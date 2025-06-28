@@ -52,7 +52,7 @@ test('Should be able import contacts', async () => {
   const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
 
   await waitFor(() => {
-    const fileInput = screen.getByTestId('importContactsFile');
+    const fileInput = screen.getByTestId('uploadcontacts');
     userEvent.upload(fileInput, file);
   });
   await waitFor(() => {
