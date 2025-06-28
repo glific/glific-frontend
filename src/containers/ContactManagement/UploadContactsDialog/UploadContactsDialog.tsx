@@ -163,7 +163,7 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
               </div>
 
               <div className={styles.UploadContainer}>
-                <label className={styles.Upload} htmlFor="importContactsFile">
+                <label className={styles.Upload} htmlFor="uploadcontacts">
                   <span className={styles.FileInput}>
                     {fileName !== '' ? (
                       <>
@@ -188,9 +188,9 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
 
                     <input
                       type="file"
-                      id="importContactsFile"
+                      id="uploadcontacts"
                       disabled={fileName !== ''}
-                      data-testid="importContactsFile"
+                      data-testid="uploadcontacts"
                       onChange={(event) => {
                         setErrors([]);
                         addAttachment(event);
