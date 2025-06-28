@@ -294,3 +294,12 @@ export const formatString = (str: string) =>
     .replace(/_/g, ' ')
     .replace(/([a-z])([0-9])/gi, '$1 $2')
     .replace(/\b\w/g, (char) => char.toUpperCase());
+
+export const handleSubscriptionError = (error: any, subscriptionType: string, refetch: any) => {
+  setLogs(`Subscription error for ${subscriptionType}: ${error}`, 'error');
+
+  if (error?.message?.includes('Socket closed')) {
+    // Trigger a refetch if we lose connection
+    refetch(true);
+  }
+};
