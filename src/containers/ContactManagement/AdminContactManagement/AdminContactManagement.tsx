@@ -57,12 +57,8 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
       <div>
         <h2>Move contacts</h2>
 
-        <div className={styles.Instructions} style={{ fontSize: '14px' }}>
-          <span
-            style={{
-              marginBottom: '1rem',
-            }}
-          >
+        <div className={styles.Instructions}>
+          <span>
             You can move contacts to collections in bulk or update their contact information. Please create csv file
             that exactly matches the sample.
           </span>

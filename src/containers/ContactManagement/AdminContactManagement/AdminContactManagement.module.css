@@ -23,8 +23,7 @@
 }
 
 .UploadContainer {
-  margin-top: 24px;
-  margin-bottom: 36px;
+  margin: 1rem 0;
 }
 
 .Upload {
@@ -71,7 +70,7 @@
 }
 
 .Sample {
-  margin: 0.5rem 0;
+  margin-top: 0.5rem;
   display: flex;
   justify-content: center;
 }
@@ -87,6 +86,14 @@
   width: 30%;
 }
 
+.Instructions {
+  height: 60%;
+  overflow-y: scroll;
+  -webkit-scrollbar: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 .Instructions h5 {
   font-size: 0.875rem;
   line-height: 1.5rem;
@@ -94,15 +101,11 @@
   color: #000;
 }
 
-.Instructions div {
-  margin: 1rem 0;
-}
-
 .Instructions ul {
   padding-left: 1rem;
   margin: 0;
 }
 
-.Instructions ul li {
+.Instructions {
   font-size: 0.875rem;
 }
