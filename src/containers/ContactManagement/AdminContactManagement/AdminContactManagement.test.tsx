@@ -33,7 +33,7 @@ vi.mock('common/notification', async (importOriginal) => {
 test('Admin contact management form renders correctly', async () => {
   render(contactManagement);
   const helpText = await screen.getByText(
-    'You can move contacts to collections in bulk or update their contact information. Please create csv file that exactly matches the sample. Here are the'
+    'You can move contacts to collections in bulk or update their contact information. Please create csv file that exactly matches the sample.'
   );
   expect(helpText).toBeInTheDocument();
 });

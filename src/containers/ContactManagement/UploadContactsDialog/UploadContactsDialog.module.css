@@ -7,6 +7,7 @@
   cursor: unset;
   border: 2px solid #073f24 !important;
 }
+
 .Uploaded span {
   color: #073f24;
 }
@@ -57,8 +58,13 @@
   margin-bottom: 16px;
 }
 
+.Sample {
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
 .Sample a {
-  margin-left: 50px;
   text-transform: uppercase;
   text-decoration: none;
   color: #119656;
@@ -91,4 +97,37 @@
 
 .DialogContent {
   text-align: center;
+}
+
+.Upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 70px;
+  border: 1px dashed #119656;
+  border-radius: 0;
+  background-color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  color: #119656;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.Upload input {
+  display: none;
+}
+
+.FileInput {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.UploadFile {
+  display: flex;
+  align-items: start;
 }
