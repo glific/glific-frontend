@@ -185,8 +185,8 @@ Replace `API-PORT` with your backend API port number.
 
 - 🌐 [Glific.org](https://glific.org/)
 - 📄 [One Pager](https://docs.google.com/document/d/1XYxNvIYzNyX2Ve99-HrmTC8utyBFaf_Y7NP1dFYxI9Q/edit?usp=sharing)
-- 📁 [Google Drive](https://drive.google.com/drive/folders/1aMQvS8xWRnIEtsIkRgLodhDAM-0hg0v1?usp=sharing)
-- 📝 [Product Features](https://docs.google.com/document/d/1uUWmvFkPXJ1xVMr2xaBYJztoItnqxBnfqABz5ad6Zl8/edit?usp=sharing)
-- 📰 [Blogs](https://chintugudiya.org/tag/glific/)
+- 📁 [Google Drive](https://glific.github.io/docs/docs/intro)
+- 📝 [Product Features](https://glific.github.io/docs/docs/category/product-features)
+- 📰 [Blogs](https://glific.org/blogs/)
 ### Chat With Us  
 - 💬 [Discord](https://discord.gg/scsrGUw)
