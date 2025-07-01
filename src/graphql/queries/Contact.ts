@@ -168,6 +168,8 @@ export const GET_CONTACT_PROFILES = gql`
       id
       name
       type
+      is_active
+      is_default
       language {
         id
       }
