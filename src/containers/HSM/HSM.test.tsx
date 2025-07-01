@@ -335,4 +335,35 @@ describe('Add mode', () => {
     const callToActionRadio = screen.getByRole('radio', { name: 'Call to actions' }) as HTMLInputElement;
     expect(callToActionRadio.checked).toBe(false);
   });
+
+  test('attachment URL is trimmed before validation', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    // Select attachment type (e.g., IMAGE)
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[2].focus();
+    fireEvent.keyDown(autocompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+
+    // Enter attachment URL with spaces
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[3], { target: { value: '   https://example.com/image.jpg   ' } });
+
+    await waitFor(() => {
+      // The input value should still have spaces, but validation should use the trimmed value.
+      expect(inputs[3]).toHaveValue('   https://example.com/image.jpg   ');
+    });
+
+    // Optionally, trigger blur to invoke validation
+    fireEvent.blur(inputs[3]);
+
+    // There should be no validation error for a valid trimmed URL
+    await waitFor(() => {
+      expect(screen.queryByText('Attachment URL is required.')).not.toBeInTheDocument();
+    });
+  });
 });
