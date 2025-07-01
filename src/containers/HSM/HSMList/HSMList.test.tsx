@@ -124,7 +124,7 @@ test('should navigate to create template page', async () => {
   const { getByText, getByTestId } = render(template(syncTemplateQuery));
 
   await waitFor(() => {
-    expect(getByText('Templates')).toBeInTheDocument();
+    expect(getByText('HSM Templates')).toBeInTheDocument();
   });
 
   fireEvent.click(getByTestId('newItemButton'));
@@ -136,7 +136,7 @@ test('should navigate to create template page with selected tag', async () => {
   const { getByText, getByTestId, getAllByRole } = render(template(syncTemplateQuery));
 
   await waitFor(() => {
-    expect(getByText('Templates')).toBeInTheDocument();
+    expect(getByText('HSM Templates')).toBeInTheDocument();
   });
 
   const autoComplete = getAllByRole('combobox')[1];
