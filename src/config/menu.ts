@@ -136,7 +136,7 @@ const menus = (): Menu[] => [
         roles: managerLevel,
       },
       {
-        title: 'HSM Template',
+        title: 'HSM Templates',
         path: '/template',
         icon: 'template',
         type: 'sideDrawer',
