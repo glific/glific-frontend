@@ -143,6 +143,15 @@ const gqlClient = (navigate: any) => {
         authToken: getAuthSession('access_token'),
         userId: getUserSession('id'),
       },
+      keepAlive: 30000,
+      on: {
+        closed: (event: any) => {
+          setLogs(`WebSocket closed with code ${event.code} and reason: ${event.reason}`, 'error');
+        },
+        error: (error) => {
+          setLogs(`WebSocket error: ${error}`, 'error');
+        },
+      },
     })
   );
 
