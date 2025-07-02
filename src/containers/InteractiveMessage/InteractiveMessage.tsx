@@ -799,10 +799,7 @@ export const InteractiveMessage = () => {
       validate: () => !dynamicMedia && isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
-          setAttachmentURL(event.target.value);
-        },
-        onChange: (event: any) => {
-          setAttachmentURL(event.target.value);
+          setAttachmentURL(event.target.value.trim());
         },
       },
       helperText:

@@ -324,9 +324,7 @@ export const HSM = () => {
 
 const validateURL = (value: string) => {
   if (value && type) {
-    // const trimmedValue = value.trim(); 
     setValidatingURL(true);
-
     validateMedia(value, type.id, false).then((response: any) => {
       if (!response.data.is_valid) {
         setIsUrlValid(response.data.message);
@@ -590,10 +588,6 @@ const validateURL = (value: string) => {
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
-        },
-        onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value.trim()), 1000);
         },
       },
     },
