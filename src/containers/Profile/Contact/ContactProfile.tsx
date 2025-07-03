@@ -121,12 +121,16 @@ export const ContactProfile = () => {
               }
             >
               <AvatarDisplay name={name} />
-                <span>
-                 {name}
-                 {(is_default || is_active) && ' '}
-                 {is_default && <span className={styles.ProfileLabel}>[Default]</span>}
-                 {is_active && <span className={styles.ProfileLabel}>[Active]</span>}
-                </span>
+<span>
+  {name}
+  {(is_default || is_active) && (
+    <span className={styles.ProfileTags}>
+      {is_default && <span className={styles.Pill + ' ' + styles.Default}>default</span>}
+      {is_active && <span className={styles.Pill + ' ' + styles.Active}>active</span>}
+    </span>
+  )}
+</span>
+
 
             </div>
             {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}

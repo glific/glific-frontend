@@ -88,8 +88,26 @@
   padding: 10px;
 }
 
-.ProfileLabel {
-  color: #666;
-  font-size: 0.85rem;
-  margin-left: 2px; 
+.ProfileTags {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+}
+
+.Pill {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: 500;
+  text-transform: lowercase;
+}
+
+.Default {
+  background-color: #e0e0e0;
+  color: #4b4b4b;
+}
+
+.Active {
+  background-color: #e4f5ea;
+  color: #256029;
 }
