@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
 import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeMedia, getHSMTemplateTypeText } from 'mocks/Template';
 import { setNotification } from 'common/notification';
+import * as utilsModule from 'common/utils';
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -31,6 +32,9 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
     BeautifulMentionsMenuItemProps: {},
   };
 });
+
+// Add this spy before your tests
+const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
 
 describe('Edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
@@ -336,34 +340,38 @@ describe('Add mode', () => {
     expect(callToActionRadio.checked).toBe(false);
   });
 
-  test('attachment URL is trimmed before validation', async () => {
+  test('validateMedia is called with URL without spaces', async () => {
     render(template);
 
     await waitFor(() => {
       expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
     });
 
-    // Select attachment type (e.g., IMAGE)
+    // Select IMAGE type using the autocomplete dropdown
     const autocompletes = screen.getAllByTestId('autocomplete-element');
     autocompletes[2].focus();
     fireEvent.keyDown(autocompletes[2], { key: 'ArrowDown' });
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
 
-    // Enter attachment URL with spaces
+    // Find the IMAGE option in the dropdown and click it
+    const imageOption = await screen.findByText(
+      (content, element) => content === 'IMAGE' && element?.tagName.toLowerCase() === 'li'
+    );
+    fireEvent.click(imageOption);
+
+    // Find the URL input (assuming it's the 4th textbox)
     const inputs = screen.getAllByRole('textbox');
-    fireEvent.change(inputs[3], { target: { value: '   https://example.com/image.jpg   ' } });
+    const urlInput = inputs[3];
 
+    // Enter URL with extra spaces
+    const urlWithSpaces = '   https://example.com/image.jpg   ';
+    fireEvent.change(urlInput, { target: { value: urlWithSpaces } });
+
+    // Blur the input to trigger validation
+    fireEvent.blur(urlInput);
+
+    // Check that validateMedia is called with trimmed version
     await waitFor(() => {
-      // The input value should still have spaces, but validation should use the trimmed value.
-      expect(inputs[3]).toHaveValue('   https://example.com/image.jpg   ');
-    });
-
-    // Optionally, trigger blur to invoke validation
-    fireEvent.blur(inputs[3]);
-
-    // There should be no validation error for a valid trimmed URL
-    await waitFor(() => {
-      expect(screen.queryByText('Attachment URL is required.')).not.toBeInTheDocument();
+      expect(validateMediaSpy).toHaveBeenCalledWith('https://example.com/image.jpg', expect.anything(), false);
     });
   });
 });

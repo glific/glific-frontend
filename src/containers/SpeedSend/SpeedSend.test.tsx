@@ -119,12 +119,11 @@ describe('test creating a speed send', () => {
 
     fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
 
-    fireEvent.blur(inputs[2], {
-      target: {
-        value: 'invalid media',
-      },
+    fireEvent.change(inputs[2], {
+      target: { value: 'invalid media' },
     });
 
+    fireEvent.blur(inputs[2]);
     await waitFor(() => {
       expect(validateMediaSpy).toHaveBeenCalled();
       expect(screen.getByText('Validating URL')).toBeInTheDocument();
