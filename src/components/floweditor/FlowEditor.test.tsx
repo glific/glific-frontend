@@ -51,7 +51,23 @@ const mockedAxios = axios as any;
 vi.mock('../simulator/Simulator', () => ({
   default: ({ message }: { message: string }) => <div data-testid="simulator">{message}</div>, // Mocking the component's behavior
 }));
+mockedAxios.get.mockImplementation(() =>
+  Promise.resolve({
+    data: {
+      results: [],
+    },
+  })
+);
 
+beforeAll(() => {
+  globalThis.indexedDB = {
+    open: vi.fn(() => ({
+      onerror: vi.fn(),
+      onsuccess: vi.fn(),
+      result: {},
+    })),
+  } as unknown as IDBFactory;
+});
 const mocks = [
   messageReceivedSubscription({ organizationId: null }),
   messageSendSubscription({ organizationId: null }),

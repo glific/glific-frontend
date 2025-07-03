@@ -66,7 +66,7 @@ export const getFlowDefinition = async (uuid: string): Promise<any | null> => {
 
 export const fetchLatestRevision = async (uuid: string) => {
   let latestRevision;
-  const response = await axios(`${glificBase}revisions/${uuid}`);
+  const response = await axios.get(`${glificBase}revisions/${uuid}`);
   if (response.data.results.length > 0) {
     latestRevision = response.data.results.reduce((latest: any, current: any) => {
       return new Date(latest.created_on) > new Date(current.created_on) ? latest : current;
