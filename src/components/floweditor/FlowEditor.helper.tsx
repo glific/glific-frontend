@@ -4,8 +4,92 @@ import '@nyaruka/temba-components/dist/temba-components.js';
 
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './FlowEditor.module.css';
+import axios from 'axios';
 
 const glificBase = FLOW_EDITOR_API;
+
+const DB_NAME = 'FlowDefinitionDB';
+const VERSION = 1;
+const STORE_NAME = 'flowDefinitions';
+let dbInstance: IDBDatabase | null = null;
+
+async function initDB(): Promise<IDBDatabase> {
+  if (dbInstance) {
+    return dbInstance;
+  }
+
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, VERSION);
+
+    request.onerror = () => {
+      reject(new Error('Failed to open IndexedDB'));
+    };
+
+    request.onsuccess = () => {
+      dbInstance = request.result;
+      resolve(dbInstance);
+    };
+
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'uuid' });
+        store.createIndex('timestamp', 'timeStamp', { unique: false });
+      }
+    };
+  });
+}
+
+export const getFlowDefinition = async (uuid: string): Promise<any | null> => {
+  const db = dbInstance || (await initDB());
+  if (!db) {
+    console.warn('Database not initialized. Call initDB() first.');
+    return null;
+  }
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(uuid);
+
+    request.onsuccess = () => {
+      const result = request.result;
+      resolve(result ? result : null);
+    };
+
+    request.onerror = () => {
+      reject(new Error('Failed to get flow definition'));
+    };
+  });
+};
+
+export const fetchLatestRevision = async (uuid: string) => {
+  let latestRevision;
+  const response = await axios(`${glificBase}revisions/${uuid}`);
+  if (response.data.results.length > 0) {
+    latestRevision = response.data.results.reduce((latest: any, current: any) => {
+      return new Date(latest.created_on) > new Date(current.created_on) ? latest : current;
+    });
+  }
+
+  return latestRevision;
+};
+
+export const postLatestRevision = async (uuid: any, definition: any) => {
+  const url = `${glificBase}revisions/${uuid}`;
+
+  try {
+    const response = await axios.post(url, definition);
+    if (response.status === 200) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error posting latest revision:', error);
+    return false;
+  }
+};
 
 export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolean) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
@@ -109,7 +193,7 @@ export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolea
   return config;
 };
 
-export const loadfiles = (startFlowEditor: any) => {
+export const loadfiles = async (startFlowEditor: any) => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
 
