@@ -322,19 +322,19 @@ export const HSM = () => {
     return payloadCopy;
   };
 
-const validateURL = (value: string) => {
-  if (value && type) {
-    setValidatingURL(true);
-    validateMedia(value, type.id, false).then((response: any) => {
-      if (!response.data.is_valid) {
-        setIsUrlValid(response.data.message);
-      } else {
-        setIsUrlValid('');
-      }
-      setValidatingURL(false);
-    });
-  }
-};
+  const validateURL = (value: string) => {
+    if (value && type) {
+      setValidatingURL(true);
+      validateMedia(value, type.id, false).then((response: any) => {
+        if (!response.data.is_valid) {
+          setIsUrlValid(response.data.message);
+        } else {
+          setIsUrlValid('');
+        }
+        setValidatingURL(false);
+      });
+    }
+  };
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
