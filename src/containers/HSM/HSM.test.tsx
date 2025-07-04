@@ -33,7 +33,6 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   };
 });
 
-// Add this spy before your tests
 const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
 
 describe('Edit mode', () => {
