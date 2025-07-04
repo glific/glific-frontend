@@ -28,12 +28,10 @@ export const ContactProfile = () => {
     variables: {
       filter: {
         contactId: params.id,
-        is_active: true
-      }
+      },
     },
     fetchPolicy: 'network-only',
   });
-
   useEffect(() => {
     if (data) {
       setSelectedProfileId(data.contact.contact.activeProfile?.id);
@@ -101,7 +99,8 @@ export const ContactProfile = () => {
 
   const drawer = (
     <div className={styles.Drawer}>
-      {profileHeaders.map(({ id, name }) => {
+      {profileHeaders.map((profile: any) => {
+        const { id, name, is_active, is_default } = profile;
         const showProfileSelected = id === selectedProfileId || id === 'noProfile';
 
         return (
@@ -122,23 +121,29 @@ export const ContactProfile = () => {
                 }
               >
                 <AvatarDisplay name={name} />
-                {name}
+                <span>
+                  {name}
+                  {(is_default || is_active) && (
+                    <span className={styles.ProfileTags}>
+                      {is_default && <span className={styles.Pill + ' ' + styles.Default}>DEFAULT</span>}
+                      {is_active && <span className={styles.Pill + ' ' + styles.Active}>ACTIVE</span>}
+                    </span>
+                  )}
+                </span>
               </div>
               {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
             </div>
             <Collapse in={showProfileSelected}>
               <div className={styles.ProfileHeaderElements}>
-                {list.map((data: any, index: number) => {
-                  return (
-                    <div
-                      key={index}
-                      onClick={() => setShowProfileSection(data.section)}
-                      className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
-                    >
-                      {data.name}
-                    </div>
-                  );
-                })}
+                {list.map((data: any, index: number) => (
+                  <div
+                    key={index}
+                    onClick={() => setShowProfileSection(data.section)}
+                    className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
+                  >
+                    {data.name}
+                  </div>
+                ))}
               </div>
             </Collapse>
           </React.Fragment>
