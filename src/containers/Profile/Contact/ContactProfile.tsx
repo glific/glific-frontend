@@ -28,7 +28,7 @@ export const ContactProfile = () => {
     variables: {
       filter: {
         contactId: params.id,
-      }
+      },
     },
     fetchPolicy: 'network-only',
   });
@@ -103,57 +103,54 @@ export const ContactProfile = () => {
         const { id, name, is_active, is_default } = profile;
         const showProfileSelected = id === selectedProfileId || id === 'noProfile';
 
-      return (
-        <React.Fragment key={id}>
-          <div
-            data-testid="profileHeader"
-            className={styles.ProfileHeader}
-            onClick={() => {
-              setSelectedProfileId(`${id}`);
-              setShowProfileSection('profile');
-            }}
-          >
+        return (
+          <React.Fragment key={id}>
             <div
-              className={
-                showProfileSelected
-                  ? `${styles.ProfileHeaderTitle} ${styles.SelectedProfile}`
-                  : styles.ProfileHeaderTitle
-              }
+              data-testid="profileHeader"
+              className={styles.ProfileHeader}
+              onClick={() => {
+                setSelectedProfileId(`${id}`);
+                setShowProfileSection('profile');
+              }}
             >
-              <AvatarDisplay name={name} />
-<span>
-  {name}
-  {(is_default || is_active) && (
-    <span className={styles.ProfileTags}>
-      {is_default && <span className={styles.Pill + ' ' + styles.Default}>default</span>}
-      {is_active && <span className={styles.Pill + ' ' + styles.Active}>active</span>}
-    </span>
-  )}
-</span>
-
-
+              <div
+                className={
+                  showProfileSelected
+                    ? `${styles.ProfileHeaderTitle} ${styles.SelectedProfile}`
+                    : styles.ProfileHeaderTitle
+                }
+              >
+                <AvatarDisplay name={name} />
+                <span>
+                  {name}
+                  {(is_default || is_active) && (
+                    <span className={styles.ProfileTags}>
+                      {is_default && <span className={styles.Pill + ' ' + styles.Default}>DEFAULT</span>}
+                      {is_active && <span className={styles.Pill + ' ' + styles.Active}>ACTIVE</span>}
+                    </span>
+                  )}
+                </span>
+              </div>
+              {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
             </div>
-            {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
-          </div>
-          <Collapse in={showProfileSelected}>
-            <div className={styles.ProfileHeaderElements}>
-              {list.map((data: any, index: number) => (
-                <div
-                  key={index}
-                  onClick={() => setShowProfileSection(data.section)}
-                  className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
-                >
-                  {data.name}
-                </div>
-              ))}
-            </div>
-          </Collapse>
-        </React.Fragment>
-      );
-    })}
-   </div>
-);
-
+            <Collapse in={showProfileSelected}>
+              <div className={styles.ProfileHeaderElements}>
+                {list.map((data: any, index: number) => (
+                  <div
+                    key={index}
+                    onClick={() => setShowProfileSection(data.section)}
+                    className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
+                  >
+                    {data.name}
+                  </div>
+                ))}
+              </div>
+            </Collapse>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
 
   let profileBodyContent;
   if (showProfileSection === 'profile') {
