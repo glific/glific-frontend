@@ -106,10 +106,9 @@ export const ChatMessageType = ({
           <div data-testid="videoMessage">
             <ReactPlayer
               className={isSimulatedMessage ? styles.SimulatorVideo : videoStyles}
-              url={mediaUrl}
+              src={mediaUrl}
               controls
               light={VideoThumbnail}
-              config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             />
           </div>
           <MessagesWithLinks message={media.caption || media.text} />
