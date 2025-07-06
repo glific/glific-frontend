@@ -82,21 +82,20 @@ describe('test creating a speed send', () => {
     });
 
     const inputs = screen.getAllByRole('textbox');
-
     const autocompletes = screen.getAllByTestId('autocomplete-element');
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
     fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
 
-    fireEvent.change(inputs[2], {
+    fireEvent.blur(inputs[2], {
       target: {
         value: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
       },
     });
 
     await waitFor(() => {
-      expect(validateMediaSpy).toHaveBeenCalled();
+      expect(validateMediaSpy).toHaveBeenCalledTimes(1);
       expect(screen.getByText('Validating URL')).toBeInTheDocument();
     });
   });
@@ -121,11 +120,10 @@ describe('test creating a speed send', () => {
     fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
 
     fireEvent.change(inputs[2], {
-      target: {
-        value: 'invalid media',
-      },
+      target: { value: 'invalid media' },
     });
 
+    fireEvent.blur(inputs[2]);
     await waitFor(() => {
       expect(validateMediaSpy).toHaveBeenCalled();
       expect(screen.getByText('Validating URL')).toBeInTheDocument();

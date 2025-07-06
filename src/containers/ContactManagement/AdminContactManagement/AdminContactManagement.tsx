@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
 import { Button } from 'components/UI/Form/Button/Button';
-import FileIcon from 'assets/images/icons/Document/Light.svg?react';
+import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
-import { slicedString } from 'common/utils';
 import styles from './AdminContactManagement.module.css';
 
 export interface AdminContactManagementProps {
@@ -47,8 +46,7 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
       if (extension !== 'csv') {
         setErrors([{ message: 'Please make sure the file format matches the sample' }]);
       } else {
-        const shortenedName = slicedString(mediaName, 10);
-        setFileName(shortenedName);
+        setFileName(mediaName);
         setCsvContent(reader.result);
       }
     };
@@ -60,19 +58,38 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
         <h2>Move contacts</h2>
 
         <div className={styles.Instructions}>
-          You can move contacts to collections in bulk or update their contact information. Please create csv file that
-          exactly matches the sample. Here are the &nbsp;
-          <a href={CONTACT_MANAGE_HELP_LINK} target="_blank" rel="noreferrer" className={styles.Link}>
-            detailed instructions.
-          </a>
+          <span>
+            You can move contacts to collections in bulk or update their contact information. Please create csv file
+            that exactly matches the sample.
+          </span>
+          <div>
+            <h5>Instructions</h5>
+            <ul>
+              <li>
+                Ensure your CSV includes the following fields: Phone Number (in E164 format, e.g., +91XXXXXXXXXX),
+                Contact Name, and any other fields you want to update.
+              </li>
+              <li>Click Upload File to select your CSV. Only CSV files are accepted.</li>
+              <li>
+                After upload, check for successful imports and any errors (e.g., invalid phone numbers) in
+                Notifications. Correct and re-upload if needed.
+              </li>
+            </ul>
+
+            <div>
+              Here are the&nbsp;
+              <a href={CONTACT_MANAGE_HELP_LINK} target="_blank" rel="noreferrer" className={styles.Link}>
+                detailed instructions.
+              </a>
+            </div>
+          </div>
         </div>
         <div className={styles.UploadContainer}>
-          <label className={styles.UploadEnabled} htmlFor="uploadFile">
-            <span>
-              <FileIcon className={styles.FileIcon} />
+          <label className={styles.Upload} htmlFor="uploadFile">
+            <span className={styles.FileInput}>
               {fileName !== '' ? (
                 <>
-                  <span>{fileName}</span>
+                  {fileName}
                   <CrossIcon
                     data-testid="cross-icon"
                     className={styles.CrossIcon}
@@ -84,7 +101,11 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
                   />
                 </>
               ) : (
-                'Select file'
+                <>
+                  <span className={styles.UploadFile}>
+                    <UploadIcon /> Upload File
+                  </span>
+                </>
               )}
 
               <input

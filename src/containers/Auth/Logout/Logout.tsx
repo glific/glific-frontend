@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { useContext, useEffect, CSSProperties } from 'react';
+import { useEffect, CSSProperties } from 'react';
 import axios from 'axios';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { useApolloClient } from '@apollo/client';
@@ -66,8 +66,8 @@ export const Logout = () => {
     <DialogBox
       title={t('Your session has expired!')}
       buttonOk={t('Login')}
-      handleOk={() => handleLogout()}
-      handleCancel={() => handleLogout()}
+      handleOk={handleLogout}
+      handleCancel={handleLogout}
       skipCancel
       alignButtons="center"
     >

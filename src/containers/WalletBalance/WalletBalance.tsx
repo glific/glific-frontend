@@ -11,6 +11,7 @@ import { getUserSession } from 'services/AuthService';
 import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import { ProviderContext } from 'context/session';
 import styles from './WalletBalance.module.css';
+import { handleSubscriptionError } from 'common/utils';
 
 export interface WalletBalanceProps {
   fullOpen: boolean;
@@ -104,6 +105,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
             updateBalanceValue(balance.balance);
           }
         },
+        onError: (error) => handleSubscriptionError(error, 'WALLET_BALANCE', setRetried),
       });
     }
   }, [subscribeToMore]);
