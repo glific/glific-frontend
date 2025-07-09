@@ -587,11 +587,7 @@ export const HSM = () => {
       ),
       inputProp: {
         onBlur: (event: any) => {
-          setAttachmentURL(event.target.value);
-        },
-        onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+          setAttachmentURL(event.target.value.trim());
         },
       },
     },

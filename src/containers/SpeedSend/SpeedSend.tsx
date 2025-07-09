@@ -409,8 +409,8 @@ export const SpeedSend = () => {
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
       inputProp: {
-        onChange: (event: any) => {
-          setAttachmentURL(event.target.value);
+        onBlur: (event: any) => {
+          setAttachmentURL(event.target.value.trim());
         },
       },
     },
