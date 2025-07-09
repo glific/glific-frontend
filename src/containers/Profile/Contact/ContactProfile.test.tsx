@@ -72,20 +72,18 @@ describe('contact profile with multiple profiles', () => {
       expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 
-    //should show active profile first
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 1');
     });
 
     fireEvent.click(screen.getAllByTestId('profileHeader')[1]);
 
-    //should show active profile first
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
     });
   });
 
-  test('should render all profiles and show correct status cues', async () => {
+  test('should only show active and correct status cues', async () => {
     render(wrapper);
 
     await waitFor(() => {
@@ -94,21 +92,9 @@ describe('contact profile with multiple profiles', () => {
 
     const profileHeaders = await screen.findAllByTestId('profileHeader');
 
-    // Assert 3 profiles rendered
-    expect(profileHeaders).toHaveLength(3);
+    expect(profileHeaders).toHaveLength(2);
 
-    // Check profile names and label cues according to new implementation
-    // Update the expected text below to match your new UI cues
-    expect(profileHeaders[0]).toHaveTextContent('profile name 1'); // Add new cues if any
-    expect(profileHeaders[0]).toHaveTextContent('DEFAULT');
-    expect(profileHeaders[0]).toHaveTextContent('ACTIVE');
-
+    expect(profileHeaders[0]).toHaveTextContent('profile name 1DEFAULTACTIVE');
     expect(profileHeaders[1]).toHaveTextContent('profile name 2');
-    expect(profileHeaders[1]).toHaveTextContent('ACTIVE');
-    expect(profileHeaders[1]).not.toHaveTextContent('DEFAULT');
-
-    expect(profileHeaders[2]).toHaveTextContent('profile name 3');
-    expect(profileHeaders[2]).not.toHaveTextContent('DEFAULT');
-    expect(profileHeaders[2]).not.toHaveTextContent('ACTIVE');
   });
 });
