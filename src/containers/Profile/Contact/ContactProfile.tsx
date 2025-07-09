@@ -28,6 +28,7 @@ export const ContactProfile = () => {
     variables: {
       filter: {
         contactId: params.id,
+        is_active: true,
       },
     },
     fetchPolicy: 'network-only',
@@ -75,7 +76,7 @@ export const ContactProfile = () => {
     activeProfileId: activeProfile?.id,
   };
 
-  let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
+  let profileHeaders: Array<{ id: string | undefined; name: string; is_default?: boolean }> = [];
   if (profileData && profileData.profiles.length > 0 && activeProfile?.id) {
     profileHeaders = profileData.profiles;
   } else {
@@ -99,8 +100,7 @@ export const ContactProfile = () => {
 
   const drawer = (
     <div className={styles.Drawer}>
-      {profileHeaders.map((profile: any) => {
-        const { id, name, is_active, is_default } = profile;
+      {profileHeaders.map(({ id, is_default, name }) => {
         const showProfileSelected = id === selectedProfileId || id === 'noProfile';
 
         return (
@@ -121,15 +121,15 @@ export const ContactProfile = () => {
                 }
               >
                 <AvatarDisplay name={name} />
-                <span>
-                  {name}
-                  {(is_default || is_active) && (
-                    <span className={styles.ProfileTags}>
-                      {is_default && <span className={styles.Pill + ' ' + styles.Default}>DEFAULT</span>}
-                      {is_active && <span className={styles.Pill + ' ' + styles.Active}>ACTIVE</span>}
-                    </span>
+                <div className={styles.NameWithTags}>
+                  <div className={styles.TruncatedName}>{name}</div>
+                  {(is_default || activeProfile?.id === id) && (
+                    <div className={styles.ProfileTags}>
+                      {is_default && <span className={`${styles.Pill} ${styles.Default}`}>DEFAULT</span>}
+                      {activeProfile?.id === id && <span className={`${styles.Pill} ${styles.Active}`}>ACTIVE</span>}
+                    </div>
                   )}
-                </span>
+                </div>
               </div>
               {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
             </div>
