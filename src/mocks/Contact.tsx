@@ -116,10 +116,11 @@ export const getMultipleProfiles = {
     variables: {
       filter: {
         contactId: '2',
+        is_active: true,
       },
     },
   },
-    result: {
+  result: {
     data: {
       profiles: [
         {
@@ -139,15 +140,6 @@ export const getMultipleProfiles = {
           fields: '{}',
           language: { id: '1' },
           type: 'Parent',
-        },
-        {
-          id: '4',
-          name: 'profile name 3',
-          is_default: false,
-          is_active: false,
-          fields: '{}',
-          language: { id: '1' },
-          type: 'Alumni',
         },
       ],
     },
