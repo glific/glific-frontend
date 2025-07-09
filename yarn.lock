@@ -756,16 +756,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@jsplumb/browser-ui@^6.2.10":
-  version "6.2.10"
-  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-6.2.10.tgz#86b85ed42110563d2816e3712677cdbbbf33366f"
-  integrity sha512-trk++mK5q6hceJL79teemzcilJ+8DrZT/lMK0+B80AtHqZHr0YwMCf+so2JBb2Z/MDZ0fUEU9MbELY6OPhhs5g==
-
-"@kurkle/color@^0.3.0":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@kurkle/color/-/color-0.3.4.tgz#4d4ff677e1609214fc71c580125ddddd86abcabf"
-  integrity sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==
-
 "@lexical/clipboard@0.33.0":
   version "0.33.0"
   resolved "https://registry.yarnpkg.com/@lexical/clipboard/-/clipboard-0.33.0.tgz#6e10ccc497c1be7239e9b42408d4d7490d4763d4"
@@ -1157,21 +1147,16 @@
     hls.js "~1.5.19"
     mux-embed "^5.8.3"
 
-"@nyaruka/temba-components@^0.129.2":
-  version "0.129.2"
-  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.129.2.tgz#400fda01ca4c3c27fd1634f85589c6f9e5a3b6a5"
-  integrity sha512-E0H2I14YhLs/ZQFys0rFHovyDJt5hOwXPH0B2dcy7lT5D86ddmO6t0R45dwBLSMlBHizx2wC4JEZTBwgcHBExA==
+"@nyaruka/temba-components@^0.113.0":
+  version "0.113.0"
+  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.113.0.tgz#e37db43737d39b5b72745f75cca8c2caad6dcc57"
+  integrity sha512-nCMMuMuaDM6w/H2EvezYVdMFEOMye6Iujd+1Yt5oVQO3BMdkA1w1xqwdduGYRyA8xRG1TgdLomRxbhcKFuAuew==
   dependencies:
-    "@jsplumb/browser-ui" "^6.2.10"
     "@lit/localize" "^0.12.1"
-    chart.js "^4.4.8"
-    chartjs-adapter-luxon "^1.3.1"
-    chartjs-plugin-datalabels "^2.2.0"
     color-hash "^2.0.2"
     croppie "^2.6.5"
     geojson "^0.5.0"
     image-size "^1.1.1"
-    immer "10"
     leaflet "1.5.1"
     lit "3.1.2"
     lit-element "^4.0.4"
@@ -1180,7 +1165,6 @@
     remarkable "^2.0.1"
     serialize-javascript "^6.0.2"
     tiny-lru "^11.2.5"
-    zustand "^5.0.3"
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
@@ -2475,23 +2459,6 @@ chalk@^4.1.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
-
-chart.js@^4.4.8:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-4.5.0.tgz#11a1ef6c4befc514b1b0b613ebac226c4ad2740b"
-  integrity sha512-aYeC/jDgSEx8SHWZvANYMioYMZ2KX02W6f6uVfyteuCGcadDLcYVHdfdygsTQkQ4TKn5lghoojAsPj5pu0SnvQ==
-  dependencies:
-    "@kurkle/color" "^0.3.0"
-
-chartjs-adapter-luxon@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/chartjs-adapter-luxon/-/chartjs-adapter-luxon-1.3.1.tgz#8ad8be7cc1521bacd6cd2ff4b013669d4dd49364"
-  integrity sha512-yxHov3X8y+reIibl1o+j18xzrcdddCLqsXhriV2+aQ4hCR66IYFchlRXUvrJVoxglJ380pgytU7YWtoqdIgqhg==
-
-chartjs-plugin-datalabels@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/chartjs-plugin-datalabels/-/chartjs-plugin-datalabels-2.2.0.tgz#369578e131d743c2e34b5fbe2d3f9335f6639b8f"
-  integrity sha512-14ZU30lH7n89oq+A4bWaJPnAG8a7ZTk7dKf48YAzMvJjQtjrgg5Dpk9f+LbjCF6bpx3RAGTeL13IXpKQYyRvlw==
 
 check-error@^2.1.1:
   version "2.1.1"
@@ -4020,11 +3987,6 @@ immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==
-
-immer@10:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-10.1.1.tgz#206f344ea372d8ea176891545ee53ccc062db7bc"
-  integrity sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==
 
 import-fresh@^3.2.1, import-fresh@^3.3.0:
   version "3.3.1"
@@ -6898,8 +6860,3 @@ zen-observable@0.8.15:
   version "0.8.15"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
-
-zustand@^5.0.3:
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-5.0.6.tgz#a2da43d8dc3d31e314279e5baec06297bea70a5c"
-  integrity sha512-ihAqNeUVhe0MAD+X8M5UzqyZ9k3FFZLBTtqo6JLPwV53cbRB/mJwBI0PxcIgqhBBHlEs8G45OTDTMq3gNcLq3A==
