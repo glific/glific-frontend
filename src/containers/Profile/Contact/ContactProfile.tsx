@@ -126,7 +126,7 @@ export const ContactProfile = () => {
                   {(is_default || activeProfile?.id === id) && (
                     <div className={styles.ProfileTags}>
                       {is_default && <span className={`${styles.Pill} ${styles.Default}`}>DEFAULT</span>}
-                      {activeProfile?.id === id && <span className={`${styles.Pill} ${styles.Active}`}>ACTIVE</span>}
+                      {activeProfile?.id === id && <span className={`${styles.Pill} ${styles.Active}`}>CURRENT</span>}
                     </div>
                   )}
                 </div>

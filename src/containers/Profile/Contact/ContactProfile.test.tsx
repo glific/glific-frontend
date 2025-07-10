@@ -94,7 +94,7 @@ describe('contact profile with multiple profiles', () => {
 
     expect(profileHeaders).toHaveLength(2);
 
-    expect(profileHeaders[0]).toHaveTextContent('profile name 1DEFAULTACTIVE');
+    expect(profileHeaders[0]).toHaveTextContent('profile name 1DEFAULTCURRENT');
     expect(profileHeaders[1]).toHaveTextContent('profile name 2');
   });
 });
