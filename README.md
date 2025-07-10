@@ -2,6 +2,7 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![](https://github.com/glific/glific/workflows/Continuous%20Integration/badge.svg)
+[![Code coverage](https://img.shields.io/codecov/c/github/glific/glific-frontend/master.svg)](https://codecov.io/gh/glific/glific-frontend/branch/master)
 ![GitHub issues](https://img.shields.io/github/issues-raw/glific/glific-frontend)
 [![Discord](https://img.shields.io/discord/717975833226248303.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/MVf2KF)
 [![Cypress](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/ocex65/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/ocex65/runs)
