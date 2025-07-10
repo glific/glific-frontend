@@ -116,10 +116,3 @@
   align-items: flex-start;
   gap: 1px;
 }
-
-.TruncatedName {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
