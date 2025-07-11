@@ -83,7 +83,7 @@ describe('contact profile with multiple profiles', () => {
     });
   });
 
-  test('should only show active and correct status cues', async () => {
+  test('should only show active profiles and shows correct status cues', async () => {
     render(wrapper);
 
     await waitFor(() => {
