@@ -123,12 +123,10 @@ export const ContactProfile = () => {
                 <AvatarDisplay name={name} />
                 <div className={styles.NameWithTags}>
                   <div>{name.length > 18 ? `${name.slice(0, 18)}...` : name}</div>
-                  {(is_default || activeProfile?.id === id) && (
-                    <div className={styles.ProfileTags}>
-                      {is_default && <span className={`${styles.Pill} ${styles.Default}`}>DEFAULT</span>}
-                      {activeProfile?.id === id && <span className={`${styles.Pill} ${styles.Active}`}>CURRENT</span>}
-                    </div>
-                  )}
+                  <div className={styles.ProfileTags}>
+                    {is_default && <span className={`${styles.Pill} ${styles.Default}`}>DEFAULT</span>}
+                    {activeProfile?.id === id && <span className={`${styles.Pill} ${styles.Active}`}>CURRENT</span>}
+                  </div>
                 </div>
               </div>
               {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
