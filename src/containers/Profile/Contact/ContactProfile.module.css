@@ -88,12 +88,12 @@
   padding: 10px;
 }
 
-.ProfileTags {
+.ProfileTagsContainer {
   display: inline-flex;
   gap: 4px;
 }
 
-.Pill {
+.ProfileTag {
   font-size: 0.5rem;
   padding: 2px 8px;
   border-radius: 12px;
