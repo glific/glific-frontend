@@ -140,7 +140,7 @@ const Simulator = ({
 
   const [allConversations, setAllConversations] = useState<any>({});
   const variables = { organizationId: getUserSession('organizationId') };
-
+  const [currentMessageUuid, setCurrentMessageUuid] = useState<string>("");
   let messages: any[] = [];
   let simulatorId = '';
   const sender: Sender = {
@@ -150,8 +150,7 @@ const Simulator = ({
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
-
-  const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any) => {
+  const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any, messageUuid?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
     // check if send message text is not empty
@@ -166,6 +165,7 @@ const Simulator = ({
     if (interactivePayload) {
       type = interactivePayload.payload.type;
       payload = interactivePayload.payload;
+      payload.id = messageUuid || "";
       delete payload.type;
       context = interactivePayload.context;
     } else if (templateValue) {
@@ -245,8 +245,9 @@ const Simulator = ({
     setShowSimulator(false);
   };
 
-  const handleOpenListReplyDrawer = (items: any) => {
+  const handleOpenListReplyDrawer = (items: any, messageUuid: string) => {
     setSelectedListTemplate(items);
+    setCurrentMessageUuid(messageUuid);
     setIsDrawerOpen(true);
   };
 
@@ -280,7 +281,6 @@ const Simulator = ({
     isPollContent: boolean = false
   ) => {
     const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } = messageObject;
-
     const messageType = isInteractive ? templateType : type;
     const { body, buttons } = WhatsAppTemplateButton(isInteractive ? '' : messageObject.body);
 
@@ -300,7 +300,7 @@ const Simulator = ({
               bspMessageId={bspMessageId}
               showHeader={showHeader}
               component={SimulatorTemplate}
-              onGlobalButtonClick={handleOpenListReplyDrawer}
+              onGlobalButtonClick={(items: any) => handleOpenListReplyDrawer(items, messageObject.uuid || "")}
             />
             <TimeComponent direction={direction} insertedAt={insertedAt} />
           </>
@@ -315,7 +315,7 @@ const Simulator = ({
             showHeader={showHeader}
             disabled={isInteractive}
             bspMessageId={bspMessageId}
-            onQuickReplyClick={(value: any) => sendMessage(sender, value)}
+            onQuickReplyClick={(value: any) => sendMessage(sender, value, null, messageObject.uuid || "")}
           />
         );
       }
@@ -475,7 +475,7 @@ const Simulator = ({
   };
 
   const handleListDrawerItemClick = (payloadObject: any) => {
-    sendMessage(sender, payloadObject);
+    sendMessage(sender, payloadObject, null, currentMessageUuid);
     handleListReplyDrawerClose();
   };
 
