@@ -72,34 +72,29 @@ describe('contact profile with multiple profiles', () => {
       expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 
-    //should show active profile first
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 1');
     });
 
     fireEvent.click(screen.getAllByTestId('profileHeader')[1]);
 
-    //should show active profile first
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
     });
   });
 
-  test('should only show active profiles in profile list', async () => {
+  test('should only show active profiles and shows correct status cues', async () => {
     render(wrapper);
 
     await waitFor(() => {
       expect(screen.getByText('Contact Profile')).toBeInTheDocument();
     });
 
-    await waitFor(() => {
-      const profileHeaders = screen.getAllByTestId('profileHeader');
+    const profileHeaders = await screen.findAllByTestId('profileHeader');
 
-      // Should render exactly 2 active profiles
-      expect(profileHeaders).toHaveLength(2);
+    expect(profileHeaders).toHaveLength(2);
 
-      expect(profileHeaders[0]).toHaveTextContent('profile name 1');
-      expect(profileHeaders[1]).toHaveTextContent('profile name 2');
-    });
+    expect(profileHeaders[0]).toHaveTextContent('profile name 1DEFAULTCURRENT');
+    expect(profileHeaders[1]).toHaveTextContent('profile name 2');
   });
 });
