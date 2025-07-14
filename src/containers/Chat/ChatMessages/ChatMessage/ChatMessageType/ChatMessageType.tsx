@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import HtmlImgFallback from 'components/UI/ImgFallback/ImgFallback';
-import VideoThumbnail from 'assets/images/videothumbnail.jpeg';
 import MapIcon from 'assets/images/map.svg?react';
 import DocumentIconDark from 'assets/images/icons/Document/Dark.svg?react';
 import DownloadIcon from 'assets/images/icons/Download.svg?react';
