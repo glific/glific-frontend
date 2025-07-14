@@ -242,21 +242,23 @@ export const FlowEditor = () => {
     let revisionSaved = false;
     if (uuid) {
       const latestRevision = await fetchLatestRevision(uuid);
-
       const flowDefinition = await getFlowDefinition(uuid);
 
-      const timeDifferenceSeconds = Math.abs(
-        dayjs(latestRevision.created_on).diff(dayjs(flowDefinition.timeStamp), 'seconds')
-      );
+      if (latestRevision && flowDefinition) {
+        const latestRevisionTime = dayjs(latestRevision.created_on);
+        const flowDefinitionTime = dayjs(flowDefinition.timestamp);
 
-      if (timeDifferenceSeconds > 300) {
-        revisionSaved = await postLatestRevision(uuid, flowDefinition.definition);
-      } else {
-        revisionSaved = true;
+        if (flowDefinitionTime.isAfter(latestRevisionTime)) {
+          const timeDifferenceSeconds = flowDefinitionTime.diff(latestRevisionTime, 'seconds');
+          revisionSaved =
+            timeDifferenceSeconds > 300 ? await postLatestRevision(uuid, flowDefinition.definition) : true;
+        } else {
+          revisionSaved = true;
+        }
       }
+
+      return revisionSaved;
     }
-    console.log(revisionSaved);
-    return revisionSaved;
   };
 
   const handlePublishFlow = async () => {
