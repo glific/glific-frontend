@@ -4,7 +4,7 @@ import '@nyaruka/temba-components/dist/temba-components.js';
 
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './FlowEditor.module.css';
-import axios from 'axios';
+import { getAuthSession } from 'services/AuthService';
 
 const glificBase = FLOW_EDITOR_API;
 
@@ -35,7 +35,7 @@ async function initDB(): Promise<IDBDatabase> {
 
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: 'uuid' });
-        store.createIndex('timestamp', 'timeStamp', { unique: false });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
       }
     };
   });
@@ -65,23 +65,45 @@ export const getFlowDefinition = async (uuid: string): Promise<any | null> => {
 };
 
 export const fetchLatestRevision = async (uuid: string) => {
-  let latestRevision;
-  const response = await axios.get(`${glificBase}revisions/${uuid}`);
-  if (response.data.results.length > 0) {
-    latestRevision = response.data.results.reduce((latest: any, current: any) => {
-      return new Date(latest.created_on) > new Date(current.created_on) ? latest : current;
-    });
-  }
+  try {
+    let latestRevision = null;
+    const token = getAuthSession('access_token');
 
-  return latestRevision;
+    const response = await fetch(`${glificBase}revisions/${uuid}?version=13.2`, {
+      headers: {
+        authorization: token,
+      },
+    });
+    const data = await response.json();
+
+    if (data.results.length > 0) {
+      latestRevision = data.results.reduce((latest: any, current: any) => {
+        return new Date(latest.created_on) > new Date(current.created_on) ? latest : current;
+      });
+    }
+
+    return latestRevision;
+  } catch (error) {
+    console.error('Error fetching latest revision:', error);
+    return null;
+  }
 };
 
-export const postLatestRevision = async (uuid: any, definition: any) => {
+export const postLatestRevision = async (uuid: string, definition: any) => {
   const url = `${glificBase}revisions/${uuid}`;
+  const token = getAuthSession('access_token');
 
   try {
-    const response = await axios.post(url, definition);
-    if (response.status === 200) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token,
+      },
+      body: JSON.stringify(definition),
+    });
+
+    if (response.ok) {
       return true;
     }
     return false;
