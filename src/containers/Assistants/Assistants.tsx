@@ -49,7 +49,7 @@ export const Assistants = () => {
   return (
     <div className={styles.AssistantContainer}>
       <Heading
-        formTitle={t('Assistants')}
+        formTitle={t('AI Assistants')}
         helpData={assistantsInfo}
         headerHelp={t("Purpose-built AI that uses OpenAI's models and calls tools")}
         button={{
