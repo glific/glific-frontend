@@ -140,7 +140,7 @@ const Simulator = ({
 
   const [allConversations, setAllConversations] = useState<any>({});
   const variables = { organizationId: getUserSession('organizationId') };
-  const [currentMessageUuid, setCurrentMessageUuid] = useState<string>("");
+  const [currentMessageUuid, setCurrentMessageUuid] = useState<string>('');
   let messages: any[] = [];
   let simulatorId = '';
   const sender: Sender = {
@@ -165,7 +165,7 @@ const Simulator = ({
     if (interactivePayload) {
       type = interactivePayload.payload.type;
       payload = interactivePayload.payload;
-      payload.id = messageUuid || "";
+      payload.id = messageUuid;
       delete payload.type;
       context = interactivePayload.context;
     } else if (templateValue) {
@@ -300,7 +300,7 @@ const Simulator = ({
               bspMessageId={bspMessageId}
               showHeader={showHeader}
               component={SimulatorTemplate}
-              onGlobalButtonClick={(items: any) => handleOpenListReplyDrawer(items, messageObject.uuid || "")}
+              onGlobalButtonClick={(items: any) => handleOpenListReplyDrawer(items, messageObject.uuid || '')}
             />
             <TimeComponent direction={direction} insertedAt={insertedAt} />
           </>
@@ -315,7 +315,7 @@ const Simulator = ({
             showHeader={showHeader}
             disabled={isInteractive}
             bspMessageId={bspMessageId}
-            onQuickReplyClick={(value: any) => sendMessage(sender, value, null, messageObject.uuid || "")}
+            onQuickReplyClick={(value: any) => sendMessage(sender, value, null, messageObject.uuid || '')}
           />
         );
       }
