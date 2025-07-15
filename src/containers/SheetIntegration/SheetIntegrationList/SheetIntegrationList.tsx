@@ -68,6 +68,7 @@ export const SheetIntegrationList = () => {
         buttonOk="Close"
         colorOk="secondary"
         handleOk={() => setShowDialog(false)}
+        handleCancel={() => setShowDialog(false)}
       >
         {warningKeys.map((key, index) => (
           <div key={key} className={styles.DialogContent}>
