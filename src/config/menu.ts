@@ -181,7 +181,7 @@ const menus = (): Menu[] => [
     roles: managerLevel,
   },
   {
-    title: 'Assistants',
+    title: 'AI Assistants',
     path: '/assistants',
     icon: 'assistant',
     type: 'sideDrawer',
