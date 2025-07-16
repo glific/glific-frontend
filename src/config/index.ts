@@ -42,7 +42,6 @@ export const GUPSHUP_CALLBACK_URL = `${GLIFIC_BACKEND_URL}/gupshup`;
 export const APPSIGNAL_API_KEY = envVariables.VITE_APPSIGNAL_API_KEY;
 export const APP_NAME = appName || 'Glific: Two way communication platform';
 export const GLIFIC_DOCS_URL = 'http://docs.glific.org';
-export const ANALYTICS_URL = `${GLIFIC_BACKEND_URL}/stats`;
 export const CORS_PROXY_URL = 'https://cors-anywhere.tides.coloredcow.com';
 export const FLOWS_HELP_LINK = 'https://app.rapidpro.io/video/';
 export const STRIPE_PUBLISH_KEY = envVariables.VITE_STRIPE_PUBLISH_KEY;
