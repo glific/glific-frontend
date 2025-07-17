@@ -1,5 +1,5 @@
 import { organizationHasDynamicRole } from 'common/utils';
-import { ANALYTICS_URL, GLIFIC_DOCS_URL, DISCORD_URL } from 'config';
+import { GLIFIC_DOCS_URL, DISCORD_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
 const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
@@ -181,7 +181,7 @@ const menus = (): Menu[] => [
     roles: managerLevel,
   },
   {
-    title: 'Assistants',
+    title: 'AI Assistants',
     path: '/assistants',
     icon: 'assistant',
     type: 'sideDrawer',
@@ -269,14 +269,6 @@ const menus = (): Menu[] => [
     roles: staffLevel,
   },
   {
-    title: 'Analytics',
-    path: '/analytics',
-    url: ANALYTICS_URL,
-    icon: 'analytics',
-    type: 'sideDrawer',
-    roles: staffLevel,
-  },
-  {
     title: 'Resources',
     path: '/help',
     url: GLIFIC_DOCS_URL,
@@ -284,15 +276,6 @@ const menus = (): Menu[] => [
     type: 'sideDrawer',
     roles: staffLevel,
   },
-
-  // {
-  //   title: "What's new",
-  //   path: '/changelog',
-  //   url: NEW_UI_BLOG,
-  //   icon: 'new',
-  //   type: 'sideDrawer',
-  //   roles: staffLevel,
-  // },
   {
     title: 'Discord',
     path: '/discord',
