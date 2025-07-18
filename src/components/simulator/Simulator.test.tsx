@@ -43,6 +43,10 @@ const getDefaultProps = () => ({
   resetMessage: vi.fn(),
 });
 
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
 test('opened simulator should close when click of simulator icon', async () => {
   const props = getDefaultProps();
   const mockOpenSimulator = vi.fn();
@@ -138,8 +142,8 @@ test('Receive an interactive message and send the response with correct uuid', a
   });
 
   await waitFor(() => {
-    expect(mockedAxios.post).toHaveBeenCalledTimes(4);
-    const payload = mockedAxios.post.mock.calls[3][1];
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+    const payload = mockedAxios.post.mock.calls[1][1];
     expect(payload.payload.payload.id).toBe(expectedUuid);
   });
 });
@@ -225,6 +229,6 @@ test('simulator should reset on clicking the reset button message', async () => 
   const resetButton = getByTestId('resetIcon');
   fireEvent.click(resetButton);
   await waitFor(() => {
-    expect(mockedAxios.post).toHaveBeenCalledTimes(6);
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
   });
 });
