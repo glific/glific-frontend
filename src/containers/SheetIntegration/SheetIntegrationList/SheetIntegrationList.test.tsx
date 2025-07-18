@@ -18,7 +18,7 @@ const mocks = [
   getSearchSheetQuery,
   getSheetQuery,
   getSheetQuery,
-  deleteSheetQuery,
+  deleteSheetQuery({ id: '1' }),
   createSheetQuery,
   getSheetCountQuery,
   getSheetCountQuery,
@@ -95,7 +95,7 @@ describe('SheetIntegrationList', () => {
   });
 
   test('Should render warnings', async () => {
-    const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithWarnings));
+    const { getByText, getByTestId, getAllByTestId, queryByText } = render(wrapper(syncSheetMutationWithWarnings));
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -109,6 +109,29 @@ describe('SheetIntegrationList', () => {
     await waitFor(() => {
       expect(screen.getByText('Please check the warnings')).toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(queryByText('Please check the warnings')).not.toBeInTheDocument();
+    });
+  });
+
+  test('should delete the sheet', async () => {
+    const { getAllByTestId, getByText } = render(wrapper());
+
+    await waitFor(() => {
+      expect(getByText('Google sheets')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
+    fireEvent.click(screen.getByText('Delete'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
   });
   test('Dialog closes when cross icon is clicked', async () => {
     const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithWarnings));
