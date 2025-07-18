@@ -85,6 +85,7 @@ export const HSM = () => {
     location: null,
     media: {},
     body: '',
+    footer: '',
   });
   const { t } = useTranslation();
   const params = useParams();
@@ -264,7 +265,10 @@ export const HSM = () => {
       const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
-      const sampleText: any = parsedText && message + parsedText;
+      let sampleText: any = parsedText && message + parsedText;
+      // if (footerValue && footerValue.trim()) {
+      //   sampleText = sampleText ? `${sampleText}\n\n${footerValue}` : footerValue;
+      // }
       setSimulatorMessage(sampleText);
     } else {
       setSimulatorMessage(getExampleFromBody(bodyValue, variables));
@@ -715,7 +719,13 @@ export const HSM = () => {
   useEffect(() => {
     if (!isEditing) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-      setSimulatorMessage(message || '');
+      let sampleText = message || '';
+
+      // ✅ Append footer if present
+      if (footer && footer.trim()) {
+        sampleText += `\n\n${footer}`;
+      }
+      setSimulatorMessage(sampleText || '');
     }
   }, [isAddButtonChecked]);
 
@@ -734,7 +744,9 @@ export const HSM = () => {
       if (parsedText) {
         sampleText = (message || ' ') + parsedText;
       }
-
+      if (footer && footer.trim()) {
+        sampleText += `\n\n${footer}`;
+      }
       if (sampleText) {
         setSimulatorMessage(sampleText);
       }

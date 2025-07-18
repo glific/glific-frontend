@@ -166,7 +166,7 @@ const getTemplateDataTypeText = {
       buttons:
         '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
       buttonType: 'QUICK_REPLY',
-      footer: 'Sample footer',
+      footer: 'footer',
 
       quality: null,
     },
@@ -283,6 +283,7 @@ export const templateMock = createTemplateMock({
   example: 'Hi, How are you*_~~_* [User]',
   hasButtons: true,
   buttons: '[{"type":"QUICK_REPLY","text":"Call me"}]',
+  footer: 'footer',
   buttonType: 'QUICK_REPLY',
 });
 

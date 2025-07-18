@@ -171,7 +171,7 @@ describe('Add mode', () => {
     fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
     fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
     fireEvent.change(inputs[1], { target: { value: 'title' } });
-
+    fireEvent.change(inputs[3], { target: { value: 'footer' } });
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
@@ -359,7 +359,7 @@ describe('Add mode', () => {
 
     // Find the URL input (assuming it's the 4th textbox)
     const inputs = screen.getAllByRole('textbox');
-    const urlInput = inputs[3];
+    const urlInput = inputs[4];
 
     // Enter URL with extra spaces
     const urlWithSpaces = '   https://example.com/image.jpg   ';
