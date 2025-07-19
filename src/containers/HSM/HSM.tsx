@@ -429,7 +429,7 @@ export const HSM = () => {
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
 
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue, footer });
+    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
   };
 
   const fields = [
