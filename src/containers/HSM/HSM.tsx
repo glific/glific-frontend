@@ -429,7 +429,7 @@ export const HSM = () => {
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
 
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
+    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue, footer });
   };
 
   const fields = [
@@ -519,6 +519,8 @@ export const HSM = () => {
       name: 'footer',
       label: t('Footer'),
       type: 'text',
+      textArea: true,
+      disabled: isEditing,
       inputProp: {
         onBlur: (event: any) => setFooter(event.target.value.trim()),
       },
@@ -720,8 +722,6 @@ export const HSM = () => {
     if (!isEditing) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
       let sampleText = message || '';
-
-      // ✅ Append footer if present
       if (footer && footer.trim()) {
         sampleText += `\n\n${footer}`;
       }
