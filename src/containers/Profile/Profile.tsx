@@ -180,18 +180,15 @@ export const Profile = ({
   let type: any;
   const pageTitle = t('Contact Profile');
 
-  const isDefaultProfile =
-    hasMultipleProfiles &&
-    multiProfileAttributes.selectedProfile?.is_default;
+  const isDefaultProfile = hasMultipleProfiles && multiProfileAttributes.selectedProfile?.is_default;
 
   const dialogMessage = hasMultipleProfiles
     ? isDefaultProfile
       ? t(
-        "Are you sure you want to delete the default profile? Deleting default profile will delete the contact. This is irreversible."
-      )
+          'Are you sure you want to delete the default profile? Deleting default profile will delete the contact. This is irreversible.'
+        )
       : t("You won't be able to send messages to this profile.")
     : t("You won't be able to send messages to this contact.");
-
 
   return (
     <FormLayout
