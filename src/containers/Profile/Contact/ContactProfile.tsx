@@ -28,12 +28,11 @@ export const ContactProfile = () => {
     variables: {
       filter: {
         contactId: params.id,
-        is_active: true
-      }
+        is_active: true,
+      },
     },
     fetchPolicy: 'network-only',
   });
-
   useEffect(() => {
     if (data) {
       setSelectedProfileId(data.contact.contact.activeProfile?.id);
@@ -77,7 +76,7 @@ export const ContactProfile = () => {
     activeProfileId: activeProfile?.id,
   };
 
-  let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
+  let profileHeaders: Array<{ id: string | undefined; name: string; is_default?: boolean }> = [];
   if (profileData && profileData.profiles.length > 0 && activeProfile?.id) {
     profileHeaders = profileData.profiles;
   } else {
@@ -101,7 +100,7 @@ export const ContactProfile = () => {
 
   const drawer = (
     <div className={styles.Drawer}>
-      {profileHeaders.map(({ id, name }) => {
+      {profileHeaders.map(({ id, is_default, name }) => {
         const showProfileSelected = id === selectedProfileId || id === 'noProfile';
 
         return (
@@ -122,23 +121,29 @@ export const ContactProfile = () => {
                 }
               >
                 <AvatarDisplay name={name} />
-                {name}
+                <div className={styles.NameWithTags}>
+                  <div>{name.length > 18 ? `${name.slice(0, 18)}...` : name}</div>
+                  <div className={styles.ProfileTagsContainer}>
+                    {is_default && <span className={`${styles.ProfileTag} ${styles.Default}`}>DEFAULT</span>}
+                    {activeProfile?.id === id && (
+                      <span className={`${styles.ProfileTag} ${styles.Active}`}>CURRENT</span>
+                    )}
+                  </div>
+                </div>
               </div>
               {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
             </div>
             <Collapse in={showProfileSelected}>
               <div className={styles.ProfileHeaderElements}>
-                {list.map((data: any, index: number) => {
-                  return (
-                    <div
-                      key={index}
-                      onClick={() => setShowProfileSection(data.section)}
-                      className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
-                    >
-                      {data.name}
-                    </div>
-                  );
-                })}
+                {list.map((data: any, index: number) => (
+                  <div
+                    key={index}
+                    onClick={() => setShowProfileSection(data.section)}
+                    className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
+                  >
+                    {data.name}
+                  </div>
+                ))}
               </div>
             </Collapse>
           </React.Fragment>
