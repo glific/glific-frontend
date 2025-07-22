@@ -75,6 +75,7 @@ export const simulatorSearchQuery = {
               body: 'All Blogs',
               bspMessageId: 'simu-MonixaC7AzXlKbT+NxprLC36PPnLib5AQDmG',
               id: '9741472',
+              uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
               insertedAt: '2022-07-27T11:08:50.726019Z',
               interactiveContent:
                 '{"type":"list","items":[{"title":"Blogs","subtitle":"Blogs","options":[{"type":"text","title":"Blog 1","description":""},{"type":"text","title":"Blog 2","description":""},{"type":"text","title":"Blog 3","description":""},{"type":"text","title":"Blog 4","description":""},{"type":"text","title":"Blog 5","description":""},{"type":"text","title":"Blog 6","description":""},{"type":"text","title":"Blog 7","description":""},{"type":"text","title":"Blog 8","description":""},{"type":"text","title":"Blog 9","description":""},{"type":"text","title":"Blog 10","description":""}]}],"globalButtons":[{"type":"text","title":"Blogs"}],"body":"All Blogs"}',
@@ -106,6 +107,7 @@ export const messageReceivedSubscription = (variables: any = { organizationId: '
         body: 'hello',
         bspMessageId: '1',
         id: '21',
+        uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
         insertedAt: '2020-07-11T14:03:28Z',
         receiver: {
           id: '1',
@@ -132,6 +134,7 @@ const messageSubscriptionData = {
     body: 'How can we help?',
     bspMessageId: '1',
     id: '22',
+    uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
     insertedAt: '2020-07-11T14:03:28Z',
     receiver: {
       id: '2',
@@ -164,3 +167,68 @@ export const messageSendSubscription = (variables: any = { organizationId: '1' }
     data: messageSubscriptionData,
   },
 });
+
+export const keywordSentSubscription = {
+  request: {
+    query: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      receivedSimulatorMessage: {
+        __typename: 'Message',
+        body: 'draft:a',
+        bspMessageId: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
+        id: '201',
+        insertedAt: '2025-07-17T08:55:27.431750Z',
+        interactiveContent: '{}',
+        location: null,
+        media: null,
+        uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
+        receiver: {
+          __typename: 'Contact',
+          id: '6',
+        },
+        sender: {
+          __typename: 'Contact',
+          id: '1',
+        },
+        type: 'TEXT',
+      },
+    },
+  },
+  delay: 50,
+};
+
+export const interactiveMessageReceiveSubscription = {
+  request: {
+    query: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentSimulatorMessage: {
+        __typename: 'Message',
+        body: 'Glific comes with all new features',
+        bspMessageId: null,
+        id: '202',
+        uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
+        insertedAt: '2025-07-17T08:55:27.476328Z',
+        interactiveContent:
+          '{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for Glific"}}',
+        location: null,
+        media: null,
+        receiver: {
+          __typename: 'Contact',
+          id: '1',
+        },
+        sender: {
+          __typename: 'Contact',
+          id: '6',
+        },
+        type: 'QUICK_REPLY',
+      },
+    },
+  },
+  delay: 50,
+};
