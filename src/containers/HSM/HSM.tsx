@@ -423,13 +423,13 @@ export const HSM = () => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    let text = message;
+    const fullMessage = footer ? `${message}\n\n${footer}` : message;
 
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
 
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
+    setSampleMessages({ ...sampleMessages, body: fullMessage, media: mediaBody, type: typeValue });
   };
 
   const fields = [
@@ -513,17 +513,6 @@ export const HSM = () => {
         setBody(value);
       },
       defaultValue: (isEditing || isCopyState) && editorState,
-    },
-    {
-      component: Input,
-      name: 'footer',
-      label: t('Footer'),
-      type: 'text',
-      textArea: true,
-      disabled: isEditing,
-      inputProp: {
-        onBlur: (event: any) => setFooter(event.target.value.trim()),
-      },
     },
     {
       component: TemplateVariables,
@@ -722,9 +711,6 @@ export const HSM = () => {
     if (!isEditing) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
       let sampleText = message || '';
-      if (footer && footer.trim()) {
-        sampleText += `\n\n${footer}`;
-      }
       setSimulatorMessage(sampleText || '');
     }
   }, [isAddButtonChecked]);
@@ -744,14 +730,13 @@ export const HSM = () => {
       if (parsedText) {
         sampleText = (message || ' ') + parsedText;
       }
-      if (footer && footer.trim()) {
-        sampleText += `\n\n${footer}`;
-      }
-      if (sampleText) {
-        setSimulatorMessage(sampleText);
+      const fullSimulatorMessage = footer ? `${sampleText || ''}\n\n${footer}` : sampleText;
+
+      if (fullSimulatorMessage) {
+        setSimulatorMessage(fullSimulatorMessage);
       }
     }
-  }, [templateButtons, body, variables]);
+  }, [templateButtons, body, variables, footer]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
