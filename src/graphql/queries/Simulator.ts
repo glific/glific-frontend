@@ -21,6 +21,7 @@ export const RELEASE_SIMULATOR = gql`
 export const SIMULATOR_MESSAGE_FRAGMENT = `
     id
     body
+    uuid
     insertedAt
     receiver {
       id
