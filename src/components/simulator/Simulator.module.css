@@ -350,3 +350,12 @@
   font-size: 10px;
   margin-left: 2px;
 }
+
+.FooterMessage {
+  font-size: 14px;
+  color: #555;
+  /* text-align: left; */
+  margin-top: 10px;
+  /* padding: 5px;
+  border-top: 1px solid #ddd; */
+}

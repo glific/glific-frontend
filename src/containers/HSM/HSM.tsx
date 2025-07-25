@@ -515,6 +515,15 @@ export const HSM = () => {
       defaultValue: (isEditing || isCopyState) && editorState,
     },
     {
+      component: Input,
+      name: 'footer',
+      label: t('Footer'),
+      disabled: isEditing,
+      inputProp: {
+        onchange: (event: any) => setFooter(event.target.value),
+      },
+    },
+    {
       component: TemplateVariables,
       message: body,
       variables: variables,
