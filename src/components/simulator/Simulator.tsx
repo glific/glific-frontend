@@ -293,8 +293,6 @@ const Simulator = ({
     const content = interactiveContent && JSON.parse(interactiveContent);
     let isInteractiveContentPresent = false;
     let template;
-    let messageFooter = footer;
-
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
