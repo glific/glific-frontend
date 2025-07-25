@@ -130,15 +130,19 @@
   outline-color: transparent;
   outline-style: none;
 }
+
 .Simulator input::-webkit-input-placeholder {
   color: #e6e6e6;
 }
+
 .Simulator input::-moz-placeholder {
   color: #e6e6e6;
 }
+
 .Simulator input:-ms-input-placeholder {
   color: #e6e6e6;
 }
+
 .Simulator input:-moz-placeholder {
   color: #e6e6e6;
 }
@@ -200,6 +204,7 @@
   position: relative;
   transition: height 0.3s linear;
 }
+
 .Simulator .Screen .Controls {
   z-index: 100;
   display: flex;
@@ -245,6 +250,7 @@
 
   line-height: 5px;
 }
+
 .Simulator .Screen .Controls input:focus {
   outline: none;
   box-shadow: none;
@@ -319,6 +325,7 @@
 .AttachmentOptions {
   text-transform: none !important;
 }
+
 .AttachmentOptions:hover {
   background-color: #edf6f2 !important;
 }
@@ -352,10 +359,8 @@
 }
 
 .FooterMessage {
-  font-size: 14px;
-  color: #555;
-  /* text-align: left; */
-  margin-top: 10px;
-  /* padding: 5px;
-  border-top: 1px solid #ddd; */
+  font-size: 12px;
+  color: #b0b0b0;
+  font-style: italic;
+  margin-top: 6px;
 }

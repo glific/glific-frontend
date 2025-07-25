@@ -423,13 +423,12 @@ export const HSM = () => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    const fullMessage = footer ? `${message}\n\n${footer}` : message;
-
+    // Do not append footer to body; pass as separate property
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
 
-    setSampleMessages({ ...sampleMessages, body: fullMessage, media: mediaBody, type: typeValue });
+    setSampleMessages({ ...sampleMessages, body: message, media: mediaBody, type: typeValue, footer });
   };
 
   const fields = [
@@ -520,7 +519,7 @@ export const HSM = () => {
       label: t('Footer'),
       disabled: isEditing,
       inputProp: {
-        onchange: (event: any) => setFooter(event.target.value),
+        onChange: (event: any) => setFooter(event.target.value),
       },
     },
     {
