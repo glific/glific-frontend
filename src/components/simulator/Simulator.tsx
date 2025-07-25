@@ -309,7 +309,6 @@ const Simulator = ({
               onGlobalButtonClick={(items: any) => handleOpenListReplyDrawer(items, messageObject.uuid || '')}
             />
             <TimeComponent direction={direction} insertedAt={insertedAt} />
-            {/* {messageFooter && messageFooter.trim() && <div className={styles.FooterMessage}>{messageFooter}</div>} */}
           </>
         );
       }
@@ -348,7 +347,7 @@ const Simulator = ({
         />
 
         <TimeComponent direction={direction} insertedAt={insertedAt} />
-        {/* {messageFooter && messageFooter.trim() && <div className={styles.FooterMessage}>{messageFooter}</div>} */}
+
       </>
     );
     if (isInteractiveContentPresent && direction !== 'send') {
