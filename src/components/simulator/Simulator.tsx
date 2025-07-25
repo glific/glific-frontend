@@ -119,10 +119,10 @@ const getSimulatorVariables = (id: any) => ({
 });
 
 const Simulator = ({
-  setShowSimulator = () => {},
+  setShowSimulator = () => { },
   message,
   isPreviewMessage,
-  getSimulatorId = () => {},
+  getSimulatorId = () => { },
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
@@ -131,6 +131,7 @@ const Simulator = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [footer, setFooter] = useState('');
   const nodeRef = useRef<HTMLDivElement>(null!);
 
   const client = useApolloClient();
@@ -173,6 +174,9 @@ const Simulator = ({
     } else {
       payload.text = sendMessageText;
     }
+    if (footer.trim()) {
+      payload.footer = footer;
+    }
 
     axios
       .post(GUPSHUP_CALLBACK_URL, {
@@ -191,6 +195,7 @@ const Simulator = ({
         setLogs(error, 'error', true);
       });
     setInputMessage('');
+    setFooter('');
   };
 
   useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
@@ -288,7 +293,6 @@ const Simulator = ({
     const content = interactiveContent && JSON.parse(interactiveContent);
     let isInteractiveContentPresent = false;
     let template;
-
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
@@ -339,7 +343,9 @@ const Simulator = ({
           location={location}
           isSimulatedMessage={isSimulatedMessage}
         />
+
         <TimeComponent direction={direction} insertedAt={insertedAt} />
+
       </>
     );
     if (isInteractiveContentPresent && direction !== 'send') {
