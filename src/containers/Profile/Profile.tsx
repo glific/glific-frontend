@@ -160,7 +160,7 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => { },
+      handleCreateItem: () => {},
       multiple: false,
     },
     {
@@ -172,7 +172,7 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => { },
+      handleCreateItem: () => {},
       multiple: false,
     },
   ];
