@@ -125,7 +125,7 @@ export const Profile = ({
     }
 
     setName(displayName);
-    // setHideRemoveBtn(hideDeleteButton);
+    setHideRemoveBtn(hideDeleteButton);
     setLanguageId(languageIdValue.id);
   };
 
