@@ -125,7 +125,7 @@ export const Profile = ({
     }
 
     setName(displayName);
-    setHideRemoveBtn(hideDeleteButton);
+    // setHideRemoveBtn(hideDeleteButton);
     setLanguageId(languageIdValue.id);
   };
 
@@ -160,7 +160,7 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => {},
+      handleCreateItem: () => { },
       multiple: false,
     },
     {
@@ -172,7 +172,7 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => {},
+      handleCreateItem: () => { },
       multiple: false,
     },
   ];
@@ -185,8 +185,8 @@ export const Profile = ({
   const dialogMessage = hasMultipleProfiles
     ? isDefaultProfile
       ? t(
-          'Are you sure you want to delete the default profile? Deleting default profile will delete the contact. This is irreversible.'
-        )
+        'Deleting default profile will delete the contact. This is irreversible.'
+      )
       : t("You won't be able to send messages to this profile.")
     : t("You won't be able to send messages to this contact.");
 
