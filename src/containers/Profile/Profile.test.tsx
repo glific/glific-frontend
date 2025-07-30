@@ -56,11 +56,7 @@ it('should show default profile deletion warning pop up when deleting default pr
   render(
     <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
       <Router>
-        <Profile
-          match={{ params: { id: 1 } }}
-          {...props}
-          multiProfileAttributes={multiProfileAttributes}
-        />
+        <Profile match={{ params: { id: 1 } }} {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
     </MockedProvider>
   );
@@ -70,7 +66,9 @@ it('should show default profile deletion warning pop up when deleting default pr
   const deleteButton = screen.queryByTestId('remove-icon');
   if (deleteButton) {
     fireEvent.click(deleteButton);
-    expect(screen.getByText('Deleting default profile will delete the contact. This is irreversible.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Deleting default profile will delete the contact. This is irreversible.')
+    ).toBeInTheDocument();
   } else {
     expect(screen.getByTestId('formLayout')).toBeInTheDocument();
   }
@@ -89,11 +87,7 @@ it('should show non-default profile deletion message when deleting non-default p
   render(
     <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
       <Router>
-        <Profile
-          match={{ params: { id: 1 } }}
-          {...props}
-          multiProfileAttributes={multiProfileAttributes}
-        />
+        <Profile match={{ params: { id: 1 } }} {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
     </MockedProvider>
   );
@@ -103,11 +97,9 @@ it('should show non-default profile deletion message when deleting non-default p
   const deleteButton = screen.queryByTestId('remove-icon');
   if (deleteButton) {
     fireEvent.click(deleteButton);
-    console.log("ppp")
+    console.log('ppp');
     expect(screen.getByText("You won't be able to send messages to this profile.")).toBeInTheDocument();
   } else {
-
     expect(screen.getByTestId('formLayout')).toBeInTheDocument();
   }
 });
-
