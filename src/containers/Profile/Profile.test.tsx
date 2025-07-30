@@ -2,8 +2,10 @@ import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 
-import { LOGGED_IN_USER_MOCK, multiple_profile_mock, LOGGED_IN_USER_MULTIPLE_PROFILES } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
 import { Profile } from './Profile';
+
+const mocks = LOGGED_IN_USER_MOCK;
 
 const props: any = {
   profileType: 'User',
@@ -12,7 +14,7 @@ const props: any = {
 
 it('should render Profile page', async () => {
   const wrapper = (
-    <MockedProvider mocks={LOGGED_IN_USER_MOCK} addTypename={false}>
+    <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <Profile match={{ params: { id: 1 } }} {...props} />
       </Router>
@@ -31,7 +33,7 @@ it('should render profile page for contact profile', async () => {
   props.removePhoneField = true;
 
   render(
-    <MockedProvider mocks={LOGGED_IN_USER_MOCK} addTypename={false}>
+    <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <Profile {...props} />
       </Router>
