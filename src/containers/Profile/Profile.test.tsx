@@ -1,8 +1,8 @@
-import { render, waitFor, screen } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 
-import { LOGGED_IN_USER_MOCK, getMultipleProfiles } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
 import { Profile } from './Profile';
 
 const mocks = LOGGED_IN_USER_MOCK;
