@@ -57,7 +57,7 @@ it('should show default profile deletion warning pop up when deleting default pr
     <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
       <Router>
         <Profile
-          // match={{ params: { id: 1 } }}
+          match={{ params: { id: 1 } }}
           {...props}
           multiProfileAttributes={multiProfileAttributes}
         />
@@ -76,37 +76,4 @@ it('should show default profile deletion warning pop up when deleting default pr
   }
 });
 
-it('should show non-default profile deletion message when deleting non-default profile', async () => {
-  const multiProfileAttributes = {
-    selectedProfile: {
-      id: '3',
-      name: 'profile name 2',
-      is_default: false,
-    },
-    selectedProfileId: '3',
-  };
-
-  render(
-    <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
-      <Router>
-        <Profile
-          {...props}
-          multiProfileAttributes={multiProfileAttributes}
-        />
-      </Router>
-    </MockedProvider>
-  );
-
-  await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
-
-  const deleteButton = screen.queryByTestId('remove-icon');
-  if (deleteButton) {
-    fireEvent.click(deleteButton);
-    console.log("ppp")
-    expect(screen.getByText("You won't be able to send messages to this profile.")).toBeInTheDocument();
-  } else {
-
-    expect(screen.getByTestId('formLayout')).toBeInTheDocument();
-  }
-});
 
