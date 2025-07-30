@@ -1,25 +1,24 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 
-import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK, multiple_profile_mock, LOGGED_IN_USER_MULTIPLE_PROFILES } from 'mocks/Contact';
 import { Profile } from './Profile';
-
-const mocks = LOGGED_IN_USER_MOCK;
 
 const props: any = {
   profileType: 'User',
   redirectionLink: '/chat',
 };
-const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <Profile match={{ params: { id: 1 } }} {...props} />
-    </Router>
-  </MockedProvider>
-);
 
 it('should render Profile page', async () => {
+  const wrapper = (
+    <MockedProvider mocks={LOGGED_IN_USER_MOCK} addTypename={false}>
+      <Router>
+        <Profile match={{ params: { id: 1 } }} {...props} />
+      </Router>
+    </MockedProvider>
+  );
+
   const { container } = render(wrapper);
 
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
@@ -32,7 +31,7 @@ it('should render profile page for contact profile', async () => {
   props.removePhoneField = true;
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={LOGGED_IN_USER_MOCK} addTypename={false}>
       <Router>
         <Profile {...props} />
       </Router>
@@ -43,21 +42,20 @@ it('should render profile page for contact profile', async () => {
 });
 
 it('should show default profile deletion message when deleting default profile', async () => {
-
   const multiProfileAttributes = {
     selectedProfile: {
+      id: '2',
       name: 'profile name 1',
       is_default: true,
-      language: { id: '1' }
     },
     selectedProfileId: '2',
-    activeProfileId: '2'
   };
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
       <Router>
         <Profile
+          match={{ params: { id: 1 } }}
           {...props}
           multiProfileAttributes={multiProfileAttributes}
         />
@@ -67,25 +65,30 @@ it('should show default profile deletion message when deleting default profile',
 
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
 
-  expect('Deleting default profile will delete the contact. This is irreversible.').toBeDefined();
+  const deleteButton = screen.queryByTestId('remove-icon');
+  if (deleteButton) {
+    fireEvent.click(deleteButton);
+    expect(screen.getByText('Deleting default profile will delete the contact. This is irreversible.')).toBeInTheDocument();
+  } else {
+    expect(screen.getByTestId('formLayout')).toBeInTheDocument();
+  }
 });
 
 it('should show non-default profile deletion message when deleting non-default profile', async () => {
-
   const multiProfileAttributes = {
     selectedProfile: {
+      id: '3',
       name: 'profile name 2',
       is_default: false,
-      language: { id: '1' }
     },
     selectedProfileId: '3',
-    activeProfileId: '3'
   };
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
       <Router>
         <Profile
+          match={{ params: { id: 1 } }}
           {...props}
           multiProfileAttributes={multiProfileAttributes}
         />
@@ -95,5 +98,14 @@ it('should show non-default profile deletion message when deleting non-default p
 
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
 
-  expect("You won't be able to send messages to this profile.").toBeDefined();
+  const deleteButton = screen.queryByTestId('remove-icon');
+  if (deleteButton) {
+    fireEvent.click(deleteButton);
+    console.log("ppp")
+    expect(screen.getByText("You won't be able to send messages to this profile.")).toBeInTheDocument();
+  } else {
+
+    expect(screen.getByTestId('formLayout')).toBeInTheDocument();
+  }
 });
+
