@@ -41,7 +41,7 @@ it('should render profile page for contact profile', async () => {
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
 });
 
-it('should show default profile deletion message when deleting default profile', async () => {
+it('should show default profile deletion warning pop up when deleting default profile', async () => {
   const multiProfileAttributes = {
     selectedProfile: {
       id: '2',
