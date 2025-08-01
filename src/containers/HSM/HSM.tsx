@@ -63,6 +63,7 @@ export const HSM = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [isActive, setIsActive] = useState<boolean>(true);
   const [category, setCategory] = useState<any>([]);
+  const [footer, setFooter] = useState('');
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
@@ -84,6 +85,7 @@ export const HSM = () => {
     location: null,
     media: {},
     body: '',
+    footer: '',
   });
   const { t } = useTranslation();
   const params = useParams();
@@ -141,6 +143,7 @@ export const HSM = () => {
     language,
     label,
     body,
+    footer,
     type,
     attachmentURL,
     category,
@@ -215,6 +218,7 @@ export const HSM = () => {
     language: languageIdValue,
     label: labelValue,
     body: bodyValue,
+    footer: footerValue,
     example: exampleValue,
     type: typeValue,
     MessageMedia: MessageMediaValue,
@@ -245,6 +249,7 @@ export const HSM = () => {
     }
 
     setBody(bodyValue);
+    setFooter(footerValue || '');
     setEditorState(bodyValue);
     setCategory(categoryValue);
     setTagId(tagIdValue);
@@ -260,7 +265,10 @@ export const HSM = () => {
       const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
-      const sampleText: any = parsedText && message + parsedText;
+      let sampleText: any = parsedText && message + parsedText;
+      // if (footerValue && footerValue.trim()) {
+      //   sampleText = sampleText ? `${sampleText}\n\n${footerValue}` : footerValue;
+      // }
       setSimulatorMessage(sampleText);
     } else {
       setSimulatorMessage(getExampleFromBody(bodyValue, variables));
@@ -306,6 +314,9 @@ export const HSM = () => {
 
     if (payloadCopy.type === 'TEXT' || isEditing) {
       delete payloadCopy.attachmentURL;
+    }
+    if (footer?.trim()) {
+      payloadCopy.footer = footer.trim();
     }
 
     if (tagId) {
@@ -412,13 +423,12 @@ export const HSM = () => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    let text = message;
-
+    // Do not append footer to body; pass as separate property
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
 
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
+    setSampleMessages({ ...sampleMessages, body: message, media: mediaBody, type: typeValue, footer });
   };
 
   const fields = [
@@ -502,6 +512,15 @@ export const HSM = () => {
         setBody(value);
       },
       defaultValue: (isEditing || isCopyState) && editorState,
+    },
+    {
+      component: Input,
+      name: 'footer',
+      label: t('Footer'),
+      disabled: isEditing,
+      inputProp: {
+        onChange: (event: any) => setFooter(event.target.value),
+      },
     },
     {
       component: TemplateVariables,
@@ -622,6 +641,8 @@ export const HSM = () => {
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
+    footer: Yup.string().max(60, 'Footer must be under 60 characters'),
+
     body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
     category: Yup.object().nullable().required(t('Category is required.')),
     variables: Yup.array().of(
@@ -697,7 +718,8 @@ export const HSM = () => {
   useEffect(() => {
     if (!isEditing) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-      setSimulatorMessage(message || '');
+      let sampleText = message || '';
+      setSimulatorMessage(sampleText || '');
     }
   }, [isAddButtonChecked]);
 
@@ -716,12 +738,13 @@ export const HSM = () => {
       if (parsedText) {
         sampleText = (message || ' ') + parsedText;
       }
+      const fullSimulatorMessage = footer ? `${sampleText || ''}\n\n${footer}` : sampleText;
 
-      if (sampleText) {
-        setSimulatorMessage(sampleText);
+      if (fullSimulatorMessage) {
+        setSimulatorMessage(fullSimulatorMessage);
       }
     }
-  }, [templateButtons, body, variables]);
+  }, [templateButtons, body, variables, footer]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
