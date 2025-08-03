@@ -423,12 +423,12 @@ export const HSM = () => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    // Do not append footer to body; pass as separate property
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
+    let text = message;
 
-    setSampleMessages({ ...sampleMessages, body: message, media: mediaBody, type: typeValue, footer });
+    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue, footer });
   };
 
   const fields = [
