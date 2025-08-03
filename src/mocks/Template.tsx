@@ -272,6 +272,7 @@ export const createTemplateMock = (input: any) => ({
 export const templateMock = createTemplateMock({
   label: 'title',
   body: 'Hi, How are you*_~~_* {{1}}',
+  footer: 'footer',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: '1',
@@ -283,13 +284,14 @@ export const templateMock = createTemplateMock({
   example: 'Hi, How are you*_~~_* [User]',
   hasButtons: true,
   buttons: '[{"type":"QUICK_REPLY","text":"Call me"}]',
-  footer: 'footer',
+
   buttonType: 'QUICK_REPLY',
 });
 
 export const quickReplyMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
+  footer: 'footer',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
@@ -307,11 +309,11 @@ export const quickReplyMock = createTemplateMock({
 export const ctaMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
+  footer: 'footer',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
   isActive: true,
-
   isHsm: true,
   languageId: '1',
   example: 'Hi',

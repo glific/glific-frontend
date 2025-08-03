@@ -131,6 +131,7 @@ describe('Add mode', () => {
     const inputs = screen.getAllByRole('textbox');
 
     fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
     const lexicalEditor = inputs[2];
 
     await user.click(lexicalEditor);
@@ -172,10 +173,15 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
     fireEvent.change(inputs[1], { target: { value: 'title' } });
     fireEvent.change(inputs[3], { target: { value: 'footer' } });
+    // console.log(inputs[3]);
+    console.log('asfmsdkmc');
     fireEvent.click(screen.getByTestId('submitActionButton'));
+    console.log('asf');
 
     await waitFor(() => {
+      console.log('asf');
       expect(setNotification).toHaveBeenCalled();
+      console.log('asf');
     });
   });
 
