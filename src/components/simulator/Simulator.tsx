@@ -119,10 +119,10 @@ const getSimulatorVariables = (id: any) => ({
 });
 
 const Simulator = ({
-  setShowSimulator = () => { },
+  setShowSimulator = () => {},
   message,
   isPreviewMessage,
-  getSimulatorId = () => { },
+  getSimulatorId = () => {},
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
@@ -345,7 +345,6 @@ const Simulator = ({
         />
 
         <TimeComponent direction={direction} insertedAt={insertedAt} />
-
       </>
     );
     if (isInteractiveContentPresent && direction !== 'send') {
