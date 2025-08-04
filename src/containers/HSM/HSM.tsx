@@ -265,7 +265,7 @@ export const HSM = () => {
       const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
-      let sampleText: any = parsedText && message + parsedText;
+      const sampleText: any = parsedText && message + parsedText;
       setSimulatorMessage(sampleText);
     } else {
       setSimulatorMessage(getExampleFromBody(bodyValue, variables));
