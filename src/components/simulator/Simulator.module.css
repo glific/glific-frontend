@@ -365,4 +365,5 @@
   display: block;
   word-break: break-word;
   white-space: pre-wrap;
+  font-weight: 600;
 }
