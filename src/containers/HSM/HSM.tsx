@@ -715,8 +715,7 @@ export const HSM = () => {
   useEffect(() => {
     if (!isEditing) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-      let sampleText = message || '';
-      setSimulatorMessage(sampleText || '');
+      setSimulatorMessage(message || '');
     }
   }, [isAddButtonChecked]);
 
