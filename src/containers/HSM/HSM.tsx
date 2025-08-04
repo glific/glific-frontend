@@ -266,9 +266,6 @@ export const HSM = () => {
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
       let sampleText: any = parsedText && message + parsedText;
-      // if (footerValue && footerValue.trim()) {
-      //   sampleText = sampleText ? `${sampleText}\n\n${footerValue}` : footerValue;
-      // }
       setSimulatorMessage(sampleText);
     } else {
       setSimulatorMessage(getExampleFromBody(bodyValue, variables));
@@ -738,10 +735,9 @@ export const HSM = () => {
       if (parsedText) {
         sampleText = (message || ' ') + parsedText;
       }
-      const fullSimulatorMessage = footer ? `${sampleText || ''}\n\n${footer}` : sampleText;
 
-      if (fullSimulatorMessage) {
-        setSimulatorMessage(fullSimulatorMessage);
+      if (sampleText) {
+        setSimulatorMessage(sampleText);
       }
     }
   }, [templateButtons, body, variables, footer]);

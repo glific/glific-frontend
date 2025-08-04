@@ -131,7 +131,6 @@ const Simulator = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
-  const [footer, setFooter] = useState('');
   const nodeRef = useRef<HTMLDivElement>(null!);
 
   const client = useApolloClient();
@@ -174,9 +173,6 @@ const Simulator = ({
     } else {
       payload.text = sendMessageText;
     }
-    if (footer.trim()) {
-      payload.footer = footer;
-    }
 
     axios
       .post(GUPSHUP_CALLBACK_URL, {
@@ -195,7 +191,6 @@ const Simulator = ({
         setLogs(error, 'error', true);
       });
     setInputMessage('');
-    setFooter('');
   };
 
   useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
@@ -360,6 +355,7 @@ const Simulator = ({
           data-testid="simulatorMessage"
         >
           {messageBody}
+          {message.footer && <span className={styles.Footer}>{message.footer}</span>}
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons

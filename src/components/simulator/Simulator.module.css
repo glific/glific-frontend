@@ -357,3 +357,12 @@
   font-size: 10px;
   margin-left: 2px;
 }
+
+.Footer {
+  font-size: 10px;
+  color: #999;
+  margin-top: 4px;
+  display: block;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
