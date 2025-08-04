@@ -356,7 +356,7 @@ const Simulator = ({
           data-testid="simulatorMessage"
         >
           {messageBody}
-          {message.footer && <span className={styles.Footer}>{message.footer}</span>}
+          {message?.footer && <span className={styles.Footer}>{message.footer}</span>}
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons
