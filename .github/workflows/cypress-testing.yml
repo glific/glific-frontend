@@ -63,9 +63,9 @@ jobs:
           cd ../
           echo clone glific repo
           git clone https://github.com/glific/glific.git
-          git checkout add_footer_to_session_template
           echo done. go to dir.
           cd glific
+          git checkout add_footer_to_session_template
           echo done. start dev.secret.exs config
           cd priv
           mkdir cert
