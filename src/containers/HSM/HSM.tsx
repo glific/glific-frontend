@@ -268,7 +268,15 @@ export const HSM = () => {
       const sampleText: any = parsedText && message + parsedText;
       setSimulatorMessage(sampleText);
     } else {
-      setSimulatorMessage(getExampleFromBody(bodyValue, variables));
+      const { message } = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
+
+      setSampleMessages({
+        type: typeValue?.id || 'TEXT',
+        body: message,
+        media: { ...sampleMessages.media },
+        footer: footerValue || '',
+        location: null,
+      });
     }
 
     if (typeValue && typeValue !== 'TEXT') {
