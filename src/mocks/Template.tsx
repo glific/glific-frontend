@@ -291,7 +291,7 @@ export const templateMock = createTemplateMock({
 export const quickReplyMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
-  footer: 'footer',
+  footer: '',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
@@ -309,7 +309,7 @@ export const quickReplyMock = createTemplateMock({
 export const ctaMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
-  footer: 'footer',
+  footer: '',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
