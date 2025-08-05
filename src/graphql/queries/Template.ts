@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 const templateFields = `
     id
     body
+    footer
     label
     isHsm
     updatedAt
