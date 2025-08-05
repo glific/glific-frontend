@@ -21,6 +21,7 @@ import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import {
   checkElementInRegistry,
+  deleteFlowDefinition,
   fetchLatestRevision,
   getFlowDefinition,
   getKeywords,
@@ -123,7 +124,7 @@ export const FlowEditor = () => {
   });
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
         setFlowValidation(data.publishFlow.errors);
         setIsError(true);
@@ -131,6 +132,7 @@ export const FlowEditor = () => {
         setPublished(true);
       }
       setPublishLoading(false);
+      if (uuid) await deleteFlowDefinition(uuid);
     },
     onError: () => {
       setPublishLoading(false);

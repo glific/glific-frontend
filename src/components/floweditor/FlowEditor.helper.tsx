@@ -5,6 +5,7 @@ import '@nyaruka/temba-components/dist/temba-components.js';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './FlowEditor.module.css';
 import { getAuthSession } from 'services/AuthService';
+import setLogs from 'config/logs';
 
 const glificBase = FLOW_EDITOR_API;
 
@@ -60,6 +61,29 @@ export const getFlowDefinition = async (uuid: string): Promise<any | null> => {
 
     request.onerror = () => {
       reject(new Error('Failed to get flow definition'));
+    };
+  });
+};
+
+export const deleteFlowDefinition = async (uuid: string): Promise<boolean> => {
+  const db = dbInstance || (await initDB());
+
+  if (!db) {
+    setLogs('Database not initialized. Call initDB() first.', 'error');
+    return false;
+  }
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.delete(uuid);
+
+    request.onsuccess = () => {
+      resolve(true);
+    };
+
+    request.onerror = () => {
+      reject(new Error(`Failed to delete flow definition with UUID: ${uuid}`));
     };
   });
 };
