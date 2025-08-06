@@ -239,7 +239,7 @@ export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolea
   return config;
 };
 
-export const loadfiles = async (startFlowEditor: any) => {
+export const loadfiles = (startFlowEditor: any) => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
 
