@@ -32,6 +32,7 @@ import {
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 import dayjs from 'dayjs';
+import setLogs from 'config/logs';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -257,10 +258,14 @@ export const FlowEditor = () => {
         } else {
           revisionSaved = true;
         }
-      }
+      } else if (!flowDefinition) {
+        setLogs(`Local Flow definition not found ${uuid}`, 'info');
 
-      return revisionSaved;
+        // If flowDefinition is not found, we assume the revision is saved
+        revisionSaved = true;
+      }
     }
+    return revisionSaved;
   };
 
   const handlePublishFlow = async () => {

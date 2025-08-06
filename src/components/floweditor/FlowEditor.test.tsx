@@ -352,7 +352,7 @@ test('if keywords are more than 8 it should be shown in a tooltip', async () => 
   });
 });
 
-test('delete flow definition', async () => {
+test('it should check the timestamp of the local revision and remote revision and only publish the latest version', async () => {
   const fetchRevisionSpy = vi.spyOn(FlowEditorHelper, 'fetchLatestRevision').mockResolvedValue({
     id: 'test-revision-id',
     created_on: '2023-01-01T00:00:00Z',

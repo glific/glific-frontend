@@ -45,7 +45,7 @@ async function initDB(): Promise<IDBDatabase> {
 export const getFlowDefinition = async (uuid: string): Promise<any | null> => {
   const db = dbInstance || (await initDB());
   if (!db) {
-    console.warn('Database not initialized. Call initDB() first.');
+    setLogs('Database not initialized. Call initDB() first.', 'error');
     return null;
   }
 
@@ -101,14 +101,14 @@ export const fetchLatestRevision = async (uuid: string) => {
     const data = await response.json();
 
     if (data.results.length > 0) {
-      latestRevision = data.results.reduce((latest: any, current: any) => {
-        return new Date(latest.created_on) > new Date(current.created_on) ? latest : current;
-      });
+      latestRevision = data.results.reduce((latest: any, current: any) =>
+        new Date(latest.created_on) > new Date(current.created_on) ? latest : current
+      );
     }
 
     return latestRevision;
   } catch (error) {
-    console.error('Error fetching latest revision:', error);
+    setLogs(`Error fetching latest revision: ${error}`, 'error');
     return null;
   }
 };
@@ -132,7 +132,7 @@ export const postLatestRevision = async (uuid: string, definition: any) => {
     }
     return false;
   } catch (error) {
-    console.error('Error posting latest revision:', error);
+    setLogs(`Error posting latest revision: ${error}`, 'error');
     return false;
   }
 };
