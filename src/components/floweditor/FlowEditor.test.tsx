@@ -10,12 +10,12 @@ import {
   getInactiveFlow,
   getFlowWithoutKeyword,
   getOrganizationServicesQuery,
-  publishFlow,
   getFreeFlow,
   resetFlowCount,
   getFlowTranslations,
   getTemplateFlow,
   getFlowWithManyKeywords,
+  publishFlowWithSuccess,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -27,6 +27,7 @@ import {
   simulatorSearchQuery,
 } from 'mocks/Simulator';
 import * as Notification from 'common/notification';
+import * as FlowEditorHelper from './FlowEditor.helper';
 
 window.location = { assign: vi.fn() } as any;
 window.location.reload = vi.fn();
@@ -36,6 +37,7 @@ beforeEach(() => {
     writable: true,
     value: { reload: vi.fn() },
   });
+  vi.clearAllMocks();
 });
 
 vi.mock('react-router', async () => {
@@ -78,11 +80,11 @@ const mocks = [
   simulatorGetQuery,
   simulatorSearchQuery,
   simulatorSearchQuery,
-  publishFlow,
   getOrganizationServicesQuery,
   getFreeFlow,
   getFreeFlow,
   getFlowTranslations,
+  publishFlowWithSuccess,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -347,5 +349,44 @@ test('if keywords are more than 8 it should be shown in a tooltip', async () => 
 
   await waitFor(() => {
     expect(screen.findByText('help, activity, preference, optout, stop, start, end, yes + 2 more'));
+  });
+});
+
+test('delete flow definition', async () => {
+  const fetchRevisionSpy = vi.spyOn(FlowEditorHelper, 'fetchLatestRevision').mockResolvedValue({
+    id: 'test-revision-id',
+    created_on: '2023-01-01T00:00:00Z',
+    definition: {},
+  });
+  const getFlowDefinitionSpy = vi.spyOn(FlowEditorHelper, 'getFlowDefinition').mockResolvedValue({
+    uuid: 'test-uuid',
+    definition: {},
+    timestamp: Date.now(),
+  });
+  const postRevisionSpy = vi.spyOn(FlowEditorHelper, 'postLatestRevision').mockResolvedValue(true);
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+  render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.getByText('help workflow')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Publish'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Ready to publish?')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(fetchRevisionSpy).toHaveBeenCalled();
+    expect(getFlowDefinitionSpy).toHaveBeenCalled();
+    expect(postRevisionSpy).toHaveBeenCalled();
+  });
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
