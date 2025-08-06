@@ -266,17 +266,9 @@ export const HSM = () => {
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
       const sampleText: any = parsedText && message + parsedText;
-      setSimulatorMessage(sampleText);
+      setSimulatorMessage(sampleText, footerValue || '');
     } else {
-      const { message } = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
-
-      setSampleMessages({
-        type: typeValue?.id || 'TEXT',
-        body: message,
-        media: { ...sampleMessages.media },
-        footer: footerValue || '',
-        location: null,
-      });
+      setSimulatorMessage(getExampleFromBody(bodyValue, variables), footerValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -424,7 +416,7 @@ export const HSM = () => {
     return data;
   };
 
-  const setSimulatorMessage = (messages: any) => {
+  const setSimulatorMessage = (messages: any, footer?: any) => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
@@ -432,8 +424,11 @@ export const HSM = () => {
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
     let text = message;
-
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue, footer });
+    let sampleMessage = { ...sampleMessages, body: text, media: mediaBody, type: typeValue };
+    if (footer || footer === '') {
+      sampleMessage.footer = footer;
+    }
+    setSampleMessages(sampleMessage);
   };
 
   const fields = [
@@ -521,7 +516,7 @@ export const HSM = () => {
     {
       component: Input,
       name: 'footer',
-      label: t('Footer'),
+      label: `${t('Footer')} (optional)`,
       disabled: isEditing,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
@@ -744,7 +739,7 @@ export const HSM = () => {
       }
 
       if (sampleText) {
-        setSimulatorMessage(sampleText);
+        setSimulatorMessage(sampleText, footer);
       }
     }
   }, [templateButtons, body, variables, footer]);
