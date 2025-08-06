@@ -641,8 +641,7 @@ export const HSM = () => {
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
-    footer: Yup.string().max(60, 'Footer must be under 60 characters'),
-
+    footer: Yup.string().max(60, t('Footer must be under 60 characters')),
     body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
     category: Yup.object().nullable().required(t('Category is required.')),
     variables: Yup.array().of(
