@@ -21,7 +21,10 @@ import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import {
   checkElementInRegistry,
+<<<<<<< HEAD
   deleteFlowDefinition,
+=======
+>>>>>>> 9b06d850c5d565326e060c0d01d4b917ecd7fe3e
   fetchLatestRevision,
   getFlowDefinition,
   getKeywords,
