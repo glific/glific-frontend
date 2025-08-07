@@ -131,6 +131,7 @@ describe('Add mode', () => {
     const inputs = screen.getAllByRole('textbox');
 
     fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
     const lexicalEditor = inputs[2];
 
     await user.click(lexicalEditor);
@@ -170,10 +171,10 @@ describe('Add mode', () => {
     autocompletes[3].focus();
     fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
     fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
+    fireEvent.change(inputs[3], { target: { value: 'footer' } });
     fireEvent.change(inputs[1], { target: { value: 'title' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
-
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
@@ -359,7 +360,7 @@ describe('Add mode', () => {
 
     // Find the URL input (assuming it's the 4th textbox)
     const inputs = screen.getAllByRole('textbox');
-    const urlInput = inputs[3];
+    const urlInput = inputs[4];
 
     // Enter URL with extra spaces
     const urlWithSpaces = '   https://example.com/image.jpg   ';

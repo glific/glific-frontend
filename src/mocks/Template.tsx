@@ -121,6 +121,7 @@ export const templateEditMock = (templateId: string, buttons: any) => ({
             label: 'English',
           },
           shortcode: 'account_balance',
+          footer: 'Sample footer',
           tag: null,
           translations:
             '{"2":{"uuid":"0de5b294-0385-48d0-bdc0-53cc833a31c5","status":"APPROVED","number_parameters":1,"language_id":2,"label":"Account Balance","example":" अब आप नीचे दिए विकल्पों में से एक का चयन करके [003] के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]","body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
@@ -165,6 +166,7 @@ const getTemplateDataTypeText = {
       buttons:
         '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
       buttonType: 'QUICK_REPLY',
+      footer: 'footer',
 
       quality: null,
     },
@@ -270,6 +272,7 @@ export const createTemplateMock = (input: any) => ({
 export const templateMock = createTemplateMock({
   label: 'title',
   body: 'Hi, How are you*_~~_* {{1}}',
+  footer: 'footer',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: '1',
@@ -281,12 +284,14 @@ export const templateMock = createTemplateMock({
   example: 'Hi, How are you*_~~_* [User]',
   hasButtons: true,
   buttons: '[{"type":"QUICK_REPLY","text":"Call me"}]',
+
   buttonType: 'QUICK_REPLY',
 });
 
 export const quickReplyMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
+  footer: '',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
@@ -304,11 +309,11 @@ export const quickReplyMock = createTemplateMock({
 export const ctaMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
+  footer: '',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
   isActive: true,
-
   isHsm: true,
   languageId: '1',
   example: 'Hi',
