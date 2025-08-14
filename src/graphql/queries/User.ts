@@ -69,6 +69,7 @@ export const GET_CURRENT_USER = gql`
         id
         name
         phone
+        email
         accessRoles {
           id
           label
