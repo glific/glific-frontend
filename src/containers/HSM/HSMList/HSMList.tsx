@@ -432,7 +432,7 @@ export const HSMList = () => {
         loadingList={syncTemplateLoad}
         helpData={templateInfo}
         secondaryButton={secondaryButton}
-        title={'Templates'}
+        title={'HSM Templates'}
         listItem={'sessionTemplates'}
         listItemName={'HSM Template'}
         pageLink={'template'}

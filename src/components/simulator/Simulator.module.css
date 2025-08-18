@@ -130,15 +130,19 @@
   outline-color: transparent;
   outline-style: none;
 }
+
 .Simulator input::-webkit-input-placeholder {
   color: #e6e6e6;
 }
+
 .Simulator input::-moz-placeholder {
   color: #e6e6e6;
 }
+
 .Simulator input:-ms-input-placeholder {
   color: #e6e6e6;
 }
+
 .Simulator input:-moz-placeholder {
   color: #e6e6e6;
 }
@@ -200,6 +204,7 @@
   position: relative;
   transition: height 0.3s linear;
 }
+
 .Simulator .Screen .Controls {
   z-index: 100;
   display: flex;
@@ -245,6 +250,7 @@
 
   line-height: 5px;
 }
+
 .Simulator .Screen .Controls input:focus {
   outline: none;
   box-shadow: none;
@@ -319,6 +325,7 @@
 .AttachmentOptions {
   text-transform: none !important;
 }
+
 .AttachmentOptions:hover {
   background-color: #edf6f2 !important;
 }
@@ -349,4 +356,14 @@
 .DoneAllIcon {
   font-size: 10px;
   margin-left: 2px;
+}
+
+.Footer {
+  font-size: 10px;
+  color: #999;
+  margin-top: 4px;
+  display: block;
+  word-break: break-word;
+  white-space: pre-wrap;
+  font-weight: 600;
 }

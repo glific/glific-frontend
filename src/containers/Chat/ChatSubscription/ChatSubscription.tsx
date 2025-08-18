@@ -10,7 +10,7 @@ import {
   SEARCH_QUERY_VARIABLES,
 } from 'common/constants';
 import { setErrorMessage } from 'common/notification';
-import { randomIntFromInterval, addLogs } from 'common/utils';
+import { randomIntFromInterval, addLogs, handleSubscriptionError } from 'common/utils';
 import { saveConversation } from 'services/ChatService';
 import { getUserSession } from 'services/AuthService';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
@@ -206,6 +206,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         document: COLLECTION_SENT_SUBSCRIPTION,
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'COLLECTION'),
+        onError: (error) => handleSubscriptionError(error, 'COLLECTION', setTriggerRefetch),
       });
     }
   }, [collectionSubscribe]);
@@ -218,6 +219,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         document: MESSAGE_RECEIVED_SUBSCRIPTION,
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'RECEIVED'),
+        onError: (error) => handleSubscriptionError(error, 'MESSAGE_RECEIVED', setTriggerRefetch),
       });
 
       // message sent subscription
@@ -225,6 +227,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         document: MESSAGE_SENT_SUBSCRIPTION,
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'SENT'),
+        onError: (error) => handleSubscriptionError(error, 'SENT', setTriggerRefetch),
       });
 
       // message status subscription
@@ -232,7 +235,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         document: MESSAGE_STATUS_SUBSCRIPTION,
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'STATUS'),
-        onError: () => {},
+        onError: (error) => handleSubscriptionError(error, 'STATUS', setTriggerRefetch),
       });
     }
   }, [subscribeToMore]);

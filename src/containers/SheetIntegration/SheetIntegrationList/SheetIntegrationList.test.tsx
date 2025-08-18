@@ -2,7 +2,7 @@ import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/re
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { setUserSession } from 'services/AuthService';
-import { SheetIntegrationList } from './SheetIntegrationList';
+import SheetIntegrationList from './SheetIntegrationList';
 import * as Notification from 'common/notification';
 import {
   getSearchSheetQuery,
@@ -42,7 +42,7 @@ window.open = vi.fn();
 afterEach(() => cleanup());
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
-describe('<SheetIntegrationList />', () => {
+describe('SheetIntegrationList', () => {
   test('Should render SheetIntegrationList', async () => {
     const { getByText, getByTestId } = render(wrapper());
 
@@ -132,5 +132,24 @@ describe('<SheetIntegrationList />', () => {
     });
 
     fireEvent.click(screen.getByTestId('ok-button'));
+  });
+  test('Dialog closes when cross icon is clicked', async () => {
+    const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithWarnings));
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Google sheets')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('additionalButton')[2]);
+    await waitFor(() => {
+      expect(screen.getByText('Please check the warnings')).toBeInTheDocument();
+    });
+
+    const crossIcon = screen.getByLabelText('close');
+
+    fireEvent.click(crossIcon);
+
+    expect(screen.queryByText('Please check the warnings')).not.toBeInTheDocument();
   });
 });

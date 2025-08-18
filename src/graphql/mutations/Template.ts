@@ -18,6 +18,7 @@ export const CREATE_TEMPLATE = gql`
         id
         label
         body
+        footer
         isActive
         language {
           label
@@ -52,6 +53,7 @@ export const UPDATE_TEMPLATE = gql`
         id
         label
         body
+        footer
         isActive
         language {
           label

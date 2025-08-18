@@ -74,6 +74,7 @@ export const TemplateOptions = ({
         color="primary"
         data-testid="addButton"
         onClick={() => handleAddClick(helper, type)}
+        disabled={disabled}
       >
         Add {title}
       </Button>

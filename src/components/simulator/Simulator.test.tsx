@@ -11,6 +11,8 @@ import {
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
   simulatorSearchQuery,
+  keywordSentSubscription,
+  interactiveMessageReceiveSubscription,
 } from 'mocks/Simulator';
 import Simulator from './Simulator';
 import { setUserSession } from 'services/AuthService';
@@ -39,6 +41,10 @@ const getDefaultProps = () => ({
   setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: false,
   resetMessage: vi.fn(),
+});
+
+beforeEach(() => {
+  vi.clearAllMocks();
 });
 
 test('opened simulator should close when click of simulator icon', async () => {
@@ -97,6 +103,49 @@ test('send a message/media from the simulator', async () => {
 
   fireEvent.click(imageButton);
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+});
+
+test('Receive an interactive message and send the response with correct uuid', async () => {
+  const expectedUuid = interactiveMessageReceiveSubscription.result.data.sentSimulatorMessage.uuid;
+  const mocks = [
+    simulatorSearchQuery,
+    simulatorReleaseSubscription(),
+    simulatorReleaseQuery,
+    simulatorGetQuery,
+    keywordSentSubscription,
+    interactiveMessageReceiveSubscription,
+  ];
+
+  const props = getDefaultProps();
+  props.showSimulator = true;
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+  await waitFor(() => {
+    expect(getByTestId('simulatorInput')).toBeInTheDocument();
+  });
+
+  const input = getByTestId('simulatorInput');
+  fireEvent.change(input, { target: { value: 'draft:a' } });
+  await waitFor(() => {
+    fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+  });
+
+  await waitFor(async () => {
+    const quickReplyButton = await screen.findByText(/yes/i);
+    expect(quickReplyButton).toBeInTheDocument();
+    fireEvent.click(quickReplyButton);
+  });
+
+  await waitFor(() => {
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+    const payload = mockedAxios.post.mock.calls[1][1];
+    expect(payload.payload.payload.id).toBe(expectedUuid);
+  });
 });
 
 test('click on clear icon closes the simulator', async () => {
@@ -180,6 +229,6 @@ test('simulator should reset on clicking the reset button message', async () => 
   const resetButton = getByTestId('resetIcon');
   fireEvent.click(resetButton);
   await waitFor(() => {
-    expect(mockedAxios.post).toHaveBeenCalledTimes(4);
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
   });
 });

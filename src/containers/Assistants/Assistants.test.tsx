@@ -35,7 +35,7 @@ test('should show empty text when no assistants are found', async () => {
   render(assistantsComponent(emptyMocks));
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('No assistants found!')).toBeInTheDocument;
   });
 });
@@ -44,7 +44,7 @@ test('it renders the list properly and switches between items', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -63,7 +63,7 @@ test('it creates an assistant', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -92,7 +92,7 @@ test('it searchs for an assistant', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -116,7 +116,7 @@ test('it uploads files to assistant', async () => {
   render(assistantsComponent(uploadSupportedFileMocks));
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
     expect(screen.getByTestId('addFiles'));
   });
@@ -199,7 +199,7 @@ test('it updates the assistant', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -232,7 +232,7 @@ test('it deletes the assistant', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -260,7 +260,7 @@ test('it should show errors for invalid value in temperature', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -285,7 +285,7 @@ test('it opens the instruction dialog box', async () => {
   render(assistantsComponent());
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
@@ -309,7 +309,7 @@ test('uploading multiple files and error messages', async () => {
   render(assistantsComponent(errorMocks));
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
     expect(screen.getByTestId('addFiles'));
   });

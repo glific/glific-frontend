@@ -116,7 +116,7 @@ export const getMultipleProfiles = {
     variables: {
       filter: {
         contactId: '2',
-        is_active: true
+        is_active: true,
       },
     },
   },
@@ -124,30 +124,22 @@ export const getMultipleProfiles = {
     data: {
       profiles: [
         {
-          fields:
-            '{"role":{"value":"Student","type":"string","label":"role","inserted_at":"2024-09-08T12:13:37.192507Z"},"name":{"value":"profile name 1","type":"string","label":"Name","inserted_at":"2024-09-08T12:13:37.151339Z"},"age_group":{"value":"19 or above","type":"string","label":"Age Group","inserted_at":"2024-09-08T12:12:45.907810Z"}}',
           id: '2',
-          language: {
-            id: '1',
-          },
           name: 'profile name 1',
-          type: 'Student',
           is_default: true,
           is_active: true,
+          fields: '{}',
+          language: { id: '1' },
+          type: 'Student',
         },
         {
-          __typename: 'Profile',
-          fields:
-            '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 2","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
           id: '3',
-          language: {
-            __typename: 'Language',
-            id: '1',
-          },
           name: 'profile name 2',
-          type: 'Parent',
           is_default: false,
           is_active: true,
+          fields: '{}',
+          language: { id: '1' },
+          type: 'Parent',
         },
       ],
     },

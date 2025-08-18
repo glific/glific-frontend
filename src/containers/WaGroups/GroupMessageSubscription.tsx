@@ -8,7 +8,7 @@ import {
   REFETCH_RANDOM_TIME_MIN,
 } from 'common/constants';
 import { setErrorMessage } from 'common/notification';
-import { randomIntFromInterval, addLogs } from 'common/utils';
+import { randomIntFromInterval, addLogs, handleSubscriptionError } from 'common/utils';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
@@ -193,6 +193,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         document: WA_MESSAGE_RECEIVED_SUBSCRIPTION,
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'RECEIVED'),
+        onError: (error) => handleSubscriptionError(error, 'WA_RECEIVED', setTriggerRefetch),
       });
 
       // message sent subscription
@@ -200,13 +201,14 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         document: WA_MESSAGE_SENT_SUBSCRIPTION,
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'SENT'),
+        onError: (error) => handleSubscriptionError(error, 'WA_SENT', setTriggerRefetch),
       });
 
       subscribeToMore({
         document: UPDATE_WA_MESSAGE_STATUS,
         variables: subscriptionVariables,
-        onError: (error) => console.log(error),
         updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'STATUS'),
+        onError: (error) => handleSubscriptionError(error, 'WA_STATUS', setTriggerRefetch),
       });
     }
   }, [subscribeToMore]);

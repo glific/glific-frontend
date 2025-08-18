@@ -63,6 +63,7 @@ export const HSM = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [isActive, setIsActive] = useState<boolean>(true);
   const [category, setCategory] = useState<any>([]);
+  const [footer, setFooter] = useState('');
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
@@ -84,6 +85,7 @@ export const HSM = () => {
     location: null,
     media: {},
     body: '',
+    footer: '',
   });
   const { t } = useTranslation();
   const params = useParams();
@@ -141,6 +143,7 @@ export const HSM = () => {
     language,
     label,
     body,
+    footer,
     type,
     attachmentURL,
     category,
@@ -215,6 +218,7 @@ export const HSM = () => {
     language: languageIdValue,
     label: labelValue,
     body: bodyValue,
+    footer: footerValue,
     example: exampleValue,
     type: typeValue,
     MessageMedia: MessageMediaValue,
@@ -245,6 +249,7 @@ export const HSM = () => {
     }
 
     setBody(bodyValue);
+    setFooter(footerValue || '');
     setEditorState(bodyValue);
     setCategory(categoryValue);
     setTagId(tagIdValue);
@@ -261,9 +266,9 @@ export const HSM = () => {
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
       const sampleText: any = parsedText && message + parsedText;
-      setSimulatorMessage(sampleText);
+      setSimulatorMessage(sampleText, footerValue || '');
     } else {
-      setSimulatorMessage(getExampleFromBody(bodyValue, variables));
+      setSimulatorMessage(getExampleFromBody(bodyValue, variables), footerValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -306,6 +311,9 @@ export const HSM = () => {
 
     if (payloadCopy.type === 'TEXT' || isEditing) {
       delete payloadCopy.attachmentURL;
+    }
+    if (footer?.trim()) {
+      payloadCopy.footer = footer.trim();
     }
 
     if (tagId) {
@@ -408,17 +416,19 @@ export const HSM = () => {
     return data;
   };
 
-  const setSimulatorMessage = (messages: any) => {
+  const setSimulatorMessage = (messages: any, footer?: any) => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    let text = message;
-
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
-
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
+    let text = message;
+    let sampleMessage = { ...sampleMessages, body: text, media: mediaBody, type: typeValue };
+    if (footer || footer === '') {
+      sampleMessage.footer = footer;
+    }
+    setSampleMessages(sampleMessage);
   };
 
   const fields = [
@@ -504,6 +514,15 @@ export const HSM = () => {
       defaultValue: (isEditing || isCopyState) && editorState,
     },
     {
+      component: Input,
+      name: 'footer',
+      label: `${t('Footer')} (optional)`,
+      disabled: isEditing,
+      inputProp: {
+        onChange: (event: any) => setFooter(event.target.value),
+      },
+    },
+    {
       component: TemplateVariables,
       message: body,
       variables: variables,
@@ -587,11 +606,7 @@ export const HSM = () => {
       ),
       inputProp: {
         onBlur: (event: any) => {
-          setAttachmentURL(event.target.value);
-        },
-        onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+          setAttachmentURL(event.target.value.trim());
         },
       },
     },
@@ -626,6 +641,7 @@ export const HSM = () => {
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
+    footer: Yup.string().max(60, t('Footer value can be at most 60 characters')),
     body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
     category: Yup.object().nullable().required(t('Category is required.')),
     variables: Yup.array().of(
@@ -722,10 +738,10 @@ export const HSM = () => {
       }
 
       if (sampleText) {
-        setSimulatorMessage(sampleText);
+        setSimulatorMessage(sampleText, footer);
       }
     }
-  }, [templateButtons, body, variables]);
+  }, [templateButtons, body, variables, footer]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
