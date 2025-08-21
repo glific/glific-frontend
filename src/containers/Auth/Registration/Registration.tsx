@@ -13,9 +13,10 @@ export interface User {
   phone: string;
   password: string;
   captcha: string;
+  email: string;
 }
 
-const initialFormValues: User = { name: '', phone: '', password: '', captcha: '' };
+const initialFormValues: User = { name: '', phone: '', password: '', captcha: '', email: '' };
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
@@ -69,12 +70,20 @@ export const Registration = () => {
       placeholder: t('Password'),
       darkMode: true,
     },
+     {
+      component: Input,
+      name: 'email',
+      type: 'email',
+      placeholder: t('Email'),
+      darkMode: true,
+    },
   ];
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
+    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.'))
   });
 
   return (
