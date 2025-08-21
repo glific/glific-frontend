@@ -71,6 +71,7 @@ export const MyAccount = () => {
 
   const userName = userData.currentUser.user.contact.name;
   const userPhone = userData.currentUser.user.contact.phone;
+  const userEmail = userData.currentUser.user.email;
 
   // filter languages that support localization
   const languageOptions = organizationData.currentUser.user.organization.activeLanguages
@@ -152,10 +153,16 @@ export const MyAccount = () => {
       label: t('Phone number'),
       disabled: true,
     },
+    {
+      component: Input,
+      name: 'email',
+      label: t('Email'),
+      disabled: true,
+    },
   ];
 
   const userForm = (
-    <Formik initialValues={{ name: userName, phone: userPhone }} onSubmit={() => {}}>
+    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => {}}>
       <Form>
         {userformFields.map((field) => (
           <div className={styles.UserField} key={field.name}>
