@@ -157,6 +157,7 @@ export const MyAccount = () => {
       component: Input,
       name: 'email',
       label: t('Email'),
+      disabled: true,
     },
   ];
 
