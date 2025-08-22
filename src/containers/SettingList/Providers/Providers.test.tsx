@@ -6,13 +6,14 @@ import userEvent from '@testing-library/user-event';
 import { Providers } from './Providers';
 import { LIST_ITEM_MOCKS } from '../SettingList.test.helper';
 import * as Notification from 'common/notification';
-import { getProvidersQuery, getCredential } from 'mocks/Organization';
 import {
   createMaytapiCredentialsMock,
   getMaytapiProvider,
   getMaytapiProviderMock,
   getSavedCredentials,
   updateMaytapiCredentials,
+  getProvidersQuery,
+  getCredential,
 } from 'mocks/Organization';
 
 const mocks = LIST_ITEM_MOCKS;
@@ -71,7 +72,7 @@ describe('<Providers />', () => {
 });
 
 const maytapiProvider = (error: boolean = false) => {
-  let MOCKS: any = [...mocks, ...getMaytapiProviderMock, , createMaytapiCredentialsMock(error)];
+  const MOCKS: any = [...mocks, ...getMaytapiProviderMock, , createMaytapiCredentialsMock(error)];
 
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
@@ -84,7 +85,7 @@ const maytapiProvider = (error: boolean = false) => {
   );
 };
 const gupshupProvider = () => {
-  let MOCKS: any = [...getProvidersQuery, ...getCredential, ...getCredential];
+  const MOCKS: any = [...getProvidersQuery, ...getCredential, ...getCredential];
   return (
     <MemoryRouter initialEntries={[`/settings/gupshup`]}>
       <MockedProvider mocks={MOCKS} addTypename={false}>
