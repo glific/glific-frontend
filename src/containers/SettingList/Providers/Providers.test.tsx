@@ -282,9 +282,10 @@ describe('gupshup dialog', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
-      expect(
-        screen.getByText('Since an App ID already exists, you cannot edit App Name and API Key again.')
-      ).toBeInTheDocument();
+      const content = screen.getByTestId('dialog-content');
+      expect(content).toHaveTextContent('Since an App ID already exists');
+      expect(content).toHaveTextContent('Current App Name:');
+      expect(content).toHaveTextContent('Current API Key:');
     });
   });
 });
