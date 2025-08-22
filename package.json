@@ -26,7 +26,6 @@
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
     "@mui/x-date-pickers": "^8.7.0",
-    "@nyaruka/temba-components": "^0.120.4",
     "@sentry/integrations": "^7.114.0",
     "@sentry/react": "^9.35.0",
     "@sentry/vite-plugin": "^3.5.0",
