@@ -71,7 +71,6 @@ export const Providers = () => {
         // to get credential data
         const secretsObj = JSON.parse(data.secrets);
         if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
-
           setIsLocked(true);
         } else {
           setIsLocked(false);
@@ -197,7 +196,6 @@ export const Providers = () => {
 
     if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
       setIsLocked(true);
-      console.log("pp")
     }
   };
 
