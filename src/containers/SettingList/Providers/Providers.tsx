@@ -63,6 +63,7 @@ export const Providers = () => {
     setStateValues(states);
   };
   const [isLocked, setIsLocked] = useState(false);
+  const [credentialValues, setCredentialValues] = useState<{ app_name?: string; api_key?: string }>({});
 
   useEffect(() => {
     if (credential) {
@@ -75,6 +76,11 @@ export const Providers = () => {
         } else {
           setIsLocked(false);
         }
+
+        setCredentialValues({
+          app_name: secretsObj.app_name,
+          api_key: secretsObj.api_key,
+        });
 
         setCredentialId(data.id);
       }
@@ -234,9 +240,11 @@ export const Providers = () => {
             : 'These credentials are locked') as any
         ),
         message: t(
-          (type === 'maytapi'
+          type === 'maytapi'
             ? 'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
-            : 'Since an App ID already exists, you cannot edit App Name and API Key again.') as any
+            : (`Since an App ID already exists, you cannot edit App Name and API Key again.\n
+               Current App Name: ${credentialValues.app_name || 'N/A'}\n
+               Current API Key: ${credentialValues.api_key || 'N/A'}` as any)
         ),
       }}
     />

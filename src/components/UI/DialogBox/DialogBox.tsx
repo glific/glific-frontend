@@ -136,7 +136,7 @@ export const DialogBox = ({
       <IconButton aria-label="close" className={styles.CloseIcon} onClick={() => handleCancel()}>
         <CloseIcon />
       </IconButton>
-      <DialogContent className={contentStyle} data-testid="dialog-content">
+      <DialogContent className={contentStyle} data-testid="dialog-content" style={{ whiteSpace: 'pre-line' }}>
         {children}
       </DialogContent>
       <DialogActions className={dialogActionStyle}>
