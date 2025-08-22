@@ -326,6 +326,8 @@
   "Select days": "Select days",
   "All day": "All day",
   "Start": "Start",
+  "These credentials are locked": "These credentials are locked",
+  "Since an App ID already exists, you cannot edit App Name and API Key again.": "Since an App ID already exists, you cannot edit App Name and API Key again.",
   "Note: The next day begins after 12AM.": "Note: The next day begins after 12AM.",
   "Stop": "Stop",
   "Would you like to trigger a flow for all the other days & times?": "Would you like to trigger a flow for all the other days & times?",

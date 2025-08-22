@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { Providers } from './Providers';
 import { LIST_ITEM_MOCKS } from '../SettingList.test.helper';
 import * as Notification from 'common/notification';
+import { getProvidersQuery, getCredential } from 'mocks/Organization';
 import {
   createMaytapiCredentialsMock,
   getMaytapiProvider,
@@ -74,6 +75,18 @@ const maytapiProvider = (error: boolean = false) => {
 
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <Routes>
+          <Route path="settings/:type" element={<Providers />} />
+        </Routes>
+      </MockedProvider>
+    </MemoryRouter>
+  );
+};
+const gupshupProvider = () => {
+  let MOCKS: any = [...getProvidersQuery, ...getCredential, ...getCredential];
+  return (
+    <MemoryRouter initialEntries={[`/settings/gupshup`]}>
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
@@ -248,6 +261,31 @@ describe('update credentials', () => {
 
     await waitFor(() => {
       expect(errorMessageSpy).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('gupshup dialog', () => {
+  test('opens confirmation dialog on save', async () => {
+    render(gupshupProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+
+    const saveButton = await screen.findByTestId('submitActionButton');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+      expect(
+        screen.getByText('Since an App ID already exists, you cannot edit App Name and API Key again.')
+      ).toBeInTheDocument();
     });
   });
 });

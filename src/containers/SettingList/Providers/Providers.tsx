@@ -57,14 +57,26 @@ export const Providers = () => {
       states[key] = fields[key];
     });
     states.isActive = item.isActive;
+    setKeys(keysObj);
+    setSecrets(secretsObj);
+
     setStateValues(states);
   };
+  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
     if (credential) {
       const data = credential.credential.credential;
       if (data) {
         // to get credential data
+        const secretsObj = JSON.parse(data.secrets);
+        if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
+
+          setIsLocked(true);
+        } else {
+          setIsLocked(false);
+        }
+
         setCredentialId(data.id);
       }
     } else {
@@ -74,15 +86,16 @@ export const Providers = () => {
 
   const setPayload = (payload: any) => {
     let object: any = {};
-    const secretsObj: any = {};
-    const keysObj: any = {};
+    const secretsObj: any = { ...secrets };
+    const keysObj: any = { ...keys };
     Object.keys(secrets).forEach((key) => {
-      if (payload[key]) {
+      if (payload[key] !== undefined && payload[key] !== '') {
         secretsObj[key] = payload[key];
       }
     });
+
     Object.keys(keys).forEach((key) => {
-      if (payload[key]) {
+      if (payload[key] !== undefined && payload[key] !== '') {
         keysObj[key] = payload[key];
       }
     });
@@ -129,12 +142,14 @@ export const Providers = () => {
     ];
 
     Object.keys(fields).forEach((key) => {
+      const isDisabled =
+        fields[key].view_only || (isLocked && (key === 'app_name' || key === 'api_key' || key === 'app_id'));
       const field = {
         component: Input,
         name: key,
         type: 'text',
         label: fields[key].label,
-        disabled: fields[key].view_only,
+        disabled: isDisabled,
       };
       formField.push(field);
 
@@ -163,7 +178,7 @@ export const Providers = () => {
         setSecrets(providerSecrets);
       });
     }
-  }, [providerData]);
+  }, [providerData, isLocked]);
 
   const saveHandler = (data: any) => {
     if (data && data.createCredential) {
@@ -176,6 +191,14 @@ export const Providers = () => {
         variables: { shortcode: type },
         data: data.updateCredential,
       });
+    const secretsObj = data?.updateCredential?.credential?.secrets
+      ? JSON.parse(data.updateCredential.credential.secrets)
+      : {};
+
+    if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
+      setIsLocked(true);
+      console.log("pp")
+    }
   };
 
   if (!providerData || loading) return <Loading whiteBackground />;
@@ -206,10 +229,16 @@ export const Providers = () => {
       entityId={credentialId}
       noHeading
       confirmationState={{
-        show: type === 'maytapi',
-        title: t('Are you sure you want to change these credentials?'),
+        show: type === 'maytapi' || type === 'gupshup',
+        title: t(
+          (type === 'maytapi'
+            ? 'Are you sure you want to change these credentials?'
+            : 'These credentials are locked') as any
+        ),
         message: t(
-          'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
+          (type === 'maytapi'
+            ? 'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
+            : 'Since an App ID already exists, you cannot edit App Name and API Key again.') as any
         ),
       }}
     />
