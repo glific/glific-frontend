@@ -210,6 +210,21 @@ export const Providers = () => {
 
   const title = providerData.providers[0].name;
 
+  const getConfirmationState = () => ({
+    show: type === 'maytapi' || type === 'gupshup',
+    title: t(
+      (type === 'maytapi' ? 'Are you sure you want to change these credentials?' : 'Confirm your credentials') as any
+    ),
+    message: (formValues: any) =>
+      t(
+        type === 'maytapi'
+          ? 'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
+          : (`Are you sure this data is correct? After saving, it cannot be edited.\n
+           Current App Name: ${formValues.app_name || 'N/A'}\n
+           Current API Key: ${formValues.api_key || 'N/A'}` as any)
+      ),
+  });
+
   return (
     <FormLayout
       partialPage
@@ -233,20 +248,10 @@ export const Providers = () => {
       afterSave={saveHandler}
       entityId={credentialId}
       noHeading
-      confirmationState={{
-        show: type === 'maytapi' || type === 'gupshup',
-        title: t(
-          (type === 'maytapi'
-            ? 'Are you sure you want to change these credentials?'
-            : 'These credentials are locked') as any
-        ),
-        message: t(
-          type === 'maytapi'
-            ? 'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
-            : (`Since an App ID already exists, you cannot edit App Name and API Key again.\n
-               Current App Name: ${credentialValues.app_name || 'N/A'}\n
-               Current API Key: ${credentialValues.api_key || 'N/A'}` as any)
-        ),
+      confirmationState={getConfirmationState()}
+      buttonState={{
+        text: isLocked ? 'Credentials Locked' : 'Save',
+        status: isLocked && type === 'gupshup',
       }}
     />
   );

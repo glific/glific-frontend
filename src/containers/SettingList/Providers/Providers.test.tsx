@@ -284,7 +284,6 @@ describe('gupshup dialog', () => {
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
       const content = screen.getByTestId('dialog-content');
-      expect(content).toHaveTextContent('Since an App ID already exists');
       expect(content).toHaveTextContent('Current App Name:');
       expect(content).toHaveTextContent('Current API Key:');
     });
