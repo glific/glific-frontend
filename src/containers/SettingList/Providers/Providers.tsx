@@ -148,7 +148,8 @@ export const Providers = () => {
 
     Object.keys(fields).forEach((key) => {
       const isDisabled =
-        fields[key].view_only || (isLocked && (key === 'app_name' || key === 'api_key' || key === 'app_id'));
+        fields[key].view_only ||
+        (isLocked && (key === 'app_name' || key === 'api_key' || key === 'app_id' || key === 'api_end_point'));
       const field = {
         component: Input,
         name: key,
