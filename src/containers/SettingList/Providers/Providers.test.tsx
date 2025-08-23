@@ -284,8 +284,8 @@ describe('gupshup dialog', () => {
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
       const content = screen.getByTestId('dialog-content');
-      expect(content).toHaveTextContent('Current App Name:');
-      expect(content).toHaveTextContent('Current API Key:');
+      expect(content).toHaveTextContent('App Name:');
+      expect(content).toHaveTextContent('API Key:');
     });
   });
 });

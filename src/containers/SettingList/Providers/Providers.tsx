@@ -220,8 +220,8 @@ export const Providers = () => {
         type === 'maytapi'
           ? 'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
           : (`Are you sure this data is correct? After saving, it cannot be edited.\n
-           Current App Name: ${formValues.app_name || 'N/A'}\n
-           Current API Key: ${formValues.api_key || 'N/A'}` as any)
+            App Name: ${formValues.app_name || 'N/A'}\n
+            API Key: ${formValues.api_key || 'N/A'}` as any)
       ),
   });
 
