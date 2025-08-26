@@ -194,7 +194,7 @@ export const Providers = () => {
       ? JSON.parse(data.updateCredential.credential.secrets)
       : {};
 
-    if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
+    if (type == 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
       setIsDisabled(true);
     }
   };
