@@ -128,6 +128,7 @@ export const Organization = () => {
 
   const validation = {
     name: Yup.string().required(t('Organization name is required.')),
+    phone: Yup.string().required(t('Phone number is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
@@ -141,7 +142,7 @@ export const Organization = () => {
   };
 
   const FormSchema = Yup.object().shape(validation);
-
+  const allowBotNumberUpdate = orgData?.organization?.organization?.setting?.allow_bot_number_update;
   const formFields: any = [
     {
       component: Input,
@@ -180,7 +181,7 @@ export const Organization = () => {
       name: 'phone',
       type: 'text',
       label: t('Organization phone number'),
-      disabled: true,
+      disabled: !allowBotNumberUpdate,
       endAdornment: (
         <InputAdornment position="end">
           <IconButton
@@ -228,12 +229,14 @@ export const Organization = () => {
     },
   ];
 
-  const saveHandler = (data: any) => {
+  const saveHandler = async (data: any) => {
     // update organization details in the cache
     client.writeQuery({
       query: GET_ORGANIZATION,
       data: data.updateOrganization,
     });
+
+    await getOrg();
   };
 
   const setPayload = (payload: any) => {
@@ -252,6 +255,10 @@ export const Organization = () => {
         sendWarningMail: payload.sendWarningMail,
       },
     };
+
+    if (allowBotNumberUpdate) {
+      object.phone = payload.phone;
+    }
     return object;
   };
 
@@ -280,6 +287,11 @@ export const Organization = () => {
       customStyles={styles.organization}
       entityId={organizationId}
       noHeading
+      confirmationState={{
+        show: allowBotNumberUpdate,
+        title: t('Are you sure you want to update the phone number?'),
+        message: t('It will not be possible to update the number later. The new number will be {{phone}}.', {phone}),
+      }}
     />
   );
 };
