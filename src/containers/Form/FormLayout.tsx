@@ -80,7 +80,7 @@ export interface FormLayoutProps {
   confirmationState?: {
     show: boolean;
     title: string;
-    message: string | ((formValues: any) => string);
+    message: React.ReactNode | ((formValues: any) => React.ReactNode);
   };
   restrictButtonStatus?: {
     text?: string;

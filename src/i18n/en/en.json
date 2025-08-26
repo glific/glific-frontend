@@ -343,6 +343,8 @@
   "What operations are allowed to be performed in the sheet?": "What operations are allowed to be performed in the sheet?",
   "Google sheet": "Google sheet",
   "Link": "Link",
+  "App Name": "App Name",
+  "API Key": "API Key",
   "Sync": "Sync",
   "Last synced": "Last synced",
   "You won't be able to use this sheet.": "You won't be able to use this sheet.",

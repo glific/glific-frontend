@@ -4,3 +4,9 @@
   line-height: 18px;
   font-size: 16px;
 }
+.confirmationList {
+  text-align: left;
+  margin-top: 0.5rem;
+  list-style-position: inside;
+  font-size: 0.875rem;
+}

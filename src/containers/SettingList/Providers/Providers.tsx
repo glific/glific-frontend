@@ -35,6 +35,7 @@ export const Providers = () => {
   const params = useParams();
   const type = params.type ? params.type : null;
   const { t } = useTranslation();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const states: any = {};
 
@@ -62,7 +63,6 @@ export const Providers = () => {
 
     setStateValues(states);
   };
-  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
     if (credential) {
@@ -71,9 +71,9 @@ export const Providers = () => {
         // to get credential data
         const secretsObj = JSON.parse(data.secrets);
         if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
-          setIsLocked(true);
+          setIsDisabled(true);
         } else {
-          setIsLocked(false);
+          setIsDisabled(false);
         }
 
         setCredentialId(data.id);
@@ -85,10 +85,10 @@ export const Providers = () => {
 
   const setPayload = (payload: any) => {
     let object: any = {};
-    const secretsObj: any = { ...secrets };
-    const keysObj: any = { ...keys };
+    const secretsObj: any = secrets;
+    const keysObj: any = keys;
     Object.keys(secrets).forEach((key) => {
-      if (payload[key] !== undefined && payload[key] !== '') {
+      if (payload[key]) {
         secretsObj[key] = payload[key];
       }
     });
@@ -141,15 +141,13 @@ export const Providers = () => {
     ];
 
     Object.keys(fields).forEach((key) => {
-      const isDisabled =
-        fields[key].view_only ||
-        (isLocked && (key === 'app_name' || key === 'api_key' || key === 'app_id' || key === 'api_end_point'));
+      const isLocked = fields[key].view_only || isDisabled;
       const field = {
         component: Input,
         name: key,
         type: 'text',
         label: fields[key].label,
-        disabled: isDisabled,
+        disabled: isLocked,
         skip: fields[key].hide,
       };
       formField.push(field);
@@ -179,7 +177,7 @@ export const Providers = () => {
         setSecrets(providerSecrets);
       });
     }
-  }, [providerData, isLocked]);
+  }, [providerData, isDisabled]);
 
   const saveHandler = (data: any) => {
     if (data && data.createCredential) {
@@ -197,7 +195,7 @@ export const Providers = () => {
       : {};
 
     if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
-      setIsLocked(true);
+      setIsDisabled(true);
     }
   };
 
@@ -211,12 +209,20 @@ export const Providers = () => {
       (type === 'maytapi' ? 'Are you sure you want to change these credentials?' : 'Confirm your credentials') as any
     ),
     message: (formValues: any) =>
-      t(
-        type === 'maytapi'
-          ? 'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
-          : (`Once submitted, these credentials cannot be changed. Are you sure you want to continue?
-            App Name: ${formValues.app_name || 'N/A'}
-            API Key: ${formValues.api_key || 'N/A'}` as any)
+      type === 'maytapi' ? (
+        t('All information related to this account will be deleted. All data has already been backed up in BigQuery.')
+      ) : (
+        <div>
+          <p>{t('Once submitted, these credentials cannot be changed. Are you sure you want to continue?')}</p>
+          <ul className={styles.confirmationList}>
+            <li>
+              {t('App Name')}: {formValues.app_name || 'N/A'}
+            </li>
+            <li>
+              {t('API Key')}: {formValues.api_key || 'N/A'}
+            </li>
+          </ul>
+        </div>
       ),
   });
 
@@ -245,8 +251,8 @@ export const Providers = () => {
       noHeading
       confirmationState={getConfirmationState()}
       buttonState={{
-        text: isLocked ? 'Credentials Locked' : 'Save',
-        status: isLocked && type === 'gupshup',
+        text: isDisabled ? 'Credentials Locked' : 'Save',
+        status: isDisabled && type === 'gupshup',
       }}
     />
   );
