@@ -156,6 +156,7 @@ export const Providers = () => {
         type: 'text',
         label: fields[key].label,
         disabled: isDisabled,
+        skip: fields[key].hide,
       };
       formField.push(field);
 
