@@ -55,6 +55,15 @@ export const Registration = () => {
       type: 'text',
       placeholder: t('Your full name'),
       darkMode: true,
+      autoComplete: 'name'
+    },
+    {
+      component: Input,
+      name: 'email',
+      type: 'email',
+      placeholder: t('Email'),
+      darkMode: true,
+      autoComplete: 'username email'
     },
     {
       component: PhoneInput,
@@ -62,6 +71,7 @@ export const Registration = () => {
       type: 'phone',
       placeholder: t('Your personal WhatsApp number'),
       helperText: t('Please enter a phone number.'),
+      autoComplete: 'tel'
     },
     {
       component: Input,
@@ -69,13 +79,7 @@ export const Registration = () => {
       type: 'password',
       placeholder: t('Password'),
       darkMode: true,
-    },
-     {
-      component: Input,
-      name: 'email',
-      type: 'email',
-      placeholder: t('Email'),
-      darkMode: true,
+      autoComplete: 'new-password'
     },
   ];
 
