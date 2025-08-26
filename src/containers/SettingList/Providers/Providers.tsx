@@ -63,7 +63,6 @@ export const Providers = () => {
     setStateValues(states);
   };
   const [isLocked, setIsLocked] = useState(false);
-  const [credentialValues, setCredentialValues] = useState<{ app_name?: string; api_key?: string }>({});
 
   useEffect(() => {
     if (credential) {
@@ -76,11 +75,6 @@ export const Providers = () => {
         } else {
           setIsLocked(false);
         }
-
-        setCredentialValues({
-          app_name: secretsObj.app_name,
-          api_key: secretsObj.api_key,
-        });
 
         setCredentialId(data.id);
       }
@@ -100,7 +94,7 @@ export const Providers = () => {
     });
 
     Object.keys(keys).forEach((key) => {
-      if (payload[key] !== undefined && payload[key] !== '') {
+      if (payload[key]) {
         keysObj[key] = payload[key];
       }
     });
