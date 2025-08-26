@@ -332,8 +332,7 @@
   "New contact flow": "New contact flow",
   "For new contacts messaging your chatbot for the first time": "For new contacts messaging your chatbot for the first time",
   "Optin flow": "Optin flow",
-  "Are you sure this data is correct? After saving, it cannot be edited.": "Are you sure this data is correct? After saving, it cannot be edited.",
-
+  "Once submitted, these credentials cannot be changed. Are you sure you want to continue?": "Once submitted, these credentials cannot be changed. Are you sure you want to continue?",
   "Manage organization name, supported languages.": "Manage organization name, supported languages.",
   "Manage organization flows.": "Manage organization flows.",
   "Setup for glific billing account": "Setup for glific billing account",
