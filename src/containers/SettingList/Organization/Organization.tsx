@@ -142,7 +142,7 @@ export const Organization = () => {
   };
 
   const FormSchema = Yup.object().shape(validation);
-  const allowBotNumberUpdate = orgData?.organization?.organization?.setting?.allow_bot_number_update;
+  const allowBotNumberUpdate = orgData?.organization?.organization?.setting?.allowBotNumberUpdate;
   const formFields: any = [
     {
       component: Input,
@@ -182,6 +182,7 @@ export const Organization = () => {
       type: 'text',
       label: t('Organization phone number'),
       disabled: !allowBotNumberUpdate,
+      onChange: (e: string) => setPhone(e),
       endAdornment: (
         <InputAdornment position="end">
           <IconButton
@@ -229,14 +230,12 @@ export const Organization = () => {
     },
   ];
 
-  const saveHandler = async (data: any) => {
+  const saveHandler = (data: any) => {
     // update organization details in the cache
     client.writeQuery({
       query: GET_ORGANIZATION,
       data: data.updateOrganization,
     });
-
-    await getOrg();
   };
 
   const setPayload = (payload: any) => {

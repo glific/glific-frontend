@@ -32,7 +32,7 @@ export const GET_ORGANIZATION = gql`
           lowBalanceThreshold
           criticalBalanceThreshold
           sendWarningMail
-          allow_bot_number_update
+          allowBotNumberUpdate
         }
         regxFlow {
           flowId
