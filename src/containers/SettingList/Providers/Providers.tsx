@@ -203,28 +203,34 @@ export const Providers = () => {
 
   const title = providerData.providers[0].name;
 
-  const getConfirmationState = () => ({
-    show: type === 'maytapi' || type === 'gupshup',
-    title: t(
-      (type === 'maytapi' ? 'Are you sure you want to change these credentials?' : 'Confirm your credentials') as any
-    ),
-    message: (formValues: any) =>
-      type === 'maytapi' ? (
-        t('All information related to this account will be deleted. All data has already been backed up in BigQuery.')
-      ) : (
+  const maytapiConfirmationState = {
+    show: true,
+    title: t('Are you sure you want to change these credentials?'),
+    message: () =>
+      t('All information related to this account will be deleted. All data has already been backed up in BigQuery.'),
+  };
+
+  const gupshupConfirmationState = {
+    show: true,
+    title: t('Confirm your credentials'),
+    message: (formValues: any) => (
+      <div>
+        <p>{t('Once submitted, these credentials cannot be changed. Are you sure you want to continue?')}</p>
         <div>
-          <p>{t('Once submitted, these credentials cannot be changed. Are you sure you want to continue?')}</p>
-          <ul className={styles.confirmationList}>
-            <li>
-              {t('App Name')}: {formValues.app_name || 'N/A'}
-            </li>
-            <li>
-              {t('API Key')}: {formValues.api_key || 'N/A'}
-            </li>
-          </ul>
+          {t('App Name')}: {formValues.app_name || 'N/A'}
         </div>
-      ),
-  });
+        <div>
+          {t('API Key')}: {formValues.api_key || 'N/A'}
+        </div>
+      </div>
+    ),
+  };
+
+  const getConfirmationState = () => {
+    if (type === 'maytapi') return maytapiConfirmationState;
+    if (type === 'gupshup') return gupshupConfirmationState;
+    return { show: false, title: '', message: () => '' };
+  };
 
   return (
     <FormLayout
