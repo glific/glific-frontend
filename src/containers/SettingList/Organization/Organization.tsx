@@ -128,7 +128,7 @@ export const Organization = () => {
 
   const validation = {
     name: Yup.string().required(t('Organization name is required.')),
-    phone: Yup.string().required(t('Phone number is required.')),
+    phone: Yup.string().max(30).required(t('Phone number is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
@@ -183,7 +183,7 @@ export const Organization = () => {
       label: t('Organization phone number'),
       disabled: !allowBotNumberUpdate,
       onChange: (e: string) => setPhone(e),
-      endAdornment: (
+      endAdornment: phone ? (
         <InputAdornment position="end">
           <IconButton
             aria-label="phone number"
@@ -194,7 +194,7 @@ export const Organization = () => {
             <CopyIcon />
           </IconButton>
         </InputAdornment>
-      ),
+      ) : null,
     },
     {
       component: Input,
@@ -289,7 +289,7 @@ export const Organization = () => {
       confirmationState={{
         show: allowBotNumberUpdate,
         title: t('Are you sure you want to update the phone number?'),
-        message: t('It will not be possible to update the number later. The new number will be {{phone}}.', {phone}),
+        message: t('It will not be possible to update the number later. The new number will be {{phone}}.', { phone }),
       }}
     />
   );
