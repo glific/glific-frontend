@@ -58,8 +58,10 @@ export const Providers = () => {
       states[key] = fields[key];
     });
     states.isActive = item.isActive;
-    setKeys(keysObj);
-    setSecrets(secretsObj);
+
+    if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
+      setIsDisabled(true);
+    }
 
     setStateValues(states);
   };
@@ -69,13 +71,6 @@ export const Providers = () => {
       const data = credential.credential.credential;
       if (data) {
         // to get credential data
-        const secretsObj = JSON.parse(data.secrets);
-        if (secretsObj.app_id && secretsObj.app_id !== 'NA') {
-          setIsDisabled(true);
-        } else {
-          setIsDisabled(false);
-        }
-
         setCredentialId(data.id);
       }
     } else {
@@ -85,8 +80,8 @@ export const Providers = () => {
 
   const setPayload = (payload: any) => {
     let object: any = {};
-    const secretsObj: any = secrets;
-    const keysObj: any = keys;
+    const secretsObj: any = {};
+    const keysObj: any = {};
     Object.keys(secrets).forEach((key) => {
       if (payload[key]) {
         secretsObj[key] = payload[key];
@@ -139,15 +134,13 @@ export const Providers = () => {
         ),
       },
     ];
-
     Object.keys(fields).forEach((key) => {
-      const isLocked = fields[key].view_only || isDisabled;
       const field = {
         component: Input,
         name: key,
         type: 'text',
         label: fields[key].label,
-        disabled: isLocked,
+        disabled: fields[key].view_only,
         skip: fields[key].hide,
       };
       formField.push(field);
@@ -172,31 +165,35 @@ export const Providers = () => {
         Object.assign(fields, providerKeys);
         Object.assign(fields, providerSecrets);
 
+        const credentials = credential?.credential?.credential.secrets
+          ? JSON.parse(credential?.credential?.credential.secrets)
+          : {};
+        if (type === 'gupshup' && credentials.app_id && credentials.app_id !== 'NA') {
+          Object.keys(fields).forEach((key) => {
+            fields[key].view_only = true;
+          });
+        }
+
         addField(fields);
         setKeys(providerKeys);
         setSecrets(providerSecrets);
       });
     }
-  }, [providerData, isDisabled]);
+  }, [providerData, credential]);
 
   const saveHandler = (data: any) => {
     if (data && data.createCredential) {
       setCredentialId(data.createCredential.credential.id);
+    } else if (data && data.updateCredential) {
+      setCredential(data.updateCredential.credential);
     }
     if (data)
       // Update the details of the cache. This is required at the time of restoration
       client.writeQuery({
         query: GET_CREDENTIAL,
         variables: { shortcode: type },
-        data: data.updateCredential,
+        data: { credential: data.updateCredential },
       });
-    const secretsObj = data?.updateCredential?.credential?.secrets
-      ? JSON.parse(data.updateCredential.credential.secrets)
-      : {};
-
-    if (type == 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
-      setIsDisabled(true);
-    }
   };
 
   if (!providerData || loading) return <Loading whiteBackground />;

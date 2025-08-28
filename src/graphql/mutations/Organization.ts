@@ -103,6 +103,7 @@ export const UPDATE_CREDENTIAL = gql`
         }
         keys
         secrets
+        isActive
       }
       errors {
         key
