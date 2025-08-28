@@ -30,6 +30,7 @@ export const UPDATE_ORGANIZATION = gql`
           lowBalanceThreshold
           criticalBalanceThreshold
           sendWarningMail
+          allowBotNumberUpdate
         }
       }
       errors {
