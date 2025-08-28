@@ -55,15 +55,7 @@ export const Registration = () => {
       type: 'text',
       placeholder: t('Your full name'),
       darkMode: true,
-      autoComplete: 'name'
-    },
-    {
-      component: Input,
-      name: 'email',
-      type: 'email',
-      placeholder: t('Email'),
-      darkMode: true,
-      autoComplete: 'username email'
+      autoComplete: 'name',
     },
     {
       component: PhoneInput,
@@ -71,7 +63,17 @@ export const Registration = () => {
       type: 'phone',
       placeholder: t('Your personal WhatsApp number'),
       helperText: t('Please enter a phone number.'),
-      autoComplete: 'tel'
+      inputProps: {
+        autoComplete: 'tel',
+      },
+    },
+    {
+      component: Input,
+      name: 'email',
+      type: 'email',
+      placeholder: t('Email'),
+      darkMode: true,
+      autoComplete: 'email',
     },
     {
       component: Input,
@@ -79,7 +81,7 @@ export const Registration = () => {
       type: 'password',
       placeholder: t('Password'),
       darkMode: true,
-      autoComplete: 'new-password'
+      autoComplete: 'new-password',
     },
   ];
 
@@ -87,7 +89,7 @@ export const Registration = () => {
     name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
-    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.'))
+    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
   });
 
   return (
