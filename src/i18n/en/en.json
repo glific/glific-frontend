@@ -541,5 +541,7 @@
   "Skip Validation": "Skip Validation",
   "Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance.": "Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance.",
   "Start time": "Start time",
-  "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible."
+  "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible.",
+  "Are you sure you want to update the phone number?": "Are you sure you want to update the phone number?",
+  "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}."
 }

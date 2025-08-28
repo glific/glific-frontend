@@ -128,6 +128,7 @@ export const Organization = () => {
 
   const validation = {
     name: Yup.string().required(t('Organization name is required.')),
+    phone: Yup.string().max(30).required(t('Phone number is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
@@ -141,7 +142,7 @@ export const Organization = () => {
   };
 
   const FormSchema = Yup.object().shape(validation);
-
+  const allowBotNumberUpdate = orgData?.organization?.organization?.setting?.allowBotNumberUpdate;
   const formFields: any = [
     {
       component: Input,
@@ -180,8 +181,9 @@ export const Organization = () => {
       name: 'phone',
       type: 'text',
       label: t('Organization phone number'),
-      disabled: true,
-      endAdornment: (
+      disabled: !allowBotNumberUpdate,
+      onChange: (e: string) => setPhone(e),
+      endAdornment: phone ? (
         <InputAdornment position="end">
           <IconButton
             aria-label="phone number"
@@ -192,7 +194,7 @@ export const Organization = () => {
             <CopyIcon />
           </IconButton>
         </InputAdornment>
-      ),
+      ) : null,
     },
     {
       component: Input,
@@ -252,6 +254,10 @@ export const Organization = () => {
         sendWarningMail: payload.sendWarningMail,
       },
     };
+
+    if (allowBotNumberUpdate) {
+      object.phone = payload.phone;
+    }
     return object;
   };
 
@@ -280,6 +286,11 @@ export const Organization = () => {
       customStyles={styles.organization}
       entityId={organizationId}
       noHeading
+      confirmationState={{
+        show: allowBotNumberUpdate,
+        title: t('Are you sure you want to update the phone number?'),
+        message: t('It will not be possible to update the number later. The new number will be {{phone}}.', { phone }),
+      }}
     />
   );
 };
