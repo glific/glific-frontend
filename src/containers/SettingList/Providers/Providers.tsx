@@ -168,6 +168,7 @@ export const Providers = () => {
         const credentials = credential?.credential?.credential.secrets
           ? JSON.parse(credential?.credential?.credential.secrets)
           : {};
+
         if (type === 'gupshup' && credentials.app_id && credentials.app_id !== 'NA') {
           Object.keys(fields).forEach((key) => {
             fields[key].view_only = true;
