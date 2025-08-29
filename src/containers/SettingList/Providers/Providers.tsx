@@ -165,8 +165,8 @@ export const Providers = () => {
         Object.assign(fields, providerKeys);
         Object.assign(fields, providerSecrets);
 
-        const credentials = credential?.credential?.credential.secrets
-          ? JSON.parse(credential?.credential?.credential.secrets)
+        const credentials = credential?.credential?.credential?.secrets
+          ? JSON.parse(credential?.credential?.credential?.secrets)
           : {};
 
         if (type === 'gupshup' && credentials.app_id && credentials.app_id !== 'NA') {
