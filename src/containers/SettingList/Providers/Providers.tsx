@@ -35,6 +35,7 @@ export const Providers = () => {
   const params = useParams();
   const type = params.type ? params.type : null;
   const { t } = useTranslation();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const states: any = {};
 
@@ -57,6 +58,11 @@ export const Providers = () => {
       states[key] = fields[key];
     });
     states.isActive = item.isActive;
+
+    if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
+      setIsDisabled(true);
+    }
+
     setStateValues(states);
   };
 
@@ -81,6 +87,7 @@ export const Providers = () => {
         secretsObj[key] = payload[key];
       }
     });
+
     Object.keys(keys).forEach((key) => {
       if (payload[key]) {
         keysObj[key] = payload[key];
@@ -127,7 +134,6 @@ export const Providers = () => {
         ),
       },
     ];
-
     Object.keys(fields).forEach((key) => {
       const field = {
         component: Input,
@@ -135,6 +141,7 @@ export const Providers = () => {
         type: 'text',
         label: fields[key].label,
         disabled: fields[key].view_only,
+        skip: fields[key].hide,
       };
       formField.push(field);
 
@@ -158,29 +165,70 @@ export const Providers = () => {
         Object.assign(fields, providerKeys);
         Object.assign(fields, providerSecrets);
 
+        const credentials = credential?.credential?.credential?.secrets
+          ? JSON.parse(credential?.credential?.credential?.secrets)
+          : {};
+
+        if (type === 'gupshup' && credentials.app_id && credentials.app_id !== 'NA') {
+          Object.keys(fields).forEach((key) => {
+            fields[key].view_only = true;
+          });
+        }
+
         addField(fields);
         setKeys(providerKeys);
         setSecrets(providerSecrets);
       });
     }
-  }, [providerData]);
+  }, [providerData, credential]);
 
   const saveHandler = (data: any) => {
     if (data && data.createCredential) {
       setCredentialId(data.createCredential.credential.id);
+    } else if (data && data.updateCredential) {
+      setCredential(data.updateCredential.credential);
     }
     if (data)
       // Update the details of the cache. This is required at the time of restoration
       client.writeQuery({
         query: GET_CREDENTIAL,
         variables: { shortcode: type },
-        data: data.updateCredential,
+        data: { credential: data.updateCredential },
       });
   };
 
   if (!providerData || loading) return <Loading whiteBackground />;
 
   const title = providerData.providers[0].name;
+
+  const maytapiConfirmationState = {
+    show: true,
+    title: t('Are you sure you want to change these credentials?'),
+    message: () =>
+      t('All information related to this account will be deleted. All data has already been backed up in BigQuery.'),
+  };
+
+  const gupshupConfirmationState = {
+    show: true,
+    title: t('Confirm your credentials'),
+    message: (formValues: any) => (
+      <div>
+        <p>{t('Once submitted, these credentials cannot be changed. Are you sure you want to continue?')}</p>
+        <div>
+          {t('App Name')}: {formValues.app_name || 'N/A'}
+        </div>
+        <div>
+          {t('API Key')}: {formValues.api_key || 'N/A'}
+        </div>
+      </div>
+    ),
+  };
+
+  const getConfirmationState = () => {
+    if (type === 'maytapi') return maytapiConfirmationState;
+    if (type === 'gupshup') return gupshupConfirmationState;
+    return { show: false, title: '', message: () => '' };
+  };
 
   return (
     <FormLayout
@@ -205,12 +253,10 @@ export const Providers = () => {
       afterSave={saveHandler}
       entityId={credentialId}
       noHeading
-      confirmationState={{
-        show: type === 'maytapi',
-        title: t('Are you sure you want to change these credentials?'),
-        message: t(
-          'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
-        ),
+      confirmationState={getConfirmationState()}
+      buttonState={{
+        text: isDisabled ? 'Credentials Locked' : 'Save',
+        status: isDisabled && type === 'gupshup',
       }}
     />
   );
