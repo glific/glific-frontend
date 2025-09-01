@@ -80,7 +80,7 @@ export interface FormLayoutProps {
   confirmationState?: {
     show: boolean;
     title: string;
-    message: (formValues: any) => React.ReactNode;
+    message: React.ReactNode | ((formValues: any) => React.ReactNode);
   };
   restrictButtonStatus?: {
     text?: string;
@@ -674,7 +674,9 @@ export const FormLayout = ({
         contentAlign="center"
         data-testid="confirmation-dialog"
       >
-        {confirmationState?.message(formik.values)}
+        {typeof confirmationState?.message === 'function'
+          ? confirmationState.message(formik.values)
+          : confirmationState?.message}
       </DialogBox>
     );
   }
