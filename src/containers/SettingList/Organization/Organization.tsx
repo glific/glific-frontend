@@ -289,7 +289,10 @@ export const Organization = () => {
       confirmationState={{
         show: allowBotNumberUpdate,
         title: t('Are you sure you want to update the phone number?'),
-        message: t('It will not be possible to update the number later. The new number will be {{phone}}.', { phone }),
+        message: (formValues: any) =>
+          t('It will not be possible to update the number later. The new number will be {{phone}}.', {
+            phone: formValues?.phone || phone,
+          }),
       }}
     />
   );
