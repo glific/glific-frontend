@@ -69,10 +69,9 @@ export const MyAccount = () => {
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
 
-  const userName = userData.currentUser.user.contact.name;
-  const userPhone = userData.currentUser.user.contact.phone;
+  const userName = userData.currentUser.user.name;
+  const userPhone = userData.currentUser.user.phone;
   const userEmail = userData.currentUser.user.email;
-
   // filter languages that support localization
   const languageOptions = organizationData.currentUser.user.organization.activeLanguages
     .filter((lang: any) => lang.localized)
@@ -162,7 +161,7 @@ export const MyAccount = () => {
   ];
 
   const userForm = (
-    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => {}}>
+    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => { }}>
       <Form>
         {userformFields.map((field) => (
           <div className={styles.UserField} key={field.name}>
