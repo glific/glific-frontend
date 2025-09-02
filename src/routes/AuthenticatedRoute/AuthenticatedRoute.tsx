@@ -18,6 +18,7 @@ import Organization from 'containers/SettingList/Organization/Organization';
 import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChatInterface';
 import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
 import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
+import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -234,7 +235,10 @@ export const AuthenticatedRoute = () => {
         <Layout>
           {toastMessage}
           <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
-            <ErrorBoundary>{route}</ErrorBoundary>
+            <ErrorBoundary>
+              {route}
+              <AskMeBot />
+            </ErrorBoundary>
           </Suspense>
         </Layout>
       </div>

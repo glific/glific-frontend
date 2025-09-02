@@ -1,0 +1,89 @@
+.Container {
+    height: 100%;
+    width: 100%;
+    background-color: #F5F1EB;
+}
+
+.Header {
+    padding: 1rem;
+    background-color: #119656;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.Header span {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.LogoContainer {
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem;
+    border-radius: 100%;
+}
+
+
+
+.SuggestionsContainer {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: absolute;
+    bottom: 6rem;
+}
+
+.Suggestion {
+    width: fit-content;
+    font-size: 0.8rem;
+    /* border: #119656 1px solid; */
+    padding: 0.4rem 0.8rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    color: #2e2e2e;
+    background-color: #11965622;
+}
+
+.InputContainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background-color: #F0EDE8;
+
+}
+
+.InputContainer input {
+    border: none;
+    border-radius: 1rem;
+    font-size: 1rem;
+    width: 100%;
+    padding: 0.8rem;
+}
+
+.InputContainer input:focus {
+    outline: none;
+}
+
+.SendButton {
+    cursor: pointer;
+    padding: 0;
+}
+
+.SendButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    color: #A5D6A7 !important;
+}

@@ -134,6 +134,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       ticketingEnabled
       whatsappGroupEnabled
       certificateEnabled
+      askMeEnabled
     }
   }
 `;
