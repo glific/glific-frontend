@@ -249,13 +249,7 @@ export const Auth = ({
 
         <div className={boxClass.join(' ')}>
           {formElements}
-          {isRegistration && (
-            <div className={styles.TermsOfUse}>
-              <a href={TERMS_OF_USE_LINK} target="_blank" rel="noreferrer">
-                Read the applied terms of use
-              </a>
-            </div>
-          )}
+          {isRegistration && null}
         </div>
         {alternateText ? (
           <>
