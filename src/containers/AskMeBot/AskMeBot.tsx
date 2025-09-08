@@ -1,132 +1,97 @@
-import React, { useState, useRef } from 'react';
-import { Fab, Box, TextField, IconButton, Drawer } from '@mui/material';
-import { Send as SendIcon, Close as CloseIcon, Psychology as PsychologyIcon } from '@mui/icons-material';
-import styles from './AskMeBot.module.css';
+import { Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
+import { Drawer, Fab, IconButton, TextField } from '@mui/material';
+import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import Markdown from 'react-markdown';
+
+import AskMeBotIcon from 'assets/images/AskMeBot.svg?react';
 import Logo from 'assets/images/logo/glific-logo.svg?react';
+import styles from './AskMeBot.module.css';
+import { prompt } from './system-prompt';
 
 interface Message {
-  id: number;
-  text: string;
-  isBot: boolean;
-  timestamp: Date;
+  role: 'user' | 'system';
+  content: string;
+  timestamp?: Date;
+  prompt?: boolean;
 }
 
-// Custom Green Bot Logo Component
-const BotLogo = ({ size = 40 }: { size?: number }) => (
-  <Box
-    sx={{
-      width: size,
-      height: size,
-      borderRadius: '50%',
-      background: 'linear-gradient(135deg, #00C851 0%, #007E33 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-      boxShadow: '0 4px 20px rgba(0, 200, 81, 0.3)',
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        width: '85%',
-        height: '85%',
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%)',
-        opacity: 0.7,
-      },
-      '&::after': {
-        content: '""',
-        position: 'absolute',
-        width: '60%',
-        height: '60%',
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #A5D6A7 0%, #C8E6C9 100%)',
-        opacity: 0.5,
-      },
-    }}
-  >
-    <PsychologyIcon
-      sx={{
-        color: 'white',
-        fontSize: size * 0.6,
-        zIndex: 1,
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))',
-      }}
-    />
-  </Box>
-);
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
 
 export const AskMeBot = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([{ role: 'system', content: prompt, prompt: true }]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const fabRef = useRef<HTMLButtonElement>(null);
 
-  const quickSuggestions = [
-    'How do I create a flow?',
-    'Explain contact groups',
-    'Show me templates',
-    'Campaign setup help',
-    'Analytics overview',
-  ];
+  const handleOk = () => {
+    const messag: any = { role: 'user', content: message };
+    const updatedMessages = [...messages, messag];
+    setMessages(updatedMessages);
+    setMessage('');
+    handleSendMessage(messag, updatedMessages);
+  };
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      const newUserMessage: Message = {
-        id: Date.now(),
-        text: message,
-        isBot: false,
-        timestamp: new Date(),
-      };
+  const handleSendMessage = async (message: any, currentMessages = messages) => {
+    setIsLoading(true);
+    const input = [...currentMessages.map(({ prompt, ...rest }) => rest), message];
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/responses',
+        {
+          model: 'gpt-4o',
+          input: input,
+          tools: [
+            {
+              type: 'file_search',
+              vector_store_ids: ['vs_Fx8ChbH6bkkFeNlLRdLXyOf4'],
+              max_num_results: 20,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      // Green-themed personality responses
-      let response;
+      const newMessages: Message[] = [
+        ...currentMessages,
+        { role: 'system', content: response.data.output[1].content[0].text },
+      ];
 
-      if (message.toLowerCase().includes('flow')) {
-        response =
-          'Flows are like digital ecosystems! 🌿 They create natural conversation paths that guide your users through meaningful interactions. Want me to help you plant your first flow and watch it grow?';
-      } else if (message.toLowerCase().includes('contact')) {
-        response =
-          'Contact management is like tending a garden! 🌺 You nurture relationships, group similar contacts like flower beds, and watch your community bloom. Shall I show you how to cultivate your contact ecosystem?';
-      } else if (message.toLowerCase().includes('template')) {
-        response =
-          "Templates are your message seeds! 🌱 Plant them wisely and they'll grow into beautiful, WhatsApp-approved communications that reach your audience. Ready to start your template garden?";
-      } else if (message.toLowerCase().includes('campaign')) {
-        response =
-          'Campaigns are like seasonal harvests! 🍃 You prepare the ground, plant your messages, and reap the engagement. Let me guide you through creating campaigns that flourish!';
-      } else if (message.toLowerCase().includes('analytics')) {
-        response =
-          "Analytics are like soil reports for your digital garden! 📊🌱 They tell you what's thriving, what needs attention, and how to optimize your growth. Want to dig into the data together?";
-      } else {
-        response =
-          "I'm here to help your Glific journey flourish! 🌟 Whether it's flows, contacts, templates, or campaigns, I'll help you grow your automation skills naturally. What aspect would you like to explore?";
-      }
+      setMessages(newMessages);
 
-      const newBotMessage: Message = {
-        id: Date.now() + 1,
-        text: response,
-        isBot: true,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, newUserMessage, newBotMessage]);
-      setMessage('');
+      return response.data;
+    } catch (error: any) {
+      console.error('OpenAI API error:', error.response?.data || error.message);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+  const quickSuggestions = ['What are HSM Messages?', 'Best practices To create a flow', 'What is session window?'];
 
-  const handleQuickSuggestion = (suggestion: string) => {
-    setMessage(suggestion);
-  };
+  useEffect(() => {
+    const localStorageMessages = localStorage.getItem('askMeBotHistory');
+    if (localStorageMessages) {
+      const messages: any = JSON.parse(localStorageMessages);
+
+      setMessages(messages);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('askMeBotHistory', JSON.stringify(messages));
+  }, [messages]);
 
   return (
     <>
-      {/* Green Floating Action Button */}
       {open ? null : (
         <Fab
           ref={fabRef}
@@ -148,26 +113,36 @@ export const AskMeBot = () => {
             boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
           }}
         >
-          <BotLogo size={32} />
+          <AskMeBotIcon />
         </Fab>
       )}
 
-      {/* Side Drawer Chat */}
       <Drawer
         anchor="right"
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{
-          sx: {
-            top: 'auto',
-            bottom: '0 !important',
-            height: '80vh',
-            width: '400px',
-            maxWidth: '800px',
-            display: 'flex',
-            flexDirection: 'column',
-            background: 'linear-gradient(180deg, #F1F8E9 0%, #E8F5E8 100%)',
+        slotProps={{
+          paper: {
+            sx: {
+              top: 'auto',
+              bottom: '0 !important',
+              height: '80vh',
+              width: '400px',
+              maxWidth: '800px',
+              display: 'flex',
+              flexDirection: 'column',
+              borderTopRightRadius: '1rem',
+              borderTopLeftRadius: '1rem',
+              pointerEvents: 'auto',
+            },
           },
+          root: {
+            hideBackdrop: true,
+          },
+        }}
+        ModalProps={{
+          hideBackdrop: true,
+          style: { pointerEvents: 'none' },
         }}
       >
         <div className={styles.Container}>
@@ -180,9 +155,18 @@ export const AskMeBot = () => {
             </span>
             <CloseIcon onClick={() => setOpen(false)} />
           </div>
-          <div className={styles.Messages}>{}</div>
+          <div className={styles.Messages}>
+            {messages
+              .filter((i) => !i.prompt)
+              .map((message) => (
+                <div className={`${message.role === 'system' ? styles.System : styles.User}`}>
+                  <Markdown>{message.content}</Markdown>
+                </div>
+              ))}
+            {isLoading && <div className={styles.Loader} />}
+          </div>
           <div className={styles.SuggestionsContainer}>
-            {messages.length === 0 &&
+            {messages.length <= 1 &&
               quickSuggestions.map((suggestion, index) => (
                 <div onClick={() => setMessage(suggestion)} className={styles.Suggestion}>
                   {suggestion}
@@ -196,7 +180,7 @@ export const AskMeBot = () => {
               slotProps={{
                 input: {
                   endAdornment: (
-                    <IconButton className={styles.SendButton} onClick={handleSendMessage} disabled={!message.trim()}>
+                    <IconButton className={styles.SendButton} onClick={handleOk} disabled={!message.trim()}>
                       <SendIcon color="primary" />
                     </IconButton>
                   ),
@@ -221,7 +205,6 @@ export const AskMeBot = () => {
                 },
               }}
             />
-            {/* <input name="message" value={message} /> */}
           </div>
         </div>
       </Drawer>

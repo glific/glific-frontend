@@ -19,6 +19,7 @@ import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChat
 import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
 import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
 import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import { getOrganizationServices } from 'services/AuthService';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -190,6 +191,7 @@ export const AuthenticatedRoute = () => {
   const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
 
   const [provider, setProvider] = useState<string>('');
+  const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -237,7 +239,7 @@ export const AuthenticatedRoute = () => {
           <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
             <ErrorBoundary>
               {route}
-              <AskMeBot />
+              {isAskMeBotEnabled && <AskMeBot />}
             </ErrorBoundary>
           </Suspense>
         </Layout>

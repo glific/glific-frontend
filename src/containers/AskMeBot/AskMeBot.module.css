@@ -1,7 +1,9 @@
 .Container {
     height: 100%;
     width: 100%;
-    background-color: #F5F1EB;
+    background-color: #f5f1eb;
+    border-radius: 1rem;
+    overflow: hidden;
 }
 
 .Header {
@@ -31,8 +33,6 @@
     border-radius: 100%;
 }
 
-
-
 .SuggestionsContainer {
     width: 100%;
     padding: 0.5rem 1rem;
@@ -48,7 +48,6 @@
 .Suggestion {
     width: fit-content;
     font-size: 0.8rem;
-    /* border: #119656 1px solid; */
     padding: 0.4rem 0.8rem;
     border-radius: 1rem;
     cursor: pointer;
@@ -61,8 +60,7 @@
     bottom: 0;
     width: 100%;
     padding: 0.8rem 1rem;
-    background-color: #F0EDE8;
-
+    background-color: #f0ede8;
 }
 
 .InputContainer input {
@@ -85,5 +83,58 @@
 .SendButton:disabled {
     cursor: not-allowed;
     opacity: 0.5;
-    color: #A5D6A7 !important;
+    color: #a5d6a7 !important;
+}
+
+.Messages {
+    width: 100%;
+    height: 80%;
+    padding: 0.8rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.Message {
+    padding: 0 0.75rem;
+    max-width: 70%;
+    font-size: 0.9rem;
+    border-radius: 1.25rem;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+.System {
+    composes: Message;
+    align-self: flex-start;
+    background-color: #ffffff;
+    color: #2e2e2e;
+    border: 1px solid #e0e0e0;
+    border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.User {
+    composes: Message;
+    align-self: flex-end;
+    background: linear-gradient(135deg, #119656 0%, #0d7a47 100%);
+    color: #ffffff;
+    border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(17, 150, 86, 0.3);
+}
+
+.Loader {
+    width: 2rem;
+    aspect-ratio: 4;
+    background: radial-gradient(circle closest-side, #a5d6a7 90%, #0000) 0/calc(100%/3) 100% space;
+    clip-path: inset(0 100% 0 0);
+    animation: l1 1s steps(4) infinite;
+}
+
+@keyframes l1 {
+    to {
+        clip-path: inset(0 -34% 0 0)
+    }
 }
