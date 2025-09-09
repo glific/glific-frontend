@@ -63,6 +63,12 @@ export const AskMeBot = () => {
     handleSendMessage(inputMessage, updatedMessages);
   };
 
+  const handleKeyDown = (event: any) => {
+    if (event?.key === 'Enter' && message.trim()) {
+      handleOk();
+    }
+  };
+
   const handleSendMessage = async (message: any, currentMessages = messages) => {
     setIsLoading(true);
 
@@ -228,7 +234,7 @@ export const AskMeBot = () => {
               .filter((i) => !i.prompt)
               .map((message) => (
                 <div
-                  key={`${message.timestamp?.toString()}-${message.content.slice(0, 5)}`}
+                  key={`${message.timestamp?.toString()}-${message?.content?.slice(0, 5)}`}
                   className={`${message.role === 'system' ? styles.System : styles.User}`}
                 >
                   <Markdown>{message.content}</Markdown>
@@ -265,10 +271,16 @@ export const AskMeBot = () => {
               data-testid="textbox"
               name="message"
               value={message}
+              onKeyDown={handleKeyDown}
               slotProps={{
                 input: {
                   endAdornment: (
-                    <IconButton className={styles.SendButton} onClick={handleOk} disabled={!message.trim()}>
+                    <IconButton
+                      className={styles.SendButton}
+                      onKeyDown={handleKeyDown}
+                      onClick={handleOk}
+                      disabled={!message.trim()}
+                    >
                       <SendIcon data-testid="send-icon" color="primary" />
                     </IconButton>
                   ),
