@@ -247,10 +247,7 @@ export const Auth = ({
 
         <div className={styles.OrganizationName}>{orgName}</div>
 
-        <div className={boxClass.join(' ')}>
-          {formElements}
-          {isRegistration}
-        </div>
+        <div className={boxClass.join(' ')}>{formElements}</div>
         {alternateText ? (
           <>
             <div className={styles.Or}>
