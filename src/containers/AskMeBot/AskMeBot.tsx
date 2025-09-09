@@ -8,6 +8,8 @@ import AskMeBotIcon from 'assets/images/AskMeBot.svg?react';
 import Logo from 'assets/images/logo/glific-logo.svg?react';
 import styles from './AskMeBot.module.css';
 import { prompt } from './system-prompt';
+import { ASK_ME_BOT_ENDPOINT } from 'config';
+import { getAuthSession } from 'services/AuthService';
 
 interface Message {
   role: 'user' | 'system';
@@ -16,44 +18,77 @@ interface Message {
   prompt?: boolean;
 }
 
+interface StoredMessages {
+  messages: Message[];
+  createdAt: string;
+}
+
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
+const MESSAGE_EXPIRY_HOURS = 24;
 
 export const AskMeBot = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([{ role: 'system', content: prompt, prompt: true }]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isThreadExpiredState, setIsThreadExpiredState] = useState(false);
 
   const fabRef = useRef<HTMLButtonElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    console.log(messagesEndRef);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading, open]);
+
+  const isThreadExpired = (createdAt: string): boolean => {
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const hoursDiff = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60);
+    console.log('Hours difference:', hoursDiff);
+    return hoursDiff >= MESSAGE_EXPIRY_HOURS;
+  };
+
+  const startNewThread = (): Message[] => {
+    return [{ role: 'system', content: prompt, prompt: true }];
+  };
 
   const handleOk = () => {
-    const messag: any = { role: 'user', content: message };
-    const updatedMessages = [...messages, messag];
+    const inputMessage: any = { role: 'user', content: message, timestamp: new Date() };
+    const updatedMessages = [...messages, inputMessage];
     setMessages(updatedMessages);
     setMessage('');
-    handleSendMessage(messag, updatedMessages);
+    handleSendMessage(inputMessage, updatedMessages);
   };
 
   const handleSendMessage = async (message: any, currentMessages = messages) => {
     setIsLoading(true);
-    const input = [...currentMessages.map(({ prompt, ...rest }) => rest), message];
+
+    // If thread is expired, only send system prompt + current user message
+    let messagesToSend;
+    console.log('isThreadExpiredState:', isThreadExpiredState);
+    if (isThreadExpiredState) {
+      messagesToSend = [
+        { role: 'system', content: prompt },
+        { role: message.role, content: message.content },
+      ];
+    } else {
+      messagesToSend = [...currentMessages.map(({ prompt, timestamp, ...rest }) => rest)];
+    }
+
     try {
       const response = await axios.post(
-        'https://api.openai.com/v1/responses',
+        ASK_ME_BOT_ENDPOINT,
         {
-          model: 'gpt-4o',
-          input: input,
-          tools: [
-            {
-              type: 'file_search',
-              vector_store_ids: ['vs_Fx8ChbH6bkkFeNlLRdLXyOf4'],
-              max_num_results: 20,
-            },
-          ],
+          input: messagesToSend,
         },
         {
           headers: {
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            Authorization: getAuthSession('access_token'),
             'Content-Type': 'application/json',
           },
         }
@@ -61,14 +96,28 @@ export const AskMeBot = () => {
 
       const newMessages: Message[] = [
         ...currentMessages,
-        { role: 'system', content: response.data.output[1].content[0].text },
+        {
+          role: 'system',
+          content: response.data.output[1].content[0].text,
+          timestamp: new Date(),
+        },
       ];
 
       setMessages(newMessages);
 
+      if (isThreadExpiredState) {
+        setIsThreadExpiredState(false);
+      }
+
       return response.data;
     } catch (error: any) {
       console.error('OpenAI API error:', error.response?.data || error.message);
+      const errorMessage: Message = {
+        role: 'system',
+        content: 'Sorry, I encountered an error while processing your request. Please try again.',
+        timestamp: new Date(),
+      };
+      setMessages([...currentMessages, errorMessage]);
       throw error;
     } finally {
       setIsLoading(false);
@@ -78,17 +127,39 @@ export const AskMeBot = () => {
   const quickSuggestions = ['What are HSM Messages?', 'Best practices To create a flow', 'What is session window?'];
 
   useEffect(() => {
-    const localStorageMessages = localStorage.getItem('askMeBotHistory');
-    if (localStorageMessages) {
-      const messages: any = JSON.parse(localStorageMessages);
+    const localStorageData = localStorage.getItem('askMeBotHistory');
+    if (localStorageData) {
+      try {
+        const storedData: StoredMessages = JSON.parse(localStorageData);
+        console.log(storedData.createdAt);
+        if (isThreadExpired(storedData.createdAt)) {
+          setMessages(storedData.messages);
+          setIsThreadExpiredState(true);
+        } else {
+          setMessages(storedData.messages);
+          setIsThreadExpiredState(false);
+        }
+      } catch (error) {
+        console.error('Error parsing stored messages:', error);
 
-      setMessages(messages);
+        const newMessages = startNewThread();
+        setMessages(newMessages);
+        setIsThreadExpiredState(false);
+      }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('askMeBotHistory', JSON.stringify(messages));
-  }, [messages]);
+    if (messages.length > 1 || !messages[0]?.prompt) {
+      const dataToStore: StoredMessages = {
+        messages,
+        createdAt: isThreadExpiredState
+          ? new Date().toISOString()
+          : JSON.parse(localStorage.getItem('askMeBotHistory') || '{}').createdAt || new Date().toISOString(),
+      };
+      localStorage.setItem('askMeBotHistory', JSON.stringify(dataToStore));
+    }
+  }, [messages, isThreadExpiredState]);
 
   return (
     <>
@@ -159,11 +230,15 @@ export const AskMeBot = () => {
             {messages
               .filter((i) => !i.prompt)
               .map((message) => (
-                <div className={`${message.role === 'system' ? styles.System : styles.User}`}>
+                <div
+                  key={message.timestamp?.toString()}
+                  className={`${message.role === 'system' ? styles.System : styles.User}`}
+                >
                   <Markdown>{message.content}</Markdown>
                 </div>
               ))}
             {isLoading && <div className={styles.Loader} />}
+            <div ref={messagesEndRef} />
           </div>
           <div className={styles.SuggestionsContainer}>
             {messages.length <= 1 &&
