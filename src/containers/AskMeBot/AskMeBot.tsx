@@ -1,4 +1,5 @@
-import { Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
 import { Divider, Drawer, Fab, IconButton, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
@@ -6,10 +7,10 @@ import Markdown from 'react-markdown';
 
 import AskMeBotIcon from 'assets/images/AskMeBot.svg?react';
 import Logo from 'assets/images/logo/glific-logo.svg?react';
-import styles from './AskMeBot.module.css';
-import { prompt } from './system-prompt';
 import { ASK_ME_BOT_ENDPOINT } from 'config';
 import { getAuthSession } from 'services/AuthService';
+import styles from './AskMeBot.module.css';
+import { prompt } from './system-prompt';
 
 interface Message {
   role: 'user' | 'system';
@@ -36,7 +37,6 @@ export const AskMeBot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    console.log(messagesEndRef);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -48,7 +48,6 @@ export const AskMeBot = () => {
     const createdDate = new Date(createdAt);
     const now = new Date();
     const hoursDiff = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60);
-    console.log('Hours difference:', hoursDiff);
     return hoursDiff >= MESSAGE_EXPIRY_HOURS;
   };
 
@@ -69,7 +68,6 @@ export const AskMeBot = () => {
 
     // If thread is expired, only send system prompt + current user message
     let messagesToSend;
-    console.log('isThreadExpiredState:', isThreadExpiredState);
     if (isThreadExpiredState) {
       messagesToSend = [
         { role: 'system', content: prompt },
@@ -130,7 +128,6 @@ export const AskMeBot = () => {
     if (localStorageData) {
       try {
         const storedData: StoredMessages = JSON.parse(localStorageData);
-        console.log(storedData.createdAt);
         if (isThreadExpired(storedData.createdAt)) {
           setMessages(storedData.messages);
           setIsThreadExpiredState(true);
@@ -164,6 +161,7 @@ export const AskMeBot = () => {
     <>
       {open ? null : (
         <Fab
+          data-testid="ask-me-bot-fab"
           ref={fabRef}
           color="primary"
           aria-label="ask me bot"
@@ -223,20 +221,20 @@ export const AskMeBot = () => {
               </span>
               Ask Glific
             </span>
-            <CloseIcon onClick={() => setOpen(false)} />
+            <CloseIcon data-testid="close-icon" onClick={() => setOpen(false)} />
           </div>
           <div className={styles.Messages}>
             {messages
               .filter((i) => !i.prompt)
               .map((message) => (
                 <div
-                  key={message.timestamp?.toString()}
+                  key={`${message.timestamp?.toString()}-${message.content.slice(0, 5)}`}
                   className={`${message.role === 'system' ? styles.System : styles.User}`}
                 >
                   <Markdown>{message.content}</Markdown>
                 </div>
               ))}
-            {isLoading && <div className={styles.Loader} />}
+            {isLoading && <div data-testid="loading" className={styles.Loader} />}
             {isThreadExpiredState && !isLoading && (
               <Divider
                 sx={{
@@ -252,20 +250,26 @@ export const AskMeBot = () => {
           <div className={styles.SuggestionsContainer}>
             {messages.length <= 1 &&
               quickSuggestions.map((suggestion) => (
-                <div onClick={() => setMessage(suggestion)} className={styles.Suggestion}>
+                <div
+                  key={suggestion}
+                  data-testid="suggestion"
+                  onClick={() => setMessage(suggestion)}
+                  className={styles.Suggestion}
+                >
                   {suggestion}
                 </div>
               ))}
           </div>
           <div className={styles.InputContainer}>
             <TextField
+              data-testid="textbox"
               name="message"
               value={message}
               slotProps={{
                 input: {
                   endAdornment: (
                     <IconButton className={styles.SendButton} onClick={handleOk} disabled={!message.trim()}>
-                      <SendIcon color="primary" />
+                      <SendIcon data-testid="send-icon" color="primary" />
                     </IconButton>
                   ),
                 },
