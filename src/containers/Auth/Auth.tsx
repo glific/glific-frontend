@@ -249,7 +249,7 @@ export const Auth = ({
 
         <div className={boxClass.join(' ')}>
           {formElements}
-          {isRegistration && null}
+          {isRegistration}
         </div>
         {alternateText ? (
           <>
