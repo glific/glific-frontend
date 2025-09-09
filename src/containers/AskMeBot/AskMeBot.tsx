@@ -235,9 +235,9 @@ export const AskMeBot = () => {
               .map((message) => (
                 <div
                   key={`${message?.timestamp?.toString()}-${message?.content?.slice(0, 5)}`}
-                  className={`${message.role === 'system' ? styles.System : styles.User}`}
+                  className={`${message?.role === 'system' ? styles.System : styles.User}`}
                 >
-                  <Markdown>{message.content}</Markdown>
+                  <Markdown>{message?.content}</Markdown>
                 </div>
               ))}
             {isLoading && <div data-testid="loading" className={styles.Loader} />}
