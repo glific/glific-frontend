@@ -138,3 +138,8 @@
         clip-path: inset(0 -34% 0 0)
     }
 }
+
+.Divider {
+    color: #0d7a47;
+    font-size: 0.8rem;
+}

@@ -1,5 +1,5 @@
 import { Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
-import { Drawer, Fab, IconButton, TextField } from '@mui/material';
+import { Divider, Drawer, Fab, IconButton, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
@@ -23,7 +23,6 @@ interface StoredMessages {
   createdAt: string;
 }
 
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
 const MESSAGE_EXPIRY_HOURS = 24;
 
 export const AskMeBot = () => {
@@ -238,11 +237,21 @@ export const AskMeBot = () => {
                 </div>
               ))}
             {isLoading && <div className={styles.Loader} />}
+            {isThreadExpiredState && !isLoading && (
+              <Divider
+                sx={{
+                  boxShadow: 'none',
+                }}
+              >
+                <span className={styles.Divider}>Conversation Expired. Start a new conversation.</span>
+              </Divider>
+            )}
             <div ref={messagesEndRef} />
           </div>
+
           <div className={styles.SuggestionsContainer}>
             {messages.length <= 1 &&
-              quickSuggestions.map((suggestion, index) => (
+              quickSuggestions.map((suggestion) => (
                 <div onClick={() => setMessage(suggestion)} className={styles.Suggestion}>
                   {suggestion}
                 </div>
