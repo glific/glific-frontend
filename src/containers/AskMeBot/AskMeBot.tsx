@@ -56,11 +56,11 @@ export const AskMeBot = () => {
   };
 
   const handleOk = () => {
-    const inputMessage: any = { role: 'user', content: message, timestamp: new Date() };
-    const updatedMessages = [...messages, inputMessage];
+    const userMessage: any = { role: 'user', content: message, timestamp: new Date() };
+    const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setMessage('');
-    handleSendMessage(inputMessage, updatedMessages);
+    handleSendMessage(userMessage, updatedMessages);
   };
 
   const handleKeyDown = (event: any) => {
@@ -234,7 +234,7 @@ export const AskMeBot = () => {
               .filter((i) => !i.prompt)
               .map((message) => (
                 <div
-                  key={`${message.timestamp?.toString()}-${message?.content?.slice(0, 5)}`}
+                  key={`${message?.timestamp?.toString()}-${message?.content?.slice(0, 5)}`}
                   className={`${message.role === 'system' ? styles.System : styles.User}`}
                 >
                   <Markdown>{message.content}</Markdown>

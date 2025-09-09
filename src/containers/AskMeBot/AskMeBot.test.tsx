@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { AskMeBot } from './AskMeBot';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
+import { AskMeBot } from './AskMeBot';
 
 describe('AskMeBot', () => {
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {

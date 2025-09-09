@@ -121,7 +121,7 @@
     align-self: flex-end;
     background: linear-gradient(135deg, #119656 0%, #0d7a47 100%);
     color: #ffffff;
-    border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+    border-radius: 1.25rem 1.25rem 0.25rem;
     box-shadow: 0 2px 8px rgba(17, 150, 86, 0.3);
 }
 
