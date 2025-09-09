@@ -240,7 +240,11 @@ export const AskMeBot = () => {
                   <Markdown>{message?.content}</Markdown>
                 </div>
               ))}
-            {isLoading && <div data-testid="loading" className={styles.Loader} />}
+            {isLoading && (
+              <div className={styles.LoaderContainer}>
+                <div data-testid="loading" className={styles.Loader} />
+              </div>
+            )}
             {isThreadExpiredState && !isLoading && (
               <Divider
                 sx={{

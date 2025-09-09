@@ -125,6 +125,11 @@
     box-shadow: 0 2px 8px rgba(17, 150, 86, 0.3);
 }
 
+.LoaderContainer {
+    composes: System;
+    padding: 0.8rem;
+}
+
 .Loader {
     width: 2rem;
     aspect-ratio: 4;
