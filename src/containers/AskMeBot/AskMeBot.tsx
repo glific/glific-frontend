@@ -98,7 +98,7 @@ export const AskMeBot = () => {
         ...currentMessages,
         {
           role: 'system',
-          content: response.data.output[1].content[0].text,
+          content: response.data.response,
           timestamp: new Date(),
         },
       ];
