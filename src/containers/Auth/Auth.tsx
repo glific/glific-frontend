@@ -247,7 +247,17 @@ export const Auth = ({
 
         <div className={styles.OrganizationName}>{orgName}</div>
 
-        <div className={boxClass.join(' ')}>{formElements}</div>
+        <div className={boxClass.join(' ')}>
+          {formElements}
+          {isRegistration && (
+            <div className={styles.TermsOfUse}>
+              <a href={TERMS_OF_USE_LINK} target="_blank" rel="noreferrer">
+                Read the applied terms of use
+              </a>
+            </div>
+          )}
+        </div>
+
         {alternateText ? (
           <>
             <div className={styles.Or}>
