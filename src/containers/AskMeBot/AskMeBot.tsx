@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
-import { Divider, Drawer, Fab, IconButton, TextField } from '@mui/material';
+import { Divider, Drawer, Fab, IconButton, TextField, Tooltip } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
@@ -159,29 +159,31 @@ export const AskMeBot = () => {
   return (
     <>
       {open ? null : (
-        <Fab
-          data-testid="ask-me-bot-fab"
-          ref={fabRef}
-          color="primary"
-          aria-label="ask me bot"
-          onClick={() => setOpen(true)}
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            background: 'linear-gradient(135deg, #00C851 0%, #007E33 100%)',
-            cursor: 'pointer',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)',
-              transform: 'scale(1.1)',
-            },
-            transition: 'transform 0.2s ease-in-out',
-            zIndex: 1300,
-            boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
-          }}
-        >
-          <AskMeBotIcon />
-        </Fab>
+        <Tooltip title="Ask Glific" placement="left" arrow>
+          <Fab
+            data-testid="ask-me-bot-fab"
+            ref={fabRef}
+            color="primary"
+            aria-label="ask me bot"
+            onClick={() => setOpen(true)}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              background: 'linear-gradient(135deg, #00C851 0%, #007E33 100%)',
+              cursor: 'pointer',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)',
+                transform: 'scale(1.1)',
+              },
+              transition: 'transform 0.2s ease-in-out',
+              zIndex: 1300,
+              boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
+            }}
+          >
+            <AskMeBotIcon />
+          </Fab>
+        </Tooltip>
       )}
 
       <Drawer
@@ -198,7 +200,6 @@ export const AskMeBot = () => {
               maxWidth: '800px',
               display: 'flex',
               flexDirection: 'column',
-              borderTopRightRadius: '1rem',
               borderTopLeftRadius: '1rem',
               pointerEvents: 'auto',
             },
@@ -230,7 +231,13 @@ export const AskMeBot = () => {
                   key={`${message?.timestamp?.toString()}-${message?.content?.slice(0, 5)}`}
                   className={`${message?.role === 'user' ? styles.User : styles.System}`}
                 >
-                  <Markdown>{message?.content}</Markdown>
+                  <Markdown
+                    components={{
+                      a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                    }}
+                  >
+                    {message?.content}
+                  </Markdown>
                 </div>
               ))}
             {isLoading && (
