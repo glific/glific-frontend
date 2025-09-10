@@ -174,7 +174,7 @@ export const Auth = ({
                   }
                   const key = index;
                   return (
-                    <div key={key}>
+                    <div className={field.styles} key={key}>
                       {field.label ? (
                         <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                           {field.label}

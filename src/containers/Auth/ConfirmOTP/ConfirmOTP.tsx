@@ -105,7 +105,8 @@ export const ConfirmOTP = () => {
           phone: userObject.phone,
           password: userObject.password,
           otp: values.OTP,
-          email: userObject.email
+          email: userObject.email,
+          consent: userObject.consent,
         },
       })
       .then(() => {

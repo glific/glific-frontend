@@ -7,6 +7,8 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import styles from './Registration.module.css';
 
 export interface User {
   name: string;
@@ -14,9 +16,10 @@ export interface User {
   password: string;
   captcha: string;
   email: string;
+  consent: boolean;
 }
 
-const initialFormValues: User = { name: '', phone: '', password: '', captcha: '', email: '' };
+const initialFormValues: User = { name: '', phone: '', password: '', captcha: '', email: '', consent: false };
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
@@ -82,6 +85,14 @@ export const Registration = () => {
       placeholder: t('Password'),
       darkMode: true,
       autoComplete: 'new-password',
+    },
+    {
+      component: Checkbox,
+      name: 'consent',
+      label: 'I am ok to receive product updates',
+      styles: styles.CheckboxInline,
+      labelPlacement: 'end',
+      darkCheckbox: true,
     },
   ];
 
