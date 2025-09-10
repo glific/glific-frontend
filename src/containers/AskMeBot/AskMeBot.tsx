@@ -10,10 +10,9 @@ import Logo from 'assets/images/logo/glific-logo.svg?react';
 import { ASK_ME_BOT_ENDPOINT } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import styles from './AskMeBot.module.css';
-import { prompt } from './system-prompt';
 
 interface Message {
-  role: 'user' | 'system';
+  role: 'user' | 'system' | 'error';
   content: string;
   timestamp?: Date;
   prompt?: boolean;
@@ -29,7 +28,7 @@ const MESSAGE_EXPIRY_HOURS = 24;
 export const AskMeBot = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([{ role: 'system', content: prompt, prompt: true }]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isThreadExpiredState, setIsThreadExpiredState] = useState(false);
 
@@ -49,10 +48,6 @@ export const AskMeBot = () => {
     const now = new Date();
     const hoursDiff = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60);
     return hoursDiff >= MESSAGE_EXPIRY_HOURS;
-  };
-
-  const startNewThread = (): Message[] => {
-    return [{ role: 'system', content: prompt, prompt: true }];
   };
 
   const handleOk = () => {
@@ -75,19 +70,18 @@ export const AskMeBot = () => {
     // If thread is expired, only send system prompt + current user message
     let messagesToSend;
     if (isThreadExpiredState) {
-      messagesToSend = [
-        { role: 'system', content: prompt },
-        { role: message.role, content: message.content },
-      ];
+      messagesToSend = [{ role: message.role, content: message.content }];
     } else {
-      messagesToSend = [...currentMessages.map(({ prompt, timestamp, ...rest }) => rest)];
+      const cleanedMessages = currentMessages.map(({ prompt, timestamp, ...rest }) => rest);
+      // sending only last 10 messages
+      messagesToSend = cleanedMessages.slice(-10);
     }
 
     try {
       const response = await axios.post(
         ASK_ME_BOT_ENDPOINT,
         {
-          input: messagesToSend,
+          input: messagesToSend.filter((message) => message.role === 'user' || message.role === 'system'),
         },
         {
           headers: {
@@ -114,9 +108,8 @@ export const AskMeBot = () => {
 
       return response.data;
     } catch (error: any) {
-      console.error('OpenAI API error:', error.response?.data || error.message);
       const errorMessage: Message = {
-        role: 'system',
+        role: 'error',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
         timestamp: new Date(),
       };
@@ -144,7 +137,7 @@ export const AskMeBot = () => {
       } catch (error) {
         console.error('Error parsing stored messages:', error);
 
-        const newMessages = startNewThread();
+        const newMessages: Message[] = [];
         setMessages(newMessages);
         setIsThreadExpiredState(false);
       }
@@ -235,7 +228,7 @@ export const AskMeBot = () => {
               .map((message) => (
                 <div
                   key={`${message?.timestamp?.toString()}-${message?.content?.slice(0, 5)}`}
-                  className={`${message?.role === 'system' ? styles.System : styles.User}`}
+                  className={`${message?.role === 'user' ? styles.User : styles.System}`}
                 >
                   <Markdown>{message?.content}</Markdown>
                 </div>
@@ -259,6 +252,7 @@ export const AskMeBot = () => {
 
           <div className={styles.SuggestionsContainer}>
             {messages.length <= 1 &&
+              !isLoading &&
               quickSuggestions.map((suggestion) => (
                 <div
                   key={suggestion}
