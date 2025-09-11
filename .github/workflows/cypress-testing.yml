@@ -111,7 +111,6 @@ jobs:
       - name: Run glific backend
         run: |
           cd ../glific/
-          git checkout feat/ask_me
           OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server &
           cd ../glific-frontend/
 
