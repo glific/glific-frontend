@@ -95,7 +95,7 @@ export const Registration = () => {
     },
     {
       component: Checkbox,
-      name: 'consent',
+      name: 'consent_for_updates',
       label: 'I would like to receive product updates',
       styles: styles.CheckboxInline,
       labelPlacement: 'end',
