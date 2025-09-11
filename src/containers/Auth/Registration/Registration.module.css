@@ -17,3 +17,16 @@
   text-decoration: underline !important;
   font-size: 14px !important;
 }
+
+.CheckboxInline {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.CheckboxInline h5 {
+  color: #fff !important;
+  font-size: 14px;
+  padding-bottom: 4px;
+}
