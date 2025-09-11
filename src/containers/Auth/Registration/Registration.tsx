@@ -16,10 +16,17 @@ export interface User {
   password: string;
   captcha: string;
   email: string;
-  consent: boolean;
+  consent_for_updates: boolean;
 }
 
-const initialFormValues: User = { name: '', phone: '', password: '', captcha: '', email: '', consent: false };
+const initialFormValues: User = {
+  name: '',
+  phone: '',
+  password: '',
+  captcha: '',
+  email: '',
+  consent_for_updates: false,
+};
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
