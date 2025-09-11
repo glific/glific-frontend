@@ -13,9 +13,10 @@ export interface User {
   phone: string;
   password: string;
   captcha: string;
+  email: string;
 }
 
-const initialFormValues: User = { name: '', phone: '', password: '', captcha: '' };
+const initialFormValues: User = { name: '', phone: '', password: '', captcha: '', email: '' };
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
@@ -54,6 +55,15 @@ export const Registration = () => {
       type: 'text',
       placeholder: t('Your full name'),
       darkMode: true,
+      autoComplete: 'name',
+    },
+    {
+      component: Input,
+      name: 'email',
+      type: 'email',
+      placeholder: t('Email'),
+      darkMode: true,
+      autoComplete: 'email',
     },
     {
       component: PhoneInput,
@@ -61,6 +71,9 @@ export const Registration = () => {
       type: 'phone',
       placeholder: t('Your personal WhatsApp number'),
       helperText: t('Please enter a phone number.'),
+      inputProps: {
+        autoComplete: 'tel',
+      },
     },
     {
       component: Input,
@@ -68,6 +81,7 @@ export const Registration = () => {
       type: 'password',
       placeholder: t('Password'),
       darkMode: true,
+      autoComplete: 'new-password',
     },
   ];
 
@@ -75,6 +89,7 @@ export const Registration = () => {
     name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
+    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
   });
 
   return (

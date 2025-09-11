@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router, MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
-import { ORGANIZATION_MOCKS } from '../SettingList.test.helper';
+import { ORGANIZATION_MOCKS, ORGANIZATION_MOCKS2 } from '../SettingList.test.helper';
 import { Organization } from './Organization';
 
 const user = userEvent.setup();
@@ -93,5 +93,66 @@ test('it renders component in edit mode', async () => {
   await waitFor(() => {
     const submit = getByTestId('submitActionButton');
     user.click(submit);
+  });
+});
+
+test('it renders confirmation popup with new phone number when allowBotNumberUpdate is true', async () => {
+  const { getByText, getByTestId } = render(
+    <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
+      <Router>
+        <Organization />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Loading...')).toBeInTheDocument();
+  });
+  await waitFor(() => {
+    const inputElements = screen.getAllByRole('textbox');
+    const phoneInput = inputElements[2] as HTMLInputElement;
+    expect(phoneInput?.value).toBe('917834811114');
+    user.clear(phoneInput);
+    user.type(phoneInput, '919999999999');
+  });
+
+  await waitFor(() => {
+    const submit = getByTestId('submitActionButton');
+    user.click(submit);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    const content = screen.getByTestId('dialog-content');
+    expect(content.textContent).toMatch(/It will not be possible/i);
+  });
+});
+
+test('It does not show confirmation popup with new phone number when allowBotNumberUpdate is false', async () => {
+  const { getByText, getByTestId } = render(
+    <MockedProvider mocks={ORGANIZATION_MOCKS2} addTypename={false}>
+      <Router>
+        <Organization />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Loading...')).toBeInTheDocument();
+  });
+  await waitFor(() => {
+    const inputElements = screen.getAllByRole('textbox');
+    const phoneInput = inputElements[2] as HTMLInputElement;
+    expect(phoneInput?.value).toBe('911111111111');
+    expect(phoneInput).toBeDisabled();
+  });
+
+  await waitFor(() => {
+    const submit = getByTestId('submitActionButton');
+    user.click(submit);
+  });
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
   });
 });

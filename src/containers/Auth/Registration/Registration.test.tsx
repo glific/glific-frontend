@@ -59,6 +59,10 @@ describe('<Registration />', () => {
     await user.click(password);
     await user.keyboard('pass123456');
 
+    const email = container.querySelector('input[type="email"]') as HTMLInputElement;
+    await user.click(email);
+    await user.keyboard('you@domain.com');
+
     await waitFor(() => {
       // Regiter with button should be disabled by default
       const continueButton = screen.getByTestId('SubmitButton');
@@ -75,7 +79,7 @@ describe('<Registration />', () => {
 
     // let's mock successful registration submission
     const responseData = {
-      values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
+      values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456', email: 'you@domain.com' },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
@@ -88,6 +92,9 @@ describe('<Registration />', () => {
 
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     fireEvent.change(password, { target: { value: 'Pass@123456' } });
+
+    const email = container.querySelector('input[type="email"]') as HTMLInputElement;
+    fireEvent.change(email, { target: { value: 'you@domain.com' } });
 
     await waitFor(() => {
       expect(getByText('Register with')).toBeInTheDocument();

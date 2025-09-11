@@ -12,6 +12,8 @@ import {
   getMaytapiProviderMock,
   getSavedCredentials,
   updateMaytapiCredentials,
+  getProvidersQuery,
+  getCredential,
 } from 'mocks/Organization';
 
 const mocks = LIST_ITEM_MOCKS;
@@ -70,10 +72,22 @@ describe('<Providers />', () => {
 });
 
 const maytapiProvider = (error: boolean = false) => {
-  let MOCKS: any = [...mocks, ...getMaytapiProviderMock, , createMaytapiCredentialsMock(error)];
+  const MOCKS: any = [...mocks, ...getMaytapiProviderMock, , createMaytapiCredentialsMock(error)];
 
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <Routes>
+          <Route path="settings/:type" element={<Providers />} />
+        </Routes>
+      </MockedProvider>
+    </MemoryRouter>
+  );
+};
+const gupshupProvider = () => {
+  const MOCKS: any = [...getProvidersQuery, ...getCredential, ...getCredential];
+  return (
+    <MemoryRouter initialEntries={[`/settings/gupshup`]}>
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
@@ -248,6 +262,30 @@ describe('update credentials', () => {
 
     await waitFor(() => {
       expect(errorMessageSpy).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('gupshup dialog', () => {
+  test('opens confirmation dialog on save', async () => {
+    render(gupshupProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    const saveButton = await screen.findByTestId('submitActionButton');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+      const content = screen.getByTestId('dialog-content');
+      expect(content).toHaveTextContent('App Name:');
+      expect(content).toHaveTextContent('API Key:');
     });
   });
 });
