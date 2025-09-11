@@ -134,23 +134,33 @@ export const Providers = () => {
         ),
       },
     ];
-    Object.keys(fields).forEach((key) => {
-      const field = {
-        component: Input,
-        name: key,
-        type: 'text',
-        label: fields[key].label,
-        disabled: fields[key].view_only,
-        skip: fields[key].hide,
-      };
-      formField.push(field);
+    let orderedKeys;
+    if (type === 'gupshup') {
+      orderedKeys = ['app_name', 'api_key', 'app_id'];
+    } else {
+      orderedKeys = Object.keys(fields);
+    }
 
-      // create validation object for field
-      addValidation(fields, key);
+    orderedKeys.forEach((key) => {
+      if (fields[key]) {
+        const field = {
+          component: Input,
+          name: key,
+          type: 'text',
+          label: fields[key].label,
+          disabled: fields[key].view_only,
+          skip: fields[key].hide,
+        };
+        formField.push(field);
 
-      // add dafault value for the field
-      states[key] = fields[key].default || '';
+        // create validation object for field
+        addValidation(fields, key);
+
+        // add default value for the field
+        states[key] = fields[key].default || '';
+      }
     });
+
     setStateValues(states);
     setFormFields(formField);
   };

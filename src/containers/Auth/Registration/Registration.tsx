@@ -58,6 +58,14 @@ export const Registration = () => {
       autoComplete: 'name',
     },
     {
+      component: Input,
+      name: 'email',
+      type: 'email',
+      placeholder: t('Email'),
+      darkMode: true,
+      autoComplete: 'email',
+    },
+    {
       component: PhoneInput,
       name: 'phone',
       type: 'phone',
@@ -66,14 +74,6 @@ export const Registration = () => {
       inputProps: {
         autoComplete: 'tel',
       },
-    },
-    {
-      component: Input,
-      name: 'email',
-      type: 'email',
-      placeholder: t('Email'),
-      darkMode: true,
-      autoComplete: 'email',
     },
     {
       component: Input,
