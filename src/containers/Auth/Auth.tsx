@@ -186,9 +186,11 @@ export const Auth = ({
                     </div>
                   );
                 })}
-                <div className={styles.Link}>
-                  <Link to={`/${linkURL}`}>{linkText}</Link>
-                </div>
+                {linkURL && (
+                  <div className={styles.Link}>
+                    <Link to={`/${linkURL}`}>{linkText}</Link>
+                  </div>
+                )}
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
                     <Captcha
