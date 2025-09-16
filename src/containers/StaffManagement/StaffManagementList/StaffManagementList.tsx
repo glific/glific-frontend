@@ -22,7 +22,7 @@ export const StaffManagementList = () => {
   const columnNames = [
     { name: 'name', label: t('Name') },
     { name: 'phone', label: t('Phone number') },
-    { label: t('Assigned to') },
+    { label: t('Collections assigned') },
     { label: t('Actions') },
   ];
 
