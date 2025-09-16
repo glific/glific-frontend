@@ -201,11 +201,11 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               ))}
             </div>
           )}
-          <span>Max File Size: 20MB</span>
+          <span>Individual file size limit: 20MB</span>
 
           <span>
             {t('Information in the attached files will be available to this assistant.')}
-            <a href="https://platform.openai.com/docs/assistants/tools/file-search" target="_blank">
+            <a href="https://platform.openai.com/docs/assistants/tools/file-search#supported-files" target="_blank">
               Learn More
             </a>
           </span>
