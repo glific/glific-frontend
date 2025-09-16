@@ -124,7 +124,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       options: modelOptions || [],
       optionLabel: 'label',
       multiple: false,
-      label: t('Model'),
+      label: `${t('Model')}*`,
       helperText: t('Choose the best model for your needs.'),
       onChange: (value: any) => setModel(value),
     },
@@ -132,7 +132,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       component: Input,
       name: 'name',
       type: 'text',
-      label: t('Name'),
+      label: `${t('Name')}*`,
       onChange: (value: any) => setName(value),
       helperText: (
         <div className={styles.AssistantId}>
@@ -148,7 +148,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       component: Input,
       name: 'instructions',
       type: 'text',
-      label: t('Instructions'),
+      label: `${t('Instructions')}*`,
       rows: 3,
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
