@@ -481,8 +481,9 @@ export const HSM = () => {
     {
       component: Input,
       name: 'label',
-      label: t('Title'),
       disabled: isEditing,
+      label: `${t('Title')}*`,
+      placeholder: `${t('Title')}*`,
       helperText: t('Define what use case does this template serve eg. OTP, optin, activity preference'),
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
