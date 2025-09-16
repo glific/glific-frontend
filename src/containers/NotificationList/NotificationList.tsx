@@ -125,7 +125,7 @@ export const NotificationList = () => {
         return;
     }
 
-    navigate(destination);
+    window.open(destination);
   };
 
   const additionalAction = () => [
