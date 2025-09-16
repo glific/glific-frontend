@@ -219,7 +219,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       <div className={styles.Files}>
         <div className={styles.FilesHeader}>
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-            Files
+            Knowledge base files
             <HelpIcon
               helpData={{
                 heading: filesInfo,
