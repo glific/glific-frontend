@@ -111,7 +111,7 @@ describe('<Calendar />', () => {
   });
 
   it('should open calendar when picker button is clicked and not disabled', async () => {
-    const container = render(wrapper);
+    render(wrapper);
     const input = screen.getByRole('button', { name: /Choose date/i });
     if (input) {
       fireEvent.click(input);
