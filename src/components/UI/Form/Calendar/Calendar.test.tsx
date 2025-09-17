@@ -112,10 +112,13 @@ describe('<Calendar />', () => {
 
   it('should open calendar when picker button is clicked and not disabled', async () => {
     const container = render(wrapper);
-    const pickerButton = container.container.querySelector('[aria-label="Open date picker"]');
-    if (pickerButton) {
-      fireEvent.click(pickerButton);
+    const input = screen.getByRole('button', { name: /Choose date/i });
+    if (input) {
+      fireEvent.click(input);
       expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
     }
+    await waitFor(() => {
+      expect(screen.queryByTestId('sentinelStart')).toBeInTheDocument();
+    });
   });
 });
