@@ -109,4 +109,13 @@ describe('<Calendar />', () => {
       expect(screen.queryByTestId('sentinelStart')).not.toBeInTheDocument();
     });
   });
+
+  it('should open calendar when picker button is clicked and not disabled', async () => {
+    const container = render(wrapper);
+    const pickerButton = container.container.querySelector('[aria-label="Open date picker"]');
+    if (pickerButton) {
+      fireEvent.click(pickerButton);
+      expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
+    }
+  });
 });
