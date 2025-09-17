@@ -547,5 +547,7 @@
   "Start time": "Start time",
   "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible.",
   "Are you sure you want to update the phone number?": "Are you sure you want to update the phone number?",
-  "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}."
+  "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}.",
+  "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible.",
+  "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed."
 }
