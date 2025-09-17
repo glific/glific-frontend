@@ -68,6 +68,9 @@ export const TimePicker = ({
               error: hasError,
               onClick: () => !disabled && setOpen(true),
             },
+            openPickerButton: {
+              onClick: () => !disabled && setOpen(true),
+            },
           }}
           sx={TimePickerStyles}
         />
