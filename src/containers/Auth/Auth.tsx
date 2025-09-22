@@ -174,7 +174,7 @@ export const Auth = ({
                   }
                   const key = index;
                   return (
-                    <div key={key}>
+                    <div className={field.styles} key={key}>
                       {field.label ? (
                         <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                           {field.label}
@@ -186,9 +186,11 @@ export const Auth = ({
                     </div>
                   );
                 })}
-                <div className={styles.Link}>
-                  <Link to={`/${linkURL}`}>{linkText}</Link>
-                </div>
+                {linkURL && (
+                  <div className={styles.Link}>
+                    <Link to={`/${linkURL}`}>{linkText}</Link>
+                  </div>
+                )}
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
                     <Captcha
@@ -257,6 +259,7 @@ export const Auth = ({
             </div>
           )}
         </div>
+
         {alternateText ? (
           <>
             <div className={styles.Or}>
