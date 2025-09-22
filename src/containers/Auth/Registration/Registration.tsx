@@ -6,8 +6,8 @@ import { yupPasswordValidation } from 'common/constants';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
-import { Auth } from '../Auth';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { Auth } from '../Auth';
 import styles from './Registration.module.css';
 
 export interface User {
