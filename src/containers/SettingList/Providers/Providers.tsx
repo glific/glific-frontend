@@ -50,7 +50,7 @@ export const Providers = () => {
   const setCredential = (item: any) => {
     const keysObj = JSON.parse(item.keys);
     const secretsObj = JSON.parse(item.secrets);
-    if (secretsObj.app_id === 'NA') {
+    if (type === 'gupshup' && secretsObj.app_id === 'NA') {
       secretsObj.app_id = 'To be updated';
       secretsObj.app_name = 'To be updated';
       secretsObj.api_key = 'To be updated';
