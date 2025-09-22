@@ -62,6 +62,11 @@ describe('<Registration />', () => {
     const email = container.querySelector('input[type="email"]') as HTMLInputElement;
     await user.click(email);
     await user.keyboard('you@domain.com');
+    const checkbox = container.querySelector('input[name="consent_for_updates"]') as HTMLInputElement;
+    expect(checkbox).not.toBeChecked();
+
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
 
     await waitFor(() => {
       // Regiter with button should be disabled by default
@@ -79,7 +84,13 @@ describe('<Registration />', () => {
 
     // let's mock successful registration submission
     const responseData = {
-      values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456', email: 'you@domain.com' },
+      values: {
+        username: 'Jane Doe',
+        phone: '+919978776554',
+        password: 'pass123456',
+        email: 'you@domain.com',
+        consent_for_updates: true,
+      },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
@@ -95,6 +106,9 @@ describe('<Registration />', () => {
 
     const email = container.querySelector('input[type="email"]') as HTMLInputElement;
     fireEvent.change(email, { target: { value: 'you@domain.com' } });
+    const checkbox = container.querySelector('input[name="consent_for_updates"]') as HTMLInputElement;
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
 
     await waitFor(() => {
       expect(getByText('Register with')).toBeInTheDocument();

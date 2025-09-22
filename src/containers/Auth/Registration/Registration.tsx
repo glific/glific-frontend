@@ -6,7 +6,9 @@ import { yupPasswordValidation } from 'common/constants';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Auth } from '../Auth';
+import styles from './Registration.module.css';
 
 export interface User {
   name: string;
@@ -14,9 +16,17 @@ export interface User {
   password: string;
   captcha: string;
   email: string;
+  consent_for_updates: boolean;
 }
 
-const initialFormValues: User = { name: '', phone: '', password: '', captcha: '', email: '' };
+const initialFormValues: User = {
+  name: '',
+  phone: '',
+  password: '',
+  captcha: '',
+  email: '',
+  consent_for_updates: false,
+};
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
@@ -82,6 +92,14 @@ export const Registration = () => {
       placeholder: t('Password'),
       darkMode: true,
       autoComplete: 'new-password',
+    },
+    {
+      component: Checkbox,
+      name: 'consent_for_updates',
+      label: 'I would like to receive product updates',
+      styles: styles.CheckboxInline,
+      labelPlacement: 'end',
+      darkCheckbox: true,
     },
   ];
 
