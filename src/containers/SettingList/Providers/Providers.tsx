@@ -50,6 +50,12 @@ export const Providers = () => {
   const setCredential = (item: any) => {
     const keysObj = JSON.parse(item.keys);
     const secretsObj = JSON.parse(item.secrets);
+    console.log(secretsObj);
+    if (secretsObj.app_id === 'NA') {
+      secretsObj.app_id = 'To be updated';
+      secretsObj.app_name = 'To be updated';
+      secretsObj.api_key = 'To be updated';
+    }
     const fields: any = {};
     Object.assign(fields, keysObj);
     Object.assign(fields, secretsObj);
