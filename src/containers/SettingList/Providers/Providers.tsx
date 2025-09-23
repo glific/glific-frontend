@@ -64,7 +64,12 @@ export const Providers = () => {
     });
     states.isActive = item.isActive;
 
-    if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
+    if (
+      type === 'gupshup' &&
+      secretsObj.app_id &&
+      secretsObj.app_id !== 'NA' &&
+      secretsObj.app_id !== 'To be updated'
+    ) {
       setIsDisabled(true);
     }
 
