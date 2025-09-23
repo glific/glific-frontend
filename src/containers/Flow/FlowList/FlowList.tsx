@@ -4,13 +4,14 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
-import { FormControl, IconButton, MenuItem, Select } from '@mui/material';
+import { FormControl, IconButton, MenuItem, Select, TextField } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Pin.svg?react';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ActivePinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
@@ -26,6 +27,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { ShareFlowLink } from '../ShareKeyword/ShareFlowLink';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
@@ -64,6 +66,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 const viewIcon = <ViewIcon data-testid="viewIt" />;
+const shareIcon = <AttachFileIcon fontSize="small" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
@@ -77,6 +80,7 @@ export const FlowList = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [shareDialogKeywords, setShareDialogKeywords] = useState<string[]>([]);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -240,6 +244,13 @@ export const FlowList = () => {
       dialog: exportFlow,
       insideMore: true,
     },
+    {
+      label: 'Share',
+      icon: shareIcon,
+      parameter: 'keywords',
+      dialog: (uuid: any) => setShareDialogKeywords(uuid.map((i: string, index: number) => ({ label: i, id: index }))),
+      insideMore: true,
+    },
   ];
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
@@ -368,8 +379,11 @@ export const FlowList = () => {
         <div className={styles.DialogContent}>How do you want to create a flow?</div>
       </DialogBox>
     );
+  } else if (shareDialogKeywords.length > 0) {
+    dialogBox = (
+      <ShareFlowLink shareDialogKeywords={shareDialogKeywords} setShareDialogKeywords={setShareDialogKeywords} />
+    );
   }
-
   useEffect(() => {
     if (location.search) {
       const isTemplate = new URLSearchParams(location.search).get('isTemplate');
