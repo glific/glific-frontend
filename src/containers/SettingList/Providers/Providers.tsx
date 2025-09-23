@@ -50,6 +50,9 @@ export const Providers = () => {
   const setCredential = (item: any) => {
     const keysObj = JSON.parse(item.keys);
     const secretsObj = JSON.parse(item.secrets);
+    if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
+      setIsDisabled(true);
+    }
     if (type === 'gupshup' && secretsObj.app_id === 'NA') {
       secretsObj.app_id = 'To be updated';
       secretsObj.app_name = 'To be updated';
@@ -63,15 +66,6 @@ export const Providers = () => {
       states[key] = fields[key];
     });
     states.isActive = item.isActive;
-
-    if (
-      type === 'gupshup' &&
-      secretsObj.app_id &&
-      secretsObj.app_id !== 'NA' &&
-      secretsObj.app_id !== 'To be updated'
-    ) {
-      setIsDisabled(true);
-    }
 
     setStateValues(states);
   };
