@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.6.5",
+  "version": "6.6.6",
   "private": true,
   "type": "module",
   "license": {
@@ -54,6 +54,7 @@
     "react-google-recaptcha-v3": "^1.11.0",
     "react-i18next": "^15.6.0",
     "react-image": "^4.1.0",
+    "react-markdown": "^10.1.0",
     "react-media-recorder": "^1.7.1",
     "react-phone-input-2": "^2.15.1",
     "react-player": "^3.1.0",
