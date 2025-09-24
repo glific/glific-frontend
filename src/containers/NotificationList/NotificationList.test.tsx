@@ -50,6 +50,8 @@ const notifications = (mock?: any) => {
   );
 };
 
+window.open = vi.fn();
+
 test('It should load notifications', async () => {
   render(notifications());
 
