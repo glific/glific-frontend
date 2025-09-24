@@ -49,7 +49,7 @@ test('it renders the list properly and switches between items', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions*')).toBeInTheDocument();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -204,7 +204,7 @@ test('it updates the assistant', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions*')).toBeInTheDocument();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByTestId('copyCurrentAssistantId'));
@@ -237,7 +237,7 @@ test('it deletes the assistant', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions*')).toBeInTheDocument();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByTestId('removeAssistant'));
@@ -265,7 +265,7 @@ test('it should show errors for invalid value in temperature', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions*')).toBeInTheDocument();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
   fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 2.5 } });
