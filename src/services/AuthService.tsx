@@ -170,6 +170,9 @@ export const getUserSession = (element?: string) => {
     case 'name':
       returnValue = JSON.parse(user).name;
       break;
+    case 'organization':
+      returnValue = JSON.parse(user).organization;
+      break;
     default:
       returnValue = JSON.parse(user);
   }
@@ -308,4 +311,8 @@ export const checkOrgStatus = (status: any) => {
   }
 
   return true;
+};
+
+const getOrganizationData = () => {
+  const org = localStorage.getItem('glific_organization');
 };
