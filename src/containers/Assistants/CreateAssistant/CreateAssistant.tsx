@@ -101,7 +101,11 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
         updateAssistantId: currentId,
         input: payload,
       },
-      onCompleted: () => {
+      onCompleted: ({ updateAssistant }) => {
+        if (updateAssistant.errors && updateAssistant.errors.length > 0) {
+          setErrorMessage(updateAssistant.errors[0]);
+          return;
+        }
         setNotification('Changes saved successfully', 'success');
         setUpdateList(!updateList);
       },
@@ -165,16 +169,18 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   ];
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string(),
+    name: Yup.string().required('Name is required'),
     model: Yup.object().required('Model is required'),
-    instructions: Yup.string(),
+    instructions: Yup.string().required('Instructions are required'),
   });
 
   const formik = useFormik({
     initialValues: states,
     validationSchema: FormSchema,
     enableReinitialize: true,
-    onSubmit: (values, { setErrors }) => {},
+    onSubmit: () => {
+      handleCreate();
+    },
   });
 
   const handleClose = () => {
@@ -264,7 +270,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
             ))}
           </div>
           <div className={styles.Buttons}>
-            <Button loading={savingChanges} onClick={handleCreate} variant="contained" data-testid="submitAction">
+            <Button loading={savingChanges} onClick={formik.submitForm} variant="contained" data-testid="submitAction">
               {t('Save')}
             </Button>
             <Button
