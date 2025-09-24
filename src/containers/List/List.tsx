@@ -152,7 +152,10 @@ export interface ListProps {
   refetchQueries?: any;
 
   checkbox?: { show: boolean; action: any; selectedItems: any[]; setSelectedItems: any; icon: any };
-  sortBy?: string | null;
+  sortConfig?: {
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+  };
 }
 
 interface TableVals {
@@ -204,7 +207,7 @@ export const List = ({
   refetchQueries,
 
   checkbox,
-  sortBy,
+  sortConfig,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -254,8 +257,8 @@ export const List = ({
     // update column name from the local storage
     if (sortValue) {
       columnnNameValue = sortValue;
-    } else if (sortBy) {
-      columnnNameValue = sortBy;
+    } else if (sortConfig && sortConfig.sortBy) {
+      columnnNameValue = sortConfig.sortBy;
     }
     return columnnNameValue;
   };
@@ -268,6 +271,8 @@ export const List = ({
     const sortValue = getLastListSessionValues(listItemNameValue, true);
     if (sortValue) {
       sortDirection = sortValue;
+    } else if (sortConfig && sortConfig.sortOrder) {
+      sortDirection = sortConfig.sortOrder;
     }
 
     return sortDirection;
