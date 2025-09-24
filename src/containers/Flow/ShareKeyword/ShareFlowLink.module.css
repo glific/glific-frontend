@@ -1,193 +1,202 @@
 .Container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
 }
 
 .Heading {
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 1rem;
-    padding: 0.5rem 0;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
 }
 
 .Content {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    width: 100%;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.BotNumber {
-    font-size: 1rem;
-    background: #f8f9fa !important;
-    padding: 0.75rem;
-    border: 1px solid #e0e7ff;
-    border-radius: 8px;
-    width: 100%;
-    display: block;
+.BotNumber,
+.Keyword {
+  font-size: 1rem;
+  background: #f8f9fa !important;
+  padding: 0.75rem;
+  border: 1px solid #e0e7ff;
+  border-radius: 8px;
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  font-weight: 500;
 }
 
 .LinkSection {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    background: #ffffff !important;
-    padding: 0 16px;
-    width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff !important;
+  padding: 0 16px;
+  width: 50%;
 }
 
 .SectionTitle {
-    font-weight: 600 !important;
-    color: #073f24 !important;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  font-weight: 600 !important;
+  color: #073f24 !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .LinkCard {
-    display: flex;
-    gap: 0.5rem;
-    background: #f8f9fa !important;
-    border: 2px solid #e0e7ff !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-    transition: all 0.3s ease !important;
+  display: flex;
+  gap: 0.5rem;
+  background: #f8f9fa !important;
+  border: 2px solid #e0e7ff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease !important;
 }
 
 .LinkText {
-    font-size: 0.85rem !important;
-    color: #119656 !important;
-    font-family: 'Monaco', 'Menlo', monospace !important;
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    width: 100%;
-    height: auto;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    line-height: 1.4;
+  font-size: 1rem !important;
+  color: #119656 !important;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  width: 100%;
+  height: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  line-height: 1.4;
+  font-weight: 500;
 
-    /* Hide scrollbars for all browsers */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  /* Hide scrollbars for all browsers */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.LinkText::-webkit-scrollbar {
-    display: none;
+.LinkText::-webkit-scrollbar,
+.Keyword::-webkit-scrollbar {
+  display: none;
 }
 
 .CopyIcon {
-    color: #119656 !important;
-    border-radius: 8px !important;
-    padding: 8px !important;
-    flex-shrink: 0;
+  color: #119656 !important;
+  border-radius: 8px !important;
+  padding: 8px !important;
+  flex-shrink: 0;
 }
 
 .QRSection {
-    width: 50%;
-    display: flex;
-    justify-content: center;
+  width: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 .QRCard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .QRContainer {
-    position: relative;
-    display: inline-block;
-    padding: 16px;
-    background: #ffffff !important;
-    border: 2px solid #e0e7ff !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-    border-radius: 12px;
+  position: relative;
+  display: inline-block;
+  padding: 16px;
+  background: #ffffff !important;
+  border: 2px solid #e0e7ff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px;
 }
 
 .QRCode {
-    display: block;
-    border-radius: 8px;
+  display: block;
+  border-radius: 8px;
 }
 
 .QRLogo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    background: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow:
-        0 0 0 4px #ffffff,
-        0 2px 8px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 4px #ffffff,
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .LogoImage {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
 }
 
 .QRCaption {
-    color: #666666 !important;
-    font-style: italic;
-    margin-top: 8px !important;
+  color: #666666 !important;
+  font-style: italic;
+  margin-top: 8px !important;
 }
 
 .ButtonSection {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .ButtonSection button {
-    width: 50%;
-    border-radius: 8px;
-    gap: 0.8rem;
+  width: 50%;
+  border-radius: 8px;
+  gap: 0.8rem;
 }
 
 .CopyIcon .KeywordSelect {
-    width: 100%;
+  width: 100%;
 }
 
 .KeywordSelect .MuiOutlinedInput-root {
-    border-radius: 10px !important;
-    background: #ffffff;
-    border: 2px solid #e0e7ff !important;
-    transition: all 0.3s ease !important;
+  border-radius: 10px !important;
+  background: #ffffff;
+  border: 2px solid #e0e7ff !important;
+  transition: all 0.3s ease !important;
 }
 
 .KeywordSelect .MuiOutlinedInput-root:hover {
-    border-color: #119656 !important;
+  border-color: #119656 !important;
 }
 
 .KeywordSelect .MuiOutlinedInput-root.Mui-focused {
-    border-color: #119656 !important;
-    box-shadow: 0 0 0 3px rgba(17, 150, 86, 0.1) !important;
+  border-color: #119656 !important;
+  box-shadow: 0 0 0 3px rgba(17, 150, 86, 0.1) !important;
 }
 
 .KeywordOption {
-    padding: 12px 16px !important;
-    list-style: none;
+  padding: 12px 16px !important;
+  list-style: none;
+  cursor: pointer;
 }
 
 .KeywordChip {
-    background: rgba(17, 150, 86, 0.1) !important;
-    color: #119656 !important;
-    font-weight: 500 !important;
+  background: rgba(17, 150, 86, 0.1) !important;
+  color: #119656 !important;
+  font-weight: 500 !important;
 }
 
 .CopyIcon:hover {
-    background: rgba(17, 150, 86, 0.2) !important;
+  background: rgba(17, 150, 86, 0.2) !important;
 }

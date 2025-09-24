@@ -131,32 +131,36 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
             </div>
             <div className={styles.Section}>
               <Typography variant="subtitle1" className={styles.SectionTitle}>
-                Select Keyword
+                Keyword
               </Typography>
-              <Autocomplete
-                options={shareDialogKeywords}
-                value={selectedKeyword}
-                onChange={(_, newValue) => {
-                  if (newValue) {
-                    setSelectedKeyword(newValue);
-                  }
-                }}
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <li {...props} className={styles.KeywordOption}>
-                    <Chip label={option.label} size="small" className={styles.KeywordChip} />
-                  </li>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Choose a keyword to trigger your flow"
-                    variant="outlined"
-                    className={styles.KeywordSelect}
-                  />
-                )}
-                disableClearable
-              />
+              {shareDialogKeywords.length > 1 ? (
+                <Autocomplete
+                  options={shareDialogKeywords}
+                  value={selectedKeyword}
+                  onChange={(_, newValue) => {
+                    if (newValue) {
+                      setSelectedKeyword(newValue);
+                    }
+                  }}
+                  getOptionLabel={(option) => option.label}
+                  renderOption={(props, option) => (
+                    <li {...props} className={styles.KeywordOption}>
+                      <Chip label={option.label} size="small" className={styles.KeywordChip} />
+                    </li>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Choose a keyword to trigger your flow"
+                      variant="outlined"
+                      className={styles.KeywordSelect}
+                    />
+                  )}
+                  disableClearable
+                />
+              ) : (
+                <div className={styles.Keyword}>{selectedKeyword.label}</div>
+              )}
             </div>
 
             <div>

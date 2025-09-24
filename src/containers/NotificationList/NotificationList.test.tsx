@@ -94,7 +94,7 @@ test('click on forward arrrow', async () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
+      expect(window.open).toHaveBeenCalled();
     });
   });
 });
