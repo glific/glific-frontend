@@ -50,6 +50,7 @@ const createAssistant = {
     variables: {
       input: {
         name: null,
+        temperature: 0.1,
       },
     },
   },
