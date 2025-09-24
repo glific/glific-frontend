@@ -463,6 +463,7 @@ export const HSM = () => {
       onChange: (value: any) => {
         setNewShortcode(value);
       },
+      helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
     {
       component: AutoComplete,

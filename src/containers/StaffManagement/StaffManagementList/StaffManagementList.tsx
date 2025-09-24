@@ -105,7 +105,7 @@ export const StaffManagementList = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        button={{ show: true, label: t('Collections'), link: '/collection' }}
+        button={{ show: false }}
         searchParameter={['name']}
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}
