@@ -152,7 +152,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       component: Input,
       name: 'instructions',
       type: 'text',
-      label: t('Instructions (Prompt) *'),
+      label: t('Instructions (Prompt)*'),
       rows: 3,
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
