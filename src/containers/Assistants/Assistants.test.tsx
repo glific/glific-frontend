@@ -41,7 +41,7 @@ test('it renders the list properly and switches between items', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions (Prompt)')).toBeInTheDocument();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
   await waitFor(() => {
