@@ -123,16 +123,6 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
 
   const formFields: any = [
     {
-      component: AutoComplete,
-      name: 'model',
-      options: modelOptions || [],
-      optionLabel: 'label',
-      multiple: false,
-      label: `${t('Model')}*`,
-      helperText: t('Choose the best model for your needs.'),
-      onChange: (value: any) => setModel(value),
-    },
-    {
       component: Input,
       name: 'name',
       type: 'text',
@@ -148,6 +138,17 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
         </div>
       ),
     },
+    {
+      component: AutoComplete,
+      name: 'model',
+      options: modelOptions || [],
+      optionLabel: 'label',
+      multiple: false,
+      label: `${t('Model')}*`,
+      helperText: t('Choose the best model for your needs.'),
+      onChange: (value: any) => setModel(value),
+    },
+
     {
       component: Input,
       name: 'instructions',
