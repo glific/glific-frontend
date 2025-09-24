@@ -54,7 +54,7 @@ export const Providers = () => {
       setIsDisabled(true);
     }
     if (type === 'gupshup' && secretsObj.app_id === 'NA') {
-      secretsObj.app_id = 'To be updated';
+      secretsObj.app_id = '';
       secretsObj.app_name = 'To be updated';
       secretsObj.api_key = 'To be updated';
     }
