@@ -312,7 +312,3 @@ export const checkOrgStatus = (status: any) => {
 
   return true;
 };
-
-const getOrganizationData = () => {
-  const org = localStorage.getItem('glific_organization');
-};

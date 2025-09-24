@@ -50,6 +50,12 @@ const notifications = (mock?: any) => {
   );
 };
 
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
 test('It should load notifications', async () => {
   render(notifications());
 
@@ -92,7 +98,7 @@ test('click on forward arrrow', async () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(window.open).toHaveBeenCalled();
+      expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
 });
