@@ -22,6 +22,7 @@ import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
+import { ShareFlowLink } from 'containers/Flow/ShareKeyword/ShareFlowLink';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -47,6 +48,34 @@ export const FlowEditor = () => {
   const [publishLoading, setPublishLoading] = useState(false);
   const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
+  const [shareDialog, setShareDialog] = useState<boolean>(false);
+
+  const menuItems = [
+    {
+      label: 'Export flow',
+      action: () => {
+        exportFlowMutation({
+          variables: {
+            id: flowId,
+          },
+        });
+        handleClose();
+      },
+    },
+    {
+      label: 'Reset flow count',
+      action: () => {
+        setShowResetFlowModal(true);
+        handleClose();
+      },
+    },
+    {
+      label: 'Share Flow Link',
+      action: () => {
+        setShareDialog(true);
+      },
+    },
+  ];
 
   const config = setConfig(uuid, isTemplate, skipValidation);
 
@@ -180,6 +209,21 @@ export const FlowEditor = () => {
 
   if (showTranslateFlowModal) {
     modal = <FlowTranslation loadFlowEditor={loadFlowEditor} flowId={flowId} setDialog={setShowTranslateFlowModal} />;
+  }
+
+  if (shareDialog) {
+    const keywords = flowName.flows[0].keywords;
+    if (keywords.length === 0) {
+      setShareDialog(false);
+      setNotification('No keywords found to share the flow link', 'warning');
+    } else {
+      modal = (
+        <ShareFlowLink
+          shareDialogKeywords={keywords.map((keyword: any, index: number) => ({ label: keyword, id: index }))}
+          handleClose={() => setShareDialog(false)}
+        />
+      );
+    }
   }
 
   useEffect(() => {
@@ -382,29 +426,11 @@ export const FlowEditor = () => {
             open={open}
             onClose={handleClose}
           >
-            <MenuItem
-              onClick={() => {
-                exportFlowMutation({
-                  variables: {
-                    id: flowId,
-                  },
-                });
-                handleClose();
-              }}
-              disableRipple
-            >
-              Export flow
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setShowResetFlowModal(true);
-                handleClose();
-              }}
-              disableRipple
-              disabled={isTemplate}
-            >
-              Reset flow count
-            </MenuItem>
+            {menuItems.map((item) => (
+              <MenuItem onClick={item.action} disableRipple>
+                {item.label}
+              </MenuItem>
+            ))}
           </Menu>
           <Button
             variant="outlined"

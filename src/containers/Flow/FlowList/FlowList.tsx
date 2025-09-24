@@ -11,7 +11,7 @@ import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Pin.svg?react';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import ShareIcon from '@mui/icons-material/ShareOutlined';
 import ActivePinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
@@ -66,7 +66,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 const viewIcon = <ViewIcon data-testid="viewIt" />;
-const shareIcon = <AttachFileIcon fontSize="small" />;
+const shareIcon = <ShareIcon className={styles.ShareIcon} fontSize="small" color="secondary" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
@@ -248,7 +248,13 @@ export const FlowList = () => {
       label: 'Share',
       icon: shareIcon,
       parameter: 'keywords',
-      dialog: (uuid: any) => setShareDialogKeywords(uuid.map((i: string, index: number) => ({ label: i, id: index }))),
+      dialog: (keywords: any) => {
+        if (keywords.length > 0) {
+          setShareDialogKeywords(keywords.map((i: string, index: number) => ({ label: i, id: index })));
+        } else {
+          setNotification('No keywords found to share the flow link', 'warning');
+        }
+      },
       insideMore: true,
     },
   ];
@@ -381,7 +387,7 @@ export const FlowList = () => {
     );
   } else if (shareDialogKeywords.length > 0) {
     dialogBox = (
-      <ShareFlowLink shareDialogKeywords={shareDialogKeywords} setShareDialogKeywords={setShareDialogKeywords} />
+      <ShareFlowLink shareDialogKeywords={shareDialogKeywords} handleClose={() => setShareDialogKeywords([])} />
     );
   }
   useEffect(() => {

@@ -12,10 +12,10 @@ import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
 
 interface ShareFlowLinkProps {
   shareDialogKeywords: any[];
-  setShareDialogKeywords: Function;
+  handleClose: Function;
 }
 
-export const ShareFlowLink = ({ shareDialogKeywords, setShareDialogKeywords }: ShareFlowLinkProps) => {
+export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLinkProps) => {
   const [selectedKeyword, setSelectedKeyword] = useState(shareDialogKeywords[0]);
   const [flowLink, setFlowLink] = useState('');
 
@@ -88,7 +88,7 @@ export const ShareFlowLink = ({ shareDialogKeywords, setShareDialogKeywords }: S
           downloadLink.href = pngFile;
           downloadLink.click();
 
-          setNotification('QR Code with logo downloaded successfully!');
+          setNotification('QR Code downloaded successfully!');
         };
 
         logoImg.onerror = () => {
@@ -119,12 +119,7 @@ export const ShareFlowLink = ({ shareDialogKeywords, setShareDialogKeywords }: S
   }, [selectedKeyword]);
 
   return (
-    <Dialog
-      fullWidth={true}
-      maxWidth={'md'}
-      open={shareDialogKeywords.length > 0}
-      onClose={() => setShareDialogKeywords([])}
-    >
+    <Dialog fullWidth={true} maxWidth={'md'} open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
       <div className={styles.Container}>
         <Typography className={styles.Heading} variant="h5">
           Share Link To a Flow

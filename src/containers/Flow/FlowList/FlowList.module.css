@@ -8,9 +8,10 @@
   min-height: 36px !important;
 }
 
-.SearchBar > fieldset {
+.SearchBar>fieldset {
   border: none !important;
 }
+
 .Shortcode {
   width: 180px;
 }
@@ -172,7 +173,7 @@
   line-height: 1;
 }
 
-.RadioLabel > span {
+.RadioLabel>span {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -194,4 +195,8 @@
 
 .DialogContent {
   text-align: center;
+}
+
+.ShareIcon {
+  font-size: 14px;
 }
