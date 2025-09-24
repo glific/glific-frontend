@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { Drawer, Toolbar, Typography, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { SideDrawerContext, ProviderContext } from 'context/session';
 import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import GlificLogo from 'assets/images/logo/Logo.svg';
@@ -27,7 +28,7 @@ export const SideDrawer = () => {
             </Typography>
 
             <IconButton onClick={() => setDrawerOpen(false)} data-testid="drawer-button">
-              <MenuIcon />
+              <ArrowBackIosNewIcon />
             </IconButton>
           </div>
         ) : (
