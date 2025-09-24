@@ -219,7 +219,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       <div className={styles.Files}>
         <div className={styles.FilesHeader}>
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-            Files
+            Files*
             <HelpIcon
               helpData={{
                 heading: filesInfo,
@@ -249,7 +249,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
 
       <div className={styles.Temperature}>
         <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-          {t('Temperature')}
+          {t('Temperature')}*
           <HelpIcon
             helpData={{
               heading: temperatureInfo,
