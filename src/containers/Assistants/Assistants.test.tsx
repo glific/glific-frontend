@@ -174,7 +174,7 @@ test('it shows error when adding files to assistant fails', async () => {
   render(assistantsComponent(addFilesToFileSearchWithErrorMocks));
 
   await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByTestId('addFiles'));
   });
 
