@@ -2,11 +2,10 @@
   font-weight: 600;
   color: #073f24;
 }
+
 .Content {
   color: #93a29b;
-  word-wrap: break-word;
   word-break: break-word;
-  white-space: pre-wrap;
 }
 
 .Container {
