@@ -19,6 +19,7 @@ import styles from './SideMenus.module.css';
 import { useTranslation } from 'react-i18next';
 import { Menu } from 'config/menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 export interface SideMenusProps {
   opened: boolean;
 }
