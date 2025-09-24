@@ -427,7 +427,7 @@ export const FlowEditor = () => {
             onClose={handleClose}
           >
             {menuItems.map((item) => (
-              <MenuItem onClick={item.action} disableRipple>
+              <MenuItem key={item.label} onClick={item.action} disableRipple>
                 {item.label}
               </MenuItem>
             ))}

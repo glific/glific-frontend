@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
-import { FormControl, IconButton, MenuItem, Select, TextField } from '@mui/material';
+import { FormControl, IconButton, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
