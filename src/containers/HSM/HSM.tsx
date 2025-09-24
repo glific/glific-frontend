@@ -433,6 +433,16 @@ export const HSM = () => {
 
   const fields = [
     {
+      component: Checkbox,
+      name: 'isActive',
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Active?
+        </Typography>
+      ),
+      darkCheckbox: true,
+    },
+    {
       component: AutoComplete,
       name: 'language',
       options: languageOptions,
@@ -490,16 +500,7 @@ export const HSM = () => {
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
-    {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" className={styles.IsActive}>
-          Active?
-        </Typography>
-      ),
-      darkCheckbox: true,
-    },
+
     {
       component: EmojiInput,
       name: 'body',
@@ -515,6 +516,14 @@ export const HSM = () => {
       },
       defaultValue: (isEditing || isCopyState) && editorState,
     },
+
+    {
+      component: TemplateVariables,
+      message: body,
+      variables: variables,
+      setVariables: setVariables,
+      isEditing: isEditing,
+    },
     {
       component: Input,
       name: 'footer',
@@ -523,13 +532,6 @@ export const HSM = () => {
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
-    },
-    {
-      component: TemplateVariables,
-      message: body,
-      variables: variables,
-      setVariables: setVariables,
-      isEditing: isEditing,
     },
     {
       component: Checkbox,
