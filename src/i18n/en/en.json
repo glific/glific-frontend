@@ -520,7 +520,7 @@
   "Remove": "Remove",
   "Please confirm that this assistant is not being used in any of the active flows.": "Please confirm that this assistant is not being used in any of the active flows.",
   "Model": "Model",
-  "Instructions": "Instructions",
+  "Instructions (Prompt)*": "Instructions (Prompt)*",
   "Choose the best model for your needs.": "Choose the best model for your needs.",
   "Give a recognizable name for your assistant": "Give a recognizable name for your assistant",
   "Set the instructions according to your requirements.": "Set the instructions according to your requirements.",
