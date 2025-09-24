@@ -9,6 +9,7 @@ import { getUserSession } from 'services/AuthService';
 import styles from './ShareFlowLink.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
+import { copyToClipboardMethod } from 'common/utils';
 
 interface ShareFlowLinkProps {
   shareDialogKeywords: any[];
@@ -25,13 +26,8 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
   const getFlowLink = (keyword: { label: string; id: number }) =>
     `${SHARE_FLOW_LINK}${botNumber}?text=${keyword.label}`;
 
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setNotification('Link copied to clipboard!');
-    } catch (err) {
-      setNotification('Failed to copy link', 'warning');
-    }
+  const copyToClipboard = (text: string) => {
+    copyToClipboardMethod(text);
   };
 
   const downloadQRCode = () => {
@@ -168,9 +164,16 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
                 Flow Link
               </Typography>
               <div className={styles.LinkCard}>
-                <div className={styles.LinkText}>{flowLink}</div>
+                <div data-testid="flowLink" className={styles.LinkText}>
+                  {flowLink}
+                </div>
                 <Tooltip title="Copy link">
-                  <IconButton onClick={() => copyToClipboard(flowLink)} className={styles.CopyIcon} size="small">
+                  <IconButton
+                    data-testid="copyIcon"
+                    onClick={() => copyToClipboard(flowLink)}
+                    className={styles.CopyIcon}
+                    size="small"
+                  >
                     <ContentCopyIcon />
                   </IconButton>
                 </Tooltip>
@@ -204,11 +207,21 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
         </div>
 
         <div className={styles.ButtonSection}>
-          <Button variant="outlined" onClick={() => copyToClipboard(flowLink)} className={styles.CopyButton}>
+          <Button
+            data-testid="copyButton"
+            variant="outlined"
+            onClick={() => copyToClipboard(flowLink)}
+            className={styles.CopyButton}
+          >
             <ContentCopyIcon />
             Copy Flow Link
           </Button>
-          <Button variant="contained" onClick={downloadQRCode} className={styles.DownloadButton}>
+          <Button
+            data-testid="downloadButton"
+            variant="contained"
+            onClick={downloadQRCode}
+            className={styles.DownloadButton}
+          >
             <DownloadIcon />
             Download QR Code
           </Button>
