@@ -173,3 +173,98 @@ export const exportTicketsMock = {
     },
   },
 };
+
+export const closedTicketListQuery = {
+  request: {
+    query: TICKET_LIST_QUERY,
+    variables: {
+      filter: { status: 'closed' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'inserted_at' },
+    },
+  },
+
+  result: {
+    data: {
+      tickets: [
+        {
+          body: 'I want to know how to submit activity',
+          contact: {
+            __typename: 'Contact',
+            fields: '{}',
+            id: '20',
+            maskedPhone: '9876******10',
+            name: null,
+          },
+          id: '7213',
+          insertedAt: '2023-12-20T09:46:04Z',
+          messageNumber: 14,
+          remarks: 'Closed it as it was xyz question',
+          status: 'closed',
+          topic: 'Levelup',
+          updatedAt: '2023-12-20T10:00:08Z',
+          user: null,
+        },
+      ],
+    },
+  },
+};
+
+export const closedTicketCountQuery = {
+  request: {
+    query: TICKET_COUNT_QUERY,
+    variables: { filter: { status: 'closed' } },
+  },
+
+  result: {
+    data: {
+      countTickets: 1,
+    },
+  },
+};
+
+export const myTicketsListQuery = {
+  request: {
+    query: TICKET_LIST_QUERY,
+    variables: {
+      filter: { status: 'open', userId: '1' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'inserted_at' },
+    },
+  },
+  result: {
+    data: {
+      tickets: [
+        {
+          body: 'what is an interactive message?',
+          contact: {
+            __typename: 'Contact',
+            fields: '{}',
+            id: '20',
+            maskedPhone: '9876******10',
+            name: null,
+          },
+          id: '7213',
+          insertedAt: '2023-12-20T09:46:04Z',
+          messageNumber: 14,
+          remarks: 'Closed it as it was xyz question',
+          status: 'closed',
+          topic: 'Levelup',
+          updatedAt: '2023-12-20T10:00:08Z',
+          user: null,
+        },
+      ],
+    },
+  },
+};
+
+export const myTicketsCountQuery = {
+  request: {
+    query: TICKET_COUNT_QUERY,
+    variables: { filter: { status: 'open', userId: '1' } },
+  },
+
+  result: {
+    data: {
+      countTickets: 1,
+    },
+  },
+};

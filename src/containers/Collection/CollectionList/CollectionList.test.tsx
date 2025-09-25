@@ -22,7 +22,7 @@ import * as utils from 'common/utils';
 import { addGroupToCollectionList, getGroupsSearchQuery, updateCollectionWaGroupQuery } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 import { CONTACTS_COLLECTION, setVariables } from 'common/constants';
-import { setUserRolePermissions } from 'context/role';
+import { resetRolePermissions, setUserRolePermissions } from 'context/role';
 
 const variables = {
   filter: {
@@ -87,17 +87,7 @@ vi.mock('common/notification', async (importOriginal) => {
 });
 
 beforeEach(() => {
-  setUserSession(
-    JSON.stringify({
-      roles: [
-        {
-          label: 'Admin',
-        },
-      ],
-      organization: { id: '1' },
-    })
-  );
-  setUserRolePermissions();
+  resetRolePermissions();
 });
 
 describe('<CollectionList />', () => {
@@ -233,6 +223,38 @@ describe('<CollectionList />', () => {
     });
   });
 
+  test('it should not have create/update/delete options for staff members', async () => {
+    setUserSession(
+      JSON.stringify({
+        roles: [
+          {
+            label: 'Staff',
+          },
+        ],
+        organization: { id: '1' },
+      })
+    );
+    setUserRolePermissions();
+
+    const { getByText, getByTestId } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Collections')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('newItemButton')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('EditIcon')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
+    await waitFor(() => {
+      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+    });
+  });
+
   const groupWrapper = (
     <MemoryRouter initialEntries={['/group/collection']}>
       <MockedProvider
@@ -340,6 +362,19 @@ describe('<CollectionList />', () => {
   });
 
   test('it should navigate to create page on clicking create button', async () => {
+    // create button is only for admins
+    setUserSession(
+      JSON.stringify({
+        roles: [
+          {
+            label: 'Admin',
+          },
+        ],
+        organization: { id: '1' },
+      })
+    );
+    setUserRolePermissions();
+
     const { getByText, getByTestId } = render(groupWrapper);
 
     expect(getByTestId('loading')).toBeInTheDocument();
