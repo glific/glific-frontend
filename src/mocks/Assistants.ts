@@ -225,6 +225,17 @@ const addFilesToFilesearch = (mediaInfo: any) => ({
   },
 });
 
+const addFilesToFilesearchWithError = {
+  request: {
+    query: ADD_FILES_TO_FILE_SEARCH,
+    variables: {
+      addAssistantFilesId: '1',
+      mediaInfo: [{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }],
+    },
+  },
+  error: new Error('An error occured'),
+};
+
 const updateAssistant = {
   request: {
     query: UPDATE_ASSISTANT,
@@ -305,8 +316,10 @@ export const MOCKS = [
   getAssistantListOnSearch,
   updateAssistant,
   removeAssistant,
-  ...uploadFileMocks,
 ];
+
+export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
+export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
 
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
