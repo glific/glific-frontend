@@ -16,21 +16,21 @@ export const Captcha = ({ component: Component, onTokenUpdate, action, children,
   // Create an event handler so you can call the verification on button click event or form submit
   const handleReCaptchaVerify = useCallback(async () => {
     if (!executeRecaptcha) {
-      return;
+      return null;
     }
     const token = await executeRecaptcha(action);
-    onTokenUpdate(token);
-  }, [executeRecaptcha]);
+    return token;
+  }, [executeRecaptcha, action, onTokenUpdate]);
 
-  // You can use useEffect to trigger the verification as soon as the component being loaded
-  useEffect(() => {
-    handleReCaptchaVerify();
-  }, [handleReCaptchaVerify]);
+
 
   return (
     <Component
-      onClick={() => {
-        handleReCaptchaVerify().then(() => onClick());
+      onClick={async () => {
+        const token = await handleReCaptchaVerify();
+        if (token) {
+          onClick(token);
+        }
       }}
       {...rest}
     >

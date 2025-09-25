@@ -140,7 +140,6 @@ export const Auth = ({
       // eslint-disable-next-line
       initialFormValues.phone = value;
     };
-
   let formElements;
   // we should not render form elements when displaying success message
   if (!successMessage) {
@@ -173,6 +172,8 @@ export const Auth = ({
                     fieldInfo = { ...field, handlePhone };
                   }
                   const key = index;
+                  // console.log(values.captcha);
+
                   return (
                     <div key={key}>
                       {field.label ? (
@@ -195,14 +196,21 @@ export const Auth = ({
                       component={Button}
                       variant="contained"
                       color="primary"
-                      onClick={submitForm}
+                      onClick={(token: string) => {
+                        if (token) {
+                          // Pass the token directly to saveHandler
+                          setLoading(true);
+                          saveHandler({ ...values, captcha: token });
+                        }
+                      }}
                       className={buttonClass}
                       data-testid="SubmitButton"
                       loading={loading}
                       onTokenUpdate={(token: string) => {
+                        console.log(token)
                         setFieldValue('captcha', token);
                       }}
-                      disabled={!values.captcha}
+                      // disabled={!values.captcha}
                       action="register"
                     >
                       {buttonText}

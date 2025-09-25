@@ -39,7 +39,7 @@ export const ConfirmOTP = () => {
     }
   }, [location]);
 
-  const handleResend = () => {
+  const handleResend = (token:string) => {
     if (!userObject) {
       return;
     }
@@ -66,7 +66,7 @@ export const ConfirmOTP = () => {
         component={IconButton}
         aria-label="resend otp"
         data-testid="resendOtp"
-        onClick={handleResend}
+        onClick={(token: string) => handleResend(token)}
         edge="end"
         action="resend"
         onTokenUpdate={(tokenString: string) => setToken(tokenString)}

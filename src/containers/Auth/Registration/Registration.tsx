@@ -28,6 +28,7 @@ export const Registration = () => {
   }
 
   const onSubmitRegistration = (values: User) => {
+    console.log(values)
     if (!values.captcha) {
       setAuthError(t('Invalid captcha'));
       return;
