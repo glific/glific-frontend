@@ -58,6 +58,21 @@ export const SheetIntegration = () => {
 
   const formFields = [
     {
+      component: AutoComplete,
+      name: 'type',
+      options: typeOptions,
+      optionLabel: 'label',
+      multiple: false,
+      label: t('Allowed operations'),
+      helperText: t('What operations are allowed to be performed in the sheet?'),
+    },
+    {
+      component: Input,
+      name: 'label',
+      type: 'text',
+      label: t('Name'),
+    },
+    {
       component: Input,
       name: 'url',
       type: 'text',
@@ -67,21 +82,6 @@ export const SheetIntegration = () => {
           View Sample
         </a>
       ),
-    },
-    {
-      component: Input,
-      name: 'label',
-      type: 'text',
-      label: t('Name'),
-    },
-    {
-      component: AutoComplete,
-      name: 'type',
-      options: typeOptions,
-      optionLabel: 'label',
-      multiple: false,
-      label: t('Allowed operations'),
-      helperText: t('What operations are allowed to be performed in the sheet?'),
     },
     {
       component: Checkbox,

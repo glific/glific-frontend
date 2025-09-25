@@ -221,7 +221,7 @@ export const NotificationList = () => {
     </Popover>
   );
 
-  const severityList = ['Critical', 'Warning', 'Info', 'All'];
+  const severityList = ['All', 'Critical', 'Warning', 'Info'];
 
   const filterOnSeverity = (
     <div className={styles.Filters}>

@@ -142,10 +142,10 @@ test('it should have Info, Warning and critical checkbox', async () => {
 
   await waitFor(() => {
     const checkboxInput = screen.getAllByTestId('radio');
-    expect(checkboxInput[0]).toHaveTextContent('Critical');
-    expect(checkboxInput[1]).toHaveTextContent('Warning');
-    expect(checkboxInput[2]).toHaveTextContent('Info');
-    expect(checkboxInput[3]).toHaveTextContent('All');
+    expect(checkboxInput[0]).toHaveTextContent('All');
+    expect(checkboxInput[1]).toHaveTextContent('Critical');
+    expect(checkboxInput[2]).toHaveTextContent('Warning');
+    expect(checkboxInput[3]).toHaveTextContent('Info');
   });
 });
 

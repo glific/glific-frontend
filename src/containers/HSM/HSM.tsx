@@ -466,13 +466,14 @@ export const HSM = () => {
     {
       component: Input,
       name: 'newShortcode',
-      placeholder: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}`,
       label: `${t('Element name')}*`,
       disabled: isEditing,
       skip: languageVariant ? true : false,
       onChange: (value: any) => {
         setNewShortcode(value);
       },
+      helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
     {
       component: AutoComplete,
@@ -481,7 +482,7 @@ export const HSM = () => {
       optionLabel: 'label',
       multiple: false,
       label: `${t('Element name')}*`,
-      placeholder: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}`,
       disabled: isEditing,
       onChange: (event: any) => {
         setExistingShortcode(event);
@@ -491,8 +492,9 @@ export const HSM = () => {
     {
       component: Input,
       name: 'label',
-      label: t('Title'),
       disabled: isEditing,
+      label: `${t('Title')}*`,
+      placeholder: `${t('Title')}`,
       helperText: t('Define what use case does this template serve eg. OTP, optin, activity preference'),
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
@@ -562,7 +564,7 @@ export const HSM = () => {
       optionLabel: 'label',
       multiple: false,
       label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
+      placeholder: `${t('Category')}`,
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
@@ -575,7 +577,7 @@ export const HSM = () => {
       name: 'category',
       type: 'text',
       label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
+      placeholder: `${t('Category')}`,
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       skip: !isEditing,
