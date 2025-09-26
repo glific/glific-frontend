@@ -29,7 +29,6 @@ export const Captcha = ({ component: Component, action, children, onClick, ...re
         if (token) {
           onClick(token);
         }
-
       }}
       {...rest}
     >
