@@ -93,7 +93,6 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
         type: 'DATA',
         data: csvContent,
         groupLabel: details.collection.label,
-        importContactsId: orgId,
       },
     });
   };
