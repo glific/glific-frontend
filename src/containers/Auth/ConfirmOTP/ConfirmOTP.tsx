@@ -66,6 +66,7 @@ export const ConfirmOTP = () => {
         aria-label="resend otp"
         data-testid="resendOtp"
         onClick={(token: string) => handleResend(token)}
+        edge="end"
         action="resend"
       >
         <p className={styles.Resend}>resend</p> <RefreshIcon classes={{ root: styles.ResendButton }} />
