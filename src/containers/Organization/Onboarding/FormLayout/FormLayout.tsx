@@ -58,9 +58,10 @@ export const FormLayout = ({
   setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
-    const payload = setPayload(itemData);
+    const payload = setPayload({ ...itemData, token: captchaToken });
 
     if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
@@ -177,8 +178,8 @@ export const FormLayout = ({
             variant="contained"
             color="primary"
             onClick={(token: string) => {
-              if (showModal && !isDisabled) setIsModalOpen(true);
-              else saveHandler({ ...formik.values, token: token }, formik.setErrors);
+              setCaptchaToken(token);
+              formik.submitForm();
             }}
             className={styles.Button}
             data-testid="submitActionButton"
