@@ -19,7 +19,7 @@ export const Captcha = ({ component: Component, action, children, onClick, ...re
     }
     const token = await executeRecaptcha(action);
     if (!token) {
-      return { error: 'Failed to generate token' };
+      return null;
     }
 
     return token;
@@ -29,6 +29,7 @@ export const Captcha = ({ component: Component, action, children, onClick, ...re
     <Component
       onClick={async () => {
         const token = await handleReCaptchaVerify();
+
         onClick(token);
       }}
       {...rest}

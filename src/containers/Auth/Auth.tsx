@@ -161,7 +161,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, setFieldValue, values }) => (
+          {({ submitForm, values }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {

@@ -176,12 +176,12 @@ export const FormLayout = ({
             component={Button}
             variant="contained"
             color="primary"
-            onClick={formik.submitForm}
+            onClick={(token: string) => {
+              if (showModal && !isDisabled) setIsModalOpen(true);
+              else saveHandler({ ...formik.values, token: token }, formik.setErrors);
+            }}
             className={styles.Button}
             data-testid="submitActionButton"
-            onTokenUpdate={(token: string) => {
-              formik.setFieldValue('token', token);
-            }}
             action="register"
           >
             Next
