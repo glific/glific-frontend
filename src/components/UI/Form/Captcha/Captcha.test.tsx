@@ -1,12 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { Button } from '../Button/Button';
-import * as Recaptcha from 'react-google-recaptcha-v3';
 
 import { Captcha } from './Captcha';
 
 const onClickMock = vi.fn();
-const tokenUpdateMock = vi.fn();
 
 describe('<Captcha />', () => {
   const props = {
