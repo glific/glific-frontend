@@ -115,7 +115,10 @@ export const Providers = () => {
     validation[key] = Yup.string()
       .nullable()
       .when('isActive', {
-        is: true,
+        is: (isActive: boolean) => {
+          if (type === 'gupshup' && key === 'app_id') return false;
+          return isActive;
+        },
         then: (schema) => schema.nullable().required(`${fields[key].label} is required.`),
         otherwise: (schema) =>
           fields[key].is_required && schema.nullable().required(`${fields[key].label} is required.`),
