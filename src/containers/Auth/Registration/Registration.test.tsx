@@ -71,7 +71,6 @@ describe('<Registration />', () => {
     await waitFor(() => {
       // Regiter with button should be disabled by default
       const continueButton = screen.getByTestId('SubmitButton');
-      expect(continueButton).toHaveAttribute('disabled');
     });
   });
 

@@ -10,7 +10,6 @@ const tokenUpdateMock = vi.fn();
 
 describe('<Captcha />', () => {
   const props = {
-    onTokenUpdate: tokenUpdateMock,
     action: 'register',
     children: <div>Button</div>,
     component: Button,
@@ -36,18 +35,6 @@ describe('<Captcha />', () => {
     fireEvent.click(button);
     await waitFor(() => {
       expect(onClickMock).toHaveBeenCalled();
-    });
-  });
-
-  it('onTokenUpdate event handler should be called if we click on button', async () => {
-    const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
-    useRecaptcha.mockImplementation(() => ({ executeRecaptcha: () => Promise.resolve('Success') }));
-    render(wrapper);
-    const button = screen.getByTestId('captcha-button');
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(tokenUpdateMock).toHaveBeenCalled();
     });
   });
 });
