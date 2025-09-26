@@ -118,9 +118,9 @@ export const Providers = () => {
         is: true,
         then: (schema) => {
           if (type === 'gupshup' && key === 'app_id') {
-            return schema
+            return schema;
           }
-          return schema.nullable().required(`${fields[key].label} is required.`)
+          return schema.nullable().required(`${fields[key].label} is required.`);
         },
         otherwise: (schema) =>
           fields[key].is_required && schema.nullable().required(`${fields[key].label} is required.`),
