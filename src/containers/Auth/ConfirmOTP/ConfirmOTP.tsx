@@ -30,7 +30,6 @@ export const ConfirmOTP = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const [userObject, setUserObject] = useState<User>();
-  const [token, setToken] = useState('');
 
   useEffect(() => {
     const state = location.state as User;
@@ -39,7 +38,7 @@ export const ConfirmOTP = () => {
     }
   }, [location]);
 
-  const handleResend = () => {
+  const handleResend = (token: string) => {
     if (!userObject) {
       return;
     }
@@ -66,10 +65,8 @@ export const ConfirmOTP = () => {
         component={IconButton}
         aria-label="resend otp"
         data-testid="resendOtp"
-        onClick={handleResend}
-        edge="end"
+        onClick={(token: string) => handleResend(token)}
         action="resend"
-        onTokenUpdate={(tokenString: string) => setToken(tokenString)}
       >
         <p className={styles.Resend}>resend</p> <RefreshIcon classes={{ root: styles.ResendButton }} />
       </Captcha>
