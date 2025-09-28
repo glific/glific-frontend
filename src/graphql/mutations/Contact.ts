@@ -44,8 +44,8 @@ export const UPDATE_CONTACT = gql`
 `;
 
 export const MOVE_CONTACTS = gql`
-  mutation MoveContacts($data: String!, $moveContactsId: ID, $type: ImportContactsTypeEnum) {
-    moveContacts(data: $data, id: $moveContactsId, type: $type) {
+  mutation MoveContacts($data: String!,$type: ImportContactsTypeEnum) {
+    moveContacts(data: $data,type: $type) {
       errors {
         message
         key
