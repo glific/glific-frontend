@@ -53,11 +53,6 @@ export const Providers = () => {
     if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
       setIsDisabled(true);
     }
-    if (type === 'gupshup' && secretsObj.app_id === 'NA') {
-      secretsObj.app_id = '';
-      secretsObj.app_name = 'To be updated';
-      secretsObj.api_key = 'To be updated';
-    }
     const fields: any = {};
     Object.assign(fields, keysObj);
     Object.assign(fields, secretsObj);
@@ -159,6 +154,7 @@ export const Providers = () => {
           label: fields[key].label,
           disabled: fields[key].view_only,
           skip: fields[key].hide,
+          placeholder: type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `To be updated` : '',
         };
         formField.push(field);
 
