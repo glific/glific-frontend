@@ -67,12 +67,6 @@ describe('<Registration />', () => {
 
     await user.click(checkbox);
     expect(checkbox).toBeChecked();
-
-    await waitFor(() => {
-      // Regiter with button should be disabled by default
-      const continueButton = screen.getByTestId('SubmitButton');
-      expect(continueButton).toHaveAttribute('disabled');
-    });
   });
 
   it('should submit the form correctly', async () => {

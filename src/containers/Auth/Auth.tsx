@@ -161,7 +161,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, setFieldValue, values }) => (
+          {({ submitForm, values }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -197,14 +197,15 @@ export const Auth = ({
                       component={Button}
                       variant="contained"
                       color="primary"
-                      onClick={submitForm}
+                      onClick={(token: string) => {
+                        if (token) {
+                          setLoading(true);
+                          saveHandler({ ...values, captcha: token });
+                        }
+                      }}
                       className={buttonClass}
                       data-testid="SubmitButton"
                       loading={loading}
-                      onTokenUpdate={(token: string) => {
-                        setFieldValue('captcha', token);
-                      }}
-                      disabled={!values.captcha}
                       action="register"
                     >
                       {buttonText}
