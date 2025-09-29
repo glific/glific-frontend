@@ -159,7 +159,7 @@ export const Providers = () => {
           label: fields[key].label,
           disabled: fields[key].view_only,
           skip: fields[key].hide,
-          placeholder: type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `To be updated` : '',
+          placeholder: type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `Enter ${fields[key].label} here` : '',
         };
         formField.push(field);
 
