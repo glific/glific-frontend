@@ -53,17 +53,17 @@ export const Providers = () => {
     if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
       setIsDisabled(true);
     }
-    if (type === 'gupshup' && secretsObj.app_id === 'NA') {
-      secretsObj.app_id = 'To be updated';
-      secretsObj.app_name = 'To be updated';
-      secretsObj.api_key = 'To be updated';
-    }
     const fields: any = {};
     Object.assign(fields, keysObj);
     Object.assign(fields, secretsObj);
     Object.keys(fields).forEach((key) => {
       // restore value of the field
-      states[key] = fields[key];
+      if (type === 'gupshup' && (fields[key] === 'NA')) {
+        states[key] = '';
+      }
+      else {
+        states[key] = fields[key];
+      }
     });
     states.isActive = item.isActive;
 
@@ -116,7 +116,12 @@ export const Providers = () => {
       .nullable()
       .when('isActive', {
         is: true,
-        then: (schema) => schema.nullable().required(`${fields[key].label} is required.`),
+        then: (schema) => {
+          if (type === 'gupshup' && key === 'app_id') {
+            return schema;
+          }
+          return schema.nullable().required(`${fields[key].label} is required.`);
+        },
         otherwise: (schema) =>
           fields[key].is_required && schema.nullable().required(`${fields[key].label} is required.`),
       });
@@ -154,6 +159,7 @@ export const Providers = () => {
           label: fields[key].label,
           disabled: fields[key].view_only,
           skip: fields[key].hide,
+          placeholder: type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `Enter ${fields[key].label} here` : '',
         };
         formField.push(field);
 

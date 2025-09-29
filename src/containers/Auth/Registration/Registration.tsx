@@ -25,7 +25,7 @@ const initialFormValues: User = {
   password: '',
   captcha: '',
   email: '',
-  consent_for_updates: false,
+  consent_for_updates: true,
 };
 
 export const Registration = () => {
