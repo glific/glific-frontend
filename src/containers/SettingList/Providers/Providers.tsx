@@ -58,7 +58,12 @@ export const Providers = () => {
     Object.assign(fields, secretsObj);
     Object.keys(fields).forEach((key) => {
       // restore value of the field
-      states[key] = fields[key];
+      if (type === 'gupshup' && (fields[key] === 'NA')) {
+        states[key] = '';
+      }
+      else {
+        states[key] = fields[key];
+      }
     });
     states.isActive = item.isActive;
 
