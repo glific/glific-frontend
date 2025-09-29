@@ -28,8 +28,6 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const [errors, setErrors] = useState<{ message: string }[]>([]);
-  const orgId = getUserSession('organizationId');
-
   const { t } = useTranslation();
   const [collection] = useState();
   const [optedIn] = useState(false);
