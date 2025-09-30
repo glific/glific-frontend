@@ -100,10 +100,6 @@
   flex-flow: column;
 }
 
-.LeftArrow {
-  font-size: 20px;
-}
-
 @media only screen and (max-width: 768px) {
   .NavClose {
     width: 0px;

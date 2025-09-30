@@ -28,7 +28,7 @@ export const SideDrawer = () => {
             </Typography>
 
             <IconButton onClick={() => setDrawerOpen(false)} data-testid="drawer-button">
-              <ArrowBackIosNewIcon className={styles.LeftArrow} />
+              <ArrowBackIosNewIcon fontSize="small" />
             </IconButton>
           </div>
         ) : (
