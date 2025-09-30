@@ -34,7 +34,7 @@ export const CertificateList = () => {
     description: getDescription(description),
   });
 
-  const columnNames = [{ name: 'label', label: t('Label') }, { label: t('Description') }, { label: t('Actions') }];
+  const columnNames = [{ name: 'label', label: t('Title') }, { label: t('Description') }, { label: t('Actions') }];
 
   const dialogMessage = t("You won't be able to use this certificate.");
 

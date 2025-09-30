@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import { Popover, FormControlLabel, RadioGroup, Radio } from '@mui/material';
-import { useNavigate } from 'react-router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import dayjs from 'dayjs';
@@ -42,8 +41,6 @@ export const NotificationList = () => {
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>('');
-
-  const navigate = useNavigate();
 
   const menuRef = useRef(null);
 
@@ -125,7 +122,7 @@ export const NotificationList = () => {
         return;
     }
 
-    navigate(destination);
+    window.open(destination);
   };
 
   const additionalAction = () => [
@@ -224,7 +221,7 @@ export const NotificationList = () => {
     </Popover>
   );
 
-  const severityList = ['Critical', 'Warning', 'Info', 'All'];
+  const severityList = ['All', 'Critical', 'Warning', 'Info'];
 
   const filterOnSeverity = (
     <div className={styles.Filters}>

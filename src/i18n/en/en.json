@@ -356,6 +356,7 @@
   "No access to the platform. They can’t login.": "No access to the platform. They can’t login.",
   "User roles": "User roles",
   "Username": "Username",
+  "Collections assigned": "Collections assigned",
   "Assigned to collection(s)": "Assigned to collection(s)",
   "Can chat with contacts from assigned collection only": "Can chat with contacts from assigned collection only",
   "Phone is required": "Phone is required",
@@ -524,7 +525,7 @@
   "Remove": "Remove",
   "Please confirm that this assistant is not being used in any of the active flows.": "Please confirm that this assistant is not being used in any of the active flows.",
   "Model": "Model",
-  "Instructions": "Instructions",
+  "Instructions (Prompt)*": "Instructions (Prompt)*",
   "Choose the best model for your needs.": "Choose the best model for your needs.",
   "Give a recognizable name for your assistant": "Give a recognizable name for your assistant",
   "Set the instructions according to your requirements.": "Set the instructions according to your requirements.",
@@ -547,5 +548,7 @@
   "Start time": "Start time",
   "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible.",
   "Are you sure you want to update the phone number?": "Are you sure you want to update the phone number?",
-  "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}."
+  "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}.",
+  "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible.",
+  "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed."
 }

@@ -50,11 +50,7 @@ const notifications = (mock?: any) => {
   );
 };
 
-const mockedUsedNavigate = vi.fn();
-vi.mock('react-router', async () => ({
-  ...(await vi.importActual('react-router')),
-  useNavigate: () => mockedUsedNavigate,
-}));
+window.open = vi.fn();
 
 test('It should load notifications', async () => {
   render(notifications());
@@ -98,7 +94,7 @@ test('click on forward arrrow', async () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
+      expect(window.open).toHaveBeenCalled();
     });
   });
 });
@@ -146,10 +142,10 @@ test('it should have Info, Warning and critical checkbox', async () => {
 
   await waitFor(() => {
     const checkboxInput = screen.getAllByTestId('radio');
-    expect(checkboxInput[0]).toHaveTextContent('Critical');
-    expect(checkboxInput[1]).toHaveTextContent('Warning');
-    expect(checkboxInput[2]).toHaveTextContent('Info');
-    expect(checkboxInput[3]).toHaveTextContent('All');
+    expect(checkboxInput[0]).toHaveTextContent('All');
+    expect(checkboxInput[1]).toHaveTextContent('Critical');
+    expect(checkboxInput[2]).toHaveTextContent('Warning');
+    expect(checkboxInput[3]).toHaveTextContent('Info');
   });
 });
 

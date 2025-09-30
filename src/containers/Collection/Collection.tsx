@@ -140,7 +140,7 @@ export const Collection = () => {
       component: Input,
       name: 'label',
       type: 'text',
-      label: t('Title'),
+      label: `${t('Title')}*`,
       validate: validateTitle,
     },
     {
