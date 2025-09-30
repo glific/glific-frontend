@@ -331,7 +331,7 @@ export const Trigger = () => {
       type: 'date',
       name: 'startDate',
       disabled: isEditing,
-      label: t('Date range*'),
+      label: `${t('Date range')}*`,
       placeholder: `${t('Start date')}`,
       minDate,
       className: styles.CalendarLeft,
