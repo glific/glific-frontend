@@ -504,7 +504,7 @@ export const HSM = () => {
     {
       component: EmojiInput,
       name: 'body',
-      label: t('Message'),
+      label: `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
