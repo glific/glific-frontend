@@ -14,6 +14,7 @@ import PinIcon from 'assets/images/icons/Pin/Pin.svg?react';
 import ShareIcon from '@mui/icons-material/ShareOutlined';
 import ActivePinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -66,7 +67,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 const viewIcon = <ViewIcon data-testid="viewIt" />;
-const shareIcon = <ShareIcon className={styles.ShareIcon} fontSize="small" color="secondary" />;
+const shareIcon = <ShareIcon className={styles.ShareIcon} color="secondary" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
@@ -113,6 +114,10 @@ export const FlowList = () => {
   });
 
   const [updatePinned] = useMutation(PIN_FLOW);
+
+  const handleEdit = (id: any) => {
+    navigate(`/flow/${id}/edit`);
+  };
 
   const handleCopy = (id: any) => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
@@ -231,6 +236,13 @@ export const FlowList = () => {
       link: '/flow/configure',
     },
     {
+      label: t('Edit'),
+      icon: <EditIcon />,
+      parameter: 'id',
+      insideMore: true,
+      dialog: handleEdit,
+    },
+    {
       label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
@@ -255,7 +267,6 @@ export const FlowList = () => {
           setNotification('No keywords found to share the flow link', 'warning');
         }
       },
-      insideMore: true,
     },
   ];
 
@@ -435,6 +446,7 @@ export const FlowList = () => {
         loadingList={importing}
         restrictedAction={restrictedAction}
         refreshList={refreshList}
+        editSupport={false}
       />
     </>
   );
