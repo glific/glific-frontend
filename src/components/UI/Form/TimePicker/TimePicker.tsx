@@ -48,7 +48,6 @@ export const TimePicker = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.TimePicker} data-testid="time-picker">
         <Picker
-          readOnly={false}
           className={styles.Picker}
           label={placeholder}
           open={open}

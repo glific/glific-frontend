@@ -161,7 +161,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values }) => (
+          {({ submitForm, setFieldValue, values }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -174,7 +174,7 @@ export const Auth = ({
                   }
                   const key = index;
                   return (
-                    <div className={field.styles} key={key}>
+                    <div key={key}>
                       {field.label ? (
                         <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                           {field.label}
@@ -186,26 +186,23 @@ export const Auth = ({
                     </div>
                   );
                 })}
-                {linkURL && (
-                  <div className={styles.Link}>
-                    <Link to={`/${linkURL}`}>{linkText}</Link>
-                  </div>
-                )}
+                <div className={styles.Link}>
+                  <Link to={`/${linkURL}`}>{linkText}</Link>
+                </div>
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
                     <Captcha
                       component={Button}
                       variant="contained"
                       color="primary"
-                      onClick={(token: string) => {
-                        if (token) {
-                          setLoading(true);
-                          saveHandler({ ...values, captcha: token });
-                        }
-                      }}
+                      onClick={submitForm}
                       className={buttonClass}
                       data-testid="SubmitButton"
                       loading={loading}
+                      onTokenUpdate={(token: string) => {
+                        setFieldValue('captcha', token);
+                      }}
+                      disabled={!values.captcha}
                       action="register"
                     >
                       {buttonText}
@@ -260,7 +257,6 @@ export const Auth = ({
             </div>
           )}
         </div>
-
         {alternateText ? (
           <>
             <div className={styles.Or}>

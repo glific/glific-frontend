@@ -10,6 +10,7 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
+import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
 import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
@@ -27,6 +28,8 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const [errors, setErrors] = useState<{ message: string }[]>([]);
+  const orgId = getUserSession('organizationId');
+
   const { t } = useTranslation();
   const [collection] = useState();
   const [optedIn] = useState(false);
@@ -90,6 +93,7 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
         type: 'DATA',
         data: csvContent,
         groupLabel: details.collection.label,
+        importContactsId: orgId,
       },
     });
   };
