@@ -541,5 +541,6 @@
   "Skip Validation": "Skip Validation",
   "Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance.": "Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance.",
   "Deleting default profile will delete the contact. This is irreversible.": "Deleting default profile will delete the contact. This is irreversible.",
-  "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed."
+  "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed.",
+  "Share": "Share"
 }

@@ -81,7 +81,7 @@ export const FlowList = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [shareDialogKeywords, setShareDialogKeywords] = useState<string[]>([]);
+  const [shareDialogKeywords, setShareDialogKeywords] = useState<{ label: string; id: number }[]>([]);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -257,7 +257,7 @@ export const FlowList = () => {
       insideMore: true,
     },
     {
-      label: 'Share',
+      label: t('Share'),
       icon: shareIcon,
       parameter: 'keywords',
       dialog: (keywords: any) => {
