@@ -233,7 +233,7 @@ test('if the flow the inactive', async () => {
   });
   fireEvent.click(screen.getByTestId('previewButton'));
   await waitFor(() => {
-    expect(screen.findByTestId('beneficiaryName'));
+    expect(screen.findByTestId('simulator-container'));
   });
 
   await waitFor(() => {
