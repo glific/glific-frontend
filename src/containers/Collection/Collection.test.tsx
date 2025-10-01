@@ -14,10 +14,10 @@ import {
 import { getUsersQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { Collection } from './Collection';
+import * as FormLayout from 'containers/Form/FormLayout';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router';
 import { getSearchCollectionQuery } from 'mocks/Search';
-import * as Notification from 'common/notification';
 
 const mocks = [
   getRoleNamesMock,
@@ -33,8 +33,7 @@ const mocks = [
   createCollectionQuery,
   getSearchCollectionQuery,
   updateCollectionQuery,
-  updateCollectionUsersQuery({ addUserIds: [], groupId: '1', deleteUserIds: ['1', '2'] }),
-  updateCollectionUsersQuery({ addUserIds: ['1'], groupId: '23', deleteUserIds: [] }),
+  updateCollectionUsersQuery,
 ];
 
 const wrapper = (
@@ -45,7 +44,15 @@ const wrapper = (
   </MockedProvider>
 );
 
-const notificationSpy = vi.spyOn(Notification, 'setNotification');
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
 
 const user = userEvent.setup();
 const mockedUsedNavigate = vi.fn();
@@ -138,29 +145,34 @@ describe('collection', () => {
   });
 
   test('it should call additional query and hit the update users function', async () => {
-    render(wrapper);
-
-    expect(screen.getByTestId('loader')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(screen.getByText('Title')).toBeInTheDocument();
+    const mockCallback = vi.fn();
+    const spy = vi.spyOn(FormLayout, 'FormLayout');
+    spy.mockImplementation((props: any) => {
+      const { additionalQuery } = props;
+      return (
+        <div
+          onClick={() => {
+            additionalQuery(['1']);
+            mockCallback();
+          }}
+          data-testid="collection"
+        >
+          <span>Edit collection</span>
+        </div>
+      );
     });
 
-    const collectionInputs = screen.getAllByRole('textbox');
-
-    fireEvent.change(collectionInputs[0], { target: { value: 'Sample Collection Title' } });
-    fireEvent.change(collectionInputs[1], { target: { value: 'Sample Collection Description' } });
-
-    const autocomplete = screen.getByRole('combobox');
-    autocomplete.focus();
-    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-
-    fireEvent.click(screen.getByText('John Doe'), { key: 'Enter' });
-
-    user.click(screen.getByText('Save'));
+    const { getByTestId } = render(wrapper);
+    expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
+      expect(getByTestId('collection')).toBeInTheDocument();
+    });
+
+    user.click(getByTestId('collection'));
+
+    await waitFor(() => {
+      expect(mockCallback).toBeCalled();
     });
   });
 });

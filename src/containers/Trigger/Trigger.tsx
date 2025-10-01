@@ -350,7 +350,6 @@ export const Trigger = () => {
       name: 'startTime',
       disabled: isEditing,
       label: `${t('Time')}*`,
-      placeholder: t('Start time'),
     },
     {
       component: AutoComplete,
