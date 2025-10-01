@@ -4,7 +4,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, MARK_AS_READ } from 'graphql/mutations/Chat';
 import {
   DEFAULT_ENTITY_LIMIT,
@@ -572,6 +572,70 @@ export const conversationQuery = getConversationQuery({
     },
   ],
 });
+
+export const searchMultiQuery = (
+  term: string = '',
+  contactLimit: number = DEFAULT_ENTITY_LIMIT,
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT
+) => {
+  return {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: {
+        searchFilter: { term: term },
+        messageOpts: { limit: contactLimit, order: 'ASC' },
+        contactOpts: { order: 'DESC', limit: messageLimit },
+      },
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [
+            {
+              bspStatus: 'SESSION_AND_HSM',
+              id: '2',
+              lastMessageAt: '2020-11-18T04:37:57Z',
+              name: 'Default receiver',
+              status: 'VALID',
+            },
+            {
+              bspStatus: 'SESSION',
+              id: '3',
+              lastMessageAt: '2020-11-18T04:37:57Z',
+              name: 'Adelle Cavin',
+              status: 'VALID',
+            },
+          ],
+          messages: [
+            {
+              body: 'Hi',
+              location: null,
+              contact: {
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
+                status: 'VALID',
+              },
+              id: '18',
+              insertedAt: '2020-10-15T06:59:31.473314Z',
+              media: null,
+              messageNumber: 48,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+
+              type: 'TEXT',
+            },
+          ],
+        },
+      },
+    },
+  };
+};
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,

@@ -59,16 +59,11 @@ describe('<Registration />', () => {
     await user.click(password);
     await user.keyboard('pass123456');
 
-    const email = container.querySelector('input[type="email"]') as HTMLInputElement;
-    await user.click(email);
-    await user.keyboard('you@domain.com');
-    const checkbox = container.querySelector('input[name="consent_for_updates"]') as HTMLInputElement;
-    expect(checkbox).toBeChecked();
-    await user.click(checkbox);
-    expect(checkbox).not.toBeChecked();
-
-    await user.click(checkbox);
-    expect(checkbox).toBeChecked();
+    await waitFor(() => {
+      // Regiter with button should be disabled by default
+      const continueButton = screen.getByTestId('SubmitButton');
+      expect(continueButton).toHaveAttribute('disabled');
+    });
   });
 
   it('should submit the form correctly', async () => {
@@ -80,13 +75,7 @@ describe('<Registration />', () => {
 
     // let's mock successful registration submission
     const responseData = {
-      values: {
-        username: 'Jane Doe',
-        phone: '+919978776554',
-        password: 'pass123456',
-        email: 'you@domain.com',
-        consent_for_updates: true,
-      },
+      values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
@@ -99,11 +88,6 @@ describe('<Registration />', () => {
 
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     fireEvent.change(password, { target: { value: 'Pass@123456' } });
-
-    const email = container.querySelector('input[type="email"]') as HTMLInputElement;
-    fireEvent.change(email, { target: { value: 'you@domain.com' } });
-    const checkbox = container.querySelector('input[name="consent_for_updates"]') as HTMLInputElement;
-    expect(checkbox).toBeChecked();
 
     await waitFor(() => {
       expect(getByText('Register with')).toBeInTheDocument();

@@ -113,6 +113,7 @@ export const TriggerList = () => {
       {...columnAttributes}
       searchParameter={['name']}
       additionalAction={additionalAction}
+      sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
     />
   );
 };

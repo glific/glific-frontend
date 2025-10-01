@@ -201,11 +201,15 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               ))}
             </div>
           )}
-          <span>Max File Size: 20MB</span>
+          <span>Individual file size limit: 20MB</span>
 
           <span>
             {t('Information in the attached files will be available to this assistant.')}
-            <a href="https://platform.openai.com/docs/assistants/tools/file-search" target="_blank">
+            <a
+              href="https://platform.openai.com/docs/assistants/tools/file-search#supported-files"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Learn More
             </a>
           </span>
@@ -219,7 +223,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       <div className={styles.Files}>
         <div className={styles.FilesHeader}>
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-            Files
+            Knowledge base files *
             <HelpIcon
               helpData={{
                 heading: filesInfo,
@@ -249,7 +253,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
 
       <div className={styles.Temperature}>
         <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-          {t('Temperature')}
+          {t('Temperature')}*
           <HelpIcon
             helpData={{
               heading: temperatureInfo,

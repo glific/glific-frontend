@@ -433,6 +433,16 @@ export const HSM = () => {
 
   const fields = [
     {
+      component: Checkbox,
+      name: 'isActive',
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Active?
+        </Typography>
+      ),
+      darkCheckbox: true,
+    },
+    {
       component: AutoComplete,
       name: 'language',
       options: languageOptions,
@@ -456,13 +466,14 @@ export const HSM = () => {
     {
       component: Input,
       name: 'newShortcode',
-      placeholder: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}`,
       label: `${t('Element name')}*`,
       disabled: isEditing,
       skip: languageVariant ? true : false,
       onChange: (value: any) => {
         setNewShortcode(value);
       },
+      helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
     {
       component: AutoComplete,
@@ -471,7 +482,7 @@ export const HSM = () => {
       optionLabel: 'label',
       multiple: false,
       label: `${t('Element name')}*`,
-      placeholder: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}`,
       disabled: isEditing,
       onChange: (event: any) => {
         setExistingShortcode(event);
@@ -481,27 +492,19 @@ export const HSM = () => {
     {
       component: Input,
       name: 'label',
-      label: t('Title'),
       disabled: isEditing,
+      label: `${t('Title')}*`,
+      placeholder: `${t('Title')}`,
       helperText: t('Define what use case does this template serve eg. OTP, optin, activity preference'),
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
-    {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" className={styles.IsActive}>
-          Active?
-        </Typography>
-      ),
-      darkCheckbox: true,
-    },
+
     {
       component: EmojiInput,
       name: 'body',
-      label: t('Message'),
+      label: `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -513,6 +516,14 @@ export const HSM = () => {
       },
       defaultValue: (isEditing || isCopyState) && editorState,
     },
+
+    {
+      component: TemplateVariables,
+      message: body,
+      variables: variables,
+      setVariables: setVariables,
+      isEditing: isEditing,
+    },
     {
       component: Input,
       name: 'footer',
@@ -521,13 +532,6 @@ export const HSM = () => {
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
-    },
-    {
-      component: TemplateVariables,
-      message: body,
-      variables: variables,
-      setVariables: setVariables,
-      isEditing: isEditing,
     },
     {
       component: Checkbox,
@@ -560,7 +564,7 @@ export const HSM = () => {
       optionLabel: 'label',
       multiple: false,
       label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
+      placeholder: `${t('Category')}`,
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
@@ -573,7 +577,7 @@ export const HSM = () => {
       name: 'category',
       type: 'text',
       label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
+      placeholder: `${t('Category')}`,
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       skip: !isEditing,

@@ -53,7 +53,6 @@ export const Calendar = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.Calendar} data-testid="date-picker-inline">
         <DatePicker
-          readOnly={false}
           label={placeholder}
           open={open}
           value={dateValue}
@@ -73,6 +72,9 @@ export const Calendar = ({
               },
               helperText: hasError ? errorText : '',
               error: hasError,
+              onClick: () => !disabled && setOpen(true),
+            },
+            openPickerButton: {
               onClick: () => !disabled && setOpen(true),
             },
           }}
