@@ -28,7 +28,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { ShareFlowLink } from '../ShareKeyword/ShareFlowLink';
+import { ShareFlowLink } from '../ShareResponderLink/ShareResponderLink';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');

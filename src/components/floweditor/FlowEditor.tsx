@@ -22,7 +22,7 @@ import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
-import { ShareFlowLink } from 'containers/Flow/ShareKeyword/ShareFlowLink';
+import { ShareFlowLink } from 'containers/Flow/ShareResponderLink/ShareResponderLink';
 
 declare function showFlowEditor(node: any, config: any): void;
 

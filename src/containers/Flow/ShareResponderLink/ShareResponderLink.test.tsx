@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { ShareFlowLink } from './ShareFlowLink';
+import { ShareFlowLink } from './ShareResponderLink';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Utils from 'common/utils';
 import { setUserSession } from 'services/AuthService';

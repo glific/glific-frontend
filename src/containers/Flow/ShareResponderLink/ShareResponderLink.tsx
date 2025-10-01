@@ -4,12 +4,12 @@ import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
 import logoSrc from 'assets/images/logo/Logo.svg';
 import { SHARE_FLOW_LINK } from 'common/constants';
 import { setNotification } from 'common/notification';
-import { copyToClipboardMethod } from 'common/utils';
+import { copyToClipboardMethod, downloadCanvasAsPNG } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 import { getUserSession } from 'services/AuthService';
-import styles from './ShareFlowLink.module.css';
+import styles from './ShareResponderLink.module.css';
 
 interface ShareFlowLinkProps {
   shareDialogKeywords: any[];
@@ -78,23 +78,19 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
           ctx!.drawImage(logoImg, logoX + 4, logoY + 4, logoSize - 8, logoSize - 8);
           ctx!.restore();
 
-          const pngFile = canvas.toDataURL('image/png', 1.0);
-          const downloadLink = document.createElement('a');
-          downloadLink.download = `glific-flow-qr-${selectedKeyword.label.replace(/\s+/g, '-').toLowerCase()}.png`;
-          downloadLink.href = pngFile;
-          downloadLink.click();
-
-          setNotification('QR Code downloaded successfully!');
+          downloadCanvasAsPNG(
+            canvas,
+            `glific-flow-qr-${selectedKeyword.label.replace(/\s+/g, '-').toLowerCase()}.png`,
+            'QR Code downloaded successfully!'
+          );
         };
 
         logoImg.onerror = () => {
-          const pngFile = canvas.toDataURL('image/png', 1.0);
-          const downloadLink = document.createElement('a');
-          downloadLink.download = `glific-flow-qr-${selectedKeyword.label.replace(/\s+/g, '-').toLowerCase()}.png`;
-          downloadLink.href = pngFile;
-          downloadLink.click();
-
-          setNotification('QR Code downloaded successfully!');
+          downloadCanvasAsPNG(
+            canvas,
+            `glific-flow-qr-${selectedKeyword.label.replace(/\s+/g, '-').toLowerCase()}.png`,
+            'QR Code downloaded successfully!'
+          );
         };
 
         logoImg.src = logoSrc;
@@ -118,7 +114,7 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
     <Dialog fullWidth={true} maxWidth={'md'} open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
       <div className={styles.Container}>
         <Typography className={styles.Heading} variant="h5">
-          Share Link To a Flow
+          Share Responder Link
         </Typography>
 
         <div className={styles.Content}>
@@ -127,7 +123,7 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
               <Typography variant="subtitle1" className={styles.SectionTitle}>
                 Bot Number
               </Typography>
-              <span className={styles.BotNumber}>+ {botNumber}</span>
+              <span className={styles.BotNumber}>+{botNumber}</span>
             </div>
             <div className={styles.Section}>
               <Typography variant="subtitle1" className={styles.SectionTitle}>
@@ -165,22 +161,12 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
 
             <div>
               <Typography variant="subtitle1" className={styles.SectionTitle}>
-                Flow Link
+                Responder Link
               </Typography>
               <div className={styles.LinkCard}>
                 <div data-testid="flowLink" className={styles.LinkText}>
                   {flowLink}
                 </div>
-                <Tooltip title="Copy link">
-                  <IconButton
-                    data-testid="copyIcon"
-                    onClick={() => copyToClipboard(flowLink)}
-                    className={styles.CopyIcon}
-                    size="small"
-                  >
-                    <ContentCopyIcon />
-                  </IconButton>
-                </Tooltip>
               </div>
             </div>
           </div>
@@ -218,7 +204,7 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
             className={styles.CopyButton}
           >
             <ContentCopyIcon />
-            Copy Flow Link
+            Copy Responder link
           </Button>
           <Button
             data-testid="downloadButton"
