@@ -32,7 +32,6 @@ import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
-  console.log(keywords.length);
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
