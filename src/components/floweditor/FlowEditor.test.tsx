@@ -16,6 +16,7 @@ import {
   getFlowTranslations,
   getTemplateFlow,
   getFlowWithManyKeywords,
+  exportFlow,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -27,6 +28,7 @@ import {
   simulatorSearchQuery,
 } from 'mocks/Simulator';
 import * as Notification from 'common/notification';
+import * as Utils from 'common/utils';
 
 window.location = { assign: vi.fn() } as any;
 window.location.reload = vi.fn();
@@ -67,6 +69,7 @@ const mocks = [
   getFreeFlow,
   getFreeFlow,
   getFlowTranslations,
+  exportFlow,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -331,5 +334,53 @@ test('if keywords are more than 8 it should be shown in a tooltip', async () => 
 
   await waitFor(() => {
     expect(screen.findByText('help, activity, preference, optout, stop, start, end, yes + 2 more'));
+  });
+});
+
+test('should export the flow', async () => {
+  const exportSpy = vi.spyOn(Utils, 'exportFlowMethod');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getByTestId('moreButton'));
+  fireEvent.click(screen.getByText('Export flow'));
+
+  await waitFor(() => {
+    expect(exportSpy).toHaveBeenCalled();
+  });
+});
+
+test('should open the share responder dialog box', async () => {
+  render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getByTestId('moreButton'));
+  fireEvent.click(screen.getByText('Share Responder Link'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogHeading')).toHaveTextContent('Share Responder Link');
+  });
+});
+
+test('should show warning when no keywords are present and share responder link is clicked', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  render(wrapperFunction(noKeywordMocks));
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getByTestId('moreButton'));
+  fireEvent.click(screen.getByText('Share Responder Link'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
