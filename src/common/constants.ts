@@ -251,3 +251,5 @@ export const getVariables = (contactOptions: any, messageOptions: any, variables
     ...variables,
   };
 };
+
+export const SHARE_FLOW_LINK = 'wa.me/';

@@ -58,6 +58,7 @@
     "react-media-recorder": "^1.7.1",
     "react-phone-input-2": "^2.15.1",
     "react-player": "^3.1.0",
+    "react-qr-code": "^2.0.18",
     "react-resize-detector": "^12.1.0",
     "react-router": "^7.6.3",
     "react-tiny-link": "^3.6.1",
