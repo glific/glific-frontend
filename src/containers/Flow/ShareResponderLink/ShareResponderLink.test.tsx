@@ -23,7 +23,7 @@ describe('ShareResponderLink Component', () => {
 
   test('it should render ShareResponderLink component', async () => {
     render(wrapper);
-    expect(screen.getByText('Share Link To a Flow')).toBeInTheDocument();
+    expect(screen.getByText('Share Responder Link')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByTestId('flowLink')).toHaveTextContent('wa.me/123456?text=test');
@@ -32,7 +32,7 @@ describe('ShareResponderLink Component', () => {
 
   test('it should call handleClose on dialog close', async () => {
     render(wrapper);
-    expect(screen.getByText('Share Link To a Flow')).toBeInTheDocument();
+    expect(screen.getByText('Share Responder Link')).toBeInTheDocument();
 
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
 
@@ -44,12 +44,6 @@ describe('ShareResponderLink Component', () => {
   test('it copies flow link to clipboard', async () => {
     const copyToClipboardSpy = vi.spyOn(Utils, 'copyToClipboardMethod').mockImplementation(() => {});
     render(wrapper);
-
-    fireEvent.click(screen.getByTestId('copyIcon'));
-
-    await waitFor(() => {
-      expect(copyToClipboardSpy).toHaveBeenCalled();
-    });
 
     fireEvent.click(screen.getByTestId('copyButton'));
 
