@@ -11,8 +11,10 @@ import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Pin.svg?react';
+import ShareIcon from '@mui/icons-material/ShareOutlined';
 import ActivePinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -26,6 +28,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
+import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
@@ -64,6 +67,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 const viewIcon = <ViewIcon data-testid="viewIt" />;
+const shareIcon = <ShareIcon className={styles.ShareIcon} color="secondary" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
@@ -77,6 +81,7 @@ export const FlowList = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [shareDialogKeywords, setShareDialogKeywords] = useState<string[]>([]);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -109,6 +114,10 @@ export const FlowList = () => {
   });
 
   const [updatePinned] = useMutation(PIN_FLOW);
+
+  const handleEdit = (id: any) => {
+    navigate(`/flow/${id}/edit`);
+  };
 
   const handleCopy = (id: any) => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
@@ -227,6 +236,13 @@ export const FlowList = () => {
       link: '/flow/configure',
     },
     {
+      label: t('Edit'),
+      icon: <EditIcon />,
+      parameter: 'id',
+      insideMore: true,
+      dialog: handleEdit,
+    },
+    {
       label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
@@ -239,6 +255,18 @@ export const FlowList = () => {
       parameter: 'id',
       dialog: exportFlow,
       insideMore: true,
+    },
+    {
+      label: 'Share',
+      icon: shareIcon,
+      parameter: 'keywords',
+      dialog: (keywords: any) => {
+        if (keywords.length > 0) {
+          setShareDialogKeywords(keywords.map((i: string, index: number) => ({ label: i, id: index })));
+        } else {
+          setNotification('No keywords found to share the flow link', 'warning');
+        }
+      },
     },
   ];
 
@@ -368,8 +396,11 @@ export const FlowList = () => {
         <div className={styles.DialogContent}>How do you want to create a flow?</div>
       </DialogBox>
     );
+  } else if (shareDialogKeywords.length > 0) {
+    dialogBox = (
+      <ShareResponderLink shareDialogKeywords={shareDialogKeywords} handleClose={() => setShareDialogKeywords([])} />
+    );
   }
-
   useEffect(() => {
     if (location.search) {
       const isTemplate = new URLSearchParams(location.search).get('isTemplate');
@@ -415,6 +446,7 @@ export const FlowList = () => {
         loadingList={importing}
         restrictedAction={restrictedAction}
         refreshList={refreshList}
+        editSupport={false}
       />
     </>
   );
