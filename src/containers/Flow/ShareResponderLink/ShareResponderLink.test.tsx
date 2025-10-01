@@ -46,7 +46,7 @@ describe('ShareResponderLink Component', () => {
     });
   });
 
-  test('it copies flow link to clipboard', async () => {
+  test('it copies responder link to clipboard', async () => {
     const copyToClipboardSpy = vi.spyOn(Utils, 'copyToClipboardMethod').mockImplementation(() => {});
     render(wrapper);
 
