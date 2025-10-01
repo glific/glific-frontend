@@ -24,8 +24,6 @@ describe('ShareResponderLink Component', () => {
     );
   });
 
-  setUserSession(JSON.stringify({ organization: { contact: { phone: '123456' } } }));
-
   test('it should render ShareResponderLink component', async () => {
     render(wrapper);
     expect(screen.getByText('Share Responder Link')).toBeInTheDocument();
