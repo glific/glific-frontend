@@ -79,9 +79,9 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
   };
 
   const setPayload = (payload: any) => ({
-    status: payload?.status,
-    remarks: payload?.remarks,
-    userId: payload?.user?.id,
+    status: payload.status,
+    remarks: payload.remarks,
+    userId: payload.user.id,
   });
 
   const queries: any = {

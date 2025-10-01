@@ -84,34 +84,3 @@ describe('Disable <TimePicker />', () => {
     expect(input).toHaveValue('');
   });
 });
-
-describe('OpenPickerButton functionality', () => {
-  it('should open picker when openPickerButton is clicked and not disabled', async () => {
-    const props = timePickerProps(false);
-    render(<TimePicker {...props} />);
-
-    const openPickerButton = screen.getByRole('button', { name: /choose time/i });
-    expect(openPickerButton).toBeInTheDocument();
-
-    fireEvent.click(openPickerButton);
-
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument();
-    });
-  });
-
-  it('should not open picker when openPickerButton is clicked and disabled', async () => {
-    const props = timePickerProps(true);
-    render(<TimePicker {...props} />);
-
-    const openPickerButton = screen.getByRole('button', { name: /choose time/i });
-    expect(openPickerButton).toBeInTheDocument();
-    expect(openPickerButton).toBeDisabled();
-
-    fireEvent.click(openPickerButton);
-
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    });
-  });
-});

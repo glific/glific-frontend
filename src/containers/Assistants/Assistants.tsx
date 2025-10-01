@@ -29,7 +29,6 @@ export const Assistants = () => {
       variables: {
         input: {
           name: null,
-          temperature: 0.1,
         },
       },
       onCompleted: ({ createAssistant }) => {

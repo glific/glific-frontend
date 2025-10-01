@@ -351,7 +351,7 @@ describe('Edit mode', () => {
     render(renderInteractiveMessage('1', getTemplateMocks1));
 
     await waitFor(() => {
-      expect(screen.getByText('Title*')).toBeInTheDocument();
+      expect(screen.getByText('Title')).toBeInTheDocument();
       expect(screen.getByText('Are you excited for *Glific*?')).toBeInTheDocument();
       expect(screen.getByText('yes')).toBeInTheDocument();
       expect(screen.getByText('Marathi')).toBeInTheDocument();
@@ -388,7 +388,7 @@ describe('Edit mode', () => {
     render(renderInteractiveMessage('3', getTemplateMocks3));
 
     await waitFor(() => {
-      expect(screen.getByText('Button text*')).toBeInTheDocument();
+      expect(screen.getByText('Button text')).toBeInTheDocument();
     });
   });
 
@@ -563,7 +563,7 @@ describe('translates the template', () => {
     render(renderInteractiveMessage('4', getTemplateMocks4));
 
     await waitFor(() => {
-      expect(screen.getByText('Title*')).toBeInTheDocument();
+      expect(screen.getByText('Title')).toBeInTheDocument();
       expect(screen.getByText('Marathi')).toBeInTheDocument();
       expect(screen.getByText('Are you excited for *Glific*?')).toBeInTheDocument();
       expect(screen.getByText('yes')).toBeInTheDocument();

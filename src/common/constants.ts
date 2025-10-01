@@ -179,7 +179,7 @@ export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const LIST = 'LIST';
 export const QUICK_REPLY = 'QUICK_REPLY';
 export const LOCATION_REQUEST = 'LOCATION_REQUEST_MESSAGE';
-export const TERMS_OF_USE_LINK = 'https://tides.coloredcow.com/terms-of-use';
+export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
 
 // Gupshup sample media
@@ -251,5 +251,3 @@ export const getVariables = (contactOptions: any, messageOptions: any, variables
     ...variables,
   };
 };
-
-export const SHARE_FLOW_LINK = 'wa.me/';

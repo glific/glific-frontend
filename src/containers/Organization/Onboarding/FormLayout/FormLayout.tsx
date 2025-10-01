@@ -58,9 +58,10 @@ export const FormLayout = ({
   setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
-    const payload = setPayload(itemData);
+    const payload = setPayload({ ...itemData, token: captchaToken });
 
     if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
@@ -176,12 +177,12 @@ export const FormLayout = ({
             component={Button}
             variant="contained"
             color="primary"
-            onClick={formik.submitForm}
+            onClick={(token: string) => {
+              setCaptchaToken(token);
+              formik.submitForm();
+            }}
             className={styles.Button}
             data-testid="submitActionButton"
-            onTokenUpdate={(token: string) => {
-              formik.setFieldValue('token', token);
-            }}
             action="register"
           >
             Next

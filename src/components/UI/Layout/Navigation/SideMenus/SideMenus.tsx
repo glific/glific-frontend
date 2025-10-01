@@ -18,7 +18,6 @@ import { getSideDrawerMenus } from 'context/role';
 import styles from './SideMenus.module.css';
 import { useTranslation } from 'react-i18next';
 import { Menu } from 'config/menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 export interface SideMenusProps {
   opened: boolean;
@@ -192,34 +191,23 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           key={menu.title}
           {...links}
         >
-          <div className={styles.ListItemContent}>
-            <ListItemIcon className={styles.ListItemIcon}>
-              <ListIcon
-                selected={menu.children ? false : isSelected}
-                icon={menu.icon}
-                count={menu.showBadge ? notificationCount : undefined}
-              />
-            </ListItemIcon>
-            {opened && (
-              <ListItemText
-                disableTypography
-                data-testid="list-item"
-                className={
-                  menu.children ? styles.UnselectedText : isSelected ? styles.SelectedText : styles.UnselectedText
-                }
-                primary={t(menu.title as any)}
-              />
-            )}
-          </div>
-          {menu.children && (
-            <KeyboardArrowDownIcon
-              fontSize="small"
-              sx={{
-                color: '#b6b6b6',
-              }}
+          <ListItemIcon className={styles.ListItemIcon}>
+            <ListIcon
+              selected={menu.children ? false : isSelected}
+              icon={menu.icon}
+              count={menu.showBadge ? notificationCount : undefined}
+            />
+          </ListItemIcon>
+          {opened && (
+            <ListItemText
+              disableTypography
+              data-testid="list-item"
+              className={
+                menu.children ? styles.UnselectedText : isSelected ? styles.SelectedText : styles.UnselectedText
+              }
+              primary={t(menu.title as any)}
             />
           )}
-
           {menu.new && <span className={styles.New}>{'New'}</span>}
         </ListItemButton>
       );
