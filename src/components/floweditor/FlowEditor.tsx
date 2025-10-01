@@ -161,7 +161,7 @@ export const FlowEditor = () => {
       },
     },
     {
-      label: 'Share Flow Link',
+      label: 'Share Responder Link',
       action: () => {
         setShareDialog(true);
       },
@@ -215,7 +215,7 @@ export const FlowEditor = () => {
     const keywords = flowName?.flows?.[0]?.keywords || [];
     if (keywords.length === 0) {
       setShareDialog(false);
-      setNotification('No keywords found to share the flow link', 'warning');
+      setNotification('No keywords found to share the responder link', 'warning');
     } else {
       modal = (
         <ShareResponderLink
