@@ -9,7 +9,7 @@ export const triggerListQuery = {
       opts: {
         limit: 50,
         offset: 0,
-        order: 'ASC',
+        order: 'DESC',
         orderWith: 'updated_at',
       },
     },

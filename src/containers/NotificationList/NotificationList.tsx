@@ -122,7 +122,9 @@ export const NotificationList = () => {
         return;
     }
 
-    window.open(destination);
+    if (destination) {
+      window.open(destination, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const additionalAction = () => [
