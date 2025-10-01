@@ -54,7 +54,7 @@ const Certificate = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      label: `${t('Title')}*`,
+      label: t('Title'),
     },
     {
       component: Input,
@@ -68,7 +68,7 @@ const Certificate = () => {
       component: Input,
       name: 'url',
       type: 'text',
-      label: `${t('URL')}*`,
+      label: t('URL'),
       helperText: (
         <span className={styles.HelperText}>
           <>
@@ -79,8 +79,7 @@ const Certificate = () => {
             <br />
             For best results:
             <ul>
-              <li>Landscape certificates – Use a resolution of 3300 x 2550 px.</li>
-              <li> Portrait certificates– Use resolution of 816 x 1056 px.</li>
+              <li>Landscape certificates – Use a resolution of 2550 x 3300 px.</li>
               <li> Badges – Use a square format, minimum 600 x 600 px.</li>
             </ul>
           </>

@@ -109,16 +109,4 @@ describe('<Calendar />', () => {
       expect(screen.queryByTestId('sentinelStart')).not.toBeInTheDocument();
     });
   });
-
-  it('should open calendar when picker button is clicked and not disabled', async () => {
-    render(wrapper);
-    const input = screen.getByRole('button', { name: /Choose date/i });
-    if (input) {
-      fireEvent.click(input);
-      expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
-    }
-    await waitFor(() => {
-      expect(screen.queryByTestId('sentinelStart')).toBeInTheDocument();
-    });
-  });
 });

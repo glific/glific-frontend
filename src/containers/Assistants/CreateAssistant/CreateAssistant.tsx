@@ -37,7 +37,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   const [name, setName] = useState('');
   const [model, setModel] = useState<any>(null);
   const [instructions, setInstructions] = useState('');
-  const [options, setOptions] = useState({ fileSearch: true, temperature: 0.1 });
+  const [options, setOptions] = useState({ fileSearch: true, temperature: 1 });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
   const { t } = useTranslation();
@@ -101,11 +101,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
         updateAssistantId: currentId,
         input: payload,
       },
-      onCompleted: ({ updateAssistant }) => {
-        if (updateAssistant.errors && updateAssistant.errors.length > 0) {
-          setErrorMessage(updateAssistant.errors[0]);
-          return;
-        }
+      onCompleted: () => {
         setNotification('Changes saved successfully', 'success');
         setUpdateList(!updateList);
       },
@@ -123,10 +119,20 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
 
   const formFields: any = [
     {
+      component: AutoComplete,
+      name: 'model',
+      options: modelOptions || [],
+      optionLabel: 'label',
+      multiple: false,
+      label: t('Model'),
+      helperText: t('Choose the best model for your needs.'),
+      onChange: (value: any) => setModel(value),
+    },
+    {
       component: Input,
       name: 'name',
       type: 'text',
-      label: `${t('Name')}*`,
+      label: t('Name'),
       onChange: (value: any) => setName(value),
       helperText: (
         <div className={styles.AssistantId}>
@@ -139,21 +145,10 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       ),
     },
     {
-      component: AutoComplete,
-      name: 'model',
-      options: modelOptions || [],
-      optionLabel: 'label',
-      multiple: false,
-      label: `${t('Model')}*`,
-      helperText: t('Choose the best model for your needs.'),
-      onChange: (value: any) => setModel(value),
-    },
-
-    {
       component: Input,
       name: 'instructions',
       type: 'text',
-      label: t('Instructions (Prompt)*'),
+      label: t('Instructions'),
       rows: 3,
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
@@ -170,18 +165,16 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   ];
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
+    name: Yup.string(),
     model: Yup.object().required('Model is required'),
-    instructions: Yup.string().required('Instructions are required'),
+    instructions: Yup.string(),
   });
 
   const formik = useFormik({
     initialValues: states,
     validationSchema: FormSchema,
     enableReinitialize: true,
-    onSubmit: () => {
-      handleCreate();
-    },
+    onSubmit: (values, { setErrors }) => {},
   });
 
   const handleClose = () => {
@@ -271,7 +264,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
             ))}
           </div>
           <div className={styles.Buttons}>
-            <Button loading={savingChanges} onClick={formik.submitForm} variant="contained" data-testid="submitAction">
+            <Button loading={savingChanges} onClick={handleCreate} variant="contained" data-testid="submitAction">
               {t('Save')}
             </Button>
             <Button

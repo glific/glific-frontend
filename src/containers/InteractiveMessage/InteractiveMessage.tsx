@@ -561,7 +561,7 @@ export const InteractiveMessage = () => {
       options: templateTypeOptions,
       multiple: false,
       disabled: params?.id !== undefined,
-      label: `${t('Type')}*`,
+      label: t('Type'),
       optionLabel: 'label',
     },
     {
@@ -569,7 +569,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      label: `${t('Title')}*`,
+      label: t('Title'),
       onChange: (value: any) => {
         setTitle(value);
       },
@@ -588,7 +588,7 @@ export const InteractiveMessage = () => {
       translation: hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      label: `${t('Message')}*`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,

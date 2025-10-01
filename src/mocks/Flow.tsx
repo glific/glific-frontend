@@ -163,7 +163,7 @@ const filterFlowResult = {
         isActive: true,
         isBackground: false,
         isPinned: false,
-        keywords: [],
+        keywords: ['optout', 'stop'],
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:40.635789Z',
         name: 'Optout Workflow',

@@ -249,54 +249,6 @@ describe('<FlowList />', () => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/add', { state: { tag: { id: '1', label: 'Messages' } } });
     });
   });
-
-  test('should navigate to edit page on clicking the edit button', async () => {
-    render(flowList);
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
-
-    await waitFor(() => {
-      expect(screen.getByText('Edit')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText('Edit'));
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/1/edit');
-    });
-  });
-
-  test('should open responder link dialog on clicking the share button', async () => {
-    render(flowList);
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('shareIcon')[0]);
-
-    await waitFor(() => {
-      expect(screen.getByText('Share Responder Link')).toBeInTheDocument();
-    });
-  });
-
-  test('should show warning when no keywords are selected and share button is clicked', async () => {
-    render(flowList);
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('shareIcon')[2]);
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('No keywords found to share the responder link', 'warning');
-    });
-  });
 });
 
 describe('Template flows', () => {
