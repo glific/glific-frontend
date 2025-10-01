@@ -5,6 +5,7 @@ import * as Utils from 'common/utils';
 import { setUserSession } from 'services/AuthService';
 
 describe('ShareResponderLink Component', () => {
+  let wrapper: any;
   const shareResponderLinkProps = {
     shareDialogKeywords: [
       { label: 'test', id: 1 },
@@ -13,11 +14,15 @@ describe('ShareResponderLink Component', () => {
     handleClose: vi.fn(),
   };
 
-  const wrapper = (
-    <MockedProvider>
-      <ShareResponderLink {...shareResponderLinkProps} />
-    </MockedProvider>
-  );
+  beforeEach(() => {
+    setUserSession(JSON.stringify({ organization: { contact: { phone: '123456' } } }));
+
+    wrapper = (
+      <MockedProvider>
+        <ShareResponderLink {...shareResponderLinkProps} />
+      </MockedProvider>
+    );
+  });
 
   setUserSession(JSON.stringify({ organization: { contact: { phone: '123456' } } }));
 

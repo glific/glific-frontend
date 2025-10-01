@@ -212,7 +212,7 @@ export const FlowEditor = () => {
   }
 
   if (shareDialog) {
-    const keywords = flowName.flows[0].keywords;
+    const keywords = flowName?.flows?.[0]?.keywords || [];
     if (keywords.length === 0) {
       setShareDialog(false);
       setNotification('No keywords found to share the flow link', 'warning');
