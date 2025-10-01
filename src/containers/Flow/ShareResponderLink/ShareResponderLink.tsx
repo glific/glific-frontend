@@ -114,7 +114,7 @@ const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponder
   return (
     <Dialog fullWidth maxWidth="md" open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
       <div className={styles.Container}>
-        <Typography className={styles.Heading} variant="h5">
+        <Typography data-testid="dialogHeading" className={styles.Heading} variant="h5">
           Share Responder Link
         </Typography>
 
