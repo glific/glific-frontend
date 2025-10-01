@@ -30,7 +30,6 @@ export const UPDATE_ORGANIZATION = gql`
           lowBalanceThreshold
           criticalBalanceThreshold
           sendWarningMail
-          allowBotNumberUpdate
         }
       }
       errors {
@@ -104,7 +103,6 @@ export const UPDATE_CREDENTIAL = gql`
         }
         keys
         secrets
-        isActive
       }
       errors {
         key

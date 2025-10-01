@@ -6,27 +6,16 @@ import { yupPasswordValidation } from 'common/constants';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
-import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Auth } from '../Auth';
-import styles from './Registration.module.css';
 
 export interface User {
   name: string;
   phone: string;
   password: string;
   captcha: string;
-  email: string;
-  consent_for_updates: boolean;
 }
 
-const initialFormValues: User = {
-  name: '',
-  phone: '',
-  password: '',
-  captcha: '',
-  email: '',
-  consent_for_updates: true,
-};
+const initialFormValues: User = { name: '', phone: '', password: '', captcha: '' };
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
@@ -65,15 +54,6 @@ export const Registration = () => {
       type: 'text',
       placeholder: t('Your full name'),
       darkMode: true,
-      autoComplete: 'name',
-    },
-    {
-      component: Input,
-      name: 'email',
-      type: 'email',
-      placeholder: t('Email'),
-      darkMode: true,
-      autoComplete: 'email',
     },
     {
       component: PhoneInput,
@@ -81,9 +61,6 @@ export const Registration = () => {
       type: 'phone',
       placeholder: t('Your personal WhatsApp number'),
       helperText: t('Please enter a phone number.'),
-      inputProps: {
-        autoComplete: 'tel',
-      },
     },
     {
       component: Input,
@@ -91,15 +68,6 @@ export const Registration = () => {
       type: 'password',
       placeholder: t('Password'),
       darkMode: true,
-      autoComplete: 'new-password',
-    },
-    {
-      component: Checkbox,
-      name: 'consent_for_updates',
-      label: 'I would like to receive product updates',
-      styles: styles.CheckboxInline,
-      labelPlacement: 'end',
-      darkCheckbox: true,
     },
   ];
 
@@ -107,7 +75,6 @@ export const Registration = () => {
     name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
-    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
   });
 
   return (

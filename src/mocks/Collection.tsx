@@ -512,12 +512,10 @@ export const updateCollectionQuery = {
   },
 };
 
-export const updateCollectionUsersQuery = (variables: any) => ({
+export const updateCollectionUsersQuery = {
   request: {
     query: UPDATE_COLLECTION_USERS,
-    variables: {
-      input: variables,
-    },
+    variables: { input: { addUserIds: [], groupId: '1', deleteUserIds: ['1', '2'] } },
   },
   result: {
     data: {
@@ -529,4 +527,4 @@ export const updateCollectionUsersQuery = (variables: any) => ({
       },
     },
   },
-});
+};

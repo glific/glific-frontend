@@ -142,7 +142,7 @@ export const TicketList = () => {
 
   const additionalAction = () => [
     {
-      icon: <ChatIcon data-testid="chat-icon" />,
+      icon: <ChatIcon />,
       parameter: 'contact',
       dialog: (contact: any, item: any) => {
         if (item.messageNumber) {
