@@ -32,6 +32,7 @@ import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
+  console.log(keywords.length);
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
@@ -67,7 +68,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 const viewIcon = <ViewIcon data-testid="viewIt" />;
-const shareIcon = <ShareIcon className={styles.ShareIcon} color="secondary" />;
+const shareIcon = <ShareIcon className={styles.ShareIcon} color="secondary" data-testid="shareIcon" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
@@ -264,7 +265,7 @@ export const FlowList = () => {
         if (keywords.length > 0) {
           setShareDialogKeywords(keywords.map((i: string, index: number) => ({ label: i, id: index })));
         } else {
-          setNotification('No keywords found to share the flow link', 'warning');
+          setNotification('No keywords found to share the responder link', 'warning');
         }
       },
     },
