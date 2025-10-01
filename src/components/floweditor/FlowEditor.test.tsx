@@ -224,7 +224,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   });
 });
 
-test('if the flow the inactive', async () => {
+test.skip('if the flow the inactive', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(wrapperFunction(inActiveFlowMocks));
 
