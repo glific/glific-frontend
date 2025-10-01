@@ -1,22 +1,23 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Autocomplete, Chip, Dialog, IconButton, TextField, Tooltip, Typography } from '@mui/material';
+import { Autocomplete, Chip, Dialog, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import QRCode from 'react-qr-code';
+
 import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
 import logoSrc from 'assets/images/logo/Logo.svg';
 import { SHARE_FLOW_LINK } from 'common/constants';
 import { setNotification } from 'common/notification';
 import { copyToClipboardMethod, downloadCanvasAsPNG } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
-import { useEffect, useState } from 'react';
-import QRCode from 'react-qr-code';
 import { getUserSession } from 'services/AuthService';
 import styles from './ShareResponderLink.module.css';
 
-interface ShareFlowLinkProps {
+interface ShareResponderLinkProps {
   shareDialogKeywords: any[];
   handleClose: Function;
 }
 
-export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLinkProps) => {
+const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponderLinkProps) => {
   const [selectedKeyword, setSelectedKeyword] = useState(shareDialogKeywords[0]);
   const [flowLink, setFlowLink] = useState('');
 
@@ -111,7 +112,7 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
   }, [selectedKeyword]);
 
   return (
-    <Dialog fullWidth={true} maxWidth={'md'} open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
+    <Dialog fullWidth maxWidth="md" open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
       <div className={styles.Container}>
         <Typography className={styles.Heading} variant="h5">
           Share Responder Link
@@ -220,3 +221,5 @@ export const ShareFlowLink = ({ shareDialogKeywords, handleClose }: ShareFlowLin
     </Dialog>
   );
 };
+
+export default ShareResponderLink;

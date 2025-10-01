@@ -1,11 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { ShareFlowLink } from './ShareResponderLink';
+import ShareResponderLink from './ShareResponderLink';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Utils from 'common/utils';
 import { setUserSession } from 'services/AuthService';
 
-describe('ShareFlowLink Component', () => {
-  const shareFlowLinkProps = {
+describe('ShareResponderLink Component', () => {
+  const shareResponderLinkProps = {
     shareDialogKeywords: [
       { label: 'test', id: 1 },
       { label: 'demo', id: 2 },
@@ -15,13 +15,13 @@ describe('ShareFlowLink Component', () => {
 
   const wrapper = (
     <MockedProvider>
-      <ShareFlowLink {...shareFlowLinkProps} />
+      <ShareResponderLink {...shareResponderLinkProps} />
     </MockedProvider>
   );
 
   setUserSession(JSON.stringify({ organization: { contact: { phone: '123456' } } }));
 
-  test('it should render ShareFlowLink component', async () => {
+  test('it should render ShareResponderLink component', async () => {
     render(wrapper);
     expect(screen.getByText('Share Link To a Flow')).toBeInTheDocument();
 
@@ -37,7 +37,7 @@ describe('ShareFlowLink Component', () => {
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
 
     await waitFor(() => {
-      expect(shareFlowLinkProps.handleClose).toHaveBeenCalled();
+      expect(shareResponderLinkProps.handleClose).toHaveBeenCalled();
     });
   });
 

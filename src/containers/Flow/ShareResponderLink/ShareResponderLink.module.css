@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #ffffff !important;
+  background: #fff !important;
   padding: 0 16px;
   width: 50%;
 }
@@ -59,7 +59,7 @@
   background: #f8f9fa !important;
   border: 2px solid #e0e7ff !important;
   border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 8%) !important;
   transition: all 0.3s ease !important;
 }
 
@@ -111,10 +111,10 @@
   position: relative;
   display: inline-block;
   padding: 16px;
-  background: #ffffff !important;
+  background: #fff !important;
   border: 2px solid #e0e7ff !important;
   border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 8%) !important;
   border-radius: 12px;
 }
 
@@ -130,14 +130,14 @@
   transform: translate(-50%, -50%);
   width: 50px;
   height: 50px;
-  background: #ffffff;
+  background: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 0 0 4px #ffffff,
-    0 2px 8px rgba(0, 0, 0, 0.15);
+    0 0 0 4px #fff,
+    0 2px 8px rgba(0, 0, 0, 15%);
 }
 
 .LogoImage {
@@ -148,7 +148,7 @@
 }
 
 .QRCaption {
-  color: #666666 !important;
+  color: #666 !important;
   font-style: italic;
   margin-top: 8px !important;
 }
@@ -171,7 +171,7 @@
 
 .KeywordSelect .MuiOutlinedInput-root {
   border-radius: 10px !important;
-  background: #ffffff;
+  background: #fff;
   border: 2px solid #e0e7ff !important;
   transition: all 0.3s ease !important;
 }
@@ -182,7 +182,7 @@
 
 .KeywordSelect .MuiOutlinedInput-root.Mui-focused {
   border-color: #119656 !important;
-  box-shadow: 0 0 0 3px rgba(17, 150, 86, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(17, 150, 86, 10%) !important;
 }
 
 .KeywordOption {
@@ -192,11 +192,11 @@
 }
 
 .KeywordChip {
-  background: rgba(17, 150, 86, 0.1) !important;
+  background: rgba(17, 150, 86, 10%) !important;
   color: #119656 !important;
   font-weight: 500 !important;
 }
 
 .CopyIcon:hover {
-  background: rgba(17, 150, 86, 0.2) !important;
+  background: rgba(17, 150, 86, 20%) !important;
 }

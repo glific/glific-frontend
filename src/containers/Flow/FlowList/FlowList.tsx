@@ -28,7 +28,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { ShareFlowLink } from '../ShareResponderLink/ShareResponderLink';
+import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
@@ -398,7 +398,7 @@ export const FlowList = () => {
     );
   } else if (shareDialogKeywords.length > 0) {
     dialogBox = (
-      <ShareFlowLink shareDialogKeywords={shareDialogKeywords} handleClose={() => setShareDialogKeywords([])} />
+      <ShareResponderLink shareDialogKeywords={shareDialogKeywords} handleClose={() => setShareDialogKeywords([])} />
     );
   }
   useEffect(() => {

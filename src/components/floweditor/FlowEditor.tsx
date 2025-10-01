@@ -22,7 +22,7 @@ import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
-import { ShareFlowLink } from 'containers/Flow/ShareResponderLink/ShareResponderLink';
+import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -49,33 +49,6 @@ export const FlowEditor = () => {
   const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
-
-  const menuItems = [
-    {
-      label: 'Export flow',
-      action: () => {
-        exportFlowMutation({
-          variables: {
-            id: flowId,
-          },
-        });
-        handleClose();
-      },
-    },
-    {
-      label: 'Reset flow count',
-      action: () => {
-        setShowResetFlowModal(true);
-        handleClose();
-      },
-    },
-    {
-      label: 'Share Flow Link',
-      action: () => {
-        setShareDialog(true);
-      },
-    },
-  ];
 
   const config = setConfig(uuid, isTemplate, skipValidation);
 
@@ -168,6 +141,33 @@ export const FlowEditor = () => {
     },
   });
 
+  const menuItems = [
+    {
+      label: 'Export flow',
+      action: () => {
+        exportFlowMutation({
+          variables: {
+            id: flowId,
+          },
+        });
+        handleClose();
+      },
+    },
+    {
+      label: 'Reset flow count',
+      action: () => {
+        setShowResetFlowModal(true);
+        handleClose();
+      },
+    },
+    {
+      label: 'Share Flow Link',
+      action: () => {
+        setShareDialog(true);
+      },
+    },
+  ];
+
   useEffect(() => {
     if (flowName && flowName.flows.length > 0) {
       setFlowId(flowName.flows[0].id);
@@ -218,7 +218,7 @@ export const FlowEditor = () => {
       setNotification('No keywords found to share the flow link', 'warning');
     } else {
       modal = (
-        <ShareFlowLink
+        <ShareResponderLink
           shareDialogKeywords={keywords.map((keyword: any, index: number) => ({ label: keyword, id: index }))}
           handleClose={() => setShareDialog(false)}
         />
