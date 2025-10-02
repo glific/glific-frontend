@@ -143,7 +143,7 @@ describe('collection', () => {
     expect(screen.getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Title*')).toBeInTheDocument();
     });
 
     const collectionInputs = screen.getAllByRole('textbox');
