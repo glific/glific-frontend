@@ -19,9 +19,20 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
-import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
+import {
+  checkElementInRegistry,
+  deleteFlowDefinition,
+  fetchLatestRevision,
+  getFlowDefinition,
+  getKeywords,
+  loadfiles,
+  postLatestRevision,
+  setConfig,
+} from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
+import dayjs from 'dayjs';
+import setLogs from 'config/logs';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -114,7 +125,7 @@ export const FlowEditor = () => {
   });
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
         setFlowValidation(data.publishFlow.errors);
         setIsError(true);
@@ -122,6 +133,7 @@ export const FlowEditor = () => {
         setPublished(true);
       }
       setPublishLoading(false);
+      if (uuid) await deleteFlowDefinition(uuid);
     },
     onError: () => {
       setPublishLoading(false);
@@ -208,8 +220,10 @@ export const FlowEditor = () => {
       Track('Flow opened');
 
       return () => {
-        Object.keys(files).forEach((node: any) => {
+        Object.keys(files).forEach((node) => {
+          // @ts-ignore
           if (files[node] && document.body.contains(files[node])) {
+            // @ts-ignore
             document.body.removeChild(files[node]);
           }
         });
@@ -227,8 +241,37 @@ export const FlowEditor = () => {
     return () => {};
   }, [flowId]);
 
-  const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: params.uuid } });
+  const checkLatestRevision = async () => {
+    let revisionSaved = false;
+    if (uuid) {
+      const latestRevision = await fetchLatestRevision(uuid);
+      const flowDefinition = await getFlowDefinition(uuid);
+
+      if (latestRevision && flowDefinition) {
+        const latestRevisionTime = dayjs(latestRevision.created_on);
+        const flowDefinitionTime = dayjs(flowDefinition.timestamp);
+
+        if (flowDefinitionTime.isAfter(latestRevisionTime)) {
+          const timeDifferenceSeconds = flowDefinitionTime.diff(latestRevisionTime, 'seconds');
+          revisionSaved =
+            timeDifferenceSeconds > 300 ? await postLatestRevision(uuid, flowDefinition.definition) : true;
+        } else {
+          revisionSaved = true;
+        }
+      } else if (!flowDefinition) {
+        setLogs(`Local Flow definition not found ${uuid}`, 'info');
+
+        // If flowDefinition is not found, we assume the revision is saved
+        revisionSaved = true;
+      }
+    }
+    return revisionSaved;
+  };
+
+  const handlePublishFlow = async () => {
+    if (await checkLatestRevision()) {
+      publishFlow({ variables: { uuid: params.uuid } });
+    }
   };
 
   const handleCancelFlow = () => {
