@@ -303,3 +303,12 @@ export const handleSubscriptionError = (error: any, subscriptionType: string, re
     refetch(true);
   }
 };
+
+export const downloadCanvasAsPNG = (canvas: HTMLCanvasElement, fileName: string, notification: string) => {
+  const pngFile = canvas.toDataURL('image/png', 1.0);
+  const downloadLink = document.createElement('a');
+  downloadLink.download = fileName;
+  downloadLink.href = pngFile;
+  downloadLink.click();
+  setNotification(notification);
+};
