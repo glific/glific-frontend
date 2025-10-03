@@ -45,7 +45,7 @@ export const QuickReplyTemplate = ({
 
   return (
     <>
-      {index === 0 && <div className={styles.Heading}>Button text*</div>}
+      {index === 0 && <div className={styles.Heading}>Button Text*</div>}
       {translation && <div className={styles.Translation}>{translation}</div>}
       <div className={styles.WrapperBackground}>
         <div className={styles.QuickReplyWrapper}>
