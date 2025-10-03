@@ -388,7 +388,7 @@ describe('Edit mode', () => {
     render(renderInteractiveMessage('3', getTemplateMocks3));
 
     await waitFor(() => {
-      expect(screen.getByText('Button text*')).toBeInTheDocument();
+      expect(screen.getByText('Button Text*')).toBeInTheDocument();
     });
   });
 

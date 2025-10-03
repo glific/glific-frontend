@@ -43,7 +43,7 @@ test('it should render platform Details page', async () => {
 });
 
 test('it should fill the Chatbot Details page', async () => {
-  const { getByTestId, getAllByRole, getAllByTestId, getByText } = render(renderForm);
+  const { getByTestId, getAllByRole, getByText } = render(renderForm);
 
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Chatbot Details');
