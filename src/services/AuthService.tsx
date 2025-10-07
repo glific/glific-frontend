@@ -78,12 +78,14 @@ export const checkAuthStatusService = () => {
     authStatus = false;
   } else {
     const tokenExpiryTime = new Date(tokenExpiryTimeFromSession);
-    // compare the session token with the current time
-    if (tokenExpiryTime > new Date()) {
+    // Create a buffer time of 1 minute before actual expiry
+    const bufferTime = new Date(tokenExpiryTime.getTime() - 60000);
+
+    if (bufferTime > new Date()) {
       // token is still valid return true
       authStatus = true;
     } else {
-      // this means token has expired and let's return false
+      // this means token will expire in 1 minute or less, let's return false to trigger renewal
       authStatus = false;
     }
   }
