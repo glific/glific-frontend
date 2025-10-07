@@ -146,7 +146,7 @@ export const SheetIntegrationList = () => {
   });
 
   const columnNames = [
-    { name: 'label', label: t('Label') },
+    { name: 'label', label: t('Name') },
     { label: t('Last synced') },
     { label: t('Type') },
     { label: t('Actions') },

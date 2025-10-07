@@ -185,7 +185,7 @@ export const Flow = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      label: t('Name'),
+      label: `${t('Name')}*`,
       disabled: isTemplate,
     },
     {

@@ -30,7 +30,6 @@ export const ConfirmOTP = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const [userObject, setUserObject] = useState<User>();
-  const [token, setToken] = useState('');
 
   useEffect(() => {
     const state = location.state as User;
@@ -39,7 +38,7 @@ export const ConfirmOTP = () => {
     }
   }, [location]);
 
-  const handleResend = () => {
+  const handleResend = (token: string) => {
     if (!userObject) {
       return;
     }
@@ -69,7 +68,6 @@ export const ConfirmOTP = () => {
         onClick={handleResend}
         edge="end"
         action="resend"
-        onTokenUpdate={(tokenString: string) => setToken(tokenString)}
       >
         <p className={styles.Resend}>resend</p> <RefreshIcon classes={{ root: styles.ResendButton }} />
       </Captcha>
@@ -105,6 +103,8 @@ export const ConfirmOTP = () => {
           phone: userObject.phone,
           password: userObject.password,
           otp: values.OTP,
+          email: userObject.email,
+          consent_for_updates: userObject.consent_for_updates,
         },
       })
       .then(() => {
