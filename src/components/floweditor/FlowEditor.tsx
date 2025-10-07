@@ -266,6 +266,23 @@ export const FlowEditor = () => {
     return () => {};
   }, [flowId]);
 
+  useEffect(() => {
+    if (flowId) {
+      // health check to ensure the session is active
+      const pollFlowConnection = () => {
+        getFreeFlow({ variables: { id: flowId } });
+      };
+
+      // setting the polling interval to 15 minutes
+      const POLLING_INTERVAL = 15 * 60 * 1000;
+      const pollingInterval = setInterval(pollFlowConnection, POLLING_INTERVAL);
+
+      return () => {
+        clearInterval(pollingInterval);
+      };
+    }
+  }, [flowId, getFreeFlow]);
+
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: params.uuid } });
   };
