@@ -30,7 +30,9 @@ import { ticketsInfo } from 'common/HelpData';
 import setLogs from 'config/logs';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
-const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
+const getBody = (body: any) => (
+  <div className={styles.TableText}>{body.length > 100 ? `${body.slice(0, 100)}...` : body}</div>
+);
 const getTopic = (topic: any) => <div className={styles.TableText}>{topic}</div>;
 
 const getInsertedAt = (insertedAt: string) => (
@@ -142,7 +144,7 @@ export const TicketList = () => {
 
   const additionalAction = () => [
     {
-      icon: <ChatIcon />,
+      icon: <ChatIcon data-testid="chat-icon" />,
       parameter: 'contact',
       dialog: (contact: any, item: any) => {
         if (item.messageNumber) {

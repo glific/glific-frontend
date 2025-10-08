@@ -8,7 +8,6 @@
 
 .Editor {
   position: relative;
-
   height: 10rem;
   position: relative;
   padding: 1rem;
@@ -61,16 +60,13 @@
 }
 
 .disabled {
+  composes: Editor;
   position: relative;
-  border: 2px solid rgba(0, 0, 0, 0.23);
-  border-radius: 12px;
   height: 10rem;
   position: relative;
   padding: 1rem;
   position: relative;
   display: block;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
   color: rgba(0, 0, 0, 0.38);
 }
 
@@ -189,4 +185,8 @@
 
 .FormatingOptions span:hover {
   background-color: #eee;
+}
+
+.DisablePicker {
+  pointer-events: none;
 }

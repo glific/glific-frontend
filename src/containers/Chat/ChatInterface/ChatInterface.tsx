@@ -16,6 +16,7 @@ import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
+import { getOrganizationServices } from 'services/AuthService';
 
 const tabs = [
   {
@@ -46,6 +47,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const params = useParams();
   const [value, setValue] = useState(tabs[0].link);
   const [appliedFilters, setAppliedFilters] = useState<any>({});
+  const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -195,7 +197,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      {selectedTab === 'contacts' && !savedSearches && (
+      {!isAskMeBotEnabled && selectedTab === 'contacts' && !savedSearches && (
         <SimulatorIcon
           data-testid="simulatorIcon"
           className={styles.SimulatorIcon}

@@ -19,7 +19,8 @@ type ServiceType =
   | 'contactProfileEnabled'
   | 'ticketingEnabled'
   | 'whatsappGroupEnabled'
-  | 'certificateEnabled';
+  | 'certificateEnabled'
+  | 'askMeBotEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
@@ -168,6 +169,9 @@ export const getUserSession = (element?: string) => {
       break;
     case 'name':
       returnValue = JSON.parse(user).name;
+      break;
+    case 'organization':
+      returnValue = JSON.parse(user).organization;
       break;
     default:
       returnValue = JSON.parse(user);

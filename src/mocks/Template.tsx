@@ -121,6 +121,7 @@ export const templateEditMock = (templateId: string, buttons: any) => ({
             label: 'English',
           },
           shortcode: 'account_balance',
+          footer: 'Sample footer',
           tag: null,
           translations:
             '{"2":{"uuid":"0de5b294-0385-48d0-bdc0-53cc833a31c5","status":"APPROVED","number_parameters":1,"language_id":2,"label":"Account Balance","example":" अब आप नीचे दिए विकल्पों में से एक का चयन करके [003] के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]","body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
@@ -165,6 +166,7 @@ const getTemplateDataTypeText = {
       buttons:
         '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
       buttonType: 'QUICK_REPLY',
+      footer: 'footer',
 
       quality: null,
     },
@@ -270,6 +272,7 @@ export const createTemplateMock = (input: any) => ({
 export const templateMock = createTemplateMock({
   label: 'title',
   body: 'Hi, How are you*_~~_* {{1}}',
+  footer: 'footer',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: '1',
@@ -281,12 +284,14 @@ export const templateMock = createTemplateMock({
   example: 'Hi, How are you*_~~_* [User]',
   hasButtons: true,
   buttons: '[{"type":"QUICK_REPLY","text":"Call me"}]',
+
   buttonType: 'QUICK_REPLY',
 });
 
 export const quickReplyMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
+  footer: '',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
@@ -304,17 +309,35 @@ export const quickReplyMock = createTemplateMock({
 export const ctaMock = createTemplateMock({
   label: 'Hello',
   body: 'Hi',
+  footer: '',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: null,
   isActive: true,
-
   isHsm: true,
   languageId: '1',
   example: 'Hi',
   shortcode: 'welcome',
   hasButtons: true,
   buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+  buttonType: 'CALL_TO_ACTION',
+});
+
+export const dynamicUrlMock = createTemplateMock({
+  label: 'Hello',
+  body: 'Hi',
+  type: 'TEXT',
+  category: 'ACCOUNT_UPDATE',
+  tagId: null,
+  isActive: true,
+  allowTemplateCategoryChange: true,
+  isHsm: true,
+  shortcode: 'welcome',
+  languageId: '2',
+  example: 'Hi',
+  hasButtons: true,
+  buttons:
+    '[{"type":"URL","text":"Click me","url":"https://example.com/{{1}}","example":["https://example.com/example"]}]',
   buttonType: 'CALL_TO_ACTION',
 });
 
@@ -372,7 +395,7 @@ export const filterSpeedSends = {
   },
 };
 
-export const templateCountQuery = (filter: any, count: number = 3) => {
+export const templateCountQuery = (filter: any, count: number) => {
   return {
     request: {
       query: GET_TEMPLATES_COUNT,
@@ -558,7 +581,7 @@ export const templatesData = [
     },
   },
   {
-    id: '94',
+    id: '95',
     label: 'Message',
     bspId: null,
     body: 'some description',
@@ -626,7 +649,7 @@ export const bulkApplyMutation = {
   request: {
     query: BULK_APPLY_TEMPLATES,
     variables: {
-      data: 'Language,Title,Message,Sample Message,Element Name,Category,Attachment Type,Attachment URL,Has Buttons,Button Type,CTA Button 1 Type,CTA Button 1 Title,CTA Button 1 Value,CTA Button 2 Type,CTA Button 2 Title,CTA Button 2 Value,Quick Reply 1 Title,Quick Reply 2 Title,Quick Reply 3 Title\nEnglish,Welcome glific,"Hi {{1}}, Welcome to the world","Hi [User], Welcome to the world",welcome_glific,TRANSACTIONAL,,,FALSE,,,,,,,,,,',
+      data: 'Language,Title,Message,Sample Message,Element Name,Category,Attachment Type,Attachment URL,Has Buttons,Button Type,CTA Button 1 Type,CTA Button 1 Title,CTA Button 1 Value,CTA Button 2 Type,CTA Button 2 Title,CTA Button 2 Value,Quick Reply 1 Title,Quick Reply 2 Title,Quick Reply 3 Title\r\nEnglish,Welcome Arogya,"Hi {{1}},\nWelcome to the world","Hi [Akhilesh],\nWelcome to the world",bulk_hsm_welcome,UTILITY,,,FALSE,,,,,,,,,,\r\nEnglish,Signup,"Hi {{1}},\nSignup Here","Hi [Akhilesh],\nSignup Here",bulk_hsm_signup,UTILITY,,,TRUE,QUICK_REPLY,,,,,,,Yes,No,\r\nEnglish,Help,"Hi {{1}},\nNeed help?","Hi [Akhilesh],\nNeed help?",bulk_hsm_help,UTILITY,,,TRUE,CALL_TO_ACTION,Phone Number,Call here,8979120220,URL,Visit Here,https://github.com/glific,,,\r\nEnglish,Activity,"Hi {{1}},\nLook at this image.","Hi [Akhilesh],\nLook at this image.",bulk_hsm_activity,UTILITY,image,https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg,FALSE,,,,,,,,,,',
     },
   },
   result: {
@@ -637,6 +660,16 @@ export const bulkApplyMutation = {
       },
     },
   },
+};
+
+export const bulkApplyMutationWIthError = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: {
+      data: 'file content',
+    },
+  },
+  error: new Error('Invalid format'),
 };
 
 export const importTemplateMutation = {
@@ -681,6 +714,7 @@ export const HSM_TEMPLATE_MOCKS = [
   templateMock,
   quickReplyMock,
   ctaMock,
+  dynamicUrlMock,
 ];
 
 export const SPEED_SENDS_MOCKS = [

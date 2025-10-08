@@ -217,7 +217,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
             items={suggestions}
           />
           <OnChangePlugin onChange={handleChange} />
-          {picker}
+          <span className={disabled && styles.DisablePicker}>{picker}</span>
         </div>
       </div>
       {form && form.errors[field.name] && form.touched[field.name] ? (

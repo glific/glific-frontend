@@ -22,7 +22,7 @@ export const StaffManagementList = () => {
   const columnNames = [
     { name: 'name', label: t('Name') },
     { name: 'phone', label: t('Phone number') },
-    { label: t('Assigned to') },
+    { label: t('Collections assigned') },
     { label: t('Actions') },
   ];
 
@@ -105,7 +105,7 @@ export const StaffManagementList = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        button={{ show: true, label: t('Collections'), link: '/collection' }}
+        button={{ show: false }}
         searchParameter={['name']}
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}
