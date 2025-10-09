@@ -8,6 +8,7 @@ on:
 
 jobs:
   glific:
+    name: CI
     runs-on: ubuntu-latest
 
     services:
