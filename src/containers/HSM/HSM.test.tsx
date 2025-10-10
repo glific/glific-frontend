@@ -375,7 +375,7 @@ describe('Add mode', () => {
     });
   });
 
-  test('it should not allow adding more than 10 quick reply buttons', async () => {
+  test('should not allow adding more than 10 quick reply buttons', async () => {
     render(template);
 
     await waitFor(() => {
