@@ -31,7 +31,7 @@ import setLogs from 'config/logs';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => (
-  <div className={styles.TableText}>{body.length > 100 ? `${body.slice(0, 100)}...` : body}</div>
+  <div className={styles.TableText}>{body?.length > 100 ? `${body?.slice(0, 100)}...` : body}</div>
 );
 const getTopic = (topic: any) => <div className={styles.TableText}>{topic}</div>;
 
