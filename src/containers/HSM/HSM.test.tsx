@@ -374,4 +374,28 @@ describe('Add mode', () => {
       expect(validateMediaSpy).toHaveBeenCalledWith('https://example.com/image.jpg', expect.anything(), false);
     });
   });
+
+  test('should not allow adding more than 10 quick reply buttons', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    fireEvent.click(screen.getByText('Quick replies'));
+
+    for (let i = 0; i < 9; i += 1) {
+      await waitFor(() => {
+        const addButton = screen.queryByText('Add Quick Reply');
+        expect(addButton).toBeInTheDocument();
+        user.click(addButton!);
+      });
+    }
+    const addButtonAfterLimit = screen.queryByText('Add Quick Reply');
+    await waitFor(() => {
+      expect(addButtonAfterLimit).not.toBeInTheDocument();
+    });
+  });
 });
