@@ -374,4 +374,43 @@ describe('Add mode', () => {
       expect(validateMediaSpy).toHaveBeenCalledWith('https://example.com/image.jpg', expect.anything(), false);
     });
   });
+
+  test('it hides the Add Quick Reply button after 10 quick replies are added in a hsm template', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    const elementName = inputs[0];
+    const title = inputs[1];
+
+    await user.type(title, 'Hello');
+    await user.type(elementName, 'welcome');
+
+    const lexicalEditor = inputs[2];
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    fireEvent.click(screen.getByText('Quick replies'));
+
+    for (let i = 0; i < 9; i++) {
+      const addButton = screen.queryByText('Add Quick Reply');
+      expect(addButton).toBeInTheDocument();
+      await user.click(addButton!);
+    }
+
+    await waitFor(() => {
+      const addButtonAfterLimit = screen.queryByText('Add Quick Reply');
+      expect(addButtonAfterLimit).not.toBeInTheDocument();
+    });
+  });
 });
