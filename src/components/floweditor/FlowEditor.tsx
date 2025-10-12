@@ -47,8 +47,8 @@ export const FlowEditor = () => {
   const [publishLoading, setPublishLoading] = useState(false);
   const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
-
-  const config = setConfig(uuid, isTemplate, skipValidation);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const [lockedByUser, setLockedByUser] = useState<string>('');
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -65,6 +65,7 @@ export const FlowEditor = () => {
   let flowKeywords;
 
   const loadFlowEditor = () => {
+    const config = setConfig(uuid, isTemplate, skipValidation, isReadOnly);
     showFlowEditor(document.getElementById('flow'), config);
     setLoading(false);
   };
@@ -79,12 +80,31 @@ export const FlowEditor = () => {
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
+      console.log('flowGet keys:', Object.keys(flowGet));
+
       if (flowGet.flow && !flowEditorLoaded) {
         loadFlowEditor();
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
-        setDialogMessage(flowGet.errors[0].message);
-        setCurrentEditDialogBox(true);
+        const errorMessage = flowGet.errors[0].message;
+
+        if (
+          errorMessage.toLowerCase().includes('currently being edited') ||
+          errorMessage.toLowerCase().includes('locked')
+        ) {
+          const match = errorMessage.match(/by (.+?)(?:\.|$)/i);
+          const lockedBy = match ? match[1] : 'another user';
+
+          setIsReadOnly(true);
+          setLockedByUser(lockedBy);
+          setNotification(`This flow is currently being edited by ${lockedBy}. Opening in read-only mode.`, 'warning');
+
+          // Load with read-only config after state is set
+          setTimeout(() => {
+            loadFlowEditor();
+            setFlowEditorLoaded(true);
+          }, 0);
+        }
       }
     },
   });
@@ -99,6 +119,7 @@ export const FlowEditor = () => {
       setErrorMessage(error);
     },
   });
+
   const [resetFlowCountMethod] = useMutation(RESET_FLOW_COUNT, {
     onCompleted: ({ resetFlowCount }) => {
       const { success } = resetFlowCount;
@@ -140,6 +161,7 @@ export const FlowEditor = () => {
   });
 
   useEffect(() => {
+    console.log('Flow Details:', flowName);
     if (flowName && flowName.flows.length > 0) {
       setFlowId(flowName.flows[0].id);
       setIsTemplate(flowName.flows[0].isTemplate);
@@ -248,29 +270,6 @@ export const FlowEditor = () => {
     </div>
   );
 
-  if (currentEditDialogBox) {
-    dialog = (
-      <DialogBox
-        title={dialogMessage}
-        alignButtons="center"
-        skipCancel
-        buttonOk="Take Over"
-        buttonMiddle="Go Back"
-        handleOk={() => {
-          getFreeFlowForced({ variables: { id: flowId, isForced: true } });
-          setCurrentEditDialogBox(false);
-        }}
-        handleMiddle={() => {
-          navigate('/flow');
-        }}
-      >
-        <p className={styles.DialogDescription}>
-          You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to start editing now.
-        </p>
-      </DialogBox>
-    );
-  }
-
   if (publishDialog) {
     dialog = (
       <DialogBox
@@ -346,6 +345,18 @@ export const FlowEditor = () => {
     <>
       {exportFlowloading && <BackdropLoader />}
       {dialog}
+
+      {/* Read-Only Banner */}
+      {isReadOnly && (
+        <div className={styles.ReadOnlyBanner}>
+          <WarningIcon className={styles.BannerIcon} />
+          <span>
+            <strong>View-Only Mode:</strong> This flow is currently being edited by {lockedByUser}. You can view but
+            cannot make changes.
+          </span>
+        </div>
+      )}
+
       <div className={styles.Header}>
         <div className={styles.Title}>
           <BackIconFlow
@@ -401,7 +412,7 @@ export const FlowEditor = () => {
                 handleClose();
               }}
               disableRipple
-              disabled={isTemplate}
+              disabled={isTemplate || isReadOnly}
             >
               Reset flow count
             </MenuItem>
@@ -410,7 +421,7 @@ export const FlowEditor = () => {
             variant="outlined"
             color="primary"
             data-testid="translateButton"
-            disabled={isTemplate}
+            disabled={isTemplate || isReadOnly}
             onClick={() => {
               setShowTranslateFlowModal(true);
               handleClose();
@@ -432,7 +443,7 @@ export const FlowEditor = () => {
             variant="contained"
             color="primary"
             data-testid="button"
-            disabled={isTemplate}
+            disabled={isTemplate || isReadOnly}
             onClick={() => setPublishDialog(true)}
           >
             <PublishIcon className={styles.Icon} />
