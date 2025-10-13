@@ -1,8 +1,7 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 export interface CaptchaProps {
-  onTokenUpdate: any;
   action: string;
   children: any;
   component: any;
@@ -10,27 +9,28 @@ export interface CaptchaProps {
   [key: string]: any;
 }
 
-export const Captcha = ({ component: Component, onTokenUpdate, action, children, onClick, ...rest }: CaptchaProps) => {
+export const Captcha = ({ component: Component, action, children, onClick, ...rest }: CaptchaProps) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Create an event handler so you can call the verification on button click event or form submit
   const handleReCaptchaVerify = useCallback(async () => {
     if (!executeRecaptcha) {
-      return;
+      return null;
     }
     const token = await executeRecaptcha(action);
-    onTokenUpdate(token);
-  }, [executeRecaptcha]);
+    if (!token) {
+      return null;
+    }
 
-  // You can use useEffect to trigger the verification as soon as the component being loaded
-  useEffect(() => {
-    handleReCaptchaVerify();
-  }, [handleReCaptchaVerify]);
+    return token;
+  }, [executeRecaptcha]);
 
   return (
     <Component
-      onClick={() => {
-        handleReCaptchaVerify().then(() => onClick());
+      onClick={async () => {
+        const token = await handleReCaptchaVerify();
+
+        onClick(token);
       }}
       {...rest}
     >

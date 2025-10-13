@@ -63,6 +63,7 @@ export const HSM = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [isActive, setIsActive] = useState<boolean>(true);
   const [category, setCategory] = useState<any>([]);
+  const [footer, setFooter] = useState('');
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
@@ -84,6 +85,7 @@ export const HSM = () => {
     location: null,
     media: {},
     body: '',
+    footer: '',
   });
   const { t } = useTranslation();
   const params = useParams();
@@ -141,6 +143,7 @@ export const HSM = () => {
     language,
     label,
     body,
+    footer,
     type,
     attachmentURL,
     category,
@@ -215,6 +218,7 @@ export const HSM = () => {
     language: languageIdValue,
     label: labelValue,
     body: bodyValue,
+    footer: footerValue,
     example: exampleValue,
     type: typeValue,
     MessageMedia: MessageMediaValue,
@@ -245,6 +249,7 @@ export const HSM = () => {
     }
 
     setBody(bodyValue);
+    setFooter(footerValue || '');
     setEditorState(bodyValue);
     setCategory(categoryValue);
     setTagId(tagIdValue);
@@ -261,9 +266,9 @@ export const HSM = () => {
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
       const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
       const sampleText: any = parsedText && message + parsedText;
-      setSimulatorMessage(sampleText);
+      setSimulatorMessage(sampleText, footerValue || '');
     } else {
-      setSimulatorMessage(getExampleFromBody(bodyValue, variables));
+      setSimulatorMessage(getExampleFromBody(bodyValue, variables), footerValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -306,6 +311,9 @@ export const HSM = () => {
 
     if (payloadCopy.type === 'TEXT' || isEditing) {
       delete payloadCopy.attachmentURL;
+    }
+    if (footer?.trim()) {
+      payloadCopy.footer = footer.trim();
     }
 
     if (tagId) {
@@ -408,20 +416,32 @@ export const HSM = () => {
     return data;
   };
 
-  const setSimulatorMessage = (messages: any) => {
+  const setSimulatorMessage = (messages: any, footer?: any) => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    let text = message;
-
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;
     typeValue = type?.id || 'TEXT';
-
-    setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
+    let text = message;
+    let sampleMessage = { ...sampleMessages, body: text, media: mediaBody, type: typeValue };
+    if (footer || footer === '') {
+      sampleMessage.footer = footer;
+    }
+    setSampleMessages(sampleMessage);
   };
 
   const fields = [
+    {
+      component: Checkbox,
+      name: 'isActive',
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Active?
+        </Typography>
+      ),
+      darkCheckbox: true,
+    },
     {
       component: AutoComplete,
       name: 'language',
@@ -446,13 +466,14 @@ export const HSM = () => {
     {
       component: Input,
       name: 'newShortcode',
-      placeholder: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}`,
       label: `${t('Element name')}*`,
       disabled: isEditing,
       skip: languageVariant ? true : false,
       onChange: (value: any) => {
         setNewShortcode(value);
       },
+      helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
     {
       component: AutoComplete,
@@ -461,7 +482,7 @@ export const HSM = () => {
       optionLabel: 'label',
       multiple: false,
       label: `${t('Element name')}*`,
-      placeholder: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}`,
       disabled: isEditing,
       onChange: (event: any) => {
         setExistingShortcode(event);
@@ -471,27 +492,19 @@ export const HSM = () => {
     {
       component: Input,
       name: 'label',
-      label: t('Title'),
       disabled: isEditing,
+      label: `${t('Title')}*`,
+      placeholder: `${t('Title')}`,
       helperText: t('Define what use case does this template serve eg. OTP, optin, activity preference'),
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
-    {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" className={styles.IsActive}>
-          Active?
-        </Typography>
-      ),
-      darkCheckbox: true,
-    },
+
     {
       component: EmojiInput,
       name: 'body',
-      label: t('Message'),
+      label: `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -503,12 +516,22 @@ export const HSM = () => {
       },
       defaultValue: (isEditing || isCopyState) && editorState,
     },
+
     {
       component: TemplateVariables,
       message: body,
       variables: variables,
       setVariables: setVariables,
       isEditing: isEditing,
+    },
+    {
+      component: Input,
+      name: 'footer',
+      label: `${t('Footer')} (optional)`,
+      disabled: isEditing,
+      inputProp: {
+        onChange: (event: any) => setFooter(event.target.value),
+      },
     },
     {
       component: Checkbox,
@@ -541,7 +564,7 @@ export const HSM = () => {
       optionLabel: 'label',
       multiple: false,
       label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
+      placeholder: `${t('Category')}`,
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
@@ -554,7 +577,7 @@ export const HSM = () => {
       name: 'category',
       type: 'text',
       label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
+      placeholder: `${t('Category')}`,
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       skip: !isEditing,
@@ -622,6 +645,7 @@ export const HSM = () => {
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
+    footer: Yup.string().max(60, t('Footer value can be at most 60 characters')),
     body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
     category: Yup.object().nullable().required(t('Category is required.')),
     variables: Yup.array().of(
@@ -718,10 +742,10 @@ export const HSM = () => {
       }
 
       if (sampleText) {
-        setSimulatorMessage(sampleText);
+        setSimulatorMessage(sampleText, footer);
       }
     }
-  }, [templateButtons, body, variables]);
+  }, [templateButtons, body, variables, footer]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));

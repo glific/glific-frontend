@@ -14,6 +14,7 @@ export const getCurrentUserQuery = {
           name: 'John Doe',
           phone: '+919820198765',
           roles: ['admin'],
+          email: 'you@domain.com',
           contact: {
             id: '1',
             name: 'Glific user',
@@ -78,6 +79,7 @@ export const updateUserQuery = [
           user: {
             id: '2',
             name: 'Updated Name',
+            email: 'you@domain.com'
           },
         },
       },

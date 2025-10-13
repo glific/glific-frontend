@@ -74,6 +74,7 @@ export const TemplateOptions = ({
         color="primary"
         data-testid="addButton"
         onClick={() => handleAddClick(helper, type)}
+        disabled={disabled}
       >
         Add {title}
       </Button>
@@ -202,6 +203,7 @@ export const TemplateOptions = ({
               <div>
                 <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                   <TextField
+                    placeholder="Sample Suffix"
                     disabled={disabled}
                     label={'Sample Suffix'}
                     className={styles.TextField}
@@ -268,7 +270,7 @@ export const TemplateOptions = ({
               ) : null}
             </FormControl>
           </div>
-          <div>{inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers) : null}</div>
+          <div>{inputFields.length === index + 1 && inputFields.length !== 10 ? addButton(arrayHelpers) : null}</div>
         </>
       );
     }

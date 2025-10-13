@@ -13,7 +13,7 @@
 }
 
 .GlificLogo {
-  margin-top: 5vh;
+  margin-top: 2vh;
   width: 99px;
 }
 
@@ -80,7 +80,7 @@
   color: #93a29b;
   font-weight: bolder;
   margin-top: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   font-size: 16px;
   text-transform: uppercase;
 }
@@ -90,7 +90,7 @@
   text-decoration: none;
   font-size: 36px;
   font-weight: bolder;
-  margin-top: 0.25rem;
+  margin-top: -0.25rem;
 }
 
 .Auth a {
@@ -183,8 +183,10 @@
 }
 
 .AuthRegistrationButton {
-  composes: AuthButton;
+  width: 334px;
+  margin-right: 0px;
   border: 0px;
+  color: #edf4f0 !important;
 }
 
 .ErrorMessage {

@@ -32,6 +32,7 @@ export const GET_ORGANIZATION = gql`
           lowBalanceThreshold
           criticalBalanceThreshold
           sendWarningMail
+          allowBotNumberUpdate
         }
         regxFlow {
           flowId
@@ -134,6 +135,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       ticketingEnabled
       whatsappGroupEnabled
       certificateEnabled
+      askMeBotEnabled
     }
   }
 `;

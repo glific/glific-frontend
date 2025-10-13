@@ -339,6 +339,7 @@ const Simulator = ({
           location={location}
           isSimulatedMessage={isSimulatedMessage}
         />
+
         <TimeComponent direction={direction} insertedAt={insertedAt} />
       </>
     );
@@ -355,6 +356,7 @@ const Simulator = ({
           data-testid="simulatorMessage"
         >
           {messageBody}
+          {message?.footer && <span className={styles.Footer}>{message.footer}</span>}
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons

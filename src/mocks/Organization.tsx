@@ -60,6 +60,7 @@ export const getOrganizationQuery = [
               lowBalanceThreshold: '10',
               criticalBalanceThreshold: '5',
               sendWarningMail: false,
+              allowBotNumberUpdate: true,
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
@@ -116,6 +117,7 @@ export const getOrganizationQuery = [
               lowBalanceThreshold: '10',
               criticalBalanceThreshold: '5',
               sendWarningMail: false,
+              allowBotNumberUpdate: true,
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
@@ -167,6 +169,7 @@ export const getOrganizationQuery = [
               lowBalanceThreshold: '10',
               criticalBalanceThreshold: '5',
               sendWarningMail: false,
+              allowBotNumberUpdate: true,
             },
             regxFlow: {
               __typename: 'RegxFlow',
@@ -220,6 +223,7 @@ export const getOrganizationSettings = {
             lowBalanceThreshold: '10',
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
+            allowBotNumberUpdate: false
           },
           regxFlow: {
             __typename: 'RegxFlow',
@@ -915,6 +919,7 @@ export const getOrganizationStatus = (status: string) => ({
             lowBalanceThreshold: '10',
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
+            allowBotNumberUpdate: false
           },
           name: 'Glific',
           signaturePhrase: 'Sample text',
@@ -1048,5 +1053,119 @@ export const updateMaytapiCredentials = (error: boolean = false) => ({
     },
   },
 });
+
+export const getOrganizationSettingsAllowBot = [
+  {
+    request: {
+      query: GET_ORGANIZATION,
+    },
+    result: {
+      data: {
+        organization: {
+          organization: {
+            defaultLanguage: { id: 1, label: 'English (United States)' },
+            activeLanguages: [
+              {
+                id: 1,
+                label: 'English (United States)',
+              },
+            ],
+            id: 1,
+            newcontactFlowId: '5',
+            optinFlowId: '2',
+            outOfOffice: {
+              enabled: true,
+              defaultFlowId: 1,
+              enabledDays: [
+                { enabled: true, id: 1 },
+                { enabled: true, id: 2 },
+                { enabled: true, id: 3 },
+                { enabled: true, id: 4 },
+                { enabled: true, id: 5 },
+                { enabled: false, id: 6 },
+                { enabled: false, id: 7 },
+              ],
+              endTime: '12:30:27',
+              flowId: 2,
+              startTime: '12:31:27',
+            },
+            regxFlow: {
+              __typename: 'RegxFlow',
+              flowId: '1',
+              regx: 'unique_regex',
+              regxOpt: null,
+            },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
+              allowBotNumberUpdate: false,
+            },
+            name: 'Glific',
+            signaturePhrase: 'Sample text',
+            contact: {
+              phone: 911111111111,
+            },
+            status: 'ACTIVE',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_ORGANIZATION,
+      variables: { id: 1 },
+    },
+    result: {
+      data: {
+        organization: {
+          organization: {
+            activeLanguages: [
+              { id: '1', label: 'English' },
+              { id: '2', label: 'Hindi' },
+            ],
+            contact: { phone: '911111111111' },
+            defaultLanguage: { id: '1', label: 'English' },
+            id: '1',
+            name: 'Glific',
+            newcontactFlowId: '5',
+            optinFlowId: '1',
+            outOfOffice: {
+              defaultFlowId: '7',
+              enabled: true,
+              enabledDays: [
+                { enabled: true, id: 1 },
+                { enabled: true, id: 2 },
+                { enabled: true, id: 3 },
+                { enabled: true, id: 4 },
+                { enabled: true, id: 5 },
+                { enabled: true, id: 6 },
+                { enabled: true, id: 7 },
+              ],
+              endTime: '20:00:00',
+              flowId: '1',
+              startTime: '09:00:00',
+            },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
+              allowBotNumberUpdate: false,
+            },
+            regxFlow: {
+              __typename: 'RegxFlow',
+              flowId: '1',
+              regx: 'unique_regex',
+              regxOpt: null,
+            },
+            signaturePhrase: 'Please change me, NOW!',
+            status: 'ACTIVE',
+          },
+        },
+      },
+    },
+  },
+];
 
 export const getMaytapiProviderMock = [getCredentials, getCredentials, getMaytapiProvider];
