@@ -49,12 +49,8 @@ export const FlowEditor = () => {
   const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
-<<<<<<< HEAD
 
   const config = setConfig(uuid, isTemplate, skipValidation);
-=======
-  const [isReadOnly, setIsReadOnly] = useState(false);
->>>>>>> cc971cb73 (chore: add the concurrent view support for flow editor)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -89,15 +85,8 @@ export const FlowEditor = () => {
         loadFlowEditor();
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
-<<<<<<< HEAD
         setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);
-=======
-        setIsReadOnly(true);
-        setNotification('This flow is being edited by another user. Opening in view-only mode.');
-        loadFlowEditor();
-        setFlowEditorLoaded(true);
->>>>>>> cc971cb73 (chore: add the concurrent view support for flow editor)
       }
     },
   });
