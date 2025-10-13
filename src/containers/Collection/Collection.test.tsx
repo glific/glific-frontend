@@ -105,7 +105,7 @@ describe('collection', () => {
     expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Title')).toBeInTheDocument();
+      expect(getByText('Title*')).toBeInTheDocument();
     });
 
     const collectionInputs = getAllByRole('textbox');
@@ -122,7 +122,7 @@ describe('collection', () => {
     expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Title')).toBeInTheDocument();
+      expect(getByText('Title*')).toBeInTheDocument();
     });
 
     const collectionInputs = getAllByRole('textbox');
@@ -143,7 +143,7 @@ describe('collection', () => {
     expect(screen.getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Title*')).toBeInTheDocument();
     });
 
     const collectionInputs = screen.getAllByRole('textbox');

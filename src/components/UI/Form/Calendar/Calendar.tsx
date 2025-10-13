@@ -75,6 +75,9 @@ export const Calendar = ({
               error: hasError,
               onClick: () => !disabled && setOpen(true),
             },
+            openPickerButton: {
+              onClick: () => !disabled && setOpen(true),
+            },
           }}
           onClose={() => setOpen(false)}
           sx={CalendarStyles}
