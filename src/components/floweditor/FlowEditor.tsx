@@ -65,8 +65,9 @@ export const FlowEditor = () => {
   let flowTitle: any;
   let flowKeywords;
 
-  const loadFlowEditor = () => {
-    const config = setConfig(uuid, isTemplate, skipValidation, isReadOnly);
+  const loadFlowEditor = (forceReadOnly = false) => {
+    const readOnlyMode = forceReadOnly || isReadOnly;
+    const config = setConfig(uuid, isTemplate, skipValidation, readOnlyMode);
     showFlowEditor(document.getElementById('flow'), config);
     setLoading(false);
   };
@@ -87,7 +88,7 @@ export const FlowEditor = () => {
       } else if (flowGet.errors && flowGet.errors.length) {
         setIsReadOnly(true);
         setNotification('This flow is being edited by another user. Opening in view-only mode.');
-        loadFlowEditor();
+        loadFlowEditor(true);
         setFlowEditorLoaded(true);
       }
     },
