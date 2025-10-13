@@ -15,6 +15,25 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
+"@apollo/client@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.14.0.tgz#eda34b85ee03c6c0828ba21782419c8699feaf0b"
+  integrity sha512-0YQKKRIxiMlIou+SekQqdCo0ZTHxOcES+K8vKB53cIDpwABNR0P0yRzPgsbgcj3zRJniD93S/ontsnZsCLZrxQ==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.1.1"
+    "@wry/caches" "^1.0.0"
+    "@wry/equality" "^0.5.6"
+    "@wry/trie" "^0.5.0"
+    graphql-tag "^2.12.6"
+    hoist-non-react-statics "^3.3.2"
+    optimism "^0.18.0"
+    prop-types "^15.7.2"
+    rehackt "^0.1.0"
+    symbol-observable "^4.0.0"
+    ts-invariant "^0.10.3"
+    tslib "^2.3.0"
+    zen-observable-ts "^1.2.5"
+
 "@apollo/client@^3.0.0", "@apollo/client@^3.0.0-beta.23":
   version "3.13.8"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.13.8.tgz#ef1d49a5b134c69a55e3f137164a8e323aef4e2a"
@@ -33,19 +52,6 @@
     ts-invariant "^0.10.3"
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
-
-"@apollo/client@^4.0.7":
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-4.0.7.tgz#cc9bfe652bfc5e4e766fee919e4c2d98606d25ec"
-  integrity sha512-hZp/mKtAqM+g6buUnu6Wqtyc33QebvfdY0SE46xWea4lU1CxwI57VORy2N2vA9CoCRgYM4ELNXzr6nNErAdhfg==
-  dependencies:
-    "@graphql-typed-document-node/core" "^3.1.1"
-    "@wry/caches" "^1.0.0"
-    "@wry/equality" "^0.5.6"
-    "@wry/trie" "^0.5.0"
-    graphql-tag "^2.12.6"
-    optimism "^0.18.0"
-    tslib "^2.3.0"
 
 "@apollo/link-context@^2.0.0-beta.3":
   version "2.0.0-beta.3"
