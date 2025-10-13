@@ -497,9 +497,15 @@ describe('copy mode', async () => {
       expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
-    const startDateInput = container.queryByTestId('Start date');
-    const endDateInput = container.queryByTestId('End date');
+    const startDateInput = container.queryByTestId('Start date') as HTMLInputElement;
+    const endDateInput = container.queryByTestId('End date') as HTMLInputElement;
     const timeInput = container.queryByTestId('Start time');
+    const today = dayjs();
+    const tomorrow = dayjs().add(1, 'day');
+    await waitFor(() => {
+      expect(startDateInput?.value).toBe(today.format('MM/DD/YYYY'));
+      expect(endDateInput?.value).toBe(tomorrow.format('MM/DD/YYYY'));
+    });
 
     if (startDateInput) {
       fireEvent.change(startDateInput, { target: { value: startDate.format('MM/DD/YYYY') } });
