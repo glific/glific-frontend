@@ -570,20 +570,19 @@ export const filterUsersByContactId = (contactId: string, hasUser: boolean = tru
     data: {
       users: hasUser
         ? [
-          {
-            id: '1',
-            name: 'NGO Admin',
-            phone: '919999988888',
-            accessRoles: [{ label: 'Admin' }],
-            groups: [],
-            contact: { id: contactId },
-          },
-        ]
+            {
+              id: '1',
+              name: 'NGO Admin',
+              phone: '919999988888',
+              accessRoles: [{ label: 'Admin' }],
+              groups: [],
+              contact: { id: contactId },
+            },
+          ]
         : [],
     },
   },
 });
-
 
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
@@ -609,7 +608,6 @@ export const multiple_profile_mock = [
   getCurrentUserQuery,
   getCurrentUserQuery,
   getOrganizationLanguagesQuery,
-  // Ensure user existence check returns a user for contactId '1'
   filterUsersByContactId('1', true),
   getProfileMock('2', {
     fields:
@@ -636,7 +634,6 @@ export const LOGGED_IN_USER_MULTIPLE_PROFILES = [
   getContactQuery,
   getContactProfiles,
 ];
-
 
 export const getGroupContact = {
   request: {
