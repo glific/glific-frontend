@@ -203,10 +203,10 @@ export const Profile = ({
   const dialogMessage = hasMultipleProfiles
     ? isDefaultProfile
       ? t('Deleting default profile will delete the contact. This is irreversible.')
-      : t("You won't be able to send messages to this profile.")
-    : userExists
-      ? t('Deleting this contact will also delete the corresponding user.')
-      : t("You won't be able to send messages to this contact.");
+      : t(userExists
+        ? 'Deleting this contact will also delete the corresponding user.'
+        : "You won't be able to send messages to this contact.")
+    : t("You won't be able to send messages to this profile.");
 
   console.log(dialogMessage)
 

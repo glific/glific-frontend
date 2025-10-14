@@ -20,8 +20,6 @@ import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
 import { FILTER_USERS } from 'graphql/queries/User';
 import { TERMINATE_FLOW } from 'graphql/mutations/Flow';
-import { FILTER_USER_MOCK } from 'containers/StaffManagement/StaffManagement.test.helper';
-
 const groups = [
   {
     id: '1',
@@ -600,7 +598,6 @@ export const LOGGED_IN_USER_MOCK = [
   addFlowToContactQuery,
   clearMessagesQuery,
   ...getOrganizationQuery,
-  FILTER_USER_MOCK,
   updateContact,
 ];
 
