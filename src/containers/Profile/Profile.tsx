@@ -14,6 +14,7 @@ import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE 
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { FILTER_USERS } from 'graphql/queries/User';
 
 const profileIcon = <ProfileIcon />;
 
@@ -45,10 +46,25 @@ export const Profile = ({
     updateItemQuery: UPDATE_CONTACT,
     deleteItemQuery: hasMultipleProfiles ? DELETE_CONTACT_PROFILE : DELETE_CONTACT,
   };
+  const { id: contactIdParam } = useParams();
 
   const params = useParams();
+  console.log('params', params);
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
+  console.log('data', data);
+  const contactId = contactIdParam || data?.currentUser?.user?.contact?.id;
+  console.log('contactId', contactId);
+
+  const { data: userCheckData, loading: userLoading } = useQuery(FILTER_USERS, {
+    variables: {
+      filter: { contactId: contactId },
+    },
+    skip: !contactId,
+  });
+
+  console.log('userCheckData', userCheckData?.users?.length > 0);
+  const userExists = userCheckData?.users?.length > 0;
 
   const updateName = () => {
     if (!hasMultipleProfiles) {
@@ -160,7 +176,7 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => {},
+      handleCreateItem: () => { },
       multiple: false,
     },
     {
@@ -172,21 +188,27 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => {},
+      handleCreateItem: () => { },
       multiple: false,
     },
   ];
 
   let type: any;
   const pageTitle = t('Contact Profile');
+  console.log("useer", userExists)
 
   const isDefaultProfile = hasMultipleProfiles && multiProfileAttributes.selectedProfile?.is_default;
 
+  console.log("hasMultupleprofile", hasMultipleProfiles)
   const dialogMessage = hasMultipleProfiles
     ? isDefaultProfile
       ? t('Deleting default profile will delete the contact. This is irreversible.')
       : t("You won't be able to send messages to this profile.")
-    : t("You won't be able to send messages to this contact.");
+    : userExists
+      ? t('Deleting this contact will also delete the corresponding user.')
+      : t("You won't be able to send messages to this contact.");
+
+  console.log(dialogMessage)
 
   return (
     <FormLayout

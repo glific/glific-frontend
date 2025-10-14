@@ -18,7 +18,9 @@ import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
+import { FILTER_USERS } from 'graphql/queries/User';
 import { TERMINATE_FLOW } from 'graphql/mutations/Flow';
+import { FILTER_USER_MOCK } from 'containers/StaffManagement/StaffManagement.test.helper';
 
 const groups = [
   {
@@ -561,6 +563,30 @@ export const getProfileMock = (id: string, profileDetails?: any) => ({
   },
 });
 
+export const filterUsersByContactId = (contactId: string, hasUser: boolean = true) => ({
+  request: {
+    query: FILTER_USERS,
+    variables: { filter: { contactId: contactId } },
+  },
+  result: {
+    data: {
+      users: hasUser
+        ? [
+          {
+            id: '1',
+            name: 'NGO Admin',
+            phone: '919999988888',
+            accessRoles: [{ label: 'Admin' }],
+            groups: [],
+            contact: { id: contactId },
+          },
+        ]
+        : [],
+    },
+  },
+});
+
+
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
@@ -574,6 +600,7 @@ export const LOGGED_IN_USER_MOCK = [
   addFlowToContactQuery,
   clearMessagesQuery,
   ...getOrganizationQuery,
+  FILTER_USER_MOCK,
   updateContact,
 ];
 
@@ -585,6 +612,8 @@ export const multiple_profile_mock = [
   getCurrentUserQuery,
   getCurrentUserQuery,
   getOrganizationLanguagesQuery,
+  // Ensure user existence check returns a user for contactId '1'
+  filterUsersByContactId('1', true),
   getProfileMock('2', {
     fields:
       '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 1","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
@@ -610,6 +639,7 @@ export const LOGGED_IN_USER_MULTIPLE_PROFILES = [
   getContactQuery,
   getContactProfiles,
 ];
+
 
 export const getGroupContact = {
   request: {

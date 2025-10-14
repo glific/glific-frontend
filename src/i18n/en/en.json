@@ -276,6 +276,7 @@
   "My Profile": "My Profile",
   "You won't be able to send messages to this profile.": "You won't be able to send messages to this profile.",
   "You won't be able to send messages to this contact.": "You won't be able to send messages to this contact.",
+  "Deleting this contact will also delete the corresponding user.": "Deleting this contact will also delete the corresponding user.",
   "Description is required.": "Description is required.",
   "You won't be able to use this role again.": "You won't be able to use this role again.",
   "Label": "Label",

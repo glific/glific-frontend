@@ -40,9 +40,7 @@ export const FILTER_USERS = gql`
         id
         label
       }
-      contact {
-        id
-      }
+      contactID: id
     }
   }
 `;
@@ -58,6 +56,7 @@ export const GET_USERS = gql`
     users(filter: $filter, opts: $opts) {
       id
       name
+      contact_id
     }
   }
 `;

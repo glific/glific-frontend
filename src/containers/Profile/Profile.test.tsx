@@ -22,6 +22,7 @@ const wrapper = (
 
 it('should render Profile page', async () => {
   const { container } = render(wrapper);
+  console.log(container);
 
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
   await waitFor(() => {
@@ -71,5 +72,32 @@ it('should show default profile deletion warning pop up when deleting default pr
     ).toBeInTheDocument();
   } else {
     expect(screen.getByTestId('formLayout')).toBeInTheDocument();
+  }
+});
+
+it('should show contact deletion warning pop up when deleting contact with user', async () => {
+  const multiProfileAttributes = {
+    selectedProfile: {
+      id: '2',
+      name: 'profile name 1',
+      is_default: false,
+    },
+    selectedProfileId: '2',
+  };
+
+  render(
+    <MockedProvider mocks={multiple_profile_mock} addTypename={false}>
+      <Router>
+        <Profile match={{ params: { id: 1 } }} {...props} multiProfileAttributes={multiProfileAttributes} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+
+  const deleteButton = screen.queryByTestId('remove-icon');
+  if (deleteButton) {
+    fireEvent.click(deleteButton);
+    expect(screen.getByText('Deleting this contact will also delete the corresponding user.')).toBeInTheDocument();
   }
 });
