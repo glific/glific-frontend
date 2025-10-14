@@ -966,10 +966,10 @@ export const createMaytapiCredentialsMock = (error: boolean = false) => ({
         credential: error
           ? null
           : {
-            id: '3',
-            keys: '{}',
-            secrets: '{"token":"token","product_id":"product_id"}',
-          },
+              id: '3',
+              keys: '{}',
+              secrets: '{"token":"token","product_id":"product_id"}',
+            },
         errors: error ? [new Error('Something went wrong')] : null,
       },
     },
@@ -1041,13 +1041,13 @@ export const updateMaytapiCredentials = (error: boolean = false) => ({
         credential: error
           ? null
           : {
-            id: '3',
-            provider: {
-              shortcode: 'maytapi',
+              id: '3',
+              provider: {
+                shortcode: 'maytapi',
+              },
+              keys: '{}',
+              secrets: '{"token":"token","product_id":"product_id2"}',
             },
-            keys: '{}',
-            secrets: '{"token":"token","product_id":"product_id2"}',
-          },
         errors: error ? [new Error('Something went wrong')] : null,
       },
     },
