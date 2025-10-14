@@ -223,7 +223,7 @@ export const getOrganizationSettings = {
             lowBalanceThreshold: '10',
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
-            allowBotNumberUpdate: false
+            allowBotNumberUpdate: false,
           },
           regxFlow: {
             __typename: 'RegxFlow',
@@ -367,7 +367,7 @@ export const getProvidersQuery = [
       variables: {
         id: '1',
         input: {
-          shortcode: null,
+          shortcode: 'gupshup',
           isActive: true,
           keys: '{"worker":"Glific.Providers.Gupshup.Worker","url":"https://gupshup.io/","handler":"Glific.Providers.Gupshup.Message","api_end_point":"https://api.gupshup.io/sm/api/v1"}',
           secrets: '{}',
@@ -919,7 +919,7 @@ export const getOrganizationStatus = (status: string) => ({
             lowBalanceThreshold: '10',
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
-            allowBotNumberUpdate: false
+            allowBotNumberUpdate: false,
           },
           name: 'Glific',
           signaturePhrase: 'Sample text',
@@ -966,10 +966,10 @@ export const createMaytapiCredentialsMock = (error: boolean = false) => ({
         credential: error
           ? null
           : {
-              id: '3',
-              keys: '{}',
-              secrets: '{"token":"token","product_id":"product_id"}',
-            },
+            id: '3',
+            keys: '{}',
+            secrets: '{"token":"token","product_id":"product_id"}',
+          },
         errors: error ? [new Error('Something went wrong')] : null,
       },
     },
@@ -1031,7 +1031,7 @@ export const updateMaytapiCredentials = (error: boolean = false) => ({
         shortcode: 'maytapi',
         isActive: true,
         keys: '{}',
-        secrets: '{"token":"token2","product_id":"product_id2"}',
+        secrets: '{"token":"token","product_id":"product_id2"}',
       },
     },
   },
@@ -1041,13 +1041,13 @@ export const updateMaytapiCredentials = (error: boolean = false) => ({
         credential: error
           ? null
           : {
-              id: '3',
-              provider: {
-                shortcode: 'maytapi',
-              },
-              keys: '{}',
-              secrets: '{"token":"token2","product_id":"product_id2"}',
+            id: '3',
+            provider: {
+              shortcode: 'maytapi',
             },
+            keys: '{}',
+            secrets: '{"token":"token","product_id":"product_id2"}',
+          },
         errors: error ? [new Error('Something went wrong')] : null,
       },
     },
