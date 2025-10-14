@@ -44,7 +44,6 @@ export const Providers = () => {
   });
   const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
     variables: { shortcode: type },
-    fetchPolicy: 'cache-and-network',
   });
 
   const setCredential = (item: any) => {

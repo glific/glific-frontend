@@ -991,7 +991,7 @@ export const getSavedCredentials = {
           provider: {
             shortcode: 'maytapi',
           },
-          secrets: '{"token":"token2","product_id":"product_id"}',
+          secrets: '{"token":"token","product_id":"product_id"}',
         },
       },
     },
