@@ -406,29 +406,11 @@ export const FlowEditor = () => {
             open={open}
             onClose={handleClose}
           >
-            <MenuItem
-              onClick={() => {
-                exportFlowMutation({
-                  variables: {
-                    id: flowId,
-                  },
-                });
-                handleClose();
-              }}
-              disableRipple
-            >
-              Export flow
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setShowResetFlowModal(true);
-                handleClose();
-              }}
-              disableRipple
-              disabled={isTemplate || isReadOnly}
-            >
-              Reset flow count
-            </MenuItem>
+            {menuItems.map((item) => (
+              <MenuItem key={item.label} onClick={item.action} disableRipple>
+                {item.label}
+              </MenuItem>
+            ))}
           </Menu>
           <Button
             variant="outlined"
