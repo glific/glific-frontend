@@ -367,7 +367,7 @@ export const getProvidersQuery = [
       variables: {
         id: '1',
         input: {
-          shortcode: 'gupshup',
+          shortcode: null,
           isActive: true,
           keys: '{"worker":"Glific.Providers.Gupshup.Worker","url":"https://gupshup.io/","handler":"Glific.Providers.Gupshup.Message","api_end_point":"https://api.gupshup.io/sm/api/v1"}',
           secrets: '{}',
