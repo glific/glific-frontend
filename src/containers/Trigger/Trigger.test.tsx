@@ -500,8 +500,6 @@ describe('copy mode', async () => {
     const startDateInput = container.queryByTestId('Start date') as HTMLInputElement;
     const endDateInput = container.queryByTestId('End date') as HTMLInputElement;
     const timeInput = container.queryByTestId('Start time') as HTMLInputElement;
-    const today = dayjs();
-    const tomorrow = dayjs().add(1, 'day');
     await waitFor(() => {
       expect(startDateInput?.value).toBe('');
       expect(endDateInput?.value).toBe('');
