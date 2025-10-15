@@ -179,6 +179,24 @@ export const FlowList = () => {
     );
   };
 
+  // AssistantItem: no copy state, no button
+  const AssistantItem = ({ id, index }: { id: string; index: number }) => {
+    return (
+      <div className={styles.assistantItem}>
+        <div className={styles.assistantNumber}>{index + 1}.</div>
+        <div className={styles.assistantDetails}>
+          <div className={styles.idRow}>
+            <code className={styles.assistantId}>{id}</code>
+          </div>
+          <div className={styles.reason}>
+            <strong>Reason:</strong> Assistant not found in Glific.
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Dialog section
   if (importStatus.length > 0) {
     dialog = (
       <DialogBox
@@ -189,11 +207,72 @@ export const FlowList = () => {
         skipCancel
       >
         <div className={styles.ImportDialog}>
-          {importStatus.map((status: any) => (
-            <div key={status.flowName}>
-              <strong>{status.flowName}:</strong> {status.status}
-            </div>
-          ))}
+          {importStatus.map((status: any) => {
+            const statusText = status.status ?? '';
+            const hasAssistantError = statusText.includes('Failed to import assistant');
+
+            const warningChunks = statusText
+              .split(/Failed to import assistant/g)
+              .slice(1)
+              .filter(Boolean);
+
+            const assistantIds: string[] = warningChunks
+              .map((chunk: string) => {
+                const m = chunk.match(/Assistant ID:\s*([a-zA-Z0-9_]+)/);
+                return m ? m[1] : null;
+              })
+              .filter((id: string | null): id is string => id !== null);
+
+            if (hasAssistantError && assistantIds.length > 0) {
+              return (
+                <div key={status.flowName} className={styles.statusContainer}>
+                  <div className={styles.statusChips}>
+                    <div className={styles.chipSuccess}>✅ Flow imported</div>
+                    <div className={styles.chipWarning}>
+                      ⚠️ {assistantIds.length} warning{assistantIds.length > 1 ? 's' : ''}
+                    </div>
+                  </div>
+                  <div className={styles.sectionTitle}>
+                    <strong>
+                      {assistantIds.length === 1 ? 'Failed to import assistant:' : 'Failed to import assistants:'}
+                    </strong>
+                  </div>
+                  <hr className={styles.sectionDivider} /> {/* <-- new line */}
+                  {assistantIds.length === 1 ? (
+                    <div className={styles.assistantSingle}>
+                      <span className={styles.assistantNum}>1.</span>{' '}
+                      <code className={styles.assistantCode}>{assistantIds[0]}</code>
+                    </div>
+                  ) : (
+                    <ol className={styles.assistantListPlain}>
+                      {assistantIds.map((id: string) => (
+                        <li key={id}>
+                          <code className={styles.assistantCode}>{id}</code>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                  <div className={styles.fix}>
+                    <strong>Fix:</strong>{' '}
+                    <a
+                      href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
+                      className={styles.helpLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Create a new assistant in Glific.
+                    </a>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div key={status.flowName} className={styles.statusContainer}>
+                <strong>{status.flowName}:</strong> {status.status}
+              </div>
+            );
+          })}
         </div>
       </DialogBox>
     );

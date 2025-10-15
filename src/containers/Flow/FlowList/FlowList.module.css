@@ -8,7 +8,7 @@
   min-height: 36px !important;
 }
 
-.SearchBar>fieldset {
+.SearchBar > fieldset {
   border: none !important;
 }
 
@@ -173,7 +173,7 @@
   line-height: 1;
 }
 
-.RadioLabel>span {
+.RadioLabel > span {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -199,4 +199,72 @@
 
 .ShareIcon {
   font-size: 18px;
+}
+
+.statusChips {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.flowName {
+  font-size: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  margin: 8px 0 6px;
+  color: #333;
+}
+
+.assistantListPlain {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+.assistantListPlain li {
+  margin: 4px 0;
+}
+
+.assistantSingle {
+  margin: 4px 0 8px;
+}
+.assistantNum {
+  font-weight: 600;
+  color: #666;
+}
+
+.assistantCode {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  color: #333;
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+.fix {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+}
+.fix strong {
+  color: #333;
+}
+
+.helpLink {
+  color: #1976d2;
+  text-decoration: none;
+}
+.helpLink:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+.sectionDivider {
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+  margin: 6px 0 8px; /* tight spacing under the bold header */
 }
