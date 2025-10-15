@@ -184,9 +184,15 @@ export const Profile = ({
 
   const dialogMessage = hasMultipleProfiles
     ? isDefaultProfile
-      ? t('Deleting default profile will delete the contact. This is irreversible.')
-      : t("You won't be able to send messages to this profile.")
-    : t("You won't be able to send messages to this contact.");
+      ? t(
+          'Deleting default profile will delete the contact. This is irreversible. Staff account linked to this contact will also get deleted.'
+        )
+      : t(
+          "You won't be able to send messages to this profile.Staff account linked to this contact will also get deleted."
+        )
+    : t(
+        "You won't be able to send messages to this contact. Staff account linked to this contact will also get deleted."
+      );
 
   return (
     <FormLayout
