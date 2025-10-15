@@ -176,7 +176,7 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => { },
+      handleCreateItem: () => {},
       multiple: false,
     },
     {
@@ -188,27 +188,32 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
-      handleCreateItem: () => { },
+      handleCreateItem: () => {},
       multiple: false,
     },
   ];
 
   let type: any;
   const pageTitle = t('Contact Profile');
-  console.log("useer", userExists)
+  console.log('useer', userExists);
 
   const isDefaultProfile = hasMultipleProfiles && multiProfileAttributes.selectedProfile?.is_default;
 
-  console.log("hasMultupleprofile", hasMultipleProfiles)
-  const dialogMessage = hasMultipleProfiles
-    ? isDefaultProfile
-      ? t('Deleting default profile will delete the contact. This is irreversible.')
-      : t(userExists
-        ? 'Deleting this contact will also delete the corresponding user.'
-        : "You won't be able to send messages to this contact.")
-    : t("You won't be able to send messages to this profile.");
+  console.log('hasMultupleprofile', hasMultipleProfiles);
+  let dialogMessage;
 
-  console.log(dialogMessage)
+  if (isDefaultProfile) {
+    // Case 1: Has multiple profiles & it's the default profile
+    dialogMessage = t('Deleting default profile will delete the contact. This is irreversible.');
+  } else if (userExists) {
+    // Case 2: Has multiple profiles, not default, but corresponding user exists
+    dialogMessage = t('Deleting this contact will also delete the corresponding user.');
+  } else {
+    // Case 3: Has multiple profiles, not default, and no corresponding user
+    dialogMessage = t("You won't be able to send messages to this contact.");
+  }
+
+  console.log(dialogMessage);
 
   return (
     <FormLayout
