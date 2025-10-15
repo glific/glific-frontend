@@ -417,10 +417,9 @@ export const Trigger = () => {
     setFrequencyLabel(label);
     // If a user wants to update the trigger
     if (isCopyState) {
-      const currentDate = dayjs();
-      setStartDate(currentDate);
-      setEndDate(currentDate.add(1, 'day'));
-      setStartTime(currentDate);
+      setStartDate('');
+      setEndDate('');
+      setStartTime('');
     } else {
       setStartDate(dayjs(startAtValue));
       setEndDate(dayjs(endDateValue));
