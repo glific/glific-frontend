@@ -179,24 +179,6 @@ export const FlowList = () => {
     );
   };
 
-  // AssistantItem: no copy state, no button
-  const AssistantItem = ({ id, index }: { id: string; index: number }) => {
-    return (
-      <div className={styles.assistantItem}>
-        <div className={styles.assistantNumber}>{index + 1}.</div>
-        <div className={styles.assistantDetails}>
-          <div className={styles.idRow}>
-            <code className={styles.assistantId}>{id}</code>
-          </div>
-          <div className={styles.reason}>
-            <strong>Reason:</strong> Assistant not found in Glific.
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Dialog section
   if (importStatus.length > 0) {
     dialog = (
       <DialogBox
@@ -226,18 +208,21 @@ export const FlowList = () => {
             if (hasAssistantError && assistantIds.length > 0) {
               return (
                 <div key={status.flowName} className={styles.statusContainer}>
-                  <div className={styles.statusChips}>
-                    <div className={styles.chipSuccess}>✅ Flow imported</div>
-                    <div className={styles.chipWarning}>
-                      ⚠️ {assistantIds.length} warning{assistantIds.length > 1 ? 's' : ''}
-                    </div>
-                  </div>
+                  <p className={styles.statusMessage}>
+                    Flow imported successfully, but failed to import assistants. Please{' '}
+                    <a
+                      href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
+                      className={styles.helpLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      create a new assistant
+                    </a>{' '}
+                    and replace the existing one in the flow.
+                  </p>
                   <div className={styles.sectionTitle}>
-                    <strong>
-                      {assistantIds.length === 1 ? 'Failed to import assistant:' : 'Failed to import assistants:'}
-                    </strong>
+                    <strong>{assistantIds.length === 1 ? 'Failed Assistant:' : 'Failed Assistants:'}</strong>
                   </div>
-                  <hr className={styles.sectionDivider} /> {/* <-- new line */}
                   {assistantIds.length === 1 ? (
                     <div className={styles.assistantSingle}>
                       <span className={styles.assistantNum}>1.</span>{' '}
@@ -252,17 +237,6 @@ export const FlowList = () => {
                       ))}
                     </ol>
                   )}
-                  <div className={styles.fix}>
-                    <strong>Fix:</strong>{' '}
-                    <a
-                      href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
-                      className={styles.helpLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Create a new assistant in Glific.
-                    </a>
-                  </div>
                 </div>
               );
             }
