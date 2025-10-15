@@ -203,13 +203,10 @@ export const Profile = ({
   let dialogMessage;
 
   if (isDefaultProfile) {
-    // Case 1: Has multiple profiles & it's the default profile
     dialogMessage = t('Deleting default profile will delete the contact. This is irreversible.');
   } else if (userExists) {
-    // Case 2: Has multiple profiles, not default, but corresponding user exists
     dialogMessage = t('Deleting this contact will also delete the corresponding user.');
   } else {
-    // Case 3: Has multiple profiles, not default, and no corresponding user
     dialogMessage = t("You won't be able to send messages to this contact.");
   }
 
