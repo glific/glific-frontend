@@ -223,7 +223,7 @@ export const getOrganizationSettings = {
             lowBalanceThreshold: '10',
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
-            allowBotNumberUpdate: false
+            allowBotNumberUpdate: false,
           },
           regxFlow: {
             __typename: 'RegxFlow',
@@ -919,7 +919,7 @@ export const getOrganizationStatus = (status: string) => ({
             lowBalanceThreshold: '10',
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
-            allowBotNumberUpdate: false
+            allowBotNumberUpdate: false,
           },
           name: 'Glific',
           signaturePhrase: 'Sample text',
