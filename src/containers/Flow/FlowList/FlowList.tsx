@@ -207,12 +207,12 @@ export const FlowList = () => {
 
             if (hasAssistantError && assistantIds.length > 0) {
               return (
-                <div key={status.flowName} className={styles.statusContainer}>
-                  <p className={styles.statusMessage}>
+                <div key={status.FlowName} className={styles.StatusContainer}>
+                  <p className={styles.StatusMessage}>
                     Flow imported successfully, but failed to import assistants. Please{' '}
                     <a
                       href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
-                      className={styles.helpLink}
+                      className={styles.HelpLink}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -220,19 +220,19 @@ export const FlowList = () => {
                     </a>{' '}
                     and replace the existing one in the flow.
                   </p>
-                  <div className={styles.sectionTitle}>
+                  <div className={styles.SectionTitle}>
                     <strong>{assistantIds.length === 1 ? 'Failed Assistant:' : 'Failed Assistants:'}</strong>
                   </div>
                   {assistantIds.length === 1 ? (
-                    <div className={styles.assistantSingle}>
-                      <span className={styles.assistantNum}>1.</span>{' '}
-                      <code className={styles.assistantCode}>{assistantIds[0]}</code>
+                    <div className={styles.AssistantSingle}>
+                      <span className={styles.AssistantNum}>1.</span>{' '}
+                      <code className={styles.AssistantCod}>{assistantIds[0]}</code>
                     </div>
                   ) : (
-                    <ol className={styles.assistantListPlain}>
+                    <ol className={styles.AssistantListPlain}>
                       {assistantIds.map((id: string) => (
                         <li key={id}>
-                          <code className={styles.assistantCode}>{id}</code>
+                          <code className={styles.AssistantCod}>{id}</code>
                         </li>
                       ))}
                     </ol>

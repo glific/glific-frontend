@@ -201,14 +201,14 @@
   font-size: 18px;
 }
 
-.flowName {
+.FlowName {
   font-size: 16px;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.statusMessage {
+.StatusMessage {
   text-align: center;
   margin: 8px 0 10px;
   color: #333;
@@ -216,38 +216,38 @@
   line-height: 1.5;
 }
 
-.sectionTitle {
+.SectionTitle {
   margin: 8px 0 4px;
   color: #444;
   font-weight: 600;
 }
 
-.assistantSingle {
+.AssistantSingle {
   margin: 4px 0 0;
   display: flex;
   align-items: baseline;
   gap: 6px;
 }
 
-.assistantNum {
+.AssistantNum {
   color: #222;
 }
 
-.assistantCode {
+.AssistantCod {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 14px;
 }
 
-.assistantListPlain {
+.AssistantListPlain {
   margin: 4px 0 0;
   padding-left: 18px;
 }
 
-.assistantListPlain li {
+.AssistantListPlain li {
   margin: 2px 0;
 }
 
-.assistantListPlain,
+.AssistantListPlain,
 .assistantSingle {
   text-align: left;
 }
