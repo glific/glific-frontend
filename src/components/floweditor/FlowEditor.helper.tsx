@@ -7,14 +7,14 @@ import styles from './FlowEditor.module.css';
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolean, isReadOnly: boolean) => {
+export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolean) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
   const config = {
     flow: uuid,
     flowType: 'messaging',
     localStorage: true,
-    mutable: !isTemplate && !isReadOnly,
+    mutable: !isReadOnly,
     showNodeLabel: false,
     attachmentsEnabled: false,
     filters: ['whatsapp', 'classifier'],

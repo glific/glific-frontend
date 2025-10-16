@@ -46,7 +46,6 @@ export const FlowEditor = () => {
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
-  const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
@@ -67,7 +66,7 @@ export const FlowEditor = () => {
 
   const loadFlowEditor = (forceReadOnly = false) => {
     const readOnlyMode = forceReadOnly || isReadOnly;
-    const config = setConfig(uuid, isTemplate, skipValidation, readOnlyMode);
+    const config = setConfig(uuid, skipValidation, readOnlyMode);
     showFlowEditor(document.getElementById('flow'), config);
     setLoading(false);
   };
@@ -174,7 +173,7 @@ export const FlowEditor = () => {
   useEffect(() => {
     if (flowName && flowName.flows.length > 0) {
       setFlowId(flowName.flows[0].id);
-      setIsTemplate(flowName.flows[0].isTemplate);
+      setIsReadOnly(flowName.flows[0].isTemplate);
       setSkipValidation(flowName.flows[0].skipValidation);
     }
   }, [flowName]);
@@ -373,7 +372,7 @@ export const FlowEditor = () => {
       <div className={styles.Header}>
         <div className={styles.Title}>
           <BackIconFlow
-            onClick={() => (isTemplate ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
+            onClick={() => (isReadOnly ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
             className={styles.BackIcon}
             data-testid="back-button"
           />
@@ -416,7 +415,7 @@ export const FlowEditor = () => {
             variant="outlined"
             color="primary"
             data-testid="translateButton"
-            disabled={isTemplate || isReadOnly}
+            disabled={isReadOnly}
             onClick={() => {
               setShowTranslateFlowModal(true);
               handleClose();
@@ -438,7 +437,7 @@ export const FlowEditor = () => {
             variant="contained"
             color="primary"
             data-testid="button"
-            disabled={isTemplate || isReadOnly}
+            disabled={isReadOnly}
             onClick={() => setPublishDialog(true)}
           >
             <PublishIcon className={styles.Icon} />
