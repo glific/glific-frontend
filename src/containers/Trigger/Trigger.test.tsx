@@ -44,7 +44,7 @@ const fillForm = async (container: any, frequency: string) => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Select flow')).toBeInTheDocument();
+    expect(screen.getByText('Select flow*')).toBeInTheDocument();
   });
 
   const autoCompletes = screen.getAllByRole('combobox');

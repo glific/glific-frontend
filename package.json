@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.7.0",
+  "version": "6.7.2",
   "private": true,
   "type": "module",
   "license": {
@@ -21,7 +21,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@glific/flow-editor": "^1.26.3-30",
+    "@glific/flow-editor": "^1.43.0-2",
     "@lexical/react": "^0.33.0",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
@@ -58,6 +58,7 @@
     "react-media-recorder": "^1.7.1",
     "react-phone-input-2": "^2.15.1",
     "react-player": "^3.1.0",
+    "react-qr-code": "^2.0.18",
     "react-resize-detector": "^12.1.0",
     "react-router": "^7.6.3",
     "react-tiny-link": "^3.6.1",
