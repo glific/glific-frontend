@@ -10,12 +10,12 @@ import {
   getInactiveFlow,
   getFlowWithoutKeyword,
   getOrganizationServicesQuery,
-  publishFlow,
   getFreeFlow,
   resetFlowCount,
   getFlowTranslations,
   getTemplateFlow,
   getFlowWithManyKeywords,
+  publishFlowWithSuccess,
   exportFlow,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
@@ -29,6 +29,7 @@ import {
 } from 'mocks/Simulator';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
+import * as FlowEditorHelper from './FlowEditor.helper';
 
 window.location = { assign: vi.fn() } as any;
 window.location.reload = vi.fn();
@@ -38,6 +39,7 @@ beforeEach(() => {
     writable: true,
     value: { reload: vi.fn() },
   });
+  vi.clearAllMocks();
 });
 
 vi.mock('react-router', async () => {
@@ -53,7 +55,23 @@ const mockedAxios = axios as any;
 vi.mock('../simulator/Simulator', () => ({
   default: ({ message }: { message: string }) => <div data-testid="simulator">{message}</div>, // Mocking the component's behavior
 }));
+mockedAxios.get.mockImplementation(() =>
+  Promise.resolve({
+    data: {
+      results: [],
+    },
+  })
+);
 
+beforeAll(() => {
+  globalThis.indexedDB = {
+    open: vi.fn(() => ({
+      onerror: vi.fn(),
+      onsuccess: vi.fn(),
+      result: {},
+    })),
+  } as unknown as IDBFactory;
+});
 const mocks = [
   messageReceivedSubscription({ organizationId: null }),
   messageSendSubscription({ organizationId: null }),
@@ -64,11 +82,11 @@ const mocks = [
   simulatorGetQuery,
   simulatorSearchQuery,
   simulatorSearchQuery,
-  publishFlow,
   getOrganizationServicesQuery,
   getFreeFlow,
   getFreeFlow,
   getFlowTranslations,
+  publishFlowWithSuccess,
   exportFlow,
 ];
 
@@ -334,6 +352,45 @@ test('if keywords are more than 8 it should be shown in a tooltip', async () => 
 
   await waitFor(() => {
     expect(screen.findByText('help, activity, preference, optout, stop, start, end, yes + 2 more'));
+  });
+});
+
+test('it should check the timestamp of the local revision and remote revision and only publish the latest version', async () => {
+  const fetchRevisionSpy = vi.spyOn(FlowEditorHelper, 'fetchLatestRevision').mockResolvedValue({
+    id: 'test-revision-id',
+    created_on: '2023-01-01T00:00:00Z',
+    definition: {},
+  });
+  const getFlowDefinitionSpy = vi.spyOn(FlowEditorHelper, 'getFlowDefinition').mockResolvedValue({
+    uuid: 'test-uuid',
+    definition: {},
+    timestamp: Date.now(),
+  });
+  const postRevisionSpy = vi.spyOn(FlowEditorHelper, 'postLatestRevision').mockResolvedValue(true);
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+  render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.getByText('help workflow')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Publish'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Ready to publish?')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(fetchRevisionSpy).toHaveBeenCalled();
+    expect(getFlowDefinitionSpy).toHaveBeenCalled();
+    expect(postRevisionSpy).toHaveBeenCalled();
+  });
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
 

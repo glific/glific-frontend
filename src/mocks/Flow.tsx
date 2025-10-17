@@ -437,6 +437,23 @@ export const publishFlow = {
   },
 };
 
+export const publishFlowWithSuccess = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: null,
+        success: true,
+      },
+    },
+  },
+};
+
 export const getOrganizationServicesQuery = {
   request: {
     query: GET_ORGANIZATION_SERVICES,

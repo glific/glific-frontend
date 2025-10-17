@@ -4,8 +4,138 @@ import '@nyaruka/temba-components/dist/temba-components.js';
 
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './FlowEditor.module.css';
+import { getAuthSession } from 'services/AuthService';
+import setLogs from 'config/logs';
 
 const glificBase = FLOW_EDITOR_API;
+
+const DB_NAME = 'FlowDefinitionDB';
+const VERSION = 1;
+const STORE_NAME = 'flowDefinitions';
+let dbInstance: IDBDatabase | null = null;
+
+async function initDB(): Promise<IDBDatabase> {
+  if (dbInstance) {
+    return dbInstance;
+  }
+
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, VERSION);
+
+    request.onerror = () => {
+      reject(new Error('Failed to open IndexedDB'));
+    };
+
+    request.onsuccess = () => {
+      dbInstance = request.result;
+      resolve(dbInstance);
+    };
+
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'uuid' });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+      }
+    };
+  });
+}
+
+export const getFlowDefinition = async (uuid: string): Promise<any | null> => {
+  const db = dbInstance || (await initDB());
+  if (!db) {
+    setLogs('Database not initialized. Call initDB() first.', 'error');
+    return null;
+  }
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(uuid);
+
+    request.onsuccess = () => {
+      const result = request.result;
+      resolve(result ? result : null);
+    };
+
+    request.onerror = () => {
+      reject(new Error('Failed to get flow definition'));
+    };
+  });
+};
+
+export const deleteFlowDefinition = async (uuid: string): Promise<boolean> => {
+  const db = dbInstance || (await initDB());
+
+  if (!db) {
+    setLogs('Database not initialized. Call initDB() first.', 'error');
+    return false;
+  }
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.delete(uuid);
+
+    request.onsuccess = () => {
+      resolve(true);
+    };
+
+    request.onerror = () => {
+      reject(new Error(`Failed to delete flow definition with UUID: ${uuid}`));
+    };
+  });
+};
+
+export const fetchLatestRevision = async (uuid: string) => {
+  try {
+    let latestRevision = null;
+    const token = getAuthSession('access_token');
+
+    const response = await fetch(`${glificBase}revisions/${uuid}?version=13.2`, {
+      headers: {
+        authorization: token,
+      },
+    });
+    const data = await response.json();
+
+    if (data.results.length > 0) {
+      latestRevision = data.results.reduce((latest: any, current: any) =>
+        new Date(latest.created_on) > new Date(current.created_on) ? latest : current
+      );
+    }
+
+    return latestRevision;
+  } catch (error) {
+    setLogs(`Error fetching latest revision: ${error}`, 'error');
+    return null;
+  }
+};
+
+export const postLatestRevision = async (uuid: string, definition: any) => {
+  const url = `${glificBase}revisions/${uuid}`;
+  const token = getAuthSession('access_token');
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token,
+      },
+      body: JSON.stringify(definition),
+    });
+
+    if (response.ok) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    setLogs(`Error posting latest revision: ${error}`, 'error');
+    return false;
+  }
+};
 
 export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolean) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
