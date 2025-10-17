@@ -408,21 +408,26 @@ export const Trigger = () => {
     groupType,
   }: any) => {
     setIsRepeating(isRepeatingValue);
-    setEndDate(endDateValue);
     setIsActive(isCopyState ? true : isActiveValue);
-    setEndDate(dayjs(endDateValue));
     setGroupType(groupType);
 
     const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
     setFrequencyOptions(options);
     setFrequencyLabel(label);
-    setStartDate(dayjs(startAtValue));
     // If a user wants to update the trigger
-    if (dayjs().isAfter(startAtValue, 'days')) {
+    if (isCopyState) {
+      setStartDate('');
+      setEndDate('');
+      setStartTime('');
+    } else {
+      setStartDate(dayjs(startAtValue));
+      setEndDate(dayjs(endDateValue));
+      setStartTime(startAtValue ? dayjs(startAtValue) : null);
+    }
+    if (!isCopyState && dayjs().isAfter(startAtValue, 'days')) {
       setMinDate(dayjs(startAtValue));
     }
-    setStartTime(startAtValue ? dayjs(startAtValue) : null);
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 

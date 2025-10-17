@@ -44,7 +44,6 @@ export const Providers = () => {
   });
   const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
     variables: { shortcode: type },
-    fetchPolicy: 'no-cache', // This is required to restore the data after save
   });
 
   const setCredential = (item: any) => {
@@ -58,10 +57,9 @@ export const Providers = () => {
     Object.assign(fields, secretsObj);
     Object.keys(fields).forEach((key) => {
       // restore value of the field
-      if (type === 'gupshup' && (fields[key] === 'NA')) {
+      if (type === 'gupshup' && fields[key] === 'NA') {
         states[key] = '';
-      }
-      else {
+      } else {
         states[key] = fields[key];
       }
     });
@@ -159,7 +157,8 @@ export const Providers = () => {
           label: fields[key].label,
           disabled: fields[key].view_only,
           skip: fields[key].hide,
-          placeholder: type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `Enter ${fields[key].label} here` : '',
+          placeholder:
+            type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `Enter ${fields[key].label} here` : '',
         };
         formField.push(field);
 
