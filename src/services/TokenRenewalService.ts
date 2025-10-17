@@ -65,11 +65,10 @@ class TokenRenewalManager {
       throw new Error('No renewal token available');
     }
 
-    // set authorization header with renewal token
-    axios.defaults.headers.common.authorization = renewalToken;
-
     try {
-      const response = await axios.post(RENEW_TOKEN);
+      const response = await axios.post(RENEW_TOKEN, null, {
+        headers: { authorization: renewalToken },
+      });
 
       // update session with new tokens
       if (response.data && response.data.data) {
