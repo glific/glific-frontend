@@ -8,7 +8,7 @@
   min-height: 36px !important;
 }
 
-.SearchBar>fieldset {
+.SearchBar > fieldset {
   border: none !important;
 }
 
@@ -173,7 +173,7 @@
   line-height: 1;
 }
 
-.RadioLabel>span {
+.RadioLabel > span {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -199,4 +199,55 @@
 
 .ShareIcon {
   font-size: 18px;
+}
+
+.FlowName {
+  font-size: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.StatusMessage {
+  text-align: center;
+  margin: 8px 0 10px;
+  color: #333;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.SectionTitle {
+  margin: 8px 0 4px;
+  color: #444;
+  font-weight: 600;
+}
+
+.AssistantSingle {
+  margin: 4px 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.AssistantNum {
+  color: #222;
+}
+
+.AssistantCod {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+}
+
+.AssistantListPlain {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.AssistantListPlain li {
+  margin: 2px 0;
+}
+
+.AssistantListPlain,
+.assistantSingle {
+  text-align: left;
 }
