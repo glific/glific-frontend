@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import InfoIcon from '@mui/icons-material/Info';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, Navigate, useParams } from 'react-router';
 import { Menu, MenuItem, Typography } from '@mui/material';
@@ -49,6 +50,7 @@ export const FlowEditor = () => {
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [readOnlyMessage, setReadOnlyMessage] = useState('');
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -86,7 +88,7 @@ export const FlowEditor = () => {
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
         setIsReadOnly(true);
-        setNotification('This flow is being edited by another user. Opening in view-only mode.');
+        setReadOnlyMessage(flowGet.errors[0].message);
         loadFlowEditor(true);
         setFlowEditorLoaded(true);
       }
@@ -383,7 +385,6 @@ export const FlowEditor = () => {
             <div>{flowKeywords}</div>
           </div>
         </div>
-
         <div className={styles.Actions}>
           <Button
             aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -445,7 +446,12 @@ export const FlowEditor = () => {
           </Button>
         </div>
       </div>
-
+      {isReadOnly && readOnlyMessage && (
+        <div className={styles.ReadOnlyBanner}>
+          <InfoIcon className={styles.BannerIcon} />
+          <span>View Only Mode - {readOnlyMessage}</span>
+        </div>
+      )}
       {showSimulator && (
         <Simulator setShowSimulator={setShowSimulator} hasResetButton flowSimulator message={getFlowKeyword()} />
       )}

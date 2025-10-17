@@ -93,7 +93,7 @@
   color: #073f24;
 }
 
-.DialogTitle>h2 {
+.DialogTitle > h2 {
   font-size: 24px;
 }
 
@@ -169,4 +169,25 @@
   color: #119656;
   cursor: pointer;
   font-weight: bold;
+}
+
+.ReadOnlyBanner {
+  position: absolute;
+  top: 5rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #119656;
+  color: #ffffff;
+  border-bottom: 1px solid #1b5e20;
+  z-index: 999;
+  font-size: 0.875rem;
+}
+
+.BannerIcon {
+  font-size: 1.25rem;
+  color: #ffffff;
 }
