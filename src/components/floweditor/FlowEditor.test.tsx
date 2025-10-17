@@ -1,5 +1,6 @@
 import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
+import * as FlowEditorHelper from './FlowEditor.helper';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import axios from 'axios';
@@ -390,15 +391,9 @@ test('should show warning when no keywords are present and share responder link 
 test('should display read-only banner when flow is being edited by another user', async () => {
   mockedAxios.post.mockResolvedValue({ data: {} });
 
-  vi.mock('./FlowEditor.helper', async () => {
-    const actual = await vi.importActual('./FlowEditor.helper');
-    return {
-      ...actual,
-      loadfiles: (callback: any) => {
-        setTimeout(callback, 0);
-        return {};
-      },
-    };
+  const loadfilesSpy = vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: any) => {
+    setTimeout(callback, 0);
+    return {} as any;
   });
 
   const errorData = {
@@ -449,9 +444,6 @@ test('should display read-only banner when flow is being edited by another user'
     await waitFor(
       () => {
         const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
-        if (!readOnlyBanner) {
-          const header = container.querySelector('[class*="Header"]');
-        }
         expect(readOnlyBanner).toBeInTheDocument();
       },
       { timeout: 5000, interval: 200 }
@@ -476,7 +468,7 @@ test('should not display read-only banner when flow is available for editing', a
     expect(container.querySelector('#flow')).toBeInTheDocument();
   });
 
-  const banner = container.querySelector('.ReadOnlyBanner');
+  const banner = container.querySelector('[class*="ReadOnlyBanner"]');
   expect(banner).not.toBeInTheDocument();
 
   const publishButton = screen.getByTestId('button');

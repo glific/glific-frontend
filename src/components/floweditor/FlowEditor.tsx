@@ -44,8 +44,6 @@ export const FlowEditor = () => {
   const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
-  const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
