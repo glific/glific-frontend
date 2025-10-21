@@ -216,7 +216,7 @@
 }
 
 .AssistantCod {
-  font-family: 'Heebo', sans-serif;
+  font-family: 'Heebo', sans-serif !important;
   font-size: 14px;
 }
 
