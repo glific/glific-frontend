@@ -49,12 +49,12 @@ export const Profile = ({
   const params = useParams();
   const { data, loading } = useQuery(GET_CURRENT_USER);
   const { data: data2 } = useQuery(FILTER_USERS);
-  const user_data = data2?.users;
+  const userData = data2?.users;
 
   const contactId = params?.id;
   let found = false;
-  for (let i = 0; i < user_data?.length; i++) {
-    const user = user_data[i];
+  for (let i = 0; i < userData?.length; i += 1) {
+    const user = userData[i];
     if (user.contact?.id === contactId) {
       found = true;
       break;

@@ -128,7 +128,7 @@ it('should show only profile deletion warning pop up when deleting  profile', as
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
-        <Profile {...props} />
+        <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
     </MockedProvider>
   );
