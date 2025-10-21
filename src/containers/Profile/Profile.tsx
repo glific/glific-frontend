@@ -11,7 +11,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE } from 'graphql/mutations/Contact';
-import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { GET_CURRENT_USER, FILTER_USERS } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -47,8 +47,19 @@ export const Profile = ({
   };
 
   const params = useParams();
-
   const { data, loading } = useQuery(GET_CURRENT_USER);
+  const { data: data2 } = useQuery(FILTER_USERS);
+  const user_data = data2?.users;
+
+  const contactId = params?.id;
+  let found = false;
+  for (let i = 0; i < user_data?.length; i++) {
+    const user = user_data[i];
+    if (user.contact?.id === contactId) {
+      found = true;
+      break;
+    }
+  }
 
   const updateName = () => {
     if (!hasMultipleProfiles) {
@@ -182,16 +193,15 @@ export const Profile = ({
 
   const isDefaultProfile = hasMultipleProfiles && multiProfileAttributes.selectedProfile?.is_default;
 
-  const dialogMessage = hasMultipleProfiles
+  let dialogMessage: string = hasMultipleProfiles
     ? isDefaultProfile
-      ? t(
-          'Deleting default profile will delete the contact. This is irreversible. Staff account linked to this contact will also get deleted.'
-        )
+      ? t('Deleting default profile will delete the contact. This is irreversible.')
       : t("You won't be able to send messages to this profile.")
-    : t(
-        "You won't be able to send messages to this contact. Staff account linked to this contact will also get deleted."
-      );
+    : t("You won't be able to send messages to this contact.");
 
+  if (found) {
+    dialogMessage += ` ${t('Staff account linked to this contact will also get deleted.')}`;
+  }
   return (
     <FormLayout
       {...queries}

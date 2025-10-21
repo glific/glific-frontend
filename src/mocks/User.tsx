@@ -197,3 +197,56 @@ export const getUsers = {
     },
   },
 };
+
+export const getUsersEmptyVars = {
+  request: {
+    query: FILTER_USERS,
+    variables: {},
+  },
+  result: {
+    data: {
+      users: [
+        {
+          accessRoles: [
+            {
+              label: 'Admin',
+            },
+          ],
+          contact: {
+            id: '14',
+          },
+          groups: [],
+          id: '1',
+          name: 'NGO Admin',
+          phone: '919999988888',
+        },
+      ],
+    },
+  },
+};
+export const getUsersEmptyVars2 = {
+  request: {
+    query: FILTER_USERS,
+    variables: {},
+  },
+  result: {
+    data: {
+      users: [
+        {
+          accessRoles: [
+            {
+              label: 'Admin',
+            },
+          ],
+          contact: {
+            id: '3',
+          },
+          groups: [],
+          id: '1',
+          name: 'NGO Admin',
+          phone: '919999988888',
+        },
+      ],
+    },
+  },
+};
