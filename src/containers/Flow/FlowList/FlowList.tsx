@@ -223,20 +223,13 @@ export const FlowList = () => {
                   <div className={styles.SectionTitle}>
                     <strong>{assistantIds.length === 1 ? 'Failed Assistant:' : 'Failed Assistants:'}</strong>
                   </div>
-                  {assistantIds.length === 1 ? (
-                    <div className={styles.AssistantSingle}>
-                      <span className={styles.AssistantNum}>1.</span>{' '}
-                      <code className={styles.AssistantCod}>{assistantIds[0]}</code>
-                    </div>
-                  ) : (
-                    <ol className={styles.AssistantListPlain}>
-                      {assistantIds.map((id: string) => (
-                        <li key={id}>
-                          <code className={styles.AssistantCod}>{id}</code>
-                        </li>
-                      ))}
-                    </ol>
-                  )}
+                  <ol className={styles.AssistantListPlain}>
+                    {assistantIds.map((id: string) => (
+                      <li key={id}>
+                        <code className={styles.AssistantCod}>{id}</code>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               );
             }

@@ -201,13 +201,6 @@
   font-size: 18px;
 }
 
-.FlowName {
-  font-size: 16px;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
 .StatusMessage {
   text-align: center;
   margin: 8px 0 10px;
@@ -217,8 +210,8 @@
 }
 
 .SectionTitle {
-  margin: 8px 0 4px;
-  color: #444;
+  margin: 0;
+  color: #333;
   font-weight: 600;
 }
 
@@ -230,7 +223,7 @@
 }
 
 .AssistantNum {
-  color: #222;
+  color: #333;
 }
 
 .AssistantCod {
