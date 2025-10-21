@@ -67,7 +67,9 @@ it('should show default profile deletion warning pop up when deleting default pr
   if (deleteButton) {
     fireEvent.click(deleteButton);
     expect(
-      screen.getByText('Deleting default profile will delete the contact. This is irreversible.')
+      screen.getByText(
+        'Deleting default profile will delete the contact. This is irreversible. Staff account linked to this contact will also get deleted.'
+      )
     ).toBeInTheDocument();
   } else {
     expect(screen.getByTestId('formLayout')).toBeInTheDocument();
