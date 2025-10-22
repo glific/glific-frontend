@@ -117,13 +117,7 @@ describe('AuthService', () => {
   test('testing renewAuthToken with error when there is no auth token', async () => {
     clearAuthSession();
 
-    try {
-      await renewAuthToken();
-    } catch (error: any) {
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toBe('No renewal token available');
-    }
-
+    await expect(renewAuthToken()).rejects.toThrow('No renewal token available');
     // Verify setLogs was called with the correct arguments
     expect(setLogs).toHaveBeenCalledWith('Token renewal failed: renewal_token not found', 'error');
   });
