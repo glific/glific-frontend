@@ -397,6 +397,7 @@ describe('Template flows', () => {
       },
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
     const testMocks = [mockImportFlowWithAssistantError, ...baseWithoutImport];
 
