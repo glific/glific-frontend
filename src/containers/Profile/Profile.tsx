@@ -51,9 +51,10 @@ export const Profile = ({
   const { data: usersData } = useQuery(FILTER_USERS_BY_CONTACT_ID);
 
   const users = usersData?.users || [];
-  const contactIds = users.map((user: any) => user.contact?.id);
+  const contactIds = users
+    .map((user: { contact?: { id: string } }) => user.contact?.id)
+    .filter((id: any): id is string => id !== undefined);
   const contactId = params?.id;
-
   const isLinkedToStaff = contactIds.includes(contactId);
 
   const updateName = () => {
@@ -197,6 +198,7 @@ export const Profile = ({
   if (isLinkedToStaff) {
     dialogMessage += ` ${t('Staff account linked to this contact will also get deleted.')}`;
   }
+
   return (
     <FormLayout
       {...queries}
