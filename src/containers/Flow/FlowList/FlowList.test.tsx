@@ -396,15 +396,16 @@ describe('Template flows', () => {
         },
       },
     };
-    const baseWithoutImport = (mocks as any[]).filter((m) => m?.request?.query !== IMPORT_FLOW);
+
+    const baseWithoutImport = mocks.filter((m: any) => m?.request?.query !== IMPORT_FLOW);
     const testMocks = [mockImportFlowWithAssistantError, ...baseWithoutImport];
 
     const fileReaderMock = vi.fn(() => ({
       onload: null as null | ((e: unknown) => void),
-      readAsText(_file: Blob) {
+      readAsText(file: Blob) {
         const text = JSON.stringify(testJSON);
         setTimeout(() => {
-          this.onload && this.onload({ target: { result: text } });
+          this.onload?.({ target: { result: text } });
         }, 0);
       },
     }));
