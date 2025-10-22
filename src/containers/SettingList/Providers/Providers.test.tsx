@@ -202,8 +202,10 @@ describe('update credentials', () => {
 
     const inputs = screen.getAllByRole('textbox');
 
-    fireEvent.change(inputs[0], { target: { value: 'token2' } });
-    fireEvent.change(inputs[1], { target: { value: 'product_id2' } });
+    await user.clear(inputs[0]);
+    await user.clear(inputs[1]);
+    await user.type(inputs[0], 'token2');
+    await user.type(inputs[1], 'product_id2');
 
     user.click(screen.getByTestId('submitActionButton'));
 
