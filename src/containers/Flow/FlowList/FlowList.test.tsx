@@ -23,6 +23,7 @@ import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 import * as Notification from 'common/notification';
+import { IMPORT_FLOW } from 'graphql/mutations/Flow';
 
 const isActiveFilter = { isActive: true, isTemplate: false };
 
@@ -52,7 +53,6 @@ const mocks = [
   pinFlowQuery('1'),
   ...getOrganizationQuery,
 ];
-import { IMPORT_FLOW } from 'graphql/mutations/Flow';
 const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 
 const flowList = (
@@ -400,11 +400,10 @@ describe('Template flows', () => {
     const testMocks = [mockImportFlowWithAssistantError, ...baseWithoutImport];
 
     const fileReaderMock = vi.fn(() => ({
-      onload: null as null | ((e: any) => void),
+      onload: null as null | ((e: unknown) => void),
       readAsText(_file: Blob) {
         const text = JSON.stringify(testJSON);
         setTimeout(() => {
-          // @ts-ignore
           this.onload && this.onload({ target: { result: text } });
         }, 0);
       },
