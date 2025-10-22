@@ -4,8 +4,8 @@ import { BrowserRouter as Router } from 'react-router';
 import { vi } from 'vitest';
 
 import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
-import { Profile } from './Profile';
 import { getUsersEmptyVars2, getUsersEmptyVars } from 'mocks/User';
+import { Profile } from './Profile';
 
 vi.mock('react-router', async (importOriginal) => {
   const actual: any = await importOriginal();

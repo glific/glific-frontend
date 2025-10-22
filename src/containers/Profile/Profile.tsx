@@ -11,7 +11,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE } from 'graphql/mutations/Contact';
-import { GET_CURRENT_USER, FILTER_USERS } from 'graphql/queries/User';
+import { GET_CURRENT_USER, FILTER_USERS, FILTER_USERS_BY_CONTACT_ID } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -48,18 +48,13 @@ export const Profile = ({
 
   const params = useParams();
   const { data, loading } = useQuery(GET_CURRENT_USER);
-  const { data: data2 } = useQuery(FILTER_USERS);
-  const userData = data2?.users;
+  const { data: usersData } = useQuery(FILTER_USERS_BY_CONTACT_ID);
 
+  const users = usersData?.users || [];
+  const contactIds = users.map((user: any) => user.contact?.id);
   const contactId = params?.id;
-  let found = false;
-  for (let i = 0; i < userData?.length; i += 1) {
-    const user = userData[i];
-    if (user.contact?.id === contactId) {
-      found = true;
-      break;
-    }
-  }
+
+  const isLinkedToStaff = contactIds.includes(contactId);
 
   const updateName = () => {
     if (!hasMultipleProfiles) {
@@ -199,7 +194,7 @@ export const Profile = ({
       : t("You won't be able to send messages to this profile.")
     : t("You won't be able to send messages to this contact.");
 
-  if (found) {
+  if (isLinkedToStaff) {
     dialogMessage += ` ${t('Staff account linked to this contact will also get deleted.')}`;
   }
   return (

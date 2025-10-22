@@ -47,6 +47,16 @@ export const FILTER_USERS = gql`
   }
 `;
 
+export const FILTER_USERS_BY_CONTACT_ID = gql`
+  query filterUsersByContactId($filter: UserFilter, $opts: Opts) {
+    users(filter: $filter, opts: $opts) {
+      contact {
+        id
+      }
+    }
+  }
+`;
+
 export const GET_USER_ROLES = gql`
   query {
     roles
