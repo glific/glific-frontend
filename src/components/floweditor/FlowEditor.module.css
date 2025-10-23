@@ -93,7 +93,7 @@
   color: #073f24;
 }
 
-.DialogTitle>h2 {
+.DialogTitle > h2 {
   font-size: 24px;
 }
 
@@ -122,7 +122,6 @@
 }
 
 .Header {
-  position: absolute;
   width: 100%;
   z-index: 1000;
   height: 5rem;
@@ -169,4 +168,25 @@
   color: #119656;
   cursor: pointer;
   font-weight: bold;
+}
+
+.ReadOnlyBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #119656;
+  color: #fff;
+  border-bottom: 1px solid #1b5e20;
+  z-index: 9999;
+  font-size: 0.875rem;
+}
+
+.BannerIcon {
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.FlowContainer :global(#canvas-container) {
+  margin-top: 0 !important;
 }
