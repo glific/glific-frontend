@@ -47,6 +47,7 @@ export const FlowEditor = () => {
   const [publishLoading, setPublishLoading] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
+  const [isTemplate, setIsTemplate] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [readOnlyMessage, setReadOnlyMessage] = useState('');
 
@@ -173,8 +174,12 @@ export const FlowEditor = () => {
   useEffect(() => {
     if (flowName && flowName.flows.length > 0) {
       setFlowId(flowName.flows[0].id);
-      setIsReadOnly(flowName.flows[0].isTemplate);
+      setIsTemplate(flowName.flows[0].isTemplate);
       setSkipValidation(flowName.flows[0].skipValidation);
+
+      if (flowName.flows[0].isTemplate) {
+        setIsReadOnly(true);
+      }
     }
   }, [flowName]);
 
@@ -372,7 +377,7 @@ export const FlowEditor = () => {
       <div className={styles.Header}>
         <div className={styles.Title}>
           <BackIconFlow
-            onClick={() => (isReadOnly ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
+            onClick={() => navigate(isTemplate ? '/flow?isTemplate=true' : '/flow')}
             className={styles.BackIcon}
             data-testid="back-button"
           />

@@ -122,7 +122,6 @@
 }
 
 .Header {
-  position: absolute;
   width: 100%;
   z-index: 1000;
   height: 5rem;
@@ -172,10 +171,6 @@
 }
 
 .ReadOnlyBanner {
-  position: absolute;
-  top: 5rem;
-  left: 0;
-  right: 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -183,11 +178,15 @@
   background-color: #119656;
   color: #ffffff;
   border-bottom: 1px solid #1b5e20;
-  z-index: 999;
+  z-index: 9999;
   font-size: 0.875rem;
 }
 
 .BannerIcon {
   font-size: 1.25rem;
   color: #ffffff;
+}
+
+.FlowContainer :global(#canvas-container) {
+  margin-top: 0 !important;
 }
