@@ -29,7 +29,6 @@ import {
 } from 'mocks/Simulator';
 import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
-// eslint-disable-next-line import/no-unresolved
 import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
 import * as FlowEditorHelper from './FlowEditor.helper';
@@ -392,10 +391,10 @@ test('should show warning when no keywords are present and share responder link 
 test('should display read-only banner when flow is being edited by another user', async () => {
   mockedAxios.post.mockResolvedValue({ data: {} });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: any) => {
+  // @ts-expect-error - Mock implementation with simplified types for testing
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
     setTimeout(callback, 0);
-    return {} as any;
+    return {}; // Simple object return instead of 'as unknown'
   });
 
   const errorData = {
