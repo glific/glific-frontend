@@ -27,8 +27,11 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
+import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
+import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
+import * as FlowEditorHelper from './FlowEditor.helper';
 
 window.location = { assign: vi.fn() } as any;
 window.location.reload = vi.fn();
@@ -383,4 +386,98 @@ test('should show warning when no keywords are present and share responder link 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
   });
+});
+
+test('should display read-only banner when flow is being edited by another user', async () => {
+  mockedAxios.post.mockResolvedValue({ data: {} });
+
+  // @ts-expect-error - Mock implementation with simplified types for testing
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
+    setTimeout(callback, 0);
+    return {}; // Simple object return instead of 'as unknown'
+  });
+
+  const errorData = {
+    flowGet: {
+      flow: null,
+      errors: [
+        {
+          key: 'error',
+          message: 'The flow is being edited by NGO Main Account',
+        },
+      ],
+    },
+  };
+
+  let getFreeFlowCalled = false;
+  const realUseLazyQuery = Apollo.useLazyQuery;
+
+  const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: unknown, options?: unknown) => {
+    if (query === GET_FREE_FLOW) {
+      const mockGetFreeFlow = vi.fn(() => {
+        if (!getFreeFlowCalled) {
+          getFreeFlowCalled = true;
+          if (options && typeof options === 'object' && 'onCompleted' in options) {
+            const { onCompleted } = options as { onCompleted?: (data: unknown) => void };
+            if (onCompleted) {
+              setTimeout(() => onCompleted(errorData), 0);
+            }
+          }
+        }
+        return Promise.resolve({ data: errorData });
+      });
+
+      return [
+        mockGetFreeFlow,
+        {
+          called: false,
+          loading: false,
+          data: null,
+        },
+      ] as unknown;
+    }
+
+    // @ts-expect-error - Mocking Apollo Client's useLazyQuery with unknown types
+    return (realUseLazyQuery as unknown)(query, options);
+  });
+
+  try {
+    const { container } = render(wrapperFunction(activeFlowMocks));
+
+    await screen.findByTestId('flowName');
+
+    await waitFor(
+      () => {
+        const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
+        expect(readOnlyBanner).toBeInTheDocument();
+      },
+      { timeout: 5000, interval: 200 }
+    );
+
+    const banner = container.querySelector('[class*="ReadOnlyBanner"]');
+    expect(banner).toHaveTextContent('View Only Mode');
+    expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
+
+    expect(screen.getByTestId('button')).toBeDisabled();
+    expect(screen.getByTestId('translateButton')).toBeDisabled();
+  } finally {
+    useLazyQuerySpy.mockRestore();
+  }
+}, 5000);
+
+test('should not display read-only banner when flow is available for editing', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { container } = render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(container.querySelector('#flow')).toBeInTheDocument();
+  });
+
+  const banner = container.querySelector('[class*="ReadOnlyBanner"]');
+  expect(banner).not.toBeInTheDocument();
+
+  const publishButton = screen.getByTestId('button');
+  const translateButton = screen.getByTestId('translateButton');
+  expect(publishButton).not.toBeDisabled();
+  expect(translateButton).not.toBeDisabled();
 });

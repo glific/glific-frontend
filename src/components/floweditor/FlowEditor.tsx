@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import InfoIcon from '@mui/icons-material/Info';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, Navigate, useParams } from 'react-router';
 import { Menu, MenuItem, Typography } from '@mui/material';
@@ -43,14 +44,12 @@ export const FlowEditor = () => {
   const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
-  const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
-  const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
   const [shareDialog, setShareDialog] = useState<boolean>(false);
-
-  const config = setConfig(uuid, isTemplate, skipValidation);
+  const [isTemplate, setIsTemplate] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const [readOnlyMessage, setReadOnlyMessage] = useState('');
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -66,17 +65,12 @@ export const FlowEditor = () => {
   let flowTitle: any;
   let flowKeywords;
 
-  const loadFlowEditor = () => {
+  const loadFlowEditor = (forceReadOnly = false) => {
+    const readOnlyMode = forceReadOnly || isReadOnly;
+    const config = setConfig(uuid, skipValidation, readOnlyMode);
     showFlowEditor(document.getElementById('flow'), config);
     setLoading(false);
   };
-
-  const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
-    fetchPolicy: 'network-only',
-    onCompleted: () => {
-      loadFlowEditor();
-    },
-  });
 
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
@@ -85,8 +79,10 @@ export const FlowEditor = () => {
         loadFlowEditor();
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
-        setDialogMessage(flowGet.errors[0].message);
-        setCurrentEditDialogBox(true);
+        setIsReadOnly(true);
+        setReadOnlyMessage(flowGet.errors[0].message);
+        loadFlowEditor(true);
+        setFlowEditorLoaded(true);
       }
     },
   });
@@ -173,6 +169,10 @@ export const FlowEditor = () => {
       setFlowId(flowName.flows[0].id);
       setIsTemplate(flowName.flows[0].isTemplate);
       setSkipValidation(flowName.flows[0].skipValidation);
+
+      if (flowName.flows[0].isTemplate) {
+        setIsReadOnly(true);
+      }
     }
   }, [flowName]);
 
@@ -292,29 +292,6 @@ export const FlowEditor = () => {
     </div>
   );
 
-  if (currentEditDialogBox) {
-    dialog = (
-      <DialogBox
-        title={dialogMessage}
-        alignButtons="center"
-        skipCancel
-        buttonOk="Take Over"
-        buttonMiddle="Go Back"
-        handleOk={() => {
-          getFreeFlowForced({ variables: { id: flowId, isForced: true } });
-          setCurrentEditDialogBox(false);
-        }}
-        handleMiddle={() => {
-          navigate('/flow');
-        }}
-      >
-        <p className={styles.DialogDescription}>
-          You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to start editing now.
-        </p>
-      </DialogBox>
-    );
-  }
-
   if (publishDialog) {
     dialog = (
       <DialogBox
@@ -393,7 +370,7 @@ export const FlowEditor = () => {
       <div className={styles.Header}>
         <div className={styles.Title}>
           <BackIconFlow
-            onClick={() => (isTemplate ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
+            onClick={() => navigate(isTemplate ? '/flow?isTemplate=true' : '/flow')}
             className={styles.BackIcon}
             data-testid="back-button"
           />
@@ -404,7 +381,6 @@ export const FlowEditor = () => {
             <div>{flowKeywords}</div>
           </div>
         </div>
-
         <div className={styles.Actions}>
           <Button
             aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -436,7 +412,7 @@ export const FlowEditor = () => {
             variant="outlined"
             color="primary"
             data-testid="translateButton"
-            disabled={isTemplate}
+            disabled={isReadOnly}
             onClick={() => {
               setShowTranslateFlowModal(true);
               handleClose();
@@ -458,7 +434,7 @@ export const FlowEditor = () => {
             variant="contained"
             color="primary"
             data-testid="button"
-            disabled={isTemplate}
+            disabled={isReadOnly}
             onClick={() => setPublishDialog(true)}
           >
             <PublishIcon className={styles.Icon} />
@@ -466,7 +442,12 @@ export const FlowEditor = () => {
           </Button>
         </div>
       </div>
-
+      {isReadOnly && readOnlyMessage && (
+        <div className={styles.ReadOnlyBanner}>
+          <InfoIcon className={styles.BannerIcon} />
+          <span>View Only Mode - {readOnlyMessage}</span>
+        </div>
+      )}
       {showSimulator && (
         <Simulator setShowSimulator={setShowSimulator} hasResetButton flowSimulator message={getFlowKeyword()} />
       )}
