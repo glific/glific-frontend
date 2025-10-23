@@ -29,6 +29,7 @@ import {
 } from 'mocks/Simulator';
 import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
+// eslint-disable-next-line import/no-unresolved
 import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
 import * as FlowEditorHelper from './FlowEditor.helper';
@@ -436,6 +437,7 @@ test('should display read-only banner when flow is being edited by another user'
       ] as unknown;
     }
 
+    // @ts-expect-error - Mocking Apollo Client's useLazyQuery with unknown types
     return (realUseLazyQuery as unknown)(query, options);
   });
 
