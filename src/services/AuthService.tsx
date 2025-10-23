@@ -78,12 +78,14 @@ export const checkAuthStatusService = () => {
     authStatus = false;
   } else {
     const tokenExpiryTime = new Date(tokenExpiryTimeFromSession);
-    // compare the session token with the current time
-    if (tokenExpiryTime > new Date()) {
+    // Create a buffer time of 1 minute before actual expiry
+    const bufferTime = new Date(tokenExpiryTime.getTime() - 60000);
+
+    if (bufferTime > new Date()) {
       // token is still valid return true
       authStatus = true;
     } else {
-      // this means token has expired and let's return false
+      // this means token will expire in 1 minute or less, let's return false to trigger renewal
       authStatus = false;
     }
   }
@@ -188,105 +190,6 @@ export const getOrganizationServices = (service: ServiceType) => {
   if (!services) return null;
   services = JSON.parse(services);
   return services[service];
-};
-
-export const setAuthHeaders = () => {
-  // add authorization header in all calls
-  let renewTokenCalled = false;
-  let renewCallInProgress = false;
-
-  const { fetch } = window;
-  window.fetch = (...args) =>
-    (async (parameters) => {
-      const parametersCopy = parameters;
-      if (checkAuthStatusService()) {
-        if (parametersCopy[1]) {
-          parametersCopy[1].headers = {
-            ...parametersCopy[1].headers,
-            authorization: getAuthSession('access_token'),
-          };
-        }
-        // @ts-ignore
-        const result = await fetch(...parametersCopy);
-        return result;
-      }
-      renewTokenCalled = true;
-      const authToken = await renewAuthToken();
-      if (authToken.data) {
-        // update localstore
-        setAuthSession(authToken.data.data);
-        renewTokenCalled = false;
-      }
-      if (parametersCopy[1]) {
-        parametersCopy[1].headers = {
-          ...parametersCopy[1].headers,
-          authorization: getAuthSession('access_token'),
-        };
-      }
-      // @ts-ignore
-      const result = await fetch(...parametersCopy);
-      return result;
-    })(args);
-
-  const xmlSend = XMLHttpRequest.prototype.send;
-  const xmlOpen = XMLHttpRequest.prototype.open;
-
-  ((open) => {
-    // @ts-ignore
-    XMLHttpRequest.prototype.open = function authOpen(
-      method: string,
-      url: string | URL,
-      async: boolean,
-      username?: string | null,
-      password?: string | null
-    ) {
-      if (url.toString().endsWith('renew')) {
-        // @ts-ignore
-        this.renewGlificCall = true;
-      }
-      open.call(this, method, url, async, username, password);
-    };
-  })(XMLHttpRequest.prototype.open);
-
-  ((send) => {
-    XMLHttpRequest.prototype.send = async function authCheck(body) {
-      this.addEventListener('loadend', () => {
-        // @ts-ignore
-        if (this.renewGlificCall) {
-          renewCallInProgress = false;
-        } else if (this.status === 401) {
-          window.location.href = '/logout/user';
-        }
-      });
-
-      // @ts-ignore
-      if (this.renewGlificCall && !renewCallInProgress) {
-        renewCallInProgress = true;
-        send.call(this, body);
-      }
-      // @ts-ignore
-      else if (this.renewGlificCall) {
-        this.abort();
-      }
-      // @ts-ignore
-      else if (checkAuthStatusService()) {
-        this.setRequestHeader('authorization', getAuthSession('access_token'));
-        send.call(this, body);
-      } else if (!renewTokenCalled) {
-        renewTokenCalled = true;
-        const authToken = await renewAuthToken();
-        if (authToken.data) {
-          // update localstore
-          setAuthSession(authToken.data.data);
-          renewTokenCalled = false;
-        }
-        this.setRequestHeader('authorization', getAuthSession('access_token'));
-        send.call(this, body);
-      }
-    };
-  })(XMLHttpRequest.prototype.send);
-
-  return { xmlSend, fetch, xmlOpen };
 };
 
 export const checkOrgStatus = (status: any) => {
