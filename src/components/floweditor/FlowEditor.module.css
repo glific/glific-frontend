@@ -184,7 +184,7 @@
 
 .BannerIcon {
   font-size: 1.25rem;
-  color: #ffffff;
+  color: #fff;
 }
 
 .FlowContainer :global(#canvas-container) {

@@ -392,7 +392,8 @@ test('should show warning when no keywords are present and share responder link 
 test('should display read-only banner when flow is being edited by another user', async () => {
   mockedAxios.post.mockResolvedValue({ data: {} });
 
-  const loadfilesSpy = vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: any) => {
     setTimeout(callback, 0);
     return {} as any;
   });
@@ -418,7 +419,7 @@ test('should display read-only banner when flow is being edited by another user'
         if (!getFreeFlowCalled) {
           getFreeFlowCalled = true;
           if (options && typeof options === 'object' && 'onCompleted' in options) {
-            const onCompleted = (options as { onCompleted?: (data: unknown) => void }).onCompleted;
+            const { onCompleted } = options as { onCompleted?: (data: unknown) => void };
             if (onCompleted) {
               setTimeout(() => onCompleted(errorData), 0);
             }
