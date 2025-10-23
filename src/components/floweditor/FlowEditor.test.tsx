@@ -1,6 +1,5 @@
 import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
-import * as FlowEditorHelper from './FlowEditor.helper';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import axios from 'axios';
@@ -28,10 +27,11 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import { GET_FREE_FLOW, GET_FLOW_DETAILS } from 'graphql/queries/Flow';
+import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
 import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
+import * as FlowEditorHelper from './FlowEditor.helper';
 
 window.location = { assign: vi.fn() } as any;
 window.location.reload = vi.fn();
@@ -411,13 +411,16 @@ test('should display read-only banner when flow is being edited by another user'
   let getFreeFlowCalled = false;
   const realUseLazyQuery = Apollo.useLazyQuery;
 
-  const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: any, options?: any) => {
+  const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: unknown, options?: unknown) => {
     if (query === GET_FREE_FLOW) {
-      const mockGetFreeFlow = vi.fn((variables?: any) => {
+      const mockGetFreeFlow = vi.fn(() => {
         if (!getFreeFlowCalled) {
           getFreeFlowCalled = true;
-          if (options?.onCompleted) {
-            setTimeout(() => options.onCompleted(errorData), 0);
+          if (options && typeof options === 'object' && 'onCompleted' in options) {
+            const onCompleted = (options as { onCompleted?: (data: unknown) => void }).onCompleted;
+            if (onCompleted) {
+              setTimeout(() => onCompleted(errorData), 0);
+            }
           }
         }
         return Promise.resolve({ data: errorData });
@@ -430,14 +433,14 @@ test('should display read-only banner when flow is being edited by another user'
           loading: false,
           data: null,
         },
-      ] as any;
+      ] as unknown;
     }
 
-    return (realUseLazyQuery as any)(query, options);
+    return (realUseLazyQuery as unknown)(query, options);
   });
 
   try {
-    const { container, debug } = render(wrapperFunction(activeFlowMocks));
+    const { container } = render(wrapperFunction(activeFlowMocks));
 
     await screen.findByTestId('flowName');
 

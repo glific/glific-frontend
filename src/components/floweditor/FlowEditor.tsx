@@ -72,13 +72,6 @@ export const FlowEditor = () => {
     setLoading(false);
   };
 
-  const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
-    fetchPolicy: 'network-only',
-    onCompleted: () => {
-      loadFlowEditor();
-    },
-  });
-
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
