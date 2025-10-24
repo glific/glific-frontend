@@ -10,12 +10,12 @@ import { Profile } from './Profile';
 vi.mock('react-router', async (importOriginal) => {
   const actual: unknown = await importOriginal();
   return {
-    ...(actual as Record<string, any>),
+    ...(actual as Record<string, unknown>),
     useParams: () => ({ id: '14' }),
   };
 });
 
-const mocks = LOGGED_IN_USER_MOCK;
+const mocks = [...LOGGED_IN_USER_MOCK, getUsersEmptyVars];
 
 const props: any = {
   profileType: 'User',
@@ -25,7 +25,7 @@ const props: any = {
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Profile match={{ params: { id: 1 } }} {...props} />
+      <Profile {...props} />
     </Router>
   </MockedProvider>
 );
