@@ -106,7 +106,6 @@ it('should show staff account linked to this contact will also get deleted warni
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
   const deleteButton = screen.queryByTestId('remove-icon');
   if (deleteButton) {
-    console.log('delete button found');
     fireEvent.click(deleteButton);
     expect(
       screen.getByText(
