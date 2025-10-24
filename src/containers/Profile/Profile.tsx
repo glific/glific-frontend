@@ -189,11 +189,17 @@ export const Profile = ({
 
   const isDefaultProfile = hasMultipleProfiles && multiProfileAttributes.selectedProfile?.is_default;
 
-  let dialogMessage: string = hasMultipleProfiles
-    ? isDefaultProfile
-      ? t('Deleting default profile will delete the contact. This is irreversible.')
-      : t("You won't be able to send messages to this profile.")
-    : t("You won't be able to send messages to this contact.");
+  let dialogMessage: string;
+
+  if (hasMultipleProfiles) {
+    if (isDefaultProfile) {
+      dialogMessage = t('Deleting default profile will delete the contact. This is irreversible.');
+    } else {
+      dialogMessage = t("You won't be able to send messages to this profile.");
+    }
+  } else {
+    dialogMessage = t("You won't be able to send messages to this contact.");
+  }
 
   if (isLinkedToStaff) {
     dialogMessage += ` ${t('Staff account linked to this contact will also get deleted.')}`;
