@@ -207,18 +207,9 @@ export const getUsersEmptyVars = {
     data: {
       users: [
         {
-          accessRoles: [
-            {
-              label: 'Admin',
-            },
-          ],
           contact: {
             id: '14',
           },
-          groups: [],
-          id: '1',
-          name: 'NGO Admin',
-          phone: '919999988888',
         },
       ],
     },
@@ -226,25 +217,16 @@ export const getUsersEmptyVars = {
 };
 export const getUsersEmptyVars2 = {
   request: {
-    query: FILTER_USERS,
+    query: GET_USER_CONTACT_IDS,
     variables: {},
   },
   result: {
     data: {
       users: [
         {
-          accessRoles: [
-            {
-              label: 'Admin',
-            },
-          ],
           contact: {
             id: '3',
           },
-          groups: [],
-          id: '1',
-          name: 'NGO Admin',
-          phone: '919999988888',
         },
       ],
     },
