@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
@@ -23,6 +23,7 @@ import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 import * as Notification from 'common/notification';
+import { IMPORT_FLOW } from 'graphql/mutations/Flow';
 
 const isActiveFilter = { isActive: true, isTemplate: false };
 
@@ -52,6 +53,7 @@ const mocks = [
   pinFlowQuery('1'),
   ...getOrganizationQuery,
 ];
+const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 
 const flowList = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -374,6 +376,83 @@ describe('Template flows', () => {
 
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
+
+  test('Template flows > should display failed assistants when import has assistant errors', async () => {
+    const mockImportFlowWithAssistantError = {
+      request: { query: IMPORT_FLOW },
+      result: {
+        data: {
+          importFlow: {
+            status: [
+              {
+                flowName: 'Test Flow',
+                status:
+                  'Failed to import assistant Assistant ID: a_pJMxxxZfGfDicrgAD Failed to import assistant Assistant ID: asst_testsD',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
+    const testMocks = [mockImportFlowWithAssistantError, ...baseWithoutImport];
+
+    const fileReaderMock = vi.fn(() => ({
+      onload: null as null | ((e: unknown) => void),
+      readAsText() {
+        const text = JSON.stringify(testJSON);
+        setTimeout(() => {
+          this.onload?.({ target: { result: text } });
+        }, 0);
+      },
+    }));
+    vi.stubGlobal('FileReader', fileReaderMock as unknown as typeof FileReader);
+
+    render(
+      <MockedProvider mocks={testMocks} addTypename={false}>
+        <MemoryRouter>
+          <FlowList />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await screen.findAllByTestId('import-icon');
+    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
+
+    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
+    const input = await screen.findByTestId('import');
+    Object.defineProperty(input, 'files', { value: [file] });
+    fireEvent.change(input);
+
+    const title = await screen.findByText(/import flow status/i);
+    const dialog = title.closest('div')!;
+    const inDialog = within(dialog);
+
+    const helpLink = await inDialog.findByText(/create a new assistant/i);
+    const para = helpLink.closest('p');
+    expect(para).toBeTruthy();
+    expect(normalize(para!.textContent || '')).toContain('flow imported successfully, but failed to import assistants');
+
+    const failedLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'failed assistants:');
+    expect(failedLabels.length).toBeGreaterThan(0);
+
+    expect(inDialog.getByText('a_pJMxxxZfGfDicrgAD')).toBeInTheDocument();
+    expect(inDialog.getByText('asst_testsD')).toBeInTheDocument();
+
+    expect(helpLink).toHaveAttribute(
+      'href',
+      'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific'
+    );
+    expect(helpLink).toHaveAttribute('target', '_blank');
+    expect(helpLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+    fireEvent.click(inDialog.getByTestId('ok-button'));
+    await waitFor(() => {
+      expect(screen.queryByText(/import flow status/i)).not.toBeInTheDocument();
     });
   });
 });

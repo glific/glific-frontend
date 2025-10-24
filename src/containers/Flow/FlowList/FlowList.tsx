@@ -189,11 +189,57 @@ export const FlowList = () => {
         skipCancel
       >
         <div className={styles.ImportDialog}>
-          {importStatus.map((status: any) => (
-            <div key={status.flowName}>
-              <strong>{status.flowName}:</strong> {status.status}
-            </div>
-          ))}
+          {importStatus.map((status: any) => {
+            const statusText = status.status ?? '';
+            const hasAssistantError = statusText.includes('Failed to import assistant');
+
+            const warningChunks = statusText
+              .split(/Failed to import assistant/g)
+              .slice(1)
+              .filter(Boolean);
+
+            const assistantIds: string[] = warningChunks
+              .map((chunk: string) => {
+                const m = chunk.match(/Assistant ID:\s*([a-zA-Z0-9_]+)/);
+                return m ? m[1] : null;
+              })
+              .filter((id: string | null): id is string => id !== null);
+
+            if (hasAssistantError && assistantIds.length > 0) {
+              return (
+                <div key={status.FlowName} className={styles.StatusContainer}>
+                  <p className={styles.StatusMessage}>
+                    Flow imported successfully, but failed to import assistants. Please{' '}
+                    <a
+                      href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
+                      className={styles.HelpLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      create a new assistant
+                    </a>{' '}
+                    and replace the existing one in the flow.
+                  </p>
+                  <div className={styles.SectionTitle}>
+                    <strong>{assistantIds.length === 1 ? 'Failed Assistant:' : 'Failed Assistants:'}</strong>
+                  </div>
+                  <ol className={styles.AssistantListPlain}>
+                    {assistantIds.map((id: string) => (
+                      <li key={id}>
+                        <code className={styles.AssistantCod}>{id}</code>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              );
+            }
+
+            return (
+              <div key={status.flowName} className={styles.statusContainer}>
+                <strong>{status.flowName}:</strong> {status.status}
+              </div>
+            );
+          })}
         </div>
       </DialogBox>
     );

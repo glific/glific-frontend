@@ -8,7 +8,7 @@
   min-height: 36px !important;
 }
 
-.SearchBar>fieldset {
+.SearchBar > fieldset {
   border: none !important;
 }
 
@@ -173,7 +173,7 @@
   line-height: 1;
 }
 
-.RadioLabel>span {
+.RadioLabel > span {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -199,4 +199,28 @@
 
 .ShareIcon {
   font-size: 18px;
+}
+
+.StatusMessage {
+  text-align: center;
+  margin: 8px 0 10px;
+  color: #333;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.SectionTitle {
+  margin: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.AssistantCod {
+  font-family: 'Heebo', sans-serif !important;
+  font-size: 14px;
+}
+
+.AssistantListPlain {
+  margin: 4px 0 0;
+  padding-left: 18px;
 }
