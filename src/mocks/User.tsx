@@ -226,7 +226,7 @@ export const getUsersEmptyVars = {
 };
 export const getUsersEmptyVars2 = {
   request: {
-    query: GET_USER_CONTACT_IDS,
+    query: FILTER_USERS,
     variables: {},
   },
   result: {
