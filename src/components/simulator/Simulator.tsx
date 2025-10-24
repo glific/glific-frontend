@@ -53,6 +53,7 @@ import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessag
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
+import { wsClient } from 'config/apolloclient';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -152,25 +153,29 @@ const Simulator = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const handleConnectionStatus = (connected: boolean) => {
-    if (connected !== isSocketConnected) {
-      setIsSocketConnected(connected);
-    }
-  };
+  // Monitor WebSocket connection status
+  useEffect(() => {
+    if (isPreviewMessage) return;
 
-  const handleSubscriptionError = (error: any, subscriptionType: string) => {
-    setLogs(`Simulator ${subscriptionType} subscription error: ${error}`, 'error');
-    const isConnectionError =
-      error?.message?.includes('Socket closed') ||
-      error?.message?.includes('WebSocket') ||
-      error?.message?.includes('NetworkError') ||
-      error?.message?.includes('Connection') ||
-      error?.networkError;
+    const disposeConnected = wsClient.on('connected', () => {
+      setIsSocketConnected(true);
+    });
 
-    if (isConnectionError) {
-      handleConnectionStatus(false);
-    }
-  };
+    const disposeClosed = wsClient.on('closed', (event: any) => {
+      setIsSocketConnected(false);
+    });
+
+    const disposeError = wsClient.on('error', (error: any) => {
+      setIsSocketConnected(false);
+    });
+
+    return () => {
+      disposeConnected();
+      disposeClosed();
+      disposeError();
+    };
+  }, [isPreviewMessage]);
+
   const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any, messageUuid?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
@@ -237,10 +242,10 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: sentData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
-      handleConnectionStatus(true);
+      setIsSocketConnected(true);
     },
     onError: (error) => {
-      handleSubscriptionError(error, 'sent message');
+      setLogs(`Simulator sent message subscription error: ${error}`, 'error');
     },
   });
 
@@ -249,10 +254,10 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: receivedData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
-      handleConnectionStatus(true);
+      setIsSocketConnected(true);
     },
     onError: (error) => {
-      handleSubscriptionError(error, 'received message');
+      setLogs(`Simulator received message subscription error: ${error}`, 'error');
     },
   });
 
