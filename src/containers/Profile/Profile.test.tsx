@@ -105,14 +105,15 @@ it('should show staff account linked to this contact will also get deleted warni
   );
   await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
   const deleteButton = screen.queryByTestId('remove-icon');
+
   if (deleteButton) {
     fireEvent.click(deleteButton);
-    expect(
-      screen.getByText(
-        "You won't be able to send messages to this profile. Staff account linked to this contact will also get deleted."
-      )
-    ).toBeInTheDocument();
   }
+  expect(
+    screen.getByText(
+      "You won't be able to send messages to this profile. Staff account linked to this contact will also get deleted."
+    )
+  ).toBeInTheDocument();
 });
 
 it('should show only profile deletion warning pop up when deleting  profile', async () => {
@@ -136,6 +137,6 @@ it('should show only profile deletion warning pop up when deleting  profile', as
   const deleteButton = screen.queryByTestId('remove-icon');
   if (deleteButton) {
     fireEvent.click(deleteButton);
-    expect(screen.getByText("You won't be able to send messages to this profile.")).toBeInTheDocument();
   }
+  expect(screen.getByText("You won't be able to send messages to this profile.")).toBeInTheDocument();
 });
