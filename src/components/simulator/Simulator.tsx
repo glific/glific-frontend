@@ -196,12 +196,13 @@ const Simulator = ({
   useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     fetchPolicy: 'network-only',
     variables,
-    skip: isPreviewMessage || simulatorId === '',
+    skip: isPreviewMessage,
     onData: ({ data: simulatorSubscribe }) => {
       if (simulatorSubscribe.data) {
         try {
           const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release.user_id;
           if (userId.toString() === getUserSession('id')) {
+            setNotification('Sorry! Simulator timeout. Please click Preview again', 'warning');
             setShowSimulator(false);
           }
         } catch (error) {
