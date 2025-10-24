@@ -63,10 +63,10 @@ it('should show default profile deletion warning pop up when deleting default pr
     selectedProfileId: '2',
   };
 
-  const mocks = [...multiple_profile_mock, getUsersEmptyVars2];
+  const mocks2 = [...multiple_profile_mock, getUsersEmptyVars2];
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks2} addTypename={false}>
       <Router>
         <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
@@ -95,9 +95,9 @@ it('should show staff account linked to this contact will also get deleted warni
     },
     selectedProfileId: '3',
   };
-  const mocks = [...multiple_profile_mock, getUsersEmptyVars];
+  const mocks3 = [...multiple_profile_mock, getUsersEmptyVars];
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks3} addTypename={false}>
       <Router>
         <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
@@ -125,9 +125,9 @@ it('should show only profile deletion warning pop up when deleting  profile', as
     },
     selectedProfileId: '3',
   };
-  const mocks = [...multiple_profile_mock, getUsersEmptyVars2];
+  const mocks4 = [...multiple_profile_mock, getUsersEmptyVars2];
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks4} addTypename={false}>
       <Router>
         <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>

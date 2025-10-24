@@ -53,7 +53,7 @@ export const Profile = ({
   const users = usersData?.users || [];
   const contactIds = users
     .map((user: { contact?: { id: string } }) => user.contact?.id)
-    .filter((id: any): id is string => id !== undefined);
+    .filter((id: unknown): id is string => id !== undefined);
   const contactId = params?.id;
   const isLinkedToStaff = contactIds.includes(contactId);
 
