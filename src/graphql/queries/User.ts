@@ -47,8 +47,8 @@ export const FILTER_USERS = gql`
   }
 `;
 
-export const FILTER_USERS_BY_CONTACT_ID = gql`
-  query filterUsersByContactId($filter: UserFilter, $opts: Opts) {
+export const GET_USER_CONTACT_IDS = gql`
+  query GET_USER_CONTACT_IDS($filter: UserFilter, $opts: Opts) {
     users(filter: $filter, opts: $opts) {
       contact {
         id

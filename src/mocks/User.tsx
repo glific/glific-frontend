@@ -1,5 +1,5 @@
 import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
-import { FILTER_USERS, GET_CURRENT_USER, GET_USERS, FILTER_USERS_BY_CONTACT_ID } from 'graphql/queries/User';
+import { FILTER_USERS, GET_CURRENT_USER, GET_USERS, GET_USER_CONTACT_IDS } from 'graphql/queries/User';
 import { setVariables } from 'common/constants';
 
 export const getCurrentUserQuery = {
@@ -200,7 +200,7 @@ export const getUsers = {
 
 export const getUsersEmptyVars = {
   request: {
-    query: FILTER_USERS_BY_CONTACT_ID,
+    query: GET_USER_CONTACT_IDS,
     variables: {},
   },
   result: {
@@ -226,7 +226,7 @@ export const getUsersEmptyVars = {
 };
 export const getUsersEmptyVars2 = {
   request: {
-    query: FILTER_USERS,
+    query: GET_USER_CONTACT_IDS,
     variables: {},
   },
   result: {

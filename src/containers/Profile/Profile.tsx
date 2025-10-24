@@ -11,7 +11,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE } from 'graphql/mutations/Contact';
-import { GET_CURRENT_USER, FILTER_USERS_BY_CONTACT_ID } from 'graphql/queries/User';
+import { GET_CURRENT_USER, GET_USER_CONTACT_IDS } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -48,7 +48,7 @@ export const Profile = ({
 
   const params = useParams();
   const { data, loading } = useQuery(GET_CURRENT_USER);
-  const { data: usersData } = useQuery(FILTER_USERS_BY_CONTACT_ID);
+  const { data: usersData } = useQuery(GET_USER_CONTACT_IDS);
 
   const users = usersData?.users || [];
   const contactIds = users
