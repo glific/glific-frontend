@@ -3,14 +3,14 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 import { vi } from 'vitest';
 
-import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK, multiple_profile_mock as MULTIPLE_PROFILE_MOCK } from 'mocks/Contact';
 import { getUsersEmptyVars2, getUsersEmptyVars } from 'mocks/User';
 import { Profile } from './Profile';
 
 vi.mock('react-router', async (importOriginal) => {
-  const actual: any = await importOriginal();
+  const actual: unknown = await importOriginal();
   return {
-    ...actual,
+    ...(actual as Record<string, any>),
     useParams: () => ({ id: '14' }),
   };
 });
@@ -63,7 +63,7 @@ it('should show default profile deletion warning pop up when deleting default pr
     selectedProfileId: '2',
   };
 
-  const mocks2 = [...multiple_profile_mock, getUsersEmptyVars2];
+  const mocks2 = [...MULTIPLE_PROFILE_MOCK, getUsersEmptyVars2];
 
   render(
     <MockedProvider mocks={mocks2} addTypename={false}>
@@ -95,7 +95,7 @@ it('should show staff account linked to this contact will also get deleted warni
     },
     selectedProfileId: '3',
   };
-  const mocks3 = [...multiple_profile_mock, getUsersEmptyVars];
+  const mocks3 = [...MULTIPLE_PROFILE_MOCK, getUsersEmptyVars];
   render(
     <MockedProvider mocks={mocks3} addTypename={false}>
       <Router>
@@ -125,7 +125,7 @@ it('should show only profile deletion warning pop up when deleting  profile', as
     },
     selectedProfileId: '3',
   };
-  const mocks4 = [...multiple_profile_mock, getUsersEmptyVars2];
+  const mocks4 = [...MULTIPLE_PROFILE_MOCK, getUsersEmptyVars2];
   render(
     <MockedProvider mocks={mocks4} addTypename={false}>
       <Router>
