@@ -131,6 +131,7 @@ const Simulator = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSocketConnected, setIsSocketConnected] = useState(true);
   const nodeRef = useRef<HTMLDivElement>(null!);
 
   const client = useApolloClient();
@@ -150,6 +151,26 @@ const Simulator = ({
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
+
+  const handleConnectionStatus = (connected: boolean) => {
+    if (connected !== isSocketConnected) {
+      setIsSocketConnected(connected);
+    }
+  };
+
+  const handleSubscriptionError = (error: any, subscriptionType: string) => {
+    setLogs(`Simulator ${subscriptionType} subscription error: ${error}`, 'error');
+    const isConnectionError =
+      error?.message?.includes('Socket closed') ||
+      error?.message?.includes('WebSocket') ||
+      error?.message?.includes('NetworkError') ||
+      error?.message?.includes('Connection') ||
+      error?.networkError;
+
+    if (isConnectionError) {
+      handleConnectionStatus(false);
+    }
+  };
   const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any, messageUuid?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
@@ -216,6 +237,10 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: sentData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
+      handleConnectionStatus(true);
+    },
+    onError: (error) => {
+      handleSubscriptionError(error, 'sent message');
     },
   });
 
@@ -224,6 +249,10 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: receivedData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
+      handleConnectionStatus(true);
+    },
+    onError: (error) => {
+      handleSubscriptionError(error, 'received message');
     },
   });
 
@@ -531,6 +560,11 @@ const Simulator = ({
                   <MoreVertIcon />
                 </div>
               </div>
+              {!isSocketConnected && (
+                <div className={styles.ConnectionStatus}>
+                  <span>⚠️ Simulator Connection Lost. Try Reloading</span>
+                </div>
+              )}
               <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
