@@ -16,9 +16,20 @@ import {
 } from 'mocks/Simulator';
 import Simulator from './Simulator';
 import { setUserSession } from 'services/AuthService';
+import { getWsClient } from 'config/apolloclient';
 
 vi.mock('axios');
+vi.mock('config/apolloclient');
+
 const mockedAxios = axios as any;
+const mockedWsClient = {
+  on: vi.fn(),
+  off: vi.fn(),
+  emit: vi.fn(),
+  close: vi.fn(),
+} as any;
+
+(getWsClient as any).mockReturnValue(mockedWsClient);
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = vi.fn();
@@ -45,6 +56,10 @@ const getDefaultProps = () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+
+  mockedWsClient.on.mockImplementation((event: string, handler: Function) => {
+    return vi.fn();
+  });
 });
 
 test('opened simulator should close when click of simulator icon', async () => {
@@ -230,5 +245,108 @@ test('simulator should reset on clicking the reset button message', async () => 
   fireEvent.click(resetButton);
   await waitFor(() => {
     expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('WebSocket connection status', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedWsClient.on.mockImplementation((event: string, handler: Function) => {
+      return vi.fn();
+    });
+  });
+
+  test('should handle WebSocket connected event', async () => {
+    const props = getDefaultProps();
+    props.showSimulator = true;
+
+    const eventHandlers: { [key: string]: Function } = {};
+    const disposeFunctions: { [key: string]: Function } = {};
+
+    mockedWsClient.on.mockImplementation((event: string, handler: Function) => {
+      eventHandlers[event] = handler;
+      disposeFunctions[event] = vi.fn();
+      return disposeFunctions[event];
+    });
+
+    const { queryByText } = render(
+      <MockedProvider mocks={mocks}>
+        <Simulator {...props} />
+      </MockedProvider>
+    );
+
+    expect(queryByText('⚠️ Simulator Connection Lost. Try Reloading')).not.toBeInTheDocument();
+
+    if (eventHandlers.connected) {
+      eventHandlers.connected();
+    }
+
+    await waitFor(() => {
+      expect(queryByText('⚠️ Simulator Connection Lost. Try Reloading')).not.toBeInTheDocument();
+    });
+  });
+
+  test('should handle WebSocket closed event and show disconnection status', async () => {
+    const props = getDefaultProps();
+    props.showSimulator = true;
+
+    const eventHandlers: { [key: string]: Function } = {};
+    const disposeFunctions: { [key: string]: Function } = {};
+
+    mockedWsClient.on.mockImplementation((event: string, handler: Function) => {
+      eventHandlers[event] = handler;
+      disposeFunctions[event] = vi.fn();
+      return disposeFunctions[event];
+    });
+
+    const { getByText, getByTestId } = render(
+      <MockedProvider mocks={mocks}>
+        <Simulator {...props} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('simulatorInput')).toBeInTheDocument();
+    });
+
+    if (eventHandlers.closed) {
+      eventHandlers.closed({ code: 1006, reason: 'Connection closed' });
+    }
+
+    await waitFor(() => {
+      expect(getByText('⚠️ Simulator Connection Lost. Try Reloading')).toBeInTheDocument();
+    });
+  });
+
+  test('should handle WebSocket error event and show disconnection status', async () => {
+    const props = getDefaultProps();
+    props.showSimulator = true;
+
+    const eventHandlers: { [key: string]: Function } = {};
+    const disposeFunctions: { [key: string]: Function } = {};
+
+    mockedWsClient.on.mockImplementation((event: string, handler: Function) => {
+      eventHandlers[event] = handler;
+      disposeFunctions[event] = vi.fn();
+      return disposeFunctions[event];
+    });
+
+    const { getByText, getByTestId } = render(
+      <MockedProvider mocks={mocks}>
+        <Simulator {...props} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('simulatorInput')).toBeInTheDocument();
+    });
+
+    if (eventHandlers.error) {
+      eventHandlers.error(new Error('WebSocket connection failed'));
+    }
+
+    await waitFor(() => {
+      expect(getByText('⚠️ Simulator Connection Lost. Try Reloading')).toBeInTheDocument();
+    });
   });
 });
