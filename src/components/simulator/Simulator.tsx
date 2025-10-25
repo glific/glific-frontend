@@ -161,11 +161,11 @@ const Simulator = ({
       setIsSocketConnected(true);
     });
 
-    const disposeClosed = getWsClient().on('closed', (event: any) => {
+    const disposeClosed = getWsClient().on('closed', () => {
       setIsSocketConnected(false);
     });
 
-    const disposeError = getWsClient().on('error', (error: any) => {
+    const disposeError = getWsClient().on('error', () => {
       setIsSocketConnected(false);
     });
 

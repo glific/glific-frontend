@@ -192,13 +192,12 @@
   font-size: 0.6rem !important;
   font-weight: bold !important;
   padding: 2px 6px;
-  background-color: rgba(255, 152, 0, 0.2);
+  background-color: rgb(255 152 0 / 20%);
   border-radius: 10px;
   border: 1px solid #ff9800;
   width: 90%;
   text-align: center;
   margin: 1rem auto;
-
 }
 
 .Header div {

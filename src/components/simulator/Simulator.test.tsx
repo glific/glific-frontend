@@ -257,8 +257,8 @@ describe('WebSocket connection status', () => {
   });
 
   test('should handle WebSocket connected event', async () => {
-    const props = getDefaultProps();
-    props.showSimulator = true;
+    const simulatorProps = getDefaultProps();
+    simulatorProps.showSimulator = true;
 
     const eventHandlers: { [key: string]: Function } = {};
     const disposeFunctions: { [key: string]: Function } = {};
@@ -271,7 +271,7 @@ describe('WebSocket connection status', () => {
 
     const { queryByText } = render(
       <MockedProvider mocks={mocks}>
-        <Simulator {...props} />
+        <Simulator {...simulatorProps} />
       </MockedProvider>
     );
 
@@ -287,8 +287,8 @@ describe('WebSocket connection status', () => {
   });
 
   test('should handle WebSocket closed event and show disconnection status', async () => {
-    const props = getDefaultProps();
-    props.showSimulator = true;
+    const simulatorProps = getDefaultProps();
+    simulatorProps.showSimulator = true;
 
     const eventHandlers: { [key: string]: Function } = {};
     const disposeFunctions: { [key: string]: Function } = {};
@@ -301,7 +301,7 @@ describe('WebSocket connection status', () => {
 
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks}>
-        <Simulator {...props} />
+        <Simulator {...simulatorProps} />
       </MockedProvider>
     );
 
@@ -319,8 +319,8 @@ describe('WebSocket connection status', () => {
   });
 
   test('should handle WebSocket error event and show disconnection status', async () => {
-    const props = getDefaultProps();
-    props.showSimulator = true;
+    const simulatorProps = getDefaultProps();
+    simulatorProps.showSimulator = true;
 
     const eventHandlers: { [key: string]: Function } = {};
     const disposeFunctions: { [key: string]: Function } = {};
@@ -333,7 +333,7 @@ describe('WebSocket connection status', () => {
 
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks}>
-        <Simulator {...props} />
+        <Simulator {...simulatorProps} />
       </MockedProvider>
     );
 
