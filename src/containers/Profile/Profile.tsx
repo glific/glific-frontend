@@ -11,7 +11,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE } from 'graphql/mutations/Contact';
-import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { GET_CURRENT_USER, GET_USER_CONTACT_IDS } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -47,8 +47,15 @@ export const Profile = ({
   };
 
   const params = useParams();
-
   const { data, loading } = useQuery(GET_CURRENT_USER);
+  const { data: usersData } = useQuery(GET_USER_CONTACT_IDS);
+
+  const users = usersData?.users || [];
+  const contactIds = users
+    .map((user: { contact?: { id: string } }) => user.contact?.id)
+    .filter((id: unknown): id is string => id !== undefined);
+  const contactId = params?.id;
+  const isLinkedToStaff = contactIds.includes(contactId);
 
   const updateName = () => {
     if (!hasMultipleProfiles) {
@@ -182,11 +189,21 @@ export const Profile = ({
 
   const isDefaultProfile = hasMultipleProfiles && multiProfileAttributes.selectedProfile?.is_default;
 
-  const dialogMessage = hasMultipleProfiles
-    ? isDefaultProfile
-      ? t('Deleting default profile will delete the contact. This is irreversible.')
-      : t("You won't be able to send messages to this profile.")
-    : t("You won't be able to send messages to this contact.");
+  let dialogMessage: string;
+
+  if (hasMultipleProfiles) {
+    if (isDefaultProfile) {
+      dialogMessage = t('Deleting default profile will delete the contact. This is irreversible.');
+    } else {
+      dialogMessage = t("You won't be able to send messages to this profile.");
+    }
+  } else {
+    dialogMessage = t("You won't be able to send messages to this contact.");
+  }
+
+  if (isLinkedToStaff) {
+    dialogMessage += ` ${t('Staff account linked to this contact will also get deleted.')}`;
+  }
 
   return (
     <FormLayout
@@ -201,7 +218,7 @@ export const Profile = ({
       redirectionLink={redirectionLink}
       listItem={hasMultipleProfiles ? 'profile' : 'contact'}
       icon={profileIcon}
-      afterDelete={afterDelete}
+      afterDelete={{ link: '/chat' }}
       type={type}
       languageAttributes={hasMultipleProfiles ? { disabled: true } : {}}
       title={pageTitle}
