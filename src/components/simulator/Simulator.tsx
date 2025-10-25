@@ -53,6 +53,7 @@ import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessag
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
+import { getWsClient } from 'config/apolloclient';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -131,6 +132,7 @@ const Simulator = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSocketConnected, setIsSocketConnected] = useState(true);
   const nodeRef = useRef<HTMLDivElement>(null!);
 
   const client = useApolloClient();
@@ -150,6 +152,30 @@ const Simulator = ({
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
+
+  // Monitor WebSocket connection status
+  useEffect(() => {
+    if (isPreviewMessage) return;
+
+    const disposeConnected = getWsClient().on('connected', () => {
+      setIsSocketConnected(true);
+    });
+
+    const disposeClosed = getWsClient().on('closed', () => {
+      setIsSocketConnected(false);
+    });
+
+    const disposeError = getWsClient().on('error', () => {
+      setIsSocketConnected(false);
+    });
+
+    return () => {
+      disposeConnected();
+      disposeClosed();
+      disposeError();
+    };
+  }, [isPreviewMessage]);
+
   const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any, messageUuid?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
@@ -216,6 +242,10 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: sentData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
+      setIsSocketConnected(true);
+    },
+    onError: (error) => {
+      setLogs(`Simulator sent message subscription error: ${error}`, 'error');
     },
   });
 
@@ -224,6 +254,10 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: receivedData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
+      setIsSocketConnected(true);
+    },
+    onError: (error) => {
+      setLogs(`Simulator received message subscription error: ${error}`, 'error');
     },
   });
 
@@ -531,6 +565,11 @@ const Simulator = ({
                   <MoreVertIcon />
                 </div>
               </div>
+              {!isSocketConnected && (
+                <div className={styles.ConnectionStatus}>
+                  <span>⚠️ Simulator Connection Lost. Try Reloading</span>
+                </div>
+              )}
               <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
