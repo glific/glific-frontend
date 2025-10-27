@@ -40,31 +40,23 @@ export const cache = new InMemoryCache({
   },
 });
 
-export const createWsClient = () =>
-  createClient({
-    url: SOCKET,
-    connectionParams: {
-      authToken: getAuthSession('access_token'),
-      userId: getUserSession('id'),
+// Export the WebSocket client so it can be accessed elsewhere
+export const wsClient = createClient({
+  url: SOCKET,
+  connectionParams: {
+    authToken: getAuthSession('access_token'),
+    userId: getUserSession('id'),
+  },
+  keepAlive: 30000,
+  on: {
+    closed: (event: any) => {
+      setLogs(`WebSocket closed with code ${event.code} and reason: ${event.reason}`, 'error');
     },
-    keepAlive: 30000,
-    on: {
-      closed: (event: any) => {
-        setLogs(`WebSocket closed with code ${event.code} and reason: ${event.reason}`, 'error');
-      },
-      error: (error) => {
-        setLogs(`WebSocket error: ${error}`, 'error');
-      },
+    error: (error) => {
+      setLogs(`WebSocket error: ${error}`, 'error');
     },
-  });
-
-let wsClient: ReturnType<typeof createClient> | null = null;
-export const getWsClient = () => {
-  if (!wsClient) {
-    wsClient = createWsClient();
-  }
-  return wsClient;
-};
+  },
+});
 
 const gqlClient = (navigate: any) => {
   let isLoggingOut = false;
@@ -162,7 +154,8 @@ const gqlClient = (navigate: any) => {
     },
   });
 
-  const wsLink = new GraphQLWsLink(getWsClient());
+  // Use the exported wsClient
+  const wsLink = new GraphQLWsLink(wsClient);
 
   const link = retryLink.split(
     ({ query }) => {

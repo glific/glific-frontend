@@ -16,7 +16,7 @@ import {
 } from 'mocks/Simulator';
 import Simulator from './Simulator';
 import { setUserSession } from 'services/AuthService';
-import { getWsClient } from 'config/apolloclient';
+import { wsClient } from 'config/apolloclient';
 
 vi.mock('axios');
 vi.mock('config/apolloclient');
@@ -29,7 +29,7 @@ const mockedWsClient = {
   close: vi.fn(),
 } as any;
 
-(getWsClient as any).mockReturnValue(mockedWsClient);
+(wsClient as any).mockReturnValue(mockedWsClient);
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = vi.fn();

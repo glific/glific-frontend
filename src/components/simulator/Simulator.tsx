@@ -53,7 +53,7 @@ import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessag
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
-import { getWsClient } from 'config/apolloclient';
+import { wsClient } from 'config/apolloclient';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -157,15 +157,15 @@ const Simulator = ({
   useEffect(() => {
     if (isPreviewMessage) return;
 
-    const disposeConnected = getWsClient().on('connected', () => {
+    const disposeConnected = wsClient.on('connected', () => {
       setIsSocketConnected(true);
     });
 
-    const disposeClosed = getWsClient().on('closed', () => {
+    const disposeClosed = wsClient.on('closed', () => {
       setIsSocketConnected(false);
     });
 
-    const disposeError = getWsClient().on('error', () => {
+    const disposeError = wsClient.on('error', () => {
       setIsSocketConnected(false);
     });
 

@@ -13,6 +13,14 @@ afterEach(() => {
 
 import.meta.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
 
+vi.mock('services/AuthService', async (importOriginal) => {
+  const original: any = await importOriginal();
+
+  return {
+    ...original,
+  };
+});
+
 vi.mock('react-media-recorder', () => {
   return {
     useReactMediaRecorder: () => {
