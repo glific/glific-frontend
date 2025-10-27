@@ -542,7 +542,7 @@ const Simulator = ({
     </ClickAwayListener>
   );
 
-  const disconnectionBanner = !isDisconnected && !isPreviewMessage && (
+  const disconnectionBanner = isDisconnected && !isPreviewMessage && (
     <div className={styles.DisconnectedBanner}>Simulator connection lost. Try to reload.</div>
   );
 
