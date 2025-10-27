@@ -4,6 +4,7 @@ import '@nyaruka/temba-components/dist/temba-components.js';
 
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './FlowEditor.module.css';
+import { wsClient } from 'config/apolloclient';
 
 const glificBase = FLOW_EDITOR_API;
 
