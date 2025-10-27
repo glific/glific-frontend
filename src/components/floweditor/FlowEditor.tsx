@@ -24,7 +24,6 @@ import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './Flo
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
-import { wsClient } from 'config/apolloclient';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -453,8 +452,6 @@ export const FlowEditor = () => {
         <Simulator setShowSimulator={setShowSimulator} hasResetButton flowSimulator message={getFlowKeyword()} />
       )}
       {modal}
-      <div onClick={() => wsClient.terminate()}>click me</div>
-
       <div className={styles.FlowContainer}>
         <div id="flow" />
         {loading && <Loading showTip />}
