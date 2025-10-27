@@ -1,5 +1,5 @@
 import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
-import { FILTER_USERS, GET_CURRENT_USER, GET_USERS } from 'graphql/queries/User';
+import { FILTER_USERS, GET_CURRENT_USER, GET_USERS, GET_USER_CONTACT_IDS } from 'graphql/queries/User';
 import { setVariables } from 'common/constants';
 
 export const getCurrentUserQuery = {
@@ -79,7 +79,7 @@ export const updateUserQuery = [
           user: {
             id: '2',
             name: 'Updated Name',
-            email: 'you@domain.com'
+            email: 'you@domain.com',
           },
         },
       },
@@ -192,6 +192,41 @@ export const getUsers = {
           id: '1',
           name: 'NGO Admin',
           phone: '919999988888',
+        },
+      ],
+    },
+  },
+};
+
+export const getUsersEmptyVars = {
+  request: {
+    query: GET_USER_CONTACT_IDS,
+    variables: {},
+  },
+  result: {
+    data: {
+      users: [
+        {
+          contact: {
+            id: '14',
+          },
+        },
+      ],
+    },
+  },
+};
+export const getUsersEmptyVars2 = {
+  request: {
+    query: GET_USER_CONTACT_IDS,
+    variables: {},
+  },
+  result: {
+    data: {
+      users: [
+        {
+          contact: {
+            id: '3',
+          },
         },
       ],
     },
