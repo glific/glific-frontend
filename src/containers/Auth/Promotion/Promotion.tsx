@@ -12,7 +12,7 @@ export const Promotion = () => {
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
-      <div className={styles.CardHeader}>
+      <div onClick={() => setMinimized(!minimized)} className={styles.CardHeader}>
         <div className={styles.Header}>
           <div className={styles.Dot} />
           <div className={styles.HeaderText}>NEW!</div>
@@ -20,10 +20,10 @@ export const Promotion = () => {
         {minimized ? (
           <>
             <div className={styles.GiftCard}>Glific Launchpad</div>
-            <MaximizeIcon className={styles.AccordianIcon} onClick={() => setMinimized(!minimized)} />
+            <MaximizeIcon className={styles.AccordianIcon} />
           </>
         ) : (
-          <MinimizeIcon className={styles.AccordianIcon} onClick={() => setMinimized(!minimized)} />
+          <MinimizeIcon className={styles.AccordianIcon} />
         )}
       </div>
 
