@@ -367,3 +367,15 @@
   white-space: pre-wrap;
   font-weight: 600;
 }
+
+
+.DisconnectedBanner {
+  margin: 8px 12px;
+  padding: 4px 6px;
+  border-radius: 7px;
+  background-color: #ffdddd;
+  color: #a94442;
+  font-size: 0.6rem;
+  font-weight: bold;
+  text-align: center;
+}

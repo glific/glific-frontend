@@ -232,3 +232,43 @@ test('simulator should reset on clicking the reset button message', async () => 
     expect(mockedAxios.post).toHaveBeenCalledTimes(2);
   });
 });
+
+test('disconnection banner should be displayed when simulator connection is lost', async () => {
+  const props = getDefaultProps();
+  props.showSimulator = true;
+
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: false,
+  });
+
+  const { getByText } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
+  });
+});
+
+test('disconnection banner should not be displayed when simulator is connected', async () => {
+  const props = getDefaultProps();
+  props.showSimulator = true;
+
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: true,
+  });
+
+  const { queryByText } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(queryByText('Simulator connection lost. Try to reload.')).not.toBeInTheDocument();
+  });
+});
