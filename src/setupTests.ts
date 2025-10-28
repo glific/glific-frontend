@@ -70,7 +70,17 @@ window.fetch = vi.fn() as any;
 
 global.URL.createObjectURL = vi.fn();
 
-if (!globalThis.TextEncoder || !globalThis.TextDecoder) {
-  globalThis.TextEncoder = TextEncoder;
-  globalThis.TextDecoder = TextDecoder as any;
+if (!globalThis.TextEncoder) {
+  Object.defineProperty(globalThis, 'TextEncoder', {
+    value: TextEncoder,
+    writable: true,
+    configurable: true,
+  });
+}
+if (!globalThis.TextDecoder) {
+  Object.defineProperty(globalThis, 'TextDecoder', {
+    value: TextDecoder,
+    writable: true,
+    configurable: true,
+  });
 }
