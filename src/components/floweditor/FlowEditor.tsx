@@ -127,6 +127,15 @@ export const FlowEditor = () => {
     },
   });
 
+  const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
+    fetchPolicy: 'network-only',
+    onCompleted: () => {
+      loadFlowEditor();
+      setReadOnlyMessage('');
+      setIsReadOnly(false);
+    },
+  });
+
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
     fetchPolicy: 'network-only',
     variables: {
@@ -443,9 +452,18 @@ export const FlowEditor = () => {
         </div>
       </div>
       {isReadOnly && readOnlyMessage && (
-        <div className={styles.ReadOnlyBanner}>
+        <div data-testid="ReadOnlyBanner" className={styles.ReadOnlyBanner}>
           <InfoIcon className={styles.BannerIcon} />
           <span>View Only Mode - {readOnlyMessage}</span>
+
+          <button
+            onClick={() => {
+              getFreeFlowForced({ variables: { id: flowId, isForced: true } });
+            }}
+            className={styles.TakeOver}
+          >
+            Take Over
+          </button>
         </div>
       )}
       {showSimulator && (
