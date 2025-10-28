@@ -450,7 +450,7 @@ export const FlowEditor = () => {
         </div>
       </div>
       {isReadOnly && readOnlyMessage && (
-        <div className={styles.ReadOnlyBanner}>
+        <div data-testid="ReadOnlyBanner" className={styles.ReadOnlyBanner}>
           <InfoIcon className={styles.BannerIcon} />
           <span>View Only Mode - {readOnlyMessage}</span>
 
