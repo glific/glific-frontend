@@ -131,6 +131,8 @@ export const FlowEditor = () => {
     fetchPolicy: 'network-only',
     onCompleted: () => {
       loadFlowEditor();
+      setReadOnlyMessage('');
+      setIsReadOnly(false);
     },
   });
 
@@ -457,8 +459,6 @@ export const FlowEditor = () => {
           <button
             onClick={() => {
               getFreeFlowForced({ variables: { id: flowId, isForced: true } });
-              setReadOnlyMessage('');
-              setIsReadOnly(false);
             }}
             className={styles.TakeOver}
           >

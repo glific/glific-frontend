@@ -1,8 +1,8 @@
+import PlaceIcon from '@mui/icons-material/Place';
 import { useState } from 'react';
 import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
-
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
   const REGISTRATION_LINK =
@@ -30,11 +30,15 @@ export const Promotion = () => {
       {!minimized && (
         <>
           <div className={styles.Image}>
-            <span>
+            <span className={styles.Title}>
               Got a new idea?
               <br /> Let's build your next chatbot!
             </span>
             <span>27-28 November</span>
+            <span className={styles.Place}>
+              <PlaceIcon />
+              Mumbai
+            </span>
           </div>
 
           <div className={styles.Points}>
@@ -46,6 +50,7 @@ export const Promotion = () => {
               <br />
 
               <p>Love what you built? Apply to build another bot or refer an NGO that could benefit from Glific.</p>
+              <p className={styles.LastDate}>Last date to apply is 5th November</p>
             </div>
           </div>
 
