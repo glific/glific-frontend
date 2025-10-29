@@ -166,6 +166,11 @@ export const InteractiveMessage = () => {
     getVariableOptions(setContactVariables);
   }, []);
 
+  const resetUploadState = () => {
+    setUploadingFile(false);
+    setUploadedFile(null);
+  };
+
   const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
     onCompleted: (data: any) => {
       setAttachmentURL(data.uploadMedia);
@@ -173,7 +178,7 @@ export const InteractiveMessage = () => {
     },
     onError: (error) => {
       setNotification('File upload failed. Please try again.');
-      setUploadedFile(null);
+      resetUploadState();
     },
   });
 
@@ -211,8 +216,15 @@ export const InteractiveMessage = () => {
 
     fileInput.onchange = (e: any) => {
       const file = e.target.files?.[0];
+      if (file) {
+        handleFileUpload(file);
+      } else {
+        resetUploadState();
+      }
+    };
 
-      handleFileUpload(file);
+    fileInput.oncancel = () => {
+      resetUploadState();
     };
 
     fileInput.click();
@@ -856,6 +868,7 @@ export const InteractiveMessage = () => {
           triggerFileUpload();
         } else {
           setType(val);
+          resetUploadState();
         }
       },
     },
