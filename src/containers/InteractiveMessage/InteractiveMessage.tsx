@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams, useNavigate } from 'react-router';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import {
@@ -12,6 +12,7 @@ import {
   COPY_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_INTERACTIVE_MESSAGE } from 'graphql/queries/InteractiveMessage';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -165,33 +166,54 @@ export const InteractiveMessage = () => {
     getVariableOptions(setContactVariables);
   }, []);
 
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
+    onCompleted: (data: any) => {
+      setAttachmentURL(data.uploadMedia);
+      setUploadingFile(false);
+    },
+    onError: (error) => {
+      setUploadingFile(false);
+    },
+  });
+
   const handleFileUpload = (file: File) => {
-    if (!file) return;
+    if (!file) {
+      console.warn('No file');
+      return;
+    }
 
-    setUploadingFile(true);
+    const mediaName = file.name;
+    const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
 
-    const localUrl = URL.createObjectURL(file);
-    setAttachmentURL(localUrl);
     setUploadedFile(file);
+    setUploadingFile(true);
 
     const fileType = file.type.split('/')[0].toUpperCase();
     if (['IMAGE', 'VIDEO'].includes(fileType)) {
       setType({ id: fileType, label: fileType });
-    } else if (file.type.includes('pdf') || file.type.includes('document')) {
+    } else if (file.type === 'application/pdf') {
       setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
     }
 
-    setUploadingFile(false);
+    uploadMedia({
+      variables: {
+        media: file,
+        extension,
+      },
+    });
   };
 
   const triggerFileUpload = () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'image/*,video/*,application/pdf';
+
     fileInput.onchange = (e: any) => {
       const file = e.target.files?.[0];
-      if (file) handleFileUpload(file);
+
+      handleFileUpload(file);
     };
+
     fileInput.click();
   };
 
@@ -831,7 +853,6 @@ export const InteractiveMessage = () => {
 
         if (val.id === UPLOAD_ATTACHMENT_ID) {
           triggerFileUpload();
-          setTimeout(() => setType(null), 0);
         } else {
           setType(val);
         }
