@@ -37,6 +37,18 @@
   min-width: 100px;
 }
 
+.SyncStatus {
+  min-width: 120px;
+  width: 15%;
+}
+
+.FailureReason {
+  min-width: 150px;
+  width: 20%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .Name {
   width: 30%;
   min-width: 200px;

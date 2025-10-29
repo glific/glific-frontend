@@ -40,7 +40,23 @@ const getLastSyncedAt = (date: string, fallback: string = '') => (
 );
 
 const getType = (type: SheetTypes) => <div className={styles.LastSyncText}>{textForSheetType[type]}</div>;
-const columnStyles = [styles.Name, styles.LastSync, styles.Type, styles.Actions];
+
+const getSyncStatus = (status: string) => <div className={styles.LastSyncText}>{status || 'N/A'}</div>;
+
+const getFailureReason = (error: string) => (
+  <div className={styles.LastSyncText} title={error || ''}>
+    {error || 'N/A'}
+  </div>
+);
+
+const columnStyles = [
+  styles.Name,
+  styles.LastSync,
+  styles.Type,
+  styles.SyncStatus,
+  styles.FailureReason,
+  styles.Actions,
+];
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
 const queries = {
@@ -139,16 +155,20 @@ export const SheetIntegrationList = () => {
     return actions;
   };
 
-  const getColumns = ({ label, sheetDataCount, lastSyncedAt, type }: any) => ({
+  const getColumns = ({ label, sheetDataCount, lastSyncedAt, type, syncStatus, failureReason }: any) => ({
     name: getName(label, sheetDataCount, type),
     date: getLastSyncedAt(lastSyncedAt),
     type: getType(type),
+    syncStatus: getSyncStatus(syncStatus),
+    failureReason: getFailureReason(failureReason),
   });
 
   const columnNames = [
     { name: 'label', label: t('Name') },
     { label: t('Last synced') },
     { label: t('Type') },
+    { label: t('Sync Status') },
+    { label: t('Failure Reason') },
     { label: t('Actions') },
   ];
 

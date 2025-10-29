@@ -152,4 +152,39 @@ describe('SheetIntegrationList', () => {
 
     expect(screen.queryByText('Please check the warnings')).not.toBeInTheDocument();
   });
+
+  test('Should render Sync Status and Failure Reason columns', async () => {
+    const { getByText, getByTestId } = render(wrapper());
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Google sheets')).toBeInTheDocument();
+    });
+
+    // Check if column headers are present
+    expect(getByText('Sync Status')).toBeInTheDocument();
+    expect(getByText('Failure Reason')).toBeInTheDocument();
+  });
+
+  test('Should display sync status and failure reason values correctly', async () => {
+    const { getByText, getByTestId } = render(wrapper());
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Google sheets')).toBeInTheDocument();
+    });
+
+    // Check if sync status values are displayed
+    await waitFor(() => {
+      expect(getByText('SUCCESS')).toBeInTheDocument();
+      expect(getByText('FAILED')).toBeInTheDocument();
+    });
+
+    // Check if failure reason is displayed
+    await waitFor(() => {
+      expect(getByText('Failed to fetch data from Google Sheets')).toBeInTheDocument();
+    });
+  });
 });
