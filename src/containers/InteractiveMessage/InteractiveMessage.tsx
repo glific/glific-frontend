@@ -47,6 +47,7 @@ const queries = {
   updateItemQuery: UPDATE_INTERACTIVE,
   deleteItemQuery: DELETE_INTERACTIVE,
 };
+const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 
 const templateTypeOptions = [
   { id: QUICK_REPLY, label: 'Reply buttons' },
@@ -86,6 +87,9 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [translateMessage, setTranslateMessage] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
+
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -160,6 +164,36 @@ export const InteractiveMessage = () => {
   useEffect(() => {
     getVariableOptions(setContactVariables);
   }, []);
+
+  const handleFileUpload = (file: File) => {
+    if (!file) return;
+
+    setUploadingFile(true);
+
+    const localUrl = URL.createObjectURL(file);
+    setAttachmentURL(localUrl);
+    setUploadedFile(file);
+
+    const fileType = file.type.split('/')[0].toUpperCase();
+    if (['IMAGE', 'VIDEO'].includes(fileType)) {
+      setType({ id: fileType, label: fileType });
+    } else if (file.type.includes('pdf') || file.type.includes('document')) {
+      setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
+    }
+
+    setUploadingFile(false);
+  };
+
+  const triggerFileUpload = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*,video/*,application/pdf';
+    fileInput.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (file) handleFileUpload(file);
+    };
+    fileInput.click();
+  };
 
   useEffect(() => {
     if (languages) {
@@ -503,9 +537,12 @@ export const InteractiveMessage = () => {
 
   const dialogMessage = t("You won't be able to use this again.");
 
-  const options = MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
-    (option: string) => ({ id: option, label: option })
-  );
+  const attachmentOptions = [
+    { id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' },
+    ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
+      (option: string) => ({ id: option, label: option })
+    ),
+  ];
 
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
@@ -779,16 +816,25 @@ export const InteractiveMessage = () => {
     {
       component: AutoComplete,
       name: 'type',
-      options,
+      options: attachmentOptions,
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment type'),
+      value: type,
       onChange: (event: any) => {
         const val = event || '';
+
         if (!event) {
           setIsUrlValid(val);
+          return;
         }
-        setType(val);
+
+        if (val.id === UPLOAD_ATTACHMENT_ID) {
+          triggerFileUpload();
+          setTimeout(() => setType(null), 0);
+        } else {
+          setType(val);
+        }
       },
     },
     {
@@ -797,16 +843,23 @@ export const InteractiveMessage = () => {
       type: 'text',
       label: t('Attachment URL'),
       validate: () => !dynamicMedia && isUrlValid,
+      disabled: uploadingFile,
+      value: attachmentURL,
+      onChange: (value: any) => {
+        setAttachmentURL(value);
+      },
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
         },
       },
-      helperText:
-        dynamicMedia &&
-        t(
-          'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
-        ),
+      helperText: uploadedFile
+        ? `File uploaded: ${uploadedFile.name}`
+        : dynamicMedia
+          ? t(
+              'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
+            )
+          : '',
     },
     {
       component: Checkbox,
