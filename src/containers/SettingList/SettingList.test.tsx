@@ -25,37 +25,4 @@ describe('<SettingList />', () => {
       expect(getByText('Settings')).toBeInTheDocument();
     });
   });
-
-  it('renders and converts provider name "Google sheet" to "Google Sheet"', async () => {
-    const mocks = [
-      {
-        request: {
-          query: GET_PROVIDERS,
-        },
-        result: {
-          data: {
-            providers: [
-              { id: 1, name: 'Google sheet', shortcode: 'google-sheet' },
-              { id: 2, name: 'BigQuery', shortcode: 'bigquery' },
-            ],
-          },
-        },
-      },
-    ];
-
-    const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <SettingList />
-        </Router>
-      </MockedProvider>
-    );
-
-    await waitFor(() => {
-      expect(getByText('Settings')).toBeInTheDocument();
-    });
-
-    expect(getByText('Google Sheet')).toBeInTheDocument();
-    expect(() => getByText('Google sheet')).toThrow();
-  });
 });

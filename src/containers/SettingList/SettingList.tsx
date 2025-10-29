@@ -58,12 +58,7 @@ export const SettingList = () => {
     const sortedProviders = providers.sort((first: any, second: any) => (first.name > second.name ? 1 : -1));
 
     // create setting list of Organisation & providers
-    providersList = sortedProviders.map((provider: any) => {
-      if (provider.name === 'Google sheet') {
-        return { ...provider, name: 'Google Sheet' };
-      }
-      return provider;
-    });
+    providersList = [...sortedProviders];
   }
 
   const drawer = (
