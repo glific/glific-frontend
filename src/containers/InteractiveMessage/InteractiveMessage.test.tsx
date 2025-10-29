@@ -20,6 +20,7 @@ import {
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 
 afterEach(() => {
   cleanup();
@@ -592,4 +593,54 @@ describe('copy interactive message', () => {
       expect(input[0]?.querySelector('input')).toHaveValue('Copy of Are you excited for *Glific*?');
     });
   });
+});
+
+test('it uploads a file successfully', async () => {
+  const uploadUrl = 'https://storage.example.com/test-image.png';
+
+  const uploadMock = {
+    request: { query: UPLOAD_MEDIA },
+    newData: () => Promise.resolve({ data: { uploadMedia: uploadUrl } }),
+  };
+
+  render(interactiveMessage([uploadMock]));
+
+  const autos = await screen.findAllByRole('combobox');
+  expect(autos.length).toBeGreaterThan(1);
+
+  fireEvent.mouseDown(autos[1]);
+  const uploadOption = await screen.findByRole('option', { name: /upload attachment/i });
+  await userEvent.click(uploadOption);
+
+  const mockFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
+
+  const origClick = HTMLInputElement.prototype.click;
+  HTMLInputElement.prototype.click = function patchedClick(this: HTMLInputElement) {
+    if (this.type === 'file') {
+      const fileList = {
+        0: mockFile,
+        length: 1,
+        item: (i: number) => (i === 0 ? mockFile : null),
+      } as unknown as FileList;
+
+      Object.defineProperty(this, 'files', { configurable: true, get: () => fileList });
+      this.dispatchEvent(new Event('input', { bubbles: true }));
+      this.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
+    return origClick.call(this);
+  };
+
+  const origPicker = (window as any).showOpenFilePicker;
+  (window as any).showOpenFilePicker = async () => [{ getFile: async () => mockFile }];
+
+  await waitFor(
+    () => {
+      expect(setNotification).toHaveBeenCalled();
+    },
+    { timeout: 3000 }
+  );
+
+  HTMLInputElement.prototype.click = origClick;
+  (window as any).showOpenFilePicker = origPicker;
 });
