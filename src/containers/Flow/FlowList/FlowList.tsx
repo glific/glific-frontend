@@ -28,11 +28,15 @@ import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
+
   return (
     <div className={styles.NameText}>
       {text}
@@ -44,6 +48,7 @@ const getName = (text: string, keywordsList: any, roles: any) => {
 };
 
 const getLastUpdatedAt = (date: string, fallback: string = '') => {
+  console.log(date, fallback);
   const displayDate = date || fallback;
   return <div className={styles.LastPublished}>{displayDate ? dayjs(displayDate).fromNow() : ''}</div>;
 };
