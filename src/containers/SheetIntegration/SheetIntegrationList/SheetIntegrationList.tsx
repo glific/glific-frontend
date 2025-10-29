@@ -68,17 +68,16 @@ const queries = {
 export const SheetIntegrationList = () => {
   const { t } = useTranslation();
 
-  const [warnings, setWarnings] = useState<any>({});
+  const [failureReason, setFailureReason] = useState<string>('');
   const [showdialog, setShowDialog] = useState(false);
 
   let dialog;
 
   if (showdialog) {
-    const warningKeys = Object.keys(warnings);
     dialog = (
       <DialogBox
         open
-        title="Please check the warnings"
+        title="Sync Failed"
         skipCancel
         alignButtons="center"
         buttonOk="Close"
@@ -86,14 +85,7 @@ export const SheetIntegrationList = () => {
         handleOk={() => setShowDialog(false)}
         handleCancel={() => setShowDialog(false)}
       >
-        {warningKeys.map((key, index) => (
-          <div key={key} className={styles.DialogContent}>
-            <strong>
-              {index + 1}. {key}:
-            </strong>{' '}
-            {warnings[key]}
-          </div>
-        ))}
+        <div className={styles.DialogContent}>{failureReason}</div>
       </DialogBox>
     );
   }
@@ -102,15 +94,9 @@ export const SheetIntegrationList = () => {
     fetchPolicy: 'network-only',
     onCompleted: async ({ syncSheet }) => {
       const notificationMessage = 'Data is successfully fetched from the Google sheet.';
-      if (syncSheet.sheet && syncSheet.sheet.warnings) {
-        const sheetWarnings = JSON.parse(syncSheet.sheet.warnings);
-
-        if (Object.keys(sheetWarnings).length) {
-          setShowDialog(true);
-          setWarnings(sheetWarnings);
-        } else {
-          setNotification(notificationMessage);
-        }
+      if (syncSheet.sheet && syncSheet.sheet.failureReason) {
+        setShowDialog(true);
+        setFailureReason(syncSheet.sheet.failureReason);
       } else {
         setNotification(notificationMessage);
       }

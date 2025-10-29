@@ -11,7 +11,7 @@ import {
   createSheetQuery,
   getSheetCountQuery,
   syncSheetMutation,
-  syncSheetMutationWithWarnings,
+  syncSheetMutationWithFailure,
 } from 'mocks/Sheet';
 
 const mocks = [
@@ -94,8 +94,8 @@ describe('SheetIntegrationList', () => {
     });
   });
 
-  test('Should render warnings', async () => {
-    const { getByText, getByTestId, getAllByTestId, queryByText } = render(wrapper(syncSheetMutationWithWarnings));
+  test('Should render failure reason dialog', async () => {
+    const { getByText, getByTestId, getAllByTestId, queryByText } = render(wrapper(syncSheetMutationWithFailure));
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -107,13 +107,16 @@ describe('SheetIntegrationList', () => {
     fireEvent.click(getAllByTestId('additionalButton')[2]);
 
     await waitFor(() => {
-      expect(screen.getByText('Please check the warnings')).toBeInTheDocument();
+      expect(screen.getByText('Sync Failed')).toBeInTheDocument();
+      expect(
+        screen.getByText('Failed to fetch data from Google Sheets. Please check your permissions.')
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
-      expect(queryByText('Please check the warnings')).not.toBeInTheDocument();
+      expect(queryByText('Sync Failed')).not.toBeInTheDocument();
     });
   });
 
@@ -134,7 +137,7 @@ describe('SheetIntegrationList', () => {
     fireEvent.click(screen.getByTestId('ok-button'));
   });
   test('Dialog closes when cross icon is clicked', async () => {
-    const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithWarnings));
+    const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithFailure));
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
@@ -143,14 +146,14 @@ describe('SheetIntegrationList', () => {
 
     fireEvent.click(getAllByTestId('additionalButton')[2]);
     await waitFor(() => {
-      expect(screen.getByText('Please check the warnings')).toBeInTheDocument();
+      expect(screen.getByText('Sync Failed')).toBeInTheDocument();
     });
 
     const crossIcon = screen.getByLabelText('close');
 
     fireEvent.click(crossIcon);
 
-    expect(screen.queryByText('Please check the warnings')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sync Failed')).not.toBeInTheDocument();
   });
 
   test('Should render Sync Status and Failure Reason columns', async () => {

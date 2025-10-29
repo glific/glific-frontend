@@ -181,7 +181,8 @@ export const syncSheetMutation = {
           lastSyncedAt: '2022-10-14T06:06:23Z',
           updatedAt: '2022-10-14T06:06:23.141322Z',
           url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6L9eu5zCfiCQiULhy_yrw7VYDoMDnb8pNi3E4l226iH865Z8Nv-6XWaZ-CStITlT3EmiCZ_RnHzof/pub?gid=0&single=true&output=csv',
-          warnings: '{}',
+          syncStatus: 'SUCCESS',
+          failureReason: null,
           type: 'READ',
         },
         errors: null,
@@ -190,7 +191,7 @@ export const syncSheetMutation = {
   },
 };
 
-export const syncSheetMutationWithWarnings = {
+export const syncSheetMutationWithFailure = {
   request: {
     query: SYNC_SHEET,
     variables: { id: '2' },
@@ -207,8 +208,8 @@ export const syncSheetMutationWithWarnings = {
           lastSyncedAt: '2022-10-14T06:06:23Z',
           updatedAt: '2022-10-14T06:06:23.141322Z',
           url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6L9eu5zCfiCQiULhy_yrw7VYDoMDnb8pNi3E4l226iH865Z8Nv-6XWaZ-CStITlT3EmiCZ_RnHzof/pub?gid=0&single=true&output=csv',
-          warnings:
-            '{"Warning 1":"This is the first mock warning message","Warning 2":"This is the second mock warning message","Warning 3":"This is the third mock warning message"}',
+          syncStatus: 'FAILED',
+          failureReason: 'Failed to fetch data from Google Sheets. Please check your permissions.',
           type: 'READ',
         },
         errors: null,
@@ -216,3 +217,5 @@ export const syncSheetMutationWithWarnings = {
     },
   },
 };
+
+export const syncSheetMutationWithWarnings = syncSheetMutationWithFailure;

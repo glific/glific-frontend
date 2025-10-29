@@ -350,6 +350,7 @@
   "Last synced": "Last synced",
   "Sync Status": "Sync Status",
   "Failure Reason": "Failure Reason",
+  "Sync Failed": "Sync Failed",
   "Confirm your credentials": "Confirm your credentials",
   "You won't be able to use this sheet.": "You won't be able to use this sheet.",
   "Google sheets": "Google sheets",
