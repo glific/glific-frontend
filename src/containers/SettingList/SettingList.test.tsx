@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router';
 
 import { SettingList } from './SettingList';
 import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
+import { GET_PROVIDERS } from 'graphql/queries/Organization';
 
 const mocks = LIST_ITEM_MOCKS;
 
@@ -23,5 +24,42 @@ describe('<SettingList />', () => {
     await waitFor(() => {
       expect(getByText('Settings')).toBeInTheDocument();
     });
+  });
+
+  it('renders and converts provider name "Google sheet" to "Google Sheet"', async () => {
+    const mocks = [
+      {
+        request: {
+          query: GET_PROVIDERS,
+        },
+        result: {
+          data: {
+            providers: [
+              { id: 1, name: 'Google sheet', shortcode: 'google-sheet' },
+              { id: 2, name: 'BigQuery', shortcode: 'bigquery' },
+            ],
+          },
+        },
+      },
+    ];
+
+    const { getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <SettingList />
+        </Router>
+      </MockedProvider>
+    );
+
+    // Wait for GraphQL data to load
+    await waitFor(() => {
+      expect(getByText('Settings')).toBeInTheDocument();
+    });
+
+    // Ensure the transformed name is rendered with capital "S"
+    expect(getByText('Google Sheet')).toBeInTheDocument();
+
+    // Ensure original name is not shown
+    expect(() => getByText('Google sheet')).toThrow();
   });
 });
