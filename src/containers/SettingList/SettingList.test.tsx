@@ -4,7 +4,6 @@ import { BrowserRouter as Router } from 'react-router';
 
 import { SettingList } from './SettingList';
 import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
-import { GET_PROVIDERS } from 'graphql/queries/Organization';
 
 const mocks = LIST_ITEM_MOCKS;
 
