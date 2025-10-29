@@ -127,12 +127,12 @@ export const HSM = () => {
 
   const shortCodeOptions: any = [];
   if (shortCodes?.sessionTemplates) {
-    const seen = new Set<string>();
+    const visitedShortCodes = new Set<string>();
     shortCodes.sessionTemplates.forEach((value: any, index: number) => {
-      const code = (value?.shortcode || '').toString();
-      if (!code || seen.has(code)) return;
-      seen.add(code);
-      shortCodeOptions.push({ label: code, id: index });
+      const shortCode = (value?.shortcode || '').toString();
+      if (!shortCode || visitedShortCodes.has(shortCode)) return;
+      visitedShortCodes.add(shortCode);
+      shortCodeOptions.push({ label: shortCode, id: index });
     });
   }
 
