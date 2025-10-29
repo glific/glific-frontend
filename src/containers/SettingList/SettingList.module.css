@@ -58,6 +58,7 @@
   display: flex;
   font-weight: 700;
   font-size: 24px;
+  text-transform: capitalize;
 }
 
 .SettingTextHeader {
