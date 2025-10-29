@@ -169,10 +169,11 @@ export const InteractiveMessage = () => {
   const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
     onCompleted: (data: any) => {
       setAttachmentURL(data.uploadMedia);
-      setUploadingFile(false);
+      setNotification('File uploaded successfully');
     },
     onError: (error) => {
-      setUploadingFile(false);
+      setNotification('File upload failed. Please try again.');
+      setUploadedFile(null);
     },
   });
 
