@@ -51,15 +51,11 @@ describe('<SettingList />', () => {
       </MockedProvider>
     );
 
-    // Wait for GraphQL data to load
     await waitFor(() => {
       expect(getByText('Settings')).toBeInTheDocument();
     });
 
-    // Ensure the transformed name is rendered with capital "S"
     expect(getByText('Google Sheet')).toBeInTheDocument();
-
-    // Ensure original name is not shown
     expect(() => getByText('Google sheet')).toThrow();
   });
 });
