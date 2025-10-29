@@ -18,11 +18,12 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
+import { setNotification } from 'common/notification';
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { GET_HSM_CATEGORIES, GET_SHORTCODES, GET_TEMPLATE } from 'graphql/queries/Template';
-import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
 import { TemplateVariables } from './TemplateVariables/TemplateVariables';
@@ -49,6 +50,7 @@ const queries = {
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 const regexForShortcode = /^[a-z0-9_]+$/g;
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 const buttonTypes: any = {
   QUICK_REPLY: { value: '' },
   CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
@@ -80,6 +82,8 @@ export const HSM = () => {
     urlType: 'Static',
     sampleSuffix: '',
   });
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState<boolean>(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -110,6 +114,55 @@ export const HSM = () => {
   });
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
+    onCompleted: (data: any) => {
+      setAttachmentURL(data.uploadMedia);
+      setNotification('File uploaded successfully');
+      setUploadingFile(false);
+    },
+    onError: (error) => {
+      console.error('Upload error:', error);
+      setNotification('File upload failed. Please try again.');
+      setUploadedFile(null);
+      setUploadingFile(false);
+    },
+  });
+
+  const handleFileUpload = (file: File) => {
+    if (!file) return;
+
+    const mediaName = file.name;
+    const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+
+    setUploadedFile(file);
+    setUploadingFile(true);
+
+    const fileType = file.type.split('/')[0].toUpperCase();
+    if (['IMAGE', 'VIDEO'].includes(fileType)) {
+      setType({ id: fileType, label: fileType });
+    } else if (file.type === 'application/pdf') {
+      setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
+    }
+
+    uploadMedia({
+      variables: {
+        media: file,
+        extension,
+      },
+    });
+  };
+
+  const triggerFileUpload = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*,video/*,application/pdf';
+    fileInput.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (file) handleFileUpload(file);
+    };
+    fileInput.click();
+  };
+  const attachmentOptions = [{ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' }, ...mediaOptions];
   let isEditing = false;
   let mode;
   const copyMessage = t('Copy of the template has been created!');
@@ -444,13 +497,26 @@ export const HSM = () => {
     },
     {
       component: AutoComplete,
-      name: 'language',
-      options: languageOptions,
+      name: 'type',
+      options: attachmentOptions,
       optionLabel: 'label',
       multiple: false,
-      label: `${t('Language')}*`,
+      label: t('Attachment Type'),
       disabled: isEditing,
-      onChange: getLanguageId,
+      onChange: (event: any) => {
+        const val = event;
+        if (!event) {
+          setIsUrlValid(val);
+          setType(null);
+          return;
+        }
+
+        if (val.id === UPLOAD_ATTACHMENT_ID) {
+          triggerFileUpload();
+        } else {
+          setType(val);
+        }
+      },
     },
     {
       component: Checkbox,
@@ -585,7 +651,7 @@ export const HSM = () => {
     {
       component: AutoComplete,
       name: 'type',
-      options: mediaOptions,
+      options: attachmentOptions,
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment Type'),
@@ -594,8 +660,15 @@ export const HSM = () => {
         const val = event;
         if (!event) {
           setIsUrlValid(val);
+          setType(null);
+          return;
         }
-        setType(val);
+
+        if (val.id === UPLOAD_ATTACHMENT_ID) {
+          triggerFileUpload();
+        } else {
+          setType(val);
+        }
       },
     },
     {
@@ -604,10 +677,12 @@ export const HSM = () => {
       type: 'text',
       label: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: isEditing,
-      helperText: t(
-        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
-      ),
+      disabled: isEditing || uploadingFile,
+      helperText: uploadedFile
+        ? `File uploaded: ${uploadedFile.name}`
+        : t(
+            'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
+          ),
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
