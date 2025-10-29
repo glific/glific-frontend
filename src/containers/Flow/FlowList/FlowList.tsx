@@ -44,19 +44,38 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   );
 };
 
-const getDate = (date: string, fallback: string = '') => (
-  <div className={styles.LastPublished}>{date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}</div>
-);
+const getLastUpdatedAt = (date: string, fallback: string = '') => {
+  const displayDate = date || fallback;
+  return <div className={styles.LastPublished}>{displayDate ? dayjs(displayDate).fromNow() : ''}</div>;
+};
 
-const getLastPublished = (date: string, fallback: string = '') =>
-  date ? (
-    <div className={styles.LastPublished}>{dayjs(date).format(STANDARD_DATE_TIME_FORMAT)}</div>
-  ) : (
-    <div className={styles.LastPublishedFallback}>{fallback}</div>
-  );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-const columnStyles = [styles.Pinned, styles.Name, styles.DateColumn, styles.Label, styles.DateColumn, styles.Actions];
+const getStatus = (lastPublishedAt: string, lastChangedAt: string) => {
+  let status = '';
+  let statusClass = '';
+
+  if (lastPublishedAt) {
+    if (dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt))) {
+      status = 'Draft';
+      statusClass = styles.DraftBadge;
+    } else {
+      status = 'Published';
+      statusClass = styles.PublishedBadge;
+    }
+  } else {
+    status = 'Not published yet';
+    statusClass = styles.NotPublishedBadge;
+  }
+
+  return (
+    <div>
+      <span className={` ${statusClass}`}>{status}</span>
+    </div>
+  );
+};
+
+const columnStyles = [styles.Pinned, styles.Name, styles.StatusColumn, styles.DateColumn, styles.Label, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -318,20 +337,30 @@ export const FlowList = () => {
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id }: any) => ({
+  const getColumns = ({
+    name,
+    keywords,
+    lastChangedAt,
+    lastPublishedAt,
+    tag,
+    roles,
+    isPinned,
+    id,
+    updatedAt,
+  }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
-    lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
+    status: getStatus(lastPublishedAt, lastChangedAt),
+    lastUpdatedAt: getLastUpdatedAt(lastChangedAt, updatedAt),
     label: tag ? getLabel(tag) : '',
-    lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
   const columnNames = [
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
-    { label: t('Last published') },
+    { label: t('Status') },
+    { label: t('Last Updated') },
     { label: t('Tag') },
-    { label: t('Last saved in Draft') },
     { label: t('Actions') },
   ];
 
