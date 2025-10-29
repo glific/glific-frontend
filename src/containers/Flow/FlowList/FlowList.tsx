@@ -19,7 +19,6 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -50,30 +49,6 @@ const getLastUpdatedAt = (date: string, fallback: string = '') => {
 };
 
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
-
-const getStatus = (lastPublishedAt: string, lastChangedAt: string) => {
-  let status = '';
-  let statusClass = '';
-
-  if (lastPublishedAt) {
-    if (dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt))) {
-      status = 'Draft';
-      statusClass = styles.DraftBadge;
-    } else {
-      status = 'Published';
-      statusClass = styles.PublishedBadge;
-    }
-  } else {
-    status = 'Not published yet';
-    statusClass = styles.NotPublishedBadge;
-  }
-
-  return (
-    <div>
-      <span className={` ${statusClass}`}>{status}</span>
-    </div>
-  );
-};
 
 const columnStyles = [styles.Pinned, styles.Name, styles.StatusColumn, styles.DateColumn, styles.Label, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
@@ -334,6 +309,30 @@ export const FlowList = () => {
       },
     },
   ];
+
+  const getStatus = (lastPublishedAt: string, lastChangedAt: string) => {
+    let status = '';
+    let statusClass = '';
+
+    if (lastPublishedAt) {
+      if (dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt))) {
+        status = t('Draft');
+        statusClass = styles.DraftBadge;
+      } else {
+        status = t('Published');
+        statusClass = styles.PublishedBadge;
+      }
+    } else {
+      status = t('Not published yet');
+      statusClass = styles.NotPublishedBadge;
+    }
+
+    return (
+      <div>
+        <span className={` ${statusClass}`}>{status}</span>
+      </div>
+    );
+  };
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
