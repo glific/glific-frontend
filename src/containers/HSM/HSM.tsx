@@ -126,9 +126,13 @@ export const HSM = () => {
   }
 
   const shortCodeOptions: any = [];
-  if (shortCodes) {
+  if (shortCodes?.sessionTemplates) {
+    const seen = new Set<string>();
     shortCodes.sessionTemplates.forEach((value: any, index: number) => {
-      shortCodeOptions.push({ label: value?.shortcode, id: index });
+      const code = (value?.shortcode || '').toString();
+      if (!code || seen.has(code)) return;
+      seen.add(code);
+      shortCodeOptions.push({ label: code, id: index });
     });
   }
 
