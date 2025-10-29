@@ -114,6 +114,11 @@ export const HSM = () => {
   });
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
+  const resetUploadState = () => {
+    setUploadingFile(false);
+    setUploadedFile(null);
+  };
+
   const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
     onCompleted: (data: any) => {
       setAttachmentURL(data.uploadMedia);
@@ -123,8 +128,7 @@ export const HSM = () => {
     onError: (error) => {
       console.error('Upload error:', error);
       setNotification('File upload failed. Please try again.');
-      setUploadedFile(null);
-      setUploadingFile(false);
+      resetUploadState();
     },
   });
 
@@ -156,12 +160,23 @@ export const HSM = () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'image/*,video/*,application/pdf';
+
     fileInput.onchange = (e: any) => {
       const file = e.target.files?.[0];
-      if (file) handleFileUpload(file);
+      if (file) {
+        handleFileUpload(file);
+      } else {
+        resetUploadState();
+      }
     };
+
+    fileInput.oncancel = () => {
+      resetUploadState();
+    };
+
     fileInput.click();
   };
+
   const attachmentOptions = [{ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' }, ...mediaOptions];
   let isEditing = false;
   let mode;
@@ -515,6 +530,7 @@ export const HSM = () => {
           triggerFileUpload();
         } else {
           setType(val);
+          resetUploadState();
         }
       },
     },
