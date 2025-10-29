@@ -41,7 +41,23 @@ const getLastSyncedAt = (date: string, fallback: string = '') => (
 
 const getType = (type: SheetTypes) => <div className={styles.LastSyncText}>{textForSheetType[type]}</div>;
 
-const getSyncStatus = (status: string) => <div className={styles.LastSyncText}>{status || 'N/A'}</div>;
+const getSyncStatus = (status: string) => {
+  if (!status) {
+    return <div className={styles.LastSyncText}>N/A</div>;
+  }
+
+  let badgeClass = styles.LastSyncText;
+
+  if (status === 'SUCCESS') {
+    badgeClass = styles.SuccessBadge;
+  } else if (status === 'FAILED') {
+    badgeClass = styles.ErrorBadge;
+  } else if (status === 'PENDING') {
+    badgeClass = styles.PendingBadge;
+  }
+
+  return <div className={badgeClass}>{status}</div>;
+};
 
 const getFailureReason = (error: string) => (
   <div className={styles.LastSyncText} title={error || ''}>
