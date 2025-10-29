@@ -59,7 +59,6 @@ export const SettingList = () => {
 
     // create setting list of Organisation & providers
     providersList = sortedProviders.map((provider: any) => {
-      console.log(provider.name);
       if (provider.name === 'Google sheet') {
         return { ...provider, name: 'Google Sheet' };
       }
