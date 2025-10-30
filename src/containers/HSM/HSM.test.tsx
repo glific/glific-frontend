@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
 import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeMedia, getHSMTemplateTypeText } from 'mocks/Template';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
 

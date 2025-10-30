@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Upload } from '@mui/icons-material';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { setNotification } from 'common/notification';
+import { getOrganizationServices } from 'services/AuthService';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import {
   CREATE_INTERACTIVE,
@@ -555,12 +557,14 @@ export const InteractiveMessage = () => {
 
   const dialogMessage = t("You won't be able to use this again.");
 
-  const attachmentOptions = [
-    { id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' },
+  let attachmentOptions = [
     ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
       (option: string) => ({ id: option, label: option })
     ),
   ];
+  if (getOrganizationServices('googleCloudStorage')) {
+    attachmentOptions.push({ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' });
+  }
 
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
@@ -872,17 +876,7 @@ export const InteractiveMessage = () => {
                 </div>
               ) : (
                 <div className={styles.UploadContent}>
-                  <svg
-                    className={styles.UploadIcon}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
+                  <Upload className={styles.UploadIcon} />
                   <span className={styles.UploadText}>Choose File</span>
                 </div>
               )}
