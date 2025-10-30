@@ -59,6 +59,19 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
+vi.mock('services/AuthService', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('services/AuthService')>();
+  return {
+    ...actual,
+    getOrganizationServices: vi.fn((service: string) => {
+      if (service === 'googleCloudStorage') {
+        return true;
+      }
+      return false;
+    }),
+  };
+});
+
 // mocking emoji picker to easily fill message field with an emoji
 vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
   const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>();
@@ -609,11 +622,11 @@ test('it uploads a file successfully', async () => {
 
   fireEvent.mouseDown(autos[1]);
 
+  // Now "UPLOAD ATTACHMENT" should be visible!
   const uploadOption = await screen.findByRole('option', { name: /upload attachment/i });
   await userEvent.click(uploadOption);
 
   const mockFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
-
   const origClick = HTMLInputElement.prototype.click;
   const origPicker = (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> })
     .showOpenFilePicker;
@@ -625,11 +638,10 @@ test('it uploads a file successfully', async () => {
         length: 1,
         item: (i: number) => (i === 0 ? mockFile : null),
       } as unknown as FileList;
-
       Object.defineProperty(this, 'files', { configurable: true, get: () => fileList });
       this.dispatchEvent(new Event('input', { bubbles: true }));
       this.dispatchEvent(new Event('change', { bubbles: true }));
-      return; // ← Explicit return for void function
+      return;
     }
     origClick.call(this);
   };
