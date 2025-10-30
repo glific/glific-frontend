@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Upload } from '@mui/icons-material';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams, useNavigate } from 'react-router';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { setNotification } from 'common/notification';
+import { getOrganizationServices } from 'services/AuthService';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import {
   CREATE_INTERACTIVE,
@@ -12,6 +14,7 @@ import {
   COPY_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_INTERACTIVE_MESSAGE } from 'graphql/queries/InteractiveMessage';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -47,6 +50,7 @@ const queries = {
   updateItemQuery: UPDATE_INTERACTIVE,
   deleteItemQuery: DELETE_INTERACTIVE,
 };
+const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 
 const templateTypeOptions = [
   { id: QUICK_REPLY, label: 'Reply buttons' },
@@ -86,6 +90,10 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [translateMessage, setTranslateMessage] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
+
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState<boolean>(false);
+  const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -160,6 +168,52 @@ export const InteractiveMessage = () => {
   useEffect(() => {
     getVariableOptions(setContactVariables);
   }, []);
+
+  const resetUploadState = () => {
+    setUploadingFile(false);
+    setUploadedFile(null);
+  };
+
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
+    onCompleted: (data: any) => {
+      setAttachmentURL(data.uploadMedia);
+      setNotification('File uploaded successfully');
+      setShowUploadButton(false);
+    },
+    onError: (error) => {
+      setNotification('File upload failed. Please try again.');
+      resetUploadState();
+      setShowUploadButton(true);
+    },
+  });
+
+  const handleFileUpload = (file: File) => {
+    if (!file) {
+      console.warn('No file');
+      return;
+    }
+
+    const mediaName = file.name;
+    const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+
+    setUploadedFile(file);
+    setUploadingFile(true);
+    setShowUploadButton(true);
+
+    const fileType = file.type.split('/')[0].toUpperCase();
+    if (['IMAGE', 'VIDEO'].includes(fileType)) {
+      setType({ id: fileType, label: fileType });
+    } else if (file.type === 'application/pdf') {
+      setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
+    }
+
+    uploadMedia({
+      variables: {
+        media: file,
+        extension,
+      },
+    });
+  };
 
   useEffect(() => {
     if (languages) {
@@ -503,9 +557,14 @@ export const InteractiveMessage = () => {
 
   const dialogMessage = t("You won't be able to use this again.");
 
-  const options = MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
-    (option: string) => ({ id: option, label: option })
-  );
+  let attachmentOptions = [
+    ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
+      (option: string) => ({ id: option, label: option })
+    ),
+  ];
+  if (getOrganizationServices('googleCloudStorage')) {
+    attachmentOptions.push({ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' });
+  }
 
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
@@ -779,17 +838,64 @@ export const InteractiveMessage = () => {
     {
       component: AutoComplete,
       name: 'type',
-      options,
+      options: attachmentOptions,
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment type'),
+      value: type,
       onChange: (event: any) => {
         const val = event || '';
+
         if (!event) {
           setIsUrlValid(val);
+          setShowUploadButton(false);
+          return;
         }
-        setType(val);
+
+        if (val.id === UPLOAD_ATTACHMENT_ID) {
+          setShowUploadButton(true);
+          setType(val);
+        } else {
+          setType(val);
+          setShowUploadButton(false);
+          resetUploadState();
+        }
       },
+    },
+    {
+      skip: !showUploadButton || (!uploadingFile && uploadedFile && attachmentURL),
+      field: 'customUploadButton',
+      component: () => (
+        <div className={styles.UploadButtonContainer}>
+          <label className={styles.UploadLabel} data-uploading={uploadingFile}>
+            <div className={styles.UploadButton}>
+              {uploadingFile ? (
+                <div className={styles.UploadContent}>
+                  <div className={styles.UploadSpinner} />
+                  <span className={styles.UploadText}>Uploading...</span>
+                </div>
+              ) : (
+                <div className={styles.UploadContent}>
+                  <Upload className={styles.UploadIcon} />
+                  <span className={styles.UploadText}>Choose File</span>
+                </div>
+              )}
+            </div>
+            <input
+              type="file"
+              accept="image/*,video/*,application/pdf"
+              onChange={(e: any) => {
+                const file = e.target.files?.[0];
+                if (file && !uploadingFile) {
+                  handleFileUpload(file);
+                }
+              }}
+              className={styles.HiddenFileInput}
+              disabled={uploadingFile}
+            />
+          </label>
+        </div>
+      ),
     },
     {
       component: Input,
@@ -797,16 +903,23 @@ export const InteractiveMessage = () => {
       type: 'text',
       label: t('Attachment URL'),
       validate: () => !dynamicMedia && isUrlValid,
+      disabled: uploadingFile,
+      value: attachmentURL,
+      onChange: (value: any) => {
+        setAttachmentURL(value);
+      },
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
         },
       },
-      helperText:
-        dynamicMedia &&
-        t(
-          'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
-        ),
+      helperText: uploadedFile
+        ? `File uploaded: ${uploadedFile.name}`
+        : dynamicMedia
+          ? t(
+              'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
+            )
+          : '',
     },
     {
       component: Checkbox,
