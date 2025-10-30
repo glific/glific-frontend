@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@mui/material';
+import { Upload } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
@@ -7,7 +8,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { CALL_TO_ACTION, QUICK_REPLY, MEDIA_MESSAGE_TYPES } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -18,11 +19,13 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
+import { setNotification } from 'common/notification';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { GET_HSM_CATEGORIES, GET_SHORTCODES, GET_TEMPLATE } from 'graphql/queries/Template';
-import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
 import { TemplateVariables } from './TemplateVariables/TemplateVariables';
@@ -33,7 +36,6 @@ import {
   getVariables,
   getExampleValue,
   getTemplateAndButtons,
-  mediaOptions,
   removeFirstLineBreak,
   CallToActionTemplate,
   QuickReplyTemplate,
@@ -49,6 +51,7 @@ const queries = {
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 const regexForShortcode = /^[a-z0-9_]+$/g;
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 const buttonTypes: any = {
   QUICK_REPLY: { value: '' },
   CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
@@ -80,6 +83,9 @@ export const HSM = () => {
     urlType: 'Static',
     sampleSuffix: '',
   });
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState<boolean>(false);
+  const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -109,6 +115,57 @@ export const HSM = () => {
     variables: { opts: { order: 'ASC' } },
   });
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
+
+  const resetUploadState = (): void => {
+    setUploadingFile(false);
+    setUploadedFile(null);
+  };
+
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
+    onCompleted: (data: { uploadMedia: string }) => {
+      setAttachmentURL(data.uploadMedia);
+      setNotification('File uploaded successfully');
+      setUploadingFile(false);
+    },
+    onError: (error: Error) => {
+      console.error('Upload error:', error);
+      setNotification('File upload failed. Please try again.');
+      resetUploadState();
+    },
+  });
+
+  const handleFileUpload = (file: File): void => {
+    if (!file) return;
+
+    const mediaName = file.name;
+    const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+
+    setUploadedFile(file);
+    setUploadingFile(true);
+
+    const fileType = file.type.split('/')[0].toUpperCase();
+    if (['IMAGE', 'VIDEO'].includes(fileType)) {
+      setType({ id: fileType, label: fileType });
+    } else if (file.type === 'application/pdf') {
+      setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
+    }
+
+    uploadMedia({
+      variables: {
+        media: file,
+        extension,
+      },
+    });
+  };
+
+  let attachmentOptions = [
+    ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
+      (option: string) => ({ id: option, label: option })
+    ),
+  ];
+  if (getOrganizationServices('googleCloudStorage')) {
+    attachmentOptions.push({ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' });
+  }
 
   let isEditing = false;
   let mode;
@@ -589,7 +646,7 @@ export const HSM = () => {
     {
       component: AutoComplete,
       name: 'type',
-      options: mediaOptions,
+      options: attachmentOptions,
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment Type'),
@@ -598,9 +655,55 @@ export const HSM = () => {
         const val = event;
         if (!event) {
           setIsUrlValid(val);
+          setType(null);
+          setShowUploadButton(false);
+          return;
         }
-        setType(val);
+
+        if (val.id === UPLOAD_ATTACHMENT_ID) {
+          setShowUploadButton(true);
+          setType(val);
+        } else {
+          setType(val);
+          setShowUploadButton(false);
+          resetUploadState();
+        }
       },
+    },
+    {
+      skip: !showUploadButton || (!uploadingFile && uploadedFile && attachmentURL),
+      field: 'customUploadButton',
+      component: () => (
+        <div className={styles.UploadButtonContainer}>
+          <label className={styles.UploadLabel} data-uploading={uploadingFile}>
+            <div className={styles.UploadButton}>
+              {uploadingFile ? (
+                <div className={styles.UploadContent}>
+                  <div className={styles.UploadSpinner} />
+                  <span className={styles.UploadText}>Uploading...</span>
+                </div>
+              ) : (
+                <div className={styles.UploadContent}>
+                  <Upload className={styles.UploadIcon} />
+                  <span className={styles.UploadText}>Choose File</span>
+                </div>
+              )}
+            </div>
+            <input
+              type="file"
+              accept="image/*,video/*,application/pdf"
+              onChange={(e: any) => {
+                const file = e.target.files?.[0];
+                if (file && !uploadingFile) {
+                  handleFileUpload(file);
+                }
+              }}
+              className={styles.HiddenFileInput}
+              disabled={uploadingFile}
+            />
+          </label>
+        </div>
+      ),
     },
     {
       component: Input,
@@ -608,10 +711,12 @@ export const HSM = () => {
       type: 'text',
       label: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: isEditing,
-      helperText: t(
-        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
-      ),
+      disabled: isEditing || uploadingFile,
+      helperText: uploadedFile
+        ? `File uploaded: ${uploadedFile.name}`
+        : t(
+            'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
+          ),
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
