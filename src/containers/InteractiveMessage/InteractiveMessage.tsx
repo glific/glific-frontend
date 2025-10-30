@@ -91,6 +91,7 @@ export const InteractiveMessage = () => {
 
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState<boolean>(false);
+  const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -175,10 +176,12 @@ export const InteractiveMessage = () => {
     onCompleted: (data: any) => {
       setAttachmentURL(data.uploadMedia);
       setNotification('File uploaded successfully');
+      setShowUploadButton(false);
     },
     onError: (error) => {
       setNotification('File upload failed. Please try again.');
       resetUploadState();
+      setShowUploadButton(true);
     },
   });
 
@@ -193,6 +196,7 @@ export const InteractiveMessage = () => {
 
     setUploadedFile(file);
     setUploadingFile(true);
+    setShowUploadButton(true);
 
     const fileType = file.type.split('/')[0].toUpperCase();
     if (['IMAGE', 'VIDEO'].includes(fileType)) {
@@ -207,27 +211,6 @@ export const InteractiveMessage = () => {
         extension,
       },
     });
-  };
-
-  const triggerFileUpload = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*,video/*,application/pdf';
-
-    fileInput.onchange = (e: any) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        handleFileUpload(file);
-      } else {
-        resetUploadState();
-      }
-    };
-
-    fileInput.oncancel = () => {
-      resetUploadState();
-    };
-
-    fileInput.click();
   };
 
   useEffect(() => {
@@ -861,16 +844,64 @@ export const InteractiveMessage = () => {
 
         if (!event) {
           setIsUrlValid(val);
+          setShowUploadButton(false);
           return;
         }
 
         if (val.id === UPLOAD_ATTACHMENT_ID) {
-          triggerFileUpload();
+          setShowUploadButton(true);
+          setType(val);
         } else {
           setType(val);
+          setShowUploadButton(false);
           resetUploadState();
         }
       },
+    },
+    {
+      skip: !showUploadButton || (!uploadingFile && uploadedFile && attachmentURL),
+      field: 'customUploadButton',
+      component: () => (
+        <div className={styles.UploadButtonContainer}>
+          <label className={styles.UploadLabel} data-uploading={uploadingFile}>
+            <div className={styles.UploadButton}>
+              {uploadingFile ? (
+                <div className={styles.UploadContent}>
+                  <div className={styles.UploadSpinner} />
+                  <span className={styles.UploadText}>Uploading...</span>
+                </div>
+              ) : (
+                <div className={styles.UploadContent}>
+                  <svg
+                    className={styles.UploadIcon}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  <span className={styles.UploadText}>Choose File</span>
+                </div>
+              )}
+            </div>
+            <input
+              type="file"
+              accept="image/*,video/*,application/pdf"
+              onChange={(e: any) => {
+                const file = e.target.files?.[0];
+                if (file && !uploadingFile) {
+                  handleFileUpload(file);
+                }
+              }}
+              className={styles.HiddenFileInput}
+              disabled={uploadingFile}
+            />
+          </label>
+        </div>
+      ),
     },
     {
       component: Input,
