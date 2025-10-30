@@ -24,6 +24,7 @@
   font-size: 14px;
   color: #717971;
   padding-left: 16px !important;
+  text-transform: capitalize;
 }
 
 .Tab:hover {
@@ -57,6 +58,7 @@
   display: flex;
   font-weight: 700;
   font-size: 24px;
+  text-transform: capitalize;
 }
 
 .SettingTextHeader {

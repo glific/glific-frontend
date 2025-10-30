@@ -135,13 +135,15 @@ export const ChatMessage = ({
       </>
     );
   } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
-    messageErrorStatus = parseTextMethod(messageError.message);
     let messageStatus: any;
 
-    if (Object.prototype.hasOwnProperty.call(messageErrorStatus, 'message')) {
+    messageErrorStatus = parseTextMethod(messageError.message);
+
+    if (messageErrorStatus && typeof messageErrorStatus === 'object' && messageErrorStatus?.message) {
       messageStatus = messageErrorStatus.message;
     } else {
-      messageStatus = messageErrorStatus[0];
+      messageStatus = messageError.message || 'Unknown Error';
+      messageErrorStatus = true;
     }
 
     tooltipTitle = (
