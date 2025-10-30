@@ -84,6 +84,7 @@ export const HSM = () => {
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState<boolean>(false);
+  const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -114,25 +115,25 @@ export const HSM = () => {
   });
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
-  const resetUploadState = () => {
+  const resetUploadState = (): void => {
     setUploadingFile(false);
     setUploadedFile(null);
   };
 
   const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
-    onCompleted: (data: any) => {
+    onCompleted: (data: { uploadMedia: string }) => {
       setAttachmentURL(data.uploadMedia);
       setNotification('File uploaded successfully');
       setUploadingFile(false);
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error('Upload error:', error);
       setNotification('File upload failed. Please try again.');
       resetUploadState();
     },
   });
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = (file: File): void => {
     if (!file) return;
 
     const mediaName = file.name;
@@ -154,27 +155,6 @@ export const HSM = () => {
         extension,
       },
     });
-  };
-
-  const triggerFileUpload = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*,video/*,application/pdf';
-
-    fileInput.onchange = (e: any) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        handleFileUpload(file);
-      } else {
-        resetUploadState();
-      }
-    };
-
-    fileInput.oncancel = () => {
-      resetUploadState();
-    };
-
-    fileInput.click();
   };
 
   const attachmentOptions = [{ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' }, ...mediaOptions];
@@ -512,27 +492,13 @@ export const HSM = () => {
     },
     {
       component: AutoComplete,
-      name: 'type',
-      options: attachmentOptions,
+      name: 'language',
+      options: languageOptions,
       optionLabel: 'label',
       multiple: false,
-      label: t('Attachment Type'),
+      label: `${t('Language')}*`,
       disabled: isEditing,
-      onChange: (event: any) => {
-        const val = event;
-        if (!event) {
-          setIsUrlValid(val);
-          setType(null);
-          return;
-        }
-
-        if (val.id === UPLOAD_ATTACHMENT_ID) {
-          triggerFileUpload();
-        } else {
-          setType(val);
-          resetUploadState();
-        }
-      },
+      onChange: getLanguageId,
     },
     {
       component: Checkbox,
@@ -677,15 +643,64 @@ export const HSM = () => {
         if (!event) {
           setIsUrlValid(val);
           setType(null);
+          setShowUploadButton(false);
           return;
         }
 
         if (val.id === UPLOAD_ATTACHMENT_ID) {
-          triggerFileUpload();
+          setShowUploadButton(true);
+          setType(val);
         } else {
           setType(val);
+          setShowUploadButton(false);
+          resetUploadState();
         }
       },
+    },
+    {
+      skip: !showUploadButton || (!uploadingFile && uploadedFile && attachmentURL),
+      field: 'customUploadButton',
+      component: () => (
+        <div className={styles.UploadButtonContainer}>
+          <label className={styles.UploadLabel} data-uploading={uploadingFile}>
+            <div className={styles.UploadButton}>
+              {uploadingFile ? (
+                <div className={styles.UploadContent}>
+                  <div className={styles.UploadSpinner} />
+                  <span className={styles.UploadText}>Uploading...</span>
+                </div>
+              ) : (
+                <div className={styles.UploadContent}>
+                  <svg
+                    className={styles.UploadIcon}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  <span className={styles.UploadText}>Choose File</span>
+                </div>
+              )}
+            </div>
+            <input
+              type="file"
+              accept="image/*,video/*,application/pdf"
+              onChange={(e: any) => {
+                const file = e.target.files?.[0];
+                if (file && !uploadingFile) {
+                  handleFileUpload(file);
+                }
+              }}
+              className={styles.HiddenFileInput}
+              disabled={uploadingFile}
+            />
+          </label>
+        </div>
+      ),
     },
     {
       component: Input,
