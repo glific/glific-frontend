@@ -33,6 +33,8 @@ export const GET_SHEETS = gql`
       label
       sheetDataCount
       lastSyncedAt
+      syncStatus
+      failureReason
       insertedAt
       updatedAt
     }
