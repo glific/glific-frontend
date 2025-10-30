@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { CALL_TO_ACTION, QUICK_REPLY, MEDIA_MESSAGE_TYPES } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -19,6 +19,7 @@ import Simulator from 'components/simulator/Simulator';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { setNotification } from 'common/notification';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -157,7 +158,15 @@ export const HSM = () => {
     });
   };
 
-  const attachmentOptions = [{ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' }, ...mediaOptions];
+  let attachmentOptions = [
+    ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
+      (option: string) => ({ id: option, label: option })
+    ),
+  ];
+  if (getOrganizationServices('googleCloudStorage')) {
+    attachmentOptions.push({ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' });
+  }
+
   let isEditing = false;
   let mode;
   const copyMessage = t('Copy of the template has been created!');
