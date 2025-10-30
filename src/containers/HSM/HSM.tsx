@@ -36,7 +36,6 @@ import {
   getVariables,
   getExampleValue,
   getTemplateAndButtons,
-  mediaOptions,
   removeFirstLineBreak,
   CallToActionTemplate,
   QuickReplyTemplate,
