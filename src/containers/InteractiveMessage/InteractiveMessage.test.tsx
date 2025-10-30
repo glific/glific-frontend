@@ -20,7 +20,6 @@ import {
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 
 afterEach(() => {
   cleanup();
