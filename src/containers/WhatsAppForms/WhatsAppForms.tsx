@@ -1,18 +1,18 @@
 import { useQuery } from '@apollo/client';
 import { Update } from '@mui/icons-material';
+import { useState } from 'react';
+import * as Yup from 'yup';
+
 import { whatsappFormsInfo } from 'common/HelpData';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_COLLECTION } from 'graphql/queries/Collection';
-import { LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
-import { useState } from 'react';
-import * as Yup from 'yup';
+import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
 
 const queries = {
-  getItemQuery: GET_COLLECTION,
+  getItemQuery: GET_WHATSAPP_FORM,
   createItemQuery: CREATE_FORM,
   updateItemQuery: UPDATE_FORM,
   deleteItemQuery: DELETE_FORM,
@@ -43,6 +43,7 @@ export const WhatsAppForms = () => {
     name,
     flowJson: JSON.stringify(flowJson),
     flowCategories,
+    description,
   };
 
   const setPayload = ({ name, flowJson, flowCategories, description }: any) => {
@@ -55,8 +56,12 @@ export const WhatsAppForms = () => {
 
     return payload;
   };
-  const setStates = () => {};
-
+  const setStates = ({ name, definition, description, categories }: any) => {
+    setName(name);
+    setDescription(description);
+    setFlowJson(JSON.parse(definition));
+    setFlowCategories(categories.map((c: string) => ({ id: c, name: c })));
+  };
   const formFields = [
     {
       component: Input,
