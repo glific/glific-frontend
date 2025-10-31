@@ -68,7 +68,7 @@ const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/W
 
 const Certificates = lazy(() => import('containers/Certificates/Certificate'));
 const CertificatesList = lazy(() => import('containers/Certificates/CertificatesList/CertificateList'));
-const WhatsappFormsList = lazy(() => import('containers/WhatsAppForms/WhatsAppFormList/WhatsAppFormList'));
+const WhatsAppFormsList = lazy(() => import('containers/WhatsAppForms/WhatsAppFormList/WhatsAppFormList'));
 const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'));
 
 const routeStaff = (
@@ -162,7 +162,7 @@ const routeAdmin = (
     <Route path="certificate/add" element={<Certificates />} />
     <Route path="certificate/:id/edit" element={<Certificates />} />
     <Route path="whatsapp-forms">
-      <Route path="" element={<WhatsappFormsList />} />
+      <Route path="" element={<WhatsAppFormsList />} />
       <Route path="add" element={<WhatsAppForms />} />
     </Route>
 

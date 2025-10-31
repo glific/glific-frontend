@@ -1,4 +1,4 @@
-const WhatsAppForms = ({ color }: { color: string }) => {
+const WhatsAppForm = ({ color }: { color: string }) => {
   return (
     <svg
       className="w-6 h-6 "
@@ -20,4 +20,4 @@ const WhatsAppForms = ({ color }: { color: string }) => {
     </svg>
   );
 };
-export default WhatsAppForms;
+export default WhatsAppForm;
