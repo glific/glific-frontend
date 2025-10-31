@@ -170,6 +170,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: managerLevel,
       },
+      {
+        title: 'WhatsApp Forms',
+        path: '/whatsapp-forms',
+        icon: 'form',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
     ],
   },
   {
