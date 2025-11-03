@@ -257,7 +257,7 @@ test('disconnection banner should be displayed when simulator connection is lost
   const disconnectionProps = getDefaultProps();
   disconnectionProps.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
-  const { getByTestId, getByText } = render(
+  const { getByTestId, getByText, queryByText } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...disconnectionProps} />
     </MockedProvider>
@@ -283,5 +283,17 @@ test('disconnection banner should be displayed when simulator connection is lost
 
   await waitFor(() => {
     expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
+  });
+
+  // the banner should disappear when connection is restored
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: true,
+  });
+
+  window.dispatchEvent(new Event('online'));
+
+  await waitFor(() => {
+    expect(queryByText('Simulator connection lost. Try to reload.')).not.toBeInTheDocument();
   });
 });
