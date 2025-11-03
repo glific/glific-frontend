@@ -233,26 +233,6 @@ test('simulator should reset on clicking the reset button message', async () => 
   });
 });
 
-test('disconnection banner should be displayed when simulator connection is lost', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
-
-  Object.defineProperty(window.navigator, 'onLine', {
-    writable: true,
-    value: false,
-  });
-
-  const { getByText } = render(
-    <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
-    </MockedProvider>
-  );
-
-  await waitFor(() => {
-    expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
-  });
-});
-
 test('disconnection banner should not be displayed when simulator is connected', async () => {
   const props = getDefaultProps();
   props.showSimulator = true;
@@ -270,5 +250,33 @@ test('disconnection banner should not be displayed when simulator is connected',
 
   await waitFor(() => {
     expect(queryByText('Simulator connection lost. Try to reload.')).not.toBeInTheDocument();
+  });
+});
+
+test('disconnection banner should be displayed when simulator connection is lost', async () => {
+  const props = getDefaultProps();
+  props.showSimulator = true;
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId, getByText } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('simulatorInput')).toBeInTheDocument();
+  });
+
+  fireEvent.change(getByTestId('simulatorInput'), { target: { value: 'something' } });
+
+  await waitFor(() => {
+    fireEvent.keyPress(getByTestId('simulatorInput'), { key: 'Enter', code: 13, charCode: 13 });
+  });
+
+  // Trigger offline event to simulate real browser behavior
+  window.dispatchEvent(new Event('offline'));
+
+  await waitFor(() => {
+    expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
   });
 });
