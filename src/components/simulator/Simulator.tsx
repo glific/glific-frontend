@@ -238,6 +238,7 @@ const Simulator = ({
     },
     onError: (error) => {
       setLogs('SIMULATOR_RELEASE_SUBSCRIPTION error', 'error', true);
+      setLogs(error, 'error', true);
       setIsDisconnected(true);
     },
   });
@@ -253,7 +254,7 @@ const Simulator = ({
     },
     onError: (error) => {
       setLogs('SIMULATOR_MESSAGE_SENT_SUBSCRIPTION error', 'error', true);
-      setLogs(error.message, 'error', true);
+      setLogs(error, 'error', true);
       setIsDisconnected(true);
     },
   });
@@ -270,7 +271,7 @@ const Simulator = ({
     },
     onError: (error) => {
       setLogs('SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION error', 'error', true);
-      setLogs(error.message, 'error', true);
+      setLogs(error, 'error', true);
       setIsDisconnected(true);
     },
   });
@@ -664,7 +665,7 @@ const Simulator = ({
             })
             .catch((error) => {
               setLogs('SIMULATOR_SEARCH_QUERY error', 'error', true);
-              setLogs(error.message, 'error', true);
+              setLogs(error, 'error', true);
               setIsDisconnected(true);
             });
         } else {
@@ -677,7 +678,7 @@ const Simulator = ({
       .catch((error) => {
         setNotification('Sorry! Failed to get simulator', 'warning');
         setLogs('GET_SIMULATOR error', 'error', true);
-        setLogs(error.message, 'error', true);
+        setLogs(error, 'error', true);
         setIsDisconnected(true);
       });
   };

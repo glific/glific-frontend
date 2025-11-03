@@ -234,8 +234,8 @@ test('simulator should reset on clicking the reset button message', async () => 
 });
 
 test('disconnection banner should not be displayed when simulator is connected', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
+  const connectionProps = getDefaultProps();
+  connectionProps.showSimulator = true;
 
   Object.defineProperty(window.navigator, 'onLine', {
     writable: true,
@@ -244,7 +244,7 @@ test('disconnection banner should not be displayed when simulator is connected',
 
   const { queryByText } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
+      <Simulator {...connectionProps} />
     </MockedProvider>
   );
 
@@ -254,12 +254,12 @@ test('disconnection banner should not be displayed when simulator is connected',
 });
 
 test('disconnection banner should be displayed when simulator connection is lost', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
+  const disconnectionProps = getDefaultProps();
+  disconnectionProps.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
+      <Simulator {...disconnectionProps} />
     </MockedProvider>
   );
 
