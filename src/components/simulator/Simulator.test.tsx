@@ -273,6 +273,11 @@ test('disconnection banner should be displayed when simulator connection is lost
     fireEvent.keyPress(getByTestId('simulatorInput'), { key: 'Enter', code: 13, charCode: 13 });
   });
 
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: false,
+  });
+
   // Trigger offline event to simulate real browser behavior
   window.dispatchEvent(new Event('offline'));
 

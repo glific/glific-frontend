@@ -170,8 +170,10 @@ const Simulator = ({
     window.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      if (!isPreviewMessage) {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      }
     };
   }, [isPreviewMessage]);
 
