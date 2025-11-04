@@ -143,6 +143,14 @@ const menus = (): Menu[] => [
         roles: managerLevel,
       },
       {
+        title: 'WhatsApp Forms',
+        path: '/whatsapp-forms',
+        icon: 'form',
+        type: 'sideDrawer',
+        roles: managerLevel,
+        show: !getOrganizationServices('whatsappFormsEnabled'),
+      },
+      {
         title: 'Triggers',
         path: '/trigger',
         icon: 'trigger',
@@ -167,13 +175,6 @@ const menus = (): Menu[] => [
         title: 'Tags',
         path: '/tag',
         icon: 'tag',
-        type: 'sideDrawer',
-        roles: managerLevel,
-      },
-      {
-        title: 'WhatsApp Forms',
-        path: '/whatsapp-forms',
-        icon: 'form',
         type: 'sideDrawer',
         roles: managerLevel,
       },
