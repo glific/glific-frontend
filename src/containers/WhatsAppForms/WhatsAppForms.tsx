@@ -1,18 +1,20 @@
 import { useQuery } from '@apollo/client';
-import { OpenInNew, Update } from '@mui/icons-material';
+import OpenInNew from '@mui/icons-material/OpenInNew';
+import Update from '@mui/icons-material/Update';
 import { useState } from 'react';
 import * as Yup from 'yup';
 
 import { whatsappFormsInfo } from 'common/HelpData';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
+import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import setLogs from 'config/logs';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
-import setLogs from 'config/logs';
-import { Button } from 'components/UI/Form/Button/Button';
-import { Heading } from 'components/UI/Heading/Heading';
+import { useParams } from 'react-router';
 import styles from './WhatsAppForm.module.css';
 
 const queries = {
@@ -28,6 +30,11 @@ export const WhatsAppForms = () => {
   const [formJson, setFormJson] = useState();
   const [formCategories, setFormCategories] = useState([]);
   const [categories, setCategories] = useState([]);
+  const params = useParams();
+  let isEditing = false;
+  if (params.id) {
+    isEditing = true;
+  }
 
   const { loading } = useQuery(LIST_FORM_CATEGORIES, {
     onCompleted: ({ whatsappFormCategories }) => {
@@ -137,7 +144,7 @@ export const WhatsAppForms = () => {
   }
   return (
     <>
-      <Heading formTitle={'Create WhatsApp Form'} helpData={whatsappFormsInfo} />
+      <Heading formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'} helpData={whatsappFormsInfo} />
       <div className={styles.FlowBuilderInfo}>
         <div className={styles.InfoContent}>
           <div className={styles.IconWrapper}>
