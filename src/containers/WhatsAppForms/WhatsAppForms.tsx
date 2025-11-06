@@ -10,6 +10,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
+import setLogs from 'config/logs';
 
 const queries = {
   getItemQuery: GET_WHATSAPP_FORM,
@@ -21,8 +22,8 @@ const queries = {
 export const WhatsAppForms = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [flowJson, setFlowJson] = useState('');
-  const [flowCategories, setFlowCategories] = useState([]);
+  const [formJson, setFormJson] = useState();
+  const [formCategories, setFormCategories] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const { loading } = useQuery(LIST_FORM_CATEGORIES, {
@@ -41,17 +42,17 @@ export const WhatsAppForms = () => {
 
   const states = {
     name,
-    flowJson: JSON.stringify(flowJson),
-    flowCategories,
+    formJson: JSON.stringify(formJson),
+    formCategories,
     description,
   };
 
-  const setPayload = ({ name, flowJson, flowCategories, description }: any) => {
+  const setPayload = ({ name, formJson, formCategories, description }: any) => {
     const payload = {
       name,
-      flowJson,
+      formJson,
       description,
-      categories: flowCategories.map((category: any) => category.id),
+      categories: formCategories.map((category: any) => category.id),
     };
 
     return payload;
@@ -59,8 +60,17 @@ export const WhatsAppForms = () => {
   const setStates = ({ name, definition, description, categories }: any) => {
     setName(name);
     setDescription(description);
-    setFlowJson(JSON.parse(definition));
-    setFlowCategories(categories.map((c: string) => ({ id: c, name: c })));
+
+    setFormCategories(categories.map((c: string) => ({ id: c, name: c })));
+
+    let parsedDefinition;
+    try {
+      parsedDefinition = JSON.parse(definition);
+    } catch (e) {
+      setLogs('Error parsing whatsapp form definition JSON:', 'error');
+      parsedDefinition = definition;
+    }
+    setFormJson(parsedDefinition);
   };
   const formFields = [
     {
@@ -79,15 +89,15 @@ export const WhatsAppForms = () => {
     },
     {
       component: Input,
-      name: 'flowJson',
+      name: 'formJson',
       type: 'text',
-      label: 'Flow JSON*',
+      label: 'Form JSON*',
       textArea: true,
       rows: 6,
     },
     {
       component: AutoComplete,
-      name: 'flowCategories',
+      name: 'formCategories',
       options: categories,
       optionLabel: 'name',
       label: 'Categories',
@@ -96,8 +106,20 @@ export const WhatsAppForms = () => {
   ];
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
-    flowJson: Yup.string().required('Flow JSON is required.'),
-    flowCategories: Yup.array().min(1, 'At least one category must be selected.'),
+
+    formJson: Yup.string()
+      .required('Form JSON is required.')
+      .test('is-json', 'Must be valid JSON', (value) => {
+        if (!value) return false;
+        try {
+          JSON.parse(value);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }),
+
+    formCategories: Yup.array().min(1, 'At least one category must be selected.'),
   });
 
   let dialogMessage = '';
