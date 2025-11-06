@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Update } from '@mui/icons-material';
+import { OpenInNew, Update } from '@mui/icons-material';
 import { useState } from 'react';
 import * as Yup from 'yup';
 
@@ -11,6 +11,9 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
 import setLogs from 'config/logs';
+import { Button } from 'components/UI/Form/Button/Button';
+import { Heading } from 'components/UI/Heading/Heading';
+import styles from './WhatsAppForm.module.css';
 
 const queries = {
   getItemQuery: GET_WHATSAPP_FORM,
@@ -78,14 +81,16 @@ export const WhatsAppForms = () => {
       name: 'name',
       type: 'text',
       label: `${'Title'}*`,
+      placeholder: 'Enter form title',
     },
     {
       component: Input,
       name: 'description',
       type: 'text',
-      label: `${'Description'}*`,
+      label: `${'Description'}`,
       textArea: true,
       rows: 2,
+      placeholder: 'Enter form description',
     },
     {
       component: Input,
@@ -94,6 +99,7 @@ export const WhatsAppForms = () => {
       label: 'Form JSON*',
       textArea: true,
       rows: 6,
+      placeholder: 'Paste your JSON from Meta flow builder here...',
     },
     {
       component: AutoComplete,
@@ -101,7 +107,9 @@ export const WhatsAppForms = () => {
       options: categories,
       optionLabel: 'name',
       label: 'Categories',
-      helperText: 'Assigned staff members will be responsible to chat with contacts in this collection',
+      placeholder: 'Select categories',
+      helperText:
+        'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
     },
   ];
   const FormSchema = Yup.object().shape({
@@ -128,22 +136,56 @@ export const WhatsAppForms = () => {
     return <Loading />;
   }
   return (
-    <FormLayout
-      {...queries}
-      states={states}
-      setPayload={setPayload}
-      languageSupport={false}
-      setStates={setStates}
-      validationSchema={FormSchema}
-      listItemName="Whatsapp Form"
-      dialogMessage={dialogMessage}
-      formFields={formFields}
-      redirectionLink={'whatsapp-forms'}
-      listItem="whatsappForm"
-      icon={<Update />}
-      helpData={whatsappFormsInfo}
-      backLinkButton={`/whatsapp-forms`}
-    />
+    <>
+      <Heading formTitle={'Create WhatsApp Form'} helpData={whatsappFormsInfo} />
+      <div className={styles.FlowBuilderInfo}>
+        <div className={styles.InfoContent}>
+          <div className={styles.IconWrapper}>
+            <OpenInNew className={styles.Icon} />
+          </div>
+          <div className={styles.TextContent}>
+            <h3 className={styles.Title}>First, create your flow in Meta Flow Builder</h3>
+            <p className={styles.Description}>
+              Design your WhatsApp Flow using Meta's visual builder, then copy the JSON and paste it below.
+            </p>
+          </div>
+        </div>
+
+        <Button
+          color="primary"
+          variant="contained"
+          className={styles.FlowBuilderButton}
+          startIcon={<OpenInNew />}
+          component="a"
+          onClick={() =>
+            window.open(
+              'https://developers.facebook.com/docs/whatsapp/flows/playground',
+              '_blank',
+              'noopener,noreferrer'
+            )
+          }
+        >
+          Open Flow Builder
+        </Button>
+      </div>
+      <FormLayout
+        {...queries}
+        states={states}
+        setPayload={setPayload}
+        languageSupport={false}
+        setStates={setStates}
+        validationSchema={FormSchema}
+        listItemName="Whatsapp Form"
+        dialogMessage={dialogMessage}
+        formFields={formFields}
+        redirectionLink={'whatsapp-forms'}
+        listItem="whatsappForm"
+        icon={<Update />}
+        helpData={whatsappFormsInfo}
+        backLinkButton={`/whatsapp-forms`}
+        noHeading
+      />
+    </>
   );
 };
 
