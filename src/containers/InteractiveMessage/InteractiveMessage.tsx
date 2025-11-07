@@ -559,11 +559,12 @@ export const InteractiveMessage = () => {
 
   let attachmentOptions = [
     ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
-      (option: string) => ({ id: option, label: option })
+      (option: string) => ({ id: option, label: `${option} URL` })
     ),
   ];
+
   if (getOrganizationServices('googleCloudStorage')) {
-    attachmentOptions.push({ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' });
+    attachmentOptions = [{ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' }, ...attachmentOptions];
   }
 
   let timer: any = null;

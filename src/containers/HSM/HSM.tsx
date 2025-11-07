@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { CALL_TO_ACTION, QUICK_REPLY, MEDIA_MESSAGE_TYPES } from 'common/constants';
+import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -39,6 +39,7 @@ import {
   removeFirstLineBreak,
   CallToActionTemplate,
   QuickReplyTemplate,
+  mediaOptions,
 } from './HSM.helper';
 
 const queries = {
@@ -158,13 +159,9 @@ export const HSM = () => {
     });
   };
 
-  let attachmentOptions = [
-    ...MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
-      (option: string) => ({ id: option, label: option })
-    ),
-  ];
+  let attachmentOptions = mediaOptions;
   if (getOrganizationServices('googleCloudStorage')) {
-    attachmentOptions.push({ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' });
+    attachmentOptions = [{ id: UPLOAD_ATTACHMENT_ID, label: 'UPLOAD ATTACHMENT' }, ...attachmentOptions];
   }
 
   let isEditing = false;
