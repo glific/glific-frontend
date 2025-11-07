@@ -189,7 +189,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('STICKER'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('STICKER URL'), { key: 'Enter' });
 
     await waitFor(() => {
       expect(screen.getByText('Animated stickers are not supported.')).toBeInTheDocument();
@@ -200,7 +200,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('AUDIO'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('AUDIO URL'), { key: 'Enter' });
 
     await waitFor(() => {
       expect(screen.getByText('Captions along with audio are not supported.')).toBeInTheDocument();
