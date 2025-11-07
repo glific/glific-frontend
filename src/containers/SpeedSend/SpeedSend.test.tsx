@@ -86,7 +86,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.blur(inputs[2], {
       target: {
@@ -117,7 +117,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[2], {
       target: { value: 'invalid media' },
@@ -161,7 +161,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('STICKER'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('STICKER URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[2], {
       target: {
@@ -219,7 +219,7 @@ describe('test creating a speed send', () => {
 
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[0], { target: { value: 'Template' } });
 
