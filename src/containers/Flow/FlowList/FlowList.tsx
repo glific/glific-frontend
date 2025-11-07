@@ -48,7 +48,6 @@ const getName = (text: string, keywordsList: any, roles: any) => {
 };
 
 const getLastUpdatedAt = (date: string, fallback: string = '') => {
-  console.log(date, fallback);
   const displayDate = date || fallback;
   return <div className={styles.LastPublished}>{displayDate ? dayjs(displayDate).fromNow() : ''}</div>;
 };
@@ -319,18 +318,10 @@ export const FlowList = () => {
     let status = '';
     let statusClass = '';
 
-    if (lastPublishedAt) {
-      if (dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt))) {
-        status = t('Draft');
-        statusClass = styles.DraftBadge;
-      } else {
-        status = t('Published');
-        statusClass = styles.PublishedBadge;
-      }
-    } else {
-      status = t('Not published yet');
-      statusClass = styles.NotPublishedBadge;
-    }
+    const hasUnpublishedChanges = !lastPublishedAt || dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt));
+
+    status = hasUnpublishedChanges ? t('Has unpublished changes') : t('Published');
+    statusClass = hasUnpublishedChanges ? styles.NotPublishedBadge : styles.PublishedBadge;
 
     return (
       <div>

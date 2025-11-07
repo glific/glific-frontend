@@ -241,14 +241,8 @@
   color: #2e7d32;
 }
 
-.DraftBadge {
-  composes: Status;
-  background-color: #fff3e0;
-  color: #e65100;
-}
-
 .NotPublishedBadge {
   composes: Status;
-  background-color: #f5f5f5;
-  color: #616161;
+  background-color: #fff3cd;
+  color: #856404;
 }
