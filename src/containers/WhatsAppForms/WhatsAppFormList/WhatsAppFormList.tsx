@@ -6,7 +6,7 @@ import { DELETE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { useState, useMemo } from 'react';
 import styles from './WhatsAppFormList.module.css';
 
-const columnStyles = [styles.Name, styles.Label, styles.Actions];
+const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
 
 const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
@@ -20,12 +20,21 @@ export const WhatsAppFormList = () => {
 
   const columnNames = [
     { name: 'name', label: 'Form Name' },
+    { name: 'status', label: 'Status' },
     { name: 'label', label: 'Category' },
     { name: 'actions', label: 'Actions' },
   ];
 
-  const getColumns = ({ name, categories }: any) => ({
+  const getColumns = ({ name, categories, status }: any) => ({
     name: <div className={styles.NameText}>{name}</div>,
+    status:
+      status === 'PUBLISHED' ? (
+        <div className={styles.PublishedBadge}>Published</div>
+      ) : status === 'DRAFT' ? (
+        <div className={styles.NotPublishedBadge}>Draft</div>
+      ) : (
+        <div className={styles.InactiveBadge}>Inactive</div>
+      ),
     label: categories?.length ? (
       <div className={styles.LabelButton}>
         {categories.map((cat: string, index: number) => (

@@ -119,10 +119,37 @@
 .ImportIcon {
   cursor: pointer;
 }
+.Status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
 
+.PublishedBadge {
+  font-size: 15px;
+  composes: Status;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+.NotPublishedBadge {
+  font-size: 15px;
+  composes: Status;
+  background-color: #fff3cd;
+  color: #856404;
+}
+.InactiveBadge {
+  composes: Status;
+  font-size: 15px;
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
 .LabelButton {
   width: fit-content;
   min-width: 80px;
+  margin-right: 100px;
   padding: 6px 12px;
   background: #f0f7f1;
   color: #555555;
