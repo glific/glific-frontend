@@ -69,6 +69,7 @@ export const SEARCH_QUERY = gql`
         interactiveContent
         sendBy
         flowLabel
+        waFormId
       }
     }
   }

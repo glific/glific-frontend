@@ -26,6 +26,9 @@ import styles from './ChatMessage.module.css';
 import { setNotification } from 'common/notification';
 import { LocationRequestTemplate } from './LocationRequestTemplate/LocationRequestTemplate';
 import { PollMessage } from './PollMessage/PollMessage';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_WHATSAPP_FORM_RESPONSE } from 'graphql/queries/WhatsAppForm';
+import { WhatsAppFormResponse } from './WhatsAppFormResponse/WhatsAppFormResponse';
 
 export interface ChatMessageProps {
   id: number;
@@ -60,6 +63,7 @@ export interface ChatMessageProps {
   poll?: any;
   pollContent?: any;
   showIcon?: boolean;
+  waFormId?: string;
 }
 
 export const ChatMessage = ({
@@ -88,15 +92,28 @@ export const ChatMessage = ({
   poll,
   pollContent,
   showIcon = true,
+  waFormId,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [waFormResponse, setWaFormResponse] = useState<any>(null);
   const { t } = useTranslation();
 
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
+
+  const [getResponse, { data, loading, error }] = useLazyQuery(GET_WHATSAPP_FORM_RESPONSE, {
+    onCompleted: (data) => {
+      if (data?.whatsappFormResponse) {
+        setWaFormResponse(data.whatsappFormResponse);
+      }
+    },
+    onError: (error) => {
+      console.error('Error fetching WhatsApp form response:', error);
+    },
+  });
 
   useEffect(() => {
     if (popup) {
@@ -111,6 +128,15 @@ export const ChatMessage = ({
       messageRef.current?.scrollIntoView();
     }
   }, []);
+
+  // Fix: Move the getResponse call to useEffect to prevent infinite loop
+  useEffect(() => {
+    if (waFormId && type === 'WA_FORM') {
+      getResponse({
+        variables: { whatsappFormResponseId: waFormId },
+      });
+    }
+  }, [waFormId, type, getResponse]);
 
   let iconLeft = false;
   let placement: any = 'bottom-end';
@@ -326,6 +352,15 @@ export const ChatMessage = ({
             poll,
           }}
         />
+      </>
+    );
+  } else if (type === 'WA_FORM') {
+    messageBody = (
+      <>
+        {contactName}
+
+        <WhatsAppFormResponse waFormResponse={waFormResponse} isSender={isSender} />
+        {dateAndSendBy}
       </>
     );
   } else {

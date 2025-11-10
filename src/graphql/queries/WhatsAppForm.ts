@@ -23,3 +23,16 @@ export const LIST_FORM_CATEGORIES = gql`
     whatsappFormCategories
   }
 `;
+
+export const GET_WHATSAPP_FORM_RESPONSE = gql`
+  query WhatsappFormResponse($whatsappFormResponseId: ID!) {
+    whatsappFormResponse(id: $whatsappFormResponseId) {
+      contactId
+      id
+      insertedAt
+      rawResponse
+      submittedAt
+      updatedAt
+    }
+  }
+`;

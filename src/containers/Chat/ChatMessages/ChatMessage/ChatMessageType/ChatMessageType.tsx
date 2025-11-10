@@ -47,7 +47,7 @@ export const ChatMessageType = ({
       mediaUrl = media.url;
     }
   }
-
+  console.log(type);
   switch (type) {
     case 'IMAGE': {
       const imageStyle = isContextMessage ? styles.ContextMessageImage : styles.Image;
@@ -138,6 +138,13 @@ export const ChatMessageType = ({
       );
       break;
 
+    case 'WA_FORM':
+      messageBody = (
+        <div className={`${isContextMessage && styles.ContentMessageMaxWidth}`}>
+          <MessagesWithLinks message={`Submitted WhatsApp Form (Form ID: ${body})`} isSender={isSender} />
+        </div>
+      );
+      break;
     default:
       messageBody = <MessagesWithLinks message={body} isSender={isSender} />;
   }
