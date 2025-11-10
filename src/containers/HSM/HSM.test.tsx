@@ -295,7 +295,7 @@ describe('Add mode', () => {
 
     autocompletes[2].focus();
     fireEvent.keyDown(autocompletes[2], { key: 'ArrowDown' });
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[3], { target: { value: 'https://example.com/image.jpg' } });
 
@@ -354,7 +354,7 @@ describe('Add mode', () => {
 
     // Find the IMAGE option in the dropdown and click it
     const imageOption = await screen.findByText(
-      (content, element) => content === 'IMAGE' && element?.tagName.toLowerCase() === 'li'
+      (content, element) => content === 'IMAGE URL' && element?.tagName.toLowerCase() === 'li'
     );
     fireEvent.click(imageOption);
 

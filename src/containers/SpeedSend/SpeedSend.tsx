@@ -33,7 +33,7 @@ const redirectionLink = 'speed-send';
 const dialogMessage = 'It will stop showing when you are drafting a customized message.';
 const mediaTypes = MEDIA_MESSAGE_TYPES.map((option: string) => ({
   id: option,
-  label: option,
+  label: `${option} URL`,
 }));
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
