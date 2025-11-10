@@ -74,8 +74,6 @@
   width: 15%;
   min-width: 200px;
   text-align: end;
-
-  padding-right: -12px;
 }
 
 .LabelText {
@@ -86,11 +84,9 @@
 }
 
 .TableText {
-  margin-right: 23px;
   text-align: left;
   font-size: 16px;
   color: #93a29b;
-  margin: 0;
 }
 
 .Sheets svg {

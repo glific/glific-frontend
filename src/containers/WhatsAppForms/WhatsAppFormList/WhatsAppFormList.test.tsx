@@ -47,9 +47,8 @@ describe('<WhatsAppFormList />', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/add');
   });
 
-  test('render search bar corretly ', () => {
+  test('render search bar correctly', () => {
     const { getByTestId } = render(wrapper());
-    screen.debug();
     const search = getByTestId('searchForm');
     expect(search).toBeInTheDocument();
   });
