@@ -186,7 +186,7 @@
 }
 
 .ErrorMessage {
-  color: red;
+  color: #fff;
   font-size: 12px;
   font-weight: 600;
 }
