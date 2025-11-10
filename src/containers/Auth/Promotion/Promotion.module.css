@@ -69,7 +69,10 @@
   top: 20px;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+}
+
+.Title {
+  margin-bottom: 1rem;
 }
 
 .Header {
@@ -132,6 +135,12 @@
   margin-bottom: 4px;
 }
 
+.LastDate {
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: bold;
+}
+
 .BodyListText>span {
   border-radius: 50%;
   margin-right: 16px;
@@ -143,6 +152,14 @@
   min-width: 18px;
   height: 18px;
   color: white;
+}
+
+.Place {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 1rem;
 }
 
 .Points {
