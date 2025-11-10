@@ -1,5 +1,5 @@
 import { CREATE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
+import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
   version: '7.2',
@@ -67,6 +67,31 @@ const createdWhatsAppFormQuery = {
   },
 };
 
+const listWhatsappForms = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
+
 const getWhatsAppForm = {
   request: {
     query: GET_WHATSAPP_FORM,
@@ -126,4 +151,5 @@ export const WHATSAPP_FORM_MOCKS = [
   createdWhatsAppFormQuery,
   getWhatsAppForm,
   editWhatsAppForm,
+  listWhatsappForms,
 ];
