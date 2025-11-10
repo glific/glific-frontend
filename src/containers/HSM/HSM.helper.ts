@@ -10,8 +10,11 @@ export interface QuickReplyTemplate {
   value: string;
 }
 
-export const mediaOptions = MEDIA_MESSAGE_TYPES.map((option: string) => ({ id: option, label: option })).filter(
-  ({ label }) => label !== 'AUDIO' && label !== 'STICKER'
+export const mediaOptions = MEDIA_MESSAGE_TYPES.filter((media) => media !== 'AUDIO' && media !== 'STICKER').map(
+  (option: string) => ({
+    id: option,
+    label: `${option} URL`,
+  })
 );
 
 export const removeFirstLineBreak = (text: any) =>
