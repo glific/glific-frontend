@@ -1,6 +1,5 @@
 .SearchBar {
   appearance: none;
-  -webkit-appearance: none;
   -moz-appearance: none;
 
   position: relative;
@@ -8,7 +7,6 @@
   background-color: #ffffff;
   border: 1px solid #c4c4c4;
   border-radius: 9999px;
-  font-family: 'Heebo', sans-serif;
   font-size: 16px;
   font-weight: 500;
   color: #000000;
@@ -21,7 +19,7 @@
   width: auto !important;
   min-width: 0 !important;
   white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 5%);
   transition: all 0.2s ease;
 
   background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M0 0 L5 5 L10 0'/></svg>");
@@ -155,7 +153,6 @@
 }
 
 .NameText {
-  padding: 0px 0px;
   line-height: 20px;
   margin: 0;
   font-size: 17px !important;

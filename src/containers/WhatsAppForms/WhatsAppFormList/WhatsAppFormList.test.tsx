@@ -39,7 +39,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('navigates to add form page when "Create New Form" button clicked', () => {
-    const { getByTestId, getByRole } = render(wrapper());
+    const { getByTestId } = render(wrapper());
 
     const button = getByTestId('newItemButton');
     fireEvent.click(button);
