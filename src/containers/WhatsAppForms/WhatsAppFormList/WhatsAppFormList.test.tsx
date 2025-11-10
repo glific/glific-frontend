@@ -54,10 +54,14 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('renders WhatsApp forms list data correctly', async () => {
-    const { getByTestId, getByText } = render(wrapper());
+    const { getByTestId, getByText, getAllByText } = render(wrapper());
     expect(getByTestId('tableBody')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('This is form name')).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      const publishedElements = getAllByText('Published');
+      expect(publishedElements[0]).toBeInTheDocument();
     });
   });
 });
