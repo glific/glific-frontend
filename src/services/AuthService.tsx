@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { setErrorMessage } from 'common/notification';
 
-import { RENEW_TOKEN, VITE_GLIFIC_AUTHENTICATION_API } from 'config';
+import { VITE_GLIFIC_AUTHENTICATION_API } from 'config';
 import setLogs from 'config/logs';
+import { tokenRenewalManager } from './TokenRenewalService';
 
 interface RegisterRequest {
   phone: string;
@@ -52,40 +53,34 @@ export const getAuthSession = (element?: string) => {
 };
 
 // service to auto renew the auth token based on valid refresh token
-export const renewAuthToken = () => {
-  const renewalToken = getAuthSession('renewal_token');
-  if (!renewalToken) {
-    setLogs('Token renewal failed: not found', 'error');
-    return new Error('Error');
-  }
-  // get the renewal token from session
-  axios.defaults.headers.common.authorization = renewalToken;
-
-  return axios
-    .post(RENEW_TOKEN)
-    .then((response: any) => response)
-    .catch((error: any) => {
-      // if we are not able to renew the token for some weird reason or if refresh token
-      throw error;
-    });
-};
+// delegates this to TokenRenewalManager to prevent race conditions
+export const renewAuthToken = () => tokenRenewalManager.renewToken();
 
 // service to check the validity of the auth / token  status
+// uses a 30sec buffer to proactively renew tokens before they expire
+// this prevents mid request token expirations
 export const checkAuthStatusService = () => {
   let authStatus = false;
   const tokenExpiryTimeFromSession = getAuthSession('token_expiry_time');
+
   // return false if there is no session on local
   if (!tokenExpiryTimeFromSession) {
     authStatus = false;
   } else {
     const tokenExpiryTime = new Date(tokenExpiryTimeFromSession);
-    // compare the session token with the current time
-    if (tokenExpiryTime > new Date()) {
-      // token is still valid return true
+    const now = new Date();
+    const bufferMs = 30 * 1000; // 30 seconds buffer
+
+    // consider token invalid if it expires within the next 30 seconds
+    // this ensures we renew tokens proactively before they actually expire
+    if (tokenExpiryTime.getTime() - now.getTime() > bufferMs) {
+      // token is still valid (with buffer) return true
       authStatus = true;
+      setLogs(`Token valid. Expires in ${Math.floor((tokenExpiryTime.getTime() - now.getTime()) / 1000)}s`, 'info');
     } else {
-      // this means token has expired and let's return false
+      // this means token has expired or is about to expire
       authStatus = false;
+      setLogs('Token expired or expiring soon (within 30s), renewal required', 'info');
     }
   }
   return authStatus;
@@ -193,37 +188,24 @@ export const getOrganizationServices = (service: ServiceType) => {
 
 export const setAuthHeaders = () => {
   // add authorization header in all calls
-  let renewTokenCalled = false;
-  let renewCallInProgress = false;
-
   const { fetch } = window;
   window.fetch = (...args) =>
     (async (parameters) => {
       const parametersCopy = parameters;
-      if (checkAuthStatusService()) {
-        if (parametersCopy[1]) {
-          parametersCopy[1].headers = {
-            ...parametersCopy[1].headers,
-            authorization: getAuthSession('access_token'),
-          };
-        }
-        // @ts-ignore
-        const result = await fetch(...parametersCopy);
-        return result;
+
+      // check if token is valid (or renew if needed)
+      if (!checkAuthStatusService()) {
+        setLogs('Fetch: Token invalid, triggering renewal', 'info');
+        await renewAuthToken();
       }
-      renewTokenCalled = true;
-      const authToken = await renewAuthToken();
-      if (authToken.data) {
-        // update localstore
-        setAuthSession(authToken.data.data);
-        renewTokenCalled = false;
-      }
+
       if (parametersCopy[1]) {
         parametersCopy[1].headers = {
           ...parametersCopy[1].headers,
           authorization: getAuthSession('access_token'),
         };
       }
+
       // @ts-ignore
       const result = await fetch(...parametersCopy);
       return result;
@@ -241,6 +223,7 @@ export const setAuthHeaders = () => {
       username?: string | null,
       password?: string | null
     ) {
+      // mark renewal endpoint calls to prevent infinite loops
       if (url.toString().endsWith('renew')) {
         // @ts-ignore
         this.renewGlificCall = true;
@@ -252,35 +235,26 @@ export const setAuthHeaders = () => {
   ((send) => {
     XMLHttpRequest.prototype.send = async function authCheck(body) {
       this.addEventListener('loadend', () => {
+        // handle 401 errors by logging out
         // @ts-ignore
-        if (this.renewGlificCall) {
-          renewCallInProgress = false;
-        } else if (this.status === 401) {
+        if (!this.renewGlificCall && this.status === 401) {
+          setLogs('XMLHttpRequest: Received 401, logging out', 'error');
           window.location.href = '/logout/user';
         }
       });
 
       // @ts-ignore
-      if (this.renewGlificCall && !renewCallInProgress) {
-        renewCallInProgress = true;
+      if (this.renewGlificCall) {
+        // this is the renewal endpoint itself - don't add auth or trigger renewal
+        // to prevent infinite loops
         send.call(this, body);
-      }
-      // @ts-ignore
-      else if (this.renewGlificCall) {
-        this.abort();
-      }
-      // @ts-ignore
-      else if (checkAuthStatusService()) {
-        this.setRequestHeader('authorization', getAuthSession('access_token'));
-        send.call(this, body);
-      } else if (!renewTokenCalled) {
-        renewTokenCalled = true;
-        const authToken = await renewAuthToken();
-        if (authToken.data) {
-          // update localstore
-          setAuthSession(authToken.data.data);
-          renewTokenCalled = false;
+      } else {
+        // regular request - check token and renew if needed
+        if (!checkAuthStatusService()) {
+          setLogs('XMLHttpRequest: Token invalid, triggering renewal', 'info');
+          await renewAuthToken();
         }
+
         this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
       }
