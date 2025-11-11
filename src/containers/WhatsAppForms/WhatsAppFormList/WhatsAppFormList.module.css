@@ -1,56 +1,15 @@
 .SearchBar {
-  appearance: none;
-  -moz-appearance: none;
-
-  position: relative;
-  display: inline-block;
-  background-color: #ffffff;
-  border: 1px solid #c4c4c4;
-  border-radius: 9999px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #000000;
-  cursor: pointer;
-  outline: none;
-  height: 36px;
-  line-height: 36px;
-
-  padding: 0 32px 0 28px;
-  width: auto !important;
-  min-width: 0 !important;
-  white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 5%);
-  transition: all 0.2s ease;
-
-  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M0 0 L5 5 L10 0'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  display: flex;
+  margin-right: 8px;
+  height: 36px !important;
+  background: #ffffff;
+  min-height: 36px !important;
 }
 
-.SearchBar::before {
-  content: '';
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%) rotate(90deg);
-  display: inline-block;
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: 100%;
-  height: 8px;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M0 0 L5 5 L10 0'/></svg>");
-  background-repeat: no-repeat;
-  background-size: 8px;
-}
-
-.SearchBar:hover {
-  border-color: #999999;
-}
-
-.SearchBar:focus {
-  border-color: #666666;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+.SearchBar > fieldset {
+  border: none !important;
 }
 
 .Shortcode {
@@ -119,6 +78,7 @@
 .ImportIcon {
   cursor: pointer;
 }
+
 .Status {
   display: inline-block;
   padding: 4px 12px;
@@ -134,30 +94,33 @@
   background-color: #e8f5e9;
   color: #2e7d32;
 }
+
 .NotPublishedBadge {
   font-size: 15px;
   composes: Status;
   background-color: #fff3cd;
   color: #856404;
 }
+
 .InactiveBadge {
   composes: Status;
   font-size: 15px;
   background-color: #f0f0f0;
   color: #6c757d;
 }
+
 .LabelButton {
   width: fit-content;
   min-width: 80px;
-  margin-right: 100px;
+  margin-right: 50px;
   padding: 6px 12px;
-  background: #f0f7f1;
   color: #555555;
   font-weight: 500;
   font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: -20px;
   border-radius: 16px;
 }
 
@@ -173,6 +136,19 @@
   display: flex;
   align-items: center;
   margin-left: 50px;
+}
+
+.CategoryTag {
+  background-color: #ffffff;
+  border: 1px solid #c4c4c4;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  display: inline-block;
 }
 
 .FilterLabel {

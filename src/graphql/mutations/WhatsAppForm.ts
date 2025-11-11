@@ -41,3 +41,19 @@ export const DELETE_FORM = gql`
     }
   }
 `;
+
+export const PUBLISH_FORM = gql`
+  mutation publishWhatsappForm($id: ID!) {
+    publishWhatsappForm(id: $id) {
+      status
+      body {
+        id
+        name
+        description
+        metaFlowId
+        status
+        categories
+      }
+    }
+  }
+`;

@@ -2,9 +2,13 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { useNavigate } from 'react-router';
 import { List } from 'containers/List/List';
 import { LIST_WHATSAPP_FORMS, GET_WHATSAPP_FORM } from 'graphql/queries/WhatsAppForm';
-import { DELETE_FORM } from 'graphql/mutations/WhatsAppForm';
+import { DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
 import { useState, useMemo } from 'react';
+import PublishIcon from 'assets/images/icons/PublishGood.svg?react';
 import styles from './WhatsAppFormList.module.css';
+import { FormControl, MenuItem, Select } from '@mui/material';
+import { useMutation } from '@apollo/client';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
 
@@ -12,11 +16,13 @@ const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
+  publishFlowQuery: PUBLISH_FORM,
 };
 
 export const WhatsAppFormList = () => {
   const navigate = useNavigate();
-  const [statusFilter, setStatusFilter] = useState('PUBLISHED');
+  const [filter, setFilter] = useState<any>('all');
+  const [publishForm] = useMutation(PUBLISH_FORM);
 
   const columnNames = [
     { name: 'name', label: 'Form Name' },
@@ -24,6 +30,16 @@ export const WhatsAppFormList = () => {
     { name: 'label', label: 'Category' },
     { name: 'actions', label: 'Actions' },
   ];
+  const publishItem = async (item: any) => {
+    try {
+      await publishForm({
+        variables: { id: item.id },
+      });
+      setNotification('Form published successfully');
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
 
   const getColumns = ({ name, categories, status }: any) => ({
     name: <div className={styles.NameText}>{name}</div>,
@@ -48,14 +64,63 @@ export const WhatsAppFormList = () => {
     ),
   });
 
-  const filters = useMemo(() => ({ status: statusFilter }), [statusFilter]);
+  const filterList = [
+    { label: 'Published', value: 'published' },
+    { label: 'Inactive', value: 'inactive' },
+    { label: 'Draft', value: 'draft' },
+    { label: 'All', value: 'all' },
+  ];
 
-  const filterList = (
-    <select className={styles.SearchBar} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-      <option value="PUBLISHED">Published</option>
-      <option value="DRAFT">Draft</option>
-      <option value="INACTIVE">Inactive</option>
-    </select>
+  const additionalAction = (item: any) => {
+    const actions = [];
+
+    if (item.status === 'DRAFT') {
+      actions.push({
+        label: 'Publish',
+        icon: <PublishIcon className={styles.IconSize} />,
+        parameter: 'id',
+        insideMore: false,
+        dialog: () => publishItem(item),
+      });
+    }
+
+    return actions;
+  };
+  const filters = useMemo(() => {
+    let filters: any = {};
+
+    if (filter === 'published') {
+      filters = { status: 'PUBLISHED' };
+    } else if (filter === 'draft') {
+      filters = { status: 'DRAFT' };
+    } else if (filter === 'inactive') {
+      filters = { status: 'INACTIVE' };
+    }
+
+    return filters;
+  }, [filter]);
+
+  const activeFilter = (
+    <>
+      <FormControl>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={filter}
+          onChange={(event) => {
+            const { value } = event.target;
+            setFilter(value);
+          }}
+          className={styles.SearchBar}
+        >
+          {filterList.map((filter: any) => (
+            <MenuItem key={filter.label} value={filter.value}>
+              {filter.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </>
   );
 
   return (
@@ -70,9 +135,14 @@ export const WhatsAppFormList = () => {
       columnStyles={columnStyles}
       {...queries}
       filters={filters}
-      filterList={filterList}
+      filterList={activeFilter}
       button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
       searchParameter={['name']}
+      restrictedAction={(item: any) => ({
+        edit: item.status !== 'PUBLISHED',
+        delete: true,
+      })}
+      additionalAction={additionalAction}
     />
   );
 };
