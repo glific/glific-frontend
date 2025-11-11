@@ -678,11 +678,12 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
-"@glific/flow-editor@1.26.3-30":
-  version "1.26.3-30"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.26.3-30.tgz#8469c86da0098eaa68a6d9bec7af5dae42d627e8"
-  integrity sha512-U0WWBg/QLnbdD/Aod1qatOt5nt9BeDWdPAG8kS524lxMnDnyRxdp6HNd74JX7aZlnv4c8rlPSrNxBKaUvzVlSA==
+"@glific/flow-editor@1.43.0-3":
+  version "1.43.0-3"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.43.0-3.tgz#609db44938b711745574027973a739116dab898c"
+  integrity sha512-onhwl0yLQgi9aNvwcwVTuUtxTI2FvijjDF1Pno5ftlsagkdP1PcTjl74zU9KAu+smWzprTcxeVxL6gMEYEgZyA==
   dependencies:
+    "@nyaruka/temba-components" "0.120.4"
     react "^16.8.6"
     react-dom "^16.8.6"
     react-icons "4.1.0"
@@ -1146,6 +1147,25 @@
   dependencies:
     hls.js "~1.5.19"
     mux-embed "^5.8.3"
+
+"@nyaruka/temba-components@0.120.4":
+  version "0.120.4"
+  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.120.4.tgz#6f0a2ca199423ea0b17b668139c7d13fd0da967c"
+  integrity sha512-veIe8lYr46H/WZaajq34xYdNv5XDB/NSuSbmkGQH4EfF2hEMOUXlHWg9UX1mhN8vdci6y//YyeIzTtuPWWCTCA==
+  dependencies:
+    "@lit/localize" "^0.12.1"
+    color-hash "^2.0.2"
+    croppie "^2.6.5"
+    geojson "^0.5.0"
+    image-size "^1.1.1"
+    leaflet "1.5.1"
+    lit "3.1.2"
+    lit-element "^4.0.4"
+    lit-html "^3.1.2"
+    luxon "3.5"
+    remarkable "^2.0.1"
+    serialize-javascript "^6.0.2"
+    tiny-lru "^11.2.5"
 
 "@nyaruka/temba-components@^0.113.0":
   version "0.113.0"
