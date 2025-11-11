@@ -188,7 +188,7 @@
   "Copy of the flow has been created!": "Copy of the flow has been created!",
   "Import flow": "Import flow",
   "Make a copy": "Make a copy",
-  "Not published yet": "Not published yet",
+  "Has unpublished changes": "Has unpublished changes",
   "Nothing in draft": "Nothing in draft",
   "Last published": "Last published",
   "Last saved in Draft": "Last saved in Draft",
@@ -551,5 +551,8 @@
   "Are you sure you want to update the phone number?": "Are you sure you want to update the phone number?",
   "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}.",
   "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed.",
-  "Share": "Share"
+  "Share": "Share",
+  "Last Updated": "Last Updated",
+  "Draft": "Draft",
+  "Published": "Published"
 }
