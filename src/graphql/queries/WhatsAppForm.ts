@@ -1,17 +1,18 @@
 import { gql } from '@apollo/client';
 
 export const GET_WHATSAPP_FORM = gql`
-  query get_whatsapp_form_by_id($id: ID!) {
-    getWhatsappFormById(id: $id) {
-      id
-      name
-      status
-      description
-      metaFlowId
-      categories
-      definition
-      errors {
-        message
+  query WhatsappForm($id: ID!) {
+    whatsappForm(id: $id) {
+      whatsappForm {
+        definition
+        description
+        categories
+        id
+        insertedAt
+        metaFlowId
+        name
+        status
+        updatedAt
       }
     }
   }
