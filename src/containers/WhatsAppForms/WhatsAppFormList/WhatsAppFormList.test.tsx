@@ -114,15 +114,29 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('shows error message when publish API fails', async () => {
-    const { getByText, getAllByRole, findByTestId } = render(wrapper([publishWhatsappFormError]));
+    const { getByText, getAllByRole, findByTestId, getByTestId } = render(wrapper([publishWhatsappFormError]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
     const select = getAllByRole('combobox')[0];
-    fireEvent.mouseDown(select);
-    fireEvent.click(getByText('Draft'));
+    fireEvent.click(getByText('All'));
 
-    const publishButton = await findByTestId('additionalButton');
-    fireEvent.click(publishButton);
+    expect(select).toHaveTextContent('All');
+    fireEvent.mouseDown(select);
+    const draftOption = getByText('Draft');
+    fireEvent.click(draftOption);
+    expect(select).toHaveTextContent('Draft');
+
+    const publishIcon = await waitFor(() => getByTestId('publish-icon'));
+    fireEvent.click(publishIcon);
+
+    await waitFor(() => {
+      expect(getByTestId('dialogTitle')).toBeInTheDocument();
+    });
+
+    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to publish this form');
+
+    const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
+    fireEvent.click(ConfirmButton);
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
