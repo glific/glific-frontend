@@ -1,4 +1,5 @@
-import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import { D } from 'graphql-ws/dist/common-DY-PBNYy';
+import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
@@ -83,9 +84,37 @@ export const publishWhatsappForm = {
     },
   },
 };
+
+export const deactivateWhatsappForm = {
+  request: {
+    query: DEACTIVATE_FORM,
+    variables: {
+      id: '3',
+    },
+  },
+  result: {
+    data: {
+      publishWhatsappForm: {
+        id: '1',
+        status: 'inactive',
+        __typename: 'WhatsappForm',
+      },
+    },
+  },
+};
 export const publishWhatsappFormError = {
   request: {
     query: PUBLISH_FORM,
+    variables: {
+      id: '3',
+    },
+  },
+  error: new Error('Failed to publish'),
+};
+
+export const deactivateWhatsappFormError = {
+  request: {
+    query: DEACTIVATE_FORM,
     variables: {
       id: '3',
     },

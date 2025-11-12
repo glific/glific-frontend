@@ -1,7 +1,13 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
-import { publishWhatsappForm, publishWhatsappFormError, WHATSAPP_FORM_MOCKS } from 'mocks/WhatsApp';
+import {
+  publishWhatsappForm,
+  publishWhatsappFormError,
+  WHATSAPP_FORM_MOCKS,
+  deactivateWhatsappForm,
+  deactivateWhatsappFormError,
+} from 'mocks/WhatsApp';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
@@ -114,7 +120,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('shows error message when publish API fails', async () => {
-    const { getByText, getAllByRole, findByTestId, getByTestId } = render(wrapper([publishWhatsappFormError]));
+    const { getByText, getAllByRole, getByTestId } = render(wrapper([publishWhatsappFormError]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
     const select = getAllByRole('combobox')[0];
@@ -134,6 +140,65 @@ describe('<WhatsAppFormList />', () => {
     });
 
     expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to publish this form');
+
+    const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
+    fireEvent.click(ConfirmButton);
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('deactivate a form successfully when inactive button is clicked', async () => {
+    const { getByText, getAllByRole, getByTestId } = render(wrapper([deactivateWhatsappForm]));
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const select = getAllByRole('combobox')[0];
+    fireEvent.click(getByText('All'));
+
+    expect(select).toHaveTextContent('All');
+    fireEvent.mouseDown(select);
+    const draftOption = getByText('Draft');
+    fireEvent.click(draftOption);
+    expect(select).toHaveTextContent('Draft');
+
+    const deactiveIcon = await waitFor(() => getByTestId('deactivate-icon'));
+    fireEvent.click(deactiveIcon);
+
+    await waitFor(() => {
+      expect(getByTestId('dialogTitle')).toBeInTheDocument();
+    });
+
+    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to inactivate this form?');
+
+    const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
+    fireEvent.click(ConfirmButton);
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('shows error message when deactivate API fails', async () => {
+    const { getByText, getAllByRole, findByTestId, getByTestId } = render(wrapper([deactivateWhatsappFormError]));
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
+
+    const select = getAllByRole('combobox')[0];
+    fireEvent.click(getByText('All'));
+
+    expect(select).toHaveTextContent('All');
+    fireEvent.mouseDown(select);
+    const draftOption = getByText('Draft');
+    fireEvent.click(draftOption);
+    expect(select).toHaveTextContent('Draft');
+
+    const deactiveIcon = await waitFor(() => getByTestId('deactivate-icon'));
+    fireEvent.click(deactiveIcon);
+
+    await waitFor(() => {
+      expect(getByTestId('dialogTitle')).toBeInTheDocument();
+    });
+
+    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to inactivate this form?');
 
     const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
     fireEvent.click(ConfirmButton);
