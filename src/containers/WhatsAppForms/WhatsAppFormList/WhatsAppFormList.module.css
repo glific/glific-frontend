@@ -12,17 +12,9 @@
   border: none !important;
 }
 
-.Shortcode {
-  width: 180px;
-}
-
 .Name {
   width: 27%;
   min-width: 200px;
-}
-
-.Pinned {
-  width: 5%;
 }
 
 .Label {
@@ -46,14 +38,6 @@
   text-align: left;
   font-size: 16px;
   color: #93a29b;
-}
-
-.Sheets svg {
-  margin-right: 8px;
-}
-
-.Webhook svg {
-  margin-right: 8px;
 }
 
 .NameText {

@@ -2,9 +2,10 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { useNavigate } from 'react-router';
 import { List } from 'containers/List/List';
 import { LIST_WHATSAPP_FORMS, GET_WHATSAPP_FORM } from 'graphql/queries/WhatsAppForm';
-import { DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import { DELETE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { useState, useMemo } from 'react';
 import PublishIcon from 'assets/images/icons/PublishGood.svg?react';
+import DeactivateIcon from 'assets/images/icons/DeactivateIcon.svg?react';
 import styles from './WhatsAppFormList.module.css';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { useMutation } from '@apollo/client';
@@ -23,6 +24,7 @@ export const WhatsAppFormList = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<any>('all');
   const [publishForm] = useMutation(PUBLISH_FORM);
+  const [DeactivateWhatsappForm] = useMutation(DEACTIVATE_FORM);
 
   const columnNames = [
     { name: 'name', label: 'Form Name' },
@@ -36,6 +38,17 @@ export const WhatsAppFormList = () => {
         variables: { id: item.id },
       });
       setNotification('Form published successfully');
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+
+  const InactiveItem = async (item: any) => {
+    try {
+      await DeactivateWhatsappForm({
+        variables: { id: item.id },
+      });
+      setNotification('Form inactivated successfully');
     } catch (error) {
       setErrorMessage(error);
     }
@@ -65,10 +78,10 @@ export const WhatsAppFormList = () => {
   });
 
   const filterList = [
+    { label: 'All', value: 'all' },
     { label: 'Published', value: 'published' },
     { label: 'Inactive', value: 'inactive' },
     { label: 'Draft', value: 'draft' },
-    { label: 'All', value: 'all' },
   ];
 
   const additionalAction = (item: any) => {
@@ -81,6 +94,16 @@ export const WhatsAppFormList = () => {
         parameter: 'id',
         insideMore: false,
         dialog: () => publishItem(item),
+      });
+    }
+
+    if (item.status === 'PUBLISHED' || item.status === 'DRAFT') {
+      actions.push({
+        label: 'Inactive',
+        icon: <DeactivateIcon className={styles.IconSize} />,
+        parameter: 'id',
+        insideMore: false,
+        dialog: () => InactiveItem(item),
       });
     }
 

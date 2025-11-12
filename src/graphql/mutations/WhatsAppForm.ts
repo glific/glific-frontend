@@ -61,7 +61,7 @@ export const PUBLISH_FORM = gql`
   }
 `;
 
-export const DeactivateWhatsappForm = gql`
+export const DEACTIVATE_FORM = gql`
   mutation DeactivateWhatsappForm($id: ID!) {
     deactivateWhatsappForm(id: $id) {
       whatsappForm {
