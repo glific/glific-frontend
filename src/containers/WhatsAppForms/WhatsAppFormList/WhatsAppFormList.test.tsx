@@ -85,7 +85,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('publishes a form successfully when publish button clicked', async () => {
-    const { getByText, getAllByRole, findByTestId } = render(wrapper([publishWhatsappForm]));
+    const { getByText, getAllByRole, getByTestId } = render(wrapper([publishWhatsappForm]));
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
     const select = getAllByRole('combobox')[0];
@@ -97,9 +97,17 @@ describe('<WhatsAppFormList />', () => {
     fireEvent.click(draftOption);
     expect(select).toHaveTextContent('Draft');
 
-    const publishButton = await findByTestId('additionalButton');
+    const publishIcon = await waitFor(() => getByTestId('publish-icon'));
+    fireEvent.click(publishIcon);
 
-    fireEvent.click(publishButton);
+    await waitFor(() => {
+      expect(getByTestId('dialogTitle')).toBeInTheDocument();
+    });
+
+    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to publish this form');
+
+    const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
+    fireEvent.click(ConfirmButton);
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });

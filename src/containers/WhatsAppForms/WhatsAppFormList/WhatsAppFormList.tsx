@@ -116,7 +116,7 @@ export const WhatsAppFormList = () => {
     if (item.status === 'DRAFT') {
       actions.push({
         label: 'Publish',
-        icon: <PublishIcon className={styles.IconSize} />,
+        icon: <PublishIcon className={styles.IconSize} data-testid="publish-icon" />,
         parameter: 'id',
         dialog: () => {
           setCurrentItem(item);
@@ -128,7 +128,7 @@ export const WhatsAppFormList = () => {
     if (item.status === 'DRAFT' || item.status === 'PUBLISHED') {
       actions.push({
         label: 'Inactive',
-        icon: <DeactivateIcon className={styles.IconSize} />,
+        icon: <DeactivateIcon className={styles.IconSize} data-testid="deactivate-icon" />,
         parameter: 'id',
         dialog: () => {
           setCurrentItem(item);
