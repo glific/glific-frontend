@@ -106,6 +106,7 @@
   justify-content: center;
   margin-left: -20px;
   border-radius: 16px;
+  overflow: visible;
 }
 
 .Roles {
@@ -143,8 +144,11 @@
 }
 
 .CategoryMore {
+  cursor: pointer;
   color: #1f9075;
+  white-space: nowrap;
   cursor: pointer;
   font-size: 12px;
   margin-left: 4px;
+  z-index: 10;
 }

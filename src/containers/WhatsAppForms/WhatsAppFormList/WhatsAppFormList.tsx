@@ -73,6 +73,7 @@ export const WhatsAppFormList = () => {
     if (!categories?.length) return null;
 
     const displayedCategories = showAll ? categories : categories.slice(0, 2);
+    const hiddenCategories = categories.slice(2);
 
     return (
       <div className={styles.LabelButton}>
@@ -82,7 +83,11 @@ export const WhatsAppFormList = () => {
           </span>
         ))}
         {categories.length > 2 && (
-          <span className={styles.CategoryMore} onClick={() => setShowAll(!showAll)}>
+          <span
+            className={styles.CategoryMore}
+            onClick={() => setShowAll(!showAll)}
+            title={hiddenCategories.join(', ')}
+          >
             {showAll ? 'Show Less' : `+${categories.length - 2} more`}
           </span>
         )}
@@ -198,7 +203,7 @@ export const WhatsAppFormList = () => {
       >
         <p className={styles.DialogText}>
           {dialogType === 'publish'
-            ? 'The form will be visible to users.'
+            ? 'The form will be published on Meta and made visible to users.'
             : 'The form will be marked inactive and cannot be used.'}
         </p>
       </DialogBox>
