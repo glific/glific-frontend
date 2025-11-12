@@ -68,29 +68,33 @@ export const WhatsAppFormList = () => {
     { name: 'actions', label: 'Actions' },
   ];
   const CategoryTags = ({ categories }: { categories: string[] }) => {
-    const [showAll, setShowAll] = useState(false);
-
     if (!categories?.length) return null;
 
-    const displayedCategories = showAll ? categories : categories.slice(0, 2);
+    const displayedCategories = categories.slice(0, 2);
     const hiddenCategories = categories.slice(2);
 
     return (
-      <div className={styles.LabelButton}>
-        {displayedCategories.map((cat, index) => (
-          <span key={index} className={styles.CategoryTag}>
-            {cat}
-          </span>
-        ))}
-        {categories.length > 2 && (
-          <span
-            className={styles.CategoryMore}
-            onClick={() => setShowAll(!showAll)}
-            title={hiddenCategories.join(', ')}
-          >
-            {showAll ? 'Show Less' : `+${categories.length - 2} more`}
-          </span>
-        )}
+      <div className={styles.LabelWrapper}>
+        <div className={styles.LabelButton}>
+          {displayedCategories.map((cat, index) => (
+            <span key={index} className={styles.CategoryTag}>
+              {cat}
+            </span>
+          ))}
+
+          {categories.length > 2 && (
+            <div className={styles.MoreWrapper}>
+              <span className={styles.CategoryMore}>+{categories.length - 2} more</span>
+              <div className={styles.MoreList}>
+                {hiddenCategories.map((cat, index) => (
+                  <div key={index} className={styles.MoreListItem}>
+                    {cat}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   };

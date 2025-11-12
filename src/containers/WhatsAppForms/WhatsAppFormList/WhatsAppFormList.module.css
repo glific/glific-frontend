@@ -152,3 +152,44 @@
   margin-left: 4px;
   z-index: 10;
 }
+
+.LabelWrapper {
+  position: relative;
+}
+
+.MoreWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.MoreList {
+  display: none;
+  position: absolute;
+  top: 22px;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  z-index: 20;
+  min-width: 150px;
+}
+
+.MoreListItem {
+  padding: 5px 10px;
+  font-size: 13px;
+  color: #333;
+  background: white;
+  border-radius: 6px;
+  margin: 2px 0;
+  border: 1px solid #eee;
+}
+
+.MoreListItem:hover {
+  background: #f7f7f7;
+}
+
+.MoreWrapper:hover .MoreList {
+  display: block;
+}
