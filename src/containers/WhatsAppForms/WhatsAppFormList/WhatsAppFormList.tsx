@@ -56,7 +56,7 @@ export const WhatsAppFormList = () => {
       await deactivateForm({
         variables: { id: item.id },
       });
-      setNotification('Form inactivated successfully');
+      setNotification('Form deactivated successfully');
     } catch (error) {
       setErrorMessage(error);
     }
@@ -193,7 +193,7 @@ export const WhatsAppFormList = () => {
 
     dialog = (
       <DialogBox
-        title={dialogType === 'publish' ? 'Do you want to publish this form?' : 'Do you want to inactivate this form?'}
+        title={dialogType === 'publish' ? 'Do you want to publish this form?' : 'Do you want to deactivate this form?'}
         handleOk={handleOk}
         handleCancel={() => {
           setCurrentItem(null);

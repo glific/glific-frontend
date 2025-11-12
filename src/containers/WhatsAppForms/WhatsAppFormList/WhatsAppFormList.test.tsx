@@ -169,7 +169,7 @@ describe('<WhatsAppFormList />', () => {
       expect(getByTestId('dialogTitle')).toBeInTheDocument();
     });
 
-    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to inactivate this form?');
+    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to deactivate this form?');
 
     const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
     fireEvent.click(ConfirmButton);
@@ -198,7 +198,7 @@ describe('<WhatsAppFormList />', () => {
       expect(getByTestId('dialogTitle')).toBeInTheDocument();
     });
 
-    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to inactivate this form?');
+    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to deactivate this form?');
 
     const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
     fireEvent.click(ConfirmButton);
