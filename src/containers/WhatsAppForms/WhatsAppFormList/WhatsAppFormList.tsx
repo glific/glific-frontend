@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react';
 import PublishIcon from 'assets/images/icons/PublishGood.svg?react';
 import DeactivateIcon from 'assets/images/icons/DeactivateIcon.svg?react';
 import styles from './WhatsAppFormList.module.css';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { useMutation } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -21,17 +22,24 @@ const queries = {
 };
 
 export const WhatsAppFormList = () => {
+  const [currentItem, setCurrentItem] = useState<any>(null);
+  const [dialogType, setDialogType] = useState<'publish' | 'inactive' | null>(null);
   const navigate = useNavigate();
   const [filter, setFilter] = useState<any>('all');
-  const [publishForm] = useMutation(PUBLISH_FORM);
-  const [DeactivateWhatsappForm] = useMutation(DEACTIVATE_FORM);
+  const [publishForm] = useMutation(PUBLISH_FORM, {
+    onCompleted: () => {
+      setCurrentItem(null);
+      setDialogType(null);
+    },
+  });
 
-  const columnNames = [
-    { name: 'name', label: 'Form Name' },
-    { name: 'status', label: 'Status' },
-    { name: 'label', label: 'Category' },
-    { name: 'actions', label: 'Actions' },
-  ];
+  const [deactivateForm] = useMutation(DEACTIVATE_FORM, {
+    onCompleted: () => {
+      setCurrentItem(null);
+      setDialogType(null);
+    },
+  });
+
   const publishItem = async (item: any) => {
     try {
       await publishForm({
@@ -45,7 +53,7 @@ export const WhatsAppFormList = () => {
 
   const InactiveItem = async (item: any) => {
     try {
-      await DeactivateWhatsappForm({
+      await deactivateForm({
         variables: { id: item.id },
       });
       setNotification('Form inactivated successfully');
@@ -53,6 +61,12 @@ export const WhatsAppFormList = () => {
       setErrorMessage(error);
     }
   };
+  const columnNames = [
+    { name: 'name', label: 'Form Name' },
+    { name: 'status', label: 'Status' },
+    { name: 'label', label: 'Category' },
+    { name: 'actions', label: 'Actions' },
+  ];
   const CategoryTags = ({ categories }: { categories: string[] }) => {
     const [showAll, setShowAll] = useState(false);
 
@@ -104,18 +118,22 @@ export const WhatsAppFormList = () => {
         label: 'Publish',
         icon: <PublishIcon className={styles.IconSize} />,
         parameter: 'id',
-        insideMore: false,
-        dialog: () => publishItem(item),
+        dialog: () => {
+          setCurrentItem(item);
+          setDialogType('publish');
+        },
       });
     }
 
-    if (item.status === 'PUBLISHED' || item.status === 'DRAFT') {
+    if (item.status === 'DRAFT' || item.status === 'PUBLISHED') {
       actions.push({
         label: 'Inactive',
         icon: <DeactivateIcon className={styles.IconSize} />,
         parameter: 'id',
-        insideMore: false,
-        dialog: () => InactiveItem(item),
+        dialog: () => {
+          setCurrentItem(item);
+          setDialogType('inactive');
+        },
       });
     }
 
@@ -158,27 +176,59 @@ export const WhatsAppFormList = () => {
     </>
   );
 
+  let dialog = null;
+  if (currentItem && dialogType) {
+    const handleOk = () => {
+      if (dialogType === 'publish') {
+        publishItem(currentItem);
+      } else if (dialogType === 'inactive') {
+        InactiveItem(currentItem);
+      }
+    };
+
+    dialog = (
+      <DialogBox
+        title={dialogType === 'publish' ? 'Do you want to publish this form?' : 'Do you want to inactivate this form?'}
+        handleOk={handleOk}
+        handleCancel={() => {
+          setCurrentItem(null);
+          setDialogType(null);
+        }}
+        alignButtons="center"
+      >
+        <p className={styles.DialogText}>
+          {dialogType === 'publish'
+            ? 'The form will be visible to users.'
+            : 'The form will be marked inactive and cannot be used.'}
+        </p>
+      </DialogBox>
+    );
+  }
+
   return (
-    <List
-      helpData={whatsappFormsInfo}
-      title="WhatsApp Forms"
-      listItem="listWhatsappForms"
-      listItemName="form"
-      pageLink="whatsapp-forms"
-      columnNames={columnNames}
-      columns={getColumns}
-      columnStyles={columnStyles}
-      {...queries}
-      filters={filters}
-      filterList={activeFilter}
-      button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
-      searchParameter={['name']}
-      restrictedAction={(item: any) => ({
-        edit: item.status !== 'PUBLISHED',
-        delete: true,
-      })}
-      additionalAction={additionalAction}
-    />
+    <>
+      <List
+        helpData={whatsappFormsInfo}
+        title="WhatsApp Forms"
+        listItem="listWhatsappForms"
+        listItemName="form"
+        pageLink="whatsapp-forms"
+        columnNames={columnNames}
+        columns={getColumns}
+        columnStyles={columnStyles}
+        {...queries}
+        filters={filters}
+        filterList={activeFilter}
+        button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
+        searchParameter={['name']}
+        restrictedAction={(item: any) => ({
+          edit: item.status !== 'PUBLISHED',
+          delete: true,
+        })}
+        additionalAction={additionalAction}
+      />
+      {dialog}
+    </>
   );
 };
 
