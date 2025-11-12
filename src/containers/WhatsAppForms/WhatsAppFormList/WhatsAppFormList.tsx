@@ -53,6 +53,28 @@ export const WhatsAppFormList = () => {
       setErrorMessage(error);
     }
   };
+  const CategoryTags = ({ categories }: { categories: string[] }) => {
+    const [showAll, setShowAll] = useState(false);
+
+    if (!categories?.length) return null;
+
+    const displayedCategories = showAll ? categories : categories.slice(0, 2);
+
+    return (
+      <div className={styles.LabelButton}>
+        {displayedCategories.map((cat, index) => (
+          <span key={index} className={styles.CategoryTag}>
+            {cat}
+          </span>
+        ))}
+        {categories.length > 2 && (
+          <span className={styles.CategoryMore} onClick={() => setShowAll(!showAll)}>
+            {showAll ? 'Show Less' : `+${categories.length - 2} more`}
+          </span>
+        )}
+      </div>
+    );
+  };
 
   const getColumns = ({ name, categories, status }: any) => ({
     name: <div className={styles.NameText}>{name}</div>,
@@ -64,17 +86,7 @@ export const WhatsAppFormList = () => {
       ) : (
         <div className={styles.InactiveBadge}>Inactive</div>
       ),
-    label: categories?.length ? (
-      <div className={styles.LabelButton}>
-        {categories.map((cat: string, index: number) => (
-          <span key={index} className={styles.CategoryTag}>
-            {cat}
-          </span>
-        ))}
-      </div>
-    ) : (
-      ''
-    ),
+    label: <CategoryTags categories={categories} />,
   });
 
   const filterList = [

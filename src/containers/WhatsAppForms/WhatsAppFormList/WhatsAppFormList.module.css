@@ -141,3 +141,10 @@
   font-weight: 500;
   line-height: 1;
 }
+
+.CategoryMore {
+  color: #1f9075;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 4px;
+}
