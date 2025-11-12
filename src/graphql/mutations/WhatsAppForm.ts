@@ -29,11 +29,16 @@ export const UPDATE_FORM = gql`
 `;
 
 export const DELETE_FORM = gql`
-  mutation UpdateWhatsappForm($id: ID!, $input: WhatsappFormInput!) {
-    updateWhatsappForm(id: $id, input: $input) {
+  mutation deleteWhatsappForm($id: ID!) {
+    deleteWhatsappForm(id: $id) {
       whatsappForm {
         id
         name
+        status
+        categories
+        definition
+        description
+        metaFlowId
       }
       errors {
         message
