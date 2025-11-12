@@ -52,8 +52,6 @@ const getSyncStatus = (status: string) => {
     badgeClass = styles.SuccessBadge;
   } else if (status === 'FAILED') {
     badgeClass = styles.ErrorBadge;
-  } else if (status === 'PENDING') {
-    badgeClass = styles.PendingBadge;
   }
 
   return <div className={badgeClass}>{status}</div>;

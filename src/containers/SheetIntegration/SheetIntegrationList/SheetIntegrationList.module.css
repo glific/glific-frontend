@@ -38,7 +38,6 @@
 }
 
 .SyncStatus {
-  min-width: 120px;
   min-width: 150px;
 }
 
@@ -96,10 +95,4 @@
   composes: SyncStatusBadge;
   background-color: #fbe8e8;
   color: #dd1f1f;
-}
-
-.PendingBadge {
-  composes: SyncStatusBadge;
-  background-color: #e3f2fd;
-  color: #1976d2;
 }
