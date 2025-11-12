@@ -107,6 +107,7 @@
   margin-left: -20px;
   border-radius: 16px;
   overflow: visible;
+  max-width: 220px;
 }
 
 .Roles {
