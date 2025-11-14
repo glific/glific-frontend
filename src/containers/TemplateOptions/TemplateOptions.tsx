@@ -103,7 +103,8 @@ export const TemplateOptions = ({
   };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
-    const { type, title, value, navigate_screen, text }: any = row;
+    const { type, title, value, navigate_screen, text, form_id }: any = row;
+
     let template: any = null;
 
     const isError = (key: string) =>
@@ -301,12 +302,10 @@ export const TemplateOptions = ({
         <div className={styles.WhatsappFormTemplateWrapper}>
           <Autocomplete
             options={forms}
-            value={form}
+            value={forms.find((form: any) => form.id === form_id) || null}
             renderInput={(params) => <TextField {...params} label="Select Form " />}
             onChange={(event: any, newValue: any) => {
-              console.log(event);
-              onInputChange(newValue.id, row, index, 'form');
-              setForm(newValue);
+              onInputChange(newValue.id, row, index, 'form_id');
             }}
           />
 

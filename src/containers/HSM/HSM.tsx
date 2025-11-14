@@ -57,7 +57,7 @@ const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 const buttonTypes: any = {
   QUICK_REPLY: { value: '' },
   CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
-  WHATSAPP_FORM: { type: 'whatsapp_form', title: '', value: '' },
+  WHATSAPP_FORM: { type: 'whatsapp_form', form_id: '', text: '', navigate_screen: '' },
 };
 
 export const buttonOptions: any = [
@@ -237,7 +237,7 @@ export const HSM = () => {
   // Creating payload for button template
   const getButtonTemplatePayload = (urlType: string, sampleSuffix: string) => {
     const buttons = templateButtons.reduce((result: any, button: any) => {
-      const { type: buttonType, value, title, text, form, navigate_screen }: any = button;
+      const { type: buttonType, value, title, text, form_id, navigate_screen }: any = button;
 
       if (templateType?.id === CALL_TO_ACTION) {
         const typeObj: any = {
@@ -263,7 +263,7 @@ export const HSM = () => {
       }
 
       if (templateType?.id === 'WHATSAPP_FORM') {
-        const obj = { type: 'FLOW', navigate_screen, text, flow_id: form, flow_action: 'NAVIGATE' };
+        const obj = { type: 'FLOW', navigate_screen, text, flow_id: form_id, flow_action: 'NAVIGATE' };
         result.push(obj);
       }
       return result;
@@ -333,7 +333,7 @@ export const HSM = () => {
     if (hasButtons) {
       const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
       setTemplateButtons(buttonsVal);
-      setTemplateType(templateButtonType);
+      setTemplateType(buttonOptions.find((btn: any) => btn.id === templateButtonType));
       setIsAddButtonChecked(hasButtons);
       const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
@@ -372,7 +372,6 @@ export const HSM = () => {
       const templateButtonData = getButtonTemplatePayload(urlType, sampleSuffix);
       Object.assign(payloadCopy, { ...templateButtonData });
     }
-    console.log('payloadCopy.type', payloadCopy.type);
 
     if (payloadCopy.type) {
       payloadCopy.type = payloadCopy.type.id;
@@ -468,12 +467,11 @@ export const HSM = () => {
       if (idx === index) return obj;
       return val;
     });
-    console.log(result);
+
     setTemplateButtons(result);
   };
 
   const handleTemplateTypeChange = (value: any) => {
-    console.log('template type changed to ', value);
     setTemplateButtons([buttonTypes[value.id]]);
     setTemplateType(value);
   };
