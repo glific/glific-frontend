@@ -144,13 +144,14 @@ export const WhatsAppTemplateButton = (text: string) => {
           value: null,
           type: 'call-to-action',
           tooltip: 'Currently not supported',
-          icon: <CallIcon />,
         };
         if (link) {
           const [url] = link;
           callToActionButton.value = url;
           callToActionButton.tooltip = '';
           callToActionButton.icon = <OpenInNewIcon />;
+        } else if (/\d/.test(value)) {
+          callToActionButton.icon = <CallIcon />;
         }
         return callToActionButton;
       }
