@@ -21,6 +21,7 @@ import {
   CALL_TO_ACTION,
   QUICK_REPLY,
   WHATSAPP_FORM,
+  GUPSHUP_WHATSAPP_FORM,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
 import { Fragment, useState } from 'react';
@@ -41,6 +42,20 @@ export interface TemplateOptionsProps {
   dynamicUrlParams: any;
   onDynamicParamsChange: any;
 }
+
+const getInfo = (type: string) => {
+  switch (type) {
+    case CALL_TO_ACTION:
+      return GUPSHUP_CALL_TO_ACTION;
+    case QUICK_REPLY:
+      return GUPSHUP_QUICK_REPLY;
+    case WHATSAPP_FORM:
+      return GUPSHUP_WHATSAPP_FORM;
+    default:
+      return '';
+  }
+};
+
 export const TemplateOptions = ({
   isAddButtonChecked,
   templateType,
@@ -307,6 +322,7 @@ export const TemplateOptions = ({
             onChange={(event: any, newValue: any) => {
               onInputChange(newValue.id, row, index, 'form_id');
             }}
+            disabled={disabled}
           />
 
           <TextField
@@ -317,6 +333,7 @@ export const TemplateOptions = ({
             onChange={(e: any) => onInputChange(e.target.value, row, index, 'navigate_screen')}
             className={styles.TextField}
             error={isError('value')}
+            disabled={disabled}
           />
 
           <TextField
@@ -327,6 +344,7 @@ export const TemplateOptions = ({
             onChange={(e: any) => onInputChange(e.target.value, row, index, 'text')}
             className={styles.TextField}
             error={isError('value')}
+            disabled={disabled}
           />
         </div>
       );
@@ -338,15 +356,23 @@ export const TemplateOptions = ({
     <>
       {isAddButtonChecked && (
         <div className={styles.TemplateOptionsContainer}>
-          <Autocomplete
-            options={buttonOptions}
-            classes={{ inputRoot: styles.DefaultInputRoot }}
-            renderInput={(params) => <TextField {...params} label="Select Button Type" />}
-            value={templateType}
-            onChange={(event: any, newValue: any) => {
-              onTemplateTypeChange(newValue);
-            }}
-          />
+          <div className={styles.TemplateOptionsHeader}>
+            <Autocomplete
+              options={buttonOptions}
+              classes={{ inputRoot: styles.DefaultInputRoot }}
+              renderInput={(params) => <TextField {...params} label="Select Button Type" />}
+              value={templateType}
+              onChange={(event: any, newValue: any) => {
+                onTemplateTypeChange(newValue);
+              }}
+              fullWidth
+              disabled={disabled}
+            />
+
+            <Tooltip title={getInfo(templateType?.id)} placement="top">
+              <InfoIcon />
+            </Tooltip>
+          </div>
 
           {templateType ? (
             <div className={styles.CallToActionTemplateFields}>
