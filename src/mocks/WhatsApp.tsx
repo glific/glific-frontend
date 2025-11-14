@@ -1,5 +1,5 @@
-import { CREATE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
+import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
+import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
   version: '7.2',
@@ -66,6 +66,157 @@ const createdWhatsAppFormQuery = {
     },
   },
 };
+export const publishWhatsappForm = {
+  request: {
+    query: PUBLISH_FORM,
+    variables: {
+      id: '3',
+    },
+  },
+  result: {
+    data: {
+      publishWhatsappForm: {
+        id: '1',
+        status: 'PUBLISHED',
+        __typename: 'WhatsappForm',
+      },
+    },
+  },
+};
+
+export const deactivateWhatsappForm = {
+  request: {
+    query: DEACTIVATE_FORM,
+    variables: {
+      id: '3',
+    },
+  },
+  result: {
+    data: {
+      publishWhatsappForm: {
+        id: '1',
+        status: 'inactive',
+        __typename: 'WhatsappForm',
+      },
+    },
+  },
+};
+export const publishWhatsappFormError = {
+  request: {
+    query: PUBLISH_FORM,
+    variables: {
+      id: '3',
+    },
+  },
+  error: new Error('Failed to publish'),
+};
+
+export const deactivateWhatsappFormError = {
+  request: {
+    query: DEACTIVATE_FORM,
+    variables: {
+      id: '3',
+    },
+  },
+  error: new Error('Failed to publish'),
+};
+const listWhatsappForms = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
+const listWhatsappFormsInactive = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'INACTIVE' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '2',
+          name: 'This is form name',
+          status: 'INACTIVE',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
+
+const listWhatsappFormsDraft = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'DRAFT' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '3',
+          name: 'This is form name',
+          status: 'DRAFT',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
+const listWhatsappFormsEmpty = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: {},
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '3',
+          name: 'This is form name',
+          status: 'DRAFT',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
 
 const getWhatsAppForm = {
   request: {
@@ -126,4 +277,8 @@ export const WHATSAPP_FORM_MOCKS = [
   createdWhatsAppFormQuery,
   getWhatsAppForm,
   editWhatsAppForm,
+  listWhatsappForms,
+  listWhatsappFormsInactive,
+  listWhatsappFormsDraft,
+  listWhatsappFormsEmpty,
 ];

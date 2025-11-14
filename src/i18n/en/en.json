@@ -10,6 +10,8 @@
   "Session message window has expired! You can only send a template message now.": "Session message window has expired! You can only send a template message now.",
   "Your message window is about to expire!": "Your message window is about to expire!",
   "or": "or",
+  "Form Name": "Form Name",
+  "Last Updated": "Last Updated",
   "We are unable to generate an OTP, kindly contact your technical team.": "We are unable to generate an OTP, kindly contact your technical team.",
   "Please confirm the OTP received at your WhatsApp number.": "Please confirm the OTP received at your WhatsApp number.",
   "We are unable to register, kindly contact your technical team.": "We are unable to register, kindly contact your technical team.",

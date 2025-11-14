@@ -23,3 +23,17 @@ export const LIST_FORM_CATEGORIES = gql`
     whatsappFormCategories
   }
 `;
+
+export const LIST_WHATSAPP_FORMS = gql`
+  query listWhatsappForms($filter: WhatsappFormFilter) {
+    listWhatsappForms(filter: $filter) {
+      id
+      name
+      status
+      description
+      metaFlowId
+      categories
+      definition
+    }
+  }
+`;
