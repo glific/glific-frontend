@@ -1,4 +1,4 @@
-import { CALL_TO_ACTION, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import { CALL_TO_ACTION, MEDIA_MESSAGE_TYPES, QUICK_REPLY, WHATSAPP_FORM } from 'common/constants';
 
 export interface CallToActionTemplate {
   type: string;
@@ -43,6 +43,9 @@ export const convertButtonsToTemplate = (templateButtons: Array<any>, templateTy
     if (templateType === QUICK_REPLY && value) {
       result.push(`[${value}]`);
     }
+    if (templateType === WHATSAPP_FORM && temp.form_id && temp.text && temp.navigate_screen) {
+      result.push(`[${temp.text}, ${temp.navigate_screen}, ${temp.form_id}]`);
+    }
     return result;
   }, []);
 
@@ -71,6 +74,13 @@ export const getTemplateAndButtons = (templateType: string, message: string, but
     result = templateButtons.map((button: any) => {
       const { text, type } = button;
       return { type, value: text };
+    });
+  }
+
+  if (templateType === WHATSAPP_FORM) {
+    result = templateButtons.map((button: any) => {
+      const { flow_id, text, navigate_screen } = button;
+      return { form_id: flow_id, text, navigate_screen };
     });
   }
 
