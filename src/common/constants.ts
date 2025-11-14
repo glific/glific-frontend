@@ -178,6 +178,7 @@ export const GUPSHUP_QUICK_REPLY =
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const LIST = 'LIST';
 export const QUICK_REPLY = 'QUICK_REPLY';
+export const WHATSAPP_FORM = 'WHATSAPP_FORM';
 export const LOCATION_REQUEST = 'LOCATION_REQUEST_MESSAGE';
 export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
