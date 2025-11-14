@@ -42,7 +42,7 @@
 }
 
 .FailureReason {
-  min-width: 30;
+  min-width: 30px;
   width: 20%;
   overflow: hidden;
   text-overflow: ellipsis;
