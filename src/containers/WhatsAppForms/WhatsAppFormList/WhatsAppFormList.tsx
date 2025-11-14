@@ -136,7 +136,7 @@ export const WhatsAppFormList = () => {
 
     if (item.status === 'DRAFT' || item.status === 'PUBLISHED') {
       actions.push({
-        label: 'Inactive',
+        label: 'Deactivate',
         icon: <DeactivateIcon className={styles.IconSize} data-testid="deactivate-icon" />,
         parameter: 'id',
         dialog: () => {
