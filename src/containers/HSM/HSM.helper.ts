@@ -10,6 +10,12 @@ export interface QuickReplyTemplate {
   value: string;
 }
 
+export interface WhatsappFormTemplate {
+  form_id: string;
+  text: string;
+  navigate_screen: string;
+}
+
 export const mediaOptions = MEDIA_MESSAGE_TYPES.filter((media) => media !== 'AUDIO' && media !== 'STICKER').map(
   (option: string) => ({
     id: option,
