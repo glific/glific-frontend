@@ -16,7 +16,6 @@ export const WhatsAppFormResponse = ({ rawResponse }: WhatsAppFormResponseProps)
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    console.log(rawResponse);
     if (rawResponse) {
       try {
         const response = JSON.parse(rawResponse);
@@ -36,7 +35,7 @@ export const WhatsAppFormResponse = ({ rawResponse }: WhatsAppFormResponseProps)
             View Response
           </Typography>
           <Typography variant="caption" className={styles.Subtitle}>
-            Response recieved
+            Response received
           </Typography>
         </div>
       </div>

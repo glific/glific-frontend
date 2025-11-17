@@ -68,6 +68,7 @@ const body = {
   interactiveContent: '{}',
   sendBy: 'test',
   flowLabel: null,
+  whatsappFormResponse: null,
 };
 
 const cache = new InMemoryCache({ addTypename: false });
@@ -155,6 +156,7 @@ cache.writeQuery({
             interactiveContent: '{}',
             sendBy: 'test',
             flowLabel: null,
+            whatsappFormResponse: null,
           },
         ],
       },
