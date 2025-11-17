@@ -472,8 +472,10 @@ export const HSM = () => {
   };
 
   const handleTemplateTypeChange = (value: any) => {
-    setTemplateButtons([buttonTypes[value.id]]);
-    setTemplateType(value);
+    if (value) {
+      setTemplateButtons([buttonTypes[value.id]]);
+      setTemplateType(value);
+    }
   };
 
   const getMediaId = async (payload: any) => {
@@ -800,6 +802,12 @@ export const HSM = () => {
           } else if (templateType?.id === 'QUICK_REPLY') {
             return Yup.object().shape({
               value: Yup.string().required('Value is required.'),
+            });
+          } else if (templateType?.id === 'WHATSAPP_FORM') {
+            return Yup.object().shape({
+              form_id: Yup.string().required('Form is required.'),
+              text: Yup.string().required('Button title is required.'),
+              navigate_screen: Yup.string().required('Screen is required.'),
             });
           }
           return Yup.object().shape({});

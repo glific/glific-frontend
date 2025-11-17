@@ -77,10 +77,9 @@ export const TemplateOptions = ({
   };
   const options = ['Static', 'Dynamic'];
   const [forms, setForms] = useState<any>([]);
-  const [form, setForm] = useState<any>(null);
   const { urlType, sampleSuffix } = dynamicUrlParams;
 
-  const {} = useQuery(LIST_WHATSAPP_FORMS, {
+  useQuery(LIST_WHATSAPP_FORMS, {
     variables: {
       filter: { status: 'PUBLISHED' },
     },
@@ -315,37 +314,52 @@ export const TemplateOptions = ({
     if (templateType?.id === WHATSAPP_FORM) {
       template = (
         <div className={styles.WhatsappFormTemplateWrapper}>
-          <Autocomplete
-            options={forms}
-            value={forms.find((form: any) => form.id === form_id) || null}
-            renderInput={(params) => <TextField {...params} label="Select Form " />}
-            onChange={(event: any, newValue: any) => {
-              onInputChange(newValue.id, row, index, 'form_id');
-            }}
-            disabled={disabled}
-          />
+          <div>
+            <Autocomplete
+              options={forms}
+              value={forms.find((form: any) => form.id === form_id) || null}
+              renderInput={(params) => <TextField {...params} label="Select Form " />}
+              onChange={(event: any, newValue: any) => {
+                onInputChange(newValue.id, row, index, 'form_id');
+              }}
+              disabled={disabled}
+            />
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <p className={styles.Errors}>{errors.templateButtons[index]?.form_id}</p>
+            ) : null}
+          </div>
 
-          <TextField
-            value={navigate_screen}
-            title={title}
-            placeholder={`Screen Name`}
-            variant="outlined"
-            onChange={(e: any) => onInputChange(e.target.value, row, index, 'navigate_screen')}
-            className={styles.TextField}
-            error={isError('value')}
-            disabled={disabled}
-          />
+          <div>
+            <TextField
+              value={navigate_screen}
+              title={title}
+              placeholder={`Screen Name`}
+              variant="outlined"
+              onChange={(e: any) => onInputChange(e.target.value, row, index, 'navigate_screen')}
+              className={styles.TextField}
+              error={isError('value')}
+              disabled={disabled}
+            />
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <p className={styles.Errors}>{errors.templateButtons[index]?.navigate_screen}</p>
+            ) : null}
+          </div>
 
-          <TextField
-            value={text}
-            title={title}
-            placeholder={`Button Title`}
-            variant="outlined"
-            onChange={(e: any) => onInputChange(e.target.value, row, index, 'text')}
-            className={styles.TextField}
-            error={isError('value')}
-            disabled={disabled}
-          />
+          <div>
+            <TextField
+              value={text}
+              title={title}
+              placeholder={`Button Title`}
+              variant="outlined"
+              onChange={(e: any) => onInputChange(e.target.value, row, index, 'text')}
+              className={styles.TextField}
+              error={isError('value')}
+              disabled={disabled}
+            />
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <p className={styles.Errors}>{errors.templateButtons[index]?.text}</p>
+            ) : null}
+          </div>
         </div>
       );
     }
@@ -367,6 +381,7 @@ export const TemplateOptions = ({
               }}
               fullWidth
               disabled={disabled}
+              disableClearable
             />
 
             <Tooltip title={getInfo(templateType?.id)} placement="top">

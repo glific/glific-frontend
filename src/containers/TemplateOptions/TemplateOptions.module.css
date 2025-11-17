@@ -147,3 +147,9 @@
   width: 100%;
   align-items: center;
 }
+
+.Errors {
+  color: #d32f2f;
+  margin: 0;
+  font-size: 0.75rem;
+}
