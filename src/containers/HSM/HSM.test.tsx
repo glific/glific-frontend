@@ -3,7 +3,13 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
-import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeMedia, getHSMTemplateTypeText } from 'mocks/Template';
+import {
+  HSM_TEMPLATE_MOCKS,
+  getHSMTemplateTypeMedia,
+  getHSMTemplateTypeText,
+  CREATE_SESSION_TEMPLATE_MOCK,
+} from 'mocks/Template';
+import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsApp';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
 
@@ -85,8 +91,9 @@ describe('Edit mode', () => {
 });
 
 describe('Add mode', () => {
+  const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK];
   const template = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={MOCKS} addTypename={false}>
       <MemoryRouter>
         <HSM />
       </MemoryRouter>
@@ -165,6 +172,76 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('Quick Reply'));
 
     fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+    fireEvent.click(screen.getAllByTestId('delete-variable')[1]);
+
+    autocompletes[3].focus();
+    fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
+    fireEvent.change(inputs[3], { target: { value: 'footer' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('it should create a hsm template with whatsapp form', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
+    const lexicalEditor = inputs[2];
+
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('bold-icon'));
+
+    fireEvent.click(screen.getByTestId('italic-icon'));
+    fireEvent.click(screen.getByTestId('strikethrough-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you**')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    fireEvent.click(screen.getByText('Add buttons'));
+
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('WhatsApp Form'));
+
+    const comboboxes = screen.getAllByRole('combobox');
+    const formCombo = comboboxes[2] as HTMLInputElement;
+    fireEvent.mouseDown(formCombo);
+    fireEvent.click(screen.getByText('This is form name'));
+    fireEvent.change(screen.getByPlaceholderText('Screen Name'), { target: { value: 'RECOMMEND' } });
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Continue' } });
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
