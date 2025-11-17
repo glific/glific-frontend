@@ -144,6 +144,30 @@ const listWhatsappForms = {
     },
   },
 };
+
+const listWhatsappFormswithoutopts = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
 const listWhatsappFormsInactive = {
   request: {
     query: LIST_WHATSAPP_FORMS,
@@ -281,4 +305,5 @@ export const WHATSAPP_FORM_MOCKS = [
   listWhatsappFormsInactive,
   listWhatsappFormsDraft,
   listWhatsappFormsEmpty,
+  listWhatsappFormswithoutopts,
 ];
