@@ -205,7 +205,7 @@ export const WhatsAppFormList = () => {
         }}
         alignButtons="center"
       >
-        <p className={`${styles.DialogText} ${styles.DialogTextCenter}`}>
+        <p className={styles.DialogTextCenter}>
           {dialogType === 'publish'
             ? 'The form will be published on Meta and made visible to users.'
             : 'The form will be marked inactive and cannot be used.'}
