@@ -193,3 +193,7 @@
 .MoreWrapper:hover .MoreList {
   display: block;
 }
+
+.DialogTextCenter {
+  text-align: center;
+}
