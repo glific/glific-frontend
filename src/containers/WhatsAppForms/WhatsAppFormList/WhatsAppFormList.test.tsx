@@ -7,13 +7,13 @@ import {
   WHATSAPP_FORM_MOCKS,
   deactivateWhatsappForm,
   deactivateWhatsappFormError,
-} from 'mocks/WhatsApp';
+} from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
 import { WhatsAppFormList } from './WhatsAppFormList';
 
-export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsApp';
+export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
 

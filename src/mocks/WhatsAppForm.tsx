@@ -78,7 +78,6 @@ export const publishWhatsappForm = {
       publishWhatsappForm: {
         id: '1',
         status: 'PUBLISHED',
-        __typename: 'WhatsappForm',
       },
     },
   },
