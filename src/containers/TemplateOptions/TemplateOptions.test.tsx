@@ -71,6 +71,7 @@ test('it renders call to action button template successfully', async () => {
 test('it renders quick reply button template successfully', async () => {
   const inputFields = [quickReply, quickReply];
   form.values.templateButtons.push(quickReply);
+
   form.values.templateButtons.push(quickReply);
   const defaultProps = props(true, 'QUICK_REPLY', inputFields, form);
   render(
