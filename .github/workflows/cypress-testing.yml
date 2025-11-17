@@ -65,6 +65,7 @@ jobs:
           git clone https://github.com/glific/glific.git
           echo done. go to dir.
           cd glific
+          git checkout feat/whatsapp-forms
           echo done. start dev.secret.exs config
           cd priv
           mkdir cert
