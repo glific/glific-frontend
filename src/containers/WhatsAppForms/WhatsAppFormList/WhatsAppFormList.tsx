@@ -133,7 +133,6 @@ export const WhatsAppFormList = () => {
       icon: <DeleteIcon className={styles.Delete} data-testid="delete-icon" />,
       parameter: 'id',
       dialog: (id: any) => {
-        console.log(id);
         setFormId(id);
         setDialogType('delete');
       },
@@ -153,7 +152,7 @@ export const WhatsAppFormList = () => {
       icon: <EditIcon className={styles.IconSize} data-testid="edit-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
-        navigate(`/whatsapp-forms/edit/${id}`);
+        navigate(`/whatsapp-forms/${id}/edit`);
       },
     };
 
@@ -222,9 +221,23 @@ export const WhatsAppFormList = () => {
       }
     };
 
+    let dialogTitle = '';
+    let dialogText = '';
+
+    if (dialogType === 'delete') {
+      dialogTitle = 'Do you want to delete this form?';
+      dialogText = 'The form will be permanently deleted and cannot be recovered.';
+    } else if (dialogType === 'publish') {
+      dialogTitle = 'Do you want to publish this form?';
+      dialogText = 'The form will be published on Meta and made visible to users.';
+    } else if (dialogType === 'inactive') {
+      dialogTitle = 'Do you want to deactivate this form?';
+      dialogText = 'The form will be marked inactive and cannot be used.';
+    }
+
     dialog = (
       <DialogBox
-        title={dialogType === 'publish' ? 'Do you want to publish this form?' : 'Do you want to deactivate this form?'}
+        title={dialogTitle}
         handleOk={handleOk}
         handleCancel={() => {
           setFormId(null);
@@ -233,11 +246,7 @@ export const WhatsAppFormList = () => {
         alignButtons="center"
         buttonOkLoading={publishLoading || deactivateLoading || deleteLoading}
       >
-        <p className={styles.DialogText}>
-          {dialogType === 'publish'
-            ? 'The form will be published on Meta and made visible to users.'
-            : 'The form will be marked inactive and cannot be used.'}
-        </p>
+        <p className={styles.DialogText}>{dialogText}</p>
       </DialogBox>
     );
   }
