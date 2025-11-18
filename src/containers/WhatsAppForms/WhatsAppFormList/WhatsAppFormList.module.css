@@ -1,14 +1,14 @@
 .SearchBar {
   border-radius: 24px;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   display: flex;
   margin-right: 8px;
   height: 36px !important;
-  background: #ffffff;
+  background: #fff;
   min-height: 36px !important;
 }
 
-.SearchBar > fieldset {
+.SearchBar>fieldset {
   border: none !important;
 }
 
@@ -27,19 +27,6 @@
   text-align: end;
 }
 
-.LabelText {
-  display: flex;
-  font-weight: 500;
-  font-size: 20px;
-  color: #073f24;
-}
-
-.TableText {
-  text-align: left;
-  font-size: 16px;
-  color: #93a29b;
-}
-
 .NameText {
   line-height: 20px;
   margin: 0;
@@ -47,20 +34,6 @@
   word-break: break-all;
   color: #191c1a !important;
   font-weight: 500;
-}
-
-.Keyword {
-  font-size: 12px;
-  color: #555555 !important;
-}
-
-.DateColumn {
-  width: 19.5%;
-  min-width: 120px;
-}
-
-.ImportIcon {
-  cursor: pointer;
 }
 
 .Status {
@@ -72,14 +45,14 @@
   text-align: center;
 }
 
-.PublishedBadge {
+.PublishBadge {
   font-size: 15px;
   composes: Status;
   background-color: #e8f5e9;
   color: #2e7d32;
 }
 
-.NotPublishedBadge {
+.DraftBadge {
   font-size: 15px;
   composes: Status;
   background-color: #fff3cd;
@@ -98,7 +71,7 @@
   min-width: 80px;
   margin-right: 50px;
   padding: 6px 12px;
-  color: #555555;
+  color: #555;
   font-weight: 500;
   font-size: 15px;
   display: flex;
@@ -110,38 +83,17 @@
   max-width: 220px;
 }
 
-.Roles {
-  position: absolute;
-  right: 20px;
-  bottom: 10px;
-  font-size: 12px;
-  color: #93a29b !important;
-}
-
-.Filters {
-  display: flex;
-  align-items: center;
-  margin-left: 50px;
-}
-
 .CategoryTag {
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #c4c4c4;
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 14px;
   font-weight: 500;
-  color: #333333;
+  color: #333;
   margin-right: 6px;
   margin-bottom: 4px;
   display: inline-block;
-}
-
-.FilterLabel {
-  color: #073f24 !important;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1;
 }
 
 .CategoryMore {
@@ -170,7 +122,7 @@
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px #0000001a;
   padding: 6px;
   z-index: 20;
   min-width: 150px;
@@ -180,7 +132,7 @@
   padding: 5px 10px;
   font-size: 13px;
   color: #333;
-  background: rgb(228, 231, 228);
+  background: #e4e7e4;
   border-radius: 6px;
   margin: 2px 0;
   border: 1px solid #eee;
@@ -194,6 +146,6 @@
   display: block;
 }
 
-.DialogTextCenter {
+.DialogText {
   text-align: center;
 }

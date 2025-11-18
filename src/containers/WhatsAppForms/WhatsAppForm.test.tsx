@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
-import { formJson, WHATSAPP_FORM_MOCKS } from 'mocks/WhatsApp';
+import { formJson, WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import WhatsAppFormList from './WhatsAppFormList/WhatsAppFormList';
 import WhatsAppForms from './WhatsAppForms';

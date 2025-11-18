@@ -9,7 +9,7 @@ import {
   getHSMTemplateTypeText,
   CREATE_SESSION_TEMPLATE_MOCK,
 } from 'mocks/Template';
-import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsApp';
+import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
 
