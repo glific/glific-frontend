@@ -239,7 +239,10 @@ describe('Add mode', () => {
     const formCombo = comboboxes[2] as HTMLInputElement;
     fireEvent.mouseDown(formCombo);
     fireEvent.click(screen.getByText('This is form name'));
-    fireEvent.change(screen.getByPlaceholderText('Screen Name'), { target: { value: 'RECOMMEND' } });
+    const formComboParam = comboboxes[3] as HTMLInputElement;
+    fireEvent.mouseDown(formComboParam);
+
+    fireEvent.click(screen.getByText('RECOMMEND'));
 
     fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Continue' } });
 
