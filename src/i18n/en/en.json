@@ -554,7 +554,6 @@
   "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}.",
   "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed.",
   "Share": "Share",
-  "Last Updated": "Last Updated",
   "Draft": "Draft",
   "Published": "Published"
 }

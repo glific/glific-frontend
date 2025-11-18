@@ -7,13 +7,13 @@ import {
   WHATSAPP_FORM_MOCKS,
   deactivateWhatsappForm,
   deactivateWhatsappFormError,
-} from 'mocks/WhatsApp';
+} from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
 import { WhatsAppFormList } from './WhatsAppFormList';
 
-export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsApp';
+export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
 
@@ -157,13 +157,15 @@ describe('<WhatsAppFormList />', () => {
     fireEvent.click(getByText('All'));
 
     expect(select).toHaveTextContent('All');
-    fireEvent.mouseDown(select);
-    const draftOption = getByText('Draft');
-    fireEvent.click(draftOption);
-    expect(select).toHaveTextContent('Draft');
 
-    const deactiveIcon = await waitFor(() => getByTestId('deactivate-icon'));
-    fireEvent.click(deactiveIcon);
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('This is form name')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(getByText('Deactivate'));
 
     await waitFor(() => {
       expect(getByTestId('dialogTitle')).toBeInTheDocument();
@@ -179,20 +181,22 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('shows error message when deactivate API fails', async () => {
-    const { getByText, getAllByRole, findByTestId, getByTestId } = render(wrapper([deactivateWhatsappFormError]));
+    const { getByText, getAllByRole, getByTestId } = render(wrapper([deactivateWhatsappFormError]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
     const select = getAllByRole('combobox')[0];
     fireEvent.click(getByText('All'));
 
     expect(select).toHaveTextContent('All');
-    fireEvent.mouseDown(select);
-    const draftOption = getByText('Draft');
-    fireEvent.click(draftOption);
-    expect(select).toHaveTextContent('Draft');
 
-    const deactiveIcon = await waitFor(() => getByTestId('deactivate-icon'));
-    fireEvent.click(deactiveIcon);
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('This is form name')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(getByText('Deactivate'));
 
     await waitFor(() => {
       expect(getByTestId('dialogTitle')).toBeInTheDocument();

@@ -29,16 +29,10 @@ export const UPDATE_FORM = gql`
 `;
 
 export const DELETE_FORM = gql`
-  mutation deleteWhatsappForm($id: ID!) {
+  mutation DeleteWhatsappForm($id: ID!) {
     deleteWhatsappForm(id: $id) {
       whatsappForm {
         id
-        name
-        status
-        categories
-        definition
-        description
-        metaFlowId
       }
       errors {
         message
@@ -52,12 +46,7 @@ export const PUBLISH_FORM = gql`
     publishWhatsappForm(id: $id) {
       whatsappForm {
         id
-        name
         status
-        categories
-        definition
-        description
-        metaFlowId
       }
       errors {
         message
@@ -71,8 +60,28 @@ export const DEACTIVATE_FORM = gql`
     deactivateWhatsappForm(id: $id) {
       whatsappForm {
         id
+        status
+      }
+      errors {
+        message
+      }
+    }
+  }
+`;
+
+export const ACTIVATE_FORM = gql`
+  mutation ActivateWhatsappForm($activateWhatsappFormId: ID!) {
+    activateWhatsappForm(id: $activateWhatsappFormId) {
+      whatsappForm {
+        categories
+        definition
+        description
+        id
+        insertedAt
+        metaFlowId
         name
         status
+        updatedAt
       }
       errors {
         message
