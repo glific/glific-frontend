@@ -77,8 +77,8 @@ export const WhatsAppFormList = () => {
       setDialogType(null);
       setNotification('Form published successfully');
     },
-    onError: () => {
-      setErrorMessage('Failed to publish form');
+    onError: (errors) => {
+      setErrorMessage(errors);
     },
   });
 
