@@ -78,13 +78,20 @@ export const TemplateOptions = ({
   const options = ['Static', 'Dynamic'];
   const [forms, setForms] = useState<any>([]);
   const { urlType, sampleSuffix } = dynamicUrlParams;
+  const [screens, setScreens] = useState<any>([]);
 
   useQuery(LIST_WHATSAPP_FORMS, {
     variables: {
       filter: { status: 'PUBLISHED' },
     },
     onCompleted: (data) => {
-      setForms(data.listWhatsappForms.map((form: any) => ({ label: form.name, id: form.metaFlowId })));
+      setForms(
+        data.listWhatsappForms.map((form: any) => ({
+          label: form.name,
+          id: form.metaFlowId,
+          definition: form.definition,
+        }))
+      );
     },
   });
 
@@ -321,6 +328,15 @@ export const TemplateOptions = ({
               renderInput={(params) => <TextField {...params} label="Select Form " />}
               onChange={(event: any, newValue: any) => {
                 onInputChange(newValue.id, row, index, 'form_id');
+
+                try {
+                  const definition = JSON.parse(newValue.definition);
+                  const screenNames = definition.screens.map((screen: any) => screen.id);
+                  setScreens(screenNames.map((screen: string) => ({ label: screen, id: screen })));
+                } catch (e) {
+                  setScreens([]);
+                  console.error('Error parsing form definition:', e);
+                }
               }}
               disabled={disabled}
             />
@@ -330,16 +346,17 @@ export const TemplateOptions = ({
           </div>
 
           <div>
-            <TextField
+            <Autocomplete
+              options={screens}
               value={navigate_screen}
-              title={title}
-              placeholder={`Screen Name`}
-              variant="outlined"
-              onChange={(e: any) => onInputChange(e.target.value, row, index, 'navigate_screen')}
-              className={styles.TextField}
-              error={isError('value')}
-              disabled={disabled}
+              renderInput={(params) => <TextField {...params} label="Screen Name" />}
+              onChange={(event: any, newValue: any) => {
+                console.log(newValue);
+                onInputChange(newValue.id, row, index, 'navigate_screen');
+              }}
+              disabled={disabled || !!!form_id}
             />
+
             {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
               <p className={styles.Errors}>{errors.templateButtons[index]?.navigate_screen}</p>
             ) : null}
