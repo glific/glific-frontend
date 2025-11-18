@@ -206,7 +206,7 @@ const listWhatsappFormsEmpty = {
         {
           id: '3',
           name: 'This is form name',
-          status: 'DRAFT',
+          status: 'PUBLISHED',
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
