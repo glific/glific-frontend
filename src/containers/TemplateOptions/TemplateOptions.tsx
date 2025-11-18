@@ -354,7 +354,7 @@ export const TemplateOptions = ({
                 console.log(newValue);
                 onInputChange(newValue.id, row, index, 'navigate_screen');
               }}
-              disabled={disabled || !!!form_id}
+              disabled={disabled || !form_id}
             />
 
             {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
