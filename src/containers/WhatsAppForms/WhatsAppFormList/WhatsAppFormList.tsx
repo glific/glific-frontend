@@ -1,14 +1,11 @@
 import { useMutation } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
-import DeactivateIcon from 'assets/images/icons/DeactivateIcon.svg?react';
-import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
-import EditIcon from 'assets/images/icons/Edit.svg?react';
 import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import { DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -69,7 +66,7 @@ const getCategories = (categories: string[]) => {
 
 export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
-  const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'delete' | null>(null);
+  const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
 
   const navigate = useNavigate();
@@ -85,25 +82,25 @@ export const WhatsAppFormList = () => {
     },
   });
 
+  const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM, {
+    onCompleted: () => {
+      setFormId(null);
+      setDialogType(null);
+      setNotification('Form activated successfully');
+    },
+    onError: (errors) => {
+      setErrorMessage(errors);
+    },
+  });
+
   const [deactivateForm, { loading: deactivateLoading }] = useMutation(DEACTIVATE_FORM, {
     onCompleted: () => {
       setFormId(null);
       setDialogType(null);
       setNotification('Form deactivated successfully');
     },
-    onError: () => {
-      setErrorMessage('Failed to deactivate form');
-    },
-  });
-
-  const [deleteForm, { loading: deleteLoading }] = useMutation(DELETE_FORM, {
-    onCompleted: () => {
-      setFormId(null);
-      setDialogType(null);
-      setNotification('Form deleted successfully');
-    },
-    onError: () => {
-      setErrorMessage('Failed to delete form');
+    onError: (errors) => {
+      setErrorMessage(errors);
     },
   });
 
@@ -128,32 +125,14 @@ export const WhatsAppFormList = () => {
   ];
 
   const additionalAction = (item: any) => {
-    const deleteAction = {
-      label: 'Delete',
-      icon: <DeleteIcon className={styles.Delete} data-testid="delete-icon" />,
-      parameter: 'id',
-      dialog: (id: any) => {
-        setFormId(id);
-        setDialogType('delete');
-      },
-    };
     const deactivateAction = {
       label: 'Deactivate',
-      icon: <DeactivateIcon className={styles.IconSize} data-testid="deactivate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
         setDialogType('inactive');
       },
-    };
-
-    const editIcon = {
-      label: 'Edit',
-      icon: <EditIcon className={styles.IconSize} data-testid="edit-icon" />,
-      parameter: 'id',
-      dialog: (id: string) => {
-        navigate(`/whatsapp-forms/${id}/edit`);
-      },
+      insideMore: true,
     };
 
     const publishAction = {
@@ -166,16 +145,25 @@ export const WhatsAppFormList = () => {
       },
     };
 
+    const activateAction = {
+      label: 'Activate',
+      parameter: 'id',
+      dialog: (id: string) => {
+        setFormId(id);
+        setDialogType('activate');
+        activateForm({ variables: { activateWhatsappFormId: id } });
+      },
+      insideMore: true,
+    };
+
     let actions = [];
 
     if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction, deleteAction];
+      actions = [deactivateAction];
     } else if (item.status === 'DRAFT') {
-      actions = [publishAction, editIcon, deactivateAction, deleteAction];
-    } else if (item.status === 'INACTIVE') {
-      actions = [deleteAction];
+      actions = [publishAction];
     } else {
-      actions = [publishAction, editIcon, deactivateAction, deleteAction];
+      actions = [activateAction];
     }
 
     return actions;
@@ -216,18 +204,13 @@ export const WhatsAppFormList = () => {
         publishForm({ variables: { id: formId } });
       } else if (dialogType === 'inactive') {
         deactivateForm({ variables: { id: formId } });
-      } else if (dialogType === 'delete') {
-        deleteForm({ variables: { id: formId } });
       }
     };
 
     let dialogTitle = '';
     let dialogText = '';
 
-    if (dialogType === 'delete') {
-      dialogTitle = 'Do you want to delete this form?';
-      dialogText = 'The form will be permanently deleted and cannot be recovered.';
-    } else if (dialogType === 'publish') {
+    if (dialogType === 'publish') {
       dialogTitle = 'Do you want to publish this form?';
       dialogText = 'The form will be published on Meta and made visible to users.';
     } else if (dialogType === 'inactive') {
@@ -244,7 +227,7 @@ export const WhatsAppFormList = () => {
           setDialogType(null);
         }}
         alignButtons="center"
-        buttonOkLoading={publishLoading || deactivateLoading || deleteLoading}
+        buttonOkLoading={deactivateLoading || activateFormLoading || publishLoading}
       >
         <p className={styles.DialogText}>{dialogText}</p>
       </DialogBox>
@@ -268,10 +251,7 @@ export const WhatsAppFormList = () => {
         button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
         searchParameter={['name']}
         additionalAction={additionalAction}
-        restrictedAction={(item: any) => ({
-          edit: false,
-          delete: false,
-        })}
+        dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
       />
       {dialog}
     </>

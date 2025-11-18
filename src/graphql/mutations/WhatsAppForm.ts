@@ -68,3 +68,24 @@ export const DEACTIVATE_FORM = gql`
     }
   }
 `;
+
+export const ACTIVATE_FORM = gql`
+  mutation ActivateWhatsappForm($activateWhatsappFormId: ID!) {
+    activateWhatsappForm(id: $activateWhatsappFormId) {
+      whatsappForm {
+        categories
+        definition
+        description
+        id
+        insertedAt
+        metaFlowId
+        name
+        status
+        updatedAt
+      }
+      errors {
+        message
+      }
+    }
+  }
+`;

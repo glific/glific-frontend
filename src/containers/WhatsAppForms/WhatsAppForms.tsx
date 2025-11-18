@@ -30,7 +30,19 @@ export const WhatsAppForms = () => {
   const [formJson, setFormJson] = useState();
   const [formCategories, setFormCategories] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [disabled, setDisabled] = useState(false);
   const params = useParams();
+
+  useQuery(GET_WHATSAPP_FORM, {
+    skip: !params.id,
+    variables: { id: params.id },
+    onCompleted: ({ whatsappForm }) => {
+      if (whatsappForm?.whatsappForm?.status === 'PUBLISHED') {
+        setDisabled(true);
+      }
+    },
+  });
+
   let isEditing = false;
   if (params.id) {
     isEditing = true;
@@ -89,6 +101,7 @@ export const WhatsAppForms = () => {
       type: 'text',
       label: `${'Title'}*`,
       placeholder: 'Enter form title',
+      disabled: disabled,
     },
     {
       component: Input,
@@ -98,6 +111,7 @@ export const WhatsAppForms = () => {
       textArea: true,
       rows: 2,
       placeholder: 'Enter form description',
+      disabled: disabled,
     },
     {
       component: Input,
@@ -107,6 +121,7 @@ export const WhatsAppForms = () => {
       textArea: true,
       rows: 6,
       placeholder: 'Paste your JSON from Meta flow builder here...',
+      disabled: disabled,
     },
     {
       component: AutoComplete,
@@ -117,6 +132,7 @@ export const WhatsAppForms = () => {
       placeholder: 'Select categories',
       helperText:
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
+      disabled: disabled,
     },
   ];
   const FormSchema = Yup.object().shape({
@@ -136,8 +152,6 @@ export const WhatsAppForms = () => {
 
     formCategories: Yup.array().min(1, 'At least one category must be selected.'),
   });
-
-  let dialogMessage = '';
 
   if (loading) {
     return <Loading />;
@@ -183,7 +197,6 @@ export const WhatsAppForms = () => {
         setStates={setStates}
         validationSchema={FormSchema}
         listItemName="Whatsapp Form"
-        dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink={'whatsapp-forms'}
         listItem="whatsappForm"
@@ -191,6 +204,11 @@ export const WhatsAppForms = () => {
         helpData={whatsappFormsInfo}
         backLinkButton={`/whatsapp-forms`}
         noHeading
+        dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+        buttonState={{
+          text: 'Save Form',
+          status: disabled,
+        }}
       />
     </>
   );
