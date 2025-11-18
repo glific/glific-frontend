@@ -50,7 +50,7 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
               onClick={() => action.dialog(additionalActionParameter, item)}
             >
               <div className={styles.IconWithText}>
-                {action?.icon}
+                {action.icon}
                 <div className={styles.TextButton}>{action.label}</div>
               </div>
             </div>
