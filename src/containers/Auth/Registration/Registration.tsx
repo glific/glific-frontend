@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,9 @@ import { sendOTP } from 'services/AuthService';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Auth } from '../Auth';
 import styles from './Registration.module.css';
+import { ORGANIZATION_NAME } from 'config';
+import axios from 'axios';
+import setLogs from 'config/logs';
 
 export interface User {
   name: string;
@@ -17,6 +20,7 @@ export interface User {
   captcha: string;
   email: string;
   consent_for_updates: boolean;
+  organization_name: string;
 }
 
 const initialFormValues: User = {
@@ -26,6 +30,7 @@ const initialFormValues: User = {
   captcha: '',
   email: '',
   consent_for_updates: true,
+  organization_name: '',
 };
 
 export const Registration = () => {
@@ -34,10 +39,21 @@ export const Registration = () => {
   const [authError, setAuthError] = useState<any>('');
   const { t } = useTranslation();
 
+  const [is_trial, setTrial] = useState('');
+  useEffect(() => {
+    axios
+      .post(ORGANIZATION_NAME)
+      .then(({ data }) => {
+        setTrial(data?.data?.is_trial);
+      })
+      .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
+  }, []);
+
   if (redirect) {
     return <Navigate to="/confirmotp" replace state={user} />;
   }
 
+  console.log('data', is_trial);
   const onSubmitRegistration = (values: User) => {
     if (!values.captcha) {
       setAuthError(t('Invalid captcha'));
@@ -93,6 +109,18 @@ export const Registration = () => {
       darkMode: true,
       autoComplete: 'new-password',
     },
+    ...(is_trial
+      ? [
+          {
+            component: Input,
+            name: 'organization_name',
+            type: 'text',
+            placeholder: t('Organization Name'),
+            darkMode: true,
+            autoComplete: 'organization',
+          },
+        ]
+      : []),
     {
       component: Checkbox,
       name: 'consent_for_updates',
@@ -108,6 +136,7 @@ export const Registration = () => {
     phone: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
     email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
+    organization_name: Yup.string().required(t('Input required')),
   });
 
   return (
