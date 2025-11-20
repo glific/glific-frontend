@@ -40,7 +40,37 @@ const getLastSyncedAt = (date: string, fallback: string = '') => (
 );
 
 const getType = (type: SheetTypes) => <div className={styles.LastSyncText}>{textForSheetType[type]}</div>;
-const columnStyles = [styles.Name, styles.LastSync, styles.Type, styles.Actions];
+
+const getSyncStatus = (status: string) => {
+  if (!status) {
+    return <div className={styles.LastSyncText}>N/A</div>;
+  }
+
+  let badgeClass = styles.LastSyncText;
+
+  if (status === 'SUCCESS') {
+    badgeClass = styles.SuccessBadge;
+  } else if (status === 'FAILED') {
+    badgeClass = styles.ErrorBadge;
+  }
+
+  return <div className={badgeClass}>{status}</div>;
+};
+
+const getFailureReason = (error: string) => (
+  <div className={styles.LastSyncText} title={error || ''}>
+    {error || 'N/A'}
+  </div>
+);
+
+const columnStyles = [
+  styles.Name,
+  styles.LastSync,
+  styles.Type,
+  styles.SyncStatus,
+  styles.FailureReason,
+  styles.Actions,
+];
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
 const queries = {
@@ -52,17 +82,16 @@ const queries = {
 export const SheetIntegrationList = () => {
   const { t } = useTranslation();
 
-  const [warnings, setWarnings] = useState<any>({});
+  const [failureReason, setFailureReason] = useState<string>('');
   const [showdialog, setShowDialog] = useState(false);
 
   let dialog;
 
   if (showdialog) {
-    const warningKeys = Object.keys(warnings);
     dialog = (
       <DialogBox
         open
-        title="Please check the warnings"
+        title="Sync Failed"
         skipCancel
         alignButtons="center"
         buttonOk="Close"
@@ -70,14 +99,7 @@ export const SheetIntegrationList = () => {
         handleOk={() => setShowDialog(false)}
         handleCancel={() => setShowDialog(false)}
       >
-        {warningKeys.map((key, index) => (
-          <div key={key} className={styles.DialogContent}>
-            <strong>
-              {index + 1}. {key}:
-            </strong>{' '}
-            {warnings[key]}
-          </div>
-        ))}
+        <div className={styles.DialogContent}>{failureReason}</div>
       </DialogBox>
     );
   }
@@ -86,15 +108,9 @@ export const SheetIntegrationList = () => {
     fetchPolicy: 'network-only',
     onCompleted: async ({ syncSheet }) => {
       const notificationMessage = 'Data is successfully fetched from the Google sheet.';
-      if (syncSheet.sheet && syncSheet.sheet.warnings) {
-        const sheetWarnings = JSON.parse(syncSheet.sheet.warnings);
-
-        if (Object.keys(sheetWarnings).length) {
-          setShowDialog(true);
-          setWarnings(sheetWarnings);
-        } else {
-          setNotification(notificationMessage);
-        }
+      if (syncSheet.sheet && syncSheet.sheet.failureReason) {
+        setShowDialog(true);
+        setFailureReason(syncSheet.sheet.failureReason);
       } else {
         setNotification(notificationMessage);
       }
@@ -139,16 +155,20 @@ export const SheetIntegrationList = () => {
     return actions;
   };
 
-  const getColumns = ({ label, sheetDataCount, lastSyncedAt, type }: any) => ({
+  const getColumns = ({ label, sheetDataCount, lastSyncedAt, type, syncStatus, failureReason }: any) => ({
     name: getName(label, sheetDataCount, type),
     date: getLastSyncedAt(lastSyncedAt),
     type: getType(type),
+    syncStatus: getSyncStatus(syncStatus),
+    failureReason: getFailureReason(failureReason),
   });
 
   const columnNames = [
     { name: 'label', label: t('Name') },
     { label: t('Last synced') },
     { label: t('Type') },
+    { label: t('Sync Status') },
+    { label: t('Failure Reason') },
     { label: t('Actions') },
   ];
 
