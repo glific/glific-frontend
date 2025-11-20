@@ -47,7 +47,7 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   );
 };
 
-const getLastUpdatedAt = (date: string, fallback: string = '') => {
+const getLastPublishedAt = (date: string, fallback: string = '') => {
   const displayDate = date || fallback;
   return <div className={styles.LastPublished}>{displayDate ? dayjs(displayDate).fromNow() : ''}</div>;
 };
@@ -320,7 +320,7 @@ export const FlowList = () => {
 
     const hasUnpublishedChanges = !lastPublishedAt || dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt));
 
-    status = hasUnpublishedChanges ? t('Has unpublished changes') : t('Published');
+    status = hasUnpublishedChanges ? t('Unpublished Changes') : t('Published');
     statusClass = hasUnpublishedChanges ? styles.NotPublishedBadge : styles.PublishedBadge;
 
     return (
@@ -341,12 +341,11 @@ export const FlowList = () => {
     roles,
     isPinned,
     id,
-    updatedAt,
   }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
     status: getStatus(lastPublishedAt, lastChangedAt),
-    lastUpdatedAt: getLastUpdatedAt(lastChangedAt, updatedAt),
+    lastPublishedAt: getLastPublishedAt(lastPublishedAt),
     label: tag ? getLabel(tag) : '',
   });
 
@@ -354,7 +353,7 @@ export const FlowList = () => {
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
     { label: t('Status') },
-    { label: t('Last Updated') },
+    { label: t('Last Published At') },
     { label: t('Tag') },
     { label: t('Actions') },
   ];
