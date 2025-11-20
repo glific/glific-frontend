@@ -117,4 +117,30 @@ describe('<Registration />', () => {
       expect(getByText('Confirm OTP')).toBeInTheDocument();
     });
   });
+  it('should show organization_name field when is_trial is true', async () => {
+    mockedAxios.post.mockResolvedValue({
+      data: { data: { is_trial: true } },
+    });
+    render(wrapper);
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    const orgField = screen.getByPlaceholderText('Organization Name');
+    expect(orgField).toBeInTheDocument();
+  });
+  it('should NOT show organization_name field when is_trial is false', async () => {
+    mockedAxios.post.mockResolvedValue({
+      data: { data: { is_trial: false } },
+    });
+
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    const orgField = screen.queryByPlaceholderText('Organization Name');
+    expect(orgField).not.toBeInTheDocument();
+  });
 });
