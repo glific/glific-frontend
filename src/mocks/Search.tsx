@@ -499,6 +499,7 @@ export const getContactSearchQuery = {
                 id: '1',
               },
               type: 'TEXT',
+              whatsappFormResponse: null,
             },
           ],
         },
@@ -562,6 +563,7 @@ export const messages = (limit: number, skip: number) =>
     interactiveContent: '{}',
     sendBy: 'test',
     flowLabel: null,
+    whatsappFormResponse: null,
   }));
 
 export const searchQuery = {

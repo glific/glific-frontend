@@ -1,3 +1,7 @@
+.TemplateOptionsContainer {
+  margin: 1rem 0;
+}
+
 .TextField {
   width: 100%;
   background-color: #ffffff;
@@ -19,16 +23,16 @@
   gap: 0.5rem;
 }
 
-.CallToActionWrapper > div {
+.CallToActionWrapper>div {
   display: flex;
   justify-content: space-between;
 }
 
-.CallToActionWrapper > div > div:last-child {
+.CallToActionWrapper>div>div:last-child {
   cursor: pointer;
 }
 
-.CallToActionWrapper > div:nth-of-type(3) > div {
+.CallToActionWrapper>div:nth-of-type(3)>div {
   margin-bottom: 0px;
 }
 
@@ -38,7 +42,7 @@
   align-items: center;
 }
 
-.QuickReplyWrapper > div {
+.QuickReplyWrapper>div {
   margin: 0px 4px 17px 4px;
   cursor: pointer;
 }
@@ -48,7 +52,7 @@
   margin-bottom: 0.5rem;
 }
 
-.RadioLabel > span:last-child {
+.RadioLabel>span:last-child {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -60,7 +64,7 @@
   display: block !important;
 }
 
-.FormControl > p {
+.FormControl>p {
   margin-left: 12px;
 }
 
@@ -103,7 +107,7 @@
   cursor: pointer;
 }
 
-.RadioGroup > label > span:first-child {
+.RadioGroup>label>span:first-child {
   padding: 0px 8px !important;
 }
 
@@ -129,4 +133,23 @@
 
 .StartAdornment {
   padding-right: 0.5rem;
+}
+
+.WhatsappFormTemplateWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.TemplateOptionsHeader {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  align-items: center;
+}
+
+.Errors {
+  color: #d32f2f;
+  margin: 0;
+  font-size: 0.75rem;
 }

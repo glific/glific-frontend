@@ -7,7 +7,7 @@ import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
 import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
-import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
+import PublishIcon from 'assets/images/icons/Publish/PublishWhite.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
 import Simulator from 'components/simulator/Simulator';

@@ -62,6 +62,7 @@ const searchQueryMock = {
               interactiveContent: '{}',
               sendBy: 'test',
               flowLabel: null,
+              whatsappFormResponse: null,
             },
           ],
         },
