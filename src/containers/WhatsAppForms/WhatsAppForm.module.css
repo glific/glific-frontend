@@ -96,11 +96,11 @@
 }
 
 .VariablesCard {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px 0 #0000001a;
   position: sticky;
   top: 100px;
   max-height: calc(100vh - 120px);

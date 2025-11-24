@@ -73,7 +73,7 @@ export const WhatsAppForms = () => {
         });
       }
     } catch (error) {
-      console.error('Error extracting variables:', error);
+      setLogs(`Error extracting variables: ${JSON.stringify(error)}`, 'error');
     }
 
     return Array.from(variables);
