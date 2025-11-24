@@ -55,22 +55,21 @@ export const WhatsAppForms = () => {
     try {
       if (json && json.screens && Array.isArray(json.screens)) {
         json.screens.forEach((screen: any) => {
-          const findPayloads = (obj: any) => {
+          const findCompleteActions = (obj: any) => {
             if (obj && typeof obj === 'object') {
-              if (obj.type === 'Footer' && obj['on-click-action'] && obj['on-click-action'].payload) {
-                const payload = obj['on-click-action'].payload;
-                Object.keys(payload).forEach((key) => variables.add(key));
+              if (obj.name === 'complete' && obj.payload) {
+                Object.keys(obj.payload).forEach((key) => variables.add(key));
               }
 
               if (Array.isArray(obj)) {
-                obj.forEach((item) => findPayloads(item));
+                obj.forEach((item) => findCompleteActions(item));
               } else {
-                Object.values(obj).forEach((value) => findPayloads(value));
+                Object.values(obj).forEach((value) => findCompleteActions(value));
               }
             }
           };
 
-          findPayloads(screen);
+          findCompleteActions(screen);
         });
       }
     } catch (error) {
