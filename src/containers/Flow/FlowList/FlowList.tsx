@@ -19,6 +19,7 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -28,15 +29,11 @@ import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
-import relativeTime from 'dayjs/plugin/relativeTime';
-
-dayjs.extend(relativeTime);
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
-
   return (
     <div className={styles.NameText}>
       {text}
@@ -47,14 +44,19 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   );
 };
 
-const getLastPublishedAt = (date: string, fallback: string = '') => {
-  const displayDate = date || fallback;
-  return <div className={styles.LastPublished}>{displayDate ? dayjs(displayDate).fromNow() : ''}</div>;
-};
+const getDate = (date: string, fallback: string = '') => (
+  <div className={styles.LastPublished}>{date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}</div>
+);
 
+const getLastPublished = (date: string, fallback: string = '') =>
+  date ? (
+    <div className={styles.LastPublished}>{dayjs(date).format(STANDARD_DATE_TIME_FORMAT)}</div>
+  ) : (
+    <div className={styles.LastPublishedFallback}>{fallback}</div>
+  );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-const columnStyles = [styles.Pinned, styles.Name, styles.StatusColumn, styles.DateColumn, styles.Label, styles.Actions];
+const columnStyles = [styles.Pinned, styles.Name, styles.DateColumn, styles.Label, styles.DateColumn, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -314,47 +316,22 @@ export const FlowList = () => {
     },
   ];
 
-  const getStatus = (lastPublishedAt: string, lastChangedAt: string) => {
-    let status = '';
-    let statusClass = '';
-
-    const hasUnpublishedChanges = !lastPublishedAt || dayjs(lastChangedAt).isAfter(dayjs(lastPublishedAt));
-
-    status = hasUnpublishedChanges ? t('Unpublished Changes') : t('Published');
-    statusClass = hasUnpublishedChanges ? styles.NotPublishedBadge : styles.PublishedBadge;
-
-    return (
-      <div>
-        <span className={` ${statusClass}`}>{status}</span>
-      </div>
-    );
-  };
-
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
-  const getColumns = ({
-    name,
-    keywords,
-    lastChangedAt,
-    lastPublishedAt,
-    tag,
-    roles,
-    isPinned,
-    id,
-  }: any) => ({
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
-    status: getStatus(lastPublishedAt, lastChangedAt),
-    lastPublishedAt: getLastPublishedAt(lastPublishedAt),
+    lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
+    lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
   const columnNames = [
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
-    { label: t('Status') },
-    { label: t('Last Published At') },
+    { label: t('Last published') },
     { label: t('Tag') },
+    { label: t('Last saved in Draft') },
     { label: t('Actions') },
   ];
 
