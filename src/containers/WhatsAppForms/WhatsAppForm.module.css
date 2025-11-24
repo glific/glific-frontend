@@ -141,10 +141,16 @@
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 0.875rem;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   color: #374151;
-  word-break: break-all;
   transition: all 0.15s ease;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.VariableItem::-webkit-scrollbar {
+  display: none;
 }
 
 .VariableItem:hover {
