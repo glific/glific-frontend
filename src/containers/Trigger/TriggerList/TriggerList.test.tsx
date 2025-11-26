@@ -57,7 +57,7 @@ test('hover over tooltip', async () => {
   });
 });
 
-test('should navigate to edit page on clicking the edit button', async () => {
+test('should navigate to edit page on clicking the view button', async () => {
   const { getAllByTestId, getByText } = render(wrapper);
 
   await waitFor(() => {
