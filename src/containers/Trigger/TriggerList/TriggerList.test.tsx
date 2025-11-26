@@ -21,7 +21,7 @@ const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => {
   return {
     ...(await vi.importActual<any>('react-router')),
-    useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
+    useLocation: () => ({ state: 'copy', pathname: '/trigger/1/edit' }),
     useParams: () => ({ id: 1 }),
     useNavigate: () => mockedUsedNavigate,
   };
