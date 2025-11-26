@@ -282,27 +282,6 @@ export const FlowList = () => {
       link: '/flow/configure',
     },
     {
-      label: t('Edit'),
-      icon: <EditIcon />,
-      parameter: 'id',
-      insideMore: true,
-      dialog: handleEdit,
-    },
-    {
-      label: t('Copy'),
-      icon: <DuplicateIcon />,
-      parameter: 'id',
-      insideMore: true,
-      dialog: handleCopy,
-    },
-    {
-      label: t('Export'),
-      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
-      parameter: 'id',
-      dialog: exportFlow,
-      insideMore: true,
-    },
-    {
       label: t('Share'),
       icon: shareIcon,
       parameter: 'keywords',
@@ -313,6 +292,27 @@ export const FlowList = () => {
           setNotification('No keywords found to share the responder link', 'warning');
         }
       },
+    },
+    {
+      label: t('Copy'),
+      icon: <DuplicateIcon />,
+      parameter: 'id',
+      insideMore: true,
+      dialog: handleCopy,
+    },
+
+    {
+      label: t('Export'),
+      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
+      parameter: 'id',
+      dialog: exportFlow,
+      insideMore: true,
+    },
+    {
+      label: t('Edit'),
+      icon: <EditIcon />,
+      parameter: 'id',
+      dialog: handleEdit,
     },
   ];
 
