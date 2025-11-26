@@ -30,17 +30,14 @@ test('should load the trigger list', async () => {
 test('click on Make a copy', async () => {
   const { getByText, findAllByTestId } = render(wrapper);
 
-  const copyIcons = await findAllByTestId('copy-icon');
-  expect(copyIcons.length).toBeGreaterThan(0);
-  expect(getByText('Triggers')).toBeInTheDocument();
-
-  const actionButtons = await findAllByTestId('additionalButton');
-  expect(actionButtons.length).toBeGreaterThan(0);
-  fireEvent.click(actionButtons[0]);
+  await waitFor(() => {
+    expect(getAllByTestId('copy-trigger')[0]).toBeInTheDocument();
+    fireEvent.click(getAllByTestId('copy-trigger')[0]);
+  });
 });
 
 test('hover over tooltip', async () => {
-  const { container, getAllByTestId, getByText } = render(wrapper);
+  const { getAllByTestId, getByText } = render(wrapper);
   await waitFor(() => {
     const tooltip = getAllByTestId('tooltip')[0];
     fireEvent.mouseOver(tooltip);
