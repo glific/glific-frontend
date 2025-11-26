@@ -186,6 +186,7 @@ export const FlowList = () => {
         buttonOk="Okay"
         alignButtons="center"
         handleOk={() => setImportStatus([])}
+        handleCancel={() => setImportStatus([])}
         skipCancel
       >
         <div className={styles.ImportDialog}>
