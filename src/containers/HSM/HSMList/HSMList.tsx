@@ -398,7 +398,6 @@ export const HSMList = () => {
       icon: <DuplicateIcon data-testid="copyTemplate" />,
       parameter: 'id',
       dialog: setCopyDialog,
-      insideMore: true,
     },
     {
       label: t('Report'),
@@ -406,7 +405,6 @@ export const HSMList = () => {
       parameter: 'id',
       dialog: showRaiseToGupShupDialog,
       hidden: filterValue !== 'REJECTED',
-      insideMore: true,
     },
   ];
 
