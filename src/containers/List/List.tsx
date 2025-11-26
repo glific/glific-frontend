@@ -510,17 +510,15 @@ export const List = ({
     let moreButton = null;
 
     let editButton = null;
-    const buttonTitle = pageLink === 'template' ? t('View') : t('Edit');
-    const isTemplate = pageLink === 'template';
 
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
-          <Tooltip title={buttonTitle} placement="top">
+          <Tooltip title="Edit" placement="top">
             <IconButton className={styles.additonalButton}>
               <div aria-label={t('Edit')} data-testid="EditIcon">
                 <div className={styles.IconWithText}>
-                  {isTemplate ? <ViewIcon className={styles.IconSize} /> : <EditIcon className={styles.IconSize} />}
+                  <EditIcon className={styles.IconSize} />
                 </div>
               </div>
             </IconButton>
@@ -528,7 +526,6 @@ export const List = ({
         </Link>
       );
     }
-
     const deleteButton = (Id: any, text: string) =>
       allowedAction.delete ? (
         <div aria-label={t('Delete')} data-testid="DeleteIcon" onClick={() => showDialogHandler(Id, text)}>
