@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
@@ -11,8 +12,12 @@ import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { EXTENDED_DATE_TIME_FORMAT_WITH_AMPM, LONG_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './TriggerList.module.css';
 import { triggerInfo } from 'common/HelpData';
+import { useMutation } from '@apollo/client';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 dayjs.extend(relativeTime);
 
 const getTooltip = (frequency: any, days: any) => {
@@ -67,20 +72,42 @@ const queries = {
 };
 
 export const TriggerList = () => {
+  const [dialogType, setDialogType] = useState<string | null>(null);
+  const [currentItem, setCurrentItem] = useState<any>(null);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const setDialog = (id: any) => {
     navigate(`/trigger/${id}/edit`, { state: 'copy' });
   };
+  const [deleteTrigger] = useMutation(DELETE_TRIGGER);
+  const setDelete = (item: any) => {
+    setCurrentItem(item);
+    setDialogType('delete');
+  };
+  const handleEdit = (id: any) => {
+    navigate(`/trigger/${id}/edit`);
+  };
 
   const additionalAction = () => [
     {
       label: t('Copy'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copy-icon" />,
       parameter: 'id',
       dialog: setDialog,
-      insideMore: true,
+    },
+    {
+      label: t('Delete'),
+      icon: <DeleteIcon />,
+      parameter: 'id',
+      dialog: setDelete,
+    },
+    {
+      label: t('View'),
+      icon: <ViewIcon />,
+      parameter: 'id',
+      dialog: handleEdit,
     },
   ];
 
@@ -97,24 +124,59 @@ export const TriggerList = () => {
     columnStyles,
   };
 
+  const handleOk = async () => {
+    if (dialogType === 'delete' && currentItem) {
+      await deleteTrigger({
+        variables: { id: currentItem.id },
+      });
+    }
+
+    // Close dialog
+    setDialogType(null);
+    setCurrentItem(null);
+  };
+  let dialog = null;
+
+  if (dialogType === 'delete') {
+    dialog = (
+      <DialogBox
+        title="Do you want to delete this trigger?"
+        handleOk={handleOk}
+        handleCancel={() => {
+          setCurrentItem(null);
+          setDialogType(null);
+        }}
+        alignButtons="center"
+      >
+        <p className={styles.DialogText}>This trigger will be permanently deleted and cannot be used again.</p>
+      </DialogBox>
+    );
+  }
+
   const dialogMessage = t("You won't be able to use this trigger.");
 
   return (
-    <List
-      helpData={triggerInfo}
-      title="Triggers"
-      listItem="triggers"
-      listItemName="trigger"
-      pageLink="trigger"
-      button={{ show: true, label: t('Create') }}
-      listIcon={triggerIcon}
-      dialogMessage={dialogMessage}
-      {...queries}
-      {...columnAttributes}
-      searchParameter={['name']}
-      additionalAction={additionalAction}
-      sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
-    />
+    <>
+      {dialog}
+      <List
+        helpData={triggerInfo}
+        title="Triggers"
+        listItem="triggers"
+        listItemName="trigger"
+        pageLink="trigger"
+        button={{ show: true, label: t('Create') }}
+        listIcon={triggerIcon}
+        dialogMessage={dialogMessage}
+        {...queries}
+        {...columnAttributes}
+        searchParameter={['name']}
+        additionalAction={additionalAction}
+        sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
+        restrictedAction={(item: any) => ({
+          delete: false,
+        })}
+      />
+    </>
   );
 };
 
