@@ -31,7 +31,7 @@ test('it renders contact form successfully', async () => {
   const { container } = render(wrapper);
 
   expect(container).toBeInTheDocument();
-  expect(screen.getByText('Add a new Contact field')).toBeInTheDocument();
+  expect(screen.getByText('Create a new Contact field')).toBeInTheDocument();
 
   // Get all input elements
   const inputElements = screen.getAllByRole('textbox');
@@ -44,7 +44,7 @@ test('it saves a contact field', async () => {
   const { container } = render(wrapper);
 
   expect(container).toBeInTheDocument();
-  expect(screen.getByText('Add a new Contact field')).toBeInTheDocument();
+  expect(screen.getByText('Create a new Contact field')).toBeInTheDocument();
 
   // Get all input elements
   const inputElements = screen.getAllByRole('textbox');
