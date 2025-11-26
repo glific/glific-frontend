@@ -48,9 +48,9 @@
 }
 
 .Actions {
-  width: 25%;
-  min-width: 170px;
-  text-align: end;
+  width: 5%;
+  max-width: 170px;
+  text-align: start;
 }
 
 .TriggerIcon {

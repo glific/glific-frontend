@@ -57,9 +57,9 @@
 }
 
 .Actions {
-  width: 30%;
-  min-width: 200px;
-  text-align: end;
+  width: 5%;
+  min-width: 100px;
+  text-align: start;
 }
 
 .ViewButton {
