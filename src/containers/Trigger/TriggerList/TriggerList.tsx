@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
@@ -14,7 +13,6 @@ import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
 import { triggerInfo } from 'common/HelpData';
-import { useMutation } from '@apollo/client';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 dayjs.extend(relativeTime);
 
