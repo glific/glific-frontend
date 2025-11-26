@@ -131,7 +131,6 @@ export const TriggerList = () => {
       });
     }
 
-    // Close dialog
     setDialogType(null);
     setCurrentItem(null);
   };
