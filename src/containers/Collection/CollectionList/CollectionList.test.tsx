@@ -179,7 +179,7 @@ describe('<CollectionList />', () => {
   });
 
   test('should export collection', async () => {
-    const { getByTestId } = render(
+    const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
         <MockedProvider mocks={[...mocks, exportCollectionsQuery]} addTypename={false}>
           <CollectionList />
@@ -189,11 +189,10 @@ describe('<CollectionList />', () => {
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByTestId('additionalButton')).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('MoreIcon'));
-    fireEvent.click(screen.getByText('Export'));
+    fireEvent.click(getByTestId('export-icon'));
     const spy = vi.spyOn(utils, 'exportCsvFile');
 
     await waitFor(() => {
@@ -202,7 +201,7 @@ describe('<CollectionList />', () => {
   });
 
   test('should show error if export collection failed', async () => {
-    const { getByTestId } = render(
+    const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
         <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]} addTypename={false}>
           <CollectionList />
@@ -212,11 +211,10 @@ describe('<CollectionList />', () => {
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByTestId('additionalButton')).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('MoreIcon'));
-    fireEvent.click(screen.getByText('Export'));
+    fireEvent.click(screen.getByTestId('export-icon'));
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
@@ -249,7 +247,7 @@ describe('<CollectionList />', () => {
       expect(screen.queryByTestId('EditIcon')).not.toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
+
     await waitFor(() => {
       expect(screen.queryByText('Delete')).not.toBeInTheDocument();
     });

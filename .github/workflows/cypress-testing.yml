@@ -86,7 +86,7 @@ jobs:
           echo start mix setup
           echo done. start installing inotify-tools
           sudo apt-get install inotify-tools
-          mix setup
+          ENABLE_DB_SSL=false mix setup
           cd ../glific-frontend/
 
         # cypress setup
@@ -96,6 +96,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
+          git checkout bug_bash_1126
           cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress@13.6.2
@@ -111,7 +112,7 @@ jobs:
       - name: Run glific backend
         run: |
           cd ../glific/
-          OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server &
+          ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server &
           cd ../glific-frontend/
 
       - name: Wait for some time for the frontend to start
