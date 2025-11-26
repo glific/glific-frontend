@@ -28,7 +28,7 @@ test('should load the trigger list', async () => {
 });
 
 test('click on Make a copy', async () => {
-  const { getByText, findAllByTestId } = render(wrapper);
+  const { getAllByTestId } = render(wrapper);
 
   await waitFor(() => {
     expect(getAllByTestId('copy-trigger')[0]).toBeInTheDocument();
