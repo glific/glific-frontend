@@ -124,8 +124,7 @@ describe('SheetIntegrationList', () => {
       expect(getByText('Google sheets')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
-    fireEvent.click(screen.getByText('Delete'));
+    fireEvent.click(getAllByTestId('DeleteIcon')[0]);
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
