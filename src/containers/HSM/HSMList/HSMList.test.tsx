@@ -62,15 +62,6 @@ const template = (mockQuery?: any) => (
   </MockedProvider>
 );
 
-const mockedUsedNavigate2 = vi.fn();
-vi.mock('react-router', async () => {
-  return {
-    ...(await vi.importActual<any>('react-router')),
-    useLocation: () => ({ state: 'copy', pathname: '/trigger/1/edit' }),
-    useParams: () => ({ id: 1 }),
-    useNavigate: () => mockedUsedNavigate,
-  };
-});
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
   return {
