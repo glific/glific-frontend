@@ -293,11 +293,10 @@ export const FlowList = () => {
     },
     {
       label: t('Copy'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copy-flow" />,
       parameter: 'id',
       dialog: handleCopy,
     },
-
     {
       label: t('Export'),
       icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,

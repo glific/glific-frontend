@@ -77,7 +77,7 @@ export const TriggerList = () => {
   const additionalAction = () => [
     {
       label: t('Copy'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copy-trigger" />,
       parameter: 'id',
       dialog: setDialog,
     },

@@ -118,7 +118,7 @@ export const InteractiveMessageList = () => {
     },
     {
       label: t('Copy'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copy-interactive-message" />,
       parameter: 'id',
       dialog: handleCopyInteractive,
     },

@@ -558,12 +558,10 @@ export const List = ({
 
     let actionsOutsideMore = allAdditionalActions;
     let actionsInsideMore: any[] = [];
-
     if (shouldShowMoreButton) {
-
       let slotsAvailable = 4;
-      if (allowedAction.edit && editSupport) slotsAvailable--; 
-      slotsAvailable--; 
+      if (allowedAction.edit && editSupport) slotsAvailable--;
+      slotsAvailable--;
 
       actionsOutsideMore = allAdditionalActions.slice(0, slotsAvailable);
       actionsInsideMore = allAdditionalActions.slice(slotsAvailable);
@@ -672,7 +670,6 @@ export const List = ({
             isActive: listItemObj.isActive,
           };
           if (showActions) {
-            
             items.operations = getIcons(listItemObj, allowedAction);
           }
           return items;
