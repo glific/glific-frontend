@@ -139,7 +139,6 @@ test('should navigate to edit template page', async () => {
     expect(getByText('HSM Templates')).toBeInTheDocument();
   });
 
-  // Wait for the list items to load and the view-icon to appear
   const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
   fireEvent.click(viewIcons[0]);
 
