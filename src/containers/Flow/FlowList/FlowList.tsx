@@ -293,7 +293,7 @@ export const FlowList = () => {
     },
     {
       label: t('Copy'),
-      icon: <DuplicateIcon data-testid="copy-flow" />,
+      icon: <DuplicateIcon data-testid="copy-icon" />,
       parameter: 'id',
       dialog: handleCopy,
     },
@@ -305,7 +305,7 @@ export const FlowList = () => {
     },
     {
       label: t('Edit'),
-      icon: <EditIcon />,
+      icon: <EditIcon data-testid="edit-icon" />,
       parameter: 'id',
       dialog: handleEdit,
     },
