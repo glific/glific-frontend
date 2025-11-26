@@ -259,7 +259,6 @@ export const FlowList = () => {
       label: 'View it',
       icon: viewIcon,
       parameter: 'id',
-      insideMore: false,
       dialog: (id: any) => {
         navigate(`/flow/${id}/edit`, { state: 'template' });
       },
@@ -268,7 +267,6 @@ export const FlowList = () => {
       label: 'Use it',
       icon: <DuplicateIcon data-testid="copyTemplate" />,
       parameter: 'id',
-      insideMore: false,
       dialog: (id: any) => {
         navigate(`/flow/${id}/edit`, { state: 'copyTemplate' });
       },
@@ -283,27 +281,6 @@ export const FlowList = () => {
       link: '/flow/configure',
     },
     {
-      label: t('Edit'),
-      icon: <EditIcon />,
-      parameter: 'id',
-      insideMore: true,
-      dialog: handleEdit,
-    },
-    {
-      label: t('Copy'),
-      icon: <DuplicateIcon />,
-      parameter: 'id',
-      insideMore: true,
-      dialog: handleCopy,
-    },
-    {
-      label: t('Export'),
-      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
-      parameter: 'id',
-      dialog: exportFlow,
-      insideMore: true,
-    },
-    {
       label: t('Share'),
       icon: shareIcon,
       parameter: 'keywords',
@@ -314,6 +291,24 @@ export const FlowList = () => {
           setNotification('No keywords found to share the responder link', 'warning');
         }
       },
+    },
+    {
+      label: t('Copy'),
+      icon: <DuplicateIcon data-testid="copy-icon" />,
+      parameter: 'id',
+      dialog: handleCopy,
+    },
+    {
+      label: t('Export'),
+      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
+      parameter: 'id',
+      dialog: exportFlow,
+    },
+    {
+      label: t('Edit'),
+      icon: <EditIcon data-testid="edit-icon" />,
+      parameter: 'id',
+      dialog: handleEdit,
     },
   ];
 

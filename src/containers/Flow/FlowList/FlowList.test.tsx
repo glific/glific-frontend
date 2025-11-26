@@ -124,16 +124,10 @@ describe('<FlowList />', () => {
     const { getAllByTestId } = render(flowList);
 
     await waitFor(() => {
-      expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
+      expect(getAllByTestId('copy-icon')[0]).toBeInTheDocument();
     });
 
-    fireEvent.click(getAllByTestId('MoreIcon')[0]);
-
-    await waitFor(() => {
-      expect(screen.getByText('Copy')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText('Copy'));
+    fireEvent.click(getAllByTestId('copy-icon')[0]);
 
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalled();

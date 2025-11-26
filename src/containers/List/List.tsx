@@ -524,8 +524,7 @@ export const List = ({
         </Link>
       );
     }
-
-    const deleteButton = (Id: any, text: string) =>
+    const deleteButtonMenuItem = (Id: any, text: string) =>
       allowedAction.delete ? (
         <div aria-label={t('Delete')} data-testid="DeleteIcon" onClick={() => showDialogHandler(Id, text)}>
           <div className={styles.IconWithText}>
@@ -535,10 +534,40 @@ export const List = ({
         </div>
       ) : null;
 
-    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.insideMore);
-    const actionsOutsideMore = additionalAction(item).filter((action: any) => !action?.insideMore);
+    const deleteButtonIcon = (Id: any, text: string) =>
+      allowedAction.delete ? (
+        <Tooltip title="Delete" placement="top">
+          <IconButton
+            className={styles.additonalButton}
+            data-testid="DeleteIcon"
+            onClick={() => showDialogHandler(Id, text)}
+          >
+            <DeleteIcon className={styles.IconSize} />
+          </IconButton>
+        </Tooltip>
+      ) : null;
 
-    if (actionsInsideMore.length > 0 || allowedAction.delete) {
+    const allAdditionalActions = additionalAction(item).filter((action: any) => !action?.hidden);
+
+    let totalActions = allAdditionalActions.length;
+
+    if (allowedAction.edit && editSupport) totalActions++;
+    if (allowedAction.delete) totalActions++;
+
+    const shouldShowMoreButton = totalActions > 4;
+
+    let actionsOutsideMore = allAdditionalActions;
+    let actionsInsideMore: any[] = [];
+    if (shouldShowMoreButton) {
+      let slotsAvailable = 4;
+      if (allowedAction.edit && editSupport) slotsAvailable--;
+      slotsAvailable--;
+
+      actionsOutsideMore = allAdditionalActions.slice(0, slotsAvailable);
+      actionsInsideMore = allAdditionalActions.slice(slotsAvailable);
+    }
+
+    if (shouldShowMoreButton) {
       moreButton = (
         <IconButton
           data-testid="MoreIcon"
@@ -564,35 +593,39 @@ export const List = ({
 
           {/* do not display edit & delete for staff role in collection */}
           {userRolePermissions.manageCollections || item !== 'collections' ? (
-            <div className={styles.MoreOptions}>
-              {moreButton}
-              {showMoreOptions == id && (
-                <Backdrop className={styles.Backdrop} open onClick={() => setShowMoreOptions('')}>
-                  <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
-                    open={open}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    classes={{ list: styles.MenuList }}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                  >
-                    <div>
-                      {actionListMap(item, actionsInsideMore, true)}
-                      <Divider className={styles.Divider}></Divider>
-                      <MenuItem className={styles.MenuItem}>{deleteButton(id, labelValue)}</MenuItem>
-                    </div>
-                  </Menu>
-                </Backdrop>
-              )}
-            </div>
+            <>
+              {!shouldShowMoreButton && deleteButtonIcon(id, labelValue)}
+
+              <div className={styles.MoreOptions}>
+                {moreButton}
+                {showMoreOptions == id && (
+                  <Backdrop className={styles.Backdrop} open onClick={() => setShowMoreOptions('')}>
+                    <Menu
+                      anchorEl={anchorEl}
+                      id="account-menu"
+                      open={open}
+                      onClose={handleClose}
+                      onClick={handleClose}
+                      classes={{ list: styles.MenuList }}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <div>
+                        {actionListMap(item, actionsInsideMore, true)}
+                        <Divider className={styles.Divider}></Divider>
+                        <MenuItem className={styles.MenuItem}>{deleteButtonMenuItem(id, labelValue)}</MenuItem>
+                      </div>
+                    </Menu>
+                  </Backdrop>
+                )}
+              </div>
+            </>
           ) : null}
         </div>
       );
