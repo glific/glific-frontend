@@ -61,7 +61,7 @@ test('it saves a contact field', async () => {
 test('it closes the dialog box on clicking cancel', async () => {
   const { container } = render(wrapper);
 
-  const dialogTitle = screen.getByText('Add a new Contact field');
+  const dialogTitle = screen.getByText('Create a new Contact field');
 
   expect(container).toBeInTheDocument();
   expect(dialogTitle).toBeInTheDocument();
