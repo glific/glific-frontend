@@ -13,6 +13,7 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import MoreOptions from 'assets/images/icons/MoreOptions.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import AddIcon from 'assets/images/add.svg?react';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
@@ -509,14 +510,19 @@ export const List = ({
     let moreButton = null;
 
     let editButton = null;
+    const buttonTitle = pageLink === 'template' ? t('View') : t('Edit');
+    const isTemplate = pageLink === 'template';
+
+    const actionIcon = isTemplate ? ViewIcon : EditIcon;
+
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
-          <Tooltip title="Edit" placement="top">
+          <Tooltip title={buttonTitle} placement="top">
             <IconButton className={styles.additonalButton}>
               <div aria-label={t('Edit')} data-testid="EditIcon">
                 <div className={styles.IconWithText}>
-                  <EditIcon className={styles.IconSize} />
+                  {isTemplate ? <ViewIcon className={styles.IconSize} /> : <EditIcon className={styles.IconSize} />}
                 </div>
               </div>
             </IconButton>
