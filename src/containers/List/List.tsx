@@ -513,8 +513,6 @@ export const List = ({
     const buttonTitle = pageLink === 'template' ? t('View') : t('Edit');
     const isTemplate = pageLink === 'template';
 
-    const actionIcon = isTemplate ? ViewIcon : EditIcon;
-
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
