@@ -121,7 +121,6 @@ export const InteractiveMessageList = () => {
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: handleCopyInteractive,
-      insideMore: true,
     },
   ];
 

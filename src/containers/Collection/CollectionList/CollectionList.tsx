@@ -141,7 +141,6 @@ export const CollectionList = () => {
     icon: <ExportIcon />,
     parameter: 'id',
     dialog: exportCollection,
-    insideMore: true,
   };
 
   const additionalAction = () => (groups ? [addEntity] : [addEntity, exportCollectionButton]);

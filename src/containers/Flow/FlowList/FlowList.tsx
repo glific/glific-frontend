@@ -258,7 +258,6 @@ export const FlowList = () => {
       label: 'View it',
       icon: viewIcon,
       parameter: 'id',
-      insideMore: false,
       dialog: (id: any) => {
         navigate(`/flow/${id}/edit`, { state: 'template' });
       },
@@ -267,7 +266,6 @@ export const FlowList = () => {
       label: 'Use it',
       icon: <DuplicateIcon data-testid="copyTemplate" />,
       parameter: 'id',
-      insideMore: false,
       dialog: (id: any) => {
         navigate(`/flow/${id}/edit`, { state: 'copyTemplate' });
       },
@@ -297,7 +295,6 @@ export const FlowList = () => {
       label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
-      insideMore: true,
       dialog: handleCopy,
     },
 
@@ -306,7 +303,6 @@ export const FlowList = () => {
       icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
-      insideMore: true,
     },
     {
       label: t('Edit'),

@@ -80,7 +80,6 @@ export const TriggerList = () => {
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
-      insideMore: true,
     },
   ];
 
