@@ -526,6 +526,34 @@ export const updateSessiontemplate = {
 
 export const templatesData = [
   {
+    id: '1',
+    bspId: null,
+    label: 'Test Template',
+    body: 'Test body',
+    shortcode: 'test',
+    category: 'ACCOUNT_UPDATE',
+    isReserved: false,
+    status: 'APPROVED',
+    reason: 'test reason',
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2020-12-01T18:00:32Z',
+    numberParameters: 0,
+    translations:
+      '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+    type: 'TEXT',
+    quality: null,
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+  {
     id: '87',
     bspId: null,
     label: 'Account Balance',

@@ -62,6 +62,15 @@ const template = (mockQuery?: any) => (
   </MockedProvider>
 );
 
+const mockedUsedNavigate2 = vi.fn();
+vi.mock('react-router', async () => {
+  return {
+    ...(await vi.importActual<any>('react-router')),
+    useLocation: () => ({ state: 'copy', pathname: '/trigger/1/edit' }),
+    useParams: () => ({ id: 1 }),
+    useNavigate: () => mockedUsedNavigate,
+  };
+});
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
   return {
@@ -130,6 +139,22 @@ test('should navigate to create template page', async () => {
   fireEvent.click(getByTestId('newItemButton'));
 
   expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/add');
+});
+
+test('should navigate to edit template page', async () => {
+  const { getByText } = render(template(syncTemplateQuery));
+
+  await waitFor(() => {
+    expect(getByText('HSM Templates')).toBeInTheDocument();
+  });
+
+  // Wait for the list items to load and the view-icon to appear
+  const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+  fireEvent.click(viewIcons[0]);
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit');
+  });
 });
 
 test('should navigate to create template page with selected tag', async () => {

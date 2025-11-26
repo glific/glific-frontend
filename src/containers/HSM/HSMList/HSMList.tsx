@@ -393,7 +393,7 @@ export const HSMList = () => {
   let additionalAction: any = () => [
     {
       label: t('View'),
-      icon: <ViewIcon />,
+      icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
       dialog: handleEdit,
     },
