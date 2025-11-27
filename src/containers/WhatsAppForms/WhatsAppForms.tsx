@@ -37,6 +37,7 @@ export const WhatsAppForms = () => {
   const [formCategories, setFormCategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [disabled, setDisabled] = useState(false);
+  const [extractedVariables, setExtractedVariables] = useState<string[]>([]);
   const params = useParams();
 
   useQuery(GET_WHATSAPP_FORM, {
@@ -54,6 +55,46 @@ export const WhatsAppForms = () => {
     isEditing = true;
   }
 
+  const extractVariablesFromJson = (json: any) => {
+    const variables = new Set<string>();
+
+    try {
+      if (json && json.screens && Array.isArray(json.screens)) {
+        json.screens.forEach((screen: any) => {
+          const findCompleteActions = (obj: any) => {
+            if (obj && typeof obj === 'object') {
+              if (obj.name === 'complete' && obj.payload) {
+                Object.keys(obj.payload).forEach((key) => variables.add(key));
+              }
+
+              if (Array.isArray(obj)) {
+                obj.forEach((item) => findCompleteActions(item));
+              } else {
+                Object.values(obj).forEach((value) => findCompleteActions(value));
+              }
+            }
+          };
+
+          findCompleteActions(screen);
+        });
+      }
+    } catch (error) {
+      setLogs(`Error extracting variables: ${JSON.stringify(error)}`, 'error');
+    }
+
+    return Array.from(variables);
+  };
+
+  const handleJsonChange = (value: string) => {
+    try {
+      const parsedJson = JSON.parse(value);
+      const variables = extractVariablesFromJson(parsedJson);
+      setExtractedVariables(variables);
+    } catch (error) {
+      setExtractedVariables([]);
+    }
+  };
+
   const { loading } = useQuery(LIST_FORM_CATEGORIES, {
     onCompleted: ({ whatsappFormCategories }) => {
       setCategories(
@@ -70,7 +111,7 @@ export const WhatsAppForms = () => {
 
   const states = {
     name,
-    formJson: JSON.stringify(formJson),
+    formJson,
     formCategories,
     description,
   };
@@ -94,10 +135,16 @@ export const WhatsAppForms = () => {
     let parsedDefinition;
     try {
       parsedDefinition = JSON.parse(definition);
+
+      const variables = extractVariablesFromJson(parsedDefinition);
+      setExtractedVariables(variables);
+
+      parsedDefinition = JSON.stringify(parsedDefinition, null, 2);
     } catch (e) {
       setLogs('Error parsing whatsapp form definition JSON:', 'error');
       parsedDefinition = definition;
     }
+
     setFormJson(parsedDefinition);
   };
   const formFields = [
@@ -128,6 +175,7 @@ export const WhatsAppForms = () => {
       rows: 6,
       placeholder: 'Paste your form JSON here...',
       disabled: disabled,
+      onChange: (value: string) => handleJsonChange(value),
     },
     {
       component: AutoComplete,
@@ -199,30 +247,57 @@ export const WhatsAppForms = () => {
           Go to Playground
         </Button>
       </div>
-      <FormLayout
-        {...queries}
-        states={states}
-        setPayload={setPayload}
-        languageSupport={false}
-        setStates={setStates}
-        validationSchema={FormSchema}
-        listItemName="Whatsapp Form"
-        formFields={formFields}
-        redirectionLink={'whatsapp-forms'}
-        listItem="whatsappForm"
-        icon={<Update />}
-        helpData={whatsappFormsInfo}
-        backLinkButton={`/whatsapp-forms`}
-        noHeading
-        dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
-        buttonState={{
-          text: 'Save Form',
-          status: disabled,
-        }}
-        customHandler={(error: string) => {
-          setErrorMessage(formatError(error), 'An error occurred');
-        }}
-      />
+
+      <div className={styles.FormContainer}>
+        <div className={styles.FormSection}>
+          <FormLayout
+            {...queries}
+            states={states}
+            setPayload={setPayload}
+            languageSupport={false}
+            setStates={setStates}
+            validationSchema={FormSchema}
+            listItemName="Whatsapp Form"
+            formFields={formFields}
+            redirectionLink={'whatsapp-forms'}
+            listItem="whatsappForm"
+            icon={<Update />}
+            helpData={whatsappFormsInfo}
+            backLinkButton={`/whatsapp-forms`}
+            noHeading
+            dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+            buttonState={{
+              text: 'Save Form',
+              status: disabled,
+            }}
+          />
+        </div>
+
+        <div className={styles.VariablesSection}>
+          <div className={styles.VariablesCard}>
+            <h3 className={styles.VariablesTitle}>
+              Form Variables
+              {extractedVariables.length > 0 && (
+                <span className={styles.VariablesCount}>{extractedVariables.length}</span>
+              )}
+            </h3>
+            {extractedVariables.length > 0 ? (
+              <ul data-testid="extractedVariables" className={styles.VariablesList}>
+                {extractedVariables.map((variable, index) => (
+                  <li key={index} className={styles.VariableItem}>
+                    {variable}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className={styles.EmptyState}>
+                <div className={styles.EmptyStateIcon}>📝</div>
+                <p>Paste your form JSON to see extracted variables</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 };

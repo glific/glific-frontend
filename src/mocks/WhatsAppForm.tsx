@@ -16,7 +16,26 @@ export const formJson = {
       data: {},
       terminal: true,
       success: true,
-      layout: {},
+      layout: {
+        children: [
+          {
+            children: {
+              label: 'Done',
+              'on-click-action': {
+                name: 'complete',
+                payload: {
+                  screen_1_Purchase_0: '${form.Purchase_experience}',
+                  screen_1_Delivery_and_1: '${form.Delivery_and_setup}',
+                  screen_1_Customer_2: '${form.Customer_service}',
+                  screen_0_Choose_0: '${data.screen_0_Choose_0}',
+                  screen_0_Leave_a_1: '${data.screen_0_Leave_a_1}',
+                },
+              },
+              type: 'Footer',
+            },
+          },
+        ],
+      },
     },
   ],
 };
