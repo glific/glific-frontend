@@ -190,7 +190,7 @@
   "Copy of the flow has been created!": "Copy of the flow has been created!",
   "Import flow": "Import flow",
   "Make a copy": "Make a copy",
-  "Has unpublished changes": "Has unpublished changes",
+  "Not published yet": "Not published yet",
   "Nothing in draft": "Nothing in draft",
   "Last published": "Last published",
   "Last saved in Draft": "Last saved in Draft",
@@ -555,5 +555,6 @@
   "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed.",
   "Share": "Share",
   "Draft": "Draft",
-  "Published": "Published"
+  "Published": "Published",
+  "Last Published At": "Last Published At"
 }
