@@ -387,7 +387,12 @@ export const FormLayout = ({
     onError: (e: ApolloError) => {
       setShowConfirmationDialog(false);
       onSaveClick(false);
-      setErrorMessage(e);
+      if (customHandler) {
+        customHandler(e.message);
+      } else {
+        setErrorMessage(e);
+      }
+
       return null;
     },
     refetchQueries: () => {
@@ -451,7 +456,12 @@ export const FormLayout = ({
     onError: (e: ApolloError) => {
       setShowConfirmationDialog(false);
       onSaveClick(false);
-      setErrorMessage(e);
+      if (customHandler) {
+        customHandler(e.message);
+      } else {
+        setErrorMessage(e);
+      }
+
       return null;
     },
   });

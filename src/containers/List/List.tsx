@@ -125,7 +125,7 @@ export interface ListProps {
 
   editSupport?: boolean;
   additionalAction?: (listValues: any) => Array<{
-    icon: any;
+    icon?: any;
     parameter: string;
     link?: string;
     dialog?: any;
