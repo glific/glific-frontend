@@ -1,12 +1,16 @@
 .Name {
-  width: 30%;
+  width: 50%;
   min-width: 150px;
 }
 
 .Actions {
-  width: 15%;
-  min-width: 100px;
-  text-align: end !important;
+  width: 10%;
+  max-width: 100px;
+  text-align: start;
+}
+
+.Actions > div {
+  justify-content: flex-start !important;
 }
 
 .LabelText {
