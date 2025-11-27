@@ -15,7 +15,13 @@ export const setNotification = (
 export const setErrorMessage = (error: any, title?: string) => {
   let errorMessage;
   // error === '' when we are resetting the error
-  if (error !== '') {
+  if (typeof error === 'string' && error !== '') {
+    errorMessage = {
+      title,
+      message: error,
+      type: 'Error',
+    };
+  } else if (error !== '') {
     errorMessage = {
       title,
       message: error.message,
