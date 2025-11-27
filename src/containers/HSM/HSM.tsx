@@ -875,6 +875,7 @@ export const HSM = () => {
         redirectionLink={backButton}
         listItem="sessionTemplate"
         icon={templateIcon}
+        hideSaveButton={isEditing}
         getLanguageId={getLanguageId}
         languageSupport={false}
         isAttachment
