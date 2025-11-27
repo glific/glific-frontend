@@ -59,13 +59,13 @@ describe('<Providers />', () => {
 });
 
 describe('<Providers />', () => {
-  it('Click on Cancel button', async () => {
+  it('Click on Back button', async () => {
     const { getByText } = render(wrapperWithType);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       // click on Cancel
-      const cancelButton = screen.getByText('Cancel');
+      const cancelButton = screen.getByText('Back');
       user.click(cancelButton);
     });
   });
