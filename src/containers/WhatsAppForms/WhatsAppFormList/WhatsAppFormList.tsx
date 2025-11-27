@@ -9,6 +9,7 @@ import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graph
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { formatError } from '../WhatsAppForms';
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -78,7 +79,7 @@ export const WhatsAppFormList = () => {
       setNotification('Form published successfully');
     },
     onError: (errors) => {
-      setErrorMessage(errors);
+      setErrorMessage(formatError(errors.message), 'An error occurred');
     },
   });
 

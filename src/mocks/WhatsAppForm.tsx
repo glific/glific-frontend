@@ -85,6 +85,40 @@ const createdWhatsAppFormQuery = {
     },
   },
 };
+
+const createdWhatsAppFormQueryWithErrors = {
+  request: {
+    query: CREATE_FORM,
+    variables: {
+      input: {
+        name: 'Test Form2',
+        formJson: JSON.stringify(formJson),
+        description: 'This is a test form',
+        categories: ['other'],
+      },
+    },
+  },
+  result: {
+    data: {
+      createWhatsappForm: null,
+    },
+    errors: [
+      {
+        message:
+          'Flow name should be unique within one WhatsApp Business Account. Please select another name for your Flow.',
+        status: 'error',
+        path: ['createWhatsappForm'],
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export const publishWhatsappForm = {
   request: {
     query: PUBLISH_FORM,
@@ -324,4 +358,5 @@ export const WHATSAPP_FORM_MOCKS = [
   listWhatsappFormsDraft,
   listWhatsappFormsEmpty,
   listWhatsappFormswithoutopts,
+  createdWhatsAppFormQueryWithErrors,
 ];
