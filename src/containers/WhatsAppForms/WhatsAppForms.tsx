@@ -25,7 +25,7 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
 };
 
-const formatError = (str: string) => {
+export const formatError = (str: string) => {
   const replaced = str.replace(/flow/gi, 'form');
   return replaced.charAt(0).toUpperCase() + replaced.slice(1).toLowerCase();
 };
