@@ -440,6 +440,7 @@ export const Trigger = () => {
       {...queries}
       states={states}
       roleAccessSupport
+      subHead={isEditing ? 'view' : 'edit'}
       setStates={setStates}
       setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}

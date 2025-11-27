@@ -11,6 +11,7 @@ export interface HeadingProps {
   showHeaderHelp?: boolean;
   backLink?: string;
   headerHelp?: string;
+  addHeader?: string;
   button?: {
     show: boolean;
     label: string;
@@ -20,11 +21,17 @@ export interface HeadingProps {
   };
 }
 
-export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, headerHelp, button }: HeadingProps) => {
+export const Heading = ({
+  formTitle,
+  helpData,
+  showHeaderHelp = true,
+  backLink,
+  headerHelp,
+  button,
+  addHeader,
+}: HeadingProps) => {
   const navigate = useNavigate();
   const addIcon = <AddIcon className={styles.AddIcon} />;
-  const isview = formTitle === 'HSM Template' || formTitle === 'trigger';
-  const title = isview ? 'view' : 'enter';
 
   return (
     <div className={styles.Heading} data-testid="heading">
@@ -40,7 +47,7 @@ export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, 
             {helpData ? <HelpIcon helpData={helpData} /> : ''}
           </div>
           <div className={styles.TextHeading}>
-            {showHeaderHelp ? headerHelp || `Please ${title} below details.` : ''}
+            {showHeaderHelp ? headerHelp || `Please ${addHeader} below details.` : ''}
           </div>
         </div>
       </div>

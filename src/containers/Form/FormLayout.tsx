@@ -77,6 +77,7 @@ export interface FormLayoutProps {
   languageAttributes?: any;
   helpData?: HelpDataProps;
   noHeading?: boolean;
+  subHead?: string;
   partialPage?: boolean;
   confirmationState?: {
     show: boolean;
@@ -99,6 +100,7 @@ export const FormLayout = ({
   dialogMessage,
   formFields,
   redirectionLink,
+  subHead = 'edit',
   listItem,
   hideSaveButton = false,
   getItemQuery,
@@ -670,7 +672,7 @@ export const FormLayout = ({
     formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} />;
+  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} addHeader={subHead} />;
 
   let confirmationDialog;
   if (showConfirmationDialog) {
