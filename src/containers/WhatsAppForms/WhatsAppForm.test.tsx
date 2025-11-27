@@ -83,4 +83,24 @@ describe('<WhatsAppForms />', () => {
       expect(notificationSpy).toHaveBeenCalled();
     });
   });
+
+  test('it should list all the variables extracted from JSON', async () => {
+    const { getByTestId, getByText, getAllByRole } = render(wrapper());
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Create WhatsApp Form')).toBeInTheDocument();
+    });
+
+    const inputs = getAllByRole('textbox');
+    fireEvent.change(inputs[2], { target: { value: JSON.stringify(formJson) } });
+
+    await waitFor(() => {
+      expect(getByTestId('extractedVariables')).toBeInTheDocument();
+      expect(getByText('screen_1_Purchase_0')).toBeInTheDocument();
+      expect(getByText('screen_1_Delivery_and_1')).toBeInTheDocument();
+      expect(getByText('screen_1_Customer_2')).toBeInTheDocument();
+      expect(getByText('screen_0_Choose_0')).toBeInTheDocument();
+    });
+  });
 });
