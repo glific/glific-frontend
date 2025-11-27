@@ -24,7 +24,7 @@ export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, 
   const navigate = useNavigate();
   const addIcon = <AddIcon className={styles.AddIcon} />;
   const isview = formTitle === 'HSM Template' || formTitle === 'trigger';
-  const Title = isview ? 'view' : 'enter';
+  const title = isview ? 'view' : 'enter';
 
   return (
     <div className={styles.Heading} data-testid="heading">
@@ -40,7 +40,7 @@ export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, 
             {helpData ? <HelpIcon helpData={helpData} /> : ''}
           </div>
           <div className={styles.TextHeading}>
-            {showHeaderHelp ? headerHelp || `Please ${Title} below details.` : ''}
+            {showHeaderHelp ? headerHelp || `Please ${title} below details.` : ''}
           </div>
         </div>
       </div>

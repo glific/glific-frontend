@@ -40,7 +40,7 @@ const startTime = dayjs().add(1, 'hour');
 
 const fillForm = async (container: any, frequency: string) => {
   await waitFor(() => {
-    expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
+    expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -139,7 +139,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -207,7 +207,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -244,7 +244,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
     const autoCompletes = screen.getAllByRole('combobox');
 
@@ -268,7 +268,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     const startDateInput = container.queryByTestId('Start date');
@@ -320,7 +320,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -348,7 +348,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -376,7 +376,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -406,7 +406,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -436,13 +436,13 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('remove-icon'));
 
     await waitFor(() => {
-      expect(screen.getByText('Are you sure you want to delete the trigger?')).toBeInTheDocument();
+      expect(screen.getByText('Are you sure you want to delete the Trigger?')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('ok-button'));
@@ -484,7 +484,7 @@ describe('copy mode', async () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Copy trigger')).toBeInTheDocument();
+      expect(screen.getByText('Copy Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -515,7 +515,7 @@ describe('copy mode', async () => {
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Copy trigger')).toBeInTheDocument();
+      expect(screen.getByText('Copy Trigger')).toBeInTheDocument();
     });
   });
 });
@@ -542,7 +542,7 @@ describe('Whatsapp group collections', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     await fillForm(container, 'Daily');
@@ -572,7 +572,7 @@ describe('Whatsapp group collections', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {

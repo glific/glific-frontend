@@ -664,7 +664,7 @@ export const FormLayout = ({
   } else if (type === 'copy') {
     formTitle = `Copy ${listItemName}`; // case when copying an item
   } else if (itemId) {
-    const isview = listItemName === 'HSM Template' || listItemName === 'trigger';
+    const isview = listItemName === 'HSM Template' || listItemName === 'Trigger';
     formTitle = isview ? `${listItemName}` : `Edit ${listItemName}`; // case when editing a item
   } else {
     formTitle = `Create a new ${listItemName}`; // case when adding a new item

@@ -444,7 +444,7 @@ export const Trigger = () => {
       setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
       languageSupport={false}
-      listItemName="trigger"
+      listItemName="Trigger"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="trigger"
