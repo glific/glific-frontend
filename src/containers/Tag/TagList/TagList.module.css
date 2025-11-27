@@ -9,6 +9,10 @@
   text-align: start;
 }
 
+.Actions > div {
+  justify-content: flex-start !important;
+}
+
 .LabelText {
   display: flex;
   font-weight: 500;

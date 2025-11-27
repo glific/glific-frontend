@@ -33,6 +33,11 @@
   width: 15%;
   max-width: 200px;
   text-align: start;
+  padding-left: 25px !important;
+}
+
+.Actions > div {
+  justify-content: flex-start !important;
 }
 
 .LabelText {
