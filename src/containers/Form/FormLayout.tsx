@@ -610,7 +610,7 @@ export const FormLayout = ({
             ) : null}
             {!skipCancel && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {t('Cancel')}
+                {t('Back')}
               </Button>
             )}
 
