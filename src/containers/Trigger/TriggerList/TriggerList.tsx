@@ -87,7 +87,7 @@ export const TriggerList = () => {
       dialog: setDialog,
     },
     {
-      label: t('View'),
+      label: t('Edit'),
       icon: <ViewIcon data-testid="view-trigger" />,
       parameter: 'id',
       dialog: handleEdit,
