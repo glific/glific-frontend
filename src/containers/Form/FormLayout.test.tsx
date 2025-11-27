@@ -72,7 +72,7 @@ test('cancel button should redirect to flowlist page', async () => {
   );
   await waitFor(() => {
     const { queryByText } = within(container.querySelector('form') as HTMLElement);
-    const button = queryByText('Back') as HTMLButtonElement;
+    const button = queryByText('Go Back') as HTMLButtonElement;
     fireEvent.click(button);
     expect(getByTestId('loading')).toBeInTheDocument();
   });

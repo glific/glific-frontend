@@ -59,7 +59,7 @@ test('it should render form correctly', async () => {
     const submitButton = screen.getByText('Save');
     expect(submitButton).toBeInTheDocument();
 
-    const cancelButton = screen.getByText('Back');
+    const cancelButton = screen.getByText('Go Back');
     expect(cancelButton).toBeInTheDocument();
 
     fireEvent.click(submitButton);

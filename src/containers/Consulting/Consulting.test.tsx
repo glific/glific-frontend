@@ -101,14 +101,14 @@ test('it renders consulting hours in edit mode', async () => {
   });
 });
 
-test('Click in Back button', async () => {
+test('Click in Go Back button', async () => {
   const { getByText } = render(consultingEditForm);
 
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Back')).toBeInTheDocument();
+    expect(getByText('Go Back')).toBeInTheDocument();
   });
-  fireEvent.click(getByText('Back'));
+  fireEvent.click(getByText('Go Back'));
   await waitFor(() => {
     expect(setOpenDialogMock).toHaveBeenCalledWith(false);
   });

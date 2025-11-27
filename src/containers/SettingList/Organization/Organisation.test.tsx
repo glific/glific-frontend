@@ -51,7 +51,7 @@ test('it renders component and clicks cancel', async () => {
     expect(getByText('Loading...')).toBeInTheDocument();
   });
   await waitFor(() => {
-    const Button = screen.getByText('Back');
+    const Button = screen.getByText('Go Back');
     expect(Button).toBeInTheDocument();
     // click on Cancel
     user.click(Button);
