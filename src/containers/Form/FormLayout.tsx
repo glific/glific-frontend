@@ -60,6 +60,7 @@ export interface FormLayoutProps {
   refetchQueries?: Array<any>;
   redirect?: boolean;
   title?: string;
+  hideSaveButton?: boolean;
   cancelAction?: Function;
   getLanguageId?: Function;
   backLinkButton?: string;
@@ -99,6 +100,7 @@ export const FormLayout = ({
   formFields,
   redirectionLink,
   listItem,
+  hideSaveButton = false,
   getItemQuery,
   createItemQuery,
   updateItemQuery,
@@ -574,22 +576,24 @@ export const FormLayout = ({
             );
           })}
           <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                formik.validateForm().then((errors) => {
-                  onSaveButtonClick(errors);
-                  formik.submitForm();
-                });
-              }}
-              className={styles.Button}
-              data-testid="submitActionButton"
-              loading={saveClick}
-              disabled={buttonState.status}
-            >
-              {buttonState.status ? buttonState.text : button}
-            </Button>
+            {!hideSaveButton && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  formik.validateForm().then((errors) => {
+                    onSaveButtonClick(errors);
+                    formik.submitForm();
+                  });
+                }}
+                className={styles.Button}
+                data-testid="submitActionButton"
+                loading={saveClick}
+                disabled={buttonState.status}
+              >
+                {buttonState.status ? buttonState.text : button}
+              </Button>
+            )}
             {additionalAction ? (
               <Button
                 variant="outlined"

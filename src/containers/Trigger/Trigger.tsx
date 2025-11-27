@@ -462,6 +462,7 @@ export const Trigger = () => {
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
+      hideSaveButton={isEditing}
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}

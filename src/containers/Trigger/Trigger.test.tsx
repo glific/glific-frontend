@@ -330,12 +330,6 @@ describe('edit mode', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('Hourly');
     });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('Trigger edited successfully!');
-    });
   });
 
   test('should renders form for daily triggers', async () => {
