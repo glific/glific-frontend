@@ -47,6 +47,7 @@ export interface FormLayoutProps {
   languageSupport?: boolean;
   setPayload?: Function;
   advanceSearch?: any;
+  backButtonLabel?: string;
   additionalState?: any;
   button?: string;
   buttonState?: {
@@ -100,6 +101,7 @@ export const FormLayout = ({
   dialogMessage,
   formFields,
   redirectionLink,
+  backButtonLabel = 'Cancel',
   subHead = 'edit',
   listItem,
   hideSaveButton = false,
@@ -626,7 +628,7 @@ export const FormLayout = ({
             ) : null}
             {!skipCancel && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {t('Go Back')}
+                {backButtonLabel}
               </Button>
             )}
 
