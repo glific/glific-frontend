@@ -110,12 +110,16 @@ export const HSM = () => {
   let backButton = location.state?.tag?.label ? `template?tag=${location.state?.tag?.label}` : 'template';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
-  const { data: shortCodes, loading: shortcodesLoading, refetch: refetchShortcodes} = useQuery(GET_SHORTCODES, {
+  const {
+    data: shortCodes,
+    loading: shortcodesLoading,
+    refetch: refetchShortcodes,
+  } = useQuery(GET_SHORTCODES, {
     variables: {
       filter: {
         isHsm: true,
       },
-    }
+    },
   });
 
   const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
@@ -892,6 +896,7 @@ export const HSM = () => {
         {...queries}
         states={states}
         setStates={setStates}
+        subHead={isEditing ? 'view' : 'edit'}
         setPayload={setPayload}
         validationSchema={isEditing ? Yup.object() : FormSchema}
         listItemName="HSM Template"
