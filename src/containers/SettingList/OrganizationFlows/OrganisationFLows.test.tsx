@@ -24,12 +24,12 @@ test('it renders component properly', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 });
 
-test('it renders component and clicks Go Back', async () => {
+test('it renders component and clicks Cancel Button', async () => {
   const { getByText } = render(wrapper);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    const Button = screen.getByText('Go Back');
+    const Button = screen.getByText('Cancel');
     expect(Button).toBeInTheDocument();
     // click on Cancel
     user.click(Button);

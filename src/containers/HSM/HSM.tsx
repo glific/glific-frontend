@@ -901,6 +901,7 @@ export const HSM = () => {
         validationSchema={isEditing ? Yup.object() : FormSchema}
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
+        backButtonLabel={isEditing ? 'Go Back' : 'Cancel'}
         formFields={fields}
         redirectionLink={backButton}
         listItem="sessionTemplate"

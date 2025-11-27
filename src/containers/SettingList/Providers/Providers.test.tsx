@@ -65,7 +65,7 @@ describe('<Providers />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       // click on Cancel
-      const cancelButton = screen.getByText('Go Back');
+      const cancelButton = screen.getByText('Cancel');
       user.click(cancelButton);
     });
   });

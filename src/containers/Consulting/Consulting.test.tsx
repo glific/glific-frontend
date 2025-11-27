@@ -106,9 +106,9 @@ test('Click on Go Back button', async () => {
 
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Go Back')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
   });
-  fireEvent.click(getByText('Go Back'));
+  fireEvent.click(getByText('Cancel'));
   await waitFor(() => {
     expect(setOpenDialogMock).toHaveBeenCalledWith(false);
   });
