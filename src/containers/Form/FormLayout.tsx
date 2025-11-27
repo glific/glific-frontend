@@ -652,7 +652,7 @@ export const FormLayout = ({
   } else if (itemId) {
     formTitle = `Edit ${listItemName}`; // case when editing a item
   } else {
-    formTitle = `Add a new ${listItemName}`; // case when adding a new item
+    formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
 
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} />;
