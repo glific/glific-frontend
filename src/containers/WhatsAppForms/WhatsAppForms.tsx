@@ -2,9 +2,11 @@ import { useQuery } from '@apollo/client';
 import OpenInNew from '@mui/icons-material/OpenInNew';
 import Update from '@mui/icons-material/Update';
 import { useState } from 'react';
+import { useParams } from 'react-router';
 import * as Yup from 'yup';
 
 import { whatsappFormsInfo } from 'common/HelpData';
+import { setErrorMessage } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
@@ -14,9 +16,7 @@ import setLogs from 'config/logs';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
-import { useParams } from 'react-router';
 import styles from './WhatsAppForm.module.css';
-import { setErrorMessage } from 'common/notification';
 
 const queries = {
   getItemQuery: GET_WHATSAPP_FORM,
@@ -177,7 +177,7 @@ export const WhatsAppForms = () => {
           <div className={styles.TextContent}>
             <h3 className={styles.Title}>Go to WhatsApp Form Builder Playground</h3>
             <p className={styles.Description}>
-              Design your Form in WhatsApp's Playground then copy the JSON and paste it below.
+              Design your Form in WhatsApp&apos;s Playground then copy the JSON and paste it below.
             </p>
           </div>
         </div>
