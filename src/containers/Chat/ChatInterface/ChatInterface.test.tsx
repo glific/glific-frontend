@@ -99,6 +99,7 @@ cache.writeQuery({
             interactiveContent: '{}',
             sendBy: 'test',
             flowLabel: null,
+            whatsappFormResponse: null,
           },
         ],
       },

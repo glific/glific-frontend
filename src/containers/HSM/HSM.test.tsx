@@ -3,7 +3,13 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
-import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeMedia, getHSMTemplateTypeText } from 'mocks/Template';
+import {
+  HSM_TEMPLATE_MOCKS,
+  getHSMTemplateTypeMedia,
+  getHSMTemplateTypeText,
+  CREATE_SESSION_TEMPLATE_MOCK,
+} from 'mocks/Template';
+import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
 
@@ -75,16 +81,19 @@ describe('Edit mode', () => {
     await waitFor(() => {
       expect(getAllByRole('textbox')[0]).toHaveValue('account_update');
     });
-
+    const combobox = getAllByRole('combobox');
+    combobox[2].focus();
+    fireEvent.keyDown(combobox[2], { key: 'ArrowDown' });
     await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[1]).toHaveValue('IMAGE');
+      expect(getAllByRole('combobox')[2]).toHaveValue('IMAGE');
     });
   });
 });
 
 describe('Add mode', () => {
+  const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK];
   const template = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={MOCKS} addTypename={false}>
       <MemoryRouter>
         <HSM />
       </MemoryRouter>
@@ -157,7 +166,85 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByText('Add buttons'));
 
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('Quick Reply'));
+
     fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+    fireEvent.click(screen.getAllByTestId('delete-variable')[1]);
+
+    autocompletes[3].focus();
+    fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
+    fireEvent.change(inputs[3], { target: { value: 'footer' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('it should create a hsm template with whatsapp form', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
+    const lexicalEditor = inputs[2];
+
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('bold-icon'));
+
+    fireEvent.click(screen.getByTestId('italic-icon'));
+    fireEvent.click(screen.getByTestId('strikethrough-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you**')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    fireEvent.click(screen.getByText('Add buttons'));
+
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('WhatsApp Form'));
+
+    const comboboxes = screen.getAllByRole('combobox');
+    const formCombo = comboboxes[2] as HTMLInputElement;
+    fireEvent.mouseDown(formCombo);
+    fireEvent.click(screen.getByText('This is form name'));
+    const formComboParam = comboboxes[3] as HTMLInputElement;
+    fireEvent.mouseDown(formComboParam);
+
+    fireEvent.click(screen.getByText('RECOMMEND'));
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Continue' } });
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
@@ -207,7 +294,9 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add buttons'));
-    fireEvent.click(screen.getByText('Quick replies'));
+    const combobox = screen.getAllByRole('combobox');
+    fireEvent.mouseDown(combobox[1] as HTMLInputElement);
+    fireEvent.click(screen.getByText('Quick Reply'));
 
     await user.click(screen.getByTestId('addButton'));
 
@@ -259,7 +348,10 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add buttons'));
-    fireEvent.click(screen.getByText('Call to actions'));
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('Call to Action'));
     fireEvent.click(screen.getByText('Phone number'));
 
     fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
@@ -324,20 +416,18 @@ describe('Add mode', () => {
     });
   });
 
-  test('it shows quick replies as the default selected button type on first render', async () => {
-    render(template);
+  test('it shows Call to Action as the default selected button type on first render', async () => {
+    const { getByRole, getAllByTestId, getByText, getAllByRole } = render(template);
 
     await waitFor(() => {
-      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      const language = getAllByTestId('AutocompleteInput')[0].querySelector('input');
       expect(language).toHaveValue('English');
     });
 
-    fireEvent.click(screen.getByText('Add buttons'));
-    const quickRepliesRadio = screen.getByRole('radio', { name: 'Quick replies' }) as HTMLInputElement;
-    expect(quickRepliesRadio.checked).toBe(true);
-
-    const callToActionRadio = screen.getByRole('radio', { name: 'Call to actions' }) as HTMLInputElement;
-    expect(callToActionRadio.checked).toBe(false);
+    fireEvent.click(getByText('Add buttons'));
+    const comboboxes = getAllByRole('combobox');
+    const buttonTypeCombo = comboboxes[1] as HTMLInputElement;
+    expect(buttonTypeCombo.value).toBe('Call to Action');
   });
 
   test('validateMedia is called with URL without spaces', async () => {
@@ -376,24 +466,30 @@ describe('Add mode', () => {
   });
 
   test('should not allow adding more than 10 quick reply buttons', async () => {
-    render(template);
+    const { getAllByTestId, getByText, queryByText, getAllByRole, findByLabelText, findByText } = render(template);
 
     await waitFor(() => {
-      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      const language = getAllByTestId('AutocompleteInput')[0].querySelector('input');
       expect(language).toHaveValue('English');
     });
 
-    fireEvent.click(screen.getByText('Add buttons'));
-    fireEvent.click(screen.getByText('Quick replies'));
+    fireEvent.click(getByText('Add buttons'));
+    const buttonTypeInput = await findByLabelText('Select Button Type');
+    fireEvent.mouseDown(buttonTypeInput);
+
+    const comboxes = getAllByRole('combobox')[1];
+    fireEvent.click(comboxes);
+
+    fireEvent.click(getByText('Quick Reply'));
 
     for (let i = 0; i < 9; i += 1) {
       await waitFor(() => {
-        const addButton = screen.queryByText('Add Quick Reply');
+        const addButton = queryByText('Add Quick Reply');
         expect(addButton).toBeInTheDocument();
         user.click(addButton!);
       });
     }
-    const addButtonAfterLimit = screen.queryByText('Add Quick Reply');
+    const addButtonAfterLimit = queryByText('Add Quick Reply');
     await waitFor(() => {
       expect(addButtonAfterLimit).not.toBeInTheDocument();
     });

@@ -66,6 +66,7 @@ export const sampleMessages = {
   sendBy: 'Glific User',
   interactiveContent: '{}',
   flowLabel: null,
+  whatsappFormResponse: null,
 };
 
 export const conversationMessageQuery = (
@@ -168,6 +169,7 @@ export const conversationCollectionQuery = (
               interactiveContent: '{}',
               sendBy: 'test',
               flowLabel: null,
+              whatsappFormResponse: null,
             },
             {
               id: '1',
@@ -204,6 +206,7 @@ export const conversationCollectionQuery = (
               interactiveContent: '{}',
               sendBy: 'test',
               flowLabel: null,
+              whatsappFormResponse: null,
             },
           ],
         },
@@ -531,6 +534,7 @@ export const conversationQuery = getConversationQuery({
           interactiveContent: '{}',
           sendBy: 'test',
           flowLabel: null,
+          whatsappFormResponse: null,
         },
         {
           id: '2',
@@ -567,6 +571,7 @@ export const conversationQuery = getConversationQuery({
           interactiveContent: '{}',
           sendBy: 'test',
           flowLabel: null,
+          whatsappFormResponse: null,
         },
       ],
     },
@@ -640,6 +645,7 @@ const conversation = {
         },
       ],
       id: 'contact_2',
+      whatsappFormResponse: null,
     },
   ],
 };
@@ -671,6 +677,7 @@ const conversationWithMultipleMessages = {
           },
           type: 'TEXT',
           media: null,
+          whatsappFormResponse: null,
         },
         {
           body: 'Yo',
@@ -684,6 +691,7 @@ const conversationWithMultipleMessages = {
           },
           type: 'TEXT',
           media: null,
+          whatsappFormResponse: null,
         },
       ],
     },
@@ -798,6 +806,7 @@ const searchQueryResult = {
             interactiveContent: '{}',
             sendBy: 'test',
             flowLabel: null,
+            whatsappFormResponse: null,
           },
         ],
       },
@@ -931,6 +940,7 @@ export const loadMoreChats = {
                 id: '2',
               },
               type: 'TEXT',
+              whatsappFormResponse: null,
             },
           ],
         },
