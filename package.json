@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.7.7",
+  "version": "6.7.8",
   "private": true,
   "type": "module",
   "license": {
@@ -21,7 +21,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@glific/flow-editor": "1.43.0-3",
+    "@glific/flow-editor": "1.43.0-7",
     "@lexical/react": "^0.33.0",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
