@@ -75,7 +75,7 @@ export const TriggerList = () => {
     navigate(`/trigger/${id}/edit`, { state: 'copy' });
   };
 
-  const handleEdit = (id: any) => {
+  const handleView = (id: any) => {
     navigate(`/trigger/${id}/edit`);
   };
 
@@ -87,10 +87,10 @@ export const TriggerList = () => {
       dialog: setDialog,
     },
     {
-      label: t('Edit'),
+      label: t('View'),
       icon: <ViewIcon data-testid="view-trigger" />,
       parameter: 'id',
-      dialog: handleEdit,
+      dialog: handleView,
     },
   ];
 
