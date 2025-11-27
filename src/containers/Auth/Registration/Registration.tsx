@@ -53,7 +53,6 @@ export const Registration = () => {
     return <Navigate to="/confirmotp" replace state={user} />;
   }
 
-  console.log('data', is_trial);
   const onSubmitRegistration = (values: User) => {
     if (!values.captcha) {
       setAuthError(t('Invalid captcha'));
@@ -136,7 +135,9 @@ export const Registration = () => {
     phone: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
     email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
-    organization_name: Yup.string().required(t('Input required')),
+    ...(is_trial && {
+      organization_name: Yup.string().required(t('Input required')),
+    }),
   });
 
   return (
