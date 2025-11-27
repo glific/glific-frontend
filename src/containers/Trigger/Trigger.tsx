@@ -451,6 +451,7 @@ export const Trigger = () => {
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
+      isView={true}
       backButtonLabel={isEditing ? 'Go Back' : 'Cancel'}
       hideSaveButton={isEditing}
       copyNotification={t('Copy of the trigger has been created!')}

@@ -895,6 +895,7 @@ export const HSM = () => {
       <FormLayout
         {...queries}
         states={states}
+        isView={true}
         setStates={setStates}
         subHead={isEditing ? 'view' : 'edit'}
         setPayload={setPayload}
