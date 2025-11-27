@@ -303,6 +303,7 @@ export const Trigger = () => {
           Active?
         </Typography>
       ),
+      disabled: isEditing,
       darkCheckbox: true,
     },
     {
@@ -383,6 +384,7 @@ export const Trigger = () => {
       handleOnChange: (value: any) => setGroupType(value),
       groupType: groupType,
       isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
+      disabled: isEditing,
     },
     {
       component: AutoComplete,
