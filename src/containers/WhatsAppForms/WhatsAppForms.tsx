@@ -270,6 +270,9 @@ export const WhatsAppForms = () => {
               text: 'Save Form',
               status: disabled,
             }}
+            customHandler={(error: string) => {
+              setErrorMessage(formatError(error), 'An error occurred');
+            }}
           />
         </div>
 
