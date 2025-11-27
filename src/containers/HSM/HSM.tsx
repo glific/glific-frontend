@@ -104,13 +104,14 @@ export const HSM = () => {
   let backButton = location.state?.tag?.label ? `template?tag=${location.state?.tag?.label}` : 'template';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
-  const { data: shortCodes, loading: shortcodesLoading } = useQuery(GET_SHORTCODES, {
+  const { data: shortCodes, loading: shortcodesLoading, refetch: refetchShortcodes} = useQuery(GET_SHORTCODES, {
     variables: {
       filter: {
         isHsm: true,
       },
-    },
+    }
   });
+
   const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
@@ -906,6 +907,7 @@ export const HSM = () => {
         cancelLink={backButton}
         getMediaId={getMediaId}
         entityId={params.id}
+        afterSave={() => refetchShortcodes()}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </>
