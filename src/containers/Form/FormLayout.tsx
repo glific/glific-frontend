@@ -99,7 +99,7 @@ export const FormLayout = ({
   setStates,
   validationSchema,
   listItemName,
-  isView,
+  isView = false,
   dialogMessage,
   formFields,
   redirectionLink,
