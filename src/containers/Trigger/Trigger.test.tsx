@@ -320,7 +320,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -354,7 +354,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -382,7 +382,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -412,7 +412,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -442,7 +442,7 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('trigger')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('remove-icon'));
@@ -578,7 +578,7 @@ describe('Whatsapp group collections', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {

@@ -48,7 +48,7 @@ describe('Edit mode', () => {
       </MockedProvider>
     );
     await waitFor(() => {
-      expect(getByText('Edit HSM Template')).toBeInTheDocument();
+      expect(getByText('HSM Template')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -69,7 +69,7 @@ describe('Edit mode', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Edit HSM Template')).toBeInTheDocument();
+      expect(getByText('HSM Template')).toBeInTheDocument();
     });
 
     await waitFor(() => {
