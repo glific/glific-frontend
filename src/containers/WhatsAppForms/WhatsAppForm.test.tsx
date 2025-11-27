@@ -83,4 +83,36 @@ describe('<WhatsAppForms />', () => {
       expect(notificationSpy).toHaveBeenCalled();
     });
   });
+
+  test('error should include forms instead of form', async () => {
+    const setErrorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+    const { getByTestId, getByText, getAllByRole } = render(wrapper());
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Create WhatsApp Form')).toBeInTheDocument();
+    });
+
+    const inputs = getAllByRole('textbox');
+
+    fireEvent.change(inputs[0], { target: { value: 'Test Form2' } });
+    fireEvent.change(inputs[1], { target: { value: 'This is a test form' } });
+
+    const autocomplete = getByTestId('AutocompleteInput');
+
+    autocomplete.focus();
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+    fireEvent.click(getByText('Other'), { key: 'Enter' });
+    fireEvent.change(inputs[2], { target: { value: JSON.stringify(formJson) } });
+
+    fireEvent.click(getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setErrorMessageSpy).toHaveBeenCalledWith(
+        'Form name should be unique within one whatsapp business account. please select another name for your form.',
+        'An error occurred'
+      );
+    });
+  });
 });
