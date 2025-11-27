@@ -386,7 +386,7 @@ export const FormLayout = ({
       setShowConfirmationDialog(false);
       onSaveClick(false);
       if (customHandler) {
-        customHandler(e);
+        customHandler(e.message);
       } else {
         setErrorMessage(e);
       }
