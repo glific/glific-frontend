@@ -276,6 +276,7 @@ export const Providers = () => {
       buttonState={{
         text: isDisabled ? 'Credentials Locked' : 'Save',
         status: isDisabled && type === 'gupshup',
+        show: true,
       }}
     />
   );

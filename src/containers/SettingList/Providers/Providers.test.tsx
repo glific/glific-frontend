@@ -59,7 +59,7 @@ describe('<Providers />', () => {
 });
 
 describe('<Providers />', () => {
-  it('Click on Cancel button', async () => {
+  it('Click on Go Back button', async () => {
     const { getByText } = render(wrapperWithType);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();

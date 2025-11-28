@@ -303,7 +303,7 @@ export const MyAccount = () => {
 
   return (
     <div>
-      <Heading formTitle={t('My Account')} showHeaderHelp={false} />
+      <Heading formTitle={t('My Account')} />
       <div className={styles.MyAccount} data-testid="MyAccount">
         {userForm}
         <Typography variant="h6" className={styles.Title}>

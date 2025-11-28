@@ -223,7 +223,7 @@ export const GroupDetails = () => {
 
   return (
     <>
-      <Heading formTitle={t('Group Details')} backLink={`/group/chat/${params.id}`} showHeaderHelp={false} />
+      <Heading formTitle={t('Group Details')} backLink={`/group/chat/${params.id}`} />
 
       <div className={styles.Container}>
         {drawer}

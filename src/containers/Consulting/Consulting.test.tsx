@@ -101,7 +101,7 @@ test('it renders consulting hours in edit mode', async () => {
   });
 });
 
-test('Click in cancel button', async () => {
+test('Click on Go Back button', async () => {
   const { getByText } = render(consultingEditForm);
 
   expect(getByText('Loading...')).toBeInTheDocument();

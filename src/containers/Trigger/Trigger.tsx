@@ -372,6 +372,7 @@ export const Trigger = () => {
       handleOnChange: (value: any) => setGroupType(value),
       groupType: groupType,
       isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
+      disabled: isEditing,
     },
     {
       component: AutoComplete,
@@ -439,16 +440,20 @@ export const Trigger = () => {
       {...queries}
       states={states}
       roleAccessSupport
+      headerDescriptionPart={isEditing ? 'view' : 'edit'}
       setStates={setStates}
       setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
       languageSupport={false}
-      listItemName="trigger"
+      listItemName="Trigger"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
+      isView={true}
+      errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+      buttonState={{ show: !isEditing }}
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}

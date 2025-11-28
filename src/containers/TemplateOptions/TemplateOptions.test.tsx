@@ -17,7 +17,7 @@ const wrapper = (initialEntry: string = '/template/add') => (
 
 test('it renders component and selects call to action type', async () => {
   const { findByText, getByText, findByLabelText } = render(wrapper());
-  const hsmTitle = await findByText('Add a new HSM Template');
+  const hsmTitle = await findByText('Create a new HSM Template');
   expect(hsmTitle).toBeInTheDocument();
   const addButtonsCheckbox = getByText('Add buttons');
   fireEvent.click(addButtonsCheckbox);
@@ -31,7 +31,7 @@ test('it renders component and selects call to action type', async () => {
 
 test('it renders call to action button template successfully', async () => {
   const { findByText, getAllByRole, getByText, findByLabelText } = render(wrapper());
-  const hsmTitle = await findByText('Add a new HSM Template');
+  const hsmTitle = await findByText('Create a new HSM Template');
   expect(hsmTitle).toBeInTheDocument();
   const addButtonsCheckbox = getByText('Add buttons');
   fireEvent.click(addButtonsCheckbox);
@@ -58,7 +58,7 @@ test('it renders call to action button template successfully', async () => {
 
 test('it renders quick reply button template successfully', async () => {
   const { findByText, findByLabelText, getByText, getByTestId } = render(wrapper());
-  const hsmTitle = await findByText('Add a new HSM Template');
+  const hsmTitle = await findByText('Create a new HSM Template');
   expect(hsmTitle).toBeInTheDocument();
   const addButtonsCheckbox = getByText('Add buttons');
   fireEvent.click(addButtonsCheckbox);

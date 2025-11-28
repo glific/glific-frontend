@@ -6,12 +6,14 @@ export interface TriggerTypeProps {
   groupType: string;
   isWhatsAppGroupEnabled: boolean;
   handleOnChange?: any;
+  disabled?: boolean;
   form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
 }
 export const TriggerType = ({
   groupType,
   isWhatsAppGroupEnabled,
   handleOnChange,
+  disabled = false,
   form: { setFieldValue },
 }: TriggerTypeProps) => {
   const isChecked = (value: string) => groupType === value;
@@ -40,7 +42,7 @@ export const TriggerType = ({
               data-testid="radio-btn"
               value={CONTACTS_COLLECTION}
               checked={isChecked(CONTACTS_COLLECTION)}
-              control={<Radio color="primary" />}
+              control={<Radio color="primary" disabled={disabled} />}
               label={'WABA Collections'}
               className={styles.Label}
             />
@@ -50,7 +52,7 @@ export const TriggerType = ({
               data-testid="radio-btn"
               value={WA_GROUPS_COLLECTION}
               checked={isChecked(WA_GROUPS_COLLECTION)}
-              control={<Radio color="primary" />}
+              control={<Radio color="primary" disabled={disabled} />}
               label={'WhatsApp Group Collections'}
               className={styles.Label}
             />
