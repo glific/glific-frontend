@@ -1,8 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
-import ActivateIcon from 'assets/images/icons/ActivateGray.svg?react';
-import DeactivateIcon from 'assets/images/icons/DeactivateIcon.svg?react';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -12,6 +10,9 @@ import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsApp
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -130,7 +131,7 @@ export const WhatsAppFormList = () => {
   const additionalAction = (item: any) => {
     const deactivateAction = {
       label: 'Deactivate',
-      icon: <DeactivateIcon className={styles.IconSize} data-testid="deactivate-icon" />,
+      icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
@@ -150,11 +151,10 @@ export const WhatsAppFormList = () => {
 
     const activateAction = {
       label: 'Activate',
-      icon: <ActivateIcon className={styles.IconSize} data-testid="activate-icon" />,
+      icon: <AddCircleOutlineIcon className={styles.IconSize} data-testid="activate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
-        setDialogType('activate');
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
     };
