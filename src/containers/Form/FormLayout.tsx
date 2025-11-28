@@ -631,7 +631,7 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            {errorButtonState.show && (
+            {errorButtonState?.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
                 {errorButtonState?.text}
               </Button>
@@ -679,7 +679,7 @@ export const FormLayout = ({
     formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
 
-  if (isView) {
+  if (headerDescriptionPart) {
     headerHelp = `Please ${headerDescriptionPart} below details.`;
   }
 
