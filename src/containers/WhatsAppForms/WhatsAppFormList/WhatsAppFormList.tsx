@@ -10,6 +10,9 @@ import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsApp
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -128,12 +131,12 @@ export const WhatsAppFormList = () => {
   const additionalAction = (item: any) => {
     const deactivateAction = {
       label: 'Deactivate',
+      icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
         setDialogType('inactive');
       },
-      insideMore: true,
     };
 
     const publishAction = {
@@ -148,13 +151,12 @@ export const WhatsAppFormList = () => {
 
     const activateAction = {
       label: 'Activate',
+      icon: <AddCircleOutlineIcon className={styles.IconSize} data-testid="activate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
-        setDialogType('activate');
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
-      insideMore: true,
     };
 
     let actions = [];
