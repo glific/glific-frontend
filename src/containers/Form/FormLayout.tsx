@@ -47,13 +47,13 @@ export interface FormLayoutProps {
   languageSupport?: boolean;
   setPayload?: Function;
   advanceSearch?: any;
-  backButtonLabel?: string;
   additionalState?: any;
-  button?: string | boolean;
+  button?: string;
   buttonState?: {
     text?: string;
     status?: boolean;
     styles?: string;
+    show?: boolean;
   };
   type?: string;
   afterSave?: Function;
@@ -89,7 +89,10 @@ export interface FormLayoutProps {
     text?: string;
     status?: boolean;
   };
-  skipCancel?: boolean | string;
+  errorButtonStatus?: {
+    show?: boolean;
+    text?: string;
+  };
 }
 
 export const FormLayout = ({
@@ -102,8 +105,11 @@ export const FormLayout = ({
   dialogMessage,
   formFields,
   redirectionLink,
-  backButtonLabel = 'Cancel',
   subHead = 'edit',
+  errorButtonStatus = {
+    show: true,
+    text: 'Cancel',
+  },
   listItem,
   getItemQuery,
   createItemQuery,
@@ -124,7 +130,7 @@ export const FormLayout = ({
   advanceSearch,
   cancelAction,
   button = 'Save',
-  buttonState = { text: '', status: false, styles: '' },
+  buttonState = { text: '', status: false, styles: '', show: true },
   type,
   afterSave,
   afterDelete,
@@ -146,7 +152,6 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
-  skipCancel = 'Cancel',
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -567,8 +572,6 @@ export const FormLayout = ({
     onSaveClick(true);
   };
 
-  console.log('value', skipCancel);
-
   const form = (
     <LexicalWrapper>
       <form onSubmit={formik.handleSubmit}>
@@ -592,7 +595,7 @@ export const FormLayout = ({
             );
           })}
           <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
-            {button && (
+            {buttonState.show && (
               <Button
                 variant="contained"
                 color="primary"
@@ -628,9 +631,9 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            {skipCancel && (
+            {errorButtonStatus.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {skipCancel}
+                {errorButtonStatus?.text}
               </Button>
             )}
 

@@ -496,7 +496,7 @@ export const SpeedSend = () => {
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={t('Save')}
-      buttonState={{ text: t('Validating URL'), status: validatingURL }}
+      buttonState={{ text: t('Validating URL'), status: validatingURL, show: true }}
       saveOnPageChange={false}
       type={mode}
       copyNotification={t('Copy of the template has been created!')}

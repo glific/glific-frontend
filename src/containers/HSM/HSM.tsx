@@ -902,18 +902,17 @@ export const HSM = () => {
         validationSchema={isEditing ? Yup.object() : FormSchema}
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
-        backButtonLabel={isEditing ? 'Go Back' : 'Cancel'}
         formFields={fields}
         redirectionLink={backButton}
         listItem="sessionTemplate"
         icon={templateIcon}
         getLanguageId={getLanguageId}
         languageSupport={false}
-        skipCancel={isEditing ? t('Go Back') : false}
+        errorButtonStatus={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
-        button={!isEditing ? t('Submit for Approval') : false}
-        buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        button={!isEditing ? t('Submit for Approval') : t('Save')}
+        buttonState={{ text: t('Validating URL'), status: validatingURL, show: !isEditing }}
         saveOnPageChange={false}
         type={mode}
         copyNotification={copyMessage}
