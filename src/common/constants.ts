@@ -185,6 +185,12 @@ export const LOCATION_REQUEST = 'LOCATION_REQUEST_MESSAGE';
 export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
 
+export const BUTTON_OPTIONS: any = [
+  { id: 'CALL_TO_ACTION', label: 'Call to Action' },
+  { id: 'QUICK_REPLY', label: 'Quick Reply' },
+  { id: 'WHATSAPP_FORM', label: 'WhatsApp Form' },
+];
+
 // Gupshup sample media
 export const SAMPLE_MEDIA_FOR_SIMULATOR = [
   {

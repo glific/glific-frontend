@@ -22,12 +22,13 @@ import {
   QUICK_REPLY,
   WHATSAPP_FORM,
   GUPSHUP_WHATSAPP_FORM,
+  BUTTON_OPTIONS,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
 import { Fragment, useState } from 'react';
-import { buttonOptions } from 'containers/HSM/HSM';
 import { useQuery } from '@apollo/client';
 import { LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { getOrganizationServices } from 'services/AuthService';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
@@ -79,6 +80,12 @@ export const TemplateOptions = ({
   const [forms, setForms] = useState<any>([]);
   const { urlType, sampleSuffix } = dynamicUrlParams;
   const [screens, setScreens] = useState<any>([]);
+
+  const isWhatsAppFormEnabled = getOrganizationServices('whatsappFormsEnabled');
+  let buttonOptions = BUTTON_OPTIONS;
+  if (!isWhatsAppFormEnabled) {
+    buttonOptions = BUTTON_OPTIONS.filter((option: any) => option.id !== WHATSAPP_FORM);
+  }
 
   useQuery(LIST_WHATSAPP_FORMS, {
     variables: {

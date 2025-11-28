@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -60,12 +60,6 @@ const buttonTypes: any = {
   WHATSAPP_FORM: { type: 'whatsapp_form', form_id: '', text: '', navigate_screen: '' },
 };
 
-export const buttonOptions: any = [
-  { id: 'CALL_TO_ACTION', label: 'Call to Action' },
-  { id: 'QUICK_REPLY', label: 'Quick Reply' },
-  { id: 'WHATSAPP_FORM', label: 'WhatsApp Form' },
-];
-
 export const HSM = () => {
   const location: any = useLocation();
   const [language, setLanguageId] = useState<any>(null);
@@ -89,7 +83,7 @@ export const HSM = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
-  const [templateType, setTemplateType] = useState<any>(buttonOptions[0]);
+  const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
   const [dynamicUrlParams, setDynamicUrlParams] = useState<any>({
     urlType: 'Static',
     sampleSuffix: '',
@@ -333,7 +327,7 @@ export const HSM = () => {
     if (hasButtons) {
       const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
       setTemplateButtons(buttonsVal);
-      setTemplateType(buttonOptions.find((btn: any) => btn.id === templateButtonType));
+      setTemplateType(BUTTON_OPTIONS.find((btn: any) => btn.id === templateButtonType));
       setIsAddButtonChecked(hasButtons);
       const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
