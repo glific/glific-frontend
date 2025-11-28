@@ -909,6 +909,7 @@ export const HSM = () => {
         icon={templateIcon}
         getLanguageId={getLanguageId}
         languageSupport={false}
+        skipCancel={isEditing ? t('Go Back') : false}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
         button={!isEditing ? t('Submit for Approval') : false}

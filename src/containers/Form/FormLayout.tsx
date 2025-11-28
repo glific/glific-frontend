@@ -89,7 +89,7 @@ export interface FormLayoutProps {
     text?: string;
     status?: boolean;
   };
-  skipCancel?: boolean;
+  skipCancel?: boolean | string;
 }
 
 export const FormLayout = ({
@@ -146,7 +146,7 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
-  skipCancel = false,
+  skipCancel = 'Cancel',
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -567,6 +567,8 @@ export const FormLayout = ({
     onSaveClick(true);
   };
 
+  console.log('value', skipCancel);
+
   const form = (
     <LexicalWrapper>
       <form onSubmit={formik.handleSubmit}>
@@ -626,9 +628,9 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            {!skipCancel && (
+            {skipCancel && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {backButtonLabel}
+                {skipCancel}
               </Button>
             )}
 
