@@ -541,7 +541,7 @@ export const Search = ({
         afterSave={saveHandler}
         helpData={searchInfo}
         backLinkButton="/search"
-        errorButtonStatus={{ text: t('Cancel'), show: !chatFilters }}
+        errorButtonState={{ text: t('Cancel'), show: !chatFilters }}
         buttonState={
           chatFilters
             ? {

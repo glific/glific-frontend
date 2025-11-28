@@ -89,7 +89,7 @@ export interface FormLayoutProps {
     text?: string;
     status?: boolean;
   };
-  errorButtonStatus?: {
+  errorButtonState?: {
     show?: boolean;
     text?: string;
   };
@@ -106,7 +106,7 @@ export const FormLayout = ({
   formFields,
   redirectionLink,
   headerDescriptionPart = 'edit',
-  errorButtonStatus = {
+  errorButtonState = {
     show: true,
     text: 'Cancel',
   },
@@ -631,9 +631,9 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            {errorButtonStatus.show && (
+            {errorButtonState.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {errorButtonStatus?.text}
+                {errorButtonState?.text}
               </Button>
             )}
 

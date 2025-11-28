@@ -908,7 +908,7 @@ export const HSM = () => {
         icon={templateIcon}
         getLanguageId={getLanguageId}
         languageSupport={false}
-        errorButtonStatus={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+        errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
         button={!isEditing ? t('Submit for Approval') : t('Save')}
