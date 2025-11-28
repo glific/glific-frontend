@@ -136,7 +136,6 @@ export const WhatsAppFormList = () => {
         setFormId(id);
         setDialogType('inactive');
       },
-      insideMore: true,
     };
 
     const publishAction = {
@@ -158,7 +157,6 @@ export const WhatsAppFormList = () => {
         setDialogType('activate');
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
-      insideMore: true,
     };
 
     let actions = [];
