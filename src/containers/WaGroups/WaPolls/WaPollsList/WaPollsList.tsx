@@ -98,13 +98,11 @@ export const WaPollsList = () => {
       icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
       dialog: (id: any) => setViewWaPollId(id),
-      insideMore: false,
     },
     {
       label: t('Copy Poll'),
       icon: <DuplicateIcon data-testid="duplicate-icon" />,
       parameter: 'id',
-      insideMore: false,
       dialog: handleCopy,
     },
     {
@@ -112,7 +110,6 @@ export const WaPollsList = () => {
       icon: <DeleteIcon data-testid="delete-icon" />,
       parameter: 'id',
       dialog: (id: any) => setDeleteWaPollId(id),
-      insideMore: false,
     },
   ];
 
