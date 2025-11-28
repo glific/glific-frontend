@@ -26,11 +26,6 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
-beforeEach(() => {
-  setOrganizationServices(JSON.stringify({ whatsappFormsEnabled: false }));
-  cleanup();
-});
-
 vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
   return {
@@ -197,6 +192,8 @@ describe('Add mode', () => {
   });
 
   test('it should create a hsm template with whatsapp form', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":true}');
+
     render(template);
 
     await waitFor(() => {
@@ -267,6 +264,22 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
+  });
+
+  test('should not display WhatsApp Form when whatsappFormsEnabled is false', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":false}');
+
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Add buttons'));
+
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    expect(screen.queryByText('WhatsApp Form')).not.toBeInTheDocument();
   });
 
   test('it adds quick reply buttons', async () => {
