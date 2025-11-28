@@ -138,10 +138,9 @@ export const CollectionList = () => {
 
   const exportCollectionButton = {
     label: t('Export'),
-    icon: <ExportIcon />,
+    icon: <ExportIcon data-testid="export-icon" />,
     parameter: 'id',
     dialog: exportCollection,
-    insideMore: true,
   };
 
   const additionalAction = () => (groups ? [addEntity] : [addEntity, exportCollectionButton]);

@@ -56,8 +56,7 @@ test('Update status', async () => {
   expect(orgCustomerButton).toBeInTheDocument();
   fireEvent.click(extensionButton);
   fireEvent.click(orgCustomerButton);
-  const moreButton = screen.getAllByTestId('MoreIcon');
-  fireEvent.click(moreButton[0]);
+
   await waitFor(() => {
     expect(screen.getByTestId('DeleteIcon')).toBeInTheDocument();
   });

@@ -40,7 +40,7 @@ const startTime = dayjs().add(1, 'hour');
 
 const fillForm = async (container: any, frequency: string) => {
   await waitFor(() => {
-    expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+    expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -139,7 +139,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -207,7 +207,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -244,7 +244,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
     });
     const autoCompletes = screen.getAllByRole('combobox');
 
@@ -268,7 +268,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
     });
 
     const startDateInput = container.queryByTestId('Start date');
@@ -548,7 +548,7 @@ describe('Whatsapp group collections', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new trigger')).toBeInTheDocument();
     });
 
     await fillForm(container, 'Daily');

@@ -97,8 +97,7 @@ test('It navigates to edit on clicking copy ', async () => {
     expect(screen.getByText('Interactive messages')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
-  fireEvent.click(screen.getByText('Copy'));
+  fireEvent.click(screen.getAllByTestId('copy-interactive-message')[0]);
 
   await waitFor(() => {
     expect(mockedUsedNavigate).toHaveBeenCalled();

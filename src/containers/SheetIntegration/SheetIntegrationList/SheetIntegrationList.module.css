@@ -8,9 +8,10 @@
 }
 
 .Actions {
-  text-align: end;
+  text-align: start;
   margin-left: auto;
-  min-width: 200px;
+  max-width: 200px;
+  width: 10%;
 }
 
 .HelperText {
@@ -38,7 +39,7 @@
 }
 
 .Name {
-  width: 30%;
+  width: 50%;
   min-width: 200px;
 }
 

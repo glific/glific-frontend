@@ -68,7 +68,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
   });
 
@@ -78,7 +78,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -108,7 +108,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -136,7 +136,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -182,7 +182,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const autocompletes = screen.getAllByTestId('autocomplete-element');
@@ -211,7 +211,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');

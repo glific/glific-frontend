@@ -58,7 +58,7 @@ describe('Create', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Poll')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Poll')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');

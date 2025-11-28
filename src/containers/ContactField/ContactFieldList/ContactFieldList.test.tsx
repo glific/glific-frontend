@@ -104,7 +104,7 @@ test('it opens contact field dialog box', async () => {
   expect(screen.getByTestId('loading')).toBeInTheDocument();
 
   fireEvent.click(getByTestId('newItemButton'));
-  const dialogTitle = await screen.findByText('Add a new Contact field');
+  const dialogTitle = await screen.findByText('Create a new Contact field');
 
   await waitFor(() => {
     expect(dialogTitle).toBeInTheDocument();

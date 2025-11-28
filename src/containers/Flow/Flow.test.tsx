@@ -153,7 +153,7 @@ it('should create tag', async () => {
   const { getByText, getByRole } = render(flow());
 
   await waitFor(() => {
-    expect(getByText('Add a new flow')).toBeInTheDocument();
+    expect(getByText('Create a new flow')).toBeInTheDocument();
   });
 
   const autoComplete = getByRole('combobox');
@@ -399,7 +399,7 @@ it('should show validate the form and show errors', async () => {
   render(flow());
 
   await waitFor(() => {
-    expect(screen.getByText('Add a new flow')).toBeInTheDocument();
+    expect(screen.getByText('Create a new flow')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByText('Save'));

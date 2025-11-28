@@ -103,7 +103,7 @@ describe('Certificate', () => {
     fireEvent.click(screen.getByTestId('newItemButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Certificate')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Certificate')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -140,7 +140,7 @@ describe('Certificate', () => {
     fireEvent.click(screen.getByTestId('newItemButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Certificate')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Certificate')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');

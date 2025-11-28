@@ -150,7 +150,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('deactivate a form successfully when inactive button is clicked', async () => {
-    const { getByText, getAllByRole, getByTestId } = render(wrapper([deactivateWhatsappForm]));
+    const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper([deactivateWhatsappForm]));
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
     const select = getAllByRole('combobox')[0];
@@ -164,8 +164,8 @@ describe('<WhatsAppFormList />', () => {
       expect(getByText('This is form name')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('MoreIcon'));
-    fireEvent.click(getByText('Deactivate'));
+    const deactivateIcon = await waitFor(() => getAllByTestId('deactivate-icon')[0]);
+    fireEvent.click(deactivateIcon);
 
     await waitFor(() => {
       expect(getByTestId('dialogTitle')).toBeInTheDocument();
@@ -181,7 +181,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('shows error message when deactivate API fails', async () => {
-    const { getByText, getAllByRole, getByTestId } = render(wrapper([deactivateWhatsappFormError]));
+    const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper([deactivateWhatsappFormError]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
     const select = getAllByRole('combobox')[0];
@@ -195,8 +195,8 @@ describe('<WhatsAppFormList />', () => {
       expect(getByText('This is form name')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('MoreIcon'));
-    fireEvent.click(getByText('Deactivate'));
+    const deactivateIcon = await waitFor(() => getAllByTestId('deactivate-icon')[0]);
+    fireEvent.click(deactivateIcon);
 
     await waitFor(() => {
       expect(getByTestId('dialogTitle')).toBeInTheDocument();

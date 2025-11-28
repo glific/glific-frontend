@@ -61,7 +61,7 @@ it('should create the tag', async () => {
     </MockedProvider>
   );
   await waitFor(() => {
-    expect(screen.getByText('Add a new tag')).toBeInTheDocument();
+    expect(screen.getByText('Create a new tag')).toBeInTheDocument();
   });
 
   fireEvent.change(screen.getByRole('textbox'), { target: { value: 'tag' } });

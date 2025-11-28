@@ -299,7 +299,7 @@ describe('Add mode', () => {
     const { getByText, getAllByRole } = render(interactiveMessage());
 
     await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     const autoCompletes = getAllByRole('combobox');
@@ -339,7 +339,7 @@ describe('Add mode', () => {
     render(interactiveMessage());
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('addButton'));
@@ -456,7 +456,7 @@ describe('translates the template', () => {
     const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('translateBtn'));
@@ -476,7 +476,7 @@ describe('translates the template', () => {
     const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     const [title, lexicalEditor, , buttonText] = screen.getAllByRole('textbox');

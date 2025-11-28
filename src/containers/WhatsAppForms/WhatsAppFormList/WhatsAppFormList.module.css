@@ -8,7 +8,7 @@
   min-height: 36px !important;
 }
 
-.SearchBar>fieldset {
+.SearchBar > fieldset {
   border: none !important;
 }
 
@@ -126,6 +126,9 @@
   padding: 6px;
   z-index: 20;
   min-width: 150px;
+}
+.IconSize {
+  font-size: 1.2rem !important;
 }
 
 .MoreListItem {

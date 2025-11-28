@@ -95,7 +95,7 @@ describe('collection', () => {
     const { getByText } = render(wrapper);
 
     await waitFor(() => {
-      expect(getByText('Add a new collection')).toBeInTheDocument();
+      expect(getByText('Create a new collection')).toBeInTheDocument();
     });
   });
 

@@ -58,7 +58,7 @@ export const Role = () => {
 
   return (
     <FormLayout
-      title="Add a new role"
+      title="Create a new role"
       {...queries}
       states={states}
       setStates={setStates}
