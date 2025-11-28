@@ -453,7 +453,7 @@ export const Trigger = () => {
       type={type}
       isView={true}
       backButtonLabel={isEditing ? 'Go Back' : 'Cancel'}
-      hideSaveButton={isEditing}
+      button={isEditing ? false : 'Save'}
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}

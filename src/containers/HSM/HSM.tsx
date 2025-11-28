@@ -907,12 +907,11 @@ export const HSM = () => {
         redirectionLink={backButton}
         listItem="sessionTemplate"
         icon={templateIcon}
-        hideSaveButton={isEditing}
         getLanguageId={getLanguageId}
         languageSupport={false}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
-        button={!isEditing ? t('Submit for Approval') : t('Save')}
+        button={!isEditing ? t('Submit for Approval') : false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
         saveOnPageChange={false}
         type={mode}

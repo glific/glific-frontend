@@ -49,7 +49,7 @@ export interface FormLayoutProps {
   advanceSearch?: any;
   backButtonLabel?: string;
   additionalState?: any;
-  button?: string;
+  button?: string | boolean;
   buttonState?: {
     text?: string;
     status?: boolean;
@@ -61,7 +61,6 @@ export interface FormLayoutProps {
   refetchQueries?: Array<any>;
   redirect?: boolean;
   title?: string;
-  hideSaveButton?: boolean;
   cancelAction?: Function;
   getLanguageId?: Function;
   backLinkButton?: string;
@@ -106,7 +105,6 @@ export const FormLayout = ({
   backButtonLabel = 'Cancel',
   subHead = 'edit',
   listItem,
-  hideSaveButton = false,
   getItemQuery,
   createItemQuery,
   updateItemQuery,
@@ -592,7 +590,7 @@ export const FormLayout = ({
             );
           })}
           <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
-            {!hideSaveButton && (
+            {button && (
               <Button
                 variant="contained"
                 color="primary"
