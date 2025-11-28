@@ -663,6 +663,7 @@ export const FormLayout = ({
   }
 
   let formTitle = '';
+  let headerHelp: string | undefined;
 
   // set title if there is a title
   if (title) {
@@ -675,7 +676,11 @@ export const FormLayout = ({
     formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} addHeader={subHead} />;
+  if (subHead) {
+    headerHelp = `Please ${subHead} below details.`;
+  }
+
+  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 
   let confirmationDialog;
   if (showConfirmationDialog) {

@@ -45,7 +45,7 @@ export const ContactManagement = () => {
 
   return (
     <>
-      <Heading formTitle="Contact Management" showHeaderHelp={false} helpData={contactVariablesInfo} />
+      <Heading formTitle="Contact Management" helpData={contactVariablesInfo} />
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
           <div>
