@@ -12,6 +12,7 @@ import {
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
+import { setOrganizationServices } from 'services/AuthService';
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -26,6 +27,7 @@ vi.mock('common/notification', async (importOriginal) => {
 });
 
 beforeEach(() => {
+  setOrganizationServices(JSON.stringify({ whatsappFormsEnabled: false }));
   cleanup();
 });
 
