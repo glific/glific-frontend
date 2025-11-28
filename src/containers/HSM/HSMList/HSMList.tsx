@@ -387,7 +387,7 @@ export const HSMList = () => {
     button.show = false;
   }
 
-  const handleEdit = (id: any) => {
+  const handleView = (id: any) => {
     navigate(`/template/${id}/edit`);
   };
   let additionalAction: any = () => [
@@ -395,7 +395,7 @@ export const HSMList = () => {
       label: t('View'),
       icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
-      dialog: handleEdit,
+      dialog: handleView,
     },
     {
       label: t('Copy UUID'),
