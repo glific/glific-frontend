@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
+import ActivateIcon from 'assets/images/icons/ActivateGray.svg?react';
+import DeactivateIcon from 'assets/images/icons/DeactivateIcon.svg?react';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -128,6 +130,7 @@ export const WhatsAppFormList = () => {
   const additionalAction = (item: any) => {
     const deactivateAction = {
       label: 'Deactivate',
+      icon: <DeactivateIcon className={styles.IconSize} data-testid="deactivate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
@@ -148,6 +151,7 @@ export const WhatsAppFormList = () => {
 
     const activateAction = {
       label: 'Activate',
+      icon: <ActivateIcon className={styles.IconSize} data-testid="activate-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         setFormId(id);
