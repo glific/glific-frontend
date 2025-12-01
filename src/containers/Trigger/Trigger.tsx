@@ -440,7 +440,6 @@ export const Trigger = () => {
       {...queries}
       states={states}
       roleAccessSupport
-      headerDescriptionPart={isEditing ? 'view' : 'edit'}
       setStates={setStates}
       setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
@@ -451,7 +450,7 @@ export const Trigger = () => {
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
-      isView={true}
+      isView={'View'}
       errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
       buttonState={{ show: !isEditing }}
       copyNotification={t('Copy of the trigger has been created!')}

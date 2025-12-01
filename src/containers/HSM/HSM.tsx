@@ -895,9 +895,8 @@ export const HSM = () => {
       <FormLayout
         {...queries}
         states={states}
-        isView={true}
+        isView={'View'}
         setStates={setStates}
-        headerDescriptionPart={'view'}
         setPayload={setPayload}
         validationSchema={isEditing ? Yup.object() : FormSchema}
         listItemName="HSM Template"

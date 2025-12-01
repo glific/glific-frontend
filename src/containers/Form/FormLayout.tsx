@@ -77,8 +77,7 @@ export interface FormLayoutProps {
   languageAttributes?: any;
   helpData?: HelpDataProps;
   noHeading?: boolean;
-  headerDescriptionPart?: string;
-  isView?: Boolean;
+  isView?: String;
   partialPage?: boolean;
   confirmationState?: {
     show: boolean;
@@ -101,11 +100,10 @@ export const FormLayout = ({
   setStates,
   validationSchema,
   listItemName,
-  isView = false,
+  isView = 'Edit',
   dialogMessage,
   formFields,
   redirectionLink,
-  headerDescriptionPart = 'edit',
   errorButtonState = {
     show: true,
     text: 'Cancel',
@@ -674,14 +672,12 @@ export const FormLayout = ({
   } else if (type === 'copy') {
     formTitle = `Copy ${listItemName}`; // case when copying an item
   } else if (itemId) {
-    formTitle = isView ? `${listItemName}` : `Edit ${listItemName}`; // case when editing a item
+    formTitle = isView === 'View' ? `${listItemName}` : `Edit ${listItemName}`; // case when editing a item
   } else {
     formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
 
-  if (headerDescriptionPart) {
-    headerHelp = `Please ${headerDescriptionPart} below details.`;
-  }
+  headerHelp = `Please ${isView} below details.`;
 
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 
