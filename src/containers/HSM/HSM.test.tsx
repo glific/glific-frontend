@@ -1,4 +1,4 @@
-import { render, waitFor, within, fireEvent, screen, cleanup } from '@testing-library/react';
+import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
