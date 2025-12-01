@@ -450,7 +450,7 @@ export const Trigger = () => {
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
-      isView={isEditing ? true : false}
+      isView={isEditing}
       errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
       buttonState={{ show: !isEditing }}
       copyNotification={t('Copy of the trigger has been created!')}
