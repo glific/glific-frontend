@@ -142,5 +142,5 @@ export const certificatesInfo: HelpDataProps = {
 
 export const whatsappFormsInfo: HelpDataProps = {
   heading: 'An overview of all the whatsapp forms created to date',
-  link: 'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates',
+  link: 'https://glific.github.io/docs/docs/Product%20Features/WhatsApp%20Forms',
 };
