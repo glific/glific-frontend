@@ -664,7 +664,8 @@ export const FormLayout = ({
   }
 
   let formTitle = '';
-  let headerHelp: string | undefined;
+  let headerHelp: string | undefined = `Please enter below details.`;
+
   // set title if there is a title
   if (title) {
     formTitle = title;
@@ -677,8 +678,6 @@ export const FormLayout = ({
   }
   if (isView) {
     headerHelp = `Please view below details.`;
-  } else {
-    headerHelp = `Please edit below details.`;
   }
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 
