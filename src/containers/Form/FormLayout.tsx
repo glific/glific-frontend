@@ -665,7 +665,6 @@ export const FormLayout = ({
 
   let formTitle = '';
   let headerHelp: string | undefined;
-  console.log('value', isView);
   // set title if there is a title
   if (title) {
     formTitle = title;
