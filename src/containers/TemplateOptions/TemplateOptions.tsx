@@ -351,7 +351,6 @@ export const TemplateOptions = ({
               value={navigate_screen}
               renderInput={(params) => <TextField {...params} label="Screen Name" />}
               onChange={(event: any, newValue: any) => {
-                console.log(newValue);
                 onInputChange(newValue.id, row, index, 'navigate_screen');
               }}
               disabled={disabled || !form_id}
