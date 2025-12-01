@@ -272,7 +272,7 @@ describe('Add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByText('Add buttons'));
 
