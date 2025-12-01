@@ -31,7 +31,6 @@ import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
 import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
-// import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import setLogs from 'config/logs';
@@ -132,6 +131,7 @@ const Simulator = ({
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const nodeRef = useRef<HTMLDivElement>(null!);
+  const [isDisconnected, setIsDisconnected] = useState(false);
 
   const client = useApolloClient();
   // Template listing
@@ -150,6 +150,33 @@ const Simulator = ({
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
+
+  useEffect(() => {
+    if (isPreviewMessage) return;
+
+    const handleOnline = () => {
+      setIsDisconnected(false);
+    };
+
+    const handleOffline = () => {
+      setIsDisconnected(true);
+    };
+
+    if (!navigator.onLine) {
+      setIsDisconnected(true);
+    }
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      if (!isPreviewMessage) {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      }
+    };
+  }, [isPreviewMessage]);
+
   const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any, messageUuid?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
@@ -189,6 +216,7 @@ const Simulator = ({
         // add log's
         setLogs(`sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
         setLogs(error, 'error', true);
+        setIsDisconnected(true);
       });
     setInputMessage('');
   };
@@ -196,18 +224,24 @@ const Simulator = ({
   useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     fetchPolicy: 'network-only',
     variables,
-    skip: isPreviewMessage || simulatorId === '',
+    skip: isPreviewMessage,
     onData: ({ data: simulatorSubscribe }) => {
       if (simulatorSubscribe.data) {
         try {
           const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release.user_id;
           if (userId.toString() === getUserSession('id')) {
+            setNotification('Sorry! Simulator timeout. Please click Preview again', 'warning');
             setShowSimulator(false);
           }
         } catch (error) {
           setLogs('simulator release error', 'error', true);
         }
       }
+    },
+    onError: (error) => {
+      setLogs('SIMULATOR_RELEASE_SUBSCRIPTION error', 'error', true);
+      setLogs(error, 'error', true);
+      setIsDisconnected(true);
     },
   });
 
@@ -216,6 +250,14 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: sentData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
+      if (isDisconnected) {
+        setIsDisconnected(false);
+      }
+    },
+    onError: (error) => {
+      setLogs('SIMULATOR_MESSAGE_SENT_SUBSCRIPTION error', 'error', true);
+      setLogs(error, 'error', true);
+      setIsDisconnected(true);
     },
   });
 
@@ -224,6 +266,15 @@ const Simulator = ({
     skip: isPreviewMessage,
     onData: ({ data: receivedData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
+      // Reset disconnected state on successful data
+      if (isDisconnected) {
+        setIsDisconnected(false);
+      }
+    },
+    onError: (error) => {
+      setLogs('SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION error', 'error', true);
+      setLogs(error, 'error', true);
+      setIsDisconnected(true);
     },
   });
 
@@ -270,6 +321,7 @@ const Simulator = ({
         // add log's
         setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
         setLogs(error, 'error', true);
+        setIsDisconnected(true);
       });
   };
 
@@ -493,6 +545,10 @@ const Simulator = ({
     </ClickAwayListener>
   );
 
+  const disconnectionBanner = isDisconnected && !isPreviewMessage && (
+    <div className={styles.DisconnectedBanner}>Simulator connection lost. Try to reload.</div>
+  );
+
   const simulator = (
     <Draggable nodeRef={nodeRef}>
       <div ref={nodeRef} data-testid="simulator-container" className={styles.SimContainer}>
@@ -531,6 +587,8 @@ const Simulator = ({
                   <MoreVertIcon />
                 </div>
               </div>
+              {disconnectionBanner}
+
               <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
@@ -548,7 +606,7 @@ const Simulator = ({
                     }}
                     value={inputMessage}
                     placeholder="Type a message"
-                    disabled={isPreviewMessage}
+                    disabled={isPreviewMessage || isDisconnected}
                     onChange={(event) => setInputMessage(event.target.value)}
                   />
                   <AttachFileIcon
@@ -563,7 +621,7 @@ const Simulator = ({
                 <Button
                   variant="contained"
                   className={styles.SendButton}
-                  disabled={isPreviewMessage}
+                  disabled={isPreviewMessage || isDisconnected}
                   onClick={() => sendMessage(sender)}
                 >
                   <MicIcon />
@@ -606,6 +664,11 @@ const Simulator = ({
                   id: searchData.search[0].contact.id,
                 });
               }
+            })
+            .catch((error) => {
+              setLogs('SIMULATOR_SEARCH_QUERY error', 'error', true);
+              setLogs(error, 'error', true);
+              setIsDisconnected(true);
             });
         } else {
           setNotification(
@@ -614,10 +677,14 @@ const Simulator = ({
           );
         }
       })
-      .catch(() => {
+      .catch((error) => {
         setNotification('Sorry! Failed to get simulator', 'warning');
+        setLogs('GET_SIMULATOR error', 'error', true);
+        setLogs(error, 'error', true);
+        setIsDisconnected(true);
       });
   };
+
   return isPreviewMessage ? (
     simulator
   ) : simulatorId ? (

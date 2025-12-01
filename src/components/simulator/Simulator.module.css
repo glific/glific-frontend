@@ -237,7 +237,6 @@
 
 .Simulator .Screen .Controls div {
   border: none;
-
   border-radius: 999px;
   padding: 5px;
   padding-left: 10px;
@@ -247,7 +246,6 @@
   background-color: white;
   display: flex;
   box-shadow: 0 1px silver;
-
   line-height: 5px;
 }
 
@@ -366,4 +364,15 @@
   word-break: break-word;
   white-space: pre-wrap;
   font-weight: 600;
+}
+
+.DisconnectedBanner {
+  margin: 8px 12px;
+  padding: 4px 6px;
+  border-radius: 7px;
+  background-color: #fdd;
+  color: #a94442;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
 }

@@ -93,7 +93,7 @@
   color: #073f24;
 }
 
-.DialogTitle > h2 {
+.DialogTitle>h2 {
   font-size: 24px;
 }
 
@@ -189,4 +189,15 @@
 
 .FlowContainer :global(#canvas-container) {
   margin-top: 0 !important;
+}
+
+.TakeOver {
+  margin-left: auto;
+  background-color: #fff;
+  color: #119656;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
 }

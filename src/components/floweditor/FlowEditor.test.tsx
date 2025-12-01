@@ -460,10 +460,16 @@ test('should display read-only banner when flow is being edited by another user'
 
     expect(screen.getByTestId('button')).toBeDisabled();
     expect(screen.getByTestId('translateButton')).toBeDisabled();
+
+    fireEvent.click(screen.getByText('Take Over'));
+
+    await waitFor(() => {
+      expect(screen.queryByAltText('ReadOnlyBanner')).not.toBeInTheDocument();
+    });
   } finally {
     useLazyQuerySpy.mockRestore();
   }
-}, 5000);
+});
 
 test('should not display read-only banner when flow is available for editing', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));

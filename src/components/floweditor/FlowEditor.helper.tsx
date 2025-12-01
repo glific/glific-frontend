@@ -141,6 +141,7 @@ export const loadfiles = (startFlowEditor: any) => {
   });
 
   // loading the largest file first
+
   document.body.appendChild(files[0]);
   document.body.appendChild(files[2]);
   document.body.appendChild(files[1]);
