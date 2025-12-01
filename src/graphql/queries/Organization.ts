@@ -136,6 +136,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       whatsappGroupEnabled
       certificateEnabled
       askMeBotEnabled
+      whatsappFormsEnabled
     }
   }
 `;
