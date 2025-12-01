@@ -895,7 +895,7 @@ export const HSM = () => {
       <FormLayout
         {...queries}
         states={states}
-        isView={'View'}
+        isView={true}
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={isEditing ? Yup.object() : FormSchema}
