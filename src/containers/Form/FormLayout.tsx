@@ -665,7 +665,7 @@ export const FormLayout = ({
 
   let formTitle = '';
   let headerHelp: string | undefined;
-
+  console.log('value', isView);
   // set title if there is a title
   if (title) {
     formTitle = title;
@@ -677,7 +677,9 @@ export const FormLayout = ({
     formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
   if (isView) {
-    headerHelp = `Please ${'view'} below details.`;
+    headerHelp = `Please view below details.`;
+  } else {
+    headerHelp = `Please edit below details.`;
   }
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 
