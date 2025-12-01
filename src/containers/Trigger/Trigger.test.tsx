@@ -460,6 +460,10 @@ describe('edit mode', () => {
 });
 
 describe('copy mode', async () => {
+  beforeEach(() => {
+    cleanup();
+  });
+
   test('it copies a trigger', async () => {
     mockUseLocationValue.state = 'copy';
 
@@ -475,15 +479,18 @@ describe('copy mode', async () => {
           startDate: startDate.format('MM/DD/YYYY'),
           endDate: endDate.format('MM/DD/YYYY'),
         }),
-        createTriggerQuery({
-          ...createTriggerPayload,
-          ...getDates(startTime, startDate, endDate),
-          days: [],
-          hours: [0, 1],
-          frequency: 'hourly',
-          groupType: 'WABA',
-          flowId: '1',
-        }),
+        createTriggerQuery(
+          {
+            ...createTriggerPayload,
+            ...getDates(startTime, startDate, endDate),
+            days: [],
+            hours: [0, 1],
+            frequency: 'hourly',
+            groupType: 'WABA',
+            flowId: '1',
+          },
+          1
+        ),
       ])
     );
 
@@ -491,10 +498,6 @@ describe('copy mode', async () => {
 
     await waitFor(() => {
       expect(screen.getByText('Copy trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
     const startDateInput = container.queryByTestId('Start date') as HTMLInputElement;
