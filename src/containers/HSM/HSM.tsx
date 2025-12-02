@@ -507,16 +507,6 @@ export const HSM = () => {
 
   const fields = [
     {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" className={styles.IsActive}>
-          Active?
-        </Typography>
-      ),
-      darkCheckbox: true,
-    },
-    {
       component: AutoComplete,
       name: 'language',
       options: languageOptions,

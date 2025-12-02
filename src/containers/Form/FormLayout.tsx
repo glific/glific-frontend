@@ -664,7 +664,7 @@ export const FormLayout = ({
   }
 
   let formTitle = '';
-  let headerHelp: string | undefined = `Please enter below details.`;
+  let headerHelp: string = `Please enter below details.`;
 
   // set title if there is a title
   if (title) {
