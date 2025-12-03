@@ -53,6 +53,7 @@ export interface FormLayoutProps {
     text?: string;
     status?: boolean;
     styles?: string;
+    show?: boolean;
   };
   type?: string;
   afterSave?: Function;
@@ -76,6 +77,7 @@ export interface FormLayoutProps {
   languageAttributes?: any;
   helpData?: HelpDataProps;
   noHeading?: boolean;
+  isView?: boolean;
   partialPage?: boolean;
   confirmationState?: {
     show: boolean;
@@ -86,7 +88,10 @@ export interface FormLayoutProps {
     text?: string;
     status?: boolean;
   };
-  skipCancel?: boolean;
+  errorButtonState?: {
+    show?: boolean;
+    text?: string;
+  };
 }
 
 export const FormLayout = ({
@@ -95,9 +100,14 @@ export const FormLayout = ({
   setStates,
   validationSchema,
   listItemName,
+  isView = false,
   dialogMessage,
   formFields,
   redirectionLink,
+  errorButtonState = {
+    show: true,
+    text: 'Cancel',
+  },
   listItem,
   getItemQuery,
   createItemQuery,
@@ -118,7 +128,7 @@ export const FormLayout = ({
   advanceSearch,
   cancelAction,
   button = 'Save',
-  buttonState = { text: '', status: false, styles: '' },
+  buttonState = { text: '', status: false, styles: '', show: true },
   type,
   afterSave,
   afterDelete,
@@ -140,7 +150,6 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
-  skipCancel = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -584,22 +593,24 @@ export const FormLayout = ({
             );
           })}
           <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                formik.validateForm().then((errors) => {
-                  onSaveButtonClick(errors);
-                  formik.submitForm();
-                });
-              }}
-              className={styles.Button}
-              data-testid="submitActionButton"
-              loading={saveClick}
-              disabled={buttonState.status}
-            >
-              {buttonState.status ? buttonState.text : button}
-            </Button>
+            {buttonState.show && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  formik.validateForm().then((errors) => {
+                    onSaveButtonClick(errors);
+                    formik.submitForm();
+                  });
+                }}
+                className={styles.Button}
+                data-testid="submitActionButton"
+                loading={saveClick}
+                disabled={buttonState.status}
+              >
+                {buttonState.status ? buttonState.text : button}
+              </Button>
+            )}
             {additionalAction ? (
               <Button
                 variant="outlined"
@@ -618,9 +629,9 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            {!skipCancel && (
+            {errorButtonState?.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {t('Cancel')}
+                {errorButtonState?.text}
               </Button>
             )}
 
@@ -653,6 +664,7 @@ export const FormLayout = ({
   }
 
   let formTitle = '';
+  let headerHelp: string = `Please enter below details.`;
 
   // set title if there is a title
   if (title) {
@@ -660,12 +672,14 @@ export const FormLayout = ({
   } else if (type === 'copy') {
     formTitle = `Copy ${listItemName}`; // case when copying an item
   } else if (itemId) {
-    formTitle = `Edit ${listItemName}`; // case when editing a item
+    formTitle = isView ? `${listItemName}` : `Edit ${listItemName}`; // case when editing a item
   } else {
     formTitle = `Create a new ${listItemName}`; // case when adding a new item
   }
-
-  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} />;
+  if (isView) {
+    headerHelp = `Please view below details.`;
+  }
+  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 
   let confirmationDialog;
   if (showConfirmationDialog) {

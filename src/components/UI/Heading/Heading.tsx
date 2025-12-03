@@ -8,7 +8,6 @@ import AddIcon from 'assets/images/add.svg?react';
 export interface HeadingProps {
   formTitle: string;
   helpData?: any;
-  showHeaderHelp?: boolean;
   backLink?: string;
   headerHelp?: string;
   button?: {
@@ -20,7 +19,13 @@ export interface HeadingProps {
   };
 }
 
-export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, headerHelp, button }: HeadingProps) => {
+export const Heading = ({
+  formTitle,
+  helpData,
+  backLink,
+  headerHelp,
+  button,
+}: HeadingProps) => {
   const navigate = useNavigate();
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
@@ -37,7 +42,7 @@ export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, 
             </div>
             {helpData ? <HelpIcon helpData={helpData} /> : ''}
           </div>
-          <div className={styles.TextHeading}>{showHeaderHelp ? headerHelp || `Please enter below details.` : ''}</div>
+          {headerHelp && <div className={styles.TextHeading}>{headerHelp}</div>}
         </div>
       </div>
       {button && button.show && (

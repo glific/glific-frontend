@@ -51,7 +51,7 @@ describe('Edit mode', () => {
       </MockedProvider>
     );
     await waitFor(() => {
-      expect(getByText('Edit HSM Template')).toBeInTheDocument();
+      expect(getByText('HSM Template')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -72,7 +72,7 @@ describe('Edit mode', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Edit HSM Template')).toBeInTheDocument();
+      expect(getByText('HSM Template')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -197,7 +197,7 @@ describe('Add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -272,7 +272,7 @@ describe('Add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByText('Add buttons'));
 

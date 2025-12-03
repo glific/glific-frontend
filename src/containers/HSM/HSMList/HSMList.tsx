@@ -21,6 +21,7 @@ import { templateInfo, templateStatusInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { capitalizeFirstLetter, copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -386,7 +387,16 @@ export const HSMList = () => {
     button.show = false;
   }
 
+  const handleView = (id: any) => {
+    navigate(`/template/${id}/edit`);
+  };
   let additionalAction: any = () => [
+    {
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-icon" />,
+      parameter: 'id',
+      dialog: handleView,
+    },
     {
       label: t('Copy UUID'),
       icon: <CopyAllOutlined data-testid="copy-button" />,
@@ -443,6 +453,9 @@ export const HSMList = () => {
         {...queries}
         filterList={filterTemplateStatus}
         filters={selectedTag?.id ? { ...appliedFilters, tagIds: [parseInt(selectedTag.id)] } : appliedFilters}
+        restrictedAction={(item: any) => ({
+          edit: false,
+        })}
       />
     </>
   );
