@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { useMutation, useQuery } from '@apollo/client';
-import { CircularProgress, Typography } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { useLocation, useParams } from 'react-router';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -23,7 +23,6 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
-import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
@@ -296,16 +295,6 @@ export const Trigger = () => {
 
   const formFields = [
     {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" className={styles.IsActive}>
-          Active?
-        </Typography>
-      ),
-      darkCheckbox: true,
-    },
-    {
       component: AutoComplete,
       name: 'flowId',
       options: flow.flows,
@@ -383,6 +372,7 @@ export const Trigger = () => {
       handleOnChange: (value: any) => setGroupType(value),
       groupType: groupType,
       isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
+      disabled: isEditing,
     },
     {
       component: AutoComplete,
@@ -454,12 +444,15 @@ export const Trigger = () => {
       setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
       languageSupport={false}
-      listItemName="trigger"
+      listItemName="Trigger"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
+      isView={isEditing}
+      errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+      buttonState={{ show: !isEditing }}
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}

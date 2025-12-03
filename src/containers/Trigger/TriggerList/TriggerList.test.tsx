@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
@@ -17,6 +17,15 @@ const wrapper = (
 );
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router', async () => {
+  return {
+    ...(await vi.importActual<any>('react-router')),
+    useLocation: () => ({ state: 'copy', pathname: '/trigger/1/edit' }),
+    useParams: () => ({ id: 1 }),
+    useNavigate: () => mockedUsedNavigate,
+  };
+});
 
 test('should load the trigger list', async () => {
   const { getByText, getByTestId } = render(wrapper);
@@ -31,19 +40,13 @@ test('click on Make a copy', async () => {
   const { getAllByTestId } = render(wrapper);
 
   await waitFor(() => {
-    expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
-  });
-
-  fireEvent.click(getAllByTestId('MoreIcon')[0]);
-
-  await waitFor(() => {
-    expect(screen.getByTestId('additionalButton')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('additionalButton'));
+    expect(getAllByTestId('copy-trigger')[0]).toBeInTheDocument();
+    fireEvent.click(getAllByTestId('copy-trigger')[0]);
   });
 });
 
 test('hover over tooltip', async () => {
-  const { container, getAllByTestId, getByText } = render(wrapper);
+  const { getAllByTestId, getByText } = render(wrapper);
   await waitFor(() => {
     const tooltip = getAllByTestId('tooltip')[0];
     fireEvent.mouseOver(tooltip);
@@ -51,5 +54,18 @@ test('hover over tooltip', async () => {
 
   await waitFor(() => {
     expect(getByText('Repeat: weekly(Mon,Tue)'));
+  });
+});
+
+test('should navigate to edit page on clicking the view button', async () => {
+  const { getAllByTestId, getByText } = render(wrapper);
+
+  await waitFor(() => {
+    expect(getByText('Triggers')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getAllByTestId('view-trigger')[0]);
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/trigger/1/edit');
   });
 });
