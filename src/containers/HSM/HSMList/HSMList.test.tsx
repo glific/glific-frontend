@@ -132,6 +132,21 @@ test('should navigate to create template page', async () => {
   expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/add');
 });
 
+test('should navigate to edit template page', async () => {
+  const { getByText } = render(template(syncTemplateQuery));
+
+  await waitFor(() => {
+    expect(getByText('HSM Templates')).toBeInTheDocument();
+  });
+
+  const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+  fireEvent.click(viewIcons[0]);
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit');
+  });
+});
+
 test('should navigate to create template page with selected tag', async () => {
   const { getByText, getByTestId, getAllByRole } = render(template(syncTemplateQuery));
 

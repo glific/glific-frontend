@@ -1041,7 +1041,7 @@ export const InteractiveMessage = () => {
         getQueryFetchPolicy="cache-and-network"
         afterSave={afterSave}
         saveOnPageChange={false}
-        buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        buttonState={{ text: t('Validating URL'), status: validatingURL, show: true }}
         helpData={interactiveMessageInfo}
         backLinkButton={`/${backButton}`}
       />
