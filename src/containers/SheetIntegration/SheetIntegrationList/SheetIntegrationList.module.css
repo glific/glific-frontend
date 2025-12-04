@@ -30,12 +30,23 @@
 }
 
 .LastSync {
-  width: 20%;
+  width: 15%;
   min-width: 200px;
 }
 
 .Type {
   min-width: 100px;
+}
+
+.SyncStatus {
+  min-width: 150px;
+}
+
+.FailureReason {
+  min-width: 30px;
+  width: 20%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .Name {
@@ -62,4 +73,27 @@
   font-weight: 400;
   margin: 0 12px;
   color: #073f24;
+  text-align: center;
+}
+
+.SyncStatusBadge {
+  border-radius: 14px;
+  padding: 4px 8px;
+  min-width: 77px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.SuccessBadge {
+  composes: SyncStatusBadge;
+  background-color: #c8ebdc;
+  color: #119656;
+}
+
+.ErrorBadge {
+  composes: SyncStatusBadge;
+  background-color: #fbe8e8;
+  color: #dd1f1f;
 }

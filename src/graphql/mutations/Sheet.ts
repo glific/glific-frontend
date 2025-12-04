@@ -77,7 +77,8 @@ export const SYNC_SHEET = gql`
         updatedAt
         url
         insertedAt
-        warnings
+        syncStatus
+        failureReason
       }
       errors {
         key
