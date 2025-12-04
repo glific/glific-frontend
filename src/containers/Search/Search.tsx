@@ -541,11 +541,12 @@ export const Search = ({
         afterSave={saveHandler}
         helpData={searchInfo}
         backLinkButton="/search"
-        skipCancel={chatFilters}
+        errorButtonState={{ text: t('Cancel'), show: !chatFilters }}
         buttonState={
           chatFilters
             ? {
                 styles: styles.Buttons,
+                show: true,
               }
             : undefined
         }

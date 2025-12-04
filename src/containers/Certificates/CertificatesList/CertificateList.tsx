@@ -23,7 +23,7 @@ const getDescription = (description?: string) => (
   <>{description ? <p>{description.length < 100 ? description : `${description.slice(0, 100)}...`}</p> : ''}</>
 );
 
-const columnStyles = [styles.Label, styles.Description, styles.Actions];
+const columnStyles = [styles.Name, styles.Description, styles.Actions];
 const certificateIcon = <CertificateIcon className={styles.DarkIcon} />;
 
 export const CertificateList = () => {

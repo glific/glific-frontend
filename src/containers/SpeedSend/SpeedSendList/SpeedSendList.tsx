@@ -99,7 +99,6 @@ export const SpeedSendList = () => {
       icon: <DuplicateIcon data-testid="copyTemplate" />,
       parameter: 'id',
       dialog: setCopyDialog,
-      insideMore: true,
     },
   ];
 

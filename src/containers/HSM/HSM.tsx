@@ -104,13 +104,18 @@ export const HSM = () => {
   let backButton = location.state?.tag?.label ? `template?tag=${location.state?.tag?.label}` : 'template';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
-  const { data: shortCodes, loading: shortcodesLoading } = useQuery(GET_SHORTCODES, {
+  const {
+    data: shortCodes,
+    loading: shortcodesLoading,
+    refetch: refetchShortcodes,
+  } = useQuery(GET_SHORTCODES, {
     variables: {
       filter: {
         isHsm: true,
       },
     },
   });
+
   const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
@@ -502,16 +507,6 @@ export const HSM = () => {
 
   const fields = [
     {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" className={styles.IsActive}>
-          Active?
-        </Typography>
-      ),
-      darkCheckbox: true,
-    },
-    {
       component: AutoComplete,
       name: 'language',
       options: languageOptions,
@@ -884,6 +879,7 @@ export const HSM = () => {
       <FormLayout
         {...queries}
         states={states}
+        isView={isEditing}
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={isEditing ? Yup.object() : FormSchema}
@@ -895,10 +891,11 @@ export const HSM = () => {
         icon={templateIcon}
         getLanguageId={getLanguageId}
         languageSupport={false}
+        errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
         button={!isEditing ? t('Submit for Approval') : t('Save')}
-        buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        buttonState={{ text: t('Validating URL'), status: validatingURL, show: !isEditing }}
         saveOnPageChange={false}
         type={mode}
         copyNotification={copyMessage}
@@ -906,6 +903,7 @@ export const HSM = () => {
         cancelLink={backButton}
         getMediaId={getMediaId}
         entityId={params.id}
+        afterSave={() => refetchShortcodes()}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </>

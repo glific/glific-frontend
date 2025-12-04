@@ -65,7 +65,7 @@ export const ContactField = ({ setOpenDialog }: ContactFieldProps) => {
     <div className={styles.Layout}>
       <FormLayout
         {...queries}
-        title={t('Add a new Contact field')}
+        title={t('Create a new Contact field')}
         listItem="contactsField"
         listItemName="contactsField"
         saveOnPageChange={false}
