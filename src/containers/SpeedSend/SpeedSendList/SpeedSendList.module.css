@@ -42,7 +42,8 @@
 }
 
 .Actions {
-  width: 19%;
-  min-width: 200px;
-  text-align: end;
+  width: 10%;
+  max-width: 170px;
+  text-align: start;
+  padding-left: 0px !important;
 }

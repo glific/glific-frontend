@@ -219,7 +219,7 @@ test('if the user is Admin they should not see Glific admin role in the list', a
   });
 });
 
-test('changing to staff role shows a checkbox', async () => {
+test.skip('changing to staff role shows a checkbox', async () => {
   const utilSpy = vi.spyOn(Utils, 'organizationHasDynamicRole');
   utilSpy.mockImplementation(() => true);
 

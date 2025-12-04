@@ -8,9 +8,9 @@
 }
 
 .Actions {
-  width: 15%;
-  min-width: 200px;
-  text-align: end;
+  width: 10%;
+  max-width: 200px;
+  text-align: start;
 }
 
 .LabelText {

@@ -174,13 +174,22 @@ export const GUPSHUP_CALL_TO_ACTION =
 export const GUPSHUP_QUICK_REPLY =
   'You may get user responses via buttons. Whatsapp allows 3 quick replies. These are static unline the call to actions where you can define call or link actions.';
 
+export const GUPSHUP_WHATSAPP_FORM = 'Whatsapp Forms allow you to collect structured data from users.';
+
 // Call to action button
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const LIST = 'LIST';
 export const QUICK_REPLY = 'QUICK_REPLY';
+export const WHATSAPP_FORM = 'WHATSAPP_FORM';
 export const LOCATION_REQUEST = 'LOCATION_REQUEST_MESSAGE';
 export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
+
+export const BUTTON_OPTIONS: any = [
+  { id: 'CALL_TO_ACTION', label: 'Call to Action' },
+  { id: 'QUICK_REPLY', label: 'Quick Reply' },
+  { id: 'WHATSAPP_FORM', label: 'WhatsApp Form' },
+];
 
 // Gupshup sample media
 export const SAMPLE_MEDIA_FOR_SIMULATOR = [

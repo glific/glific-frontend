@@ -13,6 +13,7 @@ import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
 import { triggerInfo } from 'common/HelpData';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 dayjs.extend(relativeTime);
 
 const getTooltip = (frequency: any, days: any) => {
@@ -74,13 +75,22 @@ export const TriggerList = () => {
     navigate(`/trigger/${id}/edit`, { state: 'copy' });
   };
 
+  const handleView = (id: any) => {
+    navigate(`/trigger/${id}/edit`);
+  };
+
   const additionalAction = () => [
     {
       label: t('Copy'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copy-trigger" />,
       parameter: 'id',
       dialog: setDialog,
-      insideMore: true,
+    },
+    {
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-trigger" />,
+      parameter: 'id',
+      dialog: handleView,
     },
   ];
 
@@ -114,6 +124,10 @@ export const TriggerList = () => {
       searchParameter={['name']}
       additionalAction={additionalAction}
       sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
+      restrictedAction={(item: any) => ({
+        edit: false,
+        delete: true,
+      })}
     />
   );
 };
