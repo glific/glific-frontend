@@ -8,7 +8,7 @@
   min-height: 36px !important;
 }
 
-.SearchBar>fieldset {
+.SearchBar > fieldset {
   border: none !important;
 }
 
@@ -31,8 +31,13 @@
 
 .Actions {
   width: 15%;
-  min-width: 200px;
-  text-align: end;
+  max-width: 200px;
+  text-align: start;
+  padding-left: 25px !important;
+}
+
+.Actions > div {
+  justify-content: flex-start !important;
 }
 
 .LabelText {
@@ -124,7 +129,6 @@
   color: #555555 !important;
 }
 
-.StatusColumn,
 .DateColumn {
   width: 19.5%;
   min-width: 120px;
@@ -174,7 +178,7 @@
   line-height: 1;
 }
 
-.RadioLabel>span {
+.RadioLabel > span {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -224,25 +228,4 @@
 .AssistantListPlain {
   margin: 4px 0 0;
   padding-left: 18px;
-}
-
-.Status {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.PublishedBadge {
-  composes: Status;
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.NotPublishedBadge {
-  composes: Status;
-  background-color: #fff3cd;
-  color: #856404;
 }

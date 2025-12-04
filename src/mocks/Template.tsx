@@ -233,6 +233,50 @@ export const getHSMTemplateTypeMedia = {
     data: getTemplateDataTypeMedia,
   },
 };
+export const CREATE_SESSION_TEMPLATE_MOCK = [
+  {
+    request: {
+      query: CREATE_TEMPLATE,
+    },
+    result: () => ({
+      data: {
+        createSessionTemplate: {
+          sessionTemplate: {
+            id: '101',
+            label: 'title',
+            body: 'Hi, How are you*_~~_* {{1}}',
+            footer: 'footer',
+            isActive: true,
+            language: {
+              id: '1',
+              label: 'English',
+            },
+            translations: [],
+            type: 'TEXT',
+            MessageMedia: null,
+            category: 'ACCOUNT_UPDATE',
+            shortcode: 'element_name',
+            example: 'Hi, How are you*_~~_* [User]',
+            hasButtons: true,
+            buttons: JSON.stringify([
+              {
+                type: 'FLOW',
+                navigate_screen: 'RECOMMEND',
+                text: 'Continue',
+                flow_id: '1473834353902269',
+                flow_action: 'NAVIGATE',
+              },
+            ]),
+            buttonType: 'WHATSAPP_FORM',
+          },
+          errors: null,
+        },
+      },
+    }),
+    maxUsageCount: Number.POSITIVE_INFINITY,
+    variableMatcher: () => true,
+  },
+];
 
 export const createTemplateMock = (input: any) => ({
   request: {
@@ -479,7 +523,6 @@ export const getSpeedSendTemplate2 = {
     },
   },
 };
-
 export const updateSessiontemplate = {
   request: {
     query: UPDATE_TEMPLATE,
@@ -525,6 +568,34 @@ export const updateSessiontemplate = {
 };
 
 export const templatesData = [
+  {
+    id: '1',
+    bspId: null,
+    label: 'Test Template',
+    body: 'Test body',
+    shortcode: 'test',
+    category: 'ACCOUNT_UPDATE',
+    isReserved: false,
+    status: 'APPROVED',
+    reason: 'test reason',
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2020-12-01T18:00:32Z',
+    numberParameters: 0,
+    translations:
+      '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+    type: 'TEXT',
+    quality: null,
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
   {
     id: '87',
     bspId: null,

@@ -59,6 +59,10 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
       interactiveContent
       flowLabel
       sendBy
+      whatsappFormResponse {
+        rawResponse
+        whatsappFormId
+      }
     }
   }
 `;
@@ -119,6 +123,10 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
       interactiveContent
       flowLabel
       sendBy
+      whatsappFormResponse {
+        rawResponse
+        whatsappFormId
+      }
     }
   }
 `;
