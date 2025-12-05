@@ -189,6 +189,7 @@ export const TemplateOptions = ({
               <div className={styles.TextFieldWrapper}>
                 <Autocomplete
                   options={options}
+                  disabled={disabled || disablePhoneFields || disableUrlFields}
                   classes={{ inputRoot: styles.DefaultInputRoot }}
                   renderInput={(params) => <TextField {...params} label="Select URL Type" />}
                   clearIcon={false}
