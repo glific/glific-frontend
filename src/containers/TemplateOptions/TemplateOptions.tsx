@@ -112,6 +112,8 @@ export const TemplateOptions = ({
     helper.remove(idx);
     onRemoveClick(idx);
   };
+  const urlCount = inputFields.filter((field) => field.type === 'url').length;
+  const phoneNumberCount = inputFields.filter((field) => field.type === 'phone_number').length;
 
   const addButton = (helper: any, type: boolean = false) => {
     const title = templateType ? buttonTitles[templateType?.id] : '';
@@ -131,6 +133,9 @@ export const TemplateOptions = ({
   };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
+    const disablePhoneFields = phoneNumberCount > 1;
+    const disableUrlFields = urlCount > 2;
+
     const { type, title, value, navigate_screen, text, form_id }: any = row;
 
     let template: any = null;
@@ -160,30 +165,12 @@ export const TemplateOptions = ({
                   >
                     <FormControlLabel
                       value="phone_number"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'phone_number') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone_number')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || phoneNumberCount >= 1} />}
                       label="Phone number"
                     />
                     <FormControlLabel
                       value="url"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'url') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || urlCount > 2} />}
                       label="URL"
                     />
                   </RadioGroup>
@@ -218,7 +205,7 @@ export const TemplateOptions = ({
             <div className={styles.TextFieldWrapper} data-testid="buttonTitle">
               <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                 <TextField
-                  disabled={disabled}
+                  disabled={disabled || disablePhoneFields || disableUrlFields}
                   title={title}
                   value={title}
                   placeholder={buttonTitle}
@@ -237,7 +224,7 @@ export const TemplateOptions = ({
                 <TextField
                   title={value}
                   value={value}
-                  disabled={disabled}
+                  disabled={disabled || disablePhoneFields || disableUrlFields}
                   placeholder={buttonValue}
                   variant="outlined"
                   onChange={(e: any) => onInputChange(e.target.value, row, index, 'value')}
@@ -254,7 +241,7 @@ export const TemplateOptions = ({
                 <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                   <TextField
                     placeholder="Sample Suffix"
-                    disabled={disabled}
+                    disabled={disabled || disablePhoneFields || disableUrlFields}
                     label={'Sample Suffix'}
                     className={styles.TextField}
                     slotProps={{
@@ -282,7 +269,7 @@ export const TemplateOptions = ({
           </div>
 
           <div className={styles.Button}>
-            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
+            {inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers, true) : null}
           </div>
         </Fragment>
       );
