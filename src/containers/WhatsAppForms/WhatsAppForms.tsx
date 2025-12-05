@@ -38,6 +38,7 @@ export const WhatsAppForms = () => {
   const [categories, setCategories] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [extractedVariables, setExtractedVariables] = useState<string[]>([]);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const params = useParams();
 
   useQuery(GET_WHATSAPP_FORM, {
@@ -114,23 +115,30 @@ export const WhatsAppForms = () => {
     formJson,
     formCategories,
     description,
+    googleSheetUrl,
   };
 
-  const setPayload = ({ name, formJson, formCategories, description }: any) => {
+  const setPayload = ({ name, formJson, formCategories, description, googleSheetUrl }: any) => {
     const payload = {
       name,
       formJson,
       description,
       categories: formCategories.map((category: any) => category.id),
+      googleSheetUrl,
     };
 
     return payload;
   };
-  const setStates = ({ name, definition, description, categories }: any) => {
+
+  const setStates = ({ name, definition, description, categories, sheet, ...props }: any) => {
     setName(name);
     setDescription(description);
 
     setFormCategories(categories.map((c: string) => ({ id: c, name: c })));
+
+    if (sheet?.url) {
+      setGoogleSheetUrl(sheet.url);
+    }
 
     let parsedDefinition;
     try {
@@ -188,7 +196,16 @@ export const WhatsAppForms = () => {
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
       disabled: disabled,
     },
+    {
+      component: Input,
+      name: 'googleSheetUrl',
+      label: 'Google Sheet URL',
+      placeholder: 'Enter Google Sheet URL',
+      helperText: 'Provide a Google Sheet URL to store form responses automatically.',
+      disabled: disabled,
+    },
   ];
+
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
 
@@ -271,8 +288,9 @@ export const WhatsAppForms = () => {
               status: disabled,
               show: true,
             }}
-            customHandler={(error: string) => {
-              setErrorMessage(formatError(error), 'An error occurred');
+            customHandler={(error: any) => {
+              if (typeof error === 'string') setErrorMessage(formatError(error), 'An error occurred');
+              else setErrorMessage(error[0]);
             }}
           />
         </div>
