@@ -68,7 +68,7 @@ test('it disables CTA addition after 1 phone number and 2 URLs are added on call
   const radioButtons = getAllByRole('radio');
   fireEvent.click(radioButtons[0]);
 
-  let [value1, title1] = getAllByRole('textbox');
+  const [value1, title1] = getAllByRole('textbox');
 
   fireEvent.change(title1, { target: { value: 'Contact Us' } });
   fireEvent.change(value1, { target: { value: '+919090909090' } });
@@ -76,7 +76,7 @@ test('it disables CTA addition after 1 phone number and 2 URLs are added on call
   fireEvent.click(getByText('Add Call to action'));
   await waitFor(() => {});
 
-  let [value2, title2] = getAllByRole('textbox');
+  const [value2, title2] = getAllByRole('textbox');
 
   fireEvent.change(title2, { target: { value: 'Visit Website' } });
   fireEvent.change(value2, { target: { value: 'https://example.com' } });
@@ -84,7 +84,7 @@ test('it disables CTA addition after 1 phone number and 2 URLs are added on call
   fireEvent.click(getByText('Add Call to action'));
   await waitFor(() => {});
 
-  let [value3, title3] = getAllByRole('textbox');
+  const [value3, title3] = getAllByRole('textbox');
 
   fireEvent.change(title3, { target: { value: 'More Info' } });
   fireEvent.change(value3, { target: { value: 'https://info.com' } });
