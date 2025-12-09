@@ -9,6 +9,7 @@ import {
   deactivateWhatsappFormError,
   syncWhatsappFormQueryWithErrors,
   syncWhatsappForm,
+  syncWhatsappFormError,
 } from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
@@ -230,6 +231,17 @@ describe('<WhatsAppFormList />', () => {
 
   test('sync whatsapp forms shows error notification on failure', async () => {
     const { getByTestId } = render(wrapper([syncWhatsappFormQueryWithErrors]));
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
+
+    const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
+    fireEvent.click(syncButton);
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+  test('sync whatsapp forms shows error notification on failure', async () => {
+    const { getByTestId } = render(wrapper([syncWhatsappFormError]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
     const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));

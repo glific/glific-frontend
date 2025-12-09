@@ -374,7 +374,7 @@ const syncWhatsappFormQueryWithErrors = {
   request: {
     query: SYNC_WHATSAPP_FORM,
     variables: {
-      organization_id: 'org-123',
+      organization_id: 'org-1',
     },
   },
   result: {
@@ -391,6 +391,26 @@ const syncWhatsappFormQueryWithErrors = {
   },
 };
 
+const syncWhatsappFormError = {
+  request: {
+    query: SYNC_WHATSAPP_FORM,
+    variables: {
+      organization_id: null,
+    },
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        whatsappForm: null,
+        errors: [
+          {
+            message: 'Something went wrong',
+          },
+        ],
+      },
+    },
+  },
+};
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
@@ -404,4 +424,4 @@ export const WHATSAPP_FORM_MOCKS = [
   createdWhatsAppFormQueryWithErrors,
 ];
 
-export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };
+export { syncWhatsappFormQueryWithErrors, syncWhatsappForm, syncWhatsappFormError };
