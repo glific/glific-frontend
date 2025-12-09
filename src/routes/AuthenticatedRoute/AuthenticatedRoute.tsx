@@ -20,6 +20,7 @@ import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
 import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
 import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
 import { getOrganizationServices } from 'services/AuthService';
+import Analytics from 'containers/Analytics/Analytics';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -63,6 +64,8 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const Assistant = lazy(() => import('containers/Assistants/Assistants'));
+const analytics = lazy(() => import('containers/Analytics/Analytics'));
+
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 
@@ -152,7 +155,9 @@ const routeAdmin = (
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
 
     <Route path="/assistants" element={<Assistant />} />
+
     <Route path="/assistants/:assistantId" element={<Assistant />} />
+    <Route path="/analytics" element={<Analytics />} />
 
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />

@@ -196,6 +196,13 @@ const menus = (): Menu[] => [
     roles: allRoles,
   },
   {
+    title: 'Data Analytics',
+    path: '/analytics',
+    icon: 'assistant',
+    type: 'sideDrawer',
+    roles: allRoles,
+  },
+  {
     title: 'Manage',
     path: '/collection',
     icon: 'manage',

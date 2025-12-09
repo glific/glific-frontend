@@ -69,3 +69,5 @@ export const CERTIFICATES_FAQ_FORMAT_LINK =
 export const CERTIFICATES_PERMISSIONS_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#4-error-2-permission-issues';
 export const ASK_ME_BOT_ENDPOINT = `${GLIFIC_API_URL}/v1/askme`;
+export const ANALYTICS_ENDPOINT = `${GLIFIC_API_URL}/v1/get-embed-token`;
+export const SUPERSET_DASHBOARD_ID = envVariables.VITE_SUPERSET_DASHBOARD_ID;
