@@ -7,6 +7,8 @@ import {
   WHATSAPP_FORM_MOCKS,
   deactivateWhatsappForm,
   deactivateWhatsappFormError,
+  syncWhatsappFormQueryWithErrors,
+  syncWhatsappForm,
 } from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
@@ -206,6 +208,32 @@ describe('<WhatsAppFormList />', () => {
 
     const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
     fireEvent.click(ConfirmButton);
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('sync whatsapp forms shows error notification on failure', async () => {
+    const { getByTestId, getByText } = render(wrapper([syncWhatsappForm]));
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
+    fireEvent.click(syncButton);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+
+    expect(notificationSpy).toHaveBeenCalledWith('WhatsApp Forms synced successfully');
+  });
+
+  test('sync whatsapp forms shows error notification on failure', async () => {
+    const { getByTestId, getByText } = render(wrapper([syncWhatsappFormQueryWithErrors]));
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
+
+    const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
+    fireEvent.click(syncButton);
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();

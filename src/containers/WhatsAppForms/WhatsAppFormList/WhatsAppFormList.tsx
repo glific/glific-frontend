@@ -97,7 +97,7 @@ export const WhatsAppFormList = () => {
     },
   });
 
-  const handleHsmUpdates = () => {
+  const handleFormUpdates = () => {
     setSyncWhatsappFormLoad(true);
 
     syncWhatsappForm({
@@ -241,8 +241,8 @@ export const WhatsAppFormList = () => {
       color="primary"
       loading={syncWhatsappFormLoad}
       className={styles.HsmUpdates}
-      data-testid="updateHsm"
-      onClick={() => handleHsmUpdates()}
+      data-testid="syncWhatsappForm"
+      onClick={() => handleFormUpdates()}
       aria-hidden="true"
     >
       Sync Whatsapp Form
