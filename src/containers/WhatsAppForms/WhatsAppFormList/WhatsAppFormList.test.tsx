@@ -215,7 +215,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('sync whatsapp forms shows error notification on failure', async () => {
-    const { getByTestId, getByText } = render(wrapper([syncWhatsappForm]));
+    const { getByTestId } = render(wrapper([syncWhatsappForm]));
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
     const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
@@ -229,7 +229,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('sync whatsapp forms shows error notification on failure', async () => {
-    const { getByTestId, getByText } = render(wrapper([syncWhatsappFormQueryWithErrors]));
+    const { getByTestId } = render(wrapper([syncWhatsappFormQueryWithErrors]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
     const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
