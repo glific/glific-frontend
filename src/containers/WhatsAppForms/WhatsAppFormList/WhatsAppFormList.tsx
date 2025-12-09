@@ -30,7 +30,7 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
-  SYNC_WHATSAPP_FORM: SYNC_WHATSAPP_FORM,
+  syncWhatsappForm: SYNC_WHATSAPP_FORM,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
