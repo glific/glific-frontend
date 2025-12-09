@@ -210,6 +210,13 @@ const menus = (): Menu[] => [
         },
       ]),
   {
+    title: 'Data Analytics',
+    path: '/analytics',
+    icon: 'analytics',
+    type: 'sideDrawer',
+    roles: managerLevel,
+  },
+  {
     title: 'Manage',
     path: '/collection',
     icon: 'manage',
