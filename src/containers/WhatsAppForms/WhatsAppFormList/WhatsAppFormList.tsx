@@ -13,7 +13,6 @@ import {
   SYNC_WHATSAPP_FORM,
 } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
-import { useQuery, gql } from '@apollo/client';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
@@ -82,7 +81,7 @@ export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
   const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
-  const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
+  const [syncWhatsappFormLoad, setSyncWhatsappFormLoad] = useState(false);
 
   const navigate = useNavigate();
   const [syncWhatsappForm] = useMutation(SYNC_WHATSAPP_FORM);
@@ -99,7 +98,7 @@ export const WhatsAppFormList = () => {
   });
 
   const handleHsmUpdates = () => {
-    setSyncTemplateLoad(true);
+    setSyncWhatsappFormLoad(true);
 
     syncWhatsappForm({
       variables: {
@@ -107,11 +106,9 @@ export const WhatsAppFormList = () => {
       },
     })
       .then((res) => {
-        setSyncTemplateLoad(false);
+        setSyncWhatsappFormLoad(false);
 
         const result = res?.data?.syncWhatsappForm;
-        console.log(result, 'result');
-
         if (result?.errors?.length) {
           const errorMessages = result.errors.map((err: any) => err.message).join(', ');
           setErrorMessage(errorMessages, 'An error occurred');
@@ -120,8 +117,7 @@ export const WhatsAppFormList = () => {
         }
       })
       .catch((errors) => {
-        console.log('error');
-        setSyncTemplateLoad(false);
+        setSyncWhatsappFormLoad(false);
         setErrorMessage(formatError(errors.message), 'An error occurred');
       });
   };
@@ -243,7 +239,7 @@ export const WhatsAppFormList = () => {
     <Button
       variant="outlined"
       color="primary"
-      loading={syncTemplateLoad}
+      loading={syncWhatsappFormLoad}
       className={styles.HsmUpdates}
       data-testid="updateHsm"
       onClick={() => handleHsmUpdates()}
