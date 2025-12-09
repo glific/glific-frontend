@@ -5,13 +5,22 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import {
+  ACTIVATE_FORM,
+  DEACTIVATE_FORM,
+  DELETE_FORM,
+  PUBLISH_FORM,
+  SYNC_WHATSAPP_FORM,
+} from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { useQuery, gql } from '@apollo/client';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Button } from 'components/UI/Form/Button/Button';
+import { getUserSession } from 'services/AuthService';
 
 import styles from './WhatsAppFormList.module.css';
 
@@ -22,6 +31,7 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
+  SYNC_WHATSAPP_FORM: SYNC_WHATSAPP_FORM,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
@@ -72,8 +82,10 @@ export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
   const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
+  const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
 
   const navigate = useNavigate();
+  const [syncWhatsappForm] = useMutation(SYNC_WHATSAPP_FORM);
 
   const [publishForm, { loading: publishLoading }] = useMutation(PUBLISH_FORM, {
     onCompleted: () => {
@@ -85,6 +97,34 @@ export const WhatsAppFormList = () => {
       setErrorMessage(formatError(errors.message), 'An error occurred');
     },
   });
+
+  const handleHsmUpdates = () => {
+    setSyncTemplateLoad(true);
+
+    syncWhatsappForm({
+      variables: {
+        organization_id: getUserSession('organizationId'),
+      },
+    })
+      .then((res) => {
+        setSyncTemplateLoad(false);
+
+        const result = res?.data?.syncWhatsappForm;
+        console.log(result, 'result');
+
+        if (result?.errors?.length) {
+          const errorMessages = result.errors.map((err: any) => err.message).join(', ');
+          setErrorMessage(errorMessages, 'An error occurred');
+        } else {
+          setNotification(result?.message || 'WhatsApp Forms synced successfully');
+        }
+      })
+      .catch((errors) => {
+        console.log('error');
+        setSyncTemplateLoad(false);
+        setErrorMessage(formatError(errors.message), 'An error occurred');
+      });
+  };
 
   const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM, {
     onCompleted: () => {
@@ -199,6 +239,19 @@ export const WhatsAppFormList = () => {
       </Select>
     </FormControl>
   );
+  const secondaryButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      loading={syncTemplateLoad}
+      className={styles.HsmUpdates}
+      data-testid="updateHsm"
+      onClick={() => handleHsmUpdates()}
+      aria-hidden="true"
+    >
+      Sync Whatsapp Form
+    </Button>
+  );
 
   let dialog = null;
   if (formId && dialogType) {
@@ -246,6 +299,7 @@ export const WhatsAppFormList = () => {
         listItem="listWhatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
+        secondaryButton={secondaryButton}
         columnNames={columnNames}
         columns={getColumns}
         columnStyles={columnStyles}

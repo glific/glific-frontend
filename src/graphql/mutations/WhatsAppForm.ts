@@ -89,3 +89,15 @@ export const ACTIVATE_FORM = gql`
     }
   }
 `;
+
+export const SYNC_WHATSAPP_FORM = gql`
+  mutation syncWhatsappForm($organization_id: ID!) {
+    syncWhatsappForm(organizationId: $organization_id) {
+      message
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
