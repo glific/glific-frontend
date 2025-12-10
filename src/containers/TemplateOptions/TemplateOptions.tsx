@@ -132,8 +132,6 @@ export const TemplateOptions = ({
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
     const urlType = row?.urlType || 'Static';
     const sampleSuffix = row?.sampleSuffix || '';
-    const disablePhoneFields = phoneNumberCount > 1;
-    const disableUrlFields = urlCount > 2;
 
     const { type, title, value, navigate_screen, text, form_id }: any = row ?? {};
 
@@ -188,7 +186,7 @@ export const TemplateOptions = ({
               <div className={styles.TextFieldWrapper}>
                 <Autocomplete
                   options={options}
-                  disabled={disabled || disablePhoneFields || disableUrlFields}
+                  disabled={disabled}
                   classes={{ inputRoot: styles.DefaultInputRoot }}
                   renderInput={(params) => <TextField {...params} label="Select URL Type" />}
                   clearIcon={false}
@@ -207,7 +205,7 @@ export const TemplateOptions = ({
             <div className={styles.TextFieldWrapper} data-testid="buttonTitle">
               <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                 <TextField
-                  disabled={disabled || disablePhoneFields || disableUrlFields}
+                  disabled={disabled}
                   title={title}
                   value={title}
                   placeholder={buttonTitle}
@@ -226,7 +224,7 @@ export const TemplateOptions = ({
                 <TextField
                   title={value}
                   value={value}
-                  disabled={disabled || disablePhoneFields || disableUrlFields}
+                  disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
                   onChange={(e: any) => onInputChange(e.target.value, row, index, 'value')}
@@ -243,7 +241,7 @@ export const TemplateOptions = ({
                 <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                   <TextField
                     placeholder="Sample Suffix"
-                    disabled={disabled || disablePhoneFields || disableUrlFields}
+                    disabled={disabled}
                     label={'Sample Suffix'}
                     className={styles.TextField}
                     slotProps={{
