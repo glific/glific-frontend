@@ -288,7 +288,6 @@ export const HSM = () => {
       example: templateExample.message,
     };
   };
-
   const handleDynamicParamsChange = (value: any, index: number) => {
     setTemplateButtons((prev) => {
       const updated = [...prev];

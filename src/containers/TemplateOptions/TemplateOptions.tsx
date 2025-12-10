@@ -100,7 +100,7 @@ export const TemplateOptions = ({
   });
 
   const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '', url_type: '' } : { value: '' };
+    const obj = type ? { type: '', value: '', title: '', url_type: '', sampleSuffix: '' } : { value: '' };
     helper.push(obj);
     onAddClick();
   };
@@ -169,7 +169,7 @@ export const TemplateOptions = ({
                     />
                     <FormControlLabel
                       value="url"
-                      control={<Radio color="primary" disabled={disabled || urlCount > 2} />}
+                      control={<Radio color="primary" disabled={disabled || urlCount >= 2} />}
                       label="URL"
                     />
                   </RadioGroup>
