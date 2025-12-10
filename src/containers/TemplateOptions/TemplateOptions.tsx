@@ -135,7 +135,7 @@ export const TemplateOptions = ({
     const disablePhoneFields = phoneNumberCount > 1;
     const disableUrlFields = urlCount > 2;
 
-    const { type, title, value, navigate_screen, text, form_id }: any = row;
+    const { type, title, value, navigate_screen, text, form_id }: any = row ?? {};
 
     let template: any = null;
 
