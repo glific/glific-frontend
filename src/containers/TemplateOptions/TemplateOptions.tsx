@@ -40,7 +40,6 @@ export interface TemplateOptionsProps {
   onInputChange: any;
   onTemplateTypeChange: any;
   disabled: any;
-  dynamicUrlParams: any;
   onDynamicParamsChange: any;
 }
 
@@ -67,7 +66,6 @@ export const TemplateOptions = ({
   onTemplateTypeChange,
   onInputChange,
   disabled = false,
-  dynamicUrlParams,
   onDynamicParamsChange,
 }: TemplateOptionsProps) => {
   const buttonTitle = 'Button Title';
@@ -78,7 +76,6 @@ export const TemplateOptions = ({
   };
   const options = ['Static', 'Dynamic'];
   const [forms, setForms] = useState<any>([]);
-  const { urlType, sampleSuffix } = dynamicUrlParams;
   const [screens, setScreens] = useState<any>([]);
 
   const isWhatsAppFormEnabled = getOrganizationServices('whatsappFormsEnabled');
@@ -103,7 +100,7 @@ export const TemplateOptions = ({
   });
 
   const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '' } : { value: '' };
+    const obj = type ? { type: '', value: '', title: '', url_type: '' } : { value: '' };
     helper.push(obj);
     onAddClick();
   };
@@ -133,6 +130,8 @@ export const TemplateOptions = ({
   };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
+    const urlType = row?.urlType || 'Static';
+    const sampleSuffix = row?.sampleSuffix || '';
     const disablePhoneFields = phoneNumberCount > 1;
     const disableUrlFields = urlCount > 2;
 
@@ -149,6 +148,8 @@ export const TemplateOptions = ({
       );
 
     if (templateType?.id === CALL_TO_ACTION) {
+      console.log(row, 'row---');
+      console.log(row?.urlType, 'row.urlType---');
       template = (
         <Fragment>
           <div className={styles.CallToActionWrapper}>
@@ -195,10 +196,12 @@ export const TemplateOptions = ({
                   clearIcon={false}
                   value={urlType}
                   onChange={(event: any, newValue: string | null) => {
-                    onDynamicParamsChange({
-                      ...dynamicUrlParams,
-                      urlType: newValue,
-                    });
+                    onDynamicParamsChange(
+                      {
+                        urlType: newValue || 'Static',
+                      },
+                      index
+                    );
                   }}
                 />
               </div>
@@ -257,10 +260,12 @@ export const TemplateOptions = ({
                       },
                     }}
                     onChange={(event) =>
-                      onDynamicParamsChange({
-                        ...dynamicUrlParams,
-                        sampleSuffix: event.target.value,
-                      })
+                      onDynamicParamsChange(
+                        {
+                          sampleSuffix: event.target.value,
+                        },
+                        index
+                      )
                     }
                     value={sampleSuffix}
                   />

@@ -84,10 +84,6 @@ export const HSM = () => {
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
-  const [dynamicUrlParams, setDynamicUrlParams] = useState<any>({
-    urlType: 'Static',
-    sampleSuffix: '',
-  });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState<boolean>(false);
   const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
@@ -234,9 +230,21 @@ export const HSM = () => {
   };
 
   // Creating payload for button template
-  const getButtonTemplatePayload = (urlType: string, sampleSuffix: string) => {
+  const getButtonTemplatePayload = () => {
     const buttons = templateButtons.reduce((result: any, button: any) => {
-      const { type: buttonType, value, title, text, form_id, navigate_screen }: any = button;
+      const {
+        type: buttonType,
+        value,
+        title,
+        text,
+        form_id,
+        navigate_screen,
+        urlType: buttonUrlType,
+        sampleSuffix: buttonSampleSuffix,
+      }: any = button;
+
+      const urlType = buttonUrlType || 'Static';
+      const sampleSuffix = buttonSampleSuffix || '';
 
       if (templateType?.id === CALL_TO_ACTION) {
         const typeObj: any = {
@@ -281,8 +289,12 @@ export const HSM = () => {
     };
   };
 
-  const handleDynamicParamsChange = (value: any) => {
-    setDynamicUrlParams(value);
+  const handleDynamicParamsChange = (value: any, index: number) => {
+    setTemplateButtons((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], ...value };
+      return updated;
+    });
   };
 
   const setStates = ({
@@ -358,7 +370,6 @@ export const HSM = () => {
 
   const setPayload = (payload: any) => {
     let payloadCopy = { ...payload, isHsm: true };
-    const { urlType, sampleSuffix } = dynamicUrlParams;
     if (isEditing) {
       payloadCopy.shortcode = payloadCopy.newShortcode;
     } else {
@@ -368,7 +379,7 @@ export const HSM = () => {
     payloadCopy.languageId = payload.language.id;
     payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
     if (isAddButtonChecked && templateType?.id) {
-      const templateButtonData = getButtonTemplatePayload(urlType, sampleSuffix);
+      const templateButtonData = getButtonTemplatePayload();
       Object.assign(payloadCopy, { ...templateButtonData });
     }
 
@@ -475,7 +486,6 @@ export const HSM = () => {
       if (idx === index) return obj;
       return val;
     });
-
     setTemplateButtons(result);
   };
 
@@ -627,7 +637,6 @@ export const HSM = () => {
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
       onTemplateTypeChange: handleTemplateTypeChange,
-      dynamicUrlParams,
       onDynamicParamsChange: handleDynamicParamsChange,
       setType,
     },
