@@ -375,6 +375,7 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add Call to action'));
+
     fireEvent.click(screen.getAllByTestId('delete-icon')[1]);
 
     const autocompletes = screen.getAllByTestId('autocomplete-element');
@@ -507,6 +508,68 @@ describe('Add mode', () => {
     const addButtonAfterLimit = queryByText('Add Quick Reply');
     await waitFor(() => {
       expect(addButtonAfterLimit).not.toBeInTheDocument();
+    });
+  });
+  test('it adds call to action buttons with dynamic url', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    const elementName = inputs[0];
+    const title = inputs[1];
+
+    await user.type(title, 'Hello');
+    await user.type(elementName, 'welcome');
+
+    const lexicalEditor = inputs[2];
+
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('Call to Action'));
+    fireEvent.click(screen.getByText('Phone number'));
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
+      target: { value: '9876543210' },
+    });
+
+    fireEvent.click(screen.getByText('Add Call to action'));
+    fireEvent.click(screen.getAllByText('URL')[1]);
+
+    const urlTypeCombo = await screen.findByLabelText('Select URL Type');
+    fireEvent.mouseDown(urlTypeCombo);
+    fireEvent.click(await screen.findByText('Dynamic'));
+
+    const [, secondTitleInput] = screen.getAllByPlaceholderText('Button Title');
+    fireEvent.change(secondTitleInput, { target: { value: 'Visit Website' } });
+    const [, secondTitleInput2] = screen.getAllByPlaceholderText('Button Value');
+    fireEvent.change(secondTitleInput2, { target: { value: 'WEBSITE_URL' } });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 });

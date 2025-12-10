@@ -40,7 +40,6 @@ export interface TemplateOptionsProps {
   onInputChange: any;
   onTemplateTypeChange: any;
   disabled: any;
-  dynamicUrlParams: any;
   onDynamicParamsChange: any;
 }
 
@@ -67,7 +66,6 @@ export const TemplateOptions = ({
   onTemplateTypeChange,
   onInputChange,
   disabled = false,
-  dynamicUrlParams,
   onDynamicParamsChange,
 }: TemplateOptionsProps) => {
   const buttonTitle = 'Button Title';
@@ -78,7 +76,6 @@ export const TemplateOptions = ({
   };
   const options = ['Static', 'Dynamic'];
   const [forms, setForms] = useState<any>([]);
-  const { urlType, sampleSuffix } = dynamicUrlParams;
   const [screens, setScreens] = useState<any>([]);
 
   const isWhatsAppFormEnabled = getOrganizationServices('whatsappFormsEnabled');
@@ -103,7 +100,7 @@ export const TemplateOptions = ({
   });
 
   const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '' } : { value: '' };
+    const obj = type ? { type: '', value: '', title: '', url_type: '', sampleSuffix: '' } : { value: '' };
     helper.push(obj);
     onAddClick();
   };
@@ -112,6 +109,8 @@ export const TemplateOptions = ({
     helper.remove(idx);
     onRemoveClick(idx);
   };
+  const urlCount = inputFields.filter((field) => field.type === 'url').length;
+  const phoneNumberCount = inputFields.filter((field) => field.type === 'phone_number').length;
 
   const addButton = (helper: any, type: boolean = false) => {
     const title = templateType ? buttonTitles[templateType?.id] : '';
@@ -131,7 +130,10 @@ export const TemplateOptions = ({
   };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
-    const { type, title, value, navigate_screen, text, form_id }: any = row;
+    const urlType = row?.urlType || 'Static';
+    const sampleSuffix = row?.sampleSuffix || '';
+
+    const { type, title, value, navigate_screen, text, form_id }: any = row ?? {};
 
     let template: any = null;
 
@@ -160,30 +162,12 @@ export const TemplateOptions = ({
                   >
                     <FormControlLabel
                       value="phone_number"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'phone_number') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone_number')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || phoneNumberCount >= 1} />}
                       label="Phone number"
                     />
                     <FormControlLabel
                       value="url"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'url') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || urlCount >= 2} />}
                       label="URL"
                     />
                   </RadioGroup>
@@ -202,15 +186,18 @@ export const TemplateOptions = ({
               <div className={styles.TextFieldWrapper}>
                 <Autocomplete
                   options={options}
+                  disabled={disabled}
                   classes={{ inputRoot: styles.DefaultInputRoot }}
                   renderInput={(params) => <TextField {...params} label="Select URL Type" />}
                   clearIcon={false}
                   value={urlType}
                   onChange={(event: any, newValue: string | null) => {
-                    onDynamicParamsChange({
-                      ...dynamicUrlParams,
-                      urlType: newValue,
-                    });
+                    onDynamicParamsChange(
+                      {
+                        urlType: newValue || 'Static',
+                      },
+                      index
+                    );
                   }}
                 />
               </div>
@@ -269,10 +256,12 @@ export const TemplateOptions = ({
                       },
                     }}
                     onChange={(event) =>
-                      onDynamicParamsChange({
-                        ...dynamicUrlParams,
-                        sampleSuffix: event.target.value,
-                      })
+                      onDynamicParamsChange(
+                        {
+                          sampleSuffix: event.target.value,
+                        },
+                        index
+                      )
                     }
                     value={sampleSuffix}
                   />
@@ -282,7 +271,7 @@ export const TemplateOptions = ({
           </div>
 
           <div className={styles.Button}>
-            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
+            {inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers, true) : null}
           </div>
         </Fragment>
       );
