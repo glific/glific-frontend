@@ -148,8 +148,6 @@ export const TemplateOptions = ({
       );
 
     if (templateType?.id === CALL_TO_ACTION) {
-      console.log(row, 'row---');
-      console.log(row?.urlType, 'row.urlType---');
       template = (
         <Fragment>
           <div className={styles.CallToActionWrapper}>
