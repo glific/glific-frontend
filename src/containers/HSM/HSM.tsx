@@ -419,9 +419,18 @@ export const HSM = () => {
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
-
+    const hasPhoneNumber = templateButtons.some((btn: any) => btn.type === 'phone_number');
+    const urlCount = templateButtons.filter((btn: any) => btn?.type === 'url').length;
+    let newButton = { ...buttonTypes[templateType?.id] };
+    if (templateType?.id === CALL_TO_ACTION) {
+      if (hasPhoneNumber && urlCount < 2) {
+        newButton.type = 'url';
+        newButton.value = '';
+        newButton.title = '';
+      }
+    }
     if (templateType?.id) {
-      buttons = addFromTemplate ? [...templateButtons, buttonTypes[templateType?.id]] : [buttonTypes[templateType?.id]];
+      buttons = addFromTemplate ? [...templateButtons, newButton] : [newButton];
     }
 
     setTemplateButtons(buttons);
