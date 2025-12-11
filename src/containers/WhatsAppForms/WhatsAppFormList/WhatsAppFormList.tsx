@@ -84,7 +84,6 @@ export const WhatsAppFormList = () => {
   const [syncWhatsappFormLoad, setSyncWhatsappFormLoad] = useState(false);
 
   const navigate = useNavigate();
-  const [syncWhatsappForm] = useMutation(SYNC_WHATSAPP_FORM);
 
   const [publishForm, { loading: publishLoading }] = useMutation(PUBLISH_FORM, {
     onCompleted: () => {
@@ -96,31 +95,27 @@ export const WhatsAppFormList = () => {
       setErrorMessage(formatError(errors.message), 'An error occurred');
     },
   });
-
   const handleFormUpdates = () => {
     setSyncWhatsappFormLoad(true);
-
-    syncWhatsappForm({
-      variables: {
-        organization_id: getUserSession('organizationId'),
-      },
-    })
-      .then((res) => {
-        setSyncWhatsappFormLoad(false);
-
-        const result = res?.data?.syncWhatsappForm;
-        if (result?.errors?.length) {
-          const errorMessages = result.errors.map((err: any) => err.message).join(', ');
-          setErrorMessage(errorMessages, 'An error occurred');
-        } else {
-          setNotification(result?.message || 'WhatsApp Forms synced successfully');
-        }
-      })
-      .catch((errors) => {
-        setSyncWhatsappFormLoad(false);
-        setErrorMessage(formatError(errors.message), 'An error occurred');
-      });
+    syncWhatsappForm();
   };
+
+  const [syncWhatsappForm] = useMutation(SYNC_WHATSAPP_FORM, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const errors = data?.syncWhatsappForm?.errors;
+      if (errors?.length) {
+        setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+      } else {
+        setNotification('WhatsApp Forms synced successfully', 'success');
+      }
+      setSyncWhatsappFormLoad(false);
+    },
+    onError: () => {
+      setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+      setSyncWhatsappFormLoad(false);
+    },
+  });
 
   const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM, {
     onCompleted: () => {

@@ -70,9 +70,6 @@ const whatsappFormCategories = {
 const syncWhatsappForm = {
   request: {
     query: SYNC_WHATSAPP_FORM,
-    variables: {
-      organization_id: null,
-    },
   },
   result: {
     data: {
@@ -373,9 +370,6 @@ const editWhatsAppForm = {
 const syncWhatsappFormQueryWithErrors = {
   request: {
     query: SYNC_WHATSAPP_FORM,
-    variables: {
-      organization_id: 'org-1',
-    },
   },
   result: {
     data: {
@@ -394,9 +388,6 @@ const syncWhatsappFormQueryWithErrors = {
 const syncWhatsappFormError = {
   request: {
     query: SYNC_WHATSAPP_FORM,
-    variables: {
-      organization_id: null,
-    },
   },
   result: {
     data: {
