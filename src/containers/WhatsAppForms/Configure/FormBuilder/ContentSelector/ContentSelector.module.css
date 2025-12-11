@@ -1,0 +1,11 @@
+.contentSelector {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.addContentButton {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+}

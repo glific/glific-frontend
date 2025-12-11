@@ -1,0 +1,59 @@
+.contentTypeContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.optionsSection {
+  margin-bottom: 20px;
+}
+
+.sectionLabel {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.optionRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.requiredToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.instructionsSection {
+  margin-bottom: 8px;
+}
+
+.instructionsLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+}
+
+.optionalText {
+  color: #999;
+  font-weight: 400;
+}
+
+.readMoreSection {
+  margin-bottom: 20px;
+}
+
+.charCount {
+  font-size: 12px;
+  color: #999;
+  margin-left: 8px;
+}
