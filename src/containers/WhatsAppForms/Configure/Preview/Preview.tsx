@@ -17,14 +17,6 @@ export const Preview = () => {
             </div>
             <div className={styles.chatInfo}>
               <div className={styles.avatar}>
-                {/* <svg width="40" height="40" viewBox="0 0 40 40" fill="#ddd">
-                  <circle cx="20" cy="20" r="20" />
-                  <path
-                    d="M20 20c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6zm0 3c-4 0-12 2-12 6v2h24v-2c0-4-8-6-12-6z"
-                    fill="#999"
-                  />
-                </svg> */}
-
                 <PersonIcon fontSize="large" />
               </div>
               <div className={styles.chatName}>

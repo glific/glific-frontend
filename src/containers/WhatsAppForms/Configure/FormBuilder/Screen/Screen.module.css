@@ -147,12 +147,9 @@
 }
 
 .layoutArea {
-  min-height: 200px;
   padding: 20px;
   margin-bottom: 20px;
   background-color: #fafafa;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
 }
 
 .emptyContent {

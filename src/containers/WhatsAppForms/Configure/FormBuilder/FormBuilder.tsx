@@ -89,9 +89,71 @@ export const FormBuilder = () => {
     }
   };
 
-  const addContent = (screenId: string) => {
-    // Placeholder for adding content to a screen
-    console.log('Add content to screen:', screenId);
+  const addContent = (screenId: string, category: string, item: string) => {
+    const newContentItem = {
+      id: Date.now().toString(),
+      type: category,
+      name: item,
+      order: 0,
+      data: {
+        id: item,
+      },
+    };
+
+    setScreens(
+      screens.map((screen) => {
+        if (screen.id === screenId) {
+          const newContent = [...screen.content, newContentItem].map((content, index) => ({
+            ...content,
+            order: index,
+          }));
+          return { ...screen, content: newContent };
+        }
+        return screen;
+      })
+    );
+  };
+
+  const updateContent = (screenId: string, contentId: string, updates: any) => {
+    setScreens(
+      screens.map((screen) => {
+        if (screen.id === screenId) {
+          const updatedContent = screen.content.map((item) => (item.id === contentId ? { ...item, ...updates } : item));
+          return { ...screen, content: updatedContent };
+        }
+        return screen;
+      })
+    );
+  };
+
+  const deleteContent = (screenId: string, contentId: string) => {
+    setScreens(
+      screens.map((screen) => {
+        if (screen.id === screenId) {
+          const updatedContent = screen.content
+            .filter((item) => item.id !== contentId)
+            .map((item, index) => ({ ...item, order: index }));
+          return { ...screen, content: updatedContent };
+        }
+        return screen;
+      })
+    );
+  };
+
+  const reorderContent = (screenId: string, oldIndex: number, newIndex: number) => {
+    setScreens(
+      screens.map((screen) => {
+        if (screen.id === screenId) {
+          const reorderedContent = arrayMove(screen.content, oldIndex, newIndex);
+          const updatedContent = reorderedContent.map((item, index) => ({
+            ...item,
+            order: index,
+          }));
+          return { ...screen, content: updatedContent };
+        }
+        return screen;
+      })
+    );
   };
 
   return (
@@ -115,7 +177,10 @@ export const FormBuilder = () => {
                 onDelete={() => deleteScreen(screen.id)}
                 onUpdateName={(name: string) => updateScreenName(screen.id, name)}
                 onUpdateButtonLabel={(label: string) => updateScreenButtonLabel(screen.id, label)}
-                onAddContent={() => addContent(screen.id)}
+                onAddContent={(category: string, item: string) => addContent(screen.id, category, item)}
+                onUpdateContent={(contentId: string, data: any) => updateContent(screen.id, contentId, data)}
+                onDeleteContent={(contentId: string) => deleteContent(screen.id, contentId)}
+                onReorderContent={(oldIndex: number, newIndex: number) => reorderContent(screen.id, oldIndex, newIndex)}
               />
             ))}
           </SortableContext>

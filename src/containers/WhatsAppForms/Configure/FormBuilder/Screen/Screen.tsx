@@ -1,10 +1,27 @@
-import { useSortable } from '@dnd-kit/sortable';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Screen } from '../FormBuilder.types';
+import { useState } from 'react';
+import { ContentItemComponent } from '../ContentItem/ContentItemComponent';
+import { ContentSelector } from '../ContentSelector/ContentSelector';
+import { ContentItem, Screen } from '../FormBuilder.types';
 import styles from './Screen.module.css';
 
 export interface ScreenComponentProps {
@@ -14,7 +31,10 @@ export interface ScreenComponentProps {
   onDelete: () => void;
   onUpdateName: (name: string) => void;
   onUpdateButtonLabel: (label: string) => void;
-  onAddContent: () => void;
+  onAddContent: (category: string, item: string) => void;
+  onUpdateContent: (contentId: string, updates: Partial<ContentItem>) => void;
+  onDeleteContent: (contentId: string) => void;
+  onReorderContent: (oldIndex: number, newIndex: number) => void;
 }
 
 export const ScreenComponent = ({
@@ -25,8 +45,20 @@ export const ScreenComponent = ({
   onUpdateName,
   onUpdateButtonLabel,
   onAddContent,
+  onUpdateContent,
+  onDeleteContent,
+  onReorderContent,
 }: ScreenComponentProps) => {
+  const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: screen.id });
+
+  const contentSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -34,15 +66,25 @@ export const ScreenComponent = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: any) => {
     if (e.target.value.length <= 30) {
       onUpdateName(e.target.value);
     }
   };
 
-  const handleButtonLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleButtonLabelChange = (e: any) => {
     if (e.target.value.length <= 30) {
       onUpdateButtonLabel(e.target.value);
+    }
+  };
+
+  const handleContentDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = screen.content.findIndex((item) => item.id === active.id);
+      const newIndex = screen.content.findIndex((item) => item.id === over.id);
+      onReorderContent(oldIndex, newIndex);
     }
   };
 
@@ -85,26 +127,28 @@ export const ScreenComponent = ({
             </div>
           </div>
 
-          <button className={styles.addContentButton} onClick={onAddContent}>
-            + Add Content
-          </button>
-
-          <div className={styles.layoutArea}>
-            {screen.content.length === 0 ? (
-              <div className={styles.emptyContent}>
-                <p>No content added yet. Click "Add Content" to get started.</p>
-              </div>
-            ) : (
-              <div className={styles.contentList}>
-                {screen.content.map((item) => (
-                  <div key={item.id} className={styles.contentItem}>
-                    <span className={styles.contentType}>{item.type}</span>
-                    <span className={styles.contentValue}>{item.value}</span>
+          {screen.content.length !== 0 && (
+            <div className={styles.layoutArea}>
+              <DndContext sensors={contentSensors} collisionDetection={closestCenter} onDragEnd={handleContentDragEnd}>
+                <SortableContext items={screen.content.map((c) => c.id)} strategy={verticalListSortingStrategy}>
+                  <div className={styles.contentList}>
+                    {screen.content.map((item) => (
+                      <ContentItemComponent
+                        key={item.id}
+                        item={item}
+                        isExpanded={expandedContentId === item.id}
+                        onToggleExpanded={() => setExpandedContentId(expandedContentId === item.id ? null : item.id)}
+                        onDelete={() => onDeleteContent(item.id)}
+                        onUpdate={(data) => onUpdateContent(item.id, data)}
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </SortableContext>
+              </DndContext>
+            </div>
+          )}
+
+          <ContentSelector onSelectContent={onAddContent} />
 
           <div className={styles.field}>
             <label className={styles.fieldLabel}>Button Label</label>
