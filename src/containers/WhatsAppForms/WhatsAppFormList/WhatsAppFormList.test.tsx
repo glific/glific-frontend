@@ -9,7 +9,6 @@ import {
   deactivateWhatsappFormError,
   syncWhatsappFormQueryWithErrors,
   syncWhatsappForm,
-  syncWhatsappFormError,
 } from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';

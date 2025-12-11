@@ -19,7 +19,6 @@ import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Button } from 'components/UI/Form/Button/Button';
-import { getUserSession } from 'services/AuthService';
 
 import styles from './WhatsAppFormList.module.css';
 
