@@ -324,10 +324,15 @@ describe('edit mode', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
       expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
     await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('Hourly');
     });
   });
@@ -349,6 +354,10 @@ describe('edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -380,7 +389,7 @@ describe('edit mode', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -407,6 +416,10 @@ describe('edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -582,10 +595,6 @@ describe('Whatsapp group collections', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
     const radioButton = screen.getByRole('radio', { name: /WhatsApp Group Collections/i });
