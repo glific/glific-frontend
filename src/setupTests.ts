@@ -1,10 +1,8 @@
 import 'mocks/matchMediaMock';
-import { vi } from 'vitest';
-import { TextEncoder, TextDecoder } from 'util';
+import { vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
 import { cleanup } from '@testing-library/react';
-import { afterEach } from 'vitest';
 
 // runs a cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {
@@ -68,7 +66,7 @@ window.ResizeObserver = ResizeObserver;
 window.HTMLDocument = Document;
 window.fetch = vi.fn() as any;
 
-global.URL.createObjectURL = vi.fn();
+window.URL.createObjectURL = vi.fn();
 
 if (!globalThis.TextEncoder) {
   Object.defineProperty(globalThis, 'TextEncoder', {
