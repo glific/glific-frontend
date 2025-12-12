@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Upload } from '@mui/icons-material';
+import Upload from '@mui/icons-material/Upload';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams, useNavigate } from 'react-router';

@@ -166,7 +166,7 @@ describe('<FlowList />', () => {
   });
 
   test('should export flow to json file', async () => {
-    global.URL.createObjectURL = vi.fn();
+    globalThis.URL.createObjectURL = vi.fn();
     render(flowList);
 
     await waitFor(() => {
@@ -389,22 +389,29 @@ describe('Template flows', () => {
           },
         },
       },
+      variableMatcher: () => true,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
     const testMocks = [mockImportFlowWithAssistantError, ...baseWithoutImport];
 
-    const fileReaderMock = vi.fn(() => ({
-      onload: null as null | ((e: unknown) => void),
+    class FileReaderMock {
+      onload: null | ((e: unknown) => void) = null;
+      result: string | null = null;
+
       readAsText() {
         const text = JSON.stringify(testJSON);
+        this.result = text;
         setTimeout(() => {
-          this.onload?.({ target: { result: text } });
+          if (this.onload) {
+            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
+          }
         }, 0);
-      },
-    }));
-    vi.stubGlobal('FileReader', fileReaderMock as unknown as typeof FileReader);
+      }
+    }
+
+    vi.stubGlobal('FileReader', FileReaderMock);
 
     render(
       <MockedProvider mocks={testMocks} addTypename={false}>

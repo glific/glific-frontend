@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@mui/material';
-import { Upload } from '@mui/icons-material';
+import Upload from '@mui/icons-material/Upload';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';

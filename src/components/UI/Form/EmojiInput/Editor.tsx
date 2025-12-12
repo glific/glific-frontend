@@ -23,7 +23,9 @@ import {
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
 import { handleFormatting, setDefaultValue } from 'common/RichEditor';
-import { FormatBold, FormatItalic, StrikethroughS } from '@mui/icons-material';
+import FormatBold from '@mui/icons-material/FormatBold';
+import FormatItalic from '@mui/icons-material/FormatItalic';
+import StrikethroughS from '@mui/icons-material/StrikethroughS';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
