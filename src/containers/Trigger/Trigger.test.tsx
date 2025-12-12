@@ -542,10 +542,16 @@ describe('Whatsapp group collections', () => {
 
     const container = render(wrapper(createMock));
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Select flow*')).toBeInTheDocument();
     });
 
     await fillForm(container, 'Daily');
