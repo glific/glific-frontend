@@ -1,4 +1,10 @@
-import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
+import {
+  CREATE_FORM,
+  UPDATE_FORM,
+  PUBLISH_FORM,
+  DEACTIVATE_FORM,
+  SYNC_WHATSAPP_FORM,
+} from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
@@ -61,6 +67,19 @@ const whatsappFormCategories = {
   },
 };
 
+const syncWhatsappForm = {
+  request: {
+    query: SYNC_WHATSAPP_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        message: 'WhatsApp Forms synced successfully',
+        errors: null,
+      },
+    },
+  },
+};
 const createdWhatsAppFormQuery = {
   request: {
     query: CREATE_FORM,
@@ -348,6 +367,41 @@ const editWhatsAppForm = {
   },
 };
 
+const syncWhatsappFormQueryWithErrors = {
+  request: {
+    query: SYNC_WHATSAPP_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        whatsappForm: null,
+        errors: [
+          {
+            message: 'Something went wrong',
+          },
+        ],
+      },
+    },
+  },
+};
+
+const syncWhatsappFormError = {
+  request: {
+    query: SYNC_WHATSAPP_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        whatsappForm: null,
+        errors: [
+          {
+            message: 'Something went wrong',
+          },
+        ],
+      },
+    },
+  },
+};
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
@@ -360,3 +414,5 @@ export const WHATSAPP_FORM_MOCKS = [
   listWhatsappFormswithoutopts,
   createdWhatsAppFormQueryWithErrors,
 ];
+
+export { syncWhatsappFormQueryWithErrors, syncWhatsappForm, syncWhatsappFormError };
