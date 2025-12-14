@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
+import { GET_SHEETS } from 'graphql/queries/Sheet';
 
 import styles from './WhatsAppFormList.module.css';
 
@@ -22,6 +24,7 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
+  getSheetQuery: GET_SHEETS,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
@@ -129,6 +132,15 @@ export const WhatsAppFormList = () => {
   ];
 
   const additionalAction = (item: any) => {
+    const linkAction = {
+      label: 'Link',
+      icon: <LinkIcon data-testid="link-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        window.open(item.sheet?.url);
+      },
+    };
+
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -169,6 +181,9 @@ export const WhatsAppFormList = () => {
       actions = [activateAction];
     }
 
+    if (item.sheet?.url) {
+      actions.push(linkAction);
+    }
     return actions;
   };
   const filters = useMemo(() => {
