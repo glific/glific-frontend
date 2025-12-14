@@ -70,6 +70,7 @@ const createdWhatsAppFormQuery = {
         formJson: JSON.stringify(formJson),
         description: 'This is a test form',
         categories: ['other'],
+        googleSheetUrl: '',
       },
     },
   },
@@ -95,6 +96,7 @@ const createdWhatsAppFormQueryWithErrors = {
         formJson: JSON.stringify(formJson),
         description: 'This is a test form',
         categories: ['other'],
+        googleSheetUrl: '',
       },
     },
   },
@@ -230,7 +232,6 @@ const listWhatsappFormswithoutopts = {
             sheetDataCount: 50,
           },
         },
-
       ],
     },
   },
