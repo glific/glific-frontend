@@ -13,8 +13,6 @@ import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
-import { GET_SHEETS } from 'graphql/queries/Sheet';
-
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -24,7 +22,6 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
-  getSheetQuery: GET_SHEETS,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;

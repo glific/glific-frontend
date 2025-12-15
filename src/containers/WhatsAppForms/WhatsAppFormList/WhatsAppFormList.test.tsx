@@ -212,7 +212,7 @@ describe('<WhatsAppFormList />', () => {
     });
   });
 
-  test('will open link dialog when link action is clicked', async () => {
+  test('should open the link dialog on clicking the link icon', async () => {
     const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
 
     const select = getAllByRole('combobox')[0];
