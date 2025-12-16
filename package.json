@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.8.2",
+  "version": "6.8.3",
   "private": true,
   "type": "module",
   "license": {
@@ -48,8 +48,8 @@
     "interweave-autolink": "^5.1.2",
     "lexical": "^0.33.0",
     "lexical-beautiful-mentions": "^0.1.47",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-draggable": "^4.5.0",
     "react-google-recaptcha-v3": "^1.11.0",
     "react-i18next": "^15.6.0",
