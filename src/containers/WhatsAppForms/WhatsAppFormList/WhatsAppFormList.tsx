@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 
 import styles from './WhatsAppFormList.module.css';
 
@@ -128,8 +129,17 @@ export const WhatsAppFormList = () => {
     { label: 'Inactive', value: 'inactive' },
     { label: 'Draft', value: 'draft' },
   ];
+  const handleView = (id: any) => {
+    navigate(`/whatsapp-forms/${id}/edit`);
+  };
 
   const additionalAction = (item: any) => {
+    const handleViewAction = {
+      label: 'View',
+      icon: <ViewIcon data-testid="view-icon" />,
+      parameter: 'id',
+      dialog: handleView,
+    };
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -159,7 +169,6 @@ export const WhatsAppFormList = () => {
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
     };
-
     let actions = [];
 
     if (item.status === 'PUBLISHED') {
@@ -168,6 +177,10 @@ export const WhatsAppFormList = () => {
       actions = [publishAction];
     } else {
       actions = [activateAction];
+    }
+
+    if (item.status === 'PUBLISHED') {
+      actions = [...actions, ...[handleViewAction]];
     }
 
     return actions;
@@ -242,6 +255,7 @@ export const WhatsAppFormList = () => {
     columns: getColumns,
     columnStyles,
   };
+
   return (
     <>
       <List
@@ -258,6 +272,10 @@ export const WhatsAppFormList = () => {
         searchParameter={['name']}
         additionalAction={additionalAction}
         dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+        restrictedAction={(item: any) => ({
+          edit: item.status !== 'PUBLISHED',
+          delete: true,
+        })}
       />
       {dialog}
     </>
