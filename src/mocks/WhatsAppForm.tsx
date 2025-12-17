@@ -177,78 +177,6 @@ export const deactivateWhatsappFormError = {
   },
   error: new Error('Failed to publish'),
 };
-const listWhatsappForms = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'PUBLISHED' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
-    },
-  },
-  result: {
-    data: {
-      whatsappForms: [
-        {
-          id: '1',
-          name: 'This is form name',
-          status: 'PUBLISHED',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
-        },
-      ],
-    },
-  },
-};
-
-const listWhatsappFormswithoutopts = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'PUBLISHED' },
-    },
-  },
-  result: {
-    data: {
-      whatsappForms: [
-        {
-          id: '1',
-          name: 'This is form name',
-          status: 'PUBLISHED',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
-        },
-      ],
-    },
-  },
-};
-const listWhatsappFormsInactive = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'INACTIVE' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
-    },
-  },
-  result: {
-    data: {
-      whatsappForms: [
-        {
-          id: '2',
-          name: 'This is form name',
-          status: 'INACTIVE',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
-        },
-      ],
-    },
-  },
-};
 
 const listWhatsappFormsDraft = {
   request: {
@@ -312,19 +240,7 @@ const countWhatsappForms = {
     },
   },
 };
-const countWhatsappFormsMock = {
-  request: {
-    query: COUNT_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'PUBLISHED' },
-    },
-  },
-  result: {
-    data: {
-      countWhatsappForms: 1,
-    },
-  },
-};
+
 const getWhatsAppForm = {
   request: {
     query: GET_WHATSAPP_FORM,
@@ -451,7 +367,7 @@ const listWhatsappFormsWithThreePublishedwithfilter = {
     },
   },
 };
-const listWhatsappFormsWithThreePublished = {
+const listWhatsappFormsWithoutStatus = {
   request: {
     query: LIST_WHATSAPP_FORMS,
     variables: {
@@ -531,7 +447,7 @@ export const WHATSAPP_FORM_MOCKS = [
   createdWhatsAppFormQuery,
   getWhatsAppForm,
   editWhatsAppForm,
-  listWhatsappFormsWithThreePublished,
+  listWhatsappFormsWithoutStatus,
   listWhatsappFormsInitial,
   listWhatsappFormsDraft,
   listWhatsappFormsWithThreePublishedwithfilter,

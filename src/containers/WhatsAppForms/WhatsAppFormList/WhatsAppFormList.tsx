@@ -177,13 +177,11 @@ export const WhatsAppFormList = () => {
     } else {
       actions = [activateAction];
     }
-    console.log('item status', item);
     if (item.status === 'PUBLISHED') {
       actions = [...actions, ...[handleViewAction]];
     }
     return actions;
   };
-  console.log('additionalAction', additionalAction);
   const filters = useMemo(() => {
     let filters: any = {};
     if (filter !== 'all') {

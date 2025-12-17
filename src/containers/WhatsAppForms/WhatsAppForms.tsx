@@ -272,7 +272,7 @@ export const WhatsAppForms = () => {
             buttonState={{
               text: 'Save Form',
               status: disabled,
-              show: !(formStatus == 'PUBLISHED'),
+              show: formStatus != 'PUBLISHED',
             }}
             customHandler={(error: string) => {
               setErrorMessage(formatError(error), 'An error occurred');
