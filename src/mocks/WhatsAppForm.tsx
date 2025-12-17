@@ -1,4 +1,4 @@
-import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
+import { CREATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import {
   GET_WHATSAPP_FORM,
   LIST_FORM_CATEGORIES,
@@ -193,30 +193,6 @@ const listWhatsappFormsDraft = {
           id: '3',
           name: 'This is form name',
           status: 'DRAFT',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
-        },
-      ],
-    },
-  },
-};
-const listWhatsappFormsEmpty = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: {},
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
-    },
-  },
-  result: {
-    data: {
-      whatsappForms: [
-        {
-          id: '3',
-          name: 'This is form name',
-          status: 'PUBLISHED',
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
