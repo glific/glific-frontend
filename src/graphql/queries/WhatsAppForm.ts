@@ -26,7 +26,7 @@ export const LIST_FORM_CATEGORIES = gql`
 
 export const LIST_WHATSAPP_FORMS = gql`
   query listWhatsappForms($filter: WhatsappFormFilter) {
-    listWhatsappForms(filter: $filter) {
+    whatsappForms: listWhatsappForms(filter: $filter) {
       id
       name
       status
@@ -35,5 +35,11 @@ export const LIST_WHATSAPP_FORMS = gql`
       categories
       definition
     }
+  }
+`;
+
+export const COUNT_WHATSAPP_FORMS = gql`
+  query countWhatsappForms($filter: WhatsappFormFilter) {
+    countWhatsappForms(filter: $filter)
   }
 `;

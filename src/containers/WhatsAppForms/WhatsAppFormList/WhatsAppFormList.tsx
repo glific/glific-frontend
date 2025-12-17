@@ -6,7 +6,7 @@ import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
 import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS, COUNT_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
@@ -22,6 +22,7 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
+  countQuery: COUNT_WHATSAPP_FORMS,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
@@ -236,19 +237,21 @@ export const WhatsAppFormList = () => {
       </DialogBox>
     );
   }
-
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
   return (
     <>
       <List
-        {...queries}
         helpData={whatsappFormsInfo}
         title="WhatsApp Forms"
-        listItem="listWhatsappForms"
+        listItem="whatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
-        columnNames={columnNames}
-        columns={getColumns}
-        columnStyles={columnStyles}
+        {...queries}
+        {...columnAttributes}
         filters={filters}
         filterList={formFilter}
         button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
