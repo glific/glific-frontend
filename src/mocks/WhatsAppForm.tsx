@@ -267,33 +267,6 @@ const getWhatsAppForm = {
   },
 };
 
-const editWhatsAppForm = {
-  request: {
-    query: UPDATE_FORM,
-    variables: {
-      id: '1',
-      input: {
-        name: 'This is form name',
-        formJson: JSON.stringify(formJson),
-        description: 'This is an updated test form',
-        categories: ['customer_support'],
-      },
-    },
-  },
-  result: {
-    data: {
-      updateWhatsappForm: {
-        __typename: 'WhatsappFormResult',
-        errors: null,
-        whatsappForm: {
-          __typename: 'WhatsappForm',
-          id: '1',
-          name: 'This is form name',
-        },
-      },
-    },
-  },
-};
 const listWhatsappFormsInitial = {
   request: {
     query: LIST_WHATSAPP_FORMS,
@@ -446,7 +419,6 @@ export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
   getWhatsAppForm,
-  editWhatsAppForm,
   listWhatsappFormsWithoutStatus,
   listWhatsappFormsInitial,
   listWhatsappFormsDraft,

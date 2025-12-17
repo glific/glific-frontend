@@ -259,9 +259,9 @@ export const WhatsAppForms = () => {
             setStates={setStates}
             validationSchema={FormSchema}
             listItemName="Whatsapp Form"
-            isView={formStatus == 'PUBLISHED'}
+            isView={formStatus === 'PUBLISHED'}
             formFields={formFields}
-            errorButtonState={{ text: formStatus == 'PUBLISHED' ? 'Go Back' : 'Cancel', show: true }}
+            errorButtonState={{ text: formStatus === 'PUBLISHED' ? 'Go Back' : 'Cancel', show: true }}
             redirectionLink={'whatsapp-forms'}
             listItem="whatsappForm"
             icon={<Update />}
