@@ -170,17 +170,18 @@ export const WhatsAppFormList = () => {
 
     let actions = [];
 
-    if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction];
-    } else if (item.status === 'DRAFT') {
-      actions = [publishAction];
-    } else {
-      actions = [activateAction];
-    }
-
     if (item.sheet?.url) {
       actions.push(linkAction);
     }
+
+    if (item.status === 'PUBLISHED') {
+      actions.push(deactivateAction);
+    } else if (item.status === 'DRAFT') {
+      actions.push(publishAction);
+    } else {
+      actions.push(activateAction);
+    }
+
     return actions;
   };
   const filters = useMemo(() => {
