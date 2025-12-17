@@ -1,5 +1,10 @@
 import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import {
+  GET_WHATSAPP_FORM,
+  LIST_FORM_CATEGORIES,
+  LIST_WHATSAPP_FORMS,
+  COUNT_WHATSAPP_FORMS,
+} from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
   version: '7.2',
@@ -140,7 +145,7 @@ export const deactivateWhatsappForm = {
   request: {
     query: DEACTIVATE_FORM,
     variables: {
-      id: '3',
+      id: '1',
     },
   },
   result: {
@@ -167,7 +172,7 @@ export const deactivateWhatsappFormError = {
   request: {
     query: DEACTIVATE_FORM,
     variables: {
-      id: '3',
+      id: '1',
     },
   },
   error: new Error('Failed to publish'),
@@ -182,7 +187,7 @@ const listWhatsappForms = {
   },
   result: {
     data: {
-      listWhatsappForms: [
+      whatsappForms: [
         {
           id: '1',
           name: 'This is form name',
@@ -206,7 +211,7 @@ const listWhatsappFormswithoutopts = {
   },
   result: {
     data: {
-      listWhatsappForms: [
+      whatsappForms: [
         {
           id: '1',
           name: 'This is form name',
@@ -230,7 +235,7 @@ const listWhatsappFormsInactive = {
   },
   result: {
     data: {
-      listWhatsappForms: [
+      whatsappForms: [
         {
           id: '2',
           name: 'This is form name',
@@ -255,7 +260,7 @@ const listWhatsappFormsDraft = {
   },
   result: {
     data: {
-      listWhatsappForms: [
+      whatsappForms: [
         {
           id: '3',
           name: 'This is form name',
@@ -279,7 +284,7 @@ const listWhatsappFormsEmpty = {
   },
   result: {
     data: {
-      listWhatsappForms: [
+      whatsappForms: [
         {
           id: '3',
           name: 'This is form name',
@@ -294,6 +299,32 @@ const listWhatsappFormsEmpty = {
   },
 };
 
+const countWhatsappForms = {
+  request: {
+    query: COUNT_WHATSAPP_FORMS,
+    variables: {
+      filter: {},
+    },
+  },
+  result: {
+    data: {
+      countWhatsappForms: 1,
+    },
+  },
+};
+const countWhatsappFormsMock = {
+  request: {
+    query: COUNT_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      countWhatsappForms: 1,
+    },
+  },
+};
 const getWhatsAppForm = {
   request: {
     query: GET_WHATSAPP_FORM,
@@ -347,16 +378,164 @@ const editWhatsAppForm = {
     },
   },
 };
+const listWhatsappFormsInitial = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
+      },
+    },
+  },
+  result: {
+    data: {
+      whatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+        },
+      ],
+    },
+  },
+};
+const listWhatsappFormsWithThreePublishedwithfilter = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'Customer support form',
+          metaFlowId: 'meta-flow-1',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+        {
+          id: '2',
+          name: 'Feedback Form',
+          status: 'PUBLISHED',
+          description: 'Feedback collection form',
+          metaFlowId: 'meta-flow-2',
+          categories: ['survey'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+        {
+          id: '3',
+          name: 'Lead Generation Form',
+          status: 'PUBLISHED',
+          description: 'Lead generation form',
+          metaFlowId: 'meta-flow-3',
+          categories: ['lead_generation'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+      ],
+    },
+  },
+};
+const listWhatsappFormsWithThreePublished = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: {},
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
+      },
+    },
+  },
+  result: {
+    data: {
+      whatsappForms: [
+        {
+          id: '1',
+          name: 'Customer Support Form',
+          status: 'PUBLISHED',
+          description: 'Customer support form',
+          metaFlowId: 'meta-flow-1',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+        {
+          id: '2',
+          name: 'Feedback Form',
+          status: 'PUBLISHED',
+          description: 'Feedback collection form',
+          metaFlowId: 'meta-flow-2',
+          categories: ['survey'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+        {
+          id: '3',
+          name: 'Lead Generation Form',
+          status: 'PUBLISHED',
+          description: 'Lead generation form',
+          metaFlowId: 'meta-flow-3',
+          categories: ['lead_generation'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+        {
+          id: '4',
+          name: 'Internal Testing Form',
+          status: 'DRAFT',
+          description: 'Draft form for internal testing',
+          metaFlowId: 'meta-flow-4',
+          categories: ['other'],
+          definition: JSON.stringify(formJson),
+          __typename: 'WhatsappForm',
+        },
+      ],
+    },
+  },
+};
+
+const countWhatsappFormsDraft = {
+  request: {
+    query: COUNT_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'DRAFT' },
+    },
+  },
+  result: {
+    data: {
+      countWhatsappForms: 1,
+    },
+  },
+};
 
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
   getWhatsAppForm,
   editWhatsAppForm,
-  listWhatsappForms,
-  listWhatsappFormsInactive,
+  listWhatsappFormsWithThreePublished,
+  listWhatsappFormsInitial,
   listWhatsappFormsDraft,
-  listWhatsappFormsEmpty,
-  listWhatsappFormswithoutopts,
+  listWhatsappFormsWithThreePublishedwithfilter,
   createdWhatsAppFormQueryWithErrors,
+  countWhatsappForms,
+  countWhatsappFormsDraft,
 ];

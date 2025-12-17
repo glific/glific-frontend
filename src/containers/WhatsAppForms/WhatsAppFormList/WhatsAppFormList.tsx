@@ -132,11 +132,10 @@ export const WhatsAppFormList = () => {
   const handleView = (id: any) => {
     navigate(`/whatsapp-forms/${id}/edit`);
   };
-
   const additionalAction = (item: any) => {
     const handleViewAction = {
       label: 'View',
-      icon: <ViewIcon data-testid="view-icon" />,
+      icon: <ViewIcon data-testid="view-form" />,
       parameter: 'id',
       dialog: handleView,
     };
@@ -178,13 +177,13 @@ export const WhatsAppFormList = () => {
     } else {
       actions = [activateAction];
     }
-
+    console.log('item status', item);
     if (item.status === 'PUBLISHED') {
       actions = [...actions, ...[handleViewAction]];
     }
-
     return actions;
   };
+  console.log('additionalAction', additionalAction);
   const filters = useMemo(() => {
     let filters: any = {};
     if (filter !== 'all') {
