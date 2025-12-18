@@ -159,9 +159,9 @@ describe('Menu test', () => {
 
   test('check Chats option is present if screen size is less than 768', async () => {
     // // Change the viewport to 500px.
-    global.innerWidth = 500;
+    globalThis.innerWidth = 500;
     // // Trigger the window resize event.
-    global.dispatchEvent(new Event('resize'));
+    globalThis.dispatchEvent(new Event('resize'));
     expect(screen.getByTestId('icon-component')).toBeInTheDocument();
   });
 

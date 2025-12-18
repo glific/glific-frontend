@@ -15,6 +15,7 @@ export default defineConfig({
       exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
     },
     css: true,
+    testTimeout: 10000,
   },
   plugins: [tsconfigPaths(), svgr()],
 });

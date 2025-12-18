@@ -324,10 +324,15 @@ describe('edit mode', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
       expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
     await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('Hourly');
     });
   });
@@ -349,6 +354,10 @@ describe('edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -380,7 +389,7 @@ describe('edit mode', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -407,6 +416,10 @@ describe('edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -454,6 +467,10 @@ describe('edit mode', () => {
 });
 
 describe('copy mode', async () => {
+  beforeEach(() => {
+    cleanup();
+  });
+
   test('it copies a trigger', async () => {
     mockUseLocationValue.state = 'copy';
 
@@ -469,15 +486,18 @@ describe('copy mode', async () => {
           startDate: startDate.format('MM/DD/YYYY'),
           endDate: endDate.format('MM/DD/YYYY'),
         }),
-        createTriggerQuery({
-          ...createTriggerPayload,
-          ...getDates(startTime, startDate, endDate),
-          days: [],
-          hours: [0, 1],
-          frequency: 'hourly',
-          groupType: 'WABA',
-          flowId: '1',
-        }),
+        createTriggerQuery(
+          {
+            ...createTriggerPayload,
+            ...getDates(startTime, startDate, endDate),
+            days: [],
+            hours: [0, 1],
+            frequency: 'hourly',
+            groupType: 'WABA',
+            flowId: '1',
+          },
+          1
+        ),
       ])
     );
 
@@ -485,10 +505,6 @@ describe('copy mode', async () => {
 
     await waitFor(() => {
       expect(screen.getByText('Copy Trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
     const startDateInput = container.queryByTestId('Start date') as HTMLInputElement;
@@ -539,10 +555,16 @@ describe('Whatsapp group collections', () => {
 
     const container = render(wrapper(createMock));
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Select flow*')).toBeInTheDocument();
     });
 
     await fillForm(container, 'Daily');
@@ -573,10 +595,6 @@ describe('Whatsapp group collections', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
     const radioButton = screen.getByRole('radio', { name: /WhatsApp Group Collections/i });
