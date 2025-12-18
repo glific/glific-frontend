@@ -39,13 +39,11 @@ export const WhatsAppForms = () => {
   const [disabled, setDisabled] = useState(false);
   const [extractedVariables, setExtractedVariables] = useState<string[]>([]);
   const params = useParams();
-  const [formStatus, setFormStatus] = useState('');
 
   useQuery(GET_WHATSAPP_FORM, {
     skip: !params.id,
     variables: { id: params.id },
     onCompleted: ({ whatsappForm }) => {
-      setFormStatus(whatsappForm?.whatsappForm?.status);
       if (whatsappForm?.whatsappForm?.status === 'PUBLISHED') {
         setDisabled(true);
       }
@@ -116,7 +114,7 @@ export const WhatsAppForms = () => {
     formCategories,
     description,
   };
-
+  console.log(disabled, 'disaled');
   const setPayload = ({ name, formJson, formCategories, description }: any) => {
     const payload = {
       name,
@@ -216,7 +214,7 @@ export const WhatsAppForms = () => {
         formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
-        headerHelp={formStatus === 'PUBLISHED' ? 'Please view below details' : 'Please enter below details.'}
+        headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
       />
       <div className={styles.FlowBuilderInfo}>
         <div className={styles.InfoContent}>
@@ -259,9 +257,9 @@ export const WhatsAppForms = () => {
             setStates={setStates}
             validationSchema={FormSchema}
             listItemName="Whatsapp Form"
-            isView={formStatus === 'PUBLISHED'}
+            isView={disabled}
             formFields={formFields}
-            errorButtonState={{ text: formStatus === 'PUBLISHED' ? 'Go Back' : 'Cancel', show: true }}
+            errorButtonState={{ text: disabled ? 'Go Back' : 'Cancel', show: true }}
             redirectionLink={'whatsapp-forms'}
             listItem="whatsappForm"
             icon={<Update />}
@@ -272,7 +270,7 @@ export const WhatsAppForms = () => {
             buttonState={{
               text: 'Save Form',
               status: disabled,
-              show: formStatus != 'PUBLISHED',
+              show: !disabled,
             }}
             customHandler={(error: string) => {
               setErrorMessage(formatError(error), 'An error occurred');
