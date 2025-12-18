@@ -5,13 +5,7 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import {
-  ACTIVATE_FORM,
-  DEACTIVATE_FORM,
-  DELETE_FORM,
-  PUBLISH_FORM,
-  SYNC_WHATSAPP_FORM,
-} from 'graphql/mutations/WhatsAppForm';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -96,7 +90,7 @@ export const WhatsAppFormList = () => {
     syncWhatsappForm();
   };
 
-  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_WHATSAPP_FORM, {
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_FORM, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       const errors = data?.syncWhatsappForm?.errors;
@@ -250,7 +244,7 @@ export const WhatsAppFormList = () => {
       loading={syncLoading}
       aria-hidden="true"
     >
-      Sync Whatsapp Form
+      Sync Whatsapp Forms
     </Button>
   );
 
