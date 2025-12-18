@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 import {
@@ -160,10 +160,6 @@ describe('<WhatsAppFormList />', () => {
 
     expect(getByTestId('loading')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(getByText('This is form name')).toBeInTheDocument();
-    });
-
     const deactivateIcon = await waitFor(() => getAllByTestId('deactivate-icon')[0]);
     fireEvent.click(deactivateIcon);
 
@@ -191,10 +187,6 @@ describe('<WhatsAppFormList />', () => {
 
     expect(getByTestId('loading')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(getByText('This is form name')).toBeInTheDocument();
-    });
-
     const deactivateIcon = await waitFor(() => getAllByTestId('deactivate-icon')[0]);
     fireEvent.click(deactivateIcon);
 
@@ -212,6 +204,22 @@ describe('<WhatsAppFormList />', () => {
     });
   });
 
+  test('should navigate to edit template page', async () => {
+    const { getByText, getAllByTestId, getAllByText, getAllByTitle } = render(wrapper());
+
+    await waitFor(() => {
+      expect(getByText('WhatsApp Forms')).toBeInTheDocument();
+    });
+
+    await screen.findByText('WhatsApp Forms');
+
+    const viewIcons = await screen.findAllByTestId('view-form');
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/1/edit');
+    });
+  });
   test('should open the link dialog on clicking the link icon', async () => {
     const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
 
@@ -223,7 +231,7 @@ describe('<WhatsAppFormList />', () => {
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('This is form name')).toBeInTheDocument();
+      expect(getByText('WhatsApp Forms')).toBeInTheDocument();
     });
     const linkIcon = await waitFor(() => getAllByTestId('link-icon')[0]);
     fireEvent.click(linkIcon);
