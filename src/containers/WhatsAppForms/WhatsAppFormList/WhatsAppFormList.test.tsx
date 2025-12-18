@@ -226,7 +226,7 @@ describe('<WhatsAppFormList />', () => {
     });
 
     expect(notificationSpy).toHaveBeenCalledWith(
-      'Syncing of the whatsApp forms has been started in the background',
+      'Syncing of the WhatsApp forms has started in the background. Please check the Notifications page for updates.',
       'success'
     );
   });
