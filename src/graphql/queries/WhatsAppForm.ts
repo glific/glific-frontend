@@ -13,6 +13,10 @@ export const GET_WHATSAPP_FORM = gql`
         name
         status
         updatedAt
+        sheet {
+          id
+          url
+        }
       }
     }
   }
@@ -34,6 +38,13 @@ export const LIST_WHATSAPP_FORMS = gql`
       metaFlowId
       categories
       definition
+      sheet {
+        id
+        label
+        url
+        isActive
+        sheetDataCount
+      }
     }
   }
 `;
