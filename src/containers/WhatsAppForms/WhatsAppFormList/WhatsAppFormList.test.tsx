@@ -225,7 +225,10 @@ describe('<WhatsAppFormList />', () => {
       expect(notificationSpy).toHaveBeenCalled();
     });
 
-    expect(notificationSpy).toHaveBeenCalledWith('WhatsApp Forms synced successfully', 'success');
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Syncing of the whatsApp forms has been started in the background',
+      'success'
+    );
   });
 
   test('sync whatsapp forms shows error notification on failure', async () => {
