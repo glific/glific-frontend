@@ -69,7 +69,7 @@ describe('<WhatsAppForms />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Edit WhatsApp Form')).toBeInTheDocument();
+      expect(getByText('WhatsApp Form')).toBeInTheDocument();
     });
 
     const inputs = getAllByRole('textbox');

@@ -114,7 +114,6 @@ export const WhatsAppForms = () => {
     formCategories,
     description,
   };
-  console.log(disabled, 'disaled');
   const setPayload = ({ name, formJson, formCategories, description }: any) => {
     const payload = {
       name,
@@ -211,7 +210,7 @@ export const WhatsAppForms = () => {
   return (
     <>
       <Heading
-        formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'}
+        formTitle={isEditing ? 'WhatsApp Form' : 'Create WhatsApp Form'}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
         headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
