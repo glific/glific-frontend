@@ -32,4 +32,5 @@ export interface ContentOption {
 export interface FormBuilderProps {
   formId?: string;
   onSave?: (screens: Screen[]) => void;
+  onScreensChange?: (screens: Screen[]) => void;
 }

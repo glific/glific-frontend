@@ -35,6 +35,8 @@ export interface ScreenComponentProps {
   onUpdateContent: (contentId: string, updates: Partial<ContentItem>) => void;
   onDeleteContent: (contentId: string) => void;
   onReorderContent: (oldIndex: number, newIndex: number) => void;
+  expandedContentId: string | null;
+  setExpandedContentId: (id: string | null) => void;
 }
 
 export const ScreenComponent = ({
@@ -48,9 +50,9 @@ export const ScreenComponent = ({
   onUpdateContent,
   onDeleteContent,
   onReorderContent,
+  expandedContentId,
+  setExpandedContentId,
 }: ScreenComponentProps) => {
-  const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
-
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: screen.id });
 
   const contentSensors = useSensors(

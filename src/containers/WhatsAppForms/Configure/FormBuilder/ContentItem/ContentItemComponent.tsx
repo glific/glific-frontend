@@ -58,7 +58,7 @@ export const ContentItemComponent = ({
         isExpanded ? styles.expanded : ''
       }`}
     >
-      <div className={styles.contentHeader}>
+      <div className={`${styles.contentHeader} ${isExpanded && styles.expandedHeader}`}>
         <div className={styles.dragHandle} {...attributes} {...listeners}>
           <DragIndicatorIcon fontSize="small" />
         </div>

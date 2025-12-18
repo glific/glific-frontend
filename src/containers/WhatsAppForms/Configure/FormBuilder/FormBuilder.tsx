@@ -14,22 +14,27 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Button } from 'components/UI/Form/Button/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './FormBuilder.module.css';
-import { Screen } from './FormBuilder.types';
+import { FormBuilderProps, Screen } from './FormBuilder.types';
 import { ScreenComponent } from './Screen/Screen';
 
-export const FormBuilder = () => {
+export const FormBuilder = ({ onScreensChange }: FormBuilderProps) => {
   const [screens, setScreens] = useState<Screen[]>([
     {
       id: '1',
       name: 'Screen 1',
       order: 0,
       content: [],
-      buttonLabel: '',
+      buttonLabel: 'Continue',
     },
   ]);
   const [expandedScreenId, setExpandedScreenId] = useState<string | null>('1');
+  const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
+
+  useEffect(() => {
+    onScreensChange?.(screens);
+  }, [screens, onScreensChange]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -112,6 +117,8 @@ export const FormBuilder = () => {
         return screen;
       })
     );
+
+    setExpandedContentId(newContentItem.id);
   };
 
   const updateContent = (screenId: string, contentId: string, updates: any) => {
@@ -160,9 +167,9 @@ export const FormBuilder = () => {
     <div className={styles.formBuilder}>
       <div className={styles.header}>
         <h2>Screens</h2>
-        <Button className={styles.addButton} variant="contained" onClick={addNewScreen}>
-          + Add New
-        </Button>
+          <Button className={styles.addButton} variant="contained" onClick={addNewScreen}>
+            + Add New
+          </Button>
       </div>
 
       <div className={styles.screensList}>
@@ -181,6 +188,8 @@ export const FormBuilder = () => {
                 onUpdateContent={(contentId: string, data: any) => updateContent(screen.id, contentId, data)}
                 onDeleteContent={(contentId: string) => deleteContent(screen.id, contentId)}
                 onReorderContent={(oldIndex: number, newIndex: number) => reorderContent(screen.id, oldIndex, newIndex)}
+                expandedContentId={expandedContentId}
+                setExpandedContentId={setExpandedContentId}
               />
             ))}
           </SortableContext>
