@@ -18,8 +18,8 @@ import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
-
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -157,6 +157,15 @@ export const WhatsAppFormList = () => {
   ];
 
   const additionalAction = (item: any) => {
+    const linkAction = {
+      label: 'Link',
+      icon: <LinkIcon data-testid="link-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        window.open(item.sheet?.url);
+      },
+    };
+
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -189,12 +198,16 @@ export const WhatsAppFormList = () => {
 
     let actions = [];
 
+    if (item.sheet?.url) {
+      actions.push(linkAction);
+    }
+
     if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction];
+      actions.push(deactivateAction);
     } else if (item.status === 'DRAFT') {
-      actions = [publishAction];
+      actions.push(publishAction);
     } else {
-      actions = [activateAction];
+      actions.push(activateAction);
     }
 
     return actions;
