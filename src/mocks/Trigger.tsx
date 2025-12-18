@@ -104,34 +104,43 @@ export const getTriggerQuery = (frequency: any, additionalFields?: any) => ({
   },
 });
 
-export const createTriggerQuery = (input: any) => ({
-  request: {
-    query: CREATE_TRIGGER,
-    variables: { input },
-  },
-  result: {
-    data: {
-      createTrigger: {
-        trigger: {
-          days: [],
-          endDate: '2021-03-13',
-          flow: {
+export const createTriggerQuery = (input: any, copyId?: number) => {
+  let variables: any = { input };
+  if (copyId) {
+    variables = {
+      ...variables,
+      id: copyId.toString(),
+    };
+  }
+  return {
+    request: {
+      query: CREATE_TRIGGER,
+      variables,
+    },
+    result: {
+      data: {
+        createTrigger: {
+          trigger: {
+            days: [],
+            endDate: '2021-03-13',
+            flow: {
+              id: '1',
+            },
+            roles: [],
+            name: 'New trigger',
+            frequency: 'none',
+            hours: [],
+            groups: [],
             id: '1',
+            isActive: true,
+            isRepeating: false,
+            startAt: '2021-02-28T20:00:22Z',
           },
-          roles: [],
-          name: 'New trigger',
-          frequency: 'none',
-          hours: [],
-          groups: [],
-          id: '1',
-          isActive: true,
-          isRepeating: false,
-          startAt: '2021-02-28T20:00:22Z',
         },
       },
     },
-  },
-});
+  };
+};
 
 export const updateTriggerQuery = {
   request: {
