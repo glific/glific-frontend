@@ -6,11 +6,13 @@ import { userEvent } from '@testing-library/user-event';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const mockObserve = vi.fn();
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: mockObserve,
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+class ResizeObserverMock {
+  observe = mockObserve;
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+}
+
+globalThis.ResizeObserver = ResizeObserverMock as any;
 
 describe('<WhatsAppEditor/>', () => {
   const handleHeightChange = vi.fn();

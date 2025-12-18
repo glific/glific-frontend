@@ -234,7 +234,7 @@ export const Trigger = () => {
 
   const FormSchema = Yup.object().shape(schemaShape);
 
-  const { data: flow } = useQuery(GET_FLOWS, {
+  const { data: flow, loading: flowsLoading } = useQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
       isTemplate: false,
@@ -253,8 +253,6 @@ export const Trigger = () => {
       }
     },
   });
-
-  if (!flow) return <Loading />;
 
   const handleFlowChange = (flow: any) => {
     setTriggerFlowWarning(undefined);
@@ -297,7 +295,7 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'flowId',
-      options: flow.flows,
+      options: flow?.flows,
       optionLabel: 'name',
       disabled: isEditing,
       multiple: false,
@@ -309,7 +307,7 @@ export const Trigger = () => {
           <CircularProgress size="12px" />
         </>
       ) : triggerFlowWarning ? (
-        <div className={styles.Warning}>{`Warning: ${triggerFlowWarning}`} </div>
+        <span className={styles.Warning}>{`Warning: ${triggerFlowWarning}`} </span>
       ) : (
         ''
       ),
@@ -434,6 +432,10 @@ export const Trigger = () => {
       setGroupIds(selectedGroups);
     }
   };
+
+  if (flowsLoading) {
+    return <Loading />;
+  }
 
   return (
     <FormLayout
