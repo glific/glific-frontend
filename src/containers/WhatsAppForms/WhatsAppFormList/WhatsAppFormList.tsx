@@ -178,7 +178,7 @@ export const WhatsAppFormList = () => {
       actions = [activateAction];
     }
     if (item.status === 'PUBLISHED') {
-      actions = [...actions, ...[handleViewAction]];
+      actions = [...actions, handleViewAction];
     }
     return actions;
   };
