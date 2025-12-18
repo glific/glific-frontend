@@ -103,7 +103,7 @@ export const WhatsAppFormList = () => {
       if (errors?.length) {
         setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
       } else {
-        setNotification('WhatsApp Forms synced successfully', 'success');
+        setNotification('Syncing of the whatsApp forms has been started in the background', 'success');
       }
     },
     onError: () => {
