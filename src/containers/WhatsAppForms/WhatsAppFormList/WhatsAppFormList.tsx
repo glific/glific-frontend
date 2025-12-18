@@ -29,7 +29,6 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
-  syncWhatsappForm: SYNC_WHATSAPP_FORM,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
@@ -80,7 +79,6 @@ export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
   const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
-  const [syncWhatsappFormLoad, setSyncWhatsappFormLoad] = useState(false);
 
   const navigate = useNavigate();
 
@@ -95,11 +93,10 @@ export const WhatsAppFormList = () => {
     },
   });
   const handleFormUpdates = () => {
-    setSyncWhatsappFormLoad(true);
     syncWhatsappForm();
   };
 
-  const [syncWhatsappForm] = useMutation(SYNC_WHATSAPP_FORM, {
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_WHATSAPP_FORM, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       const errors = data?.syncWhatsappForm?.errors;
@@ -108,11 +105,9 @@ export const WhatsAppFormList = () => {
       } else {
         setNotification('WhatsApp Forms synced successfully', 'success');
       }
-      setSyncWhatsappFormLoad(false);
     },
     onError: () => {
       setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
-      setSyncWhatsappFormLoad(false);
     },
   });
 
@@ -233,10 +228,10 @@ export const WhatsAppFormList = () => {
     <Button
       variant="outlined"
       color="primary"
-      loading={syncWhatsappFormLoad}
       className={styles.HsmUpdates}
       data-testid="syncWhatsappForm"
       onClick={() => handleFormUpdates()}
+      loading={syncLoading}
       aria-hidden="true"
     >
       Sync Whatsapp Form
