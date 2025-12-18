@@ -16,7 +16,7 @@ import { WhatsAppFormList } from './WhatsAppFormList';
 export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
-
+window.open = vi.fn();
 vi.mock('react-router', async () => {
   const actual = await vi.importActual<typeof import('react-router')>('react-router');
   return {
@@ -203,6 +203,7 @@ describe('<WhatsAppFormList />', () => {
       expect(errorSpy).toHaveBeenCalled();
     });
   });
+
   test('should navigate to edit template page', async () => {
     const { getByText, getAllByTestId, getAllByText, getAllByTitle } = render(wrapper());
 
@@ -217,6 +218,26 @@ describe('<WhatsAppFormList />', () => {
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/1/edit');
+    });
+  });
+  test('should open the link dialog on clicking the link icon', async () => {
+    const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
+
+    const select = getAllByRole('combobox')[0];
+    fireEvent.click(getByText('All'));
+
+    expect(select).toHaveTextContent('All');
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('WhatsApp Forms')).toBeInTheDocument();
+    });
+    const linkIcon = await waitFor(() => getAllByTestId('link-icon')[0]);
+    fireEvent.click(linkIcon);
+
+    await waitFor(() => {
+      expect(window.open).toHaveBeenCalled();
     });
   });
 });

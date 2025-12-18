@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 
 import styles from './WhatsAppFormList.module.css';
@@ -133,6 +134,14 @@ export const WhatsAppFormList = () => {
     navigate(`/whatsapp-forms/${id}/edit`);
   };
   const additionalAction = (item: any) => {
+    const linkAction = {
+      label: 'Link',
+      icon: <LinkIcon data-testid="link-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        window.open(item.sheet?.url);
+      },
+    };
     const handleViewAction = {
       label: 'View',
       icon: <ViewIcon data-testid="view-form" />,
@@ -170,16 +179,19 @@ export const WhatsAppFormList = () => {
     };
     let actions = [];
 
+    if (item.sheet?.url) {
+      actions.push(linkAction);
+    }
+
     if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction];
+      actions.push(deactivateAction);
+      actions.push(handleViewAction);
     } else if (item.status === 'DRAFT') {
-      actions = [publishAction];
+      actions.push(publishAction);
     } else {
-      actions = [activateAction];
+      actions.push(activateAction);
     }
-    if (item.status === 'PUBLISHED') {
-      actions = [...actions, handleViewAction];
-    }
+
     return actions;
   };
   const filters = useMemo(() => {
