@@ -69,3 +69,4 @@ export const CERTIFICATES_FAQ_FORMAT_LINK =
 export const CERTIFICATES_PERMISSIONS_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#4-error-2-permission-issues';
 export const ASK_ME_BOT_ENDPOINT = `${GLIFIC_API_URL}/v1/askme`;
+export const TRIAL_CREATE_USER_API = `${GLIFIC_API_URL}/trial/create-trial-user`;

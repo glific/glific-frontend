@@ -1,0 +1,186 @@
+/* Use the exact same styles as Auth.module.css but with narrower box */
+.Container {
+  overflow: auto;
+  width: 100%;
+  background: #f8faf5;
+  height: 100vh;
+}
+
+.Auth {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  vertical-align: middle;
+}
+
+.GlificLogo {
+  margin-top: 2vh;
+  width: 99px;
+}
+
+.Box {
+  border-radius: 12px;
+  margin-top: 3vh;
+  align-content: center;
+  justify-content: center;
+  flex-grow: 1;
+  min-height: 650px;
+  height: auto;
+  width: 450px;
+  border-color: #eaedec;
+  background-color: white;
+  border-style: solid;
+  border-width: 2px;
+  padding-bottom: 30px;
+}
+
+.BoxTitle {
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  margin-top: 32px;
+  margin-left: 32px;
+  font-weight: bold;
+  width: 380px;
+  color: #073f24;
+}
+
+.TitleText {
+  font-weight: bold;
+}
+
+.CenterBox {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.OrganizationName {
+  color: #073f24;
+  text-decoration: none;
+  font-size: 36px;
+  font-weight: bolder;
+  margin-top: -0.25rem;
+}
+
+.Break {
+  margin-top: 10px;
+  height: 1px;
+  width: 120px;
+  color: #eaedec;
+  border-style: solid;
+}
+
+.SubText {
+  color: #93a29b;
+  display: flex;
+  align-content: flex-start;
+  font-weight: 500;
+  margin-left: 32px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.Form {
+  width: 380px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  padding: 0px 8px;
+}
+
+.CenterButton {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px;
+  margin-top: 8px;
+}
+
+.AuthButton {
+  width: 380px;
+  margin-right: 0px;
+}
+
+.ErrorMessage {
+  text-align: center;
+  margin-top: 5px;
+  color: red;
+  width: 380px;
+  padding-bottom: 10px;
+}
+
+.SuccessMessage {
+  font-size: 16px;
+  margin-top: 100px;
+  color: #93a29b;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-weight: bolder;
+  padding: 15px 44px;
+}
+
+.SuccessMessageInline {
+  text-align: center;
+  margin-top: 10px;
+  color: #119656;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.SubmitAction {
+  display: none;
+}
+
+.Spacing {
+  margin: 10px 0px;
+  position: relative;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .Box {
+    width: 95%;
+    max-width: 400px;
+  }
+  .Form {
+    width: 90%;
+  }
+  .AuthButton {
+    width: 100%;
+  }
+}
+
+/* Get OTP Link - positioned on the right side of password field */
+.GetOtpLink {
+  text-align: right;
+  margin-top: -28px;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.OtpLinkButton {
+  background: none;
+  border: none;
+  color: #119656;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 5px 10px;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.OtpLinkButton:hover {
+  text-decoration: underline;
+  color: #0d7d45;
+}
+
+.OtpLinkButton:disabled {
+  color: #93a29b;
+  cursor: not-allowed;
+}
