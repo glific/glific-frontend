@@ -201,7 +201,7 @@ export const WhatsAppForms = () => {
       name: 'googleSheetUrl',
       label: 'Google Sheet URL',
       placeholder: 'Enter Google Sheet URL',
-      helperText: 'Provide a Google Sheet URL to store form responses automatically.',
+      helperText: 'Provide an empty Google Sheet URL to store form responses automatically.',
       disabled: disabled,
     },
   ];
