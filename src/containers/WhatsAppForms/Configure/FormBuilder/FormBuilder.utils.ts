@@ -307,7 +307,163 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
 export const generateFieldName = (label: string): string => {
   return label
     .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '') 
-    .replace(/\s+/g, '_') 
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '_')
     .trim();
+};
+
+// Convert WhatsApp Flow component type back to our internal type
+const getInternalComponentType = (whatsappType: string): { type: string; name: string } => {
+  switch (whatsappType) {
+    case 'TextHeading':
+      return { type: 'Text', name: 'Large Heading' };
+    case 'TextSubheading':
+      return { type: 'Text', name: 'Small Heading' };
+    case 'TextCaption':
+      return { type: 'Text', name: 'Caption' };
+    case 'TextBody':
+      return { type: 'Text', name: 'Body' };
+    case 'TextInput':
+      return { type: 'Text Answer', name: 'Short Answer' };
+    case 'TextArea':
+      return { type: 'Text Answer', name: 'Paragraph' };
+    case 'DatePicker':
+      return { type: 'Text Answer', name: 'Date Picker' };
+    case 'RadioButtonsGroup':
+      return { type: 'Selection', name: 'Single Choice' };
+    case 'CheckboxGroup':
+      return { type: 'Selection', name: 'Multiple Choice' };
+    case 'Dropdown':
+      return { type: 'Selection', name: 'Dropdown' };
+    case 'OptIn':
+      return { type: 'Selection', name: 'Opt In' };
+    case 'Image':
+      return { type: 'Media', name: 'Image' };
+    default:
+      return { type: 'Text', name: 'Body' };
+  }
+};
+
+// Convert WhatsApp Flow JSON component to ContentItem
+const convertWhatsAppComponentToContentItem = (component: any, order: number): ContentItem | null => {
+  const { type } = component;
+
+  // Skip Footer components - we'll handle them separately
+  if (type === 'Footer') {
+    return null;
+  }
+
+  const internalType = getInternalComponentType(type);
+  const contentItem: ContentItem = {
+    id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+    type: internalType.type,
+    name: internalType.name,
+    order,
+    data: {},
+  };
+
+  // Text display components
+  if (['TextHeading', 'TextSubheading', 'TextCaption', 'TextBody'].includes(type)) {
+    contentItem.data = {
+      text: component.text || '',
+    };
+    return contentItem;
+  }
+
+  // TextInput
+  if (type === 'TextInput') {
+    contentItem.data = {
+      label: component.label || 'Label',
+      inputType: component['input-type'] || 'text',
+      required: component.required || false,
+      placeholder: component['helper-text'] || '',
+    };
+    return contentItem;
+  }
+
+  // TextArea
+  if (type === 'TextArea') {
+    contentItem.data = {
+      label: component.label || 'Label',
+      required: component.required || false,
+      placeholder: component['helper-text'] || '',
+    };
+    return contentItem;
+  }
+
+  // DatePicker
+  if (type === 'DatePicker') {
+    contentItem.data = {
+      label: component.label || 'Label',
+      required: component.required || false,
+      placeholder: component['helper-text'] || '',
+    };
+    return contentItem;
+  }
+
+  // Selection components with data-source
+  if (['RadioButtonsGroup', 'CheckboxGroup', 'Dropdown'].includes(type)) {
+    const dataSource = component['data-source'] || [];
+    contentItem.data = {
+      label: component.label || 'Label',
+      required: component.required || false,
+      options: dataSource.map((item: any, index: number) => ({
+        id: item.id || `${index}_${item.title}`,
+        value: item.title || 'Option',
+      })),
+    };
+    return contentItem;
+  }
+
+  // OptIn
+  if (type === 'OptIn') {
+    contentItem.data = {
+      label: component.label || 'Label',
+      required: component.required || false,
+    };
+    return contentItem;
+  }
+
+  // Image
+  if (type === 'Image') {
+    contentItem.data = {
+      text: component.src || '',
+    };
+    return contentItem;
+  }
+
+  return contentItem;
+};
+
+// Convert WhatsApp Flow JSON to FormBuilder screens
+export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
+  if (!flowJSON || !flowJSON.screens || !Array.isArray(flowJSON.screens)) {
+    return [];
+  }
+
+  return flowJSON.screens.map((flowScreen: any, screenIndex: number) => {
+    // Extract form layout and children
+    const formLayout = flowScreen.layout?.children?.[0];
+    const formChildren = formLayout?.children || [];
+
+    // Find Footer component for button label
+    let buttonLabel = 'Continue';
+    const footerComponent = formChildren.find((child: any) => child.type === 'Footer');
+    if (footerComponent) {
+      buttonLabel = footerComponent.label || 'Continue';
+    }
+
+    // Convert all non-Footer components to content items
+    const content: ContentItem[] = formChildren
+      .map((component: any, index: number) => convertWhatsAppComponentToContentItem(component, index))
+      .filter((item: ContentItem | null) => item !== null) as ContentItem[];
+
+    return {
+      id: (screenIndex + 1).toString(),
+      name: flowScreen.title || `Screen ${screenIndex + 1}`,
+      order: screenIndex,
+      content,
+      buttonLabel,
+    };
+  });
 };

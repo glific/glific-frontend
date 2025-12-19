@@ -19,8 +19,8 @@ import styles from './FormBuilder.module.css';
 import { FormBuilderProps, Screen } from './FormBuilder.types';
 import { ScreenComponent } from './Screen/Screen';
 
-export const FormBuilder = ({ onScreensChange }: FormBuilderProps) => {
-  const [screens, setScreens] = useState<Screen[]>([
+export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormBuilderProps) => {
+  const [internalScreens, setInternalScreens] = useState<Screen[]>([
     {
       id: '1',
       name: 'Screen 1',
@@ -32,9 +32,25 @@ export const FormBuilder = ({ onScreensChange }: FormBuilderProps) => {
   const [expandedScreenId, setExpandedScreenId] = useState<string | null>('1');
   const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
 
+  // Use external screens if provided (controlled), otherwise use internal state (uncontrolled)
+  const screens = externalScreens || internalScreens;
+
+  const setScreens = (updater: Screen[] | ((prev: Screen[]) => Screen[])) => {
+    if (externalScreens && onScreensChange) {
+      // Controlled mode: call the callback with the new value
+      const newScreens = typeof updater === 'function' ? updater(externalScreens) : updater;
+      onScreensChange(newScreens);
+    } else {
+      // Uncontrolled mode: update internal state
+      setInternalScreens(updater);
+    }
+  };
+
   useEffect(() => {
-    onScreensChange?.(screens);
-  }, [screens, onScreensChange]);
+    if (!externalScreens) {
+      onScreensChange?.(internalScreens);
+    }
+  }, [internalScreens, onScreensChange, externalScreens]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

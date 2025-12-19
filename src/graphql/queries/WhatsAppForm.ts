@@ -13,10 +13,6 @@ export const GET_WHATSAPP_FORM = gql`
         name
         status
         updatedAt
-        sheet {
-          id
-          url
-        }
       }
     }
   }

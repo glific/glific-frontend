@@ -174,11 +174,12 @@ export const WhatsAppFormList = () => {
     if (item.status === 'PUBLISHED') {
       actions = [deactivateAction];
     } else if (item.status === 'DRAFT') {
-      actions = [configureIcon, publishAction];
+      actions = [publishAction];
     } else {
       actions = [activateAction];
     }
 
+    actions.push(configureIcon);
     return actions;
   };
   const filters = useMemo(() => {
