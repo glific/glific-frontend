@@ -86,19 +86,19 @@
   display: flex;
   align-content: center;
   flex-direction: column;
-  padding: 0px 8px;
+  padding: 0 8px;
 }
 
 .CenterButton {
   display: flex;
   justify-content: center;
-  padding: 10px 0px;
+  padding: 10px 0;
   margin-top: 8px;
 }
 
 .AuthButton {
   width: 380px;
-  margin-right: 0px;
+  margin-right: 0;
 }
 
 .ErrorMessage {
@@ -133,22 +133,8 @@
 }
 
 .Spacing {
-  margin: 10px 0px;
+  margin: 10px 0;
   position: relative;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .Box {
-    width: 95%;
-    max-width: 400px;
-  }
-  .Form {
-    width: 90%;
-  }
-  .AuthButton {
-    width: 100%;
-  }
 }
 
 .GetOtpLink {
@@ -181,4 +167,20 @@
 .OtpLinkButton:disabled {
   color: #93a29b;
   cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .Box {
+    width: 95%;
+    max-width: 400px;
+  }
+
+  .Form {
+    width: 90%;
+  }
+
+  .AuthButton {
+    width: 100%;
+  }
 }

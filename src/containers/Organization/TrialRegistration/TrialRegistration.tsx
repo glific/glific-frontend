@@ -13,8 +13,6 @@ import { TRIAL_CREATE_USER_API, TRIAL_ALLOCATE_ACCOUNT_API } from 'config/index'
 import styles from './TrialRegistration.module.css';
 
 export const TrialRegistration = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
   const [authError, setAuthError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -55,18 +53,14 @@ export const TrialRegistration = () => {
   });
 
   const handleSendOTP = async (values: any, validateForm: any) => {
-    const { otp, ...fieldsToValidate } = values;
     const errors = await validateForm();
     const hasErrors = Object.keys(errors).some((key) => key !== 'otp');
-
     if (hasErrors) {
       setAuthError('Please fill all required fields correctly');
       return;
     }
-
     setAuthError('');
     setLoading(true);
-
     const payload = {
       organization_name: values.organizationName,
       username: values.username,
