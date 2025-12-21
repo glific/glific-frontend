@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Typography } from '@mui/material';
+import axios from 'axios';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
-import { TRIAL_CREATE_USER_API } from 'config/index';
+import { TRIAL_CREATE_USER_API, TRIAL_ALLOCATE_ACCOUNT_API } from 'config/index';
 import styles from './TrialRegistration.module.css';
 
 export const TrialRegistration = () => {
@@ -39,8 +40,14 @@ export const TrialRegistration = () => {
   };
 
   const FormSchema = Yup.object().shape({
-    organizationName: Yup.string().required('Organization name is required'),
-    username: Yup.string().required('Username is required'),
+    organizationName: Yup.string()
+      .required('Organization name is required')
+      .matches(/^[A-Za-z\s]+$/, 'Organization name can only contain alphabets and spaces')
+      .min(5, 'Organization must be at least 5 characters'),
+    username: Yup.string()
+      .required('Your name is required')
+      .matches(/^[A-Za-z\s]+$/, 'Name can only contain alphabets and spaces')
+      .min(5, 'Username must be at least 5 characters'),
     email: Yup.string().email('Invalid email').required('Email is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
@@ -50,7 +57,6 @@ export const TrialRegistration = () => {
   const handleSendOTP = async (values: any, validateForm: any) => {
     const { otp, ...fieldsToValidate } = values;
     const errors = await validateForm();
-
     const hasErrors = Object.keys(errors).some((key) => key !== 'otp');
 
     if (hasErrors) {
@@ -58,56 +64,77 @@ export const TrialRegistration = () => {
       return;
     }
 
-    try {
-      setAuthError('');
-      setLoading(true);
+    setAuthError('');
+    setLoading(true);
 
-      const response = await fetch(TRIAL_CREATE_USER_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          organization_name: values.organizationName,
-          username: values.username,
-          email: values.email,
-          phone: values.phoneNumber,
-          password: values.password,
-        }),
+    const payload = {
+      organization_name: values.organizationName,
+      username: values.username,
+      email: values.email,
+      phone: values.phoneNumber,
+      password: values.password,
+    };
+
+    await axios
+      .post(TRIAL_CREATE_USER_API, payload)
+      .then(({ data }) => {
+        setLoading(false);
+
+        if (data.success !== false) {
+          setOtpSent(true);
+          setSuccessMessage('OTP sent successfully to your email');
+          setTimeout(() => setSuccessMessage(''), 3000);
+        } else {
+          const errorMessage = data.error || 'Failed to send OTP';
+          setAuthError(errorMessage);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        const errorMessage =
+          error.response?.data?.error || error.response?.data?.message || error.message || 'Failed to send OTP';
+        setAuthError(errorMessage);
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || data.message || 'Failed to send OTP');
-      }
-
-      setOtpSent(true);
-      setSuccessMessage('OTP sent successfully to your email');
-      setLoading(false);
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error: any) {
-      console.error('OTP Error:', error);
-      setAuthError(error.message || 'Failed to send OTP');
-      setLoading(false);
-    }
   };
 
   const handleSubmit = async (values: any) => {
+    if (loading) return;
+
+    setAuthError('');
+    setSuccessMessage('');
+    setLoading(true);
+
+    const payload = {
+      organization_name: values.organizationName,
+      username: values.username,
+      email: values.email,
+      phone: values.phoneNumber,
+      password: values.password,
+      otp: values.otp,
+    };
+
     try {
-      setAuthError('');
-      setLoading(true);
+      const { data } = await axios.post(TRIAL_ALLOCATE_ACCOUNT_API, payload);
 
-      console.log('Creating trial account:', values);
-
-      setTimeout(() => {
+      if (data.success && data.data?.login_url) {
         setSuccessMessage('Trial account created successfully! Redirecting to login...');
+        setLoading(false);
+
         setTimeout(() => {
-          navigate('/login');
+          window.location.href = data.data.login_url;
         }, 2000);
-      }, 1000);
+      } else {
+        const errorMessage = data.error || 'Failed to create trial account';
+        setAuthError(errorMessage);
+        setLoading(false);
+      }
     } catch (error: any) {
-      setAuthError(error.message || 'Failed to create trial account');
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to create trial account';
+      setAuthError(errorMessage);
       setLoading(false);
     }
   };
@@ -119,8 +146,6 @@ export const TrialRegistration = () => {
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
         </div>
         <hr className={styles.Break} />
-
-        <div className={styles.OrganizationName}>Glific</div>
 
         <div className={styles.Box}>
           <>
@@ -135,22 +160,15 @@ export const TrialRegistration = () => {
               {({ values, validateForm }) => (
                 <div className={styles.CenterBox}>
                   <Form className={styles.Form}>
-                    {/* Organization Name */}
                     <div className={styles.Spacing}>
                       <Field component={Input} name="organizationName" type="text" placeholder="Organization Name" />
                     </div>
-
-                    {/* Username */}
                     <div className={styles.Spacing}>
-                      <Field component={Input} name="username" type="text" placeholder="Username" />
+                      <Field component={Input} name="username" type="text" placeholder="Your name" />
                     </div>
-
-                    {/* Email */}
                     <div className={styles.Spacing}>
                       <Field component={Input} name="email" type="email" placeholder="Email" />
                     </div>
-
-                    {/* Phone Number */}
                     <div className={styles.Spacing}>
                       <Field
                         component={PhoneInput}
@@ -160,18 +178,15 @@ export const TrialRegistration = () => {
                         helperText="Include country code (e.g., +919876543210)"
                       />
                     </div>
-
-                    {/* Password with Get OTP on the right */}
                     <div className={styles.Spacing}>
                       <Field
                         component={Input}
                         name="password"
                         type="password"
-                        placeholder="Password"
+                        placeholder="Create password"
                         helperText="Minimum 8 characters"
                         {...passwordFieldInfo}
                       />
-                      {/* Get OTP Link - positioned on the right side */}
                       <div className={styles.GetOtpLink}>
                         <button
                           type="button"
@@ -179,14 +194,11 @@ export const TrialRegistration = () => {
                           className={styles.OtpLinkButton}
                           disabled={loading}
                         >
-                          {loading ? 'Sending...' : 'get otp'}
+                          {loading ? 'Sending...' : otpSent ? 'resend otp' : 'get otp'}
                         </button>
                       </div>
                     </div>
-
                     {successMessage && <div className={styles.SuccessMessageInline}>{successMessage}</div>}
-
-                    {/* OTP Field - ALWAYS VISIBLE */}
                     <div className={styles.Spacing}>
                       <Field
                         component={Input}
@@ -195,9 +207,7 @@ export const TrialRegistration = () => {
                         placeholder="Enter OTP"
                         helperText={otpSent ? 'Check your email for the OTP' : ''}
                       />
-                    </div>
-
-                    {/* Start Trial Button - ALWAYS VISIBLE */}
+                    </div>{' '}
                     <div className={styles.CenterButton}>
                       <Button
                         variant="outlined"
@@ -210,9 +220,7 @@ export const TrialRegistration = () => {
                         {!loading && 'Start Trial'}
                       </Button>
                     </div>
-
                     {authError && <div className={styles.ErrorMessage}>{authError}</div>}
-
                     <input className={styles.SubmitAction} type="submit" />
                   </Form>
                 </div>
