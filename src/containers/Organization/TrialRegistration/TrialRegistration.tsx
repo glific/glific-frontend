@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useTranslation } from 'react-i18next';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Typography } from '@mui/material';
@@ -77,7 +75,6 @@ export const TrialRegistration = () => {
         if (data.success !== false) {
           setOtpSent(true);
           setSuccessMessage('OTP sent successfully to your email');
-          setTimeout(() => setSuccessMessage(''), 3000);
         } else {
           const errorMessage = data.error || 'Failed to send OTP';
           setAuthError(errorMessage);
@@ -194,13 +191,7 @@ export const TrialRegistration = () => {
                     </div>
                     {successMessage && <div className={styles.SuccessMessageInline}>{successMessage}</div>}
                     <div className={styles.Spacing}>
-                      <Field
-                        component={Input}
-                        name="otp"
-                        type="text"
-                        placeholder="Enter OTP"
-                        helperText={otpSent ? 'Check your email for the OTP' : ''}
-                      />
+                      <Field component={Input} name="otp" type="text" placeholder="Enter OTP" />
                     </div>{' '}
                     <div className={styles.CenterButton}>
                       <Button
