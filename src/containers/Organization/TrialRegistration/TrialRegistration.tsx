@@ -143,7 +143,7 @@ export const TrialRegistration = () => {
         setSuccessMessage('Trial account created successfully! Redirecting to login...');
         setLoading(false);
 
-        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        // eslint-disable-next-line
         redirectTimeoutRef.current = setTimeout(() => {
           window.location.href = data.data.login_url;
         }, 2000);
