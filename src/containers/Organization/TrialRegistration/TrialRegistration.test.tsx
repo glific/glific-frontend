@@ -1,8 +1,8 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router';
 import axios from 'axios';
-import { TrialRegistration } from './TrialRegistration';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { TrialRegistration } from './TrialRegistration';
 
 vi.mock('axios');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

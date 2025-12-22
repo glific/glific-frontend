@@ -26,9 +26,10 @@ export const TrialRegistration = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const successMessageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const successMessageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // eslint-disable-next-line arrow-body-style
   useEffect(() => {
     return () => {
       if (successMessageTimeoutRef.current) {
