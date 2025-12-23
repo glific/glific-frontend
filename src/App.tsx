@@ -11,7 +11,7 @@ import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/Unauthenticate
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import { TrialVideoModal } from 'components/UI/TrialAccount/TrialVideoModal';
-// import { TrialBanner } from 'components/UI/TrialBanner/TrialBanner';
+import { TrialBanner } from 'components/UI/TrialBanner/TrialBanner';
 
 const App = () => {
   const navigate = useNavigate();
@@ -44,7 +44,6 @@ const App = () => {
     routes = <UnauthenticatedRoute />;
   }
 
-  // For logout action, we don't need to check if the user is logged in or not. Hence, adding it at top level
   routes = (
     <Routes>
       <Route path="/logout/:mode" element={<Logout />} />
@@ -53,20 +52,20 @@ const App = () => {
   );
 
   return (
-    <ApolloProvider client={gqlClient(navigate)}>
-      <ErrorHandler />
-      <SideDrawerContext.Provider value={sideDrawerValues}>
-        {/* Show trial banner for authenticated trial users */}
-        {/* {isAuthenticated && sessionData?.is_trial && (
-          <TrialBanner trialExpirationDate={sessionData.trial_expiration_date} isTrial={sessionData.is_trial} />
-        )} */}
+    <>
+      {/* Banner at the very top - static position, pushes content down */}
+      {isAuthenticated && sessionData?.is_trial && (
+        <TrialBanner trialExpirationDate={sessionData.trial_expiration_date} isTrial={sessionData.is_trial} />
+      )}
 
-        {routes}
-
-        {/* Show trial video modal on first login for trial users */}
-        {isAuthenticated && sessionData && <TrialVideoModal sessionData={sessionData} />}
-      </SideDrawerContext.Provider>
-    </ApolloProvider>
+      <ApolloProvider client={gqlClient(navigate)}>
+        <ErrorHandler />
+        <SideDrawerContext.Provider value={sideDrawerValues}>
+          {routes}
+          {isAuthenticated && sessionData && <TrialVideoModal sessionData={sessionData} />}
+        </SideDrawerContext.Provider>
+      </ApolloProvider>
+    </>
   );
 };
 
