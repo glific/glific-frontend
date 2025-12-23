@@ -39,8 +39,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 
 ```bash
 asdf plugin-add nodejs
-asdf install nodejs latest
-asdf set -u nodejs latest 
+asdf install
 ```
 
 #### yarn (via npm)
