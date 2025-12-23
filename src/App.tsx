@@ -1,9 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, Route, Routes } from 'react-router';
-
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
-
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SideDrawerContext } from 'context/session';
@@ -12,11 +10,21 @@ import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
+import { TrialVideoModal } from 'components/UI/TrialAccount/TrialVideoModal';
+// import { TrialBanner } from 'components/UI/TrialBanner/TrialBanner';
 
 const App = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = !!getAuthSession('accessToken');
+  const isAuthenticated = !!getAuthSession('access_token');
+
+  const sessionData = isAuthenticated
+    ? {
+        last_login_time: getAuthSession('last_login_time'),
+        is_trial: getAuthSession('is_trial'),
+        trial_expiration_date: getAuthSession('trial_expiration_date'),
+      }
+    : null;
 
   const sideDrawerValues = useMemo(
     () => ({
@@ -47,7 +55,17 @@ const App = () => {
   return (
     <ApolloProvider client={gqlClient(navigate)}>
       <ErrorHandler />
-      <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
+      <SideDrawerContext.Provider value={sideDrawerValues}>
+        {/* Show trial banner for authenticated trial users */}
+        {/* {isAuthenticated && sessionData?.is_trial && (
+          <TrialBanner trialExpirationDate={sessionData.trial_expiration_date} isTrial={sessionData.is_trial} />
+        )} */}
+
+        {routes}
+
+        {/* Show trial video modal on first login for trial users */}
+        {isAuthenticated && sessionData && <TrialVideoModal sessionData={sessionData} />}
+      </SideDrawerContext.Provider>
     </ApolloProvider>
   );
 };
