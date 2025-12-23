@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import styles from './TrialVideoModal.module.css';
 
 interface SessionData {
   last_login_time: string | null;
@@ -32,74 +33,19 @@ export const TrialVideoModal = ({ sessionData }: TrialVideoModalProps) => {
   };
 
   return (
-    <Dialog
-      open={showModal}
-      onClose={handleClose}
-      maxWidth="md"
-      fullWidth
-      PaperProps={{
-        style: {
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          margin: '20px',
-        },
-      }}
-    >
-      <IconButton
-        aria-label="close"
-        onClick={handleClose}
-        style={{
-          position: 'absolute',
-          right: 10,
-          top: 10,
-          color: '#666',
-          zIndex: 10,
-        }}
-      >
+    <Dialog open={showModal} onClose={handleClose} maxWidth="md" fullWidth className={styles.dialog}>
+      <IconButton aria-label="close" onClick={handleClose} className={styles.closeButton}>
         <CloseIcon />
       </IconButton>
-
-      <DialogContent style={{ padding: 0, overflow: 'hidden' }}>
+      <DialogContent className={styles.dialogContent}>
         <iframe
           src="https://www.canva.com/design/DAG4qx6Mn10/Es-HszV0JoAzqMV9eLM3rQ/view?embed"
-          style={{
-            width: '100%',
-            height: '70vh',
-            border: 'none',
-            display: 'block',
-          }}
+          className={styles.iframe}
           title="Trial Welcome"
           allow="fullscreen"
           allowFullScreen
         />
-        <Button
-          variant="contained"
-          onClick={handleClose}
-          style={{
-            position: 'absolute',
-            bottom: '40px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: '#119656',
-            color: 'white',
-            padding: '10px 38px',
-            fontSize: '21px',
-            fontWeight: '700',
-            textTransform: 'none',
-            borderRadius: '3px',
-            zIndex: 5,
-            cursor: 'pointer',
-            boxShadow: '0 3px 10px rgba(0,0,0,0.25)',
-            fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif',
-            letterSpacing: '0.3px',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#0c6d3d';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#0f8249';
-          }}
-        >
+        <Button variant="contained" onClick={handleClose} className={styles.startButton}>
           Let's get Started
         </Button>
       </DialogContent>
