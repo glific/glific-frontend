@@ -19,7 +19,6 @@ interface VariableItem {
   type: string;
 }
 
-// Extract all variables with their screen context
 const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
   const variables: VariableItem[] = [];
 
@@ -27,7 +26,6 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
     screen.content.forEach((item) => {
       const { data, type } = item;
 
-      // For input fields, extract the field information
       if (type === 'Text Answer' || type === 'Selection') {
         if (data.label) {
           variables.push({
@@ -35,7 +33,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             screenName: screen.name,
             contentId: item.id,
             label: data.label,
-            type: item.name, // e.g., "Short Answer", "Single Choice"
+            type: item.name,
           });
         }
       }
@@ -164,7 +162,11 @@ export const Variables = ({ screens, onUpdateScreenName, onUpdateFieldLabel }: V
                     }
                   }}
                 >
-                  {editingVariableId === variable.contentId ? <CheckIcon fontSize="small" /> : <EditIcon fontSize="small" />}
+                  {editingVariableId === variable.contentId ? (
+                    <CheckIcon fontSize="small" />
+                  ) : (
+                    <EditIcon fontSize="small" />
+                  )}
                 </IconButton>
               </div>
             ))}

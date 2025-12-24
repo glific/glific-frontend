@@ -32,16 +32,13 @@ export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormB
   const [expandedScreenId, setExpandedScreenId] = useState<string | null>('1');
   const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
 
-  // Use external screens if provided (controlled), otherwise use internal state (uncontrolled)
   const screens = externalScreens || internalScreens;
 
   const setScreens = (updater: Screen[] | ((prev: Screen[]) => Screen[])) => {
     if (externalScreens && onScreensChange) {
-      // Controlled mode: call the callback with the new value
       const newScreens = typeof updater === 'function' ? updater(externalScreens) : updater;
       onScreensChange(newScreens);
     } else {
-      // Uncontrolled mode: update internal state
       setInternalScreens(updater);
     }
   };
@@ -183,9 +180,9 @@ export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormB
     <div className={styles.formBuilder}>
       <div className={styles.header}>
         <h2>Screens</h2>
-          <Button className={styles.addButton} variant="contained" onClick={addNewScreen}>
-            + Add New
-          </Button>
+        <Button className={styles.addButton} variant="contained" onClick={addNewScreen}>
+          + Add New
+        </Button>
       </div>
 
       <div className={styles.screensList}>

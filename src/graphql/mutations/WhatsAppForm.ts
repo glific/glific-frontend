@@ -89,3 +89,14 @@ export const ACTIVATE_FORM = gql`
     }
   }
 `;
+
+export const SAVE_WHATSAPP_FORM_REVISION = gql`
+  mutation SaveWhatsappFormRevision($input: WhatsappFormRevisionInput!) {
+    saveWhatsappFormRevision(input: $input) {
+      whatsappForm {
+        id
+        definition
+      }
+    }
+  }
+`;

@@ -161,11 +161,59 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   if (componentType === 'Image') {
     return {
       type: 'Image',
-      src: data.text || '', 
+      src: data.text || '',
     };
   }
 
   return null;
+};
+
+const generatePayloadKey = (screenIndex: number, label: string, fieldCounter: number): string => {
+  const labelKey = (label || 'field')
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/gi, '')
+    .substring(0, 20);
+  return `screen_${screenIndex}_${labelKey}_${fieldCounter}`;
+};
+
+const generateScreenData = (previousScreensPayloadKeys: string[]): Record<string, any> => {
+  const data: Record<string, any> = {};
+  previousScreensPayloadKeys.forEach((key) => {
+    data[key] = {
+      __example__: 'Example',
+      type: 'string',
+    };
+  });
+  return data;
+};
+
+const generateScreenPayload = (
+  screenIndex: number,
+  componentsMap: Map<string, any>,
+  screenContent: ContentItem[],
+  previousScreensPayloadKeys: string[]
+): Record<string, string> => {
+  const payload: Record<string, string> = {};
+
+  if (previousScreensPayloadKeys.length > 0) {
+    previousScreensPayloadKeys.forEach((key) => {
+      payload[key] = `\${data.${key}}`;
+    });
+  }
+
+  let fieldCounter = 0;
+  screenContent.forEach((item) => {
+    if (item.type === 'Text Answer' || item.type === 'Selection') {
+      const component = componentsMap.get(item.id);
+      if (component && component.name) {
+        const payloadKey = generatePayloadKey(screenIndex, item.data.label || 'field', fieldCounter);
+        payload[payloadKey] = `\${form.${component.name}}`;
+        fieldCounter++;
+      }
+    }
+  });
+
+  return payload;
 };
 
 export const convertScreenToFlowJSON = (
@@ -173,50 +221,35 @@ export const convertScreenToFlowJSON = (
   screenIndex: number,
   totalScreens: number,
   nextScreenId?: string,
-  accumulatedPayload: Record<string, string> = {}
+  previousScreensPayloadKeys: string[] = []
 ): any => {
   const children: any[] = [];
-  const formFieldNames: string[] = [];
+  const componentsMap: Map<string, any> = new Map();
 
   screen.content.forEach((item) => {
     const component = convertContentItemToComponent(item);
     if (component) {
       children.push(component);
-      if (component.name) {
-        formFieldNames.push(component.name);
-      }
+      componentsMap.set(item.id, component);
     }
   });
 
   const isTerminal = screenIndex === totalScreens - 1;
 
+  const payload = generateScreenPayload(screenIndex, componentsMap, screen.content, previousScreensPayloadKeys);
+
   if (screen.buttonLabel) {
-    const currentScreenPayload: Record<string, string> = {};
-    formFieldNames.forEach((fieldName, index) => {
-      currentScreenPayload[`screen_${screenIndex}_${fieldName.split('_')[0]}_${index}`] = `\${form.${fieldName}}`;
-    });
-
-    const fullPayload: Record<string, string> = {};
-
-    if (screenIndex > 0) {
-      Object.keys(accumulatedPayload).forEach((key) => {
-        fullPayload[key] = `\${data.${key}}`;
-      });
-    }
-
-    Object.assign(fullPayload, currentScreenPayload);
-
     children.push({
       label: screen.buttonLabel,
       'on-click-action': isTerminal
         ? {
             name: 'complete',
-            payload: fullPayload,
+            payload,
           }
         : {
             name: 'navigate',
             next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' },
-            payload: currentScreenPayload, 
+            payload,
           },
       type: 'Footer',
     });
@@ -232,15 +265,7 @@ export const convertScreenToFlowJSON = (
     .replace(/\s+/g, '_')
     .trim();
 
-  const screenData: Record<string, any> = {};
-  if (screenIndex > 0) {
-    Object.keys(accumulatedPayload).forEach((key) => {
-      screenData[key] = {
-        __example__: 'Example',
-        type: 'string',
-      };
-    });
-  }
+  const screenData = generateScreenData(previousScreensPayloadKeys);
 
   return {
     id: screenId,
@@ -262,7 +287,7 @@ export const convertScreenToFlowJSON = (
 
 export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const totalScreens = screens.length;
-  let accumulatedPayload: Record<string, string> = {};
+  let previousScreensPayloadKeys: string[] = [];
 
   const flowScreens = screens.map((screen, index) => {
     const screenIds = screens.map((s) =>
@@ -279,19 +304,14 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
 
     const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
 
-    const flowScreen = convertScreenToFlowJSON(
-      screen,
-      index,
-      totalScreens,
-      nextScreenId,
-      accumulatedPayload
-    );
+    const flowScreen = convertScreenToFlowJSON(screen, index, totalScreens, nextScreenId, previousScreensPayloadKeys);
 
+    let fieldCounter = 0;
     screen.content.forEach((item) => {
-      const component = convertContentItemToComponent(item);
-      if (component && component.name) {
-        const fieldIndex = Object.keys(accumulatedPayload).filter((k) => k.startsWith(`screen_${index}_`)).length;
-        accumulatedPayload[`screen_${index}_${component.name.split('_')[0]}_${fieldIndex}`] = `\${form.${component.name}}`;
+      if (item.type === 'Text Answer' || item.type === 'Selection') {
+        const payloadKey = generatePayloadKey(index, item.data.label || 'field', fieldCounter);
+        previousScreensPayloadKeys.push(payloadKey);
+        fieldCounter++;
       }
     });
 
@@ -312,7 +332,6 @@ export const generateFieldName = (label: string): string => {
     .trim();
 };
 
-// Convert WhatsApp Flow component type back to our internal type
 const getInternalComponentType = (whatsappType: string): { type: string; name: string } => {
   switch (whatsappType) {
     case 'TextHeading':
@@ -344,11 +363,9 @@ const getInternalComponentType = (whatsappType: string): { type: string; name: s
   }
 };
 
-// Convert WhatsApp Flow JSON component to ContentItem
 const convertWhatsAppComponentToContentItem = (component: any, order: number): ContentItem | null => {
   const { type } = component;
 
-  // Skip Footer components - we'll handle them separately
   if (type === 'Footer') {
     return null;
   }
@@ -362,7 +379,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     data: {},
   };
 
-  // Text display components
   if (['TextHeading', 'TextSubheading', 'TextCaption', 'TextBody'].includes(type)) {
     contentItem.data = {
       text: component.text || '',
@@ -370,7 +386,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
-  // TextInput
   if (type === 'TextInput') {
     contentItem.data = {
       label: component.label || 'Label',
@@ -381,7 +396,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
-  // TextArea
   if (type === 'TextArea') {
     contentItem.data = {
       label: component.label || 'Label',
@@ -391,7 +405,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
-  // DatePicker
   if (type === 'DatePicker') {
     contentItem.data = {
       label: component.label || 'Label',
@@ -401,7 +414,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
-  // Selection components with data-source
   if (['RadioButtonsGroup', 'CheckboxGroup', 'Dropdown'].includes(type)) {
     const dataSource = component['data-source'] || [];
     contentItem.data = {
@@ -415,7 +427,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
-  // OptIn
   if (type === 'OptIn') {
     contentItem.data = {
       label: component.label || 'Label',
@@ -424,7 +435,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
-  // Image
   if (type === 'Image') {
     contentItem.data = {
       text: component.src || '',
@@ -435,25 +445,21 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   return contentItem;
 };
 
-// Convert WhatsApp Flow JSON to FormBuilder screens
 export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
   if (!flowJSON || !flowJSON.screens || !Array.isArray(flowJSON.screens)) {
     return [];
   }
 
   return flowJSON.screens.map((flowScreen: any, screenIndex: number) => {
-    // Extract form layout and children
     const formLayout = flowScreen.layout?.children?.[0];
     const formChildren = formLayout?.children || [];
 
-    // Find Footer component for button label
     let buttonLabel = 'Continue';
     const footerComponent = formChildren.find((child: any) => child.type === 'Footer');
     if (footerComponent) {
       buttonLabel = footerComponent.label || 'Continue';
     }
 
-    // Convert all non-Footer components to content items
     const content: ContentItem[] = formChildren
       .map((component: any, index: number) => convertWhatsAppComponentToContentItem(component, index))
       .filter((item: ContentItem | null) => item !== null) as ContentItem[];

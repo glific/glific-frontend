@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Heading } from 'components/UI/Heading/Heading';
 import styles from './Configure.module.css';
 import { FormBuilder } from './FormBuilder/FormBuilder';
@@ -6,17 +6,29 @@ import { Preview } from './Preview/Preview';
 import { JSONViewer } from './JSONViewer/JSONViewer';
 import { Variables } from './Variables/Variables';
 import { Screen } from './FormBuilder/FormBuilder.types';
-import { convertFlowJSONToFormBuilder } from './FormBuilder/FormBuilder.utils';
+import { convertFlowJSONToFormBuilder, convertFormBuilderToFlowJSON } from './FormBuilder/FormBuilder.utils';
 import { ToggleButtonGroup, ToggleButton } from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router';
 import { GET_WHATSAPP_FORM } from 'graphql/queries/WhatsAppForm';
+import { SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
 
 export const Configure = () => {
   const [screens, setScreens] = useState<Screen[]>([]);
   const [showJSON, setShowJSON] = useState(false);
   const [view, setView] = useState<'preview' | 'variables'>('preview');
   const params = useParams();
+  const isInitialMount = useRef(true);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [saveWhatsappFormRevision] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
+    onCompleted: (data) => {
+      console.log('Form revision saved successfully', data);
+    },
+    onError: (error) => {
+      console.error('Error saving form revision:', error);
+    },
+  });
 
   const handleViewJSON = () => {
     setShowJSON(true);
@@ -67,6 +79,40 @@ export const Configure = () => {
     },
   });
 
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (!params.id || screens.length === 0) {
+      return;
+    }
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      const flowJSON = convertFormBuilderToFlowJSON(screens);
+
+      saveWhatsappFormRevision({
+        variables: {
+          input: {
+            whatsappFormId: params.id,
+            definition: JSON.stringify(flowJSON),
+          },
+        },
+      });
+    }, 1000);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [screens, params.id, saveWhatsappFormRevision]);
+
   return (
     <>
       <Heading
@@ -108,7 +154,7 @@ export const Configure = () => {
               onUpdateFieldLabel={handleUpdateFieldLabel}
             />
           ) : (
-            <Preview />
+            <Preview screens={screens} />
           )}
         </div>
       </div>
