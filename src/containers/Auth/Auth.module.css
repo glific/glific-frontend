@@ -293,3 +293,63 @@
   text-align: center;
   padding-bottom: 20px;
 }
+
+.TrialContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: 5vh;
+}
+
+.TrialContainer .GlificLogo {
+  margin-top: 0;
+}
+
+.TrialRegistrationBox {
+  padding-bottom: 30px;
+}
+
+.TrialRegistrationBox .CenterButton {
+  margin-bottom: 10px;
+}
+
+.TrialRegistrationBox .BoxTitle {
+  text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.TrialRegistrationBox .SubText {
+  text-align: center;
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.TrialRegistrationBox .TitleText {
+  text-align: center;
+}
+
+.OtpFieldSpacing {
+  margin-top: 20px !important;
+}
+
+.SuccessMessageInline {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+@media (width <= 600px) {
+  .TrialContainer {
+    padding: 20px;
+  }
+}
