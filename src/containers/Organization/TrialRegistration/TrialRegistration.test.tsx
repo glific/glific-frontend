@@ -30,7 +30,7 @@ describe('TrialRegistration', () => {
       expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Phone Number')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Create password')).toBeInTheDocument();
-      expect(screen.getByTestId('GetOTPButton')).toBeInTheDocument();
+      expect(screen.getByTestId('SubmitButton')).toHaveTextContent('Get OTP');
       expect(screen.queryByPlaceholderText('Enter OTP')).not.toBeInTheDocument();
     });
   });
@@ -38,11 +38,11 @@ describe('TrialRegistration', () => {
   test('should show validation errors for empty fields', async () => {
     render(wrapper);
 
-    const getOtpButton = screen.getByTestId('GetOTPButton');
-    fireEvent.click(getOtpButton);
+    const submitButton = screen.getByTestId('SubmitButton');
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Please fill all required fields correctly')).toBeInTheDocument();
+      expect(screen.getByText('Organization name is required')).toBeInTheDocument();
     });
   });
 
@@ -97,13 +97,13 @@ describe('TrialRegistration', () => {
       target: { value: 'Secret1234!' },
     });
 
-    const getOtpButton = screen.getByTestId('GetOTPButton');
-    fireEvent.click(getOtpButton);
+    const submitButton = screen.getByTestId('SubmitButton');
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText('OTP sent successfully to amisha@gmail.com')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Enter OTP')).toBeInTheDocument();
-      expect(screen.getByText('resend')).toBeInTheDocument();
+      expect(screen.getByText('Resend')).toBeInTheDocument();
       expect(screen.getByTestId('SubmitButton')).toHaveTextContent('Start Trial');
     });
   });
@@ -134,8 +134,8 @@ describe('TrialRegistration', () => {
       target: { value: 'Secret1234!' },
     });
 
-    const getOtpButton = screen.getByTestId('GetOTPButton');
-    fireEvent.click(getOtpButton);
+    const submitButton = screen.getByTestId('SubmitButton');
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText('User with this email or phone already exists')).toBeInTheDocument();
@@ -176,7 +176,7 @@ describe('TrialRegistration', () => {
       target: { value: 'Secret1234!' },
     });
 
-    fireEvent.click(screen.getByTestId('GetOTPButton'));
+    fireEvent.click(screen.getByTestId('SubmitButton'));
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText('Enter OTP')).toBeInTheDocument();
@@ -227,7 +227,7 @@ describe('TrialRegistration', () => {
       target: { value: 'Secret1234!' },
     });
 
-    fireEvent.click(screen.getByTestId('GetOTPButton'));
+    fireEvent.click(screen.getByTestId('SubmitButton'));
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText('Enter OTP')).toBeInTheDocument();

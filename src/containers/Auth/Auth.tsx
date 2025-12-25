@@ -34,14 +34,8 @@ export interface AuthProps {
   linkURL?: string;
   errorMessage?: string;
   successMessage?: string;
-  otpConfig?: {
-    showGetOtpButton?: boolean;
-    otpButtonText?: string;
-    otpButtonDisabled?: boolean;
-    onGetOtpClick?: (values: any, validateForm: () => Promise<any>) => void;
-    otpSuccessMessage?: string;
-    otpSent?: boolean;
-  };
+  loading?: boolean;
+  inlineSuccessMessage?: string;
 }
 
 export const Auth = ({
@@ -59,13 +53,16 @@ export const Auth = ({
   linkURL,
   errorMessage,
   successMessage,
-  otpConfig,
+  loading: externalLoading,
+  inlineSuccessMessage,
 }: AuthProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState('Glific');
   const [status, setStatus] = useState('');
+
+  const isLoading = externalLoading !== undefined ? externalLoading : loading;
 
   useEffect(() => {
     if (mode === 'trialregistration') {
@@ -176,7 +173,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values, validateForm }) => (
+          {({ submitForm, values }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -203,9 +200,8 @@ export const Auth = ({
                   );
                 })}
 
-                {/* Show success message after Get OTP */}
-                {isTrialRegistration && otpConfig?.otpSuccessMessage && (
-                  <div className={styles.SuccessMessageInline}>{otpConfig.otpSuccessMessage}</div>
+                {isTrialRegistration && inlineSuccessMessage && (
+                  <div className={styles.SuccessMessageInline}>{inlineSuccessMessage}</div>
                 )}
 
                 {linkURL && (
@@ -228,28 +224,12 @@ export const Auth = ({
                       }}
                       className={buttonClass}
                       data-testid="SubmitButton"
-                      loading={loading}
+                      loading={isLoading}
                       action="register"
                     >
                       {buttonText}
                       {whatsAppIcon}
                     </Captcha>
-                  ) : isTrialRegistration && !otpConfig?.otpSent ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        otpConfig?.onGetOtpClick?.(values, validateForm);
-                      }}
-                      className={buttonClass}
-                      data-testid="GetOTPButton"
-                      disabled={otpConfig?.otpButtonDisabled}
-                      loading={otpConfig?.otpButtonDisabled}
-                      type="button"
-                    >
-                      {!otpConfig?.otpButtonDisabled && otpConfig?.otpButtonText}
-                    </Button>
                   ) : (
                     <Button
                       variant={buttonContainedVariant ? 'contained' : 'outlined'}
@@ -257,10 +237,10 @@ export const Auth = ({
                       onClick={submitForm}
                       className={buttonClass}
                       data-testid="SubmitButton"
-                      loading={loading}
+                      loading={isLoading}
                       type="button"
                     >
-                      {!loading && buttonText}
+                      {buttonText}
                     </Button>
                   )}
                 </div>

@@ -10,30 +10,33 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import styles from '../../Auth/ConfirmOTP/ConfirmOTP.module.css';
 
+interface TrialFormValues {
+  organizationName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  otp: string;
+}
+
 export const TrialRegistration = () => {
   const [authError, setAuthError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [formValues, setFormValues] = useState<TrialFormValues | null>(null);
 
   const successMessageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Store form values to use for resend
-  const formValuesRef = useRef<any>(null);
 
   useEffect(() => {
     return () => {
       if (successMessageTimeoutRef.current) {
         clearTimeout(successMessageTimeoutRef.current);
       }
-      if (redirectTimeoutRef.current) {
-        clearTimeout(redirectTimeoutRef.current);
-      }
     };
   }, []);
 
-  const initialFormValues = {
+  const initialFormValues: TrialFormValues = {
     organizationName: '',
     username: '',
     email: '',
@@ -63,19 +66,7 @@ export const TrialRegistration = () => {
     otp: otpSent ? Yup.string().required('OTP is required') : Yup.string(),
   });
 
-  const handleSendOTP = async (values: any, validateForm: () => Promise<any>) => {
-    const errors = await validateForm();
-    const hasErrors = Object.keys(errors).some((key) => key !== 'otp');
-    if (hasErrors) {
-      setAuthError('Please fill all required fields correctly');
-      return;
-    }
-    setAuthError('');
-    setLoading(true);
-
-    // Store form values for resend
-    formValuesRef.current = values;
-
+  const sendOTP = async (values: TrialFormValues) => {
     const payload = {
       organization_name: values.organizationName,
       username: values.username,
@@ -86,10 +77,8 @@ export const TrialRegistration = () => {
 
     try {
       const { data } = await axios.post(TRIAL_CREATE_USER_API, payload);
-      setLoading(false);
 
       if (data.data?.message || (!data.error && data.data)) {
-        setOtpSent(true);
         setSuccessMessage(`OTP sent successfully to ${values.email}`);
 
         if (successMessageTimeoutRef.current) {
@@ -98,58 +87,52 @@ export const TrialRegistration = () => {
         successMessageTimeoutRef.current = setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
+        return true;
       } else {
         const errorMessage = data.error || 'Failed to send OTP';
         setAuthError(errorMessage);
+        return false;
       }
     } catch (error: unknown) {
-      setLoading(false);
       const err = error as { response?: { data?: { error?: string; message?: string } }; message?: string };
       const errorMessage =
         err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to send OTP';
       setAuthError(errorMessage);
+      return false;
+    }
+  };
+
+  const handleSendOTP = async (values: TrialFormValues) => {
+    setAuthError('');
+    setLoading(true);
+
+    setFormValues(values);
+
+    const success = await sendOTP(values);
+    setLoading(false);
+
+    if (success) {
+      setOtpSent(true);
     }
   };
 
   const handleResendOTP = async (token: string) => {
-    if (!formValuesRef.current) {
+    if (!formValues) {
       return;
     }
 
     setAuthError('');
-    const payload = {
-      organization_name: formValuesRef.current.organizationName,
-      username: formValuesRef.current.username,
-      email: formValuesRef.current.email,
-      phone: formValuesRef.current.phoneNumber,
-      password: formValuesRef.current.password,
-    };
-
-    try {
-      const { data } = await axios.post(TRIAL_CREATE_USER_API, payload);
-
-      if (data.data?.message || (!data.error && data.data)) {
-        setSuccessMessage(`OTP resent successfully to ${formValuesRef.current.email}`);
-
-        if (successMessageTimeoutRef.current) {
-          clearTimeout(successMessageTimeoutRef.current);
-        }
-        successMessageTimeoutRef.current = setTimeout(() => {
-          setSuccessMessage('');
-        }, 3000);
-      } else {
-        const errorMessage = data.error || 'Failed to resend OTP';
-        setAuthError(errorMessage);
-      }
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: string; message?: string } }; message?: string };
-      const errorMessage =
-        err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to resend OTP';
-      setAuthError(errorMessage);
-    }
+    await sendOTP(formValues);
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: TrialFormValues) => {
+    if (!otpSent) {
+      // Handle Get OTP
+      handleSendOTP(values);
+      return;
+    }
+
+    // Handle account allocation
     if (loading) return;
 
     setAuthError('');
@@ -183,11 +166,6 @@ export const TrialRegistration = () => {
     }
   };
 
-  const getOtpButtonText = () => {
-    if (loading) return 'Sending...';
-    return 'Get OTP';
-  };
-
   const resendEndAdornment = (
     <InputAdornment position="end">
       <Captcha
@@ -198,7 +176,7 @@ export const TrialRegistration = () => {
         edge="end"
         action="resend"
       >
-        <p className={styles.Resend}>resend</p>
+        <p className={styles.Resend}>Resend</p>
         <RefreshIcon classes={{ root: styles.ResendButton }} />
       </Captcha>
     </InputAdornment>
@@ -244,7 +222,7 @@ export const TrialRegistration = () => {
     },
   ];
 
-  // Only add OTP field after OTP is sent
+  // Add OTP field after OTP is sent
   if (otpSent) {
     formFields.push({
       component: Input,
@@ -252,7 +230,7 @@ export const TrialRegistration = () => {
       type: 'text',
       placeholder: 'Enter OTP',
       helperText: 'Check your email for the OTP',
-      styles: 'Spacing OtpFieldSpacing',
+      styles: 'Spacing',
       endAdornment: resendEndAdornment,
     });
   }
@@ -266,17 +244,11 @@ export const TrialRegistration = () => {
       initialFormValues={initialFormValues}
       validationSchema={FormSchema}
       formFields={formFields}
-      saveHandler={otpSent ? handleSubmit : null}
+      saveHandler={handleSubmit}
       errorMessage={authError}
       successMessage=""
-      otpConfig={{
-        showGetOtpButton: !otpSent,
-        otpButtonText: getOtpButtonText(),
-        otpButtonDisabled: loading,
-        onGetOtpClick: handleSendOTP,
-        otpSuccessMessage: successMessage,
-        otpSent: otpSent,
-      }}
+      loading={loading}
+      inlineSuccessMessage={successMessage}
     />
   );
 };
