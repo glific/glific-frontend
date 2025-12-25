@@ -10,8 +10,10 @@ import { convertFlowJSONToFormBuilder, convertFormBuilderToFlowJSON } from './Fo
 import { ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router';
-import { GET_WHATSAPP_FORM } from 'graphql/queries/WhatsAppForm';
+import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
 import { SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
+import setLogs from 'config/logs';
+import { setNotification } from 'common/notification';
 
 export const Configure = () => {
   const [screens, setScreens] = useState<Screen[]>([]);
@@ -22,11 +24,9 @@ export const Configure = () => {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [saveWhatsappFormRevision] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
-    onCompleted: (data) => {
-      console.log('Form revision saved successfully', data);
-    },
     onError: (error) => {
-      console.error('Error saving form revision:', error);
+      setNotification('Error saving form revision', 'warning');
+      setLogs(error, 'error');
     },
   });
 
@@ -56,24 +56,19 @@ export const Configure = () => {
     );
   };
 
-  useQuery(GET_WHATSAPP_FORM, {
+  useQuery(GET_LATEST_WHATSAPP_FORM_REVISION, {
     skip: !params.id,
     variables: { id: params.id },
     onCompleted: ({ whatsappForm }) => {
-      console.log(whatsappForm?.whatsappForm?.definition);
-      if (whatsappForm?.whatsappForm?.definition) {
+      if (whatsappForm?.whatsappForm?.revision) {
         try {
-          // Parse the definition if it's a string, otherwise use it directly
-          const flowJSON =
-            typeof whatsappForm?.whatsappForm?.definition === 'string'
-              ? JSON.parse(whatsappForm?.whatsappForm?.definition)
-              : whatsappForm?.whatsappForm?.definition;
+          const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
+          if (!flowJSON) return;
 
-          console.log(flowJSON);
           const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
           setScreens(convertedScreens);
         } catch (error) {
-          console.error('Error parsing WhatsApp form definition:', error);
+          setLogs(error, 'error');
         }
       }
     },

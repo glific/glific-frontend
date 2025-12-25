@@ -166,7 +166,7 @@ const routeAdmin = (
       <Route path="" element={<WhatsAppFormsList />} />
       <Route path="add" element={<WhatsAppForms />} />
       <Route path=":id/edit" element={<WhatsAppForms />} />
-      <Route path="configure/:id" element={<WhatsappFormsConfigure />} />
+      <Route path=":id/configure" element={<WhatsappFormsConfigure />} />
     </Route>
 
     <Route path="/*" element={<Chat />} />

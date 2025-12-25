@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import OpenInNew from '@mui/icons-material/OpenInNew';
 import Update from '@mui/icons-material/Update';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import * as Yup from 'yup';
 
 import { whatsappFormsInfo } from 'common/HelpData';
@@ -38,6 +38,7 @@ export const WhatsAppForms = () => {
   const [disabled, setDisabled] = useState(false);
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const params = useParams();
+  const navigate = useNavigate();
 
   useQuery(GET_WHATSAPP_FORM, {
     skip: !params.id,
@@ -200,6 +201,7 @@ export const WhatsAppForms = () => {
           backLinkButton={`/whatsapp-forms`}
           noHeading
           dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+          redirect={false}
           buttonState={{
             text: 'Save Form',
             status: disabled,
@@ -208,6 +210,9 @@ export const WhatsAppForms = () => {
           customHandler={(error: any) => {
             if (typeof error === 'string') setErrorMessage(formatError(error), 'An error occurred');
             else setErrorMessage(error[0]);
+          }}
+          afterSave={({ createWhatsappForm }: any) => {
+            navigate(`/whatsapp-forms/${createWhatsappForm?.whatsappForm?.id}/configure`);
           }}
         />
       </div>

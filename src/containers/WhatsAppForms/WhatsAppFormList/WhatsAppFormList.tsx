@@ -165,10 +165,10 @@ export const WhatsAppFormList = () => {
       icon: <ConfigureIcon className={styles.IconSize} data-testid="publish-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
-        navigate(`/whatsapp-forms/configure/${id}`);
+        navigate(`/whatsapp-forms/${id}/configure`);
       },
     };
-    console.log('item status', item.status);
+
     let actions = [];
 
     if (item.status === 'PUBLISHED') {

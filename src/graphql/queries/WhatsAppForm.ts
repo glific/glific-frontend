@@ -1,10 +1,23 @@
 import { gql } from '@apollo/client';
 
+export const GET_LATEST_WHATSAPP_FORM_REVISION = gql`
+  query WhatsappForm($id: ID!) {
+    whatsappForm(id: $id) {
+      whatsappForm {
+        revision_id
+        revision {
+          id
+          definition
+        }
+      }
+    }
+  }
+`;
+
 export const GET_WHATSAPP_FORM = gql`
   query WhatsappForm($id: ID!) {
     whatsappForm(id: $id) {
       whatsappForm {
-        definition
         description
         categories
         id
@@ -33,7 +46,40 @@ export const LIST_WHATSAPP_FORMS = gql`
       description
       metaFlowId
       categories
+    }
+  }
+`;
+
+export const GET_WHATSAPP_FORM_REVISION = gql`
+  query WhatsappFormRevision($id: ID!) {
+    whatsappFormRevision(id: $id) {
+      whatsappFormRevision {
+        id
+        whatsappFormId
+        definition
+        revisionNumber
+        userId
+        insertedAt
+        updatedAt
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const LIST_WHATSAPP_FORM_REVISIONS = gql`
+  query ListWhatsappFormRevisions($whatsappFormId: ID!, $limit: Int) {
+    listWhatsappFormRevisions(whatsappFormId: $whatsappFormId, limit: $limit) {
+      id
+      whatsappFormId
       definition
+      revisionNumber
+      userId
+      insertedAt
+      updatedAt
     }
   }
 `;
