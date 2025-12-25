@@ -43,13 +43,13 @@ export const ContentSelector = ({ onSelectContent }: ContentSelectorProps) => {
   const selectedCategoryData = formComponenets.find((cat) => cat.name === selectedCategory);
 
   return (
-    <div className={styles.contentSelector}>
+    <div className={styles.ContentSelector}>
       <Button
         variant="contained"
         color="primary"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        className={styles.addContentButton}
+        className={styles.AddContentButton}
       >
         Add Content
       </Button>

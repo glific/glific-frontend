@@ -43,7 +43,7 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
   };
 
   return (
-    <div className={styles.contentTypeContainer}>
+    <div className={styles.ContentTypeContainer}>
       {isShortAnswer && (
         <FormControl fullWidth size="small" sx={{ mb: 2 }}>
           <InputLabel>Type</InputLabel>
@@ -71,9 +71,9 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
         sx={{ mb: 2 }}
       />
 
-      <div className={styles.instructionsSection}>
-        <label className={styles.instructionsLabel}>
-          Instructions <span className={styles.optionalText}>· Optional</span>
+      <div className={styles.InstructionsSection}>
+        <label className={styles.InstructionsLabel}>
+          Instructions <span className={styles.OptionalText}>· Optional</span>
         </label>
         <TextField
           fullWidth
@@ -91,7 +91,7 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
         />
       </div>
 
-      <div className={styles.requiredToggle}>
+      <div className={styles.RequiredToggle}>
         <FormControlLabel
           control={
             <Switch

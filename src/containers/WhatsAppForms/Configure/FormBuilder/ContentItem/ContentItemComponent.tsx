@@ -54,16 +54,16 @@ export const ContentItemComponent = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`${styles.contentItemContainer} ${isDragging ? styles.dragging : ''} ${
-        isExpanded ? styles.expanded : ''
+      className={`${styles.ContentItemContainer} ${isDragging ? styles.Dragging : ''} ${
+        isExpanded ? styles.Expanded : ''
       }`}
     >
-      <div className={`${styles.contentHeader} ${isExpanded && styles.expandedHeader}`}>
-        <div className={styles.dragHandle} {...attributes} {...listeners}>
+      <div className={`${styles.ContentHeader} ${isExpanded && styles.ExpandedHeader}`}>
+        <div className={styles.DragHandle} {...attributes} {...listeners}>
           <DragIndicatorIcon fontSize="small" />
         </div>
-        <span className={styles.contentTitle}>{item.name}</span>
-        <div className={styles.actions}>
+        <span className={styles.ContentTitle}>{item.name}</span>
+        <div className={styles.Actions}>
           <IconButton size="small" onClick={onDelete} aria-label="Delete content">
             <DeleteOutlined fontSize="small" />
           </IconButton>
@@ -73,7 +73,7 @@ export const ContentItemComponent = ({
         </div>
       </div>
 
-      {isExpanded && <div className={styles.contentBody}>{renderContentEditor()}</div>}
+      {isExpanded && <div className={styles.ContentBody}>{renderContentEditor()}</div>}
     </div>
   );
 };

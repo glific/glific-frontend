@@ -1,4 +1,4 @@
-.screenContainer {
+.ScreenContainer {
   background-color: white;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -7,16 +7,16 @@
   cursor: move;
 }
 
-.screenContainer:hover {
+.ScreenContainer:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.screenContainer.dragging {
+.ScreenContainer.Dragging {
   opacity: 0.5;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.screenHeader {
+.ScreenHeader {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -26,31 +26,31 @@
   cursor: pointer;
 }
 
-.dragHandle {
+.DragHandle {
   display: flex;
   align-items: center;
   color: #666;
   cursor: grab;
 }
 
-.dragHandle:active {
+.DragHandle:active {
   cursor: grabbing;
 }
 
-.screenTitle {
+.ScreenTitle {
   flex: 1;
   font-size: 16px;
   font-weight: 500;
   color: #333;
 }
 
-.actions {
+.Actions {
   display: flex;
   gap: 8px;
 }
 
-.deleteButton,
-.expandButton {
+.DeleteButton,
+.ExpandButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,26 +64,26 @@
   transition: all 0.2s;
 }
 
-.deleteButton:hover {
+.DeleteButton:hover {
   background-color: #ffebee;
   color: #d32f2f;
 }
 
-.expandButton:hover {
+.ExpandButton:hover {
   background-color: #e3f2fd;
   color: #1976d2;
 }
 
-.screenContent {
+.ScreenContent {
   padding: 20px;
   border-top: 1px solid #e0e0e0;
 }
 
-.field {
+.Field {
   margin-bottom: 20px;
 }
 
-.fieldLabel {
+.FieldLabel {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
@@ -91,13 +91,13 @@
   color: #555;
 }
 
-.inputWrapper {
+.InputWrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.input {
+.Input {
   width: 100%;
   padding: 12px 60px 12px 16px;
   border: 1px solid #ddd;
@@ -108,17 +108,17 @@
   transition: border-color 0.2s;
 }
 
-.input:focus {
+.Input:focus {
   outline: none;
   border-color: #0c9d58;
   box-shadow: 0 0 0 3px rgba(12, 157, 88, 0.1);
 }
 
-.input::placeholder {
+.Input::placeholder {
   color: #999;
 }
 
-.charCount {
+.CharCount {
   position: absolute;
   right: 16px;
   font-size: 12px;
@@ -126,77 +126,14 @@
   pointer-events: none;
 }
 
-.addContentButton {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  margin-bottom: 20px;
-  background-color: #0c9d58;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.addContentButton:hover {
-  background-color: #0a8547;
-}
-
-.layoutArea {
+.LayoutArea {
   padding: 20px;
   margin-bottom: 20px;
   background-color: #fafafa;
 }
 
-.emptyContent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 160px;
-  text-align: center;
-}
-
-.emptyContent p {
-  color: #999;
-  font-size: 14px;
-  margin: 0;
-}
-
-.contentList {
+.ContentList {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.contentItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-}
-
-.contentType {
-  padding: 4px 12px;
-  background-color: #e3f2fd;
-  color: #1976d2;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.contentValue {
-  flex: 1;
-  font-size: 14px;
-  color: #333;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }

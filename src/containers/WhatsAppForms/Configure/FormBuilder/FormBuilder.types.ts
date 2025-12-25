@@ -30,8 +30,11 @@ export interface ContentOption {
 }
 
 export interface FormBuilderProps {
-  formId?: string;
   onSave?: (screens: Screen[]) => void;
   onScreensChange?: (screens: Screen[]) => void;
   screens?: Screen[];
+  expandedScreenId: string | null;
+  setExpandedScreenId: (id: string | null) => void;
+  expandedContentId: string | null;
+  setExpandedContentId: (id: string | null) => void;
 }

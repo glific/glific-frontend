@@ -1,23 +1,23 @@
-.dialogHeader {
+.DialogHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.dialogHeader span {
+.DialogHeader span {
   font-size: 20px;
   font-weight: 600;
   color: #333;
 }
 
-.jsonActions {
+.JsonActions {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 16px;
 }
 
-.jsonCode {
+.JsonCode {
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
@@ -30,105 +30,20 @@
   overflow-y: auto;
 }
 
-.jsonCode::-webkit-scrollbar {
+.JsonCode::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.jsonCode::-webkit-scrollbar-track {
+.JsonCode::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-.jsonCode::-webkit-scrollbar-thumb {
+.JsonCode::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
 
 .jsonCode::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
-}
-
-.variablesContainer {
-  max-height: 500px;
-  overflow-y: auto;
-}
-
-.variablesContainer::-webkit-scrollbar {
-  width: 8px;
-}
-
-.variablesContainer::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.variablesContainer::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-.variablesContainer::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-.variablesHeader {
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.variablesHeader h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-}
-
-.variablesList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.variableItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-}
-
-.variableContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.variableInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.variableLabel {
-  font-size: 12px;
-  color: #999;
-  font-weight: 500;
-}
-
-.variableName {
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  font-weight: 600;
-  color: #0b7a3e;
-}
-
-.variableValue {
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
 }

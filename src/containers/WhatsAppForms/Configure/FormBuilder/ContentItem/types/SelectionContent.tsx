@@ -64,7 +64,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
   };
 
   return (
-    <div className={styles.contentTypeContainer}>
+    <div className={styles.ContentTypeContainer}>
       <TextField
         fullWidth
         label="Label"
@@ -76,7 +76,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
         slotProps={{
           htmlInput: { maxLength: labelLimit },
           input: {
-            endAdornment: <div className={styles.charCount}>{`${(data.label || '').length}/${labelLimit}`}</div>,
+            endAdornment: <div className={styles.CharCount}>{`${(data.label || '').length}/${labelLimit}`}</div>,
           },
         }}
         size="small"
@@ -84,19 +84,19 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
       />
 
       {name === 'Opt In' ? (
-        <div className={styles.readMoreSection}>
-          <label className={styles.instructionsLabel}>
-            Read more link <span className={styles.optionalText}>· Optional</span>
+        <div className={styles.ReadMoreSection}>
+          <label className={styles.InstructionsLabel}>
+            Read more link <span className={styles.OptionalText}>· Optional</span>
           </label>
           <Button variant="outlined" onClick={handleReadMoreClick} sx={{ textTransform: 'none', mb: 2 }}>
             Add "Read more" screen
           </Button>
         </div>
       ) : (
-        <div className={styles.optionsSection}>
-          <label className={styles.sectionLabel}>Options</label>
+        <div className={styles.OptionsSection}>
+          <label className={styles.SectionLabel}>Options</label>
           {options.map((option) => (
-            <div key={option.id} className={styles.optionRow}>
+            <div key={option.id} className={styles.OptionRow}>
               <TextField
                 fullWidth
                 placeholder="Enter option value"
@@ -106,7 +106,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
                   htmlInput: { maxLength: optionLimit },
                   input: {
                     endAdornment: (
-                      <div className={styles.charCount}>
+                      <div className={styles.CharCount}>
                         {option.value.length}/{optionLimit}
                       </div>
                     ),
@@ -137,7 +137,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
         </div>
       )}
 
-      <div className={styles.requiredToggle}>
+      <div className={styles.RequiredToggle}>
         <FormControlLabel
           control={
             <Switch

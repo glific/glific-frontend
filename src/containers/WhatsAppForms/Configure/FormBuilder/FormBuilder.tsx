@@ -19,7 +19,14 @@ import styles from './FormBuilder.module.css';
 import { ContentItemData, FormBuilderProps, Screen } from './FormBuilder.types';
 import { ScreenComponent } from './Screen/Screen';
 
-export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormBuilderProps) => {
+export const FormBuilder = ({
+  onScreensChange,
+  screens: externalScreens,
+  expandedScreenId,
+  setExpandedScreenId,
+  expandedContentId,
+  setExpandedContentId,
+}: FormBuilderProps) => {
   const [internalScreens, setInternalScreens] = useState<Screen[]>([
     {
       id: '1',
@@ -29,8 +36,6 @@ export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormB
       buttonLabel: 'Continue',
     },
   ]);
-  const [expandedScreenId, setExpandedScreenId] = useState<string | null>('1');
-  const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
 
   const screens = externalScreens || internalScreens;
 
@@ -185,15 +190,15 @@ export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormB
   };
 
   return (
-    <div className={styles.formBuilder}>
-      <div className={styles.header}>
+    <div className={styles.FormBuilder}>
+      <div className={styles.Header}>
         <h2>Screens</h2>
-        <Button className={styles.addButton} variant="contained" onClick={addNewScreen}>
+        <Button className={styles.AddButton} variant="contained" onClick={addNewScreen}>
           + Add New
         </Button>
       </div>
 
-      <div className={styles.screensList}>
+      <div className={styles.ScreensList}>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={screens.map((s) => s.id)} strategy={verticalListSortingStrategy}>
             {screens.map((screen) => (

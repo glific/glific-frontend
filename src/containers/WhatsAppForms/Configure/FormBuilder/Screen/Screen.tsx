@@ -18,7 +18,6 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from 'react';
 import { ContentItemComponent } from '../ContentItem/ContentItemComponent';
 import { ContentSelector } from '../ContentSelector/ContentSelector';
 import { ContentItem, Screen } from '../FormBuilder.types';
@@ -91,19 +90,19 @@ export const ScreenComponent = ({
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={`${styles.screenContainer} ${isDragging ? styles.dragging : ''}`}>
-      <div className={styles.screenHeader}>
-        <div className={styles.dragHandle} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} className={`${styles.ScreenContainer} ${isDragging ? styles.Dragging : ''}`}>
+      <div className={styles.ScreenHeader}>
+        <div className={styles.DragHandle} {...attributes} {...listeners}>
           <DragIndicatorIcon />
         </div>
 
-        <span className={styles.screenTitle}>{screen.name}</span>
-        <div className={styles.actions}>
-          <button className={styles.deleteButton} onClick={onDelete} aria-label="Delete screen">
+        <span className={styles.ScreenTitle}>{screen.name}</span>
+        <div className={styles.Actions}>
+          <button className={styles.DeleteButton} onClick={onDelete} aria-label="Delete screen">
             <DeleteOutlined />
           </button>
           <button
-            className={styles.expandButton}
+            className={styles.ExpandButton}
             onClick={onToggleExpanded}
             aria-label={isExpanded ? 'Collapse screen' : 'Expand screen'}
           >
@@ -113,27 +112,27 @@ export const ScreenComponent = ({
       </div>
 
       {isExpanded && (
-        <div className={styles.screenContent}>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Screen Name</label>
-            <div className={styles.inputWrapper}>
+        <div className={styles.ScreenContent}>
+          <div className={styles.Field}>
+            <label className={styles.FieldLabel}>Screen Name</label>
+            <div className={styles.InputWrapper}>
               <input
                 type="text"
-                className={styles.input}
+                className={styles.Input}
                 placeholder="Enter Screen name"
                 value={screen.name}
                 onChange={handleNameChange}
                 maxLength={30}
               />
-              <span className={styles.charCount}>{screen.name.length}/30</span>
+              <span className={styles.CharCount}>{screen.name.length}/30</span>
             </div>
           </div>
 
           {screen.content.length !== 0 && (
-            <div className={styles.layoutArea}>
+            <div className={styles.LayoutArea}>
               <DndContext sensors={contentSensors} collisionDetection={closestCenter} onDragEnd={handleContentDragEnd}>
                 <SortableContext items={screen.content.map((c) => c.id)} strategy={verticalListSortingStrategy}>
-                  <div className={styles.contentList}>
+                  <div className={styles.ContentList}>
                     {screen.content.map((item) => (
                       <ContentItemComponent
                         key={item.id}
@@ -152,18 +151,18 @@ export const ScreenComponent = ({
 
           <ContentSelector onSelectContent={onAddContent} />
 
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Button Label</label>
-            <div className={styles.inputWrapper}>
+          <div className={styles.Field}>
+            <label className={styles.FieldLabel}>Button Label</label>
+            <div className={styles.InputWrapper}>
               <input
                 type="text"
-                className={styles.input}
+                className={styles.Input}
                 placeholder="Enter button label"
                 value={screen.buttonLabel}
                 onChange={handleButtonLabelChange}
                 maxLength={30}
               />
-              <span className={styles.charCount}>{screen.buttonLabel.length}/30</span>
+              <span className={styles.CharCount}>{screen.buttonLabel.length}/30</span>
             </div>
           </div>
         </div>

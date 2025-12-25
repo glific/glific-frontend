@@ -24,7 +24,7 @@ export const TextContent = ({ item, onUpdate }: TextContentProps) => {
   };
 
   return (
-    <div className={styles.contentTypeContainer}>
+    <div className={styles.ContentTypeContainer}>
       <FormControl fullWidth size="small" sx={{ mb: 2 }}>
         <InputLabel>Type</InputLabel>
         <Select value={name || ''} label="Type" onChange={handleTypeChange}>

@@ -1,17 +1,14 @@
-import { useState } from 'react';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import PersonIcon from '@mui/icons-material/Person';
 import { Screen, ContentItem } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
 
 interface PreviewProps {
   screens?: Screen[];
+  currentScreenIndex: number;
 }
 
-export const Preview = ({ screens = [] }: PreviewProps) => {
-  const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
-
+export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
   const currentScreen = screens[currentScreenIndex];
 
   const renderTextContent = (item: ContentItem) => {
@@ -20,14 +17,14 @@ export const Preview = ({ screens = [] }: PreviewProps) => {
 
     switch (name) {
       case 'Large Heading':
-        return <h1 className={styles.textHeading}>{text}</h1>;
+        return <h1 className={styles.TextHeading}>{text}</h1>;
       case 'Small Heading':
-        return <h2 className={styles.textSubheading}>{text}</h2>;
+        return <h2 className={styles.TextSubheading}>{text}</h2>;
       case 'Caption':
-        return <p className={styles.textCaption}>{text}</p>;
+        return <p className={styles.TextCaption}>{text}</p>;
       case 'Body':
       default:
-        return <p className={styles.textBody}>{text}</p>;
+        return <p className={styles.TextBody}>{text}</p>;
     }
   };
 
@@ -40,34 +37,34 @@ export const Preview = ({ screens = [] }: PreviewProps) => {
     switch (name) {
       case 'Short Answer':
         return (
-          <div className={styles.inputGroup}>
+          <div className={styles.InputGroup}>
             <label className={styles.inputLabel}>
               {label}
-              {required && <span className={styles.required}>*</span>}
+              {required && <span className={styles.Required}>*</span>}
             </label>
-            <input type="text" className={styles.textInput} placeholder={placeholder || label} disabled />
+            <input type="text" className={styles.TextInput} placeholder={placeholder || label} disabled />
           </div>
         );
       case 'Paragraph':
         return (
-          <div className={styles.inputGroup}>
+          <div className={styles.InputGroup}>
             <label className={styles.inputLabel}>
               {label}
-              {required && <span className={styles.required}>*</span>}
+              {required && <span className={styles.Required}>*</span>}
             </label>
-            <textarea className={styles.textArea} placeholder={placeholder || label} rows={4} disabled />
-            {placeholder && <p className={styles.helperText}>{placeholder}</p>}
-            <p className={styles.charCount}>0 / 600</p>
+            <textarea className={styles.TextArea} placeholder={placeholder || label} rows={4} disabled />
+            {placeholder && <p className={styles.HelperText}>{placeholder}</p>}
+            <p className={styles.CharCount}>0 / 600</p>
           </div>
         );
       case 'Date Picker':
         return (
-          <div className={styles.inputGroup}>
+          <div className={styles.InputGroup}>
             <label className={styles.inputLabel}>
               {label}
-              {required && <span className={styles.required}>*</span>}
+              {required && <span className={styles.Required}>*</span>}
             </label>
-            <input type="text" className={styles.textInput} placeholder={placeholder || label} disabled />
+            <input type="text" className={styles.TextInput} placeholder={placeholder || label} disabled />
           </div>
         );
       default:
@@ -84,16 +81,16 @@ export const Preview = ({ screens = [] }: PreviewProps) => {
     switch (name) {
       case 'Single Choice':
         return (
-          <div className={styles.selectionGroup}>
-            <label className={styles.selectionLabel}>
+          <div className={styles.SelectionGroup}>
+            <label className={styles.SelectionLabel}>
               {label}
-              {required && <span className={styles.required}>*</span>}
+              {required && <span className={styles.Required}>*</span>}
             </label>
-            <div className={styles.optionsList}>
+            <div className={styles.OptionsList}>
               {options.map((option) => (
-                <div key={option.id} className={styles.radioOption}>
-                  <div className={styles.radioButton}></div>
-                  <span className={styles.optionText}>{option.value}</span>
+                <div key={option.id} className={styles.RadioOption}>
+                  <div className={styles.RadioButton}></div>
+                  <span className={styles.OptionText}>{option.value}</span>
                 </div>
               ))}
             </div>
@@ -101,16 +98,16 @@ export const Preview = ({ screens = [] }: PreviewProps) => {
         );
       case 'Multiple Choice':
         return (
-          <div className={styles.selectionGroup}>
-            <label className={styles.selectionLabel}>
+          <div className={styles.SelectionGroup}>
+            <label className={styles.SelectionLabel}>
               {label}
-              {required && <span className={styles.required}>*</span>}
+              {required && <span className={styles.Required}>*</span>}
             </label>
-            <div className={styles.optionsList}>
+            <div className={styles.OptionsList}>
               {options.map((option) => (
-                <div key={option.id} className={styles.checkboxOption}>
-                  <div className={styles.checkbox}></div>
-                  <span className={styles.optionText}>{option.value}</span>
+                <div key={option.id} className={styles.CheckboxOption}>
+                  <div className={styles.Checkbox}></div>
+                  <span className={styles.OptionText}>{option.value}</span>
                 </div>
               ))}
             </div>
@@ -118,25 +115,25 @@ export const Preview = ({ screens = [] }: PreviewProps) => {
         );
       case 'Dropdown':
         return (
-          <div className={styles.inputGroup}>
+          <div className={styles.InputGroup}>
             <label className={styles.inputLabel}>
               {label}
-              {required && <span className={styles.required}>*</span>}
+              {required && <span className={styles.Required}>*</span>}
             </label>
-            <div className={styles.dropdownField}>
-              <span className={styles.dropdownPlaceholder}>{label} dropdown</span>
-              <span className={styles.dropdownArrow}>▶</span>
+            <div className={styles.DropdownField}>
+              <span className={styles.DropdownPlaceholder}>{label} dropdown</span>
+              <span className={styles.DropdownArrow}>▶</span>
             </div>
           </div>
         );
       case 'Opt In':
         return (
-          <div className={styles.optInGroup}>
-            <div className={styles.optInOption}>
-              <div className={styles.checkbox}></div>
-              <span className={styles.optionText}>
+          <div className={styles.OptInGroup}>
+            <div className={styles.OptInOption}>
+              <div className={styles.Checkbox}></div>
+              <span className={styles.OptionText}>
                 {label}
-                {required && <span className={styles.required}>*</span>}
+                {required && <span className={styles.Required}>*</span>}
               </span>
             </div>
           </div>
@@ -159,58 +156,41 @@ export const Preview = ({ screens = [] }: PreviewProps) => {
     }
   };
 
-  const handleNext = () => {
-    if (currentScreenIndex < screens.length - 1) {
-      setCurrentScreenIndex(currentScreenIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentScreenIndex > 0) {
-      setCurrentScreenIndex(currentScreenIndex - 1);
-    }
-  };
-
   return (
-    <div className={styles.previewContainer}>
-      <div className={styles.previewHeader}>
-        <h3>Preview</h3>
-        {screens.length > 0 && (
-          <div className={styles.screenIndicator}>
-            Screen {currentScreenIndex + 1} of {screens.length}
-          </div>
-        )}
-      </div>
-      <div className={styles.phoneFrame}>
-        <div className={styles.phoneScreen}>
-          <div className={styles.chatContent}>
-            <div>{currentScreen?.name}</div>
-
-            {currentScreen && (
-              <div className={styles.formCard}>
-                <div className={styles.formContent}>
-                  {currentScreen.content.map((item) => (
-                    <div key={item.id} className={styles.contentItem}>
-                      {renderContent(item)}
-                    </div>
-                  ))}
+    <div className={styles.PreviewContainer}>
+      <div className={styles.PhoneFrame}>
+        <div className={styles.PhoneScreen}>
+          {currentScreen && (
+            <>
+              <div className={styles.ChatContentContainer}>
+                <div className={styles.WhatsappHeader}>
+                  <CloseIcon className={styles.CloseIcon} />
+                  <span className={styles.ScreenTitle}>{currentScreen.name || 'Screen'}</span>
+                  <MoreVertIcon className={styles.MenuIcon} />
                 </div>
-                {currentScreen.buttonLabel && (
-                  <div className={styles.formFooter}>
-                    <button className={styles.continueButton} onClick={handleNext}>
-                      {currentScreen.buttonLabel}
-                    </button>
-                    <p className={styles.footerText}>Managed by the business. Learn more</p>
+                <div className={styles.FormCard}>
+                  <div className={styles.FormContent}>
+                    {currentScreen.content.map((item) => (
+                      <div key={item.id} className={styles.ContentItem}>
+                        {renderContent(item)}
+                      </div>
+                    ))}
                   </div>
-                )}
+                  {currentScreen.buttonLabel && (
+                    <div className={styles.FormFooter}>
+                      <button className={styles.ContinueButton}>{currentScreen.buttonLabel}</button>
+                      <p className={styles.FooterText}>Managed by the business. Learn more</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-            {!currentScreen && (
-              <div className={styles.emptyState}>
-                <p>No screens to preview. Add a screen to get started.</p>
-              </div>
-            )}
-          </div>
+            </>
+          )}
+          {!currentScreen && (
+            <div className={styles.EmptyState}>
+              <p>No screens to preview. Add a screen to get started.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

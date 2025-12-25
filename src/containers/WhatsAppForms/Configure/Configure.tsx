@@ -18,6 +18,9 @@ import { setNotification } from 'common/notification';
 export const Configure = () => {
   const [flowName, setFlowName] = useState('');
   const [screens, setScreens] = useState<Screen[]>([]);
+  const [expandedScreenId, setExpandedScreenId] = useState<string | null>('1');
+  const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
+
   const [showJSON, setShowJSON] = useState(false);
   const [view, setView] = useState<'preview' | 'variables'>('preview');
   const params = useParams();
@@ -122,29 +125,36 @@ export const Configure = () => {
         }}
       />
 
-      <div className={styles.configureContainer}>
-        <div className={styles.flowBuilder}>
-          <FormBuilder screens={screens} onScreensChange={setScreens} />
+      <div className={styles.ConfigureContainer}>
+        <div className={styles.FlowBuilder}>
+          <FormBuilder
+            screens={screens}
+            onScreensChange={setScreens}
+            expandedScreenId={expandedScreenId}
+            setExpandedScreenId={setExpandedScreenId}
+            expandedContentId={expandedContentId}
+            setExpandedContentId={setExpandedContentId}
+          />
         </div>
-
-        <div className={styles.preview}>
-          <ToggleButtonGroup
-            value={view}
-            exclusive
-            onChange={(event, value) => {
-              setView(value);
-            }}
-            aria-label="view toggle"
-            size="small"
-          >
-            <ToggleButton value="preview" aria-label="preview">
-              Preview
-            </ToggleButton>
-            <ToggleButton value="variables" aria-label="variables">
-              Variables
-            </ToggleButton>
-          </ToggleButtonGroup>
-
+        <div className={styles.Preview}>
+          <div className={styles.Toggle}>
+            <ToggleButtonGroup
+              value={view}
+              exclusive
+              onChange={(_, value) => {
+                setView(value);
+              }}
+              aria-label="view toggle"
+              size="small"
+            >
+              <ToggleButton value="preview" aria-label="preview">
+                Preview
+              </ToggleButton>
+              <ToggleButton value="variables" aria-label="variables">
+                Variables
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
           {view === 'variables' ? (
             <Variables
               screens={screens}
@@ -152,7 +162,10 @@ export const Configure = () => {
               onUpdateFieldLabel={handleUpdateFieldLabel}
             />
           ) : (
-            <Preview screens={screens} />
+            <Preview
+              screens={screens}
+              currentScreenIndex={expandedScreenId ? screens.findIndex((s) => s.id === expandedScreenId) : 0}
+            />
           )}
         </div>
       </div>

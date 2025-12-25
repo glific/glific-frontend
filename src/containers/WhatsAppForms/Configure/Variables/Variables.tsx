@@ -77,60 +77,18 @@ export const Variables = ({ screens, onUpdateScreenName, onUpdateFieldLabel }: V
   };
 
   return (
-    <div className={styles.variablesContainer}>
-      <div className={styles.variablesHeader}>
-        <h3>Screen Names</h3>
-      </div>
-      <div className={styles.variablesList}>
-        {screens.map((screen) => (
-          <div key={screen.id} className={styles.variableItem}>
-            <div className={styles.variableContent}>
-              <div className={styles.variableLabel}>Screen ID:</div>
-              {editingScreenId === screen.id ? (
-                <TextField
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  autoFocus
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSaveScreenName(screen.id);
-                    }
-                  }}
-                />
-              ) : (
-                <div className={styles.variableValue}>{screen.name}</div>
-              )}
-            </div>
-            <IconButton
-              size="small"
-              onClick={() => {
-                if (editingScreenId === screen.id) {
-                  handleSaveScreenName(screen.id);
-                } else {
-                  handleEditScreen(screen.id, screen.name);
-                }
-              }}
-            >
-              {editingScreenId === screen.id ? <CheckIcon fontSize="small" /> : <EditIcon fontSize="small" />}
-            </IconButton>
-          </div>
-        ))}
-      </div>
-
+    <div className={styles.VariablesContainer}>
       {variables.length > 0 && (
         <>
-          <div className={styles.variablesHeader}>
+          <div className={styles.VariablesHeader}>
             <h3>Form Variables</h3>
           </div>
-          <div className={styles.variablesList}>
+          <div className={styles.VariablesList}>
             {variables.map((variable) => (
               <div key={`${variable.screenId}-${variable.contentId}`} className={styles.variableItem}>
-                <div className={styles.variableContent}>
-                  <div className={styles.variableInfo}>
-                    <div className={styles.variableLabel}>
+                <div className={styles.VariableContent}>
+                  <div className={styles.VariableInfo}>
+                    <div className={styles.VariableLabel}>
                       {variable.screenName} · {variable.type}
                     </div>
                     {editingVariableId === variable.contentId ? (
@@ -148,7 +106,7 @@ export const Variables = ({ screens, onUpdateScreenName, onUpdateFieldLabel }: V
                         }}
                       />
                     ) : (
-                      <div className={styles.variableName}>{variable.label}</div>
+                      <div className={styles.VariableName}>{variable.label}</div>
                     )}
                   </div>
                 </div>

@@ -1,168 +1,95 @@
-.previewContainer {
+.PreviewContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: #f5f5f5;
+  margin-top: 1rem;
 }
 
-.previewHeader {
-  padding: 20px 24px;
-  background-color: white;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.previewHeader h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-}
-
-.phoneFrame {
+.PhoneFrame {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 1rem;
+  background-color: #ece5dd;
+  border-radius: 1rem;
 }
 
-.phoneScreen {
+.PhoneScreen {
   width: 100%;
   max-width: 375px;
-  height: 667px;
-  background-color: white;
+  height: 670px;
   border-radius: 30px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-.whatsappHeader {
+.WhatsappHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
-  color: white;
+  justify-content: space-between;
+  padding: 0.8rem;
+  background-color: white;
+  color: #000;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.backButton {
-  display: flex;
-  align-items: center;
+.CloseIcon {
+  font-size: 24px;
   cursor: pointer;
+  color: #000;
 }
 
-.chatInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.ScreenTitle {
   flex: 1;
+  text-align: center;
+  font-size: 16px;
+  color: #000;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.MenuIcon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #000;
 }
 
-.chatName {
+.ChatContentContainer {
+  height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.name {
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.status {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-.headerActions {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.chatContent {
-  /* flex: 1; */
-  /* padding: 20px; */
   background-color: #ece5dd;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d9d9d9' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.FormCard {
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - 32px);
+}
+
+
+
+.FormContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
   overflow-y: auto;
 }
 
-.message {
-  display: inline-block;
-  max-width: 80%;
-  padding: 8px 12px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.messageText {
-  margin-bottom: 4px;
-}
-
-.messageText p {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #333;
-}
-
-.messageText p:last-child {
-  margin-bottom: 0;
-}
-
-.hint {
-  color: #666;
-  font-size: 13px;
-  font-style: italic;
-}
-
-.messageTime {
-  font-size: 11px;
-  color: #999;
-  text-align: right;
-}
-
-.screenIndicator {
-  font-size: 14px;
-  color: #666;
-  margin-top: 8px;
-}
-
-.formCard {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  margin: 20px auto;
-  max-width: 90%;
-}
-
-.formContent {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.contentItem {
+.ContentItem {
   margin: 0;
 }
 
-.textHeading {
+.TextHeading {
   font-size: 24px;
   font-weight: 700;
   color: #000;
@@ -170,7 +97,7 @@
   line-height: 1.3;
 }
 
-.textSubheading {
+.TextSubheading {
   font-size: 18px;
   font-weight: 600;
   color: #000;
@@ -178,33 +105,36 @@
   line-height: 1.4;
 }
 
-.textCaption {
+.TextCaption {
   font-size: 12px;
   color: #666;
   margin: 0;
   line-height: 1.5;
 }
 
-.textBody {
+.TextBody {
   font-size: 14px;
   color: #333;
   margin: 0;
   line-height: 1.6;
 }
 
-.formFooter {
-  padding: 16px 20px;
+.FormFooter {
+  padding: 12px 16px;
   background-color: #f8f8f8;
   border-top: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
-.continueButton {
+.ContinueButton {
   width: 100%;
   padding: 14px;
-  background-color: #25d366;
+  background-color: #1daa61;
   color: white;
   border: none;
   border-radius: 8px;
@@ -214,22 +144,22 @@
   transition: background-color 0.2s;
 }
 
-.continueButton:hover {
+.ContinueButton:hover {
   background-color: #20ba5a;
 }
 
-.continueButton:active {
+.ContinueButton:active {
   background-color: #1da851;
 }
 
-.footerText {
+.FooterText {
   font-size: 12px;
   color: #666;
   text-align: center;
   margin: 0;
 }
 
-.emptyState {
+.EmptyState {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,18 +168,18 @@
   text-align: center;
 }
 
-.emptyState p {
+.EmptyState p {
   color: #999;
   font-size: 14px;
 }
 
-.inputGroup {
+.InputGroup {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.inputLabel {
+.InputLabel {
   font-size: 14px;
   font-weight: 500;
   color: #333;
@@ -258,12 +188,12 @@
   gap: 4px;
 }
 
-.required {
+.Required {
   color: #d32f2f;
   font-size: 16px;
 }
 
-.textInput {
+.TextInput {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #d0d0d0;
@@ -276,16 +206,16 @@
   transition: border-color 0.2s;
 }
 
-.textInput:focus {
+.TextInput:focus {
   border-color: #25d366;
   background-color: white;
 }
 
-.textInput::placeholder {
+.TextInput::placeholder {
   color: #999;
 }
 
-.textArea {
+.TextArea {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #d0d0d0;
@@ -299,36 +229,36 @@
   transition: border-color 0.2s;
 }
 
-.textArea:focus {
+.TextArea:focus {
   border-color: #25d366;
   background-color: white;
 }
 
-.textArea::placeholder {
+.TextArea::placeholder {
   color: #999;
 }
 
-.helperText {
+.HelperText {
   font-size: 12px;
   color: #666;
   margin: 0;
   font-style: italic;
 }
 
-.charCount {
+.CharCount {
   font-size: 12px;
   color: #999;
   text-align: right;
   margin: 0;
 }
 
-.selectionGroup {
+.SelectionGroup {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.selectionLabel {
+.SelectionLabel {
   font-size: 14px;
   font-weight: 500;
   color: #333;
@@ -337,13 +267,13 @@
   gap: 4px;
 }
 
-.optionsList {
+.OptionsList {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.radioOption {
+.RadioOption {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -355,12 +285,12 @@
   transition: background-color 0.2s, border-color 0.2s;
 }
 
-.radioOption:hover {
+.RadioOption:hover {
   background-color: #f9f9f9;
   border-color: #25d366;
 }
 
-.radioButton {
+.RadioButton {
   width: 20px;
   height: 20px;
   border: 2px solid #666;
@@ -369,7 +299,7 @@
   background-color: white;
 }
 
-.checkboxOption {
+.CheckboxOption {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -381,12 +311,12 @@
   transition: background-color 0.2s, border-color 0.2s;
 }
 
-.checkboxOption:hover {
+.CheckboxOption:hover {
   background-color: #f9f9f9;
   border-color: #25d366;
 }
 
-.checkbox {
+.Checkbox {
   width: 20px;
   height: 20px;
   border: 2px solid #666;
@@ -395,13 +325,13 @@
   background-color: white;
 }
 
-.optionText {
+.OptionText {
   font-size: 14px;
   color: #333;
   flex: 1;
 }
 
-.dropdownField {
+.DropdownField {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -413,28 +343,28 @@
   transition: border-color 0.2s;
 }
 
-.dropdownField:hover {
+.DropdownField:hover {
   border-color: #25d366;
 }
 
-.dropdownPlaceholder {
+.DropdownPlaceholder {
   font-size: 14px;
   color: #666;
 }
 
-.dropdownArrow {
+.DropdownArrow {
   font-size: 12px;
   color: #666;
   transform: rotate(90deg);
 }
 
-.optInGroup {
+.OptInGroup {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.optInOption {
+.OptInOption {
   display: flex;
   align-items: center;
   gap: 12px;
