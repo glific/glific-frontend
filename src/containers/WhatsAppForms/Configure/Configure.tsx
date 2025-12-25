@@ -16,6 +16,7 @@ import setLogs from 'config/logs';
 import { setNotification } from 'common/notification';
 
 export const Configure = () => {
+  const [flowName, setFlowName] = useState('');
   const [screens, setScreens] = useState<Screen[]>([]);
   const [showJSON, setShowJSON] = useState(false);
   const [view, setView] = useState<'preview' | 'variables'>('preview');
@@ -61,6 +62,7 @@ export const Configure = () => {
     variables: { id: params.id },
     onCompleted: ({ whatsappForm }) => {
       if (whatsappForm?.whatsappForm?.revision) {
+        setFlowName(whatsappForm?.whatsappForm?.name || '');
         try {
           const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
           if (!flowJSON) return;
@@ -119,6 +121,7 @@ export const Configure = () => {
           action: handleViewJSON,
         }}
       />
+
       <div className={styles.configureContainer}>
         <div className={styles.flowBuilder}>
           <FormBuilder screens={screens} onScreensChange={setScreens} />

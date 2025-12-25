@@ -16,7 +16,7 @@ import {
 import { Button } from 'components/UI/Form/Button/Button';
 import { useState, useEffect } from 'react';
 import styles from './FormBuilder.module.css';
-import { FormBuilderProps, Screen } from './FormBuilder.types';
+import { ContentItemData, FormBuilderProps, Screen } from './FormBuilder.types';
 import { ScreenComponent } from './Screen/Screen';
 
 export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormBuilderProps) => {
@@ -62,7 +62,7 @@ export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormB
       name: `Screen ${screens.length + 1}`,
       order: screens.length,
       content: [],
-      buttonLabel: '',
+      buttonLabel: 'Continue',
     };
     setScreens([...screens, newScreen]);
     setExpandedScreenId(newScreen.id);
@@ -108,14 +108,22 @@ export const FormBuilder = ({ onScreensChange, screens: externalScreens }: FormB
   };
 
   const addContent = (screenId: string, category: string, item: string) => {
+    let defaultaData: ContentItemData = category === 'Text' ? { text: 'New Text' } : { label: 'New Label' };
+    if (category === 'Selection') {
+      defaultaData = {
+        ...defaultaData,
+        options: [
+          { id: '1', value: 'Option 1' },
+          { id: '2', value: 'Option 2' },
+        ],
+      };
+    }
     const newContentItem = {
       id: Date.now().toString(),
       type: category,
       name: item,
       order: 0,
-      data: {
-        id: item,
-      },
+      data: defaultaData,
     };
 
     setScreens(

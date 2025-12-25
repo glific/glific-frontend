@@ -4,7 +4,7 @@ export const GET_LATEST_WHATSAPP_FORM_REVISION = gql`
   query WhatsappForm($id: ID!) {
     whatsappForm(id: $id) {
       whatsappForm {
-        revision_id
+        name
         revision {
           id
           definition

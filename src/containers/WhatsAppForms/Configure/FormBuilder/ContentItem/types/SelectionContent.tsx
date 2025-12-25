@@ -11,10 +11,7 @@ interface SelectionContentProps {
 
 export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
   const { data, name } = item;
-  const options = data.options || [
-    { id: '1', value: '' },
-    { id: '2', value: '' },
-  ];
+  const options = data.options || [];
 
   const getLabelLimit = () => {
     if (name === 'Opt In') return 300;
