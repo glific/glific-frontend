@@ -10,8 +10,8 @@ jobs:
   deploy:
     # only run this job if the verify job succeeds
 
-    # only run this job if the workflow is running on the feature/master branch or
-    # a branch which has staging has label
+    # only run this job if the workflow is running on master branch or
+    # a pull request which has the staging label
     if: |
       (
         github.event_name == 'pull_request' &&
