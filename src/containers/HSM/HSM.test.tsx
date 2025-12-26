@@ -443,7 +443,7 @@ describe('Add mode', () => {
     fireEvent.click(getByText('Add buttons'));
     const comboboxes = getAllByRole('combobox');
     const buttonTypeCombo = comboboxes[1] as HTMLInputElement;
-    expect(buttonTypeCombo.value).toBe('Call to Action');
+    expect(buttonTypeCombo.value).toBe('Quick Reply');
   });
 
   test('validateMedia is called with URL without spaces', async () => {
