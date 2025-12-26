@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 
 import styles from './WhatsAppFormList.module.css';
 
@@ -159,6 +160,15 @@ export const WhatsAppFormList = () => {
       },
     };
 
+    const configureIcon = {
+      label: 'Configure',
+      icon: <ConfigureIcon className={styles.IconSize} data-testid="publish-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        navigate(`/whatsapp-forms/${id}/configure`);
+      },
+    };
+
     let actions = [];
 
     if (item.status === 'PUBLISHED') {
@@ -169,6 +179,7 @@ export const WhatsAppFormList = () => {
       actions = [activateAction];
     }
 
+    actions.push(configureIcon);
     return actions;
   };
   const filters = useMemo(() => {

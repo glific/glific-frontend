@@ -1,0 +1,49 @@
+.DialogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.DialogHeader span {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.JsonActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.JsonCode {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.JsonCode::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.JsonCode::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.JsonCode::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.jsonCode::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

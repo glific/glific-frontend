@@ -1,0 +1,11 @@
+.ContentSelector {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.AddContentButton {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+}
