@@ -94,6 +94,7 @@ export const SAVE_WHATSAPP_FORM_REVISION = gql`
   mutation SaveWhatsappFormRevision($input: WhatsappFormRevisionInput!) {
     saveWhatsappFormRevision(input: $input) {
       whatsappFormRevision {
+        id
         revisionNumber
       }
     }
@@ -104,7 +105,7 @@ export const REVERT_TO_WHATSAPP_FORM_REVISION = gql`
   mutation RevertToWhatsappFormRevision($whatsappFormId: ID!, $revisionId: ID!) {
     revertToWhatsappFormRevision(whatsappFormId: $whatsappFormId, revisionId: $revisionId) {
       whatsappFormRevision {
-        revisionNumber
+        definition
       }
       errors {
         key

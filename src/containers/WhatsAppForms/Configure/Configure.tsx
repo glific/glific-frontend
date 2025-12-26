@@ -1,19 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { setNotification } from 'common/notification';
 import { Heading } from 'components/UI/Heading/Heading';
+import setLogs from 'config/logs';
+import { SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
+import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
 import styles from './Configure.module.css';
 import { FormBuilder } from './FormBuilder/FormBuilder';
-import { Preview } from './Preview/Preview';
-import { JSONViewer } from './JSONViewer/JSONViewer';
-import { Variables } from './Variables/Variables';
 import { Screen } from './FormBuilder/FormBuilder.types';
 import { convertFlowJSONToFormBuilder, convertFormBuilderToFlowJSON } from './FormBuilder/FormBuilder.utils';
-import { ToggleButtonGroup, ToggleButton } from '@mui/material';
-import { useQuery, useMutation } from '@apollo/client';
-import { useParams } from 'react-router';
-import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
-import { SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
-import setLogs from 'config/logs';
-import { setNotification } from 'common/notification';
+import { JSONViewer } from './JSONViewer/JSONViewer';
+import { Preview } from './Preview/Preview';
+import { Variables } from './Variables/Variables';
+import { VersionHistory } from './VersionHistory/VersionHistory';
 
 export const Configure = () => {
   const [flowName, setFlowName] = useState('');
@@ -22,7 +23,7 @@ export const Configure = () => {
   const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
 
   const [showJSON, setShowJSON] = useState(false);
-  const [view, setView] = useState<'preview' | 'variables'>('preview');
+  const [view, setView] = useState<'preview' | 'variables' | 'versions'>('preview');
   const params = useParams();
   const isInitialMount = useRef(true);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -78,6 +79,20 @@ export const Configure = () => {
       }
     },
   });
+
+  const handleRevisionReverted = ({ revertToWhatsappFormRevision }: any) => {
+    if (revertToWhatsappFormRevision?.whatsappFormRevision?.definition) {
+      try {
+        const flowJSON = JSON.parse(revertToWhatsappFormRevision?.whatsappFormRevision?.definition);
+        if (!flowJSON) return;
+
+        const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
+        setScreens(convertedScreens);
+      } catch (error) {
+        setLogs(error, 'error');
+      }
+    }
+  };
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -153,6 +168,9 @@ export const Configure = () => {
               <ToggleButton value="variables" aria-label="variables">
                 Variables
               </ToggleButton>
+              <ToggleButton value="versions" aria-label="versions">
+                Versions
+              </ToggleButton>
             </ToggleButtonGroup>
           </div>
           {view === 'variables' ? (
@@ -161,6 +179,8 @@ export const Configure = () => {
               onUpdateScreenName={handleUpdateScreenName}
               onUpdateFieldLabel={handleUpdateFieldLabel}
             />
+          ) : view === 'versions' ? (
+            <VersionHistory whatsappFormId={params.id || ''} onRevisionReverted={handleRevisionReverted} />
           ) : (
             <Preview
               screens={screens}
