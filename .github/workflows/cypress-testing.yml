@@ -25,6 +25,7 @@ jobs:
       matrix: # build matrix for the job
         elixir: [1.18.3-otp-27]
         otp: [27.3.3]
+        containers: [1, 2, 3]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup
@@ -121,4 +122,4 @@ jobs:
         # Run cypress
       - name: Cypress run
         run: |
-          yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          yarn run cypress run --record --parallel --key ${{ secrets.CYPRESS_DASHBOARD_KEY }} --ci-build-id ${{ github.run_id }}
