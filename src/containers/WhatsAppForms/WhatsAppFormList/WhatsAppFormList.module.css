@@ -24,7 +24,7 @@
 .Actions {
   width: 15%;
   min-width: 200px;
-  text-align: end;
+  text-align: start;
 }
 
 .NameText {
