@@ -1,9 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { setNotification } from 'common/notification';
-import { Heading } from 'components/UI/Heading/Heading';
+import { setErrorMessage, setNotification } from 'common/notification';
 import setLogs from 'config/logs';
-import { SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
+import { PUBLISH_FORM, SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
 import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
@@ -15,6 +14,8 @@ import { JSONViewer } from './JSONViewer/JSONViewer';
 import { Preview } from './Preview/Preview';
 import { Variables } from './Variables/Variables';
 import { VersionHistory } from './VersionHistory/VersionHistory';
+import { ArrowLeftIcon } from '@mui/x-date-pickers';
+import { Button } from 'components/UI/Form/Button/Button';
 
 export const Configure = () => {
   const [flowName, setFlowName] = useState('');
@@ -32,6 +33,15 @@ export const Configure = () => {
     onError: (error) => {
       setNotification('Error saving form revision', 'warning');
       setLogs(error, 'error');
+    },
+  });
+
+  const [publishWhatsappForm] = useMutation(PUBLISH_FORM, {
+    onError: (errors: any) => {
+      setErrorMessage(errors);
+    },
+    onCompleted: () => {
+      setNotification('Form published successfully', 'success');
     },
   });
 
@@ -61,6 +71,28 @@ export const Configure = () => {
     );
   };
 
+  const handleRevisionReverted = ({ revertToWhatsappFormRevision }: any) => {
+    if (revertToWhatsappFormRevision?.whatsappFormRevision?.definition) {
+      try {
+        const flowJSON = JSON.parse(revertToWhatsappFormRevision?.whatsappFormRevision?.definition);
+        if (!flowJSON) return;
+
+        const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
+        setScreens(convertedScreens);
+      } catch (error) {
+        setLogs(error, 'error');
+      }
+    }
+  };
+
+  const handlePublishForm = () => {
+    publishWhatsappForm({
+      variables: {
+        id: params.id,
+      },
+    });
+  };
+
   useQuery(GET_LATEST_WHATSAPP_FORM_REVISION, {
     skip: !params.id,
     variables: { id: params.id },
@@ -79,20 +111,6 @@ export const Configure = () => {
       }
     },
   });
-
-  const handleRevisionReverted = ({ revertToWhatsappFormRevision }: any) => {
-    if (revertToWhatsappFormRevision?.whatsappFormRevision?.definition) {
-      try {
-        const flowJSON = JSON.parse(revertToWhatsappFormRevision?.whatsappFormRevision?.definition);
-        if (!flowJSON) return;
-
-        const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
-        setScreens(convertedScreens);
-      } catch (error) {
-        setLogs(error, 'error');
-      }
-    }
-  };
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -130,15 +148,24 @@ export const Configure = () => {
 
   return (
     <>
-      <Heading
-        formTitle="Configure WhatsApp Form"
-        backLink="/whatsapp-forms"
-        button={{
-          show: true,
-          label: 'View JSON',
-          action: handleViewJSON,
-        }}
-      />
+      <div className={styles.Header}>
+        <div className={styles.Name}>
+          <div className={styles.BackIcon}>
+            <ArrowLeftIcon />
+          </div>
+
+          <p>{flowName}</p>
+        </div>
+
+        <div className={styles.Buttonsscre}>
+          <Button variant="contained" color="primary" onClick={handlePublishForm}>
+            Publish
+          </Button>
+          <Button variant="outlined" onClick={handleViewJSON}>
+            View JSON
+          </Button>
+        </div>
+      </div>
 
       <div className={styles.ConfigureContainer}>
         <div className={styles.FlowBuilder}>

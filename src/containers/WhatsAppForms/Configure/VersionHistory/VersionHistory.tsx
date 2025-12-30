@@ -63,7 +63,6 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted }: VersionHi
   };
 
   const handleConfirmRevert = () => {
-    console.log(selectedRevision);
     if (selectedRevision) {
       revertToRevision({
         variables: {

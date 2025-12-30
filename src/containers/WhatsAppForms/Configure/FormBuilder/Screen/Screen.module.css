@@ -1,19 +1,15 @@
 .ScreenContainer {
-  background-color: white;
+  background-color: #F5F5F5;
   border-radius: 8px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   cursor: move;
 }
 
-.ScreenContainer:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
+
 
 .ScreenContainer.Dragging {
   opacity: 0.5;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .ScreenHeader {
@@ -111,7 +107,6 @@
 .Input:focus {
   outline: none;
   border-color: #0c9d58;
-  box-shadow: 0 0 0 3px rgba(12, 157, 88, 0.1);
 }
 
 .Input::placeholder {

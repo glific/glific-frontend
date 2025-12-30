@@ -162,6 +162,8 @@ const convertContentItemToComponent = (item: ContentItem): any => {
     return {
       type: 'Image',
       src: data.text || '',
+      height: 400,
+      'scale-type': 'contain',
     };
   }
 

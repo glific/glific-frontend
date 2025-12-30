@@ -21,7 +21,6 @@
   max-width: 375px;
   height: 670px;
   border-radius: 30px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -66,7 +65,6 @@
 
 .FormCard {
   background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   flex: 1;
   display: flex;
@@ -369,4 +367,19 @@
   align-items: center;
   gap: 12px;
   cursor: pointer;
+}
+
+.ImageContainer {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.MediaImage {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  display: block;
 }

@@ -143,6 +143,18 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     }
   };
 
+  const renderMediaContent = (item: ContentItem) => {
+    const { data } = item;
+
+    const imageUrl = data.text;
+
+    return (
+      <div className={styles.ImageContainer}>
+        <img src={imageUrl} alt="Media content" className={styles.MediaImage} />
+      </div>
+    );
+  };
+
   const renderContent = (item: ContentItem) => {
     switch (item.type) {
       case 'Text':
@@ -151,6 +163,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
         return renderTextAnswerContent(item);
       case 'Selection':
         return renderSelectionContent(item);
+      case 'Media':
+        return renderMediaContent(item);
       default:
         return null;
     }
