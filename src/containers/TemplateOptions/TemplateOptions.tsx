@@ -27,7 +27,7 @@ import {
 import styles from './TemplateOptions.module.css';
 import { Fragment, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { GET_WHATSAPP_FORM_DEFINITIONS, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { getOrganizationServices } from 'services/AuthService';
 
 export interface TemplateOptionsProps {
@@ -87,16 +87,17 @@ export const TemplateOptions = ({
     buttonOptions = BUTTON_OPTIONS.filter((option: any) => option.id !== WHATSAPP_FORM);
   }
 
-  useQuery(LIST_WHATSAPP_FORMS, {
+  useQuery(GET_WHATSAPP_FORM_DEFINITIONS, {
     variables: {
       filter: { status: 'PUBLISHED' },
     },
     onCompleted: (data) => {
+      console.log(data);
       setForms(
         data.listWhatsappForms.map((form: any) => ({
           label: form.name,
           id: form.metaFlowId,
-          definition: form.definition,
+          definition: form.revision.definition,
         }))
       );
     },
@@ -335,7 +336,7 @@ export const TemplateOptions = ({
               renderInput={(params) => <TextField {...params} label="Select Form " />}
               onChange={(event: any, newValue: any) => {
                 onInputChange(newValue.id, row, index, 'form_id');
-
+                console.log(newValue);
                 try {
                   const definition = JSON.parse(newValue.definition);
                   const screenNames = definition.screens.map((screen: any) => screen.id);

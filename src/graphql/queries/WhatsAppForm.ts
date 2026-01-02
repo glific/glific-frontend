@@ -50,6 +50,18 @@ export const LIST_WHATSAPP_FORMS = gql`
   }
 `;
 
+export const GET_WHATSAPP_FORM_DEFINITIONS = gql`
+  query listWhatsappForms($filter: WhatsappFormFilter) {
+    listWhatsappForms(filter: $filter) {
+      name
+      metaFlowId
+      revision {
+        definition
+      }
+    }
+  }
+`;
+
 export const GET_WHATSAPP_FORM_REVISION = gql`
   query WhatsappFormRevision($id: ID!) {
     whatsappFormRevision(id: $id) {
