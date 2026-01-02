@@ -5,10 +5,11 @@ import { Auth } from '../../Auth/Auth';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { TRIAL_CREATE_USER_API, TRIAL_ALLOCATE_ACCOUNT_API } from 'config/index';
+import { yupPasswordValidation } from 'common/constants';
 import { IconButton, InputAdornment } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
-import styles from '../../Auth/ConfirmOTP/ConfirmOTP.module.css';
+import otpStyles from '../../Auth/ConfirmOTP/ConfirmOTP.module.css';
 
 interface TrialFormValues {
   organizationName: string;
@@ -45,6 +46,8 @@ export const TrialRegistration = () => {
     otp: '',
   };
 
+  const t = (str: string) => str;
+
   const FormSchema = Yup.object().shape({
     organizationName: Yup.string()
       .required('Organization name is required')
@@ -53,16 +56,10 @@ export const TrialRegistration = () => {
     username: Yup.string()
       .required('Your name is required')
       .matches(/^[A-Za-z\s]+$/, 'Name can only contain alphabets and spaces')
-      .min(5, 'Username must be at least 5 characters'),
+      .min(3, 'Username must be at least 3 characters'),
     email: Yup.string().email('Invalid email').required('Email is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(8, 'Password must be at least 8 characters')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]/,
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-      ),
+    password: yupPasswordValidation(t),
     otp: otpSent ? Yup.string().required('OTP is required') : Yup.string(),
   });
 
@@ -127,12 +124,10 @@ export const TrialRegistration = () => {
 
   const handleSubmit = async (values: TrialFormValues) => {
     if (!otpSent) {
-      // Handle Get OTP
       handleSendOTP(values);
       return;
     }
 
-    // Handle account allocation
     if (loading) return;
 
     setAuthError('');
@@ -176,8 +171,8 @@ export const TrialRegistration = () => {
         edge="end"
         action="resend"
       >
-        <p className={styles.Resend}>Resend</p>
-        <RefreshIcon classes={{ root: styles.ResendButton }} />
+        <p className={otpStyles.Resend}>Resend</p>
+        <RefreshIcon classes={{ root: otpStyles.ResendButton }} />
       </Captcha>
     </InputAdornment>
   );
@@ -189,6 +184,8 @@ export const TrialRegistration = () => {
       type: 'text',
       placeholder: 'Organization Name',
       styles: 'Spacing',
+      disabled: otpSent,
+      autoComplete: 'off',
     },
     {
       component: Input,
@@ -196,6 +193,8 @@ export const TrialRegistration = () => {
       type: 'text',
       placeholder: 'Your name',
       styles: 'Spacing',
+      disabled: otpSent,
+      autoComplete: 'off',
     },
     {
       component: Input,
@@ -203,6 +202,8 @@ export const TrialRegistration = () => {
       type: 'email',
       placeholder: 'Email',
       styles: 'Spacing',
+      disabled: otpSent,
+      autoComplete: 'off',
     },
     {
       component: PhoneInput,
@@ -211,18 +212,20 @@ export const TrialRegistration = () => {
       placeholder: 'Phone Number',
       helperText: 'Include country code (e.g., +919876543210)',
       styles: 'Spacing',
+      disabled: otpSent,
+      autoComplete: 'off',
     },
     {
       component: Input,
       name: 'password',
       type: 'password',
       placeholder: 'Create password',
-      helperText: 'Minimum 8 characters',
       styles: 'Spacing',
+      disabled: otpSent,
+      autoComplete: 'off',
     },
   ];
 
-  // Add OTP field after OTP is sent
   if (otpSent) {
     formFields.push({
       component: Input,

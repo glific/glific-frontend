@@ -353,3 +353,54 @@
     padding: 20px;
   }
 }
+
+.TrialRegistrationBox input {
+  background-color: transparent !important;
+}
+
+.TrialRegistrationBox .MuiInputBase-root {
+  background-color: transparent !important;
+}
+
+.TrialRegistrationBox .MuiOutlinedInput-root {
+  background-color: transparent !important;
+}
+
+.TrialRegistrationBox .MuiOutlinedInput-input {
+  background-color: transparent !important;
+}
+
+.TrialRegistrationBox .MuiInputBase-input {
+  background-color: transparent !important;
+}
+
+.TrialRegistrationBox input:disabled {
+  color: #93a29b !important;
+  -webkit-text-fill-color: #93a29b !important;
+  opacity: 1 !important;
+}
+
+.TrialRegistrationBox input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  background-color: transparent !important;
+}
+
+.TrialRegistrationBox .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+  border-color: #93a29b !important;
+}
+
+.TrialRegistrationBox .MuiOutlinedInput-root.Mui-disabled fieldset {
+  border-color: #93a29b !important;
+}
+
+.TrialRegistrationBox.RegistrationBox .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+  border-color: #93a29b !important;
+}
+
+.TrialRegistrationBox fieldset.MuiOutlinedInput-notchedOutline {
+  border-color: #93a29b !important;
+}
+
+.TrialRegistrationBox input:disabled ~ fieldset {
+  border-color: #93a29b !important;
+}
