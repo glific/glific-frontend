@@ -5,7 +5,7 @@ import setLogs from 'config/logs';
 import { PUBLISH_FORM, SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
 import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import styles from './Configure.module.css';
 import { FormBuilder } from './FormBuilder/FormBuilder';
 import { Screen } from './FormBuilder/FormBuilder.types';
@@ -28,6 +28,7 @@ export const Configure = () => {
   const params = useParams();
   const isInitialMount = useRef(true);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
 
   const [saveWhatsappFormRevision] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
     onError: (error) => {
@@ -150,7 +151,12 @@ export const Configure = () => {
     <>
       <div className={styles.Header}>
         <div className={styles.Name}>
-          <div className={styles.BackIcon}>
+          <div
+            onClick={() => {
+              navigate('/whatsapp-forms');
+            }}
+            className={styles.BackIcon}
+          >
             <ArrowLeftIcon />
           </div>
 

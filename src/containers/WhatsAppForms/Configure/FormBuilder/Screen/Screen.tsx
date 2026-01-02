@@ -67,6 +67,9 @@ export const ScreenComponent = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const hasNameError = !screen.name || screen.name.trim() === '';
+  const hasButtonLabelError = !screen.buttonLabel || screen.buttonLabel.trim() === '';
+
   const handleNameChange = (e: any) => {
     if (e.target.value.length <= 30) {
       onUpdateName(e.target.value);
@@ -118,7 +121,7 @@ export const ScreenComponent = ({
             <div className={styles.InputWrapper}>
               <input
                 type="text"
-                className={styles.Input}
+                className={`${styles.Input} ${hasNameError ? styles.Error : ''}`}
                 placeholder="Enter Screen name"
                 value={screen.name}
                 onChange={handleNameChange}
@@ -126,6 +129,7 @@ export const ScreenComponent = ({
               />
               <span className={styles.CharCount}>{screen.name.length}/30</span>
             </div>
+            {hasNameError && <div className={styles.ErrorMessage}>Screen name is required</div>}
           </div>
 
           {screen.content.length !== 0 && (
@@ -156,7 +160,7 @@ export const ScreenComponent = ({
             <div className={styles.InputWrapper}>
               <input
                 type="text"
-                className={styles.Input}
+                className={`${styles.Input} ${hasButtonLabelError ? styles.Error : ''}`}
                 placeholder="Enter button label"
                 value={screen.buttonLabel}
                 onChange={handleButtonLabelChange}
@@ -164,6 +168,7 @@ export const ScreenComponent = ({
               />
               <span className={styles.CharCount}>{screen.buttonLabel.length}/30</span>
             </div>
+            {hasButtonLabelError && <div className={styles.ErrorMessage}>Button label is required</div>}
           </div>
         </div>
       )}

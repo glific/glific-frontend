@@ -61,7 +61,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
 
   if (['TextHeading', 'TextSubheading', 'TextCaption', 'TextBody'].includes(componentType)) {
     return {
-      text: data.text || 'Text',
+      text: data.text,
       type: componentType,
     };
   }
@@ -76,7 +76,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
     const fieldName = generateUniqueName(data.label || 'Label');
     return {
       'input-type': data.inputType?.toLowerCase() || 'text',
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'TextInput',
@@ -87,7 +87,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   if (componentType === 'TextArea') {
     const fieldName = generateUniqueName(data.label || 'Label');
     return {
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'TextArea',
@@ -98,7 +98,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   if (componentType === 'DatePicker') {
     const fieldName = generateUniqueName(data.label || 'Label');
     return {
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'DatePicker',
@@ -113,7 +113,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
         id: `${index}_${opt.value || `Option_${index + 1}`}`,
         title: opt.value || `Option ${index + 1}`,
       })),
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'RadioButtonsGroup',
@@ -127,7 +127,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
         id: `${index}_${opt.value || `Option_${index + 1}`}`,
         title: opt.value || `Option ${index + 1}`,
       })),
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'CheckboxGroup',
@@ -141,7 +141,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
         id: `${index}_${opt.value || `Option_${index + 1}`}`,
         title: opt.value || `Option ${index + 1}`,
       })),
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'Dropdown',
@@ -151,7 +151,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   if (componentType === 'OptIn') {
     const fieldName = generateUniqueName(data.label || 'Label');
     return {
-      label: data.label || 'Label',
+      label: data.label,
       name: fieldName,
       required: data.required || false,
       type: 'OptIn',

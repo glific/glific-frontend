@@ -113,7 +113,7 @@ export const FormBuilder = ({
   };
 
   const addContent = (screenId: string, category: string, item: string) => {
-    let defaultaData: ContentItemData = category === 'Text' ? { text: 'New Text' } : { label: 'New Label' };
+    let defaultaData: ContentItemData = category === 'Text' ? { text: 'Text' } : { label: 'Label' };
     if (category === 'Selection') {
       defaultaData = {
         ...defaultaData,

@@ -92,7 +92,6 @@ export const TemplateOptions = ({
       filter: { status: 'PUBLISHED' },
     },
     onCompleted: (data) => {
-      console.log(data);
       setForms(
         data.listWhatsappForms.map((form: any) => ({
           label: form.name,
@@ -336,7 +335,6 @@ export const TemplateOptions = ({
               renderInput={(params) => <TextField {...params} label="Select Form " />}
               onChange={(event: any, newValue: any) => {
                 onInputChange(newValue.id, row, index, 'form_id');
-                console.log(newValue);
                 try {
                   const definition = JSON.parse(newValue.definition);
                   const screenNames = definition.screens.map((screen: any) => screen.id);

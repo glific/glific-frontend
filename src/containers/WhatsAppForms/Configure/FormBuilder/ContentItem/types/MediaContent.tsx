@@ -16,6 +16,8 @@ export const MediaContent = ({ data, onUpdate, type }: MediaContentProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const hasValidationError = !imageUrl || imageUrl.trim() === '';
+
   const handleUrlChange = (url: string) => {
     setImageUrl(url);
     setError('');
@@ -93,7 +95,7 @@ export const MediaContent = ({ data, onUpdate, type }: MediaContentProps) => {
           </div>
           <div
             className={`${styles.UploadArea} ${isDragging ? styles.UploadAreaDragging : ''} ${
-              error ? styles.UploadAreaError : ''
+              error || hasValidationError ? styles.UploadAreaError : ''
             }`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -108,9 +110,9 @@ export const MediaContent = ({ data, onUpdate, type }: MediaContentProps) => {
               </span>
             </p>
           </div>
-          {error && (
+          {(error || hasValidationError) && (
             <div className={styles.ErrorMessage}>
-              <span>⚠</span> {error}
+              <span>⚠</span> {error || 'Image is required'}
             </div>
           )}
           <input

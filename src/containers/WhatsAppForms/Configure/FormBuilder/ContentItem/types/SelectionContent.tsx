@@ -27,6 +27,8 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
   const labelLimit = getLabelLimit();
   const optionLimit = getOptionLimit();
 
+  const hasLabelError = !data.label || data.label.trim() === '';
+
   const handleLabelChange = (e: any) => {
     if (e.target.value.length <= labelLimit) {
       onUpdate({ data: { ...data, label: e.target.value } });
@@ -71,6 +73,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
         placeholder="Enter label"
         value={data.label || ''}
         onChange={handleLabelChange}
+        error={hasLabelError}
         multiline={name === 'Opt In'}
         rows={name === 'Opt In' ? 4 : 1}
         slotProps={{
@@ -79,6 +82,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
             endAdornment: <div className={styles.CharCount}>{`${(data.label || '').length}/${labelLimit}`}</div>,
           },
         }}
+        helperText={hasLabelError ? 'Label is required' : ''}
         size="small"
         sx={{ mb: 2 }}
       />
@@ -95,35 +99,40 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
       ) : (
         <div className={styles.OptionsSection}>
           <label className={styles.SectionLabel}>Options</label>
-          {options.map((option) => (
-            <div key={option.id} className={styles.OptionRow}>
-              <TextField
-                fullWidth
-                placeholder="Enter option value"
-                value={option.value}
-                onChange={(e) => handleOptionChange(option.id, e.target.value)}
-                slotProps={{
-                  htmlInput: { maxLength: optionLimit },
-                  input: {
-                    endAdornment: (
-                      <div className={styles.CharCount}>
-                        {option.value.length}/{optionLimit}
-                      </div>
-                    ),
-                  },
-                }}
-                size="small"
-              />
-              <IconButton
-                size="small"
-                onClick={() => handleDeleteOption(option.id)}
-                disabled={options.length <= 2}
-                aria-label="Delete option"
-              >
-                <DeleteOutlined fontSize="small" />
-              </IconButton>
-            </div>
-          ))}
+          {options.map((option) => {
+            const optionHasError = !option.value || option.value.trim() === '';
+            return (
+              <div key={option.id} className={styles.OptionRow}>
+                <TextField
+                  fullWidth
+                  placeholder="Enter option value"
+                  value={option.value}
+                  onChange={(e) => handleOptionChange(option.id, e.target.value)}
+                  error={optionHasError}
+                  slotProps={{
+                    htmlInput: { maxLength: optionLimit },
+                    input: {
+                      endAdornment: (
+                        <div className={styles.CharCount}>
+                          {option.value.length}/{optionLimit}
+                        </div>
+                      ),
+                    },
+                  }}
+                  helperText={optionHasError ? 'Option value is required' : ''}
+                  size="small"
+                />
+                <IconButton
+                  size="small"
+                  onClick={() => handleDeleteOption(option.id)}
+                  disabled={options.length <= 2}
+                  aria-label="Delete option"
+                >
+                  <DeleteOutlined fontSize="small" />
+                </IconButton>
+              </div>
+            );
+          })}
 
           <Button
             variant="text"

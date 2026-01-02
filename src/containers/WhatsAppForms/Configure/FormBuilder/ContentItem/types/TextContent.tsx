@@ -12,6 +12,7 @@ export const TextContent = ({ item, onUpdate }: TextContentProps) => {
   const { data, name } = item;
 
   const textTypes = formComponenets.find((component) => component.name === 'Text')?.children || [];
+  const hasError = !data.text || data.text.trim() === '';
 
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
     onUpdate({ name: event.target.value });
@@ -44,10 +45,11 @@ export const TextContent = ({ item, onUpdate }: TextContentProps) => {
         placeholder="Enter text content"
         value={data.text || ''}
         onChange={handleTextChange}
+        error={hasError}
         slotProps={{
           htmlInput: { maxLength: 80 },
         }}
-        helperText={`${(data.text || '').length}/80`}
+        helperText={hasError ? 'Text is required' : `${(data.text || '').length}/80`}
         size="small"
       />
     </div>

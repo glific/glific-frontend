@@ -22,6 +22,8 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
   const isShortAnswer = name === 'Short Answer';
   const shortAnswerTypes = ['Text', 'Password', 'Email', 'Number', 'Passcode', 'Phone'];
 
+  const hasError = !data.label || data.label.trim() === '';
+
   const handleLabelChange = (e: any) => {
     if (e.target.value.length <= 20) {
       onUpdate({ data: { ...data, label: e.target.value } });
@@ -63,10 +65,11 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
         placeholder="Label"
         value={data.label || ''}
         onChange={handleLabelChange}
+        error={hasError}
         slotProps={{
           htmlInput: { maxLength: 20 },
         }}
-        helperText={`${(data.label || '').length}/20`}
+        helperText={hasError ? 'Label is required' : `${(data.label || '').length}/20`}
         size="small"
         sx={{ mb: 2 }}
       />
