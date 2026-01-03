@@ -4,7 +4,6 @@ export const GET_WHATSAPP_FORM = gql`
   query WhatsappForm($id: ID!) {
     whatsappForm(id: $id) {
       whatsappForm {
-        definition
         description
         categories
         id
@@ -37,7 +36,6 @@ export const LIST_WHATSAPP_FORMS = gql`
       description
       metaFlowId
       categories
-      definition
       sheet {
         id
         label

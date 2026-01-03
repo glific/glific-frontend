@@ -74,7 +74,6 @@ export const ACTIVATE_FORM = gql`
     activateWhatsappForm(id: $activateWhatsappFormId) {
       whatsappForm {
         categories
-        definition
         description
         id
         insertedAt
