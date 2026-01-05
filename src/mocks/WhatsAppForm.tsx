@@ -205,7 +205,9 @@ const listWhatsappForms = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
@@ -236,7 +238,9 @@ const listWhatsappFormswithoutopts = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
@@ -267,7 +271,9 @@ const listWhatsappFormsInactive = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
@@ -299,7 +305,9 @@ const listWhatsappFormsDraft = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
@@ -330,7 +338,9 @@ const listWhatsappFormsEmpty = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
@@ -356,7 +366,9 @@ const getWhatsAppForm = {
       whatsappForm: {
         whatsappForm: {
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           description: 'This is test form',
           id: '1',
           insertedAt: '2025-11-06 09:31:19.955920Z',

@@ -5,6 +5,7 @@ export const GET_WHATSAPP_FORM = gql`
     whatsappForm(id: $id) {
       whatsappForm {
         description
+        revision
         categories
         id
         insertedAt
@@ -36,6 +37,9 @@ export const LIST_WHATSAPP_FORMS = gql`
       description
       metaFlowId
       categories
+      revision {
+        definition
+      }
       sheet {
         id
         label
