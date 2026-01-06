@@ -31,7 +31,7 @@
     "@sentry/react": "^10.30.0",
     "@sentry/vite-plugin": "^4.6.1",
     "@stripe/react-stripe-js": "^5.4.1",
-    "@stripe/stripe-js": "^8.5.3",
+    "@stripe/stripe-js": "^8.6.0",
     "@vitejs/plugin-react": "^5.1.2",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.7.0",
