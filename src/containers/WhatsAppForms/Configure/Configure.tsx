@@ -16,12 +16,14 @@ import { Variables } from './Variables/Variables';
 import { VersionHistory } from './VersionHistory/VersionHistory';
 import { ArrowLeftIcon } from '@mui/x-date-pickers';
 import { Button } from 'components/UI/Form/Button/Button';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 export const Configure = () => {
   const [flowName, setFlowName] = useState('');
   const [screens, setScreens] = useState<Screen[]>([]);
   const [expandedScreenId, setExpandedScreenId] = useState<string | null>('1');
   const [expandedContentId, setExpandedContentId] = useState<string | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const [showJSON, setShowJSON] = useState(false);
   const [view, setView] = useState<'preview' | 'variables' | 'versions'>('preview');
@@ -37,7 +39,7 @@ export const Configure = () => {
     },
   });
 
-  const [publishWhatsappForm] = useMutation(PUBLISH_FORM, {
+  const [publishWhatsappForm, { loading }] = useMutation(PUBLISH_FORM, {
     onError: (errors: any) => {
       setErrorMessage(errors);
     },
@@ -90,6 +92,9 @@ export const Configure = () => {
     publishWhatsappForm({
       variables: {
         id: params.id,
+      },
+      onCompleted: () => {
+        setOpenDialog(false);
       },
     });
   };
@@ -147,8 +152,24 @@ export const Configure = () => {
     };
   }, [screens, params.id, saveWhatsappFormRevision]);
 
+  let dialog;
+  if (openDialog) {
+    dialog = (
+      <DialogBox
+        title="Publish Form"
+        handleOk={handlePublishForm}
+        handleCancel={() => setOpenDialog(false)}
+        buttonOkLoading={loading}
+        disableOk={loading}
+      >
+        <p>Are you sure you want to publish this form? Once published, it will be live and cannot be edited.</p>
+      </DialogBox>
+    );
+  }
+
   return (
     <>
+      {dialog}
       <div className={styles.Header}>
         <div className={styles.Name}>
           <div
@@ -164,7 +185,13 @@ export const Configure = () => {
         </div>
 
         <div className={styles.Buttonsscre}>
-          <Button variant="contained" color="primary" onClick={handlePublishForm}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setOpenDialog(true);
+            }}
+          >
             Publish
           </Button>
           <Button variant="outlined" onClick={handleViewJSON}>
