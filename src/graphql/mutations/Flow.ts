@@ -194,3 +194,16 @@ export const PIN_FLOW = gql`
     }
   }
 `;
+
+export const GENERATE_FLOW_FROM_TEXT = gql`
+  mutation GenerateFlowFromText($uuid: UUID4!, $prompt: String!) {
+    generateFlowFromText(uuid: $uuid, prompt: $prompt) {
+      success
+      flowData
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

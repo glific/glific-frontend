@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, Navigate, useParams } from 'react-router';
-import { Menu, MenuItem, Typography } from '@mui/material';
+import { Menu, MenuItem, Typography, TextField, CircularProgress } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
@@ -13,7 +13,7 @@ import { APP_NAME } from 'config/index';
 import Simulator from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
+import { PUBLISH_FLOW, RESET_FLOW_COUNT, GENERATE_FLOW_FROM_TEXT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -22,6 +22,7 @@ import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
 
@@ -50,6 +51,9 @@ export const FlowEditor = () => {
   const [isTemplate, setIsTemplate] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [readOnlyMessage, setReadOnlyMessage] = useState('');
+  const [showTextToFlowModal, setShowTextToFlowModal] = useState(false);
+  const [textToFlowPrompt, setTextToFlowPrompt] = useState('');
+  const [textToFlowLoading, setTextToFlowLoading] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -127,6 +131,27 @@ export const FlowEditor = () => {
     },
   });
 
+  const [generateFlowFromText] = useMutation(GENERATE_FLOW_FROM_TEXT, {
+    onCompleted: (data) => {
+      setTextToFlowLoading(false);
+      if (data.generateFlowFromText.success && data.generateFlowFromText.flowData) {
+        setShowTextToFlowModal(false);
+        setTextToFlowPrompt('');
+        setNotification('Flow generated successfully!', 'success');
+        // Reload the flow editor to show the generated flow
+        loadFlowEditor();
+      } else if (data.generateFlowFromText.errors && data.generateFlowFromText.errors.length > 0) {
+        const errorMsg = data.generateFlowFromText.errors[0].message || 'Failed to generate flow';
+        setNotification(errorMsg, 'warning');
+      }
+    },
+    onError: (error) => {
+      setTextToFlowLoading(false);
+      setNotification('An error occurred while generating the flow', 'warning');
+      console.error('Flow generation error:', error);
+    },
+  });
+
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: () => {
@@ -195,6 +220,22 @@ export const FlowEditor = () => {
     resetFlowCountMethod({ variables: { flowId } });
   };
 
+  const handleTextToFlowGenerate = async () => {
+    if (!textToFlowPrompt.trim()) {
+      setNotification('Please enter a prompt to generate the flow', 'warning');
+      return;
+    }
+
+    setTextToFlowLoading(true);
+
+    generateFlowFromText({
+      variables: {
+        uuid: params.uuid,
+        prompt: textToFlowPrompt.trim(),
+      },
+    });
+  };
+
   if (showResetFlowModal) {
     modal = (
       <DialogBox
@@ -233,6 +274,45 @@ export const FlowEditor = () => {
         />
       );
     }
+  }
+
+  if (showTextToFlowModal) {
+    modal = (
+      <DialogBox
+        title="Generate Flow with AI"
+        buttonOk="Generate Flow"
+        handleOk={handleTextToFlowGenerate}
+        handleCancel={() => {
+          setShowTextToFlowModal(false);
+          setTextToFlowPrompt('');
+        }}
+        alignButtons="center"
+        buttonCancel="Cancel"
+        buttonOkLoading={textToFlowLoading}
+        additionalTitleStyles={styles.DialogTitle}
+      >
+        <div className={styles.DialogContent}>
+          <TextField
+            fullWidth
+            multiline
+            rows={6}
+            variant="outlined"
+            label="Describe your flow"
+            placeholder="Example: Create a flow that sends a welcome message, asks for the user's name, and then sends a personalized greeting"
+            value={textToFlowPrompt}
+            onChange={(e) => setTextToFlowPrompt(e.target.value)}
+            disabled={textToFlowLoading}
+            autoFocus
+          />
+          {textToFlowLoading && (
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px', gap: '12px' }}>
+              <CircularProgress size={20} />
+              <Typography variant="body2">Generating your flow...</Typography>
+            </div>
+          )}
+        </div>
+      </DialogBox>
+    );
   }
 
   useEffect(() => {
@@ -391,6 +471,16 @@ export const FlowEditor = () => {
           </div>
         </div>
         <div className={styles.Actions}>
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="textToFlowButton"
+            disabled={isReadOnly}
+            onClick={() => setShowTextToFlowModal(true)}
+          >
+            <AutoAwesomeIcon className={styles.Icon} />
+            AI Generate
+          </Button>
           <Button
             aria-controls={open ? 'demo-customized-menu' : undefined}
             aria-haspopup="true"
