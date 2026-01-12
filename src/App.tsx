@@ -10,7 +10,7 @@ import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import { TrialVideoModal } from 'components/UI/TrialAccount/TrialVideoModal';
+import { TrialVideoModal } from 'components/UI/TrialVideoModal/TrialVideoModal';
 import { TrialBanner } from 'components/UI/TrialBanner/TrialBanner';
 
 const App = () => {
