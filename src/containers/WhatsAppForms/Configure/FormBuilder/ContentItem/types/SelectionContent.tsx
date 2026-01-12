@@ -62,7 +62,7 @@ export const SelectionContent = ({ item, onUpdate }: SelectionContentProps) => {
   };
 
   const handleReadMoreClick = () => {
-    console.log('Add Read more screen');
+    // TODO: Implement the logic to add a "Read more" screen
   };
 
   return (

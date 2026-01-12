@@ -22,6 +22,7 @@ export interface ContentItemData {
   options?: ContentOption[];
   inputType?: string;
   placeholder?: string;
+  variableName?: string;
 }
 
 export interface ContentOption {

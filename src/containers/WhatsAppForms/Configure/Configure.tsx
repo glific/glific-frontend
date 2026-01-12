@@ -58,14 +58,14 @@ export const Configure = () => {
     );
   };
 
-  const handleUpdateFieldLabel = (screenId: string, contentId: string, newLabel: string) => {
+  const handleUpdateFieldLabel = (screenId: string, contentId: string, newVariableName: string) => {
     setScreens((prevScreens) =>
       prevScreens.map((screen) => {
         if (screen.id === screenId) {
           return {
             ...screen,
             content: screen.content.map((item) =>
-              item.id === contentId ? { ...item, data: { ...item.data, label: newLabel } } : item
+              item.id === contentId ? { ...item, data: { ...item.data, variableName: newVariableName } } : item
             ),
           };
         }
@@ -78,6 +78,7 @@ export const Configure = () => {
     if (revertToWhatsappFormRevision?.whatsappFormRevision?.definition) {
       try {
         const flowJSON = JSON.parse(revertToWhatsappFormRevision?.whatsappFormRevision?.definition);
+
         if (!flowJSON) return;
 
         const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
@@ -94,7 +95,9 @@ export const Configure = () => {
         id: params.id,
       },
       onCompleted: () => {
+        setNotification('Form published successfully', 'success');
         setOpenDialog(false);
+        navigate('/whatsapp-forms');
       },
     });
   };
@@ -107,6 +110,7 @@ export const Configure = () => {
         setFlowName(whatsappForm?.whatsappForm?.name || '');
         try {
           const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
+
           if (!flowJSON) return;
 
           const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
@@ -234,11 +238,7 @@ export const Configure = () => {
             </ToggleButtonGroup>
           </div>
           {view === 'variables' ? (
-            <Variables
-              screens={screens}
-              onUpdateScreenName={handleUpdateScreenName}
-              onUpdateFieldLabel={handleUpdateFieldLabel}
-            />
+            <Variables screens={screens} onUpdateFieldLabel={handleUpdateFieldLabel} />
           ) : view === 'versions' ? (
             <VersionHistory whatsappFormId={params.id || ''} onRevisionReverted={handleRevisionReverted} />
           ) : (

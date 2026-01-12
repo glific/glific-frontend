@@ -55,7 +55,16 @@ const getWhatsAppComponentType = (contentType: string, contentName: string): str
   return 'TextBody';
 };
 
-const convertContentItemToComponent = (item: ContentItem): any => {
+const generateFieldName = (variableName: string, baseLabel: string, screenIndex: number, fieldCounter: number) => {
+  if (variableName && variableName.trim()) {
+    return variableName.replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
+  }
+
+  const baseName = (baseLabel || 'field').replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
+  return `screen_${screenIndex}_${baseName}_${fieldCounter}`;
+};
+
+const convertContentItemToComponent = (item: ContentItem, screenIndex: number, fieldCounter: number): any => {
   const componentType = getWhatsAppComponentType(item.type, item.name);
   const { data } = item;
 
@@ -66,14 +75,8 @@ const convertContentItemToComponent = (item: ContentItem): any => {
     };
   }
 
-  const generateUniqueName = (baseLabel: string) => {
-    const baseName = baseLabel?.replace(/\s+/g, '_') || 'field';
-    const randomId = Math.random().toString(36).substring(2, 8);
-    return `${baseName}_${randomId}`;
-  };
-
   if (componentType === 'TextInput') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       'input-type': data.inputType?.toLowerCase() || 'text',
       label: data.label,
@@ -85,7 +88,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   }
 
   if (componentType === 'TextArea') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       label: data.label,
       name: fieldName,
@@ -96,7 +99,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   }
 
   if (componentType === 'DatePicker') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       label: data.label,
       name: fieldName,
@@ -107,7 +110,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   }
 
   if (componentType === 'RadioButtonsGroup') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
         id: `${index}_${opt.value || `Option_${index + 1}`}`,
@@ -121,7 +124,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   }
 
   if (componentType === 'CheckboxGroup') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
         id: `${index}_${opt.value || `Option_${index + 1}`}`,
@@ -135,7 +138,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   }
 
   if (componentType === 'Dropdown') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
         id: `${index}_${opt.value || `Option_${index + 1}`}`,
@@ -149,7 +152,7 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   }
 
   if (componentType === 'OptIn') {
-    const fieldName = generateUniqueName(data.label || 'Label');
+    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
     return {
       label: data.label,
       name: fieldName,
@@ -170,47 +173,50 @@ const convertContentItemToComponent = (item: ContentItem): any => {
   return null;
 };
 
-const generatePayloadKey = (screenIndex: number, label: string, fieldCounter: number): string => {
-  const labelKey = (label || 'field')
-    .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9_]/gi, '')
-    .substring(0, 20);
-  return `screen_${screenIndex}_${labelKey}_${fieldCounter}`;
-};
-
-const generateScreenData = (previousScreensPayloadKeys: string[]): Record<string, any> => {
+const generateScreenData = (
+  previousScreensComponentNames: Array<{ name: string; fieldType: string }>
+): Record<string, any> => {
   const data: Record<string, any> = {};
-  previousScreensPayloadKeys.forEach((key) => {
-    data[key] = {
-      __example__: 'Example',
-      type: 'string',
-    };
+  previousScreensComponentNames.forEach(({ name, fieldType }) => {
+    if (fieldType === 'CheckboxGroup') {
+      data[name] = {
+        __example__: [],
+        items: { type: 'string' },
+        type: 'array',
+      };
+    } else if (fieldType === 'OptIn') {
+      data[name] = {
+        __example__: false,
+        type: 'boolean',
+      };
+    } else {
+      data[name] = {
+        __example__: 'Example',
+        type: 'string',
+      };
+    }
   });
   return data;
 };
 
 const generateScreenPayload = (
-  screenIndex: number,
   componentsMap: Map<string, any>,
   screenContent: ContentItem[],
-  previousScreensPayloadKeys: string[]
+  previousScreensComponentNames: Array<{ name: string; fieldType: string }>
 ): Record<string, string> => {
   const payload: Record<string, string> = {};
 
-  if (previousScreensPayloadKeys.length > 0) {
-    previousScreensPayloadKeys.forEach((key) => {
-      payload[key] = `\${data.${key}}`;
+  if (previousScreensComponentNames.length > 0) {
+    previousScreensComponentNames.forEach(({ name }) => {
+      payload[name] = `\${data.${name}}`;
     });
   }
 
-  let fieldCounter = 0;
   screenContent.forEach((item) => {
     if (item.type === 'Text Answer' || item.type === 'Selection') {
       const component = componentsMap.get(item.id);
       if (component && component.name) {
-        const payloadKey = generatePayloadKey(screenIndex, item.data.label || 'field', fieldCounter);
-        payload[payloadKey] = `\${form.${component.name}}`;
-        fieldCounter++;
+        payload[component.name] = `\${form.${component.name}}`;
       }
     }
   });
@@ -223,22 +229,27 @@ export const convertScreenToFlowJSON = (
   screenIndex: number,
   totalScreens: number,
   nextScreenId?: string,
-  previousScreensPayloadKeys: string[] = []
+  previousScreensComponentNames: Array<{ name: string; fieldType: string }> = []
 ): any => {
   const children: any[] = [];
   const componentsMap: Map<string, any> = new Map();
 
+  let fieldCounter = 0;
   screen.content.forEach((item) => {
-    const component = convertContentItemToComponent(item);
+    const component = convertContentItemToComponent(item, screenIndex, fieldCounter);
     if (component) {
       children.push(component);
       componentsMap.set(item.id, component);
+
+      if (item.type === 'Text Answer' || item.type === 'Selection') {
+        fieldCounter++;
+      }
     }
   });
 
   const isTerminal = screenIndex === totalScreens - 1;
 
-  const payload = generateScreenPayload(screenIndex, componentsMap, screen.content, previousScreensPayloadKeys);
+  const payload = generateScreenPayload(componentsMap, screen.content, previousScreensComponentNames);
 
   if (screen.buttonLabel) {
     children.push({
@@ -267,7 +278,7 @@ export const convertScreenToFlowJSON = (
     .replace(/\s+/g, '_')
     .trim();
 
-  const screenData = generateScreenData(previousScreensPayloadKeys);
+  const screenData = generateScreenData(previousScreensComponentNames);
 
   return {
     id: screenId,
@@ -289,7 +300,7 @@ export const convertScreenToFlowJSON = (
 
 export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const totalScreens = screens.length;
-  let previousScreensPayloadKeys: string[] = [];
+  let previousScreensComponentNames: Array<{ name: string; fieldType: string }> = [];
 
   const flowScreens = screens.map((screen, index) => {
     const screenIds = screens.map((s) =>
@@ -306,13 +317,26 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
 
     const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
 
-    const flowScreen = convertScreenToFlowJSON(screen, index, totalScreens, nextScreenId, previousScreensPayloadKeys);
+    const flowScreen = convertScreenToFlowJSON(
+      screen,
+      index,
+      totalScreens,
+      nextScreenId,
+      previousScreensComponentNames
+    );
 
     let fieldCounter = 0;
     screen.content.forEach((item) => {
       if (item.type === 'Text Answer' || item.type === 'Selection') {
-        const payloadKey = generatePayloadKey(index, item.data.label || 'field', fieldCounter);
-        previousScreensPayloadKeys.push(payloadKey);
+        const componentName = generateFieldName(
+          item.data.variableName || '',
+          item.data.label || 'field',
+          index,
+          fieldCounter
+        );
+
+        const componentType = getWhatsAppComponentType(item.type, item.name);
+        previousScreensComponentNames.push({ name: componentName, fieldType: componentType });
         fieldCounter++;
       }
     });
@@ -324,14 +348,6 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
     version: '7.3',
     screens: flowScreens,
   };
-};
-
-export const generateFieldName = (label: string): string => {
-  return label
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, '_')
-    .trim();
 };
 
 const getInternalComponentType = (whatsappType: string): { type: string; name: string } => {
@@ -463,7 +479,19 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
     }
 
     const content: ContentItem[] = formChildren
-      .map((component: any, index: number) => convertWhatsAppComponentToContentItem(component, index))
+      .map((component: any, index: number) => {
+        const item = convertWhatsAppComponentToContentItem(component, index);
+        if (item && component.name) {
+          const componentName = component.name;
+          const parts = componentName.split('_');
+
+          if (parts.length >= 4 && parts[0] === 'screen') {
+          } else {
+            item.data.variableName = componentName;
+          }
+        }
+        return item;
+      })
       .filter((item: ContentItem | null) => item !== null) as ContentItem[];
 
     return {
