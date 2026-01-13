@@ -164,7 +164,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   if (componentType === 'Image') {
     return {
       type: 'Image',
-      src: data.text || '',
+      src: data.text?.split('base64,')[1] || '',
       height: 400,
       'scale-type': 'contain',
     };
