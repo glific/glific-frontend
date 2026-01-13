@@ -1,3 +1,4 @@
+// src/components/UI/Layout/Navigation/SideDrawer/SideDrawer.tsx
 import { useContext, useState } from 'react';
 import { Drawer, Toolbar, Typography, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,26 +8,23 @@ import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import { UserMenu } from 'containers/UserMenu/UserMenu';
+import { TrialExpiryBanner } from 'containers/TrialBanner/TrialExpiryBanner';
 import SideMenus from '../SideMenus/SideMenus';
-
 import styles from './SideDrawer.module.css';
 
 export const SideDrawer = () => {
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
-
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const { provider } = useContext(ProviderContext);
 
   const drawer = (
-    <div>
+    <div className={styles.DrawerContent}>
       <Toolbar className={styles.AnotherToolBar}>
         {drawerOpen ? (
           <div className={styles.OuterBox}>
             <Typography variant="h6" className={styles.Title}>
               <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
             </Typography>
-
             <IconButton onClick={() => setDrawerOpen(false)} data-testid="drawer-button">
               <ArrowBackIosNewIcon fontSize="small" />
             </IconButton>
@@ -45,6 +43,12 @@ export const SideDrawer = () => {
       </Toolbar>
       <WalletBalance fullOpen={drawerOpen} />
       <SideMenus opened={drawerOpen} />
+
+      {/* Spacer to push banner to bottom */}
+      <div style={{ flex: 1 }} />
+
+      {/* Trial Expiry Banner - No wrapper, no conditional */}
+      {drawerOpen && <TrialExpiryBanner />}
     </div>
   );
 
@@ -55,7 +59,6 @@ export const SideDrawer = () => {
   if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
     bottonMenuClasses.unshift(styles.BottomMenusWithoutWallet);
   }
-
   if (!drawerOpen) {
     bottonMenuClasses.unshift(styles.BottomMenusVertical);
   }
@@ -88,7 +91,6 @@ export const SideDrawer = () => {
       >
         {drawer}
       </Drawer>
-
       <UserMenu drawerOpen={drawerOpen} />
     </nav>
   );
