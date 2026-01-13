@@ -11,7 +11,6 @@ import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/Unauthenticate
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import { TrialVideoModal } from 'components/UI/TrialVideoModal/TrialVideoModal';
-import { TrialBanner } from 'components/UI/TrialBanner/TrialBanner';
 
 const App = () => {
   const navigate = useNavigate();
@@ -53,11 +52,6 @@ const App = () => {
 
   return (
     <>
-      {/* Banner at the very top - static position, pushes content down */}
-      {isAuthenticated && sessionData?.is_trial && (
-        <TrialBanner trialExpirationDate={sessionData.trial_expiration_date} isTrial={sessionData.is_trial} />
-      )}
-
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
         <SideDrawerContext.Provider value={sideDrawerValues}>
