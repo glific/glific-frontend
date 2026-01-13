@@ -1,4 +1,4 @@
-import { CREATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
+import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import {
   GET_WHATSAPP_FORM,
   LIST_FORM_CATEGORIES,
@@ -66,6 +66,19 @@ const whatsappFormCategories = {
   },
 };
 
+const syncWhatsappForm = {
+  request: {
+    query: SYNC_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        message: 'WhatsApp Forms synced successfully',
+        errors: null,
+      },
+    },
+  },
+};
 const createdWhatsAppFormQuery = {
   request: {
     query: CREATE_FORM,
@@ -179,6 +192,101 @@ export const deactivateWhatsappFormError = {
   },
   error: new Error('Failed to publish'),
 };
+const listWhatsappForms = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
+        },
+      ],
+    },
+  },
+};
+
+const listWhatsappFormswithoutopts = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '1',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          definition: JSON.stringify(formJson),
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
+        },
+      ],
+    },
+  },
+};
+const listWhatsappFormsInactive = {
+  request: {
+    query: LIST_WHATSAPP_FORMS,
+    variables: {
+      filter: { status: 'INACTIVE' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          id: '2',
+          name: 'This is form name',
+          status: 'INACTIVE',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
+        },
+      ],
+    },
+  },
+};
 
 const listWhatsappFormsDraft = {
   request: {
@@ -198,7 +306,9 @@ const listWhatsappFormsDraft = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
@@ -221,7 +331,26 @@ const countWhatsappForms = {
   },
   result: {
     data: {
-      countWhatsappForms: 1,
+      listWhatsappForms: [
+        {
+          id: '3',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          description: 'This is test form',
+          metaFlowId: '1473834353902269',
+          categories: ['customer_support'],
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
+        },
+      ],
     },
   },
 };
@@ -238,7 +367,9 @@ const getWhatsAppForm = {
       whatsappForm: {
         whatsappForm: {
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           description: 'This is test form',
           id: '1',
           insertedAt: '2025-11-06 09:31:19.955920Z',
@@ -312,7 +443,9 @@ const listWhatsappFormsWithThreePublishedwithfilter = {
           description: 'Customer support form',
           metaFlowId: 'meta-flow-1',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
@@ -383,7 +516,9 @@ const listWhatsappFormsWithoutStatus = {
           description: 'Customer support form',
           metaFlowId: 'meta-flow-1',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
@@ -400,7 +535,9 @@ const listWhatsappFormsWithoutStatus = {
           description: 'Feedback collection form',
           metaFlowId: 'meta-flow-2',
           categories: ['survey'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
@@ -417,7 +554,9 @@ const listWhatsappFormsWithoutStatus = {
           description: 'Lead generation form',
           metaFlowId: 'meta-flow-3',
           categories: ['lead_generation'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
@@ -434,7 +573,9 @@ const listWhatsappFormsWithoutStatus = {
           description: 'Draft form for internal testing',
           metaFlowId: 'meta-flow-4',
           categories: ['other'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
@@ -463,6 +604,24 @@ const countWhatsappFormsDraft = {
   },
 };
 
+const syncWhatsappFormQueryWithErrors = {
+  request: {
+    query: SYNC_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        whatsappForm: null,
+        errors: [
+          {
+            message: 'Something went wrong',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
@@ -475,3 +634,5 @@ export const WHATSAPP_FORM_MOCKS = [
   countWhatsappForms,
   countWhatsappFormsDraft,
 ];
+
+export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };

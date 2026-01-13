@@ -5,7 +5,7 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS, COUNT_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -13,8 +13,8 @@ import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
+import { Button } from 'components/UI/Form/Button/Button';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
-
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -86,6 +86,27 @@ export const WhatsAppFormList = () => {
     },
     onError: (errors) => {
       setErrorMessage(formatError(errors.message), 'An error occurred');
+    },
+  });
+  const handleFormUpdates = () => {
+    syncWhatsappForm();
+  };
+
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_FORM, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const errors = data?.syncWhatsappForm?.errors;
+      if (errors?.length) {
+        setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+      } else {
+        setNotification(
+          'Syncing of the WhatsApp forms has started in the background. Please check the Notifications page for updates.',
+          'success'
+        );
+      }
+    },
+    onError: () => {
+      setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
     },
   });
 
@@ -222,6 +243,19 @@ export const WhatsAppFormList = () => {
       </Select>
     </FormControl>
   );
+  const secondaryButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      className={styles.HsmUpdates}
+      data-testid="syncWhatsappForm"
+      onClick={() => handleFormUpdates()}
+      loading={syncLoading}
+      aria-hidden="true"
+    >
+      Sync Whatsapp Forms
+    </Button>
+  );
 
   let dialog = null;
   if (formId && dialogType) {
@@ -273,8 +307,12 @@ export const WhatsAppFormList = () => {
         listItem="whatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
+        secondaryButton={secondaryButton}
         {...queries}
         {...columnAttributes}
+        columnNames={columnNames}
+        columns={getColumns}
+        columnStyles={columnStyles}
         filters={filters}
         filterList={formFilter}
         button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
