@@ -1,4 +1,4 @@
-import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM } from 'graphql/mutations/WhatsAppForm';
+import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
@@ -61,6 +61,19 @@ const whatsappFormCategories = {
   },
 };
 
+const syncWhatsappForm = {
+  request: {
+    query: SYNC_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        message: 'WhatsApp Forms synced successfully',
+        errors: null,
+      },
+    },
+  },
+};
 const createdWhatsAppFormQuery = {
   request: {
     query: CREATE_FORM,
@@ -70,6 +83,7 @@ const createdWhatsAppFormQuery = {
         formJson: JSON.stringify(formJson),
         description: 'This is a test form',
         categories: ['other'],
+        googleSheetUrl: '',
       },
     },
   },
@@ -95,6 +109,7 @@ const createdWhatsAppFormQueryWithErrors = {
         formJson: JSON.stringify(formJson),
         description: 'This is a test form',
         categories: ['other'],
+        googleSheetUrl: '',
       },
     },
   },
@@ -190,7 +205,16 @@ const listWhatsappForms = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
         },
       ],
     },
@@ -214,7 +238,16 @@ const listWhatsappFormswithoutopts = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
         },
       ],
     },
@@ -238,7 +271,16 @@ const listWhatsappFormsInactive = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
         },
       ],
     },
@@ -263,7 +305,16 @@ const listWhatsappFormsDraft = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
         },
       ],
     },
@@ -287,7 +338,16 @@ const listWhatsappFormsEmpty = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
         },
       ],
     },
@@ -306,7 +366,9 @@ const getWhatsAppForm = {
       whatsappForm: {
         whatsappForm: {
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           description: 'This is test form',
           id: '1',
           insertedAt: '2025-11-06 09:31:19.955920Z',
@@ -314,6 +376,13 @@ const getWhatsAppForm = {
           name: 'This is form name',
           status: 'DRAFT',
           updatedAt: '2025-11-06 09:31:39.104993Z',
+          sheet: {
+            id: 123,
+            label: 'Test Sheet',
+            url: 'http://example.com/sheet',
+            isActive: true,
+            sheetDataCount: 50,
+          },
         },
       },
     },
@@ -348,6 +417,24 @@ const editWhatsAppForm = {
   },
 };
 
+const syncWhatsappFormQueryWithErrors = {
+  request: {
+    query: SYNC_FORM,
+  },
+  result: {
+    data: {
+      syncWhatsappForm: {
+        whatsappForm: null,
+        errors: [
+          {
+            message: 'Something went wrong',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
@@ -360,3 +447,5 @@ export const WHATSAPP_FORM_MOCKS = [
   listWhatsappFormswithoutopts,
   createdWhatsAppFormQueryWithErrors,
 ];
+
+export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };

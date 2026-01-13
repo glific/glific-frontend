@@ -74,7 +74,6 @@ export const ACTIVATE_FORM = gql`
     activateWhatsappForm(id: $activateWhatsappFormId) {
       whatsappForm {
         categories
-        definition
         description
         id
         insertedAt
@@ -109,6 +108,17 @@ export const REVERT_TO_WHATSAPP_FORM_REVISION = gql`
       }
       errors {
         key
+        message
+      }
+    }
+  }
+`;
+
+export const SYNC_FORM = gql`
+  mutation syncWhatsappForm {
+    syncWhatsappForm {
+      message
+      errors {
         message
       }
     }

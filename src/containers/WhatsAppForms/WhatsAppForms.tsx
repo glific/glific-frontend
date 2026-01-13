@@ -73,6 +73,7 @@ export const WhatsAppForms = () => {
     name,
     formCategories,
     description,
+
     googleSheetUrl,
   };
 

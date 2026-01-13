@@ -5,13 +5,15 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
+import { Button } from 'components/UI/Form/Button/Button';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 
 import styles from './WhatsAppFormList.module.css';
@@ -86,6 +88,27 @@ export const WhatsAppFormList = () => {
       setErrorMessage(formatError(errors.message), 'An error occurred');
     },
   });
+  const handleFormUpdates = () => {
+    syncWhatsappForm();
+  };
+
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_FORM, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const errors = data?.syncWhatsappForm?.errors;
+      if (errors?.length) {
+        setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+      } else {
+        setNotification(
+          'Syncing of the WhatsApp forms has started in the background. Please check the Notifications page for updates.',
+          'success'
+        );
+      }
+    },
+    onError: () => {
+      setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+    },
+  });
 
   const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM, {
     onCompleted: () => {
@@ -130,6 +153,15 @@ export const WhatsAppFormList = () => {
   ];
 
   const additionalAction = (item: any) => {
+    const linkAction = {
+      label: 'Link',
+      icon: <LinkIcon data-testid="link-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        window.open(item.sheet?.url);
+      },
+    };
+
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -171,12 +203,16 @@ export const WhatsAppFormList = () => {
 
     let actions = [];
 
+    if (item.sheet?.url) {
+      actions.push(linkAction);
+    }
+
     if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction];
+      actions.push(deactivateAction);
     } else if (item.status === 'DRAFT') {
-      actions = [publishAction];
+      actions.push(publishAction);
     } else {
-      actions = [activateAction];
+      actions.push(activateAction);
     }
 
     actions.push(configureIcon);
@@ -209,6 +245,19 @@ export const WhatsAppFormList = () => {
         ))}
       </Select>
     </FormControl>
+  );
+  const secondaryButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      className={styles.HsmUpdates}
+      data-testid="syncWhatsappForm"
+      onClick={() => handleFormUpdates()}
+      loading={syncLoading}
+      aria-hidden="true"
+    >
+      Sync Whatsapp Forms
+    </Button>
   );
 
   let dialog = null;
@@ -257,6 +306,7 @@ export const WhatsAppFormList = () => {
         listItem="listWhatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
+        secondaryButton={secondaryButton}
         columnNames={columnNames}
         columns={getColumns}
         columnStyles={columnStyles}

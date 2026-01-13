@@ -96,7 +96,7 @@ export const TemplateOptions = ({
         data.listWhatsappForms.map((form: any) => ({
           label: form.name,
           id: form.metaFlowId,
-          definition: form.revision.definition,
+          definition: form?.revision?.definition,
         }))
       );
     },

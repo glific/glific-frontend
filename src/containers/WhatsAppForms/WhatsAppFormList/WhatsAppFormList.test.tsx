@@ -7,6 +7,8 @@ import {
   WHATSAPP_FORM_MOCKS,
   deactivateWhatsappForm,
   deactivateWhatsappFormError,
+  syncWhatsappFormQueryWithErrors,
+  syncWhatsappForm,
 } from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
@@ -16,7 +18,7 @@ import { WhatsAppFormList } from './WhatsAppFormList';
 export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
-
+window.open = vi.fn();
 vi.mock('react-router', async () => {
   const actual = await vi.importActual<typeof import('react-router')>('react-router');
   return {
@@ -210,5 +212,56 @@ describe('<WhatsAppFormList />', () => {
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
     });
+  });
+  test('should open the link dialog on clicking the link icon', async () => {
+    const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
+
+    const select = getAllByRole('combobox')[0];
+    fireEvent.click(getByText('All'));
+
+    expect(select).toHaveTextContent('All');
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('This is form name')).toBeInTheDocument();
+    });
+    const linkIcon = await waitFor(() => getAllByTestId('link-icon')[0]);
+    fireEvent.click(linkIcon);
+
+    await waitFor(() => {
+      expect(window.open).toHaveBeenCalled();
+    });
+  });
+
+  test('clicking on sync button should sync whatsapp forms', async () => {
+    const { getByTestId } = render(wrapper([syncWhatsappForm]));
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
+    fireEvent.click(syncButton);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Syncing of the WhatsApp forms has started in the background. Please check the Notifications page for updates.',
+      'success'
+    );
+  });
+
+  test('sync whatsapp forms shows error notification on failure', async () => {
+    const { getByTestId } = render(wrapper([syncWhatsappFormQueryWithErrors]));
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const syncButton = await waitFor(() => getByTestId('syncWhatsappForm'));
+    fireEvent.click(syncButton);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+
+    expect(notificationSpy).toHaveBeenCalledWith('Sorry, failed to sync whatsapp forms updates.', 'warning');
   });
 });

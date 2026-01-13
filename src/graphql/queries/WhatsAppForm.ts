@@ -19,6 +19,7 @@ export const GET_WHATSAPP_FORM = gql`
     whatsappForm(id: $id) {
       whatsappForm {
         description
+        revision
         categories
         id
         insertedAt
@@ -26,6 +27,10 @@ export const GET_WHATSAPP_FORM = gql`
         name
         status
         updatedAt
+        sheet {
+          id
+          url
+        }
       }
     }
   }
@@ -87,11 +92,20 @@ export const LIST_WHATSAPP_FORM_REVISIONS = gql`
     listWhatsappFormRevisions(whatsappFormId: $whatsappFormId, limit: $limit) {
       id
       whatsappFormId
-      definition
-      revisionNumber
-      userId
-      insertedAt
-      updatedAt
+      revision {
+        definition
+        revisionNumber
+        userId
+        insertedAt
+        updatedAt
+      }
+      sheet {
+        id
+        label
+        url
+        isActive
+        sheetDataCount
+      }
     }
   }
 `;
