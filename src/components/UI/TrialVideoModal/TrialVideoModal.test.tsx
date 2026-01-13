@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import TrialVideoModal from './TrialVideoModal';
 
