@@ -6,6 +6,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { TRIAL_CREATE_USER_API, TRIAL_ALLOCATE_ACCOUNT_API } from 'config/index';
 import { yupPasswordValidation } from 'common/constants';
+import { useTranslation } from 'react-i18next';
 import { IconButton, InputAdornment } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
@@ -46,7 +47,7 @@ export const TrialRegistration = () => {
     otp: '',
   };
 
-  const t = (str: string) => str;
+  const { t } = useTranslation();
 
   const FormSchema = Yup.object().shape({
     organizationName: Yup.string()
@@ -249,7 +250,6 @@ export const TrialRegistration = () => {
       formFields={formFields}
       saveHandler={handleSubmit}
       errorMessage={authError}
-      successMessage=""
       loading={loading}
       inlineSuccessMessage={successMessage}
     />

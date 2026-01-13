@@ -44,8 +44,6 @@
   width: 92px;
 }
 .DrawerOpen {
-  position: relative;
-  z-index: 10;
   height: calc(100% - 58px);
   width: 203px;
   transition: width 255ms !important;
