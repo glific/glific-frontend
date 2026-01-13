@@ -38,13 +38,27 @@ export const TrialExpiryBanner = () => {
     window.open('https://calendar.app.google/USJMfhSsDvW5yS6B7', '_blank');
   };
 
+  const handleBannerClick = () => {
+    setIsExpanded(true);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setIsExpanded(true);
+    }
+  };
+
   return (
     <div className={styles.BannerContainer}>
-      {/* Collapsed View */}
       <Collapse in={!isExpanded}>
         <div
           className={isUrgent ? styles.CollapsedBannerUrgent : styles.CollapsedBanner}
-          onClick={() => setIsExpanded(true)}
+          onClick={handleBannerClick}
+          onKeyDown={handleKeyDown}
+          role="button"
+          tabIndex={0}
+          aria-label="Expand trial banner"
         >
           <div className={styles.BannerHeader}>
             <div className={styles.BannerTitle}>
@@ -52,7 +66,7 @@ export const TrialExpiryBanner = () => {
               <span className={styles.TrialBadge}>TRIAL</span>
               <span className={styles.DaysText}>{daysRemaining}d left</span>
             </div>
-            <IconButton size="small" className={styles.ExpandIcon}>
+            <IconButton size="small" className={styles.ExpandIcon} aria-hidden="true">
               <ExpandMoreIcon fontSize="small" />
             </IconButton>
           </div>
@@ -60,7 +74,6 @@ export const TrialExpiryBanner = () => {
         </div>
       </Collapse>
 
-      {/* Expanded View */}
       <Collapse in={isExpanded}>
         <div className={isUrgent ? styles.ExpandedBannerUrgent : styles.ExpandedBanner}>
           <div className={styles.ExpandedHeader}>

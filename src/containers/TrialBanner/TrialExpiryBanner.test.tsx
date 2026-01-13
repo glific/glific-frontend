@@ -1,26 +1,26 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
-import { TrialExpiryBanner } from './TrialExpiryBanner';
 import { GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
+import { TrialExpiryBanner } from './TrialExpiryBanner';
 
 describe('TrialExpiryBanner', () => {
   const originalWindowOpen = window.open;
   const originalLocationHref = window.location.href;
 
-  let mockWindowOpen: any;
+  let mockWindowOpen: typeof window.open;
 
   beforeEach(() => {
     mockWindowOpen = vi.fn();
     window.open = mockWindowOpen;
 
-    delete (window as any).location;
-    (window as any).location = { href: '' };
+    delete (window as unknown as { location: unknown }).location;
+    (window as unknown as { location: { href: string } }).location = { href: '' };
   });
 
   afterEach(() => {
     window.open = originalWindowOpen;
-    (window as any).location = { href: originalLocationHref };
+    (window as unknown as { location: { href: string } }).location = { href: originalLocationHref };
     vi.clearAllMocks();
   });
 
