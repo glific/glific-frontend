@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { TrialVideoModal } from './TrialVideoModal';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import TrialVideoModal from './TrialVideoModal';
 
 describe('<TrialVideoModal />', () => {
   beforeEach(() => {

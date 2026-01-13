@@ -38,7 +38,7 @@
   border-radius: 3px;
   z-index: 5;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 25%);
   font-family:
     system-ui,
     -apple-system,

@@ -13,7 +13,7 @@ interface TrialVideoModalProps {
   sessionData: SessionData | null;
 }
 
-export const TrialVideoModal = ({ sessionData }: TrialVideoModalProps) => {
+const TrialVideoModal = ({ sessionData }: TrialVideoModalProps) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -46,9 +46,11 @@ export const TrialVideoModal = ({ sessionData }: TrialVideoModalProps) => {
           allowFullScreen
         />
         <Button variant="contained" onClick={handleClose} className={styles.startButton}>
-          Let's get Started
+          Let&apos;s get Started
         </Button>
       </DialogContent>
     </Dialog>
   );
 };
+
+export default TrialVideoModal;
