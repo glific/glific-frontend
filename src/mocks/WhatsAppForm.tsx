@@ -1,4 +1,4 @@
-import { CREATE_FORM, UPDATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
+import { CREATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import {
   GET_WHATSAPP_FORM,
   LIST_FORM_CATEGORIES,
@@ -191,101 +191,6 @@ export const deactivateWhatsappFormError = {
     },
   },
   error: new Error('Failed to publish'),
-};
-const listWhatsappForms = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'PUBLISHED' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
-    },
-  },
-  result: {
-    data: {
-      listWhatsappForms: [
-        {
-          id: '1',
-          name: 'This is form name',
-          status: 'PUBLISHED',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
-          sheet: {
-            id: 123,
-            label: 'Test Sheet',
-            url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
-          },
-        },
-      ],
-    },
-  },
-};
-
-const listWhatsappFormswithoutopts = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'PUBLISHED' },
-    },
-  },
-  result: {
-    data: {
-      listWhatsappForms: [
-        {
-          id: '1',
-          name: 'This is form name',
-          status: 'PUBLISHED',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
-          sheet: {
-            id: 123,
-            label: 'Test Sheet',
-            url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
-          },
-        },
-      ],
-    },
-  },
-};
-const listWhatsappFormsInactive = {
-  request: {
-    query: LIST_WHATSAPP_FORMS,
-    variables: {
-      filter: { status: 'INACTIVE' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
-    },
-  },
-  result: {
-    data: {
-      listWhatsappForms: [
-        {
-          id: '2',
-          name: 'This is form name',
-          status: 'INACTIVE',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          revision: {
-            definition: JSON.stringify(formJson),
-          },
-          sheet: {
-            id: 123,
-            label: 'Test Sheet',
-            url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
-          },
-        },
-      ],
-    },
-  },
 };
 
 const listWhatsappFormsDraft = {
