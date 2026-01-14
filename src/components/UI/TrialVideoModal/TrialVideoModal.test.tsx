@@ -24,9 +24,8 @@ describe('<TrialVideoModal />', () => {
     ...overrides,
   });
 
-  const renderTrialVideoModal = (sessionData: SessionData | null) => {
-    return render(<TrialVideoModal sessionData={sessionData} />);
-  };
+  const renderTrialVideoModal = (sessionData: SessionData | null) =>
+    render(<TrialVideoModal sessionData={sessionData} />);
 
   it('should render modal when conditions are met (first login, trial account, not shown before)', () => {
     const sessionData = getSessionData();
@@ -113,7 +112,6 @@ describe('<TrialVideoModal />', () => {
   });
 
   it('should handle all conditions together correctly', () => {
-    // Test case: Not first login AND not trial user
     const sessionData = getSessionData({
       last_login_time: '2025-12-20T10:00:00Z',
       is_trial: false,
