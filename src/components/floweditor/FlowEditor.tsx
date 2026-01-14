@@ -7,7 +7,7 @@ import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
 import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
-import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
+import PublishIcon from 'assets/images/icons/Publish/PublishWhite.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
 import Simulator from 'components/simulator/Simulator';
@@ -124,6 +124,15 @@ export const FlowEditor = () => {
     onError: () => {
       setPublishLoading(false);
       setNotification('Sorry! An error occurred', 'warning');
+    },
+  });
+
+  const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
+    fetchPolicy: 'network-only',
+    onCompleted: () => {
+      loadFlowEditor();
+      setReadOnlyMessage('');
+      setIsReadOnly(false);
     },
   });
 
@@ -443,9 +452,18 @@ export const FlowEditor = () => {
         </div>
       </div>
       {isReadOnly && readOnlyMessage && (
-        <div className={styles.ReadOnlyBanner}>
+        <div data-testid="ReadOnlyBanner" className={styles.ReadOnlyBanner}>
           <InfoIcon className={styles.BannerIcon} />
           <span>View Only Mode - {readOnlyMessage}</span>
+
+          <button
+            onClick={() => {
+              getFreeFlowForced({ variables: { id: flowId, isForced: true } });
+            }}
+            className={styles.TakeOver}
+          >
+            Take Over
+          </button>
         </div>
       )}
       {showSimulator && (

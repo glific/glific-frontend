@@ -20,6 +20,7 @@ import {
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 
 afterEach(() => {
   cleanup();
@@ -55,6 +56,19 @@ vi.mock('common/notification', async (importOriginal) => {
     ...mod,
     setNotification: vi.fn(),
     setErrorMessage: vi.fn(),
+  };
+});
+
+vi.mock('services/AuthService', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('services/AuthService')>();
+  return {
+    ...actual,
+    getOrganizationServices: vi.fn((service: string) => {
+      if (service === 'googleCloudStorage') {
+        return true;
+      }
+      return false;
+    }),
   };
 });
 
@@ -285,7 +299,7 @@ describe('Add mode', () => {
     const { getByText, getAllByRole } = render(interactiveMessage());
 
     await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     const autoCompletes = getAllByRole('combobox');
@@ -325,7 +339,7 @@ describe('Add mode', () => {
     render(interactiveMessage());
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('addButton'));
@@ -442,7 +456,7 @@ describe('translates the template', () => {
     const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('translateBtn'));
@@ -462,7 +476,7 @@ describe('translates the template', () => {
     const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+      expect(getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     const [title, lexicalEditor, , buttonText] = screen.getAllByRole('textbox');
@@ -592,4 +606,59 @@ describe('copy interactive message', () => {
       expect(input[0]?.querySelector('input')).toHaveValue('Copy of Are you excited for *Glific*?');
     });
   });
+});
+
+test('it uploads a file successfully', async () => {
+  const uploadUrl = 'https://storage.example.com/test-image.png';
+  const uploadMock = {
+    request: { query: UPLOAD_MEDIA },
+    newData: () => Promise.resolve({ data: { uploadMedia: uploadUrl } }),
+  };
+
+  render(interactiveMessage([uploadMock]));
+
+  const autos = await screen.findAllByRole('combobox');
+  expect(autos.length).toBeGreaterThan(1);
+
+  fireEvent.mouseDown(autos[1]);
+
+  // Now "UPLOAD ATTACHMENT" should be visible!
+  const uploadOption = await screen.findByRole('option', { name: /upload attachment/i });
+  await userEvent.click(uploadOption);
+
+  const mockFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
+  const origClick = HTMLInputElement.prototype.click;
+  const origPicker = (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> })
+    .showOpenFilePicker;
+
+  HTMLInputElement.prototype.click = function patchedClick(this: HTMLInputElement): void {
+    if (this.type === 'file') {
+      const fileList = {
+        0: mockFile,
+        length: 1,
+        item: (i: number) => (i === 0 ? mockFile : null),
+      } as unknown as FileList;
+      Object.defineProperty(this, 'files', { configurable: true, get: () => fileList });
+      this.dispatchEvent(new Event('input', { bubbles: true }));
+      this.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
+    origClick.call(this);
+  };
+
+  (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> }).showOpenFilePicker = async () => [
+    {
+      getFile: async () => mockFile,
+    } as FileSystemFileHandle,
+  ];
+
+  await waitFor(
+    () => {
+      expect(setNotification).toHaveBeenCalled();
+    },
+    { timeout: 3000 }
+  );
+
+  HTMLInputElement.prototype.click = origClick;
+  (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> }).showOpenFilePicker = origPicker;
 });

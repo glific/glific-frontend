@@ -1,63 +1,51 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { Formik } from 'formik';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import HSM from 'containers/HSM/HSM';
 
-import { TemplateOptions } from './TemplateOptions';
-
-const props = (isAddButtonChecked: any, templateType: any, inputFields: any, form: any) => ({
-  onAddClick: vi.fn(),
-  onRemoveClick: vi.fn(),
-  onInputChange: vi.fn(),
-  onTemplateTypeChange: vi.fn(),
-  disabled: false,
-  isAddButtonChecked,
-  templateType,
-  inputFields,
-  form,
-  dynamicUrlParams: {
-    urlType: 'Static',
-    sampleSuffix: '',
-  },
-  onDynamicParamsChange: () => {},
-});
-
-const callToAction = { type: 'phone_number', value: '', title: '' };
-const quickReply = { value: '' };
-
-const form: any = {
-  values: { templateButtons: [] },
-  touched: {},
-  errors: {},
-};
-
-const submitCallback = vi.fn();
+const wrapper = (initialEntry: string = '/template/add') => (
+  <MockedProvider mocks={WHATSAPP_FORM_MOCKS}>
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <Routes>
+        <Route path="template/add" element={<HSM />} />
+        <Route path="template/:id/edit" element={<HSM />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
+);
 
 test('it renders component and selects call to action type', async () => {
-  const inputFields = [callToAction];
-  form.values.templateButtons.push(callToAction);
-  const defaultProps = props(true, null, inputFields, form);
-
-  render(<TemplateOptions {...defaultProps} />);
-
-  const callToActionButton = screen.getByText('Call to actions');
-  fireEvent.click(callToActionButton);
+  const { findByText, getByText, findByLabelText } = render(wrapper());
+  const hsmTitle = await findByText('Create a new HSM Template');
+  expect(hsmTitle).toBeInTheDocument();
+  const addButtonsCheckbox = getByText('Add buttons');
+  fireEvent.click(addButtonsCheckbox);
+  await waitFor(() => {});
+  const input = await findByLabelText('Select Button Type');
+  fireEvent.mouseDown(input);
+  const option = await findByText('Call to Action');
+  fireEvent.click(option);
   await waitFor(() => {});
 });
 
 test('it renders call to action button template successfully', async () => {
-  const inputFields = [callToAction];
-  form.values.templateButtons.push(callToAction);
-  const defaultProps = props(true, 'CALL_TO_ACTION', inputFields, form);
-  render(
-    <Formik initialValues={inputFields} onSubmit={submitCallback}>
-      <TemplateOptions {...defaultProps} />
-    </Formik>
-  );
+  const { findByText, getAllByRole, getByText, findByLabelText } = render(wrapper());
+  const hsmTitle = await findByText('Create a new HSM Template');
+  expect(hsmTitle).toBeInTheDocument();
+  const addButtonsCheckbox = getByText('Add buttons');
+  fireEvent.click(addButtonsCheckbox);
+  await waitFor(() => {});
+  const input = await findByLabelText('Select Button Type');
+  fireEvent.mouseDown(input);
+  const option = await findByText('Call to Action');
+  fireEvent.click(option);
 
-  const callToActionButton = screen.getAllByRole('radio');
-  fireEvent.change(callToActionButton[2], { target: { value: 'phone_number' } });
+  const callToActionButton = getAllByRole('radio');
+  fireEvent.click(callToActionButton[1]);
   await waitFor(() => {});
 
-  const [value, title] = screen.getAllByRole('textbox');
+  const [value, title] = getAllByRole('textbox');
 
   fireEvent.change(title, { target: { value: 'Contact Us' } });
   fireEvent.blur(title);
@@ -68,27 +56,58 @@ test('it renders call to action button template successfully', async () => {
   await waitFor(() => {});
 });
 
+test('it disables CTA addition after 1 phone number and 2 URLs are added on call to action', async () => {
+  const { findByText, getAllByRole, getByText, findByLabelText, queryByText } = render(wrapper());
+
+  fireEvent.click(await findByText('Add buttons'));
+
+  const selectButtonType = await findByLabelText('Select Button Type');
+  fireEvent.mouseDown(selectButtonType);
+  fireEvent.click(await findByText('Call to Action'));
+
+  const radioButtons = getAllByRole('radio');
+  fireEvent.click(radioButtons[0]);
+
+  const [value1, title1] = getAllByRole('textbox');
+
+  fireEvent.change(title1, { target: { value: 'Contact Us' } });
+  fireEvent.change(value1, { target: { value: '+919090909090' } });
+
+  fireEvent.click(getByText('Add Call to action'));
+  await waitFor(() => {});
+
+  const [value2, title2] = getAllByRole('textbox');
+
+  fireEvent.change(title2, { target: { value: 'Visit Website' } });
+  fireEvent.change(value2, { target: { value: 'https://example.com' } });
+
+  fireEvent.click(getByText('Add Call to action'));
+  await waitFor(() => {});
+
+  const [value3, title3] = getAllByRole('textbox');
+
+  fireEvent.change(title3, { target: { value: 'More Info' } });
+  fireEvent.change(value3, { target: { value: 'https://info.com' } });
+
+  expect(queryByText('Add Call to action')).not.toBeInTheDocument();
+});
+
 test('it renders quick reply button template successfully', async () => {
-  const inputFields = [quickReply, quickReply];
-  form.values.templateButtons.push(quickReply);
-  form.values.templateButtons.push(quickReply);
-  const defaultProps = props(true, 'QUICK_REPLY', inputFields, form);
-  render(
-    <Formik initialValues={inputFields} onSubmit={submitCallback}>
-      <TemplateOptions {...defaultProps} />
-    </Formik>
-  );
-
-  const [value] = screen.getAllByRole('textbox');
-  fireEvent.change(value, { target: { value: 'Yes' } });
-  fireEvent.blur(value);
+  const { findByText, findByLabelText, getByText, getByTestId } = render(wrapper());
+  const hsmTitle = await findByText('Create a new HSM Template');
+  expect(hsmTitle).toBeInTheDocument();
+  const addButtonsCheckbox = getByText('Add buttons');
+  fireEvent.click(addButtonsCheckbox);
   await waitFor(() => {});
-
-  const deleteButtons = screen.getAllByTestId('cross-icon');
-  fireEvent.click(deleteButtons[1]);
+  const input = await findByLabelText('Select Button Type');
+  fireEvent.mouseDown(input);
+  const option = await findByText('Call to Action');
+  fireEvent.click(option);
   await waitFor(() => {});
-
-  const addButton = screen.getByText('Add Quick Reply');
+  const quickButton = getByTestId('addButton');
+  expect(quickButton).toBeInTheDocument();
+  const addButton = getByText('Add Call to action');
+  expect(addButton).toBeInTheDocument();
   fireEvent.click(addButton);
   await waitFor(() => {});
 });

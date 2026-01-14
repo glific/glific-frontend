@@ -1,0 +1,154 @@
+.SearchBar {
+  border-radius: 24px;
+  border: 1px solid #ccc;
+  display: flex;
+  margin-right: 8px;
+  height: 36px !important;
+  background: #fff;
+  min-height: 36px !important;
+}
+
+.SearchBar > fieldset {
+  border: none !important;
+}
+
+.Name {
+  width: 27%;
+  min-width: 200px;
+}
+
+.Label {
+  width: 15%;
+}
+
+.Actions {
+  width: 15%;
+  min-width: 200px;
+  text-align: end;
+}
+
+.NameText {
+  line-height: 20px;
+  margin: 0;
+  font-size: 17px !important;
+  word-break: break-all;
+  color: #191c1a !important;
+  font-weight: 500;
+}
+
+.Status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.PublishBadge {
+  font-size: 15px;
+  composes: Status;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.DraftBadge {
+  font-size: 15px;
+  composes: Status;
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.InactiveBadge {
+  composes: Status;
+  font-size: 15px;
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
+
+.LabelButton {
+  width: fit-content;
+  min-width: 80px;
+  margin-right: 50px;
+  padding: 6px 12px;
+  color: #555;
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -20px;
+  border-radius: 16px;
+  overflow: visible;
+  max-width: 220px;
+}
+
+.CategoryTag {
+  background-color: #fff;
+  border: 1px solid #c4c4c4;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.CategoryMore {
+  cursor: pointer;
+  color: #1f9075;
+  white-space: nowrap;
+  font-size: 12px;
+  margin-left: 4px;
+  z-index: 10;
+}
+
+.LabelWrapper {
+  position: relative;
+}
+
+.MoreWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.MoreList {
+  display: none;
+  position: absolute;
+  top: 22px;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px #0000001a;
+  padding: 6px;
+  z-index: 20;
+  min-width: 150px;
+}
+.IconSize {
+  font-size: 1.2rem !important;
+}
+
+.MoreListItem {
+  padding: 5px 10px;
+  font-size: 13px;
+  color: #333;
+  background: #e4e7e4;
+  border-radius: 6px;
+  margin: 2px 0;
+  border: 1px solid #eee;
+}
+
+.MoreListItem:hover {
+  background: #f7f7f7;
+}
+
+.MoreWrapper:hover .MoreList {
+  display: block;
+}
+
+.DialogText {
+  text-align: center;
+}

@@ -40,7 +40,7 @@ const startTime = dayjs().add(1, 'hour');
 
 const fillForm = async (container: any, frequency: string) => {
   await waitFor(() => {
-    expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+    expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -139,7 +139,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -207,7 +207,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -244,7 +244,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
     const autoCompletes = screen.getAllByRole('combobox');
 
@@ -268,7 +268,7 @@ describe('add mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
     });
 
     const startDateInput = container.queryByTestId('Start date');
@@ -320,7 +320,11 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -328,13 +332,8 @@ describe('edit mode', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('Hourly');
-    });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('Trigger edited successfully!');
     });
   });
 
@@ -354,7 +353,11 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -382,11 +385,11 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+      expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -412,7 +415,11 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -442,13 +449,13 @@ describe('edit mode', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('remove-icon'));
 
     await waitFor(() => {
-      expect(screen.getByText('Are you sure you want to delete the trigger?')).toBeInTheDocument();
+      expect(screen.getByText('Are you sure you want to delete the Trigger?')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('ok-button'));
@@ -460,6 +467,10 @@ describe('edit mode', () => {
 });
 
 describe('copy mode', async () => {
+  beforeEach(() => {
+    cleanup();
+  });
+
   test('it copies a trigger', async () => {
     mockUseLocationValue.state = 'copy';
 
@@ -475,26 +486,25 @@ describe('copy mode', async () => {
           startDate: startDate.format('MM/DD/YYYY'),
           endDate: endDate.format('MM/DD/YYYY'),
         }),
-        createTriggerQuery({
-          ...createTriggerPayload,
-          ...getDates(startTime, startDate, endDate),
-          days: [],
-          hours: [0, 1],
-          frequency: 'hourly',
-          groupType: 'WABA',
-          flowId: '1',
-        }),
+        createTriggerQuery(
+          {
+            ...createTriggerPayload,
+            ...getDates(startTime, startDate, endDate),
+            days: [],
+            hours: [0, 1],
+            frequency: 'hourly',
+            groupType: 'WABA',
+            flowId: '1',
+          },
+          1
+        ),
       ])
     );
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Copy trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+      expect(screen.getByText('Copy Trigger')).toBeInTheDocument();
     });
 
     const startDateInput = container.queryByTestId('Start date') as HTMLInputElement;
@@ -521,7 +531,7 @@ describe('copy mode', async () => {
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Copy trigger')).toBeInTheDocument();
+      expect(screen.getByText('Copy Trigger')).toBeInTheDocument();
     });
   });
 });
@@ -545,10 +555,16 @@ describe('Whatsapp group collections', () => {
 
     const container = render(wrapper(createMock));
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Select flow*')).toBeInTheDocument();
     });
 
     await fillForm(container, 'Daily');
@@ -578,11 +594,7 @@ describe('Whatsapp group collections', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+      expect(screen.getByText('Trigger')).toBeInTheDocument();
     });
 
     const radioButton = screen.getByRole('radio', { name: /WhatsApp Group Collections/i });

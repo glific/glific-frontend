@@ -351,7 +351,7 @@ export const Flow = () => {
       customHandler={customHandler}
       helpData={flowInfo}
       backLinkButton={`/${backLink}`}
-      buttonState={{ text: 'Save', status: isTemplate }}
+      buttonState={{ text: 'Save', status: isTemplate, show: true }}
       restrictButtonStatus={{ status: isTemplate }}
     />
   );

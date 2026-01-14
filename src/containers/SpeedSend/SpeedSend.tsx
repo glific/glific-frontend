@@ -33,7 +33,7 @@ const redirectionLink = 'speed-send';
 const dialogMessage = 'It will stop showing when you are drafting a customized message.';
 const mediaTypes = MEDIA_MESSAGE_TYPES.map((option: string) => ({
   id: option,
-  label: option,
+  label: `${option} URL`,
 }));
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
@@ -496,7 +496,7 @@ export const SpeedSend = () => {
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={t('Save')}
-      buttonState={{ text: t('Validating URL'), status: validatingURL }}
+      buttonState={{ text: t('Validating URL'), status: validatingURL, show: true }}
       saveOnPageChange={false}
       type={mode}
       copyNotification={t('Copy of the template has been created!')}

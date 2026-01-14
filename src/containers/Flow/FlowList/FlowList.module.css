@@ -31,8 +31,13 @@
 
 .Actions {
   width: 15%;
-  min-width: 200px;
-  text-align: end;
+  max-width: 200px;
+  text-align: start;
+  padding-left: 25px !important;
+}
+
+.Actions > div {
+  justify-content: flex-start !important;
 }
 
 .LabelText {

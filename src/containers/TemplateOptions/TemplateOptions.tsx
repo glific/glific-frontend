@@ -15,13 +15,24 @@ import Tooltip from 'components/UI/Tooltip/Tooltip';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import InfoIcon from 'assets/images/icons/Info.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
-import { GUPSHUP_CALL_TO_ACTION, GUPSHUP_QUICK_REPLY, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import {
+  GUPSHUP_CALL_TO_ACTION,
+  GUPSHUP_QUICK_REPLY,
+  CALL_TO_ACTION,
+  QUICK_REPLY,
+  WHATSAPP_FORM,
+  GUPSHUP_WHATSAPP_FORM,
+  BUTTON_OPTIONS,
+} from 'common/constants';
 import styles from './TemplateOptions.module.css';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { getOrganizationServices } from 'services/AuthService';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
-  templateType: string | null;
+  templateType: any;
   inputFields: Array<any>;
   form: { touched: any; errors: any; values: any; setFieldValue: any };
   onAddClick: any;
@@ -29,9 +40,22 @@ export interface TemplateOptionsProps {
   onInputChange: any;
   onTemplateTypeChange: any;
   disabled: any;
-  dynamicUrlParams: any;
   onDynamicParamsChange: any;
 }
+
+const getInfo = (type: string) => {
+  switch (type) {
+    case CALL_TO_ACTION:
+      return GUPSHUP_CALL_TO_ACTION;
+    case QUICK_REPLY:
+      return GUPSHUP_QUICK_REPLY;
+    case WHATSAPP_FORM:
+      return GUPSHUP_WHATSAPP_FORM;
+    default:
+      return '';
+  }
+};
+
 export const TemplateOptions = ({
   isAddButtonChecked,
   templateType,
@@ -42,7 +66,6 @@ export const TemplateOptions = ({
   onTemplateTypeChange,
   onInputChange,
   disabled = false,
-  dynamicUrlParams,
   onDynamicParamsChange,
 }: TemplateOptionsProps) => {
   const buttonTitle = 'Button Title';
@@ -52,9 +75,32 @@ export const TemplateOptions = ({
     QUICK_REPLY: 'Quick Reply',
   };
   const options = ['Static', 'Dynamic'];
-  const { urlType, sampleSuffix } = dynamicUrlParams;
+  const [forms, setForms] = useState<any>([]);
+  const [screens, setScreens] = useState<any>([]);
+
+  const isWhatsAppFormEnabled = getOrganizationServices('whatsappFormsEnabled');
+  let buttonOptions = BUTTON_OPTIONS;
+  if (!isWhatsAppFormEnabled) {
+    buttonOptions = BUTTON_OPTIONS.filter((option: any) => option.id !== WHATSAPP_FORM);
+  }
+
+  useQuery(LIST_WHATSAPP_FORMS, {
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+    onCompleted: (data) => {
+      setForms(
+        data.listWhatsappForms.map((form: any) => ({
+          label: form.name,
+          id: form.metaFlowId,
+          definition: form.definition,
+        }))
+      );
+    },
+  });
+
   const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '' } : { value: '' };
+    const obj = type ? { type: '', value: '', title: '', url_type: '', sampleSuffix: '' } : { value: '' };
     helper.push(obj);
     onAddClick();
   };
@@ -63,10 +109,12 @@ export const TemplateOptions = ({
     helper.remove(idx);
     onRemoveClick(idx);
   };
+  const urlCount = inputFields.filter((field) => field.type === 'url').length;
+  const phoneNumberCount = inputFields.filter((field) => field.type === 'phone_number').length;
 
   const addButton = (helper: any, type: boolean = false) => {
-    const title = templateType ? buttonTitles[templateType] : '';
-    const buttonClass = templateType === QUICK_REPLY ? styles.QuickReplyAddButton : styles.CallToActionAddButton;
+    const title = templateType ? buttonTitles[templateType?.id] : '';
+    const buttonClass = templateType?.id === QUICK_REPLY ? styles.QuickReplyAddButton : styles.CallToActionAddButton;
     return (
       <Button
         className={buttonClass}
@@ -82,7 +130,11 @@ export const TemplateOptions = ({
   };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
-    const { type, title, value }: any = row;
+    const urlType = row?.urlType || 'Static';
+    const sampleSuffix = row?.sampleSuffix || '';
+
+    const { type, title, value, navigate_screen, text, form_id }: any = row ?? {};
+
     let template: any = null;
 
     const isError = (key: string) =>
@@ -93,7 +145,7 @@ export const TemplateOptions = ({
         errors.templateButtons[index][key]
       );
 
-    if (templateType === CALL_TO_ACTION) {
+    if (templateType?.id === CALL_TO_ACTION) {
       template = (
         <Fragment>
           <div className={styles.CallToActionWrapper}>
@@ -105,35 +157,17 @@ export const TemplateOptions = ({
                     name="action-radio-buttons"
                     row
                     value={type}
-                    onChange={(e: any) => onInputChange(e, row, index, 'type')}
+                    onChange={(e: any) => onInputChange(e.target.value, row, index, 'type')}
                     className={styles.RadioGroup}
                   >
                     <FormControlLabel
                       value="phone_number"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'phone_number') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone_number')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || phoneNumberCount >= 1} />}
                       label="Phone number"
                     />
                     <FormControlLabel
                       value="url"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'url') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || urlCount >= 2} />}
                       label="URL"
                     />
                   </RadioGroup>
@@ -152,15 +186,18 @@ export const TemplateOptions = ({
               <div className={styles.TextFieldWrapper}>
                 <Autocomplete
                   options={options}
+                  disabled={disabled}
                   classes={{ inputRoot: styles.DefaultInputRoot }}
                   renderInput={(params) => <TextField {...params} label="Select URL Type" />}
                   clearIcon={false}
                   value={urlType}
                   onChange={(event: any, newValue: string | null) => {
-                    onDynamicParamsChange({
-                      ...dynamicUrlParams,
-                      urlType: newValue,
-                    });
+                    onDynamicParamsChange(
+                      {
+                        urlType: newValue || 'Static',
+                      },
+                      index
+                    );
                   }}
                 />
               </div>
@@ -173,7 +210,7 @@ export const TemplateOptions = ({
                   value={title}
                   placeholder={buttonTitle}
                   variant="outlined"
-                  onChange={(e: any) => onInputChange(e, row, index, 'title')}
+                  onChange={(e: any) => onInputChange(e.target.value, row, index, 'title')}
                   className={styles.TextField}
                   error={isError('title')}
                 />
@@ -190,7 +227,7 @@ export const TemplateOptions = ({
                   disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
-                  onChange={(e: any) => onInputChange(e, row, index, 'value')}
+                  onChange={(e: any) => onInputChange(e.target.value, row, index, 'value')}
                   className={styles.TextField}
                   error={isError('value')}
                 />
@@ -219,10 +256,12 @@ export const TemplateOptions = ({
                       },
                     }}
                     onChange={(event) =>
-                      onDynamicParamsChange({
-                        ...dynamicUrlParams,
-                        sampleSuffix: event.target.value,
-                      })
+                      onDynamicParamsChange(
+                        {
+                          sampleSuffix: event.target.value,
+                        },
+                        index
+                      )
                     }
                     value={sampleSuffix}
                   />
@@ -232,13 +271,13 @@ export const TemplateOptions = ({
           </div>
 
           <div className={styles.Button}>
-            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
+            {inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers, true) : null}
           </div>
         </Fragment>
       );
     }
 
-    if (templateType === QUICK_REPLY) {
+    if (templateType?.id === QUICK_REPLY) {
       template = (
         <>
           <div className={styles.QuickReplyWrapper} key={index.toString()} data-testid="quickReplyWrapper">
@@ -249,7 +288,7 @@ export const TemplateOptions = ({
                 title={title}
                 placeholder={`Quick reply ${index + 1} title`}
                 variant="outlined"
-                onChange={(e: any) => onInputChange(e, row, index, 'value')}
+                onChange={(e: any) => onInputChange(e.target.value, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
                 slotProps={{
@@ -274,58 +313,110 @@ export const TemplateOptions = ({
         </>
       );
     }
+
+    if (templateType?.id === WHATSAPP_FORM) {
+      template = (
+        <div className={styles.WhatsappFormTemplateWrapper}>
+          <div>
+            <Autocomplete
+              options={forms}
+              value={forms.find((form: any) => form.id === form_id) || null}
+              renderInput={(params) => <TextField {...params} label="Select Form " />}
+              onChange={(event: any, newValue: any) => {
+                onInputChange(newValue.id, row, index, 'form_id');
+
+                try {
+                  const definition = JSON.parse(newValue.definition);
+                  const screenNames = definition.screens.map((screen: any) => screen.id);
+                  setScreens(screenNames.map((screen: string) => ({ label: screen, id: screen })));
+                } catch (e) {
+                  setScreens([]);
+                  console.error('Error parsing form definition:', e);
+                }
+              }}
+              disabled={disabled}
+            />
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <p className={styles.Errors}>{errors.templateButtons[index]?.form_id}</p>
+            ) : null}
+          </div>
+
+          <div>
+            <Autocomplete
+              options={screens}
+              value={navigate_screen}
+              renderInput={(params) => <TextField {...params} label="Screen Name" />}
+              onChange={(event: any, newValue: any) => {
+                onInputChange(newValue.id, row, index, 'navigate_screen');
+              }}
+              disabled={disabled || !form_id}
+            />
+
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <p className={styles.Errors}>{errors.templateButtons[index]?.navigate_screen}</p>
+            ) : null}
+          </div>
+
+          <div>
+            <TextField
+              value={text}
+              title={title}
+              placeholder={`Button Title`}
+              variant="outlined"
+              onChange={(e: any) => onInputChange(e.target.value, row, index, 'text')}
+              className={styles.TextField}
+              error={isError('value')}
+              disabled={disabled}
+            />
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <p className={styles.Errors}>{errors.templateButtons[index]?.text}</p>
+            ) : null}
+          </div>
+        </div>
+      );
+    }
     return template;
   };
 
-  const radioTemplateType = (
-    <div>
-      <RadioGroup
-        aria-label="template-type"
-        name="template-type"
-        row
-        value={templateType}
-        onChange={(event) => onTemplateTypeChange(event.target.value)}
-      >
-        <div className={styles.RadioLabelWrapper}>
-          <FormControlLabel
-            value={CALL_TO_ACTION}
-            control={<Radio color="primary" disabled={disabled} />}
-            label="Call to actions"
-            classes={{ root: styles.RadioLabel }}
-          />
-          <Tooltip title={GUPSHUP_CALL_TO_ACTION} placement="right" tooltipClass={styles.Tooltip}>
-            <InfoIcon />
-          </Tooltip>
-        </div>
-        <div className={styles.RadioLabelWrapper}>
-          <FormControlLabel
-            value={QUICK_REPLY}
-            control={<Radio color="primary" disabled={disabled} />}
-            label="Quick replies"
-            className={styles.RadioLabel}
-          />
-          <Tooltip title={GUPSHUP_QUICK_REPLY} placement="right" tooltipClass={styles.Tooltip}>
-            <InfoIcon />
-          </Tooltip>
-        </div>
-      </RadioGroup>
+  return (
+    <>
+      {isAddButtonChecked && (
+        <div className={styles.TemplateOptionsContainer}>
+          <div className={styles.TemplateOptionsHeader}>
+            <Autocomplete
+              options={buttonOptions}
+              classes={{ inputRoot: styles.DefaultInputRoot }}
+              renderInput={(params) => <TextField {...params} label="Select Button Type" />}
+              value={templateType}
+              onChange={(event: any, newValue: any) => {
+                onTemplateTypeChange(newValue);
+              }}
+              fullWidth
+              disabled={disabled}
+              disableClearable
+            />
 
-      {templateType ? (
-        <div className={styles.CallToActionTemplateFields}>
-          <FieldArray
-            name="templateButtons"
-            render={(arrayHelpers: any) => (
-              <div className={styles.QuickReplyContainer}>
-                {inputFields.map((row: any, index: any) => (
-                  <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
-                ))}
-              </div>
-            )}
-          />
+            <Tooltip title={getInfo(templateType?.id)} placement="top">
+              <InfoIcon />
+            </Tooltip>
+          </div>
+
+          {templateType ? (
+            <div className={styles.CallToActionTemplateFields}>
+              <FieldArray
+                name="templateButtons"
+                render={(arrayHelpers: any) => (
+                  <div className={styles.QuickReplyContainer}>
+                    {inputFields.map((row: any, index: any) => (
+                      <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
+                    ))}
+                  </div>
+                )}
+              />
+            </div>
+          ) : null}
         </div>
-      ) : null}
-    </div>
+      )}
+    </>
   );
-
-  return <div>{isAddButtonChecked && radioTemplateType}</div>;
 };

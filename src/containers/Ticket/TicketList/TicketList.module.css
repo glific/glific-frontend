@@ -40,9 +40,14 @@
 
 .Actions {
   width: 120px;
-  text-align: end;
+  text-align: start;
   justify-content: flex-end;
   margin-left: auto;
+  padding-left: 25px !important;
+}
+
+.Actions > div {
+  justify-content: flex-start !important;
 }
 
 .LabelText {

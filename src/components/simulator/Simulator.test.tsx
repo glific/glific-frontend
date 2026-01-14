@@ -232,3 +232,68 @@ test('simulator should reset on clicking the reset button message', async () => 
     expect(mockedAxios.post).toHaveBeenCalledTimes(2);
   });
 });
+
+test('disconnection banner should not be displayed when simulator is connected', async () => {
+  const connectionProps = getDefaultProps();
+  connectionProps.showSimulator = true;
+
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: true,
+  });
+
+  const { queryByText } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...connectionProps} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(queryByText('Simulator connection lost. Try to reload.')).not.toBeInTheDocument();
+  });
+});
+
+test('disconnection banner should be displayed when simulator connection is lost', async () => {
+  const disconnectionProps = getDefaultProps();
+  disconnectionProps.showSimulator = true;
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId, getByText, queryByText } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...disconnectionProps} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('simulatorInput')).toBeInTheDocument();
+  });
+
+  fireEvent.change(getByTestId('simulatorInput'), { target: { value: 'something' } });
+
+  await waitFor(() => {
+    fireEvent.keyPress(getByTestId('simulatorInput'), { key: 'Enter', code: 13, charCode: 13 });
+  });
+
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: false,
+  });
+
+  // Trigger offline event to simulate real browser behavior
+  window.dispatchEvent(new Event('offline'));
+
+  await waitFor(() => {
+    expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
+  });
+
+  // the banner should disappear when connection is restored
+  Object.defineProperty(window.navigator, 'onLine', {
+    writable: true,
+    value: true,
+  });
+
+  window.dispatchEvent(new Event('online'));
+
+  await waitFor(() => {
+    expect(queryByText('Simulator connection lost. Try to reload.')).not.toBeInTheDocument();
+  });
+});

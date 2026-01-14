@@ -1,0 +1,172 @@
+.FlowBuilderInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  margin: 2rem;
+  margin-bottom: 0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 #22c55e1a;
+  transition: all 0.2s ease-in-out;
+}
+
+.FlowBuilderInfo:hover {
+  box-shadow: 0 4px 6px -1px #22c55e26;
+  transform: translateY(-1px);
+}
+
+.FlowBuilderInfo p {
+  margin-bottom: 0;
+}
+
+.InfoContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.IconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.Icon {
+  color: white !important;
+  font-size: 24px !important;
+}
+
+.Title {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #14532d;
+  line-height: 1.4;
+}
+
+.Description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #16a34a;
+  line-height: 1.5;
+}
+
+.FlowBuilderButton {
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  white-space: nowrap;
+  min-width: 160px;
+  transition: all 0.2s ease-in-out !important;
+  color: #fff !important;
+}
+
+.FlowBuilderButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px #22c55e4d !important;
+}
+
+.FormContainer {
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.FormSection {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+}
+
+.VariablesSection {
+  width: 320px;
+  flex-shrink: 0;
+  margin-right: 2rem;
+  margin-top: 1rem;
+}
+
+.VariablesCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 #0000001a;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.VariablesTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.VariablesCount {
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.VariablesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.VariableItem {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #374151;
+  transition: all 0.15s ease;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.VariableItem::-webkit-scrollbar {
+  display: none;
+}
+
+.VariableItem:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.EmptyState {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.EmptyStateIcon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
+}

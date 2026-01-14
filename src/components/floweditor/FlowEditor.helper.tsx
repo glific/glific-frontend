@@ -17,7 +17,7 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
     mutable: !isReadOnly,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier'],
+    filters: ['whatsapp', 'classifier', 'start_session'],
     skipValidation: skipValidation,
 
     excludeTypes: ['add_contact_urn', 'send_email', 'call_resthook', 'transfer_airtime', 'split_by_scheme'],
@@ -141,6 +141,7 @@ export const loadfiles = (startFlowEditor: any) => {
   });
 
   // loading the largest file first
+
   document.body.appendChild(files[0]);
   document.body.appendChild(files[2]);
   document.body.appendChild(files[1]);

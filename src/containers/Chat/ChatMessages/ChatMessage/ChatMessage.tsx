@@ -26,6 +26,7 @@ import styles from './ChatMessage.module.css';
 import { setNotification } from 'common/notification';
 import { LocationRequestTemplate } from './LocationRequestTemplate/LocationRequestTemplate';
 import { PollMessage } from './PollMessage/PollMessage';
+import { WhatsAppFormResponse } from './WhatsappFormResponse/WhatsAppFormResponse';
 
 export interface ChatMessageProps {
   id: number;
@@ -60,6 +61,7 @@ export interface ChatMessageProps {
   poll?: any;
   pollContent?: any;
   showIcon?: boolean;
+  whatsappFormResponse?: any;
 }
 
 export const ChatMessage = ({
@@ -88,6 +90,7 @@ export const ChatMessage = ({
   poll,
   pollContent,
   showIcon = true,
+  whatsappFormResponse,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -135,13 +138,15 @@ export const ChatMessage = ({
       </>
     );
   } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
-    messageErrorStatus = parseTextMethod(messageError.message);
     let messageStatus: any;
 
-    if (Object.prototype.hasOwnProperty.call(messageErrorStatus, 'message')) {
+    messageErrorStatus = parseTextMethod(messageError.message);
+
+    if (messageErrorStatus && typeof messageErrorStatus === 'object' && messageErrorStatus?.message) {
       messageStatus = messageErrorStatus.message;
     } else {
-      messageStatus = messageErrorStatus[0];
+      messageStatus = messageError.message || 'Unknown Error';
+      messageErrorStatus = true;
     }
 
     tooltipTitle = (
@@ -326,6 +331,14 @@ export const ChatMessage = ({
             poll,
           }}
         />
+      </>
+    );
+  } else if (type === 'WHATSAPP_FORM_RESPONSE') {
+    messageBody = (
+      <>
+        {contactName}
+        <WhatsAppFormResponse rawResponse={whatsappFormResponse?.rawResponse} />
+        {dateAndSendBy}
       </>
     );
   } else {

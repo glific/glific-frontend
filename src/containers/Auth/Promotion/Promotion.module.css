@@ -8,11 +8,16 @@
   position: fixed;
   background: linear-gradient(135deg, #e8f5f0 0%, #d4ede3 50%, #c9e8da 100%);
   width: 25%;
+  background: linear-gradient(135deg, #e8f5f0 0%, #d4ede3 50%, #c9e8da 100%);
+  width: 25%;
   right: 60px;
   bottom: 0;
   padding: 10px 0;
   border: 3px solid #0c976d;
+  border: 3px solid #0c976d;
   border-bottom: 0px;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -4px 20px rgba(12, 151, 109, 0.15);
   border-radius: 12px 12px 0 0;
   box-shadow: 0 -4px 20px rgba(12, 151, 109, 0.15);
 }
@@ -32,12 +37,19 @@
 .GiftCard {
   text-transform: uppercase;
   color: #073f24;
+  color: #073f24;
   font-size: 14px;
+  font-weight: 600;
   font-weight: 600;
 }
 
 .AccordianIcon {
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.AccordianIcon:hover {
+  transform: scale(1.1);
   transition: transform 0.2s ease;
 }
 
@@ -53,6 +65,7 @@
   width: 100%;
   padding: 0 8px;
   cursor: pointer;
+  cursor: pointer;
 }
 
 .Image {
@@ -65,16 +78,21 @@
   font-weight: 800;
   font-style: bold;
   line-height: 1.2;
+  line-height: 1.2;
   position: relative;
   top: 20px;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+}
+
+.Title {
+  margin-bottom: 1rem;
 }
 
 .Header {
   display: flex;
   align-items: center;
+  gap: 4px;
   gap: 4px;
 }
 
@@ -82,12 +100,12 @@
   height: 8px;
   width: 8px;
   background-color: #f62415;
+  background-color: #f62415;
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -99,6 +117,7 @@
 }
 
 .HeaderText {
+  color: #0c976d;
   color: #0c976d;
   font-size: 14px;
   font-weight: 900;
@@ -115,11 +134,12 @@
   margin-bottom: 20px;
   font-style: normal;
   line-height: 1.5;
+  line-height: 1.5;
   align-items: baseline;
   text-align: left;
 }
 
-.BodyListText>p {
+.BodyListText > p {
   margin: 0;
 }
 
@@ -132,7 +152,7 @@
   margin-bottom: 4px;
 }
 
-.BodyListText>span {
+.BodyListText > span {
   border-radius: 50%;
   margin-right: 16px;
   font-size: 10px;
@@ -145,6 +165,14 @@
   color: white;
 }
 
+.Place {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 1rem;
+}
+
 .Points {
   margin-left: 24px;
   margin-right: 24px;
@@ -153,6 +181,7 @@
 
 .ShareNow {
   margin-top: 30px;
+  color: #073f24;
   color: #073f24;
   font-size: 16px;
   font-weight: 500;
@@ -165,6 +194,7 @@
   font-size: 16px;
   font-weight: 500;
   align-items: baseline;
+  background: #0c976d;
   background: #0c976d;
   text-transform: uppercase;
   padding: 6px 18px;
@@ -182,6 +212,54 @@
 
 .Link {
   text-decoration: none;
+}
+
+.ButtonContainer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px 20px;
+  flex-wrap: wrap;
+}
+
+.PrimaryButton,
+.SecondaryButton {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.PrimaryButton {
+  background: #0c976d;
+  color: white;
+  border: 2px solid #0c976d;
+}
+
+.PrimaryButton:hover {
+  background: #0a7d5a;
+  border-color: #0a7d5a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.3);
+}
+
+.SecondaryButton {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  color: #0c976d;
+  border: 2px solid #0c976d;
+}
+
+.SecondaryButton:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.2);
 }
 
 .ButtonContainer {

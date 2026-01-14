@@ -68,7 +68,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
   });
 
@@ -78,7 +78,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -86,7 +86,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.blur(inputs[2], {
       target: {
@@ -108,7 +108,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -117,7 +117,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[2], {
       target: { value: 'invalid media' },
@@ -136,7 +136,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -161,7 +161,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('STICKER'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('STICKER URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[2], {
       target: {
@@ -182,14 +182,14 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const autocompletes = screen.getAllByTestId('autocomplete-element');
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('STICKER'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('STICKER URL'), { key: 'Enter' });
 
     await waitFor(() => {
       expect(screen.getByText('Animated stickers are not supported.')).toBeInTheDocument();
@@ -200,7 +200,7 @@ describe('test creating a speed send', () => {
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-    fireEvent.click(screen.getByText('AUDIO'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('AUDIO URL'), { key: 'Enter' });
 
     await waitFor(() => {
       expect(screen.getByText('Captions along with audio are not supported.')).toBeInTheDocument();
@@ -211,7 +211,7 @@ describe('test creating a speed send', () => {
     render(addSpeedSendContainer);
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+      expect(screen.getByText('Create a new Speed send')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -219,7 +219,7 @@ describe('test creating a speed send', () => {
 
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
-    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('IMAGE URL'), { key: 'Enter' });
 
     fireEvent.change(inputs[0], { target: { value: 'Template' } });
 
