@@ -1,4 +1,3 @@
-import PlaceIcon from '@mui/icons-material/Place';
 import { useState } from 'react';
 import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
