@@ -6,18 +6,14 @@
 
 .Container {
   position: fixed;
-  background: linear-gradient(135deg, #e8f5f0 0%, #d4ede3 50%, #c9e8da 100%);
-  width: 25%;
-  background: linear-gradient(135deg, #e8f5f0 0%, #d4ede3 50%, #c9e8da 100%);
-  width: 25%;
   right: 60px;
   bottom: 0;
+  width: 25%;
   padding: 10px 0;
+
+  background: linear-gradient(135deg, #e8f5f0 0%, #d4ede3 50%, #c9e8da 100%);
   border: 3px solid #0c976d;
-  border: 3px solid #0c976d;
-  border-bottom: 0px;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 -4px 20px rgba(12, 151, 109, 0.15);
+  border-bottom: 0;
   border-radius: 12px 12px 0 0;
   box-shadow: 0 -4px 20px rgba(12, 151, 109, 0.15);
 }
@@ -37,19 +33,12 @@
 .GiftCard {
   text-transform: uppercase;
   color: #073f24;
-  color: #073f24;
   font-size: 14px;
-  font-weight: 600;
   font-weight: 600;
 }
 
 .AccordianIcon {
   cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.AccordianIcon:hover {
-  transform: scale(1.1);
   transition: transform 0.2s ease;
 }
 
@@ -61,26 +50,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  line-height: 14px;
   width: 100%;
   padding: 0 8px;
-  cursor: pointer;
+  line-height: 14px;
   cursor: pointer;
 }
 
 .Image {
-  margin-right: 18px;
-  margin-left: 18px;
-  margin-top: 8px;
+  margin: 8px 18px 0;
   text-align: center;
   color: #073f24;
   font-size: 24px;
   font-weight: 800;
-  font-style: bold;
-  line-height: 1.2;
   line-height: 1.2;
   position: relative;
   top: 20px;
+
   display: flex;
   flex-direction: column;
 }
@@ -93,13 +78,11 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  gap: 4px;
 }
 
 .Dot {
   height: 8px;
   width: 8px;
-  background-color: #f62415;
   background-color: #f62415;
   border-radius: 50%;
   animation: pulse 2s infinite;
@@ -110,7 +93,6 @@
   100% {
     opacity: 1;
   }
-
   50% {
     opacity: 0.5;
   }
@@ -118,24 +100,23 @@
 
 .HeaderText {
   color: #0c976d;
-  color: #0c976d;
   font-size: 14px;
   font-weight: 900;
   width: 34px;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   text-align: left;
 }
 
+.Points {
+  margin: 50px 24px 0;
+}
+
 .BodyListText {
-  margin-top: 0px;
+  margin-bottom: 20px;
   color: #073f24;
   font-size: 15px;
   font-weight: 400;
-  margin-bottom: 20px;
-  font-style: normal;
   line-height: 1.5;
-  line-height: 1.5;
-  align-items: baseline;
   text-align: left;
 }
 
@@ -153,16 +134,20 @@
 }
 
 .BodyListText > span {
-  border-radius: 50%;
-  margin-right: 16px;
-  font-size: 10px;
-  font-weight: 900;
-  text-align: center;
-  line-height: 1.8;
-  background: #073f24;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   min-width: 18px;
   height: 18px;
-  color: white;
+  margin-right: 16px;
+  border-radius: 50%;
+
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.8;
+  color: #fff;
+  background: #073f24;
 }
 
 .Place {
@@ -173,15 +158,8 @@
   font-size: 1rem;
 }
 
-.Points {
-  margin-left: 24px;
-  margin-right: 24px;
-  margin-top: 50px;
-}
-
 .ShareNow {
   margin-top: 30px;
-  color: #073f24;
   color: #073f24;
   font-size: 16px;
   font-weight: 500;
@@ -190,19 +168,17 @@
 
 .KnowMore {
   display: flex;
+  align-items: baseline;
+  margin: 32px 48px 15px 54px;
+  padding: 6px 18px;
+
   border-radius: 40px;
+  background: #0c976d;
+  color: #fff;
+
   font-size: 16px;
   font-weight: 500;
-  align-items: baseline;
-  background: #0c976d;
-  background: #0c976d;
   text-transform: uppercase;
-  padding: 6px 18px;
-  color: #fff;
-  margin-left: 54px;
-  margin-right: 48px;
-  margin-top: 32px;
-  margin-bottom: 15px;
 }
 
 .Arrow {
@@ -214,53 +190,7 @@
   text-decoration: none;
 }
 
-.ButtonContainer {
-  display: flex;
-  gap: 12px;
-  padding: 16px 20px 20px;
-  flex-wrap: wrap;
-}
-
-.PrimaryButton,
-.SecondaryButton {
-  flex: 1;
-  min-width: 140px;
-  padding: 12px 16px;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 13px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.PrimaryButton {
-  background: #0c976d;
-  color: white;
-  border: 2px solid #0c976d;
-}
-
-.PrimaryButton:hover {
-  background: #0a7d5a;
-  border-color: #0a7d5a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.3);
-}
-
-.SecondaryButton {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  color: #0c976d;
-  border: 2px solid #0c976d;
-}
-
-.SecondaryButton:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.2);
-}
+/* Buttons */
 
 .ButtonContainer {
   display: flex;
@@ -274,67 +204,21 @@
   flex: 1;
   min-width: 140px;
   padding: 12px 16px;
+
   text-align: center;
   text-decoration: none;
-  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+
   font-size: 13px;
+  font-weight: 600;
   border-radius: 8px;
   transition: all 0.2s ease;
-  cursor: pointer;
-  white-space: nowrap;
 }
 
 .PrimaryButton {
   background: #0c976d;
-  color: white;
-  border: 2px solid #0c976d;
-}
-
-.PrimaryButton:hover {
-  background: #0a7d5a;
-  border-color: #0a7d5a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.3);
-}
-
-.SecondaryButton {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  color: #0c976d;
-  border: 2px solid #0c976d;
-}
-
-.SecondaryButton:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.2);
-}
-
-.ButtonContainer {
-  display: flex;
-  gap: 12px;
-  padding: 16px 20px 20px;
-  flex-wrap: wrap;
-}
-
-.PrimaryButton,
-.SecondaryButton {
-  flex: 1;
-  min-width: 140px;
-  padding: 12px 16px;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 13px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.PrimaryButton {
-  background: #0c976d;
-  color: white;
+  color: #fff;
   border: 2px solid #0c976d;
 }
 
