@@ -1,12 +1,10 @@
 .ScreenContainer {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   border-radius: 8px;
   margin-bottom: 16px;
   transition: all 0.2s;
   cursor: move;
 }
-
-
 
 .ScreenContainer.Dragging {
   opacity: 0.5;
