@@ -72,8 +72,6 @@
   max-height: calc(100% - 32px);
 }
 
-
-
 .FormContent {
   padding: 16px;
   display: flex;
@@ -280,7 +278,9 @@
   border-radius: 8px;
   background-color: white;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
 }
 
 .RadioOption:hover {
@@ -306,7 +306,9 @@
   border-radius: 8px;
   background-color: white;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
 }
 
 .CheckboxOption:hover {
