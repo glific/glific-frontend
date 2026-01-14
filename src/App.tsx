@@ -10,20 +10,12 @@ import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import TrialVideoModal from 'components/UI/TrialVideoModal/TrialVideoModal';
 
 const App = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = !!getAuthSession('access_token');
 
-  const sessionData = isAuthenticated
-    ? {
-        last_login_time: getAuthSession('last_login_time'),
-        is_trial: getAuthSession('is_trial'),
-        trial_expiration_date: getAuthSession('trial_expiration_date'),
-      }
-    : null;
+  const isAuthenticated = !!getAuthSession('access_token');
 
   const sideDrawerValues = useMemo(
     () => ({
@@ -53,10 +45,7 @@ const App = () => {
   return (
     <ApolloProvider client={gqlClient(navigate)}>
       <ErrorHandler />
-      <SideDrawerContext.Provider value={sideDrawerValues}>
-        {routes}
-        {isAuthenticated && sessionData && <TrialVideoModal sessionData={sessionData} />}
-      </SideDrawerContext.Provider>
+      <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
     </ApolloProvider>
   );
 };
