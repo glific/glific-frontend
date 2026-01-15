@@ -1,9 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, Route, Routes } from 'react-router';
-
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
-
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SideDrawerContext } from 'context/session';
@@ -16,7 +14,8 @@ import { Logout } from 'containers/Auth/Logout/Logout';
 const App = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = !!getAuthSession('accessToken');
+
+  const isAuthenticated = !!getAuthSession('access_token');
 
   const sideDrawerValues = useMemo(
     () => ({
@@ -36,7 +35,6 @@ const App = () => {
     routes = <UnauthenticatedRoute />;
   }
 
-  // For logout action, we don't need to check if the user is logged in or not. Hence, adding it at top level
   routes = (
     <Routes>
       <Route path="/logout/:mode" element={<Logout />} />
