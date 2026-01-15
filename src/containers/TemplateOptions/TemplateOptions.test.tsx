@@ -56,6 +56,42 @@ test('it renders call to action button template successfully', async () => {
   await waitFor(() => {});
 });
 
+test('it disables CTA addition after 1 phone number and 2 URLs are added on call to action', async () => {
+  const { findByText, getAllByRole, getByText, findByLabelText, queryByText } = render(wrapper());
+
+  fireEvent.click(await findByText('Add buttons'));
+
+  const selectButtonType = await findByLabelText('Select Button Type');
+  fireEvent.mouseDown(selectButtonType);
+  fireEvent.click(await findByText('Call to Action'));
+
+  const radioButtons = getAllByRole('radio');
+  fireEvent.click(radioButtons[0]);
+
+  const [value1, title1] = getAllByRole('textbox');
+
+  fireEvent.change(title1, { target: { value: 'Contact Us' } });
+  fireEvent.change(value1, { target: { value: '+919090909090' } });
+
+  fireEvent.click(getByText('Add Call to action'));
+  await waitFor(() => {});
+
+  const [value2, title2] = getAllByRole('textbox');
+
+  fireEvent.change(title2, { target: { value: 'Visit Website' } });
+  fireEvent.change(value2, { target: { value: 'https://example.com' } });
+
+  fireEvent.click(getByText('Add Call to action'));
+  await waitFor(() => {});
+
+  const [value3, title3] = getAllByRole('textbox');
+
+  fireEvent.change(title3, { target: { value: 'More Info' } });
+  fireEvent.change(value3, { target: { value: 'https://info.com' } });
+
+  expect(queryByText('Add Call to action')).not.toBeInTheDocument();
+});
+
 test('it renders quick reply button template successfully', async () => {
   const { findByText, findByLabelText, getByText, getByTestId } = render(wrapper());
   const hsmTitle = await findByText('Create a new HSM Template');
