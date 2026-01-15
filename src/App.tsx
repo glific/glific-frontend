@@ -15,15 +15,8 @@ import TrialVideoModal from 'components/UI/TrialVideoModal/TrialVideoModal';
 const App = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = !!getAuthSession('access_token');
 
-  const sessionData = isAuthenticated
-    ? {
-        last_login_time: getAuthSession('last_login_time'),
-        is_trial: getAuthSession('is_trial'),
-        trial_expiration_date: getAuthSession('trial_expiration_date'),
-      }
-    : null;
+  const isAuthenticated = !!getAuthSession('access_token');
 
   const sideDrawerValues = useMemo(
     () => ({
