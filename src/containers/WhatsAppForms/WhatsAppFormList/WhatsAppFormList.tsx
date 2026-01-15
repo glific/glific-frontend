@@ -194,7 +194,7 @@ export const WhatsAppFormList = () => {
 
     const configureIcon = {
       label: 'Configure',
-      icon: <ConfigureIcon className={styles.IconSize} data-testid="publish-icon" />,
+      icon: <ConfigureIcon className={styles.IconSize} data-testid="configure-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         navigate(`/whatsapp-forms/${id}/configure`);

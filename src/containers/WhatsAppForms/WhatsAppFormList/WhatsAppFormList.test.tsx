@@ -264,4 +264,27 @@ describe('<WhatsAppFormList />', () => {
 
     expect(notificationSpy).toHaveBeenCalledWith('Sorry, failed to sync whatsapp forms updates.', 'warning');
   });
+
+  test('navigates to configure page when configure icon is clicked', async () => {
+    const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
+
+    const select = getAllByRole('combobox')[0];
+    fireEvent.click(getByText('All'));
+
+    expect(select).toHaveTextContent('All');
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('This is form name')).toBeInTheDocument();
+    });
+
+
+    const configureIcon = await waitFor(() => getAllByTestId('configure-icon')[0]);
+    fireEvent.click(configureIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/3/configure');
+    });
+  });
 });
