@@ -10,6 +10,7 @@ import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
+import TrialVideoModal from 'components/UI/TrialVideoModal/TrialVideoModal';
 
 const App = () => {
   const navigate = useNavigate();
@@ -45,7 +46,10 @@ const App = () => {
   return (
     <ApolloProvider client={gqlClient(navigate)}>
       <ErrorHandler />
-      <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
+      <SideDrawerContext.Provider value={sideDrawerValues}>
+        {routes}
+        {isAuthenticated && sessionData && <TrialVideoModal sessionData={sessionData} />}
+      </SideDrawerContext.Provider>
     </ApolloProvider>
   );
 };
