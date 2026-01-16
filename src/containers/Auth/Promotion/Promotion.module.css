@@ -27,7 +27,6 @@
   height: 40px;
   display: flex;
   align-items: center;
-  justify-items: center;
 }
 
 .GiftCard {
@@ -46,173 +45,101 @@
   transform: scale(1.1);
 }
 
+/* Header */
+
 .CardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 0 8px;
-  line-height: 14px;
+  padding: 14px 16px;
   cursor: pointer;
-}
-
-.Image {
-  margin: 8px 18px 0;
-  text-align: center;
-  color: #073f24;
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.2;
-  position: relative;
-  top: 20px;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.Title {
-  margin-bottom: 1rem;
 }
 
 .Header {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 
 .Dot {
   height: 8px;
   width: 8px;
-  background-color: #f62415;
+  background-color: #0c976d;
   border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
 }
 
 .HeaderText {
   color: #0c976d;
   font-size: 14px;
   font-weight: 900;
-  width: 34px;
-  letter-spacing: 0;
-  text-align: left;
 }
 
+/* Title section */
+
+.Image {
+  margin: 24px 20px 0;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.Announcement {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0c976d;
+}
+
+.Title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #073f24;
+}
+
+/* Body text */
+
 .Points {
-  margin: 50px 24px 0;
+  margin: 28px 24px 0;
 }
 
 .BodyListText {
-  margin-bottom: 20px;
   color: #073f24;
   font-size: 15px;
-  font-weight: 400;
-  line-height: 1.5;
-  text-align: left;
-}
-
-.BodyListText > p {
-  margin: 0;
-}
-
-.BodyListText ul {
-  margin-left: 20px;
-  margin-top: 8px;
-}
-
-.BodyListText li {
-  margin-bottom: 4px;
-}
-
-.BodyListText > span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 18px;
-  height: 18px;
-  margin-right: 16px;
-  border-radius: 50%;
-
-  font-size: 10px;
-  font-weight: 900;
-  line-height: 1.8;
-  color: #fff;
-  background: #073f24;
-}
-
-.Place {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 1rem;
-}
-
-.ShareNow {
-  margin-top: 30px;
-  color: #073f24;
-  font-size: 16px;
-  font-weight: 500;
+  line-height: 1.6;
   text-align: center;
 }
 
-.KnowMore {
-  display: flex;
-  align-items: baseline;
-  margin: 32px 48px 15px 54px;
-  padding: 6px 18px;
-
-  border-radius: 40px;
-  background: #0c976d;
-  color: #fff;
-
-  font-size: 16px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.Arrow {
-  font-size: 19px;
-  margin-left: 5px;
-}
-
-.Link {
-  text-decoration: none;
+.BodyListText p {
+  margin-bottom: 14px;
 }
 
 /* Buttons */
 
 .ButtonContainer {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 16px 20px 20px;
-  flex-wrap: wrap;
+}
+
+.ButtonContainer a:last-child {
+  grid-column: 1 / -1;
 }
 
 .PrimaryButton,
 .SecondaryButton {
-  flex: 1;
-  min-width: 140px;
-  padding: 12px 16px;
-
+  padding: 14px 16px;
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
 
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.2s ease;
 }
 
@@ -225,19 +152,14 @@
 .PrimaryButton:hover {
   background: #0a7d5a;
   border-color: #0a7d5a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.3);
 }
 
 .SecondaryButton {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
   color: #0c976d;
   border: 2px solid #0c976d;
 }
 
 .SecondaryButton:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(12, 151, 109, 0.2);
+  background: #f5fdf9;
 }

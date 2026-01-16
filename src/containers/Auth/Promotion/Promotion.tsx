@@ -14,10 +14,10 @@ export const Promotion = () => {
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
-      <div onClick={() => setMinimized(!minimized)} className={styles.CardHeader}>
+      <div className={styles.CardHeader} onClick={() => setMinimized(!minimized)}>
         <div className={styles.Header}>
           <div className={styles.Dot} />
-          <div className={styles.HeaderText}>NEW!</div>
+          <div className={styles.HeaderText}>ANNOUNCEMENT ALERT!</div>
         </div>
 
         {minimized ? (
@@ -33,29 +33,30 @@ export const Promotion = () => {
       {!minimized && (
         <>
           <div className={styles.Image}>
-            <span>
+            <span className={styles.Title}>
               Glific AI Chatbot Accelerator
               <br />
-              Applications now open!
+              Applications OPEN NOW!
             </span>
-            <span>Apply by: 20 February 2026</span>
           </div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
               <p>
-                <strong>A selective, funded, hands-on 6-month cohort</strong> for 30 NGOs — 15 existing Glific users
-                looking to implement AI, and 15 new NGOs building an AI-powered WhatsApp chatbot.
+                A selective, funded, hands-on <strong>6-month cohort</strong> for <strong>30 NGOs</strong>:
+                <br />
+                15 existing Glific NGOs starting or deepening their AI journey, and 15 new NGOs building AI-powered
+                WhatsApp chatbots.
               </p>
-              <br />
+
               <p>
-                Includes platform fee waiver, AI + messaging credits, expert mentorship, 2 in-person workshops, and
+                <strong>Perks include:</strong> Platform fee waiver, AI & messaging credits, expert mentorship,
                 performance-based grants.
               </p>
-              <br />
+
               <p>
-                <strong>₹2.5L+ value</strong> for a <strong>₹30K cohort fee</strong>
-                (no additional costs for 6 months).
+                All this for a <strong>one-time fee of ₹30K</strong> – no additional costs for 6 months (
+                <strong>₹2.5L+ value</strong>).
               </p>
             </div>
           </div>
