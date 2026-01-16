@@ -1,6 +1,8 @@
 name: Continuous Deployment
 
 on:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
   push:
     branches: [master]
 
@@ -8,21 +10,27 @@ jobs:
   deploy:
     # only run this job if the verify job succeeds
 
-    # only run this job if the workflow is running on the feature/master branch
-    if: github.ref == 'refs/heads/master'
-
+    # only run this job if the workflow is running on master branch or
+    # a pull request which has the staging label
+    if: |
+      (
+        github.event_name == 'pull_request' &&
+        contains(join(github.event.pull_request.labels.*.name, ','), 'staging')
+      ) || (
+        github.event_name == 'push' &&
+        github.ref == 'refs/heads/master'
+      )
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master # Checkout out master instead of the latest commit
+          ref: ${{ github.event_name == 'push' && 'master' || github.event.pull_request.head.ref }} # Checkout out master or the PR commit
           fetch-depth: 0 # Checkout the whole branch
 
-      # setup the python
+      # setup  python
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       # configure the gigalixir-actions with our credentials and app name
       - uses: gigalixir/gigalixir-action@v0.6.2
