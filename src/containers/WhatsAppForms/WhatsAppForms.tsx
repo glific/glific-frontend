@@ -49,7 +49,6 @@ export const WhatsAppForms = () => {
       }
     },
   });
-
   let isEditing = false;
   if (params.id) {
     isEditing = true;
@@ -143,16 +142,16 @@ export const WhatsAppForms = () => {
     name: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
     formCategories: Yup.array().min(1, 'At least one category must be selected.'),
   });
-
   if (loading) {
     return <Loading />;
   }
   return (
     <>
       <Heading
-        formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'}
+        formTitle={isEditing ? (disabled ? 'WhatsApp Form' : 'Edit WhatsApp Form') : 'Create WhatsApp Form'}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
+        headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
       />
       <div className={styles.FlowBuilderInfo}>
         <div className={styles.InfoContent}>
@@ -192,9 +191,11 @@ export const WhatsAppForms = () => {
           setPayload={setPayload}
           languageSupport={false}
           setStates={setStates}
+          isView={disabled}
           validationSchema={FormSchema}
           listItemName="Whatsapp Form"
           formFields={formFields}
+          errorButtonState={{ text: disabled ? 'Go Back' : 'Cancel', show: true }}
           redirectionLink={'whatsapp-forms'}
           listItem="whatsappForm"
           icon={<Update />}
@@ -206,7 +207,7 @@ export const WhatsAppForms = () => {
           buttonState={{
             text: 'Save Form',
             status: disabled,
-            show: true,
+            show: !disabled,
           }}
           customHandler={(error: any) => {
             if (typeof error === 'string') setErrorMessage(formatError(error), 'An error occurred');
