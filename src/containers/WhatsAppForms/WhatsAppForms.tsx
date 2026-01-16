@@ -228,7 +228,7 @@ export const WhatsAppForms = () => {
   return (
     <>
       <Heading
-        formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'}
+        formTitle={isEditing ? (disabled ? 'WhatsApp Form' : 'Edit WhatsApp Form') : 'Create WhatsApp Form'}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
         headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}

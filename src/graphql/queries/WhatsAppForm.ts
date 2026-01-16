@@ -5,7 +5,9 @@ export const GET_WHATSAPP_FORM = gql`
     whatsappForm(id: $id) {
       whatsappForm {
         description
-        revision
+        revision {
+          definition
+        }
         categories
         id
         insertedAt
