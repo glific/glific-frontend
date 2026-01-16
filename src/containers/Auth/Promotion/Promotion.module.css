@@ -90,6 +90,8 @@
   line-height: 1.2;
   color: #073f24;
   display: block;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .Subtitle {
