@@ -8,7 +8,9 @@ export const Promotion = () => {
 
   const APPLY_LINK =
     'https://docs.google.com/forms/d/e/1FAIpQLSde02kRz3ljFfji5WFQ514BcSVCRVlW-invWAfopSVHSpgF5w/viewform';
-  const LEARN_MORE_LINK = 'https://glific.org/glific-ai-chatbot-accelerator-2026/';
+
+  const LEARN_MORE_LINK = 'https://drive.google.com/file/d/1q0xpv5xeIHJeGeiee_N4Qer2aQzBQ_-r/view';
+
   const REFERRAL_LINK =
     'https://docs.google.com/forms/d/e/1FAIpQLSd6cjfBCaSx_zvEdTo3tjKFiZVzjTOxJ8SAokv7Z9JZidYdNw/viewform';
 
@@ -38,20 +40,26 @@ export const Promotion = () => {
               <br />
               Applications OPEN NOW!
             </span>
+
+            <div className={styles.ApplyBy}>
+              📅 Apply by: <strong>20 February 2026</strong>
+            </div>
           </div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
               <p>
-                A selective, funded, hands-on <strong>6-month cohort</strong> for <strong>30 NGOs</strong>:
-                <br />
+                A selective, funded, hands-on <strong>6-month cohort</strong> for <strong>30 NGOs:</strong>
+              </p>
+
+              <p>
                 15 existing Glific NGOs starting or deepening their AI journey, and 15 new NGOs building AI-powered
                 WhatsApp chatbots.
               </p>
 
-              <p>
-                <strong>Perks include:</strong> Platform fee waiver, AI & messaging credits, expert mentorship,
-                performance-based grants.
+              <p className={styles.Perks}>
+                <strong>Perks include:</strong> Platform fee waiver, AI & messaging credits, expert mentorship, and
+                performance-based grants to scale your impact.
               </p>
 
               <p>
@@ -65,9 +73,11 @@ export const Promotion = () => {
             <a className={styles.PrimaryButton} href={APPLY_LINK} target="_blank" rel="noreferrer">
               Apply Now
             </a>
+
             <a className={styles.SecondaryButton} href={LEARN_MORE_LINK} target="_blank" rel="noreferrer">
               Learn More
             </a>
+
             <a className={styles.SecondaryButton} href={REFERRAL_LINK} target="_blank" rel="noreferrer">
               Submit Referral
             </a>
