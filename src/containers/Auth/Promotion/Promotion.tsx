@@ -8,9 +8,7 @@ export const Promotion = () => {
 
   const APPLY_LINK =
     'https://docs.google.com/forms/d/e/1FAIpQLSde02kRz3ljFfji5WFQ514BcSVCRVlW-invWAfopSVHSpgF5w/viewform';
-
   const LEARN_MORE_LINK = 'https://drive.google.com/file/d/1q0xpv5xeIHJeGeiee_N4Qer2aQzBQ_-r/view';
-
   const REFERRAL_LINK =
     'https://docs.google.com/forms/d/e/1FAIpQLSd6cjfBCaSx_zvEdTo3tjKFiZVzjTOxJ8SAokv7Z9JZidYdNw/viewform';
 
@@ -35,26 +33,16 @@ export const Promotion = () => {
       {!minimized && (
         <>
           <div className={styles.Image}>
-            <span className={styles.Title}>
-              Glific AI Chatbot Accelerator
-              <br />
-              Applications OPEN NOW!
-            </span>
-
-            <div className={styles.ApplyBy}>
-              📅 Apply by: <strong>20 February 2026</strong>
-            </div>
+            <span className={styles.Title}>Glific AI Chatbot Accelerator</span>
+            <span className={styles.Subtitle}>Applications OPEN NOW!</span>
           </div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
               <p>
-                A selective, funded, hands-on <strong>6-month cohort</strong> for <strong>30 NGOs:</strong>
-              </p>
-
-              <p>
-                15 existing Glific NGOs starting or deepening their AI journey, and 15 new NGOs building AI-powered
-                WhatsApp chatbots.
+                A selective, funded, hands-on <strong>6-month cohort</strong> for <strong>30 NGOs:</strong> 15 existing
+                Glific NGOs starting or deepening their AI journey, and 15 new NGOs building AI-powered WhatsApp
+                chatbots.
               </p>
 
               <p className={styles.Perks}>
@@ -66,6 +54,10 @@ export const Promotion = () => {
                 All this for a <strong>one-time fee of ₹30K</strong> – no additional costs for 6 months (
                 <strong>₹2.5L+ value</strong>).
               </p>
+            </div>
+
+            <div className={styles.ApplyBy}>
+              📅 <strong>Apply by: 20 February 2026</strong>
             </div>
           </div>
 
