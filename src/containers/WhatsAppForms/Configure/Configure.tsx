@@ -52,12 +52,6 @@ export const Configure = () => {
     setShowJSON(true);
   };
 
-  const handleUpdateScreenName = (screenId: string, newName: string) => {
-    setScreens((prevScreens) =>
-      prevScreens.map((screen) => (screen.id === screenId ? { ...screen, name: newName } : screen))
-    );
-  };
-
   const handleUpdateFieldLabel = (screenId: string, contentId: string, newVariableName: string) => {
     setScreens((prevScreens) =>
       prevScreens.map((screen) => {

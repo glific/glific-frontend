@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import OpenInNew from '@mui/icons-material/OpenInNew';
 import Update from '@mui/icons-material/Update';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -8,11 +7,9 @@ import * as Yup from 'yup';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import setLogs from 'config/logs';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';

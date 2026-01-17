@@ -1,19 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  CircularProgress,
-  Box,
-} from '@mui/material';
+import { List, ListItem, ListItemText, ListItemButton, Button, Typography, CircularProgress, Box } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { LIST_WHATSAPP_FORM_REVISIONS } from 'graphql/queries/WhatsAppForm';
 import { REVERT_TO_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';

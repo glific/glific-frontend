@@ -485,8 +485,7 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
           const componentName = component.name;
           const parts = componentName.split('_');
 
-          if (parts.length >= 4 && parts[0] === 'screen') {
-          } else {
+          if (!(parts.length >= 4 && parts[0] === 'screen')) {
             item.data.variableName = componentName;
           }
         }

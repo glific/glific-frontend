@@ -27,7 +27,7 @@ import {
 import styles from './TemplateOptions.module.css';
 import { Fragment, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_WHATSAPP_FORM_DEFINITIONS, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { GET_WHATSAPP_FORM_DEFINITIONS } from 'graphql/queries/WhatsAppForm';
 import { getOrganizationServices } from 'services/AuthService';
 
 export interface TemplateOptionsProps {
