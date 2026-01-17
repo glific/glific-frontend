@@ -166,7 +166,7 @@ export const Configure = () => {
         buttonOkLoading={loading}
         disableOk={loading}
       >
-        <p>Are you sure you want to publish this form? Once published, it will be live and cannot be edited.</p>
+        <p>Are you sure you want to publish this form?</p>
       </DialogBox>
     );
   }

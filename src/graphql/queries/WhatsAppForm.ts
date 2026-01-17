@@ -94,20 +94,11 @@ export const LIST_WHATSAPP_FORM_REVISIONS = gql`
     listWhatsappFormRevisions(whatsappFormId: $whatsappFormId, limit: $limit) {
       id
       whatsappFormId
-      revision {
-        definition
-        revisionNumber
-        userId
-        insertedAt
-        updatedAt
-      }
-      sheet {
-        id
-        label
-        url
-        isActive
-        sheetDataCount
-      }
+      definition
+      revisionNumber
+      userId
+      insertedAt
+      updatedAt
     }
   }
 `;

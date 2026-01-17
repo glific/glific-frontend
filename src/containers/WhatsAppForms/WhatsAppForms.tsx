@@ -153,37 +153,6 @@ export const WhatsAppForms = () => {
         backLink="/whatsapp-forms"
         headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
       />
-      <div className={styles.FlowBuilderInfo}>
-        <div className={styles.InfoContent}>
-          <div className={styles.IconWrapper}>
-            <OpenInNew className={styles.Icon} />
-          </div>
-          <div className={styles.TextContent}>
-            <h3 className={styles.Title}>Go to WhatsApp Form Builder Playground</h3>
-            <p className={styles.Description}>
-              Design your Form in WhatsApp&apos;s Playground then copy the JSON and paste it below.
-            </p>
-          </div>
-        </div>
-
-        <Button
-          color="primary"
-          variant="contained"
-          className={styles.FlowBuilderButton}
-          startIcon={<OpenInNew />}
-          component="a"
-          onClick={() =>
-            window.open(
-              'https://developers.facebook.com/docs/whatsapp/flows/playground',
-              '_blank',
-              'noopener,noreferrer'
-            )
-          }
-        >
-          Go to Playground
-        </Button>
-      </div>
-
       <div className={styles.FormSection}>
         <FormLayout
           {...queries}
