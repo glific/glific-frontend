@@ -1,9 +1,10 @@
-import { CREATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
+import { CREATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import {
   GET_WHATSAPP_FORM,
   LIST_FORM_CATEGORIES,
   LIST_WHATSAPP_FORMS,
   COUNT_WHATSAPP_FORMS,
+  GET_WHATSAPP_FORM_DEFINITIONS,
 } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
@@ -85,7 +86,6 @@ const createdWhatsAppFormQuery = {
     variables: {
       input: {
         name: 'Test Form',
-        formJson: JSON.stringify(formJson),
         description: 'This is a test form',
         categories: ['other'],
         googleSheetUrl: '',
@@ -111,7 +111,6 @@ const createdWhatsAppFormQueryWithErrors = {
     variables: {
       input: {
         name: 'Test Form2',
-        formJson: JSON.stringify(formJson),
         description: 'This is a test form',
         categories: ['other'],
         googleSheetUrl: '',
@@ -192,7 +191,6 @@ export const deactivateWhatsappFormError = {
   },
   error: new Error('Failed to publish'),
 };
-
 const listWhatsappFormsDraft = {
   request: {
     query: LIST_WHATSAPP_FORMS,
@@ -318,13 +316,13 @@ const listWhatsappFormsInitial = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
             url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
           },
         },
       ],
@@ -340,7 +338,7 @@ const listWhatsappFormsWithThreePublishedwithfilter = {
   },
   result: {
     data: {
-      listWhatsappForms: [
+      whatsappForms: [
         {
           id: '1',
           name: 'This is form name',
@@ -356,8 +354,6 @@ const listWhatsappFormsWithThreePublishedwithfilter = {
             id: 123,
             label: 'Test Sheet',
             url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
           },
         },
         {
@@ -367,14 +363,14 @@ const listWhatsappFormsWithThreePublishedwithfilter = {
           description: 'Feedback collection form',
           metaFlowId: 'meta-flow-2',
           categories: ['survey'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
             label: 'Test Sheet',
             url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
           },
         },
         {
@@ -384,7 +380,9 @@ const listWhatsappFormsWithThreePublishedwithfilter = {
           description: 'Lead generation form',
           metaFlowId: 'meta-flow-3',
           categories: ['lead_generation'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           __typename: 'WhatsappForm',
           sheet: {
             id: 123,
@@ -463,13 +461,6 @@ const listWhatsappFormsWithoutStatus = {
             definition: JSON.stringify(formJson),
           },
           __typename: 'WhatsappForm',
-          sheet: {
-            id: 123,
-            label: 'Test Sheet',
-            url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
-          },
         },
         {
           id: '4',
@@ -526,6 +517,79 @@ const syncWhatsappFormQueryWithErrors = {
     },
   },
 };
+const updateWhatsappForm = {
+  request: {
+    query: UPDATE_FORM,
+    variables: {
+      id: '1',
+      input: {
+        name: 'This is form name',
+        description: 'This is an updated test form',
+        categories: ['customer_support'],
+        googleSheetUrl: 'http://example.com/sheet',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateWhatsappForm: {
+        whatsappForm: {
+          id: '1',
+          name: 'This is form name',
+
+          __typename: 'WhatsappForm',
+        },
+        errors: null,
+        __typename: 'UpdateWhatsappFormPayload',
+      },
+    },
+  },
+};
+
+const createWhatsappFormDuplicateNameErrorMock = {
+  request: {
+    query: CREATE_FORM,
+    variables: {
+      input: {
+        name: 'Test Form2',
+        description: 'This is a test form',
+        categories: ['other'],
+        googleSheetUrl: JSON.stringify(formJson), // ✅ MUST match exactly
+      },
+    },
+  },
+  result: {
+    errors: [
+      {
+        message:
+          'Flow name should be unique within one WhatsApp Business Account. Please select another name for your Flow.',
+        path: ['createWhatsappForm'],
+      },
+    ],
+  },
+};
+
+const listWhatsappFormsForHsm = {
+  request: {
+    query: GET_WHATSAPP_FORM_DEFINITIONS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          name: 'This is form name',
+          metaFlowId: '1473834353902269',
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
+        },
+      ],
+    },
+  },
+};
 
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
@@ -538,6 +602,10 @@ export const WHATSAPP_FORM_MOCKS = [
   createdWhatsAppFormQueryWithErrors,
   countWhatsappForms,
   countWhatsappFormsDraft,
+  updateWhatsappForm,
+  updateWhatsappForm,
+  createWhatsappFormDuplicateNameErrorMock,
+  listWhatsappFormsForHsm,
 ];
 
 export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };

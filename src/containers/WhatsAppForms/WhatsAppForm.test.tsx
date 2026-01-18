@@ -41,13 +41,8 @@ describe('<WhatsAppForms />', () => {
 
     fireEvent.change(inputs[0], { target: { value: 'Test Form' } });
     fireEvent.change(inputs[1], { target: { value: 'This is a test form' } });
-    fireEvent.change(inputs[2], { target: { value: 'sign_up' } });
 
     fireEvent.click(getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(getByText('Must be valid JSON')).toBeInTheDocument();
-    });
 
     const autocomplete = getByTestId('AutocompleteInput');
 
@@ -55,7 +50,6 @@ describe('<WhatsAppForms />', () => {
     fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
 
     fireEvent.click(getByText('Other'), { key: 'Enter' });
-    fireEvent.change(inputs[2], { target: { value: JSON.stringify(formJson) } });
 
     fireEvent.click(getByTestId('submitActionButton'));
 
@@ -81,26 +75,6 @@ describe('<WhatsAppForms />', () => {
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
-    });
-  });
-
-  test('it should list all the variables extracted from JSON', async () => {
-    const { getByTestId, getByText, getAllByRole } = render(wrapper());
-    expect(getByText('Loading...')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(getByText('Create WhatsApp Form')).toBeInTheDocument();
-    });
-
-    const inputs = getAllByRole('textbox');
-    fireEvent.change(inputs[2], { target: { value: JSON.stringify(formJson) } });
-
-    await waitFor(() => {
-      expect(getByTestId('extractedVariables')).toBeInTheDocument();
-      expect(getByText('screen_1_Purchase_0')).toBeInTheDocument();
-      expect(getByText('screen_1_Delivery_and_1')).toBeInTheDocument();
-      expect(getByText('screen_1_Customer_2')).toBeInTheDocument();
-      expect(getByText('screen_0_Choose_0')).toBeInTheDocument();
     });
   });
 

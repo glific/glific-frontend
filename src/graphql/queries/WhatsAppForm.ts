@@ -52,7 +52,17 @@ export const LIST_WHATSAPP_FORMS = gql`
       status
       description
       metaFlowId
+      revision {
+        id
+        definition
+      }
       categories
+      sheet {
+        id
+        url
+      }
+      insertedAt
+      updatedAt
     }
   }
 `;

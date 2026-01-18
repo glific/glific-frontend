@@ -4,6 +4,7 @@
   height: 100%;
   background-color: #f5f5f5;
   margin-top: 1rem;
+  min-height: 0;
 }
 
 .PhoneFrame {
@@ -14,6 +15,7 @@
   padding: 1rem;
   background-color: #ece5dd;
   border-radius: 1rem;
+  min-height: 0;
 }
 
 .PhoneScreen {
@@ -61,24 +63,27 @@
   display: flex;
   flex-direction: column;
   background-color: #ece5dd;
+  min-height: 0;
 }
 
 .FormCard {
   background-color: white;
-  overflow-y: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
-  max-height: calc(100% - 32px);
+  min-height: 0;
+  position: relative;
 }
 
 .FormContent {
   padding: 16px;
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .ContentItem {
