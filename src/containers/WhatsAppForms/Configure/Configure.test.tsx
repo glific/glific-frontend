@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, screen, act } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
@@ -44,6 +44,21 @@ const wrapper = (extraMocks: any[] = []) => {
 describe('<Configure />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  test('loads latest form revision and renders form name', async () => {
+    render(wrapper());
+
+    expect(await screen.findByText('This is form name')).toBeInTheDocument();
+  });
+
+  test('navigates back to forms list when back icon is clicked', async () => {
+    render(wrapper());
+
+    const backIcon = await screen.findByRole('button', { hidden: true });
+    fireEvent.click(backIcon);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms');
   });
 
   test('opens publish confirmation dialog', async () => {
