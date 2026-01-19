@@ -1,10 +1,18 @@
-import { CREATE_FORM, PUBLISH_FORM, DEACTIVATE_FORM, SYNC_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
+import {
+  CREATE_FORM,
+  PUBLISH_FORM,
+  DEACTIVATE_FORM,
+  SYNC_FORM,
+  UPDATE_FORM,
+  SAVE_WHATSAPP_FORM_REVISION,
+} from 'graphql/mutations/WhatsAppForm';
 import {
   GET_WHATSAPP_FORM,
   LIST_FORM_CATEGORIES,
   LIST_WHATSAPP_FORMS,
   COUNT_WHATSAPP_FORMS,
   GET_WHATSAPP_FORM_DEFINITIONS,
+  GET_LATEST_WHATSAPP_FORM_REVISION,
 } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
@@ -39,6 +47,37 @@ export const formJson = {
               },
               type: 'Footer',
             },
+          },
+        ],
+      },
+    },
+  ],
+};
+
+const formDefinition = {
+  version: '7.3',
+  screens: [
+    {
+      id: 'screen_one',
+      title: 'Screen 1',
+      terminal: true,
+      data: {},
+      layout: {
+        type: 'SingleColumnLayout',
+        children: [
+          {
+            type: 'Form',
+            name: 'flow_path',
+            children: [
+              {
+                label: 'Continue',
+                'on-click-action': {
+                  name: 'complete',
+                  payload: {},
+                },
+                type: 'Footer',
+              },
+            ],
           },
         ],
       },
@@ -591,6 +630,80 @@ const listWhatsappFormsForHsm = {
   },
 };
 
+export const saveWhatsappFormRevisionMock = {
+  request: {
+    query: SAVE_WHATSAPP_FORM_REVISION,
+    variables: {
+      input: {
+        whatsappFormId: '1',
+        // 👇 THIS IS THE IMPORTANT FIX
+        definition: JSON.stringify(formDefinition),
+      },
+    },
+  },
+  result: {
+    data: {
+      saveWhatsappFormRevision: {
+        whatsappFormRevision: {
+          id: '10',
+          revisionNumber: 2,
+        },
+      },
+    },
+  },
+};
+
+const latestRevisionMock = {
+  request: {
+    query: GET_LATEST_WHATSAPP_FORM_REVISION,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      whatsappForm: {
+        whatsappForm: {
+          id: '1',
+          name: 'This is form name',
+          revision: {
+            definition: JSON.stringify({
+              version: '7.2',
+              screens: [
+                {
+                  id: '1',
+                  title: 'Screen 1',
+                  data: {},
+                  layout: {},
+                },
+              ],
+            }),
+          },
+        },
+      },
+    },
+  },
+};
+
+const saveRevisionMock = {
+  request: {
+    query: SAVE_WHATSAPP_FORM_REVISION,
+    variables: {
+      input: {
+        whatsappFormId: '1',
+        definition: expect.any(String),
+      },
+    },
+  },
+  result: {
+    data: {
+      saveWhatsappFormRevision: {
+        whatsappFormRevision: {
+          id: 'rev-1',
+        },
+      },
+    },
+  },
+};
+
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
@@ -606,6 +719,8 @@ export const WHATSAPP_FORM_MOCKS = [
   updateWhatsappForm,
   createWhatsappFormDuplicateNameErrorMock,
   listWhatsappFormsForHsm,
+  latestRevisionMock,
+  saveRevisionMock,
 ];
 
 export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };
