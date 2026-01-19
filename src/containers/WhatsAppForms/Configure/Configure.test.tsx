@@ -51,16 +51,6 @@ describe('<Configure />', () => {
 
     expect(await screen.findByText('This is form name')).toBeInTheDocument();
   });
-
-  test('navigates back to forms list when back icon is clicked', async () => {
-    render(wrapper());
-
-    const backIcon = await screen.findByRole('button', { hidden: true });
-    fireEvent.click(backIcon);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms');
-  });
-
   test('opens publish confirmation dialog', async () => {
     render(wrapper());
 

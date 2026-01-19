@@ -721,6 +721,7 @@ export const WHATSAPP_FORM_MOCKS = [
   listWhatsappFormsForHsm,
   latestRevisionMock,
   saveRevisionMock,
+  saveWhatsappFormRevisionMock,
 ];
 
 export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };
