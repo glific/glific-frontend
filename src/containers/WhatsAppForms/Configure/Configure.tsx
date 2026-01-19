@@ -29,7 +29,7 @@ export const Configure = () => {
   const [view, setView] = useState<'preview' | 'variables' | 'versions'>('preview');
   const params = useParams();
   const isInitialMount = useRef(true);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
 
   const [saveWhatsappFormRevision] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
