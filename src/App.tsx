@@ -11,6 +11,7 @@ import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/Unauthenticate
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import TrialVideoModal from 'components/UI/TrialVideoModal/TrialVideoModal';
+const sessionData = getAuthSession('session');
 
 const App = () => {
   const navigate = useNavigate();
