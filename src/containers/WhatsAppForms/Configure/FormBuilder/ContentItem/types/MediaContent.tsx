@@ -124,13 +124,14 @@ export const MediaContent = ({ data, onUpdate, type, isViewOnly = false }: Media
                 accept="image/jpeg,image/png"
                 onChange={handleFileInputChange}
                 style={{ display: 'none' }}
+                data-testid="uploadFile"
               />
             </>
           )}
           {isViewOnly && <p>No image uploaded</p>}
         </>
       ) : (
-        <div className={styles.ImagePreviewContainer}>
+        <div data-testid="image-preview" className={styles.ImagePreviewContainer}>
           <img src={imageUrl} alt="Uploaded media" className={styles.PreviewImage} />
         </div>
       )}
