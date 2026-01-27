@@ -2,12 +2,11 @@ import { render, fireEvent, waitFor, screen, act } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
+import * as Notification from 'common/notification';
 
 import Configure from './Configure';
 
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
-
-const mockNavigate = vi.fn();
 
 let capturedOnDragEnd: ((event: any) => void) | null = null;
 
@@ -22,30 +21,12 @@ vi.mock('@dnd-kit/core', async () => {
   };
 });
 
-vi.mock('react-router', async () => {
-  const actual = await vi.importActual<typeof import('react-router')>('react-router');
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-    useParams: () => ({ id: '1' }),
-  };
-});
-
-vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>();
-  return {
-    ...mod,
-    setNotification: vi.fn(),
-    setErrorMessage: vi.fn(),
-  };
-});
-
-const wrapper = (extraMocks: any[] = []) => {
-  const mocks = [...WHATSAPP_FORM_MOCKS];
+const wrapper = (id: number = 1) => {
+  const mocks = WHATSAPP_FORM_MOCKS;
 
   return (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
+      <MemoryRouter initialEntries={[`/whatsapp-forms/${id}/configure`]}>
         <Routes>
           <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
         </Routes>
@@ -67,7 +48,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('it adds and deletes a new screen when Add Screen is clicked', async () => {
+  test('it adds and deletes screen ', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -118,7 +99,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('it adds Text Heading content to the screen', async () => {
+  test('it adds Text Heading content to the screen and generates JSON', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -161,6 +142,8 @@ describe('<Configure />', () => {
 
     fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Caption' } });
 
+    fireEvent.click(screen.getAllByTestId('content-toggle-expand')[1]);
+
     // body
     fireEvent.click(screen.getByTestId('add-content-button'));
     fireEvent.mouseEnter(screen.getByTestId('Text'));
@@ -179,9 +162,15 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Caption');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Body');
     });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
   });
 
-  test('it adds Text Answer content to the screen', async () => {
+  test('it adds Text Answer content to the screen and generates JSON', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -220,9 +209,15 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Paragraph Label');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Date Picker Label');
     });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
   });
 
-  test('it adds Selection content to the screen', async () => {
+  test('it adds Selection content to the screen and generates JSON', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -285,9 +280,15 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Dropdown Label');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Opt In Label');
     });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
   });
 
-  test('it uploads an image file successfully', async () => {
+  test('it uploads an image file successfully and generates JSON', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -309,6 +310,12 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('image-preview')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
     });
   });
 
@@ -517,6 +524,79 @@ describe('<Configure />', () => {
       const newOrder = getContentItemNames();
       expect(newOrder[0]).toBe(initialOrder[1]);
       expect(newOrder[1]).toBe(initialOrder[0]);
+    });
+  });
+
+  test('published form shows view-only mode', async () => {
+    render(wrapper(2));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+      expect(screen.getByText('Published')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('add-screen')).not.toBeInTheDocument();
+    });
+  });
+
+  test('clicking on flow json should open json view', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+  });
+
+  test('it shows the new definition when a version is clicked', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Versions'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('version-history')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Version 3'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Back to Editing')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Back to Editing'));
+  });
+
+  test('it reverts to a previous form version', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Versions'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('version-history')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Current')).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId('revert-version-button')[4]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Are you sure you want to revert?')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Successfully reverted to selected version', 'success');
     });
   });
 });

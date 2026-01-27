@@ -75,7 +75,12 @@ export const ContentItemComponent = ({
               <DeleteOutlined fontSize="small" />
             </IconButton>
           )}
-          <IconButton size="small" onClick={onToggleExpanded} aria-label="Toggle expand">
+          <IconButton
+            size="small"
+            onClick={onToggleExpanded}
+            aria-label="Toggle expand"
+            data-testid="content-toggle-expand"
+          >
             {isExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
           </IconButton>
         </div>

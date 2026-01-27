@@ -85,7 +85,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
   }
 
   return (
-    <div className={styles.VersionHistoryContainer}>
+    <div className={styles.VersionHistoryContainer} data-testid="version-history">
       <Typography variant="h6" className={styles.Title}>
         Version History
       </Typography>
@@ -112,6 +112,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
                     startIcon={<RestoreIcon />}
                     onClick={() => handleRevertClick(revision)}
                     className={styles.RevertButton}
+                    data-testid="revert-version-button"
                   >
                     Revert
                   </Button>
@@ -120,7 +121,9 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
             >
               <ListItemButton
                 className={styles.RevisionItem}
-                onClick={() => onRevisionPreview({ definition: revision.definition, revisionNumber: revision.revisionNumber })}
+                onClick={() =>
+                  onRevisionPreview({ definition: revision.definition, revisionNumber: revision.revisionNumber })
+                }
               >
                 <ListItemText
                   primary={

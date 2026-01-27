@@ -5,6 +5,7 @@ import {
   SYNC_FORM,
   UPDATE_FORM,
   SAVE_WHATSAPP_FORM_REVISION,
+  REVERT_TO_WHATSAPP_FORM_REVISION,
 } from 'graphql/mutations/WhatsAppForm';
 import {
   GET_WHATSAPP_FORM,
@@ -13,6 +14,7 @@ import {
   COUNT_WHATSAPP_FORMS,
   GET_WHATSAPP_FORM_DEFINITIONS,
   GET_LATEST_WHATSAPP_FORM_REVISION,
+  LIST_WHATSAPP_FORM_REVISIONS,
 } from 'graphql/queries/WhatsAppForm';
 
 export const formJson = {
@@ -653,29 +655,31 @@ export const saveWhatsappFormRevisionMock = {
   },
 };
 
-const latestRevisionMock = {
-  request: {
-    query: GET_LATEST_WHATSAPP_FORM_REVISION,
-    variables: { id: '1' },
-  },
-  result: {
-    data: {
-      whatsappForm: {
-        __typename: 'WhatsappFormResult',
+const latestRevisionMock = (id: string) => {
+  return {
+    request: {
+      query: GET_LATEST_WHATSAPP_FORM_REVISION,
+      variables: { id },
+    },
+    result: {
+      data: {
         whatsappForm: {
-          __typename: 'WhatsappForm',
-          name: 'qsfdddd',
-          revision: {
-            __typename: 'WhatsappFormRevision',
-            definition:
-              '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"TextInput","required":false,"name":"screen_0_Label_0","label":"Label","input-type":"text"},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
-            id: '417',
+          __typename: 'WhatsappFormResult',
+          whatsappForm: {
+            __typename: 'WhatsappForm',
+            name: 'Whatsapp Form',
+            revision: {
+              __typename: 'WhatsappFormRevision',
+              definition:
+                '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"TextInput","required":false,"name":"screen_0_Label_0","label":"Label","input-type":"text"},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
+              id: '417',
+            },
+            status: id === '1' ? 'DRAFT' : 'PUBLISHED',
           },
-          status: 'DRAFT',
         },
       },
     },
-  },
+  };
 };
 
 const saveRevisionMock = {
@@ -699,6 +703,62 @@ const saveRevisionMock = {
   },
 };
 
+const listRevisions = {
+  request: {
+    query: LIST_WHATSAPP_FORM_REVISIONS,
+    variables: {
+      whatsappFormId: '1',
+      limit: 10,
+    },
+  },
+  result: {
+    data: {
+      listWhatsappFormRevisions: [
+        {
+          definition:
+            '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"OptIn","required":false,"name":"screen_0_Label_0","label":"Label"},{"type":"Dropdown","required":false,"name":"screen_0_Label_1","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"RadioButtonsGroup","required":false,"name":"screen_0_Label_2","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_2":"${form.screen_0_Label_2}","screen_0_Label_1":"${form.screen_0_Label_1}","screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
+          id: '20',
+          insertedAt: '2026-01-27 06:55:07',
+          isCurrent: true,
+          revisionNumber: 20,
+          updatedAt: '2026-01-27 06:55:07',
+        },
+        ...Array(10)
+          .fill(null)
+          .map((_, i) => ({
+            definition:
+              '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"OptIn","required":false,"name":"screen_0_Label_0","label":"Label"},{"type":"Dropdown","required":false,"name":"screen_0_Label_1","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"RadioButtonsGroup","required":false,"name":"screen_0_Label_2","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_2":"${form.screen_0_Label_2}","screen_0_Label_1":"${form.screen_0_Label_1}","screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
+            id: i,
+            insertedAt: '2026-01-27 06:55:07',
+            isCurrent: false,
+            revisionNumber: i + 1,
+            updatedAt: '2026-01-27 06:55:07',
+          })),
+      ],
+    },
+  },
+};
+
+const revertWhatsappFormRevisionMock = {
+  request: {
+    query: REVERT_TO_WHATSAPP_FORM_REVISION,
+    variables: { whatsappFormId: '1', revisionId: 4 },
+  },
+  result: {
+    data: {
+      revertToWhatsappFormRevision: {
+        __typename: 'WhatsappFormRevisionResult',
+        errors: null,
+        whatsappFormRevision: {
+          __typename: 'WhatsappFormRevision',
+          definition:
+            '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"TextInput","required":false,"name":"screen_0_Label_0","label":"Label","input-type":"text"},{"type":"TextHeading","text":"Text"},{"type":"RadioButtonsGroup","required":false,"name":"screen_0_Label_1","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"Dropdown","required":false,"name":"screen_0_Label_2","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"OptIn","required":false,"name":"screen_0_Label_3","label":"Label"},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_3":"${form.screen_0_Label_3}","screen_0_Label_2":"${form.screen_0_Label_2}","screen_0_Label_1":"${form.screen_0_Label_1}","screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
+        },
+      },
+    },
+  },
+};
+
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
   createdWhatsAppFormQuery,
@@ -714,9 +774,14 @@ export const WHATSAPP_FORM_MOCKS = [
   updateWhatsappForm,
   createWhatsappFormDuplicateNameErrorMock,
   listWhatsappFormsForHsm,
-  latestRevisionMock,
+
+  latestRevisionMock('1'),
+  latestRevisionMock('2'),
   saveRevisionMock,
   saveWhatsappFormRevisionMock,
+  listRevisions,
+  listRevisions,
+  revertWhatsappFormRevisionMock,
 ];
 
 export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };
