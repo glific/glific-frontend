@@ -74,7 +74,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
         multiline={name === 'Opt In'}
         rows={name === 'Opt In' ? 4 : 1}
         slotProps={{
-          htmlInput: { maxLength: labelLimit, readOnly: isViewOnly },
+          htmlInput: { maxLength: labelLimit, readOnly: isViewOnly, 'data-testid': 'label-input' },
           input: {
             endAdornment: !isViewOnly ? (
               <div className={styles.CharCount}>{`${(data.label || '').length}/${labelLimit}`}</div>
@@ -100,7 +100,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
                   onChange={(e) => handleOptionChange(option.id, e.target.value)}
                   error={!isViewOnly && optionHasError}
                   slotProps={{
-                    htmlInput: { maxLength: optionLimit, readOnly: isViewOnly },
+                    htmlInput: { maxLength: optionLimit, readOnly: isViewOnly, 'data-testid': 'option-input' },
                     input: {
                       endAdornment: !isViewOnly ? (
                         <div className={styles.CharCount}>
@@ -118,6 +118,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
                     onClick={() => handleDeleteOption(option.id)}
                     disabled={options.length <= 2}
                     aria-label="Delete option"
+                    data-testid="delete-option-button"
                   >
                     <DeleteOutlined fontSize="small" />
                   </IconButton>
@@ -133,6 +134,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
               startIcon={<AddIcon />}
               onClick={handleAddOption}
               sx={{ mt: 1, textTransform: 'none' }}
+              data-testid="add-option-button"
             >
               Add Options
             </Button>

@@ -26,7 +26,7 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
   };
 
   return (
-    <div className={styles.ContentTypeContainer}>
+    <div data-testid="text-content" className={styles.ContentTypeContainer}>
       <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
         <InputLabel>Type</InputLabel>
         <Select value={name || ''} label="Type" onChange={handleTypeChange}>
@@ -48,7 +48,11 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
         onChange={handleTextChange}
         error={!isViewOnly && hasError}
         slotProps={{
-          htmlInput: { maxLength: 80, readOnly: isViewOnly },
+          htmlInput: {
+            maxLength: 80,
+            readOnly: isViewOnly,
+            'data-testid': 'text-content-input',
+          },
         }}
         helperText={!isViewOnly ? (hasError ? 'Text is required' : `${(data.text || '').length}/80`) : undefined}
         size="small"

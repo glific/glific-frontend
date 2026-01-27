@@ -171,7 +171,7 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
   };
 
   return (
-    <div className={styles.PreviewContainer}>
+    <div data-testid="form-preview" className={styles.PreviewContainer}>
       <div className={styles.PhoneFrame}>
         <div className={styles.PhoneScreen}>
           {currentScreen && (
@@ -179,7 +179,9 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
               <div className={styles.ChatContentContainer}>
                 <div className={styles.WhatsappHeader}>
                   <CloseIcon className={styles.CloseIcon} />
-                  <span className={styles.ScreenTitle}>{currentScreen.name || 'Screen'}</span>
+                  <span data-testid="preview-screen-name" className={styles.ScreenTitle}>
+                    {currentScreen.name || 'Screen'}
+                  </span>
                   <MoreVertIcon className={styles.MenuIcon} />
                 </div>
                 <div className={styles.FormCard}>
@@ -192,7 +194,9 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
                   </div>
                   {currentScreen.buttonLabel && (
                     <div className={styles.FormFooter}>
-                      <button className={styles.ContinueButton}>{currentScreen.buttonLabel}</button>
+                      <button data-testid="preview-button-label" className={styles.ContinueButton}>
+                        {currentScreen.buttonLabel}
+                      </button>
                       <p className={styles.FooterText}>Managed by the business. Learn more</p>
                     </div>
                   )}

@@ -41,7 +41,6 @@ export const ContentSelector = ({ onSelectContent }: ContentSelectorProps) => {
   };
 
   const selectedCategoryData = formComponenets.find((cat) => cat.name === selectedCategory);
-
   return (
     <div className={styles.ContentSelector}>
       <Button
@@ -50,6 +49,7 @@ export const ContentSelector = ({ onSelectContent }: ContentSelectorProps) => {
         startIcon={<AddIcon />}
         onClick={handleClick}
         className={styles.AddContentButton}
+        data-testid="add-content-button"
       >
         Add Content
       </Button>
@@ -81,6 +81,7 @@ export const ContentSelector = ({ onSelectContent }: ContentSelectorProps) => {
             onMouseEnter={(e) => handleCategoryHover(e, category.name)}
             selected={selectedCategory === category.name}
             sx={{ py: 1.5 }}
+            data-testid={category.name}
           >
             <ListItemIcon>{category.icon}</ListItemIcon>
             <ListItemText>{category.name}</ListItemText>
@@ -120,6 +121,7 @@ export const ContentSelector = ({ onSelectContent }: ContentSelectorProps) => {
             key={item.name}
             onClick={() => handleSelectItem(selectedCategoryData.name, item.name)}
             sx={{ py: 1.5 }}
+            data-testid={item.name}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText>{item.name}</ListItemText>

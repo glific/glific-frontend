@@ -95,7 +95,12 @@ export const ScreenComponent = ({
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={`${styles.ScreenContainer} ${isDragging ? styles.Dragging : ''}`}>
+    <div
+      data-testid="form-screen"
+      ref={setNodeRef}
+      style={style}
+      className={`${styles.ScreenContainer} ${isDragging ? styles.Dragging : ''}`}
+    >
       <div className={styles.ScreenHeader}>
         {!isViewOnly && (
           <div className={styles.DragHandle} {...attributes} {...listeners}>
@@ -106,7 +111,12 @@ export const ScreenComponent = ({
         <span className={styles.ScreenTitle}>{screen.name}</span>
         <div className={styles.Actions}>
           {!isViewOnly && (
-            <button className={styles.DeleteButton} onClick={onDelete} aria-label="Delete screen">
+            <button
+              className={styles.DeleteButton}
+              onClick={onDelete}
+              aria-label="Delete screen"
+              data-testid="delete-screen"
+            >
               <DeleteOutlined />
             </button>
           )}
@@ -126,6 +136,7 @@ export const ScreenComponent = ({
             <label className={styles.FieldLabel}>Screen Name</label>
             <div className={styles.InputWrapper}>
               <input
+                data-testid="screen-name-input"
                 type="text"
                 className={`${styles.Input} ${hasNameError ? styles.Error : ''}`}
                 placeholder="Enter Screen name"
@@ -178,6 +189,7 @@ export const ScreenComponent = ({
                 onChange={handleButtonLabelChange}
                 maxLength={30}
                 readOnly={isViewOnly}
+                data-testid="button-label-input"
               />
               {!isViewOnly && <span className={styles.CharCount}>{screen.buttonLabel.length}/30</span>}
             </div>

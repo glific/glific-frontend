@@ -46,7 +46,7 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
   };
 
   return (
-    <div className={styles.ContentTypeContainer}>
+    <div data-testid="text-answer-content" className={styles.ContentTypeContainer}>
       {isShortAnswer && (
         <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
           <InputLabel>Type</InputLabel>
@@ -68,7 +68,7 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
         onChange={handleLabelChange}
         error={!isViewOnly && hasError}
         slotProps={{
-          htmlInput: { maxLength: 20, readOnly: isViewOnly },
+          htmlInput: { maxLength: 20, readOnly: isViewOnly, 'data-testid': 'label-input' },
         }}
         helperText={!isViewOnly ? (hasError ? 'Label is required' : `${(data.label || '').length}/20`) : undefined}
         size="small"

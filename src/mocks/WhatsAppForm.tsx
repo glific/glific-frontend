@@ -661,22 +661,17 @@ const latestRevisionMock = {
   result: {
     data: {
       whatsappForm: {
+        __typename: 'WhatsappFormResult',
         whatsappForm: {
-          id: '1',
-          name: 'This is form name',
+          __typename: 'WhatsappForm',
+          name: 'qsfdddd',
           revision: {
-            definition: JSON.stringify({
-              version: '7.2',
-              screens: [
-                {
-                  id: '1',
-                  title: 'Screen 1',
-                  data: {},
-                  layout: {},
-                },
-              ],
-            }),
+            __typename: 'WhatsappFormRevision',
+            definition:
+              '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"TextInput","required":false,"name":"screen_0_Label_0","label":"Label","input-type":"text"},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
+            id: '417',
           },
+          status: 'DRAFT',
         },
       },
     },

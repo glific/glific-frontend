@@ -195,7 +195,7 @@ export const FormBuilder = ({
       <div className={styles.Header}>
         <h2>Screens</h2>
         {!isViewOnly && (
-          <Button className={styles.AddButton} variant="contained" onClick={addNewScreen}>
+          <Button data-testid="add-screen" className={styles.AddButton} variant="contained" onClick={addNewScreen}>
             + Add New
           </Button>
         )}

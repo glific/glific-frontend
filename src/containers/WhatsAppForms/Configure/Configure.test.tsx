@@ -46,40 +46,223 @@ describe('<Configure />', () => {
     vi.clearAllMocks();
   });
 
-  test('loads latest form revision and renders form name', async () => {
+  test('renders the form correctly', async () => {
     render(wrapper());
-
-    expect(await screen.findByText('This is form name')).toBeInTheDocument();
-  });
-  test('opens publish confirmation dialog', async () => {
-    render(wrapper());
-
-    const publishButton = await screen.findByText('Publish');
-    fireEvent.click(publishButton);
-
-    expect(await screen.findByText('Publish Form')).toBeInTheDocument();
-    expect(screen.getByText('Are you sure you want to publish this form?')).toBeInTheDocument();
-  });
-
-  test('toggles between Preview, Variables and Versions view', async () => {
-    render(wrapper());
-
-    expect(await screen.findByText('Preview')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText('Variables'));
-    expect(await screen.findByText('Variables')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText('Versions'));
-    expect(await screen.findByText('Versions')).toBeInTheDocument();
-  });
-
-  test('opens JSON viewer when View JSON is clicked', async () => {
-    render(wrapper());
-
-    fireEvent.click(await screen.findByText('View JSON'));
 
     await waitFor(() => {
-      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+  });
+
+  test('it adds and deletes a new screen when Add Screen is clicked', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    expect(screen.getByTestId('add-screen')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    // deletes the screen
+    fireEvent.click(screen.getAllByTestId('delete-screen')[1]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+  });
+
+  test('it updates the screen name and button label which should be saved ', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: 'New Screen Name' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-screen-name')).toHaveTextContent('New Screen Name');
+    });
+
+    fireEvent.change(screen.getByTestId('button-label-input'), { target: { value: 'Next' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-button-label')).toHaveTextContent('Next');
+    });
+  });
+
+  test('it adds Text Heading content to the screen', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // large heading
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getAllByText('Large Heading')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Large Heading' } });
+
+    // small heading
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getByText('Small Heading'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Small Heading' } });
+
+    // caption
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getByText('Caption'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Caption' } });
+
+    // body
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getByText('Body'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Body' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Large Heading');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Small Heading');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Caption');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Body');
+    });
+  });
+
+  test('it adds Text Answer content to the screen', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // short answer
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getAllByText('Short Answer')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Short Answer Label' } });
+
+    // paragraph
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Paragraph Label' } });
+
+    // date pixker
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getByText('Date Picker'));
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Date Picker Label' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Short Answer Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Paragraph Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Date Picker Label');
+    });
+  });
+
+  test('it adds Selection content to the screen', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // single choice
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Single Choice'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Single Choice Label' } });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'Opt-1' } });
+    fireEvent.change(screen.getAllByTestId('option-input')[1], { target: { value: 'Opt-2' } });
+
+    fireEvent.click(screen.getByTestId('add-option-button'));
+
+    fireEvent.change(screen.getAllByTestId('option-input')[2], { target: { value: 'Opt-3' } });
+
+    //test deleting the option
+    fireEvent.click(screen.getAllByTestId('delete-option-button')[2]);
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('option-input')).toHaveLength(2);
+    });
+
+    //multiple choice
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Multiple Choice'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Multiple Choice Label' } });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'Opt-A' } });
+    fireEvent.change(screen.getAllByTestId('option-input')[1], { target: { value: 'Opt-B' } });
+
+    // dropdown
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Dropdown'));
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Dropdown Label' } });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'Opt-X' } });
+    fireEvent.change(screen.getAllByTestId('option-input')[1], { target: { value: 'Opt-Y' } });
+
+    // opt-in
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Opt In'));
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Opt In Label' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Single Choice Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Multiple Choice Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Dropdown Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Opt In Label');
     });
   });
 });
