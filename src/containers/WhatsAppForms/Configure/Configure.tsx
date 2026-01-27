@@ -230,10 +230,8 @@ export const Configure = () => {
             <ArrowLeftIcon />
           </div>
 
-          <p>
-            {previewingVersion !== null ? `Viewing Version ${previewingVersion}` : flowName}
-            {isPublished && !previewingVersion}
-          </p>
+          <p>{previewingVersion !== null ? `Viewing Version ${previewingVersion}` : flowName}</p>
+          {isPublished && <span className={styles.PublishedBadge}>Published</span>}
         </div>
 
         <div className={styles.Buttonsscre}>

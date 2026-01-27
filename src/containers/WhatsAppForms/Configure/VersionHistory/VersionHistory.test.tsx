@@ -164,7 +164,6 @@ describe('<VersionHistory />', () => {
       expect(screen.getByText('Are you sure you want to revert?')).toBeInTheDocument();
     });
 
-    // Use getByTestId to get the dialog's revert button (ok-button) instead of getByText
     const dialogRevertButton = screen.getByTestId('ok-button');
     fireEvent.click(dialogRevertButton);
 
