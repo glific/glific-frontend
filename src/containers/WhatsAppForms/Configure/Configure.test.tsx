@@ -305,23 +305,28 @@ describe('<Configure />', () => {
     const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
     Object.defineProperty(file, 'size', { value: 100 * 1024 }); // 100KB
 
-    const mockFileReader = {
-      readAsDataURL: vi.fn(),
-      onload: null as any,
-      onerror: null as any,
-      result: 'data:image/png;base64,fakebase64content',
-    };
-
-    vi.spyOn(window, 'FileReader').mockImplementation(() => mockFileReader as any);
+    const mockResult = 'data:image/png;base64,fakebase64content';
+    vi.spyOn(window, 'FileReader').mockImplementation(
+      () =>
+        ({
+          readAsDataURL: vi.fn(function (this: any) {
+            this.result = mockResult;
+            setTimeout(() => {
+              if (this.onload) {
+                this.onload({ target: { result: mockResult } });
+              }
+            }, 0);
+          }),
+          onload: null,
+          onerror: null,
+          result: null,
+        }) as any
+    );
 
     const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
     expect(fileInput).toBeInTheDocument();
 
     fireEvent.change(fileInput, { target: { files: [file] } });
-
-    act(() => {
-      mockFileReader.onload({ target: { result: mockFileReader.result } });
-    });
 
     await waitFor(() => {
       const previewImage = screen.getByAltText('Uploaded media');
@@ -400,21 +405,26 @@ describe('<Configure />', () => {
     const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
     Object.defineProperty(file, 'size', { value: 100 * 1024 });
 
-    const mockFileReader = {
-      readAsDataURL: vi.fn(),
-      onload: null as any,
-      onerror: null as any,
-      result: 'data:image/png;base64,fakebase64content',
-    };
-
-    vi.spyOn(window, 'FileReader').mockImplementation(() => mockFileReader as any);
+    const mockResult = 'data:image/png;base64,fakebase64content';
+    vi.spyOn(window, 'FileReader').mockImplementation(
+      () =>
+        ({
+          readAsDataURL: vi.fn(function (this: any) {
+            this.result = mockResult;
+            setTimeout(() => {
+              if (this.onload) {
+                this.onload({ target: { result: mockResult } });
+              }
+            }, 0);
+          }),
+          onload: null,
+          onerror: null,
+          result: null,
+        }) as any
+    );
 
     const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
     fireEvent.change(fileInput, { target: { files: [file] } });
-
-    act(() => {
-      mockFileReader.onload({ target: { result: mockFileReader.result } });
-    });
 
     await waitFor(() => {
       expect(screen.getByAltText('Uploaded media')).toBeInTheDocument();
@@ -446,7 +456,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('test validations', async () => {
+  test('it shows correct validations', async () => {
     render(wrapper());
 
     await waitFor(() => {
