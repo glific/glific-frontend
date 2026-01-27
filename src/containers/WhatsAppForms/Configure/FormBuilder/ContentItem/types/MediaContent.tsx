@@ -88,7 +88,7 @@ export const MediaContent = ({ data, onUpdate, type, isViewOnly = false }: Media
   };
 
   return (
-    <div className={styles.MediaContentContainer}>
+    <div className={styles.MediaContentContainer} data-testid="media-content">
       {!imageUrl ? (
         <>
           {!isViewOnly && (
@@ -149,6 +149,7 @@ export const MediaContent = ({ data, onUpdate, type, isViewOnly = false }: Media
               color="secondary"
               size="small"
               className={styles.DeleteButton}
+              data-testid="remove-media-button"
             >
               Remove
             </Button>

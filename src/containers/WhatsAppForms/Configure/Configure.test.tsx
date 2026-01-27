@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen, act } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
@@ -8,6 +8,19 @@ import Configure from './Configure';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
+
+let capturedOnDragEnd: ((event: any) => void) | null = null;
+
+vi.mock('@dnd-kit/core', async () => {
+  const actual = await vi.importActual<typeof import('@dnd-kit/core')>('@dnd-kit/core');
+  return {
+    ...actual,
+    DndContext: ({ children, onDragEnd }: any) => {
+      capturedOnDragEnd = onDragEnd;
+      return <div data-testid="dnd-context">{children}</div>;
+    },
+  };
+});
 
 vi.mock('react-router', async () => {
   const actual = await vi.importActual<typeof import('react-router')>('react-router');
@@ -274,6 +287,147 @@ describe('<Configure />', () => {
     });
   });
 
+  test('it uploads an image file successfully', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
+    Object.defineProperty(file, 'size', { value: 100 * 1024 }); // 100KB
+
+    const mockFileReader = {
+      readAsDataURL: vi.fn(),
+      onload: null as any,
+      onerror: null as any,
+      result: 'data:image/png;base64,fakebase64content',
+    };
+
+    vi.spyOn(window, 'FileReader').mockImplementation(() => mockFileReader as any);
+
+    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    expect(fileInput).toBeInTheDocument();
+
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    act(() => {
+      mockFileReader.onload({ target: { result: mockFileReader.result } });
+    });
+
+    await waitFor(() => {
+      const previewImage = screen.getByAltText('Uploaded media');
+      expect(previewImage).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Remove')).toBeInTheDocument();
+  });
+
+  test('it shows error for invalid file type', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-content'], 'test.pdf', { type: 'application/pdf' });
+
+    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Please select a valid image file (JPEG, PNG)')).toBeInTheDocument();
+    });
+  });
+
+  test('it shows error for file size exceeding 300KB', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'large-image.png', { type: 'image/png' });
+    Object.defineProperty(file, 'size', { value: 500 * 1024 }); // 500KB - exceeds 300KB limit
+
+    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/File size must be less than 300KB/)).toBeInTheDocument();
+    });
+  });
+
+  test('it removes uploaded image when Remove button is clicked', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
+    Object.defineProperty(file, 'size', { value: 100 * 1024 });
+
+    const mockFileReader = {
+      readAsDataURL: vi.fn(),
+      onload: null as any,
+      onerror: null as any,
+      result: 'data:image/png;base64,fakebase64content',
+    };
+
+    vi.spyOn(window, 'FileReader').mockImplementation(() => mockFileReader as any);
+
+    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    act(() => {
+      mockFileReader.onload({ target: { result: mockFileReader.result } });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Uploaded media')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Remove'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Drag and drop files')).toBeInTheDocument();
+      expect(screen.queryByAltText('Uploaded media')).not.toBeInTheDocument();
+    });
+  });
+
   test('it deletes a content item from the screen', async () => {
     render(wrapper());
 
@@ -316,6 +470,86 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Label is required')).toBeInTheDocument();
+    });
+  });
+
+  test('it reorders screens by dragging', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    const getContentItemNames = () => {
+      return screen.getAllByTestId('form-screen').map((item) => {
+        const title = item.querySelector('[class*="ContentTitle"]');
+        return title?.textContent || '';
+      });
+    };
+
+    const initialOrder = getContentItemNames();
+    expect(initialOrder).toHaveLength(2);
+
+    expect(capturedOnDragEnd).not.toBeNull();
+
+    act(() => {
+      capturedOnDragEnd!({
+        active: { id: 'screen_0_Text_0' },
+        over: { id: 'screen_0_Label_0' },
+      });
+    });
+
+    await waitFor(() => {
+      const newOrder = getContentItemNames();
+      expect(newOrder[0]).toBe(initialOrder[1]);
+      expect(newOrder[1]).toBe(initialOrder[0]);
+    });
+  });
+
+  test('it reorders content items by dragging', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('content-item')).toHaveLength(2);
+    });
+
+    const getContentItemNames = () => {
+      return screen.getAllByTestId('content-item').map((item) => {
+        const title = item.querySelector('[class*="ContentTitle"]');
+        return title?.textContent || '';
+      });
+    };
+
+    const getContentItemIds = () => {
+      return screen.getAllByTestId('content-item').map((item) => item.getAttribute('data-item-id'));
+    };
+
+    const initialOrder = getContentItemNames();
+    const itemIds = getContentItemIds();
+
+    expect(initialOrder).toHaveLength(2);
+    expect(itemIds[0]).not.toBeNull();
+    expect(itemIds[1]).not.toBeNull();
+
+    expect(capturedOnDragEnd).not.toBeNull();
+
+    act(() => {
+      capturedOnDragEnd!({
+        active: { id: itemIds[0] },
+        over: { id: itemIds[1] },
+      });
+    });
+
+    await waitFor(() => {
+      const newOrder = getContentItemNames();
+      expect(newOrder[0]).toBe(initialOrder[1]);
+      expect(newOrder[1]).toBe(initialOrder[0]);
     });
   });
 });

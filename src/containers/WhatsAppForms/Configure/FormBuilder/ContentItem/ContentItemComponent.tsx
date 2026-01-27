@@ -60,10 +60,11 @@ export const ContentItemComponent = ({
         isExpanded ? styles.Expanded : ''
       }`}
       data-testid="content-item"
+      data-item-id={item.id}
     >
       <div className={`${styles.ContentHeader} ${isExpanded && styles.ExpandedHeader}`}>
         {!isViewOnly && (
-          <div className={styles.DragHandle} {...attributes} {...listeners}>
+          <div className={styles.DragHandle} {...attributes} {...listeners} data-testid="content-drag-handle">
             <DragIndicatorIcon fontSize="small" />
           </div>
         )}
