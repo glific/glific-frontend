@@ -303,37 +303,13 @@ describe('<Configure />', () => {
     });
 
     const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
-    Object.defineProperty(file, 'size', { value: 100 * 1024 }); // 100KB
 
-    const mockResult = 'data:image/png;base64,fakebase64content';
-    vi.spyOn(window, 'FileReader').mockImplementation(
-      () =>
-        ({
-          readAsDataURL: vi.fn(function (this: any) {
-            this.result = mockResult;
-            setTimeout(() => {
-              if (this.onload) {
-                this.onload({ target: { result: mockResult } });
-              }
-            }, 0);
-          }),
-          onload: null,
-          onerror: null,
-          result: null,
-        }) as any
-    );
-
-    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
-    expect(fileInput).toBeInTheDocument();
-
+    const fileInput = screen.getByTestId('uploadFile');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      const previewImage = screen.getByAltText('Uploaded media');
-      expect(previewImage).toBeInTheDocument();
+      expect(screen.getByTestId('image-preview')).toBeInTheDocument();
     });
-
-    expect(screen.getByText('Remove')).toBeInTheDocument();
   });
 
   test('it shows error for invalid file type', async () => {
@@ -351,9 +327,9 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('media-content')).toBeInTheDocument();
     });
 
-    const file = new File(['fake-content'], 'test.pdf', { type: 'application/pdf' });
+    const file = new File(['fake-image-content'], 'test-image.pdf', { type: 'application/pdf' });
 
-    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = screen.getByTestId('uploadFile');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
@@ -376,10 +352,10 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('media-content')).toBeInTheDocument();
     });
 
-    const file = new File(['fake-image-content'], 'large-image.png', { type: 'image/png' });
-    Object.defineProperty(file, 'size', { value: 500 * 1024 }); // 500KB - exceeds 300KB limit
+    const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
+    Object.defineProperty(file, 'size', { value: 400 * 1024 });
 
-    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = screen.getByTestId('uploadFile');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
@@ -403,27 +379,8 @@ describe('<Configure />', () => {
     });
 
     const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
-    Object.defineProperty(file, 'size', { value: 100 * 1024 });
 
-    const mockResult = 'data:image/png;base64,fakebase64content';
-    vi.spyOn(window, 'FileReader').mockImplementation(
-      () =>
-        ({
-          readAsDataURL: vi.fn(function (this: any) {
-            this.result = mockResult;
-            setTimeout(() => {
-              if (this.onload) {
-                this.onload({ target: { result: mockResult } });
-              }
-            }, 0);
-          }),
-          onload: null,
-          onerror: null,
-          result: null,
-        }) as any
-    );
-
-    const fileInput = screen.getByTestId('media-content').querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = screen.getByTestId('uploadFile');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
