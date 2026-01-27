@@ -18,9 +18,11 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import WarningIcon from '@mui/icons-material/Warning';
 import { ContentItemComponent } from '../ContentItem/ContentItemComponent';
 import { ContentSelector } from '../ContentSelector/ContentSelector';
 import { ContentItem, Screen } from '../FormBuilder.types';
+import { hasScreenError } from '../FormBuilder.utils';
 import styles from './Screen.module.css';
 
 export interface ScreenComponentProps {
@@ -109,6 +111,7 @@ export const ScreenComponent = ({
         )}
 
         <span className={styles.ScreenTitle}>{screen.name}</span>
+        {hasScreenError(screen) && <WarningIcon fontSize="small" style={{ color: '#f44336', marginLeft: 'auto' }} />}
         <div className={styles.Actions}>
           {!isViewOnly && (
             <button

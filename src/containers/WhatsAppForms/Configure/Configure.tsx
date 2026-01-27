@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { setErrorMessage, setNotification } from 'common/notification';
 import setLogs from 'config/logs';
 import { PUBLISH_FORM, SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
@@ -9,7 +9,11 @@ import { useNavigate, useParams } from 'react-router';
 import styles from './Configure.module.css';
 import { FormBuilder } from './FormBuilder/FormBuilder';
 import { Screen } from './FormBuilder/FormBuilder.types';
-import { convertFlowJSONToFormBuilder, convertFormBuilderToFlowJSON } from './FormBuilder/FormBuilder.utils';
+import {
+  convertFlowJSONToFormBuilder,
+  convertFormBuilderToFlowJSON,
+  hasFormErrors,
+} from './FormBuilder/FormBuilder.utils';
 import { JSONViewer } from './JSONViewer/JSONViewer';
 import { Preview } from './Preview/Preview';
 import { Variables } from './Variables/Variables';
@@ -39,7 +43,7 @@ export const Configure = () => {
 
   const isViewOnly = isPublished || previewingVersion !== null;
 
-  const [saveWhatsappFormRevision] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
+  const [saveWhatsappFormRevision, { loading: isSaving }] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
     onError: (error) => {
       setNotification('Error saving form revision', 'warning');
       setLogs(error, 'error');
@@ -245,6 +249,10 @@ export const Configure = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => {
+                  if (hasFormErrors(screens)) {
+                    setNotification('Please fix all validation errors before publishing.', 'warning');
+                    return;
+                  }
                   setOpenDialog(true);
                 }}
               >
@@ -259,6 +267,12 @@ export const Configure = () => {
       </div>
 
       <div className={styles.ConfigureContainer}>
+        {!isSaving && (
+          <span className={styles.SavingIndicator}>
+            <CircularProgress size={14} thickness={5} color="inherit" />
+            Saving
+          </span>
+        )}
         <div className={styles.FlowBuilder}>
           <FormBuilder
             screens={screens}

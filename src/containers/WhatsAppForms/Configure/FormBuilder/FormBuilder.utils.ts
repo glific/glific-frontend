@@ -1,5 +1,42 @@
 import { Screen, ContentItem } from './FormBuilder.types';
 
+export const hasContentItemError = (item: ContentItem): boolean => {
+  const { data, type } = item;
+
+  if (type === 'Text') {
+    return !data.text || data.text.trim() === '';
+  }
+
+  if (type === 'Text Answer') {
+    return !data.label || data.label.trim() === '';
+  }
+
+  if (type === 'Selection') {
+    if (!data.label || data.label.trim() === '') return true;
+    if (!data.options || data.options.length === 0) return true;
+    return data.options.some((opt) => !opt.value || opt.value.trim() === '');
+  }
+
+  if (type === 'Media') {
+    return !data.text || data.text.trim() === '';
+  }
+
+  return false;
+};
+
+export const hasScreenError = (screen: Screen): boolean => {
+  const hasNameError = !screen.name || screen.name.trim() === '';
+  const hasButtonLabelError = !screen.buttonLabel || screen.buttonLabel.trim() === '';
+  return hasNameError || hasButtonLabelError;
+};
+
+export const hasFormErrors = (screens: Screen[]): boolean => {
+  return screens.some((screen) => {
+    if (hasScreenError(screen)) return true;
+    return screen.content.some((item) => hasContentItemError(item));
+  });
+};
+
 const getWhatsAppComponentType = (contentType: string, contentName: string): string => {
   // Text types
   if (contentType === 'Text') {
@@ -60,7 +97,7 @@ const generateFieldName = (variableName: string, baseLabel: string, screenIndex:
     return variableName.replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
   }
 
-  const baseName = (baseLabel || 'field').replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
+  const baseName = baseLabel.replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '') || `field_${fieldCounter}`;
   return `screen_${screenIndex}_${baseName}_${fieldCounter}`;
 };
 
@@ -76,7 +113,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'TextInput') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'input-type': data.inputType?.toLowerCase() || 'text',
       label: data.label,
@@ -88,7 +125,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'TextArea') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       label: data.label,
       name: fieldName,
@@ -99,7 +136,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'DatePicker') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       label: data.label,
       name: fieldName,
@@ -110,11 +147,11 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'RadioButtonsGroup') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: `${index}_${opt.value || `Option_${index + 1}`}`,
-        title: opt.value || `Option ${index + 1}`,
+        id: `${index}_${opt.value}`,
+        title: opt.value,
       })),
       label: data.label,
       name: fieldName,
@@ -124,11 +161,11 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'CheckboxGroup') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: `${index}_${opt.value || `Option_${index + 1}`}`,
-        title: opt.value || `Option ${index + 1}`,
+        id: `${index}_${opt.value}`,
+        title: opt.value,
       })),
       label: data.label,
       name: fieldName,
@@ -138,11 +175,11 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'Dropdown') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: `${index}_${opt.value || `Option_${index + 1}`}`,
-        title: opt.value || `Option ${index + 1}`,
+        id: `${index}_${opt.value}`,
+        title: opt.value,
       })),
       label: data.label,
       name: fieldName,
@@ -152,7 +189,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'OptIn') {
-    const fieldName = generateFieldName(data.variableName || '', data.label || 'Label', screenIndex, fieldCounter);
+    const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       label: data.label,
       name: fieldName,
@@ -330,7 +367,7 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
       if (item.type === 'Text Answer' || item.type === 'Selection') {
         const componentName = generateFieldName(
           item.data.variableName || '',
-          item.data.label || 'field',
+          item.data.label || '',
           index,
           fieldCounter
         );
@@ -406,7 +443,7 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
 
   if (type === 'TextInput') {
     contentItem.data = {
-      label: component.label || 'Label',
+      label: component.label || '',
       inputType: component['input-type'] || 'text',
       required: component.required || false,
       placeholder: component['helper-text'] || '',
@@ -416,7 +453,7 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
 
   if (type === 'TextArea') {
     contentItem.data = {
-      label: component.label || 'Label',
+      label: component.label || '',
       required: component.required || false,
       placeholder: component['helper-text'] || '',
     };
@@ -425,7 +462,7 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
 
   if (type === 'DatePicker') {
     contentItem.data = {
-      label: component.label || 'Label',
+      label: component.label || '',
       required: component.required || false,
       placeholder: component['helper-text'] || '',
     };
@@ -435,11 +472,11 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   if (['RadioButtonsGroup', 'CheckboxGroup', 'Dropdown'].includes(type)) {
     const dataSource = component['data-source'] || [];
     contentItem.data = {
-      label: component.label || 'Label',
+      label: component.label || '',
       required: component.required || false,
       options: dataSource.map((item: any, index: number) => ({
         id: item.id || `${index}_${item.title}`,
-        value: item.title || 'Option',
+        value: item.title || '',
       })),
     };
     return contentItem;

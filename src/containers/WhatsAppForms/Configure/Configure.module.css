@@ -30,6 +30,7 @@
   gap: 20px;
   padding: 20px;
   background-color: #fff;
+  position: relative;
 }
 
 .FlowBuilder {
@@ -61,6 +62,18 @@
   font-size: 0.875rem;
   font-weight: 500;
   margin-left: 1rem;
+}
+
+.SavingIndicator {
+  color: #119656;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  position: absolute;
+  right: 0;
 }
 
 @media (max-width: 1024px) {

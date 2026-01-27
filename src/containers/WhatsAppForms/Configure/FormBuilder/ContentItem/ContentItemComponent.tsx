@@ -4,8 +4,10 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import WarningIcon from '@mui/icons-material/Warning';
 import { IconButton } from '@mui/material';
 import { ContentItem } from '../FormBuilder.types';
+import { hasContentItemError } from '../FormBuilder.utils';
 import styles from './ContentItemComponent.module.css';
 import { MediaContent } from './types/MediaContent';
 import { SelectionContent } from './types/SelectionContent';
@@ -69,6 +71,7 @@ export const ContentItemComponent = ({
           </div>
         )}
         <span className={styles.ContentTitle}>{item.name}</span>
+        {hasContentItemError(item) && <WarningIcon fontSize="small" style={{ color: '#f44336', marginLeft: 'auto' }} />}
         <div className={styles.Actions}>
           {!isViewOnly && (
             <IconButton size="small" onClick={onDelete} aria-label="Delete content" data-testid="delete-content">
