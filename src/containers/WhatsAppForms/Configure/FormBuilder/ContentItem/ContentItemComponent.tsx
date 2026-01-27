@@ -59,6 +59,7 @@ export const ContentItemComponent = ({
       className={`${styles.ContentItemContainer} ${isDragging ? styles.Dragging : ''} ${
         isExpanded ? styles.Expanded : ''
       }`}
+      data-testid="content-item"
     >
       <div className={`${styles.ContentHeader} ${isExpanded && styles.ExpandedHeader}`}>
         {!isViewOnly && (
@@ -69,7 +70,7 @@ export const ContentItemComponent = ({
         <span className={styles.ContentTitle}>{item.name}</span>
         <div className={styles.Actions}>
           {!isViewOnly && (
-            <IconButton size="small" onClick={onDelete} aria-label="Delete content">
+            <IconButton size="small" onClick={onDelete} aria-label="Delete content" data-testid="delete-content">
               <DeleteOutlined fontSize="small" />
             </IconButton>
           )}

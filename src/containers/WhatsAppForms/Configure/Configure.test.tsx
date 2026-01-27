@@ -67,6 +67,14 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Screen 2');
+    });
+
+    // test screen toggle
+    fireEvent.click(screen.getAllByTestId('toggle-screen-expand')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Screen 1');
     });
 
     // deletes the screen
@@ -263,6 +271,51 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Multiple Choice Label');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Dropdown Label');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Opt In Label');
+    });
+  });
+
+  test('it deletes a content item from the screen', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('content-item')).toHaveLength(2);
+    });
+
+    fireEvent.click(screen.getAllByTestId('delete-content')[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('content-item')).toHaveLength(1);
+    });
+  });
+
+  test('test validations', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // screen name validation
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen name is required')).toBeInTheDocument();
+    });
+
+    // form field validations
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: '' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Label is required')).toBeInTheDocument();
     });
   });
 });

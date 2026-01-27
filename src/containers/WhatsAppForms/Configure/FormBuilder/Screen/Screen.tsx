@@ -124,6 +124,7 @@ export const ScreenComponent = ({
             className={styles.ExpandButton}
             onClick={onToggleExpanded}
             aria-label={isExpanded ? 'Collapse screen' : 'Expand screen'}
+            data-testid="toggle-screen-expand"
           >
             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </button>
