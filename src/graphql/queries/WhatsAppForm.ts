@@ -5,6 +5,7 @@ export const GET_LATEST_WHATSAPP_FORM_REVISION = gql`
     whatsappForm(id: $id) {
       whatsappForm {
         name
+        status
         revision {
           id
           definition
@@ -103,10 +104,9 @@ export const LIST_WHATSAPP_FORM_REVISIONS = gql`
   query ListWhatsappFormRevisions($whatsappFormId: ID!, $limit: Int) {
     listWhatsappFormRevisions(whatsappFormId: $whatsappFormId, limit: $limit) {
       id
-      whatsappFormId
       definition
       revisionNumber
-      userId
+      isCurrent
       insertedAt
       updatedAt
     }

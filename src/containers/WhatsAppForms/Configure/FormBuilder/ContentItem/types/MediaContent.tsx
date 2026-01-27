@@ -8,9 +8,10 @@ interface MediaContentProps {
   data: ContentItemData;
   onUpdate: (updates: Partial<ContentItem>) => void;
   type: string;
+  isViewOnly?: boolean;
 }
 
-export const MediaContent = ({ data, onUpdate, type }: MediaContentProps) => {
+export const MediaContent = ({ data, onUpdate, type, isViewOnly = false }: MediaContentProps) => {
   const [imageUrl, setImageUrl] = useState(data.text || '');
   const [error, setError] = useState('');
   const [isDragging, setIsDragging] = useState(false);
@@ -90,38 +91,43 @@ export const MediaContent = ({ data, onUpdate, type }: MediaContentProps) => {
     <div className={styles.MediaContentContainer}>
       {!imageUrl ? (
         <>
-          <div className={styles.MediaHeader}>
-            <h4 className={styles.MediaTitle}>Choose JPG or PNG file</h4>
-          </div>
-          <div
-            className={`${styles.UploadArea} ${isDragging ? styles.UploadAreaDragging : ''} ${
-              error || hasValidationError ? styles.UploadAreaError : ''
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-          >
-            <CloudUploadIcon className={styles.UploadIcon} />
-            <p className={styles.UploadText}>Drag and drop files</p>
-            <p className={styles.UploadSubtext}>
-              Or{' '}
-              <span className={styles.UploadLink} onClick={handleChooseFile}>
-                choose file on your device
-              </span>
-            </p>
-          </div>
-          {(error || hasValidationError) && (
-            <div className={styles.ErrorMessage}>
-              <span>⚠</span> {error || 'Image is required'}
-            </div>
+          {!isViewOnly && (
+            <>
+              <div className={styles.MediaHeader}>
+                <h4 className={styles.MediaTitle}>Choose JPG or PNG file</h4>
+              </div>
+              <div
+                className={`${styles.UploadArea} ${isDragging ? styles.UploadAreaDragging : ''} ${
+                  error || hasValidationError ? styles.UploadAreaError : ''
+                }`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+              >
+                <CloudUploadIcon className={styles.UploadIcon} />
+                <p className={styles.UploadText}>Drag and drop files</p>
+                <p className={styles.UploadSubtext}>
+                  Or{' '}
+                  <span className={styles.UploadLink} onClick={handleChooseFile}>
+                    choose file on your device
+                  </span>
+                </p>
+              </div>
+              {(error || hasValidationError) && (
+                <div className={styles.ErrorMessage}>
+                  <span>⚠</span> {error || 'Image is required'}
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png"
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+              />
+            </>
           )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg,image/png"
-            onChange={handleFileInputChange}
-            style={{ display: 'none' }}
-          />
+          {isViewOnly && <p>No image uploaded</p>}
         </>
       ) : (
         <div className={styles.ImagePreviewContainer}>
@@ -129,24 +135,26 @@ export const MediaContent = ({ data, onUpdate, type }: MediaContentProps) => {
         </div>
       )}
 
-      <div className={styles.FileInfo}>
-        <div>
-          <p>Maximum file size: 300kb</p>
-          <p>Acceptable file types: JPEG, PNG</p>
-        </div>
+      {!isViewOnly && (
+        <div className={styles.FileInfo}>
+          <div>
+            <p>Maximum file size: 300kb</p>
+            <p>Acceptable file types: JPEG, PNG</p>
+          </div>
 
-        {imageUrl && (
-          <Button
-            onClick={handleDelete}
-            variant="outlined"
-            color="secondary"
-            size="small"
-            className={styles.DeleteButton}
-          >
-            Remove
-          </Button>
-        )}
-      </div>
+          {imageUrl && (
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              color="secondary"
+              size="small"
+              className={styles.DeleteButton}
+            >
+              Remove
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

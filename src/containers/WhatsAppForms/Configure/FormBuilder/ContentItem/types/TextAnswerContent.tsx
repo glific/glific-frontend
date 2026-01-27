@@ -14,9 +14,10 @@ import styles from './ContentTypes.module.css';
 interface TextAnswerContentProps {
   item: ContentItem;
   onUpdate: (updates: Partial<ContentItem>) => void;
+  isViewOnly?: boolean;
 }
 
-export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) => {
+export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAnswerContentProps) => {
   const { data, name } = item;
 
   const isShortAnswer = name === 'Short Answer';
@@ -47,7 +48,7 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
   return (
     <div className={styles.ContentTypeContainer}>
       {isShortAnswer && (
-        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+        <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
           <InputLabel>Type</InputLabel>
           <Select value={data.inputType || 'Text'} label="Type" onChange={handleInputTypeChange}>
             {shortAnswerTypes.map((type) => (
@@ -65,11 +66,11 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
         placeholder="Label"
         value={data.label || ''}
         onChange={handleLabelChange}
-        error={hasError}
+        error={!isViewOnly && hasError}
         slotProps={{
-          htmlInput: { maxLength: 20 },
+          htmlInput: { maxLength: 20, readOnly: isViewOnly },
         }}
-        helperText={hasError ? 'Label is required' : `${(data.label || '').length}/20`}
+        helperText={!isViewOnly ? (hasError ? 'Label is required' : `${(data.label || '').length}/20`) : undefined}
         size="small"
         sx={{ mb: 2 }}
       />
@@ -86,9 +87,9 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
           value={data.placeholder || ''}
           onChange={handleInstructionsChange}
           slotProps={{
-            htmlInput: { maxLength: 80 },
+            htmlInput: { maxLength: 80, readOnly: isViewOnly },
           }}
-          helperText={`${(data.placeholder || '').length}/80`}
+          helperText={!isViewOnly ? `${(data.placeholder || '').length}/80` : undefined}
           size="small"
           sx={{ mb: 2 }}
         />
@@ -101,6 +102,7 @@ export const TextAnswerContent = ({ item, onUpdate }: TextAnswerContentProps) =>
               checked={data.required || false}
               onChange={(e) => handleRequiredChange(e.target.checked)}
               color="primary"
+              disabled={isViewOnly}
             />
           }
           label="Required"

@@ -26,6 +26,7 @@ export const FormBuilder = ({
   setExpandedScreenId,
   expandedContentId,
   setExpandedContentId,
+  isViewOnly = false,
 }: FormBuilderProps) => {
   const [internalScreens, setInternalScreens] = useState<Screen[]>([
     {
@@ -193,13 +194,19 @@ export const FormBuilder = ({
     <div className={styles.FormBuilder}>
       <div className={styles.Header}>
         <h2>Screens</h2>
-        <Button className={styles.AddButton} variant="contained" onClick={addNewScreen}>
-          + Add New
-        </Button>
+        {!isViewOnly && (
+          <Button className={styles.AddButton} variant="contained" onClick={addNewScreen}>
+            + Add New
+          </Button>
+        )}
       </div>
 
       <div className={styles.ScreensList}>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <DndContext
+          sensors={isViewOnly ? [] : sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={isViewOnly ? undefined : handleDragEnd}
+        >
           <SortableContext items={screens.map((s) => s.id)} strategy={verticalListSortingStrategy}>
             {screens.map((screen) => (
               <ScreenComponent
@@ -216,6 +223,7 @@ export const FormBuilder = ({
                 onReorderContent={(oldIndex: number, newIndex: number) => reorderContent(screen.id, oldIndex, newIndex)}
                 expandedContentId={expandedContentId}
                 setExpandedContentId={setExpandedContentId}
+                isViewOnly={isViewOnly}
               />
             ))}
           </SortableContext>

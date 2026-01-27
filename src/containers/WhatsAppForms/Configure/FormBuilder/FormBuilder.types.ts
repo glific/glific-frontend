@@ -38,4 +38,5 @@ export interface FormBuilderProps {
   setExpandedScreenId: (id: string | null) => void;
   expandedContentId: string | null;
   setExpandedContentId: (id: string | null) => void;
+  isViewOnly?: boolean;
 }

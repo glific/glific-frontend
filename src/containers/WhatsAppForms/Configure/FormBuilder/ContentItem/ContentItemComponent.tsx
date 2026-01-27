@@ -18,6 +18,7 @@ interface ContentItemComponentProps {
   onToggleExpanded: () => void;
   onDelete: () => void;
   onUpdate: (updates: Partial<ContentItem>) => void;
+  isViewOnly?: boolean;
 }
 
 export const ContentItemComponent = ({
@@ -26,6 +27,7 @@ export const ContentItemComponent = ({
   onToggleExpanded,
   onDelete,
   onUpdate,
+  isViewOnly = false,
 }: ContentItemComponentProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -40,13 +42,13 @@ export const ContentItemComponent = ({
   const renderContentEditor = () => {
     switch (item.type) {
       case 'Text':
-        return <TextContent onUpdate={onUpdate} item={item} />;
+        return <TextContent onUpdate={onUpdate} item={item} isViewOnly={isViewOnly} />;
       case 'Media':
-        return <MediaContent data={item.data} onUpdate={onUpdate} type={item.type} />;
+        return <MediaContent data={item.data} onUpdate={onUpdate} type={item.type} isViewOnly={isViewOnly} />;
       case 'Text Answer':
-        return <TextAnswerContent item={item} onUpdate={onUpdate} />;
+        return <TextAnswerContent item={item} onUpdate={onUpdate} isViewOnly={isViewOnly} />;
       case 'Selection':
-        return <SelectionContent item={item} onUpdate={onUpdate} />;
+        return <SelectionContent item={item} onUpdate={onUpdate} isViewOnly={isViewOnly} />;
     }
   };
 
@@ -59,14 +61,18 @@ export const ContentItemComponent = ({
       }`}
     >
       <div className={`${styles.ContentHeader} ${isExpanded && styles.ExpandedHeader}`}>
-        <div className={styles.DragHandle} {...attributes} {...listeners}>
-          <DragIndicatorIcon fontSize="small" />
-        </div>
+        {!isViewOnly && (
+          <div className={styles.DragHandle} {...attributes} {...listeners}>
+            <DragIndicatorIcon fontSize="small" />
+          </div>
+        )}
         <span className={styles.ContentTitle}>{item.name}</span>
         <div className={styles.Actions}>
-          <IconButton size="small" onClick={onDelete} aria-label="Delete content">
-            <DeleteOutlined fontSize="small" />
-          </IconButton>
+          {!isViewOnly && (
+            <IconButton size="small" onClick={onDelete} aria-label="Delete content">
+              <DeleteOutlined fontSize="small" />
+            </IconButton>
+          )}
           <IconButton size="small" onClick={onToggleExpanded} aria-label="Toggle expand">
             {isExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
           </IconButton>

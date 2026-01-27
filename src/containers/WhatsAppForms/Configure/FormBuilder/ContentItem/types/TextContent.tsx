@@ -6,9 +6,10 @@ import styles from './ContentTypes.module.css';
 interface TextContentProps {
   item: ContentItem;
   onUpdate: (updates: Partial<ContentItem>) => void;
+  isViewOnly?: boolean;
 }
 
-export const TextContent = ({ item, onUpdate }: TextContentProps) => {
+export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentProps) => {
   const { data, name } = item;
 
   const textTypes = formComponenets.find((component) => component.name === 'Text')?.children || [];
@@ -26,7 +27,7 @@ export const TextContent = ({ item, onUpdate }: TextContentProps) => {
 
   return (
     <div className={styles.ContentTypeContainer}>
-      <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+      <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
         <InputLabel>Type</InputLabel>
         <Select value={name || ''} label="Type" onChange={handleTypeChange}>
           {textTypes.map((child) => (
@@ -45,11 +46,11 @@ export const TextContent = ({ item, onUpdate }: TextContentProps) => {
         placeholder="Enter text content"
         value={data.text || ''}
         onChange={handleTextChange}
-        error={hasError}
+        error={!isViewOnly && hasError}
         slotProps={{
-          htmlInput: { maxLength: 80 },
+          htmlInput: { maxLength: 80, readOnly: isViewOnly },
         }}
-        helperText={hasError ? 'Text is required' : `${(data.text || '').length}/80`}
+        helperText={!isViewOnly ? (hasError ? 'Text is required' : `${(data.text || '').length}/80`) : undefined}
         size="small"
       />
     </div>

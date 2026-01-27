@@ -36,6 +36,7 @@ export interface ScreenComponentProps {
   onReorderContent: (oldIndex: number, newIndex: number) => void;
   expandedContentId: string | null;
   setExpandedContentId: (id: string | null) => void;
+  isViewOnly?: boolean;
 }
 
 export const ScreenComponent = ({
@@ -51,6 +52,7 @@ export const ScreenComponent = ({
   onReorderContent,
   expandedContentId,
   setExpandedContentId,
+  isViewOnly = false,
 }: ScreenComponentProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: screen.id });
 
@@ -95,15 +97,19 @@ export const ScreenComponent = ({
   return (
     <div ref={setNodeRef} style={style} className={`${styles.ScreenContainer} ${isDragging ? styles.Dragging : ''}`}>
       <div className={styles.ScreenHeader}>
-        <div className={styles.DragHandle} {...attributes} {...listeners}>
-          <DragIndicatorIcon />
-        </div>
+        {!isViewOnly && (
+          <div className={styles.DragHandle} {...attributes} {...listeners}>
+            <DragIndicatorIcon />
+          </div>
+        )}
 
         <span className={styles.ScreenTitle}>{screen.name}</span>
         <div className={styles.Actions}>
-          <button className={styles.DeleteButton} onClick={onDelete} aria-label="Delete screen">
-            <DeleteOutlined />
-          </button>
+          {!isViewOnly && (
+            <button className={styles.DeleteButton} onClick={onDelete} aria-label="Delete screen">
+              <DeleteOutlined />
+            </button>
+          )}
           <button
             className={styles.ExpandButton}
             onClick={onToggleExpanded}
@@ -126,15 +132,20 @@ export const ScreenComponent = ({
                 value={screen.name}
                 onChange={handleNameChange}
                 maxLength={30}
+                readOnly={isViewOnly}
               />
-              <span className={styles.CharCount}>{screen.name.length}/30</span>
+              {!isViewOnly && <span className={styles.CharCount}>{screen.name.length}/30</span>}
             </div>
-            {hasNameError && <div className={styles.ErrorMessage}>Screen name is required</div>}
+            {hasNameError && !isViewOnly && <div className={styles.ErrorMessage}>Screen name is required</div>}
           </div>
 
           {screen.content.length !== 0 && (
             <div className={styles.LayoutArea}>
-              <DndContext sensors={contentSensors} collisionDetection={closestCenter} onDragEnd={handleContentDragEnd}>
+              <DndContext
+                sensors={isViewOnly ? [] : contentSensors}
+                collisionDetection={closestCenter}
+                onDragEnd={isViewOnly ? undefined : handleContentDragEnd}
+              >
                 <SortableContext items={screen.content.map((c) => c.id)} strategy={verticalListSortingStrategy}>
                   <div className={styles.ContentList}>
                     {screen.content.map((item) => (
@@ -145,6 +156,7 @@ export const ScreenComponent = ({
                         onToggleExpanded={() => setExpandedContentId(expandedContentId === item.id ? null : item.id)}
                         onDelete={() => onDeleteContent(item.id)}
                         onUpdate={(data) => onUpdateContent(item.id, data)}
+                        isViewOnly={isViewOnly}
                       />
                     ))}
                   </div>
@@ -153,7 +165,7 @@ export const ScreenComponent = ({
             </div>
           )}
 
-          <ContentSelector onSelectContent={onAddContent} />
+          {!isViewOnly && <ContentSelector onSelectContent={onAddContent} />}
 
           <div className={styles.Field}>
             <label className={styles.FieldLabel}>Button Label</label>
@@ -165,10 +177,11 @@ export const ScreenComponent = ({
                 value={screen.buttonLabel}
                 onChange={handleButtonLabelChange}
                 maxLength={30}
+                readOnly={isViewOnly}
               />
-              <span className={styles.CharCount}>{screen.buttonLabel.length}/30</span>
+              {!isViewOnly && <span className={styles.CharCount}>{screen.buttonLabel.length}/30</span>}
             </div>
-            {hasButtonLabelError && <div className={styles.ErrorMessage}>Button label is required</div>}
+            {hasButtonLabelError && !isViewOnly && <div className={styles.ErrorMessage}>Button label is required</div>}
           </div>
         </div>
       )}

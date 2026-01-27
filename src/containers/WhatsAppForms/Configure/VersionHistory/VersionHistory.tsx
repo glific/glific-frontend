@@ -2,16 +2,24 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { List, ListItem, ListItemText, ListItemButton, Button, Typography, CircularProgress, Box } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { LIST_WHATSAPP_FORM_REVISIONS } from 'graphql/queries/WhatsAppForm';
 import { REVERT_TO_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
 import { setNotification } from 'common/notification';
+import { DATE_TIME_FORMAT_WITH_AMPM_LONG } from 'common/constants';
 import setLogs from 'config/logs';
 import styles from './VersionHistory.module.css';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 interface VersionHistoryProps {
   whatsappFormId: string;
   onRevisionReverted: (data: any) => void;
+  onRevisionPreview: (revision: { definition: string; revisionNumber: number }) => void;
 }
 
 interface Revision {
@@ -20,13 +28,14 @@ interface Revision {
   insertedAt: string;
   updatedAt: string;
   definition: string;
+  isCurrent?: boolean;
 }
 
-export const VersionHistory = ({ whatsappFormId, onRevisionReverted }: VersionHistoryProps) => {
+export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionPreview }: VersionHistoryProps) => {
   const [selectedRevision, setSelectedRevision] = useState<Revision | null>(null);
   const [showRevertDialog, setShowRevertDialog] = useState(false);
 
-  const { data, loading } = useQuery(LIST_WHATSAPP_FORM_REVISIONS, {
+  const { data, loading, refetch } = useQuery(LIST_WHATSAPP_FORM_REVISIONS, {
     variables: { whatsappFormId, limit: 10 },
     skip: !whatsappFormId,
   });
@@ -37,6 +46,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted }: VersionHi
       setShowRevertDialog(false);
       setSelectedRevision(null);
       onRevisionReverted(data);
+      refetch();
     },
     onError: (error) => {
       setNotification('Error reverting to version', 'warning');
@@ -61,14 +71,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted }: VersionHi
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return dayjs.utc(dateString).tz('Asia/Kolkata').format(DATE_TIME_FORMAT_WITH_AMPM_LONG);
   };
 
   const revisions: Revision[] = data?.listWhatsappFormRevisions || [];
@@ -115,13 +118,16 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted }: VersionHi
                 )
               }
             >
-              <ListItemButton className={styles.RevisionItem}>
+              <ListItemButton
+                className={styles.RevisionItem}
+                onClick={() => onRevisionPreview({ definition: revision.definition, revisionNumber: revision.revisionNumber })}
+              >
                 <ListItemText
                   primary={
                     <Box className={styles.RevisionHeader}>
                       <Typography variant="body1" fontWeight={index === 0 ? 600 : 400}>
                         Version {revision.revisionNumber}
-                        {index === 0 && <span className={styles.CurrentBadge}>Current</span>}
+                        {revision.isCurrent && <span className={styles.CurrentBadge}>Current</span>}
                       </Typography>
                     </Box>
                   }

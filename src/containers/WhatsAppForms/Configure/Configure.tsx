@@ -27,10 +27,17 @@ export const Configure = () => {
 
   const [showJSON, setShowJSON] = useState(false);
   const [view, setView] = useState<'preview' | 'variables' | 'versions'>('preview');
+  const [isPublished, setIsPublished] = useState(false);
+  const [previewingVersion, setPreviewingVersion] = useState<number | null>(null);
+  const currentScreensRef = useRef<Screen[]>([]);
+
   const params = useParams();
   const isInitialMount = useRef(true);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasUnsavedChangesRef = useRef(false);
   const navigate = useNavigate();
+
+  const isViewOnly = isPublished || previewingVersion !== null;
 
   const [saveWhatsappFormRevision] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
     onError: (error) => {
@@ -52,8 +59,13 @@ export const Configure = () => {
     setShowJSON(true);
   };
 
+  const handleScreensChange = (newScreens: Screen[] | ((prev: Screen[]) => Screen[])) => {
+    hasUnsavedChangesRef.current = true;
+    setScreens(newScreens);
+  };
+
   const handleUpdateFieldLabel = (screenId: string, contentId: string, newVariableName: string) => {
-    setScreens((prevScreens) =>
+    handleScreensChange((prevScreens) =>
       prevScreens.map((screen) => {
         if (screen.id === screenId) {
           return {
@@ -76,11 +88,36 @@ export const Configure = () => {
         if (!flowJSON) return;
 
         const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
+        hasUnsavedChangesRef.current = false;
+        currentScreensRef.current = convertedScreens;
         setScreens(convertedScreens);
+        setPreviewingVersion(null);
       } catch (error) {
         setLogs(error, 'error');
       }
     }
+  };
+
+  const handleRevisionPreview = ({ definition, revisionNumber }: { definition: string; revisionNumber: number }) => {
+    try {
+      const flowJSON = JSON.parse(definition);
+      if (!flowJSON) return;
+
+      if (previewingVersion === null) {
+        currentScreensRef.current = screens;
+      }
+
+      const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
+      setScreens(convertedScreens);
+      setPreviewingVersion(revisionNumber);
+    } catch (error) {
+      setLogs(error, 'error');
+    }
+  };
+
+  const handleBackToEditing = () => {
+    setScreens(currentScreensRef.current);
+    setPreviewingVersion(null);
   };
 
   const handlePublishForm = () => {
@@ -100,17 +137,23 @@ export const Configure = () => {
     skip: !params.id,
     variables: { id: params.id },
     onCompleted: ({ whatsappForm }) => {
-      if (whatsappForm?.whatsappForm?.revision) {
+      if (whatsappForm?.whatsappForm) {
         setFlowName(whatsappForm?.whatsappForm?.name || '');
-        try {
-          const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
+        setIsPublished(whatsappForm?.whatsappForm?.status === 'PUBLISHED');
 
-          if (!flowJSON) return;
+        if (whatsappForm?.whatsappForm?.revision) {
+          try {
+            const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
 
-          const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
-          setScreens(convertedScreens);
-        } catch (error) {
-          setLogs(error, 'error');
+            if (!flowJSON) return;
+
+            const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
+            hasUnsavedChangesRef.current = false;
+            currentScreensRef.current = convertedScreens;
+            setScreens(convertedScreens);
+          } catch (error) {
+            setLogs(error, 'error');
+          }
         }
       }
     },
@@ -122,7 +165,7 @@ export const Configure = () => {
       return;
     }
 
-    if (!params.id || screens.length === 0) {
+    if (isViewOnly || !params.id || screens.length === 0) {
       return;
     }
 
@@ -131,8 +174,12 @@ export const Configure = () => {
     }
 
     saveTimeoutRef.current = setTimeout(() => {
-      const flowJSON = convertFormBuilderToFlowJSON(screens);
+      if (!hasUnsavedChangesRef.current) {
+        return;
+      }
 
+      const flowJSON = convertFormBuilderToFlowJSON(screens);
+      hasUnsavedChangesRef.current = false;
       saveWhatsappFormRevision({
         variables: {
           input: {
@@ -148,7 +195,7 @@ export const Configure = () => {
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [screens, params.id, saveWhatsappFormRevision]);
+  }, [screens, params.id, saveWhatsappFormRevision, isViewOnly]);
 
   let dialog;
   if (openDialog) {
@@ -172,26 +219,41 @@ export const Configure = () => {
         <div className={styles.Name}>
           <div
             onClick={() => {
-              navigate('/whatsapp-forms');
+              if (previewingVersion !== null) {
+                handleBackToEditing();
+              } else {
+                navigate('/whatsapp-forms');
+              }
             }}
             className={styles.BackIcon}
           >
             <ArrowLeftIcon />
           </div>
 
-          <p>{flowName}</p>
+          <p>
+            {previewingVersion !== null ? `Viewing Version ${previewingVersion}` : flowName}
+            {isPublished && !previewingVersion}
+          </p>
         </div>
 
         <div className={styles.Buttonsscre}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setOpenDialog(true);
-            }}
-          >
-            Publish
-          </Button>
+          {previewingVersion !== null ? (
+            <Button variant="contained" color="primary" onClick={handleBackToEditing}>
+              Back to Editing
+            </Button>
+          ) : (
+            !isPublished && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setOpenDialog(true);
+                }}
+              >
+                Publish
+              </Button>
+            )
+          )}
           <Button variant="outlined" onClick={handleViewJSON}>
             View JSON
           </Button>
@@ -202,11 +264,12 @@ export const Configure = () => {
         <div className={styles.FlowBuilder}>
           <FormBuilder
             screens={screens}
-            onScreensChange={setScreens}
+            onScreensChange={handleScreensChange}
             expandedScreenId={expandedScreenId}
             setExpandedScreenId={setExpandedScreenId}
             expandedContentId={expandedContentId}
             setExpandedContentId={setExpandedContentId}
+            isViewOnly={isViewOnly}
           />
         </div>
         <div className={styles.Preview}>
@@ -234,7 +297,11 @@ export const Configure = () => {
           {view === 'variables' ? (
             <Variables screens={screens} onUpdateFieldLabel={handleUpdateFieldLabel} />
           ) : view === 'versions' ? (
-            <VersionHistory whatsappFormId={params.id || ''} onRevisionReverted={handleRevisionReverted} />
+            <VersionHistory
+              whatsappFormId={params.id || ''}
+              onRevisionReverted={handleRevisionReverted}
+              onRevisionPreview={handleRevisionPreview}
+            />
           ) : (
             <Preview
               screens={screens}
