@@ -38,7 +38,9 @@ export const JSONViewer = ({ screens, onClose }: JSONViewerProps) => {
             {copySuccess ? 'Copied!' : 'Copy JSON'}
           </Button>
         </div>
-        <pre className={styles.JsonCode}>{JSON.stringify(flowJSON, null, 2)}</pre>
+        <pre data-testid="json-preview" className={styles.JsonCode}>
+          {JSON.stringify(flowJSON, null, 2)}
+        </pre>
       </DialogContent>
     </Dialog>
   );

@@ -105,6 +105,11 @@ export const Variables = ({ screens, onUpdateFieldLabel }: VariablesProps) => {
                             handleSaveVariable(variable.screenId, variable.contentId);
                           }
                         }}
+                        slotProps={{
+                          htmlInput: {
+                            'data-testid': 'variable-name-input',
+                          },
+                        }}
                       />
                     ) : (
                       <div className={styles.VariableName}>{variable.payloadKey}</div>
@@ -123,9 +128,9 @@ export const Variables = ({ screens, onUpdateFieldLabel }: VariablesProps) => {
                   }}
                 >
                   {editingVariableId === variable.contentId ? (
-                    <CheckIcon fontSize="small" />
+                    <CheckIcon data-testid="save-icon" fontSize="small" />
                   ) : (
-                    <EditIcon fontSize="small" />
+                    <EditIcon data-testid="edit-icon" fontSize="small" />
                   )}
                 </IconButton>
               </div>

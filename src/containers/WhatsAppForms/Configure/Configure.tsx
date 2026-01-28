@@ -250,7 +250,7 @@ export const Configure = () => {
                 color="primary"
                 onClick={() => {
                   if (hasFormErrors(screens)) {
-                    setNotification('Please fix all validation errors before publishing.', 'warning');
+                    setNotification('Please fix the errors in the form before publishing.', 'warning');
                     return;
                   }
                   setOpenDialog(true);

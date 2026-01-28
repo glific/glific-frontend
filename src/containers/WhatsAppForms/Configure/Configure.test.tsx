@@ -527,7 +527,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('published form shows view-only mode', async () => {
+  test('published form shows view mode', async () => {
     render(wrapper(2));
 
     await waitFor(() => {
@@ -597,6 +597,46 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Successfully reverted to selected version', 'success');
+    });
+  });
+
+  test('it should rename the variables', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Variables'));
+
+    fireEvent.click(screen.getAllByTestId('edit-icon')[0]);
+
+    fireEvent.change(screen.getByTestId('variable-name-input'), { target: { value: 'new_variable_name' } });
+
+    fireEvent.click(screen.getAllByTestId('save-icon')[0]);
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-preview')).toHaveTextContent('new_variable_name');
+    });
+  });
+
+  test('form with errors shows notification on publish attempt', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '' } });
+
+    fireEvent.click(screen.getByText('Publish'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Please fix the errors in the form before publishing.', 'warning');
     });
   });
 });
