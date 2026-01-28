@@ -207,7 +207,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('should navigate to edit template page', async () => {
-    const { getByText, getAllByTestId, getAllByText, getAllByTitle } = render(wrapper());
+    const { getByText } = render(wrapper());
 
     await waitFor(() => {
       expect(getByText('WhatsApp Forms')).toBeInTheDocument();
@@ -222,7 +222,8 @@ describe('<WhatsAppFormList />', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/1/edit');
     });
   });
-  test('should open the link dialog on clicking the link icon', async () => {
+
+  test('should open the link  clicking the link icon', async () => {
     const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
 
     const select = getAllByRole('combobox')[0];

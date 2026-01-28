@@ -236,26 +236,7 @@ const countWhatsappForms = {
   },
   result: {
     data: {
-      listWhatsappForms: [
-        {
-          id: '3',
-          name: 'This is form name',
-          status: 'PUBLISHED',
-          description: 'This is test form',
-          metaFlowId: '1473834353902269',
-          categories: ['customer_support'],
-          revision: {
-            definition: JSON.stringify(formJson),
-          },
-          sheet: {
-            id: 123,
-            label: 'Test Sheet',
-            url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
-          },
-        },
-      ],
+      countWhatsappForms: 1,
     },
   },
 };
@@ -318,7 +299,9 @@ const listWhatsappFormsInitial = {
           description: 'This is test form',
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
-          definition: JSON.stringify(formJson),
+          revision: {
+            definition: JSON.stringify(formJson),
+          },
           sheet: {
             id: 123,
             label: 'Test Sheet',
