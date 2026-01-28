@@ -33,7 +33,7 @@ export const Promotion = () => {
           <div className={styles.Image}>
             <span className={styles.Title}>Glific AI Chatbot Accelerator</span>
             <span className={styles.Subtitle}>Applications OPEN NOW!</span>
-            <span className={styles.Caption}>For NGOs already using Glific.</span>
+            <span className={styles.Caption}>For NGOs already using Glific</span>
           </div>
 
           <div className={styles.Points}>
