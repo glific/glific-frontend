@@ -103,6 +103,12 @@
   margin-top: 4px;
 }
 
+.Caption {
+  font-size: 1rem;
+  color: #073F24;
+  margin: 0.5rem 0;
+}
+
 .Points {
   margin: 20px 20px 0;
   text-align: center;
@@ -112,7 +118,7 @@
   color: #073f24;
   font-size: clamp(13px, 1vw, 15px);
   line-height: 1.6;
-  text-align: justify; /* This will make both sides straight */
+  text-align: justify;
   text-justify: inter-word;
   align-self: stretch;
 }
@@ -129,27 +135,25 @@
 }
 
 .ButtonContainer {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  display: flex;
+  width: 100%;
+  gap: 1rem;
   padding: 20px;
 }
 
-.ButtonContainer a:last-child {
-  grid-column: 1 / -1;
-}
 
 .PrimaryButton,
 .SecondaryButton {
   padding: 14px 16px;
   text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
   font-size: 14px;
   font-weight: 600;
   border-radius: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 .PrimaryButton {
