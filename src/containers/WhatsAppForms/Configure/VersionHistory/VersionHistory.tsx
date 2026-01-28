@@ -38,6 +38,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
   const { data, loading, refetch } = useQuery(LIST_WHATSAPP_FORM_REVISIONS, {
     variables: { whatsappFormId, limit: 10 },
     skip: !whatsappFormId,
+    fetchPolicy: 'network-only',
   });
 
   const [revertToRevision, { loading: reverting }] = useMutation(REVERT_TO_WHATSAPP_FORM_REVISION, {
@@ -106,7 +107,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
               key={revision.id}
               disablePadding
               secondaryAction={
-                index !== 0 && (
+                index !== 0 ? (
                   <Button
                     size="small"
                     startIcon={<RestoreIcon />}
@@ -116,21 +117,23 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
                   >
                     Revert
                   </Button>
+                ) : (
+                  revision.isCurrent && <span className={styles.CurrentBadge}>Current</span>
                 )
               }
             >
               <ListItemButton
                 className={styles.RevisionItem}
-                onClick={() =>
-                  onRevisionPreview({ definition: revision.definition, revisionNumber: revision.revisionNumber })
-                }
+                onClick={() => {
+                  if (revision.isCurrent) return;
+                  onRevisionPreview({ definition: revision.definition, revisionNumber: revision.revisionNumber });
+                }}
               >
                 <ListItemText
                   primary={
                     <Box className={styles.RevisionHeader}>
                       <Typography variant="body1" fontWeight={index === 0 ? 600 : 400}>
                         Version {revision.revisionNumber}
-                        {revision.isCurrent && <span className={styles.CurrentBadge}>Current</span>}
                       </Typography>
                     </Box>
                   }

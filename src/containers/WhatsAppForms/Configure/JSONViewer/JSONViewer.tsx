@@ -23,25 +23,21 @@ export const JSONViewer = ({ screens, onClose }: JSONViewerProps) => {
   };
 
   return (
-    <Dialog open={true} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        <div className={styles.DialogHeader}>
-          <span>Form JSON</span>
-          <IconButton onClick={onClose} size="small">
+    <div className={styles.JsonViewerContainer}>
+      <div className={styles.JsonActions}>
+        <div className={styles.Header}>
+          <IconButton className={styles.CloseButton} onClick={onClose} size="small">
             <CloseIcon />
           </IconButton>
+          <span>Form JSON</span>
         </div>
-      </DialogTitle>
-      <DialogContent dividers>
-        <div className={styles.JsonActions}>
-          <Button variant="outlined" startIcon={<ContentCopyIcon />} onClick={handleCopyJSON} size="small">
-            {copySuccess ? 'Copied!' : 'Copy JSON'}
-          </Button>
-        </div>
-        <pre data-testid="json-preview" className={styles.JsonCode}>
-          {JSON.stringify(flowJSON, null, 2)}
-        </pre>
-      </DialogContent>
-    </Dialog>
+        <Button variant="outlined" startIcon={<ContentCopyIcon />} onClick={handleCopyJSON} size="small">
+          {copySuccess ? 'Copied!' : 'Copy JSON'}
+        </Button>
+      </div>
+      <pre data-testid="json-preview" className={styles.JsonCode}>
+        {JSON.stringify(flowJSON, null, 2)}
+      </pre>
+    </div>
   );
 };

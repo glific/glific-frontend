@@ -8,6 +8,7 @@ import styles from './Variables.module.css';
 interface VariablesProps {
   screens: Screen[];
   onUpdateFieldLabel: (screenId: string, contentId: string, newLabel: string) => void;
+  isViewOnly: boolean;
 }
 
 interface VariableItem {
@@ -57,7 +58,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
   return variables;
 };
 
-export const Variables = ({ screens, onUpdateFieldLabel }: VariablesProps) => {
+export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: VariablesProps) => {
   const [editingVariableId, setEditingVariableId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
 
@@ -116,23 +117,25 @@ export const Variables = ({ screens, onUpdateFieldLabel }: VariablesProps) => {
                     )}
                   </div>
                 </div>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    if (editingVariableId === variable.contentId) {
-                      handleSaveVariable(variable.screenId, variable.contentId);
-                    } else {
-                      const editableVariableName = variable.variableName || variable.payloadKey;
-                      handleEditVariable(variable.contentId, editableVariableName);
-                    }
-                  }}
-                >
-                  {editingVariableId === variable.contentId ? (
-                    <CheckIcon data-testid="save-icon" fontSize="small" />
-                  ) : (
-                    <EditIcon data-testid="edit-icon" fontSize="small" />
-                  )}
-                </IconButton>
+                {!isViewOnly && (
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      if (editingVariableId === variable.contentId) {
+                        handleSaveVariable(variable.screenId, variable.contentId);
+                      } else {
+                        const editableVariableName = variable.variableName || variable.payloadKey;
+                        handleEditVariable(variable.contentId, editableVariableName);
+                      }
+                    }}
+                  >
+                    {editingVariableId === variable.contentId ? (
+                      <CheckIcon data-testid="save-icon" fontSize="small" />
+                    ) : (
+                      <EditIcon data-testid="edit-icon" fontSize="small" />
+                    )}
+                  </IconButton>
+                )}
               </div>
             ))}
           </div>

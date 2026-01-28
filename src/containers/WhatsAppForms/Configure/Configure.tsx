@@ -238,7 +238,7 @@ export const Configure = () => {
           {isPublished && <span className={styles.PublishedBadge}>Published</span>}
         </div>
 
-        <div className={styles.Buttonsscre}>
+        <div>
           {previewingVersion !== null ? (
             <Button variant="contained" color="primary" onClick={handleBackToEditing}>
               Back to Editing
@@ -260,30 +260,37 @@ export const Configure = () => {
               </Button>
             )
           )}
-          <Button variant="outlined" onClick={handleViewJSON}>
-            View JSON
-          </Button>
+          {!showJSON && (
+            <Button variant="outlined" onClick={handleViewJSON}>
+              View JSON
+            </Button>
+          )}
         </div>
       </div>
 
       <div className={styles.ConfigureContainer}>
-        {!isSaving && (
+        {isSaving && (
           <span className={styles.SavingIndicator}>
             <CircularProgress size={14} thickness={5} color="inherit" />
             Saving
           </span>
         )}
         <div className={styles.FlowBuilder}>
-          <FormBuilder
-            screens={screens}
-            onScreensChange={handleScreensChange}
-            expandedScreenId={expandedScreenId}
-            setExpandedScreenId={setExpandedScreenId}
-            expandedContentId={expandedContentId}
-            setExpandedContentId={setExpandedContentId}
-            isViewOnly={isViewOnly}
-          />
+          {showJSON ? (
+            <JSONViewer screens={screens} onClose={() => setShowJSON(false)} />
+          ) : (
+            <FormBuilder
+              screens={screens}
+              onScreensChange={handleScreensChange}
+              expandedScreenId={expandedScreenId}
+              setExpandedScreenId={setExpandedScreenId}
+              expandedContentId={expandedContentId}
+              setExpandedContentId={setExpandedContentId}
+              isViewOnly={isViewOnly}
+            />
+          )}
         </div>
+
         <div className={styles.Preview}>
           <div className={styles.Toggle}>
             <ToggleButtonGroup
@@ -301,13 +308,15 @@ export const Configure = () => {
               <ToggleButton value="variables" aria-label="variables">
                 Variables
               </ToggleButton>
-              <ToggleButton value="versions" aria-label="versions">
-                Versions
-              </ToggleButton>
+              {!isPublished && (
+                <ToggleButton value="versions" aria-label="versions">
+                  Versions
+                </ToggleButton>
+              )}
             </ToggleButtonGroup>
           </div>
           {view === 'variables' ? (
-            <Variables screens={screens} onUpdateFieldLabel={handleUpdateFieldLabel} />
+            <Variables screens={screens} onUpdateFieldLabel={handleUpdateFieldLabel} isViewOnly={isViewOnly} />
           ) : view === 'versions' ? (
             <VersionHistory
               whatsappFormId={params.id || ''}
@@ -323,7 +332,7 @@ export const Configure = () => {
         </div>
       </div>
 
-      {showJSON && <JSONViewer screens={screens} onClose={() => setShowJSON(false)} />}
+      {/* {showJSON && } */}
     </>
   );
 };
