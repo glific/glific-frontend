@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Dialog, DialogTitle, DialogContent, IconButton, Button } from '@mui/material';
+import { IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Screen } from '../FormBuilder/FormBuilder.types';
