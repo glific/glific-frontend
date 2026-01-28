@@ -9,8 +9,6 @@ export const Promotion = () => {
   const APPLY_LINK =
     'https://docs.google.com/forms/d/e/1FAIpQLSde02kRz3ljFfji5WFQ514BcSVCRVlW-invWAfopSVHSpgF5w/viewform';
   const LEARN_MORE_LINK = 'https://drive.google.com/file/d/1q0xpv5xeIHJeGeiee_N4Qer2aQzBQ_-r/view';
-  const REFERRAL_LINK =
-    'https://docs.google.com/forms/d/e/1FAIpQLSd6cjfBCaSx_zvEdTo3tjKFiZVzjTOxJ8SAokv7Z9JZidYdNw/viewform';
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
@@ -35,24 +33,23 @@ export const Promotion = () => {
           <div className={styles.Image}>
             <span className={styles.Title}>Glific AI Chatbot Accelerator</span>
             <span className={styles.Subtitle}>Applications OPEN NOW!</span>
+            <span className={styles.Caption}>For NGOs already using Glific</span>
           </div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
               <p>
-                A selective, funded, hands-on <strong>6-month cohort</strong> for <strong>30 NGOs:</strong> 15 existing
-                Glific NGOs starting or deepening their AI journey, and 15 new NGOs building AI-powered WhatsApp
-                chatbots.
+                A <b>selective, funded, hands-on 6-month cohort</b> for Glific NGOs like yours — starting or deepening
+                their AI journey.
               </p>
 
               <p className={styles.Perks}>
-                <strong>Perks include:</strong> Platform fee waiver, AI & messaging credits, expert mentorship, and
-                performance-based grants to scale your impact.
+                <b>What you get:</b> Platform fee waiver, AI & messaging credits to experiment, Expert 1:1 mentorship to
+                guide you forward, Performance-based grants to scale.
               </p>
 
               <p>
-                All this for a <strong>one-time fee of ₹30K</strong> – no additional costs for 6 months (
-                <strong>₹2.5L+ value</strong>).
+                All this for <b>a one-time fee of ₹30K – no additional costs for 6 months</b> (₹2.5L+ value).
               </p>
             </div>
 
@@ -68,10 +65,6 @@ export const Promotion = () => {
 
             <a className={styles.SecondaryButton} href={LEARN_MORE_LINK} target="_blank" rel="noreferrer">
               Learn More
-            </a>
-
-            <a className={styles.SecondaryButton} href={REFERRAL_LINK} target="_blank" rel="noreferrer">
-              Submit Referral
             </a>
           </div>
         </>
