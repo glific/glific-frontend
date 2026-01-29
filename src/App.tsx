@@ -14,7 +14,7 @@ import { Logout } from 'containers/Auth/Logout/Logout';
 const App = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = !!getAuthSession('accessToken');
+  const isAuthenticated = !!getAuthSession('access_token');
 
   const sideDrawerValues = useMemo(
     () => ({
