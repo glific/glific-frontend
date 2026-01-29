@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react';
-import { IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Button, IconButton } from '@mui/material';
+import { copyToClipboard } from 'common/utils';
+import { useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
 import { convertFormBuilderToFlowJSON } from '../FormBuilder/FormBuilder.utils';
 import styles from './JSONViewer.module.css';
-import { copyToClipboard } from 'common/utils';
 
 interface JSONViewerProps {
   screens: Screen[];

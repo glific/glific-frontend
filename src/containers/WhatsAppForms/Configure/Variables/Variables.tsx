@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
-import { TextField, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, TextField } from '@mui/material';
+import { useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Variables.module.css';
 

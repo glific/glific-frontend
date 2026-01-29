@@ -1,8 +1,8 @@
-import { render, fireEvent, waitFor, screen, act } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
-import { vi } from 'vitest';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { vi } from 'vitest';
 
 import Configure from './Configure';
 

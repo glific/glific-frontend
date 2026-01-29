@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Screen, ContentItem } from '../FormBuilder/FormBuilder.types';
+import { ContentItem, Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
 
 interface PreviewProps {

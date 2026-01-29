@@ -1,6 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { ArrowLeftIcon } from '@mui/x-date-pickers';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Button } from 'components/UI/Form/Button/Button';
 import setLogs from 'config/logs';
 import { PUBLISH_FORM, SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
 import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
@@ -18,9 +21,6 @@ import { JSONViewer } from './JSONViewer/JSONViewer';
 import { Preview } from './Preview/Preview';
 import { Variables } from './Variables/Variables';
 import { VersionHistory } from './VersionHistory/VersionHistory';
-import { ArrowLeftIcon } from '@mui/x-date-pickers';
-import { Button } from 'components/UI/Form/Button/Button';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 export const Configure = () => {
   const [flowName, setFlowName] = useState('');

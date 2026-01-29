@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Button } from 'components/UI/Form/Button/Button';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './FormBuilder.module.css';
 import { ContentItemData, FormBuilderProps, Screen } from './FormBuilder.types';
 import { ScreenComponent } from './Screen/Screen';
