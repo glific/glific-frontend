@@ -183,7 +183,7 @@ export const publishWhatsappForm = {
   request: {
     query: PUBLISH_FORM,
     variables: {
-      id: '3',
+      id: '1',
     },
   },
   result: {
@@ -192,6 +192,7 @@ export const publishWhatsappForm = {
         id: '1',
         status: 'PUBLISHED',
       },
+      errors: null,
     },
   },
 };
@@ -782,6 +783,7 @@ export const WHATSAPP_FORM_MOCKS = [
   listRevisions,
   listRevisions,
   revertWhatsappFormRevisionMock,
+  publishWhatsappForm,
 ];
 
 export { syncWhatsappFormQueryWithErrors, syncWhatsappForm };

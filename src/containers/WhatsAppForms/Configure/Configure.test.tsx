@@ -631,4 +631,59 @@ describe('<Configure />', () => {
       expect(notificationSpy).toHaveBeenCalledWith('Please fix the errors in the form before publishing.', 'warning');
     });
   });
+
+  test("it should copy the json to clipboard when 'Copy to Clipboard' is clicked", async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const writeTextMock = vi.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: writeTextMock,
+      },
+    });
+
+    fireEvent.click(screen.getByText('Copy JSON'));
+
+    await waitFor(() => {
+      expect(writeTextMock).toHaveBeenCalled();
+    });
+
+    fireEvent.click(screen.getByText('Back to Editing'));
+
+    await waitFor(() => {
+      expect(screen.queryByText('Form JSON')).not.toBeInTheDocument();
+    });
+  });
+
+  test("it should publish the form when 'Publish' is clicked", async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Publish'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Publish Form')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Form published successfully', 'success');
+    });
+  });
 });
