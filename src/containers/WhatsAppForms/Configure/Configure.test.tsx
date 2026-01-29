@@ -540,14 +540,6 @@ describe('<Configure />', () => {
     });
   });
 
-  test('clicking on flow json should open json view', async () => {
-    render(wrapper());
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
-    });
-  });
-
   test('it shows the new definition when a version is clicked', async () => {
     render(wrapper());
 

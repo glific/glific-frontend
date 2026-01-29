@@ -47,6 +47,6 @@
   border-radius: 4px;
 }
 
-.jsonCode::-webkit-scrollbar-thumb:hover {
+.JsonCode::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }

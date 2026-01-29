@@ -96,6 +96,10 @@ export const SAVE_WHATSAPP_FORM_REVISION = gql`
         id
         revisionNumber
       }
+      errors {
+        key
+        message
+      }
     }
   }
 `;

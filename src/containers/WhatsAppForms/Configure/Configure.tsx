@@ -120,6 +120,7 @@ export const Configure = () => {
   };
 
   const handleBackToEditing = () => {
+    if (showJSON) setShowJSON(false);
     setScreens(currentScreensRef.current);
     setPreviewingVersion(null);
   };
@@ -143,7 +144,7 @@ export const Configure = () => {
     onCompleted: ({ whatsappForm }) => {
       if (whatsappForm?.whatsappForm) {
         setFlowName(whatsappForm?.whatsappForm?.name || '');
-        setIsPublished(whatsappForm?.whatsappForm?.status === 'PUBLISHED');
+        setIsPublished(whatsappForm?.whatsappForm?.status !== 'DRAFT');
 
         if (whatsappForm?.whatsappForm?.revision) {
           try {
@@ -161,6 +162,7 @@ export const Configure = () => {
         }
       }
     },
+    fetchPolicy: 'network-only',
   });
 
   useEffect(() => {
@@ -190,6 +192,9 @@ export const Configure = () => {
             whatsappFormId: params.id,
             definition: JSON.stringify(flowJSON),
           },
+        },
+        onError: () => {
+          hasUnsavedChangesRef.current = true;
         },
       });
     }, 1000);
@@ -239,7 +244,7 @@ export const Configure = () => {
         </div>
 
         <div>
-          {previewingVersion !== null ? (
+          {previewingVersion !== null || showJSON ? (
             <Button variant="contained" color="primary" onClick={handleBackToEditing}>
               Back to Editing
             </Button>

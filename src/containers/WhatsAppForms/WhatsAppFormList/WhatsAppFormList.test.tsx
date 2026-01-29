@@ -14,7 +14,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
 import { WhatsAppFormList } from './WhatsAppFormList';
-import { Configure as WhatsappFormsConfigure } from 'containers/WhatsAppForms/Configure/Configure';
+import Configure from 'containers/WhatsAppForms/Configure/Configure';
 export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
@@ -44,7 +44,7 @@ const wrapper = (extraMocks: any[] = [], initialEntry: string = '/whatsapp-forms
         <Routes>
           <Route path="/whatsapp-forms/add" element={<WhatsAppForms />} />
           <Route path="/whatsapp-forms/:id/edit" element={<WhatsAppForms />} />
-          <Route path=":id/configure" element={<WhatsappFormsConfigure />} />
+          <Route path="whatsapp-forms/:id/configure" element={<Configure />} />
           <Route path="/whatsapp-forms" element={<WhatsAppFormList />} />
         </Routes>
       </MemoryRouter>

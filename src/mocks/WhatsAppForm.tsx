@@ -723,7 +723,7 @@ const listRevisions = {
           revisionNumber: 20,
           updatedAt: '2026-01-27 06:55:07',
         },
-        ...Array(10)
+        ...Array(9)
           .fill(null)
           .map((_, i) => ({
             definition:

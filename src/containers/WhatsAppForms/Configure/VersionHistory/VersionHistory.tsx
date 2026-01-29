@@ -107,7 +107,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
               key={revision.id}
               disablePadding
               secondaryAction={
-                index !== 0 ? (
+                !revision.isCurrent ? (
                   <Button
                     size="small"
                     startIcon={<RestoreIcon />}
@@ -118,7 +118,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
                     Revert
                   </Button>
                 ) : (
-                  revision.isCurrent && <span className={styles.CurrentBadge}>Current</span>
+                  <span className={styles.CurrentBadge}>Current</span>
                 )
               }
             >

@@ -3,7 +3,6 @@
   border-radius: 8px;
   margin-bottom: 16px;
   transition: all 0.2s;
-  cursor: move;
 }
 
 .ScreenContainer.Dragging {

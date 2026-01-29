@@ -26,7 +26,8 @@ export const MediaContent = ({ data, onUpdate, type, isViewOnly = false }: Media
   };
 
   const handleFileSelect = async (file: File) => {
-    if (!file.type.startsWith('image/')) {
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
       setError('Please select a valid image file (JPEG, PNG)');
       return;
     }

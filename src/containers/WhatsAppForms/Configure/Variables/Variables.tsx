@@ -141,7 +141,7 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
           </div>
         </>
       ) : (
-        <p>No Variables for this screen.</p>
+        <p>No Variables </p>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Screen } from '../FormBuilder/FormBuilder.types';
 import { convertFormBuilderToFlowJSON } from '../FormBuilder/FormBuilder.utils';
 import styles from './JSONViewer.module.css';
+import { copyToClipboard } from 'common/utils';
 
 interface JSONViewerProps {
   screens: Screen[];
@@ -17,7 +18,7 @@ export const JSONViewer = ({ screens, onClose }: JSONViewerProps) => {
   const flowJSON = useMemo(() => convertFormBuilderToFlowJSON(screens), [screens]);
 
   const handleCopyJSON = () => {
-    navigator.clipboard.writeText(JSON.stringify(flowJSON, null, 2));
+    copyToClipboard(JSON.stringify(flowJSON, null, 2));
     setCopySuccess(true);
     setTimeout(() => setCopySuccess(false), 2000);
   };

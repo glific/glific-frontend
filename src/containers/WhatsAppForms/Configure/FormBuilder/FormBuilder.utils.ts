@@ -1,5 +1,16 @@
 import { Screen, ContentItem } from './FormBuilder.types';
 
+const generateScreenId = (name: string): string =>
+  name
+    .toLowerCase()
+    .replace(/\d+/g, (match) => {
+      const numbers = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+      return parseInt(match) < 10 ? numbers[parseInt(match)] : match;
+    })
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '_')
+    .trim();
+
 export const hasContentItemError = (item: ContentItem): boolean => {
   const { data, type } = item;
 
@@ -305,15 +316,7 @@ export const convertScreenToFlowJSON = (
     });
   }
 
-  const screenId = screen.name
-    .toLowerCase()
-    .replace(/\d+/g, (match) => {
-      const numbers = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-      return parseInt(match) < 10 ? numbers[parseInt(match)] : match;
-    })
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, '_')
-    .trim();
+  const screenId = generateScreenId(screen.name);
 
   const screenData = generateScreenData(previousScreensComponentNames);
 
@@ -340,17 +343,7 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   let previousScreensComponentNames: Array<{ name: string; fieldType: string }> = [];
 
   const flowScreens = screens.map((screen, index) => {
-    const screenIds = screens.map((s) =>
-      s.name
-        .toLowerCase()
-        .replace(/\d+/g, (match) => {
-          const numbers = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-          return parseInt(match) < 10 ? numbers[parseInt(match)] : match;
-        })
-        .replace(/[^a-z0-9\s]/g, '')
-        .replace(/\s+/g, '_')
-        .trim()
-    );
+    const screenIds = screens.map((s) => generateScreenId(s.name));
 
     const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
 
