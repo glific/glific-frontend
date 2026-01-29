@@ -1,9 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, Route, Routes } from 'react-router';
-
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
-
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SideDrawerContext } from 'context/session';
@@ -12,11 +10,14 @@ import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
+import TrialVideoModal from 'components/UI/TrialVideoModal/TrialVideoModal';
+const sessionData = getAuthSession('session');
 
 const App = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = !!getAuthSession('accessToken');
+
+  const isAuthenticated = !!getAuthSession('access_token');
 
   const sideDrawerValues = useMemo(
     () => ({
@@ -36,7 +37,6 @@ const App = () => {
     routes = <UnauthenticatedRoute />;
   }
 
-  // For logout action, we don't need to check if the user is logged in or not. Hence, adding it at top level
   routes = (
     <Routes>
       <Route path="/logout/:mode" element={<Logout />} />
@@ -47,7 +47,10 @@ const App = () => {
   return (
     <ApolloProvider client={gqlClient(navigate)}>
       <ErrorHandler />
-      <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
+      <SideDrawerContext.Provider value={sideDrawerValues}>
+        {routes}
+        {isAuthenticated && sessionData && <TrialVideoModal sessionData={sessionData} />}
+      </SideDrawerContext.Provider>
     </ApolloProvider>
   );
 };
