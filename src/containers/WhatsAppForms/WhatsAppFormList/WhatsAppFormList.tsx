@@ -256,6 +256,7 @@ export const WhatsAppFormList = () => {
       </Select>
     </FormControl>
   );
+
   const secondaryButton = (
     <Button
       variant="outlined"
@@ -264,7 +265,6 @@ export const WhatsAppFormList = () => {
       data-testid="syncWhatsappForm"
       onClick={() => handleFormUpdates()}
       loading={syncLoading}
-      aria-hidden="true"
     >
       Sync Whatsapp Forms
     </Button>

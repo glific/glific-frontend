@@ -203,7 +203,8 @@ describe('<WhatsAppFormList />', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/2/edit');
     });
   });
-  test('should open the link dialog on clicking the link icon', async () => {
+
+  test('should open the link  clicking the link icon', async () => {
     const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper());
 
     const select = getAllByRole('combobox')[0];
