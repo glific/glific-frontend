@@ -4,8 +4,10 @@ export const GET_WHATSAPP_FORM = gql`
   query WhatsappForm($id: ID!) {
     whatsappForm(id: $id) {
       whatsappForm {
-        definition
         description
+        revision {
+          definition
+        }
         categories
         id
         insertedAt
@@ -13,6 +15,10 @@ export const GET_WHATSAPP_FORM = gql`
         name
         status
         updatedAt
+        sheet {
+          id
+          url
+        }
       }
     }
   }
@@ -26,14 +32,29 @@ export const LIST_FORM_CATEGORIES = gql`
 
 export const LIST_WHATSAPP_FORMS = gql`
   query listWhatsappForms($filter: WhatsappFormFilter) {
-    listWhatsappForms(filter: $filter) {
+    whatsappForms: listWhatsappForms(filter: $filter) {
       id
       name
       status
       description
       metaFlowId
       categories
-      definition
+      revision {
+        definition
+      }
+      sheet {
+        id
+        label
+        url
+        isActive
+        sheetDataCount
+      }
     }
+  }
+`;
+
+export const COUNT_WHATSAPP_FORMS = gql`
+  query countWhatsappForms($filter: WhatsappFormFilter) {
+    countWhatsappForms(filter: $filter)
   }
 `;

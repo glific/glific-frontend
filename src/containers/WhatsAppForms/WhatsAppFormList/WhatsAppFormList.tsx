@@ -5,14 +5,16 @@ import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
+import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS, COUNT_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
+import { Button } from 'components/UI/Form/Button/Button';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -22,6 +24,7 @@ const queries = {
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
   publishFlowQuery: PUBLISH_FORM,
+  countQuery: COUNT_WHATSAPP_FORMS,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
@@ -85,6 +88,27 @@ export const WhatsAppFormList = () => {
       setErrorMessage(formatError(errors.message), 'An error occurred');
     },
   });
+  const handleFormUpdates = () => {
+    syncWhatsappForm();
+  };
+
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_FORM, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const errors = data?.syncWhatsappForm?.errors;
+      if (errors?.length) {
+        setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+      } else {
+        setNotification(
+          'Syncing of the WhatsApp forms has started in the background. Please check the Notifications page for updates.',
+          'success'
+        );
+      }
+    },
+    onError: () => {
+      setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+    },
+  });
 
   const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM, {
     onCompleted: () => {
@@ -127,8 +151,24 @@ export const WhatsAppFormList = () => {
     { label: 'Inactive', value: 'inactive' },
     { label: 'Draft', value: 'draft' },
   ];
-
+  const handleView = (id: any) => {
+    navigate(`/whatsapp-forms/${id}/edit`);
+  };
   const additionalAction = (item: any) => {
+    const linkAction = {
+      label: 'Link',
+      icon: <LinkIcon data-testid="link-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        window.open(item.sheet?.url);
+      },
+    };
+    const handleViewAction = {
+      label: 'View',
+      icon: <ViewIcon data-testid="view-form" />,
+      parameter: 'id',
+      dialog: handleView,
+    };
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -158,15 +198,19 @@ export const WhatsAppFormList = () => {
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
     };
-
     let actions = [];
 
+    if (item.sheet?.url) {
+      actions.push(linkAction);
+    }
+
     if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction];
+      actions.push(deactivateAction);
+      actions.push(handleViewAction);
     } else if (item.status === 'DRAFT') {
-      actions = [publishAction];
+      actions.push(publishAction);
     } else {
-      actions = [activateAction];
+      actions.push(activateAction);
     }
 
     return actions;
@@ -198,6 +242,19 @@ export const WhatsAppFormList = () => {
         ))}
       </Select>
     </FormControl>
+  );
+
+  const secondaryButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      className={styles.HsmUpdates}
+      data-testid="syncWhatsappForm"
+      onClick={() => handleFormUpdates()}
+      loading={syncLoading}
+    >
+      Sync Whatsapp Forms
+    </Button>
   );
 
   let dialog = null;
@@ -236,16 +293,23 @@ export const WhatsAppFormList = () => {
       </DialogBox>
     );
   }
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
 
   return (
     <>
       <List
-        {...queries}
         helpData={whatsappFormsInfo}
         title="WhatsApp Forms"
-        listItem="listWhatsappForms"
+        listItem="whatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
+        secondaryButton={secondaryButton}
+        {...queries}
+        {...columnAttributes}
         columnNames={columnNames}
         columns={getColumns}
         columnStyles={columnStyles}
@@ -255,6 +319,10 @@ export const WhatsAppFormList = () => {
         searchParameter={['name']}
         additionalAction={additionalAction}
         dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+        restrictedAction={(item: any) => ({
+          edit: item.status !== 'PUBLISHED',
+          delete: true,
+        })}
       />
       {dialog}
     </>

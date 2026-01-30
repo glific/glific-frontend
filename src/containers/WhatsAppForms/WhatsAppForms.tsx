@@ -38,6 +38,7 @@ export const WhatsAppForms = () => {
   const [categories, setCategories] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [extractedVariables, setExtractedVariables] = useState<string[]>([]);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const params = useParams();
 
   useQuery(GET_WHATSAPP_FORM, {
@@ -49,7 +50,6 @@ export const WhatsAppForms = () => {
       }
     },
   });
-
   let isEditing = false;
   if (params.id) {
     isEditing = true;
@@ -114,23 +114,30 @@ export const WhatsAppForms = () => {
     formJson,
     formCategories,
     description,
+    googleSheetUrl,
   };
 
-  const setPayload = ({ name, formJson, formCategories, description }: any) => {
+  const setPayload = ({ name, formJson, formCategories, description, googleSheetUrl }: any) => {
     const payload = {
       name,
       formJson,
       description,
       categories: formCategories.map((category: any) => category.id),
+      googleSheetUrl,
     };
 
     return payload;
   };
-  const setStates = ({ name, definition, description, categories }: any) => {
+
+  const setStates = ({ name, definition, description, categories, sheet, ...props }: any) => {
     setName(name);
     setDescription(description);
 
     setFormCategories(categories.map((c: string) => ({ id: c, name: c })));
+
+    if (sheet?.url) {
+      setGoogleSheetUrl(sheet.url);
+    }
 
     let parsedDefinition;
     try {
@@ -188,7 +195,16 @@ export const WhatsAppForms = () => {
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
       disabled: disabled,
     },
+    {
+      component: Input,
+      name: 'googleSheetUrl',
+      label: 'Google Sheet URL',
+      placeholder: 'Enter Google Sheet URL',
+      helperText: 'Provide a Google Sheet URL to store form responses automatically.',
+      disabled: disabled,
+    },
   ];
+
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
 
@@ -206,16 +222,16 @@ export const WhatsAppForms = () => {
 
     formCategories: Yup.array().min(1, 'At least one category must be selected.'),
   });
-
   if (loading) {
     return <Loading />;
   }
   return (
     <>
       <Heading
-        formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'}
+        formTitle={isEditing ? (disabled ? 'WhatsApp Form' : 'Edit WhatsApp Form') : 'Create WhatsApp Form'}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
+        headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
       />
       <div className={styles.FlowBuilderInfo}>
         <div className={styles.InfoContent}>
@@ -258,7 +274,9 @@ export const WhatsAppForms = () => {
             setStates={setStates}
             validationSchema={FormSchema}
             listItemName="Whatsapp Form"
+            isView={disabled}
             formFields={formFields}
+            errorButtonState={{ text: disabled ? 'Go Back' : 'Cancel', show: true }}
             redirectionLink={'whatsapp-forms'}
             listItem="whatsappForm"
             icon={<Update />}
@@ -269,10 +287,11 @@ export const WhatsAppForms = () => {
             buttonState={{
               text: 'Save Form',
               status: disabled,
-              show: true,
+              show: !disabled,
             }}
-            customHandler={(error: string) => {
-              setErrorMessage(formatError(error), 'An error occurred');
+            customHandler={(error: any) => {
+              if (typeof error === 'string') setErrorMessage(formatError(error), 'An error occurred');
+              else setErrorMessage(error[0]);
             }}
           />
         </div>
