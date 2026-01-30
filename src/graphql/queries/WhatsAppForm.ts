@@ -25,11 +25,9 @@ export const GET_WHATSAPP_FORM = gql`
         }
         categories
         id
-        insertedAt
         metaFlowId
         name
         status
-        updatedAt
         sheet {
           id
           url
@@ -62,8 +60,6 @@ export const LIST_WHATSAPP_FORMS = gql`
         id
         url
       }
-      insertedAt
-      updatedAt
     }
   }
 `;
@@ -89,8 +85,6 @@ export const GET_WHATSAPP_FORM_REVISION = gql`
         definition
         revisionNumber
         userId
-        insertedAt
-        updatedAt
       }
       errors {
         key
@@ -107,8 +101,6 @@ export const LIST_WHATSAPP_FORM_REVISIONS = gql`
       definition
       revisionNumber
       isCurrent
-      insertedAt
-      updatedAt
     }
   }
 `;
