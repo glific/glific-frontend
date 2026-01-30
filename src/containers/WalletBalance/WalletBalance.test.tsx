@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
 
 import {
   errorBalanceQuery,
