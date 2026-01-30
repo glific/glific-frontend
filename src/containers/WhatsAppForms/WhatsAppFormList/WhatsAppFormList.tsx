@@ -164,12 +164,14 @@ export const WhatsAppFormList = () => {
         window.open(item.sheet?.url);
       },
     };
+
     const handleViewAction = {
       label: 'View',
       icon: <ViewIcon data-testid="view-form" />,
       parameter: 'id',
       dialog: handleView,
     };
+
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,

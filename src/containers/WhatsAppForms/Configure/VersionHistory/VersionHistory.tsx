@@ -132,7 +132,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
                 <ListItemText
                   primary={
                     <Box className={styles.RevisionHeader}>
-                      <Typography variant="body1" fontWeight={index === 0 ? 600 : 400}>
+                      <Typography variant="body1" fontWeight={revision.isCurrent ? 600 : 400}>
                         Version {revision.revisionNumber}
                       </Typography>
                     </Box>

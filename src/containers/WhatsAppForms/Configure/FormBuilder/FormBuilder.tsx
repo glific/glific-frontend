@@ -114,10 +114,10 @@ export const FormBuilder = ({
   };
 
   const addContent = (screenId: string, category: string, item: string) => {
-    let defaultaData: ContentItemData = category === 'Text' ? { text: 'Text' } : { label: 'Label' };
+    let defaultData: ContentItemData = category === 'Text' ? { text: 'Text' } : { label: 'Label' };
     if (category === 'Selection') {
-      defaultaData = {
-        ...defaultaData,
+      defaultData = {
+        ...defaultData,
         options: [
           { id: '1', value: 'Option 1' },
           { id: '2', value: 'Option 2' },
@@ -129,7 +129,7 @@ export const FormBuilder = ({
       type: category,
       name: item,
       order: 0,
-      data: defaultaData,
+      data: defaultData,
     };
 
     setScreens(

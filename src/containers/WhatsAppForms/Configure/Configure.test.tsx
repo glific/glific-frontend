@@ -197,7 +197,7 @@ describe('<Configure />', () => {
 
     fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Paragraph Label' } });
 
-    // date pixker
+    // date picker
     fireEvent.click(screen.getByTestId('add-content-button'));
     fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
 

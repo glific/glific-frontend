@@ -179,8 +179,14 @@ export const WhatsAppForms = () => {
             if (typeof error === 'string') setErrorMessage(formatError(error), 'An error occurred');
             else setErrorMessage(error[0]);
           }}
-          afterSave={({ createWhatsappForm }: any) => {
-            navigate(`/whatsapp-forms/${createWhatsappForm?.whatsappForm?.id}/configure`);
+          afterSave={(result: any) => {
+            let formId = '';
+            if (result.createWhatsappForm) {
+              formId = result.createWhatsappForm.whatsappForm.id;
+            } else {
+              formId = result.updateWhatsappForm.whatsappForm.id;
+            }
+            navigate(`/whatsapp-forms/${formId}/configure`);
           }}
         />
       </div>

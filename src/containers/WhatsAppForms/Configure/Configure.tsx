@@ -47,6 +47,7 @@ export const Configure = () => {
     onError: (error) => {
       setNotification('Error saving form revision', 'warning');
       setLogs(error, 'error');
+      hasUnsavedChangesRef.current = true;
     },
   });
 
@@ -192,9 +193,6 @@ export const Configure = () => {
             whatsappFormId: params.id,
             definition: JSON.stringify(flowJSON),
           },
-        },
-        onError: () => {
-          hasUnsavedChangesRef.current = true;
         },
       });
     }, 1000);
