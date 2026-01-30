@@ -28,6 +28,7 @@ const wrapper = (id: number = 1) => {
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter initialEntries={[`/whatsapp-forms/${id}/configure`]}>
         <Routes>
+          <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
           <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
         </Routes>
       </MemoryRouter>
@@ -676,6 +677,9 @@ describe('<Configure />', () => {
 
     fireEvent.click(screen.getByText('Publish'));
 
+    fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+    fireEvent.click(screen.getByText('Publish'));
+
     await waitFor(() => {
       expect(screen.getByText('Publish Form')).toBeInTheDocument();
     });
@@ -684,6 +688,20 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Form published successfully', 'success');
+    });
+  });
+
+  test("should navigate back to whatsapp forms list when 'Back' is clicked", async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('back-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('WhatsApp Forms')).toBeInTheDocument();
     });
   });
 });

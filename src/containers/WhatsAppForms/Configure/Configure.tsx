@@ -233,6 +233,7 @@ export const Configure = () => {
               }
             }}
             className={styles.BackIcon}
+            data-testid="back-button"
           >
             <ArrowLeftIcon />
           </div>
