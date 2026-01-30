@@ -155,10 +155,10 @@ describe('<WalletBalance /> - Trial Organization', () => {
       },
     };
 
-    const mocks = [trialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
+    const trialMocks = [trialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
 
     render(
-      <MockedProvider mocks={mocks}>
+      <MockedProvider mocks={trialMocks}>
         <WalletBalance fullOpen={true} />
       </MockedProvider>
     );
@@ -188,10 +188,10 @@ describe('<WalletBalance /> - Trial Organization', () => {
       },
     };
 
-    const mocks = [nonTrialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
+    const nonTrialMocks = [nonTrialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
 
     render(
-      <MockedProvider mocks={mocks}>
+      <MockedProvider mocks={nonTrialMocks}>
         <WalletBalance fullOpen={true} />
       </MockedProvider>
     );
