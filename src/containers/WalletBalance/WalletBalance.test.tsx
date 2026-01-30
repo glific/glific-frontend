@@ -4,6 +4,8 @@ import { GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
 
 import {
   errorBalanceQuery,
+  trialOrganizationStatusQuery,
+  nonTrialOrganizationStatusQuery,
   walletBalanceHighQuery,
   walletBalanceHighSubscription,
   walletBalanceNull,
@@ -138,24 +140,7 @@ describe('<WalletBalance />', () => {
 
 describe('<WalletBalance /> - Trial Organization', () => {
   test('should not render for trial organization', async () => {
-    const trialOrgMock = {
-      request: {
-        query: GET_ORGANIZATION_STATUS,
-      },
-      result: {
-        data: {
-          organization: {
-            organization: {
-              isTrialOrg: true,
-              trialExpirationDate: '2025-02-15',
-              isSuspended: false,
-            },
-          },
-        },
-      },
-    };
-
-    const trialMocks = [trialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
+    const trialMocks = [...trialOrganizationStatusQuery, ...walletBalanceQuery, ...walletBalanceSubscription];
 
     render(
       <MockedProvider mocks={trialMocks}>
@@ -171,24 +156,7 @@ describe('<WalletBalance /> - Trial Organization', () => {
   });
 
   test('should render for non-trial organization', async () => {
-    const nonTrialOrgMock = {
-      request: {
-        query: GET_ORGANIZATION_STATUS,
-      },
-      result: {
-        data: {
-          organization: {
-            organization: {
-              isTrialOrg: false,
-              trialExpirationDate: null,
-              isSuspended: false,
-            },
-          },
-        },
-      },
-    };
-
-    const nonTrialMocks = [nonTrialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
+    const nonTrialMocks = [...nonTrialOrganizationStatusQuery, ...walletBalanceQuery, ...walletBalanceSubscription];
 
     render(
       <MockedProvider mocks={nonTrialMocks}>
