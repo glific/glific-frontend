@@ -24,7 +24,7 @@ export const TrialExpiryBanner = () => {
     ? Math.ceil((new Date(trialExpirationDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     : 0;
 
-  const shouldShowBanner = isTrialOrg && !isSuspended && daysRemaining > 0 && daysRemaining <= 7;
+  const shouldShowBanner = isTrialOrg && !isSuspended && daysRemaining > 0;
 
   if (!shouldShowBanner) return null;
 
