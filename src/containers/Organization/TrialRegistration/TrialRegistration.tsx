@@ -53,7 +53,7 @@ export const TrialRegistration = () => {
     organizationName: Yup.string()
       .required('Organization name is required')
       .matches(/^[A-Za-z\s]+$/, 'Organization name can only contain alphabets and spaces')
-      .min(5, 'Organization must be at least 5 characters'),
+      .min(2, 'Organization must be at least 2 characters'),
     username: Yup.string()
       .required('Your name is required')
       .matches(/^[A-Za-z\s]+$/, 'Name can only contain alphabets and spaces')
