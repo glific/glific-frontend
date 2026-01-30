@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
 
 import {
   errorBalanceQuery,
@@ -131,6 +132,76 @@ describe('<WalletBalance />', () => {
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
       expect(walletBalance).toBeInTheDocument();
+    });
+  });
+});
+
+describe('<WalletBalance /> - Trial Organization', () => {
+  test('should not render for trial organization', async () => {
+    const trialOrgMock = {
+      request: {
+        query: GET_ORGANIZATION_STATUS,
+      },
+      result: {
+        data: {
+          organization: {
+            organization: {
+              isTrialOrg: true,
+              trialExpirationDate: '2025-02-15',
+              isSuspended: false,
+            },
+          },
+        },
+      },
+    };
+
+    const mocks = [trialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
+
+    render(
+      <MockedProvider mocks={mocks}>
+        <WalletBalance fullOpen={true} />
+      </MockedProvider>
+    );
+
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('WalletBalance')).not.toBeInTheDocument();
+    });
+  });
+
+  test('should render for non-trial organization', async () => {
+    const nonTrialOrgMock = {
+      request: {
+        query: GET_ORGANIZATION_STATUS,
+      },
+      result: {
+        data: {
+          organization: {
+            organization: {
+              isTrialOrg: false,
+              trialExpirationDate: null,
+              isSuspended: false,
+            },
+          },
+        },
+      },
+    };
+
+    const mocks = [nonTrialOrgMock, ...walletBalanceQuery, ...walletBalanceSubscription];
+
+    render(
+      <MockedProvider mocks={mocks}>
+        <WalletBalance fullOpen={true} />
+      </MockedProvider>
+    );
+
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      const walletBalance = screen.getByTestId('WalletBalance');
+      expect(walletBalance).toBeInTheDocument();
+      expect(walletBalance).toHaveTextContent('Wallet balance');
     });
   });
 });
