@@ -95,7 +95,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
             apollo: ['@apollo/client'],
             mui: ['@mui/material', '@mui/icons-material', '@mui/x-date-pickers'],
             sentry: ['@sentry/react'],
-            vendor: ['lodash', 'dayjs', 'uuid', 'axios'],
+            vendor: ['dayjs', 'uuid', 'axios'],
           },
         },
       },
