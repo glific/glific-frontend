@@ -15,6 +15,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
+import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -163,12 +164,14 @@ export const WhatsAppFormList = () => {
         window.open(item.sheet?.url);
       },
     };
+
     const handleViewAction = {
       label: 'View',
       icon: <ViewIcon data-testid="view-form" />,
       parameter: 'id',
       dialog: handleView,
     };
+
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -198,6 +201,15 @@ export const WhatsAppFormList = () => {
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
     };
+    const configureIcon = {
+      label: 'Configure',
+      icon: <ConfigureIcon className={styles.IconSize} data-testid="configure-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        navigate(`/whatsapp-forms/${id}/configure`);
+      },
+    };
+
     let actions = [];
 
     if (item.sheet?.url) {
@@ -213,6 +225,7 @@ export const WhatsAppFormList = () => {
       actions.push(activateAction);
     }
 
+    actions.push(configureIcon);
     return actions;
   };
   const filters = useMemo(() => {

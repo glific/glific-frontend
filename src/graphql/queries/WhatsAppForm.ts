@@ -1,5 +1,20 @@
 import { gql } from '@apollo/client';
 
+export const GET_LATEST_WHATSAPP_FORM_REVISION = gql`
+  query WhatsappForm($id: ID!) {
+    whatsappForm(id: $id) {
+      whatsappForm {
+        name
+        status
+        revision {
+          id
+          definition
+        }
+      }
+    }
+  }
+`;
+
 export const GET_WHATSAPP_FORM = gql`
   query WhatsappForm($id: ID!) {
     whatsappForm(id: $id) {
@@ -10,11 +25,9 @@ export const GET_WHATSAPP_FORM = gql`
         }
         categories
         id
-        insertedAt
         metaFlowId
         name
         status
-        updatedAt
         sheet {
           id
           url
@@ -38,17 +51,56 @@ export const LIST_WHATSAPP_FORMS = gql`
       status
       description
       metaFlowId
+      revision {
+        id
+        definition
+      }
       categories
+      sheet {
+        id
+        url
+      }
+    }
+  }
+`;
+
+export const GET_WHATSAPP_FORM_DEFINITIONS = gql`
+  query listWhatsappForms($filter: WhatsappFormFilter) {
+    listWhatsappForms(filter: $filter) {
+      name
+      metaFlowId
       revision {
         definition
       }
-      sheet {
+    }
+  }
+`;
+
+export const GET_WHATSAPP_FORM_REVISION = gql`
+  query WhatsappFormRevision($id: ID!) {
+    whatsappFormRevision(id: $id) {
+      whatsappFormRevision {
         id
-        label
-        url
-        isActive
-        sheetDataCount
+        whatsappFormId
+        definition
+        revisionNumber
+        userId
       }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const LIST_WHATSAPP_FORM_REVISIONS = gql`
+  query ListWhatsappFormRevisions($whatsappFormId: ID!, $limit: Int) {
+    listWhatsappFormRevisions(whatsappFormId: $whatsappFormId, limit: $limit) {
+      id
+      definition
+      revisionNumber
+      isCurrent
     }
   }
 `;
