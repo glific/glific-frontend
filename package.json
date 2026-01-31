@@ -52,7 +52,7 @@
     "react-dom": "^19.2.3",
     "react-draggable": "^4.5.0",
     "react-google-recaptcha-v3": "^1.11.0",
-    "react-i18next": "^16.4.1",
+    "react-i18next": "^16.5.0",
     "react-image": "^4.1.0",
     "react-markdown": "^10.1.0",
     "react-media-recorder": "^1.7.2",
