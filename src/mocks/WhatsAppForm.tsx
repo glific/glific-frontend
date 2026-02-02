@@ -278,13 +278,6 @@ const listAllWatsappForms = {
             id: '1',
             definition: JSON.stringify(formJson),
           },
-          sheet: {
-            id: 123,
-            label: 'Test Sheet',
-            url: 'http://example.com/sheet',
-            isActive: true,
-            sheetDataCount: 50,
-          },
         },
         {
           id: '3',

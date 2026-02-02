@@ -1,21 +1,22 @@
 import { useMutation } from '@apollo/client';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { FormControl, MenuItem, Select } from '@mui/material';
+import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
 import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Button } from 'components/UI/Form/Button/Button';
 import { List } from 'containers/List/List';
 import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS, COUNT_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { COUNT_WHATSAPP_FORMS, GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
-import { Button } from 'components/UI/Form/Button/Button';
-import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
-import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
@@ -152,9 +153,6 @@ export const WhatsAppFormList = () => {
     { label: 'Inactive', value: 'inactive' },
     { label: 'Draft', value: 'draft' },
   ];
-  const handleView = (id: any) => {
-    navigate(`/whatsapp-forms/${id}/edit`);
-  };
   const additionalAction = (item: any) => {
     const linkAction = {
       label: 'Link',
@@ -165,12 +163,14 @@ export const WhatsAppFormList = () => {
       },
     };
 
-    const handleViewAction = {
-      label: 'View',
-      icon: <ViewIcon data-testid="view-form" />,
+    const handleEdit = (view: boolean) => ({
+      label: view ? 'View' : 'Edit',
+      icon: view ? <ViewIcon data-testid="view-form" /> : <EditIcon data-testid="edit-form" />,
       parameter: 'id',
-      dialog: handleView,
-    };
+      dialog: (id: any) => {
+        navigate(`/whatsapp-forms/${id}/edit`);
+      },
+    });
 
     const deactivateAction = {
       label: 'Deactivate',
@@ -210,22 +210,19 @@ export const WhatsAppFormList = () => {
       },
     };
 
-    let actions = [];
-
+    let actions = [configureIcon];
     if (item.sheet?.url) {
       actions.push(linkAction);
     }
-
-    if (item.status === 'PUBLISHED') {
-      actions.push(deactivateAction);
-      actions.push(handleViewAction);
-    } else if (item.status === 'DRAFT') {
+    if (item.status === 'DRAFT') {
       actions.push(publishAction);
+    } else if (item.status === 'PUBLISHED') {
+      actions.push(deactivateAction);
     } else {
       actions.push(activateAction);
     }
 
-    actions.push(configureIcon);
+    actions.push(handleEdit(item.status === 'PUBLISHED'));
     return actions;
   };
   const filters = useMemo(() => {
@@ -333,7 +330,7 @@ export const WhatsAppFormList = () => {
         additionalAction={additionalAction}
         dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
         restrictedAction={(item: any) => ({
-          edit: item.status !== 'PUBLISHED',
+          edit: false,
           delete: true,
         })}
       />

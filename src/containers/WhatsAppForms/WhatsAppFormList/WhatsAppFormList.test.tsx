@@ -257,13 +257,13 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('navigates to configure page when configure icon is clicked', async () => {
-    const { getByText, getByTestId } = render(wrapper());
+    const { getByText, getAllByTestId } = render(wrapper());
 
     await waitFor(() => {
       expect(getByText('Draft')).toBeInTheDocument();
     });
 
-    const configureIcon = await waitFor(() => getByTestId('configure-icon'));
+    const configureIcon = await waitFor(() => getAllByTestId('configure-icon')[2]);
     fireEvent.click(configureIcon);
 
     await waitFor(() => {
