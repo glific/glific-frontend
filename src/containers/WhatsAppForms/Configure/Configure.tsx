@@ -274,14 +274,16 @@ export const Configure = () => {
               </Button>
             )
           )}
-          <Button
-            variant="contained"
-            color="primary"
-            data-testid="save-button"
-            onClick={handleSaveWhatsappFormRevision}
-          >
-            {isSaving ? <CircularProgress size={22} color="inherit" /> : 'Save'}
-          </Button>
+          {!isPublished && (
+            <Button
+              variant="contained"
+              color="primary"
+              data-testid="save-button"
+              onClick={handleSaveWhatsappFormRevision}
+            >
+              {isSaving ? <CircularProgress size={22} color="inherit" /> : 'Save'}
+            </Button>
+          )}
         </div>
       </div>
 
