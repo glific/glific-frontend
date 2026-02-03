@@ -25,7 +25,11 @@ export const hasContentItemError = (item: ContentItem): boolean => {
   if (type === 'Selection') {
     if (!data.label || data.label.trim() === '') return true;
 
+<<<<<<< HEAD
     if (name !== 'Opt In') {
+=======
+    if (data.options) {
+>>>>>>> 440fb08c8 (Fix hasContentItemError function: add null check for data.options before validation)
       if (!data.options || data.options.length === 0) return true;
       return data.options.some((opt) => !opt.value || opt.value.trim() === '');
     }
