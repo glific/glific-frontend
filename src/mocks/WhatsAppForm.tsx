@@ -242,7 +242,6 @@ const listAllWatsappForms = {
     query: LIST_WHATSAPP_FORMS,
     variables: {
       filter: {},
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
     },
   },
   result: {
@@ -266,6 +265,7 @@ const listAllWatsappForms = {
             isActive: true,
             sheetDataCount: 50,
           },
+          updatedAt: '2026-02-03 08:22:40.815596Z',
         },
         {
           id: '2',
@@ -278,6 +278,8 @@ const listAllWatsappForms = {
             id: '1',
             definition: JSON.stringify(formJson),
           },
+          sheet: null,
+          updatedAt: '2026-02-03 08:22:40.815596Z',
         },
         {
           id: '3',
@@ -291,6 +293,7 @@ const listAllWatsappForms = {
             definition: JSON.stringify(formJson),
           },
           sheet: null,
+          updatedAt: '2026-02-03 08:22:40.815596Z',
         },
       ],
     },
@@ -334,6 +337,7 @@ const listWhatsappForms = (status: string) => {
               isActive: true,
               sheetDataCount: 50,
             },
+            updatedAt: '2026-02-03 08:22:40.815596Z',
           },
         ],
       },
