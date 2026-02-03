@@ -100,10 +100,18 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
   }, [flowJSON]);
 
   useEffect(() => {
-    if (jsonText) {
-      const result = validateJSON(jsonText);
-      setValidation(result);
+    if (!jsonText || !jsonText.trim()) {
+      setValidation({
+        isValidJson: false,
+        isValidContent: false,
+        jsonError: 'JSON cannot be empty',
+        contentError: null,
+        convertedScreens: null,
+      });
+      return;
     }
+    const result = validateJSON(jsonText);
+    setValidation(result);
   }, [jsonText]);
 
   const handleCopyJSON = () => {
