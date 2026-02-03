@@ -166,6 +166,19 @@ export const Configure = () => {
     fetchPolicy: 'network-only',
   });
 
+  const handleSaveWhatsappFormRevision = () => {
+    const flowJSON = convertFormBuilderToFlowJSON(screens);
+
+    saveWhatsappFormRevision({
+      variables: {
+        input: {
+          whatsappFormId: params.id,
+          definition: JSON.stringify(flowJSON),
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -185,16 +198,8 @@ export const Configure = () => {
         return;
       }
 
-      const flowJSON = convertFormBuilderToFlowJSON(screens);
       hasUnsavedChangesRef.current = false;
-      saveWhatsappFormRevision({
-        variables: {
-          input: {
-            whatsappFormId: params.id,
-            definition: JSON.stringify(flowJSON),
-          },
-        },
-      });
+      handleSaveWhatsappFormRevision();
     }, 1000);
 
     return () => {
@@ -242,7 +247,12 @@ export const Configure = () => {
           {isPublished && <span className={styles.PublishedBadge}>Published</span>}
         </div>
 
-        <div>
+        <div className={styles.Actions}>
+          {!showJSON && (
+            <Button variant="outlined" onClick={handleViewJSON}>
+              View JSON
+            </Button>
+          )}
           {previewingVersion !== null || showJSON ? (
             <Button variant="contained" color="primary" onClick={handleBackToEditing}>
               Back to Editing
@@ -264,11 +274,9 @@ export const Configure = () => {
               </Button>
             )
           )}
-          {!showJSON && (
-            <Button variant="outlined" onClick={handleViewJSON}>
-              View JSON
-            </Button>
-          )}
+          <Button variant="contained" color="primary" onClick={handleSaveWhatsappFormRevision}>
+            {isSaving ? <CircularProgress size={22} color="inherit" /> : 'Save'}
+          </Button>
         </div>
       </div>
 

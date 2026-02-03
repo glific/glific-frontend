@@ -18,6 +18,15 @@
   align-items: center;
 }
 
+.Actions {
+  display: flex;
+  align-items: center;
+}
+
+.Actions Button {
+  padding: 0.5rem 1.2rem;
+}
+
 .Header p {
   margin: 0;
   font-size: 1.2rem;
