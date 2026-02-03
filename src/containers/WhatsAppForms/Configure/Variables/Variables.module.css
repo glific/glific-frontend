@@ -52,17 +52,21 @@
   border-radius: 4px;
 }
 
-.variableContent {
+.VariableContent {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .VariableInfo {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .VariableLabel {
@@ -76,4 +80,6 @@
   font-size: 14px;
   font-weight: 600;
   color: #0b7a3e;
+  overflow-x: auto;
+  white-space: nowrap;
 }
