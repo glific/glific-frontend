@@ -89,25 +89,6 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
 
   const flowJSON = useMemo(() => convertFormBuilderToFlowJSON(screens), [screens]);
 
-  useEffect(() => {
-    setJsonText(JSON.stringify(flowJSON, null, 2));
-  }, [flowJSON]);
-
-  useEffect(() => {
-    if (!jsonText || !jsonText.trim()) {
-      setValidation({
-        isValidJson: false,
-        isValidContent: false,
-        jsonError: 'JSON cannot be empty',
-        contentError: null,
-        convertedScreens: null,
-      });
-      return;
-    }
-    const result = validateJSON(jsonText);
-    setValidation(result);
-  }, [jsonText]);
-
   const handleCopyJSON = () => {
     copyToClipboard(jsonText);
     setCopySuccess(true);
