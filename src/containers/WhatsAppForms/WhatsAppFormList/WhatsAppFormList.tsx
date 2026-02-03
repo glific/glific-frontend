@@ -7,11 +7,13 @@ import EditIcon from 'assets/images/icons/Edit.svg?react';
 import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { List } from 'containers/List/List';
+import dayjs from 'dayjs';
 import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import { COUNT_WHATSAPP_FORMS, GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
@@ -41,36 +43,8 @@ const getStatus = (status: string) => {
   }
 };
 
-const getCategories = (categories: string[]) => {
-  if (!categories?.length) return null;
-
-  const displayedCategories = categories.slice(0, 2);
-  const hiddenCategories = categories.slice(2);
-
-  return (
-    <div className={styles.LabelWrapper}>
-      <div className={styles.LabelButton}>
-        {displayedCategories.map((category) => (
-          <span key={category} className={styles.CategoryTag}>
-            {category}
-          </span>
-        ))}
-
-        {categories.length > 2 && (
-          <div className={styles.MoreWrapper}>
-            <span className={styles.CategoryMore}> + {categories.length - 2} more</span>
-            <div className={styles.MoreList}>
-              {hiddenCategories.map((category) => (
-                <div key={category} className={styles.MoreListItem}>
-                  {category}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+const getLastModifiedAt = (updatedAt: string) => {
+  return <div className={styles.LabelWrapper}>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>;
 };
 
 export const WhatsAppFormList = () => {
@@ -135,16 +109,16 @@ export const WhatsAppFormList = () => {
   });
 
   const columnNames = [
-    { name: 'name', label: 'Name' },
-    { name: 'status', label: 'Status' },
-    { name: 'category', label: 'Category' },
+    { label: 'Name' },
+    { label: 'Status' },
+    { label: 'Last Modified At' },
     { name: 'actions', label: 'Actions' },
   ];
 
-  const getColumns = ({ name, categories, status }: any) => ({
+  const getColumns = ({ name, status, updatedAt }: any) => ({
     name: getName(name),
     status: getStatus(status),
-    category: getCategories(categories),
+    updatedAt: getLastModifiedAt(updatedAt),
   });
 
   const filterList = [
@@ -165,7 +139,11 @@ export const WhatsAppFormList = () => {
 
     const handleEdit = (view: boolean) => ({
       label: view ? 'View' : 'Edit',
-      icon: view ? <ViewIcon data-testid="view-form" /> : <EditIcon data-testid="edit-form" />,
+      icon: view ? (
+        <ViewIcon data-testid="view-form" />
+      ) : (
+        <ConfigureIcon className={styles.IconSize} data-testid="edit-icon" />
+      ),
       parameter: 'id',
       dialog: (id: any) => {
         navigate(`/whatsapp-forms/${id}/edit`);
@@ -203,7 +181,7 @@ export const WhatsAppFormList = () => {
     };
     const configureIcon = {
       label: 'Configure',
-      icon: <ConfigureIcon className={styles.IconSize} data-testid="configure-icon" />,
+      icon: <EditIcon data-testid="configure-form" />,
       parameter: 'id',
       dialog: (id: string) => {
         navigate(`/whatsapp-forms/${id}/configure`);
