@@ -182,6 +182,19 @@ export const Configure = () => {
     });
   };
 
+  const handleSaveWhatsappFormRevision = () => {
+    const flowJSON = convertFormBuilderToFlowJSON(screens);
+
+    saveWhatsappFormRevision({
+      variables: {
+        input: {
+          whatsappFormId: params.id,
+          definition: JSON.stringify(flowJSON),
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
