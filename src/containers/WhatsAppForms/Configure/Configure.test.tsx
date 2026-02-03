@@ -740,4 +740,62 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('preview-screen-name')).toHaveTextContent('Updated Screen Name');
     });
   });
+
+  test('it shows errors in json', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    console.log(jsonTextarea.value);
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/"Label"/g, '""') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Form has validation errors (missing required fields)'));
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('JSON cannot be empty'));
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '{ ' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Expected property name or '}' in JSON at position 2 (line 1 column 3)"));
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '{ }' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Missing or invalid "screens" array'));
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '{ "screens": [] }' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Screens array cannot be empty'));
+    });
+  });
 });
