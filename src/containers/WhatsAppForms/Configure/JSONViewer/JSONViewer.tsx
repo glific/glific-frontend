@@ -3,7 +3,13 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Button, IconButton } from '@mui/material';
 import { copyToClipboard } from 'common/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
+import {
+  convertFlowJSONToFormBuilder,
+  convertFormBuilderToFlowJSON,
+  hasFormErrors,
+} from '../FormBuilder/FormBuilder.utils';
 import {
   convertFlowJSONToFormBuilder,
   convertFormBuilderToFlowJSON,
@@ -88,6 +94,17 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
   });
 
   const flowJSON = useMemo(() => convertFormBuilderToFlowJSON(screens), [screens]);
+
+  useEffect(() => {
+    setJsonText(JSON.stringify(flowJSON, null, 2));
+  }, [flowJSON]);
+
+  useEffect(() => {
+    if (jsonText) {
+      const result = validateJSON(jsonText);
+      setValidation(result);
+    }
+  }, [jsonText]);
 
   const handleCopyJSON = () => {
     copyToClipboard(jsonText);
