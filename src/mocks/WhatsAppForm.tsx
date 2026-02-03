@@ -242,6 +242,7 @@ const listAllWatsappForms = {
     query: LIST_WHATSAPP_FORMS,
     variables: {
       filter: {},
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
     },
   },
   result: {

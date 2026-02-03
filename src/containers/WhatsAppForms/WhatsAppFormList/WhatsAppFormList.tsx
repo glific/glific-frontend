@@ -109,7 +109,7 @@ export const WhatsAppFormList = () => {
   });
 
   const columnNames = [
-    { label: 'Name' },
+    { label: 'Name', name: 'name' },
     { label: 'Status' },
     { label: 'Last Modified At' },
     { name: 'actions', label: 'Actions' },
@@ -181,7 +181,7 @@ export const WhatsAppFormList = () => {
     };
     const configureIcon = {
       label: 'Configure',
-      icon: <EditIcon data-testid="configure-form" />,
+      icon: <EditIcon data-testid="configure-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         navigate(`/whatsapp-forms/${id}/configure`);
