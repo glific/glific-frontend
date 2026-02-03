@@ -281,7 +281,11 @@ export const Configure = () => {
         )}
         <div className={styles.FlowBuilder}>
           {showJSON ? (
-            <JSONViewer screens={screens} onClose={() => setShowJSON(false)} />
+            <JSONViewer
+              screens={screens}
+              onClose={() => setShowJSON(false)}
+              onScreensChange={isViewOnly ? undefined : handleScreensChange}
+            />
           ) : (
             <FormBuilder
               screens={screens}
