@@ -25,7 +25,7 @@ const wrapper = (id: number = 1) => {
   const mocks = WHATSAPP_FORM_MOCKS;
 
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/whatsapp-forms/${id}/configure`]}>
         <Routes>
           <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
@@ -49,7 +49,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('it adds and deletes screen ', async () => {
+  test('it adds and deletes screen and saves the form', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -77,6 +77,12 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Saving')).toBeInTheDocument();
     });
   });
 
@@ -702,6 +708,36 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('WhatsApp Forms')).toBeInTheDocument();
+    });
+  });
+
+  test('makes changes to whatsapp form json and saves', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('View JSON'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/Screen 1/g, 'Updated Screen Name') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Apply Changes')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-screen-name')).toHaveTextContent('Updated Screen Name');
     });
   });
 });
