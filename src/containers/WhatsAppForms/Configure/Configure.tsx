@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { ArrowLeftIcon } from '@mui/x-date-pickers';
+import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -243,7 +243,7 @@ export const Configure = () => {
             className={styles.BackIcon}
             data-testid="back-button"
           >
-            <ArrowLeftIcon />
+            <BackIcon />
           </div>
 
           <p>{previewingVersion !== null ? `Viewing Version ${previewingVersion}` : flowName}</p>
