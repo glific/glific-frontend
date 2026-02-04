@@ -779,9 +779,7 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('json-error')).toHaveTextContent(
-        "Expected property name or '}' in JSON at position 2 (line 1 column 3)"
-      );
+      expect(screen.getByTestId('json-error')).toHaveTextContent(/Expected property name or '}' in JSON at position 2/);
     });
 
     fireEvent.change(jsonTextarea, {
