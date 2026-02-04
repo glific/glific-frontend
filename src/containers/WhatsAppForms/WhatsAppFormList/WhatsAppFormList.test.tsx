@@ -12,6 +12,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
 import { WhatsAppFormList } from './WhatsAppFormList';
+import { SYNC_WHATSAPP_FORMS, PIN_WHATSAPP_FORM } from 'graphql/mutations/WhatsAppForm';
 
 export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
@@ -209,6 +210,69 @@ describe('<WhatsAppFormList />', () => {
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+  test('sync forms successfully when sync button clicked', async () => {
+    const syncWhatsappFormMock = {
+      request: {
+        query: SYNC_WHATSAPP_FORMS,
+      },
+      result: {
+        data: {
+          syncWhatsappForm: {
+            message: 'WhatsApp Forms synced successfully',
+            errors: null,
+          },
+        },
+      },
+    };
+    const { getByText } = render(wrapper([syncWhatsappFormMock]));
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const button = getByText('Sync Whatsapp Form');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('WhatsApp Forms synced successfully');
+    });
+  });
+
+  test('pins a form successfully when pin icon is clicked', async () => {
+    const pinWhatsappFormMock = {
+      request: {
+        query: PIN_WHATSAPP_FORM,
+        variables: {
+          id: '1',
+          input: {
+            isPinned: true,
+          },
+        },
+      },
+      result: {
+        data: {
+          updateWhatsappForm: {
+            whatsappForm: {
+              id: '1',
+              isPinned: true,
+            },
+            errors: null,
+          },
+        },
+      },
+    };
+    const { getAllByRole, getByTestId, getByText } = render(wrapper([pinWhatsappFormMock]));
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const select = getAllByRole('combobox')[0];
+    fireEvent.click(getByText('All'));
+    fireEvent.mouseDown(select);
+    fireEvent.click(getByText('Published'));
+
+    const pinIcon = await waitFor(() => getByTestId('pin-button'));
+    fireEvent.click(pinIcon);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Form pinned successfully');
     });
   });
 });

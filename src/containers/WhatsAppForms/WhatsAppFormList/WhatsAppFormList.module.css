@@ -152,3 +152,9 @@
 .DialogText {
   text-align: center;
 }
+
+.Pinned {
+  width: 50px;
+  min-width: 50px;
+  text-align: center;
+}
