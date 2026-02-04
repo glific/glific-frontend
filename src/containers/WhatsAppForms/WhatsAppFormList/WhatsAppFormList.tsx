@@ -1,11 +1,23 @@
 import { useMutation } from '@apollo/client';
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { Button } from 'components/UI/Form/Button/Button';
+
+import { FormControl, MenuItem, Select, IconButton } from '@mui/material';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
+import PinIcon from 'assets/images/icons/Pin/Pin.svg?react';
+import ActivePinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { List } from 'containers/List/List';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import {
+  ACTIVATE_FORM,
+  DEACTIVATE_FORM,
+  DELETE_FORM,
+  PUBLISH_FORM,
+  SYNC_WHATSAPP_FORMS,
+  PIN_WHATSAPP_FORM,
+} from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -15,7 +27,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import styles from './WhatsAppFormList.module.css';
 
-const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
+const columnStyles = [styles.Pinned, styles.Name, styles.status, styles.Label, styles.Actions];
 
 const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
@@ -72,6 +84,7 @@ export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
   const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
+  const [refresh, setRefresh] = useState(false);
 
   const navigate = useNavigate();
 
@@ -108,14 +121,70 @@ export const WhatsAppFormList = () => {
     },
   });
 
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_WHATSAPP_FORMS, {
+    onCompleted: (data) => {
+      if (data.syncWhatsappForm.errors) {
+        setErrorMessage(data.syncWhatsappForm.errors[0].message);
+      } else {
+        setNotification('WhatsApp Forms synced successfully');
+        // Trigger list refresh
+        setRefresh((prev) => !prev);
+      }
+    },
+    onError: (error) => {
+      setErrorMessage(error.message);
+    },
+  });
+
+  const [updatePinned] = useMutation(PIN_WHATSAPP_FORM);
+
+  const handlePin = (id: string, pin: boolean) => {
+    updatePinned({
+      variables: {
+        id,
+        input: {
+          isPinned: pin,
+        },
+      },
+      onCompleted: () => {
+        setRefresh((prev) => !prev);
+        setNotification(pin ? 'Form pinned successfully' : 'Form unpinned successfully');
+      },
+      onError: (error) => {
+        setErrorMessage(error.message);
+      },
+    });
+  };
+
+  const displayPinned = (isPinned: boolean, id: string) => {
+    if (isPinned) {
+      return (
+        <Tooltip title={'Unpin'} placement={'top-start'}>
+          <IconButton data-testid="unpin-button" onClick={() => handlePin(id, false)}>
+            <ActivePinIcon />
+          </IconButton>
+        </Tooltip>
+      );
+    }
+    return (
+      <Tooltip title={'Pin'} placement={'top-start'}>
+        <IconButton data-testid="pin-button" onClick={() => handlePin(id, true)}>
+          <PinIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
   const columnNames = [
-    { name: 'name', label: 'Name' },
+    { name: 'pin', label: '' },
+    { name: 'name', label: 'Name', sort: true },
     { name: 'status', label: 'Status' },
     { name: 'category', label: 'Category' },
     { name: 'actions', label: 'Actions' },
   ];
 
-  const getColumns = ({ name, categories, status }: any) => ({
+  const getColumns = ({ name, categories, status, isPinned, id }: any) => ({
+    pin: displayPinned(isPinned, id),
     name: getName(name),
     status: getStatus(status),
     category: getCategories(categories),
@@ -243,12 +312,26 @@ export const WhatsAppFormList = () => {
         {...queries}
         helpData={whatsappFormsInfo}
         title="WhatsApp Forms"
+        refreshList={refresh}
         listItem="listWhatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
         columnNames={columnNames}
         columns={getColumns}
         columnStyles={columnStyles}
+        secondaryButton={
+          <div style={{ marginRight: '10px' }}>
+            <Button
+              className={styles.SyncButton}
+              variant="outlined"
+              color="primary"
+              onClick={() => syncWhatsappForm()}
+              loading={syncLoading}
+            >
+              Sync Whatsapp Form
+            </Button>
+          </div>
+        }
         filters={filters}
         filterList={formFilter}
         button={{ show: true, label: 'Create New Form', action: () => navigate('/whatsapp-forms/add') }}
