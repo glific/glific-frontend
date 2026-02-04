@@ -204,7 +204,7 @@ export const FormBuilder = ({
 
       <div className={styles.ScreensList}>
         <DndContext
-          sensors={isViewOnly ? [] : sensors}
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={isViewOnly ? undefined : handleDragEnd}
         >
