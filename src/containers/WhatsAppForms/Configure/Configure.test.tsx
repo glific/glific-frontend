@@ -756,8 +756,6 @@ describe('<Configure />', () => {
 
     const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
 
-    console.log(jsonTextarea.value);
-
     fireEvent.change(jsonTextarea, {
       target: { value: jsonTextarea.value.replace(/"Label"/g, '""') },
     });
