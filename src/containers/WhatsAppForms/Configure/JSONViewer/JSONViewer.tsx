@@ -155,7 +155,9 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
       </div>
 
       {(validation.jsonError || validation.contentError) && (
-        <div className={styles.ErrorMessage}>{validation.jsonError || validation.contentError}</div>
+        <div data-testid="json-error" className={styles.ErrorMessage}>
+          {validation.jsonError || validation.contentError}
+        </div>
       )}
 
       <textarea

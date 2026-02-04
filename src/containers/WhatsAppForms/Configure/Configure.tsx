@@ -121,7 +121,10 @@ export const Configure = () => {
   };
 
   const handleBackToEditing = () => {
-    if (showJSON) setShowJSON(false);
+    if (showJSON) {
+      setShowJSON(false);
+      return;
+    }
     setScreens(currentScreensRef.current);
     setPreviewingVersion(null);
   };

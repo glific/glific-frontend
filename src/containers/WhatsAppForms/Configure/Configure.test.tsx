@@ -761,7 +761,9 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Form has validation errors (missing required fields)'));
+      expect(screen.getByTestId('json-error')).toHaveTextContent(
+        'Form has validation errors (missing required fields)'
+      );
     });
 
     fireEvent.change(jsonTextarea, {
@@ -769,7 +771,7 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('JSON cannot be empty'));
+      expect(screen.getByTestId('json-error')).toHaveTextContent('JSON cannot be empty');
     });
 
     fireEvent.change(jsonTextarea, {
@@ -777,7 +779,9 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText("Expected property name or '}' in JSON at position 2 (line 1 column 3)"));
+      expect(screen.getByTestId('json-error')).toHaveTextContent(
+        "Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+      );
     });
 
     fireEvent.change(jsonTextarea, {
@@ -785,7 +789,7 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Missing or invalid "screens" array'));
+      expect(screen.getByTestId('json-error')).toHaveTextContent('Missing or invalid "screens" array');
     });
 
     fireEvent.change(jsonTextarea, {
@@ -793,7 +797,7 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Screens array cannot be empty'));
+      expect(screen.getByTestId('json-error')).toHaveTextContent('Screens array cannot be empty');
     });
   });
 });

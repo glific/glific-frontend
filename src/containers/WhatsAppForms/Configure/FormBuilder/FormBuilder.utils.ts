@@ -164,7 +164,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
     const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: `${index}_${opt.value}`,
+        id: opt.id || `${index}_${opt.value}`,
         title: opt.value,
       })),
       label: data.label,
@@ -178,7 +178,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
     const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: `${index}_${opt.value}`,
+        id: opt.id || `${index}_${opt.value}`,
         title: opt.value,
       })),
       label: data.label,
@@ -192,7 +192,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
     const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: `${index}_${opt.value}`,
+        id: opt.id || `${index}_${opt.value}`,
         title: opt.value,
       })),
       label: data.label,
@@ -213,9 +213,10 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
   }
 
   if (componentType === 'Image') {
+    const src = data.text?.includes('base64,') ? data.text.split('base64,')[1] : data.text;
     return {
       type: 'Image',
-      src: data.text?.split('base64,')[1] || '',
+      src: src || '',
       height: 400,
       'scale-type': 'contain',
     };
@@ -487,8 +488,9 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   }
 
   if (type === 'Image') {
+    const src = component.src || '';
     contentItem.data = {
-      text: component.src || '',
+      text: src && !src.startsWith('data:') ? `data:image/png;base64,${src}` : src,
     };
     return contentItem;
   }

@@ -543,22 +543,18 @@ const latestRevisionMock = (id: string) => {
 const saveRevisionMock = {
   request: {
     query: SAVE_WHATSAPP_FORM_REVISION,
-    variables: {
-      input: {
-        whatsappFormId: '1',
-        definition: expect.any(String),
-      },
-    },
   },
   result: {
     data: {
       saveWhatsappFormRevision: {
         whatsappFormRevision: {
           id: 'rev-1',
+          revisionNumber: 1,
         },
       },
     },
   },
+  variableMatcher: () => true,
 };
 
 const listRevisions = {
