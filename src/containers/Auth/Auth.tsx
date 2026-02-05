@@ -136,10 +136,10 @@ export const Auth = ({
 
   const handlePhone =
     () =>
-    (value: string): void => {
-      // eslint-disable-next-line
-      initialFormValues.phone = value;
-    };
+      (value: string): void => {
+        // eslint-disable-next-line
+        initialFormValues.phone = value;
+      };
 
   let formElements;
   // we should not render form elements when displaying success message
@@ -155,6 +155,7 @@ export const Auth = ({
 
         <Formik
           initialValues={initialFormValues}
+          enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={(item) => {
             setLoading(true);
