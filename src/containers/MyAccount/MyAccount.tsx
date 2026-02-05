@@ -139,6 +139,11 @@ export const MyAccount = () => {
     password: yupPasswordValidation(t),
   });
 
+  const UserFormSchema = Yup.object().shape({
+    name: Yup.string().required(t('Name is required')),
+    email: Yup.string().email(t('Invalid email address')).required(t('Email is required')),
+  });
+
   const userformFields = [
     {
       component: Input,
@@ -156,24 +161,42 @@ export const MyAccount = () => {
       component: Input,
       name: 'email',
       label: t('Email'),
-      disabled: true,
+      disabled: false,
     },
   ];
 
   const userForm = (
-    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => { }}>
-      <Form>
-        {userformFields.map((field) => (
-          <div className={styles.UserField} key={field.name}>
-            {field.label && (
-              <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                {field.label}
-              </Typography>
-            )}
-            <Field key={field.name} {...field}></Field>
-          </div>
-        ))}
-      </Form>
+    <Formik
+      initialValues={{ name: userName, phone: userPhone, email: userEmail }}
+      validationSchema={UserFormSchema}
+      onSubmit={(values) => {
+        setMessage(t('Profile updated successfully!'));
+        updateCurrentUser({
+          variables: { input: { name: values.name, email: values.email } },
+        });
+      }}
+    >
+      {({ dirty, submitForm }) => (
+        <Form>
+          {userformFields.map((field) => (
+            <div className={styles.UserField} key={field.name}>
+              {field.label && (
+                <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                  {field.label}
+                </Typography>
+              )}
+              <Field key={field.name} {...field}></Field>
+            </div>
+          ))}
+          {dirty && (
+            <div className={styles.Buttons}>
+              <Button variant="contained" color="primary" onClick={submitForm} className={styles.Button}>
+                {t('Save')}
+              </Button>
+            </div>
+          )}
+        </Form>
+      )}
     </Formik>
   );
 

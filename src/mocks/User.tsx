@@ -122,7 +122,31 @@ export const updateUserQuery = [
       data: {
         updateCurrentUser: {
           errors: null,
-          user: null,
+          user: {
+            id: '1',
+            name: 'John Doe',
+            phone: '+919820198765',
+            email: 'you@domain.com',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { name: 'John Doe', email: 'newemail@domain.com' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: null,
+          user: {
+            id: '1',
+            name: 'John Doe',
+            phone: '+919820198765',
+            email: 'newemail@domain.com',
+          },
         },
       },
     },

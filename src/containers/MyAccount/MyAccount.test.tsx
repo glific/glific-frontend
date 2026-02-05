@@ -198,4 +198,22 @@ describe('<MyAccount />', () => {
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
   });
+
+  test('update profile (name and email) flow', async () => {
+    const { container } = render(wrapper);
+
+    await screen.findByTestId('MyAccount');
+
+    // change email
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    fireEvent.change(emailInput, { target: { value: 'newemail@domain.com' } });
+
+    // save button should appear
+    const saveButton = await screen.findByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Profile updated successfully!')).toBeInTheDocument();
+    });
+  });
 });
