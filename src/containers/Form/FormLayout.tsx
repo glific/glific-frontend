@@ -586,6 +586,11 @@ export const FormLayout = ({
                 {field.label && (
                   <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
+                    {field.helpData && (
+                      <span className={styles.HelpIcon}>
+                        <HelpIcon helpData={field.helpData} />
+                      </span>
+                    )}
                   </Typography>
                 )}
                 <Field key={key} {...field} onSubmit={formik.submitForm} />
@@ -709,7 +714,9 @@ export const FormLayout = ({
       <div className={partialPage ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
         {dialogBox}
         {confirmationDialog}
-        {!noHeading && heading}
+        {!noHeading && (
+          <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} helpData={helpData} />
+        )}
         {form}
       </div>
     </FormikProvider>

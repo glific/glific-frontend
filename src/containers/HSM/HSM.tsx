@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
+import { templateInfo } from 'common/HelpData';
 import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -558,6 +559,7 @@ export const HSM = () => {
       name: 'label',
       disabled: isEditing,
       label: `${t('Title')}*`,
+      helpData: templateInfo,
       placeholder: `${t('Title')}`,
       helperText: t('Define what use case does this template serve eg. OTP, optin, activity preference'),
       inputProp: {
@@ -719,8 +721,8 @@ export const HSM = () => {
       helperText: uploadedFile
         ? `File uploaded: ${uploadedFile.name}`
         : t(
-            'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
-          ),
+          'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
+        ),
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
@@ -886,6 +888,7 @@ export const HSM = () => {
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
         formFields={fields}
+        helpData={templateInfo}
         redirectionLink={backButton}
         listItem="sessionTemplate"
         icon={templateIcon}
