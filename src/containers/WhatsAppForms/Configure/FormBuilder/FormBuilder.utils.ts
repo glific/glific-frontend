@@ -12,7 +12,7 @@ const generateScreenId = (name: string): string =>
     .trim();
 
 export const hasContentItemError = (item: ContentItem): boolean => {
-  const { data, type } = item;
+  const { data, type, name } = item;
 
   if (type === 'Text') {
     return !data.text || data.text.trim() === '';
@@ -25,7 +25,7 @@ export const hasContentItemError = (item: ContentItem): boolean => {
   if (type === 'Selection') {
     if (!data.label || data.label.trim() === '') return true;
 
-    if (data.options) {
+    if (name !== 'Opt In') {
       if (!data.options || data.options.length === 0) return true;
       return data.options.some((opt) => !opt.value || opt.value.trim() === '');
     }
