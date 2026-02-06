@@ -1,51 +1,30 @@
-import { useMutation } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { assistantsInfo } from 'common/HelpData';
 
 import { Heading } from 'components/UI/Heading/Heading';
 
-import { CREATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANTS } from 'graphql/queries/Assistant';
 
 import { CreateAssistant } from './CreateAssistant/CreateAssistant';
 import { List } from './ListItems/List';
 import styles from './Assistants.module.css';
-import { useNavigate, useParams } from 'react-router';
-import { setErrorMessage, setNotification } from 'common/notification';
+import { useLocation, useNavigate, useParams } from 'react-router';
 
 export const Assistants = () => {
   const params = useParams();
+  const location = useLocation();
   const [updateList, setUpdateList] = useState(false);
-  const [assistantId, setAssistantId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [createAssistant, { loading }] = useMutation(CREATE_ASSISTANT);
+  const isAddRoute = location.pathname.endsWith('/add');
+  const showForm = isAddRoute || params.assistantId;
 
   const handleCreateAssistant = () => {
-    createAssistant({
-      variables: {
-        input: {
-          name: null,
-          temperature: 0.1,
-        },
-      },
-      onCompleted: ({ createAssistant }) => {
-        setNotification(t('Assistant created successfully'), 'success');
-        navigate(`/assistants/${createAssistant.assistant.id}`);
-        setUpdateList(!updateList);
-      },
-      onError: (error) => {
-        setErrorMessage(error);
-      },
-    });
+    navigate('/assistants/add');
   };
-
-  useEffect(() => {
-    if (params.assistantId) setAssistantId(params.assistantId);
-  }, [params]);
 
   return (
     <div className={styles.AssistantContainer}>
@@ -57,29 +36,17 @@ export const Assistants = () => {
           show: true,
           label: t('Create Assistant'),
           action: handleCreateAssistant,
-          loading: loading,
         }}
       />
       <div className={styles.MainContainer}>
         <div className={styles.LeftContainer}>
-          <List
-            getItemsQuery={GET_ASSISTANTS}
-            listItemName="assistants"
-            refreshList={updateList}
-            setCurrentId={setAssistantId}
-            currentId={assistantId}
-          />
+          <List getItemsQuery={GET_ASSISTANTS} listItemName="assistants" refreshList={updateList} />
         </div>
         <div className={styles.RightContainer}>
-          {assistantId ? (
-            <CreateAssistant
-              setUpdateList={setUpdateList}
-              setCurrentId={setAssistantId}
-              currentId={assistantId}
-              updateList={updateList}
-            />
+          {showForm ? (
+            <CreateAssistant key={params.assistantId ?? 'new'} setUpdateList={setUpdateList} updateList={updateList} />
           ) : (
-            <p className={styles.EmptyText}>{t('Select/Create an assistant')}</p>
+            <p className={styles.EmptyText}>Please select or create an assistant</p>
           )}
         </div>
       </div>

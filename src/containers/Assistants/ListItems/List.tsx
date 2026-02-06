@@ -10,20 +10,23 @@ import { copyToClipboard } from 'common/utils';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 
 import styles from './List.module.css';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 interface ListProps {
   getItemsQuery: DocumentNode;
   listItemName: string;
-  currentId?: any;
   refreshList?: boolean;
-  setCurrentId: any;
 }
 
-export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, currentId }: ListProps) => {
+export const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
+  const params = useParams();
+  let currentId = '';
+  if (params.assistantId) {
+    currentId = params.assistantId;
+  }
   const { t } = useTranslation();
 
   const { data, refetch, fetchMore } = useQuery(getItemsQuery, {
@@ -37,7 +40,6 @@ export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, c
       },
     },
     onCompleted: (data) => {
-      if (!currentId) setCurrentId(data[listItemName][0]?.id);
       if (data[listItemName].length > DEFAULT_ENTITY_LIMIT - 1) {
         setLoadMore(true);
       }

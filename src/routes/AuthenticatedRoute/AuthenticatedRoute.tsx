@@ -151,8 +151,10 @@ const routeAdmin = (
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
 
-    <Route path="/assistants" element={<Assistant />} />
-    <Route path="/assistants/:assistantId" element={<Assistant />} />
+    <Route path="/assistants" element={<Assistant />}>
+      <Route path="add" element={<Assistant />} />
+      <Route path=":assistantId" element={<Assistant />} />
+    </Route>
 
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />

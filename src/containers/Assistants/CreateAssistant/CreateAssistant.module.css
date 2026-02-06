@@ -20,6 +20,11 @@
   margin-bottom: 0.5rem;
 }
 
+.FormTitle {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
 .FormFields {
   display: flex;
   flex-direction: column;

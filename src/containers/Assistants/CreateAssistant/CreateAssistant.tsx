@@ -15,7 +15,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
-import { DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
@@ -24,15 +24,14 @@ import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 
 import styles from './CreateAssistant.module.css';
+import { useNavigate, useParams } from 'react-router';
 
 interface CreateAssistantProps {
-  currentId: string | number | null;
   updateList: boolean;
-  setCurrentId: any;
   setUpdateList: any;
 }
 
-export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, updateList }: CreateAssistantProps) => {
+export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
   const [name, setName] = useState('');
   const [model, setModel] = useState<any>(null);
@@ -40,6 +39,15 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   const [options, setOptions] = useState({ fileSearch: true, temperature: 0.1 });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  let isEditing = false;
+  const params = useParams();
+  let currentId = null;
+  if (params.assistantId) {
+    currentId = params.assistantId;
+    isEditing = true;
+  }
+  const navigate = useNavigate();
+
   const { t } = useTranslation();
 
   const states = {
@@ -54,6 +62,8 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
 
+  const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
+
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
 
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
@@ -66,7 +76,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   }
 
   useEffect(() => {
-    if (currentId && modelsList) {
+    if (currentId && modelsList && isEditing) {
       getAssistant({
         variables: { assistantId: currentId },
         onCompleted: ({ assistant }) => {
@@ -84,7 +94,17 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
         },
       });
     }
-  }, [currentId, modelsList]);
+  }, [currentId, modelsList, isEditing]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setAssistantId('');
+      setName('');
+      setModel(null);
+      setInstructions('');
+      setOptions({ fileSearch: true, temperature: 0.1 });
+    }
+  }, [isEditing]);
 
   const handleCreate = () => {
     const { instructions: instructionsValue, model: modelValue, name: nameValue, options: optionsValue } = states;
@@ -96,23 +116,39 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       temperature: optionsValue?.temperature,
     };
 
-    updateAssistant({
-      variables: {
-        updateAssistantId: currentId,
-        input: payload,
-      },
-      onCompleted: ({ updateAssistant }) => {
-        if (updateAssistant.errors && updateAssistant.errors.length > 0) {
-          setErrorMessage(updateAssistant.errors[0]);
-          return;
-        }
-        setNotification('Changes saved successfully', 'success');
-        setUpdateList(!updateList);
-      },
-      onError: (errors) => {
-        setErrorMessage(errors);
-      },
-    });
+    if (isEditing) {
+      updateAssistant({
+        variables: {
+          updateAssistantId: currentId,
+          input: payload,
+        },
+        onCompleted: ({ updateAssistant }) => {
+          if (updateAssistant.errors && updateAssistant.errors.length > 0) {
+            setErrorMessage(updateAssistant.errors[0]);
+            return;
+          }
+          setNotification('Changes saved successfully', 'success');
+          setUpdateList(!updateList);
+        },
+        onError: (errors) => {
+          setErrorMessage(errors);
+        },
+      });
+    } else {
+      createAssistant({
+        variables: {
+          input: payload,
+        },
+        onCompleted: ({ createAssistant }) => {
+          setNotification(t('Assistant created successfully'), 'success');
+          navigate(`/assistants/${createAssistant.assistant.id}`);
+          setUpdateList(!updateList);
+        },
+        onError: (error) => {
+          setErrorMessage(error);
+        },
+      });
+    }
   };
 
   const expandIcon = (
@@ -131,10 +167,12 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
-          <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
-            <CopyIcon />
-            <span>{assistantId}</span>
-          </div>
+          {isEditing && (
+            <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
+              <CopyIcon />
+              <span>{assistantId}</span>
+            </div>
+          )}
         </div>
       ),
     },
@@ -196,7 +234,6 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       onCompleted: ({ deleteAssistant }) => {
         setShowConfirmation(false);
         setNotification(`Assistant ${deleteAssistant.assistant.name} deleted successfully`, 'success');
-        setCurrentId(null);
         setUpdateList(!updateList);
       },
     });
@@ -253,12 +290,13 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
     return <Loading />;
   }
 
-  if (!data?.assistant?.assistant) return;
-
   return (
     <FormikProvider value={formik}>
       <div className={styles.FormContainer}>
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
+          <Typography variant="h5" className={styles.FormTitle}>
+            {isEditing ? t('Update Assistant') : t('Create Assistant')}
+          </Typography>
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
               <div className={styles.FormSection} key={field.name}>
@@ -271,7 +309,12 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
             ))}
           </div>
           <div className={styles.Buttons}>
-            <Button loading={savingChanges} onClick={formik.submitForm} variant="contained" data-testid="submitAction">
+            <Button
+              loading={savingChanges || createLoading}
+              onClick={formik.submitForm}
+              variant="contained"
+              data-testid="submitAction"
+            >
               {t('Save')}
             </Button>
             <Button
