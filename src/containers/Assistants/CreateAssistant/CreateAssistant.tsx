@@ -49,7 +49,6 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
   const navigate = useNavigate();
 
   const { t } = useTranslation();
-
   const states = {
     name,
     model,
@@ -57,15 +56,13 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
     options,
   };
 
-  let modelOptions = [];
+  let modelOptions: Array<{ id: string; label: string }> = [];
 
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
 
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
-
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
-
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
 
   if (modelsList) {
@@ -76,7 +73,7 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
   }
 
   useEffect(() => {
-    if (currentId && modelsList && isEditing) {
+    if (currentId && isEditing) {
       getAssistant({
         variables: { assistantId: currentId },
         onCompleted: ({ assistant }) => {
@@ -94,7 +91,7 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
         },
       });
     }
-  }, [currentId, modelsList, isEditing]);
+  }, [currentId, isEditing]);
 
   useEffect(() => {
     if (!isEditing) {
@@ -235,6 +232,7 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
         setShowConfirmation(false);
         setNotification(`Assistant ${deleteAssistant.assistant.name} deleted successfully`, 'success');
         setUpdateList(!updateList);
+        navigate('/assistants');
       },
     });
   };
@@ -290,13 +288,13 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
     return <Loading />;
   }
 
+  if (!data?.assistant?.assistant && params.assistantId) {
+    return <p className={styles.NotFound}>{'Assistant not found'}</p>;
+  }
   return (
     <FormikProvider value={formik}>
       <div className={styles.FormContainer}>
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
-          <Typography variant="h5" className={styles.FormTitle}>
-            {isEditing ? t('Update Assistant') : t('Create Assistant')}
-          </Typography>
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
               <div className={styles.FormSection} key={field.name}>

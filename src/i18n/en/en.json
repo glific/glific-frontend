@@ -524,7 +524,7 @@
   "Template Flows": "Template Flows",
   "Template Flow": "Template Flow",
   "Flow created successfully from template!": "Flow created successfully from template!",
-  "Select/Create an assistant": "Select/Create an assistant",
+  "Please select or create an assistant.": "Please select or create an assistant.",
   "Create Assistant": "Create Assistant",
   "AI Assistants": "AI Assistants",
   "Purpose-built AI that uses OpenAI's models and calls tools": "Purpose-built AI that uses OpenAI's models and calls tools",
@@ -561,5 +561,6 @@
   "Draft": "Draft",
   "Published": "Published",
   "Last Published At": "Last Published At",
-  "Update Assistant": "Update Assistant"
+  "Update Assistant": "Update Assistant",
+  "Assistant not found": "Assistant not found"
 }

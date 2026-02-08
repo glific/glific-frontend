@@ -44,9 +44,9 @@ export const Assistants = () => {
         </div>
         <div className={styles.RightContainer}>
           {showForm ? (
-            <CreateAssistant key={params.assistantId ?? 'new'} setUpdateList={setUpdateList} updateList={updateList} />
+            <CreateAssistant setUpdateList={setUpdateList} updateList={updateList} />
           ) : (
-            <p className={styles.EmptyText}>Please select or create an assistant</p>
+            <p className={styles.EmptyText}>{t('Please select or create an assistant.')}</p>
           )}
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import Assistants from './Assistants';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, getByText, render, screen, waitFor } from '@testing-library/react';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
@@ -15,15 +15,16 @@ import * as Notification from 'common/notification';
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router', async () => ({
-  ...(await vi.importActual('react-router')),
-  useNavigate: () => mockedUsedNavigate,
-}));
+// vi.mock('react-router', async () => ({
+//   ...(await vi.importActual('react-router')),
+//   useNavigate: () => mockedUsedNavigate,
+// }));
 
 const assistantsComponent = (mocks: any = MOCKS) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/assistants']}>
       <Routes>
+        <Route path="/assistants/add" element={<Assistants />} />
         <Route path="/assistants" element={<Assistants />} />
         <Route path="/assistants/:assistantId" element={<Assistants />} />
       </Routes>
@@ -49,14 +50,14 @@ test('it renders the list properly and switches between items', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
-  });
-
-  await waitFor(() => {
     expect(screen.getAllByTestId('listItem')).toHaveLength(3);
   });
 
   fireEvent.click(screen.getAllByTestId('listItem')[1]);
+
+  await waitFor(() => {
+    expect(screen.getAllByRole('textbox')[1]).toHaveValue('Assistant-405db438');
+  });
 });
 
 test('it creates an assistant', async () => {
@@ -68,6 +69,24 @@ test('it creates an assistant', async () => {
   });
 
   fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[1], { target: { value: 'test name' } });
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(autocompletes[0], { key: 'Enter' });
+  autocompletes[0].focus();
+  fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
@@ -118,6 +137,11 @@ test('it uploads files to assistant', async () => {
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -175,6 +199,11 @@ test('it shows error when adding files to assistant fails', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -202,6 +231,8 @@ test('it updates the assistant', async () => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
 
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
@@ -236,6 +267,8 @@ test('it deletes the assistant', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
@@ -264,6 +297,8 @@ test('it should show errors for invalid value in temperature', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
@@ -289,6 +324,8 @@ test('it opens the instruction dialog box', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByTestId('expandIcon')).toBeInTheDocument();
   });
@@ -311,6 +348,11 @@ test('uploading multiple files and error messages', async () => {
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 

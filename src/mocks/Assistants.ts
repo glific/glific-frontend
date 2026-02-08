@@ -49,8 +49,10 @@ const createAssistant = {
     query: CREATE_ASSISTANT,
     variables: {
       input: {
-        name: null,
-        temperature: 0.1,
+        instructions: 'test instructions',
+        model: 'chatgpt-4o-latest',
+        name: 'test name',
+        temperature: 1.5,
       },
     },
   },
@@ -81,7 +83,7 @@ const getAssistant = (assistantId: any) => ({
           insertedAt: '2024-10-15T11:29:28Z',
           instructions: null,
           model: 'gpt-4o',
-          name: 'cc4d824d',
+          name: 'Assistant-405db438',
           temperature: 1,
           updatedAt: '2024-10-16T15:39:47Z',
         },
