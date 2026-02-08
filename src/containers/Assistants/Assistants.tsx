@@ -7,10 +7,10 @@ import { Heading } from 'components/UI/Heading/Heading';
 
 import { GET_ASSISTANTS } from 'graphql/queries/Assistant';
 
-import { CreateAssistant } from './CreateAssistant/CreateAssistant';
-import { List } from './ListItems/List';
-import styles from './Assistants.module.css';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import styles from './Assistants.module.css';
+import CreateAssistant from './CreateAssistant/CreateAssistant';
+import List from './ListItems/List';
 
 export const Assistants = () => {
   const params = useParams();

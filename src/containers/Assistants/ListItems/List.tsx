@@ -18,7 +18,7 @@ interface ListProps {
   refreshList?: boolean;
 }
 
-export const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
+const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
@@ -129,3 +129,5 @@ export const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) =>
     </div>
   );
 };
+
+export default List;

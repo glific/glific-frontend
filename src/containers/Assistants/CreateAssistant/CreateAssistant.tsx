@@ -5,17 +5,17 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-import { copyToClipboard } from 'common/utils';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { copyToClipboard } from 'common/utils';
 
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
-import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
 import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
@@ -23,15 +23,15 @@ import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 
-import styles from './CreateAssistant.module.css';
 import { useNavigate, useParams } from 'react-router';
+import styles from './CreateAssistant.module.css';
 
 interface CreateAssistantProps {
   updateList: boolean;
   setUpdateList: any;
 }
 
-export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
+const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
   const [name, setName] = useState('');
   const [model, setModel] = useState<any>(null);
@@ -136,9 +136,9 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
         variables: {
           input: payload,
         },
-        onCompleted: ({ createAssistant }) => {
+        onCompleted: ({ createAssistant: data }) => {
           setNotification(t('Assistant created successfully'), 'success');
-          navigate(`/assistants/${createAssistant.assistant.id}`);
+          navigate(`/assistants/${data.assistant.id}`);
           setUpdateList(!updateList);
         },
         onError: (error) => {
@@ -333,3 +333,5 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
     </FormikProvider>
   );
 };
+
+export default CreateAssistant;
