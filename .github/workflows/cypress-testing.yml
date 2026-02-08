@@ -97,6 +97,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
+          git checkout fix/filesearch_file
           cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress@13.6.2
