@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
+import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -230,10 +230,26 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               }}
             />
           </Typography>
-          <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
-            <AddIcon />
-            {t('Manage Files')}
-          </Button>
+          <Tooltip
+            title={
+              data?.assistant.assistant.vectorStore?.legacy
+                ? 'This vector store was created externally and cannot be modified here.'
+                : ''
+            }
+            arrow
+          >
+            <span>
+              <Button
+                data-testid="addFiles"
+                onClick={() => setShowUploadDialog(true)}
+                variant="outlined"
+                disabled={data?.assistant.assistant.vectorStore?.legacy}
+              >
+                <AddIcon />
+                {t('Manage Files')}
+              </Button>
+            </span>
+          </Tooltip>
         </div>
         {data?.assistant.assistant.vectorStore && (
           <div className={styles.VectorStore}>

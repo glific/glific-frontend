@@ -38,6 +38,7 @@ export const GET_ASSISTANT_FILES = gql`
             filename: name
           }
           id
+          legacy
           name
           vectorStoreId
         }
