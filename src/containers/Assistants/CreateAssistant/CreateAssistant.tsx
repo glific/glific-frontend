@@ -3,6 +3,8 @@ import { InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material'
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
+
 import * as Yup from 'yup';
 
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -23,7 +25,6 @@ import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 
-import { useNavigate, useParams } from 'react-router';
 import styles from './CreateAssistant.module.css';
 
 interface CreateAssistantProps {
@@ -136,9 +137,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         variables: {
           input: payload,
         },
-        onCompleted: ({ createAssistant: data }) => {
+        onCompleted: ({ createAssistant: createAssistantData }) => {
           setNotification(t('Assistant created successfully'), 'success');
-          navigate(`/assistants/${data.assistant.id}`);
+          navigate(`/assistants/${createAssistantData.id}`);
           setUpdateList(!updateList);
         },
         onError: (error) => {
