@@ -289,7 +289,7 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
   }
 
   if (!data?.assistant?.assistant && params.assistantId) {
-    return <p className={styles.NotFound}>{'Assistant not found'}</p>;
+    return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
   }
   return (
     <FormikProvider value={formik}>

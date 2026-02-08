@@ -50,8 +50,10 @@ test('it renders the list properly and switches between items', async () => {
 
   fireEvent.click(screen.getAllByTestId('listItem')[1]);
 
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+
   await waitFor(() => {
-    expect(screen.getAllByRole('textbox')[1]).toHaveValue('Assistant-405db438');
+    expect(screen.getByText('vs_laIycGtun7qEl0U7zlVsygmy')).toBeInTheDocument();
   });
 });
 
