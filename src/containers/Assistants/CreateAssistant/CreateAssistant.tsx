@@ -73,7 +73,7 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
   }
 
   useEffect(() => {
-    if (currentId && isEditing) {
+    if (currentId && isEditing && modelsList) {
       getAssistant({
         variables: { assistantId: currentId },
         onCompleted: ({ assistant }) => {
@@ -91,7 +91,7 @@ export const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantPr
         },
       });
     }
-  }, [currentId, isEditing]);
+  }, [currentId, modelsList, isEditing]);
 
   useEffect(() => {
     if (!isEditing) {
