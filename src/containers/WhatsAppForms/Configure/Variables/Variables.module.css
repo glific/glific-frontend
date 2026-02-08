@@ -1,0 +1,79 @@
+.VariablesContainer {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.VariablesContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.VariablesContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.VariablesContainer::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.VariablesContainer::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.VariablesHeader {
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.VariablesHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.VariablesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.variableItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.variableContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.VariableInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.VariableLabel {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+}
+
+.VariableName {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b7a3e;
+}

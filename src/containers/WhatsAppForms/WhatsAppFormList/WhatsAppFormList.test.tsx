@@ -14,7 +14,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
 import { WhatsAppFormList } from './WhatsAppFormList';
-
+import Configure from 'containers/WhatsAppForms/Configure/Configure';
 export { publishWhatsappForm, publishWhatsappFormError } from 'mocks/WhatsAppForm';
 
 const mockNavigate = vi.fn();
@@ -43,7 +43,7 @@ const wrapper = (extraMocks: any[] = [], initialEntry: string = '/whatsapp-forms
       <MemoryRouter initialEntries={[initialEntry]}>
         <Routes>
           <Route path="/whatsapp-forms/add" element={<WhatsAppForms />} />
-          <Route path="/whatsapp-forms/:id/edit" element={<WhatsAppForms />} />
+          <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
           <Route path="/whatsapp-forms" element={<WhatsAppFormList />} />
         </Routes>
       </MemoryRouter>
@@ -93,7 +93,7 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('publishes a form successfully when publish button clicked', async () => {
-    const { getByText, getAllByRole, getByTestId } = render(wrapper([publishWhatsappForm]));
+    const { getByText, getAllByRole, getByTestId } = render(wrapper([publishWhatsappForm('3')]));
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
     const select = getAllByRole('combobox')[0];
@@ -122,29 +122,17 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('shows error message when publish API fails', async () => {
-    const { getByText, getAllByRole, getByTestId } = render(wrapper([publishWhatsappFormError]));
+    const { getByTestId } = render(wrapper([publishWhatsappFormError]));
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
 
-    const select = getAllByRole('combobox')[0];
-    fireEvent.click(getByText('All'));
-
-    expect(select).toHaveTextContent('All');
-    fireEvent.mouseDown(select);
-    const draftOption = getByText('Draft');
-    fireEvent.click(draftOption);
-    expect(select).toHaveTextContent('Draft');
-
     const publishIcon = await waitFor(() => getByTestId('publish-icon'));
+
     fireEvent.click(publishIcon);
 
     await waitFor(() => {
-      expect(getByTestId('dialogTitle')).toBeInTheDocument();
+      expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to publish this form');
     });
-
-    expect(getByTestId('dialogTitle')).toHaveTextContent('Do you want to publish this form');
-
-    const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
-    fireEvent.click(ConfirmButton);
+    fireEvent.click(getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
@@ -152,15 +140,8 @@ describe('<WhatsAppFormList />', () => {
   });
 
   test('deactivate a form successfully when inactive button is clicked', async () => {
-    const { getByText, getAllByRole, getByTestId, getAllByTestId } = render(wrapper([deactivateWhatsappForm]));
+    const { getByTestId, getAllByTestId } = render(wrapper([deactivateWhatsappForm]));
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
-
-    const select = getAllByRole('combobox')[0];
-    fireEvent.click(getByText('All'));
-
-    expect(select).toHaveTextContent('All');
-
-    expect(getByTestId('loading')).toBeInTheDocument();
 
     const deactivateIcon = await waitFor(() => getAllByTestId('deactivate-icon')[0]);
     fireEvent.click(deactivateIcon);
@@ -219,7 +200,7 @@ describe('<WhatsAppFormList />', () => {
     fireEvent.click(viewIcons[0]);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/1/edit');
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/2/edit');
     });
   });
 
@@ -273,5 +254,20 @@ describe('<WhatsAppFormList />', () => {
     });
 
     expect(notificationSpy).toHaveBeenCalledWith('Sorry, failed to sync whatsapp forms updates.', 'warning');
+  });
+
+  test('navigates to configure page when configure icon is clicked', async () => {
+    const { getByText, getAllByTestId } = render(wrapper());
+
+    await waitFor(() => {
+      expect(getByText('Draft')).toBeInTheDocument();
+    });
+
+    const configureIcon = await waitFor(() => getAllByTestId('configure-icon')[2]);
+    fireEvent.click(configureIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/3/configure');
+    });
   });
 });

@@ -1,0 +1,145 @@
+.ScreenContainer {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.ScreenContainer.Dragging {
+  opacity: 0.5;
+}
+
+.ScreenHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.DragHandle {
+  display: flex;
+  align-items: center;
+  color: #666;
+  cursor: grab;
+}
+
+.DragHandle:active {
+  cursor: grabbing;
+}
+
+.ScreenTitle {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.Actions {
+  display: flex;
+  gap: 8px;
+}
+
+.DeleteButton,
+.ExpandButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.DeleteButton:hover {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.ExpandButton:hover {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.ScreenContent {
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.Field {
+  margin-bottom: 20px;
+}
+
+.FieldLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.InputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.Input {
+  width: 100%;
+  padding: 12px 60px 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.Input:focus {
+  outline: none;
+  border-color: #0c9d58;
+}
+
+.Input.Error {
+  border-color: #d32f2f;
+}
+
+.Input.Error:focus {
+  border-color: #d32f2f;
+}
+
+.Input::placeholder {
+  color: #999;
+}
+
+.CharCount {
+  position: absolute;
+  right: 16px;
+  font-size: 12px;
+  color: #999;
+  pointer-events: none;
+}
+
+.LayoutArea {
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+}
+
+.ContentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ErrorMessage {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #d32f2f;
+}

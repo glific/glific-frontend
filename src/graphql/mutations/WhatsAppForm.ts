@@ -89,6 +89,35 @@ export const ACTIVATE_FORM = gql`
   }
 `;
 
+export const SAVE_WHATSAPP_FORM_REVISION = gql`
+  mutation SaveWhatsappFormRevision($input: WhatsappFormRevisionInput!) {
+    saveWhatsappFormRevision(input: $input) {
+      whatsappFormRevision {
+        id
+        revisionNumber
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const REVERT_TO_WHATSAPP_FORM_REVISION = gql`
+  mutation RevertToWhatsappFormRevision($whatsappFormId: ID!, $revisionId: ID!) {
+    revertToWhatsappFormRevision(whatsappFormId: $whatsappFormId, revisionId: $revisionId) {
+      whatsappFormRevision {
+        definition
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
 export const SYNC_FORM = gql`
   mutation syncWhatsappForm {
     syncWhatsappForm {
