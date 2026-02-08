@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import Assistants from './Assistants';
-import { fireEvent, getByText, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
@@ -14,11 +14,6 @@ import * as Notification from 'common/notification';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
-const mockedUsedNavigate = vi.fn();
-// vi.mock('react-router', async () => ({
-//   ...(await vi.importActual('react-router')),
-//   useNavigate: () => mockedUsedNavigate,
-// }));
 
 const assistantsComponent = (mocks: any = MOCKS) => (
   <MockedProvider mocks={mocks}>
