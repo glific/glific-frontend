@@ -114,7 +114,8 @@ export const FormBuilder = ({
   };
 
   const addContent = (screenId: string, category: string, item: string) => {
-    let defaultData: ContentItemData = category === 'Text' ? { text: 'Text' } : { label: 'Label' };
+    let defaultData: ContentItemData =
+      category === 'Text' ? { text: 'Text', required: true } : { label: 'Label', required: true };
     if (category === 'Selection') {
       defaultData = {
         ...defaultData,
@@ -203,7 +204,7 @@ export const FormBuilder = ({
 
       <div className={styles.ScreensList}>
         <DndContext
-          sensors={isViewOnly ? [] : sensors}
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={isViewOnly ? undefined : handleDragEnd}
         >

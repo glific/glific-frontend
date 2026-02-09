@@ -18,9 +18,18 @@
   align-items: center;
 }
 
+.Actions {
+  display: flex;
+  align-items: center;
+}
+
+.Actions Button {
+  padding: 0.5rem 1.2rem;
+}
+
 .Header p {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 38px;
   font-weight: 600;
 }
 
@@ -35,6 +44,7 @@
 
 .FlowBuilder {
   flex: 1;
+  min-width: 0;
   background-color: white;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -42,7 +52,8 @@
 }
 
 .Preview {
-  width: 400px;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
 }
 
@@ -82,6 +93,7 @@
   }
 
   .Preview {
+    flex: none;
     width: 100%;
     height: 600px;
   }

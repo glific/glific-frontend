@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { ArrowLeftIcon } from '@mui/x-date-pickers';
+import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -121,7 +121,10 @@ export const Configure = () => {
   };
 
   const handleBackToEditing = () => {
-    if (showJSON) setShowJSON(false);
+    if (showJSON) {
+      setShowJSON(false);
+      return;
+    }
     setScreens(currentScreensRef.current);
     setPreviewingVersion(null);
   };
@@ -166,6 +169,19 @@ export const Configure = () => {
     fetchPolicy: 'network-only',
   });
 
+  const handleSaveWhatsappFormRevision = () => {
+    const flowJSON = convertFormBuilderToFlowJSON(screens);
+
+    saveWhatsappFormRevision({
+      variables: {
+        input: {
+          whatsappFormId: params.id,
+          definition: JSON.stringify(flowJSON),
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -185,16 +201,8 @@ export const Configure = () => {
         return;
       }
 
-      const flowJSON = convertFormBuilderToFlowJSON(screens);
       hasUnsavedChangesRef.current = false;
-      saveWhatsappFormRevision({
-        variables: {
-          input: {
-            whatsappFormId: params.id,
-            definition: JSON.stringify(flowJSON),
-          },
-        },
-      });
+      handleSaveWhatsappFormRevision();
     }, 1000);
 
     return () => {
@@ -235,14 +243,19 @@ export const Configure = () => {
             className={styles.BackIcon}
             data-testid="back-button"
           >
-            <ArrowLeftIcon />
+            <BackIcon />
           </div>
 
           <p>{previewingVersion !== null ? `Viewing Version ${previewingVersion}` : flowName}</p>
           {isPublished && <span className={styles.PublishedBadge}>Published</span>}
         </div>
 
-        <div>
+        <div className={styles.Actions}>
+          {!showJSON && (
+            <Button variant="outlined" onClick={handleViewJSON}>
+              View JSON
+            </Button>
+          )}
           {previewingVersion !== null || showJSON ? (
             <Button variant="contained" color="primary" onClick={handleBackToEditing}>
               Back to Editing
@@ -264,9 +277,14 @@ export const Configure = () => {
               </Button>
             )
           )}
-          {!showJSON && (
-            <Button variant="outlined" onClick={handleViewJSON}>
-              View JSON
+          {!isPublished && (
+            <Button
+              variant="contained"
+              color="primary"
+              data-testid="save-button"
+              onClick={handleSaveWhatsappFormRevision}
+            >
+              {isSaving ? <CircularProgress size={22} color="inherit" /> : 'Save'}
             </Button>
           )}
         </div>
@@ -281,7 +299,11 @@ export const Configure = () => {
         )}
         <div className={styles.FlowBuilder}>
           {showJSON ? (
-            <JSONViewer screens={screens} onClose={() => setShowJSON(false)} />
+            <JSONViewer
+              screens={screens}
+              onClose={() => setShowJSON(false)}
+              onScreensChange={isViewOnly ? undefined : handleScreensChange}
+            />
           ) : (
             <FormBuilder
               screens={screens}
@@ -335,8 +357,6 @@ export const Configure = () => {
           )}
         </div>
       </div>
-
-      {/* {showJSON && } */}
     </>
   );
 };

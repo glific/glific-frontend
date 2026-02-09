@@ -60,6 +60,7 @@ export const LIST_WHATSAPP_FORMS = gql`
         id
         url
       }
+      updatedAt
     }
   }
 `;
