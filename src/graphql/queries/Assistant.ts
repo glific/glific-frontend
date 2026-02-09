@@ -29,7 +29,7 @@ export const GET_ASSISTANT = gql`
 `;
 
 export const GET_ASSISTANT_FILES = gql`
-  query Assistant($assistantId: ID!) {
+  query GetAssistantFiles($assistantId: ID!) {
     assistant(id: $assistantId) {
       assistant {
         vectorStore {
