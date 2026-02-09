@@ -357,8 +357,6 @@ export const Configure = () => {
           )}
         </div>
       </div>
-
-      {/* {showJSON && } */}
     </>
   );
 };
