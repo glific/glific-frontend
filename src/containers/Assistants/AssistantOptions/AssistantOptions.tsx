@@ -53,6 +53,8 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
     },
   });
 
+  const isLegacyVectorStore = data?.assistant.assistant.vectorStore?.legacy;
+
   const handleFileChange = (event: any) => {
     const inputFiles = event.target.files;
     let errorMessages: any = [];
@@ -231,11 +233,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             />
           </Typography>
           <Tooltip
-            title={
-              data?.assistant.assistant.vectorStore?.legacy
-                ? 'This vector store was created externally and cannot be modified here.'
-                : ''
-            }
+            title={isLegacyVectorStore ? 'This vector store was created externally and cannot be modified here.' : ''}
             arrow
           >
             <span>
@@ -243,7 +241,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                 data-testid="addFiles"
                 onClick={() => setShowUploadDialog(true)}
                 variant="outlined"
-                disabled={data?.assistant.assistant.vectorStore?.legacy}
+                disabled={isLegacyVectorStore}
               >
                 <AddIcon />
                 {t('Manage Files')}
