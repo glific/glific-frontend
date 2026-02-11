@@ -111,6 +111,38 @@ const getAssistantFiles = (assistantId: any) => ({
               },
             ],
             id: assistantId,
+            legacy: false,
+            name: 'VectorStore-77ae3597',
+            vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
+          },
+        },
+      },
+    },
+  },
+});
+
+const getAssistantFilesLegacy = (assistantId: any) => ({
+  request: {
+    query: GET_ASSISTANT_FILES,
+    variables: { assistantId },
+  },
+  result: {
+    data: {
+      assistant: {
+        __typename: 'AssistantResult',
+        assistant: {
+          __typename: 'Assistant',
+          vectorStore: {
+            __typename: 'VectorStore',
+            files: [
+              {
+                __typename: 'FileInfo',
+                fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
+                filename: 'Accelerator Guide (1).pdf',
+              },
+            ],
+            id: assistantId,
+            legacy: true,
             name: 'VectorStore-77ae3597',
             vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
           },
@@ -322,6 +354,14 @@ export const MOCKS = [
 export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
 export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
 
+export const legacyVectorStoreMocks = [
+  getAssistantsList(),
+  listOpenaiModels,
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantFilesLegacy('1'),
+  getAssistantFilesLegacy('1'),
+];
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
 export const errorMocks = [
