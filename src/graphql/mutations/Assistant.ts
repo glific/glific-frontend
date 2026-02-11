@@ -45,19 +45,6 @@ export const ADD_FILES_TO_FILE_SEARCH = gql`
   }
 `;
 
-export const REMOVE_FILES_FROM_ASSISTANT = gql`
-  mutation RemoveAssistantFile($fileId: String!, $removeAssistantFileId: ID!) {
-    removeAssistantFile(fileId: $fileId, id: $removeAssistantFileId) {
-      assistant {
-        id
-      }
-      errors {
-        message
-        key
-      }
-    }
-  }
-`;
 
 export const DELETE_ASSISTANT = gql`
   mutation DeleteAssistant($deleteAssistantId: ID!) {

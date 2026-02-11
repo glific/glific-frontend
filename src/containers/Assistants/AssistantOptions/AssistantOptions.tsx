@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import DatabaseIcon from 'assets/images/database.svg?react';
-import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import FileIcon from 'assets/images/FileGreen.svg?react';
 import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 
@@ -15,7 +15,6 @@ import { setErrorMessage, setNotification } from 'common/notification';
 
 import {
   ADD_FILES_TO_FILE_SEARCH,
-  REMOVE_FILES_FROM_ASSISTANT,
   UPLOAD_FILE_TO_OPENAI,
 } from 'graphql/mutations/Assistant';
 
@@ -41,7 +40,6 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
 
   const [uploadFileToOpenAi] = useMutation(UPLOAD_FILE_TO_OPENAI);
   const [addFilesToFileSearch, { loading: addingFiles }] = useMutation(ADD_FILES_TO_FILE_SEARCH);
-  const [removeFile] = useMutation(REMOVE_FILES_FROM_ASSISTANT);
 
   const { refetch, data } = useQuery(GET_ASSISTANT_FILES, {
     variables: { assistantId: currentId },
@@ -117,17 +115,6 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   };
 
   const handleRemoveFile = (file: any) => {
-    if (file.attached) {
-      removeFile({
-        variables: {
-          fileId: file.fileId,
-          removeAssistantFileId: currentId,
-        },
-        onCompleted: () => {
-          refetch();
-        },
-      });
-    }
     setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
     setNotification('File removed from assistant!', 'success');
   };
@@ -161,7 +148,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         open={showUploadDialog}
         title={t('Manage Files')}
         handleCancel={() => setShowUploadDialog(false)}
-        buttonOk="Add"
+        buttonOk="Save"
         fullWidth
         handleOk={handleFileUpload}
         disableOk={addingFiles || loading}
@@ -195,7 +182,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                     <span>{file.filename}</span>
                   </div>
                   <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
-                    <DeleteIcon />
+                    <CrossIcon />
                   </IconButton>
                 </div>
               ))}

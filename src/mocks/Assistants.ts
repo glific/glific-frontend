@@ -2,7 +2,6 @@ import {
   ADD_FILES_TO_FILE_SEARCH,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
-  REMOVE_FILES_FROM_ASSISTANT,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_OPENAI,
 } from 'graphql/mutations/Assistant';
@@ -189,22 +188,7 @@ export const uploadFileToFileSearchWithError = {
   variableMatcher: (variables: any) => true,
 };
 
-const removeFileFromAssistant = {
-  request: {
-    query: REMOVE_FILES_FROM_ASSISTANT,
-    variables: { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', removeAssistantFileId: '1' },
-  },
-  result: {
-    data: {
-      removeAssistantFile: {
-        assistant: {
-          id: '1',
-        },
-        errors: null,
-      },
-    },
-  },
-};
+
 
 const addFilesToFilesearch = (mediaInfo: any) => ({
   request: {
@@ -287,7 +271,6 @@ const uploadFileMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearch,
   uploadFileToFileSearch,
-  removeFileFromAssistant,
   addFilesToFilesearch([
     { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
     { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
