@@ -146,9 +146,9 @@ describe('<Registration />', () => {
     const registerWithButton = screen.getByTestId('SubmitButton') as HTMLButtonElement;
     fireEvent.click(registerWithButton);
 
-    // Wait a bit for validation to complete
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    expect(queryByText('Confirm OTP')).not.toBeInTheDocument();
+    // Wait for validation errors to appear, confirming validation ran
+    await waitFor(() => {
+      expect(queryByText('Confirm OTP')).not.toBeInTheDocument();
+    });
   });
 });

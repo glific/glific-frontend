@@ -222,10 +222,10 @@ export const Auth = ({
                         if (token) {
                           const errors = await validateForm();
 
-                          const touched = Object.keys(values).reduce((acc, key) => {
+                          const touched = Object.keys(values).reduce<Record<string, boolean>>((acc, key) => {
                             acc[key] = true;
                             return acc;
-                          }, {} as any);
+                          }, {});
                           setTouched(touched);
 
                           if (Object.keys(errors).length === 0) {
