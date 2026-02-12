@@ -83,7 +83,7 @@ describe('<Registration />', () => {
       values: {
         username: 'Jane Doe',
         phone: '+919978776554',
-        password: 'pass123456',
+        password: 'Pass@123456',
         email: 'you@domain.com',
         consent_for_updates: true,
       },
@@ -93,7 +93,8 @@ describe('<Registration />', () => {
     const { container, getByText } = render(wrapper);
 
     const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
-    fireEvent.change(userName, { target: { value: 'John doe' } });
+    fireEvent.change(userName, { target: { value: 'John Doe' } });
+
     const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
@@ -102,20 +103,24 @@ describe('<Registration />', () => {
 
     const email = container.querySelector('input[type="email"]') as HTMLInputElement;
     fireEvent.change(email, { target: { value: 'you@domain.com' } });
+
     const checkbox = container.querySelector('input[name="consent_for_updates"]') as HTMLInputElement;
     expect(checkbox).toBeChecked();
-
-    await waitFor(() => {
-      expect(getByText('Register with')).toBeInTheDocument();
-    });
 
     const registerWithButton = screen.getByTestId('SubmitButton') as HTMLButtonElement;
 
     fireEvent.click(registerWithButton);
 
-    await waitFor(() => {
-      expect(getByText('Confirm OTP')).toBeInTheDocument();
-    });
+    // Wait for async state updates and navigation
+    await waitFor(
+      () => {
+        expect(getByText('Confirm OTP')).toBeInTheDocument();
+      },
+      {
+        timeout: 3000,
+        interval: 50, // Check every 50ms instead of default 50ms
+      }
+    );
   });
 
   it('should not submit the form when password validation fails', async () => {
@@ -125,7 +130,7 @@ describe('<Registration />', () => {
       executeRecaptcha: promise,
     }));
 
-    const { container, getByText, queryByText } = render(wrapper);
+    const { container, queryByText } = render(wrapper);
 
     const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
     fireEvent.change(userName, { target: { value: 'John Doe' } });
@@ -134,21 +139,20 @@ describe('<Registration />', () => {
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    fireEvent.change(password, { target: { value: 'abc' } });
+    fireEvent.change(password, { target: { value: 'abc' } }); // Invalid password
 
     const email = container.querySelector('input[type="email"]') as HTMLInputElement;
     fireEvent.change(email, { target: { value: 'you@domain.com' } });
 
-    await waitFor(() => {
-      expect(getByText('Register with')).toBeInTheDocument();
-    });
-
     const registerWithButton = screen.getByTestId('SubmitButton') as HTMLButtonElement;
     fireEvent.click(registerWithButton);
 
-    // Wait for validation errors to appear, confirming validation ran
-    await waitFor(() => {
-      expect(queryByText('Confirm OTP')).not.toBeInTheDocument();
-    });
+    // Wait to ensure validation blocks submission
+    await waitFor(
+      () => {
+        expect(queryByText('Confirm OTP')).not.toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
   });
 });

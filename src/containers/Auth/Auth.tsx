@@ -175,7 +175,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values, validateForm, setTouched }) => (
+          {({ submitForm, values, setValues }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -220,18 +220,14 @@ export const Auth = ({
                       color="primary"
                       onClick={async (token: string) => {
                         if (token) {
-                          const errors = await validateForm();
+                          // Set captcha value
+                          await setValues({ ...values, captcha: token });
 
-                          const touched = Object.keys(values).reduce<Record<string, boolean>>((acc, key) => {
-                            acc[key] = true;
-                            return acc;
-                          }, {});
-                          setTouched(touched);
+                          // Give React time to process the state update
+                          await new Promise((resolve) => setTimeout(resolve, 0));
 
-                          if (Object.keys(errors).length === 0) {
-                            setLoading(true);
-                            saveHandler({ ...values, captcha: token });
-                          }
+                          // Let Formik handle validation & submission
+                          submitForm();
                         }
                       }}
                       className={buttonClass}
