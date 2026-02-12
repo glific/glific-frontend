@@ -139,7 +139,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         },
         onCompleted: ({ createAssistant: createAssistantData }) => {
           setNotification(t('Assistant created successfully'), 'success');
-          navigate(`/assistants/${createAssistantData.id}`);
+          navigate(`/assistants/${createAssistantData.assistant.id}`);
           setUpdateList(!updateList);
         },
         onError: (error) => {
