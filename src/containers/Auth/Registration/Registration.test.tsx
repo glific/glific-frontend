@@ -117,4 +117,38 @@ describe('<Registration />', () => {
       expect(getByText('Confirm OTP')).toBeInTheDocument();
     });
   });
+
+  it('should not submit the form when password validation fails', async () => {
+    const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
+    const promise = () => Promise.resolve('some_fake_token');
+    useRecaptcha.mockImplementation(() => ({
+      executeRecaptcha: promise,
+    }));
+
+    const { container, getByText, queryByText } = render(wrapper);
+
+    const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
+    fireEvent.change(userName, { target: { value: 'John Doe' } });
+
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    fireEvent.change(password, { target: { value: 'abc' } });
+
+    const email = container.querySelector('input[type="email"]') as HTMLInputElement;
+    fireEvent.change(email, { target: { value: 'you@domain.com' } });
+
+    await waitFor(() => {
+      expect(getByText('Register with')).toBeInTheDocument();
+    });
+
+    const registerWithButton = screen.getByTestId('SubmitButton') as HTMLButtonElement;
+    fireEvent.click(registerWithButton);
+
+    // Wait a bit for validation to complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(queryByText('Confirm OTP')).not.toBeInTheDocument();
+  });
 });
