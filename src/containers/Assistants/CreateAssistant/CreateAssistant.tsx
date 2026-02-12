@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
@@ -40,6 +40,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [options, setOptions] = useState({ fileSearch: true, temperature: 0.1 });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
+  const savedState = useRef({ name: '', model: null as any, instructions: '', temperature: 0.1 });
   let isEditing = false;
   const params = useParams();
   let currentId = null;
@@ -56,6 +58,14 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     instructions,
     options,
   };
+
+  const hasUnsavedChanges = isEditing
+    ? name !== savedState.current.name ||
+      model?.label !== savedState.current.model?.label ||
+      instructions !== savedState.current.instructions ||
+      options.temperature !== savedState.current.temperature ||
+      hasUnsavedFiles
+    : name !== '' || model !== null || instructions !== '' || hasUnsavedFiles;
 
   let modelOptions: Array<{ id: string; label: string }> = [];
 
@@ -89,6 +99,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             ...options,
             temperature: assistant?.assistant?.temperature,
           });
+          savedState.current = {
+            name: assistant?.assistant?.name,
+            model: modelValue,
+            instructions: assistant?.assistant?.instructions || '',
+            temperature: assistant?.assistant?.temperature,
+          };
         },
       });
     }
@@ -126,6 +142,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             return;
           }
           setNotification('Changes saved successfully', 'success');
+          savedState.current = { name, model, instructions, temperature: options.temperature };
           setUpdateList(!updateList);
         },
         onError: (errors) => {
@@ -202,6 +219,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       options,
       currentId,
       setOptions,
+      onUnsavedFilesChange: setHasUnsavedFiles,
     },
   ];
 
@@ -294,7 +312,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   }
   return (
     <FormikProvider value={formik}>
-      <div className={styles.FormContainer}>
+      <div className={`${styles.FormContainer} ${hasUnsavedChanges ? styles.UnsavedContainer : ''}`}>
+        {hasUnsavedChanges && (
+          <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
+            {t('Unsaved changes')}
+          </span>
+        )}
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (

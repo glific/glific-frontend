@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
@@ -26,13 +26,14 @@ interface AssistantOptionsProps {
   options: any;
   currentId: any;
   setOptions: any;
+  onUnsavedFilesChange: (hasUnsaved: boolean) => void;
 }
 
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
 const filesInfo =
   'Enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
-export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
+export const AssistantOptions = ({ currentId, options, setOptions, onUnsavedFilesChange }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,6 +54,11 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       }
     },
   });
+
+  useEffect(() => {
+    const hasUnattached = files.some((file) => !file.attached);
+    onUnsavedFilesChange(hasUnattached);
+  }, [files]);
 
   const handleFileChange = (event: any) => {
     const inputFiles = event.target.files;
