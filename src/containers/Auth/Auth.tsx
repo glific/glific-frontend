@@ -175,7 +175,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values }) => (
+          {({ submitForm, values, validateForm, setTouched }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -218,10 +218,20 @@ export const Auth = ({
                       component={Button}
                       variant="contained"
                       color="primary"
-                      onClick={(token: string) => {
+                      onClick={async (token: string) => {
                         if (token) {
-                          setLoading(true);
-                          saveHandler({ ...values, captcha: token });
+                          const errors = await validateForm();
+
+                          const touched = Object.keys(values).reduce((acc, key) => {
+                            acc[key] = true;
+                            return acc;
+                          }, {} as any);
+                          setTouched(touched);
+
+                          if (Object.keys(errors).length === 0) {
+                            setLoading(true);
+                            saveHandler({ ...values, captcha: token });
+                          }
                         }
                       }}
                       className={buttonClass}
