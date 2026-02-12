@@ -7,6 +7,7 @@ import {
   addFilesToFileSearchWithErrorMocks,
   emptyMocks,
   errorMocks,
+  legacyVectorStoreMocks,
   loadMoreMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
@@ -336,6 +337,29 @@ test('it opens the instruction dialog box', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('test instructions')).toBeInTheDocument();
+  });
+});
+
+test('it disables Manage Files button for legacy vector store', async () => {
+  render(assistantsComponent(legacyVectorStoreMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addFiles')).toBeDisabled();
+  });
+
+  fireEvent.mouseOver(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(
+      screen.getByText(
+        'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
+      )
+    ).toBeInTheDocument();
   });
 });
 
