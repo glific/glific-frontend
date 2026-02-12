@@ -38,6 +38,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [model, setModel] = useState<any>(null);
   const [instructions, setInstructions] = useState('');
   const [options, setOptions] = useState({ fileSearch: true, temperature: 0.1 });
+  const [versionDescription, setVersionDescription] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
   let isEditing = false;
@@ -55,6 +56,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     model,
     instructions,
     options,
+    versionDescription,
   };
 
   let modelOptions: Array<{ id: string; label: string }> = [];
@@ -101,18 +103,29 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setModel(null);
       setInstructions('');
       setOptions({ fileSearch: true, temperature: 0.1 });
+      setVersionDescription('');
     }
   }, [isEditing]);
 
   const handleCreate = () => {
-    const { instructions: instructionsValue, model: modelValue, name: nameValue, options: optionsValue } = states;
+    const {
+      instructions: instructionsValue,
+      model: modelValue,
+      name: nameValue,
+      options: optionsValue,
+      versionDescription: versionDescriptionValue,
+    } = states;
 
-    const payload = {
+    const payload: any = {
       instructions: instructionsValue,
       model: modelValue.label,
       name: nameValue,
       temperature: optionsValue?.temperature,
     };
+
+    if (versionDescriptionValue?.trim()) {
+      payload.description = versionDescriptionValue.trim();
+    }
 
     if (isEditing) {
       updateAssistant({
@@ -126,6 +139,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             return;
           }
           setNotification('Changes saved successfully', 'success');
+          setVersionDescription('');
           setUpdateList(!updateList);
         },
         onError: (errors) => {
@@ -202,6 +216,16 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       options,
       currentId,
       setOptions,
+    },
+    {
+      component: Input,
+      name: 'versionDescription',
+      type: 'text',
+      label: t('Version Description'),
+      rows: 2,
+      textArea: true,
+      helperText: t('Briefly describe what changed in this version (optional)'),
+      onChange: (value: any) => setVersionDescription(value),
     },
   ];
 
