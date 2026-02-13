@@ -348,6 +348,8 @@ test('it disables Manage Files button for legacy vector store', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByTestId('addFiles')).toBeDisabled();
   });
