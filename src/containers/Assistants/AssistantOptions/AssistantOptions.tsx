@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
+import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -54,6 +54,8 @@ export const AssistantOptions = ({ currentId, options, setOptions, onUnsavedFile
       }
     },
   });
+
+  const isLegacyVectorStore = data?.assistant.assistant.vectorStore?.legacy;
 
   useEffect(() => {
     const hasUnattached = files.some((file) => !file.attached);
@@ -237,10 +239,26 @@ export const AssistantOptions = ({ currentId, options, setOptions, onUnsavedFile
               }}
             />
           </Typography>
-          <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
-            <AddIcon />
-            {t('Manage Files')}
-          </Button>
+          <Tooltip
+            title={
+              isLegacyVectorStore
+                ? 'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
+                : ''
+            }
+            arrow
+          >
+            <span>
+              <Button
+                data-testid="addFiles"
+                onClick={() => setShowUploadDialog(true)}
+                variant="outlined"
+                disabled={isLegacyVectorStore}
+              >
+                <AddIcon />
+                {t('Manage Files')}
+              </Button>
+            </span>
+          </Tooltip>
         </div>
         {data?.assistant.assistant.vectorStore && (
           <div className={styles.VectorStore}>
