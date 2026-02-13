@@ -53,6 +53,7 @@ const createAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
+        description: 'description for new changes',
       },
     },
   },
