@@ -79,6 +79,7 @@ export const updateUserQuery = [
           user: {
             id: '2',
             name: 'Updated Name',
+            phone: '+919820198765',
             email: 'you@domain.com',
           },
         },
@@ -147,6 +148,20 @@ export const updateUserQuery = [
             phone: '+919820198765',
             email: 'newemail@domain.com',
           },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { name: 'John Doe', email: 'error@domain.com' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ message: 'Email already exists' }],
+          user: null,
         },
       },
     },

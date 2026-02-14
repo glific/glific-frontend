@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
 import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
+import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -15,6 +16,20 @@ const mocks = [
   getCurrentUserQuery,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { name: 'John Doe', email: 'error@domain.com' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ message: 'Email already exists' }],
+          user: null,
+        },
+      },
+    },
+  },
 ];
 
 vi.mock('axios');
@@ -214,6 +229,24 @@ describe('<MyAccount />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Profile updated successfully!')).toBeInTheDocument();
+    });
+  });
+
+  test('update profile error flow', async () => {
+    const { container } = render(wrapper);
+
+    await screen.findByTestId('MyAccount');
+
+    // change email to one that triggers an error
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    fireEvent.change(emailInput, { target: { value: 'error@domain.com' } });
+
+    // save button should appear
+    const saveButton = await screen.findByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Email already exists')).toBeInTheDocument();
     });
   });
 });

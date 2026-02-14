@@ -51,12 +51,18 @@ export const MyAccount = () => {
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
       if (data.updateCurrentUser.errors) {
-        if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
+        const error = data.updateCurrentUser.errors[0];
+        if (error.message === 'incorrect_code') {
           setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
-        } else {
+        } else if (error.message === 'Too many attempts') {
           setToastMessageInfo({
             severity: 'error',
             message: t('Too many attempts, please retry after sometime.'),
+          });
+        } else {
+          setToastMessageInfo({
+            severity: 'error',
+            message: t(error.message),
           });
         }
       } else {
