@@ -177,7 +177,7 @@ const listWhatsappForms = {
     query: LIST_WHATSAPP_FORMS,
     variables: {
       filter: { status: 'PUBLISHED' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'isPinned' },
     },
   },
   result: {
@@ -191,6 +191,7 @@ const listWhatsappForms = {
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
           definition: JSON.stringify(formJson),
+          isPinned: false,
         },
       ],
     },
@@ -215,6 +216,7 @@ const listWhatsappFormswithoutopts = {
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
           definition: JSON.stringify(formJson),
+          isPinned: false,
         },
       ],
     },
@@ -225,7 +227,7 @@ const listWhatsappFormsInactive = {
     query: LIST_WHATSAPP_FORMS,
     variables: {
       filter: { status: 'INACTIVE' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'isPinned' },
     },
   },
   result: {
@@ -239,6 +241,7 @@ const listWhatsappFormsInactive = {
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
           definition: JSON.stringify(formJson),
+          isPinned: false,
         },
       ],
     },
@@ -250,7 +253,7 @@ const listWhatsappFormsDraft = {
     query: LIST_WHATSAPP_FORMS,
     variables: {
       filter: { status: 'DRAFT' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'isPinned' },
     },
   },
   result: {
@@ -264,6 +267,7 @@ const listWhatsappFormsDraft = {
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
           definition: JSON.stringify(formJson),
+          isPinned: false,
         },
       ],
     },
@@ -274,7 +278,7 @@ const listWhatsappFormsEmpty = {
     query: LIST_WHATSAPP_FORMS,
     variables: {
       filter: {},
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'isPinned' },
     },
   },
   result: {
@@ -288,6 +292,7 @@ const listWhatsappFormsEmpty = {
           metaFlowId: '1473834353902269',
           categories: ['customer_support'],
           definition: JSON.stringify(formJson),
+          isPinned: false,
         },
       ],
     },

@@ -94,6 +94,10 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       );
 
       // loop through the cached conversations and find if contact exists
+      if (!cachedConversations?.search) {
+        return cachedConversations;
+      }
+
       let conversationIndex = 0;
       let conversationFound = false;
 
