@@ -23,6 +23,7 @@ import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import { HelpDataProps } from 'common/HelpData';
 import { LexicalWrapper } from 'common/LexicalWrapper';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -150,6 +151,7 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
+  helpData,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -586,6 +588,11 @@ export const FormLayout = ({
                 {field.label && (
                   <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
+                    {field.helpData && (
+                      <span className={styles.HelpIcon}>
+                        <HelpIcon helpData={field.helpData} />
+                      </span>
+                    )}
                   </Typography>
                 )}
                 <Field key={key} {...field} onSubmit={formik.submitForm} />
@@ -709,7 +716,9 @@ export const FormLayout = ({
       <div className={partialPage ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
         {dialogBox}
         {confirmationDialog}
-        {!noHeading && heading}
+        {!noHeading && (
+          <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} helpData={helpData} />
+        )}
         {form}
       </div>
     </FormikProvider>

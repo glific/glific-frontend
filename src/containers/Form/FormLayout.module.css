@@ -69,6 +69,14 @@
   line-height: 18px;
   color: #555555;
   padding-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.HelpIcon {
+  display: flex;
+  align-items: center;
 }
 
 .Icon {

@@ -181,7 +181,15 @@ export const HSMList = () => {
   };
 
   const columnNames: any = [
-    { name: 'label', label: t('Title') },
+    {
+      name: 'label',
+      label: (
+        <div className={styles.FilterContainer}>
+          {t('Title')}
+          <HelpIcon darkIcon helpData={templateInfo} />
+        </div>
+      ),
+    },
     { name: 'body', label: t('Body') },
     { name: 'category', label: t('Category') },
     { name: 'status', label: t('Status') },
@@ -333,7 +341,7 @@ export const HSMList = () => {
             });
           }
         }}
-        form={{ setFieldValue: () => {} }}
+        form={{ setFieldValue: () => { } }}
         field={{
           value: selectedTag,
         }}
