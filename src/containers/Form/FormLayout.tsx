@@ -23,6 +23,7 @@ import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import { HelpDataProps } from 'common/HelpData';
 import { LexicalWrapper } from 'common/LexicalWrapper';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -150,6 +151,7 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
+  helpData,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
