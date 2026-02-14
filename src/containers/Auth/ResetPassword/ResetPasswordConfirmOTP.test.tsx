@@ -94,4 +94,10 @@ describe('<ResetPasswordConfirmOTP />', () => {
       expect(screen.getAllByText('Input required').length).toBeGreaterThan(0);
     });
   });
+
+  test('it should prefill phone number from router state', async () => {
+    render(wrapper);
+    const phoneInput = (await screen.findByTestId('phoneInput')).querySelector('input') as HTMLInputElement;
+    expect(phoneInput.value).toBe('+919967665667');
+  });
 });

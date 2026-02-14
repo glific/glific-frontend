@@ -15,7 +15,7 @@ import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 
-// import { Promotion } from './Promotion/Promotion';
+import { Promotion } from './Promotion/Promotion';
 
 export interface AuthProps {
   pageTitle: string;
@@ -134,12 +134,6 @@ export const Auth = ({
     togglePassword: showPassword,
   };
 
-  const handlePhone =
-    () =>
-      (value: string): void => {
-        // eslint-disable-next-line
-        initialFormValues.phone = value;
-      };
 
   let formElements;
   // we should not render form elements when displaying success message
@@ -171,7 +165,7 @@ export const Auth = ({
                     fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
                   }
                   if (field.type === 'phone') {
-                    fieldInfo = { ...field, handlePhone };
+                    fieldInfo = { ...field };
                   }
                   const key = index;
                   return (
@@ -276,7 +270,7 @@ export const Auth = ({
         ) : null}
       </div>
 
-      {/* {mode === 'login' && <Promotion />} */}
+      {mode === 'login' && <Promotion />}
     </div>
   );
 };
