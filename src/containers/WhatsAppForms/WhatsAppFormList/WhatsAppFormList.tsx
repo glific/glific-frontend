@@ -15,7 +15,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import styles from './WhatsAppFormList.module.css';
 
-const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
+const columnStyles = [styles.Name, styles.Status, styles.Label, styles.Actions];
 
 const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
