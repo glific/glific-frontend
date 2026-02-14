@@ -158,3 +158,9 @@
   min-width: 50px;
   text-align: center;
 }
+
+.SyncButton {
+  border-radius: 24px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}

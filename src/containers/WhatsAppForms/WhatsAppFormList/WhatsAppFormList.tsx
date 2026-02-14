@@ -176,7 +176,7 @@ export const WhatsAppFormList = () => {
   };
 
   const columnNames = [
-    { name: 'pin', label: '' },
+    { name: 'isPinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: 'Name', sort: true },
     { name: 'status', label: 'Status' },
     { name: 'category', label: 'Category' },
@@ -184,7 +184,7 @@ export const WhatsAppFormList = () => {
   ];
 
   const getColumns = ({ name, categories, status, isPinned, id }: any) => ({
-    pin: displayPinned(isPinned, id),
+    isPinned: displayPinned(isPinned, id),
     name: getName(name),
     status: getStatus(status),
     category: getCategories(categories),
