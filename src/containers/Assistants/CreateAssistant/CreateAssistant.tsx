@@ -75,24 +75,24 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   useEffect(() => {
     if (currentId && isEditing && modelsList) {
-      getAssistant({
-        variables: { assistantId: currentId },
-        onCompleted: ({ assistant }) => {
-          setAssistantId(assistant?.assistant?.assistantId);
-          setName(assistant?.assistant?.name);
-          const modelValue = modelOptions?.find(
-            (item: { label: string }) => item.label === assistant?.assistant?.model
-          );
-          setModel(modelValue);
-          setInstructions(assistant?.assistant?.instructions || '');
-          setOptions({
-            ...options,
-            temperature: assistant?.assistant?.temperature,
-          });
-        },
-      });
+      getAssistant({ variables: { assistantId: currentId } });
     }
   }, [currentId, modelsList, isEditing]);
+
+  useEffect(() => {
+    if (data?.assistant?.assistant && modelsList) {
+      const assistantData = data.assistant.assistant;
+      setAssistantId(assistantData.assistantId);
+      setName(assistantData.name);
+      const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
+      setModel(modelValue);
+      setInstructions(assistantData.instructions);
+      setOptions((prev) => ({
+        ...prev,
+        temperature: assistantData.temperature,
+      }));
+    }
+  }, [data, modelsList]);
 
   useEffect(() => {
     if (!isEditing) {
