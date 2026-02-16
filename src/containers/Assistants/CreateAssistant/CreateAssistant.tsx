@@ -166,7 +166,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
           {isEditing && (
-            <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
+            <div
+              role="button"
+              data-testid="copyCurrentAssistantId"
+              onClick={() => copyToClipboard(assistantId)}
+              onKeyDown={() => copyToClipboard(assistantId)}
+            >
               <CopyIcon />
               <span>{assistantId}</span>
             </div>
