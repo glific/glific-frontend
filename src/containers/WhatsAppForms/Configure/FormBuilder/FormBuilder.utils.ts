@@ -115,6 +115,9 @@ const generateFieldName = (variableName: string, baseLabel: string, screenIndex:
   return `screen_${screenIndex}_${baseName}_${fieldCounter}`;
 };
 
+const generateOptionId = (id: string | undefined, index: number, value: string): string =>
+  id || `${index}_${value}`;
+
 const convertContentItemToComponent = (item: ContentItem, screenIndex: number, fieldCounter: number): any => {
   const componentType = getWhatsAppComponentType(item.type, item.name);
   const { data } = item;
@@ -164,7 +167,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
     const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: opt.id || `${index}_${opt.value}`,
+        id: generateOptionId(opt.id, index, opt.value),
         title: opt.value,
       })),
       label: data.label,
@@ -178,7 +181,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
     const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: opt.id || `${index}_${opt.value}`,
+        id: generateOptionId(opt.id, index, opt.value),
         title: opt.value,
       })),
       label: data.label,
@@ -192,7 +195,7 @@ const convertContentItemToComponent = (item: ContentItem, screenIndex: number, f
     const fieldName = generateFieldName(data.variableName || '', data.label || '', screenIndex, fieldCounter);
     return {
       'data-source': (data.options || []).map((opt, index) => ({
-        id: opt.id || `${index}_${opt.value}`,
+        id: generateOptionId(opt.id, index, opt.value),
         title: opt.value,
       })),
       label: data.label,
@@ -472,7 +475,7 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
       label: component.label || '',
       required: component.required || false,
       options: dataSource.map((item: any, index: number) => ({
-        id: item.id || `${index}_${item.title}`,
+        id: generateOptionId(item.id, index, item.title),
         value: item.title || '',
       })),
     };
