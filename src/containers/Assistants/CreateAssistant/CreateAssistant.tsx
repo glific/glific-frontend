@@ -171,7 +171,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
               data-testid="copyCurrentAssistantId"
               onClick={() => copyToClipboard(assistantId)}
               onKeyDown={() => copyToClipboard(assistantId)}
-              tabIndex={1}
+              tabIndex={-1}
             >
               <CopyIcon />
               <span>{assistantId}</span>
