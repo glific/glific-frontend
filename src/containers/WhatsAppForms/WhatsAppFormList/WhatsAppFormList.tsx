@@ -44,7 +44,7 @@ const getStatus = (status: string) => {
 };
 
 const getLastModifiedAt = (updatedAt: string) => {
-  return <div className={styles.LabelWrapper}>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>;
+  return <div className={styles.LabelWrapper}>{updatedAt ? dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT) : ""}</div>;
 };
 
 export const WhatsAppFormList = () => {
