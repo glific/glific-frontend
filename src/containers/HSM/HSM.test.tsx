@@ -9,7 +9,7 @@ import {
   getHSMTemplateTypeText,
   CREATE_SESSION_TEMPLATE_MOCK,
 } from 'mocks/Template';
-import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
+import { WHATSAPP_FORM_MOCKS, listWhatsappFormsForHsmInvalidDef } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
 import { setOrganizationServices } from 'services/AuthService';
@@ -280,6 +280,49 @@ describe('Add mode', () => {
     const buttonTypeCombo = combobox[1] as HTMLInputElement;
     fireEvent.mouseDown(buttonTypeCombo);
     expect(screen.queryByText('WhatsApp Form')).not.toBeInTheDocument();
+  });
+
+  test('should handle invalid form definition JSON gracefully', async () => {
+    setOrganizationServices(
+      '{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":true}'
+    );
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const INVALID_MOCKS = [listWhatsappFormsForHsmInvalidDef, ...MOCKS];
+
+    render(
+      <MockedProvider mocks={INVALID_MOCKS} addTypename={false}>
+        <MemoryRouter>
+          <HSM />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('WhatsApp Form'));
+
+    const comboboxes = screen.getAllByRole('combobox');
+    const formCombo = comboboxes[2] as HTMLInputElement;
+    fireEvent.mouseDown(formCombo);
+    fireEvent.click(screen.getByText('This is form name'));
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error parsing form definition:',
+        expect.any(Error)
+      );
+    });
+
+    consoleSpy.mockRestore();
   });
 
   test('it adds quick reply buttons', async () => {
