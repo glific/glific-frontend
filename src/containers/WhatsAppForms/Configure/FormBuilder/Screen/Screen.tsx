@@ -157,7 +157,7 @@ export const ScreenComponent = ({
           {screen.content.length !== 0 && (
             <div className={styles.LayoutArea}>
               <DndContext
-                sensors={isViewOnly ? [] : contentSensors}
+                sensors={contentSensors}
                 collisionDetection={closestCenter}
                 onDragEnd={isViewOnly ? undefined : handleContentDragEnd}
               >

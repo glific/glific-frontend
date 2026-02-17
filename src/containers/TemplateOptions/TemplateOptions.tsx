@@ -88,6 +88,7 @@ export const TemplateOptions = ({
     variables: {
       filter: { status: 'PUBLISHED' },
     },
+    fetchPolicy: 'network-only',
     onCompleted: (data) => {
       setForms(
         data.listWhatsappForms.map((form: any) => ({
@@ -327,7 +328,9 @@ export const TemplateOptions = ({
                 try {
                   const definition = JSON.parse(newValue.definition);
                   const screenNames = definition.screens.map((screen: any) => screen.id);
-                  setScreens(screenNames.map((screen: string) => ({ label: screen, id: screen })));
+                  if (screenNames.length) {
+                    setScreens([{ label: screenNames[0], id: screenNames[0] }]);
+                  }
                 } catch (e) {
                   setScreens([]);
                   console.error('Error parsing form definition:', e);

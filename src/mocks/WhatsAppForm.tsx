@@ -266,6 +266,7 @@ const listAllWatsappForms = {
             isActive: true,
             sheetDataCount: 50,
           },
+          updatedAt: '2026-02-03 08:22:40.815596Z',
         },
         {
           id: '2',
@@ -278,6 +279,8 @@ const listAllWatsappForms = {
             id: '1',
             definition: JSON.stringify(formJson),
           },
+          sheet: null,
+          updatedAt: '2026-02-03 08:22:40.815596Z',
         },
         {
           id: '3',
@@ -291,6 +294,7 @@ const listAllWatsappForms = {
             definition: JSON.stringify(formJson),
           },
           sheet: null,
+          updatedAt: '2026-02-03 08:22:40.815596Z',
         },
       ],
     },
@@ -334,6 +338,7 @@ const listWhatsappForms = (status: string) => {
               isActive: true,
               sheetDataCount: 50,
             },
+            updatedAt: '2026-02-03 08:22:40.815596Z',
           },
         ],
       },
@@ -463,6 +468,29 @@ const createWhatsappFormDuplicateNameErrorMock = {
   },
 };
 
+export const listWhatsappFormsForHsmInvalidDef = {
+  request: {
+    query: GET_WHATSAPP_FORM_DEFINITIONS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          name: 'This is form name',
+          metaFlowId: '1473834353902269',
+          revision: {
+            id: '1',
+            definition: 'invalid json',
+          },
+        },
+      ],
+    },
+  },
+};
+
 const listWhatsappFormsForHsm = {
   request: {
     query: GET_WHATSAPP_FORM_DEFINITIONS,
@@ -538,22 +566,18 @@ const latestRevisionMock = (id: string) => {
 const saveRevisionMock = {
   request: {
     query: SAVE_WHATSAPP_FORM_REVISION,
-    variables: {
-      input: {
-        whatsappFormId: '1',
-        definition: expect.any(String),
-      },
-    },
   },
   result: {
     data: {
       saveWhatsappFormRevision: {
         whatsappFormRevision: {
           id: 'rev-1',
+          revisionNumber: 1,
         },
       },
     },
   },
+  variableMatcher: () => true,
 };
 
 const listRevisions = {

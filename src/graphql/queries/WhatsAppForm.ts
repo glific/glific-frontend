@@ -50,16 +50,12 @@ export const LIST_WHATSAPP_FORMS = gql`
       name
       status
       description
-      metaFlowId
-      revision {
-        id
-        definition
-      }
       categories
       sheet {
         id
         url
       }
+      updatedAt
     }
   }
 `;
