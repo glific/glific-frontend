@@ -120,9 +120,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           updateAssistantId: currentId,
           input: payload,
         },
-        onCompleted: ({ updateAssistant }) => {
-          if (updateAssistant.errors && updateAssistant.errors.length > 0) {
-            setErrorMessage(updateAssistant.errors[0]);
+        onCompleted: ({ updateAssistant: updateAssistantData }) => {
+          if (updateAssistantData.errors && updateAssistantData.errors.length > 0) {
+            setErrorMessage(updateAssistantData.errors[0]);
             return;
           }
           setNotification('Changes saved successfully', 'success');
@@ -171,6 +171,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
               data-testid="copyCurrentAssistantId"
               onClick={() => copyToClipboard(assistantId)}
               onKeyDown={() => copyToClipboard(assistantId)}
+              tabIndex={1}
             >
               <CopyIcon />
               <span>{assistantId}</span>
