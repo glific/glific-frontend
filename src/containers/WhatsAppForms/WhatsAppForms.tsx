@@ -119,7 +119,7 @@ export const WhatsAppForms = () => {
       name: 'formCategories',
       options: categories,
       optionLabel: 'name',
-      label: 'Categories',
+      label: 'Categories *',
       placeholder: 'Select categories',
       helperText:
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',

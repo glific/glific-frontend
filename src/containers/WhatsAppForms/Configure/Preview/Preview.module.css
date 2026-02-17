@@ -19,12 +19,10 @@
   width: 100%;
   max-width: 375px;
   height: 670px;
-  border-radius: 1.5rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
-  background-color: #ece5dd;
   padding: 1rem;
 }
 
@@ -392,4 +390,13 @@
   max-height: 400px;
   object-fit: contain;
   display: block;
+}
+
+.BackgroundImage {
+  position: absolute;
+  top: 0px;
+  right: 0;
+  z-index: 10;
+  height: 680px;
+  width: 100%;
 }

@@ -25,6 +25,13 @@
   margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 2px solid #e0e0e0;
+  display: flex;
+  gap: 1rem;
+
+}
+
+.VariablesHeader span {
+  margin: 0;
 }
 
 .VariablesHeader h3 {

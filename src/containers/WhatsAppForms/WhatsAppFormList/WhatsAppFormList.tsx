@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router';
 import { formatError } from '../WhatsAppForms';
 import styles from './WhatsAppFormList.module.css';
 
-const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
+const columnStyles = [styles.Name, styles.StatusColumn, styles.ModifiedAt, styles.Actions];
 
 const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
@@ -127,6 +127,7 @@ export const WhatsAppFormList = () => {
     { label: 'Inactive', value: 'inactive' },
     { label: 'Draft', value: 'draft' },
   ];
+
   const additionalAction = (item: any) => {
     const linkAction = {
       label: 'Link',
@@ -138,11 +139,11 @@ export const WhatsAppFormList = () => {
     };
 
     const handleEdit = (view: boolean) => ({
-      label: view ? 'View' : 'Edit',
+      label: view ? 'View' : 'Configure',
       icon: view ? (
         <ViewIcon data-testid="view-form" />
       ) : (
-        <ConfigureIcon className={styles.IconSize} data-testid="edit-icon" />
+        <ConfigureIcon className={styles.IconSize} data-testid="configure-icon" />
       ),
       parameter: 'id',
       dialog: (id: any) => {
@@ -160,16 +161,6 @@ export const WhatsAppFormList = () => {
       },
     };
 
-    const publishAction = {
-      label: 'Publish',
-      icon: <PublishIcon className={styles.IconSize} data-testid="publish-icon" />,
-      parameter: 'id',
-      dialog: (id: string) => {
-        setFormId(id);
-        setDialogType('publish');
-      },
-    };
-
     const activateAction = {
       label: 'Activate',
       icon: <AddCircleOutlineIcon className={styles.IconSize} data-testid="activate-icon" />,
@@ -180,20 +171,20 @@ export const WhatsAppFormList = () => {
       },
     };
     const configureIcon = {
-      label: 'Configure',
-      icon: <EditIcon data-testid="configure-icon" />,
+      label: 'Edit',
+      icon: <EditIcon data-testid="edit-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
         navigate(`/whatsapp-forms/${id}/configure`);
       },
     };
 
-    let actions = [configureIcon];
+    let actions = [];
     if (item.sheet?.url) {
       actions.push(linkAction);
     }
     if (item.status === 'DRAFT') {
-      actions.push(publishAction);
+      actions.push(configureIcon);
     } else if (item.status === 'PUBLISHED') {
       actions.push(deactivateAction);
     } else {
@@ -203,6 +194,7 @@ export const WhatsAppFormList = () => {
     actions.push(handleEdit(item.status === 'PUBLISHED'));
     return actions;
   };
+
   const filters = useMemo(() => {
     let filters: any = {};
     if (filter !== 'all') {
@@ -241,7 +233,7 @@ export const WhatsAppFormList = () => {
       onClick={() => handleFormUpdates()}
       loading={syncLoading}
     >
-      Sync Whatsapp Forms
+      Sync Forms
     </Button>
   );
 

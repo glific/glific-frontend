@@ -170,7 +170,7 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Body');
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
@@ -217,7 +217,7 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Date Picker Label');
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
@@ -288,7 +288,7 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Opt In Label');
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
@@ -319,7 +319,7 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('image-preview')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
@@ -554,7 +554,7 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('Versions'));
+    fireEvent.click(screen.getByText('Revision History'));
 
     await waitFor(() => {
       expect(screen.getByTestId('version-history')).toBeInTheDocument();
@@ -578,7 +578,7 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('Versions'));
+    fireEvent.click(screen.getByText('Revision History'));
 
     await waitFor(() => {
       expect(screen.getByTestId('version-history')).toBeInTheDocument();
@@ -606,7 +606,7 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('Variables'));
+    fireEvent.click(screen.getByText('Field Names'));
 
     fireEvent.click(screen.getAllByTestId('edit-icon')[0]);
 
@@ -614,7 +614,7 @@ describe('<Configure />', () => {
 
     fireEvent.click(screen.getAllByTestId('save-icon')[0]);
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByTestId('json-preview')).toHaveTextContent('new_variable_name');
@@ -632,7 +632,7 @@ describe('<Configure />', () => {
 
     fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '' } });
 
-    fireEvent.click(screen.getByText('Publish'));
+    fireEvent.click(screen.getByText('Submit to Meta'));
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Please fix the errors in the form before publishing.', 'warning');
@@ -646,7 +646,7 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
@@ -664,12 +664,6 @@ describe('<Configure />', () => {
     await waitFor(() => {
       expect(writeTextMock).toHaveBeenCalled();
     });
-
-    fireEvent.click(screen.getByText('Back to Editing'));
-
-    await waitFor(() => {
-      expect(screen.queryByText('Form JSON')).not.toBeInTheDocument();
-    });
   });
 
   test("it should publish the form when 'Publish' is clicked", async () => {
@@ -681,10 +675,10 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('Publish'));
+    fireEvent.click(screen.getByText('Submit to Meta'));
 
     fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
-    fireEvent.click(screen.getByText('Publish'));
+    fireEvent.click(screen.getByText('Submit to Meta'));
 
     await waitFor(() => {
       expect(screen.getByText('Publish Form')).toBeInTheDocument();
@@ -718,7 +712,7 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
@@ -748,7 +742,7 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
     });
 
-    fireEvent.click(screen.getByText('View JSON'));
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();

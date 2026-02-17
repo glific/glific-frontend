@@ -263,7 +263,7 @@ describe('<WhatsAppFormList />', () => {
       expect(getByText('Draft')).toBeInTheDocument();
     });
 
-    const configureIcon = await waitFor(() => getAllByTestId('configure-icon')[2]);
+    const configureIcon = await waitFor(() => getAllByTestId('edit-icon')[2]);
     fireEvent.click(configureIcon);
 
     await waitFor(() => {

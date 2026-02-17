@@ -45,8 +45,8 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
 
   const handleAddOption = () => {
     const newOption: ContentOption = {
-      id: Date.now().toString(),
-      value: '',
+      id: `Option_${options.length + 1}`,
+      value: `Option ${options.length + 1}`,
     };
     onUpdate({ data: { ...data, options: [...options, newOption] } });
   };
@@ -154,7 +154,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
           }
           label="Required"
           labelPlacement="start"
-          sx={{ ml: 0, justifyContent: 'space-between', width: '100%' }}
+          sx={{ ml: 0, justifyContent: 'end', width: '100%' }}
         />
       </div>
     </div>
