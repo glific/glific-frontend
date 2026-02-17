@@ -123,29 +123,29 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       temperature: optionsValue?.temperature,
     };
 
-      if (versionDescriptionValue?.trim()) {
+    if (versionDescriptionValue?.trim()) {
       payload.description = versionDescriptionValue.trim();
     }
 
     if (isEditing) {
       updateAssistant({
-          variables: {
-            updateAssistantId: currentId,
-            input: payload,
-          },
+        variables: {
+          updateAssistantId: currentId,
+          input: payload,
+        },
         onCompleted: ({ updateAssistant: updateAssistantData }) => {
           if (updateAssistantData.errors && updateAssistantData.errors.length > 0) {
             setErrorMessage(updateAssistantData.errors[0]);
-              return;
-            }
-            setNotification('Changes saved successfully', 'success');
-            setVersionDescription('');
+            return;
+          }
+          setNotification('Changes saved successfully', 'success');
+          setVersionDescription('');
           setUpdateList(!updateList);
-          },
-          onError: (errors) => {
-            setErrorMessage(errors);
-          },
-        });
+        },
+        onError: (errors) => {
+          setErrorMessage(errors);
+        },
+      });
     } else {
       createAssistant({
         variables: {
