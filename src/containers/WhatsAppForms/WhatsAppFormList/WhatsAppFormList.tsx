@@ -43,9 +43,9 @@ const getStatus = (status: string) => {
   }
 };
 
-const getLastModifiedAt = (updatedAt: string) => {
-  return <div className={styles.LabelWrapper}>{updatedAt ? dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT) : ""}</div>;
-};
+const getLastModifiedAt = (updatedAt: string) => (
+   <div className={styles.LabelWrapper}>{updatedAt ? dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT) : ""}</div>
+)
 
 export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
@@ -115,7 +115,7 @@ export const WhatsAppFormList = () => {
     { name: 'actions', label: 'Actions' },
   ];
 
-  const getColumns = ({ name, status, updatedAt }: any) => ({
+  const getColumns = ({ name, status, updatedAt }: Record<string, string>) => ({
     name: getName(name),
     status: getStatus(status),
     updatedAt: getLastModifiedAt(updatedAt),

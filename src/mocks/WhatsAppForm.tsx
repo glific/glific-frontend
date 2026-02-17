@@ -468,6 +468,29 @@ const createWhatsappFormDuplicateNameErrorMock = {
   },
 };
 
+export const listWhatsappFormsForHsmInvalidDef = {
+  request: {
+    query: GET_WHATSAPP_FORM_DEFINITIONS,
+    variables: {
+      filter: { status: 'PUBLISHED' },
+    },
+  },
+  result: {
+    data: {
+      listWhatsappForms: [
+        {
+          name: 'This is form name',
+          metaFlowId: '1473834353902269',
+          revision: {
+            id: '1',
+            definition: 'invalid json',
+          },
+        },
+      ],
+    },
+  },
+};
+
 const listWhatsappFormsForHsm = {
   request: {
     query: GET_WHATSAPP_FORM_DEFINITIONS,
