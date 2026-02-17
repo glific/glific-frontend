@@ -119,6 +119,7 @@
     "@types/uuid": "^11.0.0",
     "@vitest/coverage-istanbul": "^4.0.15",
     "@vitest/ui": "^4.0.15",
+    "cypress-split": "^1.24.28",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
