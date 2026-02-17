@@ -105,16 +105,12 @@ const routeAdmin = (
     <Route path="sheet-integration" element={<SheetIntegrationList />} />
     <Route path="sheet-integration/add" element={<SheetIntegration />} />
     <Route path="sheet-integration/:id/edit" element={<SheetIntegration />} />
-
     <Route path="flow/configure/:uuid" element={<FlowEditor />} />
-
     <Route path="search" element={<SearchList />} />
     <Route path="search/add" element={<Search />} />
     <Route path="search/:id/edit" element={<Search />} />
-
     <Route path="trigger/add" element={<Trigger />} />
     <Route path="trigger/:id/edit" element={<Trigger />} />
-
     <Route path="staff-management" element={<StaffManagementList />} />
     <Route path="contact-management" element={<ContactManagement />} />
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
@@ -140,24 +136,20 @@ const routeAdmin = (
     <Route path="trigger" element={<TriggerList />} />
     <Route path="organizations" element={<OrganizationList />} />
     <Route path="consulting-hours/" element={<ConsultingHourList />} />
-
     <Route path="contact-fields/" element={<ContactFieldList />} />
     <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
-
     <Route path="group-details/:id/*" element={<GroupDetails />} />
     <Route path="group/collection" element={<CollectionList />} />
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
-
-    <Route path="/assistants" element={<Assistant />} />
-    <Route path="/assistants/:assistantId" element={<Assistant />} />
-
+    <Route path="assistants" element={<Assistant />} />
+    <Route path="assistants/add" element={<Assistant />} />
+    <Route path="assistants/:assistantId" element={<Assistant />} />
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
-
     <Route path="certificates" element={<CertificatesList />} />
     <Route path="certificate/add" element={<Certificates />} />
     <Route path="certificate/:id/edit" element={<Certificates />} />
@@ -166,7 +158,6 @@ const routeAdmin = (
       <Route path="add" element={<WhatsAppForms />} />
       <Route path=":id/edit" element={<WhatsAppForms />} />
     </Route>
-
     <Route path="/*" element={<Chat />} />
   </Routes>
 );

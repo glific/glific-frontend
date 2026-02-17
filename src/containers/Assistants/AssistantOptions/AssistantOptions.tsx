@@ -44,6 +44,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   const [removeFile] = useMutation(REMOVE_FILES_FROM_ASSISTANT);
 
   const { refetch, data } = useQuery(GET_ASSISTANT_FILES, {
+    skip: !currentId,
     variables: { assistantId: currentId },
     onCompleted: ({ assistant }) => {
       if (assistant.assistant.vectorStore) {

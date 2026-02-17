@@ -20,6 +20,7 @@
   margin-bottom: 0.5rem;
 }
 
+
 .FormFields {
   display: flex;
   flex-direction: column;
@@ -118,4 +119,9 @@
   width: 100%;
   display: flex;
   justify-content: end;
+}
+
+.NotFound {
+  text-align: center;
+  margin: 1rem 0;
 }
