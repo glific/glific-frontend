@@ -102,10 +102,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         temperature: assistantData.temperature,
       }));
       savedState.current = {
-        name: assistantData?.assistant?.name,
+        name: assistantData?.name,
         model: modelValue,
-        instructions: assistantData?.assistant?.instructions || '',
-        temperature: assistantData?.assistant?.temperature,
+        instructions: assistantData?.instructions || '',
+        temperature: assistantData?.temperature,
       };
     }
   }, [data, modelsList]);
