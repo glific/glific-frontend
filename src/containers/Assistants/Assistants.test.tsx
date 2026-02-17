@@ -79,6 +79,8 @@ test('it creates an assistant', async () => {
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
   fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
 
+  fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
+
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
