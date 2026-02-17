@@ -85,30 +85,30 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   useEffect(() => {
     if (currentId && isEditing && modelsList) {
-      getAssistant({
-        variables: { assistantId: currentId },
-        onCompleted: ({ assistant }) => {
-          setAssistantId(assistant?.assistant?.assistantId);
-          setName(assistant?.assistant?.name);
-          const modelValue = modelOptions?.find(
-            (item: { label: string }) => item.label === assistant?.assistant?.model
-          );
-          setModel(modelValue);
-          setInstructions(assistant?.assistant?.instructions || '');
-          setOptions({
-            ...options,
-            temperature: assistant?.assistant?.temperature,
-          });
-          savedState.current = {
-            name: assistant?.assistant?.name,
-            model: modelValue,
-            instructions: assistant?.assistant?.instructions || '',
-            temperature: assistant?.assistant?.temperature,
-          };
-        },
-      });
+      getAssistant({ variables: { assistantId: currentId } });
     }
   }, [currentId, modelsList, isEditing]);
+
+  useEffect(() => {
+    if (data?.assistant?.assistant && modelsList) {
+      const assistantData = data.assistant.assistant;
+      setAssistantId(assistantData.assistantId);
+      setName(assistantData.name);
+      const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
+      setModel(modelValue);
+      setInstructions(assistantData.instructions);
+      setOptions((prev) => ({
+        ...prev,
+        temperature: assistantData.temperature,
+      }));
+      savedState.current = {
+        name: assistantData?.assistant?.name,
+        model: modelValue,
+        instructions: assistantData?.assistant?.instructions || '',
+        temperature: assistantData?.assistant?.temperature,
+      };
+    }
+  }, [data, modelsList]);
 
   useEffect(() => {
     if (!isEditing) {
@@ -136,9 +136,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           updateAssistantId: currentId,
           input: payload,
         },
-        onCompleted: ({ updateAssistant }) => {
-          if (updateAssistant.errors && updateAssistant.errors.length > 0) {
-            setErrorMessage(updateAssistant.errors[0]);
+        onCompleted: ({ updateAssistant: updateAssistantData }) => {
+          if (updateAssistantData.errors && updateAssistantData.errors.length > 0) {
+            setErrorMessage(updateAssistantData.errors[0]);
             return;
           }
           setNotification('Changes saved successfully', 'success');
@@ -183,7 +183,13 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
           {isEditing && (
-            <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
+            <div
+              role="button"
+              data-testid="copyCurrentAssistantId"
+              onClick={() => copyToClipboard(assistantId)}
+              onKeyDown={() => copyToClipboard(assistantId)}
+              tabIndex={-1}
+            >
               <CopyIcon />
               <span>{assistantId}</span>
             </div>
