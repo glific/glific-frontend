@@ -6,9 +6,8 @@ import styles from './Promotion.module.css';
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
 
-  const APPLY_LINK =
-    'https://docs.google.com/forms/d/e/1FAIpQLSde02kRz3ljFfji5WFQ514BcSVCRVlW-invWAfopSVHSpgF5w/viewform';
-  const LEARN_MORE_LINK = 'https://drive.google.com/file/d/1q0xpv5xeIHJeGeiee_N4Qer2aQzBQ_-r/view';
+  const APPLY_LINK = 'https://forms.gle/PuYdT1tKMBNRWPCn8';
+  const LEARN_MORE_LINK = 'https://drive.google.com/file/d/1UjpG_WAV9OcUKYD0VXA4AMQOvg20gT60/view?usp=drive_link';
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
@@ -44,17 +43,17 @@ export const Promotion = () => {
               </p>
 
               <p className={styles.Perks}>
-                <b>What you get:</b> Platform fee waiver, AI & messaging credits to experiment, Expert 1:1 mentorship to
-                guide you forward, Performance-based grants to scale.
+                <b>What you get:</b> SaaS advantage—platform fees waived, AI & messaging credits to experiment, Expert
+                1:1 mentorship to guide you forward, Performance-based grants to scale.
               </p>
 
               <p>
-                All this for <b>a one-time fee of ₹30K – no additional costs for 6 months</b> (₹2.5L+ value).
+                All this for a <b>one-time fee of ₹30K – no additional costs for 6 months</b> (₹2.5L+ value).
               </p>
             </div>
 
             <div className={styles.ApplyBy}>
-              📅 <strong>Apply by: 20 February 2026</strong>
+              📅 <strong>[Extended] Apply by: 1st March 2026</strong>
             </div>
           </div>
 
