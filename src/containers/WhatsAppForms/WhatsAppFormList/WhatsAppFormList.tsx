@@ -130,11 +130,11 @@ export const WhatsAppFormList = () => {
       icon: view ? (
         <ViewIcon data-testid="view-form" />
       ) : (
-        <ConfigureIcon className={styles.IconSize} data-testid="configure-icon" />
+        <EditIcon className={styles.IconSize} data-testid="configure-icon" />
       ),
       parameter: 'id',
       dialog: (id: any) => {
-        navigate(`/whatsapp-forms/${id}/edit`);
+        navigate(`/whatsapp-forms/${id}/configure`);
       },
     });
 
@@ -159,26 +159,26 @@ export const WhatsAppFormList = () => {
     };
     const configureIcon = {
       label: 'Edit',
-      icon: <EditIcon data-testid="edit-icon" />,
+      icon: <ConfigureIcon data-testid="edit-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
-        navigate(`/whatsapp-forms/${id}/configure`);
+        navigate(`/whatsapp-forms/${id}/edit`);
       },
     };
 
-    const actions = [];
+    const actions = [handleEdit(item.status !== 'DRAFT')];
+
+    if (item.status === 'PUBLISHED') {
+      actions.push(deactivateAction);
+    } else if (item.status === 'INACTIVE') {
+      actions.push(activateAction);
+    } else if (item.status === 'DRAFT') {
+      actions.push(configureIcon);
+    }
+
     if (item.sheet?.url) {
       actions.push(linkAction);
     }
-    if (item.status === 'DRAFT') {
-      actions.push(configureIcon);
-    } else if (item.status === 'PUBLISHED') {
-      actions.push(deactivateAction);
-    } else {
-      actions.push(activateAction);
-    }
-
-    actions.push(handleEdit(item.status === 'PUBLISHED'));
     return actions;
   };
 

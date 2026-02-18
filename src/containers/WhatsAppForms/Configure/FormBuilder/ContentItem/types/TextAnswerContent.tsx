@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ContentItem } from '../../FormBuilder.types';
+import { HelpIcon } from 'components/UI/HelpIcon/HelpIcon';
 import styles from './ContentTypes.module.css';
 
 interface TextAnswerContentProps {
@@ -49,7 +50,16 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
     <div data-testid="text-answer-content" className={styles.ContentTypeContainer}>
       <TextField
         fullWidth
-        label="Label"
+        label={
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            Label
+            <HelpIcon
+              helpData={{
+                heading: 'This field name shows up as caption in the form and is also used in header name',
+              }}
+            />
+          </span>
+        }
         placeholder="Label"
         value={data.label || ''}
         onChange={handleLabelChange}

@@ -2,6 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import { Button, FormControlLabel, IconButton, Switch, TextField } from '@mui/material';
 import { ContentItem, ContentOption } from '../../FormBuilder.types';
+import { HelpIcon } from 'components/UI/HelpIcon/HelpIcon';
 import styles from './ContentTypes.module.css';
 
 interface SelectionContentProps {
@@ -66,7 +67,16 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
     <div className={styles.ContentTypeContainer}>
       <TextField
         fullWidth
-        label="Label"
+        label={
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            Label
+            <HelpIcon
+              helpData={{
+                heading: 'This field name shows up as caption in the form and is also used in header name',
+              }}
+            />
+          </span>
+        }
         placeholder="Enter label"
         value={data.label || ''}
         onChange={handleLabelChange}

@@ -150,7 +150,7 @@ describe('<WhatsAppFormList />', () => {
     fireEvent.click(viewIcons[0]);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/2/edit');
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/1/configure');
     });
   });
 
@@ -217,7 +217,7 @@ describe('<WhatsAppFormList />', () => {
     fireEvent.click(configureIcon);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/3/configure');
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/3/edit');
     });
   });
 });
