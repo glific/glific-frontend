@@ -175,7 +175,6 @@
   margin-top: 1rem;
   padding: 1rem;
   background-color: #F8FAF5;
-  width: 410;
   border-radius: 0.8rem;
   opacity: 1;
   border: 1px solid #CCCCCC
@@ -183,9 +182,8 @@
 
 .GoogleSheetContainer h3 {
   font-weight: 500;
-  font-style: Medium;
   font-size: 1rem;
-  line-height: 1.2px;
+  line-height: 1.2rem;
   letter-spacing: 0;
   vertical-align: middle;
   text-transform: capitalize;
@@ -194,7 +192,6 @@
 
 .GoogleSheetContainer p {
   font-weight: 400;
-  font-style: Regular;
   font-size: 0.8rem;
   line-height: 1.2rem;
   letter-spacing: 0.1px;

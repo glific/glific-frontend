@@ -45,9 +45,14 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
   };
 
   const handleAddOption = () => {
+    const existingIds = new Set(options.map((opt) => opt.id));
+    let counter = options.length + 1;
+    while (existingIds.has(`Option_${counter}`)) {
+      counter++;
+    }
     const newOption: ContentOption = {
-      id: `Option_${options.length + 1}`,
-      value: `Option ${options.length + 1}`,
+      id: `Option_${counter}`,
+      value: `Option ${counter}`,
     };
     onUpdate({ data: { ...data, options: [...options, newOption] } });
   };

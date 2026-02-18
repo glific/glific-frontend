@@ -258,7 +258,7 @@ export const Configure = () => {
           )}
           {previewingVersion !== null || showJSON ? (
             <Button variant="contained" color="primary" onClick={handleBackToEditing}>
-              {previewingVersion ? 'Back to Editing' : 'Form Builder'}
+              {previewingVersion !== null ? 'Back to Editing' : 'Form Builder'}
             </Button>
           ) : (
             !isPublished && (

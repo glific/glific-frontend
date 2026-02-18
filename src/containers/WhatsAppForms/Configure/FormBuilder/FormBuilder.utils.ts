@@ -85,8 +85,9 @@ export const isDuplicateScreenName = (screens: Screen[], screenId: string): bool
 /** Sanitizes a name for use as a field identifier by replacing spaces with underscores and stripping invalid characters. */
 const sanitizeName = (name: string): string =>
   name
+    .toLowerCase()
     .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9_]/gi, '')
+    .replace(/[^a-z0-9_]/g, '')
     .replace(/_+/g, '_')
     .replace(/^_|_$/g, '');
 
