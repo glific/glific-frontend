@@ -4,7 +4,6 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
-import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
@@ -14,11 +13,10 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
 import { COUNT_WHATSAPP_FORMS, GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { formatError } from '../WhatsAppForms';
 import styles from './WhatsAppFormList.module.css';
 
 const columnStyles = [styles.Name, styles.StatusColumn, styles.ModifiedAt, styles.Actions];
@@ -27,7 +25,6 @@ const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
-  publishFlowQuery: PUBLISH_FORM,
   countQuery: COUNT_WHATSAPP_FORMS,
 };
 
@@ -44,26 +41,16 @@ const getStatus = (status: string) => {
 };
 
 const getLastModifiedAt = (updatedAt: string) => (
-   <div className={styles.LabelWrapper}>{updatedAt ? dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT) : ""}</div>
-)
+  <div className={styles.LabelWrapper}>{updatedAt ? dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT) : ''}</div>
+);
 
 export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
-  const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
+  const [dialogType, setDialogType] = useState<'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
 
   const navigate = useNavigate();
 
-  const [publishForm, { loading: publishLoading }] = useMutation(PUBLISH_FORM, {
-    onCompleted: () => {
-      setFormId(null);
-      setDialogType(null);
-      setNotification('Form published successfully');
-    },
-    onError: (errors) => {
-      setErrorMessage(formatError(errors.message), 'An error occurred');
-    },
-  });
   const handleFormUpdates = () => {
     syncWhatsappForm();
   };
@@ -240,9 +227,7 @@ export const WhatsAppFormList = () => {
   let dialog = null;
   if (formId && dialogType) {
     const handleOk = () => {
-      if (dialogType === 'publish') {
-        publishForm({ variables: { id: formId } });
-      } else if (dialogType === 'inactive') {
+      if (dialogType === 'inactive') {
         deactivateForm({ variables: { id: formId } });
       }
     };
@@ -250,10 +235,7 @@ export const WhatsAppFormList = () => {
     let dialogTitle = '';
     let dialogText = '';
 
-    if (dialogType === 'publish') {
-      dialogTitle = 'Do you want to publish this form?';
-      dialogText = 'The form will be published on Meta and made visible to users.';
-    } else if (dialogType === 'inactive') {
+    if (dialogType === 'inactive') {
       dialogTitle = 'Do you want to deactivate this form?';
       dialogText = 'The form will be marked inactive and cannot be used.';
     }
@@ -267,7 +249,7 @@ export const WhatsAppFormList = () => {
           setDialogType(null);
         }}
         alignButtons="center"
-        buttonOkLoading={deactivateLoading || activateFormLoading || publishLoading}
+        buttonOkLoading={deactivateLoading || activateFormLoading}
       >
         <p className={styles.DialogText}>{dialogText}</p>
       </DialogBox>
