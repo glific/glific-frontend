@@ -862,4 +862,150 @@ describe('<Configure />', () => {
       });
     });
   });
+
+  test('it shows validation error when JSON has screen ID with spaces or numbers', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    // Replace the screen ID with one containing spaces
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/"id":\s*"[^"]*"/, '"id": "screen 1"') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent(
+        'Screen ID should only contain alphabets and underscores'
+      );
+    });
+  });
+
+  test('it shows validation error when JSON has reserved SUCCESS screen ID', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/"id":\s*"[^"]*"/, '"id": "SUCCESS"') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent("'SUCCESS' is reserved by Meta");
+    });
+  });
+
+  test('field names are consistent between component name and payload in generated JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // Add a short answer field with a label
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getAllByText('Short Answer')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'User Name' } });
+
+    // Add second screen
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    // Generate JSON and verify consistency
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+
+      // Screen 1: the component name
+      const screen1Children = parsed.screens[0].layout.children[0].children;
+      const textInput = screen1Children.find((c: any) => c.type === 'TextInput' && c.label === 'User Name');
+      expect(textInput).toBeDefined();
+      const componentName = textInput.name;
+
+      // Screen 1 footer payload: should use the same name
+      const footer = screen1Children.find((c: any) => c.type === 'Footer');
+      expect(footer['on-click-action'].payload[componentName]).toBe(`\${form.${componentName}}`);
+
+      // Screen 2 data: should have the same name
+      expect(parsed.screens[1].data[componentName]).toBeDefined();
+      expect(parsed.screens[1].data[componentName].type).toBe('string');
+    });
+  });
+
+  test('number input type generates correct data schema type in multi-screen form', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // Add a number type short answer
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getAllByText('Short Answer')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
+    });
+
+    // Change type to Number
+    const select = screen.getByTestId('short-answer-type').querySelector('[role="combobox"]')!;
+    fireEvent.mouseDown(select);
+
+    const option = await screen.findByRole('option', { name: 'Number' });
+    fireEvent.click(option);
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Age' } });
+
+    // Add second screen so data schema is generated
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    // Generate JSON and verify data schema
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+
+      // Screen 2 should have data property with type 'number' for the Age field
+      const screen2Data = parsed.screens[1].data;
+      const numberField = Object.entries(screen2Data).find(([, value]: [string, any]) => value.type === 'number');
+      expect(numberField).toBeDefined();
+      expect(numberField![1]).toEqual({ __example__: 0, type: 'number' });
+    });
+  });
 });
