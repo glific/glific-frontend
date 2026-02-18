@@ -194,15 +194,11 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Short Answer Label' } });
-
     // paragraph
     fireEvent.click(screen.getByTestId('add-content-button'));
     fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
 
     fireEvent.click(screen.getByText('Paragraph'));
-
-    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Paragraph Label' } });
 
     // date picker
     fireEvent.click(screen.getByTestId('add-content-button'));
@@ -212,8 +208,6 @@ describe('<Configure />', () => {
     fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Date Picker Label' } });
 
     await waitFor(() => {
-      expect(screen.getByTestId('form-preview')).toHaveTextContent('Short Answer Label');
-      expect(screen.getByTestId('form-preview')).toHaveTextContent('Paragraph Label');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Date Picker Label');
     });
 
@@ -221,6 +215,12 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    // if the field names are generated correctly in the JSON
+    await waitFor(() => {
+      expect(screen.getByTestId('json-preview')).toHaveTextContent('Field_Name');
+      expect(screen.getByTestId('json-preview')).toHaveTextContent('Field_Name_1');
     });
   });
 
@@ -790,6 +790,76 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('json-error')).toHaveTextContent('Screens array cannot be empty');
+    });
+  });
+
+  test('it generates a random ID for screens with non-alpha names', async () => {
+    // Make randomAlphaId deterministic: always returns 'aaaaaa'
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '123' } });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+      expect(parsed.screens[0].id).toBe('screen_aaaaaa');
+    });
+
+    vi.spyOn(Math, 'random').mockRestore();
+  });
+
+  test('it should create form with different types of short answers and shows them in preview', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+    const shortAnswerTypes = ['Email', 'Number', 'Password', 'Passcode', 'Phone'];
+
+    for (const type of shortAnswerTypes) {
+      fireEvent.click(screen.getByTestId('add-content-button'));
+      fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+      fireEvent.click(screen.getByTestId('Short Answer'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('label-input')).toHaveValue('Field Name');
+      });
+
+      // Change the short answer type via MUI Select
+      const select = screen.getByTestId('short-answer-type').querySelector('[role="combobox"]')!;
+      fireEvent.mouseDown(select);
+
+      const option = await screen.findByRole('option', { name: type });
+      fireEvent.click(option);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('label-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(screen.getByTestId('label-input'), { target: { value: `${type} Field` } });
+    }
+
+    // Verify input types in generated JSON
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+      const formChildren = parsed.screens[0].layout.children[0].children;
+      const textInputs = formChildren.filter((c: any) => c.type === 'TextInput');
+
+      shortAnswerTypes.forEach((type, i) => {
+        expect(textInputs[i + 1]['input-type']).toBe(type.toLowerCase());
+        expect(textInputs[i + 1].label).toBe(`${type} Field`);
+      });
     });
   });
 });

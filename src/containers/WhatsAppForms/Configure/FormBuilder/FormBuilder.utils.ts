@@ -118,6 +118,7 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const totalScreens = screens.length;
   const screenIds = generateUniqueScreenIds(screens);
   const fieldNameMap = computeFieldNames(screens);
+
   const previousScreensComponentNames: Array<{ name: string; fieldType: string; inputType?: string }> = [];
 
   const flowScreens = screens.map((screen, index) => {
@@ -451,7 +452,7 @@ export const convertScreenToFlowJSON = (
   const screenData = generateScreenData(previousScreensComponentNames);
 
   return {
-    id: screenId || toSnakeCaseId(screen.name) || `'screen_'${randomAlphaId()}`,
+    id: screenId,
     title: screen.name,
     terminal: isTerminal,
     data: screenData,

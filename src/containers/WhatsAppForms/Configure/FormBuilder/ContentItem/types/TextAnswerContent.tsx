@@ -78,7 +78,12 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
       {isShortAnswer && (
         <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
           <InputLabel>Type</InputLabel>
-          <Select value={data.inputType || 'Text'} label="Type" onChange={handleInputTypeChange}>
+          <Select
+            data-testid="short-answer-type"
+            value={data.inputType || 'Text'}
+            label="Type"
+            onChange={handleInputTypeChange}
+          >
             {shortAnswerTypes.map((type) => (
               <MenuItem key={type} value={type}>
                 {type}
