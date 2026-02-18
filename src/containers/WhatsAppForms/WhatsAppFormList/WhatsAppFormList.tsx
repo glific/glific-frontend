@@ -166,7 +166,7 @@ export const WhatsAppFormList = () => {
       },
     };
 
-    let actions = [];
+    const actions = [];
     if (item.sheet?.url) {
       actions.push(linkAction);
     }

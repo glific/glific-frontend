@@ -82,6 +82,14 @@ export const isDuplicateScreenName = (screens: Screen[], screenId: string): bool
   return screens.some((s) => s.id !== screenId && s.name.trim().toLowerCase() === name);
 };
 
+/** Sanitizes a name for use as a field identifier by replacing spaces with underscores and stripping invalid characters. */
+const sanitizeName = (name: string): string =>
+  name
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/gi, '')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '');
+
 /** Returns true if any input fields across all screens share the same variable name. */
 export const hasDuplicateVariableNames = (screens: Screen[]): boolean => {
   const names: string[] = [];
@@ -105,39 +113,45 @@ export const hasFormErrors = (screens: Screen[]): boolean => {
   });
 };
 
-/** Collects all validation error messages for the form, including screen-level, content-level, and Flow JSON errors. */
-export const getFormValidationErrors = (screens: Screen[]): string[] => {
-  const errors: string[] = [];
+/** Converts all form builder screens into a complete WhatsApp Flow JSON structure with version and screens array. */
+export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
+  const totalScreens = screens.length;
+  const screenIds = generateUniqueScreenIds(screens);
+  const fieldNameMap = computeFieldNames(screens);
+  const previousScreensComponentNames: Array<{ name: string; fieldType: string; inputType?: string }> = [];
 
-  if (hasDuplicateScreenNames(screens)) {
-    const names = screens.map((s) => s.name.trim().toLowerCase()).filter(Boolean);
-    const seen = new Set<string>();
-    names.forEach((name) => {
-      if (seen.has(name)) {
-        errors.push(`Duplicate screen name '${screens.find((s) => s.name.trim().toLowerCase() === name)?.name}'`);
-      }
-      seen.add(name);
-    });
-  }
+  const flowScreens = screens.map((screen, index) => {
+    const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
 
-  screens.forEach((screen, i) => {
-    const label = screen.name || `Screen ${i + 1}`;
-    if (!screen.name?.trim()) errors.push(`Screen ${i + 1}: Name is required`);
-    if (!screen.buttonLabel?.trim()) errors.push(`Screen '${label}': Button label is required`);
+    const flowScreen = convertScreenToFlowJSON(
+      screen,
+      index,
+      totalScreens,
+      nextScreenId,
+      screenIds[index],
+      fieldNameMap,
+      previousScreensComponentNames
+    );
+
     screen.content.forEach((item) => {
-      if (hasContentItemError(item)) {
-        errors.push(
-          `Screen '${label}': Field '${item.data.label || item.data.text || item.name}' has validation errors`
-        );
+      if (item.type === 'Text Answer' || item.type === 'Selection') {
+        const componentName = fieldNameMap.get(item.id) || 'field';
+        const componentType = getWhatsAppComponentType(item.type, item.name);
+        previousScreensComponentNames.push({
+          name: componentName,
+          fieldType: componentType,
+          inputType: item.data.inputType?.toLowerCase(),
+        });
       }
     });
+
+    return flowScreen;
   });
 
-  const flowJSON = convertFormBuilderToFlowJSON(screens);
-  const flowErrors = validateFlowJson(flowJSON);
-  flowErrors.errors.forEach((e) => errors.push(e.message));
-
-  return [...new Set(errors)];
+  return {
+    version: '7.3',
+    screens: flowScreens,
+  };
 };
 
 /** Maps an internal content type and name to the corresponding WhatsApp Flow component type. */
@@ -196,19 +210,10 @@ const getWhatsAppComponentType = (contentType: string, contentName: string): str
   return 'TextBody';
 };
 
-/** Sanitizes a name for use as a field identifier by replacing spaces with underscores and stripping invalid characters. */
-const sanitizeName = (name: string): string =>
-  name
-    .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9_]/gi, '')
-    .replace(/_+/g, '_')
-    .replace(/^_|_$/g, '');
-
 /** Computes unique field names for all input components across screens, deduplicating with numeric suffixes. */
 export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
   const fieldNameMap = new Map<string, string>();
   const usedNames = new Set<string>();
-  let globalCounter = 0;
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
@@ -219,12 +224,11 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
         let suffix = 1;
         while (usedNames.has(name)) {
           name = `${baseName}_${suffix}`;
-          suffix++;
+          suffix += 1;
         }
 
         usedNames.add(name);
         fieldNameMap.set(item.id, name);
-        globalCounter++;
       }
     });
   });
@@ -364,7 +368,7 @@ const generateScreenData = (
         type: 'boolean',
       };
     } else if (fieldType === 'TextInput' && inputType) {
-      const schema = INPUT_TYPE_TO_DATA_SCHEMA[inputType] || INPUT_TYPE_TO_DATA_SCHEMA['text'];
+      const schema = INPUT_TYPE_TO_DATA_SCHEMA[inputType] || INPUT_TYPE_TO_DATA_SCHEMA.text;
       data[name] = { ...schema };
     } else {
       data[name] = {
@@ -408,9 +412,9 @@ export const convertScreenToFlowJSON = (
   screenIndex: number,
   totalScreens: number,
   nextScreenId?: string,
-  previousScreensComponentNames: Array<{ name: string; fieldType: string; inputType?: string }> = [],
   screenId?: string,
-  fieldNameMap: Map<string, string> = new Map()
+  fieldNameMap: Map<string, string> = new Map(),
+  previousScreensComponentNames: Array<{ name: string; fieldType: string; inputType?: string }> = []
 ): any => {
   const children: any[] = [];
   const componentsMap: Map<string, any> = new Map();
@@ -447,7 +451,7 @@ export const convertScreenToFlowJSON = (
   const screenData = generateScreenData(previousScreensComponentNames);
 
   return {
-    id: screenId || toSnakeCaseId(screen.name) || 'screen_' + randomAlphaId(),
+    id: screenId || toSnakeCaseId(screen.name) || `'screen_'${randomAlphaId()}`,
     title: screen.name,
     terminal: isTerminal,
     data: screenData,
@@ -461,47 +465,6 @@ export const convertScreenToFlowJSON = (
         },
       ],
     },
-  };
-};
-
-/** Converts all form builder screens into a complete WhatsApp Flow JSON structure with version and screens array. */
-export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
-  const totalScreens = screens.length;
-  const screenIds = generateUniqueScreenIds(screens);
-  const fieldNameMap = computeFieldNames(screens);
-  let previousScreensComponentNames: Array<{ name: string; fieldType: string; inputType?: string }> = [];
-
-  const flowScreens = screens.map((screen, index) => {
-    const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
-
-    const flowScreen = convertScreenToFlowJSON(
-      screen,
-      index,
-      totalScreens,
-      nextScreenId,
-      previousScreensComponentNames,
-      screenIds[index],
-      fieldNameMap
-    );
-
-    screen.content.forEach((item) => {
-      if (item.type === 'Text Answer' || item.type === 'Selection') {
-        const componentName = fieldNameMap.get(item.id) || 'field';
-        const componentType = getWhatsAppComponentType(item.type, item.name);
-        previousScreensComponentNames.push({
-          name: componentName,
-          fieldType: componentType,
-          inputType: item.data.inputType?.toLowerCase(),
-        });
-      }
-    });
-
-    return flowScreen;
-  });
-
-  return {
-    version: '7.3',
-    screens: flowScreens,
   };
 };
 
@@ -696,7 +659,7 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     return { errors };
   }
 
-  const screens = parsedJson.screens;
+  const { screens } = parsedJson;
   const screenIdSet = new Set<string>();
   const screenTitleSet = new Set<string>();
   const allScreenIds = new Set<string>(screens.map((s: any) => s.id).filter(Boolean));
@@ -704,7 +667,7 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
 
   // Phase 2: Uniqueness checks
   screens.forEach((screen: any, i: number) => {
-    const id = screen.id;
+    const { id } = screen;
     const title = screen.title;
     const screenLabel = title || `Screen ${i + 1}`;
 
@@ -856,7 +819,7 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
           }
 
           if (actionName === 'navigate') {
-            const next = action.next;
+            const { next } = action;
             if (!next || !next.name) {
               errors.push({
                 message: `Screen '${screenLabel}': Navigate action must specify a 'next' screen`,
@@ -927,4 +890,39 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
   });
 
   return { errors };
+};
+
+/** Collects all validation error messages for the form, including screen-level, content-level, and Flow JSON errors. */
+export const getFormValidationErrors = (screens: Screen[]): string[] => {
+  const errors: string[] = [];
+
+  if (hasDuplicateScreenNames(screens)) {
+    const names = screens.map((s) => s.name.trim().toLowerCase()).filter(Boolean);
+    const seen = new Set<string>();
+    names.forEach((name) => {
+      if (seen.has(name)) {
+        errors.push(`Duplicate screen name '${screens.find((s) => s.name.trim().toLowerCase() === name)?.name}'`);
+      }
+      seen.add(name);
+    });
+  }
+
+  screens.forEach((screen, i) => {
+    const label = screen.name || `Screen ${i + 1}`;
+    if (!screen.name?.trim()) errors.push(`Screen ${i + 1}: Name is required`);
+    if (!screen.buttonLabel?.trim()) errors.push(`Screen '${label}': Button label is required`);
+    screen.content.forEach((item) => {
+      if (hasContentItemError(item)) {
+        errors.push(
+          `Screen '${label}': Field '${item.data.label || item.data.text || item.name}' has validation errors`
+        );
+      }
+    });
+  });
+
+  const flowJSON = convertFormBuilderToFlowJSON(screens);
+  const flowErrors = validateFlowJson(flowJSON);
+  flowErrors.errors.forEach((e) => errors.push(e.message));
+
+  return [...new Set(errors)];
 };
