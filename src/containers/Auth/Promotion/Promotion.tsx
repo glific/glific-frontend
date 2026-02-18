@@ -14,7 +14,7 @@ export const Promotion = () => {
       <div className={styles.CardHeader} onClick={() => setMinimized(!minimized)}>
         <div className={styles.Header}>
           <div className={styles.Dot} />
-          <div className={styles.HeaderText}>ANNOUNCEMENT ALERT!</div>
+          <div className={styles.HeaderText}>ANNOUNCEMENT!</div>
         </div>
 
         {minimized ? (
@@ -53,7 +53,7 @@ export const Promotion = () => {
             </div>
 
             <div className={styles.ApplyBy}>
-              📅 <strong>[Extended] Apply by: 1st March 2026</strong>
+              🗓️ <strong>[Extended] Apply by: 1st March 2026</strong>
             </div>
           </div>
 
