@@ -98,18 +98,6 @@ const abbreviateName = (sanitizedName: string): string => {
 };
 
 /** Returns true if any input fields across all screens share the same variable name. */
-export const hasDuplicateVariableNames = (screens: Screen[]): boolean => {
-  const names: string[] = [];
-  screens.forEach((screen) => {
-    screen.content.forEach((item) => {
-      if (item.type === 'Text Answer' || item.type === 'Selection') {
-        const name = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || 'field';
-        names.push(name);
-      }
-    });
-  });
-  return new Set(names).size !== names.length;
-};
 
 /** Returns true if the form has any errors — duplicate screen names, missing fields, or invalid content items. */
 export const hasFormErrors = (screens: Screen[]): boolean => {
@@ -689,38 +677,19 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
   }
 
   const { screens } = parsedJson;
-  const screenIdSet = new Set<string>();
-  const screenTitleSet = new Set<string>();
   const allScreenIds = new Set<string>(screens.map((s: any) => s.id).filter(Boolean));
   const componentNameMap = new Map<string, string>();
 
-  // Phase 2: Uniqueness checks
+  // Phase 2: Reserved ID checks
   screens.forEach((screen: any, i: number) => {
     const { id } = screen;
-    const title = screen.title;
-    const screenLabel = title || `Screen ${i + 1}`;
+    const screenLabel = screen.title || `Screen ${i + 1}`;
 
-    if (id) {
-      if (screenIdSet.has(id)) {
-        errors.push({ message: `Duplicate screen ID '${id}' found`, path: `screens[${i}]` });
-      } else {
-        screenIdSet.add(id);
-      }
-
-      if (id === 'SUCCESS') {
-        errors.push({
-          message: `Screen '${screenLabel}': ID 'SUCCESS' is reserved by Meta and cannot be used`,
-          path: `screens[${i}].id`,
-        });
-      }
-    }
-
-    if (title) {
-      if (screenTitleSet.has(title)) {
-        errors.push({ message: `Duplicate screen title '${title}' found`, path: `screens[${i}]` });
-      } else {
-        screenTitleSet.add(title);
-      }
+    if (id && id === 'SUCCESS') {
+      errors.push({
+        message: `Screen '${screenLabel}': ID 'SUCCESS' is reserved by Meta and cannot be used`,
+        path: `screens[${i}].id`,
+      });
     }
   });
 
@@ -919,39 +888,4 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
   });
 
   return { errors };
-};
-
-/** Collects all validation error messages for the form, including screen-level, content-level, and Flow JSON errors. */
-export const getFormValidationErrors = (screens: Screen[]): string[] => {
-  const errors: string[] = [];
-
-  if (hasDuplicateScreenNames(screens)) {
-    const names = screens.map((s) => s.name.trim().toLowerCase()).filter(Boolean);
-    const seen = new Set<string>();
-    names.forEach((name) => {
-      if (seen.has(name)) {
-        errors.push(`Duplicate screen name '${screens.find((s) => s.name.trim().toLowerCase() === name)?.name}'`);
-      }
-      seen.add(name);
-    });
-  }
-
-  screens.forEach((screen, i) => {
-    const label = screen.name || `Screen ${i + 1}`;
-    if (!screen.name?.trim()) errors.push(`Screen ${i + 1}: Name is required`);
-    if (!screen.buttonLabel?.trim()) errors.push(`Screen '${label}': Button label is required`);
-    screen.content.forEach((item) => {
-      if (hasContentItemError(item)) {
-        errors.push(
-          `Screen '${label}': Field '${item.data.label || item.data.text || item.name}' has validation errors`
-        );
-      }
-    });
-  });
-
-  const flowJSON = convertFormBuilderToFlowJSON(screens);
-  const flowErrors = validateFlowJson(flowJSON);
-  flowErrors.errors.forEach((e) => errors.push(e.message));
-
-  return [...new Set(errors)];
 };
