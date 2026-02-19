@@ -5,7 +5,7 @@ import { IconButton, TextField } from '@mui/material';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
-import { computeFieldNames } from '../FormBuilder/FormBuilder.utils';
+import { computePayloadKeys } from '../FormBuilder/FormBuilder.utils';
 import styles from './Variables.module.css';
 
 interface VariablesProps {
@@ -26,7 +26,7 @@ interface VariableItem {
 
 const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
   const variables: VariableItem[] = [];
-  const fieldNameMap = computeFieldNames(screens);
+  const payloadKeyMap = computePayloadKeys(screens);
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
@@ -34,7 +34,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
 
       if (type === 'Text Answer' || type === 'Selection') {
         if (data.label) {
-          const displayName = fieldNameMap.get(item.id) || 'field';
+          const payloadKey = payloadKeyMap.get(item.id) || 'field';
 
           variables.push({
             screenId: screen.id,
@@ -42,7 +42,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             contentId: item.id,
             label: data.label,
             variableName: data.variableName || '',
-            payloadKey: displayName,
+            payloadKey,
             type: item.name,
           });
         }
@@ -69,10 +69,19 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
   const isDuplicateVariable = (newName: string, excludeContentId: string): boolean => {
     const sanitized = newName
       .trim()
+      .toLowerCase()
       .replace(/\s+/g, '_')
-      .replace(/[^a-z0-9_]/gi, '');
+      .replace(/[^a-z0-9_]/g, '');
     if (!sanitized) return false;
-    return variables.some((v) => v.contentId !== excludeContentId && v.payloadKey === sanitized);
+    return variables.some((v) => {
+      if (v.contentId === excludeContentId) return false;
+      const otherSanitized = (v.variableName || v.label)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-z0-9_]/g, '');
+      return otherSanitized === sanitized;
+    });
   };
 
   const handleSaveVariable = (screenId: string, contentId: string) => {

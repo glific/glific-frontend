@@ -4,6 +4,7 @@
   height: 100%;
   margin-top: 0.5rem;
   min-height: 0;
+  overflow: hidden;
 }
 
 .PhoneFrame {
@@ -23,7 +24,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 1rem;
+  padding: 3.2rem 1rem 1rem;
 }
 
 .WhatsappHeader {
@@ -62,7 +63,7 @@
   flex-direction: column;
   background-color: #ece5dd;
   min-height: 0;
-  border-radius: 30px;
+  border-radius: 12px;
 }
 
 .FormCard {
@@ -399,4 +400,5 @@
   z-index: 10;
   height: 680px;
   width: 100%;
+  pointer-events: none;
 }

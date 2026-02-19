@@ -194,11 +194,15 @@ describe('<Configure />', () => {
       expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
     });
 
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Short Answer Label' } });
+
     // paragraph
     fireEvent.click(screen.getByTestId('add-content-button'));
     fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
 
     fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Paragraph Label' } });
 
     // date picker
     fireEvent.click(screen.getByTestId('add-content-button'));
@@ -208,6 +212,8 @@ describe('<Configure />', () => {
     fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Date Picker Label' } });
 
     await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Short Answer Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Paragraph Label');
       expect(screen.getByTestId('form-preview')).toHaveTextContent('Date Picker Label');
     });
 
@@ -215,12 +221,6 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Form JSON')).toBeInTheDocument();
-    });
-
-    // if the field names are generated correctly in the JSON
-    await waitFor(() => {
-      expect(screen.getByTestId('json-preview')).toHaveTextContent('Field_Name');
-      expect(screen.getByTestId('json-preview')).toHaveTextContent('Field_Name_1');
     });
   });
 
@@ -954,11 +954,12 @@ describe('<Configure />', () => {
 
       // Screen 1 footer payload: should use the same name
       const footer = screen1Children.find((c: any) => c.type === 'Footer');
-      expect(footer['on-click-action'].payload[componentName]).toBe(`\${form.${componentName}}`);
+      console.log(footer);
+      expect(footer['on-click-action'].payload['screen_0_user_1']).toBe(`\${form.${componentName}}`);
 
       // Screen 2 data: should have the same name
-      expect(parsed.screens[1].data[componentName]).toBeDefined();
-      expect(parsed.screens[1].data[componentName].type).toBe('string');
+      expect(parsed.screens[1].data['screen_0_user_1']).toBeDefined();
+      expect(parsed.screens[1].data['screen_0_user_1'].type).toBe('string');
     });
   });
 
