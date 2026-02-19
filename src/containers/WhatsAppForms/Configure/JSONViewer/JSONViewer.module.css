@@ -46,6 +46,32 @@
   font-size: 0.875rem;
 }
 
+.ErrorList {
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #c62828;
+  font-size: 0.875rem;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.ErrorListHeader {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ErrorItems {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.ErrorItems li {
+  margin-bottom: 0.15rem;
+}
+
 .JsonCode {
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;

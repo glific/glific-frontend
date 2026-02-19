@@ -53,8 +53,11 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
             readOnly: isViewOnly,
             'data-testid': 'text-content-input',
           },
+          input: {
+            endAdornment: <span className={styles.CharCount}>{`${(data.text || '').length}/80`}</span>,
+          },
         }}
-        helperText={!isViewOnly ? (hasError ? 'Text is required' : `${(data.text || '').length}/80`) : undefined}
+        helperText={!isViewOnly ? hasError && 'Text is required' : undefined}
         size="small"
       />
     </div>

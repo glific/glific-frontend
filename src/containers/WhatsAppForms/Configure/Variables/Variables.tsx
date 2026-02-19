@@ -1,8 +1,11 @@
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import { IconButton, TextField } from '@mui/material';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
+import { computePayloadKeys } from '../FormBuilder/FormBuilder.utils';
 import styles from './Variables.module.css';
 
 interface VariablesProps {
@@ -23,22 +26,15 @@ interface VariableItem {
 
 const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
   const variables: VariableItem[] = [];
+  const payloadKeyMap = computePayloadKeys(screens);
 
-  screens.forEach((screen, screenIndex) => {
-    let fieldCounter = 0;
+  screens.forEach((screen) => {
     screen.content.forEach((item) => {
       const { data, type } = item;
 
       if (type === 'Text Answer' || type === 'Selection') {
         if (data.label) {
-          let displayName: string;
-
-          if (data.variableName && data.variableName.trim()) {
-            displayName = data.variableName.replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
-          } else {
-            const baseName = data.label.replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
-            displayName = `screen_${screenIndex}_${baseName}_${fieldCounter}`;
-          }
+          const payloadKey = payloadKeyMap.get(item.id) || 'field';
 
           variables.push({
             screenId: screen.id,
@@ -46,10 +42,9 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             contentId: item.id,
             label: data.label,
             variableName: data.variableName || '',
-            payloadKey: displayName,
+            payloadKey,
             type: item.name,
           });
-          fieldCounter++;
         }
       }
     });
@@ -61,20 +56,45 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
 export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: VariablesProps) => {
   const [editingVariableId, setEditingVariableId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [duplicateErrorId, setDuplicateErrorId] = useState<string | null>(null);
 
   const variables = useMemo(() => extractVariablesWithContext(screens), [screens]);
 
   const handleEditVariable = (contentId: string, currentVariableName: string) => {
     setEditingVariableId(contentId);
     setEditValue(currentVariableName);
+    setDuplicateErrorId(null);
+  };
+
+  const isDuplicateVariable = (newName: string, excludeContentId: string): boolean => {
+    const sanitized = newName
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_]/g, '');
+    if (!sanitized) return false;
+    return variables.some((v) => {
+      if (v.contentId === excludeContentId) return false;
+      const otherSanitized = (v.variableName || v.label)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-z0-9_]/g, '');
+      return otherSanitized === sanitized;
+    });
   };
 
   const handleSaveVariable = (screenId: string, contentId: string) => {
     if (editValue.trim()) {
+      if (isDuplicateVariable(editValue, contentId)) {
+        setDuplicateErrorId(contentId);
+        return;
+      }
       onUpdateFieldLabel(screenId, contentId, editValue.trim());
     }
     setEditingVariableId(null);
     setEditValue('');
+    setDuplicateErrorId(null);
   };
 
   return (
@@ -82,7 +102,13 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
       {variables.length > 0 ? (
         <>
           <div className={styles.VariablesHeader}>
-            <h3>Form Variables</h3>
+            <h3>Field Names</h3>
+            <Tooltip
+              placement="top"
+              title="The field names also serve as the header under which responses are captured. To refer to a specific response of this form in the Glific flow, use the ‘Wait for Response’ node to save the flow result(e.g. flow result named: result_1). Then, use @results.result_1.field_name, replacing 'field_name' with the relevant header from here."
+            >
+              <InfoOutlineIcon fontSize="small" />
+            </Tooltip>
           </div>
           <div className={styles.VariablesList}>
             {variables.map((variable) => (
@@ -95,12 +121,21 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
                     {editingVariableId === variable.contentId ? (
                       <TextField
                         value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
+                        onChange={(e) => {
+                          setEditValue(e.target.value);
+                          if (duplicateErrorId === variable.contentId) {
+                            setDuplicateErrorId(null);
+                          }
+                        }}
                         size="small"
                         variant="outlined"
                         fullWidth
                         autoFocus
                         label="Variable Name"
+                        error={duplicateErrorId === variable.contentId}
+                        helperText={
+                          duplicateErrorId === variable.contentId ? 'Variable name must be unique' : undefined
+                        }
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             handleSaveVariable(variable.screenId, variable.contentId);

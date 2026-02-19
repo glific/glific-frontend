@@ -252,13 +252,13 @@ export const Configure = () => {
 
         <div className={styles.Actions}>
           {!showJSON && (
-            <Button variant="outlined" onClick={handleViewJSON}>
-              View JSON
+            <Button data-testid="formJsonBtn" variant="outlined" onClick={handleViewJSON}>
+              Form JSON
             </Button>
           )}
           {previewingVersion !== null || showJSON ? (
             <Button variant="contained" color="primary" onClick={handleBackToEditing}>
-              Back to Editing
+              {previewingVersion !== null ? 'Back to Editing' : 'Form Builder'}
             </Button>
           ) : (
             !isPublished && (
@@ -273,7 +273,7 @@ export const Configure = () => {
                   setOpenDialog(true);
                 }}
               >
-                Publish
+                Submit to Meta
               </Button>
             )
           )}
@@ -284,7 +284,7 @@ export const Configure = () => {
               data-testid="save-button"
               onClick={handleSaveWhatsappFormRevision}
             >
-              {isSaving ? <CircularProgress size={22} color="inherit" /> : 'Save'}
+              {isSaving ? <CircularProgress size={22} color="inherit" /> : 'Save Draft'}
             </Button>
           )}
         </div>
@@ -332,11 +332,11 @@ export const Configure = () => {
                 Preview
               </ToggleButton>
               <ToggleButton value="variables" aria-label="variables">
-                Variables
+                Field Names
               </ToggleButton>
               {!isPublished && (
                 <ToggleButton value="versions" aria-label="versions">
-                  Versions
+                  Revision History
                 </ToggleButton>
               )}
             </ToggleButtonGroup>

@@ -27,6 +27,20 @@ export const formatError = (str: string) => {
   return replaced.charAt(0).toUpperCase() + replaced.slice(1).toLowerCase();
 };
 
+const GoogleSheetUrlComponent = ({ field, disabled }: any) => {
+  return (
+    <div className={styles.GoogleSheetContainer}>
+      <h3>Data Storage</h3>
+      <Input field={field} placeholder="Add your google sheet link here" disabled={disabled} />
+
+      <p>
+        Data collected in this form will be stored in your DB by default. Add a google sheet link if you’d like to save
+        it separately.
+      </p>
+    </div>
+  );
+};
+
 export const WhatsAppForms = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -119,18 +133,15 @@ export const WhatsAppForms = () => {
       name: 'formCategories',
       options: categories,
       optionLabel: 'name',
-      label: 'Categories',
+      label: 'Categories *',
       placeholder: 'Select categories',
       helperText:
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
       disabled: disabled,
     },
     {
-      component: Input,
+      component: GoogleSheetUrlComponent,
       name: 'googleSheetUrl',
-      label: 'Google Sheet URL',
-      placeholder: 'Enter Google Sheet URL',
-      helperText: 'Provide a Google Sheet URL to store form responses automatically.',
       disabled: disabled,
     },
   ];

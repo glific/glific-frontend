@@ -8,23 +8,26 @@
   min-height: 36px !important;
 }
 
-.SearchBar > fieldset {
+.SearchBar>fieldset {
   border: none !important;
 }
 
 .Name {
-  width: 27%;
+  width: 32%;
   min-width: 200px;
 }
 
-.Label {
-  width: 15%;
+.StatusColumn {
+  width: 25%;
+  min-width: 200px;
+}
+
+.ModifiedAt {
+  width: 28%;
 }
 
 .Actions {
-  width: 15%;
-  min-width: 200px;
-  text-align: end;
+  text-align: start;
 }
 
 .NameText {
@@ -35,6 +38,7 @@
   color: #191c1a !important;
   font-weight: 500;
 }
+
 
 .Status {
   display: inline-block;
@@ -127,6 +131,7 @@
   z-index: 20;
   min-width: 150px;
 }
+
 .IconSize {
   font-size: 1.2rem !important;
 }

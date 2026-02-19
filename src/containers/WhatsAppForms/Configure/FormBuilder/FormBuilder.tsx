@@ -17,6 +17,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { useEffect, useState } from 'react';
 import styles from './FormBuilder.module.css';
 import { ContentItemData, FormBuilderProps, Screen } from './FormBuilder.types';
+import { isDuplicateScreenName } from './FormBuilder.utils';
 import { ScreenComponent } from './Screen/Screen';
 
 export const FormBuilder = ({
@@ -115,7 +116,7 @@ export const FormBuilder = ({
 
   const addContent = (screenId: string, category: string, item: string) => {
     let defaultData: ContentItemData =
-      category === 'Text' ? { text: 'Text', required: true } : { label: 'Label', required: true };
+      category === 'Text' ? { text: 'Text', required: true } : { label: 'Field Name', required: true };
     if (category === 'Selection') {
       defaultData = {
         ...defaultData,
@@ -225,6 +226,7 @@ export const FormBuilder = ({
                 expandedContentId={expandedContentId}
                 setExpandedContentId={setExpandedContentId}
                 isViewOnly={isViewOnly}
+                isDuplicateName={isDuplicateScreenName(screens, screen.id)}
               />
             ))}
           </SortableContext>
