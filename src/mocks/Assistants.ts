@@ -2,7 +2,6 @@ import {
   ADD_FILES_TO_FILE_SEARCH,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
-  REMOVE_FILES_FROM_ASSISTANT,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_OPENAI,
 } from 'graphql/mutations/Assistant';
@@ -111,6 +110,38 @@ const getAssistantFiles = (assistantId: any) => ({
               },
             ],
             id: assistantId,
+            legacy: false,
+            name: 'VectorStore-77ae3597',
+            vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
+          },
+        },
+      },
+    },
+  },
+});
+
+const getAssistantFilesLegacy = (assistantId: string) => ({
+  request: {
+    query: GET_ASSISTANT_FILES,
+    variables: { assistantId },
+  },
+  result: {
+    data: {
+      assistant: {
+        __typename: 'AssistantResult',
+        assistant: {
+          __typename: 'Assistant',
+          vectorStore: {
+            __typename: 'VectorStore',
+            files: [
+              {
+                __typename: 'FileInfo',
+                fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
+                filename: 'Accelerator Guide (1).pdf',
+              },
+            ],
+            id: assistantId,
+            legacy: true,
             name: 'VectorStore-77ae3597',
             vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
           },
@@ -189,22 +220,6 @@ export const uploadFileToFileSearchWithError = {
   variableMatcher: (variables: any) => true,
 };
 
-const removeFileFromAssistant = {
-  request: {
-    query: REMOVE_FILES_FROM_ASSISTANT,
-    variables: { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', removeAssistantFileId: '1' },
-  },
-  result: {
-    data: {
-      removeAssistantFile: {
-        assistant: {
-          id: '1',
-        },
-        errors: null,
-      },
-    },
-  },
-};
 
 const addFilesToFilesearch = (mediaInfo: any) => ({
   request: {
@@ -287,7 +302,6 @@ const uploadFileMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearch,
   uploadFileToFileSearch,
-  removeFileFromAssistant,
   addFilesToFilesearch([
     { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
     { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
@@ -322,6 +336,14 @@ export const MOCKS = [
 export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
 export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
 
+export const legacyVectorStoreMocks = [
+  getAssistantsList(),
+  listOpenaiModels,
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantFilesLegacy('1'),
+  getAssistantFilesLegacy('1'),
+];
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
 export const errorMocks = [
