@@ -120,7 +120,7 @@ const getAssistantFiles = (assistantId: any) => ({
   },
 });
 
-const getAssistantFilesLegacy = (assistantId: any) => ({
+const getAssistantFilesLegacy = (assistantId: string) => ({
   request: {
     query: GET_ASSISTANT_FILES,
     variables: { assistantId },
