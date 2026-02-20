@@ -221,7 +221,6 @@ export const uploadFileToFileSearchWithError = {
 };
 
 
-
 const addFilesToFilesearch = (mediaInfo: any) => ({
   request: {
     query: ADD_FILES_TO_FILE_SEARCH,
