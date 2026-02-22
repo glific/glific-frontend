@@ -213,11 +213,11 @@ describe('<WhatsAppFormList />', () => {
       expect(getByText('Draft')).toBeInTheDocument();
     });
 
-    const configureIcon = await waitFor(() => getAllByTestId('configure-icon')[0]);
+    const configureIcon = await waitFor(() => getAllByTestId('edit-icon')[0]);
     fireEvent.click(configureIcon);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/3/edit');
+      expect(mockNavigate).toHaveBeenCalledWith('/whatsapp-forms/3/configure');
     });
   });
 });

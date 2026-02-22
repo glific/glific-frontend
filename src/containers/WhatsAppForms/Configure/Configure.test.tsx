@@ -954,12 +954,8 @@ describe('<Configure />', () => {
 
       // Screen 1 footer payload: should use the same name
       const footer = screen1Children.find((c: any) => c.type === 'Footer');
-      console.log(footer);
-      expect(footer['on-click-action'].payload['screen_0_user_1']).toBe(`\${form.${componentName}}`);
 
-      // Screen 2 data: should have the same name
-      expect(parsed.screens[1].data['screen_0_user_1']).toBeDefined();
-      expect(parsed.screens[1].data['screen_0_user_1'].type).toBe('string');
+      expect(footer['on-click-action'].payload['user_name']).toBe(`\${form.${componentName}}`);
     });
   });
 

@@ -5,7 +5,7 @@ import { IconButton, TextField } from '@mui/material';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
-import { computePayloadKeys } from '../FormBuilder/FormBuilder.utils';
+import { computeFieldNames } from '../FormBuilder/FormBuilder.utils';
 import styles from './Variables.module.css';
 
 interface VariablesProps {
@@ -20,13 +20,13 @@ interface VariableItem {
   contentId: string;
   label: string;
   variableName: string;
-  payloadKey: string;
+  fieldName: string;
   type: string;
 }
 
 const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
   const variables: VariableItem[] = [];
-  const payloadKeyMap = computePayloadKeys(screens);
+  const fieldNameMap = computeFieldNames(screens);
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
@@ -34,7 +34,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
 
       if (type === 'Text Answer' || type === 'Selection') {
         if (data.label) {
-          const payloadKey = payloadKeyMap.get(item.id) || 'field';
+          const fieldName = fieldNameMap.get(item.id) || 'field';
 
           variables.push({
             screenId: screen.id,
@@ -42,7 +42,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             contentId: item.id,
             label: data.label,
             variableName: data.variableName || '',
-            payloadKey,
+            fieldName,
             type: item.name,
           });
         }
@@ -148,7 +148,7 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
                         }}
                       />
                     ) : (
-                      <div className={styles.VariableName}>{variable.payloadKey}</div>
+                      <div className={styles.VariableName}>{variable.fieldName}</div>
                     )}
                   </div>
                 </div>
@@ -159,8 +159,7 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
                       if (editingVariableId === variable.contentId) {
                         handleSaveVariable(variable.screenId, variable.contentId);
                       } else {
-                        const editableVariableName = variable.variableName || variable.payloadKey;
-                        handleEditVariable(variable.contentId, editableVariableName);
+                        handleEditVariable(variable.contentId, variable.variableName || variable.fieldName);
                       }
                     }}
                   >

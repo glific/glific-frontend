@@ -91,14 +91,6 @@ const sanitizeName = (name: string): string =>
     .replace(/_+/g, '_')
     .replace(/^_|_$/g, '');
 
-/** Abbreviates a sanitized name by dropping the last underscore-delimited segment (Meta pattern). */
-const abbreviateName = (sanitizedName: string): string => {
-  const parts = sanitizedName.split('_');
-  return parts.length > 1 ? parts.slice(0, -1).join('_') : sanitizedName;
-};
-
-/** Returns true if any input fields across all screens share the same variable name. */
-
 /** Returns true if the form has any errors — duplicate screen names, missing fields, or invalid content items. */
 export const hasFormErrors = (screens: Screen[]): boolean => {
   if (hasDuplicateScreenNames(screens)) return true;
@@ -113,7 +105,6 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const totalScreens = screens.length;
   const screenIds = generateUniqueScreenIds(screens);
   const fieldNameMap = computeFieldNames(screens);
-  const payloadKeyMap = computePayloadKeys(screens);
 
   const previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string }> = [];
 
@@ -127,16 +118,15 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
       nextScreenId,
       screenIds[index],
       fieldNameMap,
-      payloadKeyMap,
       previousScreensPayloadData
     );
 
     screen.content.forEach((item) => {
       if (item.type === 'Text Answer' || item.type === 'Selection') {
-        const payloadKey = payloadKeyMap.get(item.id) || 'field';
+        const fieldName = fieldNameMap.get(item.id) || 'field';
         const componentType = getWhatsAppComponentType(item.type, item.name);
         previousScreensPayloadData.push({
-          payloadKey,
+          payloadKey: fieldName,
           fieldType: componentType,
           inputType: item.data.inputType?.toLowerCase(),
         });
@@ -234,25 +224,6 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
   return fieldNameMap;
 };
 
-/** Computes stable payload keys for all input fields using the Meta pattern: screen_{screenIndex}_{abbreviation}_{fieldIndex}. */
-export const computePayloadKeys = (screens: Screen[]): Map<string, string> => {
-  const payloadKeyMap = new Map<string, string>();
-
-  screens.forEach((screen, screenIndex) => {
-    let fieldIndex = 0;
-    screen.content.forEach((item) => {
-      if (item.type === 'Text Answer' || item.type === 'Selection') {
-        const sanitized = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || 'field';
-        const abbreviated = abbreviateName(sanitized);
-        const payloadKey = `screen_${screenIndex}_${abbreviated}_${fieldIndex}`;
-        payloadKeyMap.set(item.id, payloadKey);
-        fieldIndex += 1;
-      }
-    });
-  });
-
-  return payloadKeyMap;
-};
 
 /** Converts a form builder content item into a WhatsApp Flow JSON component object. */
 const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<string, string>): any => {
@@ -402,7 +373,6 @@ const generateScreenData = (
 const generateScreenPayload = (
   screenContent: ContentItem[],
   fieldNameMap: Map<string, string>,
-  payloadKeyMap: Map<string, string>,
   previousScreensPayloadData: Array<{ payloadKey: string }>
 ): Record<string, string> => {
   const payload: Record<string, string> = {};
@@ -413,10 +383,9 @@ const generateScreenPayload = (
 
   screenContent.forEach((item) => {
     if (item.type === 'Text Answer' || item.type === 'Selection') {
-      const componentName = fieldNameMap.get(item.id);
-      const payloadKey = payloadKeyMap.get(item.id);
-      if (componentName && payloadKey) {
-        payload[payloadKey] = `\${form.${componentName}}`;
+      const fieldName = fieldNameMap.get(item.id);
+      if (fieldName) {
+        payload[fieldName] = `\${form.${fieldName}}`;
       }
     }
   });
@@ -432,7 +401,6 @@ export const convertScreenToFlowJSON = (
   nextScreenId?: string,
   screenId?: string,
   fieldNameMap: Map<string, string> = new Map(),
-  payloadKeyMap: Map<string, string> = new Map(),
   previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string }> = []
 ): any => {
   const children: any[] = [];
@@ -446,7 +414,7 @@ export const convertScreenToFlowJSON = (
 
   const isTerminal = screenIndex === totalScreens - 1;
 
-  const payload = generateScreenPayload(screen.content, fieldNameMap, payloadKeyMap, previousScreensPayloadData);
+  const payload = generateScreenPayload(screen.content, fieldNameMap, previousScreensPayloadData);
 
   if (screen.buttonLabel) {
     children.push({
