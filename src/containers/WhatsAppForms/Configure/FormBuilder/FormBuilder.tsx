@@ -121,8 +121,8 @@ export const FormBuilder = ({
       defaultData = {
         ...defaultData,
         options: [
-          { id: '1', value: 'Option 1' },
-          { id: '2', value: 'Option 2' },
+          { id: 'Option_1', value: 'Option 1' },
+          { id: 'Option_2', value: 'Option 2' },
         ],
       };
     }
