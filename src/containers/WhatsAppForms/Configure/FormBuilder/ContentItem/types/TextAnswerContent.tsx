@@ -60,7 +60,7 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
             />
           </span>
         }
-        placeholder="Label"
+        placeholder="Field Name"
         value={data.label || ''}
         onChange={handleLabelChange}
         error={!isViewOnly && hasError}

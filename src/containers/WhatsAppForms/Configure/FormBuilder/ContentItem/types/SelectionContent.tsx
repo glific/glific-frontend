@@ -74,7 +74,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
         fullWidth
         label={
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Label
+            Field Name
             <HelpIcon
               helpData={{
                 heading: 'This field name shows up as caption in the form and is also used in header name',

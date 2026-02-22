@@ -30,12 +30,12 @@ export const formatError = (str: string) => {
 const GoogleSheetUrlComponent = ({ field, disabled }: any) => {
   return (
     <div className={styles.GoogleSheetContainer}>
-      <h3>Data Storage</h3>
+      <h3>Data Storage (Optional)</h3>
       <Input field={field} placeholder="Add your google sheet link here" disabled={disabled} />
 
       <p>
-        Data collected in this form will be stored in your DB by default. Add a google sheet link if you’d like to save
-        it separately.
+        Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see
+        and share responses more easily.
       </p>
     </div>
   );
@@ -114,7 +114,7 @@ export const WhatsAppForms = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      label: `${'Title'}*`,
+      label: 'Title *',
       placeholder: 'Enter form title',
       disabled: disabled,
     },
@@ -122,7 +122,7 @@ export const WhatsAppForms = () => {
       component: Input,
       name: 'description',
       type: 'text',
-      label: `${'Description'}`,
+      label: 'Description',
       textArea: true,
       rows: 2,
       placeholder: 'Enter form description',

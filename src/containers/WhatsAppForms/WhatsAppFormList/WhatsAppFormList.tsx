@@ -126,11 +126,11 @@ export const WhatsAppFormList = () => {
     };
 
     const handleEdit = (view: boolean) => ({
-      label: view ? 'View' : 'Configure',
+      label: view ? 'View' : 'Edit',
       icon: view ? (
         <ViewIcon data-testid="view-form" />
       ) : (
-        <EditIcon className={styles.IconSize} data-testid="configure-icon" />
+        <EditIcon className={styles.IconSize} data-testid="edit-icon" />
       ),
       parameter: 'id',
       dialog: (id: any) => {
@@ -158,7 +158,7 @@ export const WhatsAppFormList = () => {
       },
     };
     const configureIcon = {
-      label: 'Edit',
+      label: 'Configure',
       icon: <ConfigureIcon data-testid="edit-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
@@ -220,7 +220,7 @@ export const WhatsAppFormList = () => {
       onClick={() => handleFormUpdates()}
       loading={syncLoading}
     >
-      Sync Forms
+      SYNC Forms
     </Button>
   );
 
