@@ -83,7 +83,7 @@ export const isDuplicateScreenName = (screens: Screen[], screenId: string): bool
 };
 
 /** Sanitizes a name for use as a field identifier by replacing spaces with underscores and stripping invalid characters. */
-const sanitizeName = (name: string): string =>
+export const sanitizeName = (name: string): string =>
   name
     .toLowerCase()
     .replace(/\s+/g, '_')
@@ -223,7 +223,6 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
   return fieldNameMap;
 };
-
 
 /** Converts a form builder content item into a WhatsApp Flow JSON component object. */
 const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<string, string>): any => {

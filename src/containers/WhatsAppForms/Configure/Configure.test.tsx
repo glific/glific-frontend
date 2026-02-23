@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import Configure from './Configure';
 
-import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
+import { WHATSAPP_FORM_MOCKS, validScreen } from 'mocks/WhatsAppForm';
 
 let capturedOnDragEnd: ((event: any) => void) | null = null;
 
@@ -235,7 +235,7 @@ describe('<Configure />', () => {
     fireEvent.click(screen.getByTestId('add-content-button'));
     fireEvent.mouseEnter(screen.getByTestId('Selection'));
 
-    fireEvent.click(screen.getByText('Single Choice'));
+    fireEvent.click(screen.getAllByText('Single Choice')[1]);
 
     fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Single Choice Label' } });
 
@@ -246,14 +246,14 @@ describe('<Configure />', () => {
 
     fireEvent.change(screen.getAllByTestId('option-input')[2], { target: { value: 'Opt-3' } });
 
-    //test deleting the option
+    // test deleting the option
     fireEvent.click(screen.getAllByTestId('delete-option-button')[2]);
 
     await waitFor(() => {
       expect(screen.queryAllByTestId('option-input')).toHaveLength(2);
     });
 
-    //multiple choice
+    // multiple choice
     fireEvent.click(screen.getByTestId('add-content-button'));
     fireEvent.mouseEnter(screen.getByTestId('Selection'));
 
@@ -417,13 +417,13 @@ describe('<Configure />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('content-item')).toHaveLength(2);
+      expect(screen.getAllByTestId('content-item')).toHaveLength(3);
     });
 
     fireEvent.click(screen.getAllByTestId('delete-content')[0]);
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('content-item')).toHaveLength(1);
+      expect(screen.getAllByTestId('content-item')).toHaveLength(2);
     });
   });
 
@@ -497,7 +497,7 @@ describe('<Configure />', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('content-item')).toHaveLength(2);
+      expect(screen.getAllByTestId('content-item')).toHaveLength(3);
     });
 
     const getContentItemNames = () => {
@@ -514,7 +514,7 @@ describe('<Configure />', () => {
     const initialOrder = getContentItemNames();
     const itemIds = getContentItemIds();
 
-    expect(initialOrder).toHaveLength(2);
+    expect(initialOrder).toHaveLength(3);
     expect(itemIds[0]).not.toBeNull();
     expect(itemIds[1]).not.toBeNull();
 
@@ -544,6 +544,41 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('add-screen')).not.toBeInTheDocument();
+    });
+  });
+
+  test('isViewOnly — delete button and add-content hidden, inputs are readonly', async () => {
+    render(wrapper(2));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('delete-screen')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('add-content-button')).not.toBeInTheDocument();
+      expect(screen.getByTestId('screen-name-input')).toHaveAttribute('readonly');
+      expect(screen.getByTestId('button-label-input')).toHaveAttribute('readonly');
+    });
+  });
+
+  test('isDuplicateName — shows unique name error when two screens share the same name', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: 'Screen 1' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen name must be unique')).toBeInTheDocument();
     });
   });
 
@@ -618,6 +653,58 @@ describe('<Configure />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('json-preview')).toHaveTextContent('new_variable_name');
+    });
+  });
+
+  test('duplicate variable names should show error and not allow to save', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Field Names'));
+
+    fireEvent.click(screen.getAllByTestId('edit-icon')[0]);
+
+    fireEvent.change(screen.getByTestId('variable-name-input'), { target: { value: 'field_name' } });
+
+    fireEvent.keyDown(screen.getByTestId('variable-name-input'), { key: 'Enter', code: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('variable-name-input')).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getByText('Variable name must be unique')).toBeInTheDocument();
+    });
+  });
+
+  test('two fields with the same label get deduplicated names in generated JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getByText('Date Picker'));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    const parsed = JSON.parse(jsonText.value);
+
+    const footer = parsed.screens[0].layout.children[0].children.find((c: any) => c.type === 'Footer');
+    const payload = footer['on-click-action']['payload'];
+    console.log(footer);
+
+    await waitFor(() => {
+      expect(payload).toHaveProperty('field_name');
+      expect(payload).toHaveProperty('field_name_1');
+      expect(payload).toHaveProperty('field_name_2');
     });
   });
 
@@ -1004,5 +1091,307 @@ describe('<Configure />', () => {
       expect(numberField).toBeDefined();
       expect(numberField![1]).toEqual({ __example__: 0, type: 'number' });
     });
+  });
+});
+
+// ── Helpers for validateFlowJson tests ───────────────────────────────────────
+
+const flow = (screens: object[]) => ({ version: '7.3', screens });
+
+const formWith = (children: object[]) => ({
+  type: 'Form',
+  name: 'flow_path',
+  children,
+});
+
+const footer = (action: object, label = 'Continue') => ({
+  type: 'Footer',
+  label,
+  'on-click-action': action,
+});
+
+const setJsonAndExpectError = async (json: object, expectedError: string | RegExp) => {
+  render(wrapper());
+  await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+  fireEvent.click(screen.getByTestId('formJsonBtn'));
+  await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+  const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+  fireEvent.change(textarea, { target: { value: JSON.stringify(json) } });
+
+  await waitFor(() => expect(screen.getByTestId('json-error')).toHaveTextContent(expectedError));
+};
+
+describe('validateFlowJson — all phases', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  test('phase 3 — screen ID with spaces is invalid', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ id: 'screen 1' })]),
+      'Screen ID should only contain alphabets and underscores'
+    );
+  });
+
+  test('phase 3 — missing screen title', async () => {
+    await setJsonAndExpectError(flow([validScreen({ title: undefined })]), 'Missing screen title');
+  });
+
+  test('phase 3 — layout type must be SingleColumnLayout', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { ...validScreen().layout, type: 'TwoColumnLayout' } })]),
+      "Layout type must be 'SingleColumnLayout'"
+    );
+  });
+
+  test('phase 3 — empty layout children', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [] } })]),
+      'Missing layout children'
+    );
+  });
+
+  test('phase 3 — first layout child must be a Form', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'TextBody', text: 'Hello' }] } })]),
+      'First layout child must be a Form component'
+    );
+  });
+
+  test('phase 3 — Form component must have children', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'Form', name: 'flow_path' }] } })]),
+      'Form component must have children'
+    );
+  });
+
+  // ── Phase 4: Footer & action validation ──────────────────────────────────
+  test('phase 4 — missing footer', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [formWith([{ type: 'TextInput', name: 'f', label: 'F', required: true, 'input-type': 'text' }])],
+          },
+        }),
+      ]),
+      'Must have exactly one Footer component'
+    );
+  });
+
+  test('phase 4 — two footers on same screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                footer({ name: 'complete', payload: {} }),
+                footer({ name: 'complete', payload: {} }, 'Also Continue'),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      'Must have exactly one Footer component, found 2'
+    );
+  });
+
+  test('phase 4 — footer label exceeds 35 characters', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'complete', payload: {} }, 'This label is way too long and exceeds limit')]),
+            ],
+          },
+        }),
+      ]),
+      'Footer label must be 35 characters or fewer'
+    );
+  });
+
+  test('phase 4 — footer missing on-click-action', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: { type: 'SingleColumnLayout', children: [formWith([{ type: 'Footer', label: 'Continue' }])] },
+        }),
+      ]),
+      "Footer must have an 'on-click-action'"
+    );
+  });
+
+  test('phase 4 — action name is not navigate or complete', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'submit', payload: {} })])] },
+        }),
+      ]),
+      "Action must be 'navigate' or 'complete'"
+    );
+  });
+
+  test('phase 4 — last screen must use complete action', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_two', type: 'screen' }, payload: {} })]),
+            ],
+          },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_one', type: 'screen' }, payload: {} })]),
+            ],
+          },
+        }),
+      ]),
+      "must use 'complete' action"
+    );
+  });
+
+  test('phase 4 — last screen must have terminal: true', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          terminal: false,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "must have 'terminal: true'"
+    );
+  });
+
+  test('phase 4 — non-terminal screen must use navigate action', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "Non-terminal screens must use 'navigate' action"
+    );
+  });
+
+  test('phase 4 — navigate action must specify a next screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'navigate', payload: {} })])] },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "Navigate action must specify a 'next' screen"
+    );
+  });
+
+  test('phase 4 — navigate next.type must be screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_two', type: 'flow' }, payload: {} })]),
+            ],
+          },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "Navigate next.type must be 'screen'"
+    );
+  });
+
+  test('phase 4 — navigate references a non-existent screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_ghost', type: 'screen' }, payload: {} })]),
+            ],
+          },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "references non-existent screen 'screen_ghost'"
+    );
+  });
+
+  // ── Phase 5: Component name uniqueness ───────────────────────────────────
+  test('phase 5 — duplicate component names across the screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                { type: 'TextInput', name: 'field_name', label: 'Field 1', required: true, 'input-type': 'text' },
+                { type: 'TextInput', name: 'field_name', label: 'Field 2', required: true, 'input-type': 'text' },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "Duplicate component name 'field_name'"
+    );
+  });
+
+  // ── Phase 6: Data property validation ────────────────────────────────────
+  test('phase 6 — data property missing __example__', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ data: { field_name: { type: 'string' } } })]),
+      "is missing '__example__'"
+    );
+  });
+
+  test('phase 6 — data property missing type', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ data: { field_name: { __example__: 'Example' } } })]),
+      "is missing 'type'"
+    );
   });
 });

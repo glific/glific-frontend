@@ -5,7 +5,7 @@ import { IconButton, TextField } from '@mui/material';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { useMemo, useState } from 'react';
 import { Screen } from '../FormBuilder/FormBuilder.types';
-import { computeFieldNames } from '../FormBuilder/FormBuilder.utils';
+import { computeFieldNames, sanitizeName } from '../FormBuilder/FormBuilder.utils';
 import styles from './Variables.module.css';
 
 interface VariablesProps {
@@ -66,27 +66,14 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
     setDuplicateErrorId(null);
   };
 
-  const isDuplicateVariable = (newName: string, excludeContentId: string): boolean => {
-    const sanitized = newName
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '_')
-      .replace(/[^a-z0-9_]/g, '');
-    if (!sanitized) return false;
-    return variables.some((v) => {
-      if (v.contentId === excludeContentId) return false;
-      const otherSanitized = (v.variableName || v.label)
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '_')
-        .replace(/[^a-z0-9_]/g, '');
-      return otherSanitized === sanitized;
-    });
+  const isDuplicateVariable = (newName: string): boolean => {
+    const sanitized = sanitizeName(newName);
+    return !!sanitized && variables.some((v) => v.contentId !== editingVariableId && v.fieldName === sanitized);
   };
 
   const handleSaveVariable = (screenId: string, contentId: string) => {
     if (editValue.trim()) {
-      if (isDuplicateVariable(editValue, contentId)) {
+      if (isDuplicateVariable(editValue)) {
         setDuplicateErrorId(contentId);
         return;
       }
