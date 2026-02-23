@@ -50,7 +50,7 @@ export const MyAccount = () => {
   // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
-      if (data.updateCurrentUser.errors) {
+      if (data.updateCurrentUser.errors && data.updateCurrentUser.errors.length > 0) {
         const error = data.updateCurrentUser.errors[0];
         if (error.message === 'incorrect_code') {
           setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });

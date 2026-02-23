@@ -168,16 +168,13 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values, setFieldValue, setValues }) => (
+          {({ submitForm, values, setValues }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
                   let fieldInfo = { ...field };
                   if (field.type === 'password') {
                     fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
-                  }
-                  if (field.type === 'phone') {
-                    fieldInfo = { ...field, handlePhone: () => (value: string) => { setFieldValue('phoneNumber', value); } };
                   }
                   const key = index;
                   return (
