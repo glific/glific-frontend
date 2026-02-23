@@ -94,7 +94,7 @@ export const updateUserQuery = [
     result: {
       data: {
         updateCurrentUser: {
-          errors: [{ message: 'incorrect_code' }],
+          errors: [{ key: 'otp', message: 'incorrect_code' }],
           user: null,
         },
       },
@@ -108,7 +108,7 @@ export const updateUserQuery = [
     result: {
       data: {
         updateCurrentUser: {
-          errors: [{ message: 'Too many attempts' }],
+          errors: [{ key: 'otp', message: 'Too many attempts' }],
           user: null,
         },
       },
@@ -160,7 +160,7 @@ export const updateUserQuery = [
     result: {
       data: {
         updateCurrentUser: {
-          errors: [{ message: 'Email already exists' }],
+          errors: [{ key: 'email', message: 'Email already exists' }],
           user: null,
         },
       },

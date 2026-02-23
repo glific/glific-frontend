@@ -24,7 +24,7 @@ const mocks = [
     result: {
       data: {
         updateCurrentUser: {
-          errors: [{ message: 'Email already exists' }],
+          errors: [{ key: 'email', message: 'Email already exists' }],
           user: null,
         },
       },
