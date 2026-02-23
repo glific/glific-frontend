@@ -175,7 +175,7 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     <div data-testid="form-preview" className={styles.PreviewContainer}>
       <div className={styles.PhoneFrame}>
         <div className={styles.PhoneScreen}>
-          <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
+          <img alt="phone" src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
 
           {currentScreen && (
             <>

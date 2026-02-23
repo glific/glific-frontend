@@ -699,7 +699,6 @@ describe('<Configure />', () => {
 
     const footer = parsed.screens[0].layout.children[0].children.find((c: any) => c.type === 'Footer');
     const payload = footer['on-click-action']['payload'];
-    console.log(footer);
 
     await waitFor(() => {
       expect(payload).toHaveProperty('field_name');
