@@ -1,9 +1,9 @@
 import {
-  ADD_FILES_TO_FILE_SEARCH,
+  CREATE_KNOWLEDGE_BASE,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
   UPDATE_ASSISTANT,
-  UPLOAD_FILE_TO_OPENAI,
+  UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANTS, GET_ASSISTANT_FILES, GET_MODELS } from 'graphql/queries/Assistant';
 
@@ -186,7 +186,7 @@ const getAssistantListOnSearch = {
 
 const uploadFileToFileSearch = {
   request: {
-    query: UPLOAD_FILE_TO_OPENAI,
+    query: UPLOAD_FILE_TO_KAAPI,
   },
   result: {
     data: {
@@ -201,7 +201,7 @@ const uploadFileToFileSearch = {
 
 export const uploadFileToFileSearchWithError = {
   request: {
-    query: UPLOAD_FILE_TO_OPENAI,
+    query: UPLOAD_FILE_TO_KAAPI,
   },
   result: {
     data: {
@@ -222,10 +222,9 @@ export const uploadFileToFileSearchWithError = {
   variableMatcher: (variables: any) => true,
 };
 
-
 const addFilesToFilesearch = (mediaInfo: any) => ({
   request: {
-    query: ADD_FILES_TO_FILE_SEARCH,
+    query: CREATE_KNOWLEDGE_BASE,
     variables: {
       addAssistantFilesId: '1',
       mediaInfo,
@@ -245,7 +244,7 @@ const addFilesToFilesearch = (mediaInfo: any) => ({
 
 const addFilesToFilesearchWithError = {
   request: {
-    query: ADD_FILES_TO_FILE_SEARCH,
+    query: CREATE_KNOWLEDGE_BASE,
     variables: {
       addAssistantFilesId: '1',
       mediaInfo: [{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }],
