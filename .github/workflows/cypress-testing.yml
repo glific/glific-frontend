@@ -22,9 +22,11 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     strategy:
+      fail-fast: false
       matrix: # build matrix for the job
         elixir: [1.18.3-otp-27]
         otp: [27.3.3]
+        shard: [0, 1, 2]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup
@@ -96,6 +98,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
+          git checkout fix/cypress_test_2
           cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress@13.6.2
@@ -119,6 +122,9 @@ jobs:
           sleep 3m
 
         # Run cypress
-      - name: Cypress run
+      - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
           yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+        env:
+          SPLIT: 3
+          SPLIT_INDEX: ${{ matrix.shard }}
