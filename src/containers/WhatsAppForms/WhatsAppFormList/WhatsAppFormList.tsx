@@ -134,7 +134,7 @@ export const WhatsAppFormList = () => {
       ),
       parameter: 'id',
       dialog: (id: any) => {
-        navigate(`/whatsapp-forms/${id}/configure`);
+        navigate(`/whatsapp-forms/${id}/edit`);
       },
     });
 
@@ -159,10 +159,10 @@ export const WhatsAppFormList = () => {
     };
     const configureIcon = {
       label: 'Configure',
-      icon: <ConfigureIcon data-testid="edit-icon" />,
+      icon: <ConfigureIcon data-testid="configure-icon" />,
       parameter: 'id',
       dialog: (id: string) => {
-        navigate(`/whatsapp-forms/${id}/edit`);
+        navigate(`/whatsapp-forms/${id}/configure`);
       },
     };
 

@@ -1,8 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import BackgroundPhoneImage from 'assets/images/phone.png';
 import { ContentItem, Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
-import BackgroundPhoneImage from 'assets/images/phone.png';
 
 interface PreviewProps {
   screens?: Screen[];

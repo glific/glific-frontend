@@ -174,10 +174,10 @@
 .GoogleSheetContainer {
   margin-top: 1rem;
   padding: 1rem;
-  background-color: #F8FAF5;
+  background-color: #f8faf5;
   border-radius: 0.8rem;
   opacity: 1;
-  border: 1px solid #CCCCCC
+  border: 1px solid #ccc;
 }
 
 .GoogleSheetContainer h3 {
@@ -187,7 +187,7 @@
   letter-spacing: 0;
   vertical-align: middle;
   text-transform: capitalize;
-  color: #555
+  color: #555;
 }
 
 .GoogleSheetContainer p {
@@ -196,5 +196,5 @@
   line-height: 1.2rem;
   letter-spacing: 0.1px;
   vertical-align: middle;
-  color: #999
+  color: #999;
 }

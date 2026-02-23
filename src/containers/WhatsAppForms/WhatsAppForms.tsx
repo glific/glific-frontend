@@ -197,7 +197,7 @@ export const WhatsAppForms = () => {
             } else {
               formId = result.updateWhatsappForm.whatsappForm.id;
             }
-            navigate(`/whatsapp-forms/${formId}/configure`);
+            navigate(`/whatsapp-forms/${formId}/edit`);
           }}
         />
       </div>
