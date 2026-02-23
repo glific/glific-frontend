@@ -3,7 +3,6 @@ export const AdvancedSearchIcon = ({ isActive = false }: { isActive?: boolean })
   const strokeColor = isActive ? 'none' : '#d9d9d9';
   return (
     <svg
-      data-testid="advanced-search-icon"
       className="w-[16px] h-[16px] text-gray-800 dark:text-white"
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"

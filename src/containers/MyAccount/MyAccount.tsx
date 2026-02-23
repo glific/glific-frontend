@@ -174,6 +174,7 @@ export const MyAccount = () => {
   const userForm = (
     <Formik
       initialValues={{ name: userName, phone: userPhone, email: userEmail }}
+      enableReinitialize={true}
       validationSchema={UserFormSchema}
       onSubmit={(values) => {
         setMessage(t('Profile updated successfully!'));

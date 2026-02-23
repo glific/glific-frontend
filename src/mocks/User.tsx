@@ -9,37 +9,45 @@ export const getCurrentUserQuery = {
   result: {
     data: {
       currentUser: {
+        __typename: 'UserWrapper',
         user: {
+          __typename: 'User',
           id: '1',
           name: 'John Doe',
           phone: '+919820198765',
-          roles: ['admin'],
+          roles: ['Admin'],
           email: 'you@domain.com',
           contact: {
+            __typename: 'Contact',
             id: '1',
             name: 'Glific user',
             phone: '9876543210',
           },
           accessRoles: [
             {
+              __typename: 'Role',
               id: '1',
               label: 'Admin',
             },
           ],
           groups: [
             {
+              __typename: 'Group',
               id: '1',
               label: 'Default Collection',
               description: '',
             },
           ],
           organization: {
+            __typename: 'Organization',
             id: '1',
             contact: {
+              __typename: 'Contact',
               phone: '917834811114',
             },
           },
           language: {
+            __typename: 'Language',
             id: '1',
             locale: 'en',
           },
@@ -58,6 +66,7 @@ export const getUsersQuery = {
     data: {
       users: [
         {
+          __typename: 'User',
           id: '1',
           name: 'John Doe',
         },

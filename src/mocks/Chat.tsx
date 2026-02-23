@@ -413,6 +413,7 @@ export const savedSearchStatusQuery = {
     data: {
       savedSearches: [
         {
+          __typename: 'SavedSearch',
           args: '{"messageOpts":{"limit":1},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":1}}',
           id: '1',
           isReserved: true,
@@ -421,6 +422,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
+          __typename: 'SavedSearch',
           args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '2',
           isReserved: true,
@@ -429,6 +431,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
+          __typename: 'SavedSearch',
           args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '3',
           isReserved: true,
@@ -437,6 +440,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
+          __typename: 'SavedSearch',
           args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '4',
           isReserved: true,
@@ -458,6 +462,7 @@ export const savedSearchQuery = {
     data: {
       savedSearches: [
         {
+          __typename: 'SavedSearch',
           args: '{"messageOpts":{"limit":1},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":1}}',
           id: '1',
           isReserved: false,

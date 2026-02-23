@@ -744,6 +744,7 @@ export const getAllFlowLabelsQuery = {
     data: {
       flowLabels: [
         {
+          __typename: 'FlowLabel',
           id: '1',
           name: 'dob',
         },

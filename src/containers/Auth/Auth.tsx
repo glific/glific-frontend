@@ -36,6 +36,8 @@ export interface AuthProps {
   linkURL?: string;
   errorMessage?: string;
   successMessage?: string;
+  loading?: boolean;
+  inlineSuccessMessage?: string;
 }
 
 export const Auth = ({
@@ -53,10 +55,14 @@ export const Auth = ({
   linkURL,
   errorMessage,
   successMessage,
+  loading: externalLoading,
+  inlineSuccessMessage,
 }: AuthProps) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [internalLoading, setInternalLoading] = useState(false);
+  const loading = externalLoading !== undefined ? externalLoading : internalLoading;
+  const setLoading = setInternalLoading;
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState('Glific');
   const [status, setStatus] = useState('');
@@ -123,6 +129,11 @@ export const Auth = ({
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
   }
 
+  let displayInlineSuccessMessage: any = null;
+  if (inlineSuccessMessage) {
+    displayInlineSuccessMessage = <div className={styles.SuccessMessage}>{inlineSuccessMessage}</div>;
+  }
+
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -134,12 +145,7 @@ export const Auth = ({
     togglePassword: showPassword,
   };
 
-  const handlePhone =
-    () =>
-      (value: string): void => {
-        // eslint-disable-next-line
-        initialFormValues.phone = value;
-      };
+
 
   let formElements;
   // we should not render form elements when displaying success message
@@ -162,7 +168,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values }) => (
+          {({ submitForm, values, setFieldValue }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -171,7 +177,7 @@ export const Auth = ({
                     fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
                   }
                   if (field.type === 'phone') {
-                    fieldInfo = { ...field, handlePhone };
+                    fieldInfo = { ...field, handlePhone: () => (value: string) => { setFieldValue('phoneNumber', value); } };
                   }
                   const key = index;
                   return (
@@ -232,6 +238,7 @@ export const Auth = ({
                 <input className={styles.SubmitAction} type="submit" />
               </Form>
               {displayErrorMessage}
+              {displayInlineSuccessMessage}
             </div>
           )}
         </Formik>

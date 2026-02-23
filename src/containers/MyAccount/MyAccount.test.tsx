@@ -6,7 +6,6 @@ import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
 import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
-import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -16,20 +15,6 @@ const mocks = [
   getCurrentUserQuery,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
-  {
-    request: {
-      query: UPDATE_CURRENT_USER,
-      variables: { input: { name: 'John Doe', email: 'error@domain.com' } },
-    },
-    result: {
-      data: {
-        updateCurrentUser: {
-          errors: [{ key: 'email', message: 'Email already exists' }],
-          user: null,
-        },
-      },
-    },
-  },
 ];
 
 vi.mock('axios');
@@ -37,7 +22,7 @@ const mockedAxios = axios as any;
 const user = userEvent.setup();
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <MyAccount />
     </MemoryRouter>
