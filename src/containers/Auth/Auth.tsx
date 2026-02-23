@@ -168,7 +168,7 @@ export const Auth = ({
             saveHandler(item);
           }}
         >
-          {({ submitForm, values, setFieldValue }) => (
+          {({ submitForm, values, setFieldValue, setValues }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -204,10 +204,16 @@ export const Auth = ({
                       component={Button}
                       variant="contained"
                       color="primary"
-                      onClick={(token: string) => {
+                      onClick={async (token: string) => {
                         if (token) {
-                          setLoading(true);
-                          saveHandler({ ...values, captcha: token });
+                          // Set captcha value
+                          await setValues({ ...values, captcha: token });
+
+                          // Give React time to process the state update
+                          await new Promise((resolve) => setTimeout(resolve, 0));
+
+                          // Let Formik handle validation & submission
+                          submitForm();
                         }
                       }}
                       className={buttonClass}
