@@ -8,6 +8,7 @@ import {
   convertFlowJSONToFormBuilder,
   convertFormBuilderToFlowJSON,
   hasFormErrors,
+  validateFlowJson,
 } from '../FormBuilder/FormBuilder.utils';
 import styles from './JSONViewer.module.css';
 
@@ -15,7 +16,7 @@ interface ValidationResult {
   isValidJson: boolean;
   isValidContent: boolean;
   jsonError: string | null;
-  contentError: string | null;
+  contentErrors: string[];
   convertedScreens: Screen[] | null;
 }
 
@@ -30,7 +31,7 @@ const validateJSON = (jsonString: string): ValidationResult => {
     isValidJson: false,
     isValidContent: false,
     jsonError: null,
-    contentError: null,
+    contentErrors: [],
     convertedScreens: null,
   };
 
@@ -43,26 +44,22 @@ const validateJSON = (jsonString: string): ValidationResult => {
     return result;
   }
 
+  const flowValidation = validateFlowJson(parsedJson);
+  if (flowValidation.errors.length > 0) {
+    result.contentErrors = flowValidation.errors.map((e) => e.message);
+    return result;
+  }
+
   try {
-    if (!parsedJson.screens || !Array.isArray(parsedJson.screens)) {
-      result.contentError = 'Missing or invalid "screens" array';
-      return result;
-    }
-
-    if (parsedJson.screens.length === 0) {
-      result.contentError = 'Screens array cannot be empty';
-      return result;
-    }
-
     const convertedScreens = convertFlowJSONToFormBuilder(parsedJson);
 
     if (!convertedScreens || convertedScreens.length === 0) {
-      result.contentError = 'Failed to parse JSON.';
+      result.contentErrors = ['Failed to parse JSON.'];
       return result;
     }
 
     if (hasFormErrors(convertedScreens)) {
-      result.contentError = 'Form has validation errors (missing required fields)';
+      result.contentErrors = ['Form has validation errors (missing required fields)'];
       result.convertedScreens = convertedScreens;
       return result;
     }
@@ -70,7 +67,7 @@ const validateJSON = (jsonString: string): ValidationResult => {
     result.isValidContent = true;
     result.convertedScreens = convertedScreens;
   } catch (e) {
-    result.contentError = e instanceof Error ? e.message : 'Failed to convert to form builder format';
+    result.contentErrors = [e instanceof Error ? e.message : 'Failed to convert to form builder format'];
   }
 
   return result;
@@ -83,7 +80,7 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
     isValidJson: true,
     isValidContent: true,
     jsonError: null,
-    contentError: null,
+    contentErrors: [],
     convertedScreens: null,
   });
 
@@ -99,7 +96,7 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
         isValidJson: false,
         isValidContent: false,
         jsonError: 'JSON cannot be empty',
-        contentError: null,
+        contentErrors: [],
         convertedScreens: null,
       });
       return;
@@ -154,9 +151,22 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
         </div>
       </div>
 
-      {(validation.jsonError || validation.contentError) && (
+      {validation.jsonError && (
         <div data-testid="json-error" className={styles.ErrorMessage}>
-          {validation.jsonError || validation.contentError}
+          {validation.jsonError}
+        </div>
+      )}
+
+      {validation.contentErrors.length > 0 && (
+        <div data-testid="json-error" className={styles.ErrorList}>
+          <div className={styles.ErrorListHeader}>
+            {validation.contentErrors.length} validation error{validation.contentErrors.length > 1 ? 's' : ''} found:
+          </div>
+          <ul className={styles.ErrorItems}>
+            {validation.contentErrors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
         </div>
       )}
 

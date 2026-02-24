@@ -1,5 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import BackgroundPhoneImage from 'assets/images/phone.png';
 import { ContentItem, Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
 
@@ -174,6 +175,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     <div data-testid="form-preview" className={styles.PreviewContainer}>
       <div className={styles.PhoneFrame}>
         <div className={styles.PhoneScreen}>
+          <img alt="phone" src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
+
           {currentScreen && (
             <>
               <div className={styles.ChatContentContainer}>

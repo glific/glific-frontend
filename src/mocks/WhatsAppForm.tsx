@@ -17,6 +17,31 @@ import {
   LIST_WHATSAPP_FORM_REVISIONS,
 } from 'graphql/queries/WhatsAppForm';
 
+export const validScreen = (overrides: Record<string, any> = {}) => ({
+  id: 'screen_one',
+  title: 'Screen 1',
+  terminal: true,
+  data: {},
+  layout: {
+    type: 'SingleColumnLayout',
+    children: [
+      {
+        type: 'Form',
+        name: 'flow_path',
+        children: [
+          { type: 'TextInput', name: 'field_name', label: 'Field Name', required: true, 'input-type': 'text' },
+          {
+            type: 'Footer',
+            label: 'Continue',
+            'on-click-action': { name: 'complete', payload: { field_name: '${form.field_name}' } },
+          },
+        ],
+      },
+    ],
+  },
+  ...overrides,
+});
+
 export const formJson = {
   version: '7.2',
   screens: [
@@ -552,7 +577,7 @@ const latestRevisionMock = (id: string) => {
             revision: {
               __typename: 'WhatsappFormRevision',
               definition:
-                '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"TextInput","required":false,"name":"screen_0_Label_0","label":"Label","input-type":"text"},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
+                '{"screens": [{"id": "screen", "data": {}, "title": "Screen 1", "layout": {"type": "SingleColumnLayout", "children": [{"name": "flow_path", "type": "Form", "children": [{"text": "Text", "type": "TextHeading"}, {"name": "screen_0_label_0", "type": "TextInput", "label": "Label", "required": false, "input-type": "text"}, {"name": "field_name", "type": "RadioButtonsGroup", "label": "Field Name", "required": true, "data-source": [{"id": "Option_1", "title": "Option 1"}, {"id": "Option_2", "title": "Option 2"}]}, {"type": "Footer", "label": "Continue", "on-click-action": {"name": "complete", "payload": {"field_name": "${form.field_name}", "screen_0_label_0": "${form.screen_0_label_0}"}}}]}]}, "terminal": true}], "version": "7.3"}',
               id: '417',
             },
             status: id === '1' ? 'DRAFT' : 'PUBLISHED',

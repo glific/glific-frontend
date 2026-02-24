@@ -27,6 +27,20 @@ export const formatError = (str: string) => {
   return replaced.charAt(0).toUpperCase() + replaced.slice(1).toLowerCase();
 };
 
+const GoogleSheetUrlComponent = ({ field, disabled }: any) => {
+  return (
+    <div className={styles.GoogleSheetContainer}>
+      <h3>Data Storage (Optional)</h3>
+      <Input field={field} placeholder="Add your google sheet link here" disabled={disabled} />
+
+      <p>
+        Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see
+        and share responses more easily.
+      </p>
+    </div>
+  );
+};
+
 export const WhatsAppForms = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -100,7 +114,7 @@ export const WhatsAppForms = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      label: `${'Title'}*`,
+      label: 'Title *',
       placeholder: 'Enter form title',
       disabled: disabled,
     },
@@ -108,7 +122,7 @@ export const WhatsAppForms = () => {
       component: Input,
       name: 'description',
       type: 'text',
-      label: `${'Description'}`,
+      label: 'Description',
       textArea: true,
       rows: 2,
       placeholder: 'Enter form description',
@@ -119,18 +133,15 @@ export const WhatsAppForms = () => {
       name: 'formCategories',
       options: categories,
       optionLabel: 'name',
-      label: 'Categories',
+      label: 'Categories *',
       placeholder: 'Select categories',
       helperText:
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
       disabled: disabled,
     },
     {
-      component: Input,
+      component: GoogleSheetUrlComponent,
       name: 'googleSheetUrl',
-      label: 'Google Sheet URL',
-      placeholder: 'Enter Google Sheet URL',
-      helperText: 'Provide a Google Sheet URL to store form responses automatically.',
       disabled: disabled,
     },
   ];
@@ -186,7 +197,7 @@ export const WhatsAppForms = () => {
             } else {
               formId = result.updateWhatsappForm.whatsappForm.id;
             }
-            navigate(`/whatsapp-forms/${formId}/configure`);
+            navigate(`/whatsapp-forms/${formId}/edit`);
           }}
         />
       </div>

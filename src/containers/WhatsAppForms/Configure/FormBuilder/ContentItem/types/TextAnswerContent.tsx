@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ContentItem } from '../../FormBuilder.types';
+import { HelpIcon } from 'components/UI/HelpIcon/HelpIcon';
 import styles from './ContentTypes.module.css';
 
 interface TextAnswerContentProps {
@@ -47,10 +48,42 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
 
   return (
     <div data-testid="text-answer-content" className={styles.ContentTypeContainer}>
+      <TextField
+        fullWidth
+        label={
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            Label
+            <HelpIcon
+              helpData={{
+                heading: 'This field name shows up as caption in the form and is also used in header name',
+              }}
+            />
+          </span>
+        }
+        placeholder="Field Name"
+        value={data.label || ''}
+        onChange={handleLabelChange}
+        error={!isViewOnly && hasError}
+        slotProps={{
+          htmlInput: { maxLength: 20, readOnly: isViewOnly, 'data-testid': 'label-input' },
+          input: {
+            endAdornment: <span className={styles.CharCount}>{`${(data.label || '').length}/20`}</span>,
+          },
+        }}
+        helperText={!isViewOnly ? hasError && 'Label is required' : undefined}
+        size="small"
+        sx={{ mb: 2 }}
+      />
+
       {isShortAnswer && (
         <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
           <InputLabel>Type</InputLabel>
-          <Select value={data.inputType || 'Text'} label="Type" onChange={handleInputTypeChange}>
+          <Select
+            data-testid="short-answer-type"
+            value={data.inputType || 'Text'}
+            label="Type"
+            onChange={handleInputTypeChange}
+          >
             {shortAnswerTypes.map((type) => (
               <MenuItem key={type} value={type}>
                 {type}
@@ -59,21 +92,6 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
           </Select>
         </FormControl>
       )}
-
-      <TextField
-        fullWidth
-        label="Label"
-        placeholder="Label"
-        value={data.label || ''}
-        onChange={handleLabelChange}
-        error={!isViewOnly && hasError}
-        slotProps={{
-          htmlInput: { maxLength: 20, readOnly: isViewOnly, 'data-testid': 'label-input' },
-        }}
-        helperText={!isViewOnly ? (hasError ? 'Label is required' : `${(data.label || '').length}/20`) : undefined}
-        size="small"
-        sx={{ mb: 2 }}
-      />
 
       <div className={styles.InstructionsSection}>
         <label className={styles.InstructionsLabel}>
@@ -88,8 +106,10 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
           onChange={handleInstructionsChange}
           slotProps={{
             htmlInput: { maxLength: 80, readOnly: isViewOnly },
+            input: {
+              endAdornment: <span className={styles.CharCount}>{`${(data.placeholder || '').length}/80`}</span>,
+            },
           }}
-          helperText={!isViewOnly ? `${(data.placeholder || '').length}/80` : undefined}
           size="small"
           sx={{ mb: 2 }}
         />
@@ -107,7 +127,7 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
           }
           label="Required"
           labelPlacement="start"
-          sx={{ ml: 0, justifyContent: 'space-between', width: '100%' }}
+          sx={{ ml: 0, justifyContent: 'end', width: '100%' }}
         />
       </div>
     </div>

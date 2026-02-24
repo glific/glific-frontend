@@ -39,6 +39,7 @@ export interface ScreenComponentProps {
   expandedContentId: string | null;
   setExpandedContentId: (id: string | null) => void;
   isViewOnly?: boolean;
+  isDuplicateName?: boolean;
 }
 
 export const ScreenComponent = ({
@@ -55,6 +56,7 @@ export const ScreenComponent = ({
   expandedContentId,
   setExpandedContentId,
   isViewOnly = false,
+  isDuplicateName = false,
 }: ScreenComponentProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: screen.id });
 
@@ -111,7 +113,9 @@ export const ScreenComponent = ({
         )}
 
         <span className={styles.ScreenTitle}>{screen.name}</span>
-        {hasScreenError(screen) && <WarningIcon fontSize="small" style={{ color: '#f44336', marginLeft: 'auto' }} />}
+        {(hasScreenError(screen) || isDuplicateName) && (
+          <WarningIcon fontSize="small" style={{ color: '#f44336', marginLeft: 'auto' }} />
+        )}
         <div className={styles.Actions}>
           {!isViewOnly && (
             <button
@@ -142,7 +146,7 @@ export const ScreenComponent = ({
               <input
                 data-testid="screen-name-input"
                 type="text"
-                className={`${styles.Input} ${hasNameError ? styles.Error : ''}`}
+                className={`${styles.Input} ${hasNameError || isDuplicateName ? styles.Error : ''}`}
                 placeholder="Enter Screen name"
                 value={screen.name}
                 onChange={handleNameChange}
@@ -152,6 +156,9 @@ export const ScreenComponent = ({
               {!isViewOnly && <span className={styles.CharCount}>{screen.name.length}/30</span>}
             </div>
             {hasNameError && !isViewOnly && <div className={styles.ErrorMessage}>Screen name is required</div>}
+            {isDuplicateName && !hasNameError && !isViewOnly && (
+              <div className={styles.ErrorMessage}>Screen name must be unique</div>
+            )}
           </div>
 
           {screen.content.length !== 0 && (

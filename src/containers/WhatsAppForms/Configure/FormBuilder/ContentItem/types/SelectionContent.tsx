@@ -2,6 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import { Button, FormControlLabel, IconButton, Switch, TextField } from '@mui/material';
 import { ContentItem, ContentOption } from '../../FormBuilder.types';
+import { HelpIcon } from 'components/UI/HelpIcon/HelpIcon';
 import styles from './ContentTypes.module.css';
 
 interface SelectionContentProps {
@@ -44,9 +45,14 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
   };
 
   const handleAddOption = () => {
+    const existingIds = new Set(options.map((opt) => opt.id));
+    let counter = options.length + 1;
+    while (existingIds.has(`Option_${counter}`)) {
+      counter++;
+    }
     const newOption: ContentOption = {
-      id: Date.now().toString(),
-      value: '',
+      id: `Option_${counter}`,
+      value: `Option ${counter}`,
     };
     onUpdate({ data: { ...data, options: [...options, newOption] } });
   };
@@ -66,7 +72,16 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
     <div className={styles.ContentTypeContainer}>
       <TextField
         fullWidth
-        label="Label"
+        label={
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            Field Name
+            <HelpIcon
+              helpData={{
+                heading: 'This field name shows up as caption in the form and is also used in header name',
+              }}
+            />
+          </span>
+        }
         placeholder="Enter label"
         value={data.label || ''}
         onChange={handleLabelChange}
@@ -154,7 +169,7 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
           }
           label="Required"
           labelPlacement="start"
-          sx={{ ml: 0, justifyContent: 'space-between', width: '100%' }}
+          sx={{ ml: 0, justifyContent: 'end', width: '100%' }}
         />
       </div>
     </div>
