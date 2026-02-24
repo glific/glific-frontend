@@ -54,10 +54,12 @@ export const AssistantOptions = ({
           attached: true,
         }))
       );
+    } else {
+      setFiles([]);
     }
   }, [existingFiles]);
 
-  const [uploadFileToOpenAi] = useMutation(UPLOAD_FILE_TO_KAAPI);
+  const [uploadFileToKaapi] = useMutation(UPLOAD_FILE_TO_KAAPI);
   const [createKnowledgeBase, { loading: addingFiles }] = useMutation(CREATE_KNOWLEDGE_BASE);
 
   const handleFileChange = (event: any) => {
@@ -77,7 +79,7 @@ export const AssistantOptions = ({
     });
 
     const uploadPromises = validFiles.map(async (file: any) => {
-      const { uploadedFile, error } = await uplaodFile(file);
+      const { uploadedFile, error } = await uploadFile(file);
 
       if (uploadedFile) {
         uploadedFiles.push(uploadedFile);
@@ -101,11 +103,11 @@ export const AssistantOptions = ({
       });
   };
 
-  const uplaodFile = async (file: any) => {
+  const uploadFile = async (file: any) => {
     let uploadedFile;
     let error = null;
 
-    await uploadFileToOpenAi({
+    await uploadFileToKaapi({
       variables: {
         media: file,
       },
@@ -113,7 +115,7 @@ export const AssistantOptions = ({
         uploadedFile = {
           fileId: uploadFilesearchFile?.fileId,
           filename: uploadFilesearchFile?.filename,
-          uploadedAt: uploadFilesearchFile?.uploadedAt ? `${uploadFilesearchFile.uploadedAt}Z` : null,
+          uploadedAt: uploadFilesearchFile?.uploadedAt,
         };
       },
       onError: (errors) => {
@@ -139,6 +141,7 @@ export const AssistantOptions = ({
         onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
           setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
           setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
+          setFiles((prev) => prev.map((file) => ({ ...file, attached: true })));
           let successMessage = 'Knowledge base created successfully!';
           if (currentId) {
             successMessage = 'Knowledge base updated successfully!';

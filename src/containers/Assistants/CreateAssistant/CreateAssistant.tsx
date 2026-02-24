@@ -222,7 +222,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
       formikTouched: formik.touched,
-      isLegacyVectorStore: data?.assistant?.assistant?.vectorStore?.legacy,
+      isLegacyVectorStore: data?.assistant?.assistant?.vectorStore?.legacy ?? false,
       existingFiles: data?.assistant?.assistant?.vectorStore?.files,
     },
     {
