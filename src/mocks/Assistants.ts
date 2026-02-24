@@ -5,7 +5,7 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANTS, GET_ASSISTANT_FILES, GET_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANTS, GET_MODELS } from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3) => ({
   request: {
@@ -52,6 +52,7 @@ const createAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
+        knowledgeBaseId: 'kb-1',
         description: 'description for new changes',
       },
     },
@@ -68,7 +69,7 @@ const createAssistant = {
   },
 };
 
-const getAssistant = (assistantId: any) => ({
+const getAssistant = (assistantId: any, options?: { legacy?: boolean }) => ({
   request: {
     query: GET_ASSISTANT,
     variables: { assistantId },
@@ -80,73 +81,22 @@ const getAssistant = (assistantId: any) => ({
         assistant: {
           assistantId: 'asst_JhYmNWzpCVBZY2vTuohvmqjs',
           id: assistantId,
-          insertedAt: '2024-10-15T11:29:28Z',
-          instructions: null,
-          model: 'gpt-4o',
+          newVersionInProgress: false,
           name: 'Assistant-405db438',
+          model: 'gpt-4o',
+          instructions: null,
+          status: 'active',
           temperature: 1,
-          updatedAt: '2024-10-16T15:39:47Z',
-        },
-      },
-    },
-  },
-});
-
-const getAssistantFiles = (assistantId: any) => ({
-  request: {
-    query: GET_ASSISTANT_FILES,
-    variables: { assistantId },
-  },
-  result: {
-    data: {
-      assistant: {
-        __typename: 'AssistantResult',
-        assistant: {
-          __typename: 'Assistant',
           vectorStore: {
-            __typename: 'VectorStore',
+            id: 'vs-1',
+            name: 'VectorStore-77ae3597',
+            legacy: options?.legacy ?? false,
             files: [
               {
-                __typename: 'FileInfo',
-                fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
-                filename: 'Accelerator Guide (1).pdf',
+                name: 'Accelerator Guide (1).pdf',
+                id: 'file-rls90OGDUgFeLewh6e01Eamf',
               },
             ],
-            id: assistantId,
-            legacy: false,
-            name: 'VectorStore-77ae3597',
-            vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
-          },
-        },
-      },
-    },
-  },
-});
-
-const getAssistantFilesLegacy = (assistantId: string) => ({
-  request: {
-    query: GET_ASSISTANT_FILES,
-    variables: { assistantId },
-  },
-  result: {
-    data: {
-      assistant: {
-        __typename: 'AssistantResult',
-        assistant: {
-          __typename: 'Assistant',
-          vectorStore: {
-            __typename: 'VectorStore',
-            files: [
-              {
-                __typename: 'FileInfo',
-                fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
-                filename: 'Accelerator Guide (1).pdf',
-              },
-            ],
-            id: assistantId,
-            legacy: true,
-            name: 'VectorStore-77ae3597',
-            vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
           },
         },
       },
@@ -194,6 +144,7 @@ const uploadFileToFileSearch = {
       uploadFilesearchFile: {
         fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
         filename: 'Accelerator Guide (1).pdf',
+        uploadedAt: '2024-10-16T15:58:26',
       },
     },
   },
@@ -223,32 +174,38 @@ export const uploadFileToFileSearchWithError = {
   variableMatcher: (variables: any) => true,
 };
 
-const addFilesToFilesearch = (mediaInfo: any) => ({
+const fileWithUploadedAt = {
+  fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
+  filename: 'Accelerator Guide (1).pdf',
+  uploadedAt: '2024-10-16T15:58:26Z',
+};
+
+const createKnowledgeBaseMock = (mediaInfo: any, assistantId: string | null) => ({
   request: {
     query: CREATE_KNOWLEDGE_BASE,
     variables: {
-      addAssistantFilesId: '1',
+      createKnowledgeBaseId: assistantId,
       mediaInfo,
     },
   },
   result: {
     data: {
-      addAssistantFiles: {
-        assistant: {
-          id: '1',
+      createKnowledgeBase: {
+        knowledgeBase: {
+          id: 'kb-1',
+          name: 'KnowledgeBase-1',
         },
-        errors: null,
       },
     },
   },
 });
 
-const addFilesToFilesearchWithError = {
+const createKnowledgeBaseWithError = {
   request: {
     query: CREATE_KNOWLEDGE_BASE,
     variables: {
-      addAssistantFilesId: '1',
-      mediaInfo: [{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }],
+      createKnowledgeBaseId: '1',
+      mediaInfo: [fileWithUploadedAt],
     },
   },
   error: new Error('An error occured'),
@@ -264,16 +221,13 @@ const updateAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
+        knowledgeBaseId: 'vs-1',
       },
     },
   },
   result: {
     data: {
       updateAssistant: {
-        assistant: {
-          id: '1',
-          name: 'test name',
-        },
         errors: null,
       },
     },
@@ -304,11 +258,8 @@ const uploadFileMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearch,
   uploadFileToFileSearch,
-  addFilesToFilesearch([
-    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-  ]),
+  createKnowledgeBaseMock([fileWithUploadedAt], null),
+  createKnowledgeBaseMock([fileWithUploadedAt, fileWithUploadedAt, fileWithUploadedAt], '1'),
 ];
 
 export const MOCKS = [
@@ -323,28 +274,19 @@ export const MOCKS = [
   getAssistant('2'),
   getAssistant('2'),
   getAssistant('4'),
-  getAssistantFiles('4'),
-  getAssistantFiles('1'),
-  getAssistantFiles('1'),
-  getAssistantFiles('1'),
-  getAssistantFiles(4),
-  getAssistantFiles('2'),
-  getAssistantFiles('2'),
   getAssistantListOnSearch,
   updateAssistant,
   removeAssistant,
 ];
 
 export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
-export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
+export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, createKnowledgeBaseWithError];
 
 export const legacyVectorStoreMocks = [
   getAssistantsList(),
   listOpenaiModels,
-  getAssistant('1'),
-  getAssistant('1'),
-  getAssistantFilesLegacy('1'),
-  getAssistantFilesLegacy('1'),
+  getAssistant('1', { legacy: true }),
+  getAssistant('1', { legacy: true }),
 ];
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
@@ -353,9 +295,7 @@ export const errorMocks = [
   listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
-  getAssistantFiles('1'),
-  getAssistantFiles('1'),
   uploadFileToFileSearch,
   uploadFileToFileSearchWithError,
-  addFilesToFilesearch([{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }]),
+  createKnowledgeBaseMock([fileWithUploadedAt], '1'),
 ];
