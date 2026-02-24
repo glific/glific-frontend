@@ -61,6 +61,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
+  const assistantData = data?.assistant?.assistant;
 
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
@@ -147,8 +148,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   }, [currentId, modelsList, isEditing]);
 
   useEffect(() => {
-    if (data?.assistant?.assistant && modelsList) {
-      const assistantData = data.assistant.assistant;
+    if (assistantData && modelsList) {
       setAssistantId(assistantData.assistantId);
       const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
       formik.setValues({
@@ -222,8 +222,13 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
       formikTouched: formik.touched,
-      isLegacyVectorStore: data?.assistant?.assistant?.vectorStore?.legacy ?? false,
-      existingFiles: data?.assistant?.assistant?.vectorStore?.files,
+      isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
+      initialFiles:
+        assistantData?.vectorStore?.files.map((file: any) => ({
+          fileId: file.id,
+          filename: file.name,
+          attached: true,
+        })) || [],
     },
     {
       component: Input,
@@ -308,7 +313,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     return <Loading />;
   }
 
-  if (!data?.assistant?.assistant && params.assistantId) {
+  if (!assistantData && params.assistantId) {
     return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
   }
   return (

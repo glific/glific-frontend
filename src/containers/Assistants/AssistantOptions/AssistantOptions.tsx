@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
@@ -23,7 +23,7 @@ interface AssistantOptionsProps {
   formikErrors: any;
   formikTouched: any;
   isLegacyVectorStore: boolean;
-  existingFiles: any[];
+  initialFiles: any[];
 }
 
 const temperatureInfo =
@@ -38,27 +38,13 @@ export const AssistantOptions = ({
   formikErrors,
   formikTouched,
   isLegacyVectorStore,
-  existingFiles,
+  initialFiles,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<any[]>(initialFiles);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (existingFiles?.length) {
-      setFiles(
-        existingFiles.map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-          attached: true,
-        }))
-      );
-    } else {
-      setFiles([]);
-    }
-  }, [existingFiles]);
 
   const [uploadFileToKaapi] = useMutation(UPLOAD_FILE_TO_KAAPI);
   const [createKnowledgeBase, { loading: addingFiles }] = useMutation(CREATE_KNOWLEDGE_BASE);
