@@ -117,33 +117,36 @@ export const AssistantOptions = ({
     setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
   };
 
-  const handleFileUpload = () => {
-    const filesToUpload = files.filter((item) => !item.attached);
-    if (filesToUpload.length > 0) {
-      createKnowledgeBase({
-        variables: {
-          createKnowledgeBaseId: currentId,
-          mediaInfo: files.filter((item) => !item.attached),
-        },
-        onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
-          setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
-          setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
-          setFiles((prev) => prev.map((file) => ({ ...file, attached: true })));
-          let successMessage = 'Knowledge base created successfully!';
-          if (currentId) {
-            successMessage = 'Knowledge base updated successfully!';
-          }
+  const hasFilesChanged =
+    files.length !== initialFiles.length ||
+    files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
 
-          setNotification(successMessage, 'success');
-          setShowUploadDialog(false);
-        },
-        onError: (error) => {
-          setErrorMessage(error);
-        },
-      });
-    } else {
+  const handleFileUpload = () => {
+    if (!hasFilesChanged) {
       setShowUploadDialog(false);
+      return;
     }
+
+    createKnowledgeBase({
+      variables: {
+        createKnowledgeBaseId: currentId,
+        mediaInfo: files,
+      },
+      onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
+        setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
+        setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
+        let successMessage = 'Knowledge base created successfully!';
+        if (currentId) {
+          successMessage = 'Knowledge base updated successfully!';
+        }
+
+        setNotification(successMessage, 'success');
+        setShowUploadDialog(false);
+      },
+      onError: (error) => {
+        setErrorMessage(error);
+      },
+    });
   };
 
   let dialog;

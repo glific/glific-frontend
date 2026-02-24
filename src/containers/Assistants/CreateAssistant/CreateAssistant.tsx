@@ -227,7 +227,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         assistantData?.vectorStore?.files.map((file: any) => ({
           fileId: file.id,
           filename: file.name,
-          attached: true,
         })) || [],
     },
     {
