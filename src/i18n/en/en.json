@@ -561,5 +561,7 @@
   "Draft": "Draft",
   "Published": "Published",
   "Last Published At": "Last Published At",
-  "Assistant not found": "Assistant not found"
+  "Assistant not found": "Assistant not found",
+  "Version Description": "Version Description",
+  "Briefly describe what changed in this version (optional)": "Briefly describe what changed in this version (optional)"
 }
