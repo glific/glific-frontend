@@ -39,6 +39,7 @@ const initialValues = {
   temperature: 0.1,
   knowledgeBaseId: '',
   knowledgeBaseName: '',
+  versionDescription: '',
 };
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
@@ -88,6 +89,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       name: values.name,
       temperature: values.temperature,
     };
+
+    if (values.versionDescription?.trim()) {
+      payload.description = values.versionDescription.trim();
+    }
 
     if (values.knowledgeBaseId) {
       payload.knowledgeBaseId = values.knowledgeBaseId;
@@ -153,6 +158,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         temperature: assistantData.temperature,
         knowledgeBaseId: assistantData.vectorStore?.id,
         knowledgeBaseName: assistantData.vectorStore?.name,
+        versionDescription: assistantData.description,
       });
     }
   }, [data, modelsList]);
@@ -196,7 +202,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       multiple: false,
       label: `${t('Model')}*`,
       helperText: t('Choose the best model for your needs.'),
-      onChange: (value: any) => formik.setFieldValue('model', value),
     },
 
     {
@@ -207,7 +212,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       rows: 3,
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
-      onChange: (value: any) => formik.setFieldValue('instructions', value),
       endAdornment: expandIcon,
     },
     {
@@ -220,6 +224,15 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       formikTouched: formik.touched,
       isLegacyVectorStore: data?.assistant?.assistant?.vectorStore?.legacy,
       existingFiles: data?.assistant?.assistant?.vectorStore?.files,
+    },
+    {
+      component: Input,
+      name: 'versionDescription',
+      type: 'text',
+      label: t('Version Description'),
+      rows: 2,
+      textArea: true,
+      helperText: t('Briefly describe what changed in this version (optional)'),
     },
   ];
 
