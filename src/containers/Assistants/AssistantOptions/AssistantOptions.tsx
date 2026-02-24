@@ -30,6 +30,7 @@ const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
 const filesInfo =
   'Enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
+
 export const AssistantOptions = ({
   currentId,
   formikValues,
@@ -61,6 +62,29 @@ export const AssistantOptions = ({
 
   const [uploadFileToKaapi] = useMutation(UPLOAD_FILE_TO_KAAPI);
   const [createKnowledgeBase, { loading: addingFiles }] = useMutation(CREATE_KNOWLEDGE_BASE);
+
+  const uploadFile = async (file: any) => {
+    let uploadedFile;
+    let error = null;
+
+    await uploadFileToKaapi({
+      variables: {
+        media: file,
+      },
+      onCompleted: ({ uploadFilesearchFile }) => {
+        uploadedFile = {
+          fileId: uploadFilesearchFile?.fileId,
+          filename: uploadFilesearchFile?.filename,
+          uploadedAt: uploadFilesearchFile?.uploadedAt,
+        };
+      },
+      onError: (errors) => {
+        error = errors.message;
+      },
+    });
+
+    return { uploadedFile, error };
+  };
 
   const handleFileChange = (event: any) => {
     const inputFiles = event.target.files;
@@ -101,29 +125,6 @@ export const AssistantOptions = ({
         console.error('Error uploading files:', error);
         setLoading(false);
       });
-  };
-
-  const uploadFile = async (file: any) => {
-    let uploadedFile;
-    let error = null;
-
-    await uploadFileToKaapi({
-      variables: {
-        media: file,
-      },
-      onCompleted: ({ uploadFilesearchFile }) => {
-        uploadedFile = {
-          fileId: uploadFilesearchFile?.fileId,
-          filename: uploadFilesearchFile?.filename,
-          uploadedAt: uploadFilesearchFile?.uploadedAt,
-        };
-      },
-      onError: (errors) => {
-        error = errors.message;
-      },
-    });
-
-    return { uploadedFile, error };
   };
 
   const handleRemoveFile = (file: any) => {
