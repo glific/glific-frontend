@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const GET_LATEST_WHATSAPP_FORM_REVISION = gql`
-  query WhatsappForm($id: ID!) {
+  query WhatsappFormLatestRevision($id: ID!) {
     whatsappForm(id: $id) {
       whatsappForm {
         name
@@ -97,6 +97,7 @@ export const LIST_WHATSAPP_FORM_REVISIONS = gql`
       definition
       revisionNumber
       isCurrent
+      insertedAt
     }
   }
 `;

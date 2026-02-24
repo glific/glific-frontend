@@ -55,9 +55,6 @@ export const Configure = () => {
     onError: (errors: any) => {
       setErrorMessage(errors);
     },
-    onCompleted: () => {
-      setNotification('Form published successfully', 'success');
-    },
   });
 
   const handleViewJSON = () => {

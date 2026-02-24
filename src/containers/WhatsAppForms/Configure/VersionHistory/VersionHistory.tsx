@@ -72,7 +72,7 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
   };
 
   const formatDate = (dateString: string) => {
-    return dayjs.utc(dateString).tz('Asia/Kolkata').format(DATE_TIME_FORMAT_WITH_AMPM_LONG);
+    return dayjs.utc(dateString).local().format(DATE_TIME_FORMAT_WITH_AMPM_LONG);
   };
 
   const revisions: Revision[] = data?.listWhatsappFormRevisions || [];

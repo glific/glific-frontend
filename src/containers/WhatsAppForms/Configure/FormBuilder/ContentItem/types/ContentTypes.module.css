@@ -79,6 +79,7 @@
 
 .DeleteButton {
   color: #d32f2f;
+  font-size: 0.8rem;
 }
 
 .UploadArea {
@@ -202,10 +203,6 @@
   justify-content: center;
   gap: 16px;
   padding: 0.5rem;
-}
-
-.DeleteButton {
-  font-size: 0.8rem;
 }
 
 .PreviewImage {
