@@ -251,6 +251,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         setUpdateList(!updateList);
         navigate('/assistants');
       },
+      onError: (error) => {
+        setErrorMessage(error);
+      },
     });
   };
 
