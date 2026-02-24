@@ -177,7 +177,7 @@ export const uploadFileToFileSearchWithError = {
 const fileWithUploadedAt = {
   fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
   filename: 'Accelerator Guide (1).pdf',
-  uploadedAt: '2024-10-16T15:58:26Z',
+  uploadedAt: '2024-10-16T15:58:26',
 };
 
 const createKnowledgeBaseMock = (

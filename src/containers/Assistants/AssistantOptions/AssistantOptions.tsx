@@ -65,7 +65,7 @@ export const AssistantOptions = ({
 
   const uploadFile = async (file: any) => {
     let uploadedFile;
-    let error = null;
+    let errorMessage = null;
 
     await uploadFileToKaapi({
       variables: {
@@ -79,11 +79,11 @@ export const AssistantOptions = ({
         };
       },
       onError: (errors) => {
-        error = errors.message;
+        errorMessage = errors.message;
       },
     });
 
-    return { uploadedFile, error };
+    return { uploadedFile, errorMessage };
   };
 
   const handleFileChange = (event: any) => {
@@ -103,13 +103,13 @@ export const AssistantOptions = ({
     });
 
     const uploadPromises = validFiles.map(async (file: any) => {
-      const { uploadedFile, error } = await uploadFile(file);
+      const { uploadedFile, errorMessage } = await uploadFile(file);
 
       if (uploadedFile) {
         uploadedFiles.push(uploadedFile);
       }
-      if (error) {
-        errorMessages.push(error);
+      if (errorMessage) {
+        errorMessages.push(errorMessage);
       }
     });
 
