@@ -69,7 +69,7 @@ const createAssistant = {
   },
 };
 
-const getAssistant = (assistantId: any, options?: { legacy?: boolean }) => ({
+const getAssistant = (assistantId: string, options?: { legacy?: boolean }) => ({
   request: {
     query: GET_ASSISTANT,
     variables: { assistantId },
@@ -180,7 +180,7 @@ const fileWithUploadedAt = {
   uploadedAt: '2024-10-16T15:58:26Z',
 };
 
-const createKnowledgeBaseMock = (mediaInfo: any, assistantId: string | null) => ({
+const createKnowledgeBaseMock = (mediaInfo: Array<{ fileId: string; filename: string; uploadedAt: string }>, assistantId: string | null) => ({
   request: {
     query: CREATE_KNOWLEDGE_BASE,
     variables: {
