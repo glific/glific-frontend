@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
+import { CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -61,8 +61,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   let modelOptions: Array<{ id: string; label: string }> = [];
 
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
-  const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
+  const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT, {
+    fetchPolicy: 'network-only',
+  });
   const assistantData = data?.assistant?.assistant;
+  const newVersionInProgress = assistantData?.newVersionInProgress ?? false;
 
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
@@ -106,6 +109,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           updateAssistantId: currentId,
           input: payload,
         },
+        refetchQueries: [{ query: GET_ASSISTANT, variables: { assistantId: currentId } }],
         onCompleted: ({ updateAssistant: updateAssistantData }) => {
           if (updateAssistantData.errors && updateAssistantData.errors.length > 0) {
             setErrorMessage(updateAssistantData.errors[0]);
@@ -113,6 +117,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           }
           setNotification('Changes saved successfully', 'success');
           setUpdateList(!updateList);
+          setHasUnsavedFiles(false);
         },
         onError: (errors) => {
           setErrorMessage(errors);
@@ -165,6 +170,15 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       });
     }
   }, [data, modelsList]);
+
+  useEffect(() => {
+    if (newVersionInProgress) {
+      startPolling(5000);
+    } else {
+      stopPolling();
+    }
+    return () => stopPolling();
+  }, [newVersionInProgress]);
 
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
@@ -219,7 +233,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     {
       component: AssistantOptions,
       name: 'assistantOptions',
-      currentId,
       formikValues: formik.values,
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
@@ -329,12 +342,22 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   return (
     <FormikProvider value={formik}>
-      <div className={`${styles.FormContainer} ${hasUnsavedChanges ? styles.UnsavedContainer : ''}`}>
-        {hasUnsavedChanges && (
-          <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
-            {t('Unsaved changes')}
-          </span>
-        )}
+      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
+          {newVersionInProgress && (
+            <div className={styles.VersionInProgress} data-testid="versionInProgress">
+              <CircularProgress size={16} />
+              <span>{t('A new version is being created')}</span>
+            </div>
+          )}
+
+          {hasUnsavedChanges && (
+            <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
+              {t('Unsaved changes')}
+            </span>
+          )}
+        </div>
+
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (

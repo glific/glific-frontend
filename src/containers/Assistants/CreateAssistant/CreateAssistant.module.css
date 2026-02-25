@@ -2,13 +2,16 @@
   padding: 3rem;
   height: 100%;
   position: relative;
-  border-left: 3px solid transparent;
 }
 
 .UnsavedContainer {
   border: 2px solid #ef5350;
   border-radius: 8px;
   box-shadow: 0 0 12px 0 rgba(239 83 80 25%);
+}
+
+.VersionInProgressContainer {
+  padding-top: 4rem;
 }
 
 .Form {
@@ -27,7 +30,6 @@
   margin-bottom: 0.5rem;
 }
 
-
 .FormFields {
   display: flex;
   flex-direction: column;
@@ -43,22 +45,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.UnsavedIndicator {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background-color: #fef2f2;
-  color: #dc2626;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.3rem 0.75rem;
-  border-radius: 1rem;
-  border: 1px solid #fca5a5;
+  width: 100%;
 }
 
 .DialogContent {
@@ -151,4 +138,48 @@
 .NotFound {
   text-align: center;
   margin: 1rem 0;
+}
+
+.StatusContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  height: 3rem;
+}
+
+.GreenBackground {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+}
+
+.VersionInProgress {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  font-size: 0.875rem;
+  font-weight: 500;
+  gap: 0.5rem;
+  position: absolute;
+  left: 1.5rem;
+}
+
+.UnsavedIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #fef2f2;
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid #fca5a5;
+  z-index: 10;
+  position: absolute;
+  right: 1.5rem;
 }

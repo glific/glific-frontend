@@ -17,7 +17,6 @@ import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/A
 
 import styles from './AssistantOptions.module.css';
 interface AssistantOptionsProps {
-  currentId: any;
   formikValues: any;
   setFieldValue: (field: string, value: any) => void;
   formikErrors: any;
@@ -33,7 +32,6 @@ const filesInfo =
   'Enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
 
 export const AssistantOptions = ({
-  currentId,
   formikValues,
   setFieldValue,
   formikErrors,
@@ -120,8 +118,7 @@ export const AssistantOptions = ({
   };
 
   const hasFilesChanged =
-    files.length !== initialFiles.length ||
-    files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
+    files.length !== initialFiles.length || files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
 
   useEffect(() => {
     onFilesChange?.(hasFilesChanged);
@@ -135,18 +132,13 @@ export const AssistantOptions = ({
 
     createKnowledgeBase({
       variables: {
-        createKnowledgeBaseId: currentId,
+        createKnowledgeBaseId: formikValues?.knowledgeBaseId || null,
         mediaInfo: files,
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
         setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
-        let successMessage = 'Knowledge base created successfully!';
-        if (currentId) {
-          successMessage = 'Knowledge base updated successfully!';
-        }
-
-        setNotification(successMessage, 'success');
+        setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
       },
       onError: (error) => {
@@ -161,11 +153,14 @@ export const AssistantOptions = ({
       <DialogBox
         open={showUploadDialog}
         title={t('Manage Files')}
-        handleCancel={() => setShowUploadDialog(false)}
+        handleCancel={() => {
+          setFiles(initialFiles);
+          setShowUploadDialog(false);
+        }}
         buttonOk="Save"
         fullWidth
         handleOk={handleFileUpload}
-        disableOk={addingFiles || loading}
+        disableOk={addingFiles || loading || files.length === 0}
         buttonOkLoading={addingFiles || loading}
       >
         <div className={styles.DialogContent}>

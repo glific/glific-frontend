@@ -9,6 +9,7 @@ import {
   errorMocks,
   legacyVectorStoreMocks,
   loadMoreMocks,
+  newVersionInProgressMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
 import * as Notification from 'common/notification';
@@ -103,7 +104,10 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('Knowledge base created successfully!', 'success');
+    expect(notificationSpy).toHaveBeenCalledWith(
+      "Knowledge base creation in progress, will notify once it's done",
+      'success'
+    );
   });
 
   fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
@@ -389,6 +393,22 @@ test('it disables Manage Files button for legacy vector store', async () => {
   });
 });
 
+test('it shows version in progress indicator when newVersionInProgress is true', async () => {
+  render(assistantsComponent(newVersionInProgressMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('versionInProgress')).toBeInTheDocument();
+    expect(screen.getByText('A new version is being created')).toBeInTheDocument();
+  });
+});
+
 test('uploading multiple files and error messages', async () => {
   render(assistantsComponent(errorMocks));
 
@@ -462,5 +482,42 @@ test("it shows indicator for unsaved changes when there are changes in the assis
 
   await waitFor(() => {
     expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
+
+test('closing a knowledge base dialog with no files should revert to the original files', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('deleteFile'));
+
+  // ok button should be disabled and file list should be empty after deleting the only file present
+  await waitFor(() => {
+    expect(screen.queryAllByTestId('fileItem')).toHaveLength(0);
+    expect(screen.getByTestId('ok-button')).toBeDisabled();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  // dialog should be closed and original file should still be present
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
   });
 });

@@ -69,7 +69,10 @@ const createAssistant = {
   },
 };
 
-const getAssistant = (assistantId: string, options?: { legacy?: boolean }) => ({
+const getAssistant = (
+  assistantId: string,
+  options?: { legacy?: boolean; newVersionInProgress?: boolean }
+) => ({
   request: {
     query: GET_ASSISTANT,
     variables: { assistantId },
@@ -81,7 +84,7 @@ const getAssistant = (assistantId: string, options?: { legacy?: boolean }) => ({
         assistant: {
           assistantId: 'asst_JhYmNWzpCVBZY2vTuohvmqjs',
           id: assistantId,
-          newVersionInProgress: false,
+          newVersionInProgress: options?.newVersionInProgress ?? false,
           name: 'Assistant-405db438',
           model: 'gpt-4o',
           instructions: null,
@@ -290,6 +293,12 @@ export const legacyVectorStoreMocks = [
   listOpenaiModels,
   getAssistant('1', { legacy: true }),
   getAssistant('1', { legacy: true }),
+];
+export const newVersionInProgressMocks = [
+  getAssistantsList(),
+  listOpenaiModels,
+  getAssistant('1', { newVersionInProgress: true }),
+  getAssistant('1', { newVersionInProgress: true }),
 ];
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
