@@ -32,15 +32,21 @@ interface CreateAssistantProps {
   setUpdateList: any;
 }
 
+const initialValues = {
+  name: '',
+  model: null as any,
+  instructions: '',
+  temperature: 0.1,
+  knowledgeBaseId: '',
+  knowledgeBaseName: '',
+  versionDescription: '',
+};
+
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
-  const [name, setName] = useState('');
-  const [model, setModel] = useState<any>(null);
-  const [instructions, setInstructions] = useState('');
-  const [options, setOptions] = useState({ fileSearch: true, temperature: 0.1 });
-  const [versionDescription, setVersionDescription] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+
   let isEditing = false;
   const params = useParams();
   let currentId = null;
@@ -49,20 +55,13 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     isEditing = true;
   }
   const navigate = useNavigate();
-
   const { t } = useTranslation();
-  const states = {
-    name,
-    model,
-    instructions,
-    options,
-    versionDescription,
-  };
 
   let modelOptions: Array<{ id: string; label: string }> = [];
 
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
+  const assistantData = data?.assistant?.assistant;
 
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
@@ -75,56 +74,29 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     }));
   }
 
-  useEffect(() => {
-    if (currentId && isEditing && modelsList) {
-      getAssistant({ variables: { assistantId: currentId } });
-    }
-  }, [currentId, modelsList, isEditing]);
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    model: Yup.object().nullable().required('Model is required'),
+    instructions: Yup.string().required('Instructions are required'),
+    knowledgeBaseId: isEditing
+      ? Yup.string()
+      : Yup.string().required('Knowledge base is required. Please upload files first.'),
+  });
 
-  useEffect(() => {
-    if (data?.assistant?.assistant && modelsList) {
-      const assistantData = data.assistant.assistant;
-      setAssistantId(assistantData.assistantId);
-      setName(assistantData.name);
-      const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
-      setModel(modelValue);
-      setInstructions(assistantData.instructions);
-      setOptions((prev) => ({
-        ...prev,
-        temperature: assistantData.temperature,
-      }));
-    }
-  }, [data, modelsList]);
-
-  useEffect(() => {
-    if (!isEditing) {
-      setAssistantId('');
-      setName('');
-      setModel(null);
-      setInstructions('');
-      setOptions({ fileSearch: true, temperature: 0.1 });
-      setVersionDescription('');
-    }
-  }, [isEditing]);
-
-  const handleCreate = () => {
-    const {
-      instructions: instructionsValue,
-      model: modelValue,
-      name: nameValue,
-      options: optionsValue,
-      versionDescription: versionDescriptionValue,
-    } = states;
-
-    const payload: any = {
-      instructions: instructionsValue,
-      model: modelValue.label,
-      name: nameValue,
-      temperature: optionsValue?.temperature,
+  const handleCreate = (values: typeof initialValues) => {
+    const payload: Record<string, any> = {
+      instructions: values.instructions,
+      model: values.model?.label,
+      name: values.name,
+      temperature: values.temperature,
     };
 
-    if (versionDescriptionValue?.trim()) {
-      payload.description = versionDescriptionValue.trim();
+    if (values.versionDescription?.trim()) {
+      payload.description = values.versionDescription.trim();
+    }
+
+    if (values.knowledgeBaseId) {
+      payload.knowledgeBaseId = values.knowledgeBaseId;
     }
 
     if (isEditing) {
@@ -139,7 +111,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             return;
           }
           setNotification('Changes saved successfully', 'success');
-          setVersionDescription('');
           setUpdateList(!updateList);
         },
         onError: (errors) => {
@@ -163,6 +134,35 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     }
   };
 
+  const formik = useFormik({
+    initialValues,
+    validationSchema: FormSchema,
+    enableReinitialize: false,
+    onSubmit: handleCreate,
+  });
+
+  useEffect(() => {
+    if (currentId && isEditing && modelsList) {
+      getAssistant({ variables: { assistantId: currentId } });
+    }
+  }, [currentId, modelsList, isEditing]);
+
+  useEffect(() => {
+    if (assistantData && modelsList) {
+      setAssistantId(assistantData.assistantId);
+      const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
+      formik.setValues({
+        name: assistantData.name,
+        model: modelValue || null,
+        instructions: assistantData.instructions,
+        temperature: assistantData.temperature,
+        knowledgeBaseId: assistantData.vectorStore?.id,
+        knowledgeBaseName: assistantData.vectorStore?.name,
+        versionDescription: assistantData.description,
+      });
+    }
+  }, [data, modelsList]);
+
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
       <ExpandIcon data-testid="expandIcon" onClick={() => setOpenInstructions(true)} className={styles.ExpandButton} />
@@ -175,7 +175,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       name: 'name',
       type: 'text',
       label: `${t('Name')}*`,
-      onChange: (value: any) => setName(value),
+      onChange: (value: any) => formik.setFieldValue('name', value),
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
@@ -202,7 +202,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       multiple: false,
       label: `${t('Model')}*`,
       helperText: t('Choose the best model for your needs.'),
-      onChange: (value: any) => setModel(value),
     },
 
     {
@@ -213,15 +212,22 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       rows: 3,
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
-      onChange: (value: any) => setInstructions(value),
       endAdornment: expandIcon,
     },
     {
       component: AssistantOptions,
-      name: 'options',
-      options,
+      name: 'assistantOptions',
       currentId,
-      setOptions,
+      formikValues: formik.values,
+      setFieldValue: formik.setFieldValue,
+      formikErrors: formik.errors,
+      formikTouched: formik.touched,
+      isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
+      initialFiles:
+        assistantData?.vectorStore?.files.map((file: any) => ({
+          fileId: file.id,
+          filename: file.name,
+        })) || [],
     },
     {
       component: Input,
@@ -231,24 +237,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       rows: 2,
       textArea: true,
       helperText: t('Briefly describe what changed in this version (optional)'),
-      onChange: (value: any) => setVersionDescription(value),
     },
   ];
-
-  const FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    model: Yup.object().required('Model is required'),
-    instructions: Yup.string().required('Instructions are required'),
-  });
-
-  const formik = useFormik({
-    initialValues: states,
-    validationSchema: FormSchema,
-    enableReinitialize: true,
-    onSubmit: () => {
-      handleCreate();
-    },
-  });
 
   const handleClose = () => {
     setShowConfirmation(false);
@@ -265,6 +255,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         setUpdateList(!updateList);
         navigate('/assistants');
       },
+      onError: (error) => {
+        setErrorMessage(error);
+      },
     });
   };
 
@@ -273,7 +266,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   if (showConfirmation) {
     dialog = (
       <DialogBox
-        title={`Are you sure you want to delete the assistant ${name}?`}
+        title={`Are you sure you want to delete the assistant ${formik.values.name}?`}
         handleCancel={handleClose}
         colorOk="warning"
         alignButtons="center"
@@ -295,8 +288,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             <h5>Edit system instructions</h5>
             <OutlinedInput
               name="expand-instructions"
-              onChange={(event) => setInstructions(event.target.value)}
-              value={instructions}
+              onChange={(event) => formik.setFieldValue('instructions', event.target.value)}
+              value={formik.values.instructions}
               className={styles.Input}
               multiline
               rows={16}
@@ -319,7 +312,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     return <Loading />;
   }
 
-  if (!data?.assistant?.assistant && params.assistantId) {
+  if (!assistantData && params.assistantId) {
     return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
   }
   return (

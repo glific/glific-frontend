@@ -22,29 +22,26 @@ export const UPDATE_ASSISTANT = gql`
   }
 `;
 
-export const UPLOAD_FILE_TO_OPENAI = gql`
+export const UPLOAD_FILE_TO_KAAPI = gql`
   mutation UploadFilesearchFile($media: Upload!) {
     uploadFilesearchFile(media: $media) {
       fileId
       filename
+      uploadedAt
     }
   }
 `;
 
-export const ADD_FILES_TO_FILE_SEARCH = gql`
-  mutation AddAssistantFiles($addAssistantFilesId: ID!, $mediaInfo: [FileInfoInput!]!) {
-    addAssistantFiles(id: $addAssistantFilesId, mediaInfo: $mediaInfo) {
-      assistant {
+export const CREATE_KNOWLEDGE_BASE = gql`
+  mutation CreateKnowledgeBase($mediaInfo: [FileInfoInput!]!, $createKnowledgeBaseId: ID) {
+    createKnowledgeBase(mediaInfo: $mediaInfo, id: $createKnowledgeBaseId) {
+      knowledgeBase {
         id
-      }
-      errors {
-        key
-        message
+        name
       }
     }
   }
 `;
-
 
 export const DELETE_ASSISTANT = gql`
   mutation DeleteAssistant($deleteAssistantId: ID!) {
