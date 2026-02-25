@@ -46,6 +46,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [assistantId, setAssistantId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
 
   let isEditing = false;
   const params = useParams();
@@ -151,14 +152,16 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     if (assistantData && modelsList) {
       setAssistantId(assistantData.assistantId);
       const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
-      formik.setValues({
-        name: assistantData.name,
-        model: modelValue || null,
-        instructions: assistantData.instructions,
-        temperature: assistantData.temperature,
-        knowledgeBaseId: assistantData.vectorStore?.id,
-        knowledgeBaseName: assistantData.vectorStore?.name,
-        versionDescription: assistantData.description,
+      formik.resetForm({
+        values: {
+          name: assistantData.name,
+          model: modelValue || null,
+          instructions: assistantData.instructions,
+          temperature: assistantData.temperature,
+          knowledgeBaseId: assistantData.vectorStore?.id,
+          knowledgeBaseName: assistantData.vectorStore?.name,
+          versionDescription: assistantData.description,
+        },
       });
     }
   }, [data, modelsList]);
@@ -175,7 +178,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       name: 'name',
       type: 'text',
       label: `${t('Name')}*`,
-      onChange: (value: any) => formik.setFieldValue('name', value),
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
@@ -228,6 +230,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           fileId: file.id,
           filename: file.name,
         })) || [],
+      onFilesChange: setHasUnsavedFiles,
     },
     {
       component: Input,
@@ -308,6 +311,14 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     );
   }
 
+  const { values: v, initialValues: iv } = formik;
+  const hasUnsavedChanges =
+    v.name?.trim() !== (iv.name || '').trim() ||
+    v.instructions?.trim() !== (iv.instructions || '').trim() ||
+    v.model?.label !== iv.model?.label ||
+    v.temperature !== iv.temperature ||
+    hasUnsavedFiles;
+
   if (loading || listLoading) {
     return <Loading />;
   }
@@ -315,9 +326,15 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   if (!assistantData && params.assistantId) {
     return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
   }
+
   return (
     <FormikProvider value={formik}>
-      <div className={styles.FormContainer}>
+      <div className={`${styles.FormContainer} ${hasUnsavedChanges ? styles.UnsavedContainer : ''}`}>
+        {hasUnsavedChanges && (
+          <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
+            {t('Unsaved changes')}
+          </span>
+        )}
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (

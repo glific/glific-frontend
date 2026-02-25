@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
@@ -24,6 +24,7 @@ interface AssistantOptionsProps {
   formikTouched: any;
   isLegacyVectorStore: boolean;
   initialFiles: any[];
+  onFilesChange?: (hasChanges: boolean) => void;
 }
 
 const temperatureInfo =
@@ -39,6 +40,7 @@ export const AssistantOptions = ({
   formikTouched,
   isLegacyVectorStore,
   initialFiles,
+  onFilesChange,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(initialFiles);
@@ -120,6 +122,10 @@ export const AssistantOptions = ({
   const hasFilesChanged =
     files.length !== initialFiles.length ||
     files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
+
+  useEffect(() => {
+    onFilesChange?.(hasFilesChanged);
+  }, [hasFilesChanged]);
 
   const handleFileUpload = () => {
     if (!hasFilesChanged) {

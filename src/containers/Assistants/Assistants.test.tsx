@@ -441,3 +441,26 @@ test('uploading multiple files and error messages', async () => {
     expect(notificationSpy).toHaveBeenCalledWith("Files with extension '.csv' not supported in Filesearch", 'warning');
   });
 });
+
+test("it shows indicator for unsaved changes when there are changes in the assistant's prompt or settings", async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
