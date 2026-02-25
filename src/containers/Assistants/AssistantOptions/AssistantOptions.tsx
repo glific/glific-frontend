@@ -153,11 +153,14 @@ export const AssistantOptions = ({
       <DialogBox
         open={showUploadDialog}
         title={t('Manage Files')}
-        handleCancel={() => setShowUploadDialog(false)}
+        handleCancel={() => {
+          setFiles(initialFiles);
+          setShowUploadDialog(false);
+        }}
         buttonOk="Save"
         fullWidth
         handleOk={handleFileUpload}
-        disableOk={addingFiles || loading}
+        disableOk={addingFiles || loading || files.length === 0}
         buttonOkLoading={addingFiles || loading}
       >
         <div className={styles.DialogContent}>
