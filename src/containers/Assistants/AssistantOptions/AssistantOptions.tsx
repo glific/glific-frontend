@@ -118,8 +118,7 @@ export const AssistantOptions = ({
   };
 
   const hasFilesChanged =
-    files.length !== initialFiles.length ||
-    files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
+    files.length !== initialFiles.length || files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
 
   const handleFileUpload = () => {
     if (!hasFilesChanged) {
@@ -135,12 +134,7 @@ export const AssistantOptions = ({
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
         setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
-        let successMessage = 'Knowledge base created successfully!';
-        if (currentId) {
-          successMessage = 'Knowledge base updated successfully!';
-        }
-
-        setNotification(successMessage, 'success');
+        setNotification('Knowledge base creation in progress, will notify once its done', 'success');
         setShowUploadDialog(false);
       },
       onError: (error) => {
