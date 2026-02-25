@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
@@ -17,13 +17,13 @@ import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/A
 
 import styles from './AssistantOptions.module.css';
 interface AssistantOptionsProps {
-  currentId: any;
   formikValues: any;
   setFieldValue: (field: string, value: any) => void;
   formikErrors: any;
   formikTouched: any;
   isLegacyVectorStore: boolean;
   initialFiles: any[];
+  onFilesChange?: (hasChanges: boolean) => void;
 }
 
 const temperatureInfo =
@@ -32,13 +32,13 @@ const filesInfo =
   'Enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
 
 export const AssistantOptions = ({
-  currentId,
   formikValues,
   setFieldValue,
   formikErrors,
   formikTouched,
   isLegacyVectorStore,
   initialFiles,
+  onFilesChange,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(initialFiles);
@@ -120,6 +120,10 @@ export const AssistantOptions = ({
   const hasFilesChanged =
     files.length !== initialFiles.length || files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
 
+  useEffect(() => {
+    onFilesChange?.(hasFilesChanged);
+  }, [hasFilesChanged]);
+
   const handleFileUpload = () => {
     if (!hasFilesChanged) {
       setShowUploadDialog(false);
@@ -128,7 +132,7 @@ export const AssistantOptions = ({
 
     createKnowledgeBase({
       variables: {
-        createKnowledgeBaseId: currentId,
+        createKnowledgeBaseId: formikValues?.knowledgeBaseId || null,
         mediaInfo: files,
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {

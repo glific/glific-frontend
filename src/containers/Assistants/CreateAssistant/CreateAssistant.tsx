@@ -46,6 +46,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [assistantId, setAssistantId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
 
   let isEditing = false;
   const params = useParams();
@@ -60,7 +61,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   let modelOptions: Array<{ id: string; label: string }> = [];
 
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
-  const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT);
+  const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT, {
+    fetchPolicy: 'network-only',
+  });
   const assistantData = data?.assistant?.assistant;
   const newVersionInProgress = assistantData?.newVersionInProgress ?? false;
 
@@ -106,6 +109,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           updateAssistantId: currentId,
           input: payload,
         },
+        refetchQueries: [{ query: GET_ASSISTANT, variables: { assistantId: currentId } }],
         onCompleted: ({ updateAssistant: updateAssistantData }) => {
           if (updateAssistantData.errors && updateAssistantData.errors.length > 0) {
             setErrorMessage(updateAssistantData.errors[0]);
@@ -113,6 +117,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           }
           setNotification('Changes saved successfully', 'success');
           setUpdateList(!updateList);
+          setHasUnsavedFiles(false);
         },
         onError: (errors) => {
           setErrorMessage(errors);
@@ -152,14 +157,16 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     if (assistantData && modelsList) {
       setAssistantId(assistantData.assistantId);
       const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
-      formik.setValues({
-        name: assistantData.name,
-        model: modelValue || null,
-        instructions: assistantData.instructions,
-        temperature: assistantData.temperature,
-        knowledgeBaseId: assistantData.vectorStore?.id,
-        knowledgeBaseName: assistantData.vectorStore?.name,
-        versionDescription: assistantData.description,
+      formik.resetForm({
+        values: {
+          name: assistantData.name,
+          model: modelValue || null,
+          instructions: assistantData.instructions,
+          temperature: assistantData.temperature,
+          knowledgeBaseId: assistantData.vectorStore?.id,
+          knowledgeBaseName: assistantData.vectorStore?.name,
+          versionDescription: assistantData.description,
+        },
       });
     }
   }, [data, modelsList]);
@@ -173,8 +180,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     return () => stopPolling();
   }, [newVersionInProgress]);
 
-
-
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
       <ExpandIcon data-testid="expandIcon" onClick={() => setOpenInstructions(true)} className={styles.ExpandButton} />
@@ -187,7 +192,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       name: 'name',
       type: 'text',
       label: `${t('Name')}*`,
-      onChange: (value: any) => formik.setFieldValue('name', value),
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
@@ -240,6 +244,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           fileId: file.id,
           filename: file.name,
         })) || [],
+      onFilesChange: setHasUnsavedFiles,
     },
     {
       component: Input,
@@ -320,6 +325,14 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     );
   }
 
+  const { values: v, initialValues: iv } = formik;
+  const hasUnsavedChanges =
+    v.name?.trim() !== (iv.name || '').trim() ||
+    v.instructions?.trim() !== (iv.instructions || '').trim() ||
+    v.model?.label !== iv.model?.label ||
+    v.temperature !== iv.temperature ||
+    hasUnsavedFiles;
+
   if (loading || listLoading) {
     return <Loading />;
   }
@@ -327,15 +340,25 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   if (!assistantData && params.assistantId) {
     return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
   }
+
   return (
     <FormikProvider value={formik}>
-      <div className={styles.FormContainer}>
-        {newVersionInProgress && (
-          <div className={styles.VersionInProgress} data-testid="versionInProgress">
-            <CircularProgress size={16} />
-            <span>{t('A new version is being created')}</span>
-          </div>
-        )}
+      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} data-testid="versionInProgress">
+          {newVersionInProgress && (
+            <div className={styles.VersionInProgress}>
+              <CircularProgress size={16} />
+              <span>{t('A new version is being created')}</span>
+            </div>
+          )}
+
+          {hasUnsavedChanges && (
+            <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
+              {t('Unsaved changes')}
+            </span>
+          )}
+        </div>
+
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
