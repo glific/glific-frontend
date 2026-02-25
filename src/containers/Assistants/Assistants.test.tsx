@@ -54,12 +54,12 @@ test('it renders the list properly and switches between items', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(screen.getByText('vs_laIycGtun7qEl0U7zlVsygmy')).toBeInTheDocument();
+    expect(screen.getByText('VectorStore-77ae3597')).toBeInTheDocument();
   });
 });
 
 test('it creates an assistant', async () => {
-  render(assistantsComponent());
+  render(assistantsComponent(uploadSupportedFileMocks));
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
@@ -84,10 +84,34 @@ test('it creates an assistant', async () => {
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
   fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
 
+  fireEvent.click(screen.getByTestId('addFiles'));
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+  });
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Knowledge base created successfully!', 'success');
+  });
+
+  fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
+
   fireEvent.click(screen.getByTestId('submitAction'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
   });
 });
 
