@@ -105,7 +105,7 @@ test('it creates an assistant', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith(
-      'Knowledge base creation in progress, will notify once its done',
+      "Knowledge base creation in progress, will notify once it's done",
       'success'
     );
   });
@@ -482,5 +482,42 @@ test("it shows indicator for unsaved changes when there are changes in the assis
 
   await waitFor(() => {
     expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
+
+test('closing a knowledge base dialog with no files should revert to the original files', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('deleteFile'));
+
+  // ok button should be disabled and file list should be empty after deleting the only file present
+  await waitFor(() => {
+    expect(screen.queryAllByTestId('fileItem')).toHaveLength(0);
+    expect(screen.getByTestId('ok-button')).toBeDisabled();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  // dialog should be closed and original file should still be present
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
   });
 });

@@ -233,7 +233,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     {
       component: AssistantOptions,
       name: 'assistantOptions',
-      currentId,
       formikValues: formik.values,
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
@@ -344,9 +343,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   return (
     <FormikProvider value={formik}>
       <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
-        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} data-testid="versionInProgress">
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
           {newVersionInProgress && (
-            <div className={styles.VersionInProgress}>
+            <div className={styles.VersionInProgress} data-testid="versionInProgress">
               <CircularProgress size={16} />
               <span>{t('A new version is being created')}</span>
             </div>

@@ -138,7 +138,7 @@ export const AssistantOptions = ({
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
         setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
-        setNotification('Knowledge base creation in progress, will notify once its done', 'success');
+        setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
       },
       onError: (error) => {
