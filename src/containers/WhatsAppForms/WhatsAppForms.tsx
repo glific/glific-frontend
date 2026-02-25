@@ -1,18 +1,15 @@
 import { useQuery } from '@apollo/client';
-import OpenInNew from '@mui/icons-material/OpenInNew';
 import Update from '@mui/icons-material/Update';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import * as Yup from 'yup';
 
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import setLogs from 'config/logs';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
@@ -30,15 +27,29 @@ export const formatError = (str: string) => {
   return replaced.charAt(0).toUpperCase() + replaced.slice(1).toLowerCase();
 };
 
+const GoogleSheetUrlComponent = ({ field, disabled }: any) => {
+  return (
+    <div className={styles.GoogleSheetContainer}>
+      <h3>Data Storage (Optional)</h3>
+      <Input field={field} placeholder="Add your google sheet link here" disabled={disabled} />
+
+      <p>
+        Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see
+        and share responses more easily.
+      </p>
+    </div>
+  );
+};
+
 export const WhatsAppForms = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [formJson, setFormJson] = useState();
   const [formCategories, setFormCategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [disabled, setDisabled] = useState(false);
-  const [extractedVariables, setExtractedVariables] = useState<string[]>([]);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const params = useParams();
+  const navigate = useNavigate();
 
   useQuery(GET_WHATSAPP_FORM, {
     skip: !params.id,
@@ -49,51 +60,10 @@ export const WhatsAppForms = () => {
       }
     },
   });
-
   let isEditing = false;
   if (params.id) {
     isEditing = true;
   }
-
-  const extractVariablesFromJson = (json: any) => {
-    const variables = new Set<string>();
-
-    try {
-      if (json && json.screens && Array.isArray(json.screens)) {
-        json.screens.forEach((screen: any) => {
-          const findCompleteActions = (obj: any) => {
-            if (obj && typeof obj === 'object') {
-              if (obj.name === 'complete' && obj.payload) {
-                Object.keys(obj.payload).forEach((key) => variables.add(key));
-              }
-
-              if (Array.isArray(obj)) {
-                obj.forEach((item) => findCompleteActions(item));
-              } else {
-                Object.values(obj).forEach((value) => findCompleteActions(value));
-              }
-            }
-          };
-
-          findCompleteActions(screen);
-        });
-      }
-    } catch (error) {
-      setLogs(`Error extracting variables: ${JSON.stringify(error)}`, 'error');
-    }
-
-    return Array.from(variables);
-  };
-
-  const handleJsonChange = (value: string) => {
-    try {
-      const parsedJson = JSON.parse(value);
-      const variables = extractVariablesFromJson(parsedJson);
-      setExtractedVariables(variables);
-    } catch (error) {
-      setExtractedVariables([]);
-    }
-  };
 
   const { loading } = useQuery(LIST_FORM_CATEGORIES, {
     onCompleted: ({ whatsappFormCategories }) => {
@@ -111,48 +81,40 @@ export const WhatsAppForms = () => {
 
   const states = {
     name,
-    formJson,
     formCategories,
     description,
+
+    googleSheetUrl,
   };
 
-  const setPayload = ({ name, formJson, formCategories, description }: any) => {
+  const setPayload = ({ name, formCategories, description, googleSheetUrl }: any) => {
     const payload = {
       name,
-      formJson,
       description,
       categories: formCategories.map((category: any) => category.id),
+      googleSheetUrl,
     };
 
     return payload;
   };
-  const setStates = ({ name, definition, description, categories }: any) => {
+
+  const setStates = ({ name, description, categories, sheet }: any) => {
     setName(name);
     setDescription(description);
 
     setFormCategories(categories.map((c: string) => ({ id: c, name: c })));
 
-    let parsedDefinition;
-    try {
-      parsedDefinition = JSON.parse(definition);
-
-      const variables = extractVariablesFromJson(parsedDefinition);
-      setExtractedVariables(variables);
-
-      parsedDefinition = JSON.stringify(parsedDefinition, null, 2);
-    } catch (e) {
-      setLogs('Error parsing whatsapp form definition JSON:', 'error');
-      parsedDefinition = definition;
+    if (sheet?.url) {
+      setGoogleSheetUrl(sheet.url);
     }
-
-    setFormJson(parsedDefinition);
   };
+
   const formFields = [
     {
       component: Input,
       name: 'name',
       type: 'text',
-      label: `${'Title'}*`,
+      label: 'Title *',
       placeholder: 'Enter form title',
       disabled: disabled,
     },
@@ -160,147 +122,84 @@ export const WhatsAppForms = () => {
       component: Input,
       name: 'description',
       type: 'text',
-      label: `${'Description'}`,
+      label: 'Description',
       textArea: true,
       rows: 2,
       placeholder: 'Enter form description',
       disabled: disabled,
     },
     {
-      component: Input,
-      name: 'formJson',
-      type: 'text',
-      label: 'Form JSON*',
-      textArea: true,
-      rows: 6,
-      placeholder: 'Paste your form JSON here...',
-      disabled: disabled,
-      onChange: (value: string) => handleJsonChange(value),
-    },
-    {
       component: AutoComplete,
       name: 'formCategories',
       options: categories,
       optionLabel: 'name',
-      label: 'Categories',
+      label: 'Categories *',
       placeholder: 'Select categories',
       helperText:
         'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
       disabled: disabled,
     },
+    {
+      component: GoogleSheetUrlComponent,
+      name: 'googleSheetUrl',
+      disabled: disabled,
+    },
   ];
+
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
-
-    formJson: Yup.string()
-      .required('Form JSON is required.')
-      .test('is-json', 'Must be valid JSON', (value) => {
-        if (!value) return false;
-        try {
-          JSON.parse(value);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      }),
-
     formCategories: Yup.array().min(1, 'At least one category must be selected.'),
   });
-
   if (loading) {
     return <Loading />;
   }
   return (
     <>
       <Heading
-        formTitle={isEditing ? 'Edit WhatsApp Form' : 'Create WhatsApp Form'}
+        formTitle={isEditing ? (disabled ? 'WhatsApp Form' : 'Edit WhatsApp Form') : 'Create WhatsApp Form'}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
+        headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
       />
-      <div className={styles.FlowBuilderInfo}>
-        <div className={styles.InfoContent}>
-          <div className={styles.IconWrapper}>
-            <OpenInNew className={styles.Icon} />
-          </div>
-          <div className={styles.TextContent}>
-            <h3 className={styles.Title}>Go to WhatsApp Form Builder Playground</h3>
-            <p className={styles.Description}>
-              Design your Form in WhatsApp&apos;s Playground then copy the JSON and paste it below.
-            </p>
-          </div>
-        </div>
-
-        <Button
-          color="primary"
-          variant="contained"
-          className={styles.FlowBuilderButton}
-          startIcon={<OpenInNew />}
-          component="a"
-          onClick={() =>
-            window.open(
-              'https://developers.facebook.com/docs/whatsapp/flows/playground',
-              '_blank',
-              'noopener,noreferrer'
-            )
-          }
-        >
-          Go to Playground
-        </Button>
-      </div>
-
-      <div className={styles.FormContainer}>
-        <div className={styles.FormSection}>
-          <FormLayout
-            {...queries}
-            states={states}
-            setPayload={setPayload}
-            languageSupport={false}
-            setStates={setStates}
-            validationSchema={FormSchema}
-            listItemName="Whatsapp Form"
-            formFields={formFields}
-            redirectionLink={'whatsapp-forms'}
-            listItem="whatsappForm"
-            icon={<Update />}
-            helpData={whatsappFormsInfo}
-            backLinkButton={`/whatsapp-forms`}
-            noHeading
-            dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
-            buttonState={{
-              text: 'Save Form',
-              status: disabled,
-              show: true,
-            }}
-            customHandler={(error: string) => {
-              setErrorMessage(formatError(error), 'An error occurred');
-            }}
-          />
-        </div>
-
-        <div className={styles.VariablesSection}>
-          <div className={styles.VariablesCard}>
-            <h3 className={styles.VariablesTitle}>
-              Form Variables
-              {extractedVariables.length > 0 && (
-                <span className={styles.VariablesCount}>{extractedVariables.length}</span>
-              )}
-            </h3>
-            {extractedVariables.length > 0 ? (
-              <ul data-testid="extractedVariables" className={styles.VariablesList}>
-                {extractedVariables.map((variable, index) => (
-                  <li key={index} className={styles.VariableItem}>
-                    {variable}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className={styles.EmptyState}>
-                <div className={styles.EmptyStateIcon}>📝</div>
-                <p>Paste your form JSON to see extracted variables</p>
-              </div>
-            )}
-          </div>
-        </div>
+      <div className={styles.FormSection}>
+        <FormLayout
+          {...queries}
+          states={states}
+          setPayload={setPayload}
+          languageSupport={false}
+          setStates={setStates}
+          isView={disabled}
+          validationSchema={FormSchema}
+          listItemName="Whatsapp Form"
+          formFields={formFields}
+          errorButtonState={{ text: disabled ? 'Go Back' : 'Cancel', show: true }}
+          redirectionLink={'whatsapp-forms'}
+          listItem="whatsappForm"
+          icon={<Update />}
+          helpData={whatsappFormsInfo}
+          backLinkButton={`/whatsapp-forms`}
+          noHeading
+          dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+          redirect={false}
+          buttonState={{
+            text: 'Save Form',
+            status: disabled,
+            show: !disabled,
+          }}
+          customHandler={(error: any) => {
+            if (typeof error === 'string') setErrorMessage(formatError(error), 'An error occurred');
+            else setErrorMessage(error[0]);
+          }}
+          afterSave={(result: any) => {
+            let formId = '';
+            if (result.createWhatsappForm) {
+              formId = result.createWhatsappForm.whatsappForm.id;
+            } else {
+              formId = result.updateWhatsappForm.whatsappForm.id;
+            }
+            navigate(`/whatsapp-forms/${formId}/edit`);
+          }}
+        />
       </div>
     </>
   );
