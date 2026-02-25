@@ -9,6 +9,7 @@ import {
   errorMocks,
   legacyVectorStoreMocks,
   loadMoreMocks,
+  newVersionInProgressMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
 import * as Notification from 'common/notification';
@@ -103,7 +104,10 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('Knowledge base created successfully!', 'success');
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Knowledge base creation in progress, will notify once its done',
+      'success'
+    );
   });
 
   fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
@@ -386,6 +390,22 @@ test('it disables Manage Files button for legacy vector store', async () => {
         'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
       )
     ).toBeInTheDocument();
+  });
+});
+
+test('it shows version in progress indicator when newVersionInProgress is true', async () => {
+  render(assistantsComponent(newVersionInProgressMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('versionInProgress')).toBeInTheDocument();
+    expect(screen.getByText('A new version is being created')).toBeInTheDocument();
   });
 });
 

@@ -20,7 +20,6 @@
   margin-bottom: 0.5rem;
 }
 
-
 .FormFields {
   display: flex;
   flex-direction: column;
@@ -125,4 +124,19 @@
 .NotFound {
   text-align: center;
   margin: 1rem 0;
+}
+
+.VersionInProgress {
+  position: absolute;
+  top: 1rem;
+  right: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #e8f5e9;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #073f24;
+  font-size: 0.875rem;
 }
