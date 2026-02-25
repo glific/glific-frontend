@@ -638,10 +638,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
-"@glific/flow-editor@1.43.0-8":
-  version "1.43.0-8"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.43.0-8.tgz#5e4384210b34651c4569f3124a8ec02294788c04"
-  integrity sha512-0Fq/WkJjRwuMdReHFeyE1RtkbSAuDZt48BR/HcTxvVvrLIbu84wshvwBFqrusm/4SY1fEpeGHVGPOXvj0dPLng==
+"@glific/flow-editor@1.43.0-10":
+  version "1.43.0-10"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.43.0-10.tgz#83641a9853b975e43c0edf1f38deea0d709c9f97"
+  integrity sha512-1NH1KG26oXUZ+xxKywPXYzFUnfaBk1jqWjgSQWJxDKo69zqUe+eNdT0/idC6V+lzHUFH6t8jfdN7ItGnqiASKw==
   dependencies:
     "@nyaruka/temba-components" "0.120.4"
     react "^16.8.6"
