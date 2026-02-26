@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.8.6",
+  "version": "6.9.0",
   "private": true,
   "type": "module",
   "license": {
@@ -17,11 +17,14 @@
     "@appsignal/plugin-window-events": "^1.0.26",
     "@appsignal/react": "^1.0.31",
     "@date-io/dayjs": "^3.2.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@glific/flow-editor": "1.43.0-8",
+    "@glific/flow-editor": "1.43.0-10",
     "@lexical/react": "^0.39.0",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",

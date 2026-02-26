@@ -1,27 +1,31 @@
 import { useMutation } from '@apollo/client';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { FormControl, MenuItem, Select } from '@mui/material';
-import PublishIcon from 'assets/images/icons/Publish/PublishGray.svg?react';
+import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { whatsappFormsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Button } from 'components/UI/Form/Button/Button';
 import { List } from 'containers/List/List';
-import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
-import { GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import dayjs from 'dayjs';
+import { ACTIVATE_FORM, DEACTIVATE_FORM, DELETE_FORM, SYNC_FORM } from 'graphql/mutations/WhatsAppForm';
+import { COUNT_WHATSAPP_FORMS, GET_WHATSAPP_FORM, LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { formatError } from '../WhatsAppForms';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-
 import styles from './WhatsAppFormList.module.css';
 
-const columnStyles = [styles.Name, styles.status, styles.Label, styles.Actions];
+const columnStyles = [styles.Name, styles.StatusColumn, styles.ModifiedAt, styles.Actions];
 
 const queries = {
   filterItemsQuery: LIST_WHATSAPP_FORMS,
   deleteItemQuery: DELETE_FORM,
   getItemQuery: GET_WHATSAPP_FORM,
-  publishFlowQuery: PUBLISH_FORM,
+  countQuery: COUNT_WHATSAPP_FORMS,
 };
 
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
@@ -36,53 +40,36 @@ const getStatus = (status: string) => {
   }
 };
 
-const getCategories = (categories: string[]) => {
-  if (!categories?.length) return null;
-
-  const displayedCategories = categories.slice(0, 2);
-  const hiddenCategories = categories.slice(2);
-
-  return (
-    <div className={styles.LabelWrapper}>
-      <div className={styles.LabelButton}>
-        {displayedCategories.map((category) => (
-          <span key={category} className={styles.CategoryTag}>
-            {category}
-          </span>
-        ))}
-
-        {categories.length > 2 && (
-          <div className={styles.MoreWrapper}>
-            <span className={styles.CategoryMore}> + {categories.length - 2} more</span>
-            <div className={styles.MoreList}>
-              {hiddenCategories.map((category) => (
-                <div key={category} className={styles.MoreListItem}>
-                  {category}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+const getLastModifiedAt = (updatedAt: string) => (
+  <div className={styles.LabelWrapper}>{updatedAt ? dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT) : ''}</div>
+);
 
 export const WhatsAppFormList = () => {
   const [formId, setFormId] = useState<string | null>(null);
-  const [dialogType, setDialogType] = useState<'publish' | 'inactive' | 'activate' | null>(null);
+  const [dialogType, setDialogType] = useState<'inactive' | 'activate' | null>(null);
   const [filter, setFilter] = useState<any>('all');
 
   const navigate = useNavigate();
 
-  const [publishForm, { loading: publishLoading }] = useMutation(PUBLISH_FORM, {
-    onCompleted: () => {
-      setFormId(null);
-      setDialogType(null);
-      setNotification('Form published successfully');
+  const handleFormUpdates = () => {
+    syncWhatsappForm();
+  };
+
+  const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_FORM, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const errors = data?.syncWhatsappForm?.errors;
+      if (errors?.length) {
+        setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
+      } else {
+        setNotification(
+          'Syncing of the WhatsApp forms has started in the background. Please check the Notifications page for updates.',
+          'success'
+        );
+      }
     },
-    onError: (errors) => {
-      setErrorMessage(formatError(errors.message), 'An error occurred');
+    onError: () => {
+      setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
     },
   });
 
@@ -109,16 +96,16 @@ export const WhatsAppFormList = () => {
   });
 
   const columnNames = [
-    { name: 'name', label: 'Name' },
-    { name: 'status', label: 'Status' },
-    { name: 'category', label: 'Category' },
+    { label: 'Name', name: 'name' },
+    { label: 'Status' },
+    { label: 'Last Modified At' },
     { name: 'actions', label: 'Actions' },
   ];
 
-  const getColumns = ({ name, categories, status }: any) => ({
+  const getColumns = ({ name, status, updatedAt }: Record<string, string>) => ({
     name: getName(name),
     status: getStatus(status),
-    category: getCategories(categories),
+    updatedAt: getLastModifiedAt(updatedAt),
   });
 
   const filterList = [
@@ -129,6 +116,28 @@ export const WhatsAppFormList = () => {
   ];
 
   const additionalAction = (item: any) => {
+    const linkAction = {
+      label: 'Link',
+      icon: <LinkIcon data-testid="link-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        window.open(item.sheet?.url);
+      },
+    };
+
+    const handleEdit = (view: boolean) => ({
+      label: view ? 'View' : 'Edit',
+      icon: view ? (
+        <ViewIcon data-testid="view-form" />
+      ) : (
+        <EditIcon className={styles.IconSize} data-testid="edit-icon" />
+      ),
+      parameter: 'id',
+      dialog: (id: any) => {
+        navigate(`/whatsapp-forms/${id}/edit`);
+      },
+    });
+
     const deactivateAction = {
       label: 'Deactivate',
       icon: <HighlightOffIcon className={styles.IconSize} data-testid="deactivate-icon" />,
@@ -136,16 +145,6 @@ export const WhatsAppFormList = () => {
       dialog: (id: string) => {
         setFormId(id);
         setDialogType('inactive');
-      },
-    };
-
-    const publishAction = {
-      label: 'Publish',
-      icon: <PublishIcon className={styles.IconSize} data-testid="publish-icon" />,
-      parameter: 'id',
-      dialog: (id: string) => {
-        setFormId(id);
-        setDialogType('publish');
       },
     };
 
@@ -158,19 +157,31 @@ export const WhatsAppFormList = () => {
         activateForm({ variables: { activateWhatsappFormId: id } });
       },
     };
+    const configureIcon = {
+      label: 'Configure',
+      icon: <ConfigureIcon data-testid="configure-icon" />,
+      parameter: 'id',
+      dialog: (id: string) => {
+        navigate(`/whatsapp-forms/${id}/configure`);
+      },
+    };
 
-    let actions = [];
+    const actions = [handleEdit(item.status !== 'DRAFT')];
 
     if (item.status === 'PUBLISHED') {
-      actions = [deactivateAction];
+      actions.push(deactivateAction);
+    } else if (item.status === 'INACTIVE') {
+      actions.push(activateAction);
     } else if (item.status === 'DRAFT') {
-      actions = [publishAction];
-    } else {
-      actions = [activateAction];
+      actions.push(configureIcon);
     }
 
+    if (item.sheet?.url) {
+      actions.push(linkAction);
+    }
     return actions;
   };
+
   const filters = useMemo(() => {
     let filters: any = {};
     if (filter !== 'all') {
@@ -200,12 +211,23 @@ export const WhatsAppFormList = () => {
     </FormControl>
   );
 
+  const secondaryButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      className={styles.HsmUpdates}
+      data-testid="syncWhatsappForm"
+      onClick={() => handleFormUpdates()}
+      loading={syncLoading}
+    >
+      SYNC Forms
+    </Button>
+  );
+
   let dialog = null;
   if (formId && dialogType) {
     const handleOk = () => {
-      if (dialogType === 'publish') {
-        publishForm({ variables: { id: formId } });
-      } else if (dialogType === 'inactive') {
+      if (dialogType === 'inactive') {
         deactivateForm({ variables: { id: formId } });
       }
     };
@@ -213,10 +235,7 @@ export const WhatsAppFormList = () => {
     let dialogTitle = '';
     let dialogText = '';
 
-    if (dialogType === 'publish') {
-      dialogTitle = 'Do you want to publish this form?';
-      dialogText = 'The form will be published on Meta and made visible to users.';
-    } else if (dialogType === 'inactive') {
+    if (dialogType === 'inactive') {
       dialogTitle = 'Do you want to deactivate this form?';
       dialogText = 'The form will be marked inactive and cannot be used.';
     }
@@ -230,22 +249,29 @@ export const WhatsAppFormList = () => {
           setDialogType(null);
         }}
         alignButtons="center"
-        buttonOkLoading={deactivateLoading || activateFormLoading || publishLoading}
+        buttonOkLoading={deactivateLoading || activateFormLoading}
       >
         <p className={styles.DialogText}>{dialogText}</p>
       </DialogBox>
     );
   }
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
 
   return (
     <>
       <List
-        {...queries}
         helpData={whatsappFormsInfo}
         title="WhatsApp Forms"
-        listItem="listWhatsappForms"
+        listItem="whatsappForms"
         listItemName="form"
         pageLink="whatsapp-forms"
+        secondaryButton={secondaryButton}
+        {...queries}
+        {...columnAttributes}
         columnNames={columnNames}
         columns={getColumns}
         columnStyles={columnStyles}
@@ -255,6 +281,10 @@ export const WhatsAppFormList = () => {
         searchParameter={['name']}
         additionalAction={additionalAction}
         dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+        restrictedAction={(item: any) => ({
+          edit: false,
+          delete: true,
+        })}
       />
       {dialog}
     </>
