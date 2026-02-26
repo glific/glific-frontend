@@ -178,6 +178,8 @@ export const GET_ORGANIZATION_STATUS = gql`
     organization {
       organization {
         isSuspended
+        trialExpirationDate
+        isTrialOrg
       }
     }
   }

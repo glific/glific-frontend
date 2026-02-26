@@ -1,0 +1,213 @@
+.ContentTypeContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.OptionsSection {
+  margin-bottom: 20px;
+}
+
+.SectionLabel {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.OptionRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.RequiredToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.InstructionsSection {
+  margin-bottom: 8px;
+}
+
+.InstructionsLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+}
+
+.OptionalText {
+  color: #999;
+  font-weight: 400;
+}
+
+.ReadMoreSection {
+  margin-bottom: 20px;
+}
+
+.CharCount {
+  font-size: 12px !important;
+  color: #999;
+  margin-left: 8px;
+}
+
+.MediaContentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.MediaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.MediaTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.DeleteButton {
+  color: #d32f2f;
+  font-size: 0.8rem;
+}
+
+.UploadArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  border: 2px dashed #d0d0d0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.UploadArea:hover {
+  border-color: #25d366;
+  background-color: #f5f5f5;
+}
+
+.UploadAreaDragging {
+  border-color: #25d366;
+  background-color: #e8f5e9;
+}
+
+.UploadAreaError {
+  border-color: #d32f2f;
+  background-color: #ffebee;
+}
+
+.UploadIcon {
+  font-size: 48px;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.UploadText {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.UploadSubtext {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.UploadLink {
+  color: #25d366;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.UploadLink:hover {
+  color: #1da851;
+}
+
+.ErrorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 4px;
+  color: #c62828;
+  font-size: 14px;
+}
+
+.FileInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.FileInfo p {
+  margin: 4px 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.OrDivider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.OrDivider::before,
+.OrDivider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.OrDivider span {
+  padding: 0 12px;
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.UrlInput {
+  margin-top: 8px;
+}
+
+.ImagePreview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ImagePreviewContainer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 0.5rem;
+}
+
+.PreviewImage {
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
