@@ -7,23 +7,21 @@ import {
   addFilesToFileSearchWithErrorMocks,
   emptyMocks,
   errorMocks,
+  legacyVectorStoreMocks,
   loadMoreMocks,
+  newVersionInProgressMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
 import * as Notification from 'common/notification';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
-const mockedUsedNavigate = vi.fn();
-vi.mock('react-router', async () => ({
-  ...(await vi.importActual('react-router')),
-  useNavigate: () => mockedUsedNavigate,
-}));
 
 const assistantsComponent = (mocks: any = MOCKS) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/assistants']}>
       <Routes>
+        <Route path="/assistants/add" element={<Assistants />} />
         <Route path="/assistants" element={<Assistants />} />
         <Route path="/assistants/:assistantId" element={<Assistants />} />
       </Routes>
@@ -49,18 +47,20 @@ test('it renders the list properly and switches between items', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
-  });
-
-  await waitFor(() => {
     expect(screen.getAllByTestId('listItem')).toHaveLength(3);
   });
 
   fireEvent.click(screen.getAllByTestId('listItem')[1]);
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText('VectorStore-77ae3597')).toBeInTheDocument();
+  });
 });
 
 test('it creates an assistant', async () => {
-  render(assistantsComponent());
+  render(assistantsComponent(uploadSupportedFileMocks));
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
@@ -70,7 +70,52 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('headingButton'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[1], { target: { value: 'test name' } });
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(autocompletes[0], { key: 'Enter' });
+  autocompletes[0].focus();
+  fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+  });
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      "Knowledge base creation in progress, will notify once it's done",
+      'success'
+    );
+  });
+
+  fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
   });
 });
 
@@ -118,6 +163,11 @@ test('it uploads files to assistant', async () => {
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -175,6 +225,11 @@ test('it shows error when adding files to assistant fails', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -202,6 +257,8 @@ test('it updates the assistant', async () => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
 
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
@@ -236,6 +293,8 @@ test('it deletes the assistant', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
@@ -264,6 +323,8 @@ test('it should show errors for invalid value in temperature', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
@@ -289,6 +350,8 @@ test('it opens the instruction dialog box', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByTestId('expandIcon')).toBeInTheDocument();
   });
@@ -305,12 +368,58 @@ test('it opens the instruction dialog box', async () => {
   });
 });
 
+test('it disables Manage Files button for legacy vector store', async () => {
+  render(assistantsComponent(legacyVectorStoreMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addFiles')).toBeDisabled();
+  });
+
+  fireEvent.mouseOver(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(
+      screen.getByText(
+        'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
+      )
+    ).toBeInTheDocument();
+  });
+});
+
+test('it shows version in progress indicator when newVersionInProgress is true', async () => {
+  render(assistantsComponent(newVersionInProgressMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('versionInProgress')).toBeInTheDocument();
+    expect(screen.getByText('A new version is being created')).toBeInTheDocument();
+  });
+});
+
 test('uploading multiple files and error messages', async () => {
   render(assistantsComponent(errorMocks));
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -350,5 +459,65 @@ test('uploading multiple files and error messages', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith("Files with extension '.csv' not supported in Filesearch", 'warning');
+  });
+});
+
+test("it shows indicator for unsaved changes when there are changes in the assistant's prompt or settings", async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
+
+test('closing a knowledge base dialog with no files should revert to the original files', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('deleteFile'));
+
+  // ok button should be disabled and file list should be empty after deleting the only file present
+  await waitFor(() => {
+    expect(screen.queryAllByTestId('fileItem')).toHaveLength(0);
+    expect(screen.getByTestId('ok-button')).toBeDisabled();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  // dialog should be closed and original file should still be present
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
   });
 });

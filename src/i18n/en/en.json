@@ -524,7 +524,7 @@
   "Template Flows": "Template Flows",
   "Template Flow": "Template Flow",
   "Flow created successfully from template!": "Flow created successfully from template!",
-  "Select/Create an assistant": "Select/Create an assistant",
+  "Please select or create an assistant.": "Please select or create an assistant.",
   "Create Assistant": "Create Assistant",
   "AI Assistants": "AI Assistants",
   "Purpose-built AI that uses OpenAI's models and calls tools": "Purpose-built AI that uses OpenAI's models and calls tools",
@@ -560,5 +560,11 @@
   "Share": "Share",
   "Draft": "Draft",
   "Published": "Published",
-  "Last Published At": "Last Published At"
+  "Last Published At": "Last Published At",
+  "Assistant not found": "Assistant not found",
+  "Unsaved changes": "Unsaved changes",
+  "Knowledge Base": "Knowledge Base",
+  "Version Description": "Version Description",
+  "Briefly describe what changed in this version (optional)": "Briefly describe what changed in this version (optional)",
+  "A new version is being created": "A new version is being created"
 }

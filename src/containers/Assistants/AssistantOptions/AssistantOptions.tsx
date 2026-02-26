@@ -1,57 +1,76 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import DatabaseIcon from 'assets/images/database.svg?react';
-import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import FileIcon from 'assets/images/FileGreen.svg?react';
+import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 
+import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-import { setErrorMessage, setNotification } from 'common/notification';
 
-import {
-  ADD_FILES_TO_FILE_SEARCH,
-  REMOVE_FILES_FROM_ASSISTANT,
-  UPLOAD_FILE_TO_OPENAI,
-} from 'graphql/mutations/Assistant';
-
-import { GET_ASSISTANT_FILES } from 'graphql/queries/Assistant';
+import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 
 import styles from './AssistantOptions.module.css';
 interface AssistantOptionsProps {
-  options: any;
-  currentId: any;
-  setOptions: any;
+  formikValues: any;
+  setFieldValue: (field: string, value: any) => void;
+  formikErrors: any;
+  formikTouched: any;
+  isLegacyVectorStore: boolean;
+  initialFiles: any[];
+  onFilesChange?: (hasChanges: boolean) => void;
 }
 
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
 const filesInfo =
   'Enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
-export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
+
+export const AssistantOptions = ({
+  formikValues,
+  setFieldValue,
+  formikErrors,
+  formikTouched,
+  isLegacyVectorStore,
+  initialFiles,
+  onFilesChange,
+}: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<any[]>(initialFiles);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { t } = useTranslation();
 
-  const [uploadFileToOpenAi] = useMutation(UPLOAD_FILE_TO_OPENAI);
-  const [addFilesToFileSearch, { loading: addingFiles }] = useMutation(ADD_FILES_TO_FILE_SEARCH);
-  const [removeFile] = useMutation(REMOVE_FILES_FROM_ASSISTANT);
+  const [uploadFileToKaapi] = useMutation(UPLOAD_FILE_TO_KAAPI);
+  const [createKnowledgeBase, { loading: addingFiles }] = useMutation(CREATE_KNOWLEDGE_BASE);
 
-  const { refetch, data } = useQuery(GET_ASSISTANT_FILES, {
-    variables: { assistantId: currentId },
-    onCompleted: ({ assistant }) => {
-      if (assistant.assistant.vectorStore) {
-        const attachedFiles = assistant.assistant.vectorStore.files;
-        setFiles([...files, ...attachedFiles.map((item: any) => ({ ...item, attached: true }))]);
-      }
-    },
-  });
+  const uploadFile = async (file: any) => {
+    let uploadedFile;
+    let errorMessage = null;
+
+    await uploadFileToKaapi({
+      variables: {
+        media: file,
+      },
+      onCompleted: ({ uploadFilesearchFile }) => {
+        uploadedFile = {
+          fileId: uploadFilesearchFile?.fileId,
+          filename: uploadFilesearchFile?.filename,
+          uploadedAt: uploadFilesearchFile?.uploadedAt,
+        };
+      },
+      onError: (errors) => {
+        errorMessage = errors.message;
+      },
+    });
+
+    return { uploadedFile, errorMessage };
+  };
 
   const handleFileChange = (event: any) => {
     const inputFiles = event.target.files;
@@ -70,13 +89,13 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
     });
 
     const uploadPromises = validFiles.map(async (file: any) => {
-      const { uploadedFile, error } = await uplaodFile(file);
+      const { uploadedFile, errorMessage } = await uploadFile(file);
 
       if (uploadedFile) {
         uploadedFiles.push(uploadedFile);
       }
-      if (error) {
-        errorMessages.push(error);
+      if (errorMessage) {
+        errorMessages.push(errorMessage);
       }
     });
 
@@ -94,64 +113,38 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       });
   };
 
-  const uplaodFile = async (file: any) => {
-    let uploadedFile;
-    let error = null;
-
-    await uploadFileToOpenAi({
-      variables: {
-        media: file,
-      },
-      onCompleted: ({ uploadFilesearchFile }) => {
-        uploadedFile = {
-          fileId: uploadFilesearchFile?.fileId,
-          filename: uploadFilesearchFile?.filename,
-        };
-      },
-      onError: (errors) => {
-        error = errors.message;
-      },
-    });
-
-    return { uploadedFile, error };
-  };
-
   const handleRemoveFile = (file: any) => {
-    if (file.attached) {
-      removeFile({
-        variables: {
-          fileId: file.fileId,
-          removeAssistantFileId: currentId,
-        },
-        onCompleted: () => {
-          refetch();
-        },
-      });
-    }
     setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
-    setNotification('File removed from assistant!', 'success');
   };
+
+  const hasFilesChanged =
+    files.length !== initialFiles.length || files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
+
+  useEffect(() => {
+    onFilesChange?.(hasFilesChanged);
+  }, [hasFilesChanged]);
 
   const handleFileUpload = () => {
-    const filesToUpload = files.filter((item) => !item.attached);
-    if (filesToUpload.length > 0) {
-      addFilesToFileSearch({
-        variables: {
-          addAssistantFilesId: currentId,
-          mediaInfo: files.filter((item) => !item.attached),
-        },
-        onCompleted: () => {
-          setNotification('Files added to assistant!', 'success');
-          setShowUploadDialog(false);
-          refetch();
-        },
-        onError: (error) => {
-          setErrorMessage(error);
-        },
-      });
-    } else {
+    if (!hasFilesChanged) {
       setShowUploadDialog(false);
+      return;
     }
+
+    createKnowledgeBase({
+      variables: {
+        createKnowledgeBaseId: formikValues?.knowledgeBaseId || null,
+        mediaInfo: files,
+      },
+      onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
+        setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
+        setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
+        setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
+        setShowUploadDialog(false);
+      },
+      onError: (error) => {
+        setErrorMessage(error);
+      },
+    });
   };
 
   let dialog;
@@ -160,11 +153,14 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       <DialogBox
         open={showUploadDialog}
         title={t('Manage Files')}
-        handleCancel={() => setShowUploadDialog(false)}
-        buttonOk="Add"
+        handleCancel={() => {
+          setFiles(initialFiles);
+          setShowUploadDialog(false);
+        }}
+        buttonOk="Save"
         fullWidth
         handleOk={handleFileUpload}
-        disableOk={addingFiles || loading}
+        disableOk={addingFiles || loading || files.length === 0}
         buttonOkLoading={addingFiles || loading}
       >
         <div className={styles.DialogContent}>
@@ -195,7 +191,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                     <span>{file.filename}</span>
                   </div>
                   <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
-                    <DeleteIcon />
+                    <CrossIcon />
                   </IconButton>
                 </div>
               ))}
@@ -230,24 +226,44 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               }}
             />
           </Typography>
-          <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
-            <AddIcon />
-            {t('Manage Files')}
-          </Button>
+          <Tooltip
+            title={
+              isLegacyVectorStore
+                ? 'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
+                : ''
+            }
+            arrow
+          >
+            <span>
+              <Button
+                data-testid="addFiles"
+                onClick={() => setShowUploadDialog(true)}
+                variant="outlined"
+                disabled={isLegacyVectorStore}
+              >
+                <AddIcon />
+                {t('Manage Files')}
+              </Button>
+            </span>
+          </Tooltip>
         </div>
-        {data?.assistant.assistant.vectorStore && (
+        {formikValues.knowledgeBaseId && (
           <div className={styles.VectorStore}>
             <div className={styles.VectorContent}>
               <DatabaseIcon />
               <div>
-                <p>{data?.assistant.assistant.vectorStore?.name}</p>
-                <span>{data?.assistant.assistant.vectorStore?.vectorStoreId}</span>
+                <p>{formikValues.knowledgeBaseName}</p>
               </div>
             </div>
-            {data?.assistant.assistant.vectorStore.files.length > 0 && (
-              <span>{data?.assistant.assistant.vectorStore.files.length} files</span>
+            {files.length > 0 && (
+              <span>
+                {files.length} {files.length === 1 ? 'file' : 'files'}
+              </span>
             )}
           </div>
+        )}
+        {formikTouched?.knowledgeBaseId && formikErrors?.knowledgeBaseId && (
+          <p className={styles.ErrorText}>{formikErrors.knowledgeBaseId}</p>
         )}
       </div>
 
@@ -265,12 +281,9 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             <Slider
               name="slider"
               onChange={(_, value) => {
-                setOptions({
-                  ...options,
-                  temperature: value,
-                });
+                setFieldValue('temperature', value);
               }}
-              value={options.temperature}
+              value={formikValues.temperature}
               step={0.01}
               max={2}
               min={0}
@@ -282,7 +295,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               step={0.1}
               min={0}
               max={2}
-              value={options.temperature}
+              value={formikValues.temperature}
               onChange={(event) => {
                 const value = parseFloat(event.target.value);
                 if (value < 0 || value > 2) {
@@ -290,10 +303,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                   return;
                 }
                 setError(false);
-                setOptions({
-                  ...options,
-                  temperature: value,
-                });
+                setFieldValue('temperature', value);
               }}
               className={`${styles.SliderDisplay} ${error ? styles.Error : ''}`}
             />
