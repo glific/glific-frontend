@@ -11,8 +11,8 @@ import { cache as collectionCache } from 'config/apolloclient';
 import { searchGroupQuery, waGroup } from 'mocks/Groups';
 import { collection, collectionWithLoadMore, contact } from 'containers/Chat/ChatMessages/ChatMessages.test';
 
-const contactCache = new InMemoryCache({ addTypename: false });
-const groupsCache = new InMemoryCache({ addTypename: false });
+const contactCache = new InMemoryCache();
+const groupsCache = new InMemoryCache();
 
 contactCache.writeQuery(contact);
 
@@ -88,7 +88,7 @@ test('it should render conversation collection list with readMore', async () => 
   });
 });
 
-const collectionCacheWithSearch = new InMemoryCache({ addTypename: false });
+const collectionCacheWithSearch = new InMemoryCache();
 collectionCacheWithSearch.writeQuery(collection);
 
 const searchCollectionMocks = [
@@ -104,7 +104,7 @@ test('it should render conversation collection list with searched value', async 
   props.savedSearchCriteriaId = '2';
 
   const { container } = render(
-    <MockedProvider cache={collectionCacheWithSearch} addTypename={false} mocks={searchCollectionMocks}>
+    <MockedProvider cache={collectionCacheWithSearch} mocks={searchCollectionMocks}>
       <Router>
         <ConversationList {...props} />
       </Router>
@@ -133,7 +133,7 @@ const contactProps: any = {
 
 test('It render contact collection with multi-search', async () => {
   const { container } = render(
-    <MockedProvider mocks={searchContactCollection} addTypename={false}>
+    <MockedProvider mocks={searchContactCollection}>
       <Router>
         <ConversationList {...contactProps} />
       </Router>
@@ -160,7 +160,7 @@ test('It render contact collection with multi-search', async () => {
 test('It render contact collection with no result', async () => {
   contactProps.searchVal = '';
   const { container } = render(
-    <MockedProvider mocks={searchContactCollection} addTypename={false}>
+    <MockedProvider mocks={searchContactCollection}>
       <Router>
         <ConversationList {...contactProps} />
       </Router>
@@ -195,7 +195,7 @@ const clientForGroup = new ApolloClient({
 test('it renders whatsapp groups with phone number filter', async () => {
   const { getByText } = render(
     <ApolloProvider client={clientForGroup}>
-      <MockedProvider mocks={searchGroupQuery} addTypename={false}>
+      <MockedProvider mocks={searchGroupQuery}>
         <MemoryRouter initialEntries={[route]}>
           <ConversationList {...propsForGroups} phonenumber={[{ label: '96276736', id: '1' }]} />
         </MemoryRouter>
@@ -217,7 +217,7 @@ test('it renders whatsapp groups for multi search', async () => {
     searchVal: 'group 2',
   };
   const { getByText } = render(
-    <MockedProvider mocks={searchGroupQuery} addTypename={false}>
+    <MockedProvider mocks={searchGroupQuery}>
       <MemoryRouter initialEntries={[route]}>
         <ConversationList {...propsForGroups} />
       </MemoryRouter>

@@ -94,6 +94,7 @@ export const getAllCollectionsQuery = [
       data: {
         groups: [
           {
+            __typename: 'Group',
             id: '1',
             label: 'Staff group',
             isRestricted: true,
@@ -110,6 +111,7 @@ export const getAllCollectionsQuery = [
       data: {
         groups: [
           {
+            __typename: 'Group',
             id: '1',
             label: 'Staff group',
             isRestricted: true,

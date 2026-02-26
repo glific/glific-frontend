@@ -40,6 +40,7 @@ export const simulatorGetQuery = {
   result: {
     data: {
       simulatorGet: {
+        __typename: 'Contact',
         id: '1',
         name: 'Glific Simulator',
         phone: '987654321',
@@ -65,13 +66,16 @@ export const simulatorSearchQuery = {
     data: {
       search: [
         {
+          __typename: 'Conversation',
           contact: {
+            __typename: 'Contact',
             id: '1',
             name: 'Glific Simulator Two',
             phone: '9876543210_2',
           },
           messages: [
             {
+              __typename: 'Message',
               body: 'All Blogs',
               bspMessageId: 'simu-MonixaC7AzXlKbT+NxprLC36PPnLib5AQDmG',
               id: '9741472',
@@ -82,9 +86,11 @@ export const simulatorSearchQuery = {
               location: null,
               media: null,
               receiver: {
+                __typename: 'Contact',
                 id: '15290',
               },
               sender: {
+                __typename: 'Contact',
                 id: '716',
               },
               type: 'LIST',
@@ -104,21 +110,25 @@ export const messageReceivedSubscription = (variables: any = { organizationId: '
   result: {
     data: {
       receivedSimulatorMessage: {
+        __typename: 'Message',
         body: 'hello',
         bspMessageId: '1',
         id: '21',
         uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
         insertedAt: '2020-07-11T14:03:28Z',
         receiver: {
+          __typename: 'Contact',
           id: '1',
           phone: '917834811114',
         },
         sender: {
+          __typename: 'Contact',
           id: '2',
           phone: '919090709009',
         },
         type: 'TEXT',
         media: {
+          __typename: 'Media',
           caption: null,
           url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
@@ -131,16 +141,19 @@ export const messageReceivedSubscription = (variables: any = { organizationId: '
 
 const messageSubscriptionData = {
   sentSimulatorMessage: {
+    __typename: 'Message',
     body: 'How can we help?',
     bspMessageId: '1',
     id: '22',
     uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae31',
     insertedAt: '2020-07-11T14:03:28Z',
     receiver: {
+      __typename: 'Contact',
       id: '2',
       phone: '919090909009',
     },
     sender: {
+      __typename: 'Contact',
       id: '1',
       phone: '917834811114',
     },
@@ -148,6 +161,7 @@ const messageSubscriptionData = {
     type: 'TEXT',
 
     media: {
+      __typename: 'Media',
       caption: null,
       url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
     },

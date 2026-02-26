@@ -39,6 +39,8 @@ export const UPDATE_CURRENT_USER = gql`
       user {
         id
         name
+        phone
+        email
       }
       errors {
         key

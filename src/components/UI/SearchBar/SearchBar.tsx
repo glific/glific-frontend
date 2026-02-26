@@ -19,7 +19,7 @@ export interface SearchBarProps {
   endAdornment?: any;
   searchMode: boolean;
   iconFront?: boolean;
-  searchParam?:any
+  searchParam?: any
 }
 
 export const SearchBar = ({
@@ -70,6 +70,7 @@ export const SearchBar = ({
       <InputAdornment position="end">
         <Tooltip title="Filter">
           <IconButton
+            data-testid="advanced-search-icon"
             disableFocusRipple
             aria-label="toggle password visibility"
             onClick={(e: any) => {
@@ -78,7 +79,7 @@ export const SearchBar = ({
             }}
             className={styles.FilterIcon}
           >
-            <AdvancedSearch isActive={searchParam && Object.keys(searchParam).length !== 0 } />
+            <AdvancedSearch isActive={searchParam && Object.keys(searchParam).length !== 0} />
           </IconButton>
         </Tooltip>
       </InputAdornment>

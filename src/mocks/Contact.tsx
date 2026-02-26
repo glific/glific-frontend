@@ -43,8 +43,12 @@ export const contactCollectionsQuery = (id: number, multipleGroups: boolean = fa
   result: {
     data: {
       contact: {
+        __typename: 'ContactWrapper',
         contact: {
-          groups: multipleGroups ? [...groups, { id: '3', label: 'Test collection', users: [] }] : groups,
+          __typename: 'Contact',
+          groups: (multipleGroups ? [...groups, { id: '3', label: 'Test collection', users: [] }] : groups).map(
+            (g) => ({ ...g, __typename: 'Group' })
+          ),
         },
       },
     },
@@ -80,12 +84,14 @@ export const getContactSampleQuery = (variables: any, contactDetails?: any) => {
     result: {
       data: {
         contact: {
+          __typename: 'ContactWrapper',
           contact: {
+            __typename: 'Contact',
             id: '1',
             name: null,
             activeProfile: null,
             phone: '+919820198765',
-            language: { id: '1', label: 'English' },
+            language: { __typename: 'Language', id: '1', label: 'English' },
             groups: [],
             status: 'VALID',
             bspStatus: 'SESSION_AND_HSM',
@@ -173,7 +179,9 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
   result: {
     data: {
       contact: {
+        __typename: 'ContactWrapper',
         contact: {
+          __typename: 'Contact',
           ...attributes,
           name: 'Default User',
           phone: '+919820198765',
@@ -181,6 +189,7 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
           lastMessageAt: date.toISOString(),
           groups: [
             {
+              __typename: 'Group',
               id: '1',
               label: 'Default collection',
               users: [],

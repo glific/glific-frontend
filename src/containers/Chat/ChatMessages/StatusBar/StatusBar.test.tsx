@@ -6,9 +6,7 @@ import { BSPBALANCE } from 'graphql/queries/Organization';
 import { getInactiveStatusMock, getWhatsAppManagedPhonesStatusMock, orgSuspendedMock } from 'mocks/StatusBar';
 import StatusBar from './StatusBar';
 
-const cache = new InMemoryCache({
-  addTypename: false,
-});
+const cache = new InMemoryCache();
 
 const wrapper = (bspbalance: string, mock?: any) => {
   cache.writeQuery({

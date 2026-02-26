@@ -22,7 +22,7 @@ const mockedAxios = axios as any;
 const user = userEvent.setup();
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <MyAccount />
     </MemoryRouter>
@@ -197,5 +197,41 @@ describe('<MyAccount />', () => {
     });
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
+  });
+
+  test('update profile (name and email) flow', async () => {
+    const { container } = render(wrapper);
+
+    await screen.findByTestId('MyAccount');
+
+    // change email
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    fireEvent.change(emailInput, { target: { value: 'newemail@domain.com' } });
+
+    // save button should appear
+    const saveButton = await screen.findByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Profile updated successfully!')).toBeInTheDocument();
+    });
+  });
+
+  test('update profile error flow', async () => {
+    const { container } = render(wrapper);
+
+    await screen.findByTestId('MyAccount');
+
+    // change email to one that triggers an error
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    fireEvent.change(emailInput, { target: { value: 'error@domain.com' } });
+
+    // save button should appear
+    const saveButton = await screen.findByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Email already exists')).toBeInTheDocument();
+    });
   });
 });

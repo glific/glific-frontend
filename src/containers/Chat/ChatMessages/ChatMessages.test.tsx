@@ -32,10 +32,10 @@ import { TEMPLATE_MOCKS } from 'mocks/Template';
 import * as Notification from 'common/notification';
 
 const mockIntersectionObserver = class {
-  constructor() {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  constructor() { }
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 };
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
@@ -89,7 +89,7 @@ export const loadMoreQuery = (
   },
 });
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache();
 
 cache.writeQuery(searchQuery);
 
@@ -614,7 +614,7 @@ test('should open emoji picker', async () => {
   });
 });
 
-const groupscache = new InMemoryCache({ addTypename: false });
+const groupscache = new InMemoryCache();
 groupscache.writeQuery(waGroup);
 groupscache.writeQuery(waGroupcollection);
 

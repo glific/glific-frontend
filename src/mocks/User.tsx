@@ -9,37 +9,45 @@ export const getCurrentUserQuery = {
   result: {
     data: {
       currentUser: {
+        __typename: 'UserWrapper',
         user: {
+          __typename: 'User',
           id: '1',
           name: 'John Doe',
           phone: '+919820198765',
-          roles: ['admin'],
+          roles: ['Admin'],
           email: 'you@domain.com',
           contact: {
+            __typename: 'Contact',
             id: '1',
             name: 'Glific user',
             phone: '9876543210',
           },
           accessRoles: [
             {
+              __typename: 'Role',
               id: '1',
               label: 'Admin',
             },
           ],
           groups: [
             {
+              __typename: 'Group',
               id: '1',
               label: 'Default Collection',
               description: '',
             },
           ],
           organization: {
+            __typename: 'Organization',
             id: '1',
             contact: {
+              __typename: 'Contact',
               phone: '917834811114',
             },
           },
           language: {
+            __typename: 'Language',
             id: '1',
             locale: 'en',
           },
@@ -58,6 +66,7 @@ export const getUsersQuery = {
     data: {
       users: [
         {
+          __typename: 'User',
           id: '1',
           name: 'John Doe',
         },
@@ -79,6 +88,7 @@ export const updateUserQuery = [
           user: {
             id: '2',
             name: 'Updated Name',
+            phone: '+919820198765',
             email: 'you@domain.com',
           },
         },
@@ -93,7 +103,7 @@ export const updateUserQuery = [
     result: {
       data: {
         updateCurrentUser: {
-          errors: [{ message: 'incorrect_code' }],
+          errors: [{ key: 'otp', message: 'incorrect_code' }],
           user: null,
         },
       },
@@ -107,7 +117,7 @@ export const updateUserQuery = [
     result: {
       data: {
         updateCurrentUser: {
-          errors: [{ message: 'Too many attempts' }],
+          errors: [{ key: 'otp', message: 'Too many attempts' }],
           user: null,
         },
       },
@@ -122,6 +132,44 @@ export const updateUserQuery = [
       data: {
         updateCurrentUser: {
           errors: null,
+          user: {
+            id: '1',
+            name: 'John Doe',
+            phone: '+919820198765',
+            email: 'you@domain.com',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { name: 'John Doe', email: 'newemail@domain.com' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: null,
+          user: {
+            id: '1',
+            name: 'John Doe',
+            phone: '+919820198765',
+            email: 'newemail@domain.com',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { name: 'John Doe', email: 'error@domain.com' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ key: 'email', message: 'Email already exists' }],
           user: null,
         },
       },
