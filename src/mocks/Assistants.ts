@@ -52,7 +52,7 @@ const createAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
-        knowledgeBaseId: 'kb-1',
+        llmServiceId: 'kb-1',
         description: 'description for new changes',
       },
     },
@@ -92,6 +92,7 @@ const getAssistant = (
           temperature: 1,
           vectorStore: {
             id: 'vs-1',
+            llmServiceId: 'llm-vs-1',
             name: 'VectorStore-77ae3597',
             legacy: options?.legacy ?? false,
             files: [
@@ -199,6 +200,7 @@ const createKnowledgeBaseMock = (
       createKnowledgeBase: {
         knowledgeBase: {
           id: 'kb-1',
+          llmServiceId: 'kb-1',
           name: 'KnowledgeBase-1',
         },
       },
@@ -227,7 +229,7 @@ const updateAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
-        knowledgeBaseId: 'vs-1',
+        llmServiceId: 'llm-vs-1',
       },
     },
   },
