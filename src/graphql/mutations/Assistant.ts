@@ -37,6 +37,7 @@ export const CREATE_KNOWLEDGE_BASE = gql`
     createKnowledgeBase(mediaInfo: $mediaInfo, id: $createKnowledgeBaseId) {
       knowledgeBase {
         id
+        knowledgeBaseVersionId
         name
       }
     }

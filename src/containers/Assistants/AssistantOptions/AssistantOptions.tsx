@@ -21,6 +21,7 @@ interface AssistantOptionsProps {
   setFieldValue: (field: string, value: any) => void;
   formikErrors: any;
   formikTouched: any;
+  knowledgeBaseId: string | null;
   isLegacyVectorStore: boolean;
   initialFiles: any[];
   onFilesChange?: (hasChanges: boolean) => void;
@@ -36,6 +37,7 @@ export const AssistantOptions = ({
   setFieldValue,
   formikErrors,
   formikTouched,
+  knowledgeBaseId,
   isLegacyVectorStore,
   initialFiles,
   onFilesChange,
@@ -132,11 +134,11 @@ export const AssistantOptions = ({
 
     createKnowledgeBase({
       variables: {
-        createKnowledgeBaseId: formikValues?.knowledgeBaseId || null,
+        createKnowledgeBaseId: knowledgeBaseId || null,
         mediaInfo: files,
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
-        setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
+        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
@@ -247,7 +249,7 @@ export const AssistantOptions = ({
             </span>
           </Tooltip>
         </div>
-        {formikValues.knowledgeBaseId && (
+        {formikValues.knowledgeBaseVersionId && (
           <div className={styles.VectorStore}>
             <div className={styles.VectorContent}>
               <DatabaseIcon />
@@ -262,8 +264,8 @@ export const AssistantOptions = ({
             )}
           </div>
         )}
-        {formikTouched?.knowledgeBaseId && formikErrors?.knowledgeBaseId && (
-          <p className={styles.ErrorText}>{formikErrors.knowledgeBaseId}</p>
+        {formikTouched?.knowledgeBaseVersionId && formikErrors?.knowledgeBaseVersionId && (
+          <p className={styles.ErrorText}>{formikErrors.knowledgeBaseVersionId}</p>
         )}
       </div>
 

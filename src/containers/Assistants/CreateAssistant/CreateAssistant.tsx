@@ -37,7 +37,7 @@ const initialValues = {
   model: null as any,
   instructions: '',
   temperature: 0.1,
-  knowledgeBaseId: '',
+  knowledgeBaseVersionId: '',
   knowledgeBaseName: '',
   versionDescription: '',
 };
@@ -82,7 +82,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     name: Yup.string().required('Name is required'),
     model: Yup.object().nullable().required('Model is required'),
     instructions: Yup.string().required('Instructions are required'),
-    knowledgeBaseId: isEditing
+    knowledgeBaseVersionId: isEditing
       ? Yup.string()
       : Yup.string().required('Knowledge base is required. Please upload files first.'),
   });
@@ -99,8 +99,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       payload.description = values.versionDescription.trim();
     }
 
-    if (values.knowledgeBaseId) {
-      payload.knowledgeBaseId = values.knowledgeBaseId;
+    if (values.knowledgeBaseVersionId) {
+      payload.knowledgeBaseVersionId = values.knowledgeBaseVersionId;
     }
 
     if (isEditing) {
@@ -148,7 +148,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   });
 
   useEffect(() => {
-    if (currentId && isEditing && modelsList) {
+    if (currentId && isEditing) {
       getAssistant({ variables: { assistantId: currentId } });
     }
   }, [currentId, modelsList, isEditing]);
@@ -163,7 +163,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           model: modelValue || null,
           instructions: assistantData.instructions,
           temperature: assistantData.temperature,
-          knowledgeBaseId: assistantData.vectorStore?.id,
+          knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
         },
@@ -237,6 +237,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
       formikTouched: formik.touched,
+      knowledgeBaseId: assistantData?.vectorStore?.id || null,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
       initialFiles:
         assistantData?.vectorStore?.files.map((file: any) => ({
@@ -342,8 +343,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   return (
     <FormikProvider value={formik}>
-      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
-        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
+      <div
+        className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer} ${newVersionInProgress && styles.VersionInProgressContainer}`}
+        data-testid="createAssistantContainer"
+      >
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`}>
           {newVersionInProgress && (
             <div className={styles.VersionInProgress} data-testid="versionInProgress">
               <CircularProgress size={16} />
