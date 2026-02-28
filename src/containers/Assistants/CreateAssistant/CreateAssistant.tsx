@@ -37,7 +37,7 @@ const initialValues = {
   model: null as any,
   instructions: '',
   temperature: 0.1,
-  llmServiceId: '',
+  knowledgeBaseVersionId: '',
   knowledgeBaseName: '',
   versionDescription: '',
 };
@@ -82,7 +82,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     name: Yup.string().required('Name is required'),
     model: Yup.object().nullable().required('Model is required'),
     instructions: Yup.string().required('Instructions are required'),
-    llmServiceId: isEditing
+    knowledgeBaseVersionId: isEditing
       ? Yup.string()
       : Yup.string().required('Knowledge base is required. Please upload files first.'),
   });
@@ -99,8 +99,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       payload.description = values.versionDescription.trim();
     }
 
-    if (values.llmServiceId) {
-      payload.llmServiceId = values.llmServiceId;
+    if (values.knowledgeBaseVersionId) {
+      payload.knowledgeBaseVersionId = values.knowledgeBaseVersionId;
     }
 
     if (isEditing) {
@@ -163,7 +163,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           model: modelValue || null,
           instructions: assistantData.instructions,
           temperature: assistantData.temperature,
-          llmServiceId: assistantData.vectorStore?.llmServiceId,
+          knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
         },

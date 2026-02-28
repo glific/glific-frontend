@@ -25,7 +25,7 @@ export const GET_ASSISTANT = gql`
         temperature
         vectorStore {
           id
-          llmServiceId
+          knowledgeBaseVersionId
           name
           legacy
           files {

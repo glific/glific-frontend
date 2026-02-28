@@ -138,7 +138,7 @@ export const AssistantOptions = ({
         mediaInfo: files,
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
-        setFieldValue('llmServiceId', knowledgeBaseData.knowledgeBase.llmServiceId);
+        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
@@ -249,7 +249,7 @@ export const AssistantOptions = ({
             </span>
           </Tooltip>
         </div>
-        {formikValues.llmServiceId && (
+        {formikValues.knowledgeBaseVersionId && (
           <div className={styles.VectorStore}>
             <div className={styles.VectorContent}>
               <DatabaseIcon />
@@ -264,8 +264,8 @@ export const AssistantOptions = ({
             )}
           </div>
         )}
-        {formikTouched?.llmServiceId && formikErrors?.llmServiceId && (
-          <p className={styles.ErrorText}>{formikErrors.llmServiceId}</p>
+        {formikTouched?.knowledgeBaseVersionId && formikErrors?.knowledgeBaseVersionId && (
+          <p className={styles.ErrorText}>{formikErrors.knowledgeBaseVersionId}</p>
         )}
       </div>
 
