@@ -262,7 +262,7 @@ export const AssistantOptions = ({
             )}
           </div>
         )}
-        {formikTouched?.knowledgeBaseId && formikErrors?.knowledgeBaseId && (
+        {formikTouched?.knowledgeBaseId && !formikValues.knowledgeBaseId && (
           <p className={styles.ErrorText}>{formikErrors.knowledgeBaseId}</p>
         )}
       </div>
