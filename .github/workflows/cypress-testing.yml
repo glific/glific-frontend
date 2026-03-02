@@ -95,6 +95,7 @@ jobs:
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
+          cd cypress-testing
           cd fix/test_case
           cd ..
           cp -r cypress-testing/cypress cypress
