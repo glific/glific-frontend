@@ -74,7 +74,6 @@ export const ACTIVATE_FORM = gql`
     activateWhatsappForm(id: $activateWhatsappFormId) {
       whatsappForm {
         categories
-        definition
         description
         id
         insertedAt
@@ -83,6 +82,46 @@ export const ACTIVATE_FORM = gql`
         status
         updatedAt
       }
+      errors {
+        message
+      }
+    }
+  }
+`;
+
+export const SAVE_WHATSAPP_FORM_REVISION = gql`
+  mutation SaveWhatsappFormRevision($input: WhatsappFormRevisionInput!) {
+    saveWhatsappFormRevision(input: $input) {
+      whatsappFormRevision {
+        id
+        revisionNumber
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const REVERT_TO_WHATSAPP_FORM_REVISION = gql`
+  mutation RevertToWhatsappFormRevision($whatsappFormId: ID!, $revisionId: ID!) {
+    revertToWhatsappFormRevision(whatsappFormId: $whatsappFormId, revisionId: $revisionId) {
+      whatsappFormRevision {
+        definition
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const SYNC_FORM = gql`
+  mutation syncWhatsappForm {
+    syncWhatsappForm {
+      message
       errors {
         message
       }
