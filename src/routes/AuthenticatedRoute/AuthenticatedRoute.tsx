@@ -1,25 +1,26 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
-import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { checkDynamicRole, getUserRole } from 'context/role';
-import { useToast } from 'services/ToastService';
-import { ProviderContext } from 'context/session';
-import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
-import styles from './AuthenticatedRoute.module.css';
+import { CreateAIEvaluation } from 'containers/AIEvals/CreateAIEvaluation/CreateAIEvaluation';
+import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
+import Billing from 'containers/SettingList/Billing/Billing';
+import Organization from 'containers/SettingList/Organization/Organization';
+import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
+import Providers from 'containers/SettingList/Providers/Providers';
 import Tag from 'containers/Tag/Tag';
 import TagList from 'containers/Tag/TagList/TagList';
-import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
-import Billing from 'containers/SettingList/Billing/Billing';
-import Providers from 'containers/SettingList/Providers/Providers';
-import Organization from 'containers/SettingList/Organization/Organization';
 import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChatInterface';
-import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
 import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
-import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
+import { checkDynamicRole, getUserRole } from 'context/role';
+import { ProviderContext } from 'context/session';
+import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
+import { useToast } from 'services/ToastService';
+import styles from './AuthenticatedRoute.module.css';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -160,6 +161,11 @@ const routeAdmin = (
       <Route path=":id/edit" element={<WhatsappFormsConfigure />} />
       <Route path=":id/configure" element={<WhatsAppForms />} />
     </Route>
+
+    {getOrganizationServices('aiEvaluationsEnabled') === true && (
+      <Route path="ai-evaluations/create" element={<CreateAIEvaluation />} />
+    )}
+
     <Route path="/*" element={<Chat />} />
   </Routes>
 );

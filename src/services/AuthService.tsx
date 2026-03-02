@@ -22,7 +22,8 @@ type ServiceType =
   | 'whatsappGroupEnabled'
   | 'certificateEnabled'
   | 'askMeBotEnabled'
-  | 'whatsappFormsEnabled';
+  | 'whatsappFormsEnabled'
+  | 'aiEvaluationsEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
