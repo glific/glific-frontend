@@ -448,7 +448,7 @@ test('uploading multiple files and error messages', async () => {
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'error');
+    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'warning');
   });
 
   await waitFor(() => {
