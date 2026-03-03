@@ -237,6 +237,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
       formikTouched: formik.touched,
+      validateForm: formik.validateForm,
       knowledgeBaseId: assistantData?.vectorStore?.id || null,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
       vectorStoreId: assistantData?.vectorStore?.vectorStoreId,

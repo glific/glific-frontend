@@ -26,6 +26,7 @@ interface AssistantOptionsProps {
   initialFiles: any[];
   onFilesChange?: (hasChanges: boolean) => void;
   vectorStoreId: string;
+  validateForm: () => void;
 }
 
 const temperatureInfo =
@@ -43,6 +44,7 @@ export const AssistantOptions = ({
   initialFiles,
   onFilesChange,
   vectorStoreId,
+  validateForm,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(initialFiles);
@@ -142,6 +144,7 @@ export const AssistantOptions = ({
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
+        setTimeout(() => validateForm(), 0);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
@@ -218,7 +221,7 @@ export const AssistantOptions = ({
       </DialogBox>
     );
   }
-
+  
   return (
     <div className={styles.AssistantOptions}>
       <div className={styles.Files}>
