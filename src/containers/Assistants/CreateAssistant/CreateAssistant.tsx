@@ -66,7 +66,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     'gpt-4.1-nano',
     'o4-mini',
     'o3-mini',
-    'gpt-5',
     'gpt-5-mini',
   ].map((model, index) => ({ id: index.toString(), label: model }));
 
@@ -215,7 +214,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     {
       component: AutoComplete,
       name: 'model',
-      options: modelOptions || [],
+      options: modelOptions,
       optionLabel: 'label',
       multiple: false,
       label: `${t('Model')}*`,

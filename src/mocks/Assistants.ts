@@ -137,7 +137,6 @@ const uploadFileToFileSearch = {
         fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
         filename: 'Accelerator Guide (1).pdf',
         uploadedAt: '2024-10-16T15:58:26',
-        fileSize: 32880,
       },
     },
   },
@@ -171,7 +170,6 @@ const fileWithUploadedAt = {
   fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
   filename: 'Accelerator Guide (1).pdf',
   uploadedAt: '2024-10-16T15:58:26',
-  size: 32880,
 };
 
 const createKnowledgeBaseMock = (
