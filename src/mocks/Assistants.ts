@@ -5,7 +5,7 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANTS, GET_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANTS } from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3) => ({
   request: {
@@ -32,24 +32,13 @@ const getAssistantsList = (limit: number = 3) => ({
   },
 });
 
-const listOpenaiModels = {
-  request: {
-    query: GET_MODELS,
-  },
-  result: {
-    data: {
-      listOpenaiModels: ['gpt-4-turbo', 'gpt-4-turbo-2024-04-09', 'chatgpt-4o-latest', 'gpt-4o'],
-    },
-  },
-};
-
 const createAssistant = {
   request: {
     query: CREATE_ASSISTANT,
     variables: {
       input: {
         instructions: 'test instructions',
-        model: 'chatgpt-4o-latest',
+        model: 'gpt-4o-mini',
         name: 'test name',
         temperature: 1.5,
         knowledgeBaseId: 'kb-1',
@@ -148,6 +137,7 @@ const uploadFileToFileSearch = {
         fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
         filename: 'Accelerator Guide (1).pdf',
         uploadedAt: '2024-10-16T15:58:26',
+        fileSize: 32880,
       },
     },
   },
@@ -181,6 +171,7 @@ const fileWithUploadedAt = {
   fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
   filename: 'Accelerator Guide (1).pdf',
   uploadedAt: '2024-10-16T15:58:26',
+  size: 32880,
 };
 
 const createKnowledgeBaseMock = (
@@ -224,7 +215,7 @@ const updateAssistant = {
       updateAssistantId: '1',
       input: {
         instructions: 'test instructions',
-        model: 'chatgpt-4o-latest',
+        model: 'gpt-4o-mini',
         name: 'test name',
         temperature: 1.5,
         knowledgeBaseId: 'vs-1',
@@ -272,7 +263,6 @@ export const MOCKS = [
   getAssistantsList(),
   getAssistantsList(),
   createAssistant,
-  listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
   getAssistant('1'),
@@ -290,21 +280,18 @@ export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSea
 
 export const legacyVectorStoreMocks = [
   getAssistantsList(),
-  listOpenaiModels,
   getAssistant('1', { legacy: true }),
   getAssistant('1', { legacy: true }),
 ];
 export const newVersionInProgressMocks = [
   getAssistantsList(),
-  listOpenaiModels,
   getAssistant('1', { newVersionInProgress: true }),
   getAssistant('1', { newVersionInProgress: true }),
 ];
-export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
-export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
+export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
+export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];
 export const errorMocks = [
   getAssistantsList(4),
-  listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
   uploadFileToFileSearch,
