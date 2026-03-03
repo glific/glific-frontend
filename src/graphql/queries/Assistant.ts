@@ -27,6 +27,7 @@ export const GET_ASSISTANT = gql`
           id
           name
           legacy
+          size
           files {
             name
             id
