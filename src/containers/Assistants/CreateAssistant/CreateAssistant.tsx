@@ -43,6 +43,10 @@ const initialValues = {
   initialFiles: [] as any[],
 };
 
+const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
+  (model, index) => ({ id: index.toString(), label: model })
+);
+
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -58,10 +62,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   }
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
-    (model, index) => ({ id: index.toString(), label: model })
-  );
 
   const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT, {
     fetchPolicy: 'network-only',
