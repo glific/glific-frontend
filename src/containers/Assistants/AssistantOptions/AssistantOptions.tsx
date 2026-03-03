@@ -129,7 +129,6 @@ export const AssistantOptions = ({
       return;
     }
 
-
     createKnowledgeBase({
       variables: {
         createKnowledgeBaseId: formikValues?.knowledgeBaseId || null,
@@ -139,6 +138,7 @@ export const AssistantOptions = ({
         const updatedFiles = files.map(({ status, ...rest }) => rest);
         setFiles(updatedFiles.map((f) => ({ ...f, status: 'attached' })));
         setFieldValue('initialFiles', updatedFiles);
+        setFieldValue('knowledgeBaseId', knowledgeBaseData.knowledgeBase.id);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         onFilesChange(true);
@@ -217,7 +217,6 @@ export const AssistantOptions = ({
       </DialogBox>
     );
   }
-
   return (
     <div className={styles.AssistantOptions}>
       <div className={styles.Files}>
