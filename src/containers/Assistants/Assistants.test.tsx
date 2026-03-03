@@ -448,7 +448,7 @@ test('uploading multiple files and error messages', async () => {
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'error');
+    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'warning');
   });
 
   await waitFor(() => {
@@ -482,6 +482,61 @@ test("it shows indicator for unsaved changes when there are changes in the assis
 
   await waitFor(() => {
     expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
+
+test('it shows knowledge base required warning when submitting without a knowledge base', async () => {
+  render(assistantsComponent(MOCKS));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Knowledge base is required. Please upload files first.')).toBeInTheDocument();
+  });
+});
+
+test('it clears the knowledge base required warning after knowledge base is created', async () => {
+  render(assistantsComponent(uploadSupportedFileMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Knowledge base is required. Please upload files first.')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Knowledge base is required. Please upload files first.')).not.toBeInTheDocument();
   });
 });
 
