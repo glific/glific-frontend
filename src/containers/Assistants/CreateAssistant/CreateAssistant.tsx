@@ -40,6 +40,7 @@ const initialValues = {
   knowledgeBaseId: '',
   knowledgeBaseName: '',
   versionDescription: '',
+  initialFiles: [] as any[],
 };
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
@@ -166,6 +167,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           knowledgeBaseId: assistantData.vectorStore?.id,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
+          initialFiles:
+            assistantData?.vectorStore?.files.map((file: any) => ({
+              fileId: file.id,
+              filename: file.name,
+            })) || [],
         },
       });
     }
@@ -238,11 +244,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       formikErrors: formik.errors,
       formikTouched: formik.touched,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
-      initialFiles:
-        assistantData?.vectorStore?.files.map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-        })) || [],
+      initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,
     },
     {
