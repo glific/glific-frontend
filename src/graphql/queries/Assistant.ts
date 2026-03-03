@@ -29,9 +29,11 @@ export const GET_ASSISTANT = gql`
           knowledgeBaseVersionId
           name
           legacy
+          size
           files {
             name
             id
+            fileSize
           }
         }
       }
