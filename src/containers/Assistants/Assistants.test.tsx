@@ -110,6 +110,10 @@ test('it creates an assistant', async () => {
     );
   });
 
+  await waitFor(() => {
+    expect(screen.getByText('1 file')).toBeInTheDocument();
+  });
+
   fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
 
   fireEvent.click(screen.getByTestId('submitAction'));
