@@ -30,6 +30,7 @@ export const GET_ASSISTANT = gql`
           files {
             name
             id
+            fileSize
           }
         }
       }
