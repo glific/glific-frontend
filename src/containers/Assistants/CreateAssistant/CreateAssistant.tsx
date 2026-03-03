@@ -40,6 +40,7 @@ const initialValues = {
   knowledgeBaseId: '',
   knowledgeBaseName: '',
   versionDescription: '',
+  initialFiles: [] as any[],
 };
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
@@ -102,7 +103,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     if (values.knowledgeBaseId) {
       payload.knowledgeBaseId = values.knowledgeBaseId;
     }
-
     if (isEditing) {
       updateAssistant({
         variables: {
@@ -148,10 +148,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   });
 
   useEffect(() => {
-    if (currentId && isEditing && modelsList) {
+    if (currentId && isEditing) {
       getAssistant({ variables: { assistantId: currentId } });
     }
-  }, [currentId, modelsList, isEditing]);
+  }, [currentId, isEditing]);
 
   useEffect(() => {
     if (assistantData && modelsList) {
@@ -166,6 +166,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           knowledgeBaseId: assistantData.vectorStore?.id,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
+          initialFiles:
+            assistantData?.vectorStore?.files.map((file: any) => ({
+              fileId: file.id,
+              filename: file.name,
+            })) || [],
         },
       });
     }
@@ -238,11 +243,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       formikErrors: formik.errors,
       formikTouched: formik.touched,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
-      initialFiles:
-        assistantData?.vectorStore?.files.map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-        })) || [],
+      initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,
     },
     {
@@ -342,8 +343,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   return (
     <FormikProvider value={formik}>
-      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
-        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
+      <div
+        className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer} ${newVersionInProgress && styles.VersionInProgressContainer}`}
+        data-testid="createAssistantContainer"
+      >
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`}>
           {newVersionInProgress && (
             <div className={styles.VersionInProgress} data-testid="versionInProgress">
               <CircularProgress size={16} />
