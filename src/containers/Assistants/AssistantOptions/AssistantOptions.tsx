@@ -25,7 +25,7 @@ interface AssistantOptionsProps {
   isLegacyVectorStore: boolean;
   initialFiles: any[];
   onFilesChange?: (hasChanges: boolean) => void;
-  vectorStoreId: string
+  vectorStoreId: string;
 }
 
 const temperatureInfo =
@@ -42,7 +42,7 @@ export const AssistantOptions = ({
   isLegacyVectorStore,
   initialFiles,
   onFilesChange,
-  vectorStoreId
+  vectorStoreId,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(initialFiles);
