@@ -221,7 +221,7 @@ export const AssistantOptions = ({
       </DialogBox>
     );
   }
-  
+
   return (
     <div className={styles.AssistantOptions}>
       <div className={styles.Files}>
