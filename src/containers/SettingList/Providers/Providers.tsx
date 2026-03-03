@@ -18,6 +18,8 @@ let validation: any = {};
 let FormSchema = Yup.object().shape(validation);
 const SettingIcon = <Settingicon />;
 
+const GUPSHUP_CREDENTIAL_FIELDS = ['app_name', 'api_key', 'app_id'];
+
 const queries = {
   getItemQuery: GET_CREDENTIAL,
   createItemQuery: CREATE_CREDENTIAL,
@@ -49,8 +51,9 @@ export const Providers = () => {
   const setCredential = (item: any) => {
     const keysObj = JSON.parse(item.keys);
     const secretsObj = JSON.parse(item.secrets);
-    if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
-      setIsDisabled(true);
+    if (type === 'gupshup') {
+      const allFieldsSet = GUPSHUP_CREDENTIAL_FIELDS.every((field) => secretsObj[field] && secretsObj[field] !== 'NA');
+      setIsDisabled(allFieldsSet);
     }
     const fields: any = {};
     Object.assign(fields, keysObj);
@@ -115,9 +118,6 @@ export const Providers = () => {
       .when('isActive', {
         is: true,
         then: (schema) => {
-          if (type === 'gupshup' && key === 'app_id') {
-            return schema;
-          }
           return schema.nullable().required(`${fields[key].label} is required.`);
         },
         otherwise: (schema) =>
@@ -143,7 +143,7 @@ export const Providers = () => {
     ];
     let orderedKeys;
     if (type === 'gupshup') {
-      orderedKeys = ['app_name', 'api_key', 'app_id'];
+      orderedKeys = GUPSHUP_CREDENTIAL_FIELDS;
     } else {
       orderedKeys = Object.keys(fields);
     }
@@ -158,7 +158,7 @@ export const Providers = () => {
           disabled: fields[key].view_only,
           skip: fields[key].hide,
           placeholder:
-            type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `Enter ${fields[key].label} here` : '',
+            type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key) ? `Enter ${fields[key].label} here` : '',
         };
         formField.push(field);
 
@@ -188,10 +188,16 @@ export const Providers = () => {
           ? JSON.parse(credential?.credential?.credential?.secrets)
           : {};
 
-        if (type === 'gupshup' && credentials.app_id && credentials.app_id !== 'NA') {
+        if (type === 'gupshup') {
           Object.keys(fields).forEach((key) => {
-            fields[key].view_only = true;
+            if (GUPSHUP_CREDENTIAL_FIELDS.includes(key)) {
+              fields[key].view_only = !!(credentials[key] && credentials[key] !== 'NA');
+            }
           });
+          const allFieldsSet = GUPSHUP_CREDENTIAL_FIELDS.every(
+            (field) => credentials[field] && credentials[field] !== 'NA'
+          );
+          setIsDisabled(allFieldsSet);
         }
 
         addField(fields);
@@ -238,6 +244,9 @@ export const Providers = () => {
         </div>
         <div>
           {t('API Key')}: {formValues.api_key || 'N/A'}
+        </div>
+        <div>
+          {t('App ID')}: {formValues.app_id || 'N/A'}
         </div>
       </div>
     ),
