@@ -25,6 +25,7 @@ interface AssistantOptionsProps {
   isLegacyVectorStore: boolean;
   initialFiles: any[];
   onFilesChange?: (hasChanges: boolean) => void;
+  vectorStoreId: string
 }
 
 const temperatureInfo =
@@ -41,6 +42,7 @@ export const AssistantOptions = ({
   isLegacyVectorStore,
   initialFiles,
   onFilesChange,
+  vectorStoreId
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(initialFiles);
@@ -255,6 +257,7 @@ export const AssistantOptions = ({
               <DatabaseIcon />
               <div>
                 <p>{formikValues.knowledgeBaseName}</p>
+                <span>{vectorStoreId}</span>
               </div>
             </div>
             {files.length > 0 && (

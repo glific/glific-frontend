@@ -239,6 +239,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       formikTouched: formik.touched,
       knowledgeBaseId: assistantData?.vectorStore?.id || null,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
+      vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
       initialFiles:
         assistantData?.vectorStore?.files.map((file: any) => ({
           fileId: file.id,
