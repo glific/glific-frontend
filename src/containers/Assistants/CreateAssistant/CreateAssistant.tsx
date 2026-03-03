@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT } from 'graphql/queries/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
@@ -58,9 +58,18 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  let modelOptions: Array<{ id: string; label: string }> = [];
+  const modelOptions: Array<{ id: string; label: string }> = [
+    'gpt-4o',
+    'gpt-4o-mini',
+    'gpt-4.1',
+    'gpt-4.1-mini',
+    'gpt-4.1-nano',
+    'o4-mini',
+    'o3-mini',
+    'gpt-5',
+    'gpt-5-mini',
+  ].map((model, index) => ({ id: index.toString(), label: model }));
 
-  const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT, {
     fetchPolicy: 'network-only',
   });
@@ -70,13 +79,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
-
-  if (modelsList) {
-    modelOptions = modelsList?.listOpenaiModels.map((item: string, index: number) => ({
-      id: index.toString(),
-      label: item,
-    }));
-  }
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -148,13 +150,13 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   });
 
   useEffect(() => {
-    if (currentId && isEditing && modelsList) {
+    if (currentId && isEditing) {
       getAssistant({ variables: { assistantId: currentId } });
     }
-  }, [currentId, modelsList, isEditing]);
+  }, [currentId, isEditing]);
 
   useEffect(() => {
-    if (assistantData && modelsList) {
+    if (assistantData) {
       setAssistantId(assistantData.assistantId);
       const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
       formik.resetForm({
@@ -169,7 +171,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         },
       });
     }
-  }, [data, modelsList]);
+  }, [data]);
 
   useEffect(() => {
     if (newVersionInProgress) {
@@ -332,7 +334,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     v.temperature !== iv.temperature ||
     hasUnsavedFiles;
 
-  if (loading || listLoading) {
+  if (loading) {
     return <Loading />;
   }
 
@@ -342,8 +344,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   return (
     <FormikProvider value={formik}>
-      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
-        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
+      <div
+        className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer} ${newVersionInProgress && styles.VersionInProgressContainer}`}
+        data-testid="createAssistantContainer"
+      >
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`}>
           {newVersionInProgress && (
             <div className={styles.VersionInProgress} data-testid="versionInProgress">
               <CircularProgress size={16} />
