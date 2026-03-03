@@ -62,6 +62,7 @@ export const AssistantOptions = ({
           fileId: uploadFilesearchFile?.fileId,
           filename: uploadFilesearchFile?.filename,
           uploadedAt: uploadFilesearchFile?.uploadedAt,
+          fileSize: uploadFilesearchFile?.fileSize,
         };
       },
       onError: (errors) => {
