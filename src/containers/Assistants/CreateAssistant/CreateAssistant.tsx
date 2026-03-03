@@ -40,6 +40,7 @@ const initialValues = {
   knowledgeBaseVersionId: '',
   knowledgeBaseName: '',
   versionDescription: '',
+  initialFiles: [] as any[],
 };
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
@@ -102,7 +103,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     if (values.knowledgeBaseVersionId) {
       payload.knowledgeBaseVersionId = values.knowledgeBaseVersionId;
     }
-
     if (isEditing) {
       updateAssistant({
         variables: {
@@ -151,7 +151,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     if (currentId && isEditing) {
       getAssistant({ variables: { assistantId: currentId } });
     }
-  }, [currentId, modelsList, isEditing]);
+  }, [currentId, isEditing]);
 
   useEffect(() => {
     if (assistantData && modelsList) {
@@ -166,6 +166,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
+          initialFiles:
+            assistantData?.vectorStore?.files.map((file: any) => ({
+              fileId: file.id,
+              filename: file.name,
+            })) || [],
         },
       });
     }
@@ -241,11 +246,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       knowledgeBaseId: assistantData?.vectorStore?.id || null,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
       vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
-      initialFiles:
-        assistantData?.vectorStore?.files.map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-        })) || [],
+      initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,
     },
     {

@@ -23,8 +23,7 @@ interface AssistantOptionsProps {
   formikTouched: any;
   knowledgeBaseId: string | null;
   isLegacyVectorStore: boolean;
-  initialFiles: any[];
-  onFilesChange?: (hasChanges: boolean) => void;
+  onFilesChange: (hasChanges: boolean) => void;
   vectorStoreId: string;
   validateForm: () => void;
 }
@@ -41,16 +40,19 @@ export const AssistantOptions = ({
   formikTouched,
   knowledgeBaseId,
   isLegacyVectorStore,
-  initialFiles,
   onFilesChange,
   vectorStoreId,
   validateForm,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [files, setFiles] = useState<any[]>(initialFiles);
+  const [files, setFiles] = useState<any[]>(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setFiles(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
+  }, [formikValues.initialFiles]);
 
   const [uploadFileToKaapi] = useMutation(UPLOAD_FILE_TO_KAAPI);
   const [createKnowledgeBase, { loading: addingFiles }] = useMutation(CREATE_KNOWLEDGE_BASE);
@@ -69,6 +71,7 @@ export const AssistantOptions = ({
           filename: uploadFilesearchFile?.filename,
           uploadedAt: uploadFilesearchFile?.uploadedAt,
           fileSize: uploadFilesearchFile?.fileSize,
+          status: 'new',
         };
       },
       onError: (errors) => {
@@ -125,11 +128,7 @@ export const AssistantOptions = ({
   };
 
   const hasFilesChanged =
-    files.length !== initialFiles.length || files.some((file, index) => file.fileId !== initialFiles[index]?.fileId);
-
-  useEffect(() => {
-    onFilesChange?.(hasFilesChanged);
-  }, [hasFilesChanged]);
+    files.length !== formikValues.initialFiles.length || files.some((file) => file.status === 'new');
 
   const handleFileUpload = () => {
     if (!hasFilesChanged) {
@@ -140,12 +139,17 @@ export const AssistantOptions = ({
     createKnowledgeBase({
       variables: {
         createKnowledgeBaseId: knowledgeBaseId || null,
-        mediaInfo: files,
+        mediaInfo: files.map(({ status, ...rest }) => rest),
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
+        const updatedFiles = files.map(({ status, ...rest }) => rest);
+        setFiles(updatedFiles.map((f) => ({ ...f, status: 'attached' })));
+        setFieldValue('initialFiles', updatedFiles);
+        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setTimeout(() => validateForm(), 0);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
+        onFilesChange(true);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
       },
@@ -162,7 +166,7 @@ export const AssistantOptions = ({
         open={showUploadDialog}
         title={t('Manage Files')}
         handleCancel={() => {
-          setFiles(initialFiles);
+          setFiles(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
           setShowUploadDialog(false);
         }}
         buttonOk="Save"
@@ -221,7 +225,6 @@ export const AssistantOptions = ({
       </DialogBox>
     );
   }
-
   return (
     <div className={styles.AssistantOptions}>
       <div className={styles.Files}>
