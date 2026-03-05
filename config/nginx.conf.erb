@@ -15,7 +15,7 @@ http {
 
   server {
     listen <%= ENV['PORT'] %>;
-    root /app/build;
+    root /app/dist;
     index index.html;
 
     add_header X-Content-Type-Options "nosniff" always;
