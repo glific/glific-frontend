@@ -1085,10 +1085,6 @@ describe('<Configure />', () => {
       const parsed = JSON.parse(jsonText.value);
 
       const screen1Id = parsed.screens[0].id;
-
-      // Screen 2 data should NOT contain the number field (it gets auto-converted to string if relayed via data)
-      const screen2Data = parsed.screens[1].data;
-
       // Terminal screen (screen 2) payload should reference the number field via global form property
       const screen2Footer = parsed.screens[1].layout.children[0].children.find((c: any) => c.type === 'Footer');
       const payloadValues = Object.values(screen2Footer['on-click-action'].payload) as string[];
