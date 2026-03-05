@@ -44,7 +44,7 @@ const initialValues = {
 };
 
 const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
-  (model, index) => ({ id: index.toString(), label: model })
+  (model) => ({ id: model, label: model })
 );
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
