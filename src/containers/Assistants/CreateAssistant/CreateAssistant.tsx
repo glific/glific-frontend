@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT } from 'graphql/queries/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
@@ -32,14 +32,19 @@ interface CreateAssistantProps {
   setUpdateList: any;
 }
 
+const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
+  (model) => ({ id: model, label: model })
+);
+
 const initialValues = {
   name: '',
-  model: null as any,
+  model: modelOptions[0] as any,
   instructions: '',
   temperature: 0.1,
-  knowledgeBaseId: '',
+  knowledgeBaseVersionId: '',
   knowledgeBaseName: '',
   versionDescription: '',
+  initialFiles: [] as any[],
 };
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
@@ -58,9 +63,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  let modelOptions: Array<{ id: string; label: string }> = [];
-
-  const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT, {
     fetchPolicy: 'network-only',
   });
@@ -71,18 +73,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
 
-  if (modelsList) {
-    modelOptions = modelsList?.listOpenaiModels.map((item: string, index: number) => ({
-      id: index.toString(),
-      label: item,
-    }));
-  }
-
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     model: Yup.object().nullable().required('Model is required'),
     instructions: Yup.string().required('Instructions are required'),
-    knowledgeBaseId: isEditing
+    knowledgeBaseVersionId: isEditing
       ? Yup.string()
       : Yup.string().required('Knowledge base is required. Please upload files first.'),
   });
@@ -99,10 +94,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       payload.description = values.versionDescription.trim();
     }
 
-    if (values.knowledgeBaseId) {
-      payload.knowledgeBaseId = values.knowledgeBaseId;
+    if (values.knowledgeBaseVersionId) {
+      payload.knowledgeBaseVersionId = values.knowledgeBaseVersionId;
     }
-
     if (isEditing) {
       updateAssistant({
         variables: {
@@ -148,13 +142,13 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   });
 
   useEffect(() => {
-    if (currentId && isEditing && modelsList) {
+    if (currentId && isEditing) {
       getAssistant({ variables: { assistantId: currentId } });
     }
-  }, [currentId, modelsList, isEditing]);
+  }, [currentId, isEditing]);
 
   useEffect(() => {
-    if (assistantData && modelsList) {
+    if (assistantData) {
       setAssistantId(assistantData.assistantId);
       const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
       formik.resetForm({
@@ -163,13 +157,18 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           model: modelValue || null,
           instructions: assistantData.instructions,
           temperature: assistantData.temperature,
-          knowledgeBaseId: assistantData.vectorStore?.id,
+          knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
+          initialFiles:
+            assistantData?.vectorStore?.files.map((file: any) => ({
+              fileId: file.id,
+              filename: file.name,
+            })) || [],
         },
       });
     }
-  }, [data, modelsList]);
+  }, [data]);
 
   useEffect(() => {
     if (newVersionInProgress) {
@@ -213,7 +212,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     {
       component: AutoComplete,
       name: 'model',
-      options: modelOptions || [],
+      options: modelOptions,
       optionLabel: 'label',
       multiple: false,
       label: `${t('Model')}*`,
@@ -237,12 +236,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
       formikTouched: formik.touched,
+      validateForm: formik.validateForm,
+      knowledgeBaseId: assistantData?.vectorStore?.id || null,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
-      initialFiles:
-        assistantData?.vectorStore?.files.map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-        })) || [],
+      vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
+      initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,
     },
     {
@@ -332,7 +330,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     v.temperature !== iv.temperature ||
     hasUnsavedFiles;
 
-  if (loading || listLoading) {
+  if (loading) {
     return <Loading />;
   }
 
@@ -342,8 +340,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   return (
     <FormikProvider value={formik}>
-      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
-        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
+      <div
+        className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer} ${newVersionInProgress && styles.VersionInProgressContainer}`}
+        data-testid="createAssistantContainer"
+      >
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`}>
           {newVersionInProgress && (
             <div className={styles.VersionInProgress} data-testid="versionInProgress">
               <CircularProgress size={16} />

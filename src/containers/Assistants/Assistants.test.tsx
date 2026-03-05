@@ -83,7 +83,7 @@ test('it creates an assistant', async () => {
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
-  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
@@ -108,6 +108,10 @@ test('it creates an assistant', async () => {
       "Knowledge base creation in progress, will notify once it's done",
       'success'
     );
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('1 file')).toBeInTheDocument();
   });
 
   fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
@@ -272,7 +276,7 @@ test('it updates the assistant', async () => {
   autocompletes[0].focus();
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
@@ -448,7 +452,7 @@ test('uploading multiple files and error messages', async () => {
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'error');
+    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'warning');
   });
 
   await waitFor(() => {
@@ -482,6 +486,61 @@ test("it shows indicator for unsaved changes when there are changes in the assis
 
   await waitFor(() => {
     expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
+
+test('it shows knowledge base required warning when submitting without a knowledge base', async () => {
+  render(assistantsComponent(MOCKS));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Knowledge base is required. Please upload files first.')).toBeInTheDocument();
+  });
+});
+
+test('it clears the knowledge base required warning after knowledge base is created', async () => {
+  render(assistantsComponent(uploadSupportedFileMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Knowledge base is required. Please upload files first.')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Knowledge base is required. Please upload files first.')).not.toBeInTheDocument();
   });
 });
 
