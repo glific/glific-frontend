@@ -1,0 +1,37 @@
+name: Staging Integration Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      staging_url:
+        description: 'Staging URL (e.g. https://staging.glific.com)'
+        required: true
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v3
+
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        run: yarn setup
+
+      - name: Setup Cypress
+        run: |
+          git clone https://github.com/glific/cypress-testing.git
+          cd cypress-testing
+          git checkout unified_assistant
+          cd ..
+          cp -r cypress-testing/cypress cypress
+          yarn add cypress@13.6.2
+          cp cypress-testing/cypress.config.ts.example cypress.config.ts
+
+      - name: Cypress run
+        env:
+          CYPRESS_BASE_URL: ${{ github.event.inputs.staging_url }}
+        run: |
+          yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
