@@ -212,7 +212,7 @@ export const AssistantOptions = ({
           <div className={styles.UploadInfo}>
             <span>Individual file size limit: 20MB</span>
             <span>Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .pptx, .txt</span>
-            <span>Each file takes approx 15 secs to uploa</span>
+            <span>Each file takes approx 15 secs to upload.</span>
           </div>
         </div>
       </DialogBox>
