@@ -1,14 +1,12 @@
 name: Staging Integration Testing
 
 on:
-  workflow_dispatch:
-    inputs:
-      staging_url:
-        description: 'Staging URL (e.g. https://staging.glific.com)'
-        required: true
+  pull_request:
+    types: [labeled]
 
 jobs:
   cypress:
+    if: github.event.label.name == 'test-staging'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout frontend
@@ -32,6 +30,6 @@ jobs:
 
       - name: Cypress run
         env:
-          CYPRESS_BASE_URL: ${{ github.event.inputs.staging_url }}
+          CYPRESS_BASE_URL: https://staging.glific.com
         run: |
           yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
