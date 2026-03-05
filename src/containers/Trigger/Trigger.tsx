@@ -375,7 +375,7 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'groupIds',
-      label: `${t('Select collection')}*`,
+      label: `${t('Select Collection(s)')}*`,
       options: collections?.groups,
       disabled: isEditing,
       optionLabel: 'label',

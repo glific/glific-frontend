@@ -233,7 +233,7 @@
   "End date": "समाप्ति तिथि",
   "Time": "समय",
   "Repeat": "दोहराएँ",
-  "Select collection": "संग्रह का चयन करें",
+  "Select Collection(s)": "संग्रहों का चयन करें",
   "Copy of the trigger has been created!": "ट्रिगर की कॉपी बनाई जा चुकी है!",
   "You won't be able to use this trigger.": "आप इस ट्रिगर का उपयोग नहीं कर पाएंगे।",
   "CREATE TRIGGER": "ट्रिगर बनाएं",
