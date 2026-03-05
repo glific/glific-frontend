@@ -37,9 +37,10 @@ const initialValues = {
   model: null as any,
   instructions: '',
   temperature: 0.1,
-  knowledgeBaseId: '',
+  knowledgeBaseVersionId: '',
   knowledgeBaseName: '',
   versionDescription: '',
+  initialFiles: [] as any[],
 };
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
@@ -82,7 +83,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     name: Yup.string().required('Name is required'),
     model: Yup.object().nullable().required('Model is required'),
     instructions: Yup.string().required('Instructions are required'),
-    knowledgeBaseId: isEditing
+    knowledgeBaseVersionId: isEditing
       ? Yup.string()
       : Yup.string().required('Knowledge base is required. Please upload files first.'),
   });
@@ -99,10 +100,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       payload.description = values.versionDescription.trim();
     }
 
-    if (values.knowledgeBaseId) {
-      payload.knowledgeBaseId = values.knowledgeBaseId;
+    if (values.knowledgeBaseVersionId) {
+      payload.knowledgeBaseVersionId = values.knowledgeBaseVersionId;
     }
-
     if (isEditing) {
       updateAssistant({
         variables: {
@@ -148,10 +148,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   });
 
   useEffect(() => {
-    if (currentId && isEditing && modelsList) {
+    if (currentId && isEditing) {
       getAssistant({ variables: { assistantId: currentId } });
     }
-  }, [currentId, modelsList, isEditing]);
+  }, [currentId, isEditing]);
 
   useEffect(() => {
     if (assistantData && modelsList) {
@@ -163,9 +163,14 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           model: modelValue || null,
           instructions: assistantData.instructions,
           temperature: assistantData.temperature,
-          knowledgeBaseId: assistantData.vectorStore?.id,
+          knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
           knowledgeBaseName: assistantData.vectorStore?.name,
           versionDescription: assistantData.description,
+          initialFiles:
+            assistantData?.vectorStore?.files.map((file: any) => ({
+              fileId: file.id,
+              filename: file.name,
+            })) || [],
         },
       });
     }
@@ -237,12 +242,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       setFieldValue: formik.setFieldValue,
       formikErrors: formik.errors,
       formikTouched: formik.touched,
+      validateForm: formik.validateForm,
+      knowledgeBaseId: assistantData?.vectorStore?.id || null,
       isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
-      initialFiles:
-        assistantData?.vectorStore?.files.map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-        })) || [],
+      vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
+      initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,
     },
     {
@@ -342,8 +346,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   return (
     <FormikProvider value={formik}>
-      <div className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer } ${newVersionInProgress && styles.VersionInProgressContainer}`} data-testid="createAssistantContainer">
-        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`} >
+      <div
+        className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer} ${newVersionInProgress && styles.VersionInProgressContainer}`}
+        data-testid="createAssistantContainer"
+      >
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`}>
           {newVersionInProgress && (
             <div className={styles.VersionInProgress} data-testid="versionInProgress">
               <CircularProgress size={16} />

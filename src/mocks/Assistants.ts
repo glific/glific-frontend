@@ -52,7 +52,7 @@ const createAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
-        knowledgeBaseId: 'kb-1',
+        knowledgeBaseVersionId: 'kb-1',
         description: 'description for new changes',
       },
     },
@@ -92,6 +92,7 @@ const getAssistant = (
           temperature: 1,
           vectorStore: {
             id: 'vs-1',
+            knowledgeBaseVersionId: 'llm-vs-1',
             name: 'VectorStore-77ae3597',
             legacy: options?.legacy ?? false,
             files: [
@@ -148,6 +149,7 @@ const uploadFileToFileSearch = {
         fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
         filename: 'Accelerator Guide (1).pdf',
         uploadedAt: '2024-10-16T15:58:26',
+        fileSize: 32880,
       },
     },
   },
@@ -181,10 +183,11 @@ const fileWithUploadedAt = {
   fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
   filename: 'Accelerator Guide (1).pdf',
   uploadedAt: '2024-10-16T15:58:26',
+  fileSize: 32880,
 };
 
 const createKnowledgeBaseMock = (
-  mediaInfo: Array<{ fileId: string; filename: string; uploadedAt: string }>,
+  mediaInfo: Array<{ fileId: string; filename: string; uploadedAt: string; fileSize: number }>,
   assistantId: string | null
 ) => ({
   request: {
@@ -199,6 +202,7 @@ const createKnowledgeBaseMock = (
       createKnowledgeBase: {
         knowledgeBase: {
           id: 'kb-1',
+          knowledgeBaseVersionId: 'kb-1',
           name: 'KnowledgeBase-1',
         },
       },
@@ -227,7 +231,7 @@ const updateAssistant = {
         model: 'chatgpt-4o-latest',
         name: 'test name',
         temperature: 1.5,
-        knowledgeBaseId: 'vs-1',
+        knowledgeBaseVersionId: 'llm-vs-1',
       },
     },
   },
