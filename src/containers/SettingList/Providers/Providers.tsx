@@ -191,9 +191,10 @@ export const Providers = () => {
           : {};
 
         if (type === 'gupshup') {
+          const allFieldsSet = areAllGupshupFieldsSet(credentials);
           Object.keys(fields).forEach((key) => {
             if (GUPSHUP_CREDENTIAL_FIELDS.includes(key)) {
-              fields[key].view_only = !!(credentials[key] && credentials[key] !== 'NA');
+              fields[key].view_only = allFieldsSet;
             }
           });
           setIsDisabled(areAllGupshupFieldsSet(credentials));
