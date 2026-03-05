@@ -32,9 +32,13 @@ interface CreateAssistantProps {
   setUpdateList: any;
 }
 
+const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
+  (model) => ({ id: model, label: model })
+);
+
 const initialValues = {
   name: '',
-  model: null as any,
+  model: modelOptions[0] as any,
   instructions: '',
   temperature: 0.1,
   knowledgeBaseVersionId: '',
@@ -42,10 +46,6 @@ const initialValues = {
   versionDescription: '',
   initialFiles: [] as any[],
 };
-
-const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
-  (model) => ({ id: model, label: model })
-);
 
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
