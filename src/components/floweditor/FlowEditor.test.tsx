@@ -82,7 +82,7 @@ const templateFlowMocks = [...mocks, getTemplateFlow, resetFlowCount];
 const manyKeywordsMocks = [...mocks, getFlowWithManyKeywords, resetFlowCount];
 
 const wrapperFunction = (mocks: any) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <FlowEditor />
     </Router>
@@ -216,9 +216,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(defaultWrapper);
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('previewButton'));
 
@@ -231,13 +229,9 @@ test.skip('if the flow the inactive', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(wrapperFunction(inActiveFlowMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
   fireEvent.click(screen.getByTestId('previewButton'));
-  await waitFor(() => {
-    expect(screen.findByTestId('simulator-container'));
-  });
+  expect(await screen.findByTestId('simulator-container')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(screen.getByTestId('simulator')).toHaveTextContent('Sorry, the flow is not active');
@@ -248,9 +242,7 @@ test('flow with no keywords', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(wrapperFunction(noKeywordMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
   fireEvent.click(screen.getByTestId('previewButton'));
 
   await waitFor(() => {
@@ -262,9 +254,7 @@ test('reset flow counts', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
 
   fireEvent.click(getByTestId('moreButton'));
   fireEvent.click(getByText('Reset flow count'));
@@ -288,9 +278,7 @@ test('it translates the flow', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(defaultWrapper);
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('translateButton'));
   fireEvent.click(getByTestId('cancel-button'));
@@ -321,9 +309,7 @@ test('template words should have template: prefix', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(wrapperFunction(templateFlowMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
   fireEvent.click(screen.getByTestId('previewButton'));
 
   await waitFor(() => {
@@ -335,9 +321,9 @@ test('if keywords are more than 8 it should be shown in a tooltip', async () => 
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(wrapperFunction(manyKeywordsMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help, activity, preference, optout, stop, start, end, yes + 2 more'));
-  });
+  expect(
+    await screen.findByText(/help, activity, preference, optout, stop, start, end, yes/)
+  ).toBeInTheDocument();
 });
 
 test('should export the flow', async () => {
@@ -345,9 +331,7 @@ test('should export the flow', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   render(defaultWrapper);
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('moreButton'));
   fireEvent.click(screen.getByText('Export flow'));
@@ -360,9 +344,7 @@ test('should export the flow', async () => {
 test('should open the share responder dialog box', async () => {
   render(defaultWrapper);
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('moreButton'));
   fireEvent.click(screen.getByText('Share Responder Link'));
@@ -376,9 +358,7 @@ test('should show warning when no keywords are present and share responder link 
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   render(wrapperFunction(noKeywordMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  expect(await screen.findByText('help workflow')).toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('moreButton'));
   fireEvent.click(screen.getByText('Share Responder Link'));

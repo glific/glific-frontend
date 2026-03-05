@@ -8,7 +8,9 @@ export const orgSuspendedMock = {
   result: {
     data: {
       organization: {
+        __typename: 'OrganizationStatus',
         organization: {
+          __typename: 'Organization',
           isSuspended: false,
         },
       },
@@ -24,6 +26,7 @@ export const getWhatsAppManagedPhonesStatusMock = {
     data: {
       waManagedPhones: [
         {
+          __typename: 'WaManagedPhone',
           phone: '918658048983',
           status: 'active',
         },
@@ -41,6 +44,7 @@ export const getInactiveStatusMock = {
     data: {
       waManagedPhones: [
         {
+          __typename: 'WaManagedPhone',
           phone: '918658048983',
           status: 'inactive',
         },

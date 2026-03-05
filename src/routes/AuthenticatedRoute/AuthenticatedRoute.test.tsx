@@ -30,7 +30,7 @@ const mocks = [
   getWhatsAppManagedPhonesStatusMock,
   getAttachmentPermissionMock,
 ];
-window.HTMLElement.prototype.scrollIntoView = function () {};
+window.HTMLElement.prototype.scrollIntoView = function () { };
 describe('<AuthenticatedRoute />', () => {
   test('it should render', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));

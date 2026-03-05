@@ -10,7 +10,7 @@ import { ChatConversationMocks } from './ChatConversations.test.helper';
 import { setUserSession } from 'services/AuthService';
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache();
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
@@ -96,7 +96,7 @@ const simulatorParams = {
 
 const chatConversation = (
   <ApolloProvider client={client}>
-    <MockedProvider mocks={ChatConversationMocks} addTypename={false}>
+    <MockedProvider mocks={ChatConversationMocks}>
       <Router>
         <ChatConversations {...simulatorParams} />
       </Router>

@@ -50,13 +50,19 @@ export const MyAccount = () => {
   // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
-      if (data.updateCurrentUser.errors) {
-        if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
+      if (data.updateCurrentUser.errors && data.updateCurrentUser.errors.length > 0) {
+        const error = data.updateCurrentUser.errors[0];
+        if (error.message === 'incorrect_code') {
           setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
-        } else {
+        } else if (error.message === 'Too many attempts') {
           setToastMessageInfo({
             severity: 'error',
             message: t('Too many attempts, please retry after sometime.'),
+          });
+        } else {
+          setToastMessageInfo({
+            severity: 'error',
+            message: t(error.message),
           });
         }
       } else {
@@ -139,6 +145,11 @@ export const MyAccount = () => {
     password: yupPasswordValidation(t),
   });
 
+  const UserFormSchema = Yup.object().shape({
+    name: Yup.string().required(t('Name is required')),
+    email: Yup.string().email(t('Invalid email address')).required(t('Email is required')),
+  });
+
   const userformFields = [
     {
       component: Input,
@@ -156,24 +167,43 @@ export const MyAccount = () => {
       component: Input,
       name: 'email',
       label: t('Email'),
-      disabled: true,
+      disabled: false,
     },
   ];
 
   const userForm = (
-    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => { }}>
-      <Form>
-        {userformFields.map((field) => (
-          <div className={styles.UserField} key={field.name}>
-            {field.label && (
-              <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                {field.label}
-              </Typography>
-            )}
-            <Field key={field.name} {...field}></Field>
-          </div>
-        ))}
-      </Form>
+    <Formik
+      initialValues={{ name: userName, phone: userPhone, email: userEmail }}
+      enableReinitialize={true}
+      validationSchema={UserFormSchema}
+      onSubmit={(values) => {
+        setMessage(t('Profile updated successfully!'));
+        updateCurrentUser({
+          variables: { input: { name: values.name, email: values.email } },
+        });
+      }}
+    >
+      {({ dirty, submitForm }) => (
+        <Form>
+          {userformFields.map((field) => (
+            <div className={styles.UserField} key={field.name}>
+              {field.label && (
+                <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                  {field.label}
+                </Typography>
+              )}
+              <Field key={field.name} {...field}></Field>
+            </div>
+          ))}
+          {dirty && (
+            <div className={styles.Buttons}>
+              <Button variant="contained" color="primary" onClick={submitForm} className={styles.Button}>
+                {t('Save')}
+              </Button>
+            </div>
+          )}
+        </Form>
+      )}
     </Formik>
   );
 

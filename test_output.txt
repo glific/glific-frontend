@@ -1,0 +1,1121 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/home/ankit/Desktop/App/glific-frontend[39m
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mit should render chat interface component correctly
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mit should render chat interface component correctly
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mit should render chat interface component correctly
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mit should render chat interface component correctly
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mit should render chat interface component correctly
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mit should render chat interface component correctly
+[22m[39mInvalid value for prop `src` on <audio> tag. Either remove it from the element, or pass a string or number value to keep it in the DOM. For details, see https://react.dev/link/attribute-behavior 
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to saved searches
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to saved searches
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to saved searches
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to saved searches
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould navigate to saved searches
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Collections as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Collections as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Collections as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Collections as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Collections as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Saved searches as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Saved searches as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Saved searches as heading
+[22m[39mA props object containing a "key" prop is being spread into JSX:
+  let props = {key: someKey, tabIndex: ..., role: ..., id: ..., onMouseMove: ..., onClick: ..., onTouchStart: ..., data-option-index: ..., aria-disabled: ..., aria-selected: ..., className: ..., children: ...};
+  <li {...props} />
+React keys must be passed directly to JSX without using spread:
+  let props = {tabIndex: ..., role: ..., id: ..., onMouseMove: ..., onClick: ..., onTouchStart: ..., data-option-index: ..., aria-disabled: ..., aria-selected: ..., className: ..., children: ...};
+  <li key={someKey} {...props} />
+MUI: The `anchorEl` prop provided to the component is invalid.
+The anchor element should be part of the document layout.
+Make sure the element is present in the document or that it's not display none.
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Saved searches as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface[2m > [22m[2mshould have Saved searches as heading
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface for empty cache[2m > [22m[2mshould render no conversations if there are no conversations
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface for empty cache[2m > [22m[2mshould render no conversations if there are no conversations
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface for empty cache[2m > [22m[2mshould render no conversations if there are no conversations
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface for empty cache[2m > [22m[2mshould render no conversations if there are no conversations
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface for empty cache[2m > [22m[2mshould render no conversations if there are no conversations
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `from` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying `to` date filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mChat interface with filters[2m > [22m[2mshould show filtered messages after applying date range filter
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open attachment dialog
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open attachment dialog
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open attachment dialog
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open attachment dialog
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open attachment dialog
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open attachment dialog
+[22m[39mMUI: You have provided an out-of-range value `undefined` for the select (name="attachmentType") component.
+Consider providing a value that matches one of the available options or ''.
+The available values are `IMAGE`, `AUDIO`, `VIDEO`, `DOCUMENT`, `STICKER`.
+MUI: You have provided an out-of-range value `undefined` for the select (name="attachmentType") component.
+Consider providing a value that matches one of the available options or ''.
+The available values are `IMAGE`, `AUDIO`, `VIDEO`, `DOCUMENT`, `STICKER`.
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open emoji picker
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open emoji picker
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open emoji picker
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open emoji picker
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould open emoji picker
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould have title as contact name for whatsapp groups
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould have title as contact name for whatsapp groups
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould have title as contact name for whatsapp groups
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould have title as contact name for whatsapp groups
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould have title as contact name for whatsapp groups
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2msend message to whatsapp group
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2msend message to whatsapp group
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2msend message to whatsapp group
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2msend message to whatsapp group
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2msend message to whatsapp group
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2msend message to whatsapp group
+[22m[39mNo more mocked responses for the query: mutation createAndSendMessage($input: MessageInput!) {
+  createAndSendMessage(input: $input) {
+    message {
+      id
+      body
+      insertedAt
+      sender {
+        id
+        __typename
+      }
+      receiver {
+        id
+        __typename
+      }
+      media {
+        url
+        caption
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+Expected variables: {"input":{"body":"hello","senderId":1,"receiverId":"2","flow":"OUTBOUND","interactiveTemplateId":<undefined>,"type":"TEXT","mediaId":null}}
+
+This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould send message to whatsapp group collections
+[22m[39mNo more mocked responses for the query: mutation createAndSendMessage($input: MessageInput!) {
+  createAndSendMessage(input: $input) {
+    message {
+      id
+      body
+      insertedAt
+      sender {
+        id
+        __typename
+      }
+      receiver {
+        id
+        __typename
+      }
+      media {
+        url
+        caption
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+Expected variables: {"input":{"body":"hello","senderId":1,"receiverId":"2","flow":"OUTBOUND","interactiveTemplateId":<undefined>,"type":"TEXT","mediaId":null}}
+
+This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mshould show error if send message fails
+[22m[39mNo more mocked responses for the query: mutation createAndSendMessage($input: MessageInput!) {
+  createAndSendMessage(input: $input) {
+    message {
+      id
+      body
+      insertedAt
+      sender {
+        id
+        __typename
+      }
+      receiver {
+        id
+        __typename
+      }
+      media {
+        url
+        caption
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+Expected variables: {"input":{"body":"error","senderId":1,"receiverId":"2","flow":"OUTBOUND","interactiveTemplateId":<undefined>,"type":"TEXT","mediaId":null}}
+
+This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mBlocked contacts should redirect to chat page
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22onCompleted%22%2C%22If%20your%20%60onCompleted%60%20callback%20sets%20local%20state%2C%20switch%20to%20use%20derived%20state%20using%20%60data%60%20returned%20from%20the%20hook%20instead.%20Use%20%60useEffect%60%20to%20perform%20side-effects%20as%20a%20result%20of%20updates%20to%20%60data%60.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A78%2C%22args%22%3A%5B%22useLazyQuery%22%2C%22variables%22%2C%22Pass%20all%20%60variables%60%20to%20the%20returned%20%60execute%60%20function%20instead.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mBlocked contacts should redirect to chat page
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mBlocked contacts should redirect to chat page
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mBlocked contacts should redirect to chat page
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mBlocked contacts should redirect to chat page
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+[90mstderr[2m | src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22m[2mBlocked contacts should redirect to chat page
+[22m[39mAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ [31m❯[39m src/containers/Chat/ChatInterface/ChatInterface.test.tsx [2m([22m[2m16 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 11451[2mms[22m[39m
+     [33m[2m✓[22m[39m it should render chat interface component correctly [33m 789[2mms[22m[39m
+     [33m[2m✓[22m[39m should navigate to collections [33m 1025[2mms[22m[39m
+     [33m[2m✓[22m[39m should navigate to saved searches [33m 520[2mms[22m[39m
+     [33m[2m✓[22m[39m should have Collections as heading [33m 500[2mms[22m[39m
+     [33m[2m✓[22m[39m should have Saved searches as heading [33m 920[2mms[22m[39m
+     [32m✓[39m should render no conversations if there are no conversations[32m 163[2mms[22m[39m
+     [33m[2m✓[22m[39m should show filtered messages after applying `from` date filter [33m 1592[2mms[22m[39m
+     [33m[2m✓[22m[39m should show filtered messages after applying `to` date filter [33m 1308[2mms[22m[39m
+[31m     [31m×[31m should show filtered messages after applying date range filter[39m[33m 1214[2mms[22m[39m
+[31m   [31m×[31m should open attachment dialog[39m[33m 1442[2mms[22m[39m
+   [33m[2m✓[22m[39m should open emoji picker [33m 453[2mms[22m[39m
+   [32m✓[39m should have title as contact name for whatsapp groups[32m 272[2mms[22m[39m
+   [33m[2m✓[22m[39m send message to whatsapp group [33m 334[2mms[22m[39m
+   [33m[2m✓[22m[39m should send message to whatsapp group collections [33m 321[2mms[22m[39m
+   [33m[2m✓[22m[39m should show error if send message fails [33m 333[2mms[22m[39m
+   [32m✓[39m Blocked contacts should redirect to chat page[32m 258[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22mChat interface with filters[2m > [22mshould show filtered messages after applying date range filter
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element by: [data-testid="show-current-messages"]
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1gtchvp-MuiPaper-root"[39m
+      [33mstyle[39m=[32m"--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_Chat_9c5ec4"[39m
+        [33mdata-testid[39m=[32m"chatContainer"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_ChatMessages_9c5ec4 chatMessages"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"MuiContainer-root MuiContainer-disableGutters _ChatMessages_5046ed css-1aa3h9d-MuiContainer-root"[39m
+            [33mdata-testid[39m=[32m"message-container"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular _ConversationHeader_eb8248 css-1ygil4i-MuiToolbar-root"[39m
+              [33mcolor[39m=[32m"primary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_ConversationHeaderWrapper_eb8248"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_ContactInfoContainer_eb8248"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_ContactInfoWrapper_eb8248"[39m
+                  [36m>[39m
+                    [36m<div>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_ContactDetails_eb8248"[39m
+                      [36m>[39m
+                        [36m<h6[39m
+                          [33mclass[39m=[32m"MuiTypography-root MuiTypography-h6 MuiTypography-noWrap _Title_eb8248 css-5lnhk4-MuiTypography-root"[39m
+                          [33mdata-testid[39m=[32m"beneficiaryName"[39m
+                        [36m>[39m
+                          [0mEffie Cormier[0m
+                        [36m</h6>[39m
+                        [36m<div[39m
+                          [33maria-hidden[39m=[32m"true"[39m
+                          [33mclass[39m=[32m"_Configure_eb8248"[39m
+                          [33mdata-testid[39m=[32m"dropdownIcon"[39m
+                        [36m>[39m
+                          [36m<svg[39m
+                            [33mfill[39m=[32m"none"[39m
+                            [33mheight[39m=[32m"20"[39m
+                            [33mviewBox[39m=[32m"0 0 19 20"[39m
+                            [33mwidth[39m=[32m"19"[39m
+                            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                          [36m>[39m
+                            [36m<path[39m
+                              [33md[39m=[32m"M9.49998 13.1442L13.6442 8.99998L12.575 7.95578L9.49998 11.0308L6.42498 7.95578L5.35578 8.99998L9.49998 13.1442ZM9.50165 19.5C8.18772 19.5 6.95268 19.2506 5.79655 18.752C4.6404 18.2533 3.63472 17.5765 2.7795 16.7217C1.92427 15.8669 1.24721 14.8616 0.748325 13.706C0.249442 12.5504 0 11.3156 0 10.0017C0 8.68772 0.249334 7.45268 0.748 6.29655C1.24667 5.1404 1.92342 4.13472 2.77825 3.2795C3.6331 2.42427 4.63834 1.74721 5.79398 1.24833C6.94959 0.749443 8.18437 0.5 9.4983 0.5C10.8122 0.5 12.0473 0.749334 13.2034 1.248C14.3596 1.74667 15.3652 2.42342 16.2205 3.27825C17.0757 4.1331 17.7527 5.13834 18.2516 6.29398C18.7505 7.44959 19 8.68437 19 9.9983C19 11.3122 18.7506 12.5473 18.252 13.7034C17.7533 14.8596 17.0765 15.8652 16.2217 16.7205C15.3669 17.5757 14.3616 18.2527 13.206 18.7516C12.0504 19.2505 10.8156 19.5 9.50165 19.5ZM9.49998 18C11.7333 18 13.625 17.225 15.175 15.675C16.725 14.125 17.5 12.2333 17.5 9.99998C17.5 7.76664 16.725 5.87498 15.175 4.32498C13.625 2.77498 11.7333 1.99998 9.49998 1.99998C7.26664 1.99998 5.37498 2.77498 3.82498 4.32498C2.27498 5.87498 1.49998 7.76664 1.49998 9.99998C1.49998 12.2333 2.27498 14.125 3.82498 15.675C5.37498 17.225 7.26664 18 9.49998 18Z"[39m
+                              [33mfill[39m=[32m"#073F24"[39m
+                            [36m/>[39m
+                          [36m</svg>[39m
+                        [36m</div>[39m
+                      [36m</div>[39m
+                    [36m</div>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_SessionTimerContainer_eb8248"[39m
+                    [36m>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_SessionTimer_eb8248"[39m
+                      [36m>[39m
+                        [36m<span>[39m
+                          [0mCollections:[0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"_CollectionsName_eb8248"[39m
+                          [33mdata-testid[39m=[32m"collectionNames"[39m
+                        [36m>[39m
+                          [0mStaff group, Staff Collection[0m
+                        [36m</span>[39m
+                      [36m</div>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_SessionTimer_eb8248"[39m
+                        [33mdata-testid[39m=[32m"sessionTimer"[39m
+                      [36m>[39m
+                        [36m<span>[39m
+                          [0mTime left:[0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m""[39m
+                          [33mdata-mui-internal-clone-element[39m=[32m"true"[39m
+                          [33mdata-testid[39m=[32m"tooltip"[39m
+                        [36m>[39m
+                          [36m<div[39m
+                            [33mclass[39m=[32m"_TimerEnd_2f7c54 _Timer_2f7c54 _SecondaryTimer_2f7c54"[39m
+                            [33mdata-testid[39m=[32m"timerCount"[39m
+                          [36m>[39m
+                            [0m0[0m
+                            [0m hrs[0m
+                          [36m</div>[39m
+                        [36m</span>[39m
+                      [36m</div>[39m
+                    [36m</div>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_Chat_eb8248"[39m
+                      [33mrole[39m=[32m"button"[39m
+                    [36m>[39m
+                      [36m<button[39m
+                        [33mclass[39m=[32m"MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium _MobileIcon_eb8248 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"[39m
+                        [33mtabindex[39m=[32m"0"[39m
+                        [33mtype[39m=[32m"button"[39m
+                      [36m>[39m
+                        [36m<svg[39m
+                          [33mdata-testid[39m=[32m"icon-component"[39m
+                        ...
+[90m [2m❯[22m Object.getElementError node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m76:38[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+[36m [2m❯[22m src/containers/Chat/ChatInterface/ChatInterface.test.tsx:[2m311:28[22m[39m
+    [90m309| [39m    })[33m;[39m
+    [90m310| [39m
+    [90m311| [39m    fireEvent[33m.[39m[34mclick[39m(screen[33m.[39m[34mgetByTestId[39m([32m'show-current-messages'[39m))[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m312| [39m
+    [90m313| [39m    fireEvent[33m.[39m[34mclick[39m(screen[33m.[39m[34mgetByTestId[39m([32m'advanced-search-icon'[39m))[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/containers/Chat/ChatInterface/ChatInterface.test.tsx[2m > [22mshould open attachment dialog
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element with the text: Attach. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mstyle[39m=[32m"padding-right: 1024px; overflow: hidden;"[39m
+[36m>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1gtchvp-MuiPaper-root"[39m
+      [33mstyle[39m=[32m"--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_Chat_9c5ec4"[39m
+        [33mdata-testid[39m=[32m"chatContainer"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_ChatMessages_9c5ec4 chatMessages"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"MuiContainer-root MuiContainer-disableGutters _ChatMessages_5046ed css-1aa3h9d-MuiContainer-root"[39m
+            [33mdata-testid[39m=[32m"message-container"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular _ConversationHeader_eb8248 css-1ygil4i-MuiToolbar-root"[39m
+              [33mcolor[39m=[32m"primary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_ConversationHeaderWrapper_eb8248"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_ContactInfoContainer_eb8248"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_ContactInfoWrapper_eb8248"[39m
+                  [36m>[39m
+                    [36m<div>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_ContactDetails_eb8248"[39m
+                      [36m>[39m
+                        [36m<h6[39m
+                          [33mclass[39m=[32m"MuiTypography-root MuiTypography-h6 MuiTypography-noWrap _Title_eb8248 css-5lnhk4-MuiTypography-root"[39m
+                          [33mdata-testid[39m=[32m"beneficiaryName"[39m
+                        [36m>[39m
+                          [0mEffie Cormier[0m
+                        [36m</h6>[39m
+                        [36m<div[39m
+                          [33maria-hidden[39m=[32m"true"[39m
+                          [33mclass[39m=[32m"_Configure_eb8248"[39m
+                          [33mdata-testid[39m=[32m"dropdownIcon"[39m
+                        [36m>[39m
+                          [36m<svg[39m
+                            [33mfill[39m=[32m"none"[39m
+                            [33mheight[39m=[32m"20"[39m
+                            [33mviewBox[39m=[32m"0 0 19 20"[39m
+                            [33mwidth[39m=[32m"19"[39m
+                            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                          [36m>[39m
+                            [36m<path[39m
+                              [33md[39m=[32m"M9.49998 13.1442L13.6442 8.99998L12.575 7.95578L9.49998 11.0308L6.42498 7.95578L5.35578 8.99998L9.49998 13.1442ZM9.50165 19.5C8.18772 19.5 6.95268 19.2506 5.79655 18.752C4.6404 18.2533 3.63472 17.5765 2.7795 16.7217C1.92427 15.8669 1.24721 14.8616 0.748325 13.706C0.249442 12.5504 0 11.3156 0 10.0017C0 8.68772 0.249334 7.45268 0.748 6.29655C1.24667 5.1404 1.92342 4.13472 2.77825 3.2795C3.6331 2.42427 4.63834 1.74721 5.79398 1.24833C6.94959 0.749443 8.18437 0.5 9.4983 0.5C10.8122 0.5 12.0473 0.749334 13.2034 1.248C14.3596 1.74667 15.3652 2.42342 16.2205 3.27825C17.0757 4.1331 17.7527 5.13834 18.2516 6.29398C18.7505 7.44959 19 8.68437 19 9.9983C19 11.3122 18.7506 12.5473 18.252 13.7034C17.7533 14.8596 17.0765 15.8652 16.2217 16.7205C15.3669 17.5757 14.3616 18.2527 13.206 18.7516C12.0504 19.2505 10.8156 19.5 9.50165 19.5ZM9.49998 18C11.7333 18 13.625 17.225 15.175 15.675C16.725 14.125 17.5 12.2333 17.5 9.99998C17.5 7.76664 16.725 5.87498 15.175 4.32498C13.625 2.77498 11.7333 1.99998 9.49998 1.99998C7.26664 1.99998 5.37498 2.77498 3.82498 4.32498C2.27498 5.87498 1.49998 7.76664 1.49998 9.99998C1.49998 12.2333 2.27498 14.125 3.82498 15.675C5.37498 17.225 7.26664 18 9.49998 18Z"[39m
+                              [33mfill[39m=[32m"#073F24"[39m
+                            [36m/>[39m
+                          [36m</svg>[39m
+                        [36m</div>[39m
+                      [36m</div>[39m
+                    [36m</div>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_SessionTimerContainer_eb8248"[39m
+                    [36m>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_SessionTimer_eb8248"[39m
+                      [36m>[39m
+                        [36m<span>[39m
+                          [0mCollections:[0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"_CollectionsName_eb8248"[39m
+                          [33mdata-testid[39m=[32m"collectionNames"[39m
+                        [36m>[39m
+                          [0mDefault Collection, Staff Collection[0m
+                        [36m</span>[39m
+                      [36m</div>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_SessionTimer_eb8248"[39m
+                        [33mdata-testid[39m=[32m"sessionTimer"[39m
+                      [36m>[39m
+                        [36m<span>[39m
+                          [0mTime left:[0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m""[39m
+                          [33mdata-mui-internal-clone-element[39m=[32m"true"[39m
+                          [33mdata-testid[39m=[32m"tooltip"[39m
+                        [36m>[39m
+                          [36m<div[39m
+                            [33mclass[39m=[32m"_TimerEnd_2f7c54 _Timer_2f7c54 _SecondaryTimer_2f7c54"[39m
+                            [33mdata-testid[39m=[32m"timerCount"[39m
+                          [36m>[39m
+                            [0m0[0m
+                            [0m hrs[0m
+                          [36m</div>[39m
+                        [36m</span>[39m
+                      [36m</div>[39m
+                    [36m</div>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_Chat_eb8248"[39m
+                      [33mrole[39m=[32m"button"[39m
+                    [36m>[39m
+                      [36m<button[39m
+                        [33mclass[39m=[32m"MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium _MobileIcon_eb8248 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"[39m
+                        [33mtabindex[39m=[32m"0"[39m
+                        [33mtype[39m=[32m"button"[39m
+                      [36m>[39m
+                        [36m<svg[...
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mstyle[39m=[32m"padding-right: 1024px; overflow: hidden;"[39m
+[36m>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1gtchvp-MuiPaper-root"[39m
+      [33mstyle[39m=[32m"--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_Chat_9c5ec4"[39m
+        [33mdata-testid[39m=[32m"chatContainer"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_ChatMessages_9c5ec4 chatMessages"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"MuiContainer-root MuiContainer-disableGutters _ChatMessages_5046ed css-1aa3h9d-MuiContainer-root"[39m
+            [33mdata-testid[39m=[32m"message-container"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular _ConversationHeader_eb8248 css-1ygil4i-MuiToolbar-root"[39m
+              [33mcolor[39m=[32m"primary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_ConversationHeaderWrapper_eb8248"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_ContactInfoContainer_eb8248"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_ContactInfoWrapper_eb8248"[39m
+                  [36m>[39m
+                    [36m<div>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_ContactDetails_eb8248"[39m
+                      [36m>[39m
+                        [36m<h6[39m
+                          [33mclass[39m=[32m"MuiTypography-root MuiTypography-h6 MuiTypography-noWrap _Title_eb8248 css-5lnhk4-MuiTypography-root"[39m
+                          [33mdata-testid[39m=[32m"beneficiaryName"[39m
+                        [36m>[39m
+                          [0mEffie Cormier[0m
+                        [36m</h6>[39m
+                        [36m<div[39m
+                          [33maria-hidden[39m=[32m"true"[39m
+                          [33mclass[39m=[32m"_Configure_eb8248"[39m
+                          [33mdata-testid[39m=[32m"dropdownIcon"[39m
+                        [36m>[39m
+                          [36m<svg[39m
+                            [33mfill[39m=[32m"none"[39m
+                            [33mheight[39m=[32m"20"[39m
+                            [33mviewBox[39m=[32m"0 0 19 20"[39m
+                            [33mwidth[39m=[32m"19"[39m
+                            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                          [36m>[39m
+                            [36m<path[39m
+                              [33md[39m=[32m"M9.49998 13.1442L13.6442 8.99998L12.575 7.95578L9.49998 11.0308L6.42498 7.95578L5.35578 8.99998L9.49998 13.1442ZM9.50165 19.5C8.18772 19.5 6.95268 19.2506 5.79655 18.752C4.6404 18.2533 3.63472 17.5765 2.7795 16.7217C1.92427 15.8669 1.24721 14.8616 0.748325 13.706C0.249442 12.5504 0 11.3156 0 10.0017C0 8.68772 0.249334 7.45268 0.748 6.29655C1.24667 5.1404 1.92342 4.13472 2.77825 3.2795C3.6331 2.42427 4.63834 1.74721 5.79398 1.24833C6.94959 0.749443 8.18437 0.5 9.4983 0.5C10.8122 0.5 12.0473 0.749334 13.2034 1.248C14.3596 1.74667 15.3652 2.42342 16.2205 3.27825C17.0757 4.1331 17.7527 5.13834 18.2516 6.29398C18.7505 7.44959 19 8.68437 19 9.9983C19 11.3122 18.7506 12.5473 18.252 13.7034C17.7533 14.8596 17.0765 15.8652 16.2217 16.7205C15.3669 17.5757 14.3616 18.2527 13.206 18.7516C12.0504 19.2505 10.8156 19.5 9.50165 19.5ZM9.49998 18C11.7333 18 13.625 17.225 15.175 15.675C16.725 14.125 17.5 12.2333 17.5 9.99998C17.5 7.76664 16.725 5.87498 15.175 4.32498C13.625 2.77498 11.7333 1.99998 9.49998 1.99998C7.26664 1.99998 5.37498 2.77498 3.82498 4.32498C2.27498 5.87498 1.49998 7.76664 1.49998 9.99998C1.49998 12.2333 2.27498 14.125 3.82498 15.675C5.37498 17.225 7.26664 18 9.49998 18Z"[39m
+                              [33mfill[39m=[32m"#073F24"[39m
+                            [36m/>[39m
+                          [36m</svg>[39m
+                        [36m</div>[39m
+                      [36m</div>[39m
+                    [36m</div>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_SessionTimerContainer_eb8248"[39m
+                    [36m>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_SessionTimer_eb8248"[39m
+                      [36m>[39m
+                        [36m<span>[39m
+                          [0mCollections:[0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"_CollectionsName_eb8248"[39m
+                          [33mdata-testid[39m=[32m"collectionNames"[39m
+                        [36m>[39m
+                          [0mDefault Collection, Staff Collection[0m
+                        [36m</span>[39m
+                      [36m</div>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"_SessionTimer_eb8248"[39m
+                        [33mdata-testid[39m=[32m"sessionTimer"[39m
+                      [36m>[39m
+                        [36m<span>[39m
+                          [0mTime left:[0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m""[39m
+                          [33mdata-mui-internal-clone-element[39m=[32m"true"[39m
+                          [33mdata-testid[39m=[32m"tooltip"[39m
+                        [36m>[39m
+                          [36m<div[39m
+                            [33mclass[39m=[32m"_TimerEnd_2f7c54 _Timer_2f7c54 _SecondaryTimer_2f7c54"[39m
+                            [33mdata-testid[39m=[32m"timerCount"[39m
+                          [36m>[39m
+                            [0m0[0m
+                            [0m hrs[0m
+                          [36m</div>[39m
+                        [36m</span>[39m
+                      [36m</div>[39m
+                    [36m</div>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_Chat_eb8248"[39m
+                      [33mrole[39m=[32m"button"[39m
+                    [36m>[39m
+                      [36m<button[39m
+                        [33mclass[39m=[32m"MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium _MobileIcon_eb8248 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"[39m
+                        [33mtabindex[39m=[32m"0"[39m
+                        [33mtype[39m=[32m"button"[39m
+                      [36m>[39m
+                        [36m<svg[...
+[90m [2m❯[22m waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m src/containers/Chat/ChatInterface/ChatInterface.test.tsx:[2m328:23[22m[39m
+    [90m326| [39m  [35mconst[39m attachmentIcon [33m=[39m [35mawait[39m screen[33m.[39m[34mfindByTestId[39m([32m'attachmentIcon'[39m)[33m;[39m
+    [90m327| [39m  fireEvent[33m.[39m[34mclick[39m(attachmentIcon)[33m;[39m
+    [90m328| [39m  [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([32m'Attach'[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m   | [39m                      [31m^[39m
+    [90m329| [39m})[33m;[39m
+    [90m330| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m14 passed[39m[22m[90m (16)[39m
+[2m   Start at [22m 17:40:26
+[2m   Duration [22m 22.26s[2m (transform 4.42s, setup 499ms, import 8.70s, tests 11.45s, environment 1.28s)[22m
+

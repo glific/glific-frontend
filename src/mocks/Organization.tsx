@@ -823,8 +823,13 @@ export const getOrganizationBSP = {
   result: {
     data: {
       organization: {
+        __typename: 'OrganizationStatus',
         organization: {
-          bsp: { shortcode: 'gupshup_enterprise' },
+          __typename: 'Organization',
+          bsp: {
+            __typename: 'BSP',
+            shortcode: 'gupshup_enterprise',
+          },
         },
       },
     },
@@ -867,8 +872,12 @@ export const OrganizationStateMock = {
   result: {
     data: {
       organization: {
+        __typename: 'OrganizationStatus',
         organization: {
+          __typename: 'Organization',
           isSuspended: false,
+          trialExpirationDate: '2025-12-31',
+          isTrialOrg: false,
         },
       },
     },
@@ -1004,10 +1013,10 @@ export const createMaytapiCredentialsMock = (error: boolean = false) => ({
         credential: error
           ? null
           : {
-              id: '3',
-              keys: '{}',
-              secrets: '{"token":"token","product_id":"product_id"}',
-            },
+            id: '3',
+            keys: '{}',
+            secrets: '{"token":"token","product_id":"product_id"}',
+          },
         errors: error ? [new Error('Something went wrong')] : null,
       },
     },
@@ -1079,13 +1088,13 @@ export const updateMaytapiCredentials = (error: boolean = false) => ({
         credential: error
           ? null
           : {
-              id: '3',
-              provider: {
-                shortcode: 'maytapi',
-              },
-              keys: '{}',
-              secrets: '{"token":"token2","product_id":"product_id2"}',
+            id: '3',
+            provider: {
+              shortcode: 'maytapi',
             },
+            keys: '{}',
+            secrets: '{"token":"token2","product_id":"product_id2"}',
+          },
         errors: error ? [new Error('Something went wrong')] : null,
       },
     },
