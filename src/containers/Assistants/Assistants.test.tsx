@@ -83,7 +83,7 @@ test('it creates an assistant', async () => {
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
-  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
@@ -276,7 +276,7 @@ test('it updates the assistant', async () => {
   autocompletes[0].focus();
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });

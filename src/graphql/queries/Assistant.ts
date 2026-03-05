@@ -40,9 +40,3 @@ export const GET_ASSISTANT = gql`
     }
   }
 `;
-
-export const GET_MODELS = gql`
-  query RootQueryType {
-    listOpenaiModels
-  }
-`;
