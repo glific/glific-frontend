@@ -1,10 +1,10 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render } from '@testing-library/react';
 import dayjs from 'dayjs';
-import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
-import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { SHORT_DATE_FORMAT } from 'common/constants';
+import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import ChatConversation from './ChatConversation';
 
 const mockCallback = vi.fn();
@@ -83,6 +83,7 @@ test('it should call the callback function on click action', () => {
 test('it should not throw when lastMessage body is null', () => {
   const props = {
     ...defaultProps,
+    highlightSearch: 'test',
     lastMessage: { body: null, insertedAt, type: 'TEXT' },
   };
   expect(() => render(wrapperContainer(props))).not.toThrow();
@@ -91,6 +92,7 @@ test('it should not throw when lastMessage body is null', () => {
 test('it should not throw when lastMessage body is undefined', () => {
   const props = {
     ...defaultProps,
+    highlightSearch: 'test',
     lastMessage: { body: undefined, insertedAt, type: 'TEXT' },
   };
   expect(() => render(wrapperContainer(props))).not.toThrow();

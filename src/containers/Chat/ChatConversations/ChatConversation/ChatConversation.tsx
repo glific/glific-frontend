@@ -1,18 +1,18 @@
-import { ListItemButton } from '@mui/material';
-import { Link, useLocation } from 'react-router';
-import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
+import { ListItemButton } from '@mui/material';
+import dayjs from 'dayjs';
+import { Link, useLocation } from 'react-router';
 
 import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
-import { MARK_AS_READ } from 'graphql/mutations/Chat';
-import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import { MessageType } from '../MessageType/MessageType';
-import styles from './ChatConversation.module.css';
-import Track from 'services/TrackService';
 import { slicedString, updateContactCache } from 'common/utils';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { Timer } from 'components/UI/Timer/Timer';
+import { MARK_AS_READ } from 'graphql/mutations/Chat';
+import { SEARCH_OFFSET } from 'graphql/queries/Search';
+import Track from 'services/TrackService';
+import { MessageType } from '../MessageType/MessageType';
+import styles from './ChatConversation.module.css';
 
 export interface ChatConversationProps {
   entityId: number;
@@ -24,7 +24,7 @@ export interface ChatConversationProps {
   index: number;
   lastMessage: {
     id: number;
-    body: string;
+    body: string | null | undefined;
     insertedAt: string;
     type: string;
     media: any;
@@ -130,20 +130,18 @@ const ChatConversation = ({
   }
 
   const name = slicedString(contactName, 20);
-
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
+  let originalText = body ?? '';
+  let displayMSG: any = <MessageType type={type} body={originalText} />;
 
-  let displayMSG: any = <MessageType type={type} body={body} />;
-
-  let originalText = body;
   if (isTextType) {
     // let's shorten the text message to display correctly
-    if (originalText?.length > COMPACT_MESSAGE_LENGTH) {
+    if (originalText.length > COMPACT_MESSAGE_LENGTH) {
       originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
     }
     // replace new line characters with space to come in same line
-    originalText = originalText?.replace(/\n/g, ' ');
+    originalText = originalText.replace(/\n/g, ' ');
 
     displayMSG = WhatsAppToJsx(originalText);
   }
@@ -203,7 +201,7 @@ const ChatConversation = ({
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
+          {isTextType && highlightSearch ? BoldedText(originalText, highlightSearch) : displayMSG}
         </div>
       </div>
       <div>
