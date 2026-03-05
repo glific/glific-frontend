@@ -20,6 +20,9 @@ const SettingIcon = <Settingicon />;
 
 const GUPSHUP_CREDENTIAL_FIELDS = ['app_name', 'api_key', 'app_id'];
 
+const areAllGupshupFieldsSet = (secretsObj: Record<string, string>) =>
+  GUPSHUP_CREDENTIAL_FIELDS.every((field) => secretsObj[field] && secretsObj[field] !== 'NA');
+
 const queries = {
   getItemQuery: GET_CREDENTIAL,
   createItemQuery: CREATE_CREDENTIAL,
@@ -52,8 +55,7 @@ export const Providers = () => {
     const keysObj = JSON.parse(item.keys);
     const secretsObj = JSON.parse(item.secrets);
     if (type === 'gupshup') {
-      const allFieldsSet = GUPSHUP_CREDENTIAL_FIELDS.every((field) => secretsObj[field] && secretsObj[field] !== 'NA');
-      setIsDisabled(allFieldsSet);
+      setIsDisabled(areAllGupshupFieldsSet(secretsObj));
     }
     const fields: any = {};
     Object.assign(fields, keysObj);
@@ -194,10 +196,7 @@ export const Providers = () => {
               fields[key].view_only = !!(credentials[key] && credentials[key] !== 'NA');
             }
           });
-          const allFieldsSet = GUPSHUP_CREDENTIAL_FIELDS.every(
-            (field) => credentials[field] && credentials[field] !== 'NA'
-          );
-          setIsDisabled(allFieldsSet);
+          setIsDisabled(areAllGupshupFieldsSet(credentials));
         }
 
         addField(fields);
