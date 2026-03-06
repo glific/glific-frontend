@@ -26,6 +26,7 @@ interface AssistantOptionsProps {
   onFilesChange: (hasChanges: boolean) => void;
   vectorStoreId: string;
   validateForm: () => void;
+  disabled: boolean
 }
 
 const temperatureInfo =
@@ -43,6 +44,7 @@ export const AssistantOptions = ({
   onFilesChange,
   vectorStoreId,
   validateForm,
+  disabled
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
@@ -250,7 +252,7 @@ export const AssistantOptions = ({
                 data-testid="addFiles"
                 onClick={() => setShowUploadDialog(true)}
                 variant="outlined"
-                disabled={isLegacyVectorStore}
+                disabled={disabled || isLegacyVectorStore}
               >
                 <AddIcon />
                 {t('Manage Files')}
@@ -299,6 +301,7 @@ export const AssistantOptions = ({
               step={0.01}
               max={2}
               min={0}
+              disabled={disabled}
             />
             <input
               role="sliderDisplay"
@@ -318,6 +321,7 @@ export const AssistantOptions = ({
                 setFieldValue('temperature', value);
               }}
               className={`${styles.SliderDisplay} ${error ? styles.Error : ''}`}
+              disabled={disabled}
             />
           </div>
           {error && <p className={styles.ErrorText}>Temperature value should be between 0-2</p>}
