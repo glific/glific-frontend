@@ -1,10 +1,10 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render } from '@testing-library/react';
 import dayjs from 'dayjs';
-import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
-import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { SHORT_DATE_FORMAT } from 'common/constants';
+import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import ChatConversation from './ChatConversation';
 
 const mockCallback = vi.fn();
@@ -78,4 +78,51 @@ test('it should call the callback function on click action', () => {
   const { getAllByTestId } = render(wrapperContainer(defaultProps));
   fireEvent.click(getAllByTestId('list')[0]);
   expect(mockCallback).toHaveBeenCalled();
+});
+
+test('it should not throw when lastMessage body is null', () => {
+  const props = {
+    ...defaultProps,
+    highlightSearch: 'test',
+    lastMessage: { body: null, insertedAt, type: 'TEXT' },
+  };
+  expect(() => render(wrapperContainer(props))).not.toThrow();
+});
+
+test('it should not throw when lastMessage body is undefined', () => {
+  const props = {
+    ...defaultProps,
+    highlightSearch: 'test',
+    lastMessage: { body: undefined, insertedAt, type: 'TEXT' },
+  };
+  expect(() => render(wrapperContainer(props))).not.toThrow();
+});
+
+test('it should truncate message body longer than 35 characters', () => {
+  const longBody = 'This is a very long message that exceeds the limit';
+  const props = {
+    ...defaultProps,
+    lastMessage: { body: longBody, insertedAt, type: 'TEXT' },
+  };
+  const { getByTestId } = render(wrapperContainer(props));
+  expect(getByTestId('content').textContent).toContain('...');
+});
+
+test('it should not truncate message body within 35 characters', () => {
+  const shortBody = 'Short message';
+  const props = {
+    ...defaultProps,
+    lastMessage: { body: shortBody, insertedAt, type: 'TEXT' },
+  };
+  const { getByTestId } = render(wrapperContainer(props));
+  expect(getByTestId('content').textContent).not.toContain('...');
+});
+
+test('it should replace newlines with spaces in TEXT messages', () => {
+  const props = {
+    ...defaultProps,
+    lastMessage: { body: 'Hello\nWorld', insertedAt, type: 'TEXT' },
+  };
+  const { getByTestId } = render(wrapperContainer(props));
+  expect(getByTestId('content').textContent).not.toContain('\n');
 });
