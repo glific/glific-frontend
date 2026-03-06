@@ -1,0 +1,35 @@
+name: Staging Integration Testing
+
+on:
+  pull_request:
+    branches: [rvignesh/fix-nginx-conf]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v3
+
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        run: yarn setup
+
+      - name: Setup Cypress
+        run: |
+          git clone https://github.com/glific/cypress-testing.git
+          cd cypress-testing
+          git checkout test_staging
+          cd ..
+          cp -r cypress-testing/cypress cypress
+          yarn add cypress@13.6.2
+          cp cypress-testing/cypress.config.ts.example cypress.config.ts
+
+      - name: Cypress run
+        env:
+          CYPRESS_BASE_URL: https://staging.glific.com
+          CYPRESS_BACKEND_URL: https://api.staging.glific.com/api
+        run: |
+          yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
