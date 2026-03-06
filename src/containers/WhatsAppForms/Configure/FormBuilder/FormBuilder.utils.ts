@@ -106,7 +106,12 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const screenIds = generateUniqueScreenIds(screens);
   const fieldNameMap = computeFieldNames(screens);
 
-  const previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string; screenId: string }> = [];
+  const previousScreensPayloadData: Array<{
+    payloadKey: string;
+    fieldType: string;
+    inputType?: string;
+    screenId: string;
+  }> = [];
 
   const flowScreens = screens.map((screen, index) => {
     const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
@@ -340,8 +345,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
 };
 
 /** Returns true if the input type stores a numeric value (number or passcode). */
-const isNumericInputType = (inputType?: string): boolean =>
-  ['number', 'passcode'].includes(inputType || '');
+const isNumericInputType = (inputType?: string): boolean => ['number', 'passcode'].includes(inputType || '');
 
 const INPUT_TYPE_TO_DATA_SCHEMA: Record<string, { type: string; __example__: any }> = {
   text: { type: 'string', __example__: 'Example' },
@@ -398,26 +402,21 @@ const generateScreenPayload = (
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType, screenId }) => {
     const isNumberField = fieldType === 'TextInput' && isNumericInputType(inputType);
     if (isNumberField) {
-      if (isTerminal && screenId) {
-        payload[payloadKey] = `\${screen.${screenId}.form.${payloadKey}}`;
-      }
-    } else {
-      payload[payloadKey] = `\${data.${payloadKey}}`;
+      payload[payloadKey] =
+        isTerminal && screenId ? `\${screen.${screenId}.form.${payloadKey}}` : `\${data.${payloadKey}}`;
     }
   });
 
-  screenContent.forEach((item) => {
-    if (item.type === 'Text Answer' || item.type === 'Selection') {
-      const fieldName = fieldNameMap.get(item.id);
-      if (fieldName) {
-        const componentType = getWhatsAppComponentType(item.type, item.name);
-        const isNumberField = componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase());
-        if (isNumberField && !isTerminal) return;
+  screenContent
+    .filter((item) => (item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id))
+    .forEach((item) => {
+      const fieldName = fieldNameMap.get(item.id)!;
+      const componentType = getWhatsAppComponentType(item.type, item.name);
+      const isNumberField = componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase());
+      if (isNumberField && !isTerminal) return;
 
-        payload[fieldName] = `\${form.${fieldName}}`;
-      }
-    }
-  });
+      payload[fieldName] = `\${form.${fieldName}}`;
+    });
 
   return payload;
 };
@@ -430,7 +429,12 @@ export const convertScreenToFlowJSON = (
   nextScreenId?: string,
   screenId?: string,
   fieldNameMap: Map<string, string> = new Map(),
-  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string; screenId: string }> = []
+  previousScreensPayloadData: Array<{
+    payloadKey: string;
+    fieldType: string;
+    inputType?: string;
+    screenId: string;
+  }> = []
 ): any => {
   const children: any[] = [];
 
@@ -520,9 +524,40 @@ const getInternalComponentType = (whatsappType: string): { type: string; name: s
  * are spread back verbatim when converting back to JSON — nothing is lost.
  */
 const EXTRA_ATTRIBUTE_KEYS: Record<string, string[]> = {
-  DatePicker: ['min-date', 'max-date', 'unavailable-dates', 'visible', 'enabled', 'on-select-action', 'init-value', 'error-message'],
-  RadioButtonsGroup: ['min-selected-items', 'max-selected-items', 'enabled', 'visible', 'on-select-action', 'on-unselect-action', 'description', 'init-value', 'error-message', 'media-size'],
-  CheckboxGroup: ['min-selected-items', 'max-selected-items', 'enabled', 'visible', 'on-select-action', 'on-unselect-action', 'description', 'init-value', 'error-message', 'media-size'],
+  DatePicker: [
+    'min-date',
+    'max-date',
+    'unavailable-dates',
+    'visible',
+    'enabled',
+    'on-select-action',
+    'init-value',
+    'error-message',
+  ],
+  RadioButtonsGroup: [
+    'min-selected-items',
+    'max-selected-items',
+    'enabled',
+    'visible',
+    'on-select-action',
+    'on-unselect-action',
+    'description',
+    'init-value',
+    'error-message',
+    'media-size',
+  ],
+  CheckboxGroup: [
+    'min-selected-items',
+    'max-selected-items',
+    'enabled',
+    'visible',
+    'on-select-action',
+    'on-unselect-action',
+    'description',
+    'init-value',
+    'error-message',
+    'media-size',
+  ],
   Dropdown: ['enabled', 'visible', 'on-select-action', 'on-unselect-action', 'init-value', 'error-message'],
 };
 
@@ -533,12 +568,27 @@ const EXTRA_ATTRIBUTE_KEYS: Record<string, string[]> = {
  * Anything outside this set triggers a validation error.
  */
 export const VALID_COMPONENT_TYPES = new Set([
-  'TextHeading', 'TextSubheading', 'TextCaption', 'TextBody',
-  'TextInput', 'TextArea', 'DatePicker',
-  'RadioButtonsGroup', 'CheckboxGroup', 'Dropdown', 'OptIn',
-  'Image', 'Footer',
-  'CalendarPicker', 'DocumentPicker', 'ChipsSelector', 'EmbeddedLink',
-  'PhotoPicker', 'RichText', 'If', 'Switch',
+  'TextHeading',
+  'TextSubheading',
+  'TextCaption',
+  'TextBody',
+  'TextInput',
+  'TextArea',
+  'DatePicker',
+  'RadioButtonsGroup',
+  'CheckboxGroup',
+  'Dropdown',
+  'OptIn',
+  'Image',
+  'Footer',
+  'CalendarPicker',
+  'DocumentPicker',
+  'ChipsSelector',
+  'EmbeddedLink',
+  'PhotoPicker',
+  'RichText',
+  'If',
+  'Switch',
 ]);
 
 /** Picks the known extra Meta-spec attributes from a JSON component that the form builder doesn't edit. */
