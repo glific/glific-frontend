@@ -402,8 +402,11 @@ const generateScreenPayload = (
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType, screenId }) => {
     const isNumberField = fieldType === 'TextInput' && isNumericInputType(inputType);
     if (isNumberField) {
-      payload[payloadKey] =
-        isTerminal && screenId ? `\${screen.${screenId}.form.${payloadKey}}` : `\${data.${payloadKey}}`;
+      if (isTerminal && screenId) {
+        payload[payloadKey] = `\${screen.${screenId}.form.${payloadKey}}`;
+      }
+    } else {
+      payload[payloadKey] = `\${data.${payloadKey}}`;
     }
   });
 
