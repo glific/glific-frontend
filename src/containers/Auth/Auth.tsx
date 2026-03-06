@@ -15,8 +15,6 @@ import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 
-import { Promotion } from './Promotion/Promotion';
-
 export interface AuthProps {
   pageTitle: string;
   buttonText: string;
@@ -302,8 +300,6 @@ export const Auth = ({
           </>
         ) : null}
       </div>
-
-      {mode === 'login' && <Promotion />}
     </div>
   );
 };
