@@ -564,7 +564,7 @@
   "Assistant not found": "Assistant not found",
   "Unsaved changes": "Unsaved changes",
   "Knowledge Base": "Knowledge Base",
-  "Version Description": "Version Description",
-  "Briefly describe what changed in this version (optional)": "Briefly describe what changed in this version (optional)",
+  "Notes (Optional)": "Notes (Optional)",
+  "Add notes on changes made to this assistant": "Add notes on changes made to this assistant",
   "A new version is being created": "A new version is being created"
 }
