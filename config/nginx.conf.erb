@@ -2,9 +2,6 @@ daemon off;
 
 worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
 
-pid /app/nginx.pid;
-error_log stderr error;
-
 events {
   use epoll;
   accept_mutex on;
@@ -16,9 +13,6 @@ http {
   gzip on;
   gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
-  log_format l2met 'measure#nginx.service=$request_time request_id=$http_x_request_id';
-	access_log /dev/stdout l2met;
-  
   server {
     listen <%= ENV['PORT'] %>;
     root /app/build;
