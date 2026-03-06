@@ -16,8 +16,10 @@ http {
   gzip on;
   gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
-  log_format l2met 'measure#nginx.service=$request_time request_id=$http_x_request_id';
-	access_log /dev/stdout l2met;
+  log_format detailed '$remote_addr - $remote_user [$time_local] '
+                    '"$request" $request_time $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent"';
+	access_log /dev/stdout detailed;
 
   server {
     listen <%= ENV['PORT'] %>;
