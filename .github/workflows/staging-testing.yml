@@ -2,7 +2,7 @@ name: Staging Integration Testing
 
 on:
   pull_request:
-    types: [labeled]
+    branches: [rvignesh/fix-nginx-conf]
 
 jobs:
   cypress:
