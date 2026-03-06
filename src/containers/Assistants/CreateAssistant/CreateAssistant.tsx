@@ -250,10 +250,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       component: Input,
       name: 'versionDescription',
       type: 'text',
-      label: t('Version Description'),
+      label: t('Notes (Optional)'),
       rows: 2,
       textArea: true,
-      helperText: t('Briefly describe what changed in this version (optional)'),
+      helperText: t('Add notes on changes made to this assistant'),
       disabled: newVersionInProgress,
     },
   ];

@@ -211,18 +211,11 @@ export const AssistantOptions = ({
               ))}
             </div>
           )}
-          <span>Individual file size limit: 20MB</span>
-
-          <span>
-            {t('Information in the attached files will be available to this assistant.')}
-            <a
-              href="https://platform.openai.com/docs/assistants/tools/file-search#supported-files"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn More
-            </a>
-          </span>
+          <div className={styles.UploadInfo}>
+            <span>Individual file size limit: 20MB</span>
+            <span>Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .pptx, .txt</span>
+            <span>Each file takes approx 15 secs to upload.</span>
+          </div>
         </div>
       </DialogBox>
     );
