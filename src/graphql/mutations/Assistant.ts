@@ -28,6 +28,7 @@ export const UPLOAD_FILE_TO_KAAPI = gql`
       fileId
       filename
       uploadedAt
+      fileSize
     }
   }
 `;
@@ -37,6 +38,7 @@ export const CREATE_KNOWLEDGE_BASE = gql`
     createKnowledgeBase(mediaInfo: $mediaInfo, id: $createKnowledgeBaseId) {
       knowledgeBase {
         id
+        knowledgeBaseVersionId
         name
       }
     }
