@@ -6,7 +6,6 @@ on:
 
 jobs:
   cypress:
-    if: github.event.label.name == 'test-staging'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout frontend
