@@ -149,7 +149,6 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   useEffect(() => {
     if (assistantData) {
-      console.log('Assistant data:', assistantData);
       setAssistantId(assistantData.assistantId);
       const modelValue =
         modelOptions?.find((item: { label: string }) => item.label === assistantData.model) ||
