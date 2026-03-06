@@ -339,6 +339,10 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
   return null;
 };
 
+/** Returns true if the input type stores a numeric value (number or passcode). */
+const isNumericInputType = (inputType?: string): boolean =>
+  ['number', 'passcode'].includes(inputType || '');
+
 const INPUT_TYPE_TO_DATA_SCHEMA: Record<string, { type: string; __example__: any }> = {
   text: { type: 'string', __example__: 'Example' },
   number: { type: 'number', __example__: 0 },
@@ -354,7 +358,7 @@ const generateScreenData = (
 ): Record<string, any> => {
   const data: Record<string, any> = {};
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType }) => {
-    if (fieldType === 'TextInput' && ['number', 'passcode'].includes(inputType || '')) return;
+    if (fieldType === 'TextInput' && isNumericInputType(inputType)) return;
 
     if (fieldType === 'CheckboxGroup') {
       data[payloadKey] = {
@@ -392,7 +396,7 @@ const generateScreenPayload = (
   const payload: Record<string, string> = {};
 
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType, screenId }) => {
-    const isNumberField = fieldType === 'TextInput' && ['number', 'passcode'].includes(inputType || '');
+    const isNumberField = fieldType === 'TextInput' && isNumericInputType(inputType);
     if (isNumberField) {
       if (isTerminal && screenId) {
         payload[payloadKey] = `\${screen.${screenId}.form.${payloadKey}}`;
@@ -407,7 +411,7 @@ const generateScreenPayload = (
       const fieldName = fieldNameMap.get(item.id);
       if (fieldName) {
         const componentType = getWhatsAppComponentType(item.type, item.name);
-        const isNumberField = componentType === 'TextInput' && ['number', 'passcode'].includes(item.data.inputType?.toLowerCase() || '');
+        const isNumberField = componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase());
         if (isNumberField && !isTerminal) return;
 
         payload[fieldName] = `\${form.${fieldName}}`;
