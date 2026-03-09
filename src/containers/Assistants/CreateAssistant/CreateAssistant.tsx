@@ -195,6 +195,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       name: 'name',
       type: 'text',
       label: `${t('Name')}*`,
+      disabled: newVersionInProgress,
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
@@ -221,8 +222,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       multiple: false,
       label: `${t('Model')}*`,
       helperText: t('Choose the best model for your needs.'),
+      disabled: newVersionInProgress,
     },
-
     {
       component: Input,
       name: 'instructions',
@@ -232,6 +233,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
       endAdornment: expandIcon,
+      disabled: newVersionInProgress,
     },
     {
       component: AssistantOptions,
@@ -246,15 +248,17 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
       initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,
+      disabled: newVersionInProgress,
     },
     {
       component: Input,
       name: 'versionDescription',
       type: 'text',
-      label: t('Version Description'),
+      label: t('Notes (Optional)'),
       rows: 2,
       textArea: true,
-      helperText: t('Briefly describe what changed in this version (optional)'),
+      helperText: t('Add notes on changes made to this assistant'),
+      disabled: newVersionInProgress,
     },
   ];
 
@@ -381,6 +385,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
               onClick={formik.submitForm}
               variant="contained"
               data-testid="submitAction"
+              disabled={newVersionInProgress}
             >
               {t('Save')}
             </Button>
