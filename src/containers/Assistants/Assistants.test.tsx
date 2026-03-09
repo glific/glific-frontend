@@ -544,6 +544,19 @@ test('it clears the knowledge base required warning after knowledge base is crea
   });
 });
 
+test('it displays assistant status in the list', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  const statusBadges = screen.getAllByTestId('assistantStatus');
+  expect(statusBadges.length).toBeGreaterThan(0);
+  expect(statusBadges[0]).toHaveTextContent('ready');
+});
+
 test('closing a knowledge base dialog with no files should revert to the original files', async () => {
   render(assistantsComponent());
 
