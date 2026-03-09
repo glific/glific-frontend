@@ -89,11 +89,14 @@
   flex-direction: column;
 }
 
-.DialogContent span {
+.UploadInfo {
   font-size: 0.8rem;
   line-height: 0;
   color: #555;
-  margin: 1rem 0;
+  display: flex;
+  gap: 1.2rem;
+  flex-direction: column;
+  margin-top: 1rem;
 }
 
 .DialogContent span a {

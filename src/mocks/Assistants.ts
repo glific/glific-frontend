@@ -1,12 +1,11 @@
 import {
-  ADD_FILES_TO_FILE_SEARCH,
+  CREATE_KNOWLEDGE_BASE,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
-  REMOVE_FILES_FROM_ASSISTANT,
   UPDATE_ASSISTANT,
-  UPLOAD_FILE_TO_OPENAI,
+  UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANTS, GET_ASSISTANT_FILES, GET_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANTS } from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3) => ({
   request: {
@@ -33,24 +32,17 @@ const getAssistantsList = (limit: number = 3) => ({
   },
 });
 
-const listOpenaiModels = {
-  request: {
-    query: GET_MODELS,
-  },
-  result: {
-    data: {
-      listOpenaiModels: ['gpt-4-turbo', 'gpt-4-turbo-2024-04-09', 'chatgpt-4o-latest', 'gpt-4o'],
-    },
-  },
-};
-
 const createAssistant = {
   request: {
     query: CREATE_ASSISTANT,
     variables: {
       input: {
-        name: null,
-        temperature: 0.1,
+        instructions: 'test instructions',
+        model: 'gpt-4o-mini',
+        name: 'test name',
+        temperature: 1.5,
+        knowledgeBaseVersionId: 'kb-1',
+        description: 'description for new changes',
       },
     },
   },
@@ -66,7 +58,10 @@ const createAssistant = {
   },
 };
 
-const getAssistant = (assistantId: any) => ({
+const getAssistant = (
+  assistantId: string,
+  options?: { legacy?: boolean; newVersionInProgress?: boolean }
+) => ({
   request: {
     query: GET_ASSISTANT,
     variables: { assistantId },
@@ -78,41 +73,23 @@ const getAssistant = (assistantId: any) => ({
         assistant: {
           assistantId: 'asst_JhYmNWzpCVBZY2vTuohvmqjs',
           id: assistantId,
-          insertedAt: '2024-10-15T11:29:28Z',
-          instructions: null,
+          newVersionInProgress: options?.newVersionInProgress ?? false,
+          name: 'Assistant-405db438',
           model: 'gpt-4o',
-          name: 'cc4d824d',
+          instructions: null,
+          status: 'active',
           temperature: 1,
-          updatedAt: '2024-10-16T15:39:47Z',
-        },
-      },
-    },
-  },
-});
-
-const getAssistantFiles = (assistantId: any) => ({
-  request: {
-    query: GET_ASSISTANT_FILES,
-    variables: { assistantId },
-  },
-  result: {
-    data: {
-      assistant: {
-        __typename: 'AssistantResult',
-        assistant: {
-          __typename: 'Assistant',
           vectorStore: {
-            __typename: 'VectorStore',
+            id: 'vs-1',
+            knowledgeBaseVersionId: 'llm-vs-1',
+            name: 'VectorStore-77ae3597',
+            legacy: options?.legacy ?? false,
             files: [
               {
-                __typename: 'FileInfo',
-                fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
-                filename: 'Accelerator Guide (1).pdf',
+                name: 'Accelerator Guide (1).pdf',
+                id: 'file-rls90OGDUgFeLewh6e01Eamf',
               },
             ],
-            id: assistantId,
-            name: 'VectorStore-77ae3597',
-            vectorStoreId: 'vs_laIycGtun7qEl0U7zlVsygmy',
           },
         },
       },
@@ -153,13 +130,15 @@ const getAssistantListOnSearch = {
 
 const uploadFileToFileSearch = {
   request: {
-    query: UPLOAD_FILE_TO_OPENAI,
+    query: UPLOAD_FILE_TO_KAAPI,
   },
   result: {
     data: {
       uploadFilesearchFile: {
         fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
         filename: 'Accelerator Guide (1).pdf',
+        uploadedAt: '2024-10-16T15:58:26',
+        fileSize: 32880,
       },
     },
   },
@@ -168,7 +147,7 @@ const uploadFileToFileSearch = {
 
 export const uploadFileToFileSearchWithError = {
   request: {
-    query: UPLOAD_FILE_TO_OPENAI,
+    query: UPLOAD_FILE_TO_KAAPI,
   },
   result: {
     data: {
@@ -189,49 +168,43 @@ export const uploadFileToFileSearchWithError = {
   variableMatcher: (variables: any) => true,
 };
 
-const removeFileFromAssistant = {
-  request: {
-    query: REMOVE_FILES_FROM_ASSISTANT,
-    variables: { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', removeAssistantFileId: '1' },
-  },
-  result: {
-    data: {
-      removeAssistantFile: {
-        assistant: {
-          id: '1',
-        },
-        errors: null,
-      },
-    },
-  },
+const fileWithUploadedAt = {
+  fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
+  filename: 'Accelerator Guide (1).pdf',
+  uploadedAt: '2024-10-16T15:58:26',
+  fileSize: 32880,
 };
 
-const addFilesToFilesearch = (mediaInfo: any) => ({
+const createKnowledgeBaseMock = (
+  mediaInfo: Array<{ fileId: string; filename: string; uploadedAt: string; fileSize: number }>,
+  assistantId: string | null
+) => ({
   request: {
-    query: ADD_FILES_TO_FILE_SEARCH,
+    query: CREATE_KNOWLEDGE_BASE,
     variables: {
-      addAssistantFilesId: '1',
+      createKnowledgeBaseId: assistantId,
       mediaInfo,
     },
   },
   result: {
     data: {
-      addAssistantFiles: {
-        assistant: {
-          id: '1',
+      createKnowledgeBase: {
+        knowledgeBase: {
+          id: 'kb-1',
+          knowledgeBaseVersionId: 'kb-1',
+          name: 'KnowledgeBase-1',
         },
-        errors: null,
       },
     },
   },
 });
 
-const addFilesToFilesearchWithError = {
+const createKnowledgeBaseWithError = {
   request: {
-    query: ADD_FILES_TO_FILE_SEARCH,
+    query: CREATE_KNOWLEDGE_BASE,
     variables: {
-      addAssistantFilesId: '1',
-      mediaInfo: [{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }],
+      createKnowledgeBaseId: '1',
+      mediaInfo: [fileWithUploadedAt],
     },
   },
   error: new Error('An error occured'),
@@ -244,19 +217,16 @@ const updateAssistant = {
       updateAssistantId: '1',
       input: {
         instructions: 'test instructions',
-        model: 'chatgpt-4o-latest',
+        model: 'gpt-4o-mini',
         name: 'test name',
         temperature: 1.5,
+        knowledgeBaseVersionId: 'llm-vs-1',
       },
     },
   },
   result: {
     data: {
       updateAssistant: {
-        assistant: {
-          id: '1',
-          name: 'test name',
-        },
         errors: null,
       },
     },
@@ -287,19 +257,14 @@ const uploadFileMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearch,
   uploadFileToFileSearch,
-  removeFileFromAssistant,
-  addFilesToFilesearch([
-    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-  ]),
+  createKnowledgeBaseMock([fileWithUploadedAt], null),
+  createKnowledgeBaseMock([fileWithUploadedAt, fileWithUploadedAt, fileWithUploadedAt], '1'),
 ];
 
 export const MOCKS = [
   getAssistantsList(),
   getAssistantsList(),
   createAssistant,
-  listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
   getAssistant('1'),
@@ -307,31 +272,31 @@ export const MOCKS = [
   getAssistant('2'),
   getAssistant('2'),
   getAssistant('4'),
-  getAssistantFiles('4'),
-  getAssistantFiles('1'),
-  getAssistantFiles('1'),
-  getAssistantFiles('1'),
-  getAssistantFiles(4),
-  getAssistantFiles('2'),
-  getAssistantFiles('2'),
   getAssistantListOnSearch,
   updateAssistant,
   removeAssistant,
 ];
 
 export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
-export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
+export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, createKnowledgeBaseWithError];
 
-export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
-export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
+export const legacyVectorStoreMocks = [
+  getAssistantsList(),
+  getAssistant('1', { legacy: true }),
+  getAssistant('1', { legacy: true }),
+];
+export const newVersionInProgressMocks = [
+  getAssistantsList(),
+  getAssistant('1', { newVersionInProgress: true }),
+  getAssistant('1', { newVersionInProgress: true }),
+];
+export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
+export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];
 export const errorMocks = [
   getAssistantsList(4),
-  listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
-  getAssistantFiles('1'),
-  getAssistantFiles('1'),
   uploadFileToFileSearch,
   uploadFileToFileSearchWithError,
-  addFilesToFilesearch([{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }]),
+  createKnowledgeBaseMock([fileWithUploadedAt], '1'),
 ];
