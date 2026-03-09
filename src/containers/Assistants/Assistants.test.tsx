@@ -392,7 +392,7 @@ test('it disables Manage Files button for legacy vector store', async () => {
   await waitFor(() => {
     expect(
       screen.getByText(
-        'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
+        'This assistant was created before 10/03/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
       )
     ).toBeInTheDocument();
   });
