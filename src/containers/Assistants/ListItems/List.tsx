@@ -116,7 +116,10 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                       label={item.itemId}
                       size="small"
                       icon={<CopyIcon />}
-                      onClick={(e) => { e.stopPropagation(); copyToClipboard(item.itemId); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyToClipboard(item.itemId);
+                      }}
                       variant="outlined"
                       className={styles.CopyChip}
                     />
