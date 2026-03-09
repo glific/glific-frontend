@@ -154,11 +154,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   useEffect(() => {
     if (assistantData) {
       setAssistantId(assistantData.assistantId);
-      const modelValue = modelOptions?.find((item: { label: string }) => item.label === assistantData.model);
+      const modelValue = assistantData.model ? { id: assistantData.model, label: assistantData.model } : null;
       formik.resetForm({
         values: {
           name: assistantData.name,
-          model: modelValue || null,
+          model: modelValue,
           instructions: assistantData.instructions,
           temperature: assistantData.temperature,
           knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
