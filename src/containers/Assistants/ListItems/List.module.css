@@ -89,18 +89,18 @@
   text-transform: none;
 }
 
-.ready,
-.active {
+.Ready,
+.Active {
   background-color: #e6f4ea;
   color: #1e7e34;
 }
 
-.in_progress {
+.In_progress {
   background-color: #fff3e0;
   color: #b93d00;
 }
 
-.failed {
+.Failed {
   background-color: #fdecea;
   color: #c62828;
 }

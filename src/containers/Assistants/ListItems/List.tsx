@@ -122,7 +122,7 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                         data-testid="assistantStatus"
                         label={item.status.replace(/_/g, ' ').replace(/^\w/, (c: string) => c.toUpperCase())}
                         size="small"
-                        className={`${styles.StatusChip} ${styles[item.status] || ''}`}
+                        className={`${styles.StatusChip} ${styles[item.status.charAt(0).toUpperCase() + item.status.slice(1)] || ''}`}
                       />
                     )}
                   </div>
