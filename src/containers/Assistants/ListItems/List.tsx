@@ -110,12 +110,22 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                     <span className={styles.Title}>{item.name}</span>
                     <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
                   </div>
-                  <span className={styles.Id}>
-                    <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
-                      <CopyIcon />
-                    </IconButton>
-                    {item.itemId}
-                  </span>
+                  <div className={styles.Footer}>
+                    <span className={styles.Id}>
+                      <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
+                        <CopyIcon />
+                      </IconButton>
+                      {item.itemId}
+                    </span>
+                    {item.status && (
+                      <span
+                        className={`${styles.Status} ${styles[`Status--${item.status}`] || ''}`}
+                        data-testid="assistantStatus"
+                      >
+                        {item.status.replace(/_/g, ' ')}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
