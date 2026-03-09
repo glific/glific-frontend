@@ -30,11 +30,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup
-      - name: Checkout frontend
+      - name: Setup frontend
         uses: actions/checkout@v3
 
       - name: Use latest Node.js
         uses: actions/setup-node@v3
+
+      - name: Setup elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
 
       - name: Setup frontend
         run: |
@@ -49,12 +55,6 @@ jobs:
           echo start yarn setup.
           yarn setup
           echo done.
-
-      - name: Setup elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ matrix.elixir }}
-          otp-version: ${{ matrix.otp }}
 
       # backend setup
       - name: Setup backend
@@ -96,9 +96,13 @@ jobs:
         run: |
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
+          echo done. go to dir.
           cd cypress-testing
-          cp cypress.config.ts.example cypress.config.ts
-          yarn
+          cd ..
+          cp -r cypress-testing/cypress cypress
+          yarn add cypress@13.6.2
+          echo Create cypress.config.ts from example
+          cp cypress-testing/cypress.config.ts.example cypress.config.ts
 
         # Run frontend
       - name: Run glific frontend
