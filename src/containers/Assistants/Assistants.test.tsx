@@ -541,8 +541,27 @@ test('it clears the knowledge base required warning after knowledge base is crea
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
+    expect(screen.getByText('1 file')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
     expect(screen.queryByText('Knowledge base is required. Please upload files first.')).not.toBeInTheDocument();
   });
+});
+
+test('it displays assistant status in the list', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  const statusBadges = screen.getAllByTestId('assistantStatus');
+  expect(statusBadges.length).toBeGreaterThan(0);
+  expect(statusBadges[0]).toHaveTextContent('Ready');
 });
 
 test('it displays a model returned from backend that is not in the hardcoded list', async () => {

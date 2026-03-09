@@ -61,6 +61,13 @@
   color: #0000007a;
 }
 
+.Footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
 .Id {
   font-size: 12px;
   color: #555;
@@ -75,6 +82,27 @@
 
 .Id svg {
   height: 1rem !important;
+  width: 1rem !important;
+}
+
+.StatusChip {
+  text-transform: none;
+}
+
+.Ready,
+.Active {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.In_progress {
+  background-color: #fff3e0;
+  color: #b93d00;
+}
+
+.Failed {
+  background-color: #fdecea;
+  color: #c62828;
 }
 
 .NoItems {

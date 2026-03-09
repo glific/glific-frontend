@@ -7,6 +7,7 @@ export const GET_ASSISTANTS = gql`
       id
       insertedAt
       name
+      status
     }
   }
 `;
