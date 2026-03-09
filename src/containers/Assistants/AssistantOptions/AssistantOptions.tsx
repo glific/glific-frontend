@@ -26,7 +26,7 @@ interface AssistantOptionsProps {
   onFilesChange: (hasChanges: boolean) => void;
   vectorStoreId: string;
   validateForm: () => void;
-  disabled: boolean
+  disabled: boolean;
 }
 
 const temperatureInfo =
@@ -44,7 +44,7 @@ export const AssistantOptions = ({
   onFilesChange,
   vectorStoreId,
   validateForm,
-  disabled
+  disabled,
 }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
@@ -147,7 +147,9 @@ export const AssistantOptions = ({
         const updatedFiles = files.map(({ status, ...rest }) => rest);
         setFiles(updatedFiles.map((f) => ({ ...f, status: 'attached' })));
         setFieldValue('initialFiles', updatedFiles);
-        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId, true);
+        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
+        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
+        setTimeout(() => validateForm(), 0);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         onFilesChange(true);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
