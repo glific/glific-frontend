@@ -109,7 +109,7 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const previousScreensPayloadData: Array<{
     payloadKey: string;
     fieldType: string;
-    inputType?: string;
+    inputType: string;
     screenId: string;
   }> = [];
 
@@ -133,7 +133,7 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
         previousScreensPayloadData.push({
           payloadKey: fieldName,
           fieldType: componentType,
-          inputType: item.data.inputType?.toLowerCase(),
+          inputType: item.data.inputType?.toLowerCase() || 'text',
           screenId: screenIds[index],
         });
       }
@@ -232,8 +232,6 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
 /** Converts a form builder content item into a WhatsApp Flow JSON component object. */
 const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<string, string>): any => {
-  // Unsupported component types are returned verbatim from their stored raw JSON.
-
   const componentType = getWhatsAppComponentType(item.type, item.name);
   const { data } = item;
   const fieldName = fieldNameMap.get(item.id);
@@ -337,6 +335,9 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
   return null;
 };
 
+/** Returns true if the input type stores a numeric value (number or passcode). */
+const isNumericInputType = (inputType: string): boolean => ['number', 'passcode'].includes(inputType);
+
 const INPUT_TYPE_TO_DATA_SCHEMA: Record<string, { type: string; __example__: any }> = {
   text: { type: 'string', __example__: 'Example' },
   number: { type: 'number', __example__: 0 },
@@ -348,11 +349,11 @@ const INPUT_TYPE_TO_DATA_SCHEMA: Record<string, { type: string; __example__: any
 
 /** Builds the data schema object for a screen based on input components from all previous screens. */
 const generateScreenData = (
-  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string; screenId: string }>
+  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType: string; screenId: string }>
 ): Record<string, any> => {
   const data: Record<string, any> = {};
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType }) => {
-    if (fieldType === 'TextInput' && ['number', 'passcode'].includes(inputType || '')) return;
+    if (fieldType === 'TextInput' && isNumericInputType(inputType)) return;
 
     if (fieldType === 'CheckboxGroup') {
       data[payloadKey] = {
@@ -365,7 +366,7 @@ const generateScreenData = (
         __example__: false,
         type: 'boolean',
       };
-    } else if (fieldType === 'TextInput' && inputType) {
+    } else if (fieldType === 'TextInput') {
       const schema = INPUT_TYPE_TO_DATA_SCHEMA[inputType] || INPUT_TYPE_TO_DATA_SCHEMA.text;
       data[payloadKey] = { ...schema };
     } else {
@@ -384,13 +385,13 @@ const generateScreenData = (
 const generateScreenPayload = (
   screenContent: ContentItem[],
   fieldNameMap: Map<string, string>,
-  previousScreensPayloadData: Array<{ payloadKey: string; fieldType?: string; inputType?: string; screenId?: string }>,
+  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType: string; screenId: string }>,
   isTerminal: boolean
 ): Record<string, string> => {
   const payload: Record<string, string> = {};
 
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType, screenId }) => {
-    const isNumberField = fieldType === 'TextInput' && ['number', 'passcode'].includes(inputType || '');
+    const isNumberField = fieldType === 'TextInput' && isNumericInputType(inputType);
     if (isNumberField) {
       if (isTerminal && screenId) {
         payload[payloadKey] = `\${screen.${screenId}.form.${payloadKey}}`;
@@ -400,19 +401,17 @@ const generateScreenPayload = (
     }
   });
 
-  screenContent.forEach((item) => {
-    if (item.type === 'Text Answer' || item.type === 'Selection') {
-      const fieldName = fieldNameMap.get(item.id);
-      if (fieldName) {
-        const componentType = getWhatsAppComponentType(item.type, item.name);
-        const isNumberField =
-          componentType === 'TextInput' && ['number', 'passcode'].includes(item.data.inputType?.toLowerCase() || '');
-        if (isNumberField && !isTerminal) return;
+  screenContent
+    .filter((item) => (item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id))
+    .forEach((item) => {
+      const fieldName = fieldNameMap.get(item.id)!;
+      const componentType = getWhatsAppComponentType(item.type, item.name);
+      const isNumberField =
+        componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase() || 'text');
+      if (isNumberField && !isTerminal) return;
 
-        payload[fieldName] = `\${form.${fieldName}}`;
-      }
-    }
-  });
+      payload[fieldName] = `\${form.${fieldName}}`;
+    });
 
   return payload;
 };
@@ -428,7 +427,7 @@ export const convertScreenToFlowJSON = (
   previousScreensPayloadData: Array<{
     payloadKey: string;
     fieldType: string;
-    inputType?: string;
+    inputType: string;
     screenId: string;
   }> = []
 ): any => {
@@ -848,7 +847,7 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     }
 
     // Phase 5: Component type validity + name uniqueness
-    formChildren.forEach((component: any) => {
+    formChildren.forEach((component: any, j: number) => {
       if (INPUT_COMPONENT_TYPES.includes(component.type) && component.name) {
         const existingScreen = componentNameMap.get(component.name);
         if (existingScreen) {
