@@ -61,55 +61,49 @@
   color: #0000007a;
 }
 
-.Id {
-  font-size: 12px;
-  color: #555;
-  display: flex;
-  align-items: center;
-  column-gap: 1rem;
-}
-
-.Id button {
-  padding: 0;
-}
-
-.Id svg {
-  height: 1rem !important;
-}
-
 .Footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 4px;
 }
 
-.Status {
+.CopyChip {
+  font-size: 12px;
+  color: #555;
+  border: none;
+  background: none;
+  padding: 0;
+  gap: 0.5rem;
+}
+
+.CopyChip svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.StatusChip {
   font-size: 11px;
   font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 10px;
   text-transform: capitalize;
-  white-space: nowrap;
+  height: auto;
+  padding: 2px 8px;
 }
 
-.Status--ready {
+.ready,
+.active {
   background-color: #e6f4ea;
   color: #1e7e34;
 }
 
-.Status--in_progress {
+.in_progress {
   background-color: #fff3e0;
   color: #e65100;
 }
 
-.Status--failed {
+.failed {
   background-color: #fdecea;
   color: #c62828;
-}
-
-.Status--active {
-  background-color: #e6f4ea;
-  color: #1e7e34;
 }
 
 .NoItems {
