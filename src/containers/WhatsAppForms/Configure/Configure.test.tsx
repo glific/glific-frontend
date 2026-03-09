@@ -1395,5 +1395,3 @@ describe('validateFlowJson — all phases', () => {
     );
   });
 });
-
-// ── Round-trip preservation tests ────────────────────────────────────────────
