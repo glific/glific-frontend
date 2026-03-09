@@ -10,6 +10,7 @@ import {
   legacyVectorStoreMocks,
   loadMoreMocks,
   newVersionInProgressMocks,
+  unknownModelMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
 import * as Notification from 'common/notification';
@@ -555,6 +556,22 @@ test('it displays assistant status in the list', async () => {
   const statusBadges = screen.getAllByTestId('assistantStatus');
   expect(statusBadges.length).toBeGreaterThan(0);
   expect(statusBadges[0]).toHaveTextContent('ready');
+  
+test('it displays a model returned from backend that is not in the hardcoded list', async () => {
+  render(assistantsComponent(unknownModelMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  expect(autocompletes[0].querySelector('input')).toHaveValue('o3-mini');
 });
 
 test('closing a knowledge base dialog with no files should revert to the original files', async () => {
