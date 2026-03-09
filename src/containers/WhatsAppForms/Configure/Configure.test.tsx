@@ -1045,7 +1045,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('number input type generates correct data schema type in multi-screen form', async () => {
+  test('number input type uses global form property instead of data relay in multi-screen form', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -1077,18 +1077,19 @@ describe('<Configure />', () => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
     });
 
-    // Generate JSON and verify data schema
+    // Generate JSON and verify
     fireEvent.click(screen.getByTestId('formJsonBtn'));
 
     await waitFor(() => {
       const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
       const parsed = JSON.parse(jsonText.value);
 
-      // Screen 2 should have data property with type 'number' for the Age field
-      const screen2Data = parsed.screens[1].data;
-      const numberField = Object.entries(screen2Data).find(([, value]: [string, any]) => value.type === 'number');
-      expect(numberField).toBeDefined();
-      expect(numberField![1]).toEqual({ __example__: 0, type: 'number' });
+      const screen1Id = parsed.screens[0].id;
+      // Terminal screen (screen 2) payload should reference the number field via global form property
+      const screen2Footer = parsed.screens[1].layout.children[0].children.find((c: any) => c.type === 'Footer');
+      const payloadValues = Object.values(screen2Footer['on-click-action'].payload) as string[];
+      const globalFormRef = payloadValues.find((v: string) => v.includes(`screen.${screen1Id}.form.`));
+      expect(globalFormRef).toBeDefined();
     });
   });
 });
