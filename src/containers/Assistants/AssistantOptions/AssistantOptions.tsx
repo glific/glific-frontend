@@ -147,9 +147,7 @@ export const AssistantOptions = ({
         const updatedFiles = files.map(({ status, ...rest }) => rest);
         setFiles(updatedFiles.map((f) => ({ ...f, status: 'attached' })));
         setFieldValue('initialFiles', updatedFiles);
-        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
-        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
-        setTimeout(() => validateForm(), 0);
+        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId, true);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         onFilesChange(true);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
