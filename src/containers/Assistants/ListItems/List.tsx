@@ -112,7 +112,7 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                   </div>
                   <div className={styles.Footer}>
                     <span className={styles.Id}>
-                      <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
+                      <IconButton data-testid="copyItemId" onClick={(e) => { e.stopPropagation(); copyToClipboard(item.itemId); }} edge="end">
                         <CopyIcon />
                       </IconButton>
                       {item.itemId}
