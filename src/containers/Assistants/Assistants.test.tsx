@@ -541,6 +541,12 @@ test('it clears the knowledge base required warning after knowledge base is crea
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
+    expect(screen.getByText('1 file')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
     expect(screen.queryByText('Knowledge base is required. Please upload files first.')).not.toBeInTheDocument();
   });
 });
