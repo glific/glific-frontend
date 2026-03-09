@@ -7,6 +7,10 @@ export const CREATE_ASSISTANT = gql`
         id
         name
       }
+      errors {
+        message
+        key
+      }
     }
   }
 `;
