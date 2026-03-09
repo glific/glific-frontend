@@ -123,6 +123,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           input: payload,
         },
         onCompleted: ({ createAssistant: createAssistantData }) => {
+          if (createAssistantData.errors?.length > 0) {
+            setErrorMessage(createAssistantData.errors[0]);
+            return;
+          }
           setNotification(t('Assistant created successfully'), 'success');
           navigate(`/assistants/${createAssistantData.assistant.id}`);
           setUpdateList(!updateList);
