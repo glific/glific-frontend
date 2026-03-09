@@ -106,7 +106,12 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const screenIds = generateUniqueScreenIds(screens);
   const fieldNameMap = computeFieldNames(screens);
 
-  const previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string }> = [];
+  const previousScreensPayloadData: Array<{
+    payloadKey: string;
+    fieldType: string;
+    inputType: string;
+    screenId: string;
+  }> = [];
 
   const flowScreens = screens.map((screen, index) => {
     const nextScreenId = index < totalScreens - 1 ? screenIds[index + 1] : undefined;
@@ -128,7 +133,8 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
         previousScreensPayloadData.push({
           payloadKey: fieldName,
           fieldType: componentType,
-          inputType: item.data.inputType?.toLowerCase(),
+          inputType: item.data.inputType?.toLowerCase() || 'text',
+          screenId: screenIds[index],
         });
       }
     });
@@ -329,21 +335,26 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
   return null;
 };
 
+/** Returns true if the input type stores a numeric value (number or passcode). */
+const isNumericInputType = (inputType: string): boolean => ['number', 'passcode'].includes(inputType);
+
 const INPUT_TYPE_TO_DATA_SCHEMA: Record<string, { type: string; __example__: any }> = {
   text: { type: 'string', __example__: 'Example' },
   number: { type: 'number', __example__: 0 },
   email: { type: 'string', __example__: 'example@mail.com' },
   password: { type: 'string', __example__: 'Example' },
-  passcode: { type: 'string', __example__: '1234' },
+  passcode: { type: 'number', __example__: 1234 },
   phone: { type: 'string', __example__: '+1234567890' },
 };
 
 /** Builds the data schema object for a screen based on input components from all previous screens. */
 const generateScreenData = (
-  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string }>
+  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType: string; screenId: string }>
 ): Record<string, any> => {
   const data: Record<string, any> = {};
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType }) => {
+    if (fieldType === 'TextInput' && isNumericInputType(inputType)) return;
+
     if (fieldType === 'CheckboxGroup') {
       data[payloadKey] = {
         __example__: [],
@@ -355,7 +366,7 @@ const generateScreenData = (
         __example__: false,
         type: 'boolean',
       };
-    } else if (fieldType === 'TextInput' && inputType) {
+    } else if (fieldType === 'TextInput') {
       const schema = INPUT_TYPE_TO_DATA_SCHEMA[inputType] || INPUT_TYPE_TO_DATA_SCHEMA.text;
       data[payloadKey] = { ...schema };
     } else {
@@ -368,26 +379,39 @@ const generateScreenData = (
   return data;
 };
 
-/** Generates the payload object for a screen's footer action, forwarding previous screen data and current form values. */
+/** Generates the payload object for a screen's footer action, forwarding previous screen data and current form values.
+ *  Number-type TextInput fields are NOT relayed through data between screens (they get auto-converted to string).
+ *  Instead, the terminal screen references them via global form property: ${screen.<id>.form.<field>}. */
 const generateScreenPayload = (
   screenContent: ContentItem[],
   fieldNameMap: Map<string, string>,
-  previousScreensPayloadData: Array<{ payloadKey: string }>
+  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType: string; screenId: string }>,
+  isTerminal: boolean
 ): Record<string, string> => {
   const payload: Record<string, string> = {};
 
-  previousScreensPayloadData.forEach(({ payloadKey }) => {
-    payload[payloadKey] = `\${data.${payloadKey}}`;
-  });
-
-  screenContent.forEach((item) => {
-    if (item.type === 'Text Answer' || item.type === 'Selection') {
-      const fieldName = fieldNameMap.get(item.id);
-      if (fieldName) {
-        payload[fieldName] = `\${form.${fieldName}}`;
+  previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType, screenId }) => {
+    const isNumberField = fieldType === 'TextInput' && isNumericInputType(inputType);
+    if (isNumberField) {
+      if (isTerminal && screenId) {
+        payload[payloadKey] = `\${screen.${screenId}.form.${payloadKey}}`;
       }
+    } else {
+      payload[payloadKey] = `\${data.${payloadKey}}`;
     }
   });
+
+  screenContent
+    .filter((item) => (item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id))
+    .forEach((item) => {
+      const fieldName = fieldNameMap.get(item.id)!;
+      const componentType = getWhatsAppComponentType(item.type, item.name);
+      const isNumberField =
+        componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase() || 'text');
+      if (isNumberField && !isTerminal) return;
+
+      payload[fieldName] = `\${form.${fieldName}}`;
+    });
 
   return payload;
 };
@@ -400,7 +424,12 @@ export const convertScreenToFlowJSON = (
   nextScreenId?: string,
   screenId?: string,
   fieldNameMap: Map<string, string> = new Map(),
-  previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string }> = []
+  previousScreensPayloadData: Array<{
+    payloadKey: string;
+    fieldType: string;
+    inputType: string;
+    screenId: string;
+  }> = []
 ): any => {
   const children: any[] = [];
 
@@ -413,7 +442,7 @@ export const convertScreenToFlowJSON = (
 
   const isTerminal = screenIndex === totalScreens - 1;
 
-  const payload = generateScreenPayload(screen.content, fieldNameMap, previousScreensPayloadData);
+  const payload = generateScreenPayload(screen.content, fieldNameMap, previousScreensPayloadData, isTerminal);
 
   if (screen.buttonLabel) {
     children.push({
@@ -817,8 +846,8 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
       });
     }
 
-    // Phase 5: Component name uniqueness
-    formChildren.forEach((component: any) => {
+    // Phase 5: Component type validity + name uniqueness
+    formChildren.forEach((component: any, j: number) => {
       if (INPUT_COMPONENT_TYPES.includes(component.type) && component.name) {
         const existingScreen = componentNameMap.get(component.name);
         if (existingScreen) {
