@@ -127,7 +127,17 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
     );
 
     screen.content.forEach((item) => {
-      if (item.type === 'Text Answer' || item.type === 'Selection') {
+      if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
+        const fieldName = fieldNameMap.get(item.id);
+        if (fieldName) {
+          previousScreensPayloadData.push({
+            payloadKey: fieldName,
+            fieldType: item.data.rawComponent.type,
+            inputType: 'text',
+            screenId: screenIds[index],
+          });
+        }
+      } else if (item.type === 'Text Answer' || item.type === 'Selection') {
         const fieldName = fieldNameMap.get(item.id) || 'field';
         const componentType = getWhatsAppComponentType(item.type, item.name);
         previousScreensPayloadData.push({
@@ -211,6 +221,16 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
+      // Unsupported components with a name are input components that need field tracking
+      if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
+        const rawName = item.data.rawComponent.name;
+        if (!usedNames.has(rawName)) {
+          usedNames.add(rawName);
+          fieldNameMap.set(item.id, rawName);
+        }
+        return;
+      }
+
       if (item.type === 'Text Answer' || item.type === 'Selection') {
         let name = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || `field`;
 
@@ -256,6 +276,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       required: data.required || false,
       type: 'TextInput',
       ...(data.placeholder && { 'helper-text': data.placeholder }),
+      ...data.extraAttributes,
     };
   }
 
@@ -410,16 +431,22 @@ const generateScreenPayload = (
     }
   });
 
-  screenContent
-    .filter((item) => (item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id))
-    .forEach((item) => {
+  screenContent.forEach((item) => {
+    if (item.type === 'Unsupported' && item.data.rawComponent?.name && fieldNameMap.has(item.id)) {
+      payload[fieldNameMap.get(item.id)!] = `\${form.${fieldNameMap.get(item.id)!}}`;
+      return;
+    }
+
+    if ((item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id)) {
       const fieldName = fieldNameMap.get(item.id)!;
       const componentType = getWhatsAppComponentType(item.type, item.name);
-      const isNumberField = componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase() || 'text');
+      const isNumberField =
+        componentType === 'TextInput' && isNumericInputType(item.data.inputType?.toLowerCase() || 'text');
       if (isNumberField && !isTerminal) return;
 
       payload[fieldName] = `\${form.${fieldName}}`;
-    });
+    }
+  });
 
   return payload;
 };
@@ -527,6 +554,7 @@ const getInternalComponentType = (whatsappType: string): { type: string; name: s
  * are spread back verbatim when converting back to JSON — nothing is lost.
  */
 const EXTRA_ATTRIBUTE_KEYS: Record<string, string[]> = {
+  TextInput: ['pattern', 'min-chars', 'max-chars'],
   DatePicker: [
     'min-date',
     'max-date',
@@ -597,6 +625,7 @@ export const VALID_COMPONENT_TYPES = new Set([
 /** Picks the known extra Meta-spec attributes from a JSON component that the form builder doesn't edit. */
 const extractExtraAttributes = (component: any, componentType: string): Record<string, any> | undefined => {
   const extraKeys = EXTRA_ATTRIBUTE_KEYS[componentType];
+  console.log('Extracting extra attributes for component type:', componentType, 'with keys:', extraKeys);
   if (!extraKeys) return undefined;
   const extra: Record<string, any> = {};
   extraKeys.forEach((key) => {
@@ -637,11 +666,13 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
 
   if (type === 'TextInput') {
     const rawInputType = component['input-type'] || 'text';
+    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       label: component.label || '',
       inputType: rawInputType.charAt(0).toUpperCase() + rawInputType.slice(1),
       required: component.required || false,
       placeholder: component['helper-text'] || '',
+      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
