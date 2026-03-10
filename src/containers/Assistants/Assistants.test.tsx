@@ -10,6 +10,7 @@ import {
   legacyVectorStoreMocks,
   loadMoreMocks,
   newVersionInProgressMocks,
+  unknownModelMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
 import * as Notification from 'common/notification';
@@ -391,7 +392,7 @@ test('it disables Manage Files button for legacy vector store', async () => {
   await waitFor(() => {
     expect(
       screen.getByText(
-        'This assistant was created before 28/02/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
+        'This assistant was created before 10/03/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
       )
     ).toBeInTheDocument();
   });
@@ -540,8 +541,44 @@ test('it clears the knowledge base required warning after knowledge base is crea
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
+    expect(screen.getByText('1 file')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
     expect(screen.queryByText('Knowledge base is required. Please upload files first.')).not.toBeInTheDocument();
   });
+});
+
+test('it displays assistant status in the list', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  const statusBadges = screen.getAllByTestId('assistantStatus');
+  expect(statusBadges.length).toBeGreaterThan(0);
+  expect(statusBadges[0]).toHaveTextContent('Ready');
+});
+
+test('it displays a model returned from backend that is not in the hardcoded list', async () => {
+  render(assistantsComponent(unknownModelMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  expect(autocompletes[0].querySelector('input')).toHaveValue('o3-mini');
 });
 
 test('closing a knowledge base dialog with no files should revert to the original files', async () => {

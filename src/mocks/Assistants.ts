@@ -27,6 +27,7 @@ const getAssistantsList = (limit: number = 3) => ({
         insertedAt: '2024-10-16T15:58:26Z',
         itemId: 'asst_UaWOAyI61Njf9l77Ey9iv0VI',
         name: `Assistant-${ind + 1}`,
+        status: 'ready',
       })),
     },
   },
@@ -60,7 +61,7 @@ const createAssistant = {
 
 const getAssistant = (
   assistantId: string,
-  options?: { legacy?: boolean; newVersionInProgress?: boolean }
+  options?: { legacy?: boolean; newVersionInProgress?: boolean; model?: string }
 ) => ({
   request: {
     query: GET_ASSISTANT,
@@ -75,7 +76,7 @@ const getAssistant = (
           id: assistantId,
           newVersionInProgress: options?.newVersionInProgress ?? false,
           name: 'Assistant-405db438',
-          model: 'gpt-4o',
+          model: options?.model ?? 'gpt-4o',
           instructions: null,
           status: 'active',
           temperature: 1,
@@ -122,6 +123,7 @@ const getAssistantListOnSearch = {
           insertedAt: '2024-10-16T15:58:26Z',
           itemId: 'asst_UaWOAyI61Njf9l77Ey9iv0VI',
           name: `testAssistant`,
+          status: 'ready',
         },
       ],
     },
@@ -289,6 +291,11 @@ export const newVersionInProgressMocks = [
   getAssistantsList(),
   getAssistant('1', { newVersionInProgress: true }),
   getAssistant('1', { newVersionInProgress: true }),
+];
+export const unknownModelMocks = [
+  getAssistantsList(),
+  getAssistant('1', { model: 'o3-mini' }),
+  getAssistant('1', { model: 'o3-mini' }),
 ];
 export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];

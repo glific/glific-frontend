@@ -1,5 +1,5 @@
 import { DocumentNode, useQuery } from '@apollo/client';
-import { IconButton } from '@mui/material';
+import { Chip, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -110,12 +110,22 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                     <span className={styles.Title}>{item.name}</span>
                     <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
                   </div>
-                  <span className={styles.Id}>
-                    <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
-                      <CopyIcon />
-                    </IconButton>
-                    {item.itemId}
-                  </span>
+                  <div className={styles.Footer}>
+                    <span className={styles.Id}>
+                      <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
+                        <CopyIcon />
+                      </IconButton>
+                      {item.itemId}
+                    </span>
+                    {item.status && (
+                      <Chip
+                        data-testid="assistantStatus"
+                        label={item.status.replace(/_/g, ' ').replace(/^\w/, (c: string) => c.toUpperCase())}
+                        size="small"
+                        className={`${styles.StatusChip} ${styles[item.status.charAt(0).toUpperCase() + item.status.slice(1)] || ''}`}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             ))
