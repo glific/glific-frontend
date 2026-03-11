@@ -373,7 +373,7 @@ test('it opens the instruction dialog box', async () => {
   });
 });
 
-test('it disables Manage Files button for legacy vector store', async () => {
+test('it shows read-only note and hides upload for legacy vector store', async () => {
   render(assistantsComponent(legacyVectorStoreMocks));
 
   await waitFor(() => {
@@ -384,18 +384,15 @@ test('it disables Manage Files button for legacy vector store', async () => {
   fireEvent.click(screen.getAllByTestId('listItem')[0]);
 
   await waitFor(() => {
-    expect(screen.getByTestId('addFiles')).toBeDisabled();
+    expect(screen.getByText('Knowledge Base Files *')).toBeInTheDocument();
   });
-
-  fireEvent.mouseOver(screen.getByTestId('addFiles'));
 
   await waitFor(() => {
-    expect(
-      screen.getByText(
-        'This assistant was created before 10/03/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('readOnlyNote')).toBeInTheDocument();
   });
+
+  expect(screen.queryByTestId('uploadFile')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('deleteFile')).not.toBeInTheDocument();
 });
 
 test('it shows version in progress indicator when newVersionInProgress is true', async () => {
