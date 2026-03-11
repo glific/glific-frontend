@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
+import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -185,12 +185,12 @@ export const AssistantOptions = ({
         <div className={styles.DialogContent}>
           {isLegacyVectorStore ? (
             <p className={styles.ReadOnlyNote}>
-              {
-                'This assistant was created before 10/03/2026. Knowledge base files for old assistants are "read-only". You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
-              }
+              'This assistant was created before 10/03/2026. Knowledge base files for old assistants are "read-only".
+              You can still make changes by creating a new assistant, copying the prompt and other settings, and
+              re-uploading the files there.'
             </p>
           ) : (
-            <Button className="Container" fullWidth={true} component="label" variant="text" tabIndex={-1}>
+            <Button className="Container" fullWidth component="label" variant="text" tabIndex={-1}>
               <div className={fileUploadDisabled ? styles.DisabledUploadContainer : styles.UploadContainer}>
                 {loading ? (
                   <CircularProgress size={20} />
