@@ -18,19 +18,23 @@ interface ListProps {
   refreshList?: boolean;
 }
 
+const statusMap: Record<string, { label: string; styleKey: string }> = {
+  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
+  failed: { label: 'Failed', styleKey: 'Failed' },
+  ready: { label: 'Ready', styleKey: 'Ready' },
+};
+
 const getStatus = (status: string, newVersionInProgress: boolean) => {
-  let label = '';
-  let className = '';
-  if (newVersionInProgress || status === 'in_progress') {
-    label = 'In Progress';
-    className = styles.InProgress;
-  } else {
-    label = status.charAt(0).toUpperCase() + status.slice(1);
-    className = styles[status.charAt(0).toUpperCase() + status.slice(1)] || '';
-  }
+  const effectiveStatus = newVersionInProgress ? 'in_progress' : status;
+  const { label, styleKey } = statusMap[effectiveStatus] || statusMap.in_progress;
 
   return (
-    <Chip data-testid="assistantStatus" label={label} size="small" className={`${styles.StatusChip} ${className}`} />
+    <Chip
+      data-testid="assistantStatus"
+      label={label}
+      size="small"
+      className={`${styles.StatusChip} ${styleKey ? styles[styleKey] : ''}`}
+    />
   );
 };
 
@@ -114,30 +118,34 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
           (data[listItemName].length === 0 ? (
             <div className={styles.NoItems}>No {listItemName} found!</div>
           ) : (
-            data[listItemName].map((item: any) => (
-              <div
-                key={item.id}
-                className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
-                onClick={() => navigate(`/assistants/${item.id}`)}
-                data-testid="listItem"
-              >
-                <div className={styles.Itemm}>
-                  <div className={styles.Header}>
-                    <span className={styles.Title}>{item.name}</span>
-                    <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
-                  </div>
-                  <div className={styles.Footer}>
-                    <span className={styles.Id}>
-                      <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
-                        <CopyIcon />
-                      </IconButton>
-                      {item.itemId}
-                    </span>
-                    {item.status && getStatus(item.status, item.newVersionInProgress)}
+            data[listItemName].map((item: any) => {
+              const statusChip = item.status ? getStatus(item.status, item.newVersionInProgress) : null;
+
+              return (
+                <div
+                  key={item.id}
+                  className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
+                  onClick={() => navigate(`/assistants/${item.id}`)}
+                  data-testid="listItem"
+                >
+                  <div className={styles.Itemm}>
+                    <div className={styles.Header}>
+                      <span className={styles.Title}>{item.name}</span>
+                      <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
+                    </div>
+                    <div className={styles.Footer}>
+                      <span className={styles.Id}>
+                        <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
+                          <CopyIcon />
+                        </IconButton>
+                        {item.itemId}
+                      </span>
+                      {statusChip}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ))}
         {showLoadMore ? (
           <span data-testid="loadmore" onClick={loadMoreItems} className={styles.LoadMore}>
