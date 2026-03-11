@@ -119,7 +119,7 @@ jobs:
       - name: Wait for frontend to be available
         uses: iFaxity/wait-on-action@v1
         with:
-          resource: http://localhost:4001
+          resource: https://localhost:4001
           timeout: 120
           interval: 5
 
