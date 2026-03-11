@@ -219,7 +219,7 @@ export const AssistantOptions = ({
                     <FileIcon />
                     <span>{file.filename}</span>
                   </div>
-                  {fileUploadDisabled ? null : (
+                  {!fileUploadDisabled && (
                     <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
                       <CrossIcon />
                     </IconButton>
