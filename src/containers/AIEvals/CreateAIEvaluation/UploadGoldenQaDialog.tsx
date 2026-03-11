@@ -36,14 +36,14 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
     name: fileName
       .split('.')[0]
       .replace(/-/g, '_')
-      .replace(/[^a-zA-Z0-9_-]/g, ''),
+      .replace(/[^a-zA-Z0-9_]/g, ''),
     duplicationFactor: 1,
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .required('Name is required')
-      .matches(/^[a-zA-Z0-9_-]+$/, 'Name can only contain alphanumeric characters and underscores'),
+      .matches(/^[a-zA-Z0-9_]+$/, 'Name can only contain alphanumeric characters and underscores'),
     duplicationFactor: Yup.number()
       .typeError('Duplication factor must be a number')
       .min(1, 'Duplication factor must be between 1 and 5')
@@ -68,20 +68,19 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
         },
       });
 
-      const { goldenQa, errors } = data?.createGoldenQa;
+      const { goldenQa, errors } = data?.createGoldenQa || {};
 
-      if (errors !== null) {
-        let errorMsg = 'Failed to upload Golden QA';
-        if (Array.isArray(errors)) {
-          errorMsg =
-            errors
-              .map((err: any) => err?.message)
-              .filter(Boolean)
-              .join('; ') || errorMsg;
-        } else if (typeof errors === 'object' && errors !== null) {
-          errorMsg = errors.message || errorMsg;
-        }
+      if (errors && errors.length > 0) {
+        let errorMsg = errors
+            .map((err: any) => err?.message)
+            .filter(Boolean)
+            .join('; ') || "Failed to upload Golden QA";
         setNotification(errorMsg, 'error');
+        return;
+      }
+
+      if (!goldenQa || !goldenQa.name) {
+        setNotification('Failed to upload Golden QA', 'error');
         return;
       }
 
