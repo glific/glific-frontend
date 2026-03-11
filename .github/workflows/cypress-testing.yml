@@ -116,13 +116,8 @@ jobs:
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
           cd ../glific-frontend/
 
-      - name: Wait for frontend to be available
-        uses: iFaxity/wait-on-action@v1
-        with:
-          resource: https://api.glific.test:4001
-          timeout: 120
-          interval: 5
-          log: true
+      - name: Sleep for 5 minutes
+        run: sleep 300
 
         # Run cypress
       - name: Cypress run (shard ${{ matrix.shard }}/3)
