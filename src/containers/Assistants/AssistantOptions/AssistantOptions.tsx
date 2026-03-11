@@ -305,7 +305,7 @@ export const AssistantOptions = ({
               step={0.01}
               max={2}
               min={0}
-              disabled={disabled && !isLegacyVectorStore}
+              disabled={disabled}
             />
             <input
               role="sliderDisplay"
