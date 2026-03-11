@@ -18,6 +18,22 @@ interface ListProps {
   refreshList?: boolean;
 }
 
+const getStatus = (status: string, newVersionInProgress: boolean) => {
+  let label = '';
+  let className = '';
+  if (newVersionInProgress || status === 'in_progress') {
+    label = 'In Progress';
+    className = styles.InProgress;
+  } else {
+    label = status.charAt(0).toUpperCase() + status.slice(1);
+    className = styles[status.charAt(0).toUpperCase() + status.slice(1)] || '';
+  }
+
+  return (
+    <Chip data-testid="assistantStatus" label={label} size="small" className={`${styles.StatusChip} ${className}`} />
+  );
+};
+
 const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -117,14 +133,7 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                       </IconButton>
                       {item.itemId}
                     </span>
-                    {item.status && (
-                      <Chip
-                        data-testid="assistantStatus"
-                        label={item.status.replace(/_/g, ' ').replace(/^\w/, (c: string) => c.toUpperCase())}
-                        size="small"
-                        className={`${styles.StatusChip} ${styles[item.status.charAt(0).toUpperCase() + item.status.slice(1)] || ''}`}
-                      />
-                    )}
+                    {item.status && getStatus(item.status, item.newVersionInProgress)}
                   </div>
                 </div>
               </div>

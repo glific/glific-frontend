@@ -28,6 +28,7 @@ const getAssistantsList = (limit: number = 3) => ({
         itemId: 'asst_UaWOAyI61Njf9l77Ey9iv0VI',
         name: `Assistant-${ind + 1}`,
         status: 'ready',
+        newVersionInProgressMocks: ind === 0 ? true : false,
       })),
     },
   },
