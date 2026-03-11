@@ -387,6 +387,8 @@ test('it shows read-only note and hides upload for legacy vector store', async (
     expect(screen.getByText('Knowledge Base Files *')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getByTestId('addFiles'));
+
   await waitFor(() => {
     expect(screen.getByTestId('readOnlyNote')).toBeInTheDocument();
   });

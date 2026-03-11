@@ -184,7 +184,7 @@ export const AssistantOptions = ({
       >
         <div className={styles.DialogContent}>
           {isLegacyVectorStore ? (
-            <p className={styles.ReadOnlyNote}>
+            <p data-testid="readOnlyNote" className={styles.ReadOnlyNote}>
               This assistant was created before 10/03/2026. Knowledge base files for old assistants are read-only. You
               can still make changes by creating a new assistant, copying the prompt and other settings, and
               re-uploading the files there.
@@ -277,7 +277,7 @@ export const AssistantOptions = ({
           <p className={styles.ErrorText}>{formikErrors.knowledgeBaseVersionId}</p>
         )}
         {isLegacyVectorStore && (
-          <p data-testid="readOnlyNote" className={styles.ReadOnlyNote}>
+          <p  className={styles.ReadOnlyNote}>
             This assistant was created before 10/03/2026. Knowledge base files for old assistants are read-only. You can
             still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the
             files there.
