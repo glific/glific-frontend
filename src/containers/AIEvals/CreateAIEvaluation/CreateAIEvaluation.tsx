@@ -110,7 +110,7 @@ export const CreateAIEvaluation = () => {
     setShowUploadGoldenQaDialog(true);
   };
 
-  const handleUploadGoldenQaProceed = (values: { name: string; }) => {
+  const handleUploadGoldenQaProceed = (values: { name: string }) => {
     // Placeholder for when backend mutation response needs to be used further. New upload at top.
     setGoldenQADatasets((prev) => [values.name, ...prev]);
     setStates((prev) => ({ ...prev, goldenQaId: values.name }));

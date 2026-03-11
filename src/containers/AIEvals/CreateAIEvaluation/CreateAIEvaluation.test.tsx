@@ -238,9 +238,7 @@ describe('CreateAIEvaluation', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByText("This list includes all assistants and versions you've created.")
-    ).toBeInTheDocument();
+    expect(screen.getByText("This list includes all assistants and versions you've created.")).toBeInTheDocument();
   });
 
   test('Run Evaluation submit button is visible and enabled', async () => {
@@ -368,7 +366,8 @@ describe('CreateAIEvaluation', () => {
     // Open Golden QA dropdown (first dropdown on the form) and assert new upload is first (top) and both options exist
     const dropdowns = screen.getAllByTestId('dropdown');
     const goldenQaDropdown = dropdowns[0];
-    const selectTrigger = goldenQaDropdown.querySelector('[role="combobox"]') ?? goldenQaDropdown.querySelector('button');
+    const selectTrigger =
+      goldenQaDropdown.querySelector('[role="combobox"]') ?? goldenQaDropdown.querySelector('button');
     fireEvent.mouseDown(selectTrigger!);
 
     await waitFor(() => {

@@ -144,22 +144,21 @@ describe('UploadGoldenQaDialog', () => {
     });
   });
 
-  test.each([
-    'invalid name with spaces',
-    'invalid-name-with-hyphens',
-    'invalid.name.with.dots',
-  ])('shows validation error when name has invalid characters: "%s"', async (input) => {
-    render(wrapper());
+  test.each(['invalid name with spaces', 'invalid-name-with-hyphens', 'invalid.name.with.dots'])(
+    'shows validation error when name has invalid characters: "%s"',
+    async (input) => {
+      render(wrapper());
 
-    const nameInput = screen.getByPlaceholderText('Name your Golden QA collection');
-    await userEvent.clear(nameInput);
-    await userEvent.type(nameInput, input);
-    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+      const nameInput = screen.getByPlaceholderText('Name your Golden QA collection');
+      await userEvent.clear(nameInput);
+      await userEvent.type(nameInput, input);
+      fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
-    await waitFor(() => {
-      expect(screen.getByText('Name can only contain alphanumeric characters and underscores')).toBeInTheDocument();
-    });
-  });
+      await waitFor(() => {
+        expect(screen.getByText('Name can only contain alphanumeric characters and underscores')).toBeInTheDocument();
+      });
+    }
+  );
 
   test('shows validation error when duplication factor is less than 1', async () => {
     render(wrapper());

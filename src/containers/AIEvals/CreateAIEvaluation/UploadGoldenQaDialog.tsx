@@ -71,10 +71,11 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
       const { goldenQa, errors } = data?.createGoldenQa || {};
 
       if (errors && errors.length > 0) {
-        let errorMsg = errors
+        let errorMsg =
+          errors
             .map((err: any) => err?.message)
             .filter(Boolean)
-            .join('; ') || "Failed to upload Golden QA";
+            .join('; ') || 'Failed to upload Golden QA';
         setNotification(errorMsg, 'error');
         return;
       }
