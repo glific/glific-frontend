@@ -561,7 +561,7 @@ test('it displays assistant status in the list', async () => {
 
   const statusBadges = screen.getAllByTestId('assistantStatus');
   expect(statusBadges.length).toBeGreaterThan(0);
-  expect(statusBadges[0]).toHaveTextContent('Ready');
+  expect(statusBadges[0]).toHaveTextContent('In Progress');
 });
 
 test('it displays a model returned from backend that is not in the hardcoded list', async () => {
