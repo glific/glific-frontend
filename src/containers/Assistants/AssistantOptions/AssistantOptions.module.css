@@ -118,6 +118,12 @@
   display: none;
 }
 
+.DisabledUploadContainer {
+  composes: UploadContainer;
+  border-color: #93a29b;
+  opacity: 0.6;
+}
+
 .HelperText {
   margin: 0px;
   color: #93a29b;
@@ -184,4 +190,15 @@
   font-weight: 600;
   margin: 0;
   font-size: 1rem;
+}
+
+.ReadOnlyNote {
+  font-size: 0.8rem;
+  color: #555;
+  background-color: #fff8e1;
+  border-left: 3px solid #f9a825;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+  text-align: left;
 }
