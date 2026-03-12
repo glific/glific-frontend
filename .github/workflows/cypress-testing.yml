@@ -114,6 +114,7 @@ jobs:
         run: |
           cd ../glific/
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
+          echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
           cd ../glific-frontend/
 
       - name: Sleep for 3 minutes for backend to start
@@ -129,9 +130,9 @@ jobs:
 
       - name: Upload Phoenix server logs (shard ${{ matrix.shard }})
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: phoenix-server-log-shard-${{ matrix.shard }}
-          path: ../glific/phoenix-server.log
+          path: ${{ env.artifacts_path }}
           if-no-files-found: warn
           retention-days: 7

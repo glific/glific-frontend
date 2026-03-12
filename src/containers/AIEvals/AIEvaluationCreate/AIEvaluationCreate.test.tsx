@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
-import { AIEvaluationCreate, DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
+import AIEvaluationCreate, { DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
 
 // Mock UploadGoldenQaDialog so we can trigger onProceed without running the real mutation (which sends a File and is hard to mock in Apollo).
 vi.mock('./UploadGoldenQaDialog', () => ({
