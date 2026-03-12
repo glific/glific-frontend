@@ -120,6 +120,10 @@ These functions write to `@client` Apollo fields (`NOTIFICATION`, `ERROR_MESSAGE
 
 Tests use `MockedProvider` from `@apollo/client/testing`. Mock data lives in `src/mocks/` organized by domain (e.g., `Chat.tsx`, `Flow.tsx`, `User.tsx`).
 
+Keep reusable Apollo mock objects in domain-specific files under `src/mocks/` and import them into test files instead of redefining the same mocks inline. Prefer extracting shared mock factories/objects when multiple tests in a feature use the same GraphQL request or response shapes.
+
+When a test file repeatedly renders the same provider-wrapped component (for example `MockedProvider` + component props), extract a local `renderXxx` helper that accepts optional `mocks` and `props` overrides. Use component prop types for the helper's `props` (e.g., `Partial<Parameters<typeof Component>[0]>`) so optional/nullable props remain correctly typed.
+
 Global test setup (`src/setupTests.ts`) mocks: `react-i18next`, `react-media-recorder`, `TrackService`, and `config/logs`.
 
 The `src/common/test-utils.ts` file contains helpers like `backspace()` for simulating keyboard events.

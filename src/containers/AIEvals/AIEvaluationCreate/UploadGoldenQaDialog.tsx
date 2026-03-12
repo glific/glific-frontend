@@ -1,4 +1,4 @@
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import FileIcon from 'assets/images/FileGreen.svg?react';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -6,21 +6,8 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
+import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import styles from './UploadGoldenQaDialog.module.css';
-
-export const CREATE_GOLDEN_QA = gql`
-  mutation CreateGoldenQa($input: GoldenQaInput!) {
-    createGoldenQa(input: $input) {
-      goldenQa {
-        name
-      }
-      errors {
-        message
-      }
-    }
-  }
-`;
-
 export interface UploadGoldenQaDialogProps {
   open: boolean;
   fileName: string;
@@ -36,9 +23,29 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
     name: fileName
       .split('.')[0]
       .replace(/-/g, '_')
-      .replace(/[^a-zA-Z0-9_]/g, ''),
+      .replace(/[^a-z0-9_]/g, ''),
     duplicationFactor: 1,
   };
+
+  const formFields = [
+    {
+      name: 'name',
+      component: Input,
+      type: 'text',
+      placeholder: 'Name your Golden QA collection',
+      inputLabel: 'Name',
+      required: true,
+    },
+    {
+      name: 'duplicationFactor',
+      component: Input,
+      type: 'number',
+      placeholder: '1',
+      inputLabel: 'Duplication Factor',
+      inputProp: { min: 1, max: 5 },
+      helperText: 'No of times the golden questions are repeated while running the evaluation. Allowed values 1-5.',
+    },
+  ];
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -130,29 +137,11 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
                 <div className={styles.UploadGoldenQaFileName}>{fileName}</div>
               </div>
               <div className={styles.UploadGoldenQaFieldGroup}>
-                <div className={styles.UploadGoldenQaField}>
-                  <Field
-                    component={Input}
-                    name="name"
-                    type="text"
-                    placeholder="Name your Golden QA collection"
-                    inputLabel="Name"
-                    required
-                  />
-                </div>
-                <div className={styles.UploadGoldenQaField}>
-                  <Field
-                    component={Input}
-                    name="duplicationFactor"
-                    type="number"
-                    placeholder="1"
-                    inputLabel="Duplication Factor"
-                    inputProp={{ min: 1, max: 5 }}
-                  />
-                  <div className={styles.UploadGoldenQaHelperText}>
-                    No of times the golden questions are repeated while running the evaluation. Allowed values 1-5.
+                {formFields.map((field) => (
+                  <div className={styles.UploadGoldenQaField} key={field.name}>
+                    <Field {...field} />
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </DialogBox>

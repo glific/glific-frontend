@@ -3,60 +3,20 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
+import {
+  createGoldenQaCustomSuccessMock,
+  createGoldenQaSuccessMock,
+  getAIEvaluationCreateMocks,
+} from 'mocks/AIEvaluations';
 import AIEvaluationCreate, { DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
 
-// Mock UploadGoldenQaDialog so we can trigger onProceed without running the real mutation (which sends a File and is hard to mock in Apollo).
-vi.mock('./UploadGoldenQaDialog', () => ({
-  UploadGoldenQaDialog: ({
-    open,
-    fileName,
-    onClose,
-    onProceed,
-  }: {
-    open: boolean;
-    fileName: string;
-    onClose: () => void;
-    onProceed: (v: { name: string; duplicationFactor: number }) => void;
-  }) => {
-    if (!open) return null;
-    const name = fileName
-      .split('.')[0]
-      .replace(/-/g, '_')
-      .replace(/[^a-zA-Z0-9_-]/g, '');
-    return (
-      <div data-testid="dialogBox">
-        <div data-testid="dialogTitle">Upload Golden QA</div>
-        <div>{fileName}</div>
-        <button type="button" onClick={() => onProceed({ name, duplicationFactor: 1 })}>
-          Upload
-        </button>
-        <button type="button" onClick={onClose}>
-          Cancel
-        </button>
-      </div>
-    );
-  },
-  CREATE_GOLDEN_QA: {},
-}));
-
-const dummyGetItemMock = {
-  request: { query: DUMMY_GET_ITEM },
-  result: { data: { __typename: 'Query' } },
-};
-
-const dummyCreateMock = {
-  request: { query: DUMMY_CREATE },
-  result: { data: { __typename: 'Mutation' } },
-};
-
-const defaultMocks = [dummyGetItemMock, dummyCreateMock];
+const defaultMocks = getAIEvaluationCreateMocks(DUMMY_GET_ITEM, DUMMY_CREATE);
 
 const wrapper = (mocks: any[] = defaultMocks) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/ai-evaluations/create']}>
       <Routes>
         <Route path="/ai-evaluations/create" element={<AIEvaluationCreate />} />
-        <Route path="/ai-evaluations" element={<div>AI Evaluations List</div>} />
       </Routes>
     </MemoryRouter>
   </MockedProvider>
@@ -268,7 +228,7 @@ describe('AIEvaluationCreate', () => {
   });
 
   test('after uploading golden QA the dropdown updates to set the file uploaded as the selected option', async () => {
-    render(wrapper());
+    render(wrapper([...defaultMocks, createGoldenQaSuccessMock]));
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
@@ -293,7 +253,7 @@ describe('AIEvaluationCreate', () => {
   });
 
   test('when there is no existing file, the default option is removed after upload', async () => {
-    render(wrapper());
+    render(wrapper([...defaultMocks, createGoldenQaCustomSuccessMock('my_dataset', 1)]));
 
     await waitFor(() => {
       expect(screen.getByText('No Golden QA available, upload one first')).toBeInTheDocument();
@@ -321,7 +281,13 @@ describe('AIEvaluationCreate', () => {
   });
 
   test('when there is an existing golden QA the new uploaded golden QA is pushed to the top and becomes the selected option', async () => {
-    render(wrapper());
+    render(
+      wrapper([
+        ...defaultMocks,
+        createGoldenQaCustomSuccessMock('first_qa', 1),
+        createGoldenQaCustomSuccessMock('second_qa', 1),
+      ])
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
