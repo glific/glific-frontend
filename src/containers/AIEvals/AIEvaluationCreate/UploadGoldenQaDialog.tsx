@@ -43,7 +43,7 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .required('Name is required')
-      .matches(/^[a-zA-Z0-9_]+$/, 'Name can only contain alphanumeric characters and underscores'),
+      .matches(/^[a-z0-9_]+$/, 'Name can only contain lowercase alphanumeric characters and underscores'),
     duplicationFactor: Yup.number()
       .typeError('Duplication factor must be a number')
       .min(1, 'Duplication factor must be between 1 and 5')

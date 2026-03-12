@@ -144,7 +144,7 @@ describe('UploadGoldenQaDialog', () => {
     });
   });
 
-  test.each(['invalid name with spaces', 'invalid-name-with-hyphens', 'invalid.name.with.dots'])(
+  test.each(['invalid name with spaces', 'invalid-name-with-hyphens', 'invalid.name.with.dots', 'InvalidNameWithUpperCase'])(
     'shows validation error when name has invalid characters: "%s"',
     async (input) => {
       render(wrapper());
@@ -155,7 +155,7 @@ describe('UploadGoldenQaDialog', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
       await waitFor(() => {
-        expect(screen.getByText('Name can only contain alphanumeric characters and underscores')).toBeInTheDocument();
+        expect(screen.getByText('Name can only contain lowercase alphanumeric characters and underscores')).toBeInTheDocument();
       });
     }
   );
