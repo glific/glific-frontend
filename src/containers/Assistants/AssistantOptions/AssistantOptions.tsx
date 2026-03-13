@@ -97,7 +97,7 @@ export const AssistantOptions = ({
     if (inputFiles.length === 0) return;
 
     const validFiles = Array.from(inputFiles).filter((file: any) => {
-      if (file.size / (1024 * 1024) > 40) {
+      if (file.size / (1024 * 1024) > 20) {
         setNotification('File size should be less than 20MB', 'warning');
         return false;
       }
