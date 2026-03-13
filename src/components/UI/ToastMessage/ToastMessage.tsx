@@ -43,6 +43,7 @@ export const ToastMessage = ({
         classes={{
           standardSuccess: styles.Success,
           standardWarning: styles.Warning,
+          standardError: styles.Error,
           action: styles.Action,
           message: styles.Message,
         }}

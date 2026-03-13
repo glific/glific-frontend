@@ -113,12 +113,12 @@ jobs:
       - name: Run glific backend
         run: |
           cd ../glific/
-          ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server &
+          ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
+          echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
           cd ../glific-frontend/
 
-      - name: Wait for some time for the frontend to start
-        run: |
-          sleep 3m
+      - name: Sleep for 3 minutes for backend to start
+        run: sleep 3m
 
         # Run cypress
       - name: Cypress run (shard ${{ matrix.shard }}/3)
@@ -127,3 +127,12 @@ jobs:
         env:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.shard }}
+
+      - name: Upload Phoenix server logs (shard ${{ matrix.shard }})
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: phoenix-server-log-shard-${{ matrix.shard }}
+          path: ${{ env.artifacts_path }}
+          if-no-files-found: warn
+          retention-days: 7
