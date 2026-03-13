@@ -51,6 +51,12 @@ export const ContentItemComponent = ({
         return <TextAnswerContent item={item} onUpdate={onUpdate} isViewOnly={isViewOnly} />;
       case 'Selection':
         return <SelectionContent item={item} onUpdate={onUpdate} isViewOnly={isViewOnly} />;
+      case 'Unsupported':
+        return (
+          <div style={{ color: '#666', fontSize: '13px', fontStyle: 'italic' }}>
+            This component ({item.name}) is not editable in the form builder but will be preserved in the JSON.
+          </div>
+        );
     }
   };
 

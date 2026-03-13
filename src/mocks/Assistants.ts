@@ -28,6 +28,7 @@ const getAssistantsList = (limit: number = 3) => ({
         itemId: 'asst_UaWOAyI61Njf9l77Ey9iv0VI',
         name: `Assistant-${ind + 1}`,
         status: 'ready',
+        newVersionInProgress: !!ind,
       })),
     },
   },
@@ -82,13 +83,16 @@ const getAssistant = (
           temperature: 1,
           vectorStore: {
             id: 'vs-1',
+            vectorStoreId: 'vs_abc123',
             knowledgeBaseVersionId: 'llm-vs-1',
             name: 'VectorStore-77ae3597',
             legacy: options?.legacy ?? false,
+            size: 32880,
             files: [
               {
                 name: 'Accelerator Guide (1).pdf',
                 id: 'file-rls90OGDUgFeLewh6e01Eamf',
+                fileSize: 32880,
               },
             ],
           },
