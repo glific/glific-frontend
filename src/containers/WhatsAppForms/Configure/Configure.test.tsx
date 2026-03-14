@@ -880,10 +880,7 @@ describe('<Configure />', () => {
     });
   });
 
-  test('it generates a random ID for screens with non-alpha names', async () => {
-    // Make randomAlphaId deterministic: always returns 'aaaaaa'
-    vi.spyOn(Math, 'random').mockReturnValue(0);
-
+  test('it preserves original screen ID even when name changes to non-alpha', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -897,10 +894,9 @@ describe('<Configure />', () => {
     await waitFor(() => {
       const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
       const parsed = JSON.parse(jsonText.value);
-      expect(parsed.screens[0].id).toBe('screen_aaaaaa');
+      // Screen was imported from flow JSON with id 'screen', so it preserves that ID
+      expect(parsed.screens[0].id).toBe('screen');
     });
-
-    vi.spyOn(Math, 'random').mockRestore();
   });
 
   test('it should create form with different types of short answers and shows them in preview', async () => {
