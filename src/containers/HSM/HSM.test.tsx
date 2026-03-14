@@ -283,9 +283,7 @@ describe('Add mode', () => {
   });
 
   test('should handle invalid form definition JSON gracefully', async () => {
-    setOrganizationServices(
-      '{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":true}'
-    );
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":true}');
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -316,10 +314,7 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('This is form name'));
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error parsing form definition:',
-        expect.any(Error)
-      );
+      expect(consoleSpy).toHaveBeenCalledWith('Error parsing form definition:', expect.any(Error));
     });
 
     consoleSpy.mockRestore();

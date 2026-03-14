@@ -4,6 +4,7 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import WarningIcon from '@mui/icons-material/Warning';
 import { IconButton } from '@mui/material';
 import { ContentItem } from '../FormBuilder.types';
@@ -53,10 +54,23 @@ export const ContentItemComponent = ({
         return <SelectionContent item={item} onUpdate={onUpdate} isViewOnly={isViewOnly} />;
       case 'Unsupported':
         return (
-          <div style={{ color: '#666', fontSize: '13px', fontStyle: 'italic' }}>
-            This component ({item.name}) is not editable in the form builder but will be preserved in the JSON.
+          <div className={styles.UnsupportedContent} data-testid="unsupported-content">
+            <div className={styles.UnsupportedInfo}>
+              <InfoOutlinedIcon fontSize="small" style={{ color: '#666' }} />
+              <span>
+                This component (<strong>{item.name}</strong>) is view-only and will be preserved on export.
+              </span>
+            </div>
+            {(item.data.rawComponent?.type === 'PhotoPicker' || item.data.rawComponent?.type === 'DocumentPicker') && (
+              <div className={styles.EndpointWarning} data-testid="endpoint-warning">
+                <WarningIcon fontSize="small" style={{ color: '#ed6c02' }} />
+                <span>This component requires an upload endpoint to be configured.</span>
+              </div>
+            )}
           </div>
         );
+      default:
+        return null;
     }
   };
 

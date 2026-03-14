@@ -23,16 +23,16 @@
   gap: 0.5rem;
 }
 
-.CallToActionWrapper>div {
+.CallToActionWrapper > div {
   display: flex;
   justify-content: space-between;
 }
 
-.CallToActionWrapper>div>div:last-child {
+.CallToActionWrapper > div > div:last-child {
   cursor: pointer;
 }
 
-.CallToActionWrapper>div:nth-of-type(3)>div {
+.CallToActionWrapper > div:nth-of-type(3) > div {
   margin-bottom: 0px;
 }
 
@@ -42,7 +42,7 @@
   align-items: center;
 }
 
-.QuickReplyWrapper>div {
+.QuickReplyWrapper > div {
   margin: 0px 4px 17px 4px;
   cursor: pointer;
 }
@@ -52,7 +52,7 @@
   margin-bottom: 0.5rem;
 }
 
-.RadioLabel>span:last-child {
+.RadioLabel > span:last-child {
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px !important;
@@ -64,7 +64,7 @@
   display: block !important;
 }
 
-.FormControl>p {
+.FormControl > p {
   margin-left: 12px;
 }
 
@@ -107,7 +107,7 @@
   cursor: pointer;
 }
 
-.RadioGroup>label>span:first-child {
+.RadioGroup > label > span:first-child {
   padding: 0px 8px !important;
 }
 
