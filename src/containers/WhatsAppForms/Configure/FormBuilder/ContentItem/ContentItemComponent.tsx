@@ -58,12 +58,10 @@ export const ContentItemComponent = ({
             <div className={styles.UnsupportedInfo}>
               <InfoOutlinedIcon fontSize="small" style={{ color: '#666' }} />
               <span>
-                This component (<strong>{item.name}</strong>) is view-only and will be preserved on
-                export.
+                This component (<strong>{item.name}</strong>) is view-only and will be preserved on export.
               </span>
             </div>
-            {(item.data.rawComponent?.type === 'PhotoPicker' ||
-              item.data.rawComponent?.type === 'DocumentPicker') && (
+            {(item.data.rawComponent?.type === 'PhotoPicker' || item.data.rawComponent?.type === 'DocumentPicker') && (
               <div className={styles.EndpointWarning} data-testid="endpoint-warning">
                 <WarningIcon fontSize="small" style={{ color: '#ed6c02' }} />
                 <span>This component requires an upload endpoint to be configured.</span>

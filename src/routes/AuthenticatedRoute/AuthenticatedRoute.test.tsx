@@ -4,7 +4,12 @@ import { BrowserRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
-import { getOrganizationBSP, OrganizationStateMock, walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
+import {
+  getOrganizationBSP,
+  OrganizationStateMock,
+  walletBalanceQuery,
+  walletBalanceSubscription,
+} from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
 import { collectionCountQuery, CONVERSATION_MOCKS, markAsReadMock, savedSearchStatusQuery } from 'mocks/Chat';
 import { Loading } from 'components/UI/Layout/Loading/Loading';

@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-template-curly-in-string */
+/* eslint-disable no-underscore-dangle */
+// eslint-disable-next-line import/no-unresolved
 import { describe, expect, test } from 'vitest';
 import {
   convertFlowJSONToFormBuilder,
@@ -27,16 +31,45 @@ const fixtureFlowJSON = {
             name: 'flow_path',
             children: [
               { type: 'TextHeading', text: 'Welcome' },
-              { type: 'TextInput', name: 'user_name', label: 'Name', required: true, 'input-type': 'text' },
+              {
+                type: 'TextInput',
+                name: 'user_name',
+                label: 'Name',
+                required: true,
+                'input-type': 'text',
+              },
               { type: 'CalendarPicker', name: 'cal_pick', label: 'Pick a date' },
-              { type: 'ChipsSelector', name: 'chips_sel', label: 'Pick chips', 'data-source': [{ id: '1', title: 'A' }] },
+              {
+                type: 'ChipsSelector',
+                name: 'chips_sel',
+                label: 'Pick chips',
+                'data-source': [{ id: '1', title: 'A' }],
+              },
               { type: 'EmbeddedLink', text: 'Click here', src: 'https://example.com' },
               { type: 'RichText', text: ['Hello ', { bold: true, text: 'World' }] },
-              { type: 'If', condition: '${data.flag}', then: [{ type: 'TextBody', text: 'Yes' }], else: [{ type: 'TextBody', text: 'No' }] },
-              { type: 'Switch', value: '${data.status}', cases: { open: [{ type: 'TextBody', text: 'Open' }] } },
+              {
+                type: 'If',
+                condition: '${data.flag}',
+                // biome-ignore lint/suspicious/noThenProperty: WhatsApp Flow schema requires 'then'
+                then: [{ type: 'TextBody', text: 'Yes' }],
+                else: [{ type: 'TextBody', text: 'No' }],
+              },
+              {
+                type: 'Switch',
+                value: '${data.status}',
+                cases: { open: [{ type: 'TextBody', text: 'Open' }] },
+              },
               { type: 'PhotoPicker', name: 'photo_pick', label: 'Upload Photo' },
               { type: 'DocumentPicker', name: 'doc_pick', label: 'Upload Doc' },
-              { type: 'Footer', label: '${data.custom_prop}', 'on-click-action': { name: 'navigate', next: { name: 'final_screen', type: 'screen' }, payload: {} } },
+              {
+                type: 'Footer',
+                label: '${data.custom_prop}',
+                'on-click-action': {
+                  name: 'navigate',
+                  next: { name: 'final_screen', type: 'screen' },
+                  payload: {},
+                },
+              },
             ],
           },
         ],
@@ -55,7 +88,11 @@ const fixtureFlowJSON = {
             name: 'flow_path',
             children: [
               { type: 'TextBody', text: 'Thanks!' },
-              { type: 'Footer', label: 'Done', 'on-click-action': { name: 'complete', payload: {} } },
+              {
+                type: 'Footer',
+                label: 'Done',
+                'on-click-action': { name: 'complete', payload: {} },
+              },
             ],
           },
         ],
@@ -78,13 +115,17 @@ describe('convertFlowJSONToFormBuilder + convertFormBuilderToFlowJSON round-trip
     const screens = convertFlowJSONToFormBuilder(fixtureFlowJSON);
     const exported = convertFormBuilderToFlowJSON(screens);
     expect(exported.screens[0].data).toHaveProperty('custom_prop');
-    expect(exported.screens[0].data.custom_prop).toEqual({ type: 'string', __example__: 'hello' });
+    expect(exported.screens[0].data.custom_prop).toEqual({
+      type: 'string',
+      __example__: 'hello',
+    });
   });
 
   test('preserves Footer label with dynamic expression exactly', () => {
     const screens = convertFlowJSONToFormBuilder(fixtureFlowJSON);
     const exported = convertFormBuilderToFlowJSON(screens);
-    const footer = exported.screens[0].layout.children[0].children.find((c: any) => c.type === 'Footer');
+    const children = exported.screens[0].layout.children[0].children;
+    const footer = children.find((c: any) => c.type === 'Footer');
     expect(footer.label).toBe('${data.custom_prop}');
   });
 
@@ -156,7 +197,16 @@ describe('Unsupported component round-trip export', () => {
     const formChildren = exported.screens[0].layout.children[0].children;
 
     const original = fixtureFlowJSON.screens[0].layout.children[0].children;
-    const unsupportedTypes = ['CalendarPicker', 'ChipsSelector', 'EmbeddedLink', 'RichText', 'If', 'Switch', 'PhotoPicker', 'DocumentPicker'];
+    const unsupportedTypes = [
+      'CalendarPicker',
+      'ChipsSelector',
+      'EmbeddedLink',
+      'RichText',
+      'If',
+      'Switch',
+      'PhotoPicker',
+      'DocumentPicker',
+    ];
 
     unsupportedTypes.forEach((typeName) => {
       const origComponent = original.find((c) => c.type === typeName);
@@ -226,7 +276,9 @@ describe('validateFlowJson', () => {
     const duplicate = JSON.parse(JSON.stringify(fixtureFlowJSON));
     // Add a second CalendarPicker with same name on screen 2
     duplicate.screens[1].layout.children[0].children.splice(0, 0, {
-      type: 'CalendarPicker', name: 'cal_pick', label: 'Dup',
+      type: 'CalendarPicker',
+      name: 'cal_pick',
+      label: 'Dup',
     });
     const result = validateFlowJson(duplicate);
     const dupError = result.errors.find((e: any) => e.message.includes("Duplicate component name 'cal_pick'"));
@@ -260,14 +312,16 @@ describe('Edge cases', () => {
   test('preserves flowId and flowData on the imported Screen objects', () => {
     const screens = convertFlowJSONToFormBuilder(fixtureFlowJSON);
     expect(screens[0].flowId).toBe('my_custom_screen');
-    expect(screens[0].flowData).toEqual({ custom_prop: { type: 'string', __example__: 'hello' } });
+    expect(screens[0].flowData).toEqual({
+      custom_prop: { type: 'string', __example__: 'hello' },
+    });
     expect(screens[1].flowId).toBe('final_screen');
   });
 
   test('does not share references between flowData and original', () => {
     const input = JSON.parse(JSON.stringify(fixtureFlowJSON));
     const screens = convertFlowJSONToFormBuilder(input);
-    screens[0].flowData!.custom_prop.__example__ = 'modified';
+    (screens[0].flowData!.custom_prop as Record<string, string>).__example__ = 'modified';
     expect(input.screens[0].data.custom_prop.__example__).toBe('hello');
   });
 });

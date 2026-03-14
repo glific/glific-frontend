@@ -7,7 +7,7 @@ export interface Screen {
   /** Original WhatsApp Flow screen ID, preserved for round-trip export */
   flowId?: string;
   /** Original WhatsApp Flow screen.data declarations, preserved for round-trip export */
-  flowData?: Record<string, any>;
+  flowData?: Record<string, unknown>;
 }
 
 export interface ContentItem {

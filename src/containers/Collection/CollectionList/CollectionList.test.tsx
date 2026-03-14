@@ -247,7 +247,6 @@ describe('<CollectionList />', () => {
       expect(screen.queryByTestId('EditIcon')).not.toBeInTheDocument();
     });
 
-
     await waitFor(() => {
       expect(screen.queryByText('Delete')).not.toBeInTheDocument();
     });
