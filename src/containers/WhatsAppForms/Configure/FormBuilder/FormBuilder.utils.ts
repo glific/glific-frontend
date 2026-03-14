@@ -100,10 +100,40 @@ export const hasFormErrors = (screens: Screen[]): boolean => {
   });
 };
 
+/** Builds screen IDs for export, preserving original flowId when available. */
+const buildScreenIds = (screens: Screen[]): string[] => {
+  const usedIds = new Set<string>();
+  const ids: string[] = [];
+
+  // First pass: collect all preserved flowIds
+  screens.forEach((screen) => {
+    if (screen.flowId) {
+      usedIds.add(screen.flowId);
+    }
+  });
+
+  // Second pass: assign IDs
+  screens.forEach((screen) => {
+    if (screen.flowId) {
+      ids.push(screen.flowId);
+    } else {
+      let id = toSnakeCaseId(screen.name);
+      if (!id || usedIds.has(id)) {
+        const suffix = randomAlphaId();
+        id = id ? `${id}_${suffix}` : `screen_${suffix}`;
+      }
+      usedIds.add(id);
+      ids.push(id);
+    }
+  });
+
+  return ids;
+};
+
 /** Converts all form builder screens into a complete WhatsApp Flow JSON structure with version and screens array. */
 export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
   const totalScreens = screens.length;
-  const screenIds = generateUniqueScreenIds(screens);
+  const screenIds = buildScreenIds(screens);
   const fieldNameMap = computeFieldNames(screens);
 
   const previousScreensPayloadData: Array<{ payloadKey: string; fieldType: string; inputType?: string }> = [];
@@ -129,6 +159,12 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
           payloadKey: fieldName,
           fieldType: componentType,
           inputType: item.data.inputType?.toLowerCase(),
+        });
+      } else if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
+        previousScreensPayloadData.push({
+          payloadKey: item.data.rawComponent.name,
+          fieldType: item.data.rawComponent.type || 'string',
+          inputType: 'text',
         });
       }
     });
@@ -217,6 +253,11 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
         usedNames.add(name);
         fieldNameMap.set(item.id, name);
+      } else if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
+        // Track unsupported components that have a name (input-like components)
+        const rawName = item.data.rawComponent.name;
+        usedNames.add(rawName);
+        fieldNameMap.set(item.id, rawName);
       }
     });
   });
@@ -226,6 +267,11 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
 /** Converts a form builder content item into a WhatsApp Flow JSON component object. */
 const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<string, string>): any => {
+  // Unsupported components: return raw JSON verbatim (passthrough)
+  if (item.type === 'Unsupported' && item.data.rawComponent) {
+    return item.data.rawComponent;
+  }
+
   const componentType = getWhatsAppComponentType(item.type, item.name);
   const { data } = item;
   const fieldName = fieldNameMap.get(item.id);
@@ -432,7 +478,10 @@ export const convertScreenToFlowJSON = (
     });
   }
 
-  const screenData = generateScreenData(previousScreensPayloadData);
+  const generated = generateScreenData(previousScreensPayloadData);
+  const preserved = screen.flowData ?? {};
+  // Merge: preserved values take precedence over generated
+  const screenData = { ...generated, ...preserved };
 
   return {
     id: screenId,
@@ -480,7 +529,7 @@ const getInternalComponentType = (whatsappType: string): { type: string; name: s
     case 'Image':
       return { type: 'Media', name: 'Image' };
     default:
-      return { type: 'Text', name: 'Body' };
+      return { type: 'Unsupported', name: whatsappType };
   }
 };
 
@@ -566,6 +615,12 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return contentItem;
   }
 
+  // Unsupported type: preserve raw component JSON verbatim
+  if (internalType.type === 'Unsupported') {
+    contentItem.data = { rawComponent: JSON.parse(JSON.stringify(component)) };
+    return contentItem;
+  }
+
   return contentItem;
 };
 
@@ -601,6 +656,8 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
       order: screenIndex,
       content,
       buttonLabel,
+      flowId: flowScreen.id,
+      flowData: flowScreen.data ? JSON.parse(JSON.stringify(flowScreen.data)) : undefined,
     };
   });
 };
@@ -622,6 +679,10 @@ const INPUT_COMPONENT_TYPES = [
   'CheckboxGroup',
   'Dropdown',
   'OptIn',
+  'CalendarPicker',
+  'ChipsSelector',
+  'PhotoPicker',
+  'DocumentPicker',
 ];
 
 /** Validates a WhatsApp Flow JSON structure, checking screen IDs, titles, layout, actions, components, and data properties. */

@@ -4,6 +4,10 @@ export interface Screen {
   order: number;
   content: ContentItem[];
   buttonLabel: string;
+  /** Original WhatsApp Flow screen ID, preserved for round-trip export */
+  flowId?: string;
+  /** Original WhatsApp Flow screen.data declarations, preserved for round-trip export */
+  flowData?: Record<string, any>;
 }
 
 export interface ContentItem {
@@ -23,6 +27,8 @@ export interface ContentItemData {
   inputType?: string;
   placeholder?: string;
   variableName?: string;
+  /** Raw WhatsApp Flow JSON for unsupported component types (passthrough) */
+  rawComponent?: any;
 }
 
 export interface ContentOption {
