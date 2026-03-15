@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
+import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,6 +51,10 @@ export const AssistantOptions = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { t } = useTranslation();
+  let fileUploadDisabled = false;
+  if (isLegacyVectorStore || disabled) {
+    fileUploadDisabled = true;
+  }
 
   useEffect(() => {
     setFiles(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
@@ -171,31 +175,42 @@ export const AssistantOptions = ({
           setFiles(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
           setShowUploadDialog(false);
         }}
-        buttonOk="Save"
+        buttonOk={fileUploadDisabled ? 'Close' : 'Save'}
+        skipCancel={fileUploadDisabled}
         fullWidth
         handleOk={handleFileUpload}
         disableOk={addingFiles || loading || files.length === 0}
         buttonOkLoading={addingFiles || loading}
       >
         <div className={styles.DialogContent}>
-          <Button className="Container" fullWidth={true} component="label" variant="text" tabIndex={-1}>
-            <div className={styles.UploadContainer}>
-              {loading ? (
-                <CircularProgress size={20} />
-              ) : (
-                <>
-                  <UploadIcon /> {t('Upload File')}
-                </>
-              )}
-              <input
-                data-testid="uploadFile"
-                type="file"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-                multiple
-              />
-            </div>
-          </Button>
+          {isLegacyVectorStore ? (
+            <p data-testid="readOnlyNote" className={styles.ReadOnlyNote}>
+              This assistant was created before 10/03/2026. Knowledge base files for old assistants are read-only. You
+              can still make changes by creating a new assistant, copying the prompt and other settings, and
+              re-uploading the files there.
+            </p>
+          ) : (
+            <Button className="Container" fullWidth component="label" variant="text" tabIndex={-1}>
+              <div className={fileUploadDisabled ? styles.DisabledUploadContainer : styles.UploadContainer}>
+                {loading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <>
+                    <UploadIcon /> {t('Upload File')}
+                  </>
+                )}
+                <input
+                  data-testid="uploadFile"
+                  type="file"
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                  multiple
+                  disabled={fileUploadDisabled}
+                />
+              </div>
+            </Button>
+          )}
+
           {files.length > 0 && (
             <div className={styles.FileList}>
               {files.map((file, index) => (
@@ -204,9 +219,11 @@ export const AssistantOptions = ({
                     <FileIcon />
                     <span>{file.filename}</span>
                   </div>
-                  <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
-                    <CrossIcon />
-                  </IconButton>
+                  {!fileUploadDisabled && (
+                    <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
+                      <CrossIcon />
+                    </IconButton>
+                  )}
                 </div>
               ))}
             </div>
@@ -232,26 +249,13 @@ export const AssistantOptions = ({
               }}
             />
           </Typography>
-          <Tooltip
-            title={
-              isLegacyVectorStore
-                ? 'This assistant was created before 10/03/2026. Knowledge base files for old assistants are “read-only”. You can still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the files there.'
-                : ''
-            }
-            arrow
-          >
-            <span>
-              <Button
-                data-testid="addFiles"
-                onClick={() => setShowUploadDialog(true)}
-                variant="outlined"
-                disabled={disabled || isLegacyVectorStore}
-              >
-                <AddIcon />
-                {t('Manage Files')}
-              </Button>
-            </span>
-          </Tooltip>
+
+          <span>
+            <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
+              <AddIcon />
+              {t('Manage Files')}
+            </Button>
+          </span>
         </div>
         {formikValues.knowledgeBaseVersionId && (
           <div className={styles.VectorStore}>
@@ -271,6 +275,13 @@ export const AssistantOptions = ({
         )}
         {formikTouched?.knowledgeBaseVersionId && formikErrors?.knowledgeBaseVersionId && (
           <p className={styles.ErrorText}>{formikErrors.knowledgeBaseVersionId}</p>
+        )}
+        {isLegacyVectorStore && (
+          <p className={styles.ReadOnlyNote}>
+            This assistant was created before 10/03/2026. Knowledge base files for old assistants are read-only. You can
+            still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the
+            files there.
+          </p>
         )}
       </div>
 
@@ -314,7 +325,7 @@ export const AssistantOptions = ({
                 setFieldValue('temperature', value);
               }}
               className={`${styles.SliderDisplay} ${error ? styles.Error : ''}`}
-              disabled={disabled}
+              disabled={disabled && !isLegacyVectorStore}
             />
           </div>
           {error && <p className={styles.ErrorText}>Temperature value should be between 0-2</p>}

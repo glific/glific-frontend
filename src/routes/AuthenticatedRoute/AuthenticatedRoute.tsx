@@ -1,25 +1,25 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
-import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { checkDynamicRole, getUserRole } from 'context/role';
-import { useToast } from 'services/ToastService';
-import { ProviderContext } from 'context/session';
-import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
-import styles from './AuthenticatedRoute.module.css';
+import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
+import Billing from 'containers/SettingList/Billing/Billing';
+import Organization from 'containers/SettingList/Organization/Organization';
+import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
+import Providers from 'containers/SettingList/Providers/Providers';
 import Tag from 'containers/Tag/Tag';
 import TagList from 'containers/Tag/TagList/TagList';
-import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
-import Billing from 'containers/SettingList/Billing/Billing';
-import Providers from 'containers/SettingList/Providers/Providers';
-import Organization from 'containers/SettingList/Organization/Organization';
 import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChatInterface';
-import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
 import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
-import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
+import { checkDynamicRole, getUserRole } from 'context/role';
+import { ProviderContext } from 'context/session';
+import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
+import { useToast } from 'services/ToastService';
+import styles from './AuthenticatedRoute.module.css';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -44,7 +44,6 @@ const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProf
 const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/HSM/HSMList/HSMList'));
 const HSM = lazy(() => import('containers/HSM/HSM'));
-
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
 const BlockContactList = lazy(() => import('containers/BlockContact/BlockContactList/BlockContactList'));
@@ -72,6 +71,7 @@ const CertificatesList = lazy(() => import('containers/Certificates/Certificates
 const WhatsAppFormsList = lazy(() => import('containers/WhatsAppForms/WhatsAppFormList/WhatsAppFormList'));
 const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'));
 const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
+const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 
 const routeStaff = (
   <Routes>
@@ -164,6 +164,7 @@ const routeAdmin = (
       <Route path=":id/edit" element={<WhatsappFormsConfigure />} />
       <Route path=":id/configure" element={<WhatsAppForms />} />
     </Route>
+    <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="/*" element={<Chat />} />
   </Routes>
 );
