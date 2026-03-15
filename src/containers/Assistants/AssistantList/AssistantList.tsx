@@ -32,13 +32,7 @@ const getLiveVersion = (liveVersionNumber: number | null) =>
 
 const getLastUpdated = (updatedAt: string) => {
   if (!updatedAt) return '-';
-  const date = dayjs(updatedAt);
-  const now = dayjs();
-  const diffDays = now.diff(date, 'day');
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays <= 7) return 'a week ago';
-  return date.format('DD MMM YYYY');
+  return dayjs(updatedAt).fromNow();
 };
 
 const columnStyles = [styles.NameColumn, styles.VersionColumn, styles.DateColumn, styles.Actions];

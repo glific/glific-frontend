@@ -1,5 +1,7 @@
 import { gql } from '@apollo/client';
 
+
+/** @deprecated Use FILTER_ASSISTANTS instead */
 export const GET_ASSISTANTS = gql`
   query Assistants($filter: AssistantFilter, $opts: Opts) {
     assistants(filter: $filter, opts: $opts) {
