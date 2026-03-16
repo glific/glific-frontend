@@ -183,19 +183,6 @@ export default function AIEvaluationCreate() {
 
   const dialogMessage = 'This action cannot be undone.';
 
-  const handleSetPayload = (payload: any) => {
-    createEvaluation({
-      variables: {
-        input: {
-          evaluationName: payload.evaluationName,
-          goldenQaId: payload.goldenQaId,
-          assistantConfigVersionId: payload.assistantId,
-        },
-      },
-    });
-    return payload;
-  };
-
   return (
     <div>
       <FormLayout
@@ -228,8 +215,6 @@ export default function AIEvaluationCreate() {
         noHeading={false}
         partialPage={false}
         confirmationState={{ show: false, title: '', message: '' }}
-        setPayload={handleSetPayload}
-        customHandler={() => {}}
       />
       <input
         ref={fileInputRef}
