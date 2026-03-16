@@ -7,6 +7,7 @@ import {
   createGoldenQaCustomSuccessMock,
   createGoldenQaSuccessMock,
   getAIEvaluationCreateMocks,
+  getAssistantConfigVersionsMock,
 } from 'mocks/AIEvaluations';
 import AIEvaluationCreate, { DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
 
@@ -67,12 +68,12 @@ describe('AIEvaluationCreate', () => {
     });
 
     expect(
-      screen.getByText(/Select the Golden QA dataset from the existing list or upload a new set/)
+      screen.getByText(/Select The Golden QA Dataset From Existing List Or Upload A New Golden Set/)
     ).toBeInTheDocument();
     expect(screen.getByText('Expected CSV Format:')).toBeInTheDocument();
-    expect(screen.getByText('Question,Answer')).toBeInTheDocument();
-    expect(screen.getByText('What is the capital of France?,Paris')).toBeInTheDocument();
-    expect(screen.getByText('Click here for the template CSV')).toBeInTheDocument();
+    expect(screen.getByText('Question, Answer')).toBeInTheDocument();
+    expect(screen.getByText('{"What Is X"},{"Answer"}')).toBeInTheDocument();
+    expect(screen.getByText('Click Here For The Template Csv')).toBeInTheDocument();
   });
 
   test('renders Upload Golden QA button', async () => {
@@ -150,10 +151,10 @@ describe('AIEvaluationCreate', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
     fireEvent.change(nameInput, { target: { value: 'valid_name' } });
     fireEvent.click(screen.getByText('Run Evaluation'));
 
@@ -166,10 +167,10 @@ describe('AIEvaluationCreate', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
     fireEvent.change(nameInput, { target: { value: 'invalid name with spaces' } });
     fireEvent.click(screen.getByText('Run Evaluation'));
 
@@ -182,13 +183,32 @@ describe('AIEvaluationCreate', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
     fireEvent.change(nameInput, { target: { value: 'valid_evaluation-name123' } });
 
     expect((nameInput as HTMLInputElement).value).toBe('valid_evaluation-name123');
+  });
+
+  test('shows assistant options from query using assistantName and versionNumber', async () => {
+    render(wrapper([...defaultMocks, getAssistantConfigVersionsMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Assistant (Version 2)')).toBeInTheDocument();
+      expect(screen.getByText('Test Assistant (Version 1)')).toBeInTheDocument();
+    });
   });
 
   test('shows assistant helper text', async () => {

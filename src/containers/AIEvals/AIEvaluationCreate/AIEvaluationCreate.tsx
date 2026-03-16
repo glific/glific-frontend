@@ -1,10 +1,14 @@
-import { gql } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
+import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
+import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
+import { setNotification } from 'common/notification';
 
 import styles from './AIEvaluationCreate.module.css';
 import { UploadGoldenQaDialog } from './UploadGoldenQaDialog';
@@ -34,50 +38,77 @@ export const DUMMY_CREATE = gql`
 const goldenQAHelperContent = (
   <div className={styles.GoldenQAHelper}>
     <p className={styles.GoldenQAHelperDescription}>
-      Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the
-      evaluation on.
+      Select The Golden QA Dataset From Existing List Or Upload A New Golden Set Of QA In Csv Format To Run The
+      Evaluation On.
     </p>
     <div className={styles.CSVFormatBox}>
       <div className={styles.CSVFormatLabel}>Expected CSV Format:</div>
-      <div className={styles.CSVFormatExample}>Question,Answer</div>
-      <div className={styles.CSVFormatExample}>{'What is the capital of France?,Paris'}</div>
+      <div className={styles.CSVFormatExample}>Question, Answer</div>
+      <div className={styles.CSVFormatExample}>{'{"What Is X"},{"Answer"}'}</div>
       <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
-        Click here for the template CSV
+        Click Here For The Template Csv
       </a>
     </div>
   </div>
 );
 
 const GoldenQaField = (props: any) => {
-  const { onUploadGoldenQaClick, form, ...dropdownProps } = props;
+  const { onUploadGoldenQaClick, form, helperText, ...dropdownProps } = props;
   return (
-    <div className={styles.GoldenQaRow}>
-      <Dropdown {...dropdownProps} form={form} />
-      <Button
-        variant="outlined"
-        color="primary"
-        type="button"
-        className={styles.UploadGoldenQaButton}
-        onClick={onUploadGoldenQaClick}
-      >
-        Upload Golden QA
-      </Button>
+    <div>
+      <div className={styles.GoldenQaRow}>
+        <Dropdown {...dropdownProps} form={form} />
+        <Button
+          variant="outlined"
+          color="primary"
+          type="button"
+          className={styles.UploadGoldenQaButton}
+          onClick={onUploadGoldenQaClick}
+        >
+          Upload Golden QA
+        </Button>
+      </div>
+      {helperText && <div className={styles.GoldenQaHelperText}>{helperText}</div>}
     </div>
   );
 };
 
+const SectionDivider = (_props: any) => null;
+
 export default function AIEvaluationCreate() {
+  const navigate = useNavigate();
   const [goldenQADatasets, setGoldenQADatasets] = useState<string[]>([]);
   const [showUploadGoldenQaDialog, setShowUploadGoldenQaDialog] = useState(false);
   const [selectedGoldenQaFileName, setSelectedGoldenQaFileName] = useState<string | null>(null);
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [createEvaluation] = useMutation(CREATE_EVALUATION, {
+    onCompleted: () => {
+      setNotification('Evaluation started successfully!');
+      navigate('/ai-evaluations');
+    },
+    onError: (error) => {
+      setNotification(error.message, 'warning');
+    },
+  });
+
   const goldenQaOptions =
     goldenQADatasets.length === 0
       ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
       : goldenQADatasets.map((name) => ({ id: name, label: name }));
-  const assistantOptions = [{ id: '', label: 'Pick your assistant & version to evaluate' }];
+
+  const { data: versionsData } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
+    variables: { filter: {} },
+  });
+
+  const assistantOptions =
+    versionsData?.assistantConfigVersions?.length > 0
+      ? versionsData.assistantConfigVersions.map((v: any) => ({
+          id: v.id,
+          label: `${v.assistantName} (Version ${v.versionNumber})`,
+        }))
+      : [{ id: '', label: 'No assistants available' }];
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string()
@@ -128,22 +159,42 @@ export default function AIEvaluationCreate() {
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
     },
     {
+      component: SectionDivider,
+      name: '__evaluationDetailsDivider',
+      label: 'Evaluation Details',
+      placedolder: '',
+    },
+    {
       component: Input,
       name: 'evaluationName',
       type: 'text',
       label: 'Evaluation Name*',
-      placeholder: 'Give a unique name for the evaluation experiment.',
+      placeholder: 'Give a unique name for the evaluation experiment',
     },
     {
       component: Dropdown,
       name: 'assistantId',
       label: 'AI Assistant*',
       options: assistantOptions,
+      placeholder: '',
       helperText: "This list includes all assistants and versions you've created.",
     },
   ];
 
   const dialogMessage = 'This action cannot be undone.';
+
+  const handleSetPayload = (payload: any) => {
+    createEvaluation({
+      variables: {
+        input: {
+          evaluationName: payload.evaluationName,
+          goldenQaId: payload.goldenQaId,
+          assistantConfigVersionId: payload.assistantId,
+        },
+      },
+    });
+    return payload;
+  };
 
   return (
     <div>
@@ -177,7 +228,8 @@ export default function AIEvaluationCreate() {
         noHeading={false}
         partialPage={false}
         confirmationState={{ show: false, title: '', message: '' }}
-        customStyles={styles.FormLayout}
+        setPayload={handleSetPayload}
+        customHandler={() => {}}
       />
       <input
         ref={fileInputRef}
@@ -197,4 +249,4 @@ export default function AIEvaluationCreate() {
       )}
     </div>
   );
-};
+}
