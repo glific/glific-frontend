@@ -1211,8 +1211,8 @@ describe('validateFlowJson — all phases', () => {
               type: 'CalendarPicker',
               name: 'appt_date',
               label: {
-                "start-date": "Pick a start date",
-                "end-date": "Pick an end date"
+                'start-date': 'Pick a start date',
+                'end-date': 'Pick an end date',
               },
               required: true,
               mode: 'single',
@@ -1234,12 +1234,9 @@ describe('validateFlowJson — all phases', () => {
 
     fireEvent.click(screen.getByText('Field Names'));
 
-    screen.debug(document, Infinity)
-
     await waitFor(() => {
       expect(screen.getByText('Screen 1 · CalendarPicker · appt_date')).toBeInTheDocument();
-    })
-
+    });
   });
 
   // ── Phase 4: Footer & action validation ──────────────────────────────────
@@ -1749,9 +1746,7 @@ describe('round-trip preservation — unsupported components & extra attributes'
               {
                 type: 'Form',
                 name: 'flow_path',
-                children: [
-                  { type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } },
-                ],
+                children: [{ type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } }],
               },
             ],
           },
@@ -1801,9 +1796,7 @@ describe('round-trip preservation — unsupported components & extra attributes'
               {
                 type: 'Form',
                 name: 'flow_path',
-                children: [
-                  { type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } },
-                ],
+                children: [{ type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } }],
               },
             ],
           },
