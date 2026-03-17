@@ -153,13 +153,11 @@ export const FormLayout = ({
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
   const [saveClick, onSaveClick] = useState(false);
-  const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
@@ -251,6 +249,50 @@ export const FormLayout = ({
     }
   };
 
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+
+  let itemId = entityId;
+  if (!itemId) {
+    itemId = params.id;
+  }
+
+  let variables: any = itemId ? { [idType]: itemId } : false;
+  if (listItem === 'credential') {
+    variables = params.type ? { shortcode: params.type } : false;
+  }
+
+  const organization = useQuery(USER_LANGUAGES, {
+    skip: !languageSupport,
+  });
+
+  const { loading, error, data: itemData, refetch } = useQuery(getItemQuery, {
+    variables,
+    skip: !itemId,
+    fetchPolicy: getQueryFetchPolicy,
+    onCompleted: (data) => {
+      if (data) {
+        const loadedItem = data[listItem]?.[listItem] ?? data[Object.keys(data)[0]]?.[listItem];
+        if (loadedItem && setStates) {
+          setStates(loadedItem);
+        }
+      }
+    },
+  });
+
+  const fetchedItem: any = itemData
+    ? (itemData[listItem]?.[listItem] ?? itemData[Object.keys(itemData)[0]]?.[listItem] ?? null)
+    : null;
+
+  const isLoadedData = Boolean(fetchedItem);
+
+  const languageId = fetchedItem
+    ? languageSupport
+      ? fetchedItem.language.id
+      : null
+    : !itemId && organization.data
+      ? organization.data.currentUser.user.organization.defaultLanguage.id
+      : '';
+
   const formik = useFormik({
     initialValues: {
       languageId,
@@ -284,16 +326,6 @@ export const FormLayout = ({
     }
   }, [entityId]);
 
-  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
-  let item: any = null;
-
-  let itemId = entityId;
-  if (!itemId) {
-    itemId = params.id;
-  }
-
-  let variables: any = itemId ? { [idType]: itemId } : false;
-
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
       setNotification(`${capitalListItemName} deleted successfully`);
@@ -310,39 +342,6 @@ export const FormLayout = ({
         variables: SEARCH_QUERY_VARIABLES,
       },
     ],
-  });
-
-  // get the organization for current user and have languages option set to that.
-
-  const organization = useQuery(USER_LANGUAGES, {
-    skip: !languageSupport,
-    onCompleted: (data: any) => {
-      if (!itemId) {
-        setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
-      }
-    },
-  });
-  if (listItem === 'credential') {
-    variables = params.type ? { shortcode: params.type } : false;
-  }
-
-  const { loading, error, refetch } = useQuery(getItemQuery, {
-    variables,
-    skip: !itemId,
-    fetchPolicy: getQueryFetchPolicy,
-    onCompleted: (data) => {
-      if (data) {
-        item = data[listItem] ? data[listItem][listItem] : data[Object.keys(data)[0]][listItem];
-        if (item) {
-          setIsLoadedData(true);
-          setLink(data[listItem] ? data[listItem][listItem][linkParameter] : item.linkParameter);
-          setLanguageId(languageSupport ? item.language.id : null);
-          if (setStates) {
-            setStates(item);
-          }
-        }
-      }
-    },
   });
 
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
@@ -448,7 +447,6 @@ export const FormLayout = ({
           afterSave(data, saveClick);
         }
       }
-      setIsLoadedData(true);
       onSaveClick(false);
     },
     refetchQueries: () => {
