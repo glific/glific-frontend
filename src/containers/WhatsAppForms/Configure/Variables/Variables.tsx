@@ -32,22 +32,6 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
     screen.content.forEach((item) => {
       const { data, type } = item;
 
-      if (type === 'Unsupported' && data.rawComponent?.name) {
-        const fieldName = fieldNameMap.get(item.id);
-        if (fieldName) {
-          variables.push({
-            screenId: screen.id,
-            screenName: screen.name,
-            contentId: item.id,
-            label: data.rawComponent.label || data.rawComponent.name,
-            variableName: data.rawComponent.name,
-            fieldName,
-            type: data.rawComponent.type,
-          });
-        }
-        return;
-      }
-
       if (type === 'Text Answer' || type === 'Selection') {
         if (data.label) {
           const fieldName = fieldNameMap.get(item.id) || 'field';
