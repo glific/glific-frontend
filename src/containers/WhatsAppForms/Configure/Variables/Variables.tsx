@@ -39,7 +39,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             screenId: screen.id,
             screenName: screen.name,
             contentId: item.id,
-            label: data.rawComponent.label || data.rawComponent.name,
+            label: typeof data.rawComponent.label === 'string' ? data.rawComponent.label : data.rawComponent.name,
             variableName: data.rawComponent.name,
             fieldName,
             type: data.rawComponent.type,
