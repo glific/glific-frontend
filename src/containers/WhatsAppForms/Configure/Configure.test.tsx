@@ -1210,7 +1210,10 @@ describe('validateFlowJson — all phases', () => {
             {
               type: 'CalendarPicker',
               name: 'appt_date',
-              label: 'Pick a date',
+              label: {
+                "start-date": "Pick a start date",
+                "end-date": "Pick an end date"
+              },
               required: true,
               mode: 'single',
             },
@@ -1226,6 +1229,17 @@ describe('validateFlowJson — all phases', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    fireEvent.click(screen.getByText('Field Names'));
+
+    screen.debug(document, Infinity)
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen 1 · CalendarPicker · appt_date')).toBeInTheDocument();
+    })
+
   });
 
   // ── Phase 4: Footer & action validation ──────────────────────────────────
