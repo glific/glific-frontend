@@ -1152,18 +1152,80 @@ describe('validateFlowJson — all phases', () => {
     );
   });
 
-  test('phase 3 — first layout child must be a Form', async () => {
+  test('phase 3 — layout without footer shows error (Form is optional)', async () => {
     await setJsonAndExpectError(
       flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'TextBody', text: 'Hello' }] } })]),
-      'First layout child must be a Form component'
+      'Must have exactly one Footer component'
     );
   });
 
-  test('phase 3 — Form component must have children', async () => {
+  test('phase 3 — Form with no children has no footer, shows error', async () => {
     await setJsonAndExpectError(
       flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'Form', name: 'flow_path' }] } })]),
-      'Form component must have children'
+      'Must have exactly one Footer component'
     );
+  });
+
+  test('phase 3 — CalendarPicker inside Form throws layout placement error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                {
+                  type: 'CalendarPicker',
+                  name: 'appt_date',
+                  label: 'Pick a date',
+                  required: true,
+                  mode: 'single',
+                },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "'CalendarPicker' must be a direct child of SingleColumnLayout, not inside a Form component"
+    );
+  });
+
+  test('phase 3 — CalendarPicker as direct layout child with Form+Footer is valid', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const validCalendarScreen = flow([
+      {
+        id: 'screen_one',
+        title: 'Screen 1',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            {
+              type: 'CalendarPicker',
+              name: 'appt_date',
+              label: 'Pick a date',
+              required: true,
+              mode: 'single',
+            },
+            formWith([footer({ name: 'complete', payload: {} })]),
+          ],
+        },
+      },
+    ]);
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(validCalendarScreen) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
   });
 
   // ── Phase 4: Footer & action validation ──────────────────────────────────
@@ -1494,7 +1556,7 @@ describe('round-trip preservation — unsupported components & extra attributes'
     expect(unsupportedItem!.data.rawComponent).toEqual(photoPicker);
 
     const outputJSON = convertFormBuilderToFlowJSON(screens);
-    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputChildren = outputJSON.screens[0].layout.children;
     const outputComponent = outputChildren.find((c: any) => c.type === 'PhotoPicker');
 
     expect(outputComponent).toEqual(photoPicker);
@@ -1644,6 +1706,111 @@ describe('round-trip preservation — unsupported components & extra attributes'
     const dateItem = screens[0].content.find((item) => item.name === 'Date Picker');
     expect(dateItem).toBeDefined();
     expect(dateItem!.data.extraAttributes).toBeUndefined();
+  });
+
+  test('CalendarPicker as direct layout child is preserved verbatim through round-trip', () => {
+    const calendarPicker = {
+      type: 'CalendarPicker',
+      name: 'appt_date',
+      label: 'Pick a date',
+      required: true,
+      mode: 'range',
+      'min-date': '2024-10-21',
+      'max-date': '2025-12-12',
+    };
+
+    // Flow where CalendarPicker is a direct layout child (not inside Form)
+    const flowJSON = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              calendarPicker,
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [
+                  { type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.name).toBe('CalendarPicker');
+    expect(unsupportedItem!.data.rawComponent).toEqual(calendarPicker);
+
+    // Round-trip: CalendarPicker must be a direct child of layout.children, NOT inside Form
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const layoutChildren = outputJSON.screens[0].layout.children;
+    const calendarInLayout = layoutChildren.find((c: any) => c.type === 'CalendarPicker');
+    expect(calendarInLayout).toEqual(calendarPicker);
+
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const calendarInForm = formComponent?.children?.find((c: any) => c.type === 'CalendarPicker');
+    expect(calendarInForm).toBeUndefined();
+  });
+
+  test('DocumentPicker as direct layout child is preserved verbatim through round-trip', () => {
+    const documentPicker = {
+      type: 'DocumentPicker',
+      name: 'user_doc',
+      label: 'Upload Document',
+      required: false,
+      'max-file-size-kb': 5120,
+    };
+
+    const flowJSON = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              documentPicker,
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [
+                  { type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.data.rawComponent).toEqual(documentPicker);
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const layoutChildren = outputJSON.screens[0].layout.children;
+    const docInLayout = layoutChildren.find((c: any) => c.type === 'DocumentPicker');
+    expect(docInLayout).toEqual(documentPicker);
+
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const docInForm = formComponent?.children?.find((c: any) => c.type === 'DocumentPicker');
+    expect(docInForm).toBeUndefined();
   });
 
   test('mixed supported, unsupported, and extra-attribute components all survive round-trip', () => {
