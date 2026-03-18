@@ -448,7 +448,8 @@ export const FormLayout = ({
     },
   });
 
-  if (loading || languageSupport) return <Loading />;
+  if (loading) return <Loading />;
+
   if (error) {
     setErrorMessage(error);
     return null;

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import dayjs from 'dayjs';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -39,7 +39,6 @@ import {
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 import styles from './HSMList.module.css';
-import { ProviderContext } from 'context/session';
 import { useSearchParams } from 'react-router';
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
@@ -86,7 +85,6 @@ export const HSMList = () => {
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { provider } = useContext(ProviderContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
