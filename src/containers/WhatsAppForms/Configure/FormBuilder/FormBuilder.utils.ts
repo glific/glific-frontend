@@ -127,17 +127,7 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
     );
 
     screen.content.forEach((item) => {
-      if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
-        const fieldName = fieldNameMap.get(item.id);
-        if (fieldName) {
-          previousScreensPayloadData.push({
-            payloadKey: fieldName,
-            fieldType: item.data.rawComponent.type,
-            inputType: 'text',
-            screenId: screenIds[index],
-          });
-        }
-      } else if (item.type === 'Text Answer' || item.type === 'Selection') {
+      if (item.type === 'Text Answer' || item.type === 'Selection') {
         const fieldName = fieldNameMap.get(item.id) || 'field';
         const componentType = getWhatsAppComponentType(item.type, item.name);
         previousScreensPayloadData.push({
@@ -221,16 +211,6 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
-      // Unsupported components with a name are input components that need field tracking
-      if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
-        const rawName = item.data.rawComponent.name;
-        if (!usedNames.has(rawName)) {
-          usedNames.add(rawName);
-          fieldNameMap.set(item.id, rawName);
-        }
-        return;
-      }
-
       if (item.type === 'Text Answer' || item.type === 'Selection') {
         let name = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || `field`;
 
@@ -252,11 +232,6 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
 /** Converts a form builder content item into a WhatsApp Flow JSON component object. */
 const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<string, string>): any => {
-  // Unsupported component types are returned verbatim from their stored raw JSON.
-  if (item.type === 'Unsupported') {
-    return item.data.rawComponent || null;
-  }
-
   const componentType = getWhatsAppComponentType(item.type, item.name);
   const { data } = item;
   const fieldName = fieldNameMap.get(item.id);
@@ -276,7 +251,6 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       required: data.required || false,
       type: 'TextInput',
       ...(data.placeholder && { 'helper-text': data.placeholder }),
-      ...data.extraAttributes,
     };
   }
 
@@ -297,7 +271,6 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       required: data.required || false,
       type: 'DatePicker',
       ...(data.placeholder && { 'helper-text': data.placeholder }),
-      ...data.extraAttributes,
     };
   }
 
@@ -311,7 +284,6 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       name: fieldName,
       required: data.required || false,
       type: 'RadioButtonsGroup',
-      ...data.extraAttributes,
     };
   }
 
@@ -325,7 +297,6 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       name: fieldName,
       required: data.required || false,
       type: 'CheckboxGroup',
-      ...data.extraAttributes,
     };
   }
 
@@ -339,7 +310,6 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       name: fieldName,
       required: data.required || false,
       type: 'Dropdown',
-      ...data.extraAttributes,
     };
   }
 
@@ -431,13 +401,9 @@ const generateScreenPayload = (
     }
   });
 
-  screenContent.forEach((item) => {
-    if (item.type === 'Unsupported' && item.data.rawComponent?.name && fieldNameMap.has(item.id)) {
-      payload[fieldNameMap.get(item.id)!] = `\${form.${fieldNameMap.get(item.id)!}}`;
-      return;
-    }
-
-    if ((item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id)) {
+  screenContent
+    .filter((item) => (item.type === 'Text Answer' || item.type === 'Selection') && fieldNameMap.has(item.id))
+    .forEach((item) => {
       const fieldName = fieldNameMap.get(item.id)!;
       const componentType = getWhatsAppComponentType(item.type, item.name);
       const isNumberField =
@@ -445,8 +411,7 @@ const generateScreenPayload = (
       if (isNumberField && !isTerminal) return;
 
       payload[fieldName] = `\${form.${fieldName}}`;
-    }
-  });
+    });
 
   return payload;
 };
@@ -493,12 +458,12 @@ export const convertScreenToFlowJSON = (
 
   const footer = screen.buttonLabel
     ? {
-      label: screen.buttonLabel,
-      'on-click-action': isTerminal
-        ? { name: 'complete', payload }
-        : { name: 'navigate', next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' }, payload },
-      type: 'Footer',
-    }
+        label: screen.buttonLabel,
+        'on-click-action': isTerminal
+          ? { name: 'complete', payload }
+          : { name: 'navigate', next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' }, payload },
+        type: 'Footer',
+      }
     : null;
 
   const screenData = generateScreenData(previousScreensPayloadData);
@@ -656,12 +621,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     data: {},
   };
 
-  // Unsupported component types are stored verbatim so nothing is lost on round-trip.
-  if (internalType.type === 'Unsupported') {
-    contentItem.data = { rawComponent: component };
-    return contentItem;
-  }
-
   if (['TextHeading', 'TextSubheading', 'TextCaption', 'TextBody'].includes(type)) {
     contentItem.data = {
       text: component.text || '',
@@ -671,13 +630,11 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
 
   if (type === 'TextInput') {
     const rawInputType = component['input-type'] || 'text';
-    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       label: component.label || '',
       inputType: rawInputType.charAt(0).toUpperCase() + rawInputType.slice(1),
       required: component.required || false,
       placeholder: component['helper-text'] || '',
-      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
@@ -692,19 +649,16 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   }
 
   if (type === 'DatePicker') {
-    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       label: component.label || '',
       required: component.required || false,
       placeholder: component['helper-text'] || '',
-      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
 
   if (['RadioButtonsGroup', 'CheckboxGroup', 'Dropdown'].includes(type)) {
     const dataSource = component['data-source'] || [];
-    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       label: component.label || '',
       required: component.required || false,
@@ -712,7 +666,6 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
         id: item.id || `${index}_${item.title}`,
         value: item.title || '',
       })),
-      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
@@ -746,7 +699,7 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
     const layoutChildren = flowScreen.layout?.children || [];
     const formLayout = layoutChildren.find((c: any) => c.type === 'Form');
     const directLayoutComponents = layoutChildren.filter((c: any) => c.type !== 'Form');
-    const formChildren = formLayout ? (formLayout.children || []) : [];
+    const formChildren = formLayout ? formLayout.children || [] : [];
     const allChildren = [...directLayoutComponents, ...formChildren];
 
     let buttonLabel = 'Continue';
@@ -758,7 +711,7 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
     const content: ContentItem[] = allChildren
       .map((component: any, index: number) => {
         const item = convertWhatsAppComponentToContentItem(component, index);
-        if (item && item.type !== 'Unsupported' && component.name) {
+        if (item && component.name) {
           item.data.variableName = component.name;
         }
         return item;
