@@ -9,7 +9,6 @@ export const getListAiEvaluationsMock = {
 
 export const getCreateEvaluationMock = {
   request: { query: CREATE_EVALUATION },
-  variableMatcher: () => true,
   result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
 };
 
@@ -50,7 +49,6 @@ export const getAssistantConfigVersionsMock = {
     },
   },
 };
-
 
 export const createGoldenQaSuccessMock = {
   request: { query: CREATE_GOLDEN_QA },
