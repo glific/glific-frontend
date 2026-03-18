@@ -248,14 +248,14 @@ export const Trigger = () => {
 
   const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER);
 
-  const handleFlowChange = async (flow: any) => {
+  const handleFlowChange = async (input: any) => {
     setTriggerFlowWarning(undefined);
-    if (flow) {
+    if (input) {
       try {
         const result = await validateTriggerFlow({
           variables: {
             input: {
-              flowId: flow.id,
+              flowId: input.id,
             },
           },
         });

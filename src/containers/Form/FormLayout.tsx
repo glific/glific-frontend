@@ -233,11 +233,11 @@ export const FormLayout = ({
 
       if (saveOnPageChange || saveClick) {
         setFormSubmitted(true);
-        let message = `${capitalListItemName} edited successfully!`;
+        let notificationMessage = `${capitalListItemName} edited successfully!`;
         if (type === 'copy') {
-          message = copyNotification;
+          notificationMessage = copyNotification;
         }
-        setNotification(message);
+        setNotification(notificationMessage);
       } else {
         setNotification('Your changes have been autosaved');
       }
@@ -349,7 +349,12 @@ export const FormLayout = ({
     skip: !languageSupport,
   });
 
-  const { loading, error, data: itemData, refetch } = useQuery(getItemQuery, {
+  const {
+    loading,
+    error,
+    data: itemData,
+    refetch,
+  } = useQuery(getItemQuery, {
     variables,
     skip: !itemId,
     fetchPolicy: getQueryFetchPolicy,
@@ -369,7 +374,7 @@ export const FormLayout = ({
 
   const languageId = fetchedItem
     ? languageSupport
-      ? fetchedItem.language?.id ?? ''
+      ? (fetchedItem.language?.id ?? '')
       : null
     : !itemId && organization.data
       ? organization.data.currentUser.user.organization.defaultLanguage.id
