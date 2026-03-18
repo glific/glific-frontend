@@ -16,7 +16,7 @@ import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
 import { RaiseToGupShup } from 'containers/HSM/RaiseToGupshupDialog/RaiseToGupShup';
-import { GUPSHUP_ENTERPRISE_SHORTCODE, STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { templateInfo, templateStatusInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
 import { WhatsAppToJsx } from 'common/RichEditor';
@@ -228,26 +228,6 @@ export const HSMList = () => {
     }
   };
 
-  const handleImportTemplates = async (result: string, media: any) => {
-    const extension = getFileExtension(media.name);
-    if (extension !== 'csv') {
-      setNotification(t('Please upload a valid CSV file'), 'warning');
-      setImporting(false);
-    } else {
-      try {
-        const { data } = await importTemplatesMutation({ variables: { data: result } });
-        const errors = data?.importTemplates?.errors;
-        if (errors && errors.length > 0) {
-          setNotification(t('Error importing templates'), 'warning');
-        }
-      } catch {
-        setNotification(t('Error importing templates'), 'warning');
-      } finally {
-        setImporting(false);
-      }
-    }
-  };
-
   let filterValue: any = '';
   const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
   const defaultSortBy = 'STATUS';
@@ -373,20 +353,6 @@ export const HSMList = () => {
       </div>
     </div>
   );
-
-  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
-    secondaryButton = (
-      <div className={styles.SecondaryButton}>
-        {syncHSMButton}
-        <ImportButton
-          title={t('Import templates')}
-          onImport={() => setImporting(true)}
-          afterImport={handleImportTemplates}
-        />
-      </div>
-    );
-    button.show = false;
-  }
 
   const handleView = (id: any) => {
     navigate(`/template/${id}/edit`);
