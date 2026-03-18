@@ -68,12 +68,12 @@ describe('AIEvaluationCreate', () => {
     });
 
     expect(
-      screen.getByText(/Select The Golden QA Dataset From Existing List Or Upload A New Golden Set/)
+      screen.getByText(/Select the Golden QA dataset from the existing list or upload a new set/)
     ).toBeInTheDocument();
     expect(screen.getByText('Expected CSV Format:')).toBeInTheDocument();
-    expect(screen.getByText('Question, Answer')).toBeInTheDocument();
-    expect(screen.getByText('{"What Is X"},{"Answer"}')).toBeInTheDocument();
-    expect(screen.getByText('Click Here For The Template Csv')).toBeInTheDocument();
+    expect(screen.getByText('Question,Answer')).toBeInTheDocument();
+    expect(screen.getByText('What is the capital of France?,Paris')).toBeInTheDocument();
+    expect(screen.getByText('Click here for the template CSV')).toBeInTheDocument();
   });
 
   test('renders Upload Golden QA button', async () => {
@@ -160,22 +160,6 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Please select an AI Assistant')).toBeInTheDocument();
-    });
-  });
-
-  test('shows validation error for invalid evaluation name pattern', async () => {
-    render(wrapper());
-
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
-    });
-
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
-    fireEvent.change(nameInput, { target: { value: 'invalid name with spaces' } });
-    fireEvent.click(screen.getByText('Run Evaluation'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Invalid evaluation name')).toBeInTheDocument();
     });
   });
 

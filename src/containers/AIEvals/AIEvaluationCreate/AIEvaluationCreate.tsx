@@ -4,7 +4,6 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
-// src / graphql / mutations / AIEvaluations.ts;
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -17,15 +16,15 @@ import { UploadGoldenQaDialog } from './UploadGoldenQaDialog';
 const goldenQAHelperContent = (
   <div className={styles.GoldenQAHelper}>
     <p className={styles.GoldenQAHelperDescription}>
-      Select The Golden QA Dataset From Existing List Or Upload A New Golden Set Of QA In Csv Format To Run The
-      Evaluation On.
+      Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the
+      evaluation on.
     </p>
     <div className={styles.CSVFormatBox}>
       <div className={styles.CSVFormatLabel}>Expected CSV Format:</div>
-      <div className={styles.CSVFormatExample}>Question, Answer</div>
-      <div className={styles.CSVFormatExample}>{'{"What Is X"},{"Answer"}'}</div>
+      <div className={styles.CSVFormatExample}>Question,Answer</div>
+      <div className={styles.CSVFormatExample}>{'What is the capital of France?,Paris'}</div>
       <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
-        Click Here For The Template Csv
+        Click here for the template CSV
       </a>
     </div>
   </div>
@@ -90,9 +89,7 @@ export default function AIEvaluationCreate() {
       : [{ id: '', label: 'No assistants available' }];
 
   const validationSchema = Yup.object().shape({
-    evaluationName: Yup.string()
-      .required('Evaluation name is required')
-      .matches(/^[a-zA-Z0-9_-]+$/, 'Invalid evaluation name'),
+    evaluationName: Yup.string().required('Evaluation name is required'),
     goldenQaId: Yup.string().required('Please select a Golden QA dataset'),
     assistantId: Yup.string().required('Please select an AI Assistant'),
   });
