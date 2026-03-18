@@ -12,6 +12,7 @@ export const CREATE_GOLDEN_QA = gql`
   mutation CreateGoldenQa($input: GoldenQaInput!) {
     createGoldenQa(input: $input) {
       goldenQa {
+        datasetId
         name
       }
       errors {

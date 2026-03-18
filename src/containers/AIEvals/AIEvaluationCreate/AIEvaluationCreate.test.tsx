@@ -9,9 +9,9 @@ import {
   getAIEvaluationCreateMocks,
   getAssistantConfigVersionsMock,
 } from 'mocks/AIEvaluations';
-import AIEvaluationCreate, { DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
+import AIEvaluationCreate from './AIEvaluationCreate';
 
-const defaultMocks = getAIEvaluationCreateMocks(DUMMY_GET_ITEM, DUMMY_CREATE);
+const defaultMocks = getAIEvaluationCreateMocks();
 
 const wrapper = (mocks: any[] = defaultMocks) => (
   <MockedProvider mocks={mocks}>
@@ -304,8 +304,8 @@ describe('AIEvaluationCreate', () => {
     render(
       wrapper([
         ...defaultMocks,
-        createGoldenQaCustomSuccessMock('first_qa', 1),
-        createGoldenQaCustomSuccessMock('second_qa', 1),
+        createGoldenQaCustomSuccessMock('first_qa', 1, '100'),
+        createGoldenQaCustomSuccessMock('second_qa', 1, '200'),
       ])
     );
 

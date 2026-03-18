@@ -1,9 +1,10 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
+// src / graphql / mutations / AIEvaluations.ts;
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -12,28 +13,6 @@ import { setNotification } from 'common/notification';
 
 import styles from './AIEvaluationCreate.module.css';
 import { UploadGoldenQaDialog } from './UploadGoldenQaDialog';
-
-// Dummy GraphQL documents until backend supports get/update/delete for AI evaluations (exported for tests)
-export const DUMMY_GET_ITEM = gql`
-  query DummyAiEvalGet {
-    __typename
-  }
-`;
-export const DUMMY_UPDATE = gql`
-  mutation DummyAiEvalUpdate {
-    __typename
-  }
-`;
-export const DUMMY_DELETE = gql`
-  mutation DummyAiEvalDelete {
-    __typename
-  }
-`;
-export const DUMMY_CREATE = gql`
-  mutation DummyAiEvalCreate {
-    __typename
-  }
-`;
 
 const goldenQAHelperContent = (
   <div className={styles.GoldenQAHelper}>
@@ -77,16 +56,17 @@ const SectionDivider = (_props: any) => null;
 
 export default function AIEvaluationCreate() {
   const navigate = useNavigate();
-  const [goldenQADatasets, setGoldenQADatasets] = useState<string[]>([]);
+  const [goldenQADatasets, setGoldenQADatasets] = useState<Array<{ datasetId: number; name: string }>>([]);
   const [showUploadGoldenQaDialog, setShowUploadGoldenQaDialog] = useState(false);
   const [selectedGoldenQaFileName, setSelectedGoldenQaFileName] = useState<string | null>(null);
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [createEvaluation] = useMutation(CREATE_EVALUATION, {
-    onCompleted: () => {
+  const [createEvaluation, { loading: evaluationLoading }] = useMutation(CREATE_EVALUATION, {
+    onCompleted: (data) => {
+      console.log('Evaluation creation response:', data);
       setNotification('Evaluation started successfully!');
-      navigate('/ai-evaluations');
+      navigate('/chat');
     },
     onError: (error) => {
       setNotification(error.message, 'warning');
@@ -96,7 +76,7 @@ export default function AIEvaluationCreate() {
   const goldenQaOptions =
     goldenQADatasets.length === 0
       ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
-      : goldenQADatasets.map((name) => ({ id: name, label: name }));
+      : goldenQADatasets.map(({ datasetId, name }) => ({ id: datasetId, label: name }));
 
   const { data: versionsData } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
     variables: { filter: {} },
@@ -118,9 +98,9 @@ export default function AIEvaluationCreate() {
     assistantId: Yup.string().required('Please select an AI Assistant'),
   });
 
-  const [states, setStates] = useState<{ evaluationName: string; goldenQaId: string; assistantId: string }>({
+  const [states, setStates] = useState<{ evaluationName: string; goldenQaId: number; assistantId: string }>({
     evaluationName: '',
-    goldenQaId: '0',
+    goldenQaId: 0,
     assistantId: '',
   });
 
@@ -141,10 +121,9 @@ export default function AIEvaluationCreate() {
     setShowUploadGoldenQaDialog(true);
   };
 
-  const handleUploadGoldenQaProceed = (values: { name: string }) => {
-    // Placeholder for when backend mutation response needs to be used further. New upload at top.
-    setGoldenQADatasets((prev) => [values.name, ...prev]);
-    setStates((prev) => ({ ...prev, goldenQaId: values.name }));
+  const handleUploadGoldenQaProceed = (values: { datasetId: number; name: string }) => {
+    setGoldenQADatasets((prev) => [{ datasetId: values.datasetId, name: values.name }, ...prev]);
+    setStates((prev) => ({ ...prev, goldenQaId: values.datasetId }));
     setShowUploadGoldenQaDialog(false);
   };
 
@@ -183,6 +162,21 @@ export default function AIEvaluationCreate() {
 
   const dialogMessage = 'This action cannot be undone.';
 
+  const handleSetPayload = (payload: any) => {
+    const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId);
+    createEvaluation({
+      variables: {
+        input: {
+          datasetId: payload.goldenQaId,
+          experimentName: payload.evaluationName,
+          configId: selectedVersion?.kaapiUuid ?? payload.assistantId,
+          configVersion: payload.assistantId,
+        },
+      },
+    });
+    return payload;
+  };
+
   return (
     <div>
       <FormLayout
@@ -194,10 +188,10 @@ export default function AIEvaluationCreate() {
         formFields={formFields}
         redirectionLink="ai-evaluations"
         listItem="aiEvaluation"
-        getItemQuery={DUMMY_GET_ITEM}
-        createItemQuery={DUMMY_CREATE}
-        updateItemQuery={DUMMY_UPDATE}
-        deleteItemQuery={DUMMY_DELETE}
+        getItemQuery={GET_ASSISTANT_CONFIG_VERSIONS}
+        createItemQuery={CREATE_EVALUATION}
+        updateItemQuery={CREATE_EVALUATION}
+        deleteItemQuery={CREATE_EVALUATION}
         defaultAttribute={null}
         icon={null}
         refetchQueries={[]}
@@ -215,6 +209,9 @@ export default function AIEvaluationCreate() {
         noHeading={false}
         partialPage={false}
         confirmationState={{ show: false, title: '', message: '' }}
+        setPayload={handleSetPayload}
+        customHandler={() => {}}
+        buttonState={{ status: evaluationLoading, text: 'Running...', styles: '', show: true }}
       />
       <input
         ref={fileInputRef}

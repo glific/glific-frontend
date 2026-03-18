@@ -13,7 +13,7 @@ export interface UploadGoldenQaDialogProps {
   fileName: string;
   file: File | null;
   onClose: () => void;
-  onProceed: (values: { name: string; duplicationFactor: number }) => void;
+  onProceed: (values: { datasetId: number; name: string; duplicationFactor: number }) => void;
 }
 
 export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed }: UploadGoldenQaDialogProps) => {
@@ -94,6 +94,7 @@ export const UploadGoldenQaDialog = ({ open, fileName, file, onClose, onProceed 
 
       setNotification('Golden QA uploaded successfully', 'success');
       onProceed({
+        datasetId: parseInt(goldenQa.datasetId, 10),
         name: goldenQa.name,
         duplicationFactor: goldenQa.duplication_factor,
       });
