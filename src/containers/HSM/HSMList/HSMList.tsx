@@ -236,7 +236,7 @@ export const HSMList = () => {
     } else {
       try {
         const { data } = await importTemplatesMutation({ variables: { data: result } });
-        const { errors } = data.importTemplates;
+        const errors = data?.importTemplates?.errors;
         if (errors && errors.length > 0) {
           setNotification(t('Error importing templates'), 'warning');
         }
@@ -289,7 +289,7 @@ export const HSMList = () => {
       loading={syncTemplateLoad}
       className={styles.HsmUpdates}
       data-testid="updateHsm"
-      onClick={() => handleHsmUpdates()}
+      onClick={handleHsmUpdates}
       aria-hidden="true"
     >
       SYNC HSM

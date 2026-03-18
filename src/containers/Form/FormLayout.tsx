@@ -2,7 +2,7 @@ import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
-import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
+import { DocumentNode, useQuery, useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -207,9 +207,96 @@ export const FormLayout = ({
     }
   };
 
-  const performTask = (payload: any) => {
-    if (itemId) {
-      if (isLoadedData) {
+  const handleUpdateCompleted = (data: any) => {
+    setShowConfirmationDialog(false);
+    let itemUpdatedObject: any = Object.keys(data)[0];
+    itemUpdatedObject = data[itemUpdatedObject];
+    const updatedItem = itemUpdatedObject[listItem];
+    const { errors, message } = itemUpdatedObject;
+
+    if (errors) {
+      if (customHandler) {
+        customHandler(errors);
+      } else {
+        setErrorMessage(errors[0]);
+      }
+    } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
+      if (customError) {
+        const codeErrors = { code: 'Failed to compile code. Please check again' };
+        customError.setErrors(codeErrors);
+      }
+    } else {
+      if (type === 'copy') setLink(updatedItem[linkParameter]);
+      if (additionalQuery) {
+        additionalQuery(itemId);
+      }
+
+      if (saveOnPageChange || saveClick) {
+        setFormSubmitted(true);
+        let message = `${capitalListItemName} edited successfully!`;
+        if (type === 'copy') {
+          message = copyNotification;
+        }
+        setNotification(message);
+      } else {
+        setNotification('Your changes have been autosaved');
+      }
+      if (afterSave) {
+        afterSave(data, saveClick, message);
+      }
+    }
+    onSaveClick(false);
+  };
+
+  const handleCreateCompleted = (data: any) => {
+    setShowConfirmationDialog(false);
+    let itemCreatedObject: any = `create${camelCaseItem}`;
+    itemCreatedObject = data[itemCreatedObject];
+    const itemCreated = itemCreatedObject[listItem];
+
+    const { errors } = itemCreatedObject;
+    if (errors) {
+      if (customHandler) {
+        customHandler(errors);
+      } else {
+        setErrorMessage(errors[0]);
+      }
+    } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
+      if (customError) {
+        const codeErrors = { code: 'Failed to compile code. Please check again' };
+        customError.setErrors(codeErrors);
+      }
+    } else {
+      if (additionalQuery) {
+        additionalQuery(itemCreated.id);
+      }
+      if (!itemId) setLink(itemCreated[linkParameter]);
+      if (saveOnPageChange || saveClick) {
+        setFormSubmitted(true);
+        setNotification(`${capitalListItemName} created successfully!`);
+      } else {
+        setNotification('Your changes have been autosaved');
+      }
+      if (afterSave) {
+        afterSave(data, saveClick);
+      }
+    }
+    onSaveClick(false);
+  };
+
+  const handleMutationError = (e: any) => {
+    setShowConfirmationDialog(false);
+    onSaveClick(false);
+    if (customHandler) {
+      customHandler(e.message);
+    } else {
+      setErrorMessage(e);
+    }
+  };
+
+  const performTask = async (payload: any) => {
+    try {
+      if (itemId && isLoadedData) {
         let idKey = idType;
         let idVal = itemId;
 
@@ -223,29 +310,26 @@ export const FormLayout = ({
         if (idType === 'organizationId') {
           idKey = 'id';
           idVal = payloadBody.billingId;
-          // Clearning unnecessary fields
           delete payloadBody.billingId;
         }
 
-        updateItem({
+        const { data } = await updateItem({
           variables: {
             [idKey]: idVal,
             input: payloadBody,
           },
         });
+        if (data) handleUpdateCompleted(data);
       } else {
-        createItem({
+        const { data } = await createItem({
           variables: {
             input: payload,
           },
         });
+        if (data) handleCreateCompleted(data);
       }
-    } else {
-      createItem({
-        variables: {
-          input: payload,
-        },
-      });
+    } catch (e: any) {
+      handleMutationError(e);
     }
   };
 
@@ -269,19 +353,17 @@ export const FormLayout = ({
     variables,
     skip: !itemId,
     fetchPolicy: getQueryFetchPolicy,
-    onCompleted: (data) => {
-      if (data) {
-        const loadedItem = data[listItem]?.[listItem] ?? data[Object.keys(data)[0]]?.[listItem];
-        if (loadedItem && setStates) {
-          setStates(loadedItem);
-        }
-      }
-    },
   });
 
   const fetchedItem: any = itemData
     ? (itemData[listItem]?.[listItem] ?? itemData[Object.keys(itemData)[0]]?.[listItem] ?? null)
     : null;
+
+  useEffect(() => {
+    if (fetchedItem && setStates) {
+      setStates(fetchedItem);
+    }
+  }, [itemData]);
 
   const isLoadedData = Boolean(fetchedItem);
 
@@ -327,14 +409,6 @@ export const FormLayout = ({
   }, [entityId]);
 
   const [deleteItem] = useMutation(deleteItemQuery, {
-    onCompleted: () => {
-      setNotification(`${capitalListItemName} deleted successfully`);
-      setDeleted(true);
-    },
-    onError: (err: ApolloError) => {
-      setShowDialog(false);
-      setErrorMessage(err);
-    },
     awaitRefetchQueries: true,
     refetchQueries: [
       {
@@ -347,60 +421,6 @@ export const FormLayout = ({
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
-    onCompleted: (data) => {
-      setShowConfirmationDialog(false);
-      let itemUpdatedObject: any = Object.keys(data)[0];
-      itemUpdatedObject = data[itemUpdatedObject];
-      const updatedItem = itemUpdatedObject[listItem];
-      const { errors, message } = itemUpdatedObject;
-
-      if (errors) {
-        if (customHandler) {
-          customHandler(errors);
-        } else {
-          setErrorMessage(errors[0]);
-        }
-      } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
-        if (customError) {
-          // this is a custom error for extensions. We need to move this out of this component
-          const codeErrors = { code: 'Failed to compile code. Please check again' };
-          customError.setErrors(codeErrors);
-        }
-      } else {
-        if (type === 'copy') setLink(updatedItem[linkParameter]);
-        if (additionalQuery) {
-          additionalQuery(itemId);
-        }
-
-        if (saveOnPageChange || saveClick) {
-          setFormSubmitted(true);
-          // display successful message after update
-          let message = `${capitalListItemName} edited successfully!`;
-          if (type === 'copy') {
-            message = copyNotification;
-          }
-          setNotification(message);
-        } else {
-          setNotification('Your changes have been autosaved');
-        }
-        // emit data after save
-        if (afterSave) {
-          afterSave(data, saveClick, message);
-        }
-      }
-      onSaveClick(false);
-    },
-    onError: (e: ApolloError) => {
-      setShowConfirmationDialog(false);
-      onSaveClick(false);
-      if (customHandler) {
-        customHandler(e.message);
-      } else {
-        setErrorMessage(e);
-      }
-
-      return null;
-    },
     refetchQueries: () => {
       if (refetchQueries)
         return refetchQueries.map((refetchQuery: any) => ({
@@ -412,43 +432,6 @@ export const FormLayout = ({
   });
 
   const [createItem] = useMutation(createItemQuery, {
-    onCompleted: (data) => {
-      setShowConfirmationDialog(false);
-      let itemCreatedObject: any = `create${camelCaseItem}`;
-      itemCreatedObject = data[itemCreatedObject];
-      const itemCreated = itemCreatedObject[listItem];
-
-      const { errors } = itemCreatedObject;
-      if (errors) {
-        if (customHandler) {
-          customHandler(errors);
-        } else {
-          setErrorMessage(errors[0]);
-        }
-      } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
-        if (customError) {
-          const codeErrors = { code: 'Failed to compile code. Please check again' };
-          customError.setErrors(codeErrors);
-        }
-      } else {
-        if (additionalQuery) {
-          additionalQuery(itemCreated.id);
-        }
-        if (!itemId) setLink(itemCreated[linkParameter]);
-        if (saveOnPageChange || saveClick) {
-          setFormSubmitted(true);
-          // display successful message after create
-          setNotification(`${capitalListItemName} created successfully!`);
-        } else {
-          setNotification('Your changes have been autosaved');
-        }
-        // emit data after save
-        if (afterSave) {
-          afterSave(data, saveClick);
-        }
-      }
-      onSaveClick(false);
-    },
     refetchQueries: () => {
       if (refetchQueries)
         return refetchQueries.map((refetchQuery: any) => ({
@@ -457,17 +440,6 @@ export const FormLayout = ({
         }));
 
       return [];
-    },
-    onError: (e: ApolloError) => {
-      setShowConfirmationDialog(false);
-      onSaveClick(false);
-      if (customHandler) {
-        customHandler(e.message);
-      } else {
-        setErrorMessage(e);
-      }
-
-      return null;
     },
   });
 
@@ -640,8 +612,15 @@ export const FormLayout = ({
     </LexicalWrapper>
   );
 
-  const handleDeleteItem = () => {
-    deleteItem({ variables: { id: itemId } });
+  const handleDeleteItem = async () => {
+    try {
+      await deleteItem({ variables: { id: itemId } });
+      setNotification(`${capitalListItemName} deleted successfully`);
+      setDeleted(true);
+    } catch (err: any) {
+      setShowDialog(false);
+      setErrorMessage(err);
+    }
   };
 
   let dialogBox;

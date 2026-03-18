@@ -264,7 +264,7 @@ export const Trigger = () => {
           setTriggerFlowWarning(validateTrigger.errors[0].message);
         }
       } catch {
-        setTriggerFlowWarning('Failed to validate flow. Please try again.');
+        setTriggerFlowWarning(t('Failed to validate flow. Please try again.'));
       }
     }
   };
