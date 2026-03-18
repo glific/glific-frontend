@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import Configure from './Configure';
+import { convertFlowJSONToFormBuilder, convertFormBuilderToFlowJSON } from './FormBuilder/FormBuilder.utils';
 
 import { WHATSAPP_FORM_MOCKS, validScreen } from 'mocks/WhatsAppForm';
 
@@ -1450,6 +1451,26 @@ describe('validateFlowJson — all phases', () => {
         }),
       ]),
       "Duplicate component name 'field_name'"
+    );
+  });
+
+  // ── Phase 5: Unknown component type ──────────────────────────────────────
+  test('phase 5 — unknown component type triggers validation error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                { type: 'SuperWidget', name: 'widget_1', label: 'Widget' },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "Unknown component type 'SuperWidget'"
     );
   });
 
