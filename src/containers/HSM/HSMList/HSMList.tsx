@@ -30,12 +30,7 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { GET_TAGS } from 'graphql/queries/Tags';
-import {
-  BULK_APPLY_TEMPLATES,
-  DELETE_TEMPLATE,
-  IMPORT_TEMPLATES,
-  SYNC_HSM_TEMPLATES,
-} from 'graphql/mutations/Template';
+import { BULK_APPLY_TEMPLATES, DELETE_TEMPLATE, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 import styles from './HSMList.module.css';
@@ -90,7 +85,6 @@ export const HSMList = () => {
 
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES);
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, { fetchPolicy: 'network-only' });
-  const [importTemplatesMutation] = useMutation(IMPORT_TEMPLATES);
 
   const { data: tags } = useQuery(GET_TAGS, {
     variables: {},

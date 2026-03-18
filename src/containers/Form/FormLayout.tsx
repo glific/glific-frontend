@@ -162,6 +162,18 @@ export const FormLayout = ({
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
 
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+  let itemId = entityId;
+  if (!itemId) {
+    itemId = params.id;
+  }
+
+  let variables: any = itemId ? { [idType]: itemId } : false;
+  if (listItem === 'credential') {
+    variables = params.type ? { shortcode: params.type } : false;
+  }
+
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
     let payload = {
       ...itemData,
@@ -333,18 +345,6 @@ export const FormLayout = ({
     }
   };
 
-  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
-
-  let itemId = entityId;
-  if (!itemId) {
-    itemId = params.id;
-  }
-
-  let variables: any = itemId ? { [idType]: itemId } : false;
-  if (listItem === 'credential') {
-    variables = params.type ? { shortcode: params.type } : false;
-  }
-
   const organization = useQuery(USER_LANGUAGES, {
     skip: !languageSupport,
   });
@@ -422,8 +422,6 @@ export const FormLayout = ({
       },
     ],
   });
-
-  const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
     refetchQueries: () => {
