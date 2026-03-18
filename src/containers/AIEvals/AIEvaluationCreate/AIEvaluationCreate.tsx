@@ -63,8 +63,7 @@ export default function AIEvaluationCreate() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [createEvaluation, { loading: evaluationLoading }] = useMutation(CREATE_EVALUATION, {
-    onCompleted: (data) => {
-      console.log('Evaluation creation response:', data);
+    onCompleted: () => {
       setNotification('Evaluation started successfully!');
       navigate('/chat');
     },
