@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { HSM_LIST, bulkApplyMutation, bulkApplyMutationWIthError } from 'mocks/Template';
+import { BULK_APPLY_TEMPLATES } from 'graphql/mutations/Template';
 import { HSMList } from './HSMList';
 import userEvent from '@testing-library/user-event';
 import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
@@ -196,7 +197,7 @@ test('bulk apply templates', async () => {
   });
 });
 
-test('bulk apply templates', async () => {
+test('bulk apply templates with network error', async () => {
   const { getByTestId } = render(template(bulkApplyMutationWIthError));
 
   await waitFor(() => {
@@ -213,5 +214,38 @@ test('bulk apply templates', async () => {
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('An error occured! Please check the format of the file', 'warning');
+  });
+});
+
+test('bulk apply templates with application-level errors', async () => {
+  const bulkApplyWithAppErrors = {
+    request: {
+      query: BULK_APPLY_TEMPLATES,
+      variables: { data: 'csv data with errors' },
+    },
+    result: {
+      data: {
+        bulkApplyTemplates: {
+          errors: [{ message: 'Template not found' }],
+          csv_rows: 'Title,Status\nWelcome,Failed',
+        },
+      },
+    },
+  };
+
+  const { getByTestId } = render(template(bulkApplyWithAppErrors));
+
+  await waitFor(() => {
+    expect(getByTestId('updateHsm')).toBeInTheDocument();
+  });
+
+  const mockFile = new File(['csv data with errors'], 'testFile.csv', { type: 'text/csv' });
+  fireEvent.change(getByTestId('import'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith(
+      'Templates were processed with errors. Please check the csv file for details.',
+      'warning'
+    );
   });
 });
