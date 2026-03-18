@@ -1232,10 +1232,45 @@ describe('validateFlowJson — all phases', () => {
 
     fireEvent.click(screen.getByText('Apply Changes'));
 
-    fireEvent.click(screen.getByText('Field Names'));
+    fireEvent.click(screen.getByRole('button', { name: 'variables' }));
 
     await waitFor(() => {
       expect(screen.getByText('Screen 1 · CalendarPicker · appt_date')).toBeInTheDocument();
+    });
+
+    const rangeCalendarScreen = flow([
+      {
+        id: 'screen_one',
+        title: 'Screen 1',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            {
+              type: 'CalendarPicker',
+              name: 'calendar_range',
+              label: { 'start-date': 'Start date', 'end-date': 'End date' },
+              required: { 'start-date': true, 'end-date': false },
+              mode: 'range',
+            },
+            formWith([footer({ name: 'complete', payload: {} })]),
+          ],
+        },
+      },
+    ]);
+
+    fireEvent.change(textarea, { target: { value: JSON.stringify(rangeCalendarScreen) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    // Variables view is already active, so just wait for the updated content
+    await waitFor(() => {
+      expect(screen.getByText('Screen 1 · CalendarPicker · calendar_range')).toBeInTheDocument();
     });
   });
 

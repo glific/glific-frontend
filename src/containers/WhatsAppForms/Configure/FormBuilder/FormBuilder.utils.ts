@@ -466,12 +466,22 @@ export const convertScreenToFlowJSON = (
     screenId: string;
   }> = []
 ): any => {
-  const children: any[] = [];
+  const formChildren: any[] = [];
+  const layoutDirectChildren: any[] = [];
 
   screen.content.forEach((item) => {
     const component = convertContentItemToComponent(item, fieldNameMap);
     if (component) {
-      children.push(component);
+      const isLayoutDirect =
+        item.type === 'Unsupported' &&
+        item.data.rawComponent?.type &&
+        LAYOUT_DIRECT_COMPONENT_TYPES.has(item.data.rawComponent.type);
+
+      if (isLayoutDirect) {
+        layoutDirectChildren.push(component);
+      } else {
+        formChildren.push(component);
+      }
     }
   });
 
@@ -480,7 +490,7 @@ export const convertScreenToFlowJSON = (
   const payload = generateScreenPayload(screen.content, fieldNameMap, previousScreensPayloadData, isTerminal);
 
   if (screen.buttonLabel) {
-    children.push({
+    formChildren.push({
       label: screen.buttonLabel,
       'on-click-action': isTerminal
         ? {
@@ -506,10 +516,11 @@ export const convertScreenToFlowJSON = (
     layout: {
       type: 'SingleColumnLayout',
       children: [
+        ...layoutDirectChildren,
         {
           type: 'Form',
           name: 'flow_path',
-          children,
+          children: formChildren,
         },
       ],
     },
@@ -593,6 +604,12 @@ const EXTRA_ATTRIBUTE_KEYS: Record<string, string[]> = {
 };
 
 /**
+ * Component types that must be direct children of SingleColumnLayout (not inside Form).
+ * WhatsApp validates this and throws schema errors if these are nested inside a Form.
+ */
+export const LAYOUT_DIRECT_COMPONENT_TYPES = new Set(['CalendarPicker', 'DocumentPicker', 'PhotoPicker']);
+
+/**
  * All component types valid per the WhatsApp Flows spec.
  * Supported types are editable in the form builder.
  * Known-but-unsupported types are preserved as raw JSON passthroughs.
@@ -625,7 +642,6 @@ export const VALID_COMPONENT_TYPES = new Set([
 /** Picks the known extra Meta-spec attributes from a JSON component that the form builder doesn't edit. */
 const extractExtraAttributes = (component: any, componentType: string): Record<string, any> | undefined => {
   const extraKeys = EXTRA_ATTRIBUTE_KEYS[componentType];
-  console.log('Extracting extra attributes for component type:', componentType, 'with keys:', extraKeys);
   if (!extraKeys) return undefined;
   const extra: Record<string, any> = {};
   extraKeys.forEach((key) => {
@@ -738,8 +754,14 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
   }
 
   return flowJSON.screens.map((flowScreen: any, screenIndex: number) => {
-    const formLayout = flowScreen.layout?.children?.[0];
-    const formChildren = formLayout?.children || [];
+    const layoutChildren = flowScreen.layout?.children || [];
+
+    // Find the Form component (may not be at index 0 if layout-direct components precede it)
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const formChildren = formComponent?.children || [];
+
+    // Collect direct layout children (CalendarPicker, DocumentPicker, PhotoPicker, etc.)
+    const directLayoutChildren = layoutChildren.filter((c: any) => c.type !== 'Form');
 
     let buttonLabel = 'Continue';
     const footerComponent = formChildren.find((child: any) => child.type === 'Footer');
@@ -747,9 +769,23 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
       buttonLabel = footerComponent.label || 'Continue';
     }
 
-    const content: ContentItem[] = formChildren
-      .map((component: any, index: number) => {
-        const item = convertWhatsAppComponentToContentItem(component, index);
+    let orderCounter = 0;
+
+    // Parse direct layout children first
+    const directContent: ContentItem[] = directLayoutChildren
+      .map((component: any) => {
+        const item = convertWhatsAppComponentToContentItem(component, orderCounter++);
+        if (item && item.type !== 'Unsupported' && component.name) {
+          item.data.variableName = component.name;
+        }
+        return item;
+      })
+      .filter((item: ContentItem | null) => item !== null) as ContentItem[];
+
+    // Then parse form children
+    const formContent: ContentItem[] = formChildren
+      .map((component: any) => {
+        const item = convertWhatsAppComponentToContentItem(component, orderCounter++);
         if (item && item.type !== 'Unsupported' && component.name) {
           item.data.variableName = component.name;
         }
@@ -761,7 +797,7 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
       id: (screenIndex + 1).toString(),
       name: flowScreen.title || `Screen ${screenIndex + 1}`,
       order: screenIndex,
-      content,
+      content: [...directContent, ...formContent],
       buttonLabel,
     };
   });
@@ -860,27 +896,30 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
       return;
     }
 
-    const formComponent = layoutChildren[0];
-    if (formComponent?.type !== 'Form') {
-      errors.push({
-        message: `Screen '${screenLabel}': First layout child must be a Form component`,
-        path: `screens[${i}].layout.children[0]`,
+    // Find Form component (may not be at index 0 if layout-direct components precede it)
+    const formIndex = layoutChildren.findIndex((c: any) => c.type === 'Form');
+    const formComponent = formIndex >= 0 ? layoutChildren[formIndex] : null;
+    const formChildren: any[] = formComponent?.children || [];
+
+    // Collect direct layout children (non-Form)
+    const directLayoutChildren = layoutChildren.filter((c: any) => c.type !== 'Form');
+
+    // Check that layout-direct component types are NOT inside Form
+    if (formChildren.length > 0) {
+      formChildren.forEach((component: any, j: number) => {
+        if (LAYOUT_DIRECT_COMPONENT_TYPES.has(component.type)) {
+          errors.push({
+            message: `Screen '${screenLabel}': '${component.type}' must be a direct child of SingleColumnLayout, not inside a Form component`,
+            path: `screens[${i}].layout.children[${formIndex}].children[${j}]`,
+          });
+        }
       });
-      return;
     }
 
-    const formChildren = formComponent.children;
-    if (!Array.isArray(formChildren)) {
-      errors.push({
-        message: `Screen '${screenLabel}': Form component must have children`,
-        path: `screens[${i}].layout.children[0].children`,
-      });
-      return;
-    }
-
-    // Footer validation
-    const footers = formChildren.filter((c: any) => c.type === 'Footer');
-    const nonFooterComponents = formChildren.filter((c: any) => c.type !== 'Footer');
+    // Footer validation — search both form children and direct layout children
+    const allComponents = [...directLayoutChildren, ...formChildren];
+    const footers = allComponents.filter((c: any) => c.type === 'Footer');
+    const nonFooterComponents = allComponents.filter((c: any) => c.type !== 'Footer' && c.type !== 'Form');
 
     if (footers.length === 0) {
       errors.push({
@@ -979,12 +1018,12 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
       });
     }
 
-    // Phase 5: Component type validity + name uniqueness
-    formChildren.forEach((component: any, j: number) => {
-      if (component.type !== 'Footer' && !VALID_COMPONENT_TYPES.has(component.type)) {
+    // Phase 5: Component type validity + name uniqueness (check all components)
+    allComponents.forEach((component: any, j: number) => {
+      if (component.type !== 'Footer' && component.type !== 'Form' && !VALID_COMPONENT_TYPES.has(component.type)) {
         errors.push({
           message: `Screen '${screenLabel}': Unknown component type '${component.type}' at index ${j}`,
-          path: `screens[${i}].layout.children[0].children[${j}]`,
+          path: `screens[${i}]`,
         });
       }
 
