@@ -287,7 +287,7 @@ export const FormLayout = ({
 
   const languageId = fetchedItem
     ? languageSupport
-      ? fetchedItem.language.id
+      ? fetchedItem.language?.id ?? ''
       : null
     : !itemId && organization.data
       ? organization.data.currentUser.user.organization.defaultLanguage.id

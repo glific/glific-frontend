@@ -566,5 +566,7 @@
   "Knowledge Base": "Knowledge Base",
   "Notes (Optional)": "Notes (Optional)",
   "Add notes on changes made to this assistant": "Add notes on changes made to this assistant",
-  "A new version is being created": "A new version is being created"
+  "A new version is being created": "A new version is being created",
+  "Please upload a valid CSV file": "Please upload a valid CSV file",
+  "Templates were processed with errors. Please check the csv file for details.": "Templates were processed with errors. Please check the csv file for details."
 }

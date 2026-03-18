@@ -190,7 +190,8 @@ export const HSMList = () => {
     setSyncTemplateLoad(true);
     try {
       const { data } = await syncHsmTemplates();
-      if (data.errors) {
+      const errors = data?.syncHsmTemplate?.errors;
+      if (!data?.syncHsmTemplate || errors?.length) {
         setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
       } else {
         setNotification(t('HSM queued for sync. Check notifications for updates.'), 'success');
@@ -205,13 +206,18 @@ export const HSMList = () => {
   const handleBulkApply = async (result: string, media: any) => {
     const extension = getFileExtension(media.name);
     if (extension !== 'csv') {
-      setNotification('Please upload a valid CSV file', 'warning');
+      setNotification(t('Please upload a valid CSV file'), 'warning');
       setImporting(false);
     } else {
       try {
         const { data } = await bulkApplyTemplates({ variables: { data: result } });
-        if (data?.bulkApplyTemplates) {
-          exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
+        const response = data?.bulkApplyTemplates;
+        if (response?.csv_rows) {
+          exportCsvFile(response.csv_rows, 'result');
+        }
+        if (response?.errors?.length) {
+          setNotification(t('Templates were processed with errors. Please check the csv file for details.'), 'warning');
+        } else if (response) {
           setNotification(t('Templates applied successfully. Please check the csv file for the results'));
         }
       } catch {
@@ -225,7 +231,7 @@ export const HSMList = () => {
   const handleImportTemplates = async (result: string, media: any) => {
     const extension = getFileExtension(media.name);
     if (extension !== 'csv') {
-      setNotification('Please upload a valid CSV file', 'warning');
+      setNotification(t('Please upload a valid CSV file'), 'warning');
       setImporting(false);
     } else {
       try {
@@ -363,11 +369,7 @@ export const HSMList = () => {
         <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
           View Sample
         </a>
-        <ImportButton
-          title={t('Bulk apply')}
-          onImport={() => setImporting(true)}
-          afterImport={handleBulkApply}
-        />
+        <ImportButton title={t('Bulk apply')} onImport={() => setImporting(true)} afterImport={handleBulkApply} />
       </div>
     </div>
   );

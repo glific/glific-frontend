@@ -197,12 +197,12 @@ export const Providers = () => {
         addField(fields);
         setKeys(providerKeys);
         setSecrets(providerSecrets);
-
-        const credentialData = credential?.credential?.credential;
-        if (credentialData) {
-          setCredential(credentialData);
-        }
       });
+
+      const credentialData = credential?.credential?.credential;
+      if (credentialData) {
+        setCredential(credentialData);
+      }
     }
   }, [providerData, credential]);
 

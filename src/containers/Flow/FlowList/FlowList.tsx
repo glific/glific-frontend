@@ -128,14 +128,18 @@ export const FlowList = () => {
   };
 
   const handlePin = async (updateFlowId: any, pin: boolean = false) => {
-    await updatePinned({
-      variables: {
-        updateFlowId,
-        input: { isPinned: pin },
-      },
-    });
-    setRefreshList(!refreshList);
-    setNotification(pin ? 'Flow pinned successfully' : 'Flow unpinned successfully');
+    try {
+      await updatePinned({
+        variables: {
+          updateFlowId,
+          input: { isPinned: pin },
+        },
+      });
+      setRefreshList(!refreshList);
+      setNotification(pin ? 'Flow pinned successfully' : 'Flow unpinned successfully');
+    } catch {
+      setNotification('Failed to update pin status', 'warning');
+    }
   };
 
   let dialog;
@@ -227,11 +231,7 @@ export const FlowList = () => {
   }
 
   const importButton = (
-    <ImportButton
-      title={t('Import flow')}
-      onImport={() => setImporting(true)}
-      afterImport={handleImport}
-    />
+    <ImportButton title={t('Import flow')} onImport={() => setImporting(true)} afterImport={handleImport} />
   );
 
   const templateFlowActions = [

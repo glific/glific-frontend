@@ -251,16 +251,20 @@ export const Trigger = () => {
   const handleFlowChange = async (flow: any) => {
     setTriggerFlowWarning(undefined);
     if (flow) {
-      const result = await validateTriggerFlow({
-        variables: {
-          input: {
-            flowId: flow.id,
+      try {
+        const result = await validateTriggerFlow({
+          variables: {
+            input: {
+              flowId: flow.id,
+            },
           },
-        },
-      });
-      const { validateTrigger } = result.data;
-      if (!validateTrigger.success && validateTrigger.errors && validateTrigger.errors.length > 0) {
-        setTriggerFlowWarning(validateTrigger.errors[0].message);
+        });
+        const { validateTrigger } = result.data;
+        if (!validateTrigger.success && validateTrigger.errors && validateTrigger.errors.length > 0) {
+          setTriggerFlowWarning(validateTrigger.errors[0].message);
+        }
+      } catch {
+        setTriggerFlowWarning('Failed to validate flow. Please try again.');
       }
     }
   };
