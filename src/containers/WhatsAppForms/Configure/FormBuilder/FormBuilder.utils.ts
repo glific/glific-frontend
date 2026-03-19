@@ -214,6 +214,17 @@ const getWhatsAppComponentType = (contentType: string, contentName: string): str
   return 'TextBody';
 };
 
+/** Returns a unique name derived from baseName by appending _1, _2, … until it is not in usedNames. */
+const uniqueName = (baseName: string, usedNames: Set<string>): string => {
+  let name = baseName;
+  let suffix = 1;
+  while (usedNames.has(name)) {
+    name = `${baseName}_${suffix}`;
+    suffix += 1;
+  }
+  return name;
+};
+
 /** Computes unique field names for all input components across screens, deduplicating with numeric suffixes. */
 export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
   const fieldNameMap = new Map<string, string>();
@@ -223,24 +234,15 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
     screen.content.forEach((item) => {
       // Unsupported components with a name are input components that need field tracking
       if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
-        const rawName = item.data.rawComponent.name;
-        if (!usedNames.has(rawName)) {
-          usedNames.add(rawName);
-          fieldNameMap.set(item.id, rawName);
-        }
+        const name = uniqueName(item.data.rawComponent.name, usedNames);
+        usedNames.add(name);
+        fieldNameMap.set(item.id, name);
         return;
       }
 
       if (item.type === 'Text Answer' || item.type === 'Selection') {
-        let name = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || `field`;
-
-        const baseName = name;
-        let suffix = 1;
-        while (usedNames.has(name)) {
-          name = `${baseName}_${suffix}`;
-          suffix += 1;
-        }
-
+        const base = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || `field`;
+        const name = uniqueName(base, usedNames);
         usedNames.add(name);
         fieldNameMap.set(item.id, name);
       }
@@ -385,7 +387,7 @@ const generateScreenData = (
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType }) => {
     if (fieldType === 'TextInput' && isNumericInputType(inputType)) return;
 
-    if (fieldType === 'CheckboxGroup') {
+    if (fieldType === 'CheckboxGroup' || fieldType === 'ChipsSelector') {
       data[payloadKey] = {
         __example__: [],
         items: { type: 'string' },
@@ -792,6 +794,9 @@ const INPUT_COMPONENT_TYPES = [
   'CheckboxGroup',
   'Dropdown',
   'OptIn',
+  'CalendarPicker',
+  'DocumentPicker',
+  'PhotoPicker',
 ];
 
 /** Validates a WhatsApp Flow JSON structure, checking screen IDs, titles, layout, actions, components, and data properties. */

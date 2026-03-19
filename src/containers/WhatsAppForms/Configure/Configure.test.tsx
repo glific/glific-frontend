@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 
 import Configure from './Configure';
 import {
+  computeFieldNames,
   convertFlowJSONToFormBuilder,
   convertFormBuilderToFlowJSON,
 } from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
@@ -1520,6 +1521,25 @@ describe('validateFlowJson — all phases', () => {
     );
   });
 
+  test('phase 5 — two CalendarPickers with the same name triggers duplicate error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        {
+          ...validScreen(),
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick a date', required: true, mode: 'single' },
+              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick another date', required: false, mode: 'single' },
+              formWith([footer({ name: 'complete', payload: {} })]),
+            ],
+          },
+        },
+      ]),
+      "Duplicate component name 'appt_date'"
+    );
+  });
+
   // ── Phase 5: Unknown component type ──────────────────────────────────────
   test('phase 5 — unknown component type triggers validation error', async () => {
     await setJsonAndExpectError(
@@ -1919,5 +1939,21 @@ describe('round-trip preservation — unsupported components & extra attributes'
     // DatePicker with min-date preserved
     const outDate = outputChildren.find((c: any) => c.type === 'DatePicker');
     expect(outDate['min-date']).toBe('1735689600000');
+  });
+
+  test('duplicate Unsupported rawComponent names get _1, _2 suffixes like Text Answer/Selection', () => {
+    const flowJSON = makeFlowJSON([
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo A', 'on-click-action': { name: 'open_url', url: 'https://a.com' } },
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo B', 'on-click-action': { name: 'open_url', url: 'https://b.com' } },
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo C', 'on-click-action': { name: 'open_url', url: 'https://c.com' } },
+    ]);
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+    const fieldNameMap = computeFieldNames(screens);
+
+    const ids = screens[0].content.map((item) => item.id);
+    expect(fieldNameMap.get(ids[0])).toBe('promo');
+    expect(fieldNameMap.get(ids[1])).toBe('promo_1');
+    expect(fieldNameMap.get(ids[2])).toBe('promo_2');
   });
 });
