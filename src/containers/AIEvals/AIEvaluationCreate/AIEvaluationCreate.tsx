@@ -76,12 +76,13 @@ export default function AIEvaluationCreate() {
       ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
       : goldenQADatasets.map(({ datasetId, name }) => ({ id: datasetId, label: name }));
 
-  const { data: versionsData } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
+  const { data: versionsData, loading: versionsLoading } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
     variables: { filter: {} },
   });
 
-  const assistantOptions =
-    versionsData?.assistantConfigVersions?.length > 0
+  const assistantOptions = versionsLoading
+    ? [{ id: '', label: 'Fetching assistants...' }]
+    : versionsData?.assistantConfigVersions?.length > 0
       ? versionsData.assistantConfigVersions.map((v: any) => ({
           id: v.id,
           label: `${v.assistantName} (Version ${v.versionNumber})`,
