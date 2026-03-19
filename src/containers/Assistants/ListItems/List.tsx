@@ -16,6 +16,7 @@ interface ListProps {
   getItemsQuery: DocumentNode;
   listItemName: string;
   refreshList?: boolean;
+  baseRoute?: string;
 }
 
 const statusMap: Record<string, { label: string; styleKey: string }> = {
@@ -38,7 +39,7 @@ const getStatus = (status: string, newVersionInProgress: boolean) => {
   );
 };
 
-const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
+const List = ({ getItemsQuery, listItemName, refreshList, baseRoute = '/assistants' }: ListProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
@@ -125,7 +126,7 @@ const List = ({ getItemsQuery, listItemName, refreshList }: ListProps) => {
                 <div
                   key={item.id}
                   className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
-                  onClick={() => navigate(`/assistants/${item.id}`)}
+                  onClick={() => navigate(`${baseRoute}/${item.id}`)}
                   data-testid="listItem"
                 >
                   <div className={styles.Itemm}>

@@ -11,8 +11,6 @@ import {
   getAssistantConfigVersionsLoadingMock,
   getAssistantConfigVersionsMock,
   getAssistantConfigVersionsMultipleNamesMock,
-  getCreateEvaluationMock,
-  getListAiEvaluationsMock,
 } from 'mocks/AIEvaluations';
 import AIEvaluationCreate from './AIEvaluationCreate';
 
