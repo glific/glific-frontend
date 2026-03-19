@@ -9,7 +9,6 @@ import {
   getAIEvaluationCreateMocks,
   getAssistantConfigVersionsEmptyMock,
   getAssistantConfigVersionsLoadingMock,
-  getAssistantConfigVersionsMock,
   getAssistantConfigVersionsMultipleNamesMock,
 } from 'mocks/AIEvaluations';
 import AIEvaluationCreate from './AIEvaluationCreate';
@@ -166,7 +165,7 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('accepts valid evaluation name with alphanumeric, underscore and hyphen', async () => {
+  test('accepts any non-empty evaluation name', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -180,7 +179,7 @@ describe('AIEvaluationCreate', () => {
   });
 
   test('shows assistant options from query using assistantName and versionNumber', async () => {
-    render(wrapper([...defaultMocks, getAssistantConfigVersionsMock]));
+    render(wrapper([...defaultMocks]));
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();

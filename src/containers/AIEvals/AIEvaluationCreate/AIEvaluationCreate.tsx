@@ -165,7 +165,7 @@ export default function AIEvaluationCreate() {
         input: {
           datasetId: payload.goldenQaId,
           experimentName: payload.evaluationName,
-          configId: selectedVersion?.kaapiUuid ?? payload.assistantId,
+          configId: selectedVersion?.kaapiUuid,
           configVersion: payload.assistantId,
         },
       },
