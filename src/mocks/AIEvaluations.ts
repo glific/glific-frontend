@@ -50,6 +50,60 @@ export const getAssistantConfigVersionsMock = {
   },
 };
 
+export const getAssistantConfigVersionsEmptyMock = {
+  request: { query: GET_ASSISTANT_CONFIG_VERSIONS, variables: { filter: {} } },
+  result: { data: { assistantConfigVersions: [] } },
+};
+
+export const getAssistantConfigVersionsLoadingMock = {
+  request: { query: GET_ASSISTANT_CONFIG_VERSIONS, variables: { filter: {} } },
+  result: { data: { assistantConfigVersions: [] } },
+  delay: Infinity,
+};
+
+export const getAssistantConfigVersionsMultipleNamesMock = {
+  request: { query: GET_ASSISTANT_CONFIG_VERSIONS, variables: { filter: {} } },
+  result: {
+    data: {
+      assistantConfigVersions: [
+        {
+          __typename: 'AssistantConfigVersion',
+          id: '1',
+          assistantId: 'a1',
+          assistantName: 'Alpha Assistant',
+          versionNumber: 1,
+          description: 'v1',
+          model: 'gpt-4',
+          status: 'ACTIVE',
+          kaapiUuid: 'kaapi-alpha-v1',
+        },
+        {
+          __typename: 'AssistantConfigVersion',
+          id: '2',
+          assistantId: 'a2',
+          assistantName: 'Beta Assistant',
+          versionNumber: 1,
+          description: 'v3',
+          model: 'gpt-4',
+          status: 'ACTIVE',
+          kaapiUuid: 'kaapi-beta-v3',
+        },
+        {
+          __typename: 'AssistantConfigVersion',
+          id: '3',
+          assistantId: 'a2',
+          assistantName: 'Beta Assistant',
+          versionNumber: 2,
+          description: 'v1',
+          model: 'gpt-4',
+          status: 'ACTIVE',
+          kaapiUuid: 'kaapi-beta-v1',
+        },
+      ],
+    },
+  },
+};
+
 export const createGoldenQaSuccessMock = {
   request: { query: CREATE_GOLDEN_QA },
   variableMatcher: () => true,

@@ -138,7 +138,7 @@ export default function AIEvaluationCreate() {
       component: SectionDivider,
       name: '__evaluationDetailsDivider',
       label: 'Evaluation Details',
-      placedolder: '',
+      placeholder: '',
     },
     {
       component: Input,

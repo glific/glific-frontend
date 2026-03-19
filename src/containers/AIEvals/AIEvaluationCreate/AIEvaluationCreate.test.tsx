@@ -7,7 +7,12 @@ import {
   createGoldenQaCustomSuccessMock,
   createGoldenQaSuccessMock,
   getAIEvaluationCreateMocks,
+  getAssistantConfigVersionsEmptyMock,
+  getAssistantConfigVersionsLoadingMock,
   getAssistantConfigVersionsMock,
+  getAssistantConfigVersionsMultipleNamesMock,
+  getCreateEvaluationMock,
+  getListAiEvaluationsMock,
 } from 'mocks/AIEvaluations';
 import AIEvaluationCreate from './AIEvaluationCreate';
 
@@ -195,16 +200,6 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('shows assistant helper text', async () => {
-    render(wrapper());
-
-    await waitFor(() => {
-      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
-    });
-
-    expect(screen.getByText("This list includes all assistants and versions you've created.")).toBeInTheDocument();
-  });
-
   test('Run Evaluation submit button is visible and enabled', async () => {
     render(wrapper());
 
@@ -212,6 +207,65 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
       expect(screen.getByTestId('submitActionButton')).toHaveTextContent('Run Evaluation');
       expect(screen.getByTestId('submitActionButton')).not.toBeDisabled();
+    });
+  });
+
+  test('shows Fetching assistants... while assistant config versions are loading', async () => {
+    const mocks = [getAssistantConfigVersionsLoadingMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Fetching assistants...')).toBeInTheDocument();
+    });
+  });
+
+  test('shows No assistants available when assistant config versions list is empty', async () => {
+    const mocks = [getAssistantConfigVersionsEmptyMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('No assistants available')).toBeInTheDocument();
+    });
+  });
+
+  test('shows all assistant config versions with correct labels for multiple assistant names', async () => {
+    const mocks = [getAssistantConfigVersionsMultipleNamesMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 2)')).toBeInTheDocument();
     });
   });
 
