@@ -381,14 +381,6 @@ export const List = ({
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   if (deleteItemQuery) {
     [deleteItem] = useMutation(deleteItemQuery, {
-      onCompleted: () => {
-        setNotification(`${capitalListItemName} deleted successfully`);
-        checkUserRole();
-        countQuery && refetchCount();
-        if (refetchValues) {
-          refetchValues(filterPayload());
-        }
-      },
       refetchQueries: () => {
         if (refetchQueries)
           return refetchQueries.map((refetchQuery: any) => ({
@@ -396,9 +388,6 @@ export const List = ({
             variables: refetchQuery.variables,
           }));
         return [];
-      },
-      onError: () => {
-        setNotification(`Sorry! An error occurred!`, 'warning');
       },
     });
   }
@@ -412,9 +401,19 @@ export const List = ({
     setDeleteItemID(null);
   };
 
-  const deleteHandler = (id: number) => {
+  const deleteHandler = async (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
-    deleteItem({ variables });
+    try {
+      await deleteItem({ variables });
+      setNotification(`${capitalListItemName} deleted successfully`);
+      checkUserRole();
+      countQuery && refetchCount();
+      if (refetchValues) {
+        refetchValues(filterPayload());
+      }
+    } catch {
+      setNotification(`Sorry! An error occurred!`, 'warning');
+    }
   };
 
   const handleDeleteItem = () => {
