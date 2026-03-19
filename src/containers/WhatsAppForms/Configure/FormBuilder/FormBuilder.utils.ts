@@ -868,7 +868,8 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
       return;
     }
 
-    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const formIndex = layoutChildren.findIndex((c: any) => c.type === 'Form');
+    const formComponent = formIndex !== -1 ? layoutChildren[formIndex] : undefined;
     const formChildren: any[] = Array.isArray(formComponent?.children) ? formComponent.children : [];
 
     // Check for layout-direct components incorrectly placed inside Form
@@ -876,7 +877,7 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
       if (LAYOUT_DIRECT_COMPONENT_TYPES.has(component.type)) {
         errors.push({
           message: `Screen '${screenLabel}': '${component.type}' must be a direct child of SingleColumnLayout, not inside a Form component`,
-          path: `screens[${i}].layout.children[0].children[${j}]`,
+          path: `screens[${i}].layout.children[${formIndex}].children[${j}]`,
         });
       }
     });
@@ -989,9 +990,14 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     // Phase 5: Component type validity + name uniqueness
     allComponents.forEach((component: any, j: number) => {
       if (component.type !== 'Footer' && !VALID_COMPONENT_TYPES.has(component.type)) {
+        const directIdx = layoutChildren.indexOf(component);
+        const componentPath =
+          directIdx !== -1
+            ? `screens[${i}].layout.children[${directIdx}]`
+            : `screens[${i}].layout.children[${formIndex}].children[${formChildren.indexOf(component)}]`;
         errors.push({
           message: `Screen '${screenLabel}': Unknown component type '${component.type}' at index ${j}`,
-          path: `screens[${i}].layout.children[0].children[${j}]`,
+          path: componentPath,
         });
       }
 

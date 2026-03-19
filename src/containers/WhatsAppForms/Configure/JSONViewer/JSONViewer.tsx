@@ -128,7 +128,7 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
     <div className={styles.JsonViewerContainer}>
       <div className={styles.JsonActions}>
         <div className={styles.Header}>
-          <IconButton className={styles.CloseButton} onClick={onClose} size="small">
+          <IconButton className={styles.CloseButton} onClick={onClose} size="small" data-testid="json-viewer-close">
             <CloseIcon />
           </IconButton>
           <span>Form JSON</span>

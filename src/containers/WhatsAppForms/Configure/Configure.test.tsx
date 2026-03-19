@@ -5,7 +5,10 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import Configure from './Configure';
-import { convertFlowJSONToFormBuilder, convertFormBuilderToFlowJSON } from './FormBuilder/FormBuilder.utils';
+import {
+  convertFlowJSONToFormBuilder,
+  convertFormBuilderToFlowJSON,
+} from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
 
 import { WHATSAPP_FORM_MOCKS, validScreen } from 'mocks/WhatsAppForm';
 
@@ -1091,6 +1094,69 @@ describe('<Configure />', () => {
       const payloadValues = Object.values(screen2Footer['on-click-action'].payload) as string[];
       const globalFormRef = payloadValues.find((v: string) => v.includes(`screen.${screen1Id}.form.`));
       expect(globalFormRef).toBeDefined();
+    });
+  });
+
+  test('unsupported component shows read-only message in form builder', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const testJson = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'SCREEN_ONE',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [
+                  {
+                    type: 'EmbeddedLink',
+                    text: 'Terms & Conditions',
+                    'on-click-action': { name: 'open_url', url: 'https://example.com/terms' },
+                  },
+                  {
+                    type: 'Footer',
+                    label: 'Continue',
+                    'on-click-action': { name: 'complete', payload: {} },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(testJson) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+    fireEvent.click(screen.getByTestId('json-viewer-close'));
+
+    await waitFor(() => expect(screen.getByTestId('content-toggle-expand')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByTestId('content-toggle-expand'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'This component (EmbeddedLink) is not editable in the form builder but will be preserved in the JSON.'
+        )
+      ).toBeInTheDocument();
     });
   });
 });
