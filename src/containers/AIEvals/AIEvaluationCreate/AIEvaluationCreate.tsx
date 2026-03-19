@@ -152,7 +152,6 @@ export default function AIEvaluationCreate() {
       label: 'AI Assistant*',
       options: assistantOptions,
       placeholder: '',
-      helperText: "This list includes all assistants and versions you've created.",
     },
   ];
 
@@ -208,6 +207,7 @@ export default function AIEvaluationCreate() {
         setPayload={handleSetPayload}
         customHandler={() => {}}
         buttonState={{ status: evaluationLoading, text: 'Running...', styles: '', show: true }}
+        errorButtonState={{ show: !evaluationLoading, text: 'Cancel' }}
       />
       <input
         ref={fileInputRef}
