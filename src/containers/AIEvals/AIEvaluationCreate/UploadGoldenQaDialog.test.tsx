@@ -190,6 +190,7 @@ describe('UploadGoldenQaDialog', () => {
       expect(notificationSpy).toHaveBeenCalledWith('Golden QA uploaded successfully', 'success');
     });
     expect(onProceed).toHaveBeenCalledWith({
+      datasetId: 123,
       name: 'golden_qa',
       duplicationFactor: 1,
     });
@@ -215,6 +216,7 @@ describe('UploadGoldenQaDialog', () => {
 
     await waitFor(() => {
       expect(onProceed).toHaveBeenCalledWith({
+        datasetId: 456,
         name: 'my_custom_name',
         duplicationFactor: 3,
       });
