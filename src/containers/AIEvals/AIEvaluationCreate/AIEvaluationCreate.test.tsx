@@ -8,10 +8,21 @@ import {
   createGoldenQaSuccessMock,
   getAIEvaluationCreateMocks,
   getAssistantConfigVersionsEmptyMock,
+  getAssistantConfigVersionsErrorMock,
   getAssistantConfigVersionsLoadingMock,
   getAssistantConfigVersionsMultipleNamesMock,
+  getAssistantConfigVersionsMock,
+  getCreateEvaluationNetworkErrorMock,
+  getCreateEvaluationSuccessMock,
+  getListAiEvaluationsMock,
 } from 'mocks/AIEvaluations';
+import { setNotification } from 'common/notification';
 import AIEvaluationCreate from './AIEvaluationCreate';
+
+vi.mock('common/notification', () => ({
+  setNotification: vi.fn(),
+  setErrorMessage: vi.fn(),
+}));
 
 const defaultMocks = getAIEvaluationCreateMocks();
 
@@ -20,10 +31,33 @@ const wrapper = (mocks: any[] = defaultMocks) => (
     <MemoryRouter initialEntries={['/ai-evaluations/create']}>
       <Routes>
         <Route path="/ai-evaluations/create" element={<AIEvaluationCreate />} />
+        <Route path="/chat" element={<div>Chat Page</div>} />
       </Routes>
     </MemoryRouter>
   </MockedProvider>
 );
+
+const fillAndSubmitForm = async (evaluationName = 'test_evaluation') => {
+  await waitFor(() => {
+    expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByPlaceholderText('Give a unique name for the evaluation experiment'), {
+    target: { value: evaluationName },
+  });
+
+  const assistantDropdown = screen.getAllByTestId('dropdown')[1];
+  const selectTrigger =
+    assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+  fireEvent.mouseDown(selectTrigger!);
+
+  await waitFor(() => {
+    expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+
+  fireEvent.click(screen.getByText('Run Evaluation'));
+};
 
 describe('AIEvaluationCreate', () => {
   beforeEach(() => {
@@ -226,6 +260,14 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
+  test('shows error notification when fetching assistant config versions fails', async () => {
+    render(wrapper([getAssistantConfigVersionsErrorMock]));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Failed to fetch assistants', 'warning');
+    });
+  });
+
   test('shows No assistants available when assistant config versions list is empty', async () => {
     const mocks = [getAssistantConfigVersionsEmptyMock];
     render(wrapper(mocks));
@@ -263,6 +305,50 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Alpha Assistant (Version 1)')).toBeInTheDocument();
       expect(screen.getByText('Beta Assistant (Version 1)')).toBeInTheDocument();
       expect(screen.getByText('Beta Assistant (Version 2)')).toBeInTheDocument();
+    });
+  });
+
+  test('calls createEvaluation with correct parameters when form is submitted', async () => {
+    let capturedVariables: any = null;
+    const captureMock = {
+      request: { query: getCreateEvaluationSuccessMock.request.query },
+      variableMatcher: (vars: any) => {
+        capturedVariables = vars;
+        return true;
+      },
+      result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
+    };
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, captureMock]));
+
+    await fillAndSubmitForm('test_evaluation');
+
+    await waitFor(() => {
+      expect(capturedVariables?.input).toMatchObject({
+        experimentName: 'test_evaluation',
+        configId: 'kaapi-uuid-a1',
+        configVersion: '1',
+      });
+    });
+  });
+
+  test('shows success notification and navigates to chat on successful submission', async () => {
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getCreateEvaluationSuccessMock]));
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Evaluation started successfully!');
+      expect(screen.getByText('Chat Page')).toBeInTheDocument();
+    });
+  });
+
+  test('shows error notification when evaluation API call fails', async () => {
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getCreateEvaluationNetworkErrorMock]));
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Evaluation failed', 'warning');
     });
   });
 

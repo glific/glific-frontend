@@ -61,7 +61,7 @@ export default function AIEvaluationCreate() {
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [createEvaluation, { loading: evaluationLoading }] = useMutation(CREATE_EVALUATION, {
+  const [createEvaluation] = useMutation(CREATE_EVALUATION, {
     onCompleted: () => {
       setNotification('Evaluation started successfully!');
       navigate('/chat');
@@ -78,6 +78,9 @@ export default function AIEvaluationCreate() {
 
   const { data: versionsData, loading: versionsLoading } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
     variables: { filter: {} },
+    onError: (error) => {
+      setNotification(error.message, 'warning');
+    },
   });
 
   const assistantOptions = versionsLoading
@@ -166,11 +169,11 @@ export default function AIEvaluationCreate() {
           datasetId: payload.goldenQaId,
           experimentName: payload.evaluationName,
           configId: selectedVersion?.kaapiUuid,
-          configVersion: payload.assistantId,
+          configVersion: selectedVersion?.id,
         },
       },
     });
-    return payload;
+    return null;
   };
 
   return (
@@ -183,7 +186,7 @@ export default function AIEvaluationCreate() {
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink="ai-evaluations"
-        listItem="aiEvaluation"
+        listItem="evaluation"
         getItemQuery={GET_ASSISTANT_CONFIG_VERSIONS}
         createItemQuery={CREATE_EVALUATION}
         updateItemQuery={CREATE_EVALUATION}
@@ -206,9 +209,7 @@ export default function AIEvaluationCreate() {
         partialPage={false}
         confirmationState={{ show: false, title: '', message: '' }}
         setPayload={handleSetPayload}
-        customHandler={() => {}}
-        buttonState={{ status: evaluationLoading, text: 'Running...', styles: '', show: true }}
-        errorButtonState={{ show: !evaluationLoading, text: 'Cancel' }}
+        afterSave={() => navigate('/chat')}
       />
       <input
         ref={fileInputRef}

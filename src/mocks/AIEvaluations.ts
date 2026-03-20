@@ -12,6 +12,28 @@ export const getCreateEvaluationMock = {
   result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
 };
 
+export const getCreateEvaluationWithVariablesMock = (input: {
+  datasetId: number;
+  experimentName: string;
+  configId: string;
+  configVersion: string;
+}) => ({
+  request: { query: CREATE_EVALUATION, variables: { input } },
+  result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
+});
+
+export const getCreateEvaluationSuccessMock = {
+  request: { query: CREATE_EVALUATION },
+  variableMatcher: () => true,
+  result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
+};
+
+export const getCreateEvaluationNetworkErrorMock = {
+  request: { query: CREATE_EVALUATION },
+  variableMatcher: () => true,
+  error: new Error('Evaluation failed'),
+};
+
 export const getAIEvaluationCreateMocks = () => [
   getListAiEvaluationsMock,
   getCreateEvaluationMock,
@@ -48,6 +70,11 @@ export const getAssistantConfigVersionsMock = {
       ],
     },
   },
+};
+
+export const getAssistantConfigVersionsErrorMock = {
+  request: { query: GET_ASSISTANT_CONFIG_VERSIONS, variables: { filter: {} } },
+  error: new Error('Failed to fetch assistants'),
 };
 
 export const getAssistantConfigVersionsEmptyMock = {
