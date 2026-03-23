@@ -65,35 +65,6 @@ describe('AssistantOptions upload queue behavior', () => {
     vi.clearAllMocks();
   });
 
-  test('rejects file selection when total file count exceeds 500', async () => {
-    const initialFiles = Array.from({ length: 500 }, (_, index) => ({
-      fileId: `f-${index}`,
-      filename: `existing-${index}.txt`,
-      uploadedAt: '2026-01-01',
-      fileSize: 1,
-    }));
-    const { uploadMutation } = setupMutations();
-
-    renderAssistantOptions({
-      formikValues: {
-        ...baseProps.formikValues,
-        initialFiles,
-      },
-    });
-
-    fireEvent.click(screen.getByTestId('addFiles'));
-    fireEvent.change(screen.getByTestId('uploadFile'), {
-      target: {
-        files: [new File(['content'], 'new-file.txt', { type: 'text/plain' })],
-      },
-    });
-
-    await waitFor(() => {
-      expect(setNotificationSpy).toHaveBeenCalledWith('You cannot upload more than 500 files.', 'warning');
-    });
-    expect(uploadMutation).not.toHaveBeenCalled();
-  });
-
   test('uploads at most 10 files concurrently and starts next queued file on completion', async () => {
     const uploadControllers: Record<
       string,
@@ -275,7 +246,7 @@ describe('AssistantOptions upload queue behavior', () => {
     expect(failedIndex).toBeLessThan(existingIndex);
   });
 
-  test('hides delete icon while file upload is in progress', async () => {
+  test('does not allow deleting a file while file upload is in progress', async () => {
     const uploadMutation = vi.fn(() => new Promise(() => {}));
     setupMutations({ uploadImpl: uploadMutation });
 
@@ -289,8 +260,97 @@ describe('AssistantOptions upload queue behavior', () => {
 
     await waitFor(() => {
       expect(uploadMutation).toHaveBeenCalledTimes(1);
-      expect(screen.queryByTestId('deleteFile')).not.toBeInTheDocument();
+      expect(screen.getByTestId('deleteFile')).toBeDisabled();
     });
+
+    fireEvent.click(screen.getByTestId('deleteFile'));
+    expect(screen.getByText('in-progress.txt')).toBeInTheDocument();
+  });
+
+  test('allows deleting queued, failed and attached files', async () => {
+    const uploadControllers: Record<
+      string,
+      { succeed: () => void; fail: (message?: string) => void; completed: boolean }
+    > = {};
+
+    const uploadMutation = vi.fn(({ variables, onCompleted, onError }) => {
+      const fileName = variables.media.name as string;
+
+      return new Promise((resolve) => {
+        uploadControllers[fileName] = {
+          completed: false,
+          succeed: () => {
+            if (uploadControllers[fileName].completed) return;
+            uploadControllers[fileName].completed = true;
+            onCompleted({
+              uploadFilesearchFile: {
+                fileId: `id-${fileName}`,
+                filename: fileName,
+                uploadedAt: '2026-01-01',
+                fileSize: 12,
+              },
+            });
+            resolve({});
+          },
+          fail: (message = 'upload failed') => {
+            if (uploadControllers[fileName].completed) return;
+            uploadControllers[fileName].completed = true;
+            onError({ message });
+            resolve({});
+          },
+        };
+      });
+    });
+
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: Array.from({ length: 12 }, (_, index) => new File(['content'], `state-file-${index}.txt`)),
+      },
+    });
+
+    await waitFor(() => {
+      expect(uploadMutation).toHaveBeenCalledTimes(10);
+      expect(screen.getAllByTestId('queuedIcon')).toHaveLength(2);
+    });
+
+    fireEvent.click(
+      screen
+        .getByText('state-file-10.txt')
+        .closest('[data-testid="fileItem"]')!
+        .querySelector('[data-testid="deleteFile"]')!
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('state-file-10.txt')).not.toBeInTheDocument();
+    });
+
+    uploadControllers['state-file-0.txt'].succeed();
+    uploadControllers['state-file-1.txt'].fail('bad file');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+      expect(screen.getByText('state-file-0.txt')).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      screen
+        .getByText('state-file-1.txt')
+        .closest('[data-testid="fileItem"]')!
+        .querySelector('[data-testid="deleteFile"]')!
+    );
+    expect(screen.queryByText('state-file-1.txt')).not.toBeInTheDocument();
+
+    fireEvent.click(
+      screen
+        .getByText('state-file-0.txt')
+        .closest('[data-testid="fileItem"]')!
+        .querySelector('[data-testid="deleteFile"]')!
+    );
+    expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
   });
 
   test('shows warning notification on save when files have failed uploads', async () => {
@@ -323,5 +383,58 @@ describe('AssistantOptions upload queue behavior', () => {
       expect(setNotificationSpy).toHaveBeenCalledWith('Remove or re-upload files that failed before saving.', 'warning');
     });
     expect(createKnowledgeBaseMutation).not.toHaveBeenCalled();
+  });
+
+  test('allows retrying a failed file while another upload is still in progress', async () => {
+    const uploadMutation = vi.fn(({ variables, onCompleted, onError }) => {
+      const fileName = variables.media.name as string;
+
+      if (fileName === 'stuck-upload.txt') {
+        return new Promise(() => {});
+      }
+
+      if (fileName === 'retry-failed.txt') {
+        onError({ message: 'temporary failure' });
+        return Promise.resolve({});
+      }
+
+      if (fileName === 'retry-success.txt') {
+        onCompleted({
+          uploadFilesearchFile: {
+            fileId: `id-${fileName}`,
+            filename: fileName,
+            uploadedAt: '2026-01-01',
+            fileSize: 12,
+          },
+        });
+        return Promise.resolve({});
+      }
+
+      return Promise.resolve({});
+    });
+
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [
+          new File(['content'], 'stuck-upload.txt', { type: 'text/plain' }),
+          new File(['content'], 'retry-failed.txt', { type: 'text/plain' }),
+        ],
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+      expect(screen.getByTestId('retryFile')).toBeEnabled();
+    });
+
+    fireEvent.click(screen.getByTestId('retryFile'));
+
+    await waitFor(() => {
+      expect(uploadMutation).toHaveBeenCalledTimes(3);
+    });
   });
 });

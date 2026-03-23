@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ReplayIcon from '@mui/icons-material/Replay';
 import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +43,7 @@ interface AssistantFile {
   status: FileStatus;
   tempId: string;
   errorMessage?: string;
+  sourceFile?: File;
 }
 
 interface UploadedFile {
@@ -50,8 +53,9 @@ interface UploadedFile {
   fileSize?: number;
 }
 
-const MAX_FILES = 500;
 const MAX_CONCURRENT_UPLOADS = 10;
+const MAX_RETRY_ATTEMPTS = 5;
+const INITIAL_BACKOFF_MS = 2000;
 
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
@@ -82,6 +86,10 @@ export const AssistantOptions = ({
   const [error, setError] = useState(false);
   const uploadSessionRef = useRef(0);
   const activeControllersRef = useRef<AbortController[]>([]);
+  const pendingUploadQueueRef = useRef<
+    Array<{ file: File; tempId: string; sessionId: number; resolveResult: (success: boolean) => void }>
+  >([]);
+  const activeUploadsRef = useRef(0);
   const isUploadDialogOpenRef = useRef(false);
   const { t } = useTranslation();
   let fileUploadDisabled = false;
@@ -115,9 +123,50 @@ export const AssistantOptions = ({
     activeControllersRef.current = [];
   };
 
+  const sleepWithAbort = (durationMs: number, signal: AbortSignal) =>
+    new Promise<void>((resolve, reject) => {
+      if (signal.aborted) {
+        reject(new DOMException('Aborted', 'AbortError'));
+        return;
+      }
+
+      const timeout = setTimeout(() => {
+        signal.removeEventListener('abort', onAbort);
+        resolve();
+      }, durationMs);
+
+      const onAbort = () => {
+        clearTimeout(timeout);
+        reject(new DOMException('Aborted', 'AbortError'));
+      };
+
+      signal.addEventListener('abort', onAbort, { once: true });
+    });
+
+  const isRateLimitError = (uploadError: any) => {
+    const networkStatus = uploadError?.networkError?.statusCode || uploadError?.networkError?.status;
+    const graphQLErrorCode = uploadError?.graphQLErrors?.[0]?.extensions?.code;
+    const message = uploadError?.message || uploadError?.networkError?.message || '';
+
+    return (
+      networkStatus === 429 ||
+      graphQLErrorCode === 'TOO_MANY_REQUESTS' ||
+      message.includes('429') ||
+      message.toLowerCase().includes('too many requests')
+    );
+  };
+
+  const updateLoadingFromStatuses = (sessionId: number) => {
+    if (!isCurrentSessionRef(sessionId)) return;
+    const hasQueuedForSession = pendingUploadQueueRef.current.some((queueItem) => queueItem.sessionId === sessionId);
+    const hasActiveForSession = activeUploadsRef.current > 0;
+    setLoading(hasQueuedForSession || hasActiveForSession);
+  };
+
   const closeUploadDialog = () => {
     uploadSessionRef.current += 1;
     isUploadDialogOpenRef.current = false;
+    pendingUploadQueueRef.current = [];
     cancelActiveRequests();
     setLoading(false);
     setFiles(formikValues.initialFiles.map(mapInitialFileToAssistantFile));
@@ -128,41 +177,73 @@ export const AssistantOptions = ({
     file: File
   ): Promise<{ uploadedFile: UploadedFile | null; errorMessage: string | null; aborted: boolean }> => {
     let uploadedFile: UploadedFile | null = null;
-    let errorMessage = null;
+    let errorMessage: string | null = null;
     let aborted = false;
     const controller = new AbortController();
     activeControllersRef.current.push(controller);
 
-    await uploadFileToKaapi({
-      variables: {
-        media: file,
-      },
-      context: {
-        options: {
-          signal: controller.signal,
+    const runAttempt = async () => {
+      let attemptError: any = null;
+      let uploadedData: any = null;
+      const { data } = await uploadFileToKaapi({
+        variables: {
+          media: file,
         },
-        fetchOptions: {
-          signal: controller.signal,
+        context: {
+          fetchOptions: {
+            signal: controller.signal,
+          },
         },
-      },
-      onCompleted: ({ uploadFilesearchFile }) => {
-        uploadedFile = {
-          fileId: uploadFilesearchFile?.fileId,
-          filename: uploadFilesearchFile?.filename,
-          uploadedAt: uploadFilesearchFile?.uploadedAt,
-          fileSize: uploadFilesearchFile?.fileSize,
-        };
-      },
-      onError: (errors) => {
-        if (isAbortError(errors)) {
-          aborted = true;
-          return;
+        onCompleted: ({ uploadFilesearchFile }) => {
+          uploadedData = uploadFilesearchFile;
+        },
+        onError: (uploadError) => {
+          attemptError = uploadError;
+        },
+      });
+
+      if (attemptError) {
+        throw attemptError;
+      }
+
+      const responseData = uploadedData || data?.uploadFilesearchFile;
+      uploadedFile = {
+        fileId: responseData?.fileId,
+        filename: responseData?.filename,
+        uploadedAt: responseData?.uploadedAt,
+        fileSize: responseData?.fileSize,
+      };
+    };
+
+    try {
+      for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt += 1) {
+        try {
+          await runAttempt();
+          break;
+        } catch (uploadError: any) {
+          if (isAbortError(uploadError)) {
+            aborted = true;
+            break;
+          }
+
+          errorMessage = uploadError?.message || 'Failed to upload file';
+          if (!isRateLimitError(uploadError) || attempt >= MAX_RETRY_ATTEMPTS) {
+            break;
+          }
+
+          const backoffMs = INITIAL_BACKOFF_MS * 2 ** (attempt - 1);
+          await sleepWithAbort(backoffMs, controller.signal);
         }
-        errorMessage = errors.message;
-      },
-    }).finally(() => {
+      }
+    } catch (uploadError: any) {
+      if (isAbortError(uploadError)) {
+        aborted = true;
+      } else {
+        errorMessage = uploadError?.message || 'Failed to upload file';
+      }
+    } finally {
       activeControllersRef.current = activeControllersRef.current.filter((entry) => entry !== controller);
-    });
+    }
 
     return { uploadedFile, errorMessage, aborted };
   };
@@ -178,109 +259,94 @@ export const AssistantOptions = ({
     return [...list].sort((first, second) => statusOrder[first.status] - statusOrder[second.status]);
   };
 
-  const runUploadQueue = async (
-    filesToUpload: File[],
-    queuedFiles: AssistantFile[],
-    sessionId: number
-  ): Promise<{ uploadedFiles: AssistantFile[]; hasFailures: boolean }> => {
-    let cursor = 0;
-    let activeUploads = 0;
-    const uploadedFiles: AssistantFile[] = [];
-    let hasFailures = false;
-    const isCurrentSession = () => isUploadDialogOpenRef.current && uploadSessionRef.current === sessionId;
+  const processUploadQueue = () => {
+    while (activeUploadsRef.current < MAX_CONCURRENT_UPLOADS && pendingUploadQueueRef.current.length > 0) {
+      const nextUpload = pendingUploadQueueRef.current.shift();
+      if (!nextUpload) return;
 
-    return new Promise((resolve) => {
-      const processNext = () => {
-        if (!isCurrentSession()) {
-          if (activeUploads === 0) {
-            resolve({ uploadedFiles, hasFailures });
+      const { file, tempId, sessionId, resolveResult } = nextUpload;
+      if (!isCurrentSessionRef(sessionId)) {
+        resolveResult(false);
+        continue;
+      }
+
+      activeUploadsRef.current += 1;
+      setFiles((prevFiles) =>
+        prevFiles.map((fileItem) =>
+          fileItem.tempId === tempId ? { ...fileItem, status: 'uploading', errorMessage: '' } : fileItem
+        )
+      );
+
+      uploadFile(file)
+        .then(({ uploadedFile, errorMessage, aborted }) => {
+          if (!isCurrentSessionRef(sessionId) || aborted) {
+            resolveResult(false);
+            return;
           }
-          return;
-        }
 
-        while (activeUploads < MAX_CONCURRENT_UPLOADS && cursor < filesToUpload.length) {
-          const currentIndex = cursor;
-          cursor += 1;
-          activeUploads += 1;
-          const queuedFile = queuedFiles[currentIndex];
-          const currentFile = filesToUpload[currentIndex];
+          if (uploadedFile) {
+            const attachedFile: AssistantFile = {
+              fileId: uploadedFile.fileId,
+              filename: uploadedFile.filename,
+              uploadedAt: uploadedFile.uploadedAt,
+              fileSize: uploadedFile.fileSize,
+              status: 'attached',
+              tempId,
+            };
 
-          if (isCurrentSession()) {
             setFiles((prevFiles) =>
-              prevFiles.map((file) => (file.tempId === queuedFile.tempId ? { ...file, status: 'uploading' } : file))
+              prevFiles.map((fileItem) => (fileItem.tempId === tempId ? attachedFile : fileItem))
             );
+            resolveResult(true);
+            return;
           }
 
-          uploadFile(currentFile)
-            .then(({ uploadedFile, errorMessage, aborted }) => {
-              if (!isCurrentSession()) return;
-              if (aborted) return;
+          setFiles((prevFiles) =>
+            prevFiles.map((fileItem) =>
+              fileItem.tempId === tempId
+                ? { ...fileItem, status: 'failed', errorMessage: errorMessage || 'Failed to upload file' }
+                : fileItem
+            )
+          );
+          resolveResult(false);
+        })
+        .catch((uploadError) => {
+          if (!isCurrentSessionRef(sessionId) || isAbortError(uploadError)) {
+            resolveResult(false);
+            return;
+          }
 
-              if (uploadedFile) {
-                const attachedFile: AssistantFile = {
-                  fileId: uploadedFile.fileId,
-                  filename: uploadedFile.filename,
-                  uploadedAt: uploadedFile.uploadedAt,
-                  fileSize: uploadedFile.fileSize,
-                  status: 'attached' as const,
-                  tempId: queuedFile.tempId,
-                };
-                uploadedFiles.push(attachedFile);
-                setFiles((prevFiles) =>
-                  prevFiles.map((file) => (file.tempId === queuedFile.tempId ? attachedFile : file))
-                );
-              } else {
-                hasFailures = true;
-                setFiles((prevFiles) =>
-                  prevFiles.map((file) =>
-                    file.tempId === queuedFile.tempId
-                      ? { ...file, status: 'failed', errorMessage: errorMessage || 'Failed to upload file' }
-                      : file
-                  )
-                );
-              }
-            })
-            .catch((uploadError) => {
-              if (!isCurrentSession() || isAbortError(uploadError)) return;
-              console.error('Error uploading file:', uploadError);
-              hasFailures = true;
-              setFiles((prevFiles) =>
-                prevFiles.map((file) =>
-                  file.tempId === queuedFile.tempId
-                    ? { ...file, status: 'failed', errorMessage: uploadError?.message || 'Failed to upload file' }
-                    : file
-                )
-              );
-            })
-            .finally(() => {
-              activeUploads -= 1;
-              if (cursor >= filesToUpload.length && activeUploads === 0) {
-                resolve({ uploadedFiles, hasFailures });
-                return;
-              }
+          setFiles((prevFiles) =>
+            prevFiles.map((fileItem) =>
+              fileItem.tempId === tempId
+                ? { ...fileItem, status: 'failed', errorMessage: uploadError?.message || 'Failed to upload file' }
+                : fileItem
+            )
+          );
+          resolveResult(false);
+        })
+        .finally(() => {
+          activeUploadsRef.current -= 1;
+          updateLoadingFromStatuses(sessionId);
+          processUploadQueue();
+        });
+    }
+  };
 
-              processNext();
-            });
-        }
-
-        if (cursor >= filesToUpload.length && activeUploads === 0) {
-          resolve({ uploadedFiles, hasFailures });
-        }
-      };
-
-      processNext();
+  const enqueueFilesForUpload = (uploadFiles: Array<{ sourceFile: File; tempId: string }>, sessionId: number) => {
+    const uploadTasks = uploadFiles.map(({ sourceFile, tempId }) => {
+      return new Promise<boolean>((resolveResult) => {
+        pendingUploadQueueRef.current.push({ file: sourceFile, tempId, sessionId, resolveResult });
+      });
     });
+
+    processUploadQueue();
+    return Promise.all(uploadTasks);
   };
 
   const handleFileChange = (event: any) => {
     const inputFiles = Array.from(event.target.files || []) as File[];
     if (inputFiles.length === 0) return;
-
-    const activeFileCount = files.filter((file) => file.status !== 'failed').length;
-    if (activeFileCount + inputFiles.length > MAX_FILES) {
-      setNotification('You cannot upload more than 500 files.', 'warning');
-      return;
-    }
 
     const validFiles = inputFiles.filter((file) => {
       if (file.size / (1024 * 1024) > 20) {
@@ -299,13 +365,18 @@ export const AssistantOptions = ({
       status: 'queued' as const,
       tempId: `${file.name}-${Date.now()}-${index}`,
       errorMessage: '',
+      sourceFile: file,
     }));
 
     setFiles((prevFiles) => [...prevFiles, ...queuedFiles]);
 
-    runUploadQueue(validFiles, queuedFiles, sessionId)
-      .then(({ hasFailures }) => {
+    enqueueFilesForUpload(
+      queuedFiles.map((file) => ({ sourceFile: file.sourceFile as File, tempId: file.tempId })),
+      sessionId
+    )
+      .then((results) => {
         if (!isCurrentSessionRef(sessionId)) return;
+        const hasFailures = results.some((result) => !result);
         if (hasFailures) {
           setNotification('Some file uploads failed, hover the failure to see the reason', 'warning');
         }
@@ -316,15 +387,29 @@ export const AssistantOptions = ({
       })
       .finally(() => {
         if (!isCurrentSessionRef(sessionId)) return;
-        setLoading(false);
+        updateLoadingFromStatuses(sessionId);
       });
   };
 
-  const isCurrentSessionRef = (sessionId: number) =>
-    isUploadDialogOpenRef.current && uploadSessionRef.current === sessionId;
+  const isCurrentSessionRef = (sessionId: number) => uploadSessionRef.current === sessionId;
 
   const handleRemoveFile = (file: AssistantFile) => {
+    if (file.status === 'uploading') return;
     setFiles(files.filter((fileItem) => fileItem.tempId !== file.tempId));
+  };
+
+  const handleRetryFile = (file: AssistantFile) => {
+    if (!file.sourceFile) return;
+    const sessionId = uploadSessionRef.current;
+    setLoading(true);
+    setFiles((prevFiles) =>
+      prevFiles.map((fileItem) =>
+        fileItem.tempId === file.tempId ? { ...fileItem, status: 'queued', errorMessage: '' } : fileItem
+      )
+    );
+    enqueueFilesForUpload([{ sourceFile: file.sourceFile, tempId: file.tempId }], sessionId).finally(() => {
+      updateLoadingFromStatuses(sessionId);
+    });
   };
 
   const hasFilesChanged = () => {
@@ -423,7 +508,7 @@ export const AssistantOptions = ({
             <Button className="Container" fullWidth component="label" variant="text" tabIndex={-1}>
               <div className={fileUploadDisabled ? styles.DisabledUploadContainer : styles.UploadContainer}>
                 {loading ? (
-                  <CircularProgress size={20} />
+                  <CircularProgress size={30} />
                 ) : (
                   <>
                     <UploadIcon /> {t('Upload File')}
@@ -445,27 +530,51 @@ export const AssistantOptions = ({
             <div className={styles.FileList}>
               {getSortedFiles(files).map((file, index) => (
                 <div data-testid="fileItem" className={styles.File} key={file.fileId || file.tempId || index}>
-                  <div>
+                  <div className={styles.FileLeadingIcon}>
                     <FileIcon />
-                    <span>{file.filename}</span>
                   </div>
+                  <div className={styles.FileName}>{file.filename}</div>
                   <div className={styles.FileActions}>
-                    {file.status === 'uploading' && <CircularProgress data-testid="uploadingIcon" size={20} />}
-                    {file.status === 'queued' && (
-                      <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
-                    )}
-                    {file.status === 'failed' && (
-                      <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                        <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
-                      </Tooltip>
-                    )}
-                    <IconButton
-                      data-testid="deleteFile"
-                      disabled={loading || file.status === 'uploading' || file.status === 'queued'}
-                      onClick={() => handleRemoveFile(file)}
-                    >
-                      <CrossIcon />
-                    </IconButton>
+                    <div className={styles.ActionSlot}>
+                      {file.status === 'failed' && (
+                        <Tooltip title={file.sourceFile ? 'Retry upload' : 'Retry unavailable'} placement="top" arrow>
+                          <span>
+                            <IconButton
+                              data-testid="retryFile"
+                              className={styles.RetryButton}
+                              disabled={!file.sourceFile}
+                              onClick={() => handleRetryFile(file)}
+                            >
+                              <ReplayIcon className={styles.RetryIcon} fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
+                    <div className={styles.ActionSlot}>
+                      {file.status === 'uploading' && <CircularProgress data-testid="uploadingIcon" size={20} />}
+                      {file.status === 'queued' && (
+                        <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
+                      )}
+                      {file.status === 'failed' && (
+                        <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
+                          <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
+                        </Tooltip>
+                      )}
+                      {file.status === 'attached' && (
+                        <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
+                      )}
+                    </div>
+                    <div className={styles.ActionSlot}>
+                      <IconButton
+                        className={styles.CloseButton}
+                        data-testid="deleteFile"
+                        disabled={file.status === 'uploading'}
+                        onClick={() => handleRemoveFile(file)}
+                      >
+                        <CrossIcon />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
               ))}
