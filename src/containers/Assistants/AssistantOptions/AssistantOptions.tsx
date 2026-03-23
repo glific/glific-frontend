@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
@@ -29,6 +31,28 @@ interface AssistantOptionsProps {
   disabled: boolean;
 }
 
+type FileStatus = 'attached' | 'queued' | 'uploading' | 'failed';
+
+interface AssistantFile {
+  fileId?: string;
+  filename: string;
+  uploadedAt?: string;
+  fileSize?: number;
+  status: FileStatus;
+  tempId: string;
+  errorMessage?: string;
+}
+
+interface UploadedFile {
+  fileId?: string;
+  filename: string;
+  uploadedAt?: string;
+  fileSize?: number;
+}
+
+const MAX_FILES = 500;
+const MAX_CONCURRENT_UPLOADS = 10;
+
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
 const filesInfo =
@@ -46,10 +70,19 @@ export const AssistantOptions = ({
   validateForm,
   disabled,
 }: AssistantOptionsProps) => {
+  const mapInitialFileToAssistantFile = (file: any): AssistantFile => ({
+    ...file,
+    status: 'attached',
+    tempId: file.fileId || file.filename,
+  });
+
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [files, setFiles] = useState<any[]>(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
+  const [files, setFiles] = useState<AssistantFile[]>(formikValues.initialFiles.map(mapInitialFileToAssistantFile));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const uploadSessionRef = useRef(0);
+  const activeControllersRef = useRef<AbortController[]>([]);
+  const isUploadDialogOpenRef = useRef(false);
   const { t } = useTranslation();
   let fileUploadDisabled = false;
   if (isLegacyVectorStore || disabled) {
@@ -57,19 +90,60 @@ export const AssistantOptions = ({
   }
 
   useEffect(() => {
-    setFiles(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
+    setFiles(formikValues.initialFiles.map(mapInitialFileToAssistantFile));
   }, [formikValues.initialFiles]);
+
+  useEffect(() => {
+    isUploadDialogOpenRef.current = showUploadDialog;
+  }, [showUploadDialog]);
 
   const [uploadFileToKaapi] = useMutation(UPLOAD_FILE_TO_KAAPI);
   const [createKnowledgeBase, { loading: addingFiles }] = useMutation(CREATE_KNOWLEDGE_BASE);
 
-  const uploadFile = async (file: any) => {
-    let uploadedFile;
+  const isAbortError = (error: any) => {
+    const message = error?.message || error?.networkError?.message;
+    return Boolean(
+      error?.name === 'AbortError' ||
+      error?.networkError?.name === 'AbortError' ||
+      message?.includes('aborted') ||
+      message?.includes('AbortError')
+    );
+  };
+
+  const cancelActiveRequests = () => {
+    activeControllersRef.current.forEach((controller) => controller.abort());
+    activeControllersRef.current = [];
+  };
+
+  const closeUploadDialog = () => {
+    uploadSessionRef.current += 1;
+    isUploadDialogOpenRef.current = false;
+    cancelActiveRequests();
+    setLoading(false);
+    setFiles(formikValues.initialFiles.map(mapInitialFileToAssistantFile));
+    setShowUploadDialog(false);
+  };
+
+  const uploadFile = async (
+    file: File
+  ): Promise<{ uploadedFile: UploadedFile | null; errorMessage: string | null; aborted: boolean }> => {
+    let uploadedFile: UploadedFile | null = null;
     let errorMessage = null;
+    let aborted = false;
+    const controller = new AbortController();
+    activeControllersRef.current.push(controller);
 
     await uploadFileToKaapi({
       variables: {
         media: file,
+      },
+      context: {
+        options: {
+          signal: controller.signal,
+        },
+        fetchOptions: {
+          signal: controller.signal,
+        },
       },
       onCompleted: ({ uploadFilesearchFile }) => {
         uploadedFile = {
@@ -77,26 +151,138 @@ export const AssistantOptions = ({
           filename: uploadFilesearchFile?.filename,
           uploadedAt: uploadFilesearchFile?.uploadedAt,
           fileSize: uploadFilesearchFile?.fileSize,
-          status: 'new',
         };
       },
       onError: (errors) => {
+        if (isAbortError(errors)) {
+          aborted = true;
+          return;
+        }
         errorMessage = errors.message;
       },
+    }).finally(() => {
+      activeControllersRef.current = activeControllersRef.current.filter((entry) => entry !== controller);
     });
 
-    return { uploadedFile, errorMessage };
+    return { uploadedFile, errorMessage, aborted };
+  };
+
+  const getSortedFiles = (list: AssistantFile[]) => {
+    const statusOrder: Record<FileStatus, number> = {
+      uploading: 0,
+      queued: 1,
+      failed: 2,
+      attached: 3,
+    };
+
+    return [...list].sort((first, second) => statusOrder[first.status] - statusOrder[second.status]);
+  };
+
+  const runUploadQueue = async (
+    filesToUpload: File[],
+    queuedFiles: AssistantFile[],
+    sessionId: number
+  ): Promise<{ uploadedFiles: AssistantFile[]; hasFailures: boolean }> => {
+    let cursor = 0;
+    let activeUploads = 0;
+    const uploadedFiles: AssistantFile[] = [];
+    let hasFailures = false;
+    const isCurrentSession = () => isUploadDialogOpenRef.current && uploadSessionRef.current === sessionId;
+
+    return new Promise((resolve) => {
+      const processNext = () => {
+        if (!isCurrentSession()) {
+          if (activeUploads === 0) {
+            resolve({ uploadedFiles, hasFailures });
+          }
+          return;
+        }
+
+        while (activeUploads < MAX_CONCURRENT_UPLOADS && cursor < filesToUpload.length) {
+          const currentIndex = cursor;
+          cursor += 1;
+          activeUploads += 1;
+          const queuedFile = queuedFiles[currentIndex];
+          const currentFile = filesToUpload[currentIndex];
+
+          if (isCurrentSession()) {
+            setFiles((prevFiles) =>
+              prevFiles.map((file) => (file.tempId === queuedFile.tempId ? { ...file, status: 'uploading' } : file))
+            );
+          }
+
+          uploadFile(currentFile)
+            .then(({ uploadedFile, errorMessage, aborted }) => {
+              if (!isCurrentSession()) return;
+              if (aborted) return;
+
+              if (uploadedFile) {
+                const attachedFile: AssistantFile = {
+                  fileId: uploadedFile.fileId,
+                  filename: uploadedFile.filename,
+                  uploadedAt: uploadedFile.uploadedAt,
+                  fileSize: uploadedFile.fileSize,
+                  status: 'attached' as const,
+                  tempId: queuedFile.tempId,
+                };
+                uploadedFiles.push(attachedFile);
+                setFiles((prevFiles) =>
+                  prevFiles.map((file) => (file.tempId === queuedFile.tempId ? attachedFile : file))
+                );
+              } else {
+                hasFailures = true;
+                setFiles((prevFiles) =>
+                  prevFiles.map((file) =>
+                    file.tempId === queuedFile.tempId
+                      ? { ...file, status: 'failed', errorMessage: errorMessage || 'Failed to upload file' }
+                      : file
+                  )
+                );
+              }
+            })
+            .catch((uploadError) => {
+              if (!isCurrentSession() || isAbortError(uploadError)) return;
+              console.error('Error uploading file:', uploadError);
+              hasFailures = true;
+              setFiles((prevFiles) =>
+                prevFiles.map((file) =>
+                  file.tempId === queuedFile.tempId
+                    ? { ...file, status: 'failed', errorMessage: uploadError?.message || 'Failed to upload file' }
+                    : file
+                )
+              );
+            })
+            .finally(() => {
+              activeUploads -= 1;
+              if (cursor >= filesToUpload.length && activeUploads === 0) {
+                resolve({ uploadedFiles, hasFailures });
+                return;
+              }
+
+              processNext();
+            });
+        }
+
+        if (cursor >= filesToUpload.length && activeUploads === 0) {
+          resolve({ uploadedFiles, hasFailures });
+        }
+      };
+
+      processNext();
+    });
   };
 
   const handleFileChange = (event: any) => {
-    const inputFiles = event.target.files;
-    let errorMessages: any = [];
-    let uploadedFiles: any = [];
-    setLoading(true);
-
+    const inputFiles = Array.from(event.target.files || []) as File[];
     if (inputFiles.length === 0) return;
 
-    const validFiles = Array.from(inputFiles).filter((file: any) => {
+    const activeFileCount = files.filter((file) => file.status !== 'failed').length;
+    if (activeFileCount + inputFiles.length > MAX_FILES) {
+      setNotification('You cannot upload more than 500 files.', 'warning');
+      return;
+    }
+
+    const validFiles = inputFiles.filter((file) => {
       if (file.size / (1024 * 1024) > 20) {
         setNotification('File size should be less than 20MB', 'warning');
         return false;
@@ -104,52 +290,96 @@ export const AssistantOptions = ({
       return true;
     });
 
-    const uploadPromises = validFiles.map(async (file: any) => {
-      const { uploadedFile, errorMessage } = await uploadFile(file);
+    if (validFiles.length === 0) return;
 
-      if (uploadedFile) {
-        uploadedFiles.push(uploadedFile);
-      }
-      if (errorMessage) {
-        errorMessages.push(errorMessage);
-      }
-    });
+    setLoading(true);
+    const sessionId = uploadSessionRef.current;
+    const queuedFiles = validFiles.map((file, index) => ({
+      filename: file.name,
+      status: 'queued' as const,
+      tempId: `${file.name}-${Date.now()}-${index}`,
+      errorMessage: '',
+    }));
 
-    Promise.all(uploadPromises)
-      .then(() => {
-        setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
-        if (errorMessages.length > 0) {
-          setNotification(errorMessages.join('\n\n'), 'warning');
+    setFiles((prevFiles) => [...prevFiles, ...queuedFiles]);
+
+    runUploadQueue(validFiles, queuedFiles, sessionId)
+      .then(({ hasFailures }) => {
+        if (!isCurrentSessionRef(sessionId)) return;
+        if (hasFailures) {
+          setNotification('Some file uploads failed, hover the failure to see the reason', 'warning');
         }
-        setLoading(false);
       })
       .catch((error) => {
+        if (isAbortError(error)) return;
         console.error('Error uploading files:', error);
+      })
+      .finally(() => {
+        if (!isCurrentSessionRef(sessionId)) return;
         setLoading(false);
       });
   };
 
-  const handleRemoveFile = (file: any) => {
-    setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
+  const isCurrentSessionRef = (sessionId: number) =>
+    isUploadDialogOpenRef.current && uploadSessionRef.current === sessionId;
+
+  const handleRemoveFile = (file: AssistantFile) => {
+    setFiles(files.filter((fileItem) => fileItem.tempId !== file.tempId));
   };
 
-  const hasFilesChanged =
-    files.length !== formikValues.initialFiles.length || files.some((file) => file.status === 'new');
+  const hasFilesChanged = () => {
+    const attachedFiles = files.filter((file) => file.status === 'attached');
+    if (attachedFiles.length !== formikValues.initialFiles.length) {
+      return true;
+    }
+
+    const initialFileIds = new Set(formikValues.initialFiles.map((file: any) => file.fileId));
+    return attachedFiles.some((file) => !file.fileId || !initialFileIds.has(file.fileId));
+  };
 
   const handleFileUpload = () => {
-    if (!hasFilesChanged) {
+    if (files.some((file) => file.status === 'failed')) {
+      setNotification('Remove or re-upload files that failed before saving.', 'warning');
+      return;
+    }
+
+    if (!hasFilesChanged()) {
       setShowUploadDialog(false);
       return;
     }
 
+    const attachedFiles = files
+      .filter((file) => file.status === 'attached')
+      .map(({ status, tempId, ...rest }) => rest)
+      .filter(
+        (file, index, allFiles) =>
+          allFiles.findIndex(
+            (entry) =>
+              entry.fileId === file.fileId && entry.filename === file.filename && entry.uploadedAt === file.uploadedAt
+          ) === index
+      );
+
+    const controller = new AbortController();
+    activeControllersRef.current.push(controller);
+
     createKnowledgeBase({
       variables: {
         createKnowledgeBaseId: knowledgeBaseId || null,
-        mediaInfo: files.map(({ status, ...rest }) => rest),
+        mediaInfo: attachedFiles,
+      },
+      context: {
+        options: {
+          signal: controller.signal,
+        },
+        fetchOptions: {
+          signal: controller.signal,
+        },
       },
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
-        const updatedFiles = files.map(({ status, ...rest }) => rest);
-        setFiles(updatedFiles.map((f) => ({ ...f, status: 'attached' })));
+        const updatedFiles = files
+          .filter((file) => file.status === 'attached')
+          .map(({ status, tempId, ...rest }) => rest);
+        setFiles(updatedFiles.map(mapInitialFileToAssistantFile));
         setFieldValue('initialFiles', updatedFiles);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
@@ -160,8 +390,11 @@ export const AssistantOptions = ({
         setShowUploadDialog(false);
       },
       onError: (error) => {
+        if (isAbortError(error)) return;
         setErrorMessage(error);
       },
+    }).finally(() => {
+      activeControllersRef.current = activeControllersRef.current.filter((entry) => entry !== controller);
     });
   };
 
@@ -171,10 +404,7 @@ export const AssistantOptions = ({
       <DialogBox
         open={showUploadDialog}
         title={t('Manage Files')}
-        handleCancel={() => {
-          setFiles(formikValues.initialFiles.map((f: any) => ({ ...f, status: 'attached' })));
-          setShowUploadDialog(false);
-        }}
+        handleCancel={closeUploadDialog}
         buttonOk={fileUploadDisabled ? 'Close' : 'Save'}
         skipCancel={fileUploadDisabled}
         fullWidth
@@ -213,17 +443,30 @@ export const AssistantOptions = ({
 
           {files.length > 0 && (
             <div className={styles.FileList}>
-              {files.map((file, index) => (
-                <div data-testid="fileItem" className={styles.File} key={index}>
+              {getSortedFiles(files).map((file, index) => (
+                <div data-testid="fileItem" className={styles.File} key={file.fileId || file.tempId || index}>
                   <div>
                     <FileIcon />
                     <span>{file.filename}</span>
                   </div>
-                  {!fileUploadDisabled && (
-                    <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
+                  <div className={styles.FileActions}>
+                    {file.status === 'uploading' && <CircularProgress data-testid="uploadingIcon" size={20} />}
+                    {file.status === 'queued' && (
+                      <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
+                    )}
+                    {file.status === 'failed' && (
+                      <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
+                        <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
+                      </Tooltip>
+                    )}
+                    <IconButton
+                      data-testid="deleteFile"
+                      disabled={loading || file.status === 'uploading' || file.status === 'queued'}
+                      onClick={() => handleRemoveFile(file)}
+                    >
                       <CrossIcon />
                     </IconButton>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>

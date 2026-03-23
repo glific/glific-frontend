@@ -163,6 +163,22 @@
   text-align: left;
 }
 
+.FileActions {
+  display: flex;
+  align-items: center;
+  column-gap: 0.25rem;
+  min-width: 4rem;
+  justify-content: flex-end;
+}
+
+.QueuedIcon {
+  color: #76848f;
+}
+
+.FailedIcon {
+  color: #fb5c5c;
+}
+
 .EmptyText {
   font-size: 0.8rem;
   color: #2f2f2f;
