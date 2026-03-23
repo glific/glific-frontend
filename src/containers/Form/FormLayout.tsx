@@ -174,7 +174,7 @@ export const FormLayout = ({
     variables = params.type ? { shortcode: params.type } : false;
   }
 
-  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
+  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any, isSaveClick: boolean = false) => {
     let payload = {
       ...itemData,
       ...defaultAttribute,
@@ -208,18 +208,18 @@ export const FormLayout = ({
             const payloadCopy = payload;
             delete payloadCopy.attachmentURL;
             payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
-            performTask(payloadCopy);
+            performTask(payloadCopy, isSaveClick);
           }
         })
         .catch((e: any) => {
           setErrorMessage(e);
         });
     } else {
-      performTask(payload);
+      performTask(payload, isSaveClick);
     }
   };
 
-  const handleUpdateCompleted = (data: any) => {
+  const handleUpdateCompleted = (data: any, isSaveClick: boolean) => {
     setShowConfirmationDialog(false);
     let itemUpdatedObject: any = Object.keys(data)[0];
     itemUpdatedObject = data[itemUpdatedObject];
@@ -243,7 +243,7 @@ export const FormLayout = ({
         additionalQuery(itemId);
       }
 
-      if (saveOnPageChange || saveClick) {
+      if (saveOnPageChange || isSaveClick) {
         setFormSubmitted(true);
         let notificationMessage = `${capitalListItemName} edited successfully!`;
         if (type === 'copy') {
@@ -254,13 +254,13 @@ export const FormLayout = ({
         setNotification('Your changes have been autosaved');
       }
       if (afterSave) {
-        afterSave(data, saveClick, message);
+        afterSave(data, isSaveClick, message);
       }
     }
     onSaveClick(false);
   };
 
-  const handleCreateCompleted = (data: any) => {
+  const handleCreateCompleted = (data: any, isSaveClick: boolean) => {
     setShowConfirmationDialog(false);
     let itemCreatedObject: any = `create${camelCaseItem}`;
     itemCreatedObject = data[itemCreatedObject];
@@ -283,14 +283,14 @@ export const FormLayout = ({
         additionalQuery(itemCreated.id);
       }
       if (!itemId) setLink(itemCreated[linkParameter]);
-      if (saveOnPageChange || saveClick) {
+      if (saveOnPageChange || isSaveClick) {
         setFormSubmitted(true);
         setNotification(`${capitalListItemName} created successfully!`);
       } else {
         setNotification('Your changes have been autosaved');
       }
       if (afterSave) {
-        afterSave(data, saveClick);
+        afterSave(data, isSaveClick);
       }
     }
     onSaveClick(false);
@@ -306,7 +306,7 @@ export const FormLayout = ({
     }
   };
 
-  const performTask = async (payload: any) => {
+  const performTask = async (payload: any, isSaveClick: boolean) => {
     try {
       if (itemId && isLoadedData) {
         let idKey = idType;
@@ -331,14 +331,14 @@ export const FormLayout = ({
             input: payloadBody,
           },
         });
-        if (data) handleUpdateCompleted(data);
+        if (data) handleUpdateCompleted(data, isSaveClick);
       } else {
         const { data } = await createItem({
           variables: {
             input: payload,
           },
         });
-        if (data) handleCreateCompleted(data);
+        if (data) handleCreateCompleted(data, isSaveClick);
       }
     } catch (e: any) {
       handleMutationError(e);
@@ -541,13 +541,6 @@ export const FormLayout = ({
       </Button>
     ) : null;
 
-  const onSaveButtonClick = (errors: any) => {
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-    onSaveClick(true);
-  };
-
   const form = (
     <LexicalWrapper>
       <form onSubmit={formik.handleSubmit}>
@@ -577,8 +570,17 @@ export const FormLayout = ({
                 color="primary"
                 onClick={() => {
                   formik.validateForm().then((errors) => {
-                    onSaveButtonClick(errors);
-                    formik.submitForm();
+                    if (Object.keys(errors).length > 0) {
+                      formik.submitForm();
+                      return;
+                    }
+                    onSaveClick(true);
+                    if (confirmationState?.show) {
+                      setShowConfirmationDialog(true);
+                    } else {
+                      setCustomError({ setErrors: formik.setErrors });
+                      saveHandler(formik.values, true);
+                    }
                   });
                 }}
                 className={styles.Button}
@@ -672,7 +674,7 @@ export const FormLayout = ({
       <DialogBox
         title={confirmationState?.title || 'Are you sure you want to proceed?'}
         handleOk={() => {
-          saveHandler(formik.values);
+          saveHandler(formik.values, true);
         }}
         handleCancel={() => {
           onSaveClick(false);
