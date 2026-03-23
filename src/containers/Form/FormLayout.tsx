@@ -372,13 +372,16 @@ export const FormLayout = ({
 
   const isLoadedData = Boolean(fetchedItem);
 
-  const languageId = fetchedItem
-    ? languageSupport
-      ? (fetchedItem.language?.id ?? '')
-      : null
-    : !itemId && organization.data
-      ? organization.data.currentUser.user.organization.defaultLanguage.id
-      : '';
+  const getLanguageIdValue = () => {
+    if (fetchedItem) {
+      return languageSupport ? (fetchedItem.language?.id ?? '') : null;
+    }
+    if (!itemId && organization.data) {
+      return organization.data.currentUser.user.organization.defaultLanguage.id;
+    }
+    return '';
+  };
+  const languageId = getLanguageIdValue();
 
   const formik = useFormik({
     initialValues: {
