@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import * as Notification from 'common/notification';
@@ -63,6 +63,10 @@ const renderAssistantOptions = (props: Partial<Parameters<typeof AssistantOption
 describe('AssistantOptions upload queue behavior', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   test('uploads at most 10 files concurrently and starts next queued file on completion', async () => {
@@ -464,6 +468,156 @@ describe('AssistantOptions upload queue behavior', () => {
 
     await waitFor(() => {
       expect(uploadMutation).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  test('retries upload request when rate limit errors occur', async () => {
+    vi.useFakeTimers();
+    const uploadMutation = vi.fn(({ variables, onCompleted, onError }) => {
+      const fileName = variables.media.name as string;
+      const attempt = uploadMutation.mock.calls.length;
+
+      if (attempt === 1) {
+        onError({ message: '429 Too Many Requests', networkError: { statusCode: 429 } });
+        return Promise.resolve({});
+      }
+
+      onCompleted({
+        uploadFilesearchFile: {
+          fileId: `id-${fileName}`,
+          filename: fileName,
+          uploadedAt: '2026-01-01',
+          fileSize: 12,
+        },
+      });
+      return Promise.resolve({});
+    });
+
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [new File(['content'], 'rate-limit-retry.txt', { type: 'text/plain' })],
+      },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(uploadMutation).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+      await Promise.resolve();
+    });
+
+    expect(uploadMutation).toHaveBeenCalledTimes(2);
+    expect(screen.getByTestId('attachedIcon')).toBeInTheDocument();
+  });
+
+  test('shows failure state and tooltip message after exhausting rate limit retries', async () => {
+    vi.useFakeTimers();
+    const uploadMutation = vi.fn(({ onError }) => {
+      onError({ message: '429 Too Many Requests', networkError: { statusCode: 429 } });
+      return Promise.resolve({});
+    });
+
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [new File(['content'], 'rate-limit-exhausted.txt', { type: 'text/plain' })],
+      },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(uploadMutation).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000 + 4000 + 8000 + 16000);
+      await Promise.resolve();
+    });
+
+    expect(uploadMutation).toHaveBeenCalledTimes(5);
+    expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+    expect(setNotificationSpy).toHaveBeenCalledWith(
+      'Some file uploads failed, hover the failure to see the reason',
+      'warning'
+    );
+
+    vi.useRealTimers();
+    fireEvent.mouseOver(screen.getByTestId('failedIcon'));
+    await waitFor(() => {
+      expect(screen.getByText('429 Too Many Requests')).toBeInTheDocument();
+    });
+  });
+
+  test('shows queued icon while upload waits in queue', async () => {
+    const uploadMutation = vi.fn(({ variables, onCompleted }) => {
+      const fileName = variables.media.name as string;
+      if (fileName.startsWith('queued-state-0')) {
+        return new Promise(() => {});
+      }
+
+      onCompleted({
+        uploadFilesearchFile: {
+          fileId: `id-${fileName}`,
+          filename: fileName,
+          uploadedAt: '2026-01-01',
+          fileSize: 12,
+        },
+      });
+      return Promise.resolve({});
+    });
+
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: Array.from({ length: 11 }, (_, index) =>
+          new File(['content'], `queued-state-${index}.txt`, { type: 'text/plain' })
+        ),
+      },
+    });
+
+    await waitFor(() => {
+      expect(uploadMutation).toHaveBeenCalledTimes(10);
+      expect(screen.getAllByTestId('queuedIcon')).toHaveLength(1);
+    });
+  });
+
+  test('shows failed icon with error tooltip on upload failure', async () => {
+    const uploadMutation = vi.fn(({ onError }) => {
+      onError({ message: 'Invalid file format' });
+      return Promise.resolve({});
+    });
+
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [new File(['content'], 'broken-file.txt', { type: 'text/plain' })],
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+    });
+
+    fireEvent.mouseOver(screen.getByTestId('failedIcon'));
+    await waitFor(() => {
+      expect(screen.getByText('Invalid file format')).toBeInTheDocument();
     });
   });
 

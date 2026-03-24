@@ -120,6 +120,19 @@ export const AssistantOptions = ({
     );
   };
 
+  const isRateLimitError = (uploadError: any) => {
+    const networkStatus = uploadError?.networkError?.statusCode || uploadError?.networkError?.status;
+    const graphQLErrorCode = uploadError?.graphQLErrors?.[0]?.extensions?.code;
+    const message = uploadError?.message || uploadError?.networkError?.message || '';
+
+    return (
+      networkStatus === 429 ||
+      graphQLErrorCode === 'TOO_MANY_REQUESTS' ||
+      message.includes('429') ||
+      message.toLowerCase().includes('too many requests')
+    );
+  };
+
   const cancelActiveRequests = () => {
     activeControllersRef.current.forEach((controller) => controller.abort());
     activeControllersRef.current = [];
@@ -144,19 +157,6 @@ export const AssistantOptions = ({
 
       signal.addEventListener('abort', onAbort, { once: true });
     });
-
-  const isRateLimitError = (uploadError: any) => {
-    const networkStatus = uploadError?.networkError?.statusCode || uploadError?.networkError?.status;
-    const graphQLErrorCode = uploadError?.graphQLErrors?.[0]?.extensions?.code;
-    const message = uploadError?.message || uploadError?.networkError?.message || '';
-
-    return (
-      networkStatus === 429 ||
-      graphQLErrorCode === 'TOO_MANY_REQUESTS' ||
-      message.includes('429') ||
-      message.toLowerCase().includes('too many requests')
-    );
-  };
 
   const updateLoadingFromStatuses = (sessionId: number) => {
     if (!isCurrentSessionRef(sessionId)) return;
