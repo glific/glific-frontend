@@ -88,6 +88,7 @@ export const AssistantOptions = ({
   const [error, setError] = useState(false);
   const uploadSessionRef = useRef(0);
   const activeControllersRef = useRef<AbortController[]>([]);
+  const uploadControllersRef = useRef<Map<string, AbortController>>(new Map());
   const pendingUploadQueueRef = useRef<
     Array<{ file: File; tempId: string; sessionId: number; resolveResult: (success: boolean) => void }>
   >([]);
@@ -136,6 +137,7 @@ export const AssistantOptions = ({
   const cancelActiveRequests = () => {
     activeControllersRef.current.forEach((controller) => controller.abort());
     activeControllersRef.current = [];
+    uploadControllersRef.current.clear();
   };
 
   const sleepWithAbort = (durationMs: number, signal: AbortSignal) =>
@@ -176,13 +178,15 @@ export const AssistantOptions = ({
   };
 
   const uploadFile = async (
-    file: File
+    file: File,
+    tempId: string
   ): Promise<{ uploadedFile: UploadedFile | null; errorMessage: string | null; aborted: boolean }> => {
     let uploadedFile: UploadedFile | null = null;
     let errorMessage: string | null = null;
     let aborted = false;
     const controller = new AbortController();
     activeControllersRef.current.push(controller);
+    uploadControllersRef.current.set(tempId, controller);
 
     const runAttempt = async () => {
       let attemptError: any = null;
@@ -196,8 +200,8 @@ export const AssistantOptions = ({
             signal: controller.signal,
           },
         },
-        onCompleted: ({ uploadFilesearchFile }) => {
-          uploadedData = uploadFilesearchFile;
+        onCompleted: (payload) => {
+          uploadedData = payload?.uploadFilesearchFile;
         },
         onError: (uploadError) => {
           attemptError = uploadError;
@@ -245,6 +249,7 @@ export const AssistantOptions = ({
       }
     } finally {
       activeControllersRef.current = activeControllersRef.current.filter((entry) => entry !== controller);
+      uploadControllersRef.current.delete(tempId);
     }
 
     return { uploadedFile, errorMessage, aborted };
@@ -279,7 +284,7 @@ export const AssistantOptions = ({
         )
       );
 
-      uploadFile(file)
+      uploadFile(file, tempId)
         .then(({ uploadedFile, errorMessage, aborted }) => {
           if (!isCurrentSessionRef(sessionId) || aborted) {
             resolveResult(false);
@@ -395,8 +400,20 @@ export const AssistantOptions = ({
   const isCurrentSessionRef = (sessionId: number) => uploadSessionRef.current === sessionId;
 
   const handleRemoveFile = (file: AssistantFile) => {
-    if (file.status === 'uploading') return;
-    setFiles(files.filter((fileItem) => fileItem.tempId !== file.tempId));
+    const { tempId } = file;
+
+    const removedQueueEntries = pendingUploadQueueRef.current.filter((queueItem) => queueItem.tempId === tempId);
+    pendingUploadQueueRef.current = pendingUploadQueueRef.current.filter((queueItem) => queueItem.tempId !== tempId);
+    removedQueueEntries.forEach(({ resolveResult }) => resolveResult(false));
+
+    const uploadController = uploadControllersRef.current.get(tempId);
+    if (uploadController) {
+      uploadController.abort();
+      uploadControllersRef.current.delete(tempId);
+    }
+
+    setFiles((prevFiles) => prevFiles.filter((fileItem) => fileItem.tempId !== tempId));
+    updateLoadingFromStatuses(uploadSessionRef.current);
   };
 
   const handleRetryFile = (file: AssistantFile) => {
