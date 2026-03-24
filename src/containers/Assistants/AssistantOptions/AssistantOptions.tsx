@@ -56,6 +56,8 @@ interface UploadedFile {
 const MAX_CONCURRENT_UPLOADS = 10;
 const MAX_RETRY_ATTEMPTS = 5;
 const INITIAL_BACKOFF_MS = 2000;
+const MAX_FILE_SIZE_MB = 20;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
@@ -292,6 +294,7 @@ export const AssistantOptions = ({
               fileSize: uploadedFile.fileSize,
               status: 'attached',
               tempId,
+              sourceFile: file,
             };
 
             setFiles((prevFiles) =>
@@ -348,19 +351,17 @@ export const AssistantOptions = ({
     const inputFiles = Array.from(event.target.files || []) as File[];
     if (inputFiles.length === 0) return;
 
-    const validFiles = inputFiles.filter((file) => {
-      if (file.size / (1024 * 1024) > 20) {
-        setNotification('File size should be less than 20MB', 'warning');
-        return false;
-      }
-      return true;
-    });
-
-    if (validFiles.length === 0) return;
+    const oversizedFiles = inputFiles.filter((file) => file.size > MAX_FILE_SIZE_BYTES);
+    if (oversizedFiles.length > 0) {
+      const oversizedFileNames = oversizedFiles.map((file) => file.name).join(', ');
+      const fileVerb = oversizedFiles.length > 1 ? 'are' : 'is';
+      setNotification(`${oversizedFileNames} ${fileVerb} above 20MB`, 'warning');
+      return;
+    }
 
     setLoading(true);
     const sessionId = uploadSessionRef.current;
-    const queuedFiles = validFiles.map((file, index) => ({
+    const queuedFiles = inputFiles.map((file, index) => ({
       filename: file.name,
       status: 'queued' as const,
       tempId: `${file.name}-${Date.now()}-${index}`,
@@ -435,7 +436,7 @@ export const AssistantOptions = ({
 
     const attachedFiles = files
       .filter((file) => file.status === 'attached')
-      .map(({ status, tempId, ...rest }) => rest)
+      .map(({ status, tempId, sourceFile, ...rest }) => rest)
       .filter(
         (file, index, allFiles) =>
           allFiles.findIndex(
@@ -453,9 +454,6 @@ export const AssistantOptions = ({
         mediaInfo: attachedFiles,
       },
       context: {
-        options: {
-          signal: controller.signal,
-        },
         fetchOptions: {
           signal: controller.signal,
         },
@@ -463,7 +461,7 @@ export const AssistantOptions = ({
       onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
         const updatedFiles = files
           .filter((file) => file.status === 'attached')
-          .map(({ status, tempId, ...rest }) => rest);
+          .map(({ status, tempId, sourceFile, ...rest }) => rest);
         setFiles(updatedFiles.map(mapInitialFileToAssistantFile));
         setFieldValue('initialFiles', updatedFiles);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
@@ -475,7 +473,6 @@ export const AssistantOptions = ({
         setShowUploadDialog(false);
       },
       onError: (error) => {
-        if (isAbortError(error)) return;
         setErrorMessage(error);
       },
     }).finally(() => {
@@ -517,6 +514,7 @@ export const AssistantOptions = ({
                 <input
                   data-testid="uploadFile"
                   type="file"
+                  accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
                   onChange={handleFileChange}
                   style={{ display: 'none' }}
                   multiple
@@ -534,48 +532,54 @@ export const AssistantOptions = ({
                     <FileIcon />
                   </div>
                   <div className={styles.FileName}>{file.filename}</div>
-                  <div className={styles.FileActions}>
-                    <div className={styles.ActionSlot}>
-                      {file.status === 'failed' && (
-                        <Tooltip title={file.sourceFile ? 'Retry upload' : 'Retry unavailable'} placement="top" arrow>
-                          <span>
-                            <IconButton
-                              data-testid="retryFile"
-                              className={styles.RetryButton}
-                              disabled={!file.sourceFile}
-                              onClick={() => handleRetryFile(file)}
-                            >
-                              <ReplayIcon className={styles.RetryIcon} fontSize="small" />
-                            </IconButton>
-                          </span>
-                        </Tooltip>
-                      )}
+                  {!isLegacyVectorStore && (
+                    <div className={styles.FileActions}>
+                      <div className={styles.ActionSlot}>
+                        {file.status === 'failed' && (
+                          <Tooltip title={file.sourceFile ? 'Retry upload' : 'Retry unavailable'} placement="top" arrow>
+                            <span>
+                              <IconButton
+                                data-testid="retryFile"
+                                className={styles.RetryButton}
+                                disabled={!file.sourceFile}
+                                onClick={() => handleRetryFile(file)}
+                              >
+                                <ReplayIcon className={styles.RetryIcon} fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        )}
+                      </div>
+                      <div className={styles.ActionSlot}>
+                        {file.sourceFile && (
+                          <>
+                            {file.status === 'uploading' && <CircularProgress data-testid="uploadingIcon" size={20} />}
+                            {file.status === 'queued' && (
+                              <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
+                            )}
+                            {file.status === 'failed' && (
+                              <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
+                                <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
+                              </Tooltip>
+                            )}
+                            {file.status === 'attached' && (
+                              <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
+                            )}
+                          </>
+                        )}
+                      </div>
+                      <div className={styles.ActionSlot}>
+                        <IconButton
+                          className={styles.CloseButton}
+                          data-testid="deleteFile"
+                          disabled={file.status === 'uploading'}
+                          onClick={() => handleRemoveFile(file)}
+                        >
+                          <CrossIcon />
+                        </IconButton>
+                      </div>
                     </div>
-                    <div className={styles.ActionSlot}>
-                      {file.status === 'uploading' && <CircularProgress data-testid="uploadingIcon" size={20} />}
-                      {file.status === 'queued' && (
-                        <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
-                      )}
-                      {file.status === 'failed' && (
-                        <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                          <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
-                        </Tooltip>
-                      )}
-                      {file.status === 'attached' && (
-                        <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
-                      )}
-                    </div>
-                    <div className={styles.ActionSlot}>
-                      <IconButton
-                        className={styles.CloseButton}
-                        data-testid="deleteFile"
-                        disabled={file.status === 'uploading'}
-                        onClick={() => handleRemoveFile(file)}
-                      >
-                        <CrossIcon />
-                      </IconButton>
-                    </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>

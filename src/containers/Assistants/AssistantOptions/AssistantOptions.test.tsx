@@ -385,6 +385,35 @@ describe('AssistantOptions upload queue behavior', () => {
     expect(createKnowledgeBaseMutation).not.toHaveBeenCalled();
   });
 
+  test('shows only close action for already saved files', async () => {
+    setupMutations();
+    renderAssistantOptions({
+      formikValues: {
+        ...baseProps.formikValues,
+        initialFiles: [
+          {
+            fileId: 'existing-file-id',
+            filename: 'existing-file.txt',
+            uploadedAt: '2026-01-01',
+            fileSize: 10,
+          },
+        ],
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    await waitFor(() => {
+      expect(screen.getByText('existing-file.txt')).toBeInTheDocument();
+      expect(screen.getByTestId('deleteFile')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('attachedIcon')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('queuedIcon')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('failedIcon')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('retryFile')).not.toBeInTheDocument();
+  });
+
   test('allows retrying a failed file while another upload is still in progress', async () => {
     const uploadMutation = vi.fn(({ variables, onCompleted, onError }) => {
       const fileName = variables.media.name as string;
@@ -436,5 +465,29 @@ describe('AssistantOptions upload queue behavior', () => {
     await waitFor(() => {
       expect(uploadMutation).toHaveBeenCalledTimes(3);
     });
+  });
+
+  test('rejects entire selection when any file is above 20MB', async () => {
+    const uploadMutation = vi.fn(() => Promise.resolve({}));
+    setupMutations({ uploadImpl: uploadMutation });
+    renderAssistantOptions();
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    const validFile = new File(['content'], 'valid-file.txt', { type: 'text/plain' });
+    const largeFile = new File(['content'], 'large-file.txt', { type: 'text/plain' });
+    Object.defineProperty(largeFile, 'size', { value: 21 * 1024 * 1024 });
+
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [validFile, largeFile],
+      },
+    });
+
+    await waitFor(() => {
+      expect(setNotificationSpy).toHaveBeenCalledWith('large-file.txt is above 20MB', 'warning');
+    });
+    expect(uploadMutation).not.toHaveBeenCalled();
+    expect(screen.queryByText('valid-file.txt')).not.toBeInTheDocument();
+    expect(screen.queryByText('large-file.txt')).not.toBeInTheDocument();
   });
 });

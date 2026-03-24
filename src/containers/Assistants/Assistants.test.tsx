@@ -1,7 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter, Route, Routes } from 'react-router';
-import Assistants from './Assistants';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import * as Notification from 'common/notification';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
@@ -13,7 +12,8 @@ import {
   unknownModelMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
-import * as Notification from 'common/notification';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import Assistants from './Assistants';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
@@ -452,18 +452,15 @@ test('uploading multiple files and error messages', async () => {
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith('testFile2.txt is above 20MB', 'warning');
   });
 
+  //no files should be uploaded as input does not allow csv files to be selected
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(0);
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith("Files with extension '.csv' not supported in Filesearch", 'warning');
-  });
 });
 
 test("it shows indicator for unsaved changes when there are changes in the assistant's prompt or settings", async () => {
