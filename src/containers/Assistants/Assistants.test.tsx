@@ -457,7 +457,7 @@ test('uploading multiple files and error messages', async () => {
 
   //no files should be uploaded as input does not allow csv files to be selected
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(0);
+    expect(screen.queryByText('testFile.csv')).not.toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
