@@ -5,6 +5,11 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import Configure from './Configure';
+import {
+  computeFieldNames,
+  convertFlowJSONToFormBuilder,
+  convertFormBuilderToFlowJSON,
+} from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
 
 import { WHATSAPP_FORM_MOCKS, validScreen } from 'mocks/WhatsAppForm';
 
@@ -1092,6 +1097,69 @@ describe('<Configure />', () => {
       expect(globalFormRef).toBeDefined();
     });
   });
+
+  test('unsupported component shows read-only message in form builder', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const testJson = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'SCREEN_ONE',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [
+                  {
+                    type: 'EmbeddedLink',
+                    text: 'Terms & Conditions',
+                    'on-click-action': { name: 'open_url', url: 'https://example.com/terms' },
+                  },
+                  {
+                    type: 'Footer',
+                    label: 'Continue',
+                    'on-click-action': { name: 'complete', payload: {} },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(testJson) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+    fireEvent.click(screen.getByTestId('json-viewer-close'));
+
+    await waitFor(() => expect(screen.getByTestId('content-toggle-expand')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByTestId('content-toggle-expand'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'This component (EmbeddedLink) is not editable in the form builder but will be preserved in the JSON.'
+        )
+      ).toBeInTheDocument();
+    });
+  });
 });
 
 // ── Helpers for validateFlowJson tests ───────────────────────────────────────
@@ -1151,18 +1219,91 @@ describe('validateFlowJson — all phases', () => {
     );
   });
 
-  test('phase 3 — first layout child must be a Form', async () => {
+  test('phase 3 — layout without footer shows error (Form is optional)', async () => {
     await setJsonAndExpectError(
       flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'TextBody', text: 'Hello' }] } })]),
-      'First layout child must be a Form component'
+      'Must have exactly one Footer component'
     );
   });
 
-  test('phase 3 — Form component must have children', async () => {
+  test('phase 3 — Form with no children has no footer, shows error', async () => {
     await setJsonAndExpectError(
       flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'Form', name: 'flow_path' }] } })]),
-      'Form component must have children'
+      'Must have exactly one Footer component'
     );
+  });
+
+  test('phase 3 — CalendarPicker inside Form throws layout placement error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                {
+                  type: 'CalendarPicker',
+                  name: 'appt_date',
+                  label: 'Pick a date',
+                  required: true,
+                  mode: 'single',
+                },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "'CalendarPicker' must be a direct child of SingleColumnLayout, not inside a Form component"
+    );
+  });
+
+  test('phase 3 — CalendarPicker as direct layout child with Form+Footer is valid', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const validCalendarScreen = flow([
+      {
+        id: 'screen_one',
+        title: 'Screen 1',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            {
+              type: 'CalendarPicker',
+              name: 'appt_date',
+              label: {
+                'start-date': 'Pick a start date',
+                'end-date': 'Pick an end date',
+              },
+              required: true,
+              mode: 'single',
+            },
+            formWith([footer({ name: 'complete', payload: {} })]),
+          ],
+        },
+      },
+    ]);
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(validCalendarScreen) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    fireEvent.click(screen.getByText('Field Names'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen 1 · CalendarPicker · appt_date')).toBeInTheDocument();
+    });
   });
 
   // ── Phase 4: Footer & action validation ──────────────────────────────────
@@ -1380,6 +1521,45 @@ describe('validateFlowJson — all phases', () => {
     );
   });
 
+  test('phase 5 — two CalendarPickers with the same name triggers duplicate error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        {
+          ...validScreen(),
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick a date', required: true, mode: 'single' },
+              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick another date', required: false, mode: 'single' },
+              formWith([footer({ name: 'complete', payload: {} })]),
+            ],
+          },
+        },
+      ]),
+      "Duplicate component name 'appt_date'"
+    );
+  });
+
+  // ── Phase 5: Unknown component type ──────────────────────────────────────
+  test('phase 5 — unknown component type triggers validation error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                { type: 'SuperWidget', name: 'widget_1', label: 'Widget' },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "Unknown component type 'SuperWidget'"
+    );
+  });
+
   // ── Phase 6: Data property validation ────────────────────────────────────
   test('phase 6 — data property missing __example__', async () => {
     await setJsonAndExpectError(
@@ -1393,5 +1573,387 @@ describe('validateFlowJson — all phases', () => {
       flow([validScreen({ data: { field_name: { __example__: 'Example' } } })]),
       "is missing 'type'"
     );
+  });
+});
+
+// ── Round-trip preservation tests ────────────────────────────────────────────
+
+describe('round-trip preservation — unsupported components & extra attributes', () => {
+  const makeFlowJSON = (formChildren: object[]) => ({
+    version: '7.3',
+    screens: [
+      {
+        id: 'screen_one',
+        title: 'Screen 1',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            {
+              type: 'Form',
+              name: 'flow_path',
+              children: [
+                ...formChildren,
+                {
+                  type: 'Footer',
+                  label: 'Continue',
+                  'on-click-action': { name: 'complete', payload: {} },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  });
+
+  test('unsupported component (EmbeddedLink) is preserved verbatim through round-trip', () => {
+    const embeddedLink = {
+      type: 'EmbeddedLink',
+      text: 'Terms & Conditions',
+      'on-click-action': {
+        name: 'open_url',
+        url: 'https://example.com/terms',
+      },
+    };
+
+    const flowJSON = makeFlowJSON([embeddedLink]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    // Should be parsed as Unsupported type with rawComponent
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.name).toBe('EmbeddedLink');
+    expect(unsupportedItem!.data.rawComponent).toEqual(embeddedLink);
+
+    // Round-trip back to JSON
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputComponent = outputChildren.find((c: any) => c.type === 'EmbeddedLink');
+
+    expect(outputComponent).toEqual(embeddedLink);
+  });
+
+  test('unsupported component (PhotoPicker) is preserved verbatim through round-trip', () => {
+    const photoPicker = {
+      type: 'PhotoPicker',
+      name: 'user_photo',
+      label: 'Upload Photo',
+      description: 'Please upload your photo',
+      'min-uploaded-photos': 1,
+      'max-uploaded-photos': 3,
+    };
+
+    const flowJSON = makeFlowJSON([photoPicker]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.data.rawComponent).toEqual(photoPicker);
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children;
+    const outputComponent = outputChildren.find((c: any) => c.type === 'PhotoPicker');
+
+    expect(outputComponent).toEqual(photoPicker);
+  });
+
+  test('DatePicker extra attributes (min-date, max-date, unavailable-dates) are preserved', () => {
+    const datePicker = {
+      type: 'DatePicker',
+      name: 'appointment_date',
+      label: 'Pick a date',
+      required: true,
+      'helper-text': 'Select your appointment date',
+      'min-date': '1735689600000',
+      'max-date': '1767225600000',
+      'unavailable-dates': ['1748736000000', '1749340800000'],
+    };
+
+    const flowJSON = makeFlowJSON([datePicker]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const dateItem = screens[0].content.find((item) => item.name === 'Date Picker');
+    expect(dateItem).toBeDefined();
+    expect(dateItem!.data.extraAttributes).toEqual({
+      'min-date': '1735689600000',
+      'max-date': '1767225600000',
+      'unavailable-dates': ['1748736000000', '1749340800000'],
+    });
+
+    // Round-trip back to JSON
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputDatePicker = outputChildren.find((c: any) => c.type === 'DatePicker');
+
+    expect(outputDatePicker['min-date']).toBe('1735689600000');
+    expect(outputDatePicker['max-date']).toBe('1767225600000');
+    expect(outputDatePicker['unavailable-dates']).toEqual(['1748736000000', '1749340800000']);
+  });
+
+  test('RadioButtonsGroup extra attributes are preserved', () => {
+    const radioGroup = {
+      type: 'RadioButtonsGroup',
+      name: 'color_choice',
+      label: 'Pick a color',
+      required: true,
+      'data-source': [
+        { id: '1', title: 'Red' },
+        { id: '2', title: 'Blue' },
+      ],
+      'init-value': '1',
+      'on-select-action': { name: 'update_data', payload: { selected: '${form.color_choice}' } },
+    };
+
+    const flowJSON = makeFlowJSON([radioGroup]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const radioItem = screens[0].content.find((item) => item.name === 'Single Choice');
+    expect(radioItem).toBeDefined();
+    expect(radioItem!.data.extraAttributes).toEqual({
+      'init-value': '1',
+      'on-select-action': { name: 'update_data', payload: { selected: '${form.color_choice}' } },
+    });
+
+    // Round-trip back to JSON
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputRadio = outputChildren.find((c: any) => c.type === 'RadioButtonsGroup');
+
+    expect(outputRadio['init-value']).toBe('1');
+    expect(outputRadio['on-select-action']).toEqual(radioGroup['on-select-action']);
+  });
+
+  test('CheckboxGroup extra attributes are preserved', () => {
+    const checkboxGroup = {
+      type: 'CheckboxGroup',
+      name: 'toppings',
+      label: 'Select toppings',
+      required: false,
+      'data-source': [
+        { id: '1', title: 'Cheese' },
+        { id: '2', title: 'Pepperoni' },
+      ],
+      'min-selected-items': 1,
+      'max-selected-items': 2,
+    };
+
+    const flowJSON = makeFlowJSON([checkboxGroup]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const checkboxItem = screens[0].content.find((item) => item.name === 'Multiple Choice');
+    expect(checkboxItem).toBeDefined();
+    expect(checkboxItem!.data.extraAttributes).toEqual({
+      'min-selected-items': 1,
+      'max-selected-items': 2,
+    });
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputCheckbox = outputChildren.find((c: any) => c.type === 'CheckboxGroup');
+
+    expect(outputCheckbox['min-selected-items']).toBe(1);
+    expect(outputCheckbox['max-selected-items']).toBe(2);
+  });
+
+  test('Dropdown extra attributes are preserved', () => {
+    const dropdown = {
+      type: 'Dropdown',
+      name: 'country',
+      label: 'Select country',
+      required: true,
+      'data-source': [
+        { id: 'us', title: 'United States' },
+        { id: 'uk', title: 'United Kingdom' },
+      ],
+      'init-value': 'us',
+      enabled: false,
+    };
+
+    const flowJSON = makeFlowJSON([dropdown]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const dropdownItem = screens[0].content.find((item) => item.name === 'Dropdown');
+    expect(dropdownItem).toBeDefined();
+    expect(dropdownItem!.data.extraAttributes).toEqual({
+      'init-value': 'us',
+      enabled: false,
+    });
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputDropdown = outputChildren.find((c: any) => c.type === 'Dropdown');
+
+    expect(outputDropdown['init-value']).toBe('us');
+    expect(outputDropdown.enabled).toBe(false);
+  });
+
+  test('supported component without extra attributes has no extraAttributes field', () => {
+    const datePicker = {
+      type: 'DatePicker',
+      name: 'basic_date',
+      label: 'Pick date',
+      required: false,
+    };
+
+    const flowJSON = makeFlowJSON([datePicker]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const dateItem = screens[0].content.find((item) => item.name === 'Date Picker');
+    expect(dateItem).toBeDefined();
+    expect(dateItem!.data.extraAttributes).toBeUndefined();
+  });
+
+  test('CalendarPicker as direct layout child is preserved verbatim through round-trip', () => {
+    const calendarPicker = {
+      type: 'CalendarPicker',
+      name: 'appt_date',
+      label: 'Pick a date',
+      required: true,
+      mode: 'range',
+      'min-date': '2024-10-21',
+      'max-date': '2025-12-12',
+    };
+
+    // Flow where CalendarPicker is a direct layout child (not inside Form)
+    const flowJSON = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              calendarPicker,
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [{ type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } }],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.name).toBe('CalendarPicker');
+    expect(unsupportedItem!.data.rawComponent).toEqual(calendarPicker);
+
+    // Round-trip: CalendarPicker must be a direct child of layout.children, NOT inside Form
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const layoutChildren = outputJSON.screens[0].layout.children;
+    const calendarInLayout = layoutChildren.find((c: any) => c.type === 'CalendarPicker');
+    expect(calendarInLayout).toEqual(calendarPicker);
+
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const calendarInForm = formComponent?.children?.find((c: any) => c.type === 'CalendarPicker');
+    expect(calendarInForm).toBeUndefined();
+  });
+
+  test('DocumentPicker as direct layout child is preserved verbatim through round-trip', () => {
+    const documentPicker = {
+      type: 'DocumentPicker',
+      name: 'user_doc',
+      label: 'Upload Document',
+      required: false,
+      'max-file-size-kb': 5120,
+    };
+
+    const flowJSON = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              documentPicker,
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [{ type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } }],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.data.rawComponent).toEqual(documentPicker);
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const layoutChildren = outputJSON.screens[0].layout.children;
+    const docInLayout = layoutChildren.find((c: any) => c.type === 'DocumentPicker');
+    expect(docInLayout).toEqual(documentPicker);
+
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const docInForm = formComponent?.children?.find((c: any) => c.type === 'DocumentPicker');
+    expect(docInForm).toBeUndefined();
+  });
+
+  test('mixed supported, unsupported, and extra-attribute components all survive round-trip', () => {
+    const textBody = { type: 'TextBody', text: 'Welcome message' };
+    const embeddedLink = {
+      type: 'EmbeddedLink',
+      text: 'Privacy Policy',
+      'on-click-action': { name: 'open_url', url: 'https://example.com/privacy' },
+    };
+    const datePickerWithExtras = {
+      type: 'DatePicker',
+      name: 'visit_date',
+      label: 'Visit Date',
+      required: true,
+      'min-date': '1735689600000',
+    };
+
+    const flowJSON = makeFlowJSON([textBody, embeddedLink, datePickerWithExtras]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    expect(screens[0].content).toHaveLength(3);
+    expect(screens[0].content[0].type).toBe('Text');
+    expect(screens[0].content[1].type).toBe('Unsupported');
+    expect(screens[0].content[2].type).toBe('Text Answer');
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+
+    // TextBody preserved
+    expect(outputChildren.find((c: any) => c.type === 'TextBody')).toBeDefined();
+    // EmbeddedLink preserved verbatim
+    expect(outputChildren.find((c: any) => c.type === 'EmbeddedLink')).toEqual(embeddedLink);
+    // DatePicker with min-date preserved
+    const outDate = outputChildren.find((c: any) => c.type === 'DatePicker');
+    expect(outDate['min-date']).toBe('1735689600000');
+  });
+
+  test('duplicate Unsupported rawComponent names get _1, _2 suffixes like Text Answer/Selection', () => {
+    const flowJSON = makeFlowJSON([
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo A', 'on-click-action': { name: 'open_url', url: 'https://a.com' } },
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo B', 'on-click-action': { name: 'open_url', url: 'https://b.com' } },
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo C', 'on-click-action': { name: 'open_url', url: 'https://c.com' } },
+    ]);
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+    const fieldNameMap = computeFieldNames(screens);
+
+    const ids = screens[0].content.map((item) => item.id);
+    expect(fieldNameMap.get(ids[0])).toBe('promo');
+    expect(fieldNameMap.get(ids[1])).toBe('promo_1');
+    expect(fieldNameMap.get(ids[2])).toBe('promo_2');
   });
 });
