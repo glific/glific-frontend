@@ -854,4 +854,496 @@ describe('AssistantOptions upload queue behavior', () => {
     expect(screen.queryByText('valid-file.txt')).not.toBeInTheDocument();
     expect(screen.queryByText('large-file.txt')).not.toBeInTheDocument();
   });
+
+  test('keeps file uploading state when retry backoff sleep is aborted immediately', async () => {
+    const originalAbortController = globalThis.AbortController;
+
+    class ImmediatelyAbortedAbortController {
+      public signal: AbortSignal;
+      constructor() {
+        const ac = new originalAbortController();
+        ac.abort();
+        this.signal = ac.signal;
+      }
+      // Keep the interface compatible; abort may be called by the component.
+      abort() {
+        // no-op; signal is already aborted by construction
+      }
+    }
+
+    (globalThis as any).AbortController = ImmediatelyAbortedAbortController;
+
+    try {
+      const rateLimitError = new Error('429 Too Many Requests');
+      (rateLimitError as any).networkError = { statusCode: 429 };
+
+      const mocks = [
+        {
+          request: {
+            query: UPLOAD_FILE_TO_KAAPI,
+          },
+          variableMatcher: (variables: any) => variables?.media?.name === 'immediate-abort-rate-limit.txt',
+          error: rateLimitError,
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: {
+          files: [new File(['content'], 'immediate-abort-rate-limit.txt', { type: 'text/plain' })],
+        },
+      });
+
+      await waitFor(() => {
+        // Since the retry backoff is aborted before it can succeed,
+        // the component leaves the file in the "uploading" state.
+        expect(screen.getAllByTestId('uploadingIcon').length).toBeGreaterThan(0);
+      });
+      expect(screen.queryByTestId('failedIcon')).not.toBeInTheDocument();
+    } finally {
+      (globalThis as any).AbortController = originalAbortController;
+    }
+  });
+
+  test('does not transition file to failed when upload is aborted during retry attempts', async () => {
+    const abortError = new Error('Aborted');
+    (abortError as any).name = 'AbortError';
+
+    const mocks = [
+      {
+        request: { query: UPLOAD_FILE_TO_KAAPI },
+        variableMatcher: (variables: any) => variables?.media?.name === 'upload-abort-attempt.txt',
+        error: abortError,
+      },
+    ];
+
+    render(
+      <MockedProvider mocks={mocks}>
+        <AssistantOptions {...baseProps} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [new File(['content'], 'upload-abort-attempt.txt', { type: 'text/plain' })],
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('uploadingIcon').length).toBeGreaterThan(0);
+    });
+    expect(screen.queryByTestId('failedIcon')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('attachedIcon')).not.toBeInTheDocument();
+  });
+
+  test('shows upload error tooltip when an abort-like error is not recognized as AbortError', async () => {
+    const originalAbortController = globalThis.AbortController;
+    const originalDOMException = globalThis.DOMException;
+
+    class ImmediatelyAbortedAbortController {
+      public signal: AbortSignal;
+      constructor() {
+        const ac = new originalAbortController();
+        ac.abort();
+        this.signal = ac.signal;
+      }
+      abort() {
+        // no-op
+      }
+    }
+
+    class FakeDOMException extends Error {
+      name = 'NotAbortError';
+      constructor(message: string, _unused: string) {
+        super(message);
+      }
+    }
+
+    (globalThis as any).AbortController = ImmediatelyAbortedAbortController;
+    (globalThis as any).DOMException = FakeDOMException;
+
+    try {
+      const rateLimitError = new Error('429 Too Many Requests');
+      (rateLimitError as any).networkError = { statusCode: 429 };
+
+      const mocks = [
+        {
+          request: { query: UPLOAD_FILE_TO_KAAPI },
+          variableMatcher: (variables: any) => variables?.media?.name === 'abort-not-recognized.txt',
+          error: rateLimitError,
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: {
+          files: [new File(['content'], 'abort-not-recognized.txt', { type: 'text/plain' })],
+        },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+      });
+
+      fireEvent.mouseOver(screen.getByTestId('failedIcon'));
+      await waitFor(() => {
+        expect(screen.getByText('Aborted')).toBeInTheDocument();
+      });
+    } finally {
+      (globalThis as any).AbortController = originalAbortController;
+      (globalThis as any).DOMException = originalDOMException;
+    }
+  });
+
+  test('marks file as failed and shows tooltip when uploadFile resolves without an uploadedFile', async () => {
+    const mocks = [
+      {
+        request: { query: UPLOAD_FILE_TO_KAAPI },
+        variableMatcher: (variables: any) => variables?.media?.name === 'then-failed.txt',
+        error: new Error('then-failed-error'),
+      },
+    ];
+
+    render(
+      <MockedProvider mocks={mocks}>
+        <AssistantOptions {...baseProps} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: {
+        files: [new File(['content'], 'then-failed.txt', { type: 'text/plain' })],
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+    });
+
+    fireEvent.mouseOver(screen.getByTestId('failedIcon'));
+    await waitFor(() => {
+      expect(screen.getByText('then-failed-error')).toBeInTheDocument();
+    });
+  });
+
+  test('marks file as failed when uploadFile rejects and sets tooltip from upload error', async () => {
+    const originalMapDelete = Map.prototype.delete;
+
+    vi.spyOn(Map.prototype, 'delete').mockImplementation(function (this: Map<any, any>, key: any) {
+      if (typeof key === 'string' && key.includes('catch-reject-delete.txt')) {
+        throw new Error('map-delete-explosion');
+      }
+      return originalMapDelete.call(this, key);
+    });
+
+    const mocks = [
+      {
+        request: { query: UPLOAD_FILE_TO_KAAPI },
+        variableMatcher: (variables: any) => variables?.media?.name === 'catch-reject-delete.txt',
+        result: {
+          data: {
+            uploadFilesearchFile: {
+              fileId: 'id-catch-reject-delete.txt',
+              filename: 'catch-reject-delete.txt',
+              uploadedAt: '2026-01-01',
+              fileSize: 12,
+            },
+          },
+        },
+      },
+    ];
+
+    try {
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: {
+          files: [new File(['content'], 'catch-reject-delete.txt', { type: 'text/plain' })],
+        },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+      });
+
+      fireEvent.mouseOver(screen.getByTestId('failedIcon'));
+      await waitFor(() => {
+        expect(screen.getByText('map-delete-explosion')).toBeInTheDocument();
+      });
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  test('does not mark file as failed when uploadFile rejects with AbortError', async () => {
+    const originalMapDelete = Map.prototype.delete;
+
+    const abortError = new Error('Aborted');
+    (abortError as any).name = 'AbortError';
+
+    vi.spyOn(Map.prototype, 'delete').mockImplementation(function (this: Map<any, any>, key: any) {
+      if (typeof key === 'string' && key.includes('catch-abort-early-return.txt')) {
+        throw abortError;
+      }
+      return originalMapDelete.call(this, key);
+    });
+
+    const mocks = [
+      {
+        request: { query: UPLOAD_FILE_TO_KAAPI },
+        variableMatcher: (variables: any) => variables?.media?.name === 'catch-abort-early-return.txt',
+        result: {
+          data: {
+            uploadFilesearchFile: {
+              fileId: 'id-catch-abort-early-return.txt',
+              filename: 'catch-abort-early-return.txt',
+              uploadedAt: '2026-01-01',
+              fileSize: 12,
+            },
+          },
+        },
+      },
+    ];
+
+    try {
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: { files: [new File(['content'], 'catch-abort-early-return.txt', { type: 'text/plain' })] },
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('uploadingIcon').length).toBeGreaterThan(0);
+      });
+      expect(screen.queryByTestId('failedIcon')).not.toBeInTheDocument();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  test('falls back to default failure message when upload error has no message', async () => {
+    const originalMapDelete = Map.prototype.delete;
+
+    vi.spyOn(Map.prototype, 'delete').mockImplementation(function (this: Map<any, any>, key: any) {
+      if (typeof key === 'string' && key.includes('catch-fallback-default-error.txt')) {
+        // Throw a non-Error object without a `message` property so the fallback is used.
+        throw { name: 'SomeError' };
+      }
+      return originalMapDelete.call(this, key);
+    });
+
+    const mocks = [
+      {
+        request: { query: UPLOAD_FILE_TO_KAAPI },
+        variableMatcher: (variables: any) => variables?.media?.name === 'catch-fallback-default-error.txt',
+        result: {
+          data: {
+            uploadFilesearchFile: {
+              fileId: 'id-catch-fallback-default-error.txt',
+              filename: 'catch-fallback-default-error.txt',
+              uploadedAt: '2026-01-01',
+              fileSize: 12,
+            },
+          },
+        },
+      },
+    ];
+
+    try {
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: { files: [new File(['content'], 'catch-fallback-default-error.txt', { type: 'text/plain' })] },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+      });
+
+      fireEvent.mouseOver(screen.getByTestId('failedIcon'));
+      await waitFor(() => {
+        expect(screen.getByText('Failed to upload file')).toBeInTheDocument();
+      });
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  test('does not log enqueue errors when Promise.all rejects with AbortError', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const abortError = new Error('Aborted');
+    (abortError as any).name = 'AbortError';
+
+    const originalPromiseAll = Promise.all;
+    (Promise as any).all = () => Promise.reject(abortError);
+
+    try {
+      const mocks = [
+        {
+          request: { query: UPLOAD_FILE_TO_KAAPI },
+          variableMatcher: (variables: any) => variables?.media?.name === 'abort-catch-console.txt',
+          result: {
+            data: {
+              uploadFilesearchFile: {
+                fileId: 'id-abort-catch-console.txt',
+                filename: 'abort-catch-console.txt',
+                uploadedAt: '2026-01-01',
+                fileSize: 12,
+              },
+            },
+          },
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: {
+          files: [new File(['content'], 'abort-catch-console.txt', { type: 'text/plain' })],
+        },
+      });
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+      });
+    } finally {
+      vi.restoreAllMocks();
+      Promise.all = originalPromiseAll;
+    }
+  });
+
+  test('logs enqueue errors when Promise.all rejects with a non-abort error', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const error = new Error('queue-push-broke');
+
+    const originalPromiseAll = Promise.all;
+    (Promise as any).all = () => Promise.reject(error);
+
+    try {
+      const mocks = [
+        {
+          request: { query: UPLOAD_FILE_TO_KAAPI },
+          variableMatcher: (variables: any) => variables?.media?.name === 'console-catch-nonabort.txt',
+          result: {
+            data: {
+              uploadFilesearchFile: {
+                fileId: 'id-console-catch-nonabort.txt',
+                filename: 'console-catch-nonabort.txt',
+                uploadedAt: '2026-01-01',
+                fileSize: 12,
+              },
+            },
+          },
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <AssistantOptions {...baseProps} />
+        </MockedProvider>
+      );
+
+      fireEvent.click(screen.getByTestId('addFiles'));
+      fireEvent.change(screen.getByTestId('uploadFile'), {
+        target: {
+          files: [new File(['content'], 'console-catch-nonabort.txt', { type: 'text/plain' })],
+        },
+      });
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalled();
+        expect(consoleErrorSpy.mock.calls[0][0]).toContain('Error uploading files:');
+      });
+    } finally {
+      vi.restoreAllMocks();
+      Promise.all = originalPromiseAll;
+    }
+  });
+
+  test('aborts the upload controller when a file is removed and its controller entry still exists', async () => {
+    const fileName = 'remove-controller-entry.txt';
+    const abortSpy = vi.spyOn(AbortController.prototype, 'abort');
+
+    // Prevent uploadFile's cleanup from removing the controller entry from the ref map.
+    // This lets handleRemoveFile find uploadController even when the row is no longer in "uploading".
+    const originalMapDelete = Map.prototype.delete;
+    vi.spyOn(Map.prototype, 'delete').mockImplementation(function (this: Map<any, any>, key: any) {
+      if (typeof key === 'string' && key.includes(fileName)) {
+        return true; // pretend deletion succeeded, but keep the entry
+      }
+      return originalMapDelete.call(this, key);
+    });
+
+    const mocks = [
+      {
+        request: { query: UPLOAD_FILE_TO_KAAPI },
+        variableMatcher: (variables: any) => variables?.media?.name === fileName,
+        error: new Error('upload-failure'),
+      },
+    ];
+
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <AssistantOptions {...baseProps} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+    fireEvent.change(screen.getByTestId('uploadFile'), {
+      target: { files: [new File(['content'], fileName, { type: 'text/plain' })] },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(fileName)).toBeInTheDocument();
+      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
+    });
+
+    const fileItem = screen.getByText(fileName).closest('[data-testid="fileItem"]')!;
+    const deleteButton = fileItem.querySelector('[data-testid="deleteFile"]') as HTMLButtonElement;
+    expect(deleteButton).not.toBeDisabled();
+
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      expect(screen.queryByText(fileName)).not.toBeInTheDocument();
+    });
+
+    expect(abortSpy).toHaveBeenCalled();
+    vi.restoreAllMocks();
+  });
 });
