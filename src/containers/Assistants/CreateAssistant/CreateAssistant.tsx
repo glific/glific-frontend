@@ -77,9 +77,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     name: Yup.string().required('Name is required'),
     model: Yup.object().nullable().required('Model is required'),
     instructions: Yup.string().required('Instructions are required'),
-    knowledgeBaseVersionId: isEditing
-      ? Yup.string()
-      : Yup.string().required('Knowledge base is required. Please upload files first.'),
+    knowledgeBaseVersionId: Yup.string(),
   });
 
   const handleCreate = (values: typeof initialValues) => {
