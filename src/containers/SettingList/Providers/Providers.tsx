@@ -102,7 +102,7 @@ export const Providers = () => {
     });
     object = {
       shortcode: type,
-      isActive: payload.isActive,
+      isActive: type === 'gupshup' ? true : payload.isActive,
       keys: JSON.stringify(keysObj),
       secrets: JSON.stringify(secretsObj),
     };
@@ -132,8 +132,12 @@ export const Providers = () => {
     // reset validation to empty
     resetValidation();
 
-    const formField: any = [
-      {
+    const formField: any = [];
+    let orderedKeys;
+    if (type === 'gupshup') {
+      orderedKeys = GUPSHUP_CREDENTIAL_FIELDS;
+    } else {
+      formField.push({
         component: Checkbox,
         name: 'isActive',
         title: (
@@ -141,12 +145,7 @@ export const Providers = () => {
             Active?
           </Typography>
         ),
-      },
-    ];
-    let orderedKeys;
-    if (type === 'gupshup') {
-      orderedKeys = GUPSHUP_CREDENTIAL_FIELDS;
-    } else {
+      });
       orderedKeys = Object.keys(fields);
     }
 
