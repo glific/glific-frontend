@@ -25,11 +25,11 @@ export const createAssistantOptionsMutationMocks = ({
       },
       variableMatcher: () => true,
       maxUsageCount: Number.POSITIVE_INFINITY,
-      result: async (variables: Record<string, unknown>) => {
+      result: (variables: Record<string, unknown>) => {
         const mutationVariables = (variables as any)?.variables || variables;
         let completedPayload: any;
         let erroredPayload: any;
-        await uploadMutation({
+        uploadMutation({
           variables: mutationVariables,
           onCompleted: (payload: any) => {
             completedPayload = payload;
@@ -60,11 +60,11 @@ export const createAssistantOptionsMutationMocks = ({
       },
       variableMatcher: () => true,
       maxUsageCount: Number.POSITIVE_INFINITY,
-      result: async (variables: Record<string, unknown>) => {
+      result: (variables: Record<string, unknown>) => {
         const mutationVariables = (variables as any)?.variables || variables;
         let completedPayload: any;
         let erroredPayload: any;
-        await createKnowledgeBaseMutation({
+        createKnowledgeBaseMutation({
           variables: mutationVariables,
           onCompleted: (payload: any) => {
             completedPayload = payload;

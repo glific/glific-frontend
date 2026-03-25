@@ -16,7 +16,6 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import Assistants from './Assistants';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
-const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
 beforeEach(() => {
   vi.clearAllMocks();
