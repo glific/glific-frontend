@@ -5,6 +5,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
+  cloneCompletedMocks,
+  cloneErrorMocks,
+  cloneFailedMocks,
+  clonePendingMocks,
   emptyMocks,
   errorMocks,
   legacyVectorStoreMocks,
@@ -614,5 +618,147 @@ test('closing a knowledge base dialog with no files should revert to the origina
 
   await waitFor(() => {
     expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+});
+
+test('it shows Clone Assistant button when cloneStatus is pending', async () => {
+  render(assistantsComponent(clonePendingMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+    expect(screen.getByTestId('cloneAssistant')).toHaveTextContent('Clone Assistant');
+    expect(screen.getByTestId('cloneAssistant')).not.toBeDisabled();
+  });
+});
+
+test('it shows confirmation dialog and initiates cloning on proceed', async () => {
+  render(assistantsComponent(clonePendingMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cloneAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Cloning May Affect Responses')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant clone initiated');
+  });
+});
+
+test('it cancels clone confirmation dialog', async () => {
+  render(assistantsComponent(clonePendingMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cloneAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Cloning May Affect Responses')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Cloning May Affect Responses')).not.toBeInTheDocument();
+  });
+});
+
+test('it shows disabled Clone Assistant button when cloneStatus is completed', async () => {
+  render(assistantsComponent(cloneCompletedMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+    expect(screen.getByTestId('cloneAssistant')).toBeDisabled();
+    expect(screen.getByTestId('cloneAssistant')).toHaveTextContent('Clone Assistant');
+  });
+});
+
+test('it shows Retry cloning button when cloneStatus is failed', async () => {
+  render(assistantsComponent(cloneFailedMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+    expect(screen.getByTestId('cloneAssistant')).toHaveTextContent('Retry cloning');
+    expect(screen.getByTestId('cloneAssistant')).not.toBeDisabled();
+  });
+});
+
+test('it does not show clone button when cloneStatus is none', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  expect(screen.queryByTestId('cloneAssistant')).not.toBeInTheDocument();
+});
+
+test('it shows error when clone mutation fails', async () => {
+  render(assistantsComponent(cloneErrorMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cloneAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Cloning May Affect Responses')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
   });
 });
