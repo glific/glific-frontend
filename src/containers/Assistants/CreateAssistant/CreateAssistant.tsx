@@ -190,17 +190,14 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   }, [newVersionInProgress, cloneInitiated]);
 
   useEffect(() => {
-    if (cloneInitiated && cloneStatus === 'completed') {
+    if (!cloneInitiated) return;
+    if (cloneStatus === 'completed') {
       setCloneInitiated(false);
       stopPolling();
       setNotification(t('Assistant cloned successfully'));
       setUpdateList(!updateList);
     }
-    if (cloneInitiated && cloneStatus === 'failed') {
-      setCloneInitiated(false);
-      stopPolling();
-    }
-  }, [cloneStatus, cloneInitiated]);
+  }, [cloneStatus]);
 
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
