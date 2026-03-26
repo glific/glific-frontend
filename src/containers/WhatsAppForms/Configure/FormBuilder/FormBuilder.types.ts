@@ -23,6 +23,8 @@ export interface ContentItemData {
   inputType?: string;
   placeholder?: string;
   variableName?: string;
+  extraAttributes?: Record<string, any>;
+  rawComponent?: any;
 }
 
 export interface ContentOption {

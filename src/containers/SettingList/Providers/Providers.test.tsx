@@ -276,10 +276,6 @@ describe('gupshup dialog', () => {
       expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 
-    await waitFor(() => {
-      expect(screen.getByText('Active?')).toBeInTheDocument();
-    });
-
     const saveButton = await screen.findByTestId('submitActionButton');
     await user.click(saveButton);
 

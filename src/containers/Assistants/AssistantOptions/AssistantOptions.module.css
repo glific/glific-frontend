@@ -144,23 +144,68 @@
 
 .File {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  column-gap: 0.5rem;
   font-size: 0.8rem;
   background-color: #ebf8ee;
-  padding: 0.5rem 1rem;
-  padding-right: 0;
+  padding: 0.5rem 0.5rem;
 }
 
-.File div {
+.FileLeadingIcon {
+  width: 1.25rem;
+  min-width: 1.25rem;
   display: flex;
   align-items: center;
-  column-gap: 0.8rem;
+  justify-content: flex-start;
 }
 
-.File span {
-  line-height: 1rem;
+.FileName {
+  flex: 1;
+  min-width: 0;
   text-align: left;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.FileActions {
+  display: flex;
+  align-items: center;
+  column-gap: 0.25rem;
+  width: 5.25rem;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.ActionSlot {
+  width: 1.75rem;
+  min-width: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.QueuedIcon {
+  color: #76848f;
+}
+
+.FailedIcon {
+  color: #fb5c5c;
+}
+
+.SuccessIcon {
+  color: #119656;
+}
+
+.RetryButton {
+  padding: 4px;
+}
+
+.CloseButton {
+  padding: 4px;
+}
+
+.RetryIcon {
+  color: #76848f;
 }
 
 .EmptyText {
