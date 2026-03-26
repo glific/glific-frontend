@@ -17,7 +17,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { CLONE_ASSISTANT, CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANTS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT } from 'graphql/queries/Assistant';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
@@ -75,21 +75,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
   const [cloneInitiated, setCloneInitiated] = useState(false);
-  const [cloneAssistant] = useMutation(CLONE_ASSISTANT, {
-    onCompleted: (result) => {
-      if (result.cloneAssistant?.errors?.length > 0) {
-        setErrorMessage(result.cloneAssistant.errors[0]);
-      } else {
-        const message = result.cloneAssistant?.message || t('Assistant clone initiated');
-        setNotification(message);
-        setCloneInitiated(true);
-        startPolling(5000);
-      }
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
+  const [cloneAssistant] = useMutation(CLONE_ASSISTANT);
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -316,9 +302,23 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     });
   };
 
-  const handleCloneConfirm = () => {
+  const handleCloneConfirm = async () => {
     setShowCloneDialog(false);
-    cloneAssistant({ variables: { cloneAssistantId: currentId } });
+    setCloneInitiated(true);
+    try {
+      const response = await cloneAssistant({ variables: { cloneAssistantId: currentId } });
+      if (response.data?.cloneAssistant?.errors?.length > 0) {
+        setErrorMessage(response.data.cloneAssistant.errors[0]);
+        setCloneInitiated(false);
+        return;
+      }
+      const message = response.data?.cloneAssistant?.message || t('Assistant clone initiated');
+      setNotification(message);
+      startPolling(5000);
+    } catch (error: unknown) {
+      setErrorMessage(error);
+      setCloneInitiated(false);
+    }
   };
 
   const isCloning = cloneInitiated || cloneStatus === 'in_progress';
@@ -362,7 +362,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         alignButtons="center"
       >
         <div className={styles.DialogContent}>
-          {t('Cloned assistants may behave differently from the original. We recommend reviewing responses or running evaluations after cloning. Need help? Contact support.')}
+          {t(
+            'Cloned assistants may behave differently from the original. We recommend reviewing responses or running evaluations after cloning. Need help? Contact support.'
+          )}
           <br />
           <br />
           {t('Do you want to proceed?')}
