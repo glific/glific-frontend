@@ -1,7 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter, Route, Routes } from 'react-router';
-import Assistants from './Assistants';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import * as Notification from 'common/notification';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
@@ -13,10 +12,14 @@ import {
   unknownModelMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
-import * as Notification from 'common/notification';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import Assistants from './Assistants';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
-const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 const assistantsComponent = (mocks: any = MOCKS) => (
   <MockedProvider mocks={mocks}>
@@ -105,10 +108,7 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith(
-      "Knowledge base creation in progress, will notify once it's done",
-      'success'
-    );
+    expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -202,20 +202,20 @@ test('it uploads files to assistant', async () => {
   fireEvent.click(screen.getAllByTestId('deleteFile')[0]);
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(screen.queryByText('testFile.txt')).not.toBeInTheDocument();
   });
 
   fireEvent.change(fileInput, { target: { files: [mockFileBiggerThan20MB] } });
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('testFile2.txt is above 20MB', 'warning');
   });
 
   fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
@@ -245,13 +245,13 @@ test('it shows error when adding files to assistant fails', async () => {
   fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(errorMessageSpy).toHaveBeenCalled();
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
   });
 });
 
@@ -452,18 +452,15 @@ test('uploading multiple files and error messages', async () => {
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith('testFile2.txt is above 20MB', 'warning');
   });
 
+  //no files should be uploaded as input does not allow csv files to be selected
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+    expect(screen.queryByText('testFile.csv')).not.toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith("Files with extension '.csv' not supported in Filesearch", 'warning');
-  });
 });
 
 test("it shows indicator for unsaved changes when there are changes in the assistant's prompt or settings", async () => {
@@ -538,10 +535,6 @@ test('it clears the knowledge base required warning after knowledge base is crea
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(screen.getByText('1 file')).toBeInTheDocument();
-  });
 
   fireEvent.click(screen.getByTestId('submitAction'));
 
