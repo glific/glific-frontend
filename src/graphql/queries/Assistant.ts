@@ -11,6 +11,7 @@ export const GET_ASSISTANTS = gql`
       name
       status
       newVersionInProgress
+      cloneStatus
     }
   }
 `;
@@ -25,6 +26,7 @@ export const FILTER_ASSISTANTS = gql`
       name
       status
       liveVersionNumber
+      cloneStatus
     }
   }
 `;
@@ -42,6 +44,7 @@ export const GET_ASSISTANT = gql`
         assistantId: assistantDisplayId
         id
         newVersionInProgress
+        cloneStatus
         name
         model
         instructions
