@@ -14,7 +14,9 @@
   border: 1px dashed #7cb87c;
   border-radius: 4px;
   padding: 12px 16px;
-  font-size: 14px;
+  font-family: monospace;
+  font-size: 13px;
+  color: #333;
 }
 
 .CSVFormatLabel {
@@ -43,16 +45,38 @@
 
 .GoldenQaRow {
   display: flex;
-  align-items: center;
   gap: 12px;
+  align-items: center;
 }
 
 .UploadGoldenQaButton {
   white-space: nowrap;
   border-radius: 20px !important;
   flex-shrink: 0;
+  height: 40px;
+}
+
+.GoldenQaLeft {
+  width: 420px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.GoldenQaRight {
+  display: flex;
+  align-items: center;
 }
 
 .GoldenQaHelperText {
   margin-top: 6px;
+}
+
+.HiddenFileInput {
+  display: none;
+}
+
+.SectionDividerLabel {
+  font-weight: 700;
+  font-size: 20px;
+  color: #191c1a;
 }

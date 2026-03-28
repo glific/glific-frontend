@@ -3,7 +3,12 @@ import { gql } from '@apollo/client';
 export const CREATE_EVALUATION = gql`
   mutation createEvaluation($input: EvaluationInput!) {
     createEvaluation(input: $input) {
-      status
+      evaluation {
+        status
+      }
+      errors {
+        message
+      }
     }
   }
 `;

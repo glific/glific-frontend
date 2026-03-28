@@ -1,17 +1,17 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
 import { setNotification } from 'common/notification';
 
-import styles from './AIEvaluationCreate.module.css';
 import { UploadGoldenQaDialog } from './UploadGoldenQaDialog';
+import styles from './AIEvaluationCreate.module.css';
 
 const goldenQAHelperContent = (
   <div className={styles.GoldenQAHelper}>
@@ -20,11 +20,11 @@ const goldenQAHelperContent = (
       evaluation on.
     </p>
     <div className={styles.CSVFormatBox}>
-      <div className={styles.CSVFormatLabel}>Expected CSV Format:</div>
-      <div className={styles.CSVFormatExample}>Question,Answer</div>
-      <div className={styles.CSVFormatExample}>{'What is the capital of France?,Paris'}</div>
+      <div className={styles.CSVFormatExample}>Expected CSV Format:</div>
+      <div className={styles.CSVFormatExample}>Question, Answer</div>
+      <div className={styles.CSVFormatExample}>{'{"What Is X"},{"Answer"}'}</div>
       <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
-        Click here for the template CSV
+        Click Here For The Template Csv
       </a>
     </div>
   </div>
@@ -35,16 +35,20 @@ const GoldenQaField = (props: any) => {
   return (
     <div>
       <div className={styles.GoldenQaRow}>
-        <Dropdown {...dropdownProps} form={form} />
-        <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          className={styles.UploadGoldenQaButton}
-          onClick={onUploadGoldenQaClick}
-        >
-          Upload Golden QA
-        </Button>
+        <div className={styles.GoldenQaLeft}>
+          <Dropdown {...dropdownProps} form={form} />
+        </div>
+        <div className={styles.GoldenQaRight}>
+          <Button
+            variant="outlined"
+            color="primary"
+            type="button"
+            className={styles.UploadGoldenQaButton}
+            onClick={onUploadGoldenQaClick}
+          >
+            Upload Golden QA
+          </Button>
+        </div>
       </div>
       {helperText && <div className={styles.GoldenQaHelperText}>{helperText}</div>}
     </div>
@@ -61,16 +65,6 @@ export default function AIEvaluationCreate() {
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [createEvaluation] = useMutation(CREATE_EVALUATION, {
-    onCompleted: () => {
-      setNotification('Evaluation started successfully!');
-      navigate('/chat');
-    },
-    onError: (error) => {
-      setNotification(error.message, 'warning');
-    },
-  });
-
   const goldenQaOptions =
     goldenQADatasets.length === 0
       ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
@@ -78,6 +72,7 @@ export default function AIEvaluationCreate() {
 
   const { data: versionsData, loading: versionsLoading } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
     variables: { filter: {} },
+    fetchPolicy: 'network-only',
     onError: (error) => {
       setNotification(error.message, 'warning');
     },
@@ -131,29 +126,28 @@ export default function AIEvaluationCreate() {
     {
       component: GoldenQaField,
       name: 'goldenQaId',
-      label: 'Select Golden QA',
+      label: <strong>Select Golden QA</strong>,
       options: goldenQaOptions,
-      placeholder: '',
       helperText: goldenQAHelperContent,
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
     },
     {
       component: SectionDivider,
       name: '__evaluationDetailsDivider',
-      label: 'Evaluation Details',
+      label: <span className={styles.SectionDividerLabel}>Evaluation Details</span>,
       placeholder: '',
     },
     {
       component: Input,
       name: 'evaluationName',
       type: 'text',
-      label: 'Evaluation Name*',
+      label: <strong>Evaluation Name*</strong>,
       placeholder: 'Give a unique name for the evaluation experiment',
     },
     {
       component: Dropdown,
       name: 'assistantId',
-      label: 'AI Assistant*',
+      label: <strong>AI Assistant*</strong>,
       options: assistantOptions,
       placeholder: '',
     },
@@ -163,17 +157,12 @@ export default function AIEvaluationCreate() {
 
   const handleSetPayload = (payload: any) => {
     const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId);
-    createEvaluation({
-      variables: {
-        input: {
-          datasetId: payload.goldenQaId,
-          experimentName: payload.evaluationName,
-          configId: selectedVersion?.kaapiUuid,
-          configVersion: selectedVersion?.id,
-        },
-      },
-    });
-    return null;
+    return {
+      datasetId: payload.goldenQaId,
+      experimentName: payload.evaluationName,
+      configId: selectedVersion?.kaapiUuid,
+      configVersion: selectedVersion?.versionNumber,
+    };
   };
 
   return (
@@ -215,7 +204,8 @@ export default function AIEvaluationCreate() {
         ref={fileInputRef}
         type="file"
         accept=".csv"
-        style={{ display: 'none' }}
+        title="Upload Golden QA CSV"
+        className={styles.HiddenFileInput}
         onChange={handleGoldenQaFileSelected}
       />
       {showUploadGoldenQaDialog && selectedGoldenQaFileName && (

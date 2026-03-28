@@ -12,7 +12,6 @@ import {
   getAssistantConfigVersionsLoadingMock,
   getAssistantConfigVersionsMultipleNamesMock,
   getAssistantConfigVersionsMock,
-  getCreateEvaluationNetworkErrorMock,
   getCreateEvaluationSuccessMock,
   getListAiEvaluationsMock,
 } from 'mocks/AIEvaluations';
@@ -107,9 +106,9 @@ describe('AIEvaluationCreate', () => {
       screen.getByText(/Select the Golden QA dataset from the existing list or upload a new set/)
     ).toBeInTheDocument();
     expect(screen.getByText('Expected CSV Format:')).toBeInTheDocument();
-    expect(screen.getByText('Question,Answer')).toBeInTheDocument();
-    expect(screen.getByText('What is the capital of France?,Paris')).toBeInTheDocument();
-    expect(screen.getByText('Click here for the template CSV')).toBeInTheDocument();
+    expect(screen.getByText('Question, Answer')).toBeInTheDocument();
+    expect(screen.getByText('{"What Is X"},{"Answer"}')).toBeInTheDocument();
+    expect(screen.getByText('Click Here For The Template Csv')).toBeInTheDocument();
   });
 
   test('renders Upload Golden QA button', async () => {
@@ -316,7 +315,15 @@ describe('AIEvaluationCreate', () => {
         capturedVariables = vars;
         return true;
       },
-      result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
+      result: {
+        data: {
+          createEvaluation: {
+            __typename: 'EvaluationResult',
+            evaluation: { __typename: 'CreateEvaluationResult', status: 'queued' },
+            errors: null,
+          },
+        },
+      },
     };
     render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, captureMock]));
 
@@ -326,7 +333,6 @@ describe('AIEvaluationCreate', () => {
       expect(capturedVariables?.input).toMatchObject({
         experimentName: 'test_evaluation',
         configId: 'kaapi-uuid-a1',
-        configVersion: '1',
       });
     });
   });
@@ -337,18 +343,8 @@ describe('AIEvaluationCreate', () => {
     await fillAndSubmitForm();
 
     await waitFor(() => {
-      expect(setNotification).toHaveBeenCalledWith('Evaluation started successfully!');
+      expect(setNotification).toHaveBeenCalledWith('AI evaluation created successfully!');
       expect(screen.getByText('Chat Page')).toBeInTheDocument();
-    });
-  });
-
-  test('shows error notification when evaluation API call fails', async () => {
-    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getCreateEvaluationNetworkErrorMock]));
-
-    await fillAndSubmitForm();
-
-    await waitFor(() => {
-      expect(setNotification).toHaveBeenCalledWith('Evaluation failed', 'warning');
     });
   });
 

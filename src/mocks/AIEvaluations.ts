@@ -7,9 +7,19 @@ export const getListAiEvaluationsMock = {
   result: { data: { aiEvaluations: [] } },
 };
 
+const evaluationSuccessResult = {
+  data: {
+    createEvaluation: {
+      __typename: 'EvaluationResult',
+      evaluation: { __typename: 'CreateEvaluationResult', status: 'queued' },
+      errors: null,
+    },
+  },
+};
+
 export const getCreateEvaluationMock = {
   request: { query: CREATE_EVALUATION },
-  result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
+  result: evaluationSuccessResult,
 };
 
 export const getCreateEvaluationWithVariablesMock = (input: {
@@ -19,19 +29,13 @@ export const getCreateEvaluationWithVariablesMock = (input: {
   configVersion: string;
 }) => ({
   request: { query: CREATE_EVALUATION, variables: { input } },
-  result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
+  result: evaluationSuccessResult,
 });
 
 export const getCreateEvaluationSuccessMock = {
   request: { query: CREATE_EVALUATION },
   variableMatcher: () => true,
-  result: { data: { createEvaluation: { status: 'queued', __typename: 'EvaluationPayload' } } },
-};
-
-export const getCreateEvaluationNetworkErrorMock = {
-  request: { query: CREATE_EVALUATION },
-  variableMatcher: () => true,
-  error: new Error('Evaluation failed'),
+  result: evaluationSuccessResult,
 };
 
 export const getAIEvaluationCreateMocks = () => [
