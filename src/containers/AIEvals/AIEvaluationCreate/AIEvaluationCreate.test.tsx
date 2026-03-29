@@ -333,6 +333,7 @@ describe('AIEvaluationCreate', () => {
       expect(capturedVariables?.input).toMatchObject({
         experimentName: 'test_evaluation',
         configId: 'kaapi-uuid-a1',
+        configVersion: '1',
       });
     });
   });

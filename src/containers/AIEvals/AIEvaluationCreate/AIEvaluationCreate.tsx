@@ -161,7 +161,7 @@ export default function AIEvaluationCreate() {
       datasetId: payload.goldenQaId,
       experimentName: payload.evaluationName,
       configId: selectedVersion?.kaapiUuid,
-      configVersion: selectedVersion?.versionNumber,
+      configVersion: selectedVersion?.id,
     };
   };
 
