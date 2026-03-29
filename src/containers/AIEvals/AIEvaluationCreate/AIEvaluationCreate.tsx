@@ -5,12 +5,12 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
 import { setNotification } from 'common/notification';
 
-import { UploadGoldenQaDialog } from './UploadGoldenQaDialog';
+import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
 
 const goldenQAHelperContent = (
@@ -70,13 +70,16 @@ export default function AIEvaluationCreate() {
       ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
       : goldenQADatasets.map(({ datasetId, name }) => ({ id: datasetId, label: name }));
 
-  const { data: versionsData, loading: versionsLoading } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, {
-    variables: { filter: {} },
-    fetchPolicy: 'network-only',
-    onError: (error) => {
-      setNotification(error.message, 'warning');
-    },
-  });
+  const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
+    GET_ASSISTANT_CONFIG_VERSIONS,
+    { variables: { filter: {} }, fetchPolicy: 'network-only' }
+  );
+
+  useEffect(() => {
+    if (versionsError) {
+      setNotification(versionsError.message, 'warning');
+    }
+  }, [versionsError]);
 
   const assistantOptions = versionsLoading
     ? [{ id: '', label: 'Fetching assistants...' }]
