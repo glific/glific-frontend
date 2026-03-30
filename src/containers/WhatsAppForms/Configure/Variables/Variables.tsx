@@ -22,6 +22,7 @@ interface VariableItem {
   variableName: string;
   fieldName: string;
   type: string;
+  editable: boolean;
 }
 
 const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
@@ -31,6 +32,26 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
       const { data, type } = item;
+
+      if (type === 'Unsupported' && data.rawComponent?.name) {
+        const fieldName = fieldNameMap.get(item.id);
+        if (fieldName) {
+          variables.push({
+            screenId: screen.id,
+            screenName: screen.name,
+            contentId: item.id,
+            label:
+              typeof data.rawComponent.label === 'string' && data.rawComponent.label.trim().length > 0
+                ? data.rawComponent.label
+                : data.rawComponent.name,
+            variableName: data.rawComponent.name,
+            fieldName,
+            type: data.rawComponent.type,
+            editable: false,
+          });
+        }
+        return;
+      }
 
       if (type === 'Text Answer' || type === 'Selection') {
         if (data.label) {
@@ -44,6 +65,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             variableName: data.variableName || '',
             fieldName,
             type: item.name,
+            editable: true,
           });
         }
       }
@@ -142,6 +164,7 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
                 {!isViewOnly && (
                   <IconButton
                     size="small"
+                    disabled={!variable.editable}
                     onClick={() => {
                       if (editingVariableId === variable.contentId) {
                         handleSaveVariable(variable.screenId, variable.contentId);

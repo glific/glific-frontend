@@ -16,8 +16,9 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
-import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CLONE_ASSISTANT, CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT } from 'graphql/queries/Assistant';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
@@ -50,6 +51,7 @@ const initialValues = {
 const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
 
@@ -72,6 +74,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
+  const [cloneInitiated, setCloneInitiated] = useState(false);
+  const [cloneAssistant] = useMutation(CLONE_ASSISTANT);
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -174,14 +178,26 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     }
   }, [data]);
 
+  const cloneStatus = assistantData?.cloneStatus;
+
   useEffect(() => {
-    if (newVersionInProgress) {
+    if (newVersionInProgress || cloneInitiated) {
       startPolling(5000);
     } else {
       stopPolling();
     }
     return () => stopPolling();
-  }, [newVersionInProgress]);
+  }, [newVersionInProgress, cloneInitiated]);
+
+  useEffect(() => {
+    if (!cloneInitiated) return;
+    if (cloneStatus === 'completed') {
+      setCloneInitiated(false);
+      stopPolling();
+      setNotification(t('Assistant cloned successfully'));
+      setUpdateList(!updateList);
+    }
+  }, [cloneStatus]);
 
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
@@ -283,8 +299,39 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     });
   };
 
+  const handleCloneConfirm = async () => {
+    setShowCloneDialog(false);
+    setCloneInitiated(true);
+    try {
+      const response = await cloneAssistant({ variables: { cloneAssistantId: currentId } });
+      if (response.data?.cloneAssistant?.errors?.length > 0) {
+        setErrorMessage(response.data.cloneAssistant.errors[0]);
+        setCloneInitiated(false);
+        return;
+      }
+      const message = response.data?.cloneAssistant?.message || t('Assistant clone initiated');
+      setNotification(message);
+      startPolling(5000);
+    } catch (error: unknown) {
+      setErrorMessage(error);
+      setCloneInitiated(false);
+    }
+  };
+
+  const isCloning = cloneInitiated || cloneStatus === 'in_progress';
+  const isAlreadyCloned = cloneStatus === 'completed';
+  const showCloneButton = isEditing && cloneStatus && cloneStatus !== 'none';
+
+  const getCloneButtonLabel = () => {
+    if (isCloning) return t('Cloning');
+    if (cloneStatus === 'failed') return t('Retry cloning');
+    return t('Clone Assistant');
+  };
+
   let dialog;
   let instructionsDialog;
+  let cloneConfirmDialog;
+
   if (showConfirmation) {
     dialog = (
       <DialogBox
@@ -298,6 +345,26 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       >
         <div className={styles.DialogContent}>
           {t('Please confirm that this assistant is not being used in any of the active flows.')}
+        </div>
+      </DialogBox>
+    );
+  }
+  if (showCloneDialog) {
+    cloneConfirmDialog = (
+      <DialogBox
+        title={t('Cloning May Affect Responses')}
+        handleCancel={() => setShowCloneDialog(false)}
+        handleOk={handleCloneConfirm}
+        buttonOk={t('Proceed')}
+        alignButtons="center"
+      >
+        <div className={styles.DialogContent}>
+          {t(
+            'Cloned assistants may behave differently from the original. We recommend reviewing responses or running evaluations after cloning. Need help? Contact support.'
+          )}
+          <br />
+          <br />
+          {t('Do you want to proceed?')}
         </div>
       </DialogBox>
     );
@@ -367,6 +434,25 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           )}
         </div>
 
+        {showCloneButton && (
+          <div className={styles.CloneButtonContainer}>
+            <Tooltip title={isAlreadyCloned ? t('Already cloned') : ''} placement="bottom">
+              <span>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowCloneDialog(true)}
+                  disabled={isCloning || isAlreadyCloned}
+                  data-testid="cloneAssistant"
+                >
+                  {getCloneButtonLabel()}
+                  {isCloning && <CircularProgress size={16} color="inherit" className={styles.CloneSpinner} />}
+                </Button>
+              </span>
+            </Tooltip>
+          </div>
+        )}
+
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
@@ -402,6 +488,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           </div>
         </form>
         {dialog}
+        {cloneConfirmDialog}
         {instructionsDialog}
       </div>
     </FormikProvider>

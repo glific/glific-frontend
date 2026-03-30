@@ -1,4 +1,5 @@
 import {
+  CLONE_ASSISTANT,
   CREATE_KNOWLEDGE_BASE,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
@@ -7,7 +8,7 @@ import {
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANTS } from 'graphql/queries/Assistant';
 
-const getAssistantsList = (limit: number = 3) => ({
+const getAssistantsList = (limit: number = 3, cloneStatus: string = 'none') => ({
   request: {
     query: GET_ASSISTANTS,
     variables: {
@@ -29,6 +30,7 @@ const getAssistantsList = (limit: number = 3) => ({
         name: `Assistant-${ind + 1}`,
         status: 'ready',
         newVersionInProgress: !!ind,
+        cloneStatus,
       })),
     },
   },
@@ -62,7 +64,7 @@ const createAssistant = {
 
 const getAssistant = (
   assistantId: string,
-  options?: { legacy?: boolean; newVersionInProgress?: boolean; model?: string }
+  options?: { legacy?: boolean; newVersionInProgress?: boolean; model?: string; cloneStatus?: string }
 ) => ({
   request: {
     query: GET_ASSISTANT,
@@ -76,6 +78,7 @@ const getAssistant = (
           assistantId: 'asst_JhYmNWzpCVBZY2vTuohvmqjs',
           id: assistantId,
           newVersionInProgress: options?.newVersionInProgress ?? false,
+          cloneStatus: options?.cloneStatus ?? 'none',
           name: 'Assistant-405db438',
           model: options?.model ?? 'gpt-4o',
           instructions: null,
@@ -128,6 +131,7 @@ const getAssistantListOnSearch = {
           itemId: 'asst_UaWOAyI61Njf9l77Ey9iv0VI',
           name: `testAssistant`,
           status: 'ready',
+          cloneStatus: 'none',
         },
       ],
     },
@@ -310,4 +314,62 @@ export const errorMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearchWithError,
   createKnowledgeBaseMock([fileWithUploadedAt], '1'),
+];
+
+const cloneAssistantMock = (id: string) => ({
+  request: {
+    query: CLONE_ASSISTANT,
+    variables: { cloneAssistantId: id },
+  },
+  result: {
+    data: {
+      cloneAssistant: {
+        message: 'Assistant clone initiated',
+        errors: null,
+      },
+    },
+  },
+});
+
+const cloneAssistantErrorMock = (id: string) => ({
+  request: {
+    query: CLONE_ASSISTANT,
+    variables: { cloneAssistantId: id },
+  },
+  result: {
+    data: {
+      cloneAssistant: {
+        message: null,
+        errors: [{ key: 'clone', message: 'Clone failed' }],
+      },
+    },
+  },
+});
+
+export const clonePendingMocks = [
+  getAssistantsList(3, 'pending'),
+  getAssistant('1', { cloneStatus: 'pending' }),
+  getAssistant('1', { cloneStatus: 'pending' }),
+  cloneAssistantMock('1'),
+  getAssistant('1', { cloneStatus: 'completed' }),
+];
+
+export const cloneCompletedMocks = [
+  getAssistantsList(3, 'completed'),
+  getAssistant('1', { cloneStatus: 'completed' }),
+  getAssistant('1', { cloneStatus: 'completed' }),
+];
+
+export const cloneFailedMocks = [
+  getAssistantsList(3, 'failed'),
+  getAssistant('1', { cloneStatus: 'failed' }),
+  getAssistant('1', { cloneStatus: 'failed' }),
+  cloneAssistantMock('1'),
+];
+
+export const cloneErrorMocks = [
+  getAssistantsList(3, 'pending'),
+  getAssistant('1', { cloneStatus: 'pending' }),
+  getAssistant('1', { cloneStatus: 'pending' }),
+  cloneAssistantErrorMock('1'),
 ];
