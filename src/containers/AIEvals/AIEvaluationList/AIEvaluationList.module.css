@@ -1,0 +1,68 @@
+.EvaluationName {
+  font-weight: 600;
+  font-size: 15px;
+  color: #191c1a;
+}
+
+.StatusCell {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.StatusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.StatusLabel {
+  font-size: 14px;
+  color: #191c1a;
+}
+
+.StatusSub {
+  font-size: 12px;
+  color: #777;
+  margin-top: 2px;
+}
+
+.ScoreCell {
+  font-weight: 600;
+  font-size: 14px;
+  color: #191c1a;
+}
+
+.TableText {
+  font-size: 14px;
+  color: #191c1a;
+}
+
+.DownloadButton {
+  border-radius: 20px !important;
+  font-size: 13px !important;
+  white-space: nowrap;
+}
+
+/* Column widths */
+.NameColumn {
+  width: 28%;
+}
+
+.StatusColumn {
+  width: 18%;
+}
+
+.ScoreColumn {
+  width: 14%;
+}
+
+.DateColumn {
+  width: 14%;
+}
+
+.ActionsColumn {
+  width: 12%;
+}

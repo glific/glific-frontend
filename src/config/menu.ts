@@ -196,6 +196,13 @@ const menus = (): Menu[] => [
     roles: allRoles,
   },
   {
+    title: 'AI Evals',
+    path: '/ai-evaluations',
+    icon: 'ai-evals',
+    type: 'sideDrawer',
+    roles: allRoles,
+  },
+  {
     title: 'Manage',
     path: '/collection',
     icon: 'manage',

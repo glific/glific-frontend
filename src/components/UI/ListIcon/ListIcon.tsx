@@ -35,6 +35,7 @@ import { Badge } from '@mui/material';
 import DiscordIcon from 'assets/images/icons/Discord/DiscordIcon';
 import CertificateIcon from 'assets/images/icons/SideDrawer/CertificateIcon';
 import WhatsAppForms from 'assets/images/icons/SideDrawer/WhatsappForm';
+import AIEvalsIcon from 'assets/images/icons/SideDrawer/AIEvalsIcon';
 
 export interface ListIconProps {
   icon: string | undefined;
@@ -81,6 +82,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     waPolls: WaPolls,
     certificate: CertificateIcon,
     form: WhatsAppForms,
+    'ai-evals': AIEvalsIcon,
   };
 
   const iconImage = stringsToIcons[icon] && (
