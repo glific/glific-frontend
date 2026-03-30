@@ -2,10 +2,11 @@ import {
   CREATE_KNOWLEDGE_BASE,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
+  SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANTS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_ASSISTANTS } from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3) => ({
   request: {
@@ -301,6 +302,102 @@ export const unknownModelMocks = [
   getAssistant('1', { model: 'o3-mini' }),
   getAssistant('1', { model: 'o3-mini' }),
 ];
+const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber?: number }) => ({
+  request: {
+    query: GET_ASSISTANT_VERSIONS,
+    variables: { assistantId },
+  },
+  result: {
+    data: {
+      assistantVersions: [
+        {
+          id: 'v1',
+          versionNumber: 1,
+          model: 'gpt-4o',
+          prompt: 'You are a helpful assistant.',
+          settings: { temperature: 1 },
+          status: 'ready',
+          isLive: options?.liveVersionNumber === 1 || options?.liveVersionNumber === undefined ? true : false,
+          description: 'Initial version',
+          insertedAt: '2024-10-16T15:00:00Z',
+          updatedAt: '2024-10-16T15:00:00Z',
+        },
+        {
+          id: 'v2',
+          versionNumber: 2,
+          model: 'gpt-4o-mini',
+          prompt: 'You are a helpful assistant v2.',
+          settings: { temperature: 0.5 },
+          status: 'ready',
+          isLive: options?.liveVersionNumber === 2,
+          description: null,
+          insertedAt: '2024-10-17T15:00:00Z',
+          updatedAt: '2024-10-17T15:00:00Z',
+        },
+      ],
+    },
+  },
+});
+
+const setLiveVersion = (assistantId: string, versionId: string) => ({
+  request: {
+    query: SET_LIVE_VERSION,
+    variables: { assistantId, versionId },
+  },
+  result: {
+    data: {
+      setLiveVersion: {
+        assistant: {
+          id: assistantId,
+          activeConfigVersionId: versionId,
+          liveVersionNumber: 2,
+        },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const ASSISTANT_DETAIL_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+];
+
+export const ASSISTANT_DETAIL_SET_LIVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  setLiveVersion('1', 'v2'),
+];
+
+export const ASSISTANT_DETAIL_SAVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  {
+    request: {
+      query: UPDATE_ASSISTANT,
+      variables: {
+        updateAssistantId: '1',
+        input: {
+          instructions: 'Updated instructions',
+          model: 'gpt-4o',
+          temperature: 1,
+          knowledgeBaseVersionId: 'llm-vs-1',
+        },
+      },
+    },
+    result: { data: { updateAssistant: { errors: null } } },
+  },
+];
+
 export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];
 export const errorMocks = [

@@ -62,3 +62,19 @@ export const DELETE_ASSISTANT = gql`
     }
   }
 `;
+
+export const SET_LIVE_VERSION = gql`
+  mutation SetLiveVersion($assistantId: ID!, $versionId: ID!) {
+    setLiveVersion(assistantId: $assistantId, versionId: $versionId) {
+      assistant {
+        id
+        activeConfigVersionId
+        liveVersionNumber
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

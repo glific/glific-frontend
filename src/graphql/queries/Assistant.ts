@@ -1,5 +1,22 @@
 import { gql } from '@apollo/client';
 
+export const GET_ASSISTANT_VERSIONS = gql`
+  query AssistantVersions($assistantId: ID!) {
+    assistantVersions(assistantId: $assistantId) {
+      id
+      versionNumber
+      model
+      prompt
+      settings
+      status
+      isLive
+      description
+      insertedAt
+      updatedAt
+    }
+  }
+`;
+
 export const GET_ASSISTANTS = gql`
   query Assistants($filter: AssistantFilter, $opts: Opts) {
     assistants(filter: $filter, opts: $opts) {
