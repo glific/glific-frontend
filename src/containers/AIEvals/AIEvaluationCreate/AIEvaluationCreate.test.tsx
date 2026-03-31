@@ -198,6 +198,23 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
+  test('shows validation error when evaluation name is cleared after being typed', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
+    });
+
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
+    fireEvent.change(nameInput, { target: { value: 'some_name' } });
+    fireEvent.change(nameInput, { target: { value: '' } });
+    fireEvent.blur(nameInput);
+
+    await waitFor(() => {
+      expect(screen.getByText('Evaluation name is required')).toBeInTheDocument();
+    });
+  });
+
   test('accepts any non-empty evaluation name', async () => {
     render(wrapper());
 
@@ -286,6 +303,27 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
+  test('renders assistant options in the order of their version numbers', async () => {
+    render(wrapper([getAssistantConfigVersionsMultipleNamesMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      const options = screen.getAllByRole('option');
+      expect(options[0]).toHaveTextContent('Alpha Assistant (Version 1)');
+      expect(options[1]).toHaveTextContent('Beta Assistant (Version 1)');
+      expect(options[2]).toHaveTextContent('Beta Assistant (Version 2)');
+    });
+  });
+
   test('shows all assistant config versions with correct labels for multiple assistant names', async () => {
     const mocks = [getAssistantConfigVersionsMultipleNamesMock];
     render(wrapper(mocks));
@@ -331,6 +369,7 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(capturedVariables?.input).toMatchObject({
+        datasetId: 0,
         experimentName: 'test_evaluation',
         configId: 'kaapi-uuid-a1',
         configVersion: '1',
