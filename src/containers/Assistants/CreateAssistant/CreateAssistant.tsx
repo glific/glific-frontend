@@ -260,7 +260,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       formikTouched: formik.touched,
       validateForm: formik.validateForm,
       knowledgeBaseId: assistantData?.vectorStore?.id || null,
-      isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
+      isLegacyVectorStore: true,
       vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
       initialFiles: formik.values.initialFiles,
       onFilesChange: setHasUnsavedFiles,

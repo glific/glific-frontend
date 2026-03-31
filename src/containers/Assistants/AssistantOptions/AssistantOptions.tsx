@@ -81,7 +81,7 @@ export const AssistantOptions = ({
     status: 'attached',
     tempId: file.fileId || file.filename,
   });
-
+  console.log(isLegacyVectorStore);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<AssistantFile[]>(formikValues.initialFiles.map(mapInitialFileToAssistantFile));
   const [loading, setLoading] = useState(false);
@@ -576,11 +576,19 @@ export const AssistantOptions = ({
                             )}
                             {file.status === 'failed' && (
                               <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                                <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
+                                <ErrorOutlineIcon
+                                  data-testid="failedIcon"
+                                  className={styles.FailedIcon}
+                                  fontSize="small"
+                                />
                               </Tooltip>
                             )}
                             {file.status === 'attached' && (
-                              <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
+                              <CheckCircleIcon
+                                data-testid="attachedIcon"
+                                className={styles.SuccessIcon}
+                                fontSize="small"
+                              />
                             )}
                           </>
                         )}
@@ -615,7 +623,7 @@ export const AssistantOptions = ({
       <div className={styles.Files}>
         <div className={styles.FilesHeader}>
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-            Knowledge Base Files *
+            Knowledge Base Files *{isLegacyVectorStore && 'Sdc'}
             <HelpIcon
               helpData={{
                 heading: filesInfo,

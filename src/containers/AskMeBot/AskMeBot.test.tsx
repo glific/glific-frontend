@@ -12,10 +12,13 @@ describe('AskMeBot', () => {
   vi.mock('axios');
   const mockedAxios = axios as any;
 
-  mockedAxios.post.mockResolvedValueOnce({
-    data: {
-      response: 'This is a mock response from the bot.',
-    },
+  beforeEach(() => {
+    mockedAxios.post.mockResolvedValue({
+      data: {
+        response: 'This is a mock response from the bot.',
+      },
+    });
+    localStorage.removeItem('askMeBotHistory');
   });
 
   const wrapper = (
@@ -34,13 +37,13 @@ describe('AskMeBot', () => {
     fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
 
     await waitFor(() => {
-      expect(screen.getByText('Ask Glific')).toBeInTheDocument();
+      expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('close-icon'));
+    fireEvent.click(screen.getByTestId('minimize-btn'));
 
     await waitFor(() => {
-      expect(screen.queryByText('Ask Glific')).not.toBeInTheDocument();
+      expect(screen.queryByText('Ask Glific! Learn About How It Works?')).not.toBeInTheDocument();
     });
   });
 
@@ -50,19 +53,48 @@ describe('AskMeBot', () => {
     fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
 
     await waitFor(() => {
-      expect(screen.getByText('Ask Glific')).toBeInTheDocument();
+      expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
-    fireEvent.click(screen.getByTestId('send-icon'));
-
     await waitFor(() => {
-      expect(screen.getByTestId('loading')).toBeInTheDocument();
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
     });
+  });
+
+  test('it should allow new chat', async () => {
+    render(wrapper);
+
+    fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
+    fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('new-chat-btn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
+    });
+  });
+
+  test('it should show feedback buttons on bot responses', async () => {
+    render(wrapper);
+
+    fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
+    fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('feedback-up')).toBeInTheDocument();
+    expect(screen.getByTestId('feedback-down')).toBeInTheDocument();
   });
 });
