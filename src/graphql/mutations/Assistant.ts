@@ -49,6 +49,18 @@ export const CREATE_KNOWLEDGE_BASE = gql`
   }
 `;
 
+export const CLONE_ASSISTANT = gql`
+  mutation CloneAssistant($cloneAssistantId: ID!) {
+    cloneAssistant(id: $cloneAssistantId) {
+      message
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
 export const DELETE_ASSISTANT = gql`
   mutation DeleteAssistant($deleteAssistantId: ID!) {
     deleteAssistant(id: $deleteAssistantId) {

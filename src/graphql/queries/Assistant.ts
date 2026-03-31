@@ -1,22 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_ASSISTANT_VERSIONS = gql`
-  query AssistantVersions($assistantId: ID!) {
-    assistantVersions(assistantId: $assistantId) {
-      id
-      versionNumber
-      model
-      prompt
-      settings
-      status
-      isLive
-      description
-      insertedAt
-      updatedAt
-    }
-  }
-`;
-
+/** @deprecated Use FILTER_ASSISTANTS instead */
 export const GET_ASSISTANTS = gql`
   query Assistants($filter: AssistantFilter, $opts: Opts) {
     assistants(filter: $filter, opts: $opts) {
@@ -26,7 +10,29 @@ export const GET_ASSISTANTS = gql`
       name
       status
       newVersionInProgress
+      cloneStatus
     }
+  }
+`;
+
+export const FILTER_ASSISTANTS = gql`
+  query Assistants($filter: AssistantFilter, $opts: Opts) {
+    assistants(filter: $filter, opts: $opts) {
+      assistantDisplayId
+      id
+      insertedAt
+      updatedAt
+      name
+      status
+      liveVersionNumber
+      cloneStatus
+    }
+  }
+`;
+
+export const GET_ASSISTANTS_COUNT = gql`
+  query CountAssistants($filter: AssistantFilter) {
+    countAssistants(filter: $filter)
   }
 `;
 
@@ -37,6 +43,7 @@ export const GET_ASSISTANT = gql`
         assistantId: assistantDisplayId
         id
         newVersionInProgress
+        cloneStatus
         name
         model
         instructions
@@ -56,6 +63,22 @@ export const GET_ASSISTANT = gql`
           }
         }
       }
+    }
+  }
+`;
+export const GET_ASSISTANT_VERSIONS = gql`
+  query AssistantVersions($assistantId: ID!) {
+    assistantVersions(assistantId: $assistantId) {
+      id
+      versionNumber
+      model
+      prompt
+      settings
+      status
+      isLive
+      description
+      insertedAt
+      updatedAt
     }
   }
 `;

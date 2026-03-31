@@ -214,6 +214,17 @@ const getWhatsAppComponentType = (contentType: string, contentName: string): str
   return 'TextBody';
 };
 
+/** Returns a unique name derived from baseName by appending _1, _2, … until it is not in usedNames. */
+const uniqueName = (baseName: string, usedNames: Set<string>): string => {
+  let name = baseName;
+  let suffix = 1;
+  while (usedNames.has(name)) {
+    name = `${baseName}_${suffix}`;
+    suffix += 1;
+  }
+  return name;
+};
+
 /** Computes unique field names for all input components across screens, deduplicating with numeric suffixes. */
 export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
   const fieldNameMap = new Map<string, string>();
@@ -223,24 +234,15 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
     screen.content.forEach((item) => {
       // Unsupported components with a name are input components that need field tracking
       if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
-        const rawName = item.data.rawComponent.name;
-        if (!usedNames.has(rawName)) {
-          usedNames.add(rawName);
-          fieldNameMap.set(item.id, rawName);
-        }
+        const name = uniqueName(item.data.rawComponent.name, usedNames);
+        usedNames.add(name);
+        fieldNameMap.set(item.id, name);
         return;
       }
 
       if (item.type === 'Text Answer' || item.type === 'Selection') {
-        let name = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || `field`;
-
-        const baseName = name;
-        let suffix = 1;
-        while (usedNames.has(name)) {
-          name = `${baseName}_${suffix}`;
-          suffix += 1;
-        }
-
+        const base = sanitizeName(item.data.variableName || '') || sanitizeName(item.data.label || '') || `field`;
+        const name = uniqueName(base, usedNames);
         usedNames.add(name);
         fieldNameMap.set(item.id, name);
       }
@@ -385,7 +387,7 @@ const generateScreenData = (
   previousScreensPayloadData.forEach(({ payloadKey, fieldType, inputType }) => {
     if (fieldType === 'TextInput' && isNumericInputType(inputType)) return;
 
-    if (fieldType === 'CheckboxGroup') {
+    if (fieldType === 'CheckboxGroup' || fieldType === 'ChipsSelector') {
       data[payloadKey] = {
         __example__: [],
         items: { type: 'string' },
@@ -451,6 +453,12 @@ const generateScreenPayload = (
   return payload;
 };
 
+/**
+ * Component types that must be direct children of SingleColumnLayout,
+ * NOT nested inside a Form component.
+ */
+const LAYOUT_DIRECT_COMPONENT_TYPES = new Set(['CalendarPicker', 'DocumentPicker', 'PhotoPicker']);
+
 /** Converts a single form builder screen into a WhatsApp Flow JSON screen object with layout, components, and footer. */
 export const convertScreenToFlowJSON = (
   screen: Screen,
@@ -466,12 +474,18 @@ export const convertScreenToFlowJSON = (
     screenId: string;
   }> = []
 ): any => {
-  const children: any[] = [];
+  const formChildren: any[] = [];
+  const layoutDirectChildren: any[] = [];
 
   screen.content.forEach((item) => {
     const component = convertContentItemToComponent(item, fieldNameMap);
-    if (component) {
-      children.push(component);
+    if (!component) return;
+
+    const rawType = item.type === 'Unsupported' ? item.data.rawComponent?.type : null;
+    if (rawType && LAYOUT_DIRECT_COMPONENT_TYPES.has(rawType)) {
+      layoutDirectChildren.push(component);
+    } else {
+      formChildren.push(component);
     }
   });
 
@@ -479,24 +493,24 @@ export const convertScreenToFlowJSON = (
 
   const payload = generateScreenPayload(screen.content, fieldNameMap, previousScreensPayloadData, isTerminal);
 
-  if (screen.buttonLabel) {
-    children.push({
-      label: screen.buttonLabel,
-      'on-click-action': isTerminal
-        ? {
-            name: 'complete',
-            payload,
-          }
-        : {
-            name: 'navigate',
-            next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' },
-            payload,
-          },
-      type: 'Footer',
-    });
-  }
+  const footer = screen.buttonLabel
+    ? {
+        label: screen.buttonLabel,
+        'on-click-action': isTerminal
+          ? { name: 'complete', payload }
+          : { name: 'navigate', next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' }, payload },
+        type: 'Footer',
+      }
+    : null;
 
   const screenData = generateScreenData(previousScreensPayloadData);
+
+  // Build layout children: direct components first, then Form (if any form children exist or there's a footer)
+  const layoutChildren: any[] = [...layoutDirectChildren];
+  if (formChildren.length > 0 || footer) {
+    if (footer) formChildren.push(footer);
+    layoutChildren.push({ type: 'Form', name: 'flow_path', children: formChildren });
+  }
 
   return {
     id: screenId,
@@ -505,13 +519,7 @@ export const convertScreenToFlowJSON = (
     data: screenData,
     layout: {
       type: 'SingleColumnLayout',
-      children: [
-        {
-          type: 'Form',
-          name: 'flow_path',
-          children,
-        },
-      ],
+      children: layoutChildren,
     },
   };
 };
@@ -625,7 +633,6 @@ export const VALID_COMPONENT_TYPES = new Set([
 /** Picks the known extra Meta-spec attributes from a JSON component that the form builder doesn't edit. */
 const extractExtraAttributes = (component: any, componentType: string): Record<string, any> | undefined => {
   const extraKeys = EXTRA_ATTRIBUTE_KEYS[componentType];
-  console.log('Extracting extra attributes for component type:', componentType, 'with keys:', extraKeys);
   if (!extraKeys) return undefined;
   const extra: Record<string, any> = {};
   extraKeys.forEach((key) => {
@@ -738,16 +745,19 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
   }
 
   return flowJSON.screens.map((flowScreen: any, screenIndex: number) => {
-    const formLayout = flowScreen.layout?.children?.[0];
-    const formChildren = formLayout?.children || [];
+    const layoutChildren = flowScreen.layout?.children || [];
+    const formLayout = layoutChildren.find((c: any) => c.type === 'Form');
+    const directLayoutComponents = layoutChildren.filter((c: any) => c.type !== 'Form');
+    const formChildren = formLayout ? formLayout.children || [] : [];
+    const allChildren = [...directLayoutComponents, ...formChildren];
 
     let buttonLabel = 'Continue';
-    const footerComponent = formChildren.find((child: any) => child.type === 'Footer');
+    const footerComponent = allChildren.find((child: any) => child.type === 'Footer');
     if (footerComponent) {
       buttonLabel = footerComponent.label || 'Continue';
     }
 
-    const content: ContentItem[] = formChildren
+    const content: ContentItem[] = allChildren
       .map((component: any, index: number) => {
         const item = convertWhatsAppComponentToContentItem(component, index);
         if (item && item.type !== 'Unsupported' && component.name) {
@@ -784,6 +794,9 @@ const INPUT_COMPONENT_TYPES = [
   'CheckboxGroup',
   'Dropdown',
   'OptIn',
+  'CalendarPicker',
+  'DocumentPicker',
+  'PhotoPicker',
 ];
 
 /** Validates a WhatsApp Flow JSON structure, checking screen IDs, titles, layout, actions, components, and data properties. */
@@ -860,27 +873,27 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
       return;
     }
 
-    const formComponent = layoutChildren[0];
-    if (formComponent?.type !== 'Form') {
-      errors.push({
-        message: `Screen '${screenLabel}': First layout child must be a Form component`,
-        path: `screens[${i}].layout.children[0]`,
-      });
-      return;
-    }
+    const formIndex = layoutChildren.findIndex((c: any) => c.type === 'Form');
+    const formComponent = formIndex !== -1 ? layoutChildren[formIndex] : undefined;
+    const formChildren: any[] = Array.isArray(formComponent?.children) ? formComponent.children : [];
 
-    const formChildren = formComponent.children;
-    if (!Array.isArray(formChildren)) {
-      errors.push({
-        message: `Screen '${screenLabel}': Form component must have children`,
-        path: `screens[${i}].layout.children[0].children`,
-      });
-      return;
-    }
+    // Check for layout-direct components incorrectly placed inside Form
+    formChildren.forEach((component: any, j: number) => {
+      if (LAYOUT_DIRECT_COMPONENT_TYPES.has(component.type)) {
+        errors.push({
+          message: `Screen '${screenLabel}': '${component.type}' must be a direct child of SingleColumnLayout, not inside a Form component`,
+          path: `screens[${i}].layout.children[${formIndex}].children[${j}]`,
+        });
+      }
+    });
 
-    // Footer validation
-    const footers = formChildren.filter((c: any) => c.type === 'Footer');
-    const nonFooterComponents = formChildren.filter((c: any) => c.type !== 'Footer');
+    // Collect all components: direct layout children (non-Form) + Form children
+    const directLayoutComponents = layoutChildren.filter((c: any) => c.type !== 'Form');
+    const allComponents = [...directLayoutComponents, ...formChildren];
+
+    // Footer validation — Footer can be inside Form or directly in layout
+    const footers = allComponents.filter((c: any) => c.type === 'Footer');
+    const nonFooterComponents = allComponents.filter((c: any) => c.type !== 'Footer');
 
     if (footers.length === 0) {
       errors.push({
@@ -980,11 +993,16 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     }
 
     // Phase 5: Component type validity + name uniqueness
-    formChildren.forEach((component: any, j: number) => {
+    allComponents.forEach((component: any, j: number) => {
       if (component.type !== 'Footer' && !VALID_COMPONENT_TYPES.has(component.type)) {
+        const directIdx = layoutChildren.indexOf(component);
+        const componentPath =
+          directIdx !== -1
+            ? `screens[${i}].layout.children[${directIdx}]`
+            : `screens[${i}].layout.children[${formIndex}].children[${formChildren.indexOf(component)}]`;
         errors.push({
           message: `Screen '${screenLabel}': Unknown component type '${component.type}' at index ${j}`,
-          path: `screens[${i}].layout.children[0].children[${j}]`,
+          path: componentPath,
         });
       }
 

@@ -22,6 +22,7 @@ interface VariableItem {
   variableName: string;
   fieldName: string;
   type: string;
+  editable: boolean;
 }
 
 const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
@@ -39,10 +40,14 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             screenId: screen.id,
             screenName: screen.name,
             contentId: item.id,
-            label: data.rawComponent.label || data.rawComponent.name,
+            label:
+              typeof data.rawComponent.label === 'string' && data.rawComponent.label.trim().length > 0
+                ? data.rawComponent.label
+                : data.rawComponent.name,
             variableName: data.rawComponent.name,
             fieldName,
             type: data.rawComponent.type,
+            editable: false,
           });
         }
         return;
@@ -60,6 +65,7 @@ const extractVariablesWithContext = (screens: Screen[]): VariableItem[] => {
             variableName: data.variableName || '',
             fieldName,
             type: item.name,
+            editable: true,
           });
         }
       }
@@ -158,6 +164,7 @@ export const Variables = ({ screens, onUpdateFieldLabel, isViewOnly }: Variables
                 {!isViewOnly && (
                   <IconButton
                     size="small"
+                    disabled={!variable.editable}
                     onClick={() => {
                       if (editingVariableId === variable.contentId) {
                         handleSaveVariable(variable.screenId, variable.contentId);
