@@ -81,7 +81,7 @@ export const AssistantOptions = ({
     status: 'attached',
     tempId: file.fileId || file.filename,
   });
-  console.log(isLegacyVectorStore);
+
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<AssistantFile[]>(formikValues.initialFiles.map(mapInitialFileToAssistantFile));
   const [loading, setLoading] = useState(false);
@@ -623,7 +623,7 @@ export const AssistantOptions = ({
       <div className={styles.Files}>
         <div className={styles.FilesHeader}>
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-            Knowledge Base Files *{isLegacyVectorStore && 'Sdc'}
+            Knowledge Base Files *
             <HelpIcon
               helpData={{
                 heading: filesInfo,
