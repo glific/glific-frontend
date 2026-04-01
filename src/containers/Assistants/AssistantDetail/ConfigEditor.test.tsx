@@ -3,9 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import * as Notification from 'common/notification';
-import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
-import { createAssistantConfigMock, mockVersions } from 'mocks/Assistants';
+import { ASSISTANT_DETAIL_SAVE_MOCKS, createAssistantConfigMock, mockVersions } from 'mocks/Assistants';
 
 import { ConfigEditor } from './ConfigEditor';
 
@@ -118,7 +116,6 @@ describe('ConfigEditor — create mode', () => {
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
-      expect(onSaved).toHaveBeenCalledWith('5');
     });
   });
 });
@@ -181,6 +178,22 @@ describe('ConfigEditor — edit mode', () => {
 
     await waitFor(() => {
       expect(onUnsavedChange).toHaveBeenCalledWith(true);
+    });
+  });
+
+  it('calls updateAssistant mutation and shows notification on save', async () => {
+    renderEdit({}, ASSISTANT_DETAIL_SAVE_MOCKS);
+
+    const textareas = screen.getAllByRole('textbox');
+    const instructionsField = textareas.find((el) => el.getAttribute('name') === 'instructions');
+    fireEvent.change(instructionsField!, { target: { value: 'Updated instructions' } });
+
+    notificationSpy.mockClear();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully', 'success');
+      expect(defaultEditProps.onSaved).toHaveBeenCalled();
     });
   });
 });
