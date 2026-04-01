@@ -63,7 +63,7 @@ const createAssistant = {
   },
 };
 
-const getAssistant = (
+export const getAssistant = (
   assistantId: string,
   options?: { legacy?: boolean; newVersionInProgress?: boolean; model?: string; cloneStatus?: string }
 ) => ({
@@ -430,6 +430,93 @@ export const ASSISTANT_DETAIL_SAVE_MOCKS = [
     result: { data: { updateAssistant: { errors: null } } },
   },
 ];
+
+export const assistantNotFoundMock = {
+  request: { query: GET_ASSISTANT, variables: { assistantId: '999' } },
+  result: { data: { assistant: null } },
+};
+
+export const setLiveVersionErrorMock = {
+  request: {
+    query: SET_LIVE_VERSION,
+    variables: { assistantId: '1', versionId: 'v2' },
+  },
+  result: {
+    data: {
+      setLiveVersion: {
+        assistant: null,
+        errors: [{ key: 'base', message: 'Cannot set live version' }],
+      },
+    },
+  },
+};
+
+export const createAssistantSuccessMock = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        name: 'My Assistant',
+        instructions: 'Test instructions',
+        model: 'gpt-4o',
+        temperature: 0.1,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: { id: '99', name: 'My Assistant' },
+        errors: [],
+      },
+    },
+  },
+};
+
+export const createAssistantErrorMock = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        name: 'My Assistant',
+        instructions: 'Test instructions',
+        model: 'gpt-4o',
+        temperature: 0.1,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: null,
+        errors: [{ key: 'base', message: 'Name already taken' }],
+      },
+    },
+  },
+};
+
+export const updateAssistantErrorMock = {
+  request: {
+    query: UPDATE_ASSISTANT,
+    variables: {
+      updateAssistantId: '1',
+      input: {
+        instructions: 'Updated instructions',
+        model: 'gpt-4o',
+        temperature: 1,
+        description: 'Initial version',
+        knowledgeBaseVersionId: 'llm-vs-1',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateAssistant: {
+        errors: [{ key: 'base', message: 'Update failed' }],
+      },
+    },
+  },
+};
 
 export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];

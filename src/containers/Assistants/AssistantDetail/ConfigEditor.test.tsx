@@ -3,7 +3,14 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import * as Notification from 'common/notification';
-import { ASSISTANT_DETAIL_SAVE_MOCKS, createAssistantConfigMock, mockVersions } from 'mocks/Assistants';
+import {
+  ASSISTANT_DETAIL_SAVE_MOCKS,
+  createAssistantConfigMock,
+  createAssistantErrorMock,
+  mockVersions,
+  setLiveVersionErrorMock,
+  updateAssistantErrorMock,
+} from 'mocks/Assistants';
 
 import { ConfigEditor } from './ConfigEditor';
 
@@ -118,6 +125,23 @@ describe('ConfigEditor — create mode', () => {
       expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
     });
   });
+
+  it('shows error notification when createAssistant returns errors', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    renderCreate({}, [createAssistantErrorMock]);
+
+    const nameField = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'name');
+    fireEvent.change(nameField!, { target: { value: 'My Assistant' } });
+
+    const instructionsField = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'instructions');
+    fireEvent.change(instructionsField!, { target: { value: 'Test instructions' } });
+
+    fireEvent.click(screen.getByText('Save'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+  });
 });
 
 describe('ConfigEditor — edit mode', () => {
@@ -194,6 +218,32 @@ describe('ConfigEditor — edit mode', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully', 'success');
       expect(defaultEditProps.onSaved).toHaveBeenCalled();
+    });
+  });
+
+  it('shows error notification when updateAssistant returns errors', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    renderEdit({}, [updateAssistantErrorMock]);
+
+    const textareas = screen.getAllByRole('textbox');
+    const instructionsField = textareas.find((el) => el.getAttribute('name') === 'instructions');
+    fireEvent.change(instructionsField!, { target: { value: 'Updated instructions' } });
+
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+
+  it('shows error when setLiveVersion returns errors', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    renderEdit({ version: { ...mockVersion, id: 'v2', isLive: false } }, [setLiveVersionErrorMock]);
+
+    fireEvent.click(screen.getByTestId('setLiveButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
     });
   });
 });

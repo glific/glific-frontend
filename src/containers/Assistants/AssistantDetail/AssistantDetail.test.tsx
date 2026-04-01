@@ -4,7 +4,14 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
-import { ASSISTANT_DETAIL_MOCKS, ASSISTANT_DETAIL_SAVE_MOCKS, ASSISTANT_DETAIL_SET_LIVE_MOCKS } from 'mocks/Assistants';
+import {
+  ASSISTANT_DETAIL_MOCKS,
+  ASSISTANT_DETAIL_SAVE_MOCKS,
+  ASSISTANT_DETAIL_SET_LIVE_MOCKS,
+  assistantNotFoundMock,
+  createAssistantSuccessMock,
+  getAssistant,
+} from 'mocks/Assistants';
 
 import AssistantDetail from './AssistantDetail';
 
@@ -298,4 +305,53 @@ test('save button in edit mode triggers notification on success', async () => {
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully', 'success');
   });
+});
+
+test('shows assistant not found when query returns no data', async () => {
+  renderAssistantDetail([assistantNotFoundMock], '999');
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant not found')).toBeInTheDocument();
+  });
+});
+
+test('create mode save navigates to the new assistant page', async () => {
+  render(
+    <MockedProvider
+      mocks={[createAssistantSuccessMock, getAssistant('99')]}>
+      <MemoryRouter initialEntries={['/assistant-new/add']}>
+        <Routes>
+          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('Save')).toBeInTheDocument();
+  });
+
+  const nameField = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'name');
+  fireEvent.change(nameField!, { target: { value: 'My Assistant' } });
+
+  const instructionsField = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'instructions');
+  fireEvent.change(instructionsField!, { target: { value: 'Test instructions' } });
+
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
+  });
+});
+
+test('pressing Enter on copy assistant ID button calls copyToClipboard', async () => {
+  const copySpy = vi.spyOn(Utils, 'copyToClipboard').mockImplementation(() => {});
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('copyAssistantId')).toBeInTheDocument();
+  });
+
+  fireEvent.keyDown(screen.getByTestId('copyAssistantId'), { key: 'Enter' });
+  expect(copySpy).toHaveBeenCalledWith('asst_JhYmNWzpCVBZY2vTuohvmqjs');
 });
