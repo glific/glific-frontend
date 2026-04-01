@@ -118,7 +118,7 @@ export const AssistantDetail = () => {
             vectorStore={null}
             newVersionInProgress={false}
             onSaved={handleSaved}
-            onCancel={() => navigate('/assistants')}
+            onCancel={() => navigate('/assistants-new')}
             createMode
           />
         </div>

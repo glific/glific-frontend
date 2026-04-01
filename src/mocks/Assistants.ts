@@ -327,7 +327,7 @@ export const mockVersions = [
     settings: { temperature: 0.5 },
     status: 'ready',
     isLive: false,
-    description: null,
+    description: undefined,
     insertedAt: '2024-10-17T15:00:00Z',
     updatedAt: '2024-10-17T15:00:00Z',
   },
@@ -404,6 +404,7 @@ export const ASSISTANT_DETAIL_SET_LIVE_MOCKS = [
   getAssistantVersions('1'),
   getAssistantVersions('1'),
   setLiveVersion('1', 'v2', 2),
+  getAssistantVersions('1', { liveVersionNumber: 2 }),
 ];
 
 export const ASSISTANT_DETAIL_SAVE_MOCKS = [
@@ -421,6 +422,7 @@ export const ASSISTANT_DETAIL_SAVE_MOCKS = [
           instructions: 'Updated instructions',
           model: 'gpt-4o',
           temperature: 1,
+          description: 'Initial version',
           knowledgeBaseVersionId: 'llm-vs-1',
         },
       },
@@ -469,6 +471,28 @@ const cloneAssistantErrorMock = (id: string) => ({
     },
   },
 });
+
+export const createAssistantConfigMock = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        name: 'My Assistant',
+        instructions: 'Test instructions',
+        model: 'gpt-4o',
+        temperature: 0.1,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: { id: '5', name: 'My Assistant' },
+        errors: [],
+      },
+    },
+  },
+};
 
 export const clonePendingMocks = [
   getAssistantsList(3, 'pending'),
