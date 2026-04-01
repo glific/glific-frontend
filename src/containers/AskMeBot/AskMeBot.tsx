@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -8,16 +9,14 @@ import SettingsOverscanIcon from '@mui/icons-material/SettingsOverscan';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
-import { Divider, Fab, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
-import axios from 'axios';
+import { Fab, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 
 import AskMeBotIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
-import { ASK_ME_BOT_ENDPOINT } from 'config';
-import { getAuthSession } from 'services/AuthService';
+import { ASK_ME_BOT } from 'graphql/mutations/AskMeBot';
 import styles from './AskMeBot.module.css';
 
 interface Message {
@@ -28,11 +27,6 @@ interface Message {
   feedback?: 'up' | 'down' | null;
 }
 
-interface StoredMessages {
-  messages: Message[];
-  createdAt: string;
-}
-
 interface ChatHistoryItem {
   id: string;
   title: string;
@@ -41,8 +35,6 @@ interface ChatHistoryItem {
 }
 
 type DisplayMode = 'floating' | 'sidebar' | 'fullscreen';
-
-const MESSAGE_EXPIRY_HOURS = 24;
 
 const QUICK_SUGGESTIONS = [
   'Create your first chatbot',
@@ -64,15 +56,17 @@ export const AskMeBot = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isThreadExpiredState, setIsThreadExpiredState] = useState(false);
   const [displayMode, setDisplayMode] = useState<DisplayMode>('floating');
   const [displayMenuAnchor, setDisplayMenuAnchor] = useState<null | HTMLElement>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [historyAnchor, setHistoryAnchor] = useState<null | HTMLElement>(null);
   const [chatHistory] = useState<ChatHistoryItem[]>(MOCK_CHAT_HISTORY);
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [askMeBot] = useMutation(ASK_ME_BOT);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -81,13 +75,6 @@ export const AskMeBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading, open]);
-
-  const isThreadExpired = (createdAt: string): boolean => {
-    const createdDate = new Date(createdAt);
-    const now = new Date();
-    const hoursDiff = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60);
-    return hoursDiff >= MESSAGE_EXPIRY_HOURS;
-  };
 
   const handleOk = () => {
     if (!message.trim()) return;
@@ -115,53 +102,50 @@ export const AskMeBot = () => {
   const handleSendMessage = async (msg: Message, currentMessages = messages) => {
     setIsLoading(true);
 
-    let messagesToSend;
-    if (isThreadExpiredState) {
-      messagesToSend = [{ role: msg.role, content: msg.content }];
-    } else {
-      const cleanedMessages = currentMessages.map(({ prompt, timestamp, feedback, ...rest }) => rest);
-      messagesToSend = cleanedMessages.slice(-10);
-    }
-
     try {
-      const response = await axios.post(
-        ASK_ME_BOT_ENDPOINT,
-        {
-          input: messagesToSend.filter((m) => m.role === 'user' || m.role === 'system'),
-        },
-        {
-          headers: {
-            Authorization: getAuthSession('access_token'),
-            'Content-Type': 'application/json',
+      const { data } = await askMeBot({
+        variables: {
+          input: {
+            query: msg.content,
+            conversationId: conversationId || '',
           },
-        }
-      );
+        },
+      });
+
+      const result = data?.askmeBot;
+
+      if (result?.errors?.length) {
+        const errorMessage: Message = {
+          role: 'error',
+          content: result.errors[0].message,
+          timestamp: new Date(),
+        };
+        setMessages([...currentMessages, errorMessage]);
+        return;
+      }
+
+      if (result?.conversationId) {
+        setConversationId(result.conversationId);
+      }
 
       const newMessages: Message[] = [
         ...currentMessages,
         {
           role: 'system',
-          content: response.data.response,
+          content: result?.answer || '',
           timestamp: new Date(),
           feedback: null,
         },
       ];
 
       setMessages(newMessages);
-
-      if (isThreadExpiredState) {
-        setIsThreadExpiredState(false);
-      }
-
-      return response.data;
-    } catch (error: any) {
+    } catch {
       const errorMessage: Message = {
         role: 'error',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
         timestamp: new Date(),
       };
       setMessages([...currentMessages, errorMessage]);
-      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -169,8 +153,7 @@ export const AskMeBot = () => {
 
   const handleNewChat = () => {
     setMessages([]);
-    setIsThreadExpiredState(false);
-    localStorage.removeItem('askMeBotHistory');
+    setConversationId(null);
   };
 
   const handleFeedback = (index: number, type: 'up' | 'down') => {
@@ -208,39 +191,6 @@ export const AskMeBot = () => {
       textAreaRef.current.style.height = Math.min(textAreaRef.current.scrollHeight, 120) + 'px';
     }
   }, [message]);
-
-  // Load from localStorage
-  useEffect(() => {
-    const localStorageData = localStorage.getItem('askMeBotHistory');
-    if (localStorageData) {
-      try {
-        const storedData: StoredMessages = JSON.parse(localStorageData);
-        if (isThreadExpired(storedData.createdAt)) {
-          setMessages(storedData.messages);
-          setIsThreadExpiredState(true);
-        } else {
-          setMessages(storedData.messages);
-          setIsThreadExpiredState(false);
-        }
-      } catch {
-        setMessages([]);
-        setIsThreadExpiredState(false);
-      }
-    }
-  }, []);
-
-  // Save to localStorage
-  useEffect(() => {
-    if (messages.length > 0 && messages.some((m) => !m.prompt)) {
-      const dataToStore: StoredMessages = {
-        messages,
-        createdAt: isThreadExpiredState
-          ? new Date().toISOString()
-          : JSON.parse(localStorage.getItem('askMeBotHistory') || '{}').createdAt || new Date().toISOString(),
-      };
-      localStorage.setItem('askMeBotHistory', JSON.stringify(dataToStore));
-    }
-  }, [messages, isThreadExpiredState]);
 
   const wrapperClass =
     displayMode === 'sidebar'
@@ -501,11 +451,6 @@ export const AskMeBot = () => {
                     <SettingsOverscanIcon className={styles.LoadingIcon} />
                     <span>thinking...</span>
                   </div>
-                )}
-                {isThreadExpiredState && !isLoading && (
-                  <Divider>
-                    <span className={styles.Divider}>Conversation Expired. Start a new conversation.</span>
-                  </Divider>
                 )}
                 <div ref={messagesEndRef} />
               </div>
