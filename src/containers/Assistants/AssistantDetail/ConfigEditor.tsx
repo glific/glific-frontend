@@ -33,6 +33,7 @@ interface ConfigEditorProps {
   newVersionInProgress: boolean;
   onSaved: (newId?: string) => void;
   onUnsavedChange?: (hasChanges: boolean) => void;
+  onCancel?: () => void;
   createMode?: boolean;
 }
 
@@ -66,6 +67,7 @@ export const ConfigEditor = ({
   newVersionInProgress,
   onSaved,
   onUnsavedChange,
+  onCancel,
   createMode = false,
 }: ConfigEditorProps) => {
   const { t } = useTranslation();
@@ -300,19 +302,16 @@ export const ConfigEditor = ({
   return (
     <FormikProvider value={formik}>
       <div className={styles.Container} data-testid="configEditorContainer">
-
         {/* Header */}
-        <div className={styles.Header}>
-          <span className={styles.Breadcrumb}>
-            {createMode ? t('New Assistant') : `${assistantName} / ${t('Version')} ${version?.versionNumber}`}
-          </span>
-          <div className={styles.HeaderActions}>
-            {hasUnsavedChanges && (
-              <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
-                {t('Unsaved changes')}
-              </span>
-            )}
-            {!createMode && (
+        {!createMode && (
+          <div className={styles.Header}>
+            <span className={styles.Breadcrumb}>{`${assistantName} / ${t('Version')} ${version?.versionNumber}`}</span>
+            <div className={styles.HeaderActions}>
+              {hasUnsavedChanges && (
+                <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
+                  {t('Unsaved changes')}
+                </span>
+              )}
               <Tooltip
                 title={version?.isLive ? t('This version is already live') : t('Set this version as LIVE tooltip')}
                 arrow
@@ -329,29 +328,38 @@ export const ConfigEditor = ({
                   </Button>
                 </span>
               </Tooltip>
-            )}
-            <Tooltip
-              title={
-                createMode
-                  ? ''
-                  : t("Save your work as a new version. This version won't be used in flows until you set it as live.")
-              }
-              arrow
-            >
-              <span>
-                <Button
-                  variant="contained"
-                  data-testid="saveVersionButton"
-                  onClick={formik.submitForm}
-                  loading={savingChanges || creating}
-                  disabled={newVersionInProgress || savingChanges || creating}
-                >
-                  {createMode ? t('Create') : t('Save')}
-                </Button>
-              </span>
-            </Tooltip>
+              <Tooltip
+                title={t(
+                  "Save your work as a new version. This version won't be used in flows until you set it as live."
+                )}
+                arrow
+              >
+                <span>
+                  <Button
+                    variant="contained"
+                    data-testid="saveVersionButton"
+                    onClick={formik.submitForm}
+                    loading={savingChanges || creating}
+                    disabled={newVersionInProgress || savingChanges || creating}
+                  >
+                    {t('Save')}
+                  </Button>
+                </span>
+              </Tooltip>
+            </div>
           </div>
-        </div>
+        )}
+
+        {createMode && (
+          <div className={styles.CreateActions}>
+            <Button variant="outlined" onClick={onCancel}>
+              {t('Cancel')}
+            </Button>
+            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
+              {t('Save')}
+            </Button>
+          </div>
+        )}
 
         {/* Form */}
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="configEditorForm">

@@ -1,5 +1,5 @@
 .Container {
-  padding: 0 2rem 2rem 2rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   height: 100%;
   position: relative;
   display: flex;
@@ -55,6 +55,16 @@
   gap: 0.75rem;
 }
 
+.CreateActions {
+  position: fixed;
+  top: 120px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 1100;
+}
+
 .Form {
   flex: 1;
   overflow-y: scroll;
@@ -68,8 +78,8 @@
 .FormFields {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
-  padding-bottom: 2rem;
+  row-gap: 0.75rem;
+  padding-bottom: 1.5rem;
 }
 
 .FormSection {
@@ -79,9 +89,9 @@
 
 .Label {
   color: #555;
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 /* Instructions modal */

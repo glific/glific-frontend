@@ -4,6 +4,7 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .AssistantId {
@@ -31,9 +32,10 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  max-width: 720px;
+  max-width: 560px;
   width: 100%;
 }
+
 
 /* ── Two-panel body ────────────────────────────────── */
 .Body {

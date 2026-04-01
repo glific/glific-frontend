@@ -86,7 +86,10 @@ export const AssistantDetail = () => {
 
   return (
     <div className={styles.Page} data-testid="assistantDetailContainer">
-      <Heading formTitle={isCreateMode ? t('Create Assistant') : (assistantData?.name ?? '')} backLink="/assistants" />
+      <Heading
+        formTitle={isCreateMode ? t('Create New Assistant') : (assistantData?.name ?? '')}
+        backLink="/assistants"
+      />
 
       {!isCreateMode && assistantData?.assistantId && (
         <span
@@ -110,6 +113,7 @@ export const AssistantDetail = () => {
             vectorStore={null}
             newVersionInProgress={false}
             onSaved={handleSaved}
+            onCancel={() => navigate('/assistants')}
             createMode
           />
         </div>
