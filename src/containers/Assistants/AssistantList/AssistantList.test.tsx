@@ -4,68 +4,11 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import * as Utils from 'common/utils';
-import { DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { FILTER_ASSISTANTS, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
+import { countAssistantsMock, filterAssistantsMock } from 'mocks/Assistants';
 
 import AssistantList from './AssistantList';
 
-const filterMock = {
-  request: {
-    query: FILTER_ASSISTANTS,
-    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' } },
-  },
-  result: {
-    data: {
-      assistants: [
-        {
-          id: '1',
-          name: 'Assistant-1',
-          assistantDisplayId: 'asst_abc123',
-          liveVersionNumber: 3,
-          updatedAt: '2024-10-16T15:58:26Z',
-          insertedAt: '2024-10-16T15:58:26Z',
-          status: 'active',
-          cloneStatus: 'none',
-        },
-        {
-          id: '2',
-          name: 'Assistant-2',
-          assistantDisplayId: 'asst_def456',
-          liveVersionNumber: null,
-          updatedAt: '2024-10-17T10:00:00Z',
-          insertedAt: '2024-10-17T10:00:00Z',
-          status: 'active',
-          cloneStatus: 'none',
-        },
-      ],
-    },
-  },
-};
-
-const countMock = {
-  request: {
-    query: GET_ASSISTANTS_COUNT,
-    variables: { filter: {} },
-  },
-  result: { data: { countAssistants: 2 } },
-};
-
-const deleteMock = {
-  request: {
-    query: DELETE_ASSISTANT,
-    variables: { deleteAssistantId: '1' },
-  },
-  result: {
-    data: {
-      deleteAssistant: {
-        assistant: { assistantId: '1', name: 'Assistant-1' },
-        errors: null,
-      },
-    },
-  },
-};
-
-const renderAssistantList = (mocks: any[] = [filterMock, countMock]) =>
+const renderAssistantList = (mocks: any[] = [filterAssistantsMock, countAssistantsMock]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={['/assistants-new']}>

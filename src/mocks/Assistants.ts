@@ -7,7 +7,13 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_ASSISTANTS } from 'graphql/queries/Assistant';
+import {
+  FILTER_ASSISTANTS,
+  GET_ASSISTANT,
+  GET_ASSISTANT_VERSIONS,
+  GET_ASSISTANTS,
+  GET_ASSISTANTS_COUNT,
+} from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3, cloneStatus: string = 'none') => ({
   request: {
@@ -516,6 +522,47 @@ export const updateAssistantErrorMock = {
       },
     },
   },
+};
+
+export const filterAssistantsMock = {
+  request: {
+    query: FILTER_ASSISTANTS,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' } },
+  },
+  result: {
+    data: {
+      assistants: [
+        {
+          id: '1',
+          name: 'Assistant-1',
+          assistantDisplayId: 'asst_abc123',
+          liveVersionNumber: 3,
+          updatedAt: '2024-10-16T15:58:26Z',
+          insertedAt: '2024-10-16T15:58:26Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+        {
+          id: '2',
+          name: 'Assistant-2',
+          assistantDisplayId: 'asst_def456',
+          liveVersionNumber: null,
+          updatedAt: '2024-10-17T10:00:00Z',
+          insertedAt: '2024-10-17T10:00:00Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+      ],
+    },
+  },
+};
+
+export const countAssistantsMock = {
+  request: {
+    query: GET_ASSISTANTS_COUNT,
+    variables: { filter: {} },
+  },
+  result: { data: { countAssistants: 2 } },
 };
 
 export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
