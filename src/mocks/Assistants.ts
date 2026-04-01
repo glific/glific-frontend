@@ -306,6 +306,33 @@ export const unknownModelMocks = [
   getAssistant('1', { model: 'o3-mini' }),
   getAssistant('1', { model: 'o3-mini' }),
 ];
+export const mockVersions = [
+  {
+    id: 'v1',
+    versionNumber: 1,
+    model: 'gpt-4o',
+    prompt: 'You are a helpful assistant.',
+    settings: { temperature: 1 },
+    status: 'ready',
+    isLive: true,
+    description: 'Initial version',
+    insertedAt: '2024-10-16T15:00:00Z',
+    updatedAt: '2024-10-16T15:00:00Z',
+  },
+  {
+    id: 'v2',
+    versionNumber: 2,
+    model: 'gpt-4o-mini',
+    prompt: 'You are a helpful assistant v2.',
+    settings: { temperature: 0.5 },
+    status: 'ready',
+    isLive: false,
+    description: null,
+    insertedAt: '2024-10-17T15:00:00Z',
+    updatedAt: '2024-10-17T15:00:00Z',
+  },
+];
+
 const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber?: number }) => ({
   request: {
     query: GET_ASSISTANT_VERSIONS,

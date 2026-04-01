@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Modal } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
@@ -33,6 +33,12 @@ export const AssistantDetail = () => {
 
   const isCreateMode = assistantId === 'add';
 
+  useEffect(() => {
+    if (!assistantId) {
+      navigate('/assistants');
+    }
+  }, [assistantId]);
+
   const { loading, data } = useQuery(GET_ASSISTANT, {
     variables: { assistantId },
     fetchPolicy: 'network-only',
@@ -42,7 +48,6 @@ export const AssistantDetail = () => {
   const assistantData = data?.assistant?.assistant;
 
   if (!assistantId) {
-    navigate('/assistants');
     return null;
   }
 
