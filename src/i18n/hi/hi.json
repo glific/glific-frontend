@@ -463,6 +463,8 @@
   "App name is required.": "ऐप का नाम आवश्यक है.",
   "API key is required.": "एपीआई कुंजी आवश्यक है.",
   "Please agree to the terms and conditions.": "कृपया नियम व शर्तों की सहमति दें।",
+  "New Assistant": "नया असिस्टेंट",
+  "A new version is being created": "एक नया संस्करण बनाया जा रहा है",
   "Versions": "संस्करण",
   "No versions found": "कोई संस्करण नहीं मिला",
   "Version": "संस्करण",

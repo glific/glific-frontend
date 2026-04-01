@@ -370,7 +370,7 @@ const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber
   },
 });
 
-const setLiveVersion = (assistantId: string, versionId: string) => ({
+const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumber: number) => ({
   request: {
     query: SET_LIVE_VERSION,
     variables: { assistantId, versionId },
@@ -381,7 +381,7 @@ const setLiveVersion = (assistantId: string, versionId: string) => ({
         assistant: {
           id: assistantId,
           activeConfigVersionId: versionId,
-          liveVersionNumber: 2,
+          liveVersionNumber,
         },
         errors: null,
       },
@@ -403,7 +403,7 @@ export const ASSISTANT_DETAIL_SET_LIVE_MOCKS = [
   getAssistantVersions('1'),
   getAssistantVersions('1'),
   getAssistantVersions('1'),
-  setLiveVersion('1', 'v2'),
+  setLiveVersion('1', 'v2', 2),
 ];
 
 export const ASSISTANT_DETAIL_SAVE_MOCKS = [
