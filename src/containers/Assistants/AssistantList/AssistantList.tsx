@@ -100,7 +100,7 @@ export const AssistantList = () => {
       button={{
         show: true,
         label: t('Create New Assistant'),
-        action: () => navigate('/assistants-new/add'),
+        action: () => navigate('/assistant-new/add'),
       }}
       editSupport={false}
     />
