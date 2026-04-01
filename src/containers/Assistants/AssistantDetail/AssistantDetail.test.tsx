@@ -62,10 +62,10 @@ test('clicking a version card loads its data into the config editor', async () =
     expect(screen.getAllByTestId('versionCard')).toHaveLength(2);
   });
 
-  fireEvent.click(screen.getAllByTestId('versionCard')[1]);
+  fireEvent.click(screen.getAllByTestId('versionCard')[0]);
 
   await waitFor(() => {
-    expect(screen.getByTestId('configEditorContainer')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 2')).toBeInTheDocument();
   });
 });
 
@@ -73,12 +73,7 @@ test('config editor shows the correct breadcrumb for selected version', async ()
   renderAssistantDetail();
 
   await waitFor(() => {
-    expect(screen.getByTestId('configEditorContainer')).toBeInTheDocument();
-  });
-
-  // Title bar shows assistant name and breadcrumb inside config editor also references it
-  await waitFor(() => {
-    expect(screen.getAllByText(/Assistant-405db438/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Assistant-405db438 / Version 1')).toBeInTheDocument();
   });
 });
 

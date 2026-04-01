@@ -35,7 +35,7 @@ export const AssistantDetail = () => {
 
   useEffect(() => {
     if (!assistantId) {
-      navigate('/assistants');
+      navigate('/assistants-new');
     }
   }, [assistantId]);
 
@@ -93,7 +93,7 @@ export const AssistantDetail = () => {
     <div className={styles.Page} data-testid="assistantDetailContainer">
       <Heading
         formTitle={isCreateMode ? t('Create New Assistant') : (assistantData?.name ?? '')}
-        backLink="/assistants"
+        backLink="/assistants-new"
       />
 
       {!isCreateMode && assistantData?.assistantId && (
