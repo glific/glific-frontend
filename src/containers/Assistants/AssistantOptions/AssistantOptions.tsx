@@ -515,8 +515,8 @@ export const AssistantOptions = ({
           {isLegacyVectorStore ? (
             <p data-testid="readOnlyNote" className={styles.ReadOnlyNote}>
               This assistant was created before 10/03/2026. Knowledge base files for old assistants are read-only. You
-              can still make changes by creating a new assistant, copying the prompt and other settings, and
-              re-uploading the files there.
+              can edit Knowledge base by cloning this assistant. It will copy the prompt and other settings, and
+              re-upload the files in the new assistant.
             </p>
           ) : (
             <Button className="Container" fullWidth component="label" variant="text" tabIndex={-1}>
@@ -652,8 +652,8 @@ export const AssistantOptions = ({
         {isLegacyVectorStore && (
           <p className={styles.ReadOnlyNote}>
             This assistant was created before 10/03/2026. Knowledge base files for old assistants are read-only. You can
-            still make changes by creating a new assistant, copying the prompt and other settings, and re-uploading the
-            files there.
+            edit Knowledge base by cloning this assistant. It will copy the prompt and other settings, and re-upload the
+            files in the new assistant.
           </p>
         )}
       </div>

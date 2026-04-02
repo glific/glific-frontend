@@ -1,0 +1,126 @@
+import { useQuery } from '@apollo/client';
+import { Chip } from '@mui/material';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
+
+import styles from './VersionPanel.module.css';
+
+dayjs.extend(relativeTime);
+
+export interface AssistantVersion {
+  id: string;
+  versionNumber: number;
+  model: string;
+  prompt: string;
+  settings: any;
+  status: string;
+  isLive: boolean;
+  description?: string;
+  insertedAt: string;
+  updatedAt: string;
+}
+
+interface VersionPanelProps {
+  assistantId: string;
+  selectedVersionId: string | null;
+  onSelectVersion: (version: AssistantVersion) => void;
+  onRefetchSelect?: (version: AssistantVersion) => void;
+  refetchTrigger?: number;
+}
+
+const statusMap: Record<string, { label: string; styleKey: string }> = {
+  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
+  failed: { label: 'Failed', styleKey: 'Failed' },
+  ready: { label: 'Ready', styleKey: 'Ready' },
+};
+
+export const VersionPanel = ({
+  assistantId,
+  selectedVersionId,
+  onSelectVersion,
+  onRefetchSelect,
+  refetchTrigger = 0,
+}: VersionPanelProps) => {
+  const { t } = useTranslation();
+  const initialSelectionDone = useRef(false);
+  const prevTrigger = useRef(0);
+
+  const { data, refetch } = useQuery(GET_ASSISTANT_VERSIONS, {
+    variables: { assistantId },
+    fetchPolicy: 'network-only',
+  });
+
+  const versions: AssistantVersion[] = data?.assistantVersions ?? [];
+  const sorted = [...versions].sort((a, b) => b.versionNumber - a.versionNumber);
+
+  // Initial auto-select
+  useEffect(() => {
+    if (versions.length === 0 || initialSelectionDone.current) return;
+    initialSelectionDone.current = true;
+    const live = versions.find((v) => v.isLive) ?? sorted[0];
+    onSelectVersion(live);
+  }, [data]);
+
+  // Refetch when trigger changes, then select latest bypassing unsaved-changes guard
+  useEffect(() => {
+    if (refetchTrigger === 0 || refetchTrigger === prevTrigger.current) return;
+    prevTrigger.current = refetchTrigger;
+    refetch().then(({ data: newData }) => {
+      if (!newData) return;
+      const newVersions: AssistantVersion[] = newData.assistantVersions ?? [];
+      const latest = [...newVersions].sort((a, b) => b.versionNumber - a.versionNumber)[0];
+      if (latest) (onRefetchSelect ?? onSelectVersion)(latest);
+    });
+  }, [refetchTrigger]);
+
+  return (
+    <div className={styles.Container}>
+      <div className={styles.List}>
+        {sorted.length === 0 ? (
+          <p className={styles.Empty}>{t('No versions found')}</p>
+        ) : (
+          sorted.map((version) => (
+            <div
+              key={version.id}
+              data-testid="versionCard"
+              className={`${styles.Card} ${selectedVersionId === version.id ? styles.Selected : ''}`}
+              onClick={() => onSelectVersion(version)}
+            >
+              <div className={styles.CardHeader}>
+                <div className={styles.CardLeft}>
+                  <span className={styles.VersionNumber}>
+                    {t('Version')} {version.versionNumber}
+                  </span>
+                  {version.isLive && (
+                    <Chip data-testid="liveBadge" label={t('LIVE')} size="small" className={styles.LiveBadge} />
+                  )}
+                  {version.status && statusMap[version.status] && (
+                    <Chip
+                      data-testid="versionStatus"
+                      label={statusMap[version.status].label}
+                      size="small"
+                      className={`${styles.StatusChip} ${styles[statusMap[version.status].styleKey]}`}
+                    />
+                  )}
+                </div>
+                <span className={styles.Time}>{dayjs(version.insertedAt).fromNow()}</span>
+              </div>
+              <span className={styles.Model}>
+                {version.model}
+                {version.description && (
+                  <span className={styles.Description}> · {version.description}</span>
+                )}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default VersionPanel;
