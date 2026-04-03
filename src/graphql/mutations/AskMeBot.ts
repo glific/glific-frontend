@@ -5,6 +5,7 @@ export const ASK_ME_BOT = gql`
     askmeBot(input: $input) {
       answer
       conversationId
+      conversationName
       errors {
         message
       }

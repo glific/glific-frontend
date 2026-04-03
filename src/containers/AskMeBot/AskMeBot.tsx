@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -17,6 +17,7 @@ import AskMeBotIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
 import { ASK_ME_BOT } from 'graphql/mutations/AskMeBot';
+import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskMeBot';
 import styles from './AskMeBot.module.css';
 
 interface Message {
@@ -25,6 +26,14 @@ interface Message {
   timestamp?: Date;
   prompt?: boolean;
   feedback?: 'up' | 'down' | null;
+}
+
+interface DifyConversation {
+  id: string;
+  name: string;
+  status: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 interface ChatHistoryItem {
@@ -43,13 +52,34 @@ const QUICK_SUGGESTIONS = [
   'Run a survey using WA forms',
 ];
 
-// Mock chat history data — will be replaced with API call
-const MOCK_CHAT_HISTORY: ChatHistoryItem[] = [
-  { id: '1', title: 'Create Chatbot', timeAgo: '2 mins. ago', date: 'Today' },
-  { id: '2', title: 'Testing flows', timeAgo: '10 mins. ago', date: 'Today' },
-  { id: '3', title: 'HSM Templates', timeAgo: '2 hours ago', date: 'Today' },
-  { id: '4', title: 'Bulk messaging setup', timeAgo: 'Yesterday', date: 'Yesterday' },
-];
+const formatTimeAgo = (timestamp: number): string => {
+  const now = Date.now() / 1000;
+  const diff = now - timestamp;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)} mins. ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+  if (diff < 172800) return 'Yesterday';
+  return new Date(timestamp * 1000).toLocaleDateString();
+};
+
+const getDateLabel = (timestamp: number): string => {
+  const date = new Date(timestamp * 1000);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) return 'Today';
+  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return date.toLocaleDateString();
+};
+
+const toHistoryItems = (conversations: DifyConversation[]): ChatHistoryItem[] =>
+  conversations.map((conv) => ({
+    id: conv.id,
+    title: conv.name || 'Untitled',
+    timeAgo: formatTimeAgo(conv.updatedAt || conv.createdAt),
+    date: getDateLabel(conv.updatedAt || conv.createdAt),
+  }));
 
 export const AskMeBot = () => {
   const [open, setOpen] = useState(false);
@@ -60,17 +90,144 @@ export const AskMeBot = () => {
   const [displayMenuAnchor, setDisplayMenuAnchor] = useState<null | HTMLElement>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [historyAnchor, setHistoryAnchor] = useState<null | HTMLElement>(null);
-  const [chatHistory] = useState<ChatHistoryItem[]>(MOCK_CHAT_HISTORY);
+  const [chatHistory, setChatHistory] = useState<ChatHistoryItem[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [conversationName, setConversationName] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const [hasMoreConversations, setHasMoreConversations] = useState(false);
+  const [lastConversationId, setLastConversationId] = useState('');
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
+  const [firstMessageId, setFirstMessageId] = useState('');
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
   const [askMeBot] = useMutation(ASK_ME_BOT);
+  const [fetchConversations] = useLazyQuery(GET_ASKME_BOT_CONVERSATIONS, {
+    fetchPolicy: 'network-only',
+  });
+  const [fetchMessages] = useLazyQuery(GET_ASKME_BOT_MESSAGES, {
+    fetchPolicy: 'network-only',
+  });
+
+  const loadConversations = async (append = false) => {
+    const { data } = await fetchConversations({
+      variables: { limit: 10, lastId: append ? lastConversationId : '' },
+    });
+    const result = data?.askmeBotConversations;
+    const conversations: DifyConversation[] = result?.conversations || [];
+    const newItems = toHistoryItems(conversations);
+
+    setChatHistory((prev) => (append ? [...prev, ...newItems] : newItems));
+    setHasMoreConversations(result?.hasMore || false);
+    if (conversations.length > 0) {
+      setLastConversationId(conversations[conversations.length - 1].id);
+    }
+  };
+
+  const handleSelectConversation = async (selectedConversationId: string) => {
+    const selected = chatHistory.find((item) => item.id === selectedConversationId);
+    setConversationId(selectedConversationId);
+    setConversationName(selected?.title || null);
+    setIsLoadingHistory(true);
+    setMessages([]);
+    setShowHistory(false);
+    setHistoryAnchor(null);
+
+    try {
+      const { data } = await fetchMessages({
+        variables: { conversationId: selectedConversationId, limit: 50 },
+      });
+      const result = data?.askmeBotMessages;
+      const difyMessages = result?.messages || [];
+
+      const loadedMessages: Message[] = difyMessages.flatMap(
+        (msg: { query: string; answer: string; createdAt: number }) => {
+          const items: Message[] = [];
+          if (msg.query) {
+            items.push({
+              role: 'user',
+              content: msg.query,
+              timestamp: new Date(msg.createdAt * 1000),
+            });
+          }
+          if (msg.answer) {
+            items.push({
+              role: 'system',
+              content: msg.answer,
+              timestamp: new Date(msg.createdAt * 1000),
+              feedback: null,
+            });
+          }
+          return items;
+        }
+      );
+
+      setMessages(loadedMessages);
+      setHasMoreMessages(result?.hasMore || false);
+      if (difyMessages.length > 0) {
+        setFirstMessageId(difyMessages[0].id);
+      }
+    } catch {
+      setMessages([{ role: 'error', content: 'Failed to load conversation history.', timestamp: new Date() }]);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const loadMoreMessages = async () => {
+    if (!conversationId || !hasMoreMessages || isLoadingHistory) return;
+    setIsLoadingHistory(true);
+
+    try {
+      const { data } = await fetchMessages({
+        variables: { conversationId, limit: 50, firstId: firstMessageId },
+      });
+      const result = data?.askmeBotMessages;
+      const difyMessages = result?.messages || [];
+
+      const olderMessages: Message[] = difyMessages.flatMap(
+        (msg: { query: string; answer: string; createdAt: number }) => {
+          const items: Message[] = [];
+          if (msg.query) {
+            items.push({
+              role: 'user',
+              content: msg.query,
+              timestamp: new Date(msg.createdAt * 1000),
+            });
+          }
+          if (msg.answer) {
+            items.push({
+              role: 'system',
+              content: msg.answer,
+              timestamp: new Date(msg.createdAt * 1000),
+              feedback: null,
+            });
+          }
+          return items;
+        }
+      );
+
+      setMessages((prev) => [...olderMessages, ...prev]);
+      setHasMoreMessages(result?.hasMore || false);
+      if (difyMessages.length > 0) {
+        setFirstMessageId(difyMessages[0].id);
+      }
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    if (open) {
+      loadConversations();
+    }
+  }, [open]);
 
   useEffect(() => {
     scrollToBottom();
@@ -108,6 +265,7 @@ export const AskMeBot = () => {
           input: {
             query: msg.content,
             conversationId: conversationId || '',
+            pageUrl: window.location.href,
           },
         },
       });
@@ -126,6 +284,10 @@ export const AskMeBot = () => {
 
       if (result?.conversationId) {
         setConversationId(result.conversationId);
+      }
+
+      if (result?.conversationName) {
+        setConversationName(result.conversationName);
       }
 
       const newMessages: Message[] = [
@@ -154,6 +316,9 @@ export const AskMeBot = () => {
   const handleNewChat = () => {
     setMessages([]);
     setConversationId(null);
+    setConversationName(null);
+    setHasMoreMessages(false);
+    setFirstMessageId('');
   };
 
   const handleFeedback = (index: number, type: 'up' | 'down') => {
@@ -168,6 +333,7 @@ export const AskMeBot = () => {
   };
 
   const getChatTitle = (): string => {
+    if (conversationName) return conversationName;
     const firstUserMessage = messages.find((m) => m.role === 'user' && !m.prompt);
     if (!firstUserMessage) return 'New chat';
     const title = firstUserMessage.content;
@@ -237,8 +403,8 @@ export const AskMeBot = () => {
                     {items.map((item) => (
                       <div
                         key={item.id}
-                        className={`${styles.HistoryItem} ${item.title === getChatTitle() ? styles.HistoryItemActive : ''}`}
-                        onClick={() => setShowHistory(false)}
+                        className={`${styles.HistoryItem} ${item.id === conversationId ? styles.HistoryItemActive : ''}`}
+                        onClick={() => handleSelectConversation(item.id)}
                       >
                         <div className={styles.HistoryItemContent}>
                           <span className={styles.HistoryItemTitle}>{item.title}</span>
@@ -251,6 +417,15 @@ export const AskMeBot = () => {
                     ))}
                   </div>
                 ))}
+                {hasMoreConversations && (
+                  <div
+                    className={styles.LoadMoreButton}
+                    onClick={() => loadConversations(true)}
+                    data-testid="load-more-conversations"
+                  >
+                    Load more conversations
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -290,6 +465,7 @@ export const AskMeBot = () => {
                 onClose={() => setHistoryAnchor(null)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                className={styles.HistoryDropdown}
               >
                 {Object.entries(groupedHistory).map(([date, items]) => [
                   <MenuItem key={`label-${date}`} disabled className={styles.HistoryDropdownDate}>
@@ -298,15 +474,24 @@ export const AskMeBot = () => {
                   ...items.map((item) => (
                     <MenuItem
                       key={item.id}
-                      onClick={() => setHistoryAnchor(null)}
+                      onClick={() => handleSelectConversation(item.id)}
                       className={
-                        item.title === getChatTitle() ? styles.HistoryDropdownItemActive : styles.HistoryDropdownItem
+                        item.id === conversationId ? styles.HistoryDropdownItemActive : styles.HistoryDropdownItem
                       }
                     >
                       {item.title}
                     </MenuItem>
                   )),
                 ])}
+                {hasMoreConversations && (
+                  <MenuItem
+                    onClick={() => loadConversations(true)}
+                    className={styles.HistoryDropdownItem}
+                    data-testid="load-more-conversations-dropdown"
+                  >
+                    Load more...
+                  </MenuItem>
+                )}
               </Menu>
               <div className={styles.HeaderRight}>
                 <Tooltip title="New chat">
@@ -403,6 +588,16 @@ export const AskMeBot = () => {
               </div>
             ) : (
               <div className={styles.Messages}>
+                {hasMoreMessages && (
+                  <div className={styles.LoadMoreButton} onClick={loadMoreMessages} data-testid="load-more-messages">
+                    {isLoadingHistory ? 'Loading...' : 'Load older messages'}
+                  </div>
+                )}
+                {isLoadingHistory && !hasMoreMessages && messages.length === 0 && (
+                  <div className={styles.LoadingContainer}>
+                    <span>Loading conversation...</span>
+                  </div>
+                )}
                 {messages
                   .filter((i) => !i.prompt)
                   .map((msg) => {

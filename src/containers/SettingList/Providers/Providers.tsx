@@ -156,7 +156,7 @@ export const Providers = () => {
           name: key,
           type: 'text',
           label: fields[key].label,
-          disabled: fields[key].view_only,
+          // disabled: fields[key].view_only,
           skip: fields[key].hide,
           placeholder:
             type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key) ? `Enter ${fields[key].label} here` : '',
@@ -196,7 +196,7 @@ export const Providers = () => {
               fields[key].view_only = allFieldsSet;
             }
           });
-          setIsDisabled(areAllGupshupFieldsSet(credentials));
+          // setIsDisabled(areAllGupshupFieldsSet(credentials));
         }
 
         addField(fields);
@@ -282,8 +282,8 @@ export const Providers = () => {
       noHeading
       confirmationState={getConfirmationState()}
       buttonState={{
-        text: isDisabled ? 'Credentials Locked' : 'Save',
-        status: isDisabled && type === 'gupshup',
+        // text: isDisabled ? 'Credentials Locked' : 'Save',
+        // status: isDisabled && type === 'gupshup',
         show: true,
       }}
     />
