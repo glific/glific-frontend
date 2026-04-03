@@ -397,10 +397,27 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+.HistoryDropdown {
+  /* background-color: ; */
+}
+
 .HistoryList {
   flex: 1;
   overflow-y: auto;
   padding: 0.5rem 0;
+}
+
+.LoadMoreButton {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: #119656;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.LoadMoreButton:hover {
+  text-decoration: underline;
 }
 
 .HistoryDateLabel {
