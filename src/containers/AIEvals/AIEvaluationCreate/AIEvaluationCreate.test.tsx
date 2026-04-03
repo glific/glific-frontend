@@ -7,20 +7,56 @@ import {
   createGoldenQaCustomSuccessMock,
   createGoldenQaSuccessMock,
   getAIEvaluationCreateMocks,
+  getAssistantConfigVersionsEmptyMock,
+  getAssistantConfigVersionsErrorMock,
+  getAssistantConfigVersionsLoadingMock,
+  getAssistantConfigVersionsMultipleNamesMock,
+  getAssistantConfigVersionsMock,
+  getCreateEvaluationSuccessMock,
+  getListAiEvaluationsMock,
 } from 'mocks/AIEvaluations';
-import AIEvaluationCreate, { DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
+import { setNotification } from 'common/notification';
+import AIEvaluationCreate from './AIEvaluationCreate';
 
-const defaultMocks = getAIEvaluationCreateMocks(DUMMY_GET_ITEM, DUMMY_CREATE);
+vi.mock('common/notification', () => ({
+  setNotification: vi.fn(),
+  setErrorMessage: vi.fn(),
+}));
+
+const defaultMocks = getAIEvaluationCreateMocks();
 
 const wrapper = (mocks: any[] = defaultMocks) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/ai-evaluations/create']}>
       <Routes>
         <Route path="/ai-evaluations/create" element={<AIEvaluationCreate />} />
+        <Route path="/chat" element={<div>Chat Page</div>} />
       </Routes>
     </MemoryRouter>
   </MockedProvider>
 );
+
+const fillAndSubmitForm = async (evaluationName = 'test_evaluation') => {
+  await waitFor(() => {
+    expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByPlaceholderText('Give a unique name for the evaluation experiment'), {
+    target: { value: evaluationName },
+  });
+
+  const assistantDropdown = screen.getAllByTestId('dropdown')[1];
+  const selectTrigger =
+    assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+  fireEvent.mouseDown(selectTrigger!);
+
+  await waitFor(() => {
+    expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+
+  fireEvent.click(screen.getByText('Run Evaluation'));
+};
 
 describe('AIEvaluationCreate', () => {
   beforeEach(() => {
@@ -70,9 +106,9 @@ describe('AIEvaluationCreate', () => {
       screen.getByText(/Select the Golden QA dataset from the existing list or upload a new set/)
     ).toBeInTheDocument();
     expect(screen.getByText('Expected CSV Format:')).toBeInTheDocument();
-    expect(screen.getByText('Question,Answer')).toBeInTheDocument();
-    expect(screen.getByText('What is the capital of France?,Paris')).toBeInTheDocument();
-    expect(screen.getByText('Click here for the template CSV')).toBeInTheDocument();
+    expect(screen.getByText('Question, Answer')).toBeInTheDocument();
+    expect(screen.getByText('{"What Is X"},{"Answer"}')).toBeInTheDocument();
+    expect(screen.getByText('Click Here For The Template Csv')).toBeInTheDocument();
   });
 
   test('renders Upload Golden QA button', async () => {
@@ -150,10 +186,10 @@ describe('AIEvaluationCreate', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
     fireEvent.change(nameInput, { target: { value: 'valid_name' } });
     fireEvent.click(screen.getByText('Run Evaluation'));
 
@@ -162,43 +198,53 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('shows validation error for invalid evaluation name pattern', async () => {
+  test('shows validation error when evaluation name is cleared after being typed', async () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
-    fireEvent.change(nameInput, { target: { value: 'invalid name with spaces' } });
-    fireEvent.click(screen.getByText('Run Evaluation'));
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
+    fireEvent.change(nameInput, { target: { value: 'some_name' } });
+    fireEvent.change(nameInput, { target: { value: '' } });
+    fireEvent.blur(nameInput);
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid evaluation name')).toBeInTheDocument();
+      expect(screen.getByText('Evaluation name is required')).toBeInTheDocument();
     });
   });
 
-  test('accepts valid evaluation name with alphanumeric, underscore and hyphen', async () => {
+  test('accepts any non-empty evaluation name', async () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment');
     fireEvent.change(nameInput, { target: { value: 'valid_evaluation-name123' } });
 
     expect((nameInput as HTMLInputElement).value).toBe('valid_evaluation-name123');
   });
 
-  test('shows assistant helper text', async () => {
-    render(wrapper());
+  test('shows assistant options from query using assistantName and versionNumber', async () => {
+    render(wrapper([...defaultMocks]));
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByText("This list includes all assistants and versions you've created.")).toBeInTheDocument();
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Assistant (Version 2)')).toBeInTheDocument();
+      expect(screen.getByText('Test Assistant (Version 1)')).toBeInTheDocument();
+    });
   });
 
   test('Run Evaluation submit button is visible and enabled', async () => {
@@ -208,6 +254,137 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
       expect(screen.getByTestId('submitActionButton')).toHaveTextContent('Run Evaluation');
       expect(screen.getByTestId('submitActionButton')).not.toBeDisabled();
+    });
+  });
+
+  test('shows Fetching assistants... while assistant config versions are loading', async () => {
+    const mocks = [getAssistantConfigVersionsLoadingMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Fetching assistants...')).toBeInTheDocument();
+    });
+  });
+
+  test('shows error notification when fetching assistant config versions fails', async () => {
+    render(wrapper([getAssistantConfigVersionsErrorMock]));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Failed to fetch assistants', 'warning');
+    });
+  });
+
+  test('shows No assistants available when assistant config versions list is empty', async () => {
+    const mocks = [getAssistantConfigVersionsEmptyMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('No assistants available')).toBeInTheDocument();
+    });
+  });
+
+  test('renders assistant options in the order of their version numbers', async () => {
+    render(wrapper([getAssistantConfigVersionsMultipleNamesMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      const options = screen.getAllByRole('option');
+      expect(options[0]).toHaveTextContent('Alpha Assistant (Version 1)');
+      expect(options[1]).toHaveTextContent('Beta Assistant (Version 1)');
+      expect(options[2]).toHaveTextContent('Beta Assistant (Version 2)');
+    });
+  });
+
+  test('shows all assistant config versions with correct labels for multiple assistant names', async () => {
+    const mocks = [getAssistantConfigVersionsMultipleNamesMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const dropdowns = screen.getAllByTestId('dropdown');
+    const assistantDropdown = dropdowns[1];
+    const selectTrigger =
+      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
+    fireEvent.mouseDown(selectTrigger!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 2)')).toBeInTheDocument();
+    });
+  });
+
+  test('calls createEvaluation with correct parameters when form is submitted', async () => {
+    let capturedVariables: any = null;
+    const captureMock = {
+      request: { query: getCreateEvaluationSuccessMock.request.query },
+      variableMatcher: (vars: any) => {
+        capturedVariables = vars;
+        return true;
+      },
+      result: {
+        data: {
+          createEvaluation: {
+            __typename: 'EvaluationResult',
+            evaluation: { __typename: 'CreateEvaluationResult', status: 'queued' },
+            errors: null,
+          },
+        },
+      },
+    };
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, captureMock]));
+
+    await fillAndSubmitForm('test_evaluation');
+
+    await waitFor(() => {
+      expect(capturedVariables?.input).toMatchObject({
+        datasetId: 0,
+        experimentName: 'test_evaluation',
+        configId: 'kaapi-uuid-a1',
+        configVersion: '1',
+      });
+    });
+  });
+
+  test('shows success notification and navigates to chat on successful submission', async () => {
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getCreateEvaluationSuccessMock]));
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('AI evaluation created successfully!');
+      expect(screen.getByText('Chat Page')).toBeInTheDocument();
     });
   });
 
@@ -284,8 +461,8 @@ describe('AIEvaluationCreate', () => {
     render(
       wrapper([
         ...defaultMocks,
-        createGoldenQaCustomSuccessMock('first_qa', 1),
-        createGoldenQaCustomSuccessMock('second_qa', 1),
+        createGoldenQaCustomSuccessMock('first_qa', 1, '100'),
+        createGoldenQaCustomSuccessMock('second_qa', 1, '200'),
       ])
     );
 

@@ -36,6 +36,21 @@ export const GET_ASSISTANTS_COUNT = gql`
   }
 `;
 
+export const GET_ASSISTANT_CONFIG_VERSIONS = gql`
+  query AssistantConfigVersions {
+    assistantConfigVersions {
+      id
+      assistantId
+      versionNumber
+      description
+      model
+      status
+      assistantName
+      kaapiUuid
+    }
+  }
+`;
+
 export const GET_ASSISTANT = gql`
   query Assistant($assistantId: ID!) {
     assistant(id: $assistantId) {
