@@ -4,6 +4,7 @@ import * as Notification from 'common/notification';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
+  createAssistantWithoutKBMocks,
   cloneCompletedMocks,
   cloneErrorMocks,
   cloneFailedMocks,
@@ -121,6 +122,39 @@ test('it creates an assistant', async () => {
   });
 
   fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
+  });
+});
+
+test('it creates an assistant without a knowledge base', async () => {
+  render(assistantsComponent(createAssistantWithoutKBMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[1], { target: { value: 'test name' } });
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(autocompletes[0], { key: 'Enter' });
+  autocompletes[0].focus();
+  fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.click(screen.getByTestId('submitAction'));
 
