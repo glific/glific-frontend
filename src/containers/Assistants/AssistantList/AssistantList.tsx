@@ -48,7 +48,7 @@ export const AssistantList = () => {
   const { t } = useTranslation();
 
   const handleEdit = (id: string) => {
-    navigate(`/assistants-new/${id}`);
+    navigate(`/assistant-new/${id}`);
   };
 
   const getColumns = ({ id, name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
@@ -100,7 +100,7 @@ export const AssistantList = () => {
       button={{
         show: true,
         label: t('Create New Assistant'),
-        action: () => navigate('/assistants-new/add'),
+        action: () => navigate('/assistant-new/add'),
       }}
       editSupport={false}
     />
