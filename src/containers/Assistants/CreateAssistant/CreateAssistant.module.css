@@ -168,6 +168,16 @@
   left: 1.5rem;
 }
 
+.CloneButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.CloneSpinner {
+  margin-left: 0.5rem;
+}
+
 .UnsavedIndicator {
   display: flex;
   align-items: center;
