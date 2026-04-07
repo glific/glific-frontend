@@ -20,10 +20,10 @@ const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId = '1') =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={[`/assistant-new/${assistantId}`]}>
+      <MemoryRouter initialEntries={[`/assistants/${assistantId}`]}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants-new" element={<div data-testid="assistants-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -32,10 +32,10 @@ const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId 
 const renderCreateMode = (mocks: any = []) =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={['/assistant-new/add']}>
+      <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants-new" element={<div data-testid="assistants-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -165,7 +165,7 @@ test('create mode shows Cancel and Save buttons', async () => {
   });
 });
 
-test('cancel button in create mode navigates to /assistants-new', async () => {
+test('cancel button in create mode navigates to /assistants', async () => {
   renderCreateMode();
 
   await waitFor(() => {
@@ -319,9 +319,9 @@ test('create mode save navigates to the new assistant page', async () => {
   render(
     <MockedProvider
       mocks={[createAssistantSuccessMock, getAssistant('99')]}>
-      <MemoryRouter initialEntries={['/assistant-new/add']}>
+      <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
