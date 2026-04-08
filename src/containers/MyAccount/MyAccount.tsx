@@ -16,6 +16,7 @@ import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
+import { setNotification } from 'common/notification';
 import styles from './MyAccount.module.css';
 import { Heading } from 'components/UI/Heading/Heading';
 
@@ -35,8 +36,6 @@ export const MyAccount = () => {
   // user language selection
   const [userLanguage, setUserLanguage] = useState('');
 
-  const [message, setMessage] = useState<string>('');
-
   const client = useApolloClient();
 
   // get the information on current user
@@ -47,7 +46,7 @@ export const MyAccount = () => {
 
   const { t, i18n } = useTranslation();
 
-  // set the mutation to update the logged in user password
+  // mutation to update password (requires OTP)
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
       if (data.updateCurrentUser.errors && data.updateCurrentUser.errors.length > 0) {
@@ -66,8 +65,21 @@ export const MyAccount = () => {
           });
         }
       } else {
+        // reset the password section back to initial state
         setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message });
+        setToastMessageInfo({ severity: 'success', message: t('Password updated successfully!') });
+      }
+    },
+  });
+
+  // separate mutation for profile (name/email) updates — does not affect password/OTP state
+  const [updateUserProfile] = useMutation(UPDATE_CURRENT_USER, {
+    onCompleted: (data) => {
+      if (data.updateCurrentUser.errors && data.updateCurrentUser.errors.length > 0) {
+        const error = data.updateCurrentUser.errors[0];
+        setNotification(t(error.message), 'warning');
+      } else {
+        setNotification(t('Profile updated successfully!'));
       }
     },
   });
@@ -108,9 +120,8 @@ export const MyAccount = () => {
     setRedirectToChat(true);
   };
 
-  // save the form if data is valid
+  // save the password form
   const saveHandler = (item: any) => {
-    setMessage(t('Password updated successfully!'));
     updateCurrentUser({
       variables: { input: item },
     });
@@ -177,8 +188,7 @@ export const MyAccount = () => {
       enableReinitialize
       validationSchema={UserFormSchema}
       onSubmit={(values) => {
-        setMessage(t('Password updated successfully!'));
-        updateCurrentUser({
+        updateUserProfile({
           variables: { input: { name: values.name, email: values.email } },
         });
       }}
@@ -303,7 +313,7 @@ export const MyAccount = () => {
       (lang: any) => lang.locale === event.target.value
     );
 
-    setMessage(t('Language changed successfully!'));
+    setNotification(t('Language changed successfully!'));
     // update user's language
     updateCurrentUser({
       variables: { input: { languageId: languageID[0].id } },
