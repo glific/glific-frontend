@@ -75,7 +75,6 @@ export const FlowList = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
   const [selectedtag, setSelectedTag] = useState<any>(null);
-  const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -89,28 +88,10 @@ export const FlowList = () => {
     releaseFlow();
   }, []);
 
-  const [importFlow] = useMutation(IMPORT_FLOW, {
-    onCompleted: (result: any) => {
-      const { status } = result.importFlow;
-      setImportStatus(status);
-      setImporting(false);
-    },
-    onError: (error: any) => {
-      setNotification('An error occured while importing the flow', 'warning');
-      setImporting(false);
-    },
-  });
+  const [importFlow] = useMutation(IMPORT_FLOW);
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlow }) => {
-      const { exportData } = exportFlow;
-      await exportFlowMethod(exportData, flowName);
-      setNotification('Flow exported successfully');
-    },
-    onError: (error: any) => {
-      setErrorMessage(error);
-    },
   });
 
   const [updatePinned] = useMutation(PIN_FLOW);
@@ -123,38 +104,41 @@ export const FlowList = () => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
   };
 
-  const exportFlow = (id: any, item: any) => {
-    setFlowName(item.name);
-    exportFlowMutation({ variables: { id } });
+  const exportFlow = async (id: any, item: any) => {
+    try {
+      const result = await exportFlowMutation({ variables: { id } });
+      const { exportData } = result.data.exportFlow;
+      await exportFlowMethod(exportData, item.name);
+      setNotification('Flow exported successfully');
+    } catch (error: any) {
+      setErrorMessage(error);
+    }
   };
 
-  const handlePin = (updateFlowId: any, pin: boolean = false) => {
-    if (pin) {
-      updatePinned({
+  const handleImport = async (result: string) => {
+    try {
+      const { data } = await importFlow({ variables: { flow: result } });
+      const { status } = data.importFlow;
+      setImportStatus(status);
+    } catch {
+      setNotification('An error occured while importing the flow', 'warning');
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const handlePin = async (updateFlowId: any, pin: boolean = false) => {
+    try {
+      await updatePinned({
         variables: {
           updateFlowId,
-          input: {
-            isPinned: true,
-          },
-        },
-        onCompleted: () => {
-          setRefreshList(!refreshList);
-          setNotification('Flow pinned successfully');
+          input: { isPinned: pin },
         },
       });
-    } else {
-      updatePinned({
-        variables: {
-          updateFlowId,
-          input: {
-            isPinned: false,
-          },
-        },
-        onCompleted: () => {
-          setRefreshList(!refreshList);
-          setNotification('Flow unpinned successfully');
-        },
-      });
+      setRefreshList(!refreshList);
+      setNotification(pin ? 'Flow pinned successfully' : 'Flow unpinned successfully');
+    } catch {
+      setNotification('Failed to update pin status', 'warning');
     }
   };
 
@@ -247,11 +231,7 @@ export const FlowList = () => {
   }
 
   const importButton = (
-    <ImportButton
-      title={t('Import flow')}
-      onImport={() => setImporting(true)}
-      afterImport={(result: string) => importFlow({ variables: { flow: result } })}
-    />
+    <ImportButton title={t('Import flow')} onImport={() => setImporting(true)} afterImport={handleImport} />
   );
 
   const templateFlowActions = [

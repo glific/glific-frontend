@@ -67,18 +67,16 @@ const SideMenus = ({ opened }: SideMenusProps) => {
   const { t } = useTranslation();
 
   // handle count for notifictions
-  const [notificationCount, setNotificationCount] = useState(0);
-  const [getNotificationCount] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
+  const [getNotificationCount, { data: notificationData }] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
     variables: {
       filter: {
         is_read: false,
       },
     },
     fetchPolicy: 'cache-and-network',
-    onCompleted: (countData) => {
-      setNotificationCount(countData.countNotifications);
-    },
   });
+
+  const notificationCount = notificationData?.countNotifications ?? 0;
 
   useEffect(() => {
     getNotificationCount();

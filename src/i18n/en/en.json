@@ -605,9 +605,11 @@
   "Version set as live successfully": "Version set as live successfully",
   "Add notes on changes made to this version": "Add notes on changes made to this version",
   "Select a version to view and edit.": "Select a version to view and edit.",
-  "Copy ID": "Copy ID",
   "Back to assistants": "Back to assistants",
   "You have unsaved changes. Are you sure you want to leave?": "You have unsaved changes. Are you sure you want to leave?",
   "Stay": "Stay",
-  "Leave": "Leave"
+  "Leave": "Leave",
+  "Please upload a valid CSV file": "Please upload a valid CSV file",
+  "Templates were processed with errors. Please check the csv file for details.": "Templates were processed with errors. Please check the csv file for details.",
+  "Failed to validate flow. Please try again.": "Failed to validate flow. Please try again."
 }

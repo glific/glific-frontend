@@ -203,6 +203,11 @@ export const Providers = () => {
         setKeys(providerKeys);
         setSecrets(providerSecrets);
       });
+
+      const credentialData = credential?.credential?.credential;
+      if (credentialData) {
+        setCredential(credentialData);
+      }
     }
   }, [providerData, credential]);
 
