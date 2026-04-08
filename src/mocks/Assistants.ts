@@ -3,10 +3,17 @@ import {
   CREATE_KNOWLEDGE_BASE,
   CREATE_ASSISTANT,
   DELETE_ASSISTANT,
+  SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANTS } from 'graphql/queries/Assistant';
+import {
+  FILTER_ASSISTANTS,
+  GET_ASSISTANT,
+  GET_ASSISTANT_VERSIONS,
+  GET_ASSISTANTS,
+  GET_ASSISTANTS_COUNT,
+} from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3, cloneStatus: string = 'none') => ({
   request: {
@@ -62,7 +69,7 @@ const createAssistant = {
   },
 };
 
-const getAssistant = (
+export const getAssistant = (
   assistantId: string,
   options?: { legacy?: boolean; newVersionInProgress?: boolean; model?: string; cloneStatus?: string }
 ) => ({
@@ -305,6 +312,259 @@ export const unknownModelMocks = [
   getAssistant('1', { model: 'o3-mini' }),
   getAssistant('1', { model: 'o3-mini' }),
 ];
+export const mockVersions = [
+  {
+    id: 'v1',
+    versionNumber: 1,
+    model: 'gpt-4o',
+    prompt: 'You are a helpful assistant.',
+    settings: { temperature: 1 },
+    status: 'ready',
+    isLive: true,
+    description: 'Initial version',
+    insertedAt: '2024-10-16T15:00:00Z',
+    updatedAt: '2024-10-16T15:00:00Z',
+  },
+  {
+    id: 'v2',
+    versionNumber: 2,
+    model: 'gpt-4o-mini',
+    prompt: 'You are a helpful assistant v2.',
+    settings: { temperature: 0.5 },
+    status: 'ready',
+    isLive: false,
+    description: undefined,
+    insertedAt: '2024-10-17T15:00:00Z',
+    updatedAt: '2024-10-17T15:00:00Z',
+  },
+];
+
+const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber?: number }) => ({
+  request: {
+    query: GET_ASSISTANT_VERSIONS,
+    variables: { assistantId },
+  },
+  result: {
+    data: {
+      assistantVersions: [
+        {
+          id: 'v1',
+          versionNumber: 1,
+          model: 'gpt-4o',
+          prompt: 'You are a helpful assistant.',
+          settings: { temperature: 1 },
+          status: 'ready',
+          isLive: options?.liveVersionNumber === 1 || options?.liveVersionNumber === undefined ? true : false,
+          description: 'Initial version',
+          insertedAt: '2024-10-16T15:00:00Z',
+          updatedAt: '2024-10-16T15:00:00Z',
+        },
+        {
+          id: 'v2',
+          versionNumber: 2,
+          model: 'gpt-4o-mini',
+          prompt: 'You are a helpful assistant v2.',
+          settings: { temperature: 0.5 },
+          status: 'ready',
+          isLive: options?.liveVersionNumber === 2,
+          description: null,
+          insertedAt: '2024-10-17T15:00:00Z',
+          updatedAt: '2024-10-17T15:00:00Z',
+        },
+      ],
+    },
+  },
+});
+
+const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumber: number) => ({
+  request: {
+    query: SET_LIVE_VERSION,
+    variables: { assistantId, versionId },
+  },
+  result: {
+    data: {
+      setLiveVersion: {
+        assistant: {
+          id: assistantId,
+          activeConfigVersionId: versionId,
+          liveVersionNumber,
+        },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const ASSISTANT_DETAIL_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+];
+
+export const ASSISTANT_DETAIL_SET_LIVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  setLiveVersion('1', 'v2', 2),
+  getAssistantVersions('1', { liveVersionNumber: 2 }),
+];
+
+export const ASSISTANT_DETAIL_SAVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  {
+    request: {
+      query: UPDATE_ASSISTANT,
+      variables: {
+        updateAssistantId: '1',
+        input: {
+          instructions: 'Updated instructions',
+          model: 'gpt-4o',
+          temperature: 1,
+          description: 'Initial version',
+          knowledgeBaseVersionId: 'llm-vs-1',
+        },
+      },
+    },
+    result: { data: { updateAssistant: { errors: null } } },
+  },
+];
+
+export const assistantNotFoundMock = {
+  request: { query: GET_ASSISTANT, variables: { assistantId: '999' } },
+  result: { data: { assistant: null } },
+};
+
+export const setLiveVersionErrorMock = {
+  request: {
+    query: SET_LIVE_VERSION,
+    variables: { assistantId: '1', versionId: 'v2' },
+  },
+  result: {
+    data: {
+      setLiveVersion: {
+        assistant: null,
+        errors: [{ key: 'base', message: 'Cannot set live version' }],
+      },
+    },
+  },
+};
+
+export const createAssistantSuccessMock = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        name: 'My Assistant',
+        instructions: 'Test instructions',
+        model: 'gpt-4o',
+        temperature: 0.1,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: { id: '99', name: 'My Assistant' },
+        errors: [],
+      },
+    },
+  },
+};
+
+export const createAssistantErrorMock = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        name: 'My Assistant',
+        instructions: 'Test instructions',
+        model: 'gpt-4o',
+        temperature: 0.1,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: null,
+        errors: [{ key: 'base', message: 'Name already taken' }],
+      },
+    },
+  },
+};
+
+export const updateAssistantErrorMock = {
+  request: {
+    query: UPDATE_ASSISTANT,
+    variables: {
+      updateAssistantId: '1',
+      input: {
+        instructions: 'Updated instructions',
+        model: 'gpt-4o',
+        temperature: 1,
+        description: 'Initial version',
+        knowledgeBaseVersionId: 'llm-vs-1',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateAssistant: {
+        errors: [{ key: 'base', message: 'Update failed' }],
+      },
+    },
+  },
+};
+
+export const filterAssistantsMock = {
+  request: {
+    query: FILTER_ASSISTANTS,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' } },
+  },
+  result: {
+    data: {
+      assistants: [
+        {
+          id: '1',
+          name: 'Assistant-1',
+          assistantDisplayId: 'asst_abc123',
+          liveVersionNumber: 3,
+          updatedAt: '2024-10-16T15:58:26Z',
+          insertedAt: '2024-10-16T15:58:26Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+        {
+          id: '2',
+          name: 'Assistant-2',
+          assistantDisplayId: 'asst_def456',
+          liveVersionNumber: null,
+          updatedAt: '2024-10-17T10:00:00Z',
+          insertedAt: '2024-10-17T10:00:00Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+      ],
+    },
+  },
+};
+
+export const countAssistantsMock = {
+  request: {
+    query: GET_ASSISTANTS_COUNT,
+    variables: { filter: {} },
+  },
+  result: { data: { countAssistants: 2 } },
+};
+
 export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];
 export const errorMocks = [
@@ -345,6 +605,28 @@ const cloneAssistantErrorMock = (id: string) => ({
     },
   },
 });
+
+export const createAssistantConfigMock = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        name: 'My Assistant',
+        instructions: 'Test instructions',
+        model: 'gpt-4o',
+        temperature: 0.1,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: { id: '5', name: 'My Assistant' },
+        errors: [],
+      },
+    },
+  },
+};
 
 export const clonePendingMocks = [
   getAssistantsList(3, 'pending'),
