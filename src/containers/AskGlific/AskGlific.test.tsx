@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
-import { AskGlific } from './AskGlific';
+import AskGlific from './AskGlific';
 
 const AskGlificMock = {
   request: {
@@ -15,7 +15,7 @@ const AskGlificMock = {
   },
   result: {
     data: {
-      AskGlific: {
+      askGlific: {
         answer: 'This is a mock response from the bot.',
         conversationId: 'conv-123',
         errors: null,
@@ -41,7 +41,7 @@ describe('AskGlific', () => {
       expect(screen.getByTestId('ask-glific-fab')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
+    fireEvent.click(screen.getByTestId('ask-glific-fab'));
 
     await waitFor(() => {
       expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe('AskGlific', () => {
       </MockedProvider>
     );
 
-    fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
+    fireEvent.click(screen.getByTestId('ask-glific-fab'));
 
     await waitFor(() => {
       expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
@@ -85,7 +85,7 @@ describe('AskGlific', () => {
       </MockedProvider>
     );
 
-    fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
+    fireEvent.click(screen.getByTestId('ask-glific-fab'));
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
     await waitFor(() => {
@@ -106,7 +106,7 @@ describe('AskGlific', () => {
       </MockedProvider>
     );
 
-    fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
+    fireEvent.click(screen.getByTestId('ask-glific-fab'));
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
     await waitFor(() => {

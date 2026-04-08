@@ -8,7 +8,6 @@
   border-radius: 1rem;
 }
 
-/* Header */
 .Header {
   padding: 0.75rem 1rem;
   background-color: #ffffff;
@@ -75,7 +74,6 @@
   background-color: #f5f5f5 !important;
 }
 
-/* Display Mode Dropdown */
 .DisplayModeItem {
   display: flex;
   align-items: center;
@@ -101,7 +99,6 @@
   color: #119656;
 }
 
-/* Welcome Section */
 .WelcomeSection {
   flex: 1;
   display: flex;
@@ -139,7 +136,6 @@
   vertical-align: middle;
 }
 
-/* Suggestions Grid */
 .SuggestionsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -173,7 +169,6 @@
   background-color: #eeeeee;
 }
 
-/* Messages */
 .Messages {
   flex: 1;
   width: 100%;
@@ -240,7 +235,6 @@
   color: #119656 !important;
 }
 
-/* Loading */
 .LoadingContainer {
   display: flex;
   align-items: center;
@@ -263,7 +257,6 @@
   }
 }
 
-/* Input Container */
 .InputContainer {
   width: 100%;
   padding: 0.75rem 1rem 1rem;
@@ -326,7 +319,6 @@
   font-size: 1.1rem;
 }
 
-/* Floating mode (default) */
 .FloatingWrapper {
   position: fixed;
   bottom: 16px;
@@ -341,7 +333,6 @@
   opacity: 1;
 }
 
-/* Sidebar mode */
 .SidebarWrapper {
   position: fixed;
   top: 0;
@@ -359,7 +350,6 @@
   border-radius: 0;
 }
 
-/* Fullscreen mode */
 .FullscreenWrapper {
   position: fixed;
   top: 0;
@@ -376,7 +366,6 @@
   border-radius: 0;
 }
 
-/* Chat History Panel (sidebar/fullscreen) */
 .HistoryPanel {
   width: 260px;
   min-width: 260px;
@@ -469,7 +458,6 @@
   opacity: 1;
 }
 
-/* Chat History Dropdown (floating mode) */
 .HistoryDropdownDate {
   font-family: Heebo !important;
   font-size: 0.7rem !important;
@@ -495,7 +483,6 @@
   color: #119656 !important;
 }
 
-/* Divider */
 .Divider {
   color: #0d7a47;
   font-size: 0.8rem;

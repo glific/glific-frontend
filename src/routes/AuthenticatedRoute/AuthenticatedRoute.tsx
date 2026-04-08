@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { AskGlific } from 'containers/AskGlific/AskGlific';
+import AskGlific from 'containers/AskGlific/AskGlific';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import Billing from 'containers/SettingList/Billing/Billing';
 import Organization from 'containers/SettingList/Organization/Organization';

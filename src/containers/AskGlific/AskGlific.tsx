@@ -51,7 +51,7 @@ const MOCK_CHAT_HISTORY: ChatHistoryItem[] = [
   { id: '4', title: 'Bulk messaging setup', timeAgo: 'Yesterday', date: 'Yesterday' },
 ];
 
-export const AskGlific = () => {
+const AskGlific = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -76,6 +76,59 @@ export const AskGlific = () => {
     scrollToBottom();
   }, [messages, isLoading, open]);
 
+  const handleSendMessage = async (msg: Message, currentMessages = messages) => {
+    setIsLoading(true);
+
+    try {
+      const { data } = await askGlific({
+        variables: {
+          input: {
+            query: msg.content,
+            conversationId: conversationId || '',
+          },
+        },
+      });
+
+      const result = data?.askGlific;
+      const answer = result?.answer || 'Sorry, Something went wrong. Please try again.';
+
+      if (result?.errors?.length) {
+        const errorMessage: Message = {
+          role: 'error',
+          content: result.errors[0].message,
+          timestamp: new Date(),
+        };
+        setMessages([...currentMessages, errorMessage]);
+        return;
+      }
+
+      if (result?.conversationId) {
+        setConversationId(result.conversationId);
+      }
+
+      const newMessages: Message[] = [
+        ...currentMessages,
+        {
+          role: 'system',
+          content: answer,
+          timestamp: new Date(),
+          feedback: null,
+        },
+      ];
+
+      setMessages(newMessages);
+    } catch {
+      const errorMessage: Message = {
+        role: 'error',
+        content: 'Sorry, I encountered an error while processing your request. Please try again.',
+        timestamp: new Date(),
+      };
+      setMessages([...currentMessages, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleOk = () => {
     if (!message.trim()) return;
     const userMessage: Message = { role: 'user', content: message, timestamp: new Date() };
@@ -99,58 +152,6 @@ export const AskGlific = () => {
     }
   };
 
-  const handleSendMessage = async (msg: Message, currentMessages = messages) => {
-    setIsLoading(true);
-
-    try {
-      const { data } = await askGlific({
-        variables: {
-          input: {
-            query: msg.content,
-            conversationId: conversationId || '',
-          },
-        },
-      });
-
-      const result = data?.askGlific;
-
-      if (result?.errors?.length) {
-        const errorMessage: Message = {
-          role: 'error',
-          content: result.errors[0].message,
-          timestamp: new Date(),
-        };
-        setMessages([...currentMessages, errorMessage]);
-        return;
-      }
-
-      if (result?.conversationId) {
-        setConversationId(result.conversationId);
-      }
-
-      const newMessages: Message[] = [
-        ...currentMessages,
-        {
-          role: 'system',
-          content: result?.answer || '',
-          timestamp: new Date(),
-          feedback: null,
-        },
-      ];
-
-      setMessages(newMessages);
-    } catch {
-      const errorMessage: Message = {
-        role: 'error',
-        content: 'Sorry, I encountered an error while processing your request. Please try again.',
-        timestamp: new Date(),
-      };
-      setMessages([...currentMessages, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleNewChat = () => {
     setMessages([]);
     setConversationId(null);
@@ -171,7 +172,7 @@ export const AskGlific = () => {
     const firstUserMessage = messages.find((m) => m.role === 'user' && !m.prompt);
     if (!firstUserMessage) return 'New chat';
     const title = firstUserMessage.content;
-    return title.length > 20 ? title.slice(0, 20) + '...' : title;
+    return title.length > 20 ? `${title.slice(0, 20)}...` : title;
   };
 
   const hasMessages = messages.filter((m) => !m.prompt).length > 0;
@@ -188,16 +189,15 @@ export const AskGlific = () => {
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = 'auto';
-      textAreaRef.current.style.height = Math.min(textAreaRef.current.scrollHeight, 120) + 'px';
+      textAreaRef.current.style.height = `${Math.min(textAreaRef.current.scrollHeight, 120)} px`;
     }
   }, [message]);
 
-  const wrapperClass =
-    displayMode === 'sidebar'
-      ? styles.SidebarWrapper
-      : displayMode === 'fullscreen'
-        ? styles.FullscreenWrapper
-        : styles.FloatingWrapper;
+  const wrapperClassMap: Record<string, string> = {
+    sidebar: styles.SidebarWrapper,
+    fullscreen: styles.FullscreenWrapper,
+  };
+  const wrapperClass = wrapperClassMap[displayMode] || styles.FloatingWrapper;
 
   return (
     <>
@@ -466,7 +466,7 @@ export const AskGlific = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={'Ask Glific anything!'}
+                  placeholder="Ask Glific anything!"
                   rows={1}
                   autoFocus
                 />
@@ -491,3 +491,5 @@ export const AskGlific = () => {
     </>
   );
 };
+
+export default AskGlific;
