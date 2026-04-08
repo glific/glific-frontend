@@ -342,7 +342,7 @@ export const ConfigEditor = ({
                     data-testid="saveVersionButton"
                     onClick={formik.submitForm}
                     loading={savingChanges || creating}
-                    disabled={newVersionInProgress || savingChanges || creating}
+                    disabled={newVersionInProgress || savingChanges || creating || !hasUnsavedChanges}
                   >
                     {t('Save')}
                   </Button>
@@ -374,11 +374,6 @@ export const ConfigEditor = ({
                 <Field key={field.name} {...field} />
               </div>
             ))}
-            {!createMode && (
-              <span className={styles.NoEvals} data-testid="noEvalsLink">
-                {t('No evals run. Start New Eval >')}
-              </span>
-            )}
           </div>
         </form>
 

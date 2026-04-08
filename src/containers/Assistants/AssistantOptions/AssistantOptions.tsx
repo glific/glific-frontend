@@ -665,7 +665,6 @@ export const AssistantOptions = ({
             <div className={styles.VectorContent}>
               <DatabaseIcon />
               <div>
-                <p>{formikValues.knowledgeBaseName}</p>
                 <span>{vectorStoreId}</span>
               </div>
             </div>
