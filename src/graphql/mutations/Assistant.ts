@@ -50,8 +50,8 @@ export const CREATE_KNOWLEDGE_BASE = gql`
 `;
 
 export const CLONE_ASSISTANT = gql`
-  mutation CloneAssistant($cloneAssistantId: ID!) {
-    cloneAssistant(id: $cloneAssistantId) {
+  mutation CloneAssistant($cloneAssistantId: ID!, $versionId: ID) {
+    cloneAssistant(id: $cloneAssistantId, versionId: $versionId) {
       message
       errors {
         key

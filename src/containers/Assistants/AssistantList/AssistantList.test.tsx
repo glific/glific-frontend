@@ -1,10 +1,15 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { vi } from 'vitest';
 
-import * as Utils from 'common/utils';
-import { countAssistantsMock, filterAssistantsMock } from 'mocks/Assistants';
+import {
+  cloneAssistantFromListMock,
+  cloneAssistantFromListErrorMock,
+  cloneAssistantNullMessageMock,
+  cloneLegacyAssistantFromListMock,
+  countAssistantsMock,
+  filterAssistantsMock,
+} from 'mocks/Assistants';
 
 import AssistantList from './AssistantList';
 
@@ -76,8 +81,7 @@ test('edit icon navigates to /assistants/:id', async () => {
   });
 });
 
-test('copy icon calls copyToClipboard with assistant display ID', async () => {
-  const copySpy = vi.spyOn(Utils, 'copyToClipboard').mockImplementation(() => {});
+test('clone icon opens confirmation dialog', async () => {
   renderAssistantList();
 
   await waitFor(() => {
@@ -86,5 +90,139 @@ test('copy icon calls copyToClipboard with assistant display ID', async () => {
 
   fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
 
-  expect(copySpy).toHaveBeenCalledWith('asst_abc123');
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+    expect(screen.getByText(/This will create a copy of the current live version of/)).toBeInTheDocument();
+    expect(screen.getAllByText('Assistant-1').length).toBeGreaterThanOrEqual(1);
+  });
+});
+
+test('clone dialog cancel closes without calling API', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('No'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone non-legacy assistant passes versionId to API', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantFromListMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  // Assistant-1 has activeConfigVersionId: 'v1' (non-legacy)
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone legacy assistant does not pass versionId to API', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneLegacyAssistantFromListMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  // Assistant-2 has activeConfigVersionId: null (legacy)
+  fireEvent.click(screen.getAllByTestId('copy-icon')[1]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone API returns errors shows error message', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantFromListErrorMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone API returns null message  uses fallback notification', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantNullMessageMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone mutation throws network error  catch block handles it', async () => {
+  const networkErrorMock = {
+    request: {
+      query: (await import('graphql/mutations/Assistant')).CLONE_ASSISTANT,
+      variables: { cloneAssistantId: '1', versionId: 'v1' },
+    },
+    error: new Error('Network error'),
+  };
+
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, networkErrorMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
 });
