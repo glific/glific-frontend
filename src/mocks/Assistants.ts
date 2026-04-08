@@ -537,6 +537,7 @@ export const filterAssistantsMock = {
           name: 'Assistant-1',
           assistantDisplayId: 'asst_abc123',
           liveVersionNumber: 3,
+          activeConfigVersionId: 'v1',
           updatedAt: '2024-10-16T15:58:26Z',
           insertedAt: '2024-10-16T15:58:26Z',
           status: 'active',
@@ -547,6 +548,7 @@ export const filterAssistantsMock = {
           name: 'Assistant-2',
           assistantDisplayId: 'asst_def456',
           liveVersionNumber: null,
+          activeConfigVersionId: null,
           updatedAt: '2024-10-17T10:00:00Z',
           insertedAt: '2024-10-17T10:00:00Z',
           status: 'active',
@@ -606,10 +608,10 @@ export const errorMocks = [
   createKnowledgeBaseMock([fileWithUploadedAt], '1'),
 ];
 
-const cloneAssistantMock = (id: string) => ({
+const cloneAssistantMock = (id: string, versionId?: string) => ({
   request: {
     query: CLONE_ASSISTANT,
-    variables: { cloneAssistantId: id },
+    variables: versionId ? { cloneAssistantId: id, versionId } : { cloneAssistantId: id },
   },
   result: {
     data: {
@@ -621,10 +623,10 @@ const cloneAssistantMock = (id: string) => ({
   },
 });
 
-const cloneAssistantErrorMock = (id: string) => ({
+const cloneAssistantErrorMock = (id: string, versionId?: string) => ({
   request: {
     query: CLONE_ASSISTANT,
-    variables: { cloneAssistantId: id },
+    variables: versionId ? { cloneAssistantId: id, versionId } : { cloneAssistantId: id },
   },
   result: {
     data: {
@@ -635,6 +637,24 @@ const cloneAssistantErrorMock = (id: string) => ({
     },
   },
 });
+
+export const cloneAssistantFromListMock = cloneAssistantMock('1', 'v1');
+export const cloneLegacyAssistantFromListMock = cloneAssistantMock('2');
+export const cloneAssistantFromListErrorMock = cloneAssistantErrorMock('1', 'v1');
+export const cloneAssistantNullMessageMock = {
+  request: {
+    query: CLONE_ASSISTANT,
+    variables: { cloneAssistantId: '1', versionId: 'v1' },
+  },
+  result: {
+    data: {
+      cloneAssistant: {
+        message: null,
+        errors: null,
+      },
+    },
+  },
+};
 
 export const createAssistantConfigMock = {
   request: {
