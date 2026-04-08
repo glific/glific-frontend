@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { useMutation } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -7,10 +9,11 @@ import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 
 import { FILTER_ASSISTANTS, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
-import { DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { List } from 'containers/List/List';
 import { assistantsInfo } from 'common/HelpData';
-import { copyToClipboard } from 'common/utils';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { setNotification, setErrorMessage } from 'common/notification';
 
 import styles from './AssistantList.module.css';
 
@@ -47,8 +50,52 @@ export const AssistantList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const [cloneDialogOpen, setCloneDialogOpen] = useState(false);
+  const [selectedAssistant, setSelectedAssistant] = useState<{
+    id: string;
+    name: string;
+    activeConfigVersionId: string | null;
+  } | null>(null);
+
+  const [cloneAssistant, { loading: cloning }] = useMutation(CLONE_ASSISTANT);
+
   const handleEdit = (id: string) => {
     navigate(`/assistant-new/${id}`);
+  };
+
+  const handleCloneClick = (_id: string, item: any) => {
+    setSelectedAssistant({
+      id: item.id,
+      name: item.name,
+      activeConfigVersionId: item.activeConfigVersionId ?? null,
+    });
+    setCloneDialogOpen(true);
+  };
+
+  const handleCloneConfirm = async () => {
+    if (!selectedAssistant) return;
+
+    const isLegacy = !selectedAssistant.activeConfigVersionId;
+    const variables: Record<string, any> = { cloneAssistantId: selectedAssistant.id };
+    if (!isLegacy) {
+      variables.versionId = selectedAssistant.activeConfigVersionId;
+    }
+
+    setCloneDialogOpen(false);
+
+    try {
+      const response = await cloneAssistant({ variables });
+      if (response.data?.cloneAssistant?.errors?.length > 0) {
+        setErrorMessage(response.data.cloneAssistant.errors[0]);
+        return;
+      }
+      const message = response.data?.cloneAssistant?.message || t('Assistant clone initiated');
+      setNotification(message);
+    } catch (error: unknown) {
+      setErrorMessage(error);
+    } finally {
+      setSelectedAssistant(null);
+    }
   };
 
   const getColumns = ({ id, name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
@@ -78,32 +125,54 @@ export const AssistantList = () => {
       dialog: handleEdit,
     },
     {
-      label: t('Copy ID'),
+      label: t('Clone'),
       icon: <CopyIcon data-testid="copy-icon" />,
-      parameter: 'assistantDisplayId',
-      dialog: (assistantDisplayId: string) => copyToClipboard(assistantDisplayId),
+      parameter: 'id',
+      dialog: handleCloneClick,
     },
   ];
 
   return (
-    <List
-      helpData={assistantsInfo}
-      title={t('AI Assistant')}
-      listItem="assistants"
-      listItemName="assistant"
-      pageLink="assistants-new"
-      dialogMessage={t("You won't be able to use this assistant.")}
-      {...queries}
-      {...columnAttributes}
-      searchParameter={['name']}
-      additionalAction={additionalAction}
-      button={{
-        show: true,
-        label: t('Create New Assistant'),
-        action: () => navigate('/assistant-new/add'),
-      }}
-      editSupport={false}
-    />
+    <>
+      <List
+        helpData={assistantsInfo}
+        title={t('AI Assistant')}
+        listItem="assistants"
+        listItemName="assistant"
+        pageLink="assistants-new"
+        dialogMessage={t("You won't be able to use this assistant.")}
+        {...queries}
+        {...columnAttributes}
+        searchParameter={['name']}
+        additionalAction={additionalAction}
+        button={{
+          show: true,
+          label: t('Create New Assistant'),
+          action: () => navigate('/assistant-new/add'),
+        }}
+        editSupport={false}
+      />
+
+      {cloneDialogOpen && selectedAssistant && (
+        <DialogBox
+          title={t('Clone Assistant')}
+          handleCancel={() => {
+            setCloneDialogOpen(false);
+            setSelectedAssistant(null);
+          }}
+          handleOk={handleCloneConfirm}
+          buttonOk={t('Yes')}
+          buttonCancel={t('No')}
+          alignButtons="center"
+          buttonOkLoading={cloning}
+          disableOk={cloning}
+        >
+          <div>
+            {t('Are you sure you want to clone the assistant')} <strong>{selectedAssistant.name}</strong>?
+          </div>
+        </DialogBox>
+      )}
+    </>
   );
 };
 
