@@ -213,7 +213,7 @@ describe('<MyAccount />', () => {
     await user.click(saveButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Profile updated successfully!')).toBeInTheDocument();
+      expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
     });
   });
 

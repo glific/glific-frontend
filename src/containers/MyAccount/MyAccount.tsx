@@ -146,8 +146,8 @@ export const MyAccount = () => {
   });
 
   const UserFormSchema = Yup.object().shape({
-    name: Yup.string().required(t('Name is required')),
-    email: Yup.string().email(t('Invalid email address')).required(t('Email is required')),
+    name: Yup.string().required(t('Name is required.')),
+    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
   });
 
   const userformFields = [
@@ -177,7 +177,7 @@ export const MyAccount = () => {
       enableReinitialize={true}
       validationSchema={UserFormSchema}
       onSubmit={(values) => {
-        setMessage(t('Profile updated successfully!'));
+        setMessage(t('Password updated successfully!'));
         updateCurrentUser({
           variables: { input: { name: values.name, email: values.email } },
         });
