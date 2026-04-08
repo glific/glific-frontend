@@ -370,6 +370,23 @@ test('create mode save navigates to the new assistant page', async () => {
   });
 });
 
+test('redirects to /assistants when no assistantId param is present', async () => {
+  render(
+    <MockedProvider mocks={[]}>
+      <MemoryRouter initialEntries={['/assistants/detail']}>
+        <Routes>
+          <Route path="/assistants/detail" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByTestId('assistants-page')).toBeInTheDocument();
+  });
+});
+
 test('pressing Enter on copy assistant ID button calls copyToClipboard', async () => {
   const copySpy = vi.spyOn(Utils, 'copyToClipboard').mockImplementation(() => {});
   renderAssistantDetail();
