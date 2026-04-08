@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter, MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
@@ -15,6 +15,10 @@ import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { getAttachmentPermissionMock } from 'mocks/Attachment';
 
 vi.mock('axios');
+
+vi.mock('components/UI/Layout/Layout', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
 
 vi.mock('containers/Assistants/AssistantList/AssistantList', () => ({
   default: () => <div data-testid="assistant-list-new" />,

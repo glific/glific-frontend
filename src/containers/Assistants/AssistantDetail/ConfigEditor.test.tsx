@@ -261,6 +261,18 @@ describe('ConfigEditor — settings parsing', () => {
 
     expect(screen.getByRole('sliderDisplay')).toHaveValue(0.7);
   });
+
+  it('falls back to default model (gpt-4o) when version.model is null', () => {
+    renderEdit({ version: { ...mockVersion, model: null } });
+
+    expect(screen.getByDisplayValue('gpt-4o')).toBeInTheDocument();
+  });
+
+  it('falls back to temperature 0.1 when settings is null', () => {
+    renderEdit({ version: { ...mockVersion, settings: null } });
+
+    expect(screen.getByRole('sliderDisplay')).toHaveValue(0.1);
+  });
 });
 
 describe('ConfigEditor — expand instructions modal', () => {
