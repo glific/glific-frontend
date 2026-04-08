@@ -174,7 +174,7 @@ export const MyAccount = () => {
   const userForm = (
     <Formik
       initialValues={{ name: userName, phone: userPhone, email: userEmail }}
-      enableReinitialize={true}
+      enableReinitialize
       validationSchema={UserFormSchema}
       onSubmit={(values) => {
         setMessage(t('Password updated successfully!'));

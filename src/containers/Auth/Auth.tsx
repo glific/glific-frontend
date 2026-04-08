@@ -224,7 +224,9 @@ export const Auth = ({
                           await setValues({ ...values, captcha: token });
 
                           // Give React time to process the state update
-                          await new Promise((resolve) => { setTimeout(resolve, 0); });
+                          await new Promise((resolve) => {
+                            setTimeout(resolve, 0);
+                          });
 
                           // Let Formik handle validation & submission
                           submitForm();
