@@ -17,8 +17,8 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
 import { setNotification } from 'common/notification';
-import styles from './MyAccount.module.css';
 import { Heading } from 'components/UI/Heading/Heading';
+import styles from './MyAccount.module.css';
 
 export const MyAccount = () => {
   // set the validation / errors / success message
@@ -202,7 +202,7 @@ export const MyAccount = () => {
                   {field.label}
                 </Typography>
               )}
-              <Field key={field.name} {...field}></Field>
+              <Field key={field.name} {...field} />
             </div>
           ))}
           {dirty && (
