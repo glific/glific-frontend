@@ -96,7 +96,7 @@ test('it creates an assistant', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
   });
   fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -186,7 +186,7 @@ test('it uploads files to assistant', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
   });
   fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -437,7 +437,7 @@ test('uploading multiple files and error messages', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
   });
   expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
 
