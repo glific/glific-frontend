@@ -13,12 +13,12 @@ import { Fab, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 
-import AskMeBotIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
-import { ASK_ME_BOT } from 'graphql/mutations/AskMeBot';
-import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskMeBot';
-import styles from './AskMeBot.module.css';
+import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskGlific';
+import styles from './AskGlific.module.css';
 
 interface Message {
   role: 'user' | 'system' | 'error';
@@ -81,7 +81,7 @@ const toHistoryItems = (conversations: DifyConversation[]): ChatHistoryItem[] =>
     date: getDateLabel(conv.updatedAt || conv.createdAt),
   }));
 
-export const AskMeBot = () => {
+const AskGlific = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -103,7 +103,7 @@ export const AskMeBot = () => {
   const [firstMessageId, setFirstMessageId] = useState('');
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  const [askMeBot] = useMutation(ASK_ME_BOT);
+  const [askGlific] = useMutation(ASK_GLIFIC);
   const [fetchConversations] = useLazyQuery(GET_ASKME_BOT_CONVERSATIONS, {
     fetchPolicy: 'network-only',
   });
@@ -139,7 +139,7 @@ export const AskMeBot = () => {
       const { data } = await fetchMessages({
         variables: { conversationId: selectedConversationId, limit: 50 },
       });
-      const result = data?.askmeBotMessages;
+      const result = data?.askGlificMessages;
       const difyMessages = result?.messages || [];
 
       const loadedMessages: Message[] = difyMessages.flatMap(
@@ -184,7 +184,7 @@ export const AskMeBot = () => {
       const { data } = await fetchMessages({
         variables: { conversationId, limit: 50, firstId: firstMessageId },
       });
-      const result = data?.askmeBotMessages;
+      const result = data?.askGlificMessages;
       const difyMessages = result?.messages || [];
 
       const olderMessages: Message[] = difyMessages.flatMap(
@@ -233,34 +233,11 @@ export const AskMeBot = () => {
     scrollToBottom();
   }, [messages, isLoading, open]);
 
-  const handleOk = () => {
-    if (!message.trim()) return;
-    const userMessage: Message = { role: 'user', content: message, timestamp: new Date() };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setMessage('');
-    handleSendMessage(userMessage, updatedMessages);
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    const userMessage: Message = { role: 'user', content: suggestion, timestamp: new Date() };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    handleSendMessage(userMessage, updatedMessages);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey && message.trim()) {
-      event.preventDefault();
-      handleOk();
-    }
-  };
-
   const handleSendMessage = async (msg: Message, currentMessages = messages) => {
     setIsLoading(true);
 
     try {
-      const { data } = await askMeBot({
+      const { data } = await askGlific({
         variables: {
           input: {
             query: msg.content,
@@ -270,7 +247,8 @@ export const AskMeBot = () => {
         },
       });
 
-      const result = data?.askmeBot;
+      const result = data?.askGlific;
+      const answer = result?.answer || 'Sorry, Something went wrong. Please try again.';
 
       if (result?.errors?.length) {
         const errorMessage: Message = {
@@ -294,7 +272,7 @@ export const AskMeBot = () => {
         ...currentMessages,
         {
           role: 'system',
-          content: result?.answer || '',
+          content: answer,
           timestamp: new Date(),
           feedback: null,
         },
@@ -310,6 +288,29 @@ export const AskMeBot = () => {
       setMessages([...currentMessages, errorMessage]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleOk = () => {
+    if (!message.trim()) return;
+    const userMessage: Message = { role: 'user', content: message, timestamp: new Date() };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setMessage('');
+    handleSendMessage(userMessage, updatedMessages);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    const userMessage: Message = { role: 'user', content: suggestion, timestamp: new Date() };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    handleSendMessage(userMessage, updatedMessages);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !event.shiftKey && message.trim()) {
+      event.preventDefault();
+      handleOk();
     }
   };
 
@@ -337,7 +338,7 @@ export const AskMeBot = () => {
     const firstUserMessage = messages.find((m) => m.role === 'user' && !m.prompt);
     if (!firstUserMessage) return 'New chat';
     const title = firstUserMessage.content;
-    return title.length > 20 ? title.slice(0, 20) + '...' : title;
+    return title.length > 20 ? `${title.slice(0, 20)}...` : title;
   };
 
   const hasMessages = messages.filter((m) => !m.prompt).length > 0;
@@ -354,25 +355,24 @@ export const AskMeBot = () => {
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = 'auto';
-      textAreaRef.current.style.height = Math.min(textAreaRef.current.scrollHeight, 120) + 'px';
+      textAreaRef.current.style.height = `${Math.min(textAreaRef.current.scrollHeight, 120)} px`;
     }
   }, [message]);
 
-  const wrapperClass =
-    displayMode === 'sidebar'
-      ? styles.SidebarWrapper
-      : displayMode === 'fullscreen'
-        ? styles.FullscreenWrapper
-        : styles.FloatingWrapper;
+  const wrapperClassMap: Record<string, string> = {
+    sidebar: styles.SidebarWrapper,
+    fullscreen: styles.FullscreenWrapper,
+  };
+  const wrapperClass = wrapperClassMap[displayMode] || styles.FloatingWrapper;
 
   return (
     <>
       {!open && (
         <Tooltip title="Ask Glific" placement="left" arrow>
           <Fab
-            data-testid="ask-me-bot-fab"
+            data-testid="ask-glific-fab"
             color="primary"
-            aria-label="ask me bot"
+            aria-label="ask glific"
             onClick={() => setOpen(true)}
             sx={{
               position: 'fixed',
@@ -385,7 +385,7 @@ export const AskMeBot = () => {
               boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
             }}
           >
-            <AskMeBotIcon />
+            <AskGlificIcon />
           </Fab>
         </Tooltip>
       )}
@@ -444,7 +444,7 @@ export const AskMeBot = () => {
               >
                 {hasMessages && (
                   <div className={styles.ChatIcon}>
-                    <AskMeBotIcon />
+                    <AskGlificIcon />
                   </div>
                 )}
                 <span>{getChatTitle()}</span>
@@ -570,7 +570,7 @@ export const AskMeBot = () => {
             {!hasMessages && !isLoading ? (
               <div className={styles.WelcomeSection}>
                 <div className={styles.WelcomeIcon}>
-                  <AskMeBotIcon />
+                  <AskGlificIcon />
                 </div>
                 <div className={styles.WelcomeText}>Ask Glific! Learn About How It Works?</div>
                 <div className={styles.SuggestionsGrid}>
@@ -661,7 +661,7 @@ export const AskMeBot = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={'Ask Glific anything!'}
+                  placeholder="Ask Glific anything!"
                   rows={1}
                   autoFocus
                 />
@@ -686,3 +686,5 @@ export const AskMeBot = () => {
     </>
   );
 };
+
+export default AskGlific;

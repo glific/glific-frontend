@@ -17,8 +17,8 @@ export const GET_ASKME_BOT_CONVERSATIONS = gql`
 `;
 
 export const GET_ASKME_BOT_MESSAGES = gql`
-  query AskmeBotMessages($conversationId: String!, $limit: Int, $firstId: String) {
-    askmeBotMessages(conversationId: $conversationId, limit: $limit, firstId: $firstId) {
+  query AskGlificMessages($conversationId: String!, $limit: Int, $firstId: String) {
+    askGlificMessages(conversationId: $conversationId, limit: $limit, firstId: $firstId) {
       messages {
         id
         conversationId

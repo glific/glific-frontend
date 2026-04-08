@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import AskGlific from 'containers/AskGlific/AskGlific';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import Billing from 'containers/SettingList/Billing/Billing';
 import Organization from 'containers/SettingList/Organization/Organization';
@@ -63,6 +63,7 @@ const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
+const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 
@@ -152,6 +153,7 @@ const routeAdmin = (
     <Route path="assistants-new" element={<AssistantList />} />
     <Route path="assistants-new/add" element={<Assistant />} />
     <Route path="assistants-new/:assistantId" element={<Assistant />} />
+    <Route path="assistant-new/:assistantId" element={<AssistantDetail />} />
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
@@ -196,7 +198,7 @@ export const AuthenticatedRoute = () => {
   const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
 
   const [provider, setProvider] = useState<string>('');
-  const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
+  const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -244,7 +246,7 @@ export const AuthenticatedRoute = () => {
           <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
             <ErrorBoundary>
               {route}
-              {isAskMeBotEnabled && <AskMeBot />}
+              {isAskGlificEnabled && <AskGlific />}
             </ErrorBoundary>
           </Suspense>
         </Layout>
