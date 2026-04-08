@@ -67,6 +67,7 @@ jobs:
           git clone https://github.com/glific/glific.git
           echo done. go to dir.
           cd glific
+          git checkout askglific/get_conversations
           echo done. start dev.secret.exs config
           cd priv
           mkdir cert
@@ -113,7 +114,6 @@ jobs:
       - name: Run glific backend
         run: |
           cd ../glific/
-          git checkout askglific/get_conversations
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
           echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
           cd ../glific-frontend/
