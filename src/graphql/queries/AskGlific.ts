@@ -25,6 +25,7 @@ export const GET_ASKME_BOT_MESSAGES = gql`
         query
         answer
         createdAt
+        feedback
       }
       hasMore
       limit

@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskGlific';
 import AskGlific from './AskGlific';
 
@@ -91,6 +91,7 @@ const messagesMock = {
             query: 'Hello bot',
             answer: 'Hi there! How can I help?',
             createdAt: now - 3000,
+            feedback: null,
           },
         ],
         hasMore: false,
@@ -118,6 +119,7 @@ const createAskGlificMock = (query: string) => ({
         answer: 'This is a mock response from the bot.',
         conversationId: 'conv-123',
         conversationName: 'Test Chat',
+        messageId: 'msg-new-001',
         errors: null,
       },
     },
@@ -496,6 +498,7 @@ describe('AskGlific', () => {
                 query: 'First question',
                 answer: 'First answer',
                 createdAt: now - 3000,
+                feedback: null,
               },
             ],
             hasMore: true,
@@ -521,6 +524,7 @@ describe('AskGlific', () => {
                 query: 'Older question',
                 answer: 'Older answer',
                 createdAt: now - 6000,
+                feedback: null,
               },
             ],
             hasMore: false,
@@ -721,6 +725,96 @@ describe('AskGlific', () => {
     await waitFor(() => {
       expect(screen.queryByText('Floating')).not.toBeInTheDocument();
     });
+  });
+
+  test('it should show existing feedback when loading chat history', async () => {
+    const messagesWithFeedbackMock = {
+      request: {
+        query: GET_ASKME_BOT_MESSAGES,
+        variables: { conversationId: 'conv-abc', limit: 50 },
+      },
+      result: {
+        data: {
+          askGlificMessages: {
+            messages: [
+              {
+                id: 'msg-fb-1',
+                conversationId: 'conv-abc',
+                query: 'How does Glific work?',
+                answer: 'Glific is a communication platform.',
+                createdAt: now - 3000,
+                feedback: 'like',
+              },
+            ],
+            hasMore: false,
+            limit: 50,
+          },
+        },
+      },
+      maxUsageCount: Number.MAX_SAFE_INTEGER,
+    };
+
+    render(
+      <MockedProvider mocks={[conversationsWithDataMock, messagesWithFeedbackMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByText('New chat'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Conversation')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Test Conversation'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Glific is a communication platform.')).toBeInTheDocument();
+    });
+
+    const thumbUp = screen.getByTestId('feedback-up');
+    expect(thumbUp.className).toContain('FeedbackButtonActive');
+  });
+
+  test('it should call feedback mutation when clicking thumbs up', async () => {
+    const feedbackMutationMock = {
+      request: {
+        query: ASK_GLIFIC_FEEDBACK,
+        variables: {
+          input: {
+            messageId: 'msg-new-001',
+            rating: 'like',
+          },
+        },
+      },
+      result: {
+        data: {
+          askGlificFeedback: {
+            success: true,
+          },
+        },
+      },
+    };
+
+    render(
+      <MockedProvider mocks={[conversationsMock, suggestionMock, feedbackMutationMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+    fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
+    });
+
+    const thumbUp = screen.getByTestId('feedback-up');
+    fireEvent.click(thumbUp);
+
+    expect(thumbUp.className).toContain('FeedbackButtonActive');
   });
 
   test('it should show history panel in sidebar mode and select conversation', async () => {

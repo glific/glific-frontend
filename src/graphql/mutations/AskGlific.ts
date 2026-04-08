@@ -6,9 +6,18 @@ export const ASK_GLIFIC = gql`
       answer
       conversationId
       conversationName
+      messageId
       errors {
         message
       }
+    }
+  }
+`;
+
+export const ASK_GLIFIC_FEEDBACK = gql`
+  mutation AskGlificFeedback($input: AskGlificFeedbackInput!) {
+    askGlificFeedback(input: $input) {
+      success
     }
   }
 `;

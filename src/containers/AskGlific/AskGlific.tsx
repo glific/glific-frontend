@@ -16,7 +16,7 @@ import Markdown from 'react-markdown';
 import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
-import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskGlific';
 import styles from './AskGlific.module.css';
 
@@ -26,6 +26,7 @@ interface Message {
   timestamp?: Date;
   prompt?: boolean;
   feedback?: 'up' | 'down' | null;
+  messageId?: string;
 }
 
 interface DifyConversation {
@@ -104,6 +105,7 @@ const AskGlific = () => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const [askGlific] = useMutation(ASK_GLIFIC);
+  const [submitFeedback] = useMutation(ASK_GLIFIC_FEEDBACK);
   const [fetchConversations] = useLazyQuery(GET_ASKME_BOT_CONVERSATIONS, {
     fetchPolicy: 'network-only',
   });
@@ -143,7 +145,7 @@ const AskGlific = () => {
       const difyMessages = result?.messages || [];
 
       const loadedMessages: Message[] = difyMessages.flatMap(
-        (msg: { query: string; answer: string; createdAt: number }) => {
+        (msg: { id: string; query: string; answer: string; createdAt: number; feedback: string | null }) => {
           const items: Message[] = [];
           if (msg.query) {
             items.push({
@@ -153,11 +155,13 @@ const AskGlific = () => {
             });
           }
           if (msg.answer) {
+            const feedbackValue = msg.feedback === 'like' ? 'up' : msg.feedback === 'dislike' ? 'down' : null;
             items.push({
               role: 'system',
               content: msg.answer,
               timestamp: new Date(msg.createdAt * 1000),
-              feedback: null,
+              feedback: feedbackValue,
+              messageId: msg.id,
             });
           }
           return items;
@@ -188,7 +192,7 @@ const AskGlific = () => {
       const difyMessages = result?.messages || [];
 
       const olderMessages: Message[] = difyMessages.flatMap(
-        (msg: { query: string; answer: string; createdAt: number }) => {
+        (msg: { id: string; query: string; answer: string; createdAt: number; feedback: string | null }) => {
           const items: Message[] = [];
           if (msg.query) {
             items.push({
@@ -198,11 +202,13 @@ const AskGlific = () => {
             });
           }
           if (msg.answer) {
+            const feedbackValue = msg.feedback === 'like' ? 'up' : msg.feedback === 'dislike' ? 'down' : null;
             items.push({
               role: 'system',
               content: msg.answer,
               timestamp: new Date(msg.createdAt * 1000),
-              feedback: null,
+              feedback: feedbackValue,
+              messageId: msg.id,
             });
           }
           return items;
@@ -275,6 +281,7 @@ const AskGlific = () => {
           content: answer,
           timestamp: new Date(),
           feedback: null,
+          messageId: result?.messageId || undefined,
         },
       ];
 
@@ -323,14 +330,29 @@ const AskGlific = () => {
   };
 
   const handleFeedback = (index: number, type: 'up' | 'down') => {
+    const targetMsg = messages[index];
+    const newFeedback = targetMsg.feedback === type ? null : type;
+    const rating = newFeedback === 'up' ? 'like' : newFeedback === 'down' ? 'dislike' : null;
+
     setMessages((prev) =>
       prev.map((msg, i) => {
         if (i === index) {
-          return { ...msg, feedback: msg.feedback === type ? null : type };
+          return { ...msg, feedback: newFeedback };
         }
         return msg;
       })
     );
+
+    if (targetMsg.messageId) {
+      submitFeedback({
+        variables: {
+          input: {
+            messageId: targetMsg.messageId,
+            rating: rating ?? 'dislike',
+          },
+        },
+      });
+    }
   };
 
   const getChatTitle = (): string => {
