@@ -610,6 +610,21 @@ const cloneAssistantErrorMock = (id: string, versionId?: string) => ({
 
 export const cloneAssistantFromListMock = cloneAssistantMock('1', 'v1');
 export const cloneLegacyAssistantFromListMock = cloneAssistantMock('2');
+export const cloneAssistantFromListErrorMock = cloneAssistantErrorMock('1', 'v1');
+export const cloneAssistantNullMessageMock = {
+  request: {
+    query: CLONE_ASSISTANT,
+    variables: { cloneAssistantId: '1', versionId: 'v1' },
+  },
+  result: {
+    data: {
+      cloneAssistant: {
+        message: null,
+        errors: null,
+      },
+    },
+  },
+};
 
 export const createAssistantConfigMock = {
   request: {

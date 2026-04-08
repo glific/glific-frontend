@@ -4,6 +4,8 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 
 import {
   cloneAssistantFromListMock,
+  cloneAssistantFromListErrorMock,
+  cloneAssistantNullMessageMock,
   cloneLegacyAssistantFromListMock,
   countAssistantsMock,
   filterAssistantsMock,
@@ -116,11 +118,7 @@ test('clone dialog cancel closes without calling API', async () => {
 });
 
 test('clone non-legacy assistant passes versionId to API', async () => {
-  renderAssistantList([
-    filterAssistantsMock,
-    countAssistantsMock,
-    cloneAssistantFromListMock,
-  ]);
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantFromListMock]);
 
   await waitFor(() => {
     expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
@@ -141,11 +139,7 @@ test('clone non-legacy assistant passes versionId to API', async () => {
 });
 
 test('clone legacy assistant does not pass versionId to API', async () => {
-  renderAssistantList([
-    filterAssistantsMock,
-    countAssistantsMock,
-    cloneLegacyAssistantFromListMock,
-  ]);
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneLegacyAssistantFromListMock]);
 
   await waitFor(() => {
     expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
@@ -153,6 +147,74 @@ test('clone legacy assistant does not pass versionId to API', async () => {
 
   // Assistant-2 has activeConfigVersionId: null (legacy)
   fireEvent.click(screen.getAllByTestId('copy-icon')[1]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone API returns errors shows error message', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantFromListErrorMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone API returns null message  uses fallback notification', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantNullMessageMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Yes'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
+  });
+});
+
+test('clone mutation throws network error  catch block handles it', async () => {
+  const networkErrorMock = {
+    request: {
+      query: (await import('graphql/mutations/Assistant')).CLONE_ASSISTANT,
+      variables: { cloneAssistantId: '1', versionId: 'v1' },
+    },
+    error: new Error('Network error'),
+  };
+
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, networkErrorMock]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copy-icon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
 
   await waitFor(() => {
     expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
