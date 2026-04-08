@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 
-
 /** @deprecated Use FILTER_ASSISTANTS instead */
 export const GET_ASSISTANTS = gql`
   query Assistants($filter: AssistantFilter, $opts: Opts) {
@@ -64,6 +63,22 @@ export const GET_ASSISTANT = gql`
           }
         }
       }
+    }
+  }
+`;
+export const GET_ASSISTANT_VERSIONS = gql`
+  query AssistantVersions($assistantId: ID!) {
+    assistantVersions(assistantId: $assistantId) {
+      id
+      versionNumber
+      model
+      prompt
+      settings
+      status
+      isLive
+      description
+      insertedAt
+      updatedAt
     }
   }
 `;

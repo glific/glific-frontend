@@ -1,0 +1,114 @@
+.Container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+.List {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.List::-webkit-scrollbar {
+  display: none;
+}
+
+.Empty {
+  color: #999;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Full-width card — no border-radius, no margin, no gap */
+.Card {
+  height: 88px;
+  padding: 0 1rem 0 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #efefef;
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s ease;
+}
+
+.Card:hover {
+  background-color: #e8f5e9;
+}
+
+.Selected {
+  background-color: #e8f5e9;
+  border-left-color: #2e7d32;
+}
+
+.CardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+
+.CardLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.VersionNumber {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #073f24;
+}
+
+.LiveBadge {
+  background-color: #2e7d32 !important;
+  color: #fff !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  height: 18px !important;
+}
+
+.StatusChip {
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  height: 18px !important;
+  text-transform: none !important;
+}
+
+.Ready {
+  background-color: #e6f4ea !important;
+  color: #1e7e34 !important;
+}
+
+.InProgress {
+  background-color: #fff3e0 !important;
+  color: #b93d00 !important;
+}
+
+.Failed {
+  background-color: #fdecea !important;
+  color: #c62828 !important;
+}
+
+.Time {
+  font-size: 0.75rem;
+  color: #999;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.Model {
+  display: block;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.Description {
+  font-size: 0.8rem;
+  color: #999;
+}
