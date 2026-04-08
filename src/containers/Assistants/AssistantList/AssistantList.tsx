@@ -75,11 +75,8 @@ export const AssistantList = () => {
   const handleCloneConfirm = async () => {
     if (!selectedAssistant) return;
 
-    const isLegacy = !selectedAssistant.activeConfigVersionId;
     const variables: Record<string, any> = { cloneAssistantId: selectedAssistant.id };
-    if (!isLegacy) {
-      variables.versionId = selectedAssistant.activeConfigVersionId;
-    }
+    variables.versionId = selectedAssistant.activeConfigVersionId;
 
     setCloneDialogOpen(false);
 
