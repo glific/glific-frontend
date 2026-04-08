@@ -56,7 +56,7 @@ const formatTimeAgo = (timestamp: number): string => {
   const now = Date.now() / 1000;
   const diff = now - timestamp;
   if (diff < 60) return 'Just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)} mins. ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
   if (diff < 172800) return 'Yesterday';
   return new Date(timestamp * 1000).toLocaleDateString();

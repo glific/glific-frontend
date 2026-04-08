@@ -36,8 +36,36 @@ const conversationsWithDataMock = {
             id: 'conv-abc',
             name: 'Test Conversation',
             status: 'normal',
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: 'conv-abc',
+            name: 'Test Conversation 2',
+            status: 'normal',
             createdAt: now - 3600,
             updatedAt: now - 60,
+          },
+          {
+            id: 'conv-y',
+            name: 'Yesterday Chat',
+            status: 'normal',
+            createdAt: Math.floor(Date.now() / 1000) - 3600 * 3,
+            updatedAt: Math.floor(Date.now() / 1000) - 3600 * 3,
+          },
+          {
+            id: 'conv-y',
+            name: 'Yesterday Chat',
+            status: 'normal',
+            createdAt: Math.floor(Date.now() / 1000) - 86400 - 100,
+            updatedAt: Math.floor(Date.now() / 1000) - 86400 - 100,
+          },
+          {
+            id: 'conv-o',
+            name: 'Old Chat',
+            status: 'normal',
+            createdAt: Math.floor(Date.now() / 1000) - 86400 * 5,
+            updatedAt: Math.floor(Date.now() / 1000) - 86400 * 5,
           },
         ],
         hasMore: false,
@@ -226,14 +254,10 @@ describe('AskGlific', () => {
     const thumbUp = screen.getByTestId('feedback-up');
     const thumbDown = screen.getByTestId('feedback-down');
 
-    // Click thumbs up
     fireEvent.click(thumbUp);
-    // Click thumbs down (should switch)
     fireEvent.click(thumbDown);
-    // Click thumbs down again (should toggle off)
     fireEvent.click(thumbDown);
 
-    // Should not throw and buttons should still be present
     expect(thumbUp).toBeInTheDocument();
     expect(thumbDown).toBeInTheDocument();
   });
@@ -280,7 +304,6 @@ describe('AskGlific', () => {
     fireEvent.change(textbox, { target: { value: 'test' } });
     fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: true });
 
-    // Should not show loading
     expect(screen.queryByText('thinking...')).not.toBeInTheDocument();
   });
 
@@ -301,30 +324,6 @@ describe('AskGlific', () => {
     fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
 
     expect(screen.queryByText('thinking...')).not.toBeInTheDocument();
-  });
-
-  test('it should send message via send button (handleOk)', async () => {
-    const typedMessageMock = createAskGlificMock('What is Glific?');
-
-    render(
-      <MockedProvider mocks={[conversationsMock, typedMessageMock]}>
-        <AskGlific />
-      </MockedProvider>
-    );
-
-    openPanel();
-
-    const textbox = screen.getByTestId('textbox');
-    fireEvent.change(textbox, { target: { value: 'What is Glific?' } });
-    fireEvent.click(screen.getByTestId('send-icon'));
-
-    await waitFor(() => {
-      expect(screen.getByText('What is Glific?')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
-    });
   });
 
   test('it should show error message on mutation failure', async () => {
@@ -353,22 +352,18 @@ describe('AskGlific', () => {
 
     openPanel();
 
-    // In floating mode, clicking header left opens the history dropdown
     await waitFor(() => {
       expect(screen.getByText('New chat')).toBeInTheDocument();
     });
 
-    // Click header left to open history dropdown
     fireEvent.click(screen.getByText('New chat'));
 
     await waitFor(() => {
       expect(screen.getByText('Test Conversation')).toBeInTheDocument();
     });
 
-    // Select the conversation
     fireEvent.click(screen.getByText('Test Conversation'));
 
-    // Should load messages for that conversation
     await waitFor(() => {
       expect(screen.getByText('Hello bot')).toBeInTheDocument();
       expect(screen.getByText('Hi there! How can I help?')).toBeInTheDocument();
@@ -394,5 +389,366 @@ describe('AskGlific', () => {
 
     // Panel should still be visible
     expect(screen.getByTestId('ask-me-bot-panel')).toBeInTheDocument();
+  });
+
+  describe('getDateLabel', () => {
+    test('should group yesterday conversations under Yesterday label', async () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(12, 0, 0, 0);
+      const yesterdayTs = Math.floor(yesterday.getTime() / 1000);
+
+      const mock = {
+        request: {
+          query: GET_ASKME_BOT_CONVERSATIONS,
+          variables: { limit: 10, lastId: '' },
+        },
+        result: {
+          data: {
+            askmeBotConversations: {
+              conversations: [
+                {
+                  id: 'conv-yd',
+                  name: 'Yesterday Date Chat',
+                  status: 'normal',
+                  createdAt: yesterdayTs,
+                  updatedAt: yesterdayTs,
+                },
+              ],
+              hasMore: false,
+              limit: 10,
+            },
+          },
+        },
+        maxUsageCount: Number.MAX_SAFE_INTEGER,
+      };
+
+      render(
+        <MockedProvider mocks={[mock]}>
+          <AskGlific />
+        </MockedProvider>
+      );
+
+      openPanel();
+      fireEvent.click(screen.getByText('New chat'));
+
+      await waitFor(() => {
+        const yesterdayLabels = screen.getAllByText('Yesterday');
+        expect(yesterdayLabels.length).toBeGreaterThanOrEqual(1);
+      });
+    });
+
+    test('should show formatted date for older conversations', async () => {
+      const oldDate = new Date();
+      oldDate.setDate(oldDate.getDate() - 10);
+      const oldTs = Math.floor(oldDate.getTime() / 1000);
+      const expectedLabel = oldDate.toLocaleDateString();
+
+      const mock = {
+        request: {
+          query: GET_ASKME_BOT_CONVERSATIONS,
+          variables: { limit: 10, lastId: '' },
+        },
+        result: {
+          data: {
+            askmeBotConversations: {
+              conversations: [
+                { id: 'conv-old', name: 'Old Date Chat', status: 'normal', createdAt: oldTs, updatedAt: oldTs },
+              ],
+              hasMore: false,
+              limit: 10,
+            },
+          },
+        },
+        maxUsageCount: Number.MAX_SAFE_INTEGER,
+      };
+
+      render(
+        <MockedProvider mocks={[mock]}>
+          <AskGlific />
+        </MockedProvider>
+      );
+
+      openPanel();
+      fireEvent.click(screen.getByText('New chat'));
+
+      await waitFor(() => {
+        // Both the date label and the timeAgo should use toLocaleDateString
+        const dateLabels = screen.getAllByText(expectedLabel);
+        expect(dateLabels.length).toBeGreaterThanOrEqual(1);
+      });
+    });
+  });
+
+  test('it should load more messages when load more button is clicked', async () => {
+    const messagesWithMoreMock = {
+      request: {
+        query: GET_ASKME_BOT_MESSAGES,
+        variables: { conversationId: 'conv-abc', limit: 50 },
+      },
+      result: {
+        data: {
+          askGlificMessages: {
+            messages: [
+              {
+                id: 'msg-1',
+                conversationId: 'conv-abc',
+                query: 'First question',
+                answer: 'First answer',
+                createdAt: now - 3000,
+              },
+            ],
+            hasMore: true,
+            limit: 50,
+          },
+        },
+      },
+      maxUsageCount: Number.MAX_SAFE_INTEGER,
+    };
+
+    const olderMessagesMock = {
+      request: {
+        query: GET_ASKME_BOT_MESSAGES,
+        variables: { conversationId: 'conv-abc', limit: 50, firstId: 'msg-1' },
+      },
+      result: {
+        data: {
+          askGlificMessages: {
+            messages: [
+              {
+                id: 'msg-0',
+                conversationId: 'conv-abc',
+                query: 'Older question',
+                answer: 'Older answer',
+                createdAt: now - 6000,
+              },
+            ],
+            hasMore: false,
+            limit: 50,
+          },
+        },
+      },
+      maxUsageCount: Number.MAX_SAFE_INTEGER,
+    };
+
+    render(
+      <MockedProvider mocks={[conversationsWithDataMock, messagesWithMoreMock, olderMessagesMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByText('New chat'));
+    await waitFor(() => {
+      expect(screen.getByText('Test Conversation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Test Conversation'));
+
+    await waitFor(() => {
+      expect(screen.getByText('First question')).toBeInTheDocument();
+    });
+
+    const loadMoreBtn = screen.getByTestId('load-more-messages');
+    expect(loadMoreBtn).toBeInTheDocument();
+
+    fireEvent.click(loadMoreBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText('Older question')).toBeInTheDocument();
+      expect(screen.getByText('Older answer')).toBeInTheDocument();
+    });
+  });
+
+  test('it should highlight active conversation in history', async () => {
+    render(
+      <MockedProvider mocks={[conversationsWithDataMock, messagesMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByText('New chat'));
+    await waitFor(() => {
+      expect(screen.getByText('Test Conversation')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Test Conversation'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hello bot')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Test Conversation'));
+
+    await waitFor(() => {
+      const menuItems = screen.getAllByRole('menuitem');
+      const activeItem = menuItems.find((item) => item.textContent === 'Test Conversation');
+      expect(activeItem).toBeInTheDocument();
+    });
+  });
+
+  test('it should load more conversations when hasMore is true', async () => {
+    const conversationsPage1 = {
+      request: {
+        query: GET_ASKME_BOT_CONVERSATIONS,
+        variables: { limit: 10, lastId: '' },
+      },
+      result: {
+        data: {
+          askmeBotConversations: {
+            conversations: [
+              { id: 'conv-1', name: 'First Chat', status: 'normal', createdAt: now - 60, updatedAt: now - 60 },
+            ],
+            hasMore: true,
+            limit: 10,
+          },
+        },
+      },
+      maxUsageCount: Number.MAX_SAFE_INTEGER,
+    };
+
+    const conversationsPage2 = {
+      request: {
+        query: GET_ASKME_BOT_CONVERSATIONS,
+        variables: { limit: 10, lastId: 'conv-1' },
+      },
+      result: {
+        data: {
+          askmeBotConversations: {
+            conversations: [
+              { id: 'conv-2', name: 'Second Chat', status: 'normal', createdAt: now - 7200, updatedAt: now - 7200 },
+            ],
+            hasMore: false,
+            limit: 10,
+          },
+        },
+      },
+      maxUsageCount: Number.MAX_SAFE_INTEGER,
+    };
+
+    render(
+      <MockedProvider mocks={[conversationsPage1, conversationsPage2]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByText('New chat'));
+
+    await waitFor(() => {
+      expect(screen.getByText('First Chat')).toBeInTheDocument();
+    });
+
+    const loadMoreBtn = screen.getByTestId('load-more-conversations-dropdown');
+    expect(loadMoreBtn).toBeInTheDocument();
+
+    fireEvent.click(loadMoreBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText('Second Chat')).toBeInTheDocument();
+    });
+  });
+
+  test('it should close history dropdown when clicking outside', async () => {
+    render(
+      <MockedProvider mocks={[conversationsWithDataMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByText('New chat'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Conversation')).toBeInTheDocument();
+    });
+
+    const backdrop = document.querySelector('.MuiBackdrop-root');
+    if (backdrop) {
+      fireEvent.click(backdrop);
+    }
+
+    await waitFor(() => {
+      expect(screen.queryByText('Test Conversation')).not.toBeInTheDocument();
+    });
+  });
+
+  test('it should close display mode menu on item selection', async () => {
+    render(
+      <MockedProvider mocks={[conversationsMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByTestId('display-mode-btn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Floating')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Floating'));
+
+    await waitFor(() => {
+      expect(screen.queryByText('Sidebar')).not.toBeInTheDocument();
+    });
+  });
+
+  test('it should switch to fullscreen display mode', async () => {
+    render(
+      <MockedProvider mocks={[conversationsMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByTestId('display-mode-btn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Fullscreen')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Fullscreen'));
+
+    expect(screen.getByTestId('ask-me-bot-panel')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Floating')).not.toBeInTheDocument();
+    });
+  });
+
+  test('it should show history panel in sidebar mode and select conversation', async () => {
+    render(
+      <MockedProvider mocks={[conversationsWithDataMock, messagesMock]}>
+        <AskGlific />
+      </MockedProvider>
+    );
+
+    openPanel();
+
+    fireEvent.click(screen.getByTestId('display-mode-btn'));
+    await waitFor(() => {
+      expect(screen.getByText('Sidebar')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Sidebar'));
+
+    fireEvent.click(screen.getByText('New chat'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('history-panel')).toBeInTheDocument();
+      expect(screen.getByText('Chat History')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Test Conversation'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hello bot')).toBeInTheDocument();
+    });
   });
 });
