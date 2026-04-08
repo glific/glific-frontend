@@ -1,7 +1,7 @@
 .Container {
   height: 100%;
   width: 100%;
-  background-color: #ffffff;
+  background-color: #fff;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
 
 .Header {
   padding: 0.75rem 1rem;
-  background-color: #ffffff;
+  background-color: #fff;
   color: #2e2e2e;
   font-weight: 600;
   font-size: 1rem;
@@ -31,10 +31,9 @@
 .HeaderLeft span {
   font-family: Heebo;
   font-weight: 500;
-  font-style: Medium;
   font-size: 13px;
   line-height: 18px;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   vertical-align: middle;
   color: #191c1a;
 }
@@ -129,10 +128,9 @@
   text-align: center;
   font-family: Heebo;
   font-weight: 500;
-  font-style: Medium;
   font-size: 0.8rem;
   line-height: 18px;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   vertical-align: middle;
 }
 
@@ -155,18 +153,16 @@
   text-align: center;
   transition: background-color 0.2s;
   border: 1px solid #e8e8e8;
-
   font-family: Heebo;
   font-weight: 400;
-  font-style: Regular;
   font-size: 0.75rem;
   line-height: 18px;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   vertical-align: middle;
 }
 
 .SuggestionCard:hover {
-  background-color: #eeeeee;
+  background-color: #eee;
 }
 
 .Messages {
@@ -187,9 +183,7 @@
   line-height: 1.5;
   font-family: Heebo;
   font-weight: 400;
-  font-style: Regular;
-  line-height: 1rem;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   vertical-align: middle;
 }
 
@@ -325,11 +319,10 @@
   right: 16px;
   z-index: 1300;
   border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0 / 15%);
   overflow: hidden;
   width: 414px;
   height: 528px;
-  angle: 0 deg;
   opacity: 1;
 }
 
@@ -340,7 +333,7 @@
   width: 680px;
   height: 100vh;
   z-index: 1300;
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0 /10%);
   overflow: hidden;
   display: flex;
   flex-direction: row;
@@ -370,7 +363,7 @@
   width: 260px;
   min-width: 260px;
   height: 100%;
-  background-color: #ffffff;
+  background-color: #fff;
   border-right: 1px solid #f0f0f0;
   display: flex;
   flex-direction: column;
@@ -483,7 +476,3 @@
   color: #119656 !important;
 }
 
-.Divider {
-  color: #0d7a47;
-  font-size: 0.8rem;
-}
