@@ -1,7 +1,25 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { GET_ASKME_BOT_CONVERSATIONS } from 'graphql/queries/AskGlific';
 import AskGlific from './AskGlific';
+
+const conversationsMock = {
+  request: {
+    query: GET_ASKME_BOT_CONVERSATIONS,
+    variables: { limit: 10, lastId: '' },
+  },
+  result: {
+    data: {
+      askmeBotConversations: {
+        conversations: [],
+        hasMore: false,
+        limit: 10,
+      },
+    },
+  },
+  maxUsageCount: Number.MAX_SAFE_INTEGER,
+};
 
 const AskGlificMock = {
   request: {
@@ -10,6 +28,7 @@ const AskGlificMock = {
       input: {
         query: 'Create your first chatbot',
         conversationId: '',
+        pageUrl: window.location.href,
       },
     },
   },
@@ -18,6 +37,7 @@ const AskGlificMock = {
       askGlific: {
         answer: 'This is a mock response from the bot.',
         conversationId: 'conv-123',
+        conversationName: null,
         errors: null,
       },
     },
@@ -32,7 +52,7 @@ describe('AskGlific', () => {
 
   test('should render AskGlific component', async () => {
     render(
-      <MockedProvider mocks={[]}>
+      <MockedProvider mocks={[conversationsMock]}>
         <AskGlific />
       </MockedProvider>
     );
@@ -56,7 +76,7 @@ describe('AskGlific', () => {
 
   test('it should send messages from suggestion', async () => {
     render(
-      <MockedProvider mocks={[AskGlificMock]}>
+      <MockedProvider mocks={[conversationsMock, AskGlificMock]}>
         <AskGlific />
       </MockedProvider>
     );
@@ -80,7 +100,7 @@ describe('AskGlific', () => {
 
   test('it should allow new chat', async () => {
     render(
-      <MockedProvider mocks={[AskGlificMock]}>
+      <MockedProvider mocks={[conversationsMock, AskGlificMock]}>
         <AskGlific />
       </MockedProvider>
     );
@@ -101,7 +121,7 @@ describe('AskGlific', () => {
 
   test('it should show feedback buttons on bot responses', async () => {
     render(
-      <MockedProvider mocks={[AskGlificMock]}>
+      <MockedProvider mocks={[conversationsMock, AskGlificMock]}>
         <AskGlific />
       </MockedProvider>
     );
