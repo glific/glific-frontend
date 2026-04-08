@@ -20,10 +20,10 @@ const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId = '1') =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={[`/assistant-new/${assistantId}`]}>
+      <MemoryRouter initialEntries={[`/assistants/${assistantId}`]}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants-new" element={<div data-testid="assistants-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -32,10 +32,10 @@ const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId 
 const renderCreateMode = (mocks: any = []) =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={['/assistant-new/add']}>
+      <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants-new" element={<div data-testid="assistants-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -165,7 +165,7 @@ test('create mode shows Cancel and Save buttons', async () => {
   });
 });
 
-test('cancel button in create mode navigates to /assistants-new', async () => {
+test('cancel button in create mode navigates to /assistants', async () => {
   renderCreateMode();
 
   await waitFor(() => {
@@ -283,6 +283,32 @@ test('Leave button in unsaved changes modal closes the modal', async () => {
   });
 });
 
+test('Leave button switches to the pending version', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-405db438 / Version 1')).toBeInTheDocument();
+  });
+
+  // Modify form to trigger unsaved changes
+  const textareas = screen.getAllByRole('textbox');
+  fireEvent.change(textareas[0], { target: { value: 'Changed' } });
+
+  // Click version 2 card — should open modal
+  fireEvent.click(screen.getAllByTestId('versionCard')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('version-switch-leave')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('version-switch-leave'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('version-switch-leave')).not.toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 2')).toBeInTheDocument();
+  });
+});
+
 test('save button in edit mode triggers notification on success', async () => {
   renderAssistantDetail(ASSISTANT_DETAIL_SAVE_MOCKS);
 
@@ -319,9 +345,9 @@ test('create mode save navigates to the new assistant page', async () => {
   render(
     <MockedProvider
       mocks={[createAssistantSuccessMock, getAssistant('99')]}>
-      <MemoryRouter initialEntries={['/assistant-new/add']}>
+      <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -341,6 +367,23 @@ test('create mode save navigates to the new assistant page', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
+  });
+});
+
+test('redirects to /assistants when no assistantId param is present', async () => {
+  render(
+    <MockedProvider mocks={[]}>
+      <MemoryRouter initialEntries={['/assistants/detail']}>
+        <Routes>
+          <Route path="/assistants/detail" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByTestId('assistants-page')).toBeInTheDocument();
   });
 });
 

@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import * as Notification from 'common/notification';
 import {
-  ASSISTANT_DETAIL_SAVE_MOCKS,
+  CONFIG_EDITOR_SAVE_MOCKS,
   createAssistantConfigMock,
   createAssistantErrorMock,
   mockVersions,
@@ -206,7 +206,7 @@ describe('ConfigEditor — edit mode', () => {
   });
 
   it('calls updateAssistant mutation and shows notification on save', async () => {
-    renderEdit({}, ASSISTANT_DETAIL_SAVE_MOCKS);
+    renderEdit({}, CONFIG_EDITOR_SAVE_MOCKS);
 
     const textareas = screen.getAllByRole('textbox');
     const instructionsField = textareas.find((el) => el.getAttribute('name') === 'instructions');
@@ -245,6 +245,33 @@ describe('ConfigEditor — edit mode', () => {
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
     });
+  });
+});
+
+describe('ConfigEditor — settings parsing', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('populates temperature correctly when settings is a JSON string', () => {
+    renderEdit({
+      version: {
+        ...mockVersion,
+        settings: JSON.stringify({ temperature: 0.7 }),
+      },
+    });
+
+    expect(screen.getByRole('sliderDisplay')).toHaveValue(0.7);
+  });
+
+  it('falls back to default model (gpt-4o) when version.model is null', () => {
+    renderEdit({ version: { ...mockVersion, model: null } });
+
+    expect(screen.getByDisplayValue('gpt-4o')).toBeInTheDocument();
+  });
+
+  it('falls back to temperature 0.1 when settings is null', () => {
+    renderEdit({ version: { ...mockVersion, settings: null } });
+
+    expect(screen.getByRole('sliderDisplay')).toHaveValue(0.1);
   });
 });
 
