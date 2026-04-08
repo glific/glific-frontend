@@ -482,7 +482,6 @@ export const AssistantOptions = ({
         setFiles(updatedFiles.map(mapInitialFileToAssistantFile));
         setFieldValue('initialFiles', updatedFiles);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
-        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setTimeout(() => validateForm(), 0);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         onFilesChange(true);
@@ -576,11 +575,19 @@ export const AssistantOptions = ({
                             )}
                             {file.status === 'failed' && (
                               <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                                <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
+                                <ErrorOutlineIcon
+                                  data-testid="failedIcon"
+                                  className={styles.FailedIcon}
+                                  fontSize="small"
+                                />
                               </Tooltip>
                             )}
                             {file.status === 'attached' && (
-                              <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
+                              <CheckCircleIcon
+                                data-testid="attachedIcon"
+                                className={styles.SuccessIcon}
+                                fontSize="small"
+                              />
                             )}
                           </>
                         )}
