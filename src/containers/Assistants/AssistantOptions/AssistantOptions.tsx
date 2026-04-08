@@ -523,104 +523,116 @@ export const AssistantOptions = ({
             <>
               <p className={styles.DialogSubtitle}>{t('You are adding more files to existing Knowledge Base')}</p>
               <div className={styles.DialogBody}>
-              <div className={styles.FileSection}>
-                <div className={styles.FileSectionHeader}>
-                  <span className={styles.FileSectionTitle}>{t('Selected File(s)')}</span>
-                  <Button
-                    component="label"
-                    variant="outlined"
-                    className={styles.AddFilesButton}
-                    disabled={fileUploadDisabled}
-                    tabIndex={-1}
-                  >
-                    <AddIcon />
-                    {t('Add Files')}
-                    <input
-                      data-testid="uploadFile"
-                      type="file"
-                      accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
-                      onChange={handleFileChange}
-                      style={{ display: 'none' }}
-                      multiple
+                <div className={styles.FileSection}>
+                  <div className={styles.FileSectionHeader}>
+                    <span className={styles.FileSectionTitle}>{t('Selected File(s)')}</span>
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      className={styles.AddFilesButton}
                       disabled={fileUploadDisabled}
-                    />
-                  </Button>
-                </div>
+                      tabIndex={-1}
+                    >
+                      <AddIcon />
+                      {t('Add Files')}
+                      <input
+                        data-testid="uploadFile"
+                        type="file"
+                        accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
+                        multiple
+                        disabled={fileUploadDisabled}
+                      />
+                    </Button>
+                  </div>
 
-                <div className={styles.FileList}>
-                  {getSortedFiles(files).map((file, index) => (
-                    <div data-testid="fileItem" className={styles.File} key={file.fileId || file.tempId || index}>
-                      <div className={styles.FileLeadingIcon}>
-                        {file.status === 'uploading' ? (
-                          <CircularProgress data-testid="uploadingIcon" size={18} />
-                        ) : (
-                          <FileIcon />
-                        )}
-                      </div>
-                      <div className={styles.FileName}>{file.filename}</div>
-                      <div className={styles.FileActions}>
-                        <div className={styles.ActionSlot}>
-                          {file.sourceFile && (
-                            <>
-                              {file.status === 'queued' && (
-                                <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
-                              )}
-                              {file.status === 'failed' && (
-                                <>
-                                  <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                                    <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
-                                  </Tooltip>
-                                  <Tooltip title="Retry upload" placement="top" arrow>
-                                    <span>
-                                      <IconButton
-                                        data-testid="retryFile"
-                                        className={styles.RetryButton}
-                                        onClick={() => handleRetryFile(file)}
-                                      >
-                                        <ReplayIcon className={styles.RetryIcon} fontSize="small" />
-                                      </IconButton>
-                                    </span>
-                                  </Tooltip>
-                                </>
-                              )}
-                              {file.status === 'attached' && (
-                                <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
-                              )}
-                            </>
+                  <div className={styles.FileList}>
+                    {getSortedFiles(files).map((file, index) => (
+                      <div data-testid="fileItem" className={styles.File} key={file.fileId || file.tempId || index}>
+                        <div className={styles.FileLeadingIcon}>
+                          {file.status === 'uploading' ? (
+                            <CircularProgress data-testid="uploadingIcon" size={18} />
+                          ) : (
+                            <FileIcon />
                           )}
                         </div>
-                        <div className={styles.ActionSlot}>
-                          <IconButton
-                            className={styles.DeleteButton}
-                            data-testid="deleteFile"
-                            disabled={file.status === 'uploading'}
-                            onClick={() => handleRemoveFile(file)}
-                          >
-                            <DeleteOutlineIcon className={styles.DeleteIcon} fontSize="small" />
-                          </IconButton>
+                        <div className={styles.FileName}>{file.filename}</div>
+                        <div className={styles.FileActions}>
+                          <div className={styles.ActionSlot}>
+                            {file.sourceFile && (
+                              <>
+                                {file.status === 'queued' && (
+                                  <AccessTimeIcon
+                                    data-testid="queuedIcon"
+                                    className={styles.QueuedIcon}
+                                    fontSize="small"
+                                  />
+                                )}
+                                {file.status === 'failed' && (
+                                  <>
+                                    <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
+                                      <ErrorOutlineIcon
+                                        data-testid="failedIcon"
+                                        className={styles.FailedIcon}
+                                        fontSize="small"
+                                      />
+                                    </Tooltip>
+                                    <Tooltip title="Retry upload" placement="top" arrow>
+                                      <span>
+                                        <IconButton
+                                          data-testid="retryFile"
+                                          className={styles.RetryButton}
+                                          onClick={() => handleRetryFile(file)}
+                                        >
+                                          <ReplayIcon className={styles.RetryIcon} fontSize="small" />
+                                        </IconButton>
+                                      </span>
+                                    </Tooltip>
+                                  </>
+                                )}
+                                {file.status === 'attached' && (
+                                  <CheckCircleIcon
+                                    data-testid="attachedIcon"
+                                    className={styles.SuccessIcon}
+                                    fontSize="small"
+                                  />
+                                )}
+                              </>
+                            )}
+                          </div>
+                          <div className={styles.ActionSlot}>
+                            <IconButton
+                              className={styles.DeleteButton}
+                              data-testid="deleteFile"
+                              disabled={file.status === 'uploading'}
+                              onClick={() => handleRemoveFile(file)}
+                            >
+                              <DeleteOutlineIcon className={styles.DeleteIcon} fontSize="small" />
+                            </IconButton>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className={styles.InfoSection}>
-                <p className={styles.InfoText}>
-                  Information in the attached files will be available to this assistant.{' '}
-                  <a
-                    href="https://platform.openai.com/docs/assistants/tools/file-search/supported-files"
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.InfoLink}
-                  >
-                    Allowed file formats
-                  </a>
-                </p>
-                <p className={styles.FileLimitText}>
-                  <strong>Individual File Limit: {MAX_FILE_SIZE_MB}MB</strong>
-                </p>
-              </div>
+                <div className={styles.InfoSection}>
+                  <p className={styles.InfoText}>
+                    Information in the attached files will be available to this assistant.{' '}
+                    <a
+                      href="https://platform.openai.com/docs/assistants/tools/file-search/supported-files"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.InfoLink}
+                    >
+                      Allowed file formats
+                    </a>
+                  </p>
+                  <p className={styles.FileLimitText}>
+                    <strong>Individual File Limit: {MAX_FILE_SIZE_MB}MB</strong>
+                  </p>
+                </div>
               </div>
             </>
           )}

@@ -283,6 +283,32 @@ test('Leave button in unsaved changes modal closes the modal', async () => {
   });
 });
 
+test('Leave button switches to the pending version', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-405db438 / Version 1')).toBeInTheDocument();
+  });
+
+  // Modify form to trigger unsaved changes
+  const textareas = screen.getAllByRole('textbox');
+  fireEvent.change(textareas[0], { target: { value: 'Changed' } });
+
+  // Click version 2 card — should open modal
+  fireEvent.click(screen.getAllByTestId('versionCard')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('version-switch-leave')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('version-switch-leave'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('version-switch-leave')).not.toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 2')).toBeInTheDocument();
+  });
+});
+
 test('save button in edit mode triggers notification on success', async () => {
   renderAssistantDetail(ASSISTANT_DETAIL_SAVE_MOCKS);
 

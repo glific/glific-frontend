@@ -248,6 +248,21 @@ describe('ConfigEditor — edit mode', () => {
   });
 });
 
+describe('ConfigEditor — settings parsing', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('populates temperature correctly when settings is a JSON string', () => {
+    renderEdit({
+      version: {
+        ...mockVersion,
+        settings: JSON.stringify({ temperature: 0.7 }),
+      },
+    });
+
+    expect(screen.getByRole('sliderDisplay')).toHaveValue(0.7);
+  });
+});
+
 describe('ConfigEditor — expand instructions modal', () => {
   beforeEach(() => vi.clearAllMocks());
 

@@ -40,7 +40,12 @@ export const Assistants = () => {
       />
       <div className={styles.MainContainer}>
         <div className={styles.LeftContainer}>
-          <List getItemsQuery={GET_ASSISTANTS} listItemName="assistants" refreshList={updateList} baseRoute="/assistants" />
+          <List
+            getItemsQuery={GET_ASSISTANTS}
+            listItemName="assistants"
+            refreshList={updateList}
+            baseRoute="/assistants"
+          />
         </div>
         <div className={styles.RightContainer}>
           {showForm ? (
