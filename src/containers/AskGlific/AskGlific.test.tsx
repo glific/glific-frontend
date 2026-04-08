@@ -1,11 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ASK_ME_BOT } from 'graphql/mutations/AskMeBot';
-import { AskMeBot } from './AskMeBot';
+import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { AskGlific } from './AskGlific';
 
-const askMeBotMock = {
+const AskGlificMock = {
   request: {
-    query: ASK_ME_BOT,
+    query: ASK_GLIFIC,
     variables: {
       input: {
         query: 'Create your first chatbot',
@@ -15,7 +15,7 @@ const askMeBotMock = {
   },
   result: {
     data: {
-      askmeBot: {
+      AskGlific: {
         answer: 'This is a mock response from the bot.',
         conversationId: 'conv-123',
         errors: null,
@@ -24,21 +24,21 @@ const askMeBotMock = {
   },
 };
 
-describe('AskMeBot', () => {
+describe('AskGlific', () => {
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
     value: vi.fn(),
     writable: true,
   });
 
-  test('should render AskMeBot component', async () => {
+  test('should render AskGlific component', async () => {
     render(
       <MockedProvider mocks={[]}>
-        <AskMeBot />
+        <AskGlific />
       </MockedProvider>
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('ask-me-bot-fab')).toBeInTheDocument();
+      expect(screen.getByTestId('ask-glific-fab')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('ask-me-bot-fab'));
@@ -56,8 +56,8 @@ describe('AskMeBot', () => {
 
   test('it should send messages from suggestion', async () => {
     render(
-      <MockedProvider mocks={[askMeBotMock]}>
-        <AskMeBot />
+      <MockedProvider mocks={[AskGlificMock]}>
+        <AskGlific />
       </MockedProvider>
     );
 
@@ -80,8 +80,8 @@ describe('AskMeBot', () => {
 
   test('it should allow new chat', async () => {
     render(
-      <MockedProvider mocks={[askMeBotMock]}>
-        <AskMeBot />
+      <MockedProvider mocks={[AskGlificMock]}>
+        <AskGlific />
       </MockedProvider>
     );
 
@@ -101,8 +101,8 @@ describe('AskMeBot', () => {
 
   test('it should show feedback buttons on bot responses', async () => {
     render(
-      <MockedProvider mocks={[askMeBotMock]}>
-        <AskMeBot />
+      <MockedProvider mocks={[AskGlificMock]}>
+        <AskGlific />
       </MockedProvider>
     );
 

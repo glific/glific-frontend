@@ -13,11 +13,11 @@ import { Fab, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 
-import AskMeBotIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
-import { ASK_ME_BOT } from 'graphql/mutations/AskMeBot';
-import styles from './AskMeBot.module.css';
+import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import styles from './AskGlific.module.css';
 
 interface Message {
   role: 'user' | 'system' | 'error';
@@ -51,7 +51,7 @@ const MOCK_CHAT_HISTORY: ChatHistoryItem[] = [
   { id: '4', title: 'Bulk messaging setup', timeAgo: 'Yesterday', date: 'Yesterday' },
 ];
 
-export const AskMeBot = () => {
+export const AskGlific = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -66,7 +66,7 @@ export const AskMeBot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [askMeBot] = useMutation(ASK_ME_BOT);
+  const [askGlific] = useMutation(ASK_GLIFIC);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -103,7 +103,7 @@ export const AskMeBot = () => {
     setIsLoading(true);
 
     try {
-      const { data } = await askMeBot({
+      const { data } = await askGlific({
         variables: {
           input: {
             query: msg.content,
@@ -112,7 +112,7 @@ export const AskMeBot = () => {
         },
       });
 
-      const result = data?.askmeBot;
+      const result = data?.askGlific;
 
       if (result?.errors?.length) {
         const errorMessage: Message = {
@@ -204,9 +204,9 @@ export const AskMeBot = () => {
       {!open && (
         <Tooltip title="Ask Glific" placement="left" arrow>
           <Fab
-            data-testid="ask-me-bot-fab"
+            data-testid="ask-glific-fab"
             color="primary"
-            aria-label="ask me bot"
+            aria-label="ask glific"
             onClick={() => setOpen(true)}
             sx={{
               position: 'fixed',
@@ -219,7 +219,7 @@ export const AskMeBot = () => {
               boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
             }}
           >
-            <AskMeBotIcon />
+            <AskGlificIcon />
           </Fab>
         </Tooltip>
       )}
@@ -269,7 +269,7 @@ export const AskMeBot = () => {
               >
                 {hasMessages && (
                   <div className={styles.ChatIcon}>
-                    <AskMeBotIcon />
+                    <AskGlific />
                   </div>
                 )}
                 <span>{getChatTitle()}</span>
@@ -385,7 +385,7 @@ export const AskMeBot = () => {
             {!hasMessages && !isLoading ? (
               <div className={styles.WelcomeSection}>
                 <div className={styles.WelcomeIcon}>
-                  <AskMeBotIcon />
+                  <AskGlific />
                 </div>
                 <div className={styles.WelcomeText}>Ask Glific! Learn About How It Works?</div>
                 <div className={styles.SuggestionsGrid}>

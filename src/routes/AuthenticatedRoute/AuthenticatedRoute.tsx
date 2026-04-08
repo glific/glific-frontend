@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import { AskGlific } from 'containers/AskGlific/AskGlific';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import Billing from 'containers/SettingList/Billing/Billing';
 import Organization from 'containers/SettingList/Organization/Organization';
@@ -196,7 +196,7 @@ export const AuthenticatedRoute = () => {
   const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
 
   const [provider, setProvider] = useState<string>('');
-  const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
+  const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -244,7 +244,7 @@ export const AuthenticatedRoute = () => {
           <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
             <ErrorBoundary>
               {route}
-              {isAskMeBotEnabled && <AskMeBot />}
+              {isAskGlificEnabled && <AskGlific />}
             </ErrorBoundary>
           </Suspense>
         </Layout>
