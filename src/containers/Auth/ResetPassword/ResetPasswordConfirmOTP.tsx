@@ -66,6 +66,7 @@ export const ResetPasswordConfirmOTP = () => {
   ];
 
   const FormSchema = Yup.object().shape({
+    phoneNumber: Yup.string().required(t('Input required')),
     OTP: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
   });

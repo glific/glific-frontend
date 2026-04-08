@@ -76,4 +76,22 @@ describe('<ResetPasswordConfirmOTP />', () => {
       expect(sendOptMock).toHaveBeenCalledWith('919967665667');
     });
   });
+
+  test('it should show validation error if phone number is empty in state', async () => {
+    const WrapperEmpty = (
+      <MemoryRouter initialEntries={[{ state: { phoneNumber: '' } }]}>
+        <Routes>
+          <Route path="/" element={<ResetPasswordConfirmOTP />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    render(WrapperEmpty);
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Input required').length).toBeGreaterThan(0);
+    });
+  });
 });
