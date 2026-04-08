@@ -142,6 +142,46 @@ const askGlificErrorMock = {
   error: new Error('Network error'),
 };
 
+const feedbackMock = {
+  request: {
+    query: ASK_GLIFIC_FEEDBACK,
+    variables: {
+      input: {
+        messageId: 'msg-new-001',
+        rating: 'like',
+      },
+    },
+  },
+  result: {
+    data: {
+      askGlificFeedback: {
+        success: true,
+      },
+    },
+  },
+  maxUsageCount: Number.MAX_SAFE_INTEGER,
+};
+
+const feedbackDislikeMock = {
+  request: {
+    query: ASK_GLIFIC_FEEDBACK,
+    variables: {
+      input: {
+        messageId: 'msg-new-001',
+        rating: 'dislike',
+      },
+    },
+  },
+  result: {
+    data: {
+      askGlificFeedback: {
+        success: true,
+      },
+    },
+  },
+  maxUsageCount: Number.MAX_SAFE_INTEGER,
+};
+
 const openPanel = () => {
   fireEvent.click(screen.getByTestId('ask-glific-fab'));
 };
@@ -241,7 +281,7 @@ describe('AskGlific', () => {
 
   test('it should toggle feedback on click', async () => {
     render(
-      <MockedProvider mocks={[conversationsMock, suggestionMock]}>
+      <MockedProvider mocks={[conversationsMock, suggestionMock, feedbackMock, feedbackDislikeMock]}>
         <AskGlific />
       </MockedProvider>
     );
