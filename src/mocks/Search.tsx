@@ -526,18 +526,15 @@ export const getBlockedContactSearchQuery = {
 
 export const messages = (limit: number, skip: number) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
-    __typename: 'ConversationMessage',
     id: `${index + skip}`,
     body: 'Hey there whats up?',
     insertedAt: `2020-${index}-25T13:36:43Z`,
     location: null,
     messageNumber: index + skip + 4,
     receiver: {
-      __typename: 'LanguageUser',
       id: '1',
     },
     sender: {
-      __typename: 'Contact',
       id: '2',
     },
     type: 'TEXT',
@@ -546,29 +543,22 @@ export const messages = (limit: number, skip: number) =>
     contextMessage:
       index % 5 === 0
         ? {
-          __typename: 'ConversationMessage',
-          body: 'All good',
-          contextId: 1,
-          messageNumber: 10,
-          errors: '{}',
-          media: null,
-          type: 'TEXT',
-          insertedAt: '2021-04-26T06:13:03.832721Z',
-          location: null,
-          receiver: {
-            __typename: 'LanguageUser',
-            id: '1',
-          },
-          sender: {
-            __typename: 'LanguageUser',
-            id: '2',
-            name: 'User',
-          },
-          interactiveContent: '{}',
-          sendBy: 'test',
-          flowLabel: null,
-          whatsappFormResponse: null,
-        }
+            body: 'All good',
+            contextId: 1,
+            messageNumber: 10,
+            errors: '{}',
+            media: null,
+            type: 'TEXT',
+            insertedAt: '2021-04-26T06:13:03.832721Z',
+            location: null,
+            receiver: {
+              id: '1',
+            },
+            sender: {
+              id: '2',
+              name: 'User',
+            },
+          }
         : null,
     interactiveContent: '{}',
     sendBy: 'test',
@@ -577,38 +567,32 @@ export const messages = (limit: number, skip: number) =>
   }));
 
 export const searchQuery = {
-  request: {
-    query: SEARCH_QUERY,
-    variables: {
-      filter: {},
-      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
-      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-    },
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
-  result: {
-    data: {
-      search: [
-        {
-          __typename: 'Conversation',
-          id: 'contact_2',
-          group: null,
-          contact: {
-            __typename: 'Contact',
-            id: '2',
-            name: null,
-            phone: '987654321',
-            maskedPhone: '98****321',
-            lastMessageAt: new Date(),
-            status: 'VALID',
-            fields:
-              '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
-            bspStatus: 'SESSION_AND_HSM',
-            isOrgRead: true,
-          },
-          messages: messages(20, 1),
+  data: {
+    search: [
+      {
+        id: 'contact_2',
+        group: null,
+        contact: {
+          id: '2',
+          name: null,
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          fields:
+            '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
         },
-      ],
-    },
+        messages: messages(20, 1),
+      },
+    ],
   },
 };
 

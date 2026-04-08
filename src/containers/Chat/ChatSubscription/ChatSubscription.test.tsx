@@ -22,14 +22,14 @@ describe('<ChatSubscription />', () => {
 
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks}>
+      <MockedProvider mocks={mocks} addTypename={false}>
         <ChatSubscription {...ChatSubscriptionParams} />
       </MockedProvider>
     );
 
     // there is nothing to assert here just waiting for all the mock calls working
-    await waitFor(() => { });
-    await waitFor(() => { });
+    await waitFor(() => {});
+    await waitFor(() => {});
   });
 });
 
@@ -71,7 +71,7 @@ const body = {
   whatsappFormResponse: null,
 };
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
@@ -174,14 +174,14 @@ describe('<ChatSubscription />', () => {
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
       <ApolloProvider client={client}>
-        <MockedProvider mocks={mocks}>
+        <MockedProvider mocks={mocks} addTypename={false}>
           <ChatSubscription {...ChatSubscriptionParams} />
         </MockedProvider>
       </ApolloProvider>
     );
 
     // there is nothing to assert here just waiting for all the mock calls working
-    await waitFor(() => { });
-    await waitFor(() => { });
+    await waitFor(() => {});
+    await waitFor(() => {});
   });
 });

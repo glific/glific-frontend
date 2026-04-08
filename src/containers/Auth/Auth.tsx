@@ -15,7 +15,7 @@ import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 
-// import { Promotion } from './Promotion/Promotion';
+import { Promotion } from './Promotion/Promotion';
 
 export interface AuthProps {
   pageTitle: string;
@@ -58,16 +58,19 @@ export const Auth = ({
   loading: externalLoading,
   inlineSuccessMessage,
 }: AuthProps) => {
-  // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
-  const [internalLoading, setInternalLoading] = useState(false);
-  const loading = externalLoading !== undefined ? externalLoading : internalLoading;
-  const setLoading = setInternalLoading;
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState('Glific');
   const [status, setStatus] = useState('');
 
+  const isLoading = externalLoading !== undefined ? externalLoading : loading;
+
   useEffect(() => {
+    if (mode === 'trialregistration') {
+      return;
+    }
+
     axios
       .post(ORGANIZATION_NAME)
       .then(({ data }) => {
@@ -75,10 +78,9 @@ export const Auth = ({
         setStatus(data?.data?.status);
       })
       .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
-    // Stop loading if any error
     if (loading && errorMessage) {
       setLoading(false);
     }
@@ -92,6 +94,7 @@ export const Auth = ({
   const boxTitleClass = [styles.BoxTitle];
   let buttonClass = styles.AuthButton;
   let buttonContainedVariant = true;
+
   switch (mode) {
     case 'login':
       boxClass.push(styles.LoginBox);
@@ -102,6 +105,13 @@ export const Auth = ({
       boxClass.push(styles.RegistrationBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
       buttonClass = styles.AuthRegistrationButton;
+      break;
+    case 'trialregistration':
+      boxClass.push(styles.RegistrationBox);
+      boxClass.push(styles.TrialRegistrationBox);
+      boxTitleClass.push(styles.RegistrationBoxTitle);
+      buttonClass = styles.AuthButton;
+      buttonContainedVariant = true;
       break;
     case 'confirmotp':
       boxClass.push(styles.OTPBox);
@@ -122,33 +132,31 @@ export const Auth = ({
   }
 
   const isRegistration = mode === 'registration';
+  const isTrialRegistration = mode === 'trialregistration';
   const whatsAppIcon = <WhatsAppIcon className={styles.WhatsAppIcon} />;
   const otpMessage = 'You will receive an OTP on your WhatsApp number';
+
   let displayErrorMessage: any = null;
   if (errorMessage) {
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
-  }
-
-  let displayInlineSuccessMessage: any = null;
-  if (inlineSuccessMessage) {
-    displayInlineSuccessMessage = <div className={styles.SuccessMessage}>{inlineSuccessMessage}</div>;
   }
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // let's add the additonal password field info to the password field to handle
-  // visibility of the field
   const passwordFieldAdditionalInfo = {
     endAdornmentCallback: handlePasswordVisibility,
     togglePassword: showPassword,
   };
 
-
+  const handlePhone =
+    () =>
+    (value: string): void => {
+      initialFormValues.phone = value;
+    };
 
   let formElements;
-  // we should not render form elements when displaying success message
   if (!successMessage) {
     formElements = (
       <>
@@ -161,7 +169,6 @@ export const Auth = ({
 
         <Formik
           initialValues={initialFormValues}
-          enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={(item) => {
             setLoading(true);
@@ -176,7 +183,11 @@ export const Auth = ({
                   if (field.type === 'password') {
                     fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
                   }
+                  if (field.type === 'phone') {
+                    fieldInfo = { ...field, handlePhone };
+                  }
                   const key = index;
+
                   return (
                     <div className={field.styles} key={key}>
                       {field.label ? (
@@ -190,11 +201,17 @@ export const Auth = ({
                     </div>
                   );
                 })}
+
+                {isTrialRegistration && inlineSuccessMessage && (
+                  <div className={styles.SuccessMessageInline}>{inlineSuccessMessage}</div>
+                )}
+
                 {linkURL && (
                   <div className={styles.Link}>
                     <Link to={`/${linkURL}`}>{linkText}</Link>
                   </div>
                 )}
+
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
                     <Captcha
@@ -215,7 +232,7 @@ export const Auth = ({
                       }}
                       className={buttonClass}
                       data-testid="SubmitButton"
-                      loading={loading}
+                      loading={isLoading}
                       action="register"
                     >
                       {buttonText}
@@ -228,20 +245,17 @@ export const Auth = ({
                       onClick={submitForm}
                       className={buttonClass}
                       data-testid="SubmitButton"
-                      loading={loading}
+                      loading={isLoading}
+                      type="button"
                     >
-                      {!loading && buttonText}
+                      {buttonText}
                     </Button>
                   )}
                 </div>
                 {isRegistration && <div className={styles.InformationText}>{otpMessage}</div>}
-                {/* We neeed to add this submit button to enable form sumbitting when user hits enter
-                key. This is an workaround solution till the bug in formik or react is fixed. For
-                more info: https://github.com/formium/formik/issues/1418 */}
                 <input className={styles.SubmitAction} type="submit" />
               </Form>
               {displayErrorMessage}
-              {displayInlineSuccessMessage}
             </div>
           )}
         </Formik>
@@ -252,14 +266,17 @@ export const Auth = ({
   }
 
   return (
-    <div className={styles.Container} data-testid="AuthContainer">
+    <div
+      className={`${styles.Container} ${isTrialRegistration ? styles.TrialContainer : ''}`}
+      data-testid="AuthContainer"
+    >
       <div className={styles.Auth}>
         <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
         </div>
         <hr className={styles.Break} />
 
-        <div className={styles.OrganizationName}>{orgName}</div>
+        {!isTrialRegistration && <div className={styles.OrganizationName}>{orgName}</div>}
 
         <div className={boxClass.join(' ')}>
           {formElements}
@@ -286,7 +303,7 @@ export const Auth = ({
         ) : null}
       </div>
 
-      {/* {mode === 'login' && <Promotion />} */}
+      {mode === 'login' && <Promotion />}
     </div>
   );
 };
