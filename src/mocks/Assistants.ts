@@ -565,6 +565,36 @@ export const countAssistantsMock = {
   result: { data: { countAssistants: 2 } },
 };
 
+const createAssistantWithoutKB = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        instructions: 'test instructions',
+        model: 'gpt-4o-mini',
+        name: 'test name',
+        temperature: 1.5,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: {
+          id: 5,
+          name: 'Assistant-no-kb',
+        },
+      },
+    },
+  },
+};
+
+export const createAssistantWithoutKBMocks = [
+  getAssistantsList(),
+  getAssistantsList(),
+  createAssistantWithoutKB,
+  getAssistant('5'),
+];
 export const emptyMocks = [getAssistantsList(0), getAssistant('2')];
 export const loadMoreMocks = [getAssistantsList(25), loadMoreQuery, getAssistant('1')];
 export const errorMocks = [
