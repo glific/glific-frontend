@@ -11,8 +11,6 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import DatabaseIcon from 'assets/images/database.svg?react';
 import FileIcon from 'assets/images/FileGreen.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
-import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -572,12 +570,11 @@ export const AssistantOptions = ({
                                   <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
                                     <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
                                   </Tooltip>
-                                  <Tooltip title={file.sourceFile ? 'Retry upload' : 'Retry unavailable'} placement="top" arrow>
+                                  <Tooltip title="Retry upload" placement="top" arrow>
                                     <span>
                                       <IconButton
                                         data-testid="retryFile"
                                         className={styles.RetryButton}
-                                        disabled={!file.sourceFile}
                                         onClick={() => handleRetryFile(file)}
                                       >
                                         <ReplayIcon className={styles.RetryIcon} fontSize="small" />
