@@ -92,7 +92,7 @@ test('clone icon opens confirmation dialog', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Clone Assistant')).toBeInTheDocument();
-    expect(screen.getByText(/Are you sure you want to clone the assistant/)).toBeInTheDocument();
+    expect(screen.getByText(/This will create a copy of the current live version of/)).toBeInTheDocument();
     expect(screen.getAllByText('Assistant-1').length).toBeGreaterThanOrEqual(1);
   });
 });

@@ -542,6 +542,8 @@
   "Clone Assistant": "Clone Assistant",
   "Clone": "Clone",
   "Are you sure you want to clone the assistant": "Are you sure you want to clone the assistant",
+  "This will create a copy of the current live version of": "This will create a copy of the current live version of",
+  "Do you want to continue?": "Do you want to continue?",
   "Yes": "Yes",
   "No": "No",
   "Cloning": "Cloning",

@@ -165,7 +165,7 @@ export const AssistantList = () => {
           disableOk={cloning}
         >
           <div>
-            {t('Are you sure you want to clone the assistant')} <strong>{selectedAssistant.name}</strong>?
+            {t('This will create a copy of the current live version of')} <strong>{selectedAssistant.name}</strong>. {t('Do you want to continue?')}
           </div>
         </DialogBox>
       )}
