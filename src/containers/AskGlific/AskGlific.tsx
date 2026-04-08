@@ -269,7 +269,7 @@ const AskGlific = () => {
               >
                 {hasMessages && (
                   <div className={styles.ChatIcon}>
-                    <AskGlific />
+                    <AskGlificIcon />
                   </div>
                 )}
                 <span>{getChatTitle()}</span>
@@ -385,7 +385,7 @@ const AskGlific = () => {
             {!hasMessages && !isLoading ? (
               <div className={styles.WelcomeSection}>
                 <div className={styles.WelcomeIcon}>
-                  <AskGlific />
+                  <AskGlificIcon />
                 </div>
                 <div className={styles.WelcomeText}>Ask Glific! Learn About How It Works?</div>
                 <div className={styles.SuggestionsGrid}>
