@@ -490,7 +490,7 @@ describe('AssistantOptions upload queue behavior', () => {
       );
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Proceed' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {
       expect(setNotificationSpy).toHaveBeenCalledWith(

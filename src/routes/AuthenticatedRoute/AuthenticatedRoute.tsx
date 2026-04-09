@@ -74,7 +74,7 @@ const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'
 const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 
-const staffRoutes = (
+const routeStaff = (
   <Routes>
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
@@ -86,8 +86,8 @@ const staffRoutes = (
   </Routes>
 );
 
-const adminRoutes = (
-  <>
+const routeAdmin = (
+  <Routes>
     <Route path="tag" element={<TagList />} />
     <Route path="tag/:id/edit" element={<Tag />} />
     <Route path="tag/add" element={<Tag />} />
@@ -147,6 +147,13 @@ const adminRoutes = (
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
+    <Route path="assistants" element={<Assistant />} />
+    <Route path="assistants/add" element={<Assistant />} />
+    <Route path="assistants/:assistantId" element={<Assistant />} />
+    <Route path="assistants-new" element={<AssistantList />} />
+    <Route path="assistants-new/add" element={<Assistant />} />
+    <Route path="assistants-new/:assistantId" element={<Assistant />} />
+    <Route path="assistant-new/:assistantId" element={<AssistantDetail />} />
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
@@ -161,7 +168,7 @@ const adminRoutes = (
     </Route>
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="/*" element={<Chat />} />
-  </>
+  </Routes>
 );
 
 export const chatRoutes = (
@@ -192,7 +199,6 @@ export const AuthenticatedRoute = () => {
 
   const [provider, setProvider] = useState<string>('');
   const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
-  const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -218,7 +224,7 @@ export const AuthenticatedRoute = () => {
   }
 
   if (userRole.includes('Staff')) {
-    route = staffRoutes;
+    route = routeStaff;
   }
 
   if (
@@ -227,23 +233,7 @@ export const AuthenticatedRoute = () => {
     userRole.includes('Admin') ||
     userRole.includes('Glific_admin')
   ) {
-    route = (
-      <Routes>
-        {adminRoutes}
-        {isAssistantConfigVersionsEnabled ? (
-          <>
-            <Route path="assistants" element={<AssistantList />} />
-            <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-          </>
-        ) : (
-          <>
-            <Route path="assistants" element={<Assistant />} />
-            <Route path="assistants/add" element={<Assistant />} />
-            <Route path="assistants/:assistantId" element={<Assistant />} />
-          </>
-        )}
-      </Routes>
-    );
+    route = routeAdmin;
   }
 
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
