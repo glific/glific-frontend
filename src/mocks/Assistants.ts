@@ -554,7 +554,7 @@ export const updateAssistantErrorMock = {
 export const filterAssistantsMock = {
   request: {
     query: FILTER_ASSISTANTS,
-    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' } },
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' } },
   },
   result: {
     data: {

@@ -65,7 +65,7 @@ test('it renders the list properly and switches between items', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(screen.getByText('VectorStore-77ae3597')).toBeInTheDocument();
+    expect(screen.getByText('vs_abc123')).toBeInTheDocument();
   });
 });
 
