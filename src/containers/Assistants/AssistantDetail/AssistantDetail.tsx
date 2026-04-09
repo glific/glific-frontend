@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router';
 import { Button } from 'components/UI/Form/Button/Button';
 
 import { copyToClipboard } from 'common/utils';
-import { setErrorMessage, setNotification } from 'common/notification';
+import { setErrorMessage } from 'common/notification';
 
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
