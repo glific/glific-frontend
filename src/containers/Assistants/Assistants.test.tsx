@@ -319,13 +319,38 @@ test('it updates the assistant', async () => {
   fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
-  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+  fireEvent.change(inputs[2], { target: { value: 'new test instructions' } });
   fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+  });
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      "Knowledge base creation in progress, will notify once it's done",
+      'success'
+    );
+  });
+
+  // Verify prompt and temperature are preserved after file save
+  expect(inputs[2]).toHaveValue('new test instructions');
 
   fireEvent.click(screen.getByTestId('submitAction'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully', 'success');
   });
 });
 
