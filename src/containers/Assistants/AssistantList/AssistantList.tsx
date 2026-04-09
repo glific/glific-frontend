@@ -159,7 +159,7 @@ export const AssistantList = () => {
         dialogMessage={t("You won't be able to use this assistant.")}
         {...queries}
         {...columnAttributes}
-        searchParameter={['name', 'assistantId']}
+        searchParameter={['name_or_assistant_id']}
         additionalAction={additionalAction}
         button={{
           show: true,
