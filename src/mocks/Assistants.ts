@@ -395,43 +395,6 @@ const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumbe
   },
 });
 
-const updateAssistantName = (id: string, name: string) => ({
-  request: {
-    query: UPDATE_ASSISTANT,
-    variables: { updateAssistantId: id, input: { name } },
-  },
-  result: { data: { updateAssistant: { errors: null } } },
-});
-
-const updateAssistantNameError = (id: string, name: string) => ({
-  request: {
-    query: UPDATE_ASSISTANT,
-    variables: { updateAssistantId: id, input: { name } },
-  },
-  result: {
-    data: { updateAssistant: { errors: [{ key: 'name', message: 'Name already taken' }] } },
-  },
-});
-
-export const ASSISTANT_DETAIL_RENAME_MOCKS = [
-  getAssistant('1'),
-  getAssistant('1'),
-  getAssistantVersions('1'),
-  getAssistantVersions('1'),
-  getAssistantVersions('1'),
-  updateAssistantName('1', 'New Name'),
-  getAssistant('1'), // refetch after rename
-];
-
-export const ASSISTANT_DETAIL_RENAME_ERROR_MOCKS = [
-  getAssistant('1'),
-  getAssistant('1'),
-  getAssistantVersions('1'),
-  getAssistantVersions('1'),
-  getAssistantVersions('1'),
-  updateAssistantNameError('1', 'New Name'),
-];
-
 export const ASSISTANT_DETAIL_MOCKS = [
   getAssistant('1'),
   getAssistant('1'),
