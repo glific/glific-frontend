@@ -140,11 +140,7 @@ export const AssistantDetail = () => {
       ) : (
         <div className={styles.PageHeader} data-testid="heading">
           <div className={styles.HeaderLeft}>
-            <BackIcon
-              className={styles.BackIcon}
-              onClick={() => navigate('/assistants-new')}
-              data-testid="back-button"
-            />
+            <BackIcon className={styles.BackIcon} onClick={() => navigate('/assistants')} data-testid="back-button" />
             {isEditingName ? (
               <div className={styles.NameEditRow}>
                 <input
