@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { Button, CircularProgress, IconButton, Slider, Tooltip, Typography } from '@mui/material';
@@ -10,8 +11,6 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import DatabaseIcon from 'assets/images/database.svg?react';
 import FileIcon from 'assets/images/FileGreen.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
-import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -501,14 +500,16 @@ export const AssistantOptions = ({
     dialog = (
       <DialogBox
         open={showUploadDialog}
-        title={t('Manage Files')}
+        title={t('Manage Knowledge Base')}
+        titleAlign="left"
         handleCancel={closeUploadDialog}
-        buttonOk={fileUploadDisabled ? 'Close' : 'Save'}
+        buttonOk={fileUploadDisabled ? 'Close' : 'Proceed'}
         skipCancel={fileUploadDisabled}
-        fullWidth
         handleOk={handleFileUpload}
         disableOk={addingFiles || loading || files.length === 0}
         buttonOkLoading={addingFiles || loading}
+        fullWidth
+        customStyles={{ content: 'kb-dialog-content' }}
       >
         <div className={styles.DialogContent}>
           {isLegacyVectorStore ? (
@@ -518,101 +519,122 @@ export const AssistantOptions = ({
               re-upload the files in the new assistant.
             </p>
           ) : (
-            <Button className="Container" fullWidth component="label" variant="text" tabIndex={-1}>
-              <div className={fileUploadDisabled ? styles.DisabledUploadContainer : styles.UploadContainer}>
-                {loading ? (
-                  <CircularProgress size={30} />
-                ) : (
-                  <>
-                    <UploadIcon /> {t('Upload File')}
-                  </>
-                )}
-                <input
-                  data-testid="uploadFile"
-                  type="file"
-                  accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
-                  onChange={handleFileChange}
-                  style={{ display: 'none' }}
-                  multiple
-                  disabled={fileUploadDisabled}
-                />
-              </div>
-            </Button>
-          )}
-
-          {files.length > 0 && (
-            <div className={styles.FileList}>
-              {getSortedFiles(files).map((file, index) => (
-                <div data-testid="fileItem" className={styles.File} key={file.fileId || file.tempId || index}>
-                  <div className={styles.FileLeadingIcon}>
-                    <FileIcon />
+            <>
+              <p className={styles.DialogSubtitle}>{t('You are adding more files to existing Knowledge Base')}</p>
+              <div className={styles.DialogBody}>
+                <div className={styles.FileSection}>
+                  <div className={styles.FileSectionHeader}>
+                    <span className={styles.FileSectionTitle}>{t('Selected File(s)')}</span>
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      className={styles.AddFilesButton}
+                      disabled={fileUploadDisabled}
+                      tabIndex={-1}
+                    >
+                      <AddIcon />
+                      {t('Add Files')}
+                      <input
+                        data-testid="uploadFile"
+                        type="file"
+                        accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
+                        multiple
+                        disabled={fileUploadDisabled}
+                      />
+                    </Button>
                   </div>
-                  <div className={styles.FileName}>{file.filename}</div>
-                  {!isLegacyVectorStore && (
-                    <div className={styles.FileActions}>
-                      <div className={styles.ActionSlot}>
-                        {file.status === 'failed' && (
-                          <Tooltip title={file.sourceFile ? 'Retry upload' : 'Retry unavailable'} placement="top" arrow>
-                            <span>
-                              <IconButton
-                                data-testid="retryFile"
-                                className={styles.RetryButton}
-                                disabled={!file.sourceFile}
-                                onClick={() => handleRetryFile(file)}
-                              >
-                                <ReplayIcon className={styles.RetryIcon} fontSize="small" />
-                              </IconButton>
-                            </span>
-                          </Tooltip>
-                        )}
-                      </div>
-                      <div className={styles.ActionSlot}>
-                        {file.sourceFile && (
-                          <>
-                            {file.status === 'uploading' && <CircularProgress data-testid="uploadingIcon" size={20} />}
-                            {file.status === 'queued' && (
-                              <AccessTimeIcon data-testid="queuedIcon" className={styles.QueuedIcon} fontSize="small" />
+
+                  <div className={styles.FileList}>
+                    {getSortedFiles(files).map((file, index) => (
+                      <div data-testid="fileItem" className={styles.File} key={file.fileId || file.tempId || index}>
+                        <div className={styles.FileLeadingIcon}>
+                          {file.status === 'uploading' ? (
+                            <CircularProgress data-testid="uploadingIcon" size={18} />
+                          ) : (
+                            <FileIcon />
+                          )}
+                        </div>
+                        <div className={styles.FileName}>{file.filename}</div>
+                        <div className={styles.FileActions}>
+                          <div className={styles.ActionSlot}>
+                            {file.sourceFile && (
+                              <>
+                                {file.status === 'queued' && (
+                                  <AccessTimeIcon
+                                    data-testid="queuedIcon"
+                                    className={styles.QueuedIcon}
+                                    fontSize="small"
+                                  />
+                                )}
+                                {file.status === 'failed' && (
+                                  <>
+                                    <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
+                                      <ErrorOutlineIcon
+                                        data-testid="failedIcon"
+                                        className={styles.FailedIcon}
+                                        fontSize="small"
+                                      />
+                                    </Tooltip>
+                                    <Tooltip title="Retry upload" placement="top" arrow>
+                                      <span>
+                                        <IconButton
+                                          data-testid="retryFile"
+                                          className={styles.RetryButton}
+                                          onClick={() => handleRetryFile(file)}
+                                        >
+                                          <ReplayIcon className={styles.RetryIcon} fontSize="small" />
+                                        </IconButton>
+                                      </span>
+                                    </Tooltip>
+                                  </>
+                                )}
+                                {file.status === 'attached' && (
+                                  <CheckCircleIcon
+                                    data-testid="attachedIcon"
+                                    className={styles.SuccessIcon}
+                                    fontSize="small"
+                                  />
+                                )}
+                              </>
                             )}
-                            {file.status === 'failed' && (
-                              <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                                <ErrorOutlineIcon
-                                  data-testid="failedIcon"
-                                  className={styles.FailedIcon}
-                                  fontSize="small"
-                                />
-                              </Tooltip>
-                            )}
-                            {file.status === 'attached' && (
-                              <CheckCircleIcon
-                                data-testid="attachedIcon"
-                                className={styles.SuccessIcon}
-                                fontSize="small"
-                              />
-                            )}
-                          </>
-                        )}
+                          </div>
+                          <div className={styles.ActionSlot}>
+                            <IconButton
+                              className={styles.DeleteButton}
+                              data-testid="deleteFile"
+                              disabled={file.status === 'uploading'}
+                              onClick={() => handleRemoveFile(file)}
+                            >
+                              <DeleteOutlineIcon className={styles.DeleteIcon} fontSize="small" />
+                            </IconButton>
+                          </div>
+                        </div>
                       </div>
-                      <div className={styles.ActionSlot}>
-                        <IconButton
-                          className={styles.CloseButton}
-                          data-testid="deleteFile"
-                          disabled={file.status === 'uploading'}
-                          onClick={() => handleRemoveFile(file)}
-                        >
-                          <CrossIcon />
-                        </IconButton>
-                      </div>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+
+                <div className={styles.InfoSection}>
+                  <p className={styles.InfoText}>
+                    Information in the attached files will be available to this assistant.{' '}
+                    <a
+                      href="https://platform.openai.com/docs/assistants/tools/file-search/supported-files"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.InfoLink}
+                    >
+                      Allowed file formats
+                    </a>
+                  </p>
+                  <p className={styles.FileLimitText}>
+                    <strong>Individual File Limit: {MAX_FILE_SIZE_MB}MB</strong>
+                  </p>
+                </div>
+              </div>
+            </>
           )}
-          <div className={styles.UploadInfo}>
-            <span>Individual file size limit: 20MB</span>
-            <span>Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .pptx, .txt</span>
-            <span>Each file takes approx 15 secs to upload.</span>
-          </div>
         </div>
       </DialogBox>
     );
