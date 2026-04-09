@@ -16,11 +16,11 @@ import AssistantList from './AssistantList';
 const renderAssistantList = (mocks: any[] = [filterAssistantsMock, countAssistantsMock]) =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={['/assistants']}>
+      <MemoryRouter initialEntries={['/assistants-new']}>
         <Routes>
-          <Route path="/assistants" element={<AssistantList />} />
-          <Route path="/assistants/add" element={<div data-testid="create-page" />} />
-          <Route path="/assistants/:id" element={<div data-testid="edit-page" />} />
+          <Route path="/assistants-new" element={<AssistantList />} />
+          <Route path="/assistant-new/add" element={<div data-testid="create-page" />} />
+          <Route path="/assistant-new/:id" element={<div data-testid="edit-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -53,7 +53,7 @@ test('renders assistant display ID below name', async () => {
   });
 });
 
-test('Create New Assistant button navigates to /assistants/add', async () => {
+test('Create New Assistant button navigates to /assistant-new/add', async () => {
   renderAssistantList();
 
   await waitFor(() => {
@@ -67,7 +67,7 @@ test('Create New Assistant button navigates to /assistants/add', async () => {
   });
 });
 
-test('edit icon navigates to /assistants/:id', async () => {
+test('edit icon navigates to /assistant-new/:id', async () => {
   renderAssistantList();
 
   await waitFor(() => {

@@ -84,7 +84,6 @@ export const ConfigEditor = ({
     enableReinitialize: false,
     onSubmit: (values) => {
       const payload: Record<string, any> = {
-        name: assistantName,
         instructions: values.instructions,
         model: values.model?.label,
         temperature: values.temperature,
@@ -146,8 +145,7 @@ export const ConfigEditor = ({
   useEffect(() => {
     if (!version) return;
     const modelValue = version.model ? { id: version.model, label: version.model } : modelOptions[0];
-    const rawSettings = version.settings ?? {};
-    const settings = typeof rawSettings === 'string' ? JSON.parse(rawSettings) : rawSettings;
+    const settings = version.settings ?? {};
 
     formik.resetForm({
       values: {
