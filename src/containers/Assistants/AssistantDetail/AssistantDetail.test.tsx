@@ -6,6 +6,8 @@ import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
 import {
   ASSISTANT_DETAIL_MOCKS,
+  ASSISTANT_DETAIL_RENAME_MOCKS,
+  ASSISTANT_DETAIL_RENAME_ERROR_MOCKS,
   ASSISTANT_DETAIL_SAVE_MOCKS,
   ASSISTANT_DETAIL_SET_LIVE_MOCKS,
   assistantNotFoundMock,
@@ -397,4 +399,117 @@ test('pressing Enter on copy assistant ID button calls copyToClipboard', async (
 
   fireEvent.keyDown(screen.getByTestId('copyAssistantId'), { key: 'Enter' });
   expect(copySpy).toHaveBeenCalledWith('asst_JhYmNWzpCVBZY2vTuohvmqjs');
+});
+
+// ── Inline name editing ───────────────────────────────────────────────────────
+
+test('edit name button is visible next to the assistant name', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+    expect(screen.getByTestId('headerTitle')).toHaveTextContent('Assistant-405db438');
+  });
+});
+
+test('clicking edit name button shows input pre-filled with current name', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('nameInput')).toBeInTheDocument();
+    expect(screen.getByTestId('nameInput')).toHaveValue('Assistant-405db438');
+  });
+});
+
+test('Cancel button closes the name input without saving', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Changed Name' } });
+  fireEvent.click(screen.getByTestId('cancelNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+    expect(screen.getByTestId('headerTitle')).toHaveTextContent('Assistant-405db438');
+  });
+});
+
+test('Save button calls UPDATE_ASSISTANT and shows success notification', async () => {
+  renderAssistantDetail(ASSISTANT_DETAIL_RENAME_MOCKS);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'New Name' } });
+
+  notificationSpy.mockClear();
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant name updated successfully');
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+  });
+});
+
+test('saving unchanged name closes input without calling API', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  // name is unchanged — same as original
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+  });
+});
+
+test('saving empty name closes input without calling API', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: '   ' } });
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+  });
+});
+
+test('API error during rename is handled gracefully', async () => {
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+  renderAssistantDetail(ASSISTANT_DETAIL_RENAME_ERROR_MOCKS);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'New Name' } });
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
+  errorSpy.mockRestore();
 });
