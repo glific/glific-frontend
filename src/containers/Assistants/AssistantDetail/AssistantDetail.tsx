@@ -97,7 +97,6 @@ export const AssistantDetail = () => {
         setErrorMessage(response.data.updateAssistant.errors[0]);
         return;
       }
-      setNotification(t('Assistant name updated successfully'));
       setIsEditingName(false);
     } catch (err: unknown) {
       setErrorMessage(err);
