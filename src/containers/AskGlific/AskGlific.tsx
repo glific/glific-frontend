@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useSubscription } from '@apollo/client';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -17,6 +17,8 @@ import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
 import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
+import { getUserSession } from 'services/AuthService';
 import styles from './AskGlific.module.css';
 
 interface Message {
@@ -65,8 +67,65 @@ const AskGlific = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const waitingForResponse = useRef(false);
 
   const [askGlific] = useMutation(ASK_GLIFIC);
+
+  // Subscribe to Ask Glific responses via WebSocket
+  const { loading: subscriptionLoading, error: subscriptionError } = useSubscription(
+    ASK_GLIFIC_RESPONSE_SUBSCRIPTION,
+    {
+      variables: { organizationId: getUserSession('organizationId') },
+      onData: ({ data: { data } }) => {
+        console.log('[AskGlific] Subscription data received:', JSON.stringify(data, null, 2));
+        console.log('[AskGlific] waitingForResponse:', waitingForResponse.current);
+
+        if (!waitingForResponse.current) {
+          console.log('[AskGlific] Ignoring — not waiting for response');
+          return;
+        }
+
+        const result = data?.askGlificResponse;
+        if (!result) {
+          console.log('[AskGlific] No askGlificResponse in data');
+          return;
+        }
+
+        waitingForResponse.current = false;
+
+        if (result.errors?.length) {
+          console.log('[AskGlific] Error from subscription:', result.errors);
+          const errorMsg: Message = {
+            role: 'error',
+            content: result.errors[0].message,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, errorMsg]);
+        } else {
+          console.log('[AskGlific] Answer received:', result.answer);
+          console.log('[AskGlific] Conversation ID:', result.conversationId);
+          const answer = result.answer || 'Sorry, Something went wrong. Please try again.';
+          if (result.conversationId) {
+            setConversationId(result.conversationId);
+          }
+          const systemMsg: Message = {
+            role: 'system',
+            content: answer,
+            timestamp: new Date(),
+            feedback: null,
+          };
+          setMessages((prev) => [...prev, systemMsg]);
+        }
+
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        console.error('[AskGlific] Subscription error:', error);
+      },
+    }
+  );
+
+  console.log('[AskGlific] Subscription status — loading:', subscriptionLoading, 'error:', subscriptionError);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -78,9 +137,13 @@ const AskGlific = () => {
 
   const handleSendMessage = async (msg: Message, currentMessages = messages) => {
     setIsLoading(true);
+    waitingForResponse.current = true;
+    console.log('[AskGlific] Sending mutation — query:', msg.content, 'conversationId:', conversationId);
 
     try {
-      const { data } = await askGlific({
+      // Send mutation — returns immediately with answer: null
+      // Real answer arrives via the subscription above
+      const { data: mutationData } = await askGlific({
         variables: {
           input: {
             query: msg.content,
@@ -88,43 +151,16 @@ const AskGlific = () => {
           },
         },
       });
-
-      const result = data?.askGlific;
-      const answer = result?.answer || 'Sorry, Something went wrong. Please try again.';
-
-      if (result?.errors?.length) {
-        const errorMessage: Message = {
-          role: 'error',
-          content: result.errors[0].message,
-          timestamp: new Date(),
-        };
-        setMessages([...currentMessages, errorMessage]);
-        return;
-      }
-
-      if (result?.conversationId) {
-        setConversationId(result.conversationId);
-      }
-
-      const newMessages: Message[] = [
-        ...currentMessages,
-        {
-          role: 'system',
-          content: answer,
-          timestamp: new Date(),
-          feedback: null,
-        },
-      ];
-
-      setMessages(newMessages);
-    } catch {
+      console.log('[AskGlific] Mutation response:', JSON.stringify(mutationData, null, 2));
+    } catch (error) {
+      console.error('[AskGlific] Mutation error:', error);
+      waitingForResponse.current = false;
       const errorMessage: Message = {
         role: 'error',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
         timestamp: new Date(),
       };
       setMessages([...currentMessages, errorMessage]);
-    } finally {
       setIsLoading(false);
     }
   };

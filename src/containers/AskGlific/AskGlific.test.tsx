@@ -1,5 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import * as Apollo from '@apollo/client';
 import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
 import AskGlific from './AskGlific';
 
@@ -16,7 +17,7 @@ const AskGlificMock = {
   result: {
     data: {
       askGlific: {
-        answer: 'This is a mock response from the bot.',
+        answer: null,
         conversationId: 'conv-123',
         errors: null,
       },
@@ -29,6 +30,33 @@ describe('AskGlific', () => {
     value: vi.fn(),
     writable: true,
   });
+
+  let onDataCallback: Function;
+
+  beforeEach(() => {
+    vi.spyOn(Apollo, 'useSubscription').mockImplementation((_query: any, options: any) => {
+      onDataCallback = options?.onData;
+      return { data: undefined, loading: false, error: undefined, restart: vi.fn() } as any;
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const simulateSubscriptionResponse = (answer: string, conversationId: string) => {
+    onDataCallback?.({
+      data: {
+        data: {
+          askGlificResponse: {
+            answer,
+            conversationId,
+            errors: null,
+          },
+        },
+      },
+    });
+  };
 
   test('should render AskGlific component', async () => {
     render(
@@ -73,6 +101,8 @@ describe('AskGlific', () => {
       expect(screen.getByText('thinking...')).toBeInTheDocument();
     });
 
+    simulateSubscriptionResponse('This is a mock response from the bot.', 'conv-123');
+
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
     });
@@ -87,6 +117,12 @@ describe('AskGlific', () => {
 
     fireEvent.click(screen.getByTestId('ask-glific-fab'));
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    simulateSubscriptionResponse('This is a mock response from the bot.', 'conv-123');
 
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
@@ -108,6 +144,12 @@ describe('AskGlific', () => {
 
     fireEvent.click(screen.getByTestId('ask-glific-fab'));
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    simulateSubscriptionResponse('This is a mock response from the bot.', 'conv-123');
 
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
