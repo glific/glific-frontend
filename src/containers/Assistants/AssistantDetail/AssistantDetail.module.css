@@ -116,10 +116,15 @@
   font-weight: 700;
   color: #191c1a;
   margin-right: 2px;
+  max-width: 560px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .EditNameButton {
   color: #119656;
+  flex-shrink: 0;
 }
 
 .NameEditRow {
