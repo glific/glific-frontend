@@ -99,10 +99,12 @@ export const AssistantList = () => {
   const handleCloneConfirm = async () => {
     if (!selectedAssistant) return;
 
-    const variables: Record<string, any> = { cloneAssistantId: selectedAssistant.id };
-    variables.versionId = selectedAssistant.activeConfigVersionId;
-
+    const currentAssistant = { ...selectedAssistant };
     setCloneDialogOpen(false);
+    setSelectedAssistant(null);
+
+    const variables: Record<string, any> = { cloneAssistantId: currentAssistant.id };
+    variables.versionId = currentAssistant.activeConfigVersionId;
 
     try {
       const response = await cloneAssistant({ variables });
@@ -112,11 +114,9 @@ export const AssistantList = () => {
       }
       const message = response.data?.cloneAssistant?.message || t('Assistant clone initiated');
       setNotification(message);
-      setCloningAssistantId(selectedAssistant.id);
+      setCloningAssistantId(currentAssistant.id);
     } catch (error: unknown) {
       setErrorMessage(error);
-    } finally {
-      setSelectedAssistant(null);
     }
   };
 
