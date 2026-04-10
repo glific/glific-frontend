@@ -2,13 +2,19 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 
+import * as Notification from 'common/notification';
+
 import {
   cloneAssistantFromListMock,
   cloneAssistantFromListErrorMock,
   cloneAssistantNullMessageMock,
   cloneLegacyAssistantFromListMock,
+  clonePollingCompletedMock,
+  clonePollingFailedMock,
+  clonePollingInProgressMock,
   countAssistantsMock,
   filterAssistantsMock,
+  filterAssistantsAfterCloneMock,
 } from 'mocks/Assistants';
 
 import AssistantList from './AssistantList';
@@ -225,4 +231,57 @@ test('clone mutation throws network error  catch block handles it', async () => 
   await waitFor(() => {
     expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument();
   });
+});
+
+const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+const confirmClone = async () => {
+  await waitFor(() => expect(screen.getAllByTestId('copy-icon')).toHaveLength(2));
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+  await waitFor(() => expect(screen.getByText('Clone Assistant')).toBeInTheDocument());
+  fireEvent.click(screen.getByText('Yes'));
+  await waitFor(() => expect(screen.queryByText('Clone Assistant')).not.toBeInTheDocument());
+};
+
+test('polling detects cloneStatus completed - shows success notification and new clone appears in list', async () => {
+  notificationSpy.mockClear();
+  renderAssistantList([
+    filterAssistantsMock,
+    countAssistantsMock,
+    cloneAssistantFromListMock,
+    clonePollingCompletedMock,
+    filterAssistantsAfterCloneMock,
+  ]);
+  await confirmClone();
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant cloned successfully');
+  });
+  await waitFor(() => {
+    expect(screen.getByText('Copy of Assistant-1')).toBeInTheDocument();
+  });
+});
+
+test('polling detects cloneStatus failed - shows warning notification', async () => {
+  notificationSpy.mockClear();
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, cloneAssistantFromListMock, clonePollingFailedMock]);
+  await confirmClone();
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant clone failed', 'warning');
+  });
+});
+
+test('polling stays silent while cloneStatus is in_progress', async () => {
+  notificationSpy.mockClear();
+  renderAssistantList([
+    filterAssistantsMock,
+    countAssistantsMock,
+    cloneAssistantFromListMock,
+    clonePollingInProgressMock,
+  ]);
+  await confirmClone();
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant clone initiated');
+  });
+  expect(notificationSpy).not.toHaveBeenCalledWith('Assistant cloned successfully');
+  expect(notificationSpy).not.toHaveBeenCalledWith('Assistant clone failed', 'warning');
 });
