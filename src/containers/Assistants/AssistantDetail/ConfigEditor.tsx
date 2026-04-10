@@ -352,17 +352,6 @@ export const ConfigEditor = ({
           </div>
         )}
 
-        {createMode && (
-          <div className={styles.CreateActions}>
-            <Button variant="outlined" onClick={onCancel}>
-              {t('Cancel')}
-            </Button>
-            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
-              {t('Save')}
-            </Button>
-          </div>
-        )}
-
         {/* Form */}
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="configEditorForm">
           <div className={styles.FormFields}>
@@ -381,6 +370,17 @@ export const ConfigEditor = ({
             )}
           </div>
         </form>
+
+        {createMode && (
+          <div className={styles.CreateActions}>
+            <Button variant="outlined" onClick={onCancel}>
+              {t('Cancel')}
+            </Button>
+            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
+              {t('Save')}
+            </Button>
+          </div>
+        )}
 
         {instructionsDialog}
       </div>
