@@ -379,6 +379,484 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+.HistoryList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.HistoryDateLabel {
+  padding: 0.5rem 1rem 0.25rem;
+  font-family: Heebo;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.HistoryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.HistoryItem:hover {
+  background-color: #f5f5f5;
+}
+
+.HistoryItemActive {
+  background-color: #f5f5f5;
+}
+
+.HistoryItemActive .HistoryItemTitle {
+  color: #119656;
+}
+
+.HistoryItemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.HistoryItemTitle {
+  font-family: Heebo;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #191c1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.HistoryItemTime {
+  font-family: Heebo;
+  font-size: 0.7rem;
+  color: #999;
+}
+
+.HistoryItemMenu {
+  color: #bbb !important;
+  padding: 0.2rem !important;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.HistoryItem:hover .HistoryItemMenu {
+  opacity: 1;
+}
+
+.HistoryDropdownDate {
+  font-family: Heebo !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  color: #888 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 0.5rem 1rem 0.25rem !important;
+  min-height: unset !important;
+}
+
+.HistoryDropdownItem {
+  font-family: Heebo !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  color: #191c1a !important;
+  padding: 0.4rem 1rem !important;
+  min-width: 160px;
+}
+
+.HistoryDropdownItemActive {
+  composes: HistoryDropdownItem;
+  color: #119656 !important;
+}
+
+.Container {
+  height: 100%;
+  width: 100%;
+  background-color: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+}
+
+.Header {
+  padding: 0.75rem 1rem;
+  background-color: #fff;
+  color: #2e2e2e;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.HeaderLeft span {
+  font-family: Heebo;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: #191c1a;
+}
+
+.HeaderLeft svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ChatIcon {
+  width: 32px;
+  height: 32px;
+  background-color: #119656;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ChatIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.HeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.HeaderIconButton {
+  padding: 0.35rem !important;
+  color: #555 !important;
+}
+
+.HeaderIconButton:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.DisplayModeItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  min-width: 160px;
+}
+
+.DisplayModeItem:hover {
+  background-color: #f5f5f5;
+}
+
+.DisplayModeItemActive {
+  composes: DisplayModeItem;
+  color: #119656;
+  font-weight: 500;
+}
+
+.DisplayModeItemActive svg {
+  color: #119656;
+}
+
+.WelcomeSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.WelcomeIcon {
+  width: 56px;
+  height: 56px;
+  background-color: #119656;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.WelcomeIcon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.WelcomeText {
+  color: #191c1a;
+  text-align: center;
+  font-family: Heebo;
+  font-weight: 500;
+  font-size: 0.8rem;
+  line-height: 18px;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.SuggestionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 0.5rem;
+}
+
+.SuggestionCard {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  color: #191c1a;
+  background-color: #f5f5f5;
+  font-size: 0.85rem;
+  text-align: center;
+  transition: background-color 0.2s;
+  border: 1px solid #e8e8e8;
+  font-family: Heebo;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 18px;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.SuggestionCard:hover {
+  background-color: #eee;
+}
+
+.Messages {
+  flex: 1;
+  width: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.Message {
+  max-width: 80%;
+  font-size: 0.8rem;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-family: Heebo;
+  font-weight: 400;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.System {
+  composes: Message;
+  align-self: flex-start;
+  color: #2e2e2e;
+  padding: 0.25rem 0;
+}
+
+.User {
+  composes: Message;
+  align-self: flex-end;
+  background-color: #f0f0f0;
+  color: #2e2e2e;
+  padding: 0.6rem 1rem;
+  border-radius: 1.25rem;
+}
+
+.SystemWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.FeedbackButtons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.FeedbackButton {
+  padding: 0.2rem !important;
+  color: #bbb !important;
+}
+
+.FeedbackButton:hover {
+  color: #777 !important;
+}
+
+.FeedbackButtonActive {
+  composes: FeedbackButton;
+  color: #119656 !important;
+}
+
+.LoadingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.LoadingIcon {
+  animation: spin 1.5s linear infinite;
+  width: 18px;
+  height: 18px;
+  color: #119656;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.InputContainer {
+  width: 100%;
+  padding: 0.75rem 1rem 1rem;
+}
+
+.InputWrapper {
+  border: 2px solid #119656;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.TextArea {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: none;
+  min-height: 60px;
+  max-height: 120px;
+  color: #2e2e2e;
+}
+
+.TextArea::placeholder {
+  color: #aaa;
+}
+
+.InputFooter {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding: 0.25rem 0.75rem 0.5rem;
+}
+
+.InputActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.SendButton {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: #119656 !important;
+  color: #fff !important;
+  padding: 0 !important;
+  min-width: unset !important;
+}
+
+.SendButton:disabled {
+  background-color: #ccc !important;
+  color: #fff !important;
+}
+
+.SendButton svg {
+  font-size: 1.1rem;
+}
+
+.FloatingWrapper {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1300;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0 / 15%);
+  overflow: hidden;
+  width: 414px;
+  height: 528px;
+  opacity: 1;
+}
+
+.SidebarWrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 680px;
+  height: 100vh;
+  z-index: 1300;
+  box-shadow: -4px 0 24px rgba(0, 0, 0 /10%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.SidebarWrapper .Container {
+  border-radius: 0;
+}
+
+.FullscreenWrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1300;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.FullscreenWrapper .Container {
+  border-radius: 0;
+}
+
+.HistoryPanel {
+  width: 260px;
+  min-width: 260px;
+  height: 100%;
+  background-color: #fff;
+  border-right: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.HistoryHeader {
+  padding: 0.75rem 1rem;
+  font-family: Heebo;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #191c1a;
+  border-bottom: 1px solid #f0f0f0;
+}
+
 .HistoryDropdown {
   /* background-color: ; */
 }
@@ -492,4 +970,3 @@
   composes: HistoryDropdownItem;
   color: #119656 !important;
 }
-
