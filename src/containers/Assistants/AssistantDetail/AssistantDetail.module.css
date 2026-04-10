@@ -16,9 +16,8 @@
   font-weight: 500;
   cursor: pointer;
   width: fit-content;
-  /* Pull up into the Heading block which has bottom padding */
   margin-top: -36px;
-  padding: 0 24px 16px 106px;
+  padding: 1px 24px 16px 70px;
   flex-shrink: 0;
   position: relative;
   z-index: 1001;
@@ -36,8 +35,6 @@
   width: 100%;
 }
 
-
-/* ── Two-panel body ────────────────────────────────── */
 .Body {
   display: flex;
   flex: 1;
@@ -81,6 +78,67 @@
   text-align: center;
   margin: 1rem 0;
   color: #555;
+}
+
+.PageHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #f8faf5;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  padding: 10px 24px 22px 10px;
+  height: 110px;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.BackIcon {
+  cursor: pointer;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.NameViewRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.NameText {
+  font-size: 38px;
+  font-weight: 700;
+  color: #191c1a;
+  margin-right: 2px;
+}
+
+.EditNameButton {
+  color: #119656;
+}
+
+.NameEditRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.NameInput {
+  font-size: 38px;
+  font-weight: 700;
+  color: #191c1a;
+  border: none;
+  border-bottom: 2px solid #119656;
+  background: transparent;
+  outline: none;
+  min-width: 200px;
+  max-width: 480px;
+  width: auto;
 }
 
 /* Unsaved changes confirmation dialog */

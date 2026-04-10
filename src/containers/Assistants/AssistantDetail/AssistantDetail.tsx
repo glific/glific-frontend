@@ -1,19 +1,23 @@
-import { useQuery } from '@apollo/client';
-import { Modal } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { IconButton, Modal } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { Button } from 'components/UI/Form/Button/Button';
 
 import { copyToClipboard } from 'common/utils';
+import { setErrorMessage } from 'common/notification';
 
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { GET_ASSISTANT } from 'graphql/queries/Assistant';
+import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
+import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 
 import { ConfigEditor } from './ConfigEditor';
 import type { AssistantVersion } from '../VersionPanel/VersionPanel';
@@ -31,7 +35,20 @@ export const AssistantDetail = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingVersion, setPendingVersion] = useState<AssistantVersion | null>(null);
 
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameValue, setNameValue] = useState('');
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
+
   const isCreateMode = assistantId === 'add';
+
+  useEffect(() => {
+    if (isEditingName) {
+      nameInputRef.current?.focus();
+      nameInputRef.current?.select();
+    }
+  }, [isEditingName]);
 
   useEffect(() => {
     if (!assistantId) {
@@ -59,6 +76,32 @@ export const AssistantDetail = () => {
   if (!isCreateMode && !assistantData) {
     return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
   }
+
+  const handleEditName = () => {
+    setNameValue(assistantData?.name ?? '');
+    setIsEditingName(true);
+  };
+
+  const handleSaveName = async () => {
+    const trimmed = nameValue.trim();
+    if (!trimmed || trimmed === assistantData?.name) {
+      setIsEditingName(false);
+      return;
+    }
+    try {
+      const response = await updateAssistant({
+        variables: { updateAssistantId: assistantId, input: { name: trimmed } },
+        refetchQueries: [{ query: GET_ASSISTANT, variables: { assistantId } }],
+      });
+      if (response.data?.updateAssistant?.errors?.length > 0) {
+        setErrorMessage(response.data.updateAssistant.errors[0]);
+        return;
+      }
+      setIsEditingName(false);
+    } catch (err: unknown) {
+      setErrorMessage(err);
+    }
+  };
 
   const handleSaved = (newId?: string) => {
     if (isCreateMode && newId) {
@@ -91,10 +134,44 @@ export const AssistantDetail = () => {
 
   return (
     <div className={styles.Page} data-testid="assistantDetailContainer">
-      <Heading
-        formTitle={isCreateMode ? t('Create New Assistant') : (assistantData?.name ?? '')}
-        backLink="/assistants"
-      />
+      {isCreateMode ? (
+        <Heading formTitle={t('Create New Assistant')} backLink="/assistants-new" />
+      ) : (
+        <div className={styles.PageHeader} data-testid="heading">
+          <div className={styles.HeaderLeft}>
+            <BackIcon className={styles.BackIcon} onClick={() => navigate('/assistants')} data-testid="back-button" />
+            {isEditingName ? (
+              <div className={styles.NameEditRow}>
+                <input
+                  ref={nameInputRef}
+                  className={styles.NameInput}
+                  value={nameValue}
+                  onChange={(e) => setNameValue(e.target.value)}
+                  data-testid="nameInput"
+                />
+                <Button variant="contained" onClick={handleSaveName} loading={savingName} data-testid="saveNameButton">
+                  {t('Save')}
+                </Button>
+                <Button variant="outlined" onClick={() => setIsEditingName(false)} data-testid="cancelNameButton">
+                  {t('Cancel')}
+                </Button>
+              </div>
+            ) : (
+              <div className={styles.NameViewRow} data-testid="headerTitle">
+                <span className={styles.NameText}>{assistantData?.name ?? ''}</span>
+                <IconButton
+                  size="small"
+                  onClick={handleEditName}
+                  data-testid="editNameButton"
+                  className={styles.EditNameButton}
+                >
+                  <EditIcon />
+                </IconButton>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {!isCreateMode && assistantData?.assistantId && (
         <span
@@ -159,14 +236,17 @@ export const AssistantDetail = () => {
           <div className={styles.DialogBox}>
             <div className={styles.Dialog}>
               <h5 className={styles.DialogTitle}>{t('Unsaved changes')}</h5>
-              <p className={styles.DialogBody}>
-                {t('You have unsaved changes. Are you sure you want to leave?')}
-              </p>
+              <p className={styles.DialogBody}>{t('You have unsaved changes. Are you sure you want to leave?')}</p>
               <div className={styles.DialogActions}>
                 <Button data-testid="version-switch-stay" onClick={cancelVersionSwitch} variant="outlined">
                   {t('Stay')}
                 </Button>
-                <Button data-testid="version-switch-leave" onClick={confirmVersionSwitch} variant="contained" color="error">
+                <Button
+                  data-testid="version-switch-leave"
+                  onClick={confirmVersionSwitch}
+                  variant="contained"
+                  color="error"
+                >
                   {t('Leave')}
                 </Button>
               </div>
