@@ -481,7 +481,6 @@ export const KnowledgeBaseOptions = ({
         setFiles(updatedFiles.map(mapInitialFileToAssistantFile));
         setFieldValue('initialFiles', updatedFiles);
         setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
-        setFieldValue('knowledgeBaseVersionId', knowledgeBaseData.knowledgeBase.knowledgeBaseVersionId);
         setTimeout(() => validateForm(), 0);
         setFieldValue('knowledgeBaseName', knowledgeBaseData.knowledgeBase.name);
         onFilesChange(true);
