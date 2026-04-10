@@ -21,7 +21,7 @@ type ServiceType =
   | 'ticketingEnabled'
   | 'whatsappGroupEnabled'
   | 'certificateEnabled'
-  | 'askMeBotEnabled'
+  | 'askGlificEnabled'
   | 'whatsappFormsEnabled';
 
 // get the current authentication session
