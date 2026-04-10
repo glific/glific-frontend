@@ -56,13 +56,12 @@
 }
 
 .CreateActions {
-  position: fixed;
-  top: 120px;
-  right: 24px;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  z-index: 1100;
+  flex-shrink: 0;
+  padding: 16px 0 8px;
+  border-top: 1px solid #e0e0e0;
 }
 
 .Form {
