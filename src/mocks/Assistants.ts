@@ -227,17 +227,46 @@ const createKnowledgeBaseWithError = {
   error: new Error('An error occured'),
 };
 
+const createKnowledgeBaseForUpdate = {
+  request: {
+    query: CREATE_KNOWLEDGE_BASE,
+    variables: {
+      createKnowledgeBaseId: 'vs-1',
+      mediaInfo: [
+        { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
+        {
+          fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
+          filename: 'Accelerator Guide (1).pdf',
+          uploadedAt: '2024-10-16T15:58:26',
+          fileSize: 32880,
+        },
+      ],
+    },
+  },
+  result: {
+    data: {
+      createKnowledgeBase: {
+        knowledgeBase: {
+          id: 'kb-new',
+          knowledgeBaseVersionId: 'kb-v-new',
+          name: 'KnowledgeBase-New',
+        },
+      },
+    },
+  },
+};
+
 const updateAssistant = {
   request: {
     query: UPDATE_ASSISTANT,
     variables: {
       updateAssistantId: '1',
       input: {
-        instructions: 'test instructions',
+        instructions: 'new test instructions',
         model: 'gpt-4o-mini',
         name: 'test name',
         temperature: 1.5,
-        knowledgeBaseVersionId: 'llm-vs-1',
+        knowledgeBaseVersionId: 'kb-v-new',
       },
     },
   },
@@ -290,7 +319,10 @@ export const MOCKS = [
   getAssistant('2'),
   getAssistant('4'),
   getAssistantListOnSearch,
+  uploadFileToFileSearch,
+  createKnowledgeBaseForUpdate,
   updateAssistant,
+  getAssistant('1'),
   removeAssistant,
 ];
 
