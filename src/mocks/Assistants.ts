@@ -702,9 +702,58 @@ const cloneAssistantErrorMock = (id: string, versionId?: string) => ({
   },
 });
 
+export const filterAssistantsAfterCloneMock = {
+  request: {
+    query: FILTER_ASSISTANTS,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' } },
+  },
+  result: {
+    data: {
+      assistants: [
+        {
+          id: '1',
+          name: 'Assistant-1',
+          assistantDisplayId: 'asst_abc123',
+          liveVersionNumber: 3,
+          activeConfigVersionId: 'v1',
+          updatedAt: '2024-10-16T15:58:26Z',
+          insertedAt: '2024-10-16T15:58:26Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+        {
+          id: '2',
+          name: 'Assistant-2',
+          assistantDisplayId: 'asst_def456',
+          liveVersionNumber: null,
+          activeConfigVersionId: null,
+          updatedAt: '2024-10-17T10:00:00Z',
+          insertedAt: '2024-10-17T10:00:00Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+        {
+          id: '3',
+          name: 'Copy of Assistant-1',
+          assistantDisplayId: 'asst_xyz789',
+          liveVersionNumber: null,
+          activeConfigVersionId: null,
+          updatedAt: '2024-10-18T10:00:00Z',
+          insertedAt: '2024-10-18T10:00:00Z',
+          status: 'active',
+          cloneStatus: 'completed',
+        },
+      ],
+    },
+  },
+};
+
 export const cloneAssistantFromListMock = cloneAssistantMock('1', 'v1');
 export const cloneLegacyAssistantFromListMock = cloneAssistantMock('2');
 export const cloneAssistantFromListErrorMock = cloneAssistantErrorMock('1', 'v1');
+export const clonePollingInProgressMock = getAssistant('1', { cloneStatus: 'in_progress' });
+export const clonePollingCompletedMock = getAssistant('1', { cloneStatus: 'completed' });
+export const clonePollingFailedMock = getAssistant('1', { cloneStatus: 'failed' });
 export const cloneAssistantNullMessageMock = {
   request: {
     query: CLONE_ASSISTANT,
