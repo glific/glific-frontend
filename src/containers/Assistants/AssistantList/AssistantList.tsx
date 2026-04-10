@@ -121,7 +121,7 @@ export const AssistantList = () => {
   });
 
   const columnNames = [
-    { name: 'name', label: t('Assistant Name') },
+    { label: t('Assistant Name') },
     { label: t('Live Version') },
     { name: 'updated_at', label: t('Last Updated'), sort: true, order: 'desc' },
     { label: t('Actions') },

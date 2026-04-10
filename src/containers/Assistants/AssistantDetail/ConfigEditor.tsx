@@ -16,7 +16,7 @@ import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant
 
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
-import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
+import { KnowledgeBaseOptions } from '../AssistantOptions/KnowledgeBaseOptions';
 import type { AssistantVersion } from '../VersionPanel/VersionPanel';
 
 import styles from './ConfigEditor.module.css';
@@ -247,7 +247,7 @@ export const ConfigEditor = ({
       disabled: newVersionInProgress,
     },
     {
-      component: AssistantOptions,
+      component: KnowledgeBaseOptions,
       name: 'assistantOptions',
       formikValues: formik.values,
       setFieldValue: formik.setFieldValue,
