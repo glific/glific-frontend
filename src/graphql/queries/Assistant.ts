@@ -25,6 +25,7 @@ export const FILTER_ASSISTANTS = gql`
       name
       status
       liveVersionNumber
+      activeConfigVersionId
       cloneStatus
     }
   }
