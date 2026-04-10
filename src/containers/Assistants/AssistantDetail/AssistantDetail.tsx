@@ -35,7 +35,7 @@ export const AssistantDetail = () => {
 
   useEffect(() => {
     if (!assistantId) {
-      navigate('/assistants-new');
+      navigate('/assistants');
     }
   }, [assistantId]);
 
@@ -62,7 +62,7 @@ export const AssistantDetail = () => {
 
   const handleSaved = (newId?: string) => {
     if (isCreateMode && newId) {
-      navigate(`/assistant-new/${newId}`);
+      navigate(`/assistants/${newId}`);
       return;
     }
     setHasUnsavedChanges(false);
@@ -93,7 +93,7 @@ export const AssistantDetail = () => {
     <div className={styles.Page} data-testid="assistantDetailContainer">
       <Heading
         formTitle={isCreateMode ? t('Create New Assistant') : (assistantData?.name ?? '')}
-        backLink="/assistants-new"
+        backLink="/assistants"
       />
 
       {!isCreateMode && assistantData?.assistantId && (
@@ -118,7 +118,7 @@ export const AssistantDetail = () => {
             vectorStore={null}
             newVersionInProgress={false}
             onSaved={handleSaved}
-            onCancel={() => navigate('/assistants-new')}
+            onCancel={() => navigate('/assistants')}
             createMode
           />
         </div>

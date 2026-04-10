@@ -82,26 +82,129 @@
   column-gap: 0.5rem;
 }
 
+:global .kb-dialog-content {
+  padding: 4px 32px 16px 32px !important;
+  padding-top: 4px !important;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) {
+  width: 663px !important;
+  max-width: 663px !important;
+  min-width: 663px !important;
+  min-height: 510px;
+  border-radius: 16px !important;
+  border: 1px solid #cccccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08) !important;
+  margin: 0 !important;
+}
+
+:global(.MuiDialog-scrollPaper):has(.kb-dialog-content),
+:global(.MuiDialog-container):has(.kb-dialog-content) {
+  align-items: center !important;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) :global(.MuiDialogTitle-root) {
+  font-weight: 600 !important;
+  font-size: 24px !important;
+  color: #191c1a !important;
+  text-align: left !important;
+  padding: 20px 32px 0px 32px !important;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) :global(.MuiDialogActions-root) {
+  padding: 16px 32px 28px 32px !important;
+  gap: 12px;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) :global(.MuiDialogActions-root button) {
+  border-radius: 100px !important;
+  height: 40px;
+  min-width: 91px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: none !important;
+}
+
 .DialogContent {
-  text-align: center;
-  max-height: 40vh;
   display: flex;
   flex-direction: column;
 }
 
-.UploadInfo {
-  font-size: 0.8rem;
-  line-height: 0;
-  color: #555;
-  display: flex;
-  gap: 1.2rem;
-  flex-direction: column;
-  margin-top: 1rem;
+.DialogSubtitle {
+  font-size: 12px;
+  color: #555555;
+  margin: 2px 0 12px 0;
+  line-height: 20px;
 }
 
-.DialogContent span a {
+.DialogBody {
+  display: flex;
+  gap: 24px;
+  min-height: 300px;
+}
+
+.FileSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.FileSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.FileSectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2f2f;
+}
+
+.AddFilesButton {
+  border-radius: 100px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  height: 32px;
+  padding: 0 16px 0 12px !important;
+  border: 2px solid #119656 !important;
+  border-color: #119656 !important;
+  color: #119656 !important;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: none !important;
+}
+
+.InfoSection {
+  width: 168px;
+  min-width: 168px;
+  font-size: 12px;
+  color: #555555;
+  opacity: 0.7;
+  padding-top: 4px;
+}
+
+.InfoText {
+  line-height: 18px;
+  margin: 0 0 16px 0;
+}
+
+.InfoLink {
   color: #119656;
   font-weight: 600;
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.FileLimitText {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555555;
+  line-height: 18px;
 }
 
 .UploadContainer {
@@ -137,18 +240,19 @@
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
-  margin: 1rem 0;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
+  max-height: 240px;
 }
 
 .File {
   display: flex;
   align-items: center;
   column-gap: 0.5rem;
-  font-size: 0.8rem;
-  background-color: #ebf8ee;
-  padding: 0.5rem 0.5rem;
+  font-size: 0.85rem;
+  background-color: #f0f4f2;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
 }
 
 .FileLeadingIcon {
@@ -202,6 +306,14 @@
 
 .CloseButton {
   padding: 4px;
+}
+
+.DeleteButton {
+  padding: 4px;
+}
+
+.DeleteIcon {
+  color: #e53935 !important;
 }
 
 .RetryIcon {
