@@ -79,7 +79,7 @@ export const AssistantList = () => {
   const [cloneAssistant, { loading: cloning }] = useMutation(CLONE_ASSISTANT);
 
   const handleEdit = (id: string) => {
-    navigate(`/assistant-new/${id}`);
+    navigate(`/assistants/${id}`);
   };
 
   const handleCloneClick = (_id: string, item: any) => {
@@ -164,7 +164,7 @@ export const AssistantList = () => {
         button={{
           show: true,
           label: t('Create New Assistant'),
-          action: () => navigate('/assistant-new/add'),
+          action: () => navigate('/assistants/add'),
         }}
         editSupport={false}
         deleteModifier={{ variables: (id: string) => ({ deleteAssistantId: id }) }}

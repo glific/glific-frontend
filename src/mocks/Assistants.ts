@@ -227,46 +227,17 @@ const createKnowledgeBaseWithError = {
   error: new Error('An error occured'),
 };
 
-const createKnowledgeBaseForUpdate = {
-  request: {
-    query: CREATE_KNOWLEDGE_BASE,
-    variables: {
-      createKnowledgeBaseId: 'vs-1',
-      mediaInfo: [
-        { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-        {
-          fileId: 'file-rls90OGDUgFeLewh6e01Eamf',
-          filename: 'Accelerator Guide (1).pdf',
-          uploadedAt: '2024-10-16T15:58:26',
-          fileSize: 32880,
-        },
-      ],
-    },
-  },
-  result: {
-    data: {
-      createKnowledgeBase: {
-        knowledgeBase: {
-          id: 'kb-new',
-          knowledgeBaseVersionId: 'kb-v-new',
-          name: 'KnowledgeBase-New',
-        },
-      },
-    },
-  },
-};
-
 const updateAssistant = {
   request: {
     query: UPDATE_ASSISTANT,
     variables: {
       updateAssistantId: '1',
       input: {
-        instructions: 'new test instructions',
+        instructions: 'test instructions',
         model: 'gpt-4o-mini',
         name: 'test name',
         temperature: 1.5,
-        knowledgeBaseVersionId: 'kb-v-new',
+        knowledgeBaseVersionId: 'llm-vs-1',
       },
     },
   },
@@ -319,10 +290,7 @@ export const MOCKS = [
   getAssistant('2'),
   getAssistant('4'),
   getAssistantListOnSearch,
-  uploadFileToFileSearch,
-  createKnowledgeBaseForUpdate,
   updateAssistant,
-  getAssistant('1'),
   removeAssistant,
 ];
 
@@ -427,6 +395,43 @@ const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumbe
   },
 });
 
+const updateAssistantName = (id: string, name: string) => ({
+  request: {
+    query: UPDATE_ASSISTANT,
+    variables: { updateAssistantId: id, input: { name } },
+  },
+  result: { data: { updateAssistant: { errors: null } } },
+});
+
+const updateAssistantNameError = (id: string, name: string) => ({
+  request: {
+    query: UPDATE_ASSISTANT,
+    variables: { updateAssistantId: id, input: { name } },
+  },
+  result: {
+    data: { updateAssistant: { errors: [{ key: 'name', message: 'Name already taken' }] } },
+  },
+});
+
+export const ASSISTANT_DETAIL_RENAME_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  updateAssistantName('1', 'New Name'),
+  getAssistant('1'), // refetch after rename
+];
+
+export const ASSISTANT_DETAIL_RENAME_ERROR_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  updateAssistantNameError('1', 'New Name'),
+];
+
 export const ASSISTANT_DETAIL_MOCKS = [
   getAssistant('1'),
   getAssistant('1'),
@@ -457,6 +462,32 @@ export const ASSISTANT_DETAIL_SAVE_MOCKS = [
       variables: {
         updateAssistantId: '1',
         input: {
+          name: 'Assistant-405db438',
+          instructions: 'Updated instructions',
+          model: 'gpt-4o',
+          temperature: 1,
+          description: 'Initial version',
+          knowledgeBaseVersionId: 'llm-vs-1',
+        },
+      },
+    },
+    result: { data: { updateAssistant: { errors: null } } },
+  },
+];
+
+export const CONFIG_EDITOR_SAVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  {
+    request: {
+      query: UPDATE_ASSISTANT,
+      variables: {
+        updateAssistantId: '1',
+        input: {
+          name: 'Test Assistant',
           instructions: 'Updated instructions',
           model: 'gpt-4o',
           temperature: 1,
@@ -539,6 +570,7 @@ export const updateAssistantErrorMock = {
     variables: {
       updateAssistantId: '1',
       input: {
+        name: 'Test Assistant',
         instructions: 'Updated instructions',
         model: 'gpt-4o',
         temperature: 1,
