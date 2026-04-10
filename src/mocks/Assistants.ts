@@ -457,6 +457,32 @@ export const ASSISTANT_DETAIL_SAVE_MOCKS = [
       variables: {
         updateAssistantId: '1',
         input: {
+          name: 'Assistant-405db438',
+          instructions: 'Updated instructions',
+          model: 'gpt-4o',
+          temperature: 1,
+          description: 'Initial version',
+          knowledgeBaseVersionId: 'llm-vs-1',
+        },
+      },
+    },
+    result: { data: { updateAssistant: { errors: null } } },
+  },
+];
+
+export const CONFIG_EDITOR_SAVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  {
+    request: {
+      query: UPDATE_ASSISTANT,
+      variables: {
+        updateAssistantId: '1',
+        input: {
+          name: 'Test Assistant',
           instructions: 'Updated instructions',
           model: 'gpt-4o',
           temperature: 1,
@@ -539,6 +565,7 @@ export const updateAssistantErrorMock = {
     variables: {
       updateAssistantId: '1',
       input: {
+        name: 'Test Assistant',
         instructions: 'Updated instructions',
         model: 'gpt-4o',
         temperature: 1,
