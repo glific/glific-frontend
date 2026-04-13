@@ -65,7 +65,7 @@ test('it renders the list properly and switches between items', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(screen.getByText('VectorStore-77ae3597')).toBeInTheDocument();
+    expect(screen.getByText('vs_abc123')).toBeInTheDocument();
   });
 });
 
@@ -88,7 +88,7 @@ test('it creates an assistant', async () => {
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
 
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
@@ -97,7 +97,7 @@ test('it creates an assistant', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
   });
   fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -149,7 +149,7 @@ test('it creates an assistant without a knowledge base', async () => {
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
 
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
@@ -220,7 +220,7 @@ test('it uploads files to assistant', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
   });
   fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -320,7 +320,7 @@ test('it updates the assistant', async () => {
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
 
   fireEvent.click(screen.getByTestId('submitAction'));
 
@@ -373,13 +373,13 @@ test('it should show errors for invalid value in temperature', async () => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 2.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 2.5 } });
 
   await waitFor(() => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: -2.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: -2.5 } });
 
   await waitFor(() => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
@@ -471,7 +471,7 @@ test('uploading multiple files and error messages', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
   });
   expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
 
