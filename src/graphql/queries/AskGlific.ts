@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const GET_ASKME_BOT_CONVERSATIONS = gql`
-  query AskmeBotConversations($limit: Int, $lastId: String) {
-    askmeBotConversations(limit: $limit, lastId: $lastId) {
+export const GET_ASK_GLIFIC_CONVERSATIONS = gql`
+  query AskGlificConversations($limit: Int, $lastId: String) {
+    askGlificConversations(limit: $limit, lastId: $lastId) {
       conversations {
         id
         name
@@ -16,7 +16,7 @@ export const GET_ASKME_BOT_CONVERSATIONS = gql`
   }
 `;
 
-export const GET_ASKME_BOT_MESSAGES = gql`
+export const GET_ASK_GLIFIC_MESSAGES = gql`
   query AskGlificMessages($conversationId: String!, $limit: Int, $firstId: String) {
     askGlificMessages(conversationId: $conversationId, limit: $limit, firstId: $firstId) {
       messages {

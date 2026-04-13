@@ -1,19 +1,19 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
-import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskGlific';
+import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import AskGlific from './AskGlific';
 
 const now = Math.floor(Date.now() / 1000);
 
 const conversationsMock = {
   request: {
-    query: GET_ASKME_BOT_CONVERSATIONS,
+    query: GET_ASK_GLIFIC_CONVERSATIONS,
     variables: { limit: 10, lastId: '' },
   },
   result: {
     data: {
-      askmeBotConversations: {
+      askGlificConversations: {
         conversations: [],
         hasMore: false,
         limit: 10,
@@ -25,12 +25,12 @@ const conversationsMock = {
 
 const conversationsWithDataMock = {
   request: {
-    query: GET_ASKME_BOT_CONVERSATIONS,
+    query: GET_ASK_GLIFIC_CONVERSATIONS,
     variables: { limit: 10, lastId: '' },
   },
   result: {
     data: {
-      askmeBotConversations: {
+      askGlificConversations: {
         conversations: [
           {
             id: 'conv-abc',
@@ -78,7 +78,7 @@ const conversationsWithDataMock = {
 
 const messagesMock = {
   request: {
-    query: GET_ASKME_BOT_MESSAGES,
+    query: GET_ASK_GLIFIC_MESSAGES,
     variables: { conversationId: 'conv-abc', limit: 50 },
   },
   result: {
@@ -442,12 +442,12 @@ describe('AskGlific', () => {
 
       const mock = {
         request: {
-          query: GET_ASKME_BOT_CONVERSATIONS,
+          query: GET_ASK_GLIFIC_CONVERSATIONS,
           variables: { limit: 10, lastId: '' },
         },
         result: {
           data: {
-            askmeBotConversations: {
+            askGlificConversations: {
               conversations: [
                 {
                   id: 'conv-yd',
@@ -488,12 +488,12 @@ describe('AskGlific', () => {
 
       const mock = {
         request: {
-          query: GET_ASKME_BOT_CONVERSATIONS,
+          query: GET_ASK_GLIFIC_CONVERSATIONS,
           variables: { limit: 10, lastId: '' },
         },
         result: {
           data: {
-            askmeBotConversations: {
+            askGlificConversations: {
               conversations: [
                 { id: 'conv-old', name: 'Old Date Chat', status: 'normal', createdAt: oldTs, updatedAt: oldTs },
               ],
@@ -525,7 +525,7 @@ describe('AskGlific', () => {
   test('it should load more messages when load more button is clicked', async () => {
     const messagesWithMoreMock = {
       request: {
-        query: GET_ASKME_BOT_MESSAGES,
+        query: GET_ASK_GLIFIC_MESSAGES,
         variables: { conversationId: 'conv-abc', limit: 50 },
       },
       result: {
@@ -551,7 +551,7 @@ describe('AskGlific', () => {
 
     const olderMessagesMock = {
       request: {
-        query: GET_ASKME_BOT_MESSAGES,
+        query: GET_ASK_GLIFIC_MESSAGES,
         variables: { conversationId: 'conv-abc', limit: 50, firstId: 'msg-1' },
       },
       result: {
@@ -636,12 +636,12 @@ describe('AskGlific', () => {
   test('it should load more conversations when hasMore is true', async () => {
     const conversationsPage1 = {
       request: {
-        query: GET_ASKME_BOT_CONVERSATIONS,
+        query: GET_ASK_GLIFIC_CONVERSATIONS,
         variables: { limit: 10, lastId: '' },
       },
       result: {
         data: {
-          askmeBotConversations: {
+          askGlificConversations: {
             conversations: [
               { id: 'conv-1', name: 'First Chat', status: 'normal', createdAt: now - 60, updatedAt: now - 60 },
             ],
@@ -655,12 +655,12 @@ describe('AskGlific', () => {
 
     const conversationsPage2 = {
       request: {
-        query: GET_ASKME_BOT_CONVERSATIONS,
+        query: GET_ASK_GLIFIC_CONVERSATIONS,
         variables: { limit: 10, lastId: 'conv-1' },
       },
       result: {
         data: {
-          askmeBotConversations: {
+          askGlificConversations: {
             conversations: [
               { id: 'conv-2', name: 'Second Chat', status: 'normal', createdAt: now - 7200, updatedAt: now - 7200 },
             ],
@@ -770,7 +770,7 @@ describe('AskGlific', () => {
   test('it should show existing feedback when loading chat history', async () => {
     const messagesWithFeedbackMock = {
       request: {
-        query: GET_ASKME_BOT_MESSAGES,
+        query: GET_ASK_GLIFIC_MESSAGES,
         variables: { conversationId: 'conv-abc', limit: 50 },
       },
       result: {

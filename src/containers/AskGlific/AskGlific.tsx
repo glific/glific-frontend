@@ -17,7 +17,7 @@ import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
-import { GET_ASKME_BOT_CONVERSATIONS, GET_ASKME_BOT_MESSAGES } from 'graphql/queries/AskGlific';
+import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import styles from './AskGlific.module.css';
 
 interface Message {
@@ -106,10 +106,10 @@ const AskGlific = () => {
 
   const [askGlific] = useMutation(ASK_GLIFIC);
   const [submitFeedback] = useMutation(ASK_GLIFIC_FEEDBACK);
-  const [fetchConversations] = useLazyQuery(GET_ASKME_BOT_CONVERSATIONS, {
+  const [fetchConversations] = useLazyQuery(GET_ASK_GLIFIC_CONVERSATIONS, {
     fetchPolicy: 'network-only',
   });
-  const [fetchMessages] = useLazyQuery(GET_ASKME_BOT_MESSAGES, {
+  const [fetchMessages] = useLazyQuery(GET_ASK_GLIFIC_MESSAGES, {
     fetchPolicy: 'network-only',
   });
 
@@ -117,7 +117,7 @@ const AskGlific = () => {
     const { data } = await fetchConversations({
       variables: { limit: 10, lastId: append ? lastConversationId : '' },
     });
-    const result = data?.askmeBotConversations;
+    const result = data?.askGlificConversations;
     const conversations: DifyConversation[] = result?.conversations || [];
     const newItems = toHistoryItems(conversations);
 
