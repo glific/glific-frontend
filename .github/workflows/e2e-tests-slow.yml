@@ -42,7 +42,7 @@ jobs:
           otp-version: ${{ env.OTP_VERSION }}
 
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: yarn-cache
         with:
           path: |
@@ -93,7 +93,19 @@ jobs:
             API_URL=$(curl -s ${NGROK_API_URL} | jq -r '.tunnels[] | select(.proto=="http") | .public_url')
           fi
 
-          echo "GLIFIC_API_HOST_OVERRIDE=${API_URL}" >> $GITHUB_ENV
+          if [ -z "$API_URL" ]; then
+            echo "ERROR: Failed to resolve ngrok API_URL from ${NGROK_API_URL}" >&2
+            exit 1
+          fi
+
+          if ! printf '%s' "$API_URL" | grep -Eq '^https?://[^[:space:]]+$'; then
+            echo "ERROR: Resolved API_URL is not a valid URL: ${API_URL}" >&2
+            exit 1
+          fi
+
+          if [ -n "$API_URL" ]; then
+            echo "GLIFIC_API_HOST_OVERRIDE=${API_URL}" >> $GITHUB_ENV
+          fi
 
       # backend setup
       - name: Setup backend (clone and configure)
@@ -123,9 +135,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            project/glific/deps
-            project/glific/_build
-          key: ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-otp-${{ env.OTP_VERSION }}-${{ hashFiles('project/glific/mix.lock') }}
+            ../glific/deps
+            ../glific/_build
+          key: ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-otp-${{ env.OTP_VERSION }}-${{ hashFiles('../glific/mix.lock') }}
           restore-keys: |
             ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-otp-${{ env.OTP_VERSION }}-
 
@@ -172,7 +184,7 @@ jobs:
 
       - name: Cypress run
         run: |
-          yarn run cypress run  --spec excludeSpecPattern=cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          yarn run cypress run --spec cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
 
       - name: Upload Phoenix server & ngrok logs
         if: always()
@@ -180,7 +192,7 @@ jobs:
         with:
           name: phoenix-server-log-slow
           path: |
-            /home/runner/work/glific-frontend/glific-frontend/project/glific/phoenix-server.log
+            /home/runner/work/glific-frontend/glific/phoenix-server.log
             /home/runner/work/glific-frontend/glific-frontend/ngrok.log
           if-no-files-found: warn
           retention-days: 7
