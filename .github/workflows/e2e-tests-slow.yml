@@ -10,6 +10,7 @@ on:
 
 jobs:
   cypress:
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-slow') }}
     runs-on: ubuntu-latest
 
     env:
