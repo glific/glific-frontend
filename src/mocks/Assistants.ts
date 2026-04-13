@@ -250,7 +250,7 @@ const updateAssistant = {
   },
 };
 
-const removeAssistant = {
+export const removeAssistant = {
   request: {
     query: DELETE_ASSISTANT,
     variables: {

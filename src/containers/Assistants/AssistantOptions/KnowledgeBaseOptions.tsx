@@ -709,7 +709,7 @@ export const KnowledgeBaseOptions = ({
               disabled={disabled}
             />
             <input
-              role="sliderDisplay"
+              data-testid="sliderDisplay"
               name="sliderDisplay"
               type="number"
               step={0.1}
