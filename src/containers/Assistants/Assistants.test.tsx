@@ -4,11 +4,11 @@ import * as Notification from 'common/notification';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
-  createAssistantWithoutKBMocks,
   cloneCompletedMocks,
   cloneErrorMocks,
   cloneFailedMocks,
   clonePendingMocks,
+  createAssistantWithoutKBMocks,
   emptyMocks,
   errorMocks,
   legacyVectorStoreMocks,
@@ -99,12 +99,8 @@ test('it creates an assistant', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Knowledge Base');
   });
-  fireEvent.click(screen.getByTestId('ok-button'));
-
-  fireEvent.click(screen.getByTestId('addFiles'));
 
   const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
-
   fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
 
   await waitFor(() => {
@@ -114,7 +110,7 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
   });
 
   await waitFor(() => {

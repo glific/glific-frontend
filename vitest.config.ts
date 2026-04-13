@@ -16,6 +16,7 @@ export default defineConfig({
     },
     css: true,
     testTimeout: 10000,
+    maxWorkers: '50%',
   },
   plugins: [tsconfigPaths(), svgr()],
 });
