@@ -259,7 +259,7 @@ describe('ConfigEditor — settings parsing', () => {
       },
     });
 
-    expect(screen.getByRole('sliderDisplay')).toHaveValue(0.7);
+    expect(screen.getByTestId('sliderDisplay')).toHaveValue(0.7);
   });
 
   it('falls back to default model (gpt-4o) when version.model is null', () => {
@@ -271,7 +271,7 @@ describe('ConfigEditor — settings parsing', () => {
   it('falls back to temperature 0.1 when settings is null', () => {
     renderEdit({ version: { ...mockVersion, settings: null } });
 
-    expect(screen.getByRole('sliderDisplay')).toHaveValue(0.1);
+    expect(screen.getByTestId('sliderDisplay')).toHaveValue(0.1);
   });
 });
 

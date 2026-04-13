@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 
 import * as Notification from 'common/notification';
+import * as Utils from 'common/utils';
 
 import {
   cloneAssistantFromListMock,
@@ -15,6 +16,7 @@ import {
   countAssistantsMock,
   filterAssistantsMock,
   filterAssistantsAfterCloneMock,
+  removeAssistant,
 } from 'mocks/Assistants';
 
 import AssistantList from './AssistantList';
@@ -284,4 +286,38 @@ test('polling stays silent while cloneStatus is in_progress', async () => {
   });
   expect(notificationSpy).not.toHaveBeenCalledWith('Assistant cloned successfully');
   expect(notificationSpy).not.toHaveBeenCalledWith('Assistant clone failed', 'warning');
+});
+
+test('clicking copy button in name cell calls copyToClipboard with assistantDisplayId', async () => {
+  const copySpy = vi.spyOn(Utils, 'copyToClipboard').mockImplementation(() => {});
+  renderAssistantList();
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('copyAssistantId')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('copyAssistantId')[0]);
+
+  expect(copySpy).toHaveBeenCalledWith('asst_abc123');
+  copySpy.mockRestore();
+});
+
+test('delete assistant calls deleteModifier with deleteAssistantId', async () => {
+  renderAssistantList([filterAssistantsMock, countAssistantsMock, removeAssistant]);
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('DeleteIcon')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getAllByTestId('DeleteIcon')[0]);
+
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Confirm'));
+
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });
