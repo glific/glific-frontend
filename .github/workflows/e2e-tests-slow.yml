@@ -123,7 +123,7 @@ jobs:
           cd cert
           echo "${{ secrets.TEST_CERTIFICATE }}" > glific.test+1.pem
           echo "${{ secrets.TEST_CERTIFICATE_KEY }}" > glific.test+1-key.pem
-          mkdir -p ../../../glific/priv/cert
+          mkdir -p $GITHUB_WORKSPACE/../glific/priv/cert
           cp glific.test+1.pem $GITHUB_WORKSPACE/../glific/priv/cert/glific.test+1.pem
           cp glific.test+1-key.pem $GITHUB_WORKSPACE/../glific/priv/cert/glific.test+1-key.pem
           cd ../../
