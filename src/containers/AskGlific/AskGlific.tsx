@@ -106,7 +106,7 @@ const AskGlific = () => {
 
   const [askGlific] = useMutation(ASK_GLIFIC);
   const [submitFeedback] = useMutation(ASK_GLIFIC_FEEDBACK);
-  const [fetchConversations] = useLazyQuery(GET_ASK_GLIFIC_CONVERSATIONS, {
+  const [fetchConversations, { loading: isLoadingConversations }] = useLazyQuery(GET_ASK_GLIFIC_CONVERSATIONS, {
     fetchPolicy: 'network-only',
   });
   const [fetchMessages] = useLazyQuery(GET_ASK_GLIFIC_MESSAGES, {
@@ -419,6 +419,16 @@ const AskGlific = () => {
             <div className={styles.HistoryPanel} data-testid="history-panel">
               <div className={styles.HistoryHeader}>Chat History</div>
               <div className={styles.HistoryList}>
+                {isLoadingConversations && chatHistory.length === 0 && (
+                  <div className={styles.HistoryEmpty} data-testid="conversations-loading">
+                    Loading conversations...
+                  </div>
+                )}
+                {!isLoadingConversations && chatHistory.length === 0 && (
+                  <div className={styles.HistoryEmpty} data-testid="no-conversations">
+                    No conversations yet
+                  </div>
+                )}
                 {Object.entries(groupedHistory).map(([date, items]) => (
                   <div key={date}>
                     <div className={styles.HistoryDateLabel}>{date}</div>
@@ -489,6 +499,16 @@ const AskGlific = () => {
                 transformOrigin={{ vertical: 'top', horizontal: 'left' }}
                 className={styles.HistoryDropdown}
               >
+                {isLoadingConversations && chatHistory.length === 0 && (
+                  <MenuItem disabled className={styles.HistoryDropdownItem}>
+                    Loading conversations...
+                  </MenuItem>
+                )}
+                {!isLoadingConversations && chatHistory.length === 0 && (
+                  <MenuItem disabled className={styles.HistoryDropdownItem}>
+                    No conversations yet
+                  </MenuItem>
+                )}
                 {Object.entries(groupedHistory).map(([date, items]) => [
                   <MenuItem key={`label-${date}`} disabled className={styles.HistoryDropdownDate}>
                     {date}
