@@ -103,8 +103,7 @@ export const blockedContactsInfo: HelpDataProps = {
 
 export const assistantsInfo: HelpDataProps = {
   heading:
-    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.',
-  link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants', // Replace with the actual Glific documentation link
+    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.',
 };
 
 export const templateStatusInfo: HelpDataProps = {

@@ -1,22 +1,23 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useTranslation } from 'react-i18next';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { IconButton, Tooltip } from '@mui/material';
 
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 
-import { copyToClipboard } from 'common/utils';
-import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
-import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { List } from 'containers/List/List';
 import { assistantsInfo } from 'common/HelpData';
+import { setErrorMessage, setNotification } from 'common/notification';
+import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification, setErrorMessage } from 'common/notification';
+import { List } from 'containers/List/List';
+import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
 
 import styles from './AssistantList.module.css';
 
@@ -165,8 +166,8 @@ export const AssistantList = () => {
       dialog: handleEdit,
     },
     {
-      label: t('Clone'),
-      icon: <CopyIcon data-testid="copy-icon" />,
+      label: t('Copy'),
+      icon: <DuplicateIcon data-testid="copy-icon" />,
       parameter: 'id',
       dialog: handleCloneClick,
     },
