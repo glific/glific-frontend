@@ -113,31 +113,32 @@ jobs:
           echo '127.0.0.1  glific.test' | sudo tee -a /etc/hosts
           echo '127.0.0.1  postgres' | sudo tee -a /etc/hosts
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
-          cd ../
+          mkdir -p project
+          cd project
           echo clone glific repo
           git clone https://github.com/glific/glific.git
-          echo done. go to dir.
           cd glific
-          echo done. start dev.secret.exs config
           cd priv
           mkdir cert
           cd cert
           echo "${{ secrets.TEST_CERTIFICATE }}" > glific.test+1.pem
           echo "${{ secrets.TEST_CERTIFICATE_KEY }}" > glific.test+1-key.pem
+          mkdir -p ../../../glific/priv/cert
+          cp glific.test+1.pem ../../../glific/priv/cert/glific.test+1.pem
+          cp glific.test+1-key.pem ../../../glific/priv/cert/glific.test+1-key.pem
           cd ../../
           cd config
           cp dev.secret.exs.txt dev.secret.exs
           cp .env.dev.txt .env.dev
           sed -i 's/:max_rate_limit_request, 60/:max_rate_limit_request, 300/g' config.exs
-          echo copy done. start setup
 
       - name: Cache Elixir deps and build
         uses: actions/cache@v4
         with:
           path: |
-            ../glific/deps
-            ../glific/_build
-          key: ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-otp-${{ env.OTP_VERSION }}-${{ hashFiles('../glific/mix.lock') }}
+            project/glific/deps
+            project/glific/_build
+          key: ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-otp-${{ env.OTP_VERSION }}-${{ hashFiles('project/glific/mix.lock') }}
           restore-keys: |
             ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-otp-${{ env.OTP_VERSION }}-
 
@@ -145,7 +146,7 @@ jobs:
         env:
           KAAPI_API_KEY: ${{ secrets.KAAPI_API_KEY }}
         run: |
-          cd ../glific
+          cd project/glific
           echo install mix dependencies if not Cached
           mix local.rebar --force
           mix local.hex --force
@@ -172,7 +173,7 @@ jobs:
 
       - name: Run glific backend
         run: |
-          cd ../glific/
+          cd project/glific/
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
           echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
 
@@ -192,7 +193,7 @@ jobs:
         with:
           name: phoenix-server-log-slow
           path: |
-            /home/runner/work/glific-frontend/glific/phoenix-server.log
+            /home/runner/work/glific-frontend/glific-frontend/project/glific/phoenix-server.log
             /home/runner/work/glific-frontend/glific-frontend/ngrok.log
           if-no-files-found: warn
           retention-days: 7
