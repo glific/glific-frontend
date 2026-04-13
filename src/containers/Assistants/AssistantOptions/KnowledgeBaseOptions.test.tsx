@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 import { KnowledgeBaseOptions } from './KnowledgeBaseOptions';
 
 import * as Notification from 'common/notification';
-import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import {
   knowledgeBaseOptionsBaseProps,
   createUploadSuccessMock,
@@ -996,5 +996,123 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
 
     expect(abortSpy).toHaveBeenCalled();
     vi.restoreAllMocks();
+  });
+
+  test('closes dialog without API call when no files have changed', async () => {
+    const existingFile = { fileId: 'existing-id', filename: 'existing.txt', uploadedAt: '2026-01-01', fileSize: 10 };
+
+    render(
+      <MockedProvider mocks={[]}>
+        <KnowledgeBaseOptions
+          {...baseProps}
+          formikValues={{ ...baseProps.formikValues, initialFiles: [existingFile] }}
+        />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    await waitFor(() => {
+      expect(screen.getByText('existing.txt')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Proceed' }));
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Knowledge Base')).not.toBeInTheDocument();
+    });
+  });
+
+  test('calls setErrorMessage when createKnowledgeBase returns an error', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+    const keepFile = { fileId: 'keep-id', filename: 'keep.txt', uploadedAt: '2026-01-01', fileSize: 10 };
+    const removeFile = { fileId: 'remove-id', filename: 'remove.txt', uploadedAt: '2026-01-02', fileSize: 15 };
+
+    const kbErrorMock = {
+      request: {
+        query: CREATE_KNOWLEDGE_BASE,
+        variables: {
+          createKnowledgeBaseId: 'kb-1',
+          mediaInfo: [{ fileId: 'keep-id', filename: 'keep.txt', uploadedAt: '2026-01-01', fileSize: 10 }],
+        },
+      },
+      error: new Error('KB creation failed'),
+    };
+
+    render(
+      <MockedProvider mocks={[kbErrorMock]}>
+        <KnowledgeBaseOptions
+          {...baseProps}
+          formikValues={{ ...baseProps.formikValues, initialFiles: [keepFile, removeFile] }}
+        />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    await waitFor(() => {
+      expect(screen.getByText('remove.txt')).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      screen
+        .getByText('remove.txt')
+        .closest('[data-testid="fileItem"]')!
+        .querySelector('[data-testid="deleteFile"]')!
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('remove.txt')).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Proceed' })).not.toBeDisabled();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Proceed' }));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+
+    errorSpy.mockRestore();
+  });
+});
+
+describe('KnowledgeBaseOptions temperature input validation', () => {
+  const renderOptions = () =>
+    render(
+      <MockedProvider mocks={[]}>
+        <KnowledgeBaseOptions {...baseProps} />
+      </MockedProvider>
+    );
+
+  test('shows error text when temperature value is out of range (> 2)', () => {
+    renderOptions();
+    const slider = screen.getByTestId('sliderDisplay');
+    fireEvent.change(slider, { target: { value: '3' } });
+    expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
+  });
+
+  test('shows error text when temperature value is negative', () => {
+    renderOptions();
+    const slider = screen.getByTestId('sliderDisplay');
+    fireEvent.change(slider, { target: { value: '-1' } });
+    expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
+  });
+
+  test('clears error and calls setFieldValue when a valid value is entered after an error', () => {
+    const setFieldValue = vi.fn();
+    render(
+      <MockedProvider mocks={[]}>
+        <KnowledgeBaseOptions {...baseProps} setFieldValue={setFieldValue} />
+      </MockedProvider>
+    );
+    const slider = screen.getByTestId('sliderDisplay');
+
+    fireEvent.change(slider, { target: { value: '3' } });
+    expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
+
+    fireEvent.change(slider, { target: { value: '1.5' } });
+    expect(screen.queryByText('Temperature value should be between 0-2')).not.toBeInTheDocument();
+    expect(setFieldValue).toHaveBeenCalledWith('temperature', 1.5);
   });
 });
