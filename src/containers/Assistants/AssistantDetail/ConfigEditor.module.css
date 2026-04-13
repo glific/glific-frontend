@@ -50,7 +50,7 @@
   color: #073f24;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
   min-width: 0;
   flex: 1;
 }
