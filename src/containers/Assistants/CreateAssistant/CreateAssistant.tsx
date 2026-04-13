@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
@@ -54,6 +54,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
+  const shouldResetFormRef = useRef(true);
 
   let isEditing = false;
   const params = useParams();
@@ -111,6 +112,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             setErrorMessage(updateAssistantData.errors[0]);
             return;
           }
+          shouldResetFormRef.current = true;
           setNotification('Changes saved successfully', 'success');
           setUpdateList(!updateList);
           setHasUnsavedFiles(false);
@@ -149,12 +151,14 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   useEffect(() => {
     if (currentId && isEditing) {
+      shouldResetFormRef.current = true;
       getAssistant({ variables: { assistantId: currentId } });
     }
   }, [currentId, isEditing]);
 
   useEffect(() => {
-    if (assistantData) {
+    if (assistantData && shouldResetFormRef.current) {
+      shouldResetFormRef.current = false;
       setAssistantId(assistantData.assistantId);
       const modelValue = assistantData.model ? { id: assistantData.model, label: assistantData.model } : null;
       formik.resetForm({
