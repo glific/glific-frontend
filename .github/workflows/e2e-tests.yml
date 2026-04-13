@@ -159,12 +159,12 @@ jobs:
 
       - name: Setup cypress
         run: |
+          cd project
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
-          cd cypress-testing
+          cp -r cypress-testing/cypress ../cypress
           cd ..
-          cp -r cypress-testing/cypress cypress
           yarn add cypress@13.6.2
           echo Create cypress.config.ts from example
           cp cypress-testing/cypress.config.ts.example cypress.config.ts
@@ -175,10 +175,10 @@ jobs:
 
       - name: Run glific backend
         run: |
-          cd ../glific/
+          cd project/glific/
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
           echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
-          cd ../glific-frontend/
+          cd ../
 
       - name: Wait for backend to be ready
         uses: iFaxity/wait-on-action@v1.2.1
