@@ -5,25 +5,20 @@ import { KnowledgeBaseOptions } from './KnowledgeBaseOptions';
 
 import * as Notification from 'common/notification';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import {
+  knowledgeBaseOptionsBaseProps,
+  createUploadSuccessMock,
+  createUploadErrorMock,
+  rateLimitError,
+} from 'mocks/KnowledgeBase';
 
 const setNotificationSpy = vi.spyOn(Notification, 'setNotification');
 
 const baseProps = {
-  formikValues: {
-    initialFiles: [],
-    knowledgeBaseVersionId: '',
-    knowledgeBaseName: '',
-    temperature: 1,
-  },
+  ...knowledgeBaseOptionsBaseProps,
   setFieldValue: vi.fn(),
-  formikErrors: {},
-  formikTouched: {},
-  knowledgeBaseId: 'kb-1',
-  isLegacyVectorStore: false,
   onFilesChange: vi.fn(),
-  vectorStoreId: 'vs-1',
   validateForm: vi.fn(),
-  disabled: false,
 };
 
 const renderKnowledgeBaseOptions = (props = baseProps, mocks: any[] = []) =>
@@ -135,57 +130,11 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     });
 
     const mocks = [
-      ...Array.from({ length: 10 }, (_, index) => ({
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === `queue-file-${index}.txt`,
-        delay: index === 0 ? 500 : Infinity,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-queue-file-${index}.txt`,
-              filename: `queue-file-${index}.txt`,
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      })),
-      {
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === 'queue-file-10.txt',
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-queue-file-10.txt`,
-              filename: `queue-file-10.txt`,
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-        delay: Infinity,
-      },
-      {
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === 'queue-file-11.txt',
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-queue-file-11.txt`,
-              filename: `queue-file-11.txt`,
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-          delay: Infinity,
-        },
-      },
+      ...Array.from({ length: 10 }, (_, index) =>
+        createUploadSuccessMock(`queue-file-${index}.txt`, index === 0 ? 500 : Infinity)
+      ),
+      createUploadSuccessMock('queue-file-10.txt', Infinity),
+      createUploadSuccessMock('queue-file-11.txt', Infinity),
     ];
 
     render(
@@ -221,40 +170,8 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     });
 
     const mocks = [
-      {
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === 'cancel-file-0.txt',
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-cancel-file-0.txt`,
-              filename: 'cancel-file-0.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-        delay: 200,
-      },
-      ...Array.from({ length: 11 }, (_, idx) => ({
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === `cancel-file-${idx + 1}.txt`,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-cancel-file-${idx + 1}.txt`,
-              filename: `cancel-file-${idx + 1}.txt`,
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-          delay: Infinity,
-        },
-      })),
+      createUploadSuccessMock('cancel-file-0.txt', 200),
+      ...Array.from({ length: 11 }, (_, idx) => createUploadSuccessMock(`cancel-file-${idx + 1}.txt`, Infinity)),
     ];
 
     render(
@@ -288,33 +205,11 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       (_, index) => new File(['content'], `order-file-${index}.txt`, { type: 'text/plain' })
     );
 
-    const mocks = [
-      ...Array.from({ length: 12 }, (_, idx) => {
-        if (idx === 1) {
-          return {
-            request: { query: UPLOAD_FILE_TO_KAAPI },
-            variableMatcher: (variables: any) => variables?.media?.name === `order-file-1.txt`,
-            error: new Error('bad file'),
-            delay: 200,
-          };
-        }
-        return {
-          request: { query: UPLOAD_FILE_TO_KAAPI },
-          variableMatcher: (variables: any) => variables?.media?.name === `order-file-${idx}.txt`,
-          delay: Infinity,
-          result: {
-            data: {
-              uploadFilesearchFile: {
-                fileId: `id-order-file-${idx}.txt`,
-                filename: `order-file-${idx}.txt`,
-                uploadedAt: '2026-01-01',
-                fileSize: 5,
-              },
-            },
-          },
-        };
-      }),
-    ];
+    const mocks = Array.from({ length: 12 }, (_, idx) =>
+      idx === 1
+        ? createUploadErrorMock('order-file-1.txt', new Error('bad file'), 200)
+        : createUploadSuccessMock(`order-file-${idx}.txt`, Infinity)
+    );
 
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -364,25 +259,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
   });
 
   test('does not allow deleting a file while file upload is in progress', async () => {
-    const mocks = [
-      {
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === 'in-progress.txt',
-        delay: Infinity,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: 'id-in-progress.txt',
-              filename: 'in-progress.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
-    ];
+    const mocks = [createUploadSuccessMock('in-progress.txt', Infinity)];
 
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -411,56 +288,11 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     );
 
     const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'state-file-0.txt',
-        delay: 100,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-state-file-0.txt`,
-              filename: 'state-file-0.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'state-file-1.txt',
-        delay: 150,
-        error: new Error('bad file'),
-      },
-      ...Array.from({ length: 8 }, (_, i) => ({
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === `state-file-${i + 2}.txt`,
-        delay: Infinity,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-state-file-${i + 2}.txt`,
-              filename: `state-file-${i + 2}.txt`,
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      })),
-      ...['state-file-10.txt', 'state-file-11.txt'].map((name) => ({
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === name,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: `id-${name}`,
-              filename: name,
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      })),
+      createUploadSuccessMock('state-file-0.txt', 100),
+      createUploadErrorMock('state-file-1.txt', new Error('bad file'), 150),
+      ...Array.from({ length: 8 }, (_, i) => createUploadSuccessMock(`state-file-${i + 2}.txt`, Infinity)),
+      createUploadSuccessMock('state-file-10.txt'),
+      createUploadSuccessMock('state-file-11.txt'),
     ];
 
     render(
@@ -511,15 +343,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
   });
 
   test('shows warning notification on proceed when files have failed uploads', async () => {
-    const mocks = [
-      {
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === 'bad-file.txt',
-        error: new Error('Upload failed due to invalid content'),
-      },
-    ];
+    const mocks = [createUploadErrorMock('bad-file.txt', new Error('Upload failed due to invalid content'))];
 
     render(
       <MockedProvider mocks={mocks}>
@@ -587,42 +411,9 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
 
   test('allows retrying a failed file while another upload is still in progress', async () => {
     const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'stuck-upload.txt',
-        delay: Infinity,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: 'id-stuck-upload.txt',
-              filename: 'stuck-upload.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'retry-failed.txt',
-        delay: 50,
-        error: new Error('temporary failure'),
-      },
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'retry-failed.txt',
-        delay: 50,
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: 'id-retry-failed.txt',
-              filename: 'retry-failed.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
+      createUploadSuccessMock('stuck-upload.txt', Infinity),
+      createUploadErrorMock('retry-failed.txt', new Error('temporary failure'), 50),
+      createUploadSuccessMock('retry-failed.txt', 50),
     ];
 
     render(
@@ -658,17 +449,10 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
   test('retries upload request when rate limit errors occur', async () => {
     vi.useFakeTimers();
 
-    const rateLimitError = new Error('429 Too Many Requests');
-    (rateLimitError as any).networkError = { statusCode: 429 };
-
     let successResponseCount = 0;
 
     const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'rate-limit-retry.txt',
-        error: rateLimitError,
-      },
+      createUploadErrorMock('rate-limit-retry.txt', rateLimitError),
       {
         request: { query: UPLOAD_FILE_TO_KAAPI },
         variableMatcher: (variables: any) => variables?.media?.name === 'rate-limit-retry.txt',
@@ -719,14 +503,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
   test('shows failure state and tooltip message after exhausting rate limit retries', async () => {
     vi.useFakeTimers();
 
-    const rateLimitError = new Error('429 Too Many Requests');
-    (rateLimitError as any).networkError = { statusCode: 429 };
-
-    const mocks = Array.from({ length: 5 }, () => ({
-      request: { query: UPLOAD_FILE_TO_KAAPI },
-      variableMatcher: (variables: any) => variables?.media?.name === 'rate-limit-exhausted.txt',
-      error: rateLimitError,
-    }));
+    const mocks = Array.from({ length: 5 }, () => createUploadErrorMock('rate-limit-exhausted.txt', rateLimitError));
 
     render(
       <MockedProvider mocks={mocks}>
@@ -773,42 +550,10 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       (_, index) => new File(['content'], `queued-state-${index}.txt`, { type: 'text/plain' })
     );
 
-    const infiniteDelayMock = {
-      request: {
-        query: UPLOAD_FILE_TO_KAAPI,
-      },
-      variableMatcher: (variables: any) => variables?.media?.name === 'queued-state-0.txt',
-      delay: Infinity,
-      result: {
-        data: {
-          uploadFilesearchFile: {
-            fileId: `id-queued-state-0.txt`,
-            filename: `queued-state-0.txt`,
-            uploadedAt: '2026-01-01',
-            fileSize: 12,
-          },
-        },
-      },
-    };
-
-    const quickMocks = files.slice(1).map((file) => ({
-      request: {
-        query: UPLOAD_FILE_TO_KAAPI,
-      },
-      variableMatcher: (variables: any) => variables?.media?.name === file.name,
-      result: {
-        data: {
-          uploadFilesearchFile: {
-            fileId: `id-${file.name}`,
-            filename: file.name,
-            uploadedAt: '2026-01-01',
-            fileSize: 12,
-          },
-        },
-      },
-    }));
-
-    const mocks = [infiniteDelayMock, ...quickMocks];
+    const mocks = [
+      createUploadSuccessMock('queued-state-0.txt', Infinity),
+      ...files.slice(1).map((file) => createUploadSuccessMock(file.name)),
+    ];
 
     render(
       <MockedProvider mocks={mocks}>
@@ -827,15 +572,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
   });
 
   test('shows failed icon with error tooltip on upload failure', async () => {
-    const mocks = [
-      {
-        request: {
-          query: UPLOAD_FILE_TO_KAAPI,
-        },
-        variableMatcher: (variables: any) => variables?.media?.name === 'broken-file.txt',
-        error: new Error('Invalid file format'),
-      },
-    ];
+    const mocks = [createUploadErrorMock('broken-file.txt', new Error('Invalid file format'))];
 
     render(
       <MockedProvider mocks={mocks}>
@@ -903,18 +640,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     (globalThis as any).AbortController = ImmediatelyAbortedAbortController;
 
     try {
-      const rateLimitError = new Error('429 Too Many Requests');
-      (rateLimitError as any).networkError = { statusCode: 429 };
-
-      const mocks = [
-        {
-          request: {
-            query: UPLOAD_FILE_TO_KAAPI,
-          },
-          variableMatcher: (variables: any) => variables?.media?.name === 'immediate-abort-rate-limit.txt',
-          error: rateLimitError,
-        },
-      ];
+      const mocks = [createUploadErrorMock('immediate-abort-rate-limit.txt', rateLimitError)];
 
       render(
         <MockedProvider mocks={mocks}>
@@ -942,13 +668,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     const abortError = new Error('Aborted');
     (abortError as any).name = 'AbortError';
 
-    const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'upload-abort-attempt.txt',
-        error: abortError,
-      },
-    ];
+    const mocks = [createUploadErrorMock('upload-abort-attempt.txt', abortError)];
 
     render(
       <MockedProvider mocks={mocks}>
@@ -1000,13 +720,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       const rateLimitError = new Error('429 Too Many Requests');
       (rateLimitError as any).networkError = { statusCode: 429 };
 
-      const mocks = [
-        {
-          request: { query: UPLOAD_FILE_TO_KAAPI },
-          variableMatcher: (variables: any) => variables?.media?.name === 'abort-not-recognized.txt',
-          error: rateLimitError,
-        },
-      ];
+      const mocks = [createUploadErrorMock('abort-not-recognized.txt', rateLimitError)];
 
       render(
         <MockedProvider mocks={mocks}>
@@ -1036,13 +750,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
   });
 
   test('marks file as failed and shows tooltip message after upload error', async () => {
-    const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'then-failed.txt',
-        error: new Error('then-failed-error'),
-      },
-    ];
+    const mocks = [createUploadErrorMock('then-failed.txt', new Error('then-failed-error'))];
 
     render(
       <MockedProvider mocks={mocks}>
@@ -1077,22 +785,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       return originalMapDelete.call(this, key);
     });
 
-    const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'catch-reject-delete.txt',
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: 'id-catch-reject-delete.txt',
-              filename: 'catch-reject-delete.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
-    ];
+    const mocks = [createUploadSuccessMock('catch-reject-delete.txt')];
 
     try {
       render(
@@ -1134,22 +827,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       return originalMapDelete.call(this, key);
     });
 
-    const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'catch-abort-early-return.txt',
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: 'id-catch-abort-early-return.txt',
-              filename: 'catch-abort-early-return.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
-    ];
+    const mocks = [createUploadSuccessMock('catch-abort-early-return.txt')];
 
     try {
       render(
@@ -1182,22 +860,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       return originalMapDelete.call(this, key);
     });
 
-    const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'catch-fallback-default-error.txt',
-        result: {
-          data: {
-            uploadFilesearchFile: {
-              fileId: 'id-catch-fallback-default-error.txt',
-              filename: 'catch-fallback-default-error.txt',
-              uploadedAt: '2026-01-01',
-              fileSize: 12,
-            },
-          },
-        },
-      },
-    ];
+    const mocks = [createUploadSuccessMock('catch-fallback-default-error.txt')];
 
     try {
       render(
@@ -1234,22 +897,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     (Promise as any).all = () => Promise.reject(abortError);
 
     try {
-      const mocks = [
-        {
-          request: { query: UPLOAD_FILE_TO_KAAPI },
-          variableMatcher: (variables: any) => variables?.media?.name === 'abort-catch-console.txt',
-          result: {
-            data: {
-              uploadFilesearchFile: {
-                fileId: 'id-abort-catch-console.txt',
-                filename: 'abort-catch-console.txt',
-                uploadedAt: '2026-01-01',
-                fileSize: 12,
-              },
-            },
-          },
-        },
-      ];
+      const mocks = [createUploadSuccessMock('abort-catch-console.txt')];
 
       render(
         <MockedProvider mocks={mocks}>
@@ -1281,22 +929,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     (Promise as any).all = () => Promise.reject(error);
 
     try {
-      const mocks = [
-        {
-          request: { query: UPLOAD_FILE_TO_KAAPI },
-          variableMatcher: (variables: any) => variables?.media?.name === 'console-catch-nonabort.txt',
-          result: {
-            data: {
-              uploadFilesearchFile: {
-                fileId: 'id-console-catch-nonabort.txt',
-                filename: 'console-catch-nonabort.txt',
-                uploadedAt: '2026-01-01',
-                fileSize: 12,
-              },
-            },
-          },
-        },
-      ];
+      const mocks = [createUploadSuccessMock('console-catch-nonabort.txt')];
 
       render(
         <MockedProvider mocks={mocks}>
@@ -1333,13 +966,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
       return originalMapDelete.call(this, key);
     });
 
-    const mocks = [
-      {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === fileName,
-        error: new Error('upload-failure'),
-      },
-    ];
+    const mocks = [createUploadErrorMock(fileName, new Error('upload-failure'))];
 
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
