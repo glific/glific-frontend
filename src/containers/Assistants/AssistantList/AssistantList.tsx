@@ -5,9 +5,12 @@ import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
+import { IconButton, Tooltip } from '@mui/material';
+
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 
+import { copyToClipboard } from 'common/utils';
 import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { List } from 'containers/List/List';
@@ -22,7 +25,22 @@ dayjs.extend(relativeTime);
 const getAssistantName = (name: string, assistantDisplayId: string) => (
   <div className={styles.NameCell}>
     <span className={styles.Name}>{name}</span>
-    <span className={styles.DisplayId}>{assistantDisplayId}</span>
+    <span className={styles.DisplayIdRow}>
+      <Tooltip title="Copy assistant ID" placement="top">
+        <IconButton
+          size="small"
+          className={styles.CopyButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            copyToClipboard(assistantDisplayId);
+          }}
+          data-testid="copyAssistantId"
+        >
+          <CopyIcon />
+        </IconButton>
+      </Tooltip>
+      <span className={styles.DisplayId}>{assistantDisplayId}</span>
+    </span>
   </div>
 );
 
@@ -127,9 +145,9 @@ export const AssistantList = () => {
   });
 
   const columnNames = [
-    { name: 'name', label: t('Assistant Name') },
+    { label: t('Assistant Name') },
     { label: t('Live Version') },
-    { label: t('Last Updated') },
+    { name: 'updated_at', label: t('Last Updated'), sort: true, order: 'desc' },
     { label: t('Actions') },
   ];
 
@@ -165,7 +183,7 @@ export const AssistantList = () => {
         dialogMessage={t("You won't be able to use this assistant.")}
         {...queries}
         {...columnAttributes}
-        searchParameter={['name']}
+        searchParameter={['name_or_assistant_id']}
         additionalAction={additionalAction}
         button={{
           show: true,
@@ -173,6 +191,8 @@ export const AssistantList = () => {
           action: () => navigate('/assistants/add'),
         }}
         editSupport={false}
+        deleteModifier={{ variables: (id: string) => ({ deleteAssistantId: id }) }}
+        sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
       />
 
       {cloneDialogOpen && selectedAssistant && (
