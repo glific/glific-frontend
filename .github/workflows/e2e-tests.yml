@@ -111,8 +111,7 @@ jobs:
           echo '127.0.0.1  glific.test' | sudo tee -a /etc/hosts
           echo '127.0.0.1  postgres' | sudo tee -a /etc/hosts
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
-          mkdir project
-          cd project
+          cd ../
           echo clone glific repo
           git clone https://github.com/glific/glific.git
           echo done. go to dir.
@@ -129,7 +128,6 @@ jobs:
           cp .env.dev.txt .env.dev
           sed -i 's/:max_rate_limit_request, 60/:max_rate_limit_request, 300/g' config.exs
           echo copy done. start setup
-          cd ../
 
       - name: Cache Elixir deps and build
         uses: actions/cache@v4
@@ -145,7 +143,7 @@ jobs:
         env:
           KAAPI_API_KEY: ${{ secrets.KAAPI_API_KEY }}
         run: |
-          cd project/glific
+          cd ../glific
           echo install mix dependencies if not Cached
           mix local.rebar --force
           mix local.hex --force
@@ -155,19 +153,16 @@ jobs:
           sudo apt-get install inotify-tools
           echo start mix setup
           ENABLE_DB_SSL=false KAAPI_API_KEY=${KAAPI_API_KEY} mix setup
-          cd ../../
 
       - name: Setup cypress
         run: |
+          mkdir -p project
           cd project
-          echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
-          echo done. go to dir.
           cp -r cypress-testing/cypress ../cypress
+          cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
           cd ..
           yarn add cypress@13.6.2
-          echo Create cypress.config.ts from example
-          cp cypress-testing/cypress.config.ts.example cypress.config.ts
 
       - name: Run glific frontend
         run: |
@@ -178,7 +173,6 @@ jobs:
           cd project/glific/
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
           echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
-          cd ../
 
       - name: Wait for backend to be ready
         uses: iFaxity/wait-on-action@v1.2.1
