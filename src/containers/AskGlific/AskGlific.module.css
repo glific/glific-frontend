@@ -149,7 +149,6 @@
   cursor: pointer;
   color: #191c1a;
   background-color: #f5f5f5;
-  font-size: 0.85rem;
   text-align: center;
   transition: background-color 0.2s;
   border: 1px solid #e8e8e8;
@@ -385,6 +384,14 @@
   padding: 0.5rem 0;
 }
 
+.HistoryEmpty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: #888;
+  font-family: Heebo;
+  font-size: 0.85rem;
+}
+
 .HistoryDateLabel {
   padding: 0.5rem 1rem 0.25rem;
   font-family: Heebo;
@@ -437,7 +444,7 @@
 .HistoryItemTime {
   font-family: Heebo;
   font-size: 0.7rem;
-  color: #999;
+  color: #767676;
 }
 
 .HistoryItemMenu {
@@ -451,15 +458,32 @@
   opacity: 1;
 }
 
+.LoadMoreButton {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: #119656;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.LoadMoreButton:hover {
+  text-decoration: underline;
+}
+
 .HistoryDropdownDate {
   font-family: Heebo !important;
   font-size: 0.7rem !important;
   font-weight: 500 !important;
-  color: #888 !important;
+  color: #767676 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   padding: 0.5rem 1rem 0.25rem !important;
   min-height: unset !important;
+}
+
+.HistoryDropdownDate:disabled {
+  opacity: 100% !important;
 }
 
 .HistoryDropdownItem {
@@ -475,4 +499,3 @@
   composes: HistoryDropdownItem;
   color: #119656 !important;
 }
-
