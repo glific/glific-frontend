@@ -483,5 +483,9 @@
   "Back to assistants": "असिस्टेंट सूची पर वापस जाएं",
   "You have unsaved changes. Are you sure you want to leave?": "आपके पास असहेजे परिवर्तन हैं। क्या आप वाकई छोड़ना चाहते हैं?",
   "Stay": "रुकें",
-  "Leave": "छोड़ें"
+  "Leave": "छोड़ें",
+  "Manage Knowledge Base": "नॉलेज बेस प्रबंधित करें",
+  "You are adding more files to existing Knowledge Base": "आप मौजूदा नॉलेज बेस में अधिक फ़ाइलें जोड़ रहे हैं",
+  "Selected File(s)": "चयनित फ़ाइल(ें)",
+  "Add Files": "फ़ाइलें जोड़ें"
 }

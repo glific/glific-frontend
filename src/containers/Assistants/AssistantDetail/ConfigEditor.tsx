@@ -84,6 +84,7 @@ export const ConfigEditor = ({
     enableReinitialize: false,
     onSubmit: (values) => {
       const payload: Record<string, any> = {
+        name: assistantName,
         instructions: values.instructions,
         model: values.model?.label,
         temperature: values.temperature,
@@ -145,7 +146,8 @@ export const ConfigEditor = ({
   useEffect(() => {
     if (!version) return;
     const modelValue = version.model ? { id: version.model, label: version.model } : modelOptions[0];
-    const settings = version.settings ?? {};
+    const rawSettings = version.settings ?? {};
+    const settings = typeof rawSettings === 'string' ? JSON.parse(rawSettings) : rawSettings;
 
     formik.resetForm({
       values: {
@@ -350,17 +352,6 @@ export const ConfigEditor = ({
           </div>
         )}
 
-        {createMode && (
-          <div className={styles.CreateActions}>
-            <Button variant="outlined" onClick={onCancel}>
-              {t('Cancel')}
-            </Button>
-            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
-              {t('Save')}
-            </Button>
-          </div>
-        )}
-
         {/* Form */}
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="configEditorForm">
           <div className={styles.FormFields}>
@@ -379,6 +370,17 @@ export const ConfigEditor = ({
             )}
           </div>
         </form>
+
+        {createMode && (
+          <div className={styles.CreateActions}>
+            <Button variant="outlined" onClick={onCancel}>
+              {t('Cancel')}
+            </Button>
+            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
+              {t('Save')}
+            </Button>
+          </div>
+        )}
 
         {instructionsDialog}
       </div>

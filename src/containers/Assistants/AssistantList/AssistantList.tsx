@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 
-import { FILTER_ASSISTANTS, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
+import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { List } from 'containers/List/List';
 import { assistantsInfo } from 'common/HelpData';
@@ -57,10 +57,34 @@ export const AssistantList = () => {
     activeConfigVersionId: string | null;
   } | null>(null);
 
+  const client = useApolloClient();
   const [cloneAssistant, { loading: cloning }] = useMutation(CLONE_ASSISTANT);
 
+  const [cloningAssistantId, setCloningAssistantId] = useState<string | null>(null);
+
+  const { data: pollingData, stopPolling } = useQuery(GET_ASSISTANT, {
+    variables: { assistantId: cloningAssistantId },
+    skip: !cloningAssistantId,
+    pollInterval: 5000,
+    fetchPolicy: 'network-only',
+  });
+
+  useEffect(() => {
+    const cloneStatus = pollingData?.assistant?.assistant?.cloneStatus;
+    if (cloneStatus === 'completed') {
+      stopPolling();
+      setCloningAssistantId(null);
+      setNotification(t('Assistant cloned successfully'));
+      client.refetchQueries({ include: [FILTER_ASSISTANTS] });
+    } else if (cloneStatus === 'failed') {
+      stopPolling();
+      setCloningAssistantId(null);
+      setNotification('Assistant clone failed', 'warning');
+    }
+  }, [pollingData]);
+
   const handleEdit = (id: string) => {
-    navigate(`/assistant-new/${id}`);
+    navigate(`/assistants/${id}`);
   };
 
   const handleCloneClick = (_id: string, item: any) => {
@@ -75,10 +99,12 @@ export const AssistantList = () => {
   const handleCloneConfirm = async () => {
     if (!selectedAssistant) return;
 
-    const variables: Record<string, any> = { cloneAssistantId: selectedAssistant.id };
-    variables.versionId = selectedAssistant.activeConfigVersionId;
-
+    const currentAssistant = { ...selectedAssistant };
     setCloneDialogOpen(false);
+    setSelectedAssistant(null);
+
+    const variables: Record<string, any> = { cloneAssistantId: currentAssistant.id };
+    variables.versionId = currentAssistant.activeConfigVersionId;
 
     try {
       const response = await cloneAssistant({ variables });
@@ -88,10 +114,9 @@ export const AssistantList = () => {
       }
       const message = response.data?.cloneAssistant?.message || t('Assistant clone initiated');
       setNotification(message);
+      setCloningAssistantId(currentAssistant.id);
     } catch (error: unknown) {
       setErrorMessage(error);
-    } finally {
-      setSelectedAssistant(null);
     }
   };
 
@@ -145,7 +170,7 @@ export const AssistantList = () => {
         button={{
           show: true,
           label: t('Create New Assistant'),
-          action: () => navigate('/assistant-new/add'),
+          action: () => navigate('/assistants/add'),
         }}
         editSupport={false}
       />
@@ -165,7 +190,8 @@ export const AssistantList = () => {
           disableOk={cloning}
         >
           <div>
-            {t('This will create a copy of the current live version of')} <strong>{selectedAssistant.name}</strong>. {t('Do you want to continue?')}
+            {t('This will create a copy of the current live version of')} <strong>{selectedAssistant.name}</strong>.{' '}
+            {t('Do you want to continue?')}
           </div>
         </DialogBox>
       )}
