@@ -537,7 +537,7 @@ export const KnowledgeBaseOptions = ({
                       <input
                         data-testid="uploadFile"
                         type="file"
-                        accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
+                        accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.txt"
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
                         multiple
