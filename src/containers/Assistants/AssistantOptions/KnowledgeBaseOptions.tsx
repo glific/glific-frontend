@@ -618,7 +618,12 @@ export const KnowledgeBaseOptions = ({
 
                 <div className={styles.InfoSection}>
                   <p className={styles.InfoText}>
-                    Information in the attached files will be available to this assistant.<br/><br/> Allowed file formats:<br/>.csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt
+                    {t('Information in the attached files will be available to this assistant.')}
+                    <br />
+                    <br />
+                    <b>{t('Allowed file formats:')}</b>
+                    <br />
+                    {t('.csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt')}
                   </p>
                   <p className={styles.FileLimitText}>
                     <strong>Individual File Limit: {MAX_FILE_SIZE_MB}MB</strong>

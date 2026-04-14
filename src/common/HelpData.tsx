@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+
 export interface HelpDataProps {
   heading: any;
   link?: string;
@@ -102,8 +104,9 @@ export const blockedContactsInfo: HelpDataProps = {
 };
 
 export const assistantsInfo: HelpDataProps = {
-  heading:
-    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.',
+  heading: t(
+    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.'
+  ),
 };
 
 export const templateStatusInfo: HelpDataProps = {
