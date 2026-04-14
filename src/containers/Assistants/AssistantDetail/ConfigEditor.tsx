@@ -21,7 +21,7 @@ import type { AssistantVersion } from '../VersionPanel/VersionPanel';
 
 import styles from './ConfigEditor.module.css';
 
-const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
+const modelOptions: Array<{ id: string; label: string }> = ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4o', 'gpt-4o-mini'].map(
   (model) => ({ id: model, label: model })
 );
 
@@ -188,6 +188,7 @@ export const ConfigEditor = ({
   };
 
   const { values: v, initialValues: iv } = formik;
+  const isCreateRequiredFieldsMissing = createMode && (!v.name?.trim() || !v.instructions?.trim());
   const hasUnsavedChanges =
     v.instructions?.trim() !== (iv.instructions || '').trim() ||
     v.model?.label !== iv.model?.label ||
@@ -371,7 +372,13 @@ export const ConfigEditor = ({
             <Button variant="outlined" onClick={onCancel}>
               {t('Cancel')}
             </Button>
-            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
+            <Button
+              variant="contained"
+              onClick={formik.submitForm}
+              loading={creating}
+              disabled={creating || isCreateRequiredFieldsMissing}
+              data-testid="createAssistantSaveButton"
+            >
               {t('Save')}
             </Button>
           </div>

@@ -180,7 +180,7 @@ export const AssistantList = () => {
         title={t('AI Assistant')}
         listItem="assistants"
         listItemName="assistant"
-        pageLink="assistants-new"
+        pageLink="assistants"
         dialogMessage={t("You won't be able to use this assistant.")}
         {...queries}
         {...columnAttributes}
