@@ -6,6 +6,8 @@ import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
 import {
   ASSISTANT_DETAIL_MOCKS,
+  ASSISTANT_DETAIL_RENAME_MOCKS,
+  ASSISTANT_DETAIL_RENAME_ERROR_MOCKS,
   ASSISTANT_DETAIL_SAVE_MOCKS,
   ASSISTANT_DETAIL_SET_LIVE_MOCKS,
   assistantNotFoundMock,
@@ -20,10 +22,10 @@ const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId = '1') =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={[`/assistant-new/${assistantId}`]}>
+      <MemoryRouter initialEntries={[`/assistants/${assistantId}`]}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants-new" element={<div data-testid="assistants-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -32,10 +34,10 @@ const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId 
 const renderCreateMode = (mocks: any = []) =>
   render(
     <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={['/assistant-new/add']}>
+      <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants-new" element={<div data-testid="assistants-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -165,7 +167,7 @@ test('create mode shows Cancel and Save buttons', async () => {
   });
 });
 
-test('cancel button in create mode navigates to /assistants-new', async () => {
+test('cancel button in create mode navigates to /assistants', async () => {
   renderCreateMode();
 
   await waitFor(() => {
@@ -283,6 +285,32 @@ test('Leave button in unsaved changes modal closes the modal', async () => {
   });
 });
 
+test('Leave button switches to the pending version', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-405db438 / Version 1')).toBeInTheDocument();
+  });
+
+  // Modify form to trigger unsaved changes
+  const textareas = screen.getAllByRole('textbox');
+  fireEvent.change(textareas[0], { target: { value: 'Changed' } });
+
+  // Click version 2 card — should open modal
+  fireEvent.click(screen.getAllByTestId('versionCard')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('version-switch-leave')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('version-switch-leave'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('version-switch-leave')).not.toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 2')).toBeInTheDocument();
+  });
+});
+
 test('save button in edit mode triggers notification on success', async () => {
   renderAssistantDetail(ASSISTANT_DETAIL_SAVE_MOCKS);
 
@@ -317,11 +345,10 @@ test('shows assistant not found when query returns no data', async () => {
 
 test('create mode save navigates to the new assistant page', async () => {
   render(
-    <MockedProvider
-      mocks={[createAssistantSuccessMock, getAssistant('99')]}>
-      <MemoryRouter initialEntries={['/assistant-new/add']}>
+    <MockedProvider mocks={[createAssistantSuccessMock, getAssistant('99')]}>
+      <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
-          <Route path="/assistant-new/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -344,6 +371,23 @@ test('create mode save navigates to the new assistant page', async () => {
   });
 });
 
+test('redirects to /assistants when no assistantId param is present', async () => {
+  render(
+    <MockedProvider mocks={[]}>
+      <MemoryRouter initialEntries={['/assistants/detail']}>
+        <Routes>
+          <Route path="/assistants/detail" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="assistants-page" />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByTestId('assistants-page')).toBeInTheDocument();
+  });
+});
+
 test('pressing Enter on copy assistant ID button calls copyToClipboard', async () => {
   const copySpy = vi.spyOn(Utils, 'copyToClipboard').mockImplementation(() => {});
   renderAssistantDetail();
@@ -354,4 +398,116 @@ test('pressing Enter on copy assistant ID button calls copyToClipboard', async (
 
   fireEvent.keyDown(screen.getByTestId('copyAssistantId'), { key: 'Enter' });
   expect(copySpy).toHaveBeenCalledWith('asst_JhYmNWzpCVBZY2vTuohvmqjs');
+});
+
+// ── Inline name editing ───────────────────────────────────────────────────────
+
+test('edit name button is visible next to the assistant name', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+    expect(screen.getByTestId('headerTitle')).toHaveTextContent('Assistant-405db438');
+  });
+});
+
+test('clicking edit name button shows input pre-filled with current name', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('nameInput')).toBeInTheDocument();
+    expect(screen.getByTestId('nameInput')).toHaveValue('Assistant-405db438');
+  });
+});
+
+test('Cancel button closes the name input without saving', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Changed Name' } });
+  fireEvent.click(screen.getByTestId('cancelNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+    expect(screen.getByTestId('headerTitle')).toHaveTextContent('Assistant-405db438');
+  });
+});
+
+test('Save button calls UPDATE_ASSISTANT and shows success notification', async () => {
+  renderAssistantDetail(ASSISTANT_DETAIL_RENAME_MOCKS);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'New Name' } });
+
+  notificationSpy.mockClear();
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+  });
+});
+
+test('saving unchanged name closes input without calling API', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  // name is unchanged — same as original
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+  });
+});
+
+test('saving empty name closes input without calling API', async () => {
+  renderAssistantDetail();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: '   ' } });
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('nameInput')).not.toBeInTheDocument();
+  });
+});
+
+test('API error during rename shows an errorMessage', async () => {
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+  renderAssistantDetail(ASSISTANT_DETAIL_RENAME_ERROR_MOCKS);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('editNameButton'));
+  fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'New Name' } });
+  fireEvent.click(screen.getByTestId('saveNameButton'));
+
+  await waitFor(() => {
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
+  errorSpy.mockRestore();
 });
