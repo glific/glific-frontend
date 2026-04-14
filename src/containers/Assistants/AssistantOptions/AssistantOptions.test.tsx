@@ -255,7 +255,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions
           {...baseProps}
           formikValues={{
@@ -330,7 +330,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions {...baseProps} />
       </MockedProvider>
     );
@@ -465,7 +465,9 @@ describe('AssistantOptions upload queue behavior', () => {
         .closest('[data-testid="fileItem"]')!
         .querySelector('[data-testid="deleteFile"]')!
     );
-    expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
+    });
   });
 
   test('shows warning notification on save when files have failed uploads', async () => {
@@ -593,7 +595,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions {...baseProps} />
       </MockedProvider>
     );
@@ -1331,7 +1333,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions {...baseProps} />
       </MockedProvider>
     );
