@@ -40,10 +40,10 @@ jobs:
 
     steps:
       - name: Setup frontend
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Use latest Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
 
       - name: Setup elixir
         uses: erlef/setup-beam@v1
@@ -103,7 +103,19 @@ jobs:
             API_URL=$(curl -s ${NGROK_API_URL} | jq -r '.tunnels[] | select(.proto=="http") | .public_url')
           fi
 
-          echo "GLIFIC_API_HOST_OVERRIDE=${API_URL}" >> $GITHUB_ENV
+          if [ -z "$API_URL" ]; then
+            echo "ERROR: Failed to resolve ngrok API_URL from ${NGROK_API_URL}" >&2
+            exit 1
+          fi
+
+          if ! printf '%s' "$API_URL" | grep -Eq '^https?://[^[:space:]]+$'; then
+            echo "ERROR: Resolved API_URL is not a valid URL: ${API_URL}" >&2
+            exit 1
+          fi
+
+          if [ -n "$API_URL" ]; then
+            echo "GLIFIC_API_HOST_OVERRIDE=${API_URL}" >> $GITHUB_ENV
+          fi
 
       # backend setup
       - name: Setup backend (clone and configure)
