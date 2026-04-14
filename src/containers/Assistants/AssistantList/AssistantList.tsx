@@ -11,10 +11,11 @@ import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 
-import { assistantsInfo } from 'common/HelpData';
+import { assistantListInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Heading } from 'components/UI/Heading/Heading';
 import { List } from 'containers/List/List';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
@@ -175,9 +176,19 @@ export const AssistantList = () => {
 
   return (
     <>
+      <Heading
+        formTitle={t('AI Assistants')}
+        helpData={assistantListInfo}
+        headerHelp={t('AI that answers based on your context')}
+        button={{
+          show: true,
+          label: t('Create New Assistant'),
+          action: () => navigate('/assistants/add'),
+        }}
+      />
       <List
-        helpData={assistantsInfo}
-        title={t('AI Assistant')}
+        title={t('AI Assistants')}
+        showHeader={false}
         listItem="assistants"
         listItemName="assistant"
         pageLink="assistants"
@@ -186,11 +197,6 @@ export const AssistantList = () => {
         {...columnAttributes}
         searchParameter={['name_or_assistant_id']}
         additionalAction={additionalAction}
-        button={{
-          show: true,
-          label: t('Create New Assistant'),
-          action: () => navigate('/assistants/add'),
-        }}
         editSupport={false}
         deleteModifier={{ variables: (id: string) => ({ deleteAssistantId: id }) }}
         sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
