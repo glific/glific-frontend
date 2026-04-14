@@ -32,11 +32,6 @@ interface VersionPanelProps {
   refetchTrigger?: number;
 }
 
-const statusMap: Record<string, { label: string; styleKey: string }> = {
-  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
-  failed: { label: 'Failed', styleKey: 'Failed' },
-  ready: { label: 'Ready', styleKey: 'Ready' },
-};
 
 export const VersionPanel = ({
   assistantId,
@@ -98,12 +93,12 @@ export const VersionPanel = ({
                   {version.isLive && (
                     <Chip data-testid="liveBadge" label={t('LIVE')} size="small" className={styles.LiveBadge} />
                   )}
-                  {version.status && statusMap[version.status] && (
+                  {version.status === 'in_progress' && (
                     <Chip
                       data-testid="versionStatus"
-                      label={statusMap[version.status].label}
+                      label="In Progress"
                       size="small"
-                      className={`${styles.StatusChip} ${styles[statusMap[version.status].styleKey]}`}
+                      className={`${styles.StatusChip} ${styles.InProgress}`}
                     />
                   )}
                 </div>

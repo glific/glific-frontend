@@ -19,13 +19,11 @@ export const Assistants = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const isNewRoute = location.pathname.startsWith('/assistants-new');
-  const baseRoute = isNewRoute ? '/assistants-new' : '/assistants';
   const isAddRoute = location.pathname.endsWith('/add');
   const showForm = isAddRoute || params.assistantId;
 
   const handleCreateAssistant = () => {
-    navigate(`${baseRoute}/add`);
+    navigate('/assistants/add');
   };
 
   return (
@@ -42,7 +40,12 @@ export const Assistants = () => {
       />
       <div className={styles.MainContainer}>
         <div className={styles.LeftContainer}>
-          <List getItemsQuery={GET_ASSISTANTS} listItemName="assistants" refreshList={updateList} baseRoute={baseRoute} />
+          <List
+            getItemsQuery={GET_ASSISTANTS}
+            listItemName="assistants"
+            refreshList={updateList}
+            baseRoute="/assistants"
+          />
         </div>
         <div className={styles.RightContainer}>
           {showForm ? (

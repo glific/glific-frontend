@@ -279,7 +279,7 @@ const updateAssistant = {
   },
 };
 
-const removeAssistant = {
+export const removeAssistant = {
   request: {
     query: DELETE_ASSISTANT,
     variables: {
@@ -427,6 +427,43 @@ const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumbe
   },
 });
 
+const updateAssistantName = (id: string, name: string) => ({
+  request: {
+    query: UPDATE_ASSISTANT,
+    variables: { updateAssistantId: id, input: { name } },
+  },
+  result: { data: { updateAssistant: { errors: null } } },
+});
+
+const updateAssistantNameError = (id: string, name: string) => ({
+  request: {
+    query: UPDATE_ASSISTANT,
+    variables: { updateAssistantId: id, input: { name } },
+  },
+  result: {
+    data: { updateAssistant: { errors: [{ key: 'name', message: 'Name already taken' }] } },
+  },
+});
+
+export const ASSISTANT_DETAIL_RENAME_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  updateAssistantName('1', 'New Name'),
+  getAssistant('1'), // refetch after rename
+];
+
+export const ASSISTANT_DETAIL_RENAME_ERROR_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  updateAssistantNameError('1', 'New Name'),
+];
+
 export const ASSISTANT_DETAIL_MOCKS = [
   getAssistant('1'),
   getAssistant('1'),
@@ -457,6 +494,32 @@ export const ASSISTANT_DETAIL_SAVE_MOCKS = [
       variables: {
         updateAssistantId: '1',
         input: {
+          name: 'Assistant-405db438',
+          instructions: 'Updated instructions',
+          model: 'gpt-4o',
+          temperature: 1,
+          description: 'Initial version',
+          knowledgeBaseVersionId: 'llm-vs-1',
+        },
+      },
+    },
+    result: { data: { updateAssistant: { errors: null } } },
+  },
+];
+
+export const CONFIG_EDITOR_SAVE_MOCKS = [
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  getAssistantVersions('1'),
+  {
+    request: {
+      query: UPDATE_ASSISTANT,
+      variables: {
+        updateAssistantId: '1',
+        input: {
+          name: 'Test Assistant',
           instructions: 'Updated instructions',
           model: 'gpt-4o',
           temperature: 1,
@@ -539,6 +602,7 @@ export const updateAssistantErrorMock = {
     variables: {
       updateAssistantId: '1',
       input: {
+        name: 'Test Assistant',
         instructions: 'Updated instructions',
         model: 'gpt-4o',
         temperature: 1,
@@ -559,7 +623,7 @@ export const updateAssistantErrorMock = {
 export const filterAssistantsMock = {
   request: {
     query: FILTER_ASSISTANTS,
-    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'name' } },
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' } },
   },
   result: {
     data: {
@@ -670,9 +734,58 @@ const cloneAssistantErrorMock = (id: string, versionId?: string) => ({
   },
 });
 
+export const filterAssistantsAfterCloneMock = {
+  request: {
+    query: FILTER_ASSISTANTS,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' } },
+  },
+  result: {
+    data: {
+      assistants: [
+        {
+          id: '1',
+          name: 'Assistant-1',
+          assistantDisplayId: 'asst_abc123',
+          liveVersionNumber: 3,
+          activeConfigVersionId: 'v1',
+          updatedAt: '2024-10-16T15:58:26Z',
+          insertedAt: '2024-10-16T15:58:26Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+        {
+          id: '2',
+          name: 'Assistant-2',
+          assistantDisplayId: 'asst_def456',
+          liveVersionNumber: null,
+          activeConfigVersionId: null,
+          updatedAt: '2024-10-17T10:00:00Z',
+          insertedAt: '2024-10-17T10:00:00Z',
+          status: 'active',
+          cloneStatus: 'none',
+        },
+        {
+          id: '3',
+          name: 'Copy of Assistant-1',
+          assistantDisplayId: 'asst_xyz789',
+          liveVersionNumber: null,
+          activeConfigVersionId: null,
+          updatedAt: '2024-10-18T10:00:00Z',
+          insertedAt: '2024-10-18T10:00:00Z',
+          status: 'active',
+          cloneStatus: 'completed',
+        },
+      ],
+    },
+  },
+};
+
 export const cloneAssistantFromListMock = cloneAssistantMock('1', 'v1');
 export const cloneLegacyAssistantFromListMock = cloneAssistantMock('2');
 export const cloneAssistantFromListErrorMock = cloneAssistantErrorMock('1', 'v1');
+export const clonePollingInProgressMock = getAssistant('1', { cloneStatus: 'in_progress' });
+export const clonePollingCompletedMock = getAssistant('1', { cloneStatus: 'completed' });
+export const clonePollingFailedMock = getAssistant('1', { cloneStatus: 'failed' });
 export const cloneAssistantNullMessageMock = {
   request: {
     query: CLONE_ASSISTANT,

@@ -16,7 +16,7 @@ import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant
 
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
-import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
+import { KnowledgeBaseOptions } from '../AssistantOptions/KnowledgeBaseOptions';
 import type { AssistantVersion } from '../VersionPanel/VersionPanel';
 
 import styles from './ConfigEditor.module.css';
@@ -84,6 +84,7 @@ export const ConfigEditor = ({
     enableReinitialize: false,
     onSubmit: (values) => {
       const payload: Record<string, any> = {
+        name: assistantName,
         instructions: values.instructions,
         model: values.model?.label,
         temperature: values.temperature,
@@ -145,7 +146,8 @@ export const ConfigEditor = ({
   useEffect(() => {
     if (!version) return;
     const modelValue = version.model ? { id: version.model, label: version.model } : modelOptions[0];
-    const settings = version.settings ?? {};
+    const rawSettings = version.settings ?? {};
+    const settings = typeof rawSettings === 'string' ? JSON.parse(rawSettings) : rawSettings;
 
     formik.resetForm({
       values: {
@@ -247,7 +249,7 @@ export const ConfigEditor = ({
       disabled: newVersionInProgress,
     },
     {
-      component: AssistantOptions,
+      component: KnowledgeBaseOptions,
       name: 'assistantOptions',
       formikValues: formik.values,
       setFieldValue: formik.setFieldValue,
@@ -340,24 +342,13 @@ export const ConfigEditor = ({
                     data-testid="saveVersionButton"
                     onClick={formik.submitForm}
                     loading={savingChanges || creating}
-                    disabled={newVersionInProgress || savingChanges || creating}
+                    disabled={newVersionInProgress || savingChanges || creating || !hasUnsavedChanges}
                   >
                     {t('Save')}
                   </Button>
                 </span>
               </Tooltip>
             </div>
-          </div>
-        )}
-
-        {createMode && (
-          <div className={styles.CreateActions}>
-            <Button variant="outlined" onClick={onCancel}>
-              {t('Cancel')}
-            </Button>
-            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
-              {t('Save')}
-            </Button>
           </div>
         )}
 
@@ -372,13 +363,19 @@ export const ConfigEditor = ({
                 <Field key={field.name} {...field} />
               </div>
             ))}
-            {!createMode && (
-              <span className={styles.NoEvals} data-testid="noEvalsLink">
-                {t('No evals run. Start New Eval >')}
-              </span>
-            )}
           </div>
         </form>
+
+        {createMode && (
+          <div className={styles.CreateActions}>
+            <Button variant="outlined" onClick={onCancel}>
+              {t('Cancel')}
+            </Button>
+            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
+              {t('Save')}
+            </Button>
+          </div>
+        )}
 
         {instructionsDialog}
       </div>
