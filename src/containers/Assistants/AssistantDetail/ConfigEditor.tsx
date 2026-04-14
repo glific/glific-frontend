@@ -50,11 +50,11 @@ const initialValues = {
 
 const EditFormSchema = Yup.object().shape({
   model: Yup.object().nullable().required('Model is required'),
-  instructions: Yup.string().required('Instructions are required'),
+  instructions: Yup.string().trim().required('Instructions are required'),
 });
 
 const CreateFormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().trim().required('Name is required'),
   model: Yup.object().nullable().required('Model is required'),
   instructions: Yup.string().required('Instructions are required'),
 });

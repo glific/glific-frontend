@@ -272,10 +272,10 @@ describe('ConfigEditor — settings parsing', () => {
     expect(screen.getByTestId('sliderDisplay')).toHaveValue(0.7);
   });
 
-  it('falls back to default model (gpt-4o) when version.model is null', () => {
+  it('falls back to default model (gpt-4.1) when version.model is null', () => {
     renderEdit({ version: { ...mockVersion, model: null } });
 
-    expect(screen.getByDisplayValue('gpt-4o')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('gpt-4.1')).toBeInTheDocument();
   });
 
   it('falls back to temperature 0.1 when settings is null', () => {
