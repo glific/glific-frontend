@@ -530,7 +530,7 @@ export const AssistantOptions = ({
                 <input
                   data-testid="uploadFile"
                   type="file"
-                  accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.pptx,.txt"
+                  accept=".csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt"
                   onChange={handleFileChange}
                   style={{ display: 'none' }}
                   multiple
@@ -602,7 +602,7 @@ export const AssistantOptions = ({
           )}
           <div className={styles.UploadInfo}>
             <span>Individual file size limit: 20MB</span>
-            <span>Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .pptx, .txt</span>
+            <span>{t('Allowed file formats: .csv, .doc, .docx, .htm, .html, .md, .markdown, .pdf, .txt')}</span>
             <span>Each file takes approx 15 secs to upload.</span>
           </div>
         </div>

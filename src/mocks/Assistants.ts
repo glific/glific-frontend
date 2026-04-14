@@ -559,7 +559,7 @@ export const createAssistantSuccessMock = {
       input: {
         name: 'My Assistant',
         instructions: 'Test instructions',
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         temperature: 0.1,
       },
     },
@@ -581,7 +581,7 @@ export const createAssistantErrorMock = {
       input: {
         name: 'My Assistant',
         instructions: 'Test instructions',
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         temperature: 0.1,
       },
     },
@@ -808,7 +808,7 @@ export const createAssistantConfigMock = {
       input: {
         name: 'My Assistant',
         instructions: 'Test instructions',
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         temperature: 0.1,
       },
     },
