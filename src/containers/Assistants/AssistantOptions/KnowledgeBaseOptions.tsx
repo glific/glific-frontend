@@ -537,7 +537,7 @@ export const KnowledgeBaseOptions = ({
                       <input
                         data-testid="uploadFile"
                         type="file"
-                        accept=".csv,.doc,.docx,.html,.java,.md,.pdf,.txt"
+                        accept=".csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt"
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
                         multiple
@@ -618,15 +618,12 @@ export const KnowledgeBaseOptions = ({
 
                 <div className={styles.InfoSection}>
                   <p className={styles.InfoText}>
-                    Information in the attached files will be available to this assistant.{' '}
-                    <a
-                      href="https://platform.openai.com/docs/assistants/tools/file-search/supported-files"
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.InfoLink}
-                    >
-                      Allowed file formats
-                    </a>
+                    {t('Information in the attached files will be available to this assistant.')}
+                    <br />
+                    <br />
+                    <b>{t('Allowed file formats:')}</b>
+                    <br />
+                    {t('.csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt')}
                   </p>
                   <p className={styles.FileLimitText}>
                     <strong>Individual File Limit: {MAX_FILE_SIZE_MB}MB</strong>

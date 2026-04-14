@@ -565,7 +565,7 @@
   "Temperature": "Temperature",
   "Upload File": "Upload File",
   "Manage Files": "Manage Files",
-  "Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .txt": "Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .txt",
+  "Allowed file formats: .csv, .doc, .docx, .htm, .html, .md, .markdown, .pdf, .txt": "Allowed file formats: .csv, .doc, .docx, .htm, .html, .md, .markdown, .pdf, .txt",
   "Manage Knowledge Base": "Manage Knowledge Base",
   "You are adding more files to existing Knowledge Base": "You are adding more files to existing Knowledge Base",
   "Selected File(s)": "Selected File(s)",
@@ -594,10 +594,6 @@
   "Assistant not found": "Assistant not found",
   "Unsaved changes": "Unsaved changes",
   "Knowledge Base": "Knowledge Base",
-  "Manage Knowledge Base": "Manage Knowledge Base",
-  "You are adding more files to existing Knowledge Base": "You are adding more files to existing Knowledge Base",
-  "Selected File(s)": "Selected File(s)",
-  "Add Files": "Add Files",
   "Knowledge Base upload in progress...": "Knowledge Base upload in progress...",
   "Notes (Optional)": "Notes (Optional)",
   "Add notes on changes made to this assistant": "Add notes on changes made to this assistant",
@@ -620,5 +616,8 @@
   "Back to assistants": "Back to assistants",
   "You have unsaved changes. Are you sure you want to leave?": "You have unsaved changes. Are you sure you want to leave?",
   "Stay": "Stay",
-  "Leave": "Leave"
+  "Leave": "Leave",
+  "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.": "'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.",
+  "Allowed file formats:": "Allowed file formats:",
+  ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt": ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt"
 }
