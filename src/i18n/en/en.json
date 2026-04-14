@@ -565,6 +565,7 @@
   "Temperature": "Temperature",
   "Upload File": "Upload File",
   "Manage Files": "Manage Files",
+  "Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .txt": "Allowed file formats: .csv, .doc, .docx, .html, .java, .md, .pdf, .txt",
   "Manage Knowledge Base": "Manage Knowledge Base",
   "You are adding more files to existing Knowledge Base": "You are adding more files to existing Knowledge Base",
   "Selected File(s)": "Selected File(s)",
