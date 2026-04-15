@@ -10,10 +10,6 @@ on:
     branches: ['**']
   workflow_dispatch:
 
-concurrency:
-  group: e2e-tests
-  cancel-in-progress: true
-
 jobs:
   cypress:
     runs-on: ubuntu-latest
@@ -36,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1]
+        shard: [0, 1, 2]
 
     steps:
       - name: Setup frontend
@@ -196,11 +192,11 @@ jobs:
           resource: https-get://glific.test:4001
           timeout: 180000
 
-      - name: Cypress run (shard ${{ matrix.shard }}/2)
+      - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
           yarn run cypress run  --config excludeSpecPattern=cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
         env:
-          SPLIT: 2
+          SPLIT: 3
           SPLIT_INDEX: ${{ matrix.shard }}
 
       - name: Upload Phoenix server & ngrok logs (shard ${{ matrix.shard }})

@@ -587,6 +587,7 @@
   "Are you sure you want to update the phone number?": "Are you sure you want to update the phone number?",
   "It will not be possible to update the number later. The new number will be {{phone}}.": "It will not be possible to update the number later. The new number will be {{phone}}.",
   "Only lowercase alphanumeric characters and underscores are allowed.": "Only lowercase alphanumeric characters and underscores are allowed.",
+  "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.": "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.",
   "Share": "Share",
   "Draft": "Draft",
   "Published": "Published",
@@ -617,7 +618,8 @@
   "You have unsaved changes. Are you sure you want to leave?": "You have unsaved changes. Are you sure you want to leave?",
   "Stay": "Stay",
   "Leave": "Leave",
-  "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.": "'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.",
+  "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.": "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.",
   "Allowed file formats:": "Allowed file formats:",
-  ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt": ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt"
+  ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt": ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt",
+  "AI that answers based on your context": "AI that answers based on your context"
 }

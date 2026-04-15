@@ -11,7 +11,7 @@ import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 
-import { assistantsInfo } from 'common/HelpData';
+import { assistantListInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -176,8 +176,8 @@ export const AssistantList = () => {
   return (
     <>
       <List
-        helpData={assistantsInfo}
-        title={t('AI Assistant')}
+        helpData={assistantListInfo}
+        title={t('AI Assistants')}
         listItem="assistants"
         listItemName="assistant"
         pageLink="assistants"

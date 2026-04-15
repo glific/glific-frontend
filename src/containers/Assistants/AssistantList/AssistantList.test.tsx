@@ -38,7 +38,7 @@ test('renders AI Assistant heading', async () => {
   renderAssistantList();
 
   await waitFor(() => {
-    expect(screen.getByText('AI Assistant')).toBeInTheDocument();
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
   });
 });
 
