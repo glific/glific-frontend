@@ -12,7 +12,7 @@ import { copyToClipboard } from 'common/utils';
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
-import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { UPDATE_ASSISTANT_ATTRS } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT } from 'graphql/queries/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
@@ -39,7 +39,7 @@ export const AssistantDetail = () => {
   const [nameValue, setNameValue] = useState('');
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
+  const [updateAssistantAttrs, { loading: savingName }] = useMutation(UPDATE_ASSISTANT_ATTRS);
 
   const isCreateMode = assistantId === 'add';
 
@@ -89,12 +89,12 @@ export const AssistantDetail = () => {
       return;
     }
     try {
-      const response = await updateAssistant({
-        variables: { updateAssistantId: assistantId, input: { name: trimmed } },
+      const response = await updateAssistantAttrs({
+        variables: { id: assistantId, input: { name: trimmed } },
         refetchQueries: [{ query: GET_ASSISTANT, variables: { assistantId } }],
       });
-      if (response.data?.updateAssistant?.errors?.length > 0) {
-        setErrorMessage(response.data.updateAssistant.errors[0]);
+      if (response.data?.updateAssistantAttrs?.errors?.length > 0) {
+        setErrorMessage(response.data.updateAssistantAttrs.errors[0]);
         return;
       }
       setIsEditingName(false);

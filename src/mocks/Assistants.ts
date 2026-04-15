@@ -5,6 +5,7 @@ import {
   DELETE_ASSISTANT,
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
+  UPDATE_ASSISTANT_ATTRS,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import {
@@ -449,19 +450,19 @@ const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumbe
 
 const updateAssistantName = (id: string, name: string) => ({
   request: {
-    query: UPDATE_ASSISTANT,
-    variables: { updateAssistantId: id, input: { name } },
+    query: UPDATE_ASSISTANT_ATTRS,
+    variables: { id, input: { name } },
   },
-  result: { data: { updateAssistant: { errors: null } } },
+  result: { data: { updateAssistantAttrs: { assistant: { id, name }, errors: null } } },
 });
 
 const updateAssistantNameError = (id: string, name: string) => ({
   request: {
-    query: UPDATE_ASSISTANT,
-    variables: { updateAssistantId: id, input: { name } },
+    query: UPDATE_ASSISTANT_ATTRS,
+    variables: { id, input: { name } },
   },
   result: {
-    data: { updateAssistant: { errors: [{ key: 'name', message: 'Name already taken' }] } },
+    data: { updateAssistantAttrs: { assistant: null, errors: [{ key: 'name', message: 'Name already taken' }] } },
   },
 });
 

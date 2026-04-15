@@ -26,6 +26,21 @@ export const UPDATE_ASSISTANT = gql`
   }
 `;
 
+export const UPDATE_ASSISTANT_ATTRS = gql`
+  mutation UpdateAssistantAttrs($id: ID!, $input: AssistantAttrsInput!) {
+    updateAssistantAttrs(id: $id, input: $input) {
+      assistant {
+        id
+        name
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
 export const UPLOAD_FILE_TO_KAAPI = gql`
   mutation UploadFilesearchFile($media: Upload!) {
     uploadFilesearchFile(media: $media) {
