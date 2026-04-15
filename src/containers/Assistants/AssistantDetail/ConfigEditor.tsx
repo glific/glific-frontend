@@ -29,7 +29,6 @@ interface ConfigEditorProps {
   assistantId: string;
   assistantName: string;
   version?: AssistantVersion;
-  vectorStore: any;
   newVersionInProgress: boolean;
   onSaved: (newId?: string) => void;
   onUnsavedChange?: (hasChanges: boolean) => void;
@@ -63,13 +62,13 @@ export const ConfigEditor = ({
   assistantId,
   assistantName,
   version,
-  vectorStore,
   newVersionInProgress,
   onSaved,
   onUnsavedChange,
   onCancel,
   createMode = false,
 }: ConfigEditorProps) => {
+  const vectorStore = version?.vectorStore ?? null;
   const { t } = useTranslation();
   const [openInstructions, setOpenInstructions] = useState(false);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
@@ -78,8 +77,27 @@ export const ConfigEditor = ({
   const [createAssistant, { loading: creating }] = useMutation(CREATE_ASSISTANT);
   const [setLiveVersion, { loading: settingLive }] = useMutation(SET_LIVE_VERSION);
 
+  const computedInitialValues = version
+    ? {
+        name: '',
+        model: version.model ? { id: version.model, label: version.model } : (modelOptions[0] as any),
+        instructions: version.prompt ?? '',
+        temperature:
+          (typeof version.settings === 'string' ? JSON.parse(version.settings) : version.settings ?? {}).temperature ??
+          0.1,
+        knowledgeBaseVersionId: vectorStore?.knowledgeBaseVersionId ?? '',
+        knowledgeBaseName: vectorStore?.name ?? '',
+        versionDescription: version.description ?? '',
+        initialFiles:
+          vectorStore?.files?.map((file: any) => ({
+            fileId: file.id,
+            filename: file.name,
+          })) ?? [],
+      }
+    : initialValues;
+
   const formik = useFormik({
-    initialValues,
+    initialValues: computedInitialValues,
     validationSchema: createMode ? CreateFormSchema : EditFormSchema,
     enableReinitialize: false,
     onSubmit: (values) => {
@@ -141,32 +159,6 @@ export const ConfigEditor = ({
       }
     },
   });
-
-  // Populate form when version changes (edit mode only)
-  useEffect(() => {
-    if (!version) return;
-    const modelValue = version.model ? { id: version.model, label: version.model } : modelOptions[0];
-    const rawSettings = version.settings ?? {};
-    const settings = typeof rawSettings === 'string' ? JSON.parse(rawSettings) : rawSettings;
-
-    formik.resetForm({
-      values: {
-        name: '',
-        model: modelValue,
-        instructions: version.prompt ?? '',
-        temperature: settings.temperature ?? 0.1,
-        knowledgeBaseVersionId: vectorStore?.knowledgeBaseVersionId ?? '',
-        knowledgeBaseName: vectorStore?.name ?? '',
-        versionDescription: version.description ?? '',
-        initialFiles:
-          vectorStore?.files?.map((file: any) => ({
-            fileId: file.id,
-            filename: file.name,
-          })) ?? [],
-      },
-    });
-    setHasUnsavedFiles(false);
-  }, [version?.id]);
 
   const handleSetLive = () => {
     if (!version) return;
