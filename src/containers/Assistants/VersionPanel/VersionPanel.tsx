@@ -11,6 +11,16 @@ import styles from './VersionPanel.module.css';
 
 dayjs.extend(relativeTime);
 
+export interface AssistantVectorStore {
+  id: string;
+  vectorStoreId: string;
+  knowledgeBaseVersionId: string;
+  name: string;
+  legacy: boolean;
+  size: number;
+  files: Array<{ name: string; id: string; fileSize: number }>;
+}
+
 export interface AssistantVersion {
   id: string;
   versionNumber: number;
@@ -22,6 +32,7 @@ export interface AssistantVersion {
   description?: string;
   insertedAt: string;
   updatedAt: string;
+  vectorStore?: AssistantVectorStore | null;
 }
 
 interface VersionPanelProps {
