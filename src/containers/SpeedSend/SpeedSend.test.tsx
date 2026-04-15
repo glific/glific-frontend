@@ -151,30 +151,25 @@ describe('test creating a speed send', () => {
       expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
     });
 
-    // Set type and label via standard inputs before clicking Marathi so that
-    // Formik reliably has these values. The onLanguageChange handler fires a
-    // notification whenever values.type is set and (values.label || values.body)
-    // is truthy — regardless of whether validation errors exist — because the
-    // `if (errors)` check is always truthy for a plain object.
-    const autocompletes = screen.getAllByTestId('autocomplete-element');
-    autocompletes[0].focus();
-    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
-
-    fireEvent.click(screen.getByText('STICKER URL'), { key: 'Enter' });
-
-    fireEvent.change(inputs[0], { target: { value: 'Template' } });
-
     fireEvent.click(screen.getByText('Marathi'));
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
 
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('STICKER URL'), { key: 'Enter' });
+
     fireEvent.change(inputs[2], {
       target: {
         value: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
       },
     });
+
+    fireEvent.change(inputs[0], { target: { value: 'Template' } });
 
     fireEvent.click(screen.getByText('Marathi'));
 
