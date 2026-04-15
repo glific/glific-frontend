@@ -25,6 +25,11 @@ const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
 beforeEach(() => {
   vi.clearAllMocks();
+  Object.assign(navigator, {
+    clipboard: {
+      writeText: vi.fn().mockResolvedValue(undefined),
+    },
+  });
 });
 
 const assistantsComponent = (mocks: any = MOCKS) => (
