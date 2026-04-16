@@ -44,6 +44,11 @@ interface VersionPanelProps {
 }
 
 
+const statusConfig: Record<string, { label: string; styleKey: string }> = {
+  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
+  failed: { label: 'Failed', styleKey: 'Failed' },
+};
+
 export const VersionPanel = ({
   assistantId,
   selectedVersionId,
@@ -104,12 +109,12 @@ export const VersionPanel = ({
                   {version.isLive && (
                     <Chip data-testid="liveBadge" label={t('LIVE')} size="small" className={styles.LiveBadge} />
                   )}
-                  {version.status === 'in_progress' && (
+                  {statusConfig[version.status] && (
                     <Chip
                       data-testid="versionStatus"
-                      label="In Progress"
+                      label={t(statusConfig[version.status].label as any)}
                       size="small"
-                      className={`${styles.StatusChip} ${styles.InProgress}`}
+                      className={`${styles.StatusChip} ${styles[statusConfig[version.status].styleKey]}`}
                     />
                   )}
                 </div>
