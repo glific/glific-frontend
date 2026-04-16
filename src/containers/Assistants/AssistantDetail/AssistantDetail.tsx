@@ -192,7 +192,6 @@ export const AssistantDetail = () => {
           <ConfigEditor
             assistantId=""
             assistantName=""
-            vectorStore={null}
             newVersionInProgress={false}
             onSaved={handleSaved}
             onCancel={() => navigate('/assistants')}
@@ -218,7 +217,6 @@ export const AssistantDetail = () => {
                 assistantId={assistantId}
                 assistantName={assistantData.name}
                 version={selectedVersion}
-                vectorStore={assistantData.vectorStore ?? null}
                 newVersionInProgress={assistantData.newVersionInProgress ?? false}
                 onSaved={handleSaved}
                 onUnsavedChange={setHasUnsavedChanges}
