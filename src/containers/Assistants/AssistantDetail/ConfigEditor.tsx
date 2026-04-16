@@ -160,6 +160,14 @@ export const ConfigEditor = ({
     },
   });
 
+  const setLiveTooltip = version?.isLive
+    ? t('This version is already live')
+    : version?.status === 'failed'
+      ? t('Cannot set a failed version as live')
+      : t('Set this version as LIVE tooltip');
+
+  const isSetLiveDisabled = version?.isLive || version?.status === 'failed' || newVersionInProgress || settingLive;
+
   const handleSetLive = () => {
     if (!version) return;
     setLiveVersion({
@@ -307,17 +315,14 @@ export const ConfigEditor = ({
                   {t('Unsaved changes')}
                 </span>
               )}
-              <Tooltip
-                title={version?.isLive ? t('This version is already live') : t('Set this version as LIVE tooltip')}
-                arrow
-              >
+              <Tooltip title={setLiveTooltip} arrow>
                 <span>
                   <Button
                     variant="outlined"
                     data-testid="setLiveButton"
                     onClick={handleSetLive}
                     loading={settingLive}
-                    disabled={version?.isLive || newVersionInProgress || settingLive}
+                    disabled={isSetLiveDisabled}
                   >
                     {t('Set As LIVE')}
                   </Button>

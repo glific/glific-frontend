@@ -605,6 +605,8 @@
   "LIVE": "LIVE",
   "Set As LIVE": "Set As LIVE",
   "This version is already live": "This version is already live",
+  "Cannot set a failed version as live": "Cannot set a failed version as live",
+  "In Progress": "In Progress",
   "Promote this version so flows use it": "Promote this version so flows use it",
   "Set this version as LIVE tooltip": "Set this version as \"LIVE\": Once made live, this assistant will respond using this version of prompt, knowledge base, and settings for all flows where this is used. You can switch between versions anytime.",
   "Save your work as a new version. This version won't be used in flows until you set it as live.": "Save your work as a new version. This version won't be used in flows until you set it as live.",
