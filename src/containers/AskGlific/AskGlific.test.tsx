@@ -1,7 +1,12 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+<<<<<<< ask_glific/sse
+import * as Apollo from '@apollo/client';
+import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+=======
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
+>>>>>>> ask-glific
 import AskGlific from './AskGlific';
 
 const now = Math.floor(Date.now() / 1000);
@@ -116,7 +121,7 @@ const createAskGlificMock = (query: string) => ({
   result: {
     data: {
       askGlific: {
-        answer: 'This is a mock response from the bot.',
+        answer: null,
         conversationId: 'conv-123',
         conversationName: 'Test Chat',
         messageId: 'msg-new-001',
@@ -192,6 +197,33 @@ describe('AskGlific', () => {
     writable: true,
   });
 
+  let onDataCallback: Function;
+
+  beforeEach(() => {
+    vi.spyOn(Apollo, 'useSubscription').mockImplementation((_query: any, options: any) => {
+      onDataCallback = options?.onData;
+      return { data: undefined, loading: false, error: undefined, restart: vi.fn() } as any;
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const simulateSubscriptionResponse = (answer: string, conversationId: string) => {
+    onDataCallback?.({
+      data: {
+        data: {
+          askGlificResponse: {
+            answer,
+            conversationId,
+            errors: null,
+          },
+        },
+      },
+    });
+  };
+
   test('should render AskGlific component', async () => {
     render(
       <MockedProvider mocks={[conversationsMock]}>
@@ -235,6 +267,8 @@ describe('AskGlific', () => {
       expect(screen.getByText('thinking...')).toBeInTheDocument();
     });
 
+    simulateSubscriptionResponse('This is a mock response from the bot.', 'conv-123');
+
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
     });
@@ -249,6 +283,12 @@ describe('AskGlific', () => {
 
     openPanel();
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    simulateSubscriptionResponse('This is a mock response from the bot.', 'conv-123');
 
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
@@ -270,6 +310,12 @@ describe('AskGlific', () => {
 
     openPanel();
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    simulateSubscriptionResponse('This is a mock response from the bot.', 'conv-123');
 
     await waitFor(() => {
       expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();

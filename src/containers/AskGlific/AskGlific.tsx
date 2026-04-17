@@ -1,3 +1,4 @@
+import { useMutation, useSubscription } from '@apollo/client';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
@@ -16,6 +17,9 @@ import Markdown from 'react-markdown';
 import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 
+import { ASK_GLIFIC } from 'graphql/mutations/AskGlific';
+import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
+import { getUserSession } from 'services/AuthService';
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import styles from './AskGlific.module.css';
@@ -97,6 +101,7 @@ const AskGlific = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const waitingForResponse = useRef(false);
 
   const [hasMoreConversations, setHasMoreConversations] = useState(false);
   const [lastConversationId, setLastConversationId] = useState('');
@@ -225,6 +230,42 @@ const AskGlific = () => {
     }
   };
 
+  // Subscribe to Ask Glific responses via WebSocket
+  useSubscription(ASK_GLIFIC_RESPONSE_SUBSCRIPTION, {
+    variables: { organizationId: getUserSession('organizationId') },
+    onData: ({ data: { data } }) => {
+      if (!waitingForResponse.current) return;
+
+      const result = data?.askGlificResponse;
+      if (!result) return;
+
+      waitingForResponse.current = false;
+
+      if (result.errors?.length) {
+        const errorMsg: Message = {
+          role: 'error',
+          content: result.errors[0].message,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMsg]);
+      } else {
+        const answer = result.answer || 'Sorry, Something went wrong. Please try again.';
+        if (result.conversationId) {
+          setConversationId(result.conversationId);
+        }
+        const systemMsg: Message = {
+          role: 'system',
+          content: answer,
+          timestamp: new Date(),
+          feedback: null,
+        };
+        setMessages((prev) => [...prev, systemMsg]);
+      }
+
+      setIsLoading(false);
+    },
+  });
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -241,9 +282,12 @@ const AskGlific = () => {
 
   const handleSendMessage = async (msg: Message, currentMessages = messages) => {
     setIsLoading(true);
+    waitingForResponse.current = true;
 
     try {
-      const { data } = await askGlific({
+      // Send mutation — returns immediately with answer: null
+      // Real answer arrives via the subscription above
+      await askGlific({
         variables: {
           input: {
             query: msg.content,
@@ -287,13 +331,13 @@ const AskGlific = () => {
 
       setMessages(newMessages);
     } catch {
+      waitingForResponse.current = false;
       const errorMessage: Message = {
         role: 'error',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
         timestamp: new Date(),
       };
       setMessages([...currentMessages, errorMessage]);
-    } finally {
       setIsLoading(false);
     }
   };
