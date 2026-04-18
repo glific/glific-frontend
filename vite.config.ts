@@ -14,15 +14,23 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   const env = loadEnv(mode, process.cwd(), '');
 
+  const isBuild = command === 'build';
+  const enableSentry = isBuild && !!env.VITE_SENTRY_AUTH_TOKEN;
+
   const plugins = [
     react(),
     viteTsconfigPaths(),
     svgr(),
-    sentryVitePlugin({
-      authToken: env.VITE_SENTRY_AUTH_TOKEN || '',
-      org: 'project-tech4dev',
-      project: 'glific-frontend',
-    }),
+    ...(enableSentry
+      ? [
+          sentryVitePlugin({
+            authToken: env.VITE_SENTRY_AUTH_TOKEN,
+            org: 'project-tech4dev',
+            project: 'glific-frontend',
+            telemetry: false,
+          }),
+        ]
+      : []),
   ];
 
   const esbuildOptions = {
@@ -39,10 +47,8 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       build: {
         sourcemap: true, // Source map generation must be turned on
       },
-      plugins: plugins,
-      optimizeDeps: {
-        esbuildOptions: esbuildOptions,
-      },
+      plugins,
+      optimizeDeps: { esbuildOptions },
     });
   }
 
@@ -54,9 +60,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       build: {
         sourcemap: true, // Source map generation must be turned on
       },
-      optimizeDeps: {
-        esbuildOptions: esbuildOptions,
-      },
+      optimizeDeps: { esbuildOptions },
       server: {
         host: 'glific.test',
         port: 3000,
@@ -70,7 +74,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           'X-XSS-Protection': '1; mode=block',
           'X-Frame-Options': 'deny',
           'Content-Security-Policy':
-            "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com ; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
+            "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com ; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
@@ -79,13 +83,22 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
 
   // command === 'build'
   return defineConfig({
-    optimizeDeps: {
-      esbuildOptions: esbuildOptions,
-    },
-    plugins: plugins,
+    plugins,
+    optimizeDeps: { esbuildOptions },
     build: {
       outDir: 'build',
-      sourcemap: true,
+      sourcemap: enableSentry,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom'],
+            apollo: ['@apollo/client'],
+            mui: ['@mui/material', '@mui/icons-material', '@mui/x-date-pickers'],
+            sentry: ['@sentry/react'],
+            vendor: ['dayjs', 'uuid', 'axios'],
+          },
+        },
+      },
     },
   });
 };

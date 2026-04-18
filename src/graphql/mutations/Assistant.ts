@@ -7,6 +7,10 @@ export const CREATE_ASSISTANT = gql`
         id
         name
       }
+      errors {
+        message
+        key
+      }
     }
   }
 `;
@@ -22,38 +26,36 @@ export const UPDATE_ASSISTANT = gql`
   }
 `;
 
-export const UPLOAD_FILE_TO_OPENAI = gql`
+export const UPLOAD_FILE_TO_KAAPI = gql`
   mutation UploadFilesearchFile($media: Upload!) {
     uploadFilesearchFile(media: $media) {
       fileId
       filename
+      uploadedAt
+      fileSize
     }
   }
 `;
 
-export const ADD_FILES_TO_FILE_SEARCH = gql`
-  mutation AddAssistantFiles($addAssistantFilesId: ID!, $mediaInfo: [FileInfoInput!]!) {
-    addAssistantFiles(id: $addAssistantFilesId, mediaInfo: $mediaInfo) {
-      assistant {
+export const CREATE_KNOWLEDGE_BASE = gql`
+  mutation CreateKnowledgeBase($mediaInfo: [FileInfoInput!]!, $createKnowledgeBaseId: ID) {
+    createKnowledgeBase(mediaInfo: $mediaInfo, id: $createKnowledgeBaseId) {
+      knowledgeBase {
         id
-      }
-      errors {
-        key
-        message
+        knowledgeBaseVersionId
+        name
       }
     }
   }
 `;
 
-export const REMOVE_FILES_FROM_ASSISTANT = gql`
-  mutation RemoveAssistantFile($fileId: String!, $removeAssistantFileId: ID!) {
-    removeAssistantFile(fileId: $fileId, id: $removeAssistantFileId) {
-      assistant {
-        id
-      }
+export const CLONE_ASSISTANT = gql`
+  mutation CloneAssistant($cloneAssistantId: ID!, $versionId: ID) {
+    cloneAssistant(id: $cloneAssistantId, versionId: $versionId) {
+      message
       errors {
-        message
         key
+        message
       }
     }
   }
@@ -67,6 +69,22 @@ export const DELETE_ASSISTANT = gql`
         assistantId
       }
       errors {
+        message
+      }
+    }
+  }
+`;
+
+export const SET_LIVE_VERSION = gql`
+  mutation SetLiveVersion($assistantId: ID!, $versionId: ID!) {
+    setLiveVersion(assistantId: $assistantId, versionId: $versionId) {
+      assistant {
+        id
+        activeConfigVersionId
+        liveVersionNumber
+      }
+      errors {
+        key
         message
       }
     }

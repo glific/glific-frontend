@@ -257,6 +257,7 @@ export const getOrganizationServicesQuery = {
         ticketingEnabled: true,
         autoTranslationEnabled: true,
         whatsappGroupEnabled: true,
+        assistantConfigVersionsEnabled: false,
       },
     },
   },
@@ -874,6 +875,44 @@ export const OrganizationStateMock = {
     },
   },
 };
+
+export const trialOrganizationStatusQuery = [
+  {
+    request: {
+      query: GET_ORGANIZATION_STATUS,
+    },
+    result: {
+      data: {
+        organization: {
+          organization: {
+            isTrialOrg: true,
+            trialExpirationDate: '2025-02-15',
+            isSuspended: false,
+          },
+        },
+      },
+    },
+  },
+];
+
+export const nonTrialOrganizationStatusQuery = [
+  {
+    request: {
+      query: GET_ORGANIZATION_STATUS,
+    },
+    result: {
+      data: {
+        organization: {
+          organization: {
+            isTrialOrg: false,
+            trialExpirationDate: null,
+            isSuspended: false,
+          },
+        },
+      },
+    },
+  },
+];
 
 export const getOrganizationStatus = (status: string) => ({
   request: {

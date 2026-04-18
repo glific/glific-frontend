@@ -10,7 +10,7 @@ export interface InputProps {
   field: { name: string; onChange?: any; value: any; onBlur: any };
   disabled?: any;
   editor?: any;
-  label: string;
+  label?: string;
   form?: { touched: any; errors: any };
   placeholder: any;
   rows?: number;

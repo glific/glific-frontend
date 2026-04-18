@@ -1,0 +1,183 @@
+.Page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.AssistantId {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #119656;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: -36px;
+  padding: 1px 24px 16px 70px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1001;
+}
+
+.AssistantId:hover {
+  text-decoration: underline;
+}
+
+.CreateWrapper {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  max-width: 560px;
+  width: 100%;
+}
+
+.Body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.VersionPanelWrapper {
+  width: 50%;
+  height: 100%;
+  border-right: 1px solid #00000029;
+  background-color: #f8faf5;
+  padding: 0;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.VersionPanelWrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.EditorWrapper {
+  width: 50%;
+  height: 100%;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.EditorWrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.EmptyText {
+  color: #555;
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.NotFound {
+  text-align: center;
+  margin: 1rem 0;
+  color: #555;
+}
+
+.PageHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #f8faf5;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  padding: 10px 24px 22px 10px;
+  height: 110px;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.BackIcon {
+  cursor: pointer;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.NameViewRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.NameText {
+  font-size: 38px;
+  font-weight: 700;
+  color: #191c1a;
+  margin-right: 2px;
+  max-width: 560px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.EditNameButton {
+  color: #119656;
+  flex-shrink: 0;
+}
+
+.NameEditRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.NameInput {
+  font-size: 38px;
+  font-weight: 700;
+  color: #191c1a;
+  border: none;
+  border-bottom: 2px solid #119656;
+  background: transparent;
+  outline: none;
+  min-width: 200px;
+  max-width: 480px;
+  width: auto;
+}
+
+/* Unsaved changes confirmation dialog */
+.DialogBox {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Dialog {
+  background-color: #fff;
+  width: 400px;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.DialogTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.DialogBody {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.DialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

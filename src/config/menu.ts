@@ -129,7 +129,7 @@ const menus = (): Menu[] => [
     roles: managerLevel,
     children: [
       {
-        title: 'Interactive msg',
+        title: 'Interactive Msg',
         path: '/interactive-message',
         icon: 'interactive-message',
         type: 'sideDrawer',

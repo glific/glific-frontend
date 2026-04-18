@@ -186,8 +186,8 @@ export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions
 export const COMPACT_MESSAGE_LENGTH = 35;
 
 export const BUTTON_OPTIONS: any = [
-  { id: 'CALL_TO_ACTION', label: 'Call to Action' },
   { id: 'QUICK_REPLY', label: 'Quick Reply' },
+  { id: 'CALL_TO_ACTION', label: 'Call to Action' },
   { id: 'WHATSAPP_FORM', label: 'WhatsApp Form' },
 ];
 

@@ -137,6 +137,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       certificateEnabled
       askMeBotEnabled
       whatsappFormsEnabled
+      assistantConfigVersionsEnabled
     }
   }
 `;
@@ -178,6 +179,8 @@ export const GET_ORGANIZATION_STATUS = gql`
     organization {
       organization {
         isSuspended
+        trialExpirationDate
+        isTrialOrg
       }
     }
   }

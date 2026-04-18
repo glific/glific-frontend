@@ -23,6 +23,9 @@ import * as Sentry from '@sentry/react';
 
 export const cache = new InMemoryCache({
   typePolicies: {
+    VectorStore: {
+      keyFields: false,
+    },
     Query: {
       fields: {
         contactHistory: {
