@@ -12,6 +12,7 @@ const ResetPasswordPhone = lazy(() => import('containers/Auth/ResetPassword/Rese
 const ResetPassOTP = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP'));
 const OnboardingForm = lazy(() => import('containers/Organization/Onboarding/Form'));
 const OnboardingHome = lazy(() => import('containers/Organization/Onboarding/Home/Home'));
+const TrialRegistration = lazy(() => import('containers/Organization/TrialRegistration/TrialRegistration'));
 
 export const UnauthenticatedRoute = () => {
   const location = useLocation();
@@ -28,6 +29,7 @@ export const UnauthenticatedRoute = () => {
           <Route path="/resetpassword-confirmotp" element={<ResetPassOTP />} />
           <Route path="/organization-registration" element={<OnboardingHome />} />
           <Route path="/organization-registration/setup" element={<OnboardingForm />} />
+          <Route path="/trial-registration" element={<TrialRegistration />} />
           <Route path="/*" element={<Navigate to="/logout/user" replace state={location.pathname} />} />
         </Routes>
       </GoogleReCaptchaProvider>

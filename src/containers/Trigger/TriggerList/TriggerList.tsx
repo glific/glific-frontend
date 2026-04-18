@@ -81,16 +81,16 @@ export const TriggerList = () => {
 
   const additionalAction = () => [
     {
-      label: t('Copy'),
-      icon: <DuplicateIcon data-testid="copy-trigger" />,
-      parameter: 'id',
-      dialog: setDialog,
-    },
-    {
       label: t('View'),
       icon: <ViewIcon data-testid="view-trigger" />,
       parameter: 'id',
       dialog: handleView,
+    },
+    {
+      label: t('Copy'),
+      icon: <DuplicateIcon data-testid="copy-trigger" />,
+      parameter: 'id',
+      dialog: setDialog,
     },
   ];
 

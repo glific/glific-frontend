@@ -1,0 +1,1959 @@
+import { MockedProvider } from '@apollo/client/testing';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import * as Notification from 'common/notification';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { vi } from 'vitest';
+
+import Configure from './Configure';
+import {
+  computeFieldNames,
+  convertFlowJSONToFormBuilder,
+  convertFormBuilderToFlowJSON,
+} from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
+
+import { WHATSAPP_FORM_MOCKS, validScreen } from 'mocks/WhatsAppForm';
+
+let capturedOnDragEnd: ((event: any) => void) | null = null;
+
+vi.mock('@dnd-kit/core', async () => {
+  const actual = await vi.importActual<typeof import('@dnd-kit/core')>('@dnd-kit/core');
+  return {
+    ...actual,
+    DndContext: ({ children, onDragEnd }: any) => {
+      capturedOnDragEnd = onDragEnd;
+      return <div data-testid="dnd-context">{children}</div>;
+    },
+  };
+});
+
+const wrapper = (id: number = 1) => {
+  const mocks = WHATSAPP_FORM_MOCKS;
+
+  return (
+    <MockedProvider mocks={mocks}>
+      <MemoryRouter initialEntries={[`/whatsapp-forms/${id}/configure`]}>
+        <Routes>
+          <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+          <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+};
+
+describe('<Configure />', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('renders the form correctly', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+  });
+
+  test('it adds and deletes screen and saves the form', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    expect(screen.getByTestId('add-screen')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Screen 2');
+    });
+
+    // test screen toggle
+    fireEvent.click(screen.getAllByTestId('toggle-screen-expand')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Screen 1');
+    });
+
+    // deletes the screen
+    fireEvent.click(screen.getAllByTestId('delete-screen')[1]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Saving')).toBeInTheDocument();
+    });
+  });
+
+  test('it updates the screen name and button label which should be saved ', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: 'New Screen Name' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-screen-name')).toHaveTextContent('New Screen Name');
+    });
+
+    fireEvent.change(screen.getByTestId('button-label-input'), { target: { value: 'Next' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-button-label')).toHaveTextContent('Next');
+    });
+  });
+
+  test('it adds Text Heading content to the screen and generates JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // large heading
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getAllByText('Large Heading')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Large Heading' } });
+
+    // small heading
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getByText('Small Heading'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Small Heading' } });
+
+    // caption
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getByText('Caption'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Caption' } });
+
+    fireEvent.click(screen.getAllByTestId('content-toggle-expand')[1]);
+
+    // body
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+
+    fireEvent.click(screen.getByText('Body'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'Body' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Large Heading');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Small Heading');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Caption');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Body');
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+  });
+
+  test('it adds Text Answer content to the screen and generates JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // short answer
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getAllByText('Short Answer')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Short Answer Label' } });
+
+    // paragraph
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Paragraph Label' } });
+
+    // date picker
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getByText('Date Picker'));
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Date Picker Label' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Short Answer Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Paragraph Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Date Picker Label');
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+  });
+
+  test('it adds Selection content to the screen and generates JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // single choice
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getAllByText('Single Choice')[1]);
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Single Choice Label' } });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'Opt-1' } });
+    fireEvent.change(screen.getAllByTestId('option-input')[1], { target: { value: 'Opt-2' } });
+
+    fireEvent.click(screen.getByTestId('add-option-button'));
+
+    fireEvent.change(screen.getAllByTestId('option-input')[2], { target: { value: 'Opt-3' } });
+
+    // test deleting the option
+    fireEvent.click(screen.getAllByTestId('delete-option-button')[2]);
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('option-input')).toHaveLength(2);
+    });
+
+    // multiple choice
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Multiple Choice'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Multiple Choice Label' } });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'Opt-A' } });
+    fireEvent.change(screen.getAllByTestId('option-input')[1], { target: { value: 'Opt-B' } });
+
+    // dropdown
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Dropdown'));
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Dropdown Label' } });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'Opt-X' } });
+    fireEvent.change(screen.getAllByTestId('option-input')[1], { target: { value: 'Opt-Y' } });
+
+    // opt-in
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+
+    fireEvent.click(screen.getByText('Opt In'));
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Opt In Label' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Single Choice Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Multiple Choice Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Dropdown Label');
+      expect(screen.getByTestId('form-preview')).toHaveTextContent('Opt In Label');
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+  });
+
+  test('it uploads an image file successfully and generates JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
+
+    const fileInput = screen.getByTestId('uploadFile');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('image-preview')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+  });
+
+  test('it shows error for invalid file type', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'test-image.pdf', { type: 'application/pdf' });
+
+    const fileInput = screen.getByTestId('uploadFile');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Please select a valid image file (JPEG, PNG)')).toBeInTheDocument();
+    });
+  });
+
+  test('it shows error for file size exceeding 300KB', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
+    Object.defineProperty(file, 'size', { value: 400 * 1024 });
+
+    const fileInput = screen.getByTestId('uploadFile');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/File size must be less than 300KB/)).toBeInTheDocument();
+    });
+  });
+
+  test('it removes uploaded image when Remove button is clicked', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Media'));
+    fireEvent.click(screen.getByText('Image'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('media-content')).toBeInTheDocument();
+    });
+
+    const file = new File(['fake-image-content'], 'test-image.png', { type: 'image/png' });
+
+    const fileInput = screen.getByTestId('uploadFile');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Uploaded media')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Remove'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Drag and drop files')).toBeInTheDocument();
+      expect(screen.queryByAltText('Uploaded media')).not.toBeInTheDocument();
+    });
+  });
+
+  test('it deletes a content item from the screen', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('content-item')).toHaveLength(3);
+    });
+
+    fireEvent.click(screen.getAllByTestId('delete-content')[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('content-item')).toHaveLength(2);
+    });
+  });
+
+  test('it shows correct validations', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // screen name validation
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen name is required')).toBeInTheDocument();
+    });
+
+    // form field validations
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+
+    fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: '' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Label is required')).toBeInTheDocument();
+    });
+  });
+
+  test('it reorders screens by dragging', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    const getContentItemNames = () => {
+      return screen.getAllByTestId('form-screen').map((item) => {
+        const title = item.querySelector('[class*="ContentTitle"]');
+        return title?.textContent || '';
+      });
+    };
+
+    const initialOrder = getContentItemNames();
+    expect(initialOrder).toHaveLength(2);
+
+    expect(capturedOnDragEnd).not.toBeNull();
+
+    act(() => {
+      capturedOnDragEnd!({
+        active: { id: 'screen_0_Text_0' },
+        over: { id: 'screen_0_Label_0' },
+      });
+    });
+
+    await waitFor(() => {
+      const newOrder = getContentItemNames();
+      expect(newOrder[0]).toBe(initialOrder[1]);
+      expect(newOrder[1]).toBe(initialOrder[0]);
+    });
+  });
+
+  test('it reorders content items by dragging', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('content-item')).toHaveLength(3);
+    });
+
+    const getContentItemNames = () => {
+      return screen.getAllByTestId('content-item').map((item) => {
+        const title = item.querySelector('[class*="ContentTitle"]');
+        return title?.textContent || '';
+      });
+    };
+
+    const getContentItemIds = () => {
+      return screen.getAllByTestId('content-item').map((item) => item.getAttribute('data-item-id'));
+    };
+
+    const initialOrder = getContentItemNames();
+    const itemIds = getContentItemIds();
+
+    expect(initialOrder).toHaveLength(3);
+    expect(itemIds[0]).not.toBeNull();
+    expect(itemIds[1]).not.toBeNull();
+
+    expect(capturedOnDragEnd).not.toBeNull();
+
+    act(() => {
+      capturedOnDragEnd!({
+        active: { id: itemIds[0] },
+        over: { id: itemIds[1] },
+      });
+    });
+
+    await waitFor(() => {
+      const newOrder = getContentItemNames();
+      expect(newOrder[0]).toBe(initialOrder[1]);
+      expect(newOrder[1]).toBe(initialOrder[0]);
+    });
+  });
+
+  test('published form shows view mode', async () => {
+    render(wrapper(2));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+      expect(screen.getByText('Published')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('add-screen')).not.toBeInTheDocument();
+    });
+  });
+
+  test('isViewOnly — delete button and add-content hidden, inputs are readonly', async () => {
+    render(wrapper(2));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('delete-screen')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('add-content-button')).not.toBeInTheDocument();
+      expect(screen.getByTestId('screen-name-input')).toHaveAttribute('readonly');
+      expect(screen.getByTestId('button-label-input')).toHaveAttribute('readonly');
+    });
+  });
+
+  test('isDuplicateName — shows unique name error when two screens share the same name', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: 'Screen 1' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen name must be unique')).toBeInTheDocument();
+    });
+  });
+
+  test('it shows the new definition when a version is clicked', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Revision History'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('version-history')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Version 3'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Back to Editing')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Back to Editing'));
+  });
+
+  test('it reverts to a previous form version', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Revision History'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('version-history')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Current')).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId('revert-version-button')[4]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Are you sure you want to revert?')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Successfully reverted to selected version', 'success');
+    });
+  });
+
+  test('it should rename the variables', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Field Names'));
+
+    fireEvent.click(screen.getAllByTestId('edit-icon')[0]);
+
+    fireEvent.change(screen.getByTestId('variable-name-input'), { target: { value: 'new_variable_name' } });
+
+    fireEvent.click(screen.getAllByTestId('save-icon')[0]);
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-preview')).toHaveTextContent('new_variable_name');
+    });
+  });
+
+  test('duplicate variable names should show error and not allow to save', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Field Names'));
+
+    fireEvent.click(screen.getAllByTestId('edit-icon')[0]);
+
+    fireEvent.change(screen.getByTestId('variable-name-input'), { target: { value: 'field_name' } });
+
+    fireEvent.keyDown(screen.getByTestId('variable-name-input'), { key: 'Enter', code: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('variable-name-input')).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getByText('Variable name must be unique')).toBeInTheDocument();
+    });
+  });
+
+  test('two fields with the same label get deduplicated names in generated JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getByText('Paragraph'));
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getByText('Date Picker'));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    const parsed = JSON.parse(jsonText.value);
+
+    const footer = parsed.screens[0].layout.children[0].children.find((c: any) => c.type === 'Footer');
+    const payload = footer['on-click-action']['payload'];
+
+    await waitFor(() => {
+      expect(payload).toHaveProperty('field_name');
+      expect(payload).toHaveProperty('field_name_1');
+      expect(payload).toHaveProperty('field_name_2');
+    });
+  });
+
+  test('form with errors shows notification on publish attempt', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '' } });
+
+    fireEvent.click(screen.getByText('Submit to Meta'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Please fix the errors in the form before publishing.', 'warning');
+    });
+  });
+
+  test("it should copy the json to clipboard when 'Copy to Clipboard' is clicked", async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const writeTextMock = vi.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: writeTextMock,
+      },
+    });
+
+    fireEvent.click(screen.getByText('Copy JSON'));
+
+    await waitFor(() => {
+      expect(writeTextMock).toHaveBeenCalled();
+    });
+  });
+
+  test("it should publish the form when 'Publish' is clicked", async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Submit to Meta'));
+
+    fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+    fireEvent.click(screen.getByText('Submit to Meta'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Publish Form')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Form published successfully', 'success');
+    });
+  });
+
+  test("should navigate back to whatsapp forms list when 'Back' is clicked", async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('back-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('WhatsApp Forms')).toBeInTheDocument();
+    });
+  });
+
+  test('makes changes to whatsapp form json and saves', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/Screen 1/g, 'Updated Screen Name') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Apply Changes')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-screen-name')).toHaveTextContent('Updated Screen Name');
+    });
+  });
+
+  test('it shows errors in json', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/"Label"/g, '""') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent(
+        'Form has validation errors (missing required fields)'
+      );
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent('JSON cannot be empty');
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '{ ' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent(/Expected property name or '}' in JSON at position 2/);
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '{ }' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent('Missing or invalid "screens" array');
+    });
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: '{ "screens": [] }' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent('Screens array cannot be empty');
+    });
+  });
+
+  test('it generates a random ID for screens with non-alpha names', async () => {
+    // Make randomAlphaId deterministic: always returns 'aaaaaa'
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.change(screen.getByTestId('screen-name-input'), { target: { value: '123' } });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+      expect(parsed.screens[0].id).toBe('screen_aaaaaa');
+    });
+
+    vi.spyOn(Math, 'random').mockRestore();
+  });
+
+  test('it should create form with different types of short answers and shows them in preview', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+    const shortAnswerTypes = ['Email', 'Number', 'Password', 'Passcode', 'Phone'];
+
+    for (const type of shortAnswerTypes) {
+      fireEvent.click(screen.getByTestId('add-content-button'));
+      fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+      fireEvent.click(screen.getByTestId('Short Answer'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('label-input')).toHaveValue('Field Name');
+      });
+
+      // Change the short answer type via MUI Select
+      const select = screen.getByTestId('short-answer-type').querySelector('[role="combobox"]')!;
+      fireEvent.mouseDown(select);
+
+      const option = await screen.findByRole('option', { name: type });
+      fireEvent.click(option);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('label-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(screen.getByTestId('label-input'), { target: { value: `${type} Field` } });
+    }
+
+    // Verify input types in generated JSON
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+      const formChildren = parsed.screens[0].layout.children[0].children;
+      const textInputs = formChildren.filter((c: any) => c.type === 'TextInput');
+
+      shortAnswerTypes.forEach((type, i) => {
+        expect(textInputs[i + 1]['input-type']).toBe(type.toLowerCase());
+        expect(textInputs[i + 1].label).toBe(`${type} Field`);
+      });
+    });
+  });
+
+  test('it shows validation error when JSON has screen ID with spaces or numbers', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    // Replace the screen ID with one containing spaces
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/"id":\s*"[^"]*"/, '"id": "screen 1"') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent(
+        'Screen ID should only contain alphabets and underscores'
+      );
+    });
+  });
+
+  test('it shows validation error when JSON has reserved SUCCESS screen ID', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Form JSON')).toBeInTheDocument();
+    });
+
+    const jsonTextarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+
+    fireEvent.change(jsonTextarea, {
+      target: { value: jsonTextarea.value.replace(/"id":\s*"[^"]*"/, '"id": "SUCCESS"') },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('json-error')).toHaveTextContent("'SUCCESS' is reserved by Meta");
+    });
+  });
+
+  test('field names are consistent between component name and payload in generated JSON', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // Add a short answer field with a label
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getAllByText('Short Answer')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'User Name' } });
+
+    // Add second screen
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    // Generate JSON and verify consistency
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+
+      // Screen 1: the component name
+      const screen1Children = parsed.screens[0].layout.children[0].children;
+      const textInput = screen1Children.find((c: any) => c.type === 'TextInput' && c.label === 'User Name');
+      expect(textInput).toBeDefined();
+      const componentName = textInput.name;
+
+      // Screen 1 footer payload: should use the same name
+      const footer = screen1Children.find((c: any) => c.type === 'Footer');
+
+      expect(footer['on-click-action'].payload['user_name']).toBe(`\${form.${componentName}}`);
+    });
+  });
+
+  test('number input type uses global form property instead of data relay in multi-screen form', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    // Add a number type short answer
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text Answer'));
+    fireEvent.click(screen.getAllByText('Short Answer')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-answer-content')).toBeInTheDocument();
+    });
+
+    // Change type to Number
+    const select = screen.getByTestId('short-answer-type').querySelector('[role="combobox"]')!;
+    fireEvent.mouseDown(select);
+
+    const option = await screen.findByRole('option', { name: 'Number' });
+    fireEvent.click(option);
+
+    fireEvent.change(screen.getByTestId('label-input'), { target: { value: 'Age' } });
+
+    // Add second screen so data schema is generated
+    fireEvent.click(screen.getByTestId('add-screen'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(2);
+    });
+
+    // Generate JSON and verify
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+
+    await waitFor(() => {
+      const jsonText = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+      const parsed = JSON.parse(jsonText.value);
+
+      const screen1Id = parsed.screens[0].id;
+      // Terminal screen (screen 2) payload should reference the number field via global form property
+      const screen2Footer = parsed.screens[1].layout.children[0].children.find((c: any) => c.type === 'Footer');
+      const payloadValues = Object.values(screen2Footer['on-click-action'].payload) as string[];
+      const globalFormRef = payloadValues.find((v: string) => v.includes(`screen.${screen1Id}.form.`));
+      expect(globalFormRef).toBeDefined();
+    });
+  });
+
+  test('unsupported component shows read-only message in form builder', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const testJson = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'SCREEN_ONE',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [
+                  {
+                    type: 'EmbeddedLink',
+                    text: 'Terms & Conditions',
+                    'on-click-action': { name: 'open_url', url: 'https://example.com/terms' },
+                  },
+                  {
+                    type: 'Footer',
+                    label: 'Continue',
+                    'on-click-action': { name: 'complete', payload: {} },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(testJson) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+    fireEvent.click(screen.getByTestId('json-viewer-close'));
+
+    await waitFor(() => expect(screen.getByTestId('content-toggle-expand')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByTestId('content-toggle-expand'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'This component (EmbeddedLink) is not editable in the form builder but will be preserved in the JSON.'
+        )
+      ).toBeInTheDocument();
+    });
+  });
+});
+
+// ── Helpers for validateFlowJson tests ───────────────────────────────────────
+
+const flow = (screens: object[]) => ({ version: '7.3', screens });
+
+const formWith = (children: object[]) => ({
+  type: 'Form',
+  name: 'flow_path',
+  children,
+});
+
+const footer = (action: object, label = 'Continue') => ({
+  type: 'Footer',
+  label,
+  'on-click-action': action,
+});
+
+const setJsonAndExpectError = async (json: object, expectedError: string | RegExp) => {
+  render(wrapper());
+  await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+  fireEvent.click(screen.getByTestId('formJsonBtn'));
+  await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+  const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+  fireEvent.change(textarea, { target: { value: JSON.stringify(json) } });
+
+  await waitFor(() => expect(screen.getByTestId('json-error')).toHaveTextContent(expectedError));
+};
+
+describe('validateFlowJson — all phases', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  test('phase 3 — screen ID with spaces is invalid', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ id: 'screen 1' })]),
+      'Screen ID should only contain alphabets and underscores'
+    );
+  });
+
+  test('phase 3 — missing screen title', async () => {
+    await setJsonAndExpectError(flow([validScreen({ title: undefined })]), 'Missing screen title');
+  });
+
+  test('phase 3 — layout type must be SingleColumnLayout', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { ...validScreen().layout, type: 'TwoColumnLayout' } })]),
+      "Layout type must be 'SingleColumnLayout'"
+    );
+  });
+
+  test('phase 3 — empty layout children', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [] } })]),
+      'Missing layout children'
+    );
+  });
+
+  test('phase 3 — layout without footer shows error (Form is optional)', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'TextBody', text: 'Hello' }] } })]),
+      'Must have exactly one Footer component'
+    );
+  });
+
+  test('phase 3 — Form with no children has no footer, shows error', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ layout: { type: 'SingleColumnLayout', children: [{ type: 'Form', name: 'flow_path' }] } })]),
+      'Must have exactly one Footer component'
+    );
+  });
+
+  test('phase 3 — CalendarPicker inside Form throws layout placement error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                {
+                  type: 'CalendarPicker',
+                  name: 'appt_date',
+                  label: 'Pick a date',
+                  required: true,
+                  mode: 'single',
+                },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "'CalendarPicker' must be a direct child of SingleColumnLayout, not inside a Form component"
+    );
+  });
+
+  test('phase 3 — CalendarPicker as direct layout child with Form+Footer is valid', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const validCalendarScreen = flow([
+      {
+        id: 'screen_one',
+        title: 'Screen 1',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            {
+              type: 'CalendarPicker',
+              name: 'appt_date',
+              label: {
+                'start-date': 'Pick a start date',
+                'end-date': 'Pick an end date',
+              },
+              required: true,
+              mode: 'single',
+            },
+            formWith([footer({ name: 'complete', payload: {} })]),
+          ],
+        },
+      },
+    ]);
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(validCalendarScreen) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    fireEvent.click(screen.getByText('Field Names'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Screen 1 · CalendarPicker · appt_date')).toBeInTheDocument();
+    });
+  });
+
+  // ── Phase 4: Footer & action validation ──────────────────────────────────
+  test('phase 4 — missing footer', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [formWith([{ type: 'TextInput', name: 'f', label: 'F', required: true, 'input-type': 'text' }])],
+          },
+        }),
+      ]),
+      'Must have exactly one Footer component'
+    );
+  });
+
+  test('phase 4 — two footers on same screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                footer({ name: 'complete', payload: {} }),
+                footer({ name: 'complete', payload: {} }, 'Also Continue'),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      'Must have exactly one Footer component, found 2'
+    );
+  });
+
+  test('phase 4 — footer label exceeds 35 characters', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'complete', payload: {} }, 'This label is way too long and exceeds limit')]),
+            ],
+          },
+        }),
+      ]),
+      'Footer label must be 35 characters or fewer'
+    );
+  });
+
+  test('phase 4 — footer missing on-click-action', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: { type: 'SingleColumnLayout', children: [formWith([{ type: 'Footer', label: 'Continue' }])] },
+        }),
+      ]),
+      "Footer must have an 'on-click-action'"
+    );
+  });
+
+  test('phase 4 — action name is not navigate or complete', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'submit', payload: {} })])] },
+        }),
+      ]),
+      "Action must be 'navigate' or 'complete'"
+    );
+  });
+
+  test('phase 4 — last screen must use complete action', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_two', type: 'screen' }, payload: {} })]),
+            ],
+          },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_one', type: 'screen' }, payload: {} })]),
+            ],
+          },
+        }),
+      ]),
+      "must use 'complete' action"
+    );
+  });
+
+  test('phase 4 — last screen must have terminal: true', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          terminal: false,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "must have 'terminal: true'"
+    );
+  });
+
+  test('phase 4 — non-terminal screen must use navigate action', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "Non-terminal screens must use 'navigate' action"
+    );
+  });
+
+  test('phase 4 — navigate action must specify a next screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'navigate', payload: {} })])] },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "Navigate action must specify a 'next' screen"
+    );
+  });
+
+  test('phase 4 — navigate next.type must be screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_two', type: 'flow' }, payload: {} })]),
+            ],
+          },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "Navigate next.type must be 'screen'"
+    );
+  });
+
+  test('phase 4 — navigate references a non-existent screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          id: 'screen_one',
+          terminal: false,
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([footer({ name: 'navigate', next: { name: 'screen_ghost', type: 'screen' }, payload: {} })]),
+            ],
+          },
+        }),
+        validScreen({
+          id: 'screen_two',
+          terminal: true,
+          layout: { type: 'SingleColumnLayout', children: [formWith([footer({ name: 'complete', payload: {} })])] },
+        }),
+      ]),
+      "references non-existent screen 'screen_ghost'"
+    );
+  });
+
+  // ── Phase 5: Component name uniqueness ───────────────────────────────────
+  test('phase 5 — duplicate component names across the screen', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                { type: 'TextInput', name: 'field_name', label: 'Field 1', required: true, 'input-type': 'text' },
+                { type: 'TextInput', name: 'field_name', label: 'Field 2', required: true, 'input-type': 'text' },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "Duplicate component name 'field_name'"
+    );
+  });
+
+  test('phase 5 — two CalendarPickers with the same name triggers duplicate error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        {
+          ...validScreen(),
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick a date', required: true, mode: 'single' },
+              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick another date', required: false, mode: 'single' },
+              formWith([footer({ name: 'complete', payload: {} })]),
+            ],
+          },
+        },
+      ]),
+      "Duplicate component name 'appt_date'"
+    );
+  });
+
+  // ── Phase 5: Unknown component type ──────────────────────────────────────
+  test('phase 5 — unknown component type triggers validation error', async () => {
+    await setJsonAndExpectError(
+      flow([
+        validScreen({
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              formWith([
+                { type: 'SuperWidget', name: 'widget_1', label: 'Widget' },
+                footer({ name: 'complete', payload: {} }),
+              ]),
+            ],
+          },
+        }),
+      ]),
+      "Unknown component type 'SuperWidget'"
+    );
+  });
+
+  // ── Phase 6: Data property validation ────────────────────────────────────
+  test('phase 6 — data property missing __example__', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ data: { field_name: { type: 'string' } } })]),
+      "is missing '__example__'"
+    );
+  });
+
+  test('phase 6 — data property missing type', async () => {
+    await setJsonAndExpectError(
+      flow([validScreen({ data: { field_name: { __example__: 'Example' } } })]),
+      "is missing 'type'"
+    );
+  });
+});
+
+// ── Round-trip preservation tests ────────────────────────────────────────────
+
+describe('round-trip preservation — unsupported components & extra attributes', () => {
+  const makeFlowJSON = (formChildren: object[]) => ({
+    version: '7.3',
+    screens: [
+      {
+        id: 'screen_one',
+        title: 'Screen 1',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            {
+              type: 'Form',
+              name: 'flow_path',
+              children: [
+                ...formChildren,
+                {
+                  type: 'Footer',
+                  label: 'Continue',
+                  'on-click-action': { name: 'complete', payload: {} },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  });
+
+  test('unsupported component (EmbeddedLink) is preserved verbatim through round-trip', () => {
+    const embeddedLink = {
+      type: 'EmbeddedLink',
+      text: 'Terms & Conditions',
+      'on-click-action': {
+        name: 'open_url',
+        url: 'https://example.com/terms',
+      },
+    };
+
+    const flowJSON = makeFlowJSON([embeddedLink]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    // Should be parsed as Unsupported type with rawComponent
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.name).toBe('EmbeddedLink');
+    expect(unsupportedItem!.data.rawComponent).toEqual(embeddedLink);
+
+    // Round-trip back to JSON
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputComponent = outputChildren.find((c: any) => c.type === 'EmbeddedLink');
+
+    expect(outputComponent).toEqual(embeddedLink);
+  });
+
+  test('unsupported component (PhotoPicker) is preserved verbatim through round-trip', () => {
+    const photoPicker = {
+      type: 'PhotoPicker',
+      name: 'user_photo',
+      label: 'Upload Photo',
+      description: 'Please upload your photo',
+      'min-uploaded-photos': 1,
+      'max-uploaded-photos': 3,
+    };
+
+    const flowJSON = makeFlowJSON([photoPicker]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.data.rawComponent).toEqual(photoPicker);
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children;
+    const outputComponent = outputChildren.find((c: any) => c.type === 'PhotoPicker');
+
+    expect(outputComponent).toEqual(photoPicker);
+  });
+
+  test('DatePicker extra attributes (min-date, max-date, unavailable-dates) are preserved', () => {
+    const datePicker = {
+      type: 'DatePicker',
+      name: 'appointment_date',
+      label: 'Pick a date',
+      required: true,
+      'helper-text': 'Select your appointment date',
+      'min-date': '1735689600000',
+      'max-date': '1767225600000',
+      'unavailable-dates': ['1748736000000', '1749340800000'],
+    };
+
+    const flowJSON = makeFlowJSON([datePicker]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const dateItem = screens[0].content.find((item) => item.name === 'Date Picker');
+    expect(dateItem).toBeDefined();
+    expect(dateItem!.data.extraAttributes).toEqual({
+      'min-date': '1735689600000',
+      'max-date': '1767225600000',
+      'unavailable-dates': ['1748736000000', '1749340800000'],
+    });
+
+    // Round-trip back to JSON
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputDatePicker = outputChildren.find((c: any) => c.type === 'DatePicker');
+
+    expect(outputDatePicker['min-date']).toBe('1735689600000');
+    expect(outputDatePicker['max-date']).toBe('1767225600000');
+    expect(outputDatePicker['unavailable-dates']).toEqual(['1748736000000', '1749340800000']);
+  });
+
+  test('RadioButtonsGroup extra attributes are preserved', () => {
+    const radioGroup = {
+      type: 'RadioButtonsGroup',
+      name: 'color_choice',
+      label: 'Pick a color',
+      required: true,
+      'data-source': [
+        { id: '1', title: 'Red' },
+        { id: '2', title: 'Blue' },
+      ],
+      'init-value': '1',
+      'on-select-action': { name: 'update_data', payload: { selected: '${form.color_choice}' } },
+    };
+
+    const flowJSON = makeFlowJSON([radioGroup]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const radioItem = screens[0].content.find((item) => item.name === 'Single Choice');
+    expect(radioItem).toBeDefined();
+    expect(radioItem!.data.extraAttributes).toEqual({
+      'init-value': '1',
+      'on-select-action': { name: 'update_data', payload: { selected: '${form.color_choice}' } },
+    });
+
+    // Round-trip back to JSON
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputRadio = outputChildren.find((c: any) => c.type === 'RadioButtonsGroup');
+
+    expect(outputRadio['init-value']).toBe('1');
+    expect(outputRadio['on-select-action']).toEqual(radioGroup['on-select-action']);
+  });
+
+  test('CheckboxGroup extra attributes are preserved', () => {
+    const checkboxGroup = {
+      type: 'CheckboxGroup',
+      name: 'toppings',
+      label: 'Select toppings',
+      required: false,
+      'data-source': [
+        { id: '1', title: 'Cheese' },
+        { id: '2', title: 'Pepperoni' },
+      ],
+      'min-selected-items': 1,
+      'max-selected-items': 2,
+    };
+
+    const flowJSON = makeFlowJSON([checkboxGroup]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const checkboxItem = screens[0].content.find((item) => item.name === 'Multiple Choice');
+    expect(checkboxItem).toBeDefined();
+    expect(checkboxItem!.data.extraAttributes).toEqual({
+      'min-selected-items': 1,
+      'max-selected-items': 2,
+    });
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputCheckbox = outputChildren.find((c: any) => c.type === 'CheckboxGroup');
+
+    expect(outputCheckbox['min-selected-items']).toBe(1);
+    expect(outputCheckbox['max-selected-items']).toBe(2);
+  });
+
+  test('Dropdown extra attributes are preserved', () => {
+    const dropdown = {
+      type: 'Dropdown',
+      name: 'country',
+      label: 'Select country',
+      required: true,
+      'data-source': [
+        { id: 'us', title: 'United States' },
+        { id: 'uk', title: 'United Kingdom' },
+      ],
+      'init-value': 'us',
+      enabled: false,
+    };
+
+    const flowJSON = makeFlowJSON([dropdown]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const dropdownItem = screens[0].content.find((item) => item.name === 'Dropdown');
+    expect(dropdownItem).toBeDefined();
+    expect(dropdownItem!.data.extraAttributes).toEqual({
+      'init-value': 'us',
+      enabled: false,
+    });
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    const outputDropdown = outputChildren.find((c: any) => c.type === 'Dropdown');
+
+    expect(outputDropdown['init-value']).toBe('us');
+    expect(outputDropdown.enabled).toBe(false);
+  });
+
+  test('supported component without extra attributes has no extraAttributes field', () => {
+    const datePicker = {
+      type: 'DatePicker',
+      name: 'basic_date',
+      label: 'Pick date',
+      required: false,
+    };
+
+    const flowJSON = makeFlowJSON([datePicker]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const dateItem = screens[0].content.find((item) => item.name === 'Date Picker');
+    expect(dateItem).toBeDefined();
+    expect(dateItem!.data.extraAttributes).toBeUndefined();
+  });
+
+  test('CalendarPicker as direct layout child is preserved verbatim through round-trip', () => {
+    const calendarPicker = {
+      type: 'CalendarPicker',
+      name: 'appt_date',
+      label: 'Pick a date',
+      required: true,
+      mode: 'range',
+      'min-date': '2024-10-21',
+      'max-date': '2025-12-12',
+    };
+
+    // Flow where CalendarPicker is a direct layout child (not inside Form)
+    const flowJSON = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              calendarPicker,
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [{ type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } }],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.name).toBe('CalendarPicker');
+    expect(unsupportedItem!.data.rawComponent).toEqual(calendarPicker);
+
+    // Round-trip: CalendarPicker must be a direct child of layout.children, NOT inside Form
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const layoutChildren = outputJSON.screens[0].layout.children;
+    const calendarInLayout = layoutChildren.find((c: any) => c.type === 'CalendarPicker');
+    expect(calendarInLayout).toEqual(calendarPicker);
+
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const calendarInForm = formComponent?.children?.find((c: any) => c.type === 'CalendarPicker');
+    expect(calendarInForm).toBeUndefined();
+  });
+
+  test('DocumentPicker as direct layout child is preserved verbatim through round-trip', () => {
+    const documentPicker = {
+      type: 'DocumentPicker',
+      name: 'user_doc',
+      label: 'Upload Document',
+      required: false,
+      'max-file-size-kb': 5120,
+    };
+
+    const flowJSON = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              documentPicker,
+              {
+                type: 'Form',
+                name: 'flow_path',
+                children: [{ type: 'Footer', label: 'Continue', 'on-click-action': { name: 'complete', payload: {} } }],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    const unsupportedItem = screens[0].content.find((item) => item.type === 'Unsupported');
+    expect(unsupportedItem).toBeDefined();
+    expect(unsupportedItem!.data.rawComponent).toEqual(documentPicker);
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const layoutChildren = outputJSON.screens[0].layout.children;
+    const docInLayout = layoutChildren.find((c: any) => c.type === 'DocumentPicker');
+    expect(docInLayout).toEqual(documentPicker);
+
+    const formComponent = layoutChildren.find((c: any) => c.type === 'Form');
+    const docInForm = formComponent?.children?.find((c: any) => c.type === 'DocumentPicker');
+    expect(docInForm).toBeUndefined();
+  });
+
+  test('mixed supported, unsupported, and extra-attribute components all survive round-trip', () => {
+    const textBody = { type: 'TextBody', text: 'Welcome message' };
+    const embeddedLink = {
+      type: 'EmbeddedLink',
+      text: 'Privacy Policy',
+      'on-click-action': { name: 'open_url', url: 'https://example.com/privacy' },
+    };
+    const datePickerWithExtras = {
+      type: 'DatePicker',
+      name: 'visit_date',
+      label: 'Visit Date',
+      required: true,
+      'min-date': '1735689600000',
+    };
+
+    const flowJSON = makeFlowJSON([textBody, embeddedLink, datePickerWithExtras]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    expect(screens[0].content).toHaveLength(3);
+    expect(screens[0].content[0].type).toBe('Text');
+    expect(screens[0].content[1].type).toBe('Unsupported');
+    expect(screens[0].content[2].type).toBe('Text Answer');
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+
+    // TextBody preserved
+    expect(outputChildren.find((c: any) => c.type === 'TextBody')).toBeDefined();
+    // EmbeddedLink preserved verbatim
+    expect(outputChildren.find((c: any) => c.type === 'EmbeddedLink')).toEqual(embeddedLink);
+    // DatePicker with min-date preserved
+    const outDate = outputChildren.find((c: any) => c.type === 'DatePicker');
+    expect(outDate['min-date']).toBe('1735689600000');
+  });
+
+  test('duplicate Unsupported rawComponent names get _1, _2 suffixes like Text Answer/Selection', () => {
+    const flowJSON = makeFlowJSON([
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo A', 'on-click-action': { name: 'open_url', url: 'https://a.com' } },
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo B', 'on-click-action': { name: 'open_url', url: 'https://b.com' } },
+      { type: 'EmbeddedLink', name: 'promo', text: 'Promo C', 'on-click-action': { name: 'open_url', url: 'https://c.com' } },
+    ]);
+
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+    const fieldNameMap = computeFieldNames(screens);
+
+    const ids = screens[0].content.map((item) => item.id);
+    expect(fieldNameMap.get(ids[0])).toBe('promo');
+    expect(fieldNameMap.get(ids[1])).toBe('promo_1');
+    expect(fieldNameMap.get(ids[2])).toBe('promo_2');
+  });
+});

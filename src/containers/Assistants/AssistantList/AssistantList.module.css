@@ -1,0 +1,56 @@
+.NameColumn {
+  width: 40%;
+  min-width: 200px;
+}
+
+.VersionColumn {
+  width: 20%;
+}
+
+.DateColumn {
+  width: 20%;
+}
+
+.Actions {
+  width: 20%;
+}
+
+.NameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.Name {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.DisplayIdRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.DisplayId {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.CopyButton {
+  padding: 2px !important;
+  color: #6b7280;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.VersionBadge {
+  color: #374151;
+}
+
+.NoVersion {
+  color: #9ca3af;
+}

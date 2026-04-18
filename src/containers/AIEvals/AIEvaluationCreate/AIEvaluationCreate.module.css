@@ -1,0 +1,57 @@
+.FormLayout {
+  width: 800px;
+}
+
+.GoldenQAHelper {
+  margin-top: 8px;
+}
+
+.GoldenQAHelperDescription {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.CSVFormatBox {
+  background-color: #f0f7f0;
+  border: 1px dashed #7cb87c;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.CSVFormatLabel {
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 6px;
+}
+
+.CSVFormatExample {
+  font-family: monospace;
+  font-size: 13px;
+  color: #333;
+}
+
+.TemplateLink {
+  display: block;
+  color: #2e7d32;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.TemplateLink:hover {
+  color: #1b5e20;
+}
+
+.GoldenQaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.UploadGoldenQaButton {
+  margin-top: 40px;
+  white-space: nowrap;
+}

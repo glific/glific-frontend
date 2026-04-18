@@ -1,5 +1,5 @@
 import { DocumentNode, useQuery } from '@apollo/client';
-import { IconButton } from '@mui/material';
+import { Chip, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,20 +10,44 @@ import { copyToClipboard } from 'common/utils';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 
 import styles from './List.module.css';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 interface ListProps {
   getItemsQuery: DocumentNode;
   listItemName: string;
-  currentId?: any;
   refreshList?: boolean;
-  setCurrentId: any;
+  baseRoute?: string;
 }
 
-export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, currentId }: ListProps) => {
+const statusMap: Record<string, { label: string; styleKey: string }> = {
+  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
+  failed: { label: 'Failed', styleKey: 'Failed' },
+  ready: { label: 'Ready', styleKey: 'Ready' },
+};
+
+const getStatus = (status: string, newVersionInProgress: boolean) => {
+  const effectiveStatus = newVersionInProgress ? 'in_progress' : status;
+  const { label, styleKey } = statusMap[effectiveStatus] || statusMap.in_progress;
+
+  return (
+    <Chip
+      data-testid="assistantStatus"
+      label={label}
+      size="small"
+      className={`${styles.StatusChip} ${styleKey ? styles[styleKey] : ''}`}
+    />
+  );
+};
+
+const List = ({ getItemsQuery, listItemName, refreshList, baseRoute = '/assistants' }: ListProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
+  const params = useParams();
+  let currentId = '';
+  if (params.assistantId) {
+    currentId = params.assistantId;
+  }
   const { t } = useTranslation();
 
   const { data, refetch, fetchMore } = useQuery(getItemsQuery, {
@@ -37,7 +61,6 @@ export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, c
       },
     },
     onCompleted: (data) => {
-      if (!currentId) setCurrentId(data[listItemName][0]?.id);
       if (data[listItemName].length > DEFAULT_ENTITY_LIMIT - 1) {
         setLoadMore(true);
       }
@@ -96,27 +119,34 @@ export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, c
           (data[listItemName].length === 0 ? (
             <div className={styles.NoItems}>No {listItemName} found!</div>
           ) : (
-            data[listItemName].map((item: any) => (
-              <div
-                key={item.id}
-                className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
-                onClick={() => navigate(`/assistants/${item.id}`)}
-                data-testid="listItem"
-              >
-                <div className={styles.Itemm}>
-                  <div className={styles.Header}>
-                    <span className={styles.Title}>{item.name}</span>
-                    <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
+            data[listItemName].map((item: any) => {
+              const statusChip = item.status ? getStatus(item.status, item.newVersionInProgress) : null;
+
+              return (
+                <div
+                  key={item.id}
+                  className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
+                  onClick={() => navigate(`${baseRoute}/${item.id}`)}
+                  data-testid="listItem"
+                >
+                  <div className={styles.Itemm}>
+                    <div className={styles.Header}>
+                      <span className={styles.Title}>{item.name}</span>
+                      <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
+                    </div>
+                    <div className={styles.Footer}>
+                      <span className={styles.Id}>
+                        <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
+                          <CopyIcon />
+                        </IconButton>
+                        {item.itemId}
+                      </span>
+                      {statusChip}
+                    </div>
                   </div>
-                  <span className={styles.Id}>
-                    <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
-                      <CopyIcon />
-                    </IconButton>
-                    {item.itemId}
-                  </span>
                 </div>
-              </div>
-            ))
+              );
+            })
           ))}
         {showLoadMore ? (
           <span data-testid="loadmore" onClick={loadMoreItems} className={styles.LoadMore}>
@@ -127,3 +157,5 @@ export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, c
     </div>
   );
 };
+
+export default List;

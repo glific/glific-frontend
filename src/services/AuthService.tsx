@@ -22,7 +22,8 @@ type ServiceType =
   | 'whatsappGroupEnabled'
   | 'certificateEnabled'
   | 'askMeBotEnabled'
-  | 'whatsappFormsEnabled';
+  | 'whatsappFormsEnabled'
+  | 'assistantConfigVersionsEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
@@ -45,6 +46,12 @@ export const getAuthSession = (element?: string) => {
       break;
     case 'last_login_time':
       returnValue = JSON.parse(session).last_login_time;
+      break;
+    case 'is_trial':
+      returnValue = JSON.parse(session).is_trial;
+      break;
+    case 'trial_expiration_date':
+      returnValue = JSON.parse(session).trial_expiration_date;
       break;
     default:
       returnValue = session;
@@ -88,13 +95,17 @@ export const checkAuthStatusService = () => {
 
 // set authentication session
 export const setAuthSession = (session: object) => {
-  const lastLoginTime = getAuthSession('last_login_time');
-  if (lastLoginTime) {
-    const existingSession = { ...session, last_login_time: lastLoginTime };
-    localStorage.setItem('glific_session', JSON.stringify(existingSession));
-  } else {
-    localStorage.setItem('glific_session', JSON.stringify(session));
-  }
+  const existingSession = localStorage.getItem('glific_session');
+  const existingData = existingSession ? JSON.parse(existingSession) : {};
+
+  // Merge: Keep all existing fields, but allow new session to override them
+  // This way we preserve trial fields even if they're not in subsequent calls
+  const mergedSession = {
+    ...existingData,
+    ...session,
+  };
+
+  localStorage.setItem('glific_session', JSON.stringify(mergedSession));
 };
 
 // clear the authentication session
