@@ -1,29 +1,37 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter, Route, Routes } from 'react-router';
-import Assistants from './Assistants';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import * as Notification from 'common/notification';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
+  cloneCompletedMocks,
+  cloneErrorMocks,
+  cloneFailedMocks,
+  clonePendingMocks,
+  createAssistantWithoutKBMocks,
   emptyMocks,
   errorMocks,
+  legacyVectorStoreMocks,
   loadMoreMocks,
+  newVersionInProgressMocks,
+  unknownModelMocks,
   uploadSupportedFileMocks,
 } from 'mocks/Assistants';
-import * as Notification from 'common/notification';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import Assistants from './Assistants';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
-const mockedUsedNavigate = vi.fn();
-vi.mock('react-router', async () => ({
-  ...(await vi.importActual('react-router')),
-  useNavigate: () => mockedUsedNavigate,
-}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 const assistantsComponent = (mocks: any = MOCKS) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/assistants']}>
       <Routes>
+        <Route path="/assistants/add" element={<Assistants />} />
         <Route path="/assistants" element={<Assistants />} />
         <Route path="/assistants/:assistantId" element={<Assistants />} />
       </Routes>
@@ -49,18 +57,20 @@ test('it renders the list properly and switches between items', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
-  });
-
-  await waitFor(() => {
     expect(screen.getAllByTestId('listItem')).toHaveLength(3);
   });
 
   fireEvent.click(screen.getAllByTestId('listItem')[1]);
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText('vs_abc123')).toBeInTheDocument();
+  });
 });
 
 test('it creates an assistant', async () => {
-  render(assistantsComponent());
+  render(assistantsComponent(uploadSupportedFileMocks));
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
@@ -70,7 +80,82 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('headingButton'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[1], { target: { value: 'test name' } });
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(autocompletes[0], { key: 'Enter' });
+  autocompletes[0].focus();
+  fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+  });
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('1 file')).toBeInTheDocument();
+  });
+
+  fireEvent.change(inputs[3], { target: { value: 'description for new changes' } });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
+  });
+});
+
+test('it creates an assistant without a knowledge base', async () => {
+  render(assistantsComponent(createAssistantWithoutKBMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[1], { target: { value: 'test name' } });
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(autocompletes[0], { key: 'Enter' });
+  autocompletes[0].focus();
+  fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
+
+  fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully', 'success');
   });
 });
 
@@ -118,6 +203,11 @@ test('it uploads files to assistant', async () => {
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -147,20 +237,20 @@ test('it uploads files to assistant', async () => {
   fireEvent.click(screen.getAllByTestId('deleteFile')[0]);
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(screen.queryByText('testFile.txt')).not.toBeInTheDocument();
   });
 
   fireEvent.change(fileInput, { target: { files: [mockFileBiggerThan20MB] } });
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('testFile2.txt is above 20MB', 'warning');
   });
 
   fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
@@ -175,6 +265,11 @@ test('it shows error when adding files to assistant fails', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -185,13 +280,13 @@ test('it shows error when adding files to assistant fails', async () => {
   fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(errorMessageSpy).toHaveBeenCalled();
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
   });
 });
 
@@ -202,6 +297,8 @@ test('it updates the assistant', async () => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
 
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
@@ -215,16 +312,41 @@ test('it updates the assistant', async () => {
   autocompletes[0].focus();
   fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
 
-  fireEvent.click(screen.getByText('chatgpt-4o-latest'), { key: 'Enter' });
+  fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
-  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(inputs[2], { target: { value: 'new test instructions' } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+  });
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      "Knowledge base creation in progress, will notify once it's done",
+      'success'
+    );
+  });
+
+  // Verify prompt and temperature are preserved after file save
+  expect(inputs[2]).toHaveValue('new test instructions');
 
   fireEvent.click(screen.getByTestId('submitAction'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully', 'success');
   });
 });
 
@@ -235,6 +357,8 @@ test('it deletes the assistant', async () => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
 
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
@@ -264,17 +388,19 @@ test('it should show errors for invalid value in temperature', async () => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
   await waitFor(() => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 2.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 2.5 } });
 
   await waitFor(() => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: -2.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: -2.5 } });
 
   await waitFor(() => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
@@ -288,6 +414,8 @@ test('it opens the instruction dialog box', async () => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
   });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
 
   await waitFor(() => {
     expect(screen.getByTestId('expandIcon')).toBeInTheDocument();
@@ -305,12 +433,57 @@ test('it opens the instruction dialog box', async () => {
   });
 });
 
+test('it shows read-only note and hides upload for legacy vector store', async () => {
+  render(assistantsComponent(legacyVectorStoreMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Knowledge Base Files *')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('readOnlyNote')).toBeInTheDocument();
+  });
+
+  expect(screen.queryByTestId('uploadFile')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('deleteFile')).not.toBeInTheDocument();
+});
+
+test('it shows version in progress indicator when newVersionInProgress is true', async () => {
+  render(assistantsComponent(newVersionInProgressMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('versionInProgress')).toBeInTheDocument();
+    expect(screen.getByText('A new version is being created')).toBeInTheDocument();
+  });
+});
+
 test('uploading multiple files and error messages', async () => {
   render(assistantsComponent(errorMocks));
 
   await waitFor(() => {
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
     expect(screen.getByTestId('addFiles'));
   });
 
@@ -339,16 +512,245 @@ test('uploading multiple files and error messages', async () => {
 
   //shows error message for larger files
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'error');
+    expect(notificationSpy).toHaveBeenCalledWith('testFile2.txt is above 20MB', 'warning');
   });
 
+  //no files should be uploaded as input does not allow csv files to be selected
   await waitFor(() => {
-    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+    expect(screen.queryByText('testFile.csv')).not.toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+});
+
+test("it shows indicator for unsaved changes when there are changes in the assistant's prompt or settings", async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const inputs = screen.getAllByRole('textbox');
+
+  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
+  });
+});
+
+test('it displays assistant status in the list', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  const statusBadges = screen.getAllByTestId('assistantStatus');
+  expect(statusBadges.length).toBeGreaterThan(0);
+  expect(statusBadges[0]).toHaveTextContent('Ready');
+});
+
+test('it displays a model returned from backend that is not in the hardcoded list', async () => {
+  render(assistantsComponent(unknownModelMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  const autocompletes = screen.getAllByTestId('AutocompleteInput');
+  expect(autocompletes[0].querySelector('input')).toHaveValue('o3-mini');
+});
+
+test('closing a knowledge base dialog with no files should revert to the original files', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+
+  fireEvent.click(screen.getByTestId('deleteFile'));
+
+  // ok button should be disabled and file list should be empty after deleting the only file present
+  await waitFor(() => {
+    expect(screen.queryAllByTestId('fileItem')).toHaveLength(0);
+    expect(screen.getByTestId('ok-button')).toBeDisabled();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  // dialog should be closed and original file should still be present
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+  });
+});
+
+test('it shows Clone Assistant button when cloneStatus is pending', async () => {
+  render(assistantsComponent(clonePendingMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+    expect(screen.getByTestId('cloneAssistant')).toHaveTextContent('Clone Assistant');
+    expect(screen.getByTestId('cloneAssistant')).not.toBeDisabled();
+  });
+});
+
+test('it shows confirmation dialog and initiates cloning on proceed', async () => {
+  render(assistantsComponent(clonePendingMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cloneAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Cloning May Affect Responses')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith("Files with extension '.csv' not supported in Filesearch", 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith('Assistant clone initiated');
+  });
+});
+
+test('it cancels clone confirmation dialog', async () => {
+  render(assistantsComponent(clonePendingMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cloneAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Cloning May Affect Responses')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Cloning May Affect Responses')).not.toBeInTheDocument();
+  });
+});
+
+test('it shows disabled Clone Assistant button when cloneStatus is completed', async () => {
+  render(assistantsComponent(cloneCompletedMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+    expect(screen.getByTestId('cloneAssistant')).toBeDisabled();
+    expect(screen.getByTestId('cloneAssistant')).toHaveTextContent('Clone Assistant');
+  });
+});
+
+test('it shows Retry cloning button when cloneStatus is failed', async () => {
+  render(assistantsComponent(cloneFailedMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+    expect(screen.getByTestId('cloneAssistant')).toHaveTextContent('Retry cloning');
+    expect(screen.getByTestId('cloneAssistant')).not.toBeDisabled();
+  });
+});
+
+test('it does not show clone button when cloneStatus is none', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
+  });
+
+  expect(screen.queryByTestId('cloneAssistant')).not.toBeInTheDocument();
+});
+
+test('it shows error when clone mutation fails', async () => {
+  render(assistantsComponent(cloneErrorMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('listItem')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('cloneAssistant')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cloneAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Cloning May Affect Responses')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
   });
 });

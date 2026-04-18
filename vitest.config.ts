@@ -1,6 +1,6 @@
-import { defineConfig } from 'vitest/config';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -12,10 +12,11 @@ export default defineConfig({
       // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
       provider: 'istanbul', // or 'c8',
       include: ['src/**/**'],
-      exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
+      exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**', './src/mocks/**'],
     },
     css: true,
     testTimeout: 10000,
+    maxWorkers: '50%',
   },
   plugins: [tsconfigPaths(), svgr()],
 });

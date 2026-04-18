@@ -1,21 +1,24 @@
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
+
 import * as Yup from 'yup';
 
-import { copyToClipboard } from 'common/utils';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { copyToClipboard } from 'common/utils';
 
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
-import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
-import { DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CLONE_ASSISTANT, CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { GET_ASSISTANT } from 'graphql/queries/Assistant';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
@@ -26,94 +29,177 @@ import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 import styles from './CreateAssistant.module.css';
 
 interface CreateAssistantProps {
-  currentId: string | number | null;
   updateList: boolean;
-  setCurrentId: any;
   setUpdateList: any;
 }
 
-export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, updateList }: CreateAssistantProps) => {
+const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
+  (model) => ({ id: model, label: model })
+);
+
+const initialValues = {
+  name: '',
+  model: modelOptions[0] as any,
+  instructions: '',
+  temperature: 0.1,
+  knowledgeBaseVersionId: '',
+  knowledgeBaseName: '',
+  versionDescription: '',
+  initialFiles: [] as any[],
+};
+
+const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
-  const [name, setName] = useState('');
-  const [model, setModel] = useState<any>(null);
-  const [instructions, setInstructions] = useState('');
-  const [options, setOptions] = useState({ fileSearch: true, temperature: 0.1 });
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
+  const shouldResetFormRef = useRef(true);
+
+  let isEditing = false;
+  const params = useParams();
+  let currentId = null;
+  if (params.assistantId) {
+    currentId = params.assistantId;
+    isEditing = true;
+  }
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const states = {
-    name,
-    model,
-    instructions,
-    options,
-  };
+  const [getAssistant, { loading, data, startPolling, stopPolling }] = useLazyQuery(GET_ASSISTANT, {
+    fetchPolicy: 'network-only',
+  });
+  const assistantData = data?.assistant?.assistant;
+  const newVersionInProgress = assistantData?.newVersionInProgress ?? false;
 
-  let modelOptions = [];
-
-  const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
-  const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
-
+  const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
-
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
+  const [cloneInitiated, setCloneInitiated] = useState(false);
+  const [cloneAssistant] = useMutation(CLONE_ASSISTANT);
 
-  if (modelsList) {
-    modelOptions = modelsList?.listOpenaiModels.map((item: string, index: number) => ({
-      id: index.toString(),
-      label: item,
-    }));
-  }
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    model: Yup.object().nullable().required('Model is required'),
+    instructions: Yup.string().required('Instructions are required'),
+    knowledgeBaseVersionId: Yup.string(),
+  });
 
-  useEffect(() => {
-    if (currentId && modelsList) {
-      getAssistant({
-        variables: { assistantId: currentId },
-        onCompleted: ({ assistant }) => {
-          setAssistantId(assistant?.assistant?.assistantId);
-          setName(assistant?.assistant?.name);
-          const modelValue = modelOptions?.find(
-            (item: { label: string }) => item.label === assistant?.assistant?.model
-          );
-          setModel(modelValue);
-          setInstructions(assistant?.assistant?.instructions || '');
-          setOptions({
-            ...options,
-            temperature: assistant?.assistant?.temperature,
-          });
+  const handleCreate = (values: typeof initialValues) => {
+    const payload: Record<string, any> = {
+      instructions: values.instructions,
+      model: values.model?.label,
+      name: values.name,
+      temperature: values.temperature,
+    };
+
+    if (values.versionDescription?.trim()) {
+      payload.description = values.versionDescription.trim();
+    }
+
+    if (values.knowledgeBaseVersionId) {
+      payload.knowledgeBaseVersionId = values.knowledgeBaseVersionId;
+    }
+    if (isEditing) {
+      updateAssistant({
+        variables: {
+          updateAssistantId: currentId,
+          input: payload,
+        },
+        refetchQueries: [{ query: GET_ASSISTANT, variables: { assistantId: currentId } }],
+        onCompleted: ({ updateAssistant: updateAssistantData }) => {
+          if (updateAssistantData.errors && updateAssistantData.errors.length > 0) {
+            setErrorMessage(updateAssistantData.errors[0]);
+            return;
+          }
+          shouldResetFormRef.current = true;
+          setNotification('Changes saved successfully', 'success');
+          setUpdateList(!updateList);
+          setHasUnsavedFiles(false);
+        },
+        onError: (errors) => {
+          setErrorMessage(errors);
+        },
+      });
+    } else {
+      createAssistant({
+        variables: {
+          input: payload,
+        },
+        onCompleted: ({ createAssistant: createAssistantData }) => {
+          if (createAssistantData.errors?.length > 0) {
+            setErrorMessage(createAssistantData.errors[0]);
+            return;
+          }
+          setNotification(t('Assistant created successfully'), 'success');
+          navigate(`/assistants/${createAssistantData.assistant.id}`);
+          setUpdateList(!updateList);
+        },
+        onError: (error) => {
+          setErrorMessage(error);
         },
       });
     }
-  }, [currentId, modelsList]);
-
-  const handleCreate = () => {
-    const { instructions: instructionsValue, model: modelValue, name: nameValue, options: optionsValue } = states;
-
-    const payload = {
-      instructions: instructionsValue,
-      model: modelValue.label,
-      name: nameValue,
-      temperature: optionsValue?.temperature,
-    };
-
-    updateAssistant({
-      variables: {
-        updateAssistantId: currentId,
-        input: payload,
-      },
-      onCompleted: ({ updateAssistant }) => {
-        if (updateAssistant.errors && updateAssistant.errors.length > 0) {
-          setErrorMessage(updateAssistant.errors[0]);
-          return;
-        }
-        setNotification('Changes saved successfully', 'success');
-        setUpdateList(!updateList);
-      },
-      onError: (errors) => {
-        setErrorMessage(errors);
-      },
-    });
   };
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: FormSchema,
+    enableReinitialize: false,
+    onSubmit: handleCreate,
+  });
+
+  useEffect(() => {
+    if (currentId && isEditing) {
+      shouldResetFormRef.current = true;
+      getAssistant({ variables: { assistantId: currentId } });
+    }
+  }, [currentId, isEditing]);
+
+  useEffect(() => {
+    if (assistantData && shouldResetFormRef.current) {
+      shouldResetFormRef.current = false;
+      setAssistantId(assistantData.assistantId);
+      const modelValue = assistantData.model ? { id: assistantData.model, label: assistantData.model } : null;
+      formik.resetForm({
+        values: {
+          name: assistantData.name,
+          model: modelValue,
+          instructions: assistantData.instructions,
+          temperature: assistantData.temperature,
+          knowledgeBaseVersionId: assistantData.vectorStore?.knowledgeBaseVersionId,
+          knowledgeBaseName: assistantData.vectorStore?.name,
+          versionDescription: assistantData.description,
+          initialFiles:
+            assistantData?.vectorStore?.files.map((file: any) => ({
+              fileId: file.id,
+              filename: file.name,
+            })) || [],
+        },
+      });
+    }
+  }, [data]);
+
+  const cloneStatus = assistantData?.cloneStatus;
+
+  useEffect(() => {
+    if (newVersionInProgress || cloneInitiated) {
+      startPolling(5000);
+    } else {
+      stopPolling();
+    }
+    return () => stopPolling();
+  }, [newVersionInProgress, cloneInitiated]);
+
+  useEffect(() => {
+    if (!cloneInitiated) return;
+    if (cloneStatus === 'completed') {
+      setCloneInitiated(false);
+      stopPolling();
+      setNotification(t('Assistant cloned successfully'));
+      setUpdateList(!updateList);
+    }
+  }, [cloneStatus]);
 
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
@@ -127,28 +213,35 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       name: 'name',
       type: 'text',
       label: `${t('Name')}*`,
-      onChange: (value: any) => setName(value),
+      disabled: newVersionInProgress,
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
-          <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
-            <CopyIcon />
-            <span>{assistantId}</span>
-          </div>
+          {isEditing && (
+            <div
+              role="button"
+              data-testid="copyCurrentAssistantId"
+              onClick={() => copyToClipboard(assistantId)}
+              onKeyDown={() => copyToClipboard(assistantId)}
+              tabIndex={-1}
+            >
+              <CopyIcon />
+              <span>{assistantId}</span>
+            </div>
+          )}
         </div>
       ),
     },
     {
       component: AutoComplete,
       name: 'model',
-      options: modelOptions || [],
+      options: modelOptions,
       optionLabel: 'label',
       multiple: false,
       label: `${t('Model')}*`,
       helperText: t('Choose the best model for your needs.'),
-      onChange: (value: any) => setModel(value),
+      disabled: newVersionInProgress,
     },
-
     {
       component: Input,
       name: 'instructions',
@@ -157,32 +250,35 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       rows: 3,
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
-      onChange: (value: any) => setInstructions(value),
       endAdornment: expandIcon,
+      disabled: newVersionInProgress,
     },
     {
       component: AssistantOptions,
-      name: 'options',
-      options,
-      currentId,
-      setOptions,
+      name: 'assistantOptions',
+      formikValues: formik.values,
+      setFieldValue: formik.setFieldValue,
+      formikErrors: formik.errors,
+      formikTouched: formik.touched,
+      validateForm: formik.validateForm,
+      knowledgeBaseId: assistantData?.vectorStore?.id || null,
+      isLegacyVectorStore: assistantData?.vectorStore?.legacy ?? false,
+      vectorStoreId: assistantData?.vectorStore?.vectorStoreId,
+      initialFiles: formik.values.initialFiles,
+      onFilesChange: setHasUnsavedFiles,
+      disabled: newVersionInProgress,
+    },
+    {
+      component: Input,
+      name: 'versionDescription',
+      type: 'text',
+      label: t('Notes (Optional)'),
+      rows: 2,
+      textArea: true,
+      helperText: t('Add notes on changes made to this assistant'),
+      disabled: newVersionInProgress,
     },
   ];
-
-  const FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    model: Yup.object().required('Model is required'),
-    instructions: Yup.string().required('Instructions are required'),
-  });
-
-  const formik = useFormik({
-    initialValues: states,
-    validationSchema: FormSchema,
-    enableReinitialize: true,
-    onSubmit: () => {
-      handleCreate();
-    },
-  });
 
   const handleClose = () => {
     setShowConfirmation(false);
@@ -196,18 +292,52 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       onCompleted: ({ deleteAssistant }) => {
         setShowConfirmation(false);
         setNotification(`Assistant ${deleteAssistant.assistant.name} deleted successfully`, 'success');
-        setCurrentId(null);
         setUpdateList(!updateList);
+        navigate('/assistants');
+      },
+      onError: (error) => {
+        setErrorMessage(error);
       },
     });
   };
 
+  const handleCloneConfirm = async () => {
+    setShowCloneDialog(false);
+    setCloneInitiated(true);
+    try {
+      const response = await cloneAssistant({ variables: { cloneAssistantId: currentId } });
+      if (response.data?.cloneAssistant?.errors?.length > 0) {
+        setErrorMessage(response.data.cloneAssistant.errors[0]);
+        setCloneInitiated(false);
+        return;
+      }
+      const message = response.data?.cloneAssistant?.message || t('Assistant clone initiated');
+      setNotification(message);
+      startPolling(5000);
+    } catch (error: unknown) {
+      setErrorMessage(error);
+      setCloneInitiated(false);
+    }
+  };
+
+  const isCloning = cloneInitiated || cloneStatus === 'in_progress';
+  const isAlreadyCloned = cloneStatus === 'completed';
+  const showCloneButton = isEditing && cloneStatus && cloneStatus !== 'none';
+
+  const getCloneButtonLabel = () => {
+    if (isCloning) return t('Cloning');
+    if (cloneStatus === 'failed') return t('Retry cloning');
+    return t('Clone Assistant');
+  };
+
   let dialog;
   let instructionsDialog;
+  let cloneConfirmDialog;
+
   if (showConfirmation) {
     dialog = (
       <DialogBox
-        title={`Are you sure you want to delete the assistant ${name}?`}
+        title={`Are you sure you want to delete the assistant ${formik.values.name}?`}
         handleCancel={handleClose}
         colorOk="warning"
         alignButtons="center"
@@ -221,6 +351,26 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       </DialogBox>
     );
   }
+  if (showCloneDialog) {
+    cloneConfirmDialog = (
+      <DialogBox
+        title={t('Cloning May Affect Responses')}
+        handleCancel={() => setShowCloneDialog(false)}
+        handleOk={handleCloneConfirm}
+        buttonOk={t('Proceed')}
+        alignButtons="center"
+      >
+        <div className={styles.DialogContent}>
+          {t(
+            'Cloned assistants may behave differently from the original. We recommend reviewing responses or running evaluations after cloning. Need help? Contact support.'
+          )}
+          <br />
+          <br />
+          {t('Do you want to proceed?')}
+        </div>
+      </DialogBox>
+    );
+  }
   if (openInstructions) {
     instructionsDialog = (
       <Modal open={openInstructions} onClose={() => setOpenInstructions(false)}>
@@ -229,8 +379,8 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
             <h5>Edit system instructions</h5>
             <OutlinedInput
               name="expand-instructions"
-              onChange={(event) => setInstructions(event.target.value)}
-              value={instructions}
+              onChange={(event) => formik.setFieldValue('instructions', event.target.value)}
+              value={formik.values.instructions}
               className={styles.Input}
               multiline
               rows={16}
@@ -249,15 +399,62 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
     );
   }
 
-  if (loading || listLoading) {
+  const { values: v, initialValues: iv } = formik;
+  const hasUnsavedChanges =
+    v.name?.trim() !== (iv.name || '').trim() ||
+    v.instructions?.trim() !== (iv.instructions || '').trim() ||
+    v.model?.label !== iv.model?.label ||
+    v.temperature !== iv.temperature ||
+    hasUnsavedFiles;
+
+  if (loading) {
     return <Loading />;
   }
 
-  if (!data?.assistant?.assistant) return;
+  if (!assistantData && params.assistantId) {
+    return <p className={styles.NotFound}>{t('Assistant not found')}</p>;
+  }
 
   return (
     <FormikProvider value={formik}>
-      <div className={styles.FormContainer}>
+      <div
+        className={`${styles.FormContainer} ${hasUnsavedChanges && styles.UnsavedContainer} ${newVersionInProgress && styles.VersionInProgressContainer}`}
+        data-testid="createAssistantContainer"
+      >
+        <div className={`${styles.StatusContainer} ${newVersionInProgress && styles.GreenBackground}`}>
+          {newVersionInProgress && (
+            <div className={styles.VersionInProgress} data-testid="versionInProgress">
+              <CircularProgress size={16} />
+              <span>{t('A new version is being created')}</span>
+            </div>
+          )}
+
+          {hasUnsavedChanges && (
+            <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">
+              {t('Unsaved changes')}
+            </span>
+          )}
+        </div>
+
+        {showCloneButton && (
+          <div className={styles.CloneButtonContainer}>
+            <Tooltip title={isAlreadyCloned ? t('Already cloned') : ''} placement="bottom">
+              <span>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowCloneDialog(true)}
+                  disabled={isCloning || isAlreadyCloned}
+                  data-testid="cloneAssistant"
+                >
+                  {getCloneButtonLabel()}
+                  {isCloning && <CircularProgress size={16} color="inherit" className={styles.CloneSpinner} />}
+                </Button>
+              </span>
+            </Tooltip>
+          </div>
+        )}
+
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
@@ -271,7 +468,13 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
             ))}
           </div>
           <div className={styles.Buttons}>
-            <Button loading={savingChanges} onClick={formik.submitForm} variant="contained" data-testid="submitAction">
+            <Button
+              loading={savingChanges || createLoading}
+              onClick={formik.submitForm}
+              variant="contained"
+              data-testid="submitAction"
+              disabled={newVersionInProgress}
+            >
               {t('Save')}
             </Button>
             <Button
@@ -287,8 +490,11 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
           </div>
         </form>
         {dialog}
+        {cloneConfirmDialog}
         {instructionsDialog}
       </div>
     </FormikProvider>
   );
 };
+
+export default CreateAssistant;

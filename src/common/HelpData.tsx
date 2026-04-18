@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+
 export interface HelpDataProps {
   heading: any;
   link?: string;
@@ -102,9 +104,17 @@ export const blockedContactsInfo: HelpDataProps = {
 };
 
 export const assistantsInfo: HelpDataProps = {
-  heading:
-    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.',
-  link: 'https://glific.github.io/docs/docs/Integrations/RAG%20using%20OpenAI%20file%20search%20assistant', // Replace with the actual Glific documentation link
+  heading: t(
+    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.'
+  ),
+  link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/'
+};
+
+export const assistantListInfo: HelpDataProps = {
+  heading: t(
+    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.'
+  ),
+  link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/'
 };
 
 export const templateStatusInfo: HelpDataProps = {
