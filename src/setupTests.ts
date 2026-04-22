@@ -2,7 +2,9 @@ import 'mocks/matchMediaMock';
 import { vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+configure({ asyncUtilTimeout: 2000 });
 
 // runs a cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {

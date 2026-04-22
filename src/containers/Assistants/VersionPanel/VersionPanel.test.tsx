@@ -62,15 +62,6 @@ describe('VersionPanel', () => {
     });
   });
 
-  it('shows status chip for ready status', async () => {
-    renderVersionPanel();
-
-    await waitFor(() => {
-      const statusChips = screen.getAllByTestId('versionStatus');
-      expect(statusChips.length).toBeGreaterThan(0);
-    });
-  });
-
   it('shows in_progress status chip correctly', async () => {
     const versionsWithInProgress = [{ ...mockVersions[0], status: 'in_progress' }];
     renderVersionPanel({}, [getVersionsMock('1', versionsWithInProgress)]);
@@ -78,6 +69,17 @@ describe('VersionPanel', () => {
     await waitFor(() => {
       expect(screen.getByTestId('versionStatus')).toHaveTextContent('In Progress');
     });
+  });
+
+  it('does not show status chip for ready status', async () => {
+    const versionsWithReady = [{ ...mockVersions[0], status: 'ready' }];
+    renderVersionPanel({}, [getVersionsMock('1', versionsWithReady)]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('versionCard')).toHaveLength(1);
+    });
+
+    expect(screen.queryByTestId('versionStatus')).not.toBeInTheDocument();
   });
 
   it('shows failed status chip correctly', async () => {

@@ -4,11 +4,11 @@ import * as Notification from 'common/notification';
 import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
-  createAssistantWithoutKBMocks,
   cloneCompletedMocks,
   cloneErrorMocks,
   cloneFailedMocks,
   clonePendingMocks,
+  createAssistantWithoutKBMocks,
   emptyMocks,
   errorMocks,
   legacyVectorStoreMocks,
@@ -65,7 +65,7 @@ test('it renders the list properly and switches between items', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(screen.getByText('VectorStore-77ae3597')).toBeInTheDocument();
+    expect(screen.getByText('vs_abc123')).toBeInTheDocument();
   });
 });
 
@@ -88,7 +88,7 @@ test('it creates an assistant', async () => {
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
 
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
@@ -99,12 +99,8 @@ test('it creates an assistant', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
   });
-  fireEvent.click(screen.getByTestId('ok-button'));
-
-  fireEvent.click(screen.getByTestId('addFiles'));
 
   const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
-
   fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
 
   await waitFor(() => {
@@ -114,7 +110,7 @@ test('it creates an assistant', async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -149,7 +145,7 @@ test('it creates an assistant without a knowledge base', async () => {
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
   fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
 
   fireEvent.click(autocompletes[0], { key: 'Enter' });
   autocompletes[0].focus();
@@ -319,13 +315,38 @@ test('it updates the assistant', async () => {
   fireEvent.click(screen.getByText('gpt-4o-mini'), { key: 'Enter' });
 
   fireEvent.change(inputs[1], { target: { value: 'test name' } });
-  fireEvent.change(inputs[2], { target: { value: 'test instructions' } });
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
+  fireEvent.change(inputs[2], { target: { value: 'new test instructions' } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 1.5 } });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Manage Files');
+  });
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      "Knowledge base creation in progress, will notify once it's done",
+      'success'
+    );
+  });
+
+  // Verify prompt and temperature are preserved after file save
+  expect(inputs[2]).toHaveValue('new test instructions');
 
   fireEvent.click(screen.getByTestId('submitAction'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully', 'success');
   });
 });
 
@@ -373,13 +394,13 @@ test('it should show errors for invalid value in temperature', async () => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 2.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: 2.5 } });
 
   await waitFor(() => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
   });
 
-  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: -2.5 } });
+  fireEvent.change(screen.getByTestId('sliderDisplay'), { target: { value: -2.5 } });
 
   await waitFor(() => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();

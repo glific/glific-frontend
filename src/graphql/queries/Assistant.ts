@@ -80,6 +80,19 @@ export const GET_ASSISTANT_VERSIONS = gql`
       description
       insertedAt
       updatedAt
+      vectorStore {
+        id
+        vectorStoreId
+        knowledgeBaseVersionId
+        name
+        legacy
+        size
+        files {
+          name
+          id
+          fileSize
+        }
+      }
     }
   }
 `;

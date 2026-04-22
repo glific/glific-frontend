@@ -41,28 +41,34 @@
   margin: 0 -2rem;
   padding: 0 2rem;
   box-shadow: 0 4px 4px 0 #0000000a;
+  overflow: hidden;
 }
 
 .Breadcrumb {
   font-size: 1rem;
   font-weight: 600;
   color: #073f24;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  min-width: 0;
+  flex: 1;
 }
 
 .HeaderActions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .CreateActions {
-  position: fixed;
-  top: 120px;
-  right: 24px;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  z-index: 1100;
+  flex-shrink: 0;
+  padding: 16px 0 8px;
+  border-top: 1px solid #e0e0e0;
 }
 
 .Form {
