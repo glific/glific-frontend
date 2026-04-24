@@ -82,8 +82,12 @@ const toHistoryItems = (conversations: DifyConversation[]): ChatHistoryItem[] =>
     date: getDateLabel(conv.updatedAt || conv.createdAt),
   }));
 
-const AskGlific = () => {
-  const [open, setOpen] = useState(false);
+interface AskGlificProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -389,29 +393,6 @@ const AskGlific = () => {
 
   return (
     <>
-      {!open && (
-        <Tooltip title="Ask Glific" placement="left" arrow>
-          <Fab
-            data-testid="ask-glific-fab"
-            color="primary"
-            aria-label="ask glific"
-            onClick={() => setOpen(true)}
-            sx={{
-              position: 'fixed',
-              bottom: 16,
-              right: 16,
-              background: '#119656',
-              cursor: 'pointer',
-              transition: 'transform 0.2s ease-in-out',
-              zIndex: 1300,
-              boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
-            }}
-          >
-            <AskGlificIcon />
-          </Fab>
-        </Tooltip>
-      )}
-
       {open && (
         <div className={wrapperClass} data-testid="ask-me-bot-panel">
           {/* Chat History Side Panel — sidebar/fullscreen only */}

@@ -20,6 +20,8 @@ import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
 import { useToast } from 'services/ToastService';
 import styles from './AuthenticatedRoute.module.css';
+import { Fab, Tooltip } from '@mui/material';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -191,6 +193,7 @@ export const AuthenticatedRoute = () => {
   const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
 
   const [provider, setProvider] = useState<string>('');
+  const [showAskGlific, setShowAskGlific] = useState(false);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
   const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
@@ -256,7 +259,29 @@ export const AuthenticatedRoute = () => {
           <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
             <ErrorBoundary>
               {route}
-              {isAskGlificEnabled && <AskGlific />}
+              {!showAskGlific && (
+                <Tooltip title="Ask Glific" placement="left" arrow>
+                  <Fab
+                    data-testid="ask-glific-fab"
+                    color="primary"
+                    aria-label="ask glific"
+                    onClick={() => setShowAskGlific(true)}
+                    sx={{
+                      position: 'fixed',
+                      bottom: 16,
+                      right: 16,
+                      background: '#119656',
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s ease-in-out',
+                      zIndex: 99,
+                      boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
+                    }}
+                  >
+                    <AskGlificIcon />
+                  </Fab>
+                </Tooltip>
+              )}
+              {isAskGlificEnabled && <AskGlific open={showAskGlific} setOpen={setShowAskGlific} />}
             </ErrorBoundary>
           </Suspense>
         </Layout>

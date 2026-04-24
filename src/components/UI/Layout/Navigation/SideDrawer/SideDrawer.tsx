@@ -11,9 +11,12 @@ import { UserMenu } from 'containers/UserMenu/UserMenu';
 import { TrialExpiryBanner } from 'containers/TrialBanner/TrialExpiryBanner';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Green.svg?react';
+import AskGlific from 'containers/AskGlific/AskGlific';
 
 export const SideDrawer = () => {
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
+  const [showAskGlific, setShowAskGlific] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { provider } = useContext(ProviderContext);
 
@@ -90,6 +93,11 @@ export const SideDrawer = () => {
         variant="permanent"
       >
         {drawer}
+        <div className={styles.AskGlificMenu} onClick={() => setShowAskGlific(true)}>
+          <AskGlificIcon />
+          Ask Glific
+        </div>
+        {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
       </Drawer>
       <UserMenu drawerOpen={drawerOpen} />
     </nav>

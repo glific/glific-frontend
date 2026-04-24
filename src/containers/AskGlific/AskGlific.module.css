@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: column;
   border-radius: 1rem;
+  z-index: 999;
+  position: absolute;
 }
 
 .Header {
@@ -318,7 +320,7 @@
   right: 16px;
   z-index: 1300;
   border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0 / 15%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 15%);
   overflow: hidden;
   width: 414px;
   height: 528px;
@@ -332,7 +334,7 @@
   width: 680px;
   height: 100vh;
   z-index: 1300;
-  box-shadow: -4px 0 24px rgba(0, 0, 0 /10%);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 10%);
   overflow: hidden;
   display: flex;
   flex-direction: row;
