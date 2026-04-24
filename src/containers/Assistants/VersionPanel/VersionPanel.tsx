@@ -11,6 +11,16 @@ import styles from './VersionPanel.module.css';
 
 dayjs.extend(relativeTime);
 
+export interface AssistantVectorStore {
+  id: string;
+  vectorStoreId: string;
+  knowledgeBaseVersionId: string;
+  name: string;
+  legacy: boolean;
+  size: number;
+  files: Array<{ name: string; id: string; fileSize: number }>;
+}
+
 export interface AssistantVersion {
   id: string;
   versionNumber: number;
@@ -22,6 +32,7 @@ export interface AssistantVersion {
   description?: string;
   insertedAt: string;
   updatedAt: string;
+  vectorStore?: AssistantVectorStore | null;
 }
 
 interface VersionPanelProps {
@@ -32,6 +43,11 @@ interface VersionPanelProps {
   refetchTrigger?: number;
 }
 
+
+const statusConfig: Record<string, { label: string; styleKey: string }> = {
+  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
+  failed: { label: 'Failed', styleKey: 'Failed' },
+};
 
 export const VersionPanel = ({
   assistantId,
@@ -93,12 +109,12 @@ export const VersionPanel = ({
                   {version.isLive && (
                     <Chip data-testid="liveBadge" label={t('LIVE')} size="small" className={styles.LiveBadge} />
                   )}
-                  {version.status === 'in_progress' && (
+                  {statusConfig[version.status] && (
                     <Chip
                       data-testid="versionStatus"
-                      label="In Progress"
+                      label={t(statusConfig[version.status].label as any)}
                       size="small"
-                      className={`${styles.StatusChip} ${styles.InProgress}`}
+                      className={`${styles.StatusChip} ${styles[statusConfig[version.status].styleKey]}`}
                     />
                   )}
                 </div>

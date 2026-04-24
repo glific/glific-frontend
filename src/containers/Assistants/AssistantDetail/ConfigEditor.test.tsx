@@ -22,14 +22,6 @@ const defaultEditProps = {
   assistantId: '1',
   assistantName: 'Test Assistant',
   version: mockVersion,
-  vectorStore: {
-    id: 'vs-1',
-    vectorStoreId: 'vs_abc123',
-    knowledgeBaseVersionId: 'llm-vs-1',
-    name: 'VectorStore-1',
-    legacy: false,
-    files: [],
-  },
   newVersionInProgress: false,
   onSaved: vi.fn(),
   onUnsavedChange: vi.fn(),
@@ -39,7 +31,6 @@ const defaultCreateProps = {
   assistantId: '',
   assistantName: '',
   version: undefined,
-  vectorStore: null,
   newVersionInProgress: false,
   onSaved: vi.fn(),
   onCancel: vi.fn(),
@@ -97,14 +88,24 @@ describe('ConfigEditor — create mode', () => {
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it('shows validation errors when submitting empty form', async () => {
+  it('keeps Save disabled until name and prompt are filled', async () => {
     renderCreate();
-    fireEvent.click(screen.getByText('Save'));
 
-    await waitFor(() => {
-      expect(screen.getByText('Name is required')).toBeInTheDocument();
-      expect(screen.getByText('Instructions are required')).toBeInTheDocument();
-    });
+    const saveButton = screen.getByTestId('createAssistantSaveButton');
+    expect(saveButton).toBeDisabled();
+
+    const nameField = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'name');
+    const instructionsField = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'instructions');
+
+    fireEvent.change(nameField!, { target: { value: 'My Assistant' } });
+    expect(saveButton).toBeDisabled();
+
+    fireEvent.change(nameField!, { target: { value: '' } });
+    fireEvent.change(instructionsField!, { target: { value: 'Test instructions' } });
+    expect(saveButton).toBeDisabled();
+
+    fireEvent.change(nameField!, { target: { value: 'My Assistant' } });
+    expect(saveButton).toBeEnabled();
   });
 
   it('calls createAssistant mutation and onSaved on success', async () => {
@@ -262,10 +263,10 @@ describe('ConfigEditor — settings parsing', () => {
     expect(screen.getByTestId('sliderDisplay')).toHaveValue(0.7);
   });
 
-  it('falls back to default model (gpt-4o) when version.model is null', () => {
+  it('falls back to default model (gpt-4.1) when version.model is null', () => {
     renderEdit({ version: { ...mockVersion, model: null } });
 
-    expect(screen.getByDisplayValue('gpt-4o')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('gpt-4.1')).toBeInTheDocument();
   });
 
   it('falls back to temperature 0.1 when settings is null', () => {

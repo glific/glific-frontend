@@ -6,22 +6,22 @@ import { useNavigate, useParams } from 'react-router';
 
 import { Button } from 'components/UI/Form/Button/Button';
 
-import { copyToClipboard } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
+import { copyToClipboard } from 'common/utils';
 
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
-import { GET_ASSISTANT } from 'graphql/queries/Assistant';
 import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { GET_ASSISTANT } from 'graphql/queries/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
-import EditIcon from 'assets/images/icons/Edit.svg?react';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
 
-import { ConfigEditor } from './ConfigEditor';
 import type { AssistantVersion } from '../VersionPanel/VersionPanel';
 import { VersionPanel } from '../VersionPanel/VersionPanel';
+import { ConfigEditor } from './ConfigEditor';
 
 import styles from './AssistantDetail.module.css';
 
@@ -135,7 +135,7 @@ export const AssistantDetail = () => {
   return (
     <div className={styles.Page} data-testid="assistantDetailContainer">
       {isCreateMode ? (
-        <Heading formTitle={t('Create New Assistant')} backLink="/assistants-new" />
+        <Heading formTitle={t('Create New Assistant')} backLink="/assistants" />
       ) : (
         <div className={styles.PageHeader} data-testid="heading">
           <div className={styles.HeaderLeft}>
@@ -192,7 +192,6 @@ export const AssistantDetail = () => {
           <ConfigEditor
             assistantId=""
             assistantName=""
-            vectorStore={null}
             newVersionInProgress={false}
             onSaved={handleSaved}
             onCancel={() => navigate('/assistants')}
@@ -218,7 +217,6 @@ export const AssistantDetail = () => {
                 assistantId={assistantId}
                 assistantName={assistantData.name}
                 version={selectedVersion}
-                vectorStore={assistantData.vectorStore ?? null}
                 newVersionInProgress={assistantData.newVersionInProgress ?? false}
                 onSaved={handleSaved}
                 onUnsavedChange={setHasUnsavedChanges}

@@ -82,15 +82,13 @@ describe('VersionPanel', () => {
     expect(screen.queryByTestId('versionStatus')).not.toBeInTheDocument();
   });
 
-  it('does not show status chip for failed status', async () => {
+  it('shows failed status chip correctly', async () => {
     const versionsWithFailed = [{ ...mockVersions[0], status: 'failed' }];
     renderVersionPanel({}, [getVersionsMock('1', versionsWithFailed)]);
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('versionCard')).toHaveLength(1);
+      expect(screen.getByTestId('versionStatus')).toHaveTextContent('Failed');
     });
-
-    expect(screen.queryByTestId('versionStatus')).not.toBeInTheDocument();
   });
 
   it('shows empty state when no versions exist', async () => {

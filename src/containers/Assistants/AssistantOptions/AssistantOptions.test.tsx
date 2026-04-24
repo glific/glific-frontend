@@ -28,6 +28,19 @@ const baseProps = {
 
 
 describe('AssistantOptions upload queue behavior', () => {
+  test('uses the restricted file type accept list for upload input', () => {
+    render(
+      <MockedProvider mocks={[]}>
+        <AssistantOptions {...baseProps} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    const uploadInput = screen.getByTestId('uploadFile');
+    expect(uploadInput).toHaveAttribute('accept', '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt');
+  });
+
   test('uploads at most 10 files concurrently and starts next queued file on completion', async () => {
     // Prepare 12 files to exceed the upload concurrency limit and test queueing
     const selectedFiles = Array.from({ length: 12 }, (_, index) => {
@@ -242,7 +255,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions
           {...baseProps}
           formikValues={{
@@ -317,7 +330,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions {...baseProps} />
       </MockedProvider>
     );
@@ -452,7 +465,9 @@ describe('AssistantOptions upload queue behavior', () => {
         .closest('[data-testid="fileItem"]')!
         .querySelector('[data-testid="deleteFile"]')!
     );
-    expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
+    });
   });
 
   test('shows warning notification on save when files have failed uploads', async () => {
@@ -580,7 +595,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions {...baseProps} />
       </MockedProvider>
     );
@@ -1318,7 +1333,7 @@ describe('AssistantOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AssistantOptions {...baseProps} />
       </MockedProvider>
     );

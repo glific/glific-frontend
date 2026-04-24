@@ -6,9 +6,9 @@ import { KnowledgeBaseOptions } from './KnowledgeBaseOptions';
 import * as Notification from 'common/notification';
 import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import {
-  knowledgeBaseOptionsBaseProps,
-  createUploadSuccessMock,
   createUploadErrorMock,
+  createUploadSuccessMock,
+  knowledgeBaseOptionsBaseProps,
   rateLimitError,
 } from 'mocks/KnowledgeBase';
 
@@ -124,6 +124,15 @@ describe('KnowledgeBaseOptions', () => {
 });
 
 describe('KnowledgeBaseOptions upload queue behavior', () => {
+  test('uses the restricted file type accept list for upload input', () => {
+    renderKnowledgeBaseOptions();
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    const uploadInput = screen.getByTestId('uploadFile');
+    expect(uploadInput).toHaveAttribute('accept', '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt');
+  });
+
   test('uploads at most 10 files concurrently and starts next queued file on completion', async () => {
     const selectedFiles = Array.from({ length: 12 }, (_, index) => {
       return new File(['content'], `queue-file-${index}.txt`, { type: 'text/plain' });

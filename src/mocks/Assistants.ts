@@ -344,6 +344,22 @@ export const unknownModelMocks = [
   getAssistant('1', { model: 'o3-mini' }),
   getAssistant('1', { model: 'o3-mini' }),
 ];
+const mockVectorStore = {
+  id: 'vs-1',
+  vectorStoreId: 'vs_abc123',
+  knowledgeBaseVersionId: 'llm-vs-1',
+  name: 'VectorStore-77ae3597',
+  legacy: false,
+  size: 32880,
+  files: [
+    {
+      name: 'Accelerator Guide (1).pdf',
+      id: 'file-rls90OGDUgFeLewh6e01Eamf',
+      fileSize: 32880,
+    },
+  ],
+};
+
 export const mockVersions = [
   {
     id: 'v1',
@@ -356,6 +372,7 @@ export const mockVersions = [
     description: 'Initial version',
     insertedAt: '2024-10-16T15:00:00Z',
     updatedAt: '2024-10-16T15:00:00Z',
+    vectorStore: mockVectorStore,
   },
   {
     id: 'v2',
@@ -368,10 +385,11 @@ export const mockVersions = [
     description: undefined,
     insertedAt: '2024-10-17T15:00:00Z',
     updatedAt: '2024-10-17T15:00:00Z',
+    vectorStore: mockVectorStore,
   },
 ];
 
-const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber?: number }) => ({
+const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber?: number; legacy?: boolean }) => ({
   request: {
     query: GET_ASSISTANT_VERSIONS,
     variables: { assistantId },
@@ -390,6 +408,7 @@ const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber
           description: 'Initial version',
           insertedAt: '2024-10-16T15:00:00Z',
           updatedAt: '2024-10-16T15:00:00Z',
+          vectorStore: { ...mockVectorStore, legacy: options?.legacy ?? false },
         },
         {
           id: 'v2',
@@ -402,6 +421,7 @@ const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber
           description: null,
           insertedAt: '2024-10-17T15:00:00Z',
           updatedAt: '2024-10-17T15:00:00Z',
+          vectorStore: { ...mockVectorStore, legacy: options?.legacy ?? false },
         },
       ],
     },
@@ -559,7 +579,7 @@ export const createAssistantSuccessMock = {
       input: {
         name: 'My Assistant',
         instructions: 'Test instructions',
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         temperature: 0.1,
       },
     },
@@ -581,7 +601,7 @@ export const createAssistantErrorMock = {
       input: {
         name: 'My Assistant',
         instructions: 'Test instructions',
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         temperature: 0.1,
       },
     },
@@ -808,7 +828,7 @@ export const createAssistantConfigMock = {
       input: {
         name: 'My Assistant',
         instructions: 'Test instructions',
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         temperature: 0.1,
       },
     },
