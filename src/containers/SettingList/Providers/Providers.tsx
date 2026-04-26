@@ -18,6 +18,11 @@ let validation: any = {};
 let FormSchema = Yup.object().shape(validation);
 const SettingIcon = <Settingicon />;
 
+const GUPSHUP_CREDENTIAL_FIELDS = ['app_name', 'api_key', 'app_id'];
+
+const areAllGupshupFieldsSet = (secretsObj: Record<string, string>) =>
+  GUPSHUP_CREDENTIAL_FIELDS.every((field) => secretsObj[field] && secretsObj[field] !== 'NA');
+
 const queries = {
   getItemQuery: GET_CREDENTIAL,
   createItemQuery: CREATE_CREDENTIAL,
@@ -49,8 +54,8 @@ export const Providers = () => {
   const setCredential = (item: any) => {
     const keysObj = JSON.parse(item.keys);
     const secretsObj = JSON.parse(item.secrets);
-    if (type === 'gupshup' && secretsObj.app_id && secretsObj.app_id !== 'NA') {
-      setIsDisabled(true);
+    if (type === 'gupshup') {
+      setIsDisabled(areAllGupshupFieldsSet(secretsObj));
     }
     const fields: any = {};
     Object.assign(fields, keysObj);
@@ -97,7 +102,7 @@ export const Providers = () => {
     });
     object = {
       shortcode: type,
-      isActive: payload.isActive,
+      isActive: type === 'gupshup' ? true : payload.isActive,
       keys: JSON.stringify(keysObj),
       secrets: JSON.stringify(secretsObj),
     };
@@ -115,9 +120,6 @@ export const Providers = () => {
       .when('isActive', {
         is: true,
         then: (schema) => {
-          if (type === 'gupshup' && key === 'app_id') {
-            return schema;
-          }
           return schema.nullable().required(`${fields[key].label} is required.`);
         },
         otherwise: (schema) =>
@@ -130,8 +132,12 @@ export const Providers = () => {
     // reset validation to empty
     resetValidation();
 
-    const formField: any = [
-      {
+    const formField: any = [];
+    let orderedKeys;
+    if (type === 'gupshup') {
+      orderedKeys = GUPSHUP_CREDENTIAL_FIELDS;
+    } else {
+      formField.push({
         component: Checkbox,
         name: 'isActive',
         title: (
@@ -139,12 +145,7 @@ export const Providers = () => {
             Active?
           </Typography>
         ),
-      },
-    ];
-    let orderedKeys;
-    if (type === 'gupshup') {
-      orderedKeys = ['app_name', 'api_key', 'app_id'];
-    } else {
+      });
       orderedKeys = Object.keys(fields);
     }
 
@@ -158,7 +159,7 @@ export const Providers = () => {
           disabled: fields[key].view_only,
           skip: fields[key].hide,
           placeholder:
-            type === 'gupshup' && (key === 'app_name' || key === 'api_key') ? `Enter ${fields[key].label} here` : '',
+            type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key) ? `Enter ${fields[key].label} here` : '',
         };
         formField.push(field);
 
@@ -188,10 +189,14 @@ export const Providers = () => {
           ? JSON.parse(credential?.credential?.credential?.secrets)
           : {};
 
-        if (type === 'gupshup' && credentials.app_id && credentials.app_id !== 'NA') {
+        if (type === 'gupshup') {
+          const allFieldsSet = areAllGupshupFieldsSet(credentials);
           Object.keys(fields).forEach((key) => {
-            fields[key].view_only = true;
+            if (GUPSHUP_CREDENTIAL_FIELDS.includes(key)) {
+              fields[key].view_only = allFieldsSet;
+            }
           });
+          setIsDisabled(areAllGupshupFieldsSet(credentials));
         }
 
         addField(fields);
@@ -238,6 +243,9 @@ export const Providers = () => {
         </div>
         <div>
           {t('API Key')}: {formValues.api_key || 'N/A'}
+        </div>
+        <div>
+          {t('App ID')}: {formValues.app_id || 'N/A'}
         </div>
       </div>
     ),

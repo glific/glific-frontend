@@ -9,7 +9,7 @@ import {
   getHSMTemplateTypeText,
   CREATE_SESSION_TEMPLATE_MOCK,
 } from 'mocks/Template';
-import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
+import { WHATSAPP_FORM_MOCKS, listWhatsappFormsForHsmInvalidDef } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import * as utilsModule from 'common/utils';
 import { setOrganizationServices } from 'services/AuthService';
@@ -282,6 +282,49 @@ describe('Add mode', () => {
     expect(screen.queryByText('WhatsApp Form')).not.toBeInTheDocument();
   });
 
+  test('should handle invalid form definition JSON gracefully', async () => {
+    setOrganizationServices(
+      '{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":true}'
+    );
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const INVALID_MOCKS = [listWhatsappFormsForHsmInvalidDef, ...MOCKS];
+
+    render(
+      <MockedProvider mocks={INVALID_MOCKS} addTypename={false}>
+        <MemoryRouter>
+          <HSM />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('WhatsApp Form'));
+
+    const comboboxes = screen.getAllByRole('combobox');
+    const formCombo = comboboxes[2] as HTMLInputElement;
+    fireEvent.mouseDown(formCombo);
+    fireEvent.click(screen.getByText('This is form name'));
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error parsing form definition:',
+        expect.any(Error)
+      );
+    });
+
+    consoleSpy.mockRestore();
+  });
+
   test('it adds quick reply buttons', async () => {
     render(template);
 
@@ -375,6 +418,7 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add Call to action'));
+
     fireEvent.click(screen.getAllByTestId('delete-icon')[1]);
 
     const autocompletes = screen.getAllByTestId('autocomplete-element');
@@ -442,7 +486,7 @@ describe('Add mode', () => {
     fireEvent.click(getByText('Add buttons'));
     const comboboxes = getAllByRole('combobox');
     const buttonTypeCombo = comboboxes[1] as HTMLInputElement;
-    expect(buttonTypeCombo.value).toBe('Call to Action');
+    expect(buttonTypeCombo.value).toBe('Quick Reply');
   });
 
   test('validateMedia is called with URL without spaces', async () => {
@@ -507,6 +551,68 @@ describe('Add mode', () => {
     const addButtonAfterLimit = queryByText('Add Quick Reply');
     await waitFor(() => {
       expect(addButtonAfterLimit).not.toBeInTheDocument();
+    });
+  });
+  test('it adds call to action buttons with dynamic url', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    const elementName = inputs[0];
+    const title = inputs[1];
+
+    await user.type(title, 'Hello');
+    await user.type(elementName, 'welcome');
+
+    const lexicalEditor = inputs[2];
+
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    const combobox = screen.getAllByRole('combobox');
+    const buttonTypeCombo = combobox[1] as HTMLInputElement;
+    fireEvent.mouseDown(buttonTypeCombo);
+    fireEvent.click(screen.getByText('Call to Action'));
+    fireEvent.click(screen.getByText('Phone number'));
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
+      target: { value: '9876543210' },
+    });
+
+    fireEvent.click(screen.getByText('Add Call to action'));
+    fireEvent.click(screen.getAllByText('URL')[1]);
+
+    const urlTypeCombo = await screen.findByLabelText('Select URL Type');
+    fireEvent.mouseDown(urlTypeCombo);
+    fireEvent.click(await screen.findByText('Dynamic'));
+
+    const [, secondTitleInput] = screen.getAllByPlaceholderText('Button Title');
+    fireEvent.change(secondTitleInput, { target: { value: 'Visit Website' } });
+    const [, secondTitleInput2] = screen.getAllByPlaceholderText('Button Value');
+    fireEvent.change(secondTitleInput2, { target: { value: 'WEBSITE_URL' } });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 });

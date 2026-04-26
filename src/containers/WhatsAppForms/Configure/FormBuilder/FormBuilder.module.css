@@ -1,0 +1,63 @@
+.FormBuilder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: white;
+}
+
+.Header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.AddButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.AddButton:hover {
+  background-color: #0a8547;
+}
+
+.AddButton:active {
+  transform: scale(0.98);
+}
+
+.ScreensList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  background-color: #fafafa;
+}
+
+.ScreensList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ScreensList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.ScreensList::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.ScreensList::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

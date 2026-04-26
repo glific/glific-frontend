@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import WhiteIcon from 'assets/images/icons/White.svg?react';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
-import { BSPBALANCE } from 'graphql/queries/Organization';
+import { BSPBALANCE, GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
@@ -25,6 +25,8 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const { provider } = useContext(ProviderContext);
 
   const balanceString = t('Wallet balance');
+
+  const { data: orgData, loading: orgLoading } = useQuery(GET_ORGANIZATION_STATUS);
 
   const gupshupSettings = (isFullOpen: boolean) => (
     <Tooltip title={t('For any help, please contact the Glific team')} placement="top-start">
@@ -110,7 +112,14 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
     }
   }, [subscribeToMore]);
 
-  if (loading && !retried) {
+  const isTrialOrg = orgData?.organization?.organization?.isTrialOrg;
+
+  // Hide wallet balance for trial organizations
+  if (isTrialOrg) {
+    return null;
+  }
+
+  if ((loading || orgLoading) && !retried) {
     return (
       <div className={styles.WalletBalance} data-testid="loading">
         <Skeleton variant="rounded" width="100%" height="100%" />

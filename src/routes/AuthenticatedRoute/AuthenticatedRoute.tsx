@@ -1,25 +1,25 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
-import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { checkDynamicRole, getUserRole } from 'context/role';
-import { useToast } from 'services/ToastService';
-import { ProviderContext } from 'context/session';
-import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
-import styles from './AuthenticatedRoute.module.css';
+import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
+import Billing from 'containers/SettingList/Billing/Billing';
+import Organization from 'containers/SettingList/Organization/Organization';
+import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
+import Providers from 'containers/SettingList/Providers/Providers';
 import Tag from 'containers/Tag/Tag';
 import TagList from 'containers/Tag/TagList/TagList';
-import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
-import Billing from 'containers/SettingList/Billing/Billing';
-import Providers from 'containers/SettingList/Providers/Providers';
-import Organization from 'containers/SettingList/Organization/Organization';
 import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChatInterface';
-import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
 import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
-import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
+import { checkDynamicRole, getUserRole } from 'context/role';
+import { ProviderContext } from 'context/session';
+import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
+import { useToast } from 'services/ToastService';
+import styles from './AuthenticatedRoute.module.css';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -44,7 +44,6 @@ const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProf
 const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/HSM/HSMList/HSMList'));
 const HSM = lazy(() => import('containers/HSM/HSM'));
-
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
 const BlockContactList = lazy(() => import('containers/BlockContact/BlockContactList/BlockContactList'));
@@ -63,6 +62,8 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const Assistant = lazy(() => import('containers/Assistants/Assistants'));
+const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
+const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 
@@ -70,8 +71,10 @@ const Certificates = lazy(() => import('containers/Certificates/Certificate'));
 const CertificatesList = lazy(() => import('containers/Certificates/CertificatesList/CertificateList'));
 const WhatsAppFormsList = lazy(() => import('containers/WhatsAppForms/WhatsAppFormList/WhatsAppFormList'));
 const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'));
+const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
+const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 
-const routeStaff = (
+const staffRoutes = (
   <Routes>
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
@@ -83,8 +86,8 @@ const routeStaff = (
   </Routes>
 );
 
-const routeAdmin = (
-  <Routes>
+const adminRoutes = (
+  <>
     <Route path="tag" element={<TagList />} />
     <Route path="tag/:id/edit" element={<Tag />} />
     <Route path="tag/add" element={<Tag />} />
@@ -105,16 +108,12 @@ const routeAdmin = (
     <Route path="sheet-integration" element={<SheetIntegrationList />} />
     <Route path="sheet-integration/add" element={<SheetIntegration />} />
     <Route path="sheet-integration/:id/edit" element={<SheetIntegration />} />
-
     <Route path="flow/configure/:uuid" element={<FlowEditor />} />
-
     <Route path="search" element={<SearchList />} />
     <Route path="search/add" element={<Search />} />
     <Route path="search/:id/edit" element={<Search />} />
-
     <Route path="trigger/add" element={<Trigger />} />
     <Route path="trigger/:id/edit" element={<Trigger />} />
-
     <Route path="staff-management" element={<StaffManagementList />} />
     <Route path="contact-management" element={<ContactManagement />} />
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
@@ -140,35 +139,29 @@ const routeAdmin = (
     <Route path="trigger" element={<TriggerList />} />
     <Route path="organizations" element={<OrganizationList />} />
     <Route path="consulting-hours/" element={<ConsultingHourList />} />
-
     <Route path="contact-fields/" element={<ContactFieldList />} />
     <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
-
     <Route path="group-details/:id/*" element={<GroupDetails />} />
     <Route path="group/collection" element={<CollectionList />} />
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
-
-    <Route path="/assistants" element={<Assistant />} />
-    <Route path="/assistants/:assistantId" element={<Assistant />} />
-
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
-
     <Route path="certificates" element={<CertificatesList />} />
     <Route path="certificate/add" element={<Certificates />} />
     <Route path="certificate/:id/edit" element={<Certificates />} />
     <Route path="whatsapp-forms">
       <Route path="" element={<WhatsAppFormsList />} />
       <Route path="add" element={<WhatsAppForms />} />
-      <Route path=":id/edit" element={<WhatsAppForms />} />
+      <Route path=":id/edit" element={<WhatsappFormsConfigure />} />
+      <Route path=":id/configure" element={<WhatsAppForms />} />
     </Route>
-
+    <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="/*" element={<Chat />} />
-  </Routes>
+  </>
 );
 
 export const chatRoutes = (
@@ -199,6 +192,7 @@ export const AuthenticatedRoute = () => {
 
   const [provider, setProvider] = useState<string>('');
   const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
+  const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -224,7 +218,7 @@ export const AuthenticatedRoute = () => {
   }
 
   if (userRole.includes('Staff')) {
-    route = routeStaff;
+    route = staffRoutes;
   }
 
   if (
@@ -233,7 +227,23 @@ export const AuthenticatedRoute = () => {
     userRole.includes('Admin') ||
     userRole.includes('Glific_admin')
   ) {
-    route = routeAdmin;
+    route = (
+      <Routes>
+        {adminRoutes}
+        {isAssistantConfigVersionsEnabled ? (
+          <>
+            <Route path="assistants" element={<AssistantList />} />
+            <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+          </>
+        ) : (
+          <>
+            <Route path="assistants" element={<Assistant />} />
+            <Route path="assistants/add" element={<Assistant />} />
+            <Route path="assistants/:assistantId" element={<Assistant />} />
+          </>
+        )}
+      </Routes>
+    );
   }
 
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed

@@ -43,19 +43,24 @@
 .NavClose {
   width: 92px;
 }
+
 .DrawerOpen {
   height: calc(100% - 58px);
   width: 203px;
   transition: width 255ms !important;
 }
+
 .DrawerClose {
   height: calc(100% - 58px);
   transition: width 255ms !important;
   width: 92px;
+  overflow-x: hidden;
 }
+
 .Toolbar {
   display: flex;
 }
+
 .Content {
   flex-grow: 1;
   padding: 24px;
@@ -74,6 +79,7 @@
 .ClosedIcon {
   margin: 12px 12px 12px 15px;
 }
+
 .BottomMenus {
   z-index: 1;
   position: absolute;
@@ -86,11 +92,24 @@
 .BottomMenus > div {
   margin: 0 6px;
 }
+
 .BottomMenusWithoutWallet {
   bottom: 15px;
 }
+
 .BottomMenusVertical {
   flex-flow: column;
+}
+
+.DrawerContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.BannerWrapper {
+  padding: 8px 12px;
+  margin-bottom: 8px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -99,7 +118,6 @@
   }
 
   .DrawerClose {
-    overflow-x: hidden;
     width: 0px;
   }
 

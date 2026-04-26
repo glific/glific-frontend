@@ -27,7 +27,7 @@ import {
 import styles from './TemplateOptions.module.css';
 import { Fragment, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { LIST_WHATSAPP_FORMS } from 'graphql/queries/WhatsAppForm';
+import { GET_WHATSAPP_FORM_DEFINITIONS } from 'graphql/queries/WhatsAppForm';
 import { getOrganizationServices } from 'services/AuthService';
 
 export interface TemplateOptionsProps {
@@ -40,7 +40,6 @@ export interface TemplateOptionsProps {
   onInputChange: any;
   onTemplateTypeChange: any;
   disabled: any;
-  dynamicUrlParams: any;
   onDynamicParamsChange: any;
 }
 
@@ -67,7 +66,6 @@ export const TemplateOptions = ({
   onTemplateTypeChange,
   onInputChange,
   disabled = false,
-  dynamicUrlParams,
   onDynamicParamsChange,
 }: TemplateOptionsProps) => {
   const buttonTitle = 'Button Title';
@@ -78,7 +76,6 @@ export const TemplateOptions = ({
   };
   const options = ['Static', 'Dynamic'];
   const [forms, setForms] = useState<any>([]);
-  const { urlType, sampleSuffix } = dynamicUrlParams;
   const [screens, setScreens] = useState<any>([]);
 
   const isWhatsAppFormEnabled = getOrganizationServices('whatsappFormsEnabled');
@@ -87,23 +84,24 @@ export const TemplateOptions = ({
     buttonOptions = BUTTON_OPTIONS.filter((option: any) => option.id !== WHATSAPP_FORM);
   }
 
-  useQuery(LIST_WHATSAPP_FORMS, {
+  useQuery(GET_WHATSAPP_FORM_DEFINITIONS, {
     variables: {
       filter: { status: 'PUBLISHED' },
     },
+    fetchPolicy: 'network-only',
     onCompleted: (data) => {
       setForms(
         data.listWhatsappForms.map((form: any) => ({
-          label: form.name,
-          id: form.metaFlowId,
-          definition: form.definition,
+          label: form?.name,
+          id: form?.metaFlowId,
+          definition: form?.revision?.definition,
         }))
       );
     },
   });
 
   const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '' } : { value: '' };
+    const obj = type ? { type: '', value: '', title: '', url_type: '', sampleSuffix: '' } : { value: '' };
     helper.push(obj);
     onAddClick();
   };
@@ -112,6 +110,8 @@ export const TemplateOptions = ({
     helper.remove(idx);
     onRemoveClick(idx);
   };
+  const urlCount = inputFields.filter((field) => field.type === 'url').length;
+  const phoneNumberCount = inputFields.filter((field) => field.type === 'phone_number').length;
 
   const addButton = (helper: any, type: boolean = false) => {
     const title = templateType ? buttonTitles[templateType?.id] : '';
@@ -131,7 +131,10 @@ export const TemplateOptions = ({
   };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
-    const { type, title, value, navigate_screen, text, form_id }: any = row;
+    const urlType = row?.urlType || 'Static';
+    const sampleSuffix = row?.sampleSuffix || '';
+
+    const { type, title, value, navigate_screen, text, form_id }: any = row ?? {};
 
     let template: any = null;
 
@@ -160,30 +163,12 @@ export const TemplateOptions = ({
                   >
                     <FormControlLabel
                       value="phone_number"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'phone_number') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone_number')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || phoneNumberCount >= 1} />}
                       label="Phone number"
                     />
                     <FormControlLabel
                       value="url"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'url') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
-                          }
-                        />
-                      }
+                      control={<Radio color="primary" disabled={disabled || urlCount >= 2} />}
                       label="URL"
                     />
                   </RadioGroup>
@@ -202,15 +187,18 @@ export const TemplateOptions = ({
               <div className={styles.TextFieldWrapper}>
                 <Autocomplete
                   options={options}
+                  disabled={disabled}
                   classes={{ inputRoot: styles.DefaultInputRoot }}
                   renderInput={(params) => <TextField {...params} label="Select URL Type" />}
                   clearIcon={false}
                   value={urlType}
                   onChange={(event: any, newValue: string | null) => {
-                    onDynamicParamsChange({
-                      ...dynamicUrlParams,
-                      urlType: newValue,
-                    });
+                    onDynamicParamsChange(
+                      {
+                        urlType: newValue || 'Static',
+                      },
+                      index
+                    );
                   }}
                 />
               </div>
@@ -269,10 +257,12 @@ export const TemplateOptions = ({
                       },
                     }}
                     onChange={(event) =>
-                      onDynamicParamsChange({
-                        ...dynamicUrlParams,
-                        sampleSuffix: event.target.value,
-                      })
+                      onDynamicParamsChange(
+                        {
+                          sampleSuffix: event.target.value,
+                        },
+                        index
+                      )
                     }
                     value={sampleSuffix}
                   />
@@ -282,7 +272,7 @@ export const TemplateOptions = ({
           </div>
 
           <div className={styles.Button}>
-            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
+            {inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers, true) : null}
           </div>
         </Fragment>
       );
@@ -335,11 +325,12 @@ export const TemplateOptions = ({
               renderInput={(params) => <TextField {...params} label="Select Form " />}
               onChange={(event: any, newValue: any) => {
                 onInputChange(newValue.id, row, index, 'form_id');
-
                 try {
                   const definition = JSON.parse(newValue.definition);
                   const screenNames = definition.screens.map((screen: any) => screen.id);
-                  setScreens(screenNames.map((screen: string) => ({ label: screen, id: screen })));
+                  if (screenNames.length) {
+                    setScreens([{ label: screenNames[0], id: screenNames[0] }]);
+                  }
                 } catch (e) {
                   setScreens([]);
                   console.error('Error parsing form definition:', e);
