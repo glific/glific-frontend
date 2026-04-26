@@ -63,6 +63,7 @@ const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
+const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 
@@ -73,7 +74,7 @@ const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'
 const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 
-const routeStaff = (
+const staffRoutes = (
   <Routes>
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
@@ -85,8 +86,8 @@ const routeStaff = (
   </Routes>
 );
 
-const routeAdmin = (
-  <Routes>
+const adminRoutes = (
+  <>
     <Route path="tag" element={<TagList />} />
     <Route path="tag/:id/edit" element={<Tag />} />
     <Route path="tag/add" element={<Tag />} />
@@ -146,12 +147,6 @@ const routeAdmin = (
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
-    <Route path="assistants" element={<Assistant />} />
-    <Route path="assistants/add" element={<Assistant />} />
-    <Route path="assistants/:assistantId" element={<Assistant />} />
-    <Route path="assistants-new" element={<AssistantList />} />
-    <Route path="assistants-new/add" element={<Assistant />} />
-    <Route path="assistants-new/:assistantId" element={<Assistant />} />
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
@@ -166,7 +161,7 @@ const routeAdmin = (
     </Route>
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="/*" element={<Chat />} />
-  </Routes>
+  </>
 );
 
 export const chatRoutes = (
@@ -197,6 +192,7 @@ export const AuthenticatedRoute = () => {
 
   const [provider, setProvider] = useState<string>('');
   const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
+  const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -222,7 +218,7 @@ export const AuthenticatedRoute = () => {
   }
 
   if (userRole.includes('Staff')) {
-    route = routeStaff;
+    route = staffRoutes;
   }
 
   if (
@@ -231,7 +227,23 @@ export const AuthenticatedRoute = () => {
     userRole.includes('Admin') ||
     userRole.includes('Glific_admin')
   ) {
-    route = routeAdmin;
+    route = (
+      <Routes>
+        {adminRoutes}
+        {isAssistantConfigVersionsEnabled ? (
+          <>
+            <Route path="assistants" element={<AssistantList />} />
+            <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+          </>
+        ) : (
+          <>
+            <Route path="assistants" element={<Assistant />} />
+            <Route path="assistants/add" element={<Assistant />} />
+            <Route path="assistants/:assistantId" element={<Assistant />} />
+          </>
+        )}
+      </Routes>
+    );
   }
 
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed

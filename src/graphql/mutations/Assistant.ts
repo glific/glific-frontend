@@ -50,8 +50,8 @@ export const CREATE_KNOWLEDGE_BASE = gql`
 `;
 
 export const CLONE_ASSISTANT = gql`
-  mutation CloneAssistant($cloneAssistantId: ID!) {
-    cloneAssistant(id: $cloneAssistantId) {
+  mutation CloneAssistant($cloneAssistantId: ID!, $versionId: ID) {
+    cloneAssistant(id: $cloneAssistantId, versionId: $versionId) {
       message
       errors {
         key
@@ -69,6 +69,22 @@ export const DELETE_ASSISTANT = gql`
         assistantId
       }
       errors {
+        message
+      }
+    }
+  }
+`;
+
+export const SET_LIVE_VERSION = gql`
+  mutation SetLiveVersion($assistantId: ID!, $versionId: ID!) {
+    setLiveVersion(assistantId: $assistantId, versionId: $versionId) {
+      assistant {
+        id
+        activeConfigVersionId
+        liveVersionNumber
+      }
+      errors {
+        key
         message
       }
     }
