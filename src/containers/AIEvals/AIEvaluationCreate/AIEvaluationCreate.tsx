@@ -31,7 +31,14 @@ const goldenQAHelperContent = (
 );
 
 const GoldenQaField = (props: any) => {
-  const { onUploadGoldenQaClick, form, helperText, ...dropdownProps } = props;
+  const { onUploadGoldenQaClick, form, helperText, newlyAddedDatasetId, ...dropdownProps } = props;
+
+  useEffect(() => {
+    if (newlyAddedDatasetId != null) {
+      form.setFieldValue('goldenQaId', newlyAddedDatasetId);
+    }
+  }, [newlyAddedDatasetId]);
+
   return (
     <div>
       <div className={styles.GoldenQaRow}>
@@ -64,6 +71,7 @@ export default function AIEvaluationCreate() {
   const [selectedGoldenQaFileName, setSelectedGoldenQaFileName] = useState<string | null>(null);
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [newlyAddedDatasetId, setNewlyAddedDatasetId] = useState<number | null>(null);
 
   const goldenQaOptions =
     goldenQADatasets.length === 0
@@ -121,7 +129,7 @@ export default function AIEvaluationCreate() {
 
   const handleUploadGoldenQaProceed = (values: { datasetId: number; name: string }) => {
     setGoldenQADatasets((prev) => [{ datasetId: values.datasetId, name: values.name }, ...prev]);
-    setStates((prev) => ({ ...prev, goldenQaId: values.datasetId }));
+    setNewlyAddedDatasetId(values.datasetId);
     setShowUploadGoldenQaDialog(false);
   };
 
@@ -133,6 +141,7 @@ export default function AIEvaluationCreate() {
       options: goldenQaOptions,
       helperText: goldenQAHelperContent,
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
+      newlyAddedDatasetId,
     },
     {
       component: SectionDivider,
