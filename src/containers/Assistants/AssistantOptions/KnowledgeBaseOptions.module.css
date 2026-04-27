@@ -1,0 +1,361 @@
+.AssistantOptions {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.Label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.Files {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e2e2;
+}
+
+.Temperature {
+  display: flex;
+  column-gap: 1rem;
+  align-items: start;
+  padding: 1rem 0;
+}
+
+.SliderContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.Slider {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  justify-content: space-between;
+}
+
+.SliderDisplay {
+  font-size: 15px;
+  padding: 4px 12px;
+  border: 0.5px solid #a4a4a4;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.Error {
+  border-color: #fb5c5c;
+}
+
+.ErrorText {
+  width: 100%;
+  color: #fb5c5c;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-align: right;
+}
+
+.SliderDisplay:focus {
+  outline: none;
+}
+
+.FilesHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.FilesHeader button {
+  border-radius: 10px;
+  font-size: 1rem;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.LabelContainer {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+:global .kb-dialog-content {
+  padding: 4px 32px 16px 32px !important;
+  padding-top: 4px !important;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) {
+  width: 663px !important;
+  max-width: 663px !important;
+  min-width: 663px !important;
+  min-height: 510px;
+  border-radius: 16px !important;
+  border: 1px solid #cccccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08) !important;
+  margin: 0 !important;
+}
+
+:global(.MuiDialog-scrollPaper):has(.kb-dialog-content),
+:global(.MuiDialog-container):has(.kb-dialog-content) {
+  align-items: center !important;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) :global(.MuiDialogTitle-root) {
+  font-weight: 600 !important;
+  font-size: 24px !important;
+  color: #191c1a !important;
+  text-align: left !important;
+  padding: 20px 32px 0px 32px !important;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) :global(.MuiDialogActions-root) {
+  padding: 16px 32px 28px 32px !important;
+  gap: 12px;
+}
+
+:global(.MuiDialog-paper):has(.kb-dialog-content) :global(.MuiDialogActions-root button) {
+  border-radius: 100px !important;
+  height: 40px;
+  min-width: 91px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: none !important;
+}
+
+.DialogContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.DialogSubtitle {
+  font-size: 12px;
+  color: #555555;
+  margin: 2px 0 12px 0;
+  line-height: 20px;
+}
+
+.DialogBody {
+  display: flex;
+  gap: 24px;
+  min-height: 300px;
+}
+
+.FileSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.FileSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.FileSectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2f2f;
+}
+
+.AddFilesButton {
+  border-radius: 100px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  height: 32px;
+  padding: 0 16px 0 12px !important;
+  border: 2px solid #119656 !important;
+  border-color: #119656 !important;
+  color: #119656 !important;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: none !important;
+}
+
+.InfoSection {
+  width: 168px;
+  min-width: 168px;
+  font-size: 12px;
+  color: #555555;
+  opacity: 0.7;
+  padding-top: 4px;
+}
+
+.InfoText {
+  line-height: 18px;
+  margin: 0 0 16px 0;
+}
+
+.InfoLink {
+  color: #119656;
+  font-weight: 600;
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.FileLimitText {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555555;
+  line-height: 18px;
+}
+
+.UploadContainer {
+  padding: 1rem 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid #119656;
+  border-style: dashed;
+  width: 100%;
+}
+
+.UploadContainer input {
+  display: none;
+}
+
+.DisabledUploadContainer {
+  composes: UploadContainer;
+  border-color: #93a29b;
+  opacity: 0.6;
+}
+
+.HelperText {
+  margin: 0px;
+  color: #93a29b;
+  line-height: 1.5;
+  font-size: 12px;
+  margin-top: 7px;
+  padding: 0 8px;
+}
+
+.FileList {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  height: 100%;
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.File {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  font-size: 0.85rem;
+  background-color: #f0f4f2;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+}
+
+.FileLeadingIcon {
+  width: 1.25rem;
+  min-width: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.FileName {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.FileActions {
+  display: flex;
+  align-items: center;
+  column-gap: 0.25rem;
+  width: 5.25rem;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.ActionSlot {
+  width: 1.75rem;
+  min-width: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.QueuedIcon {
+  color: #76848f;
+}
+
+.FailedIcon {
+  color: #fb5c5c;
+}
+
+.SuccessIcon {
+  color: #119656;
+}
+
+.RetryButton {
+  padding: 4px;
+}
+
+.CloseButton {
+  padding: 4px;
+}
+
+.DeleteButton {
+  padding: 4px;
+}
+
+.DeleteIcon {
+  color: #e53935 !important;
+}
+
+.RetryIcon {
+  color: #76848f;
+}
+
+.EmptyText {
+  font-size: 0.8rem;
+  color: #2f2f2f;
+  width: 100%;
+  text-align: center;
+}
+
+.VectorStore {
+  display: flex;
+  width: 100%;
+  background-color: #ebf8ee;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  justify-content: space-between;
+}
+
+.VectorContent {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.VectorStore p {
+  font-weight: 600;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.ReadOnlyNote {
+  font-size: 0.8rem;
+  color: #555;
+  background-color: #fff8e1;
+  border-left: 3px solid #f9a825;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+  text-align: left;
+}
