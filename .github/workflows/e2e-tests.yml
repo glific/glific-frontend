@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ELIXIR_VERSION: "1.18.3-otp-27"
-      OTP_VERSION: "27.3.3"
+      ELIXIR_VERSION: '1.18.3-otp-27'
+      OTP_VERSION: '27.3.3'
 
     services:
       postgres:
@@ -173,6 +173,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
+          git checkout apollo_migratio
           cd ..
           yarn add cypress@13.6.2
 
