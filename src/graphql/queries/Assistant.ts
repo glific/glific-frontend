@@ -25,6 +25,7 @@ export const FILTER_ASSISTANTS = gql`
       name
       status
       liveVersionNumber
+      activeConfigVersionId
       cloneStatus
     }
   }
@@ -33,6 +34,21 @@ export const FILTER_ASSISTANTS = gql`
 export const GET_ASSISTANTS_COUNT = gql`
   query CountAssistants($filter: AssistantFilter) {
     countAssistants(filter: $filter)
+  }
+`;
+
+export const GET_ASSISTANT_CONFIG_VERSIONS = gql`
+  query AssistantConfigVersions {
+    assistantConfigVersions {
+      id
+      assistantId
+      versionNumber
+      description
+      model
+      status
+      assistantName
+      kaapiUuid
+    }
   }
 `;
 
@@ -79,6 +95,19 @@ export const GET_ASSISTANT_VERSIONS = gql`
       description
       insertedAt
       updatedAt
+      vectorStore {
+        id
+        vectorStoreId
+        knowledgeBaseVersionId
+        name
+        legacy
+        size
+        files {
+          name
+          id
+          fileSize
+        }
+      }
     }
   }
 `;

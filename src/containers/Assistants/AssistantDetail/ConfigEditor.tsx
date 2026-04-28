@@ -16,12 +16,12 @@ import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant
 
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
-import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
+import { KnowledgeBaseOptions } from '../AssistantOptions/KnowledgeBaseOptions';
 import type { AssistantVersion } from '../VersionPanel/VersionPanel';
 
 import styles from './ConfigEditor.module.css';
 
-const modelOptions: Array<{ id: string; label: string }> = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'].map(
+const modelOptions: Array<{ id: string; label: string }> = ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4o', 'gpt-4o-mini'].map(
   (model) => ({ id: model, label: model })
 );
 
@@ -29,7 +29,6 @@ interface ConfigEditorProps {
   assistantId: string;
   assistantName: string;
   version?: AssistantVersion;
-  vectorStore: any;
   newVersionInProgress: boolean;
   onSaved: (newId?: string) => void;
   onUnsavedChange?: (hasChanges: boolean) => void;
@@ -50,11 +49,11 @@ const initialValues = {
 
 const EditFormSchema = Yup.object().shape({
   model: Yup.object().nullable().required('Model is required'),
-  instructions: Yup.string().required('Instructions are required'),
+  instructions: Yup.string().trim().required('Instructions are required'),
 });
 
 const CreateFormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().trim().required('Name is required'),
   model: Yup.object().nullable().required('Model is required'),
   instructions: Yup.string().required('Instructions are required'),
 });
@@ -63,13 +62,13 @@ export const ConfigEditor = ({
   assistantId,
   assistantName,
   version,
-  vectorStore,
   newVersionInProgress,
   onSaved,
   onUnsavedChange,
   onCancel,
   createMode = false,
 }: ConfigEditorProps) => {
+  const vectorStore = version?.vectorStore ?? null;
   const { t } = useTranslation();
   const [openInstructions, setOpenInstructions] = useState(false);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
@@ -78,12 +77,32 @@ export const ConfigEditor = ({
   const [createAssistant, { loading: creating }] = useMutation(CREATE_ASSISTANT);
   const [setLiveVersion, { loading: settingLive }] = useMutation(SET_LIVE_VERSION);
 
+  const computedInitialValues = version
+    ? {
+        name: '',
+        model: version.model ? { id: version.model, label: version.model } : (modelOptions[0] as any),
+        instructions: version.prompt ?? '',
+        temperature:
+          (typeof version.settings === 'string' ? JSON.parse(version.settings) : version.settings ?? {}).temperature ??
+          0.1,
+        knowledgeBaseVersionId: vectorStore?.knowledgeBaseVersionId ?? '',
+        knowledgeBaseName: vectorStore?.name ?? '',
+        versionDescription: version.description ?? '',
+        initialFiles:
+          vectorStore?.files?.map((file: any) => ({
+            fileId: file.id,
+            filename: file.name,
+          })) ?? [],
+      }
+    : initialValues;
+
   const formik = useFormik({
-    initialValues,
+    initialValues: computedInitialValues,
     validationSchema: createMode ? CreateFormSchema : EditFormSchema,
     enableReinitialize: false,
     onSubmit: (values) => {
       const payload: Record<string, any> = {
+        name: assistantName,
         instructions: values.instructions,
         model: values.model?.label,
         temperature: values.temperature,
@@ -141,30 +160,13 @@ export const ConfigEditor = ({
     },
   });
 
-  // Populate form when version changes (edit mode only)
-  useEffect(() => {
-    if (!version) return;
-    const modelValue = version.model ? { id: version.model, label: version.model } : modelOptions[0];
-    const settings = version.settings ?? {};
+  const setLiveTooltip = version?.isLive
+    ? t('This version is already live')
+    : version?.status === 'failed'
+      ? t('Cannot set a failed version as live')
+      : t('Set this version as LIVE tooltip');
 
-    formik.resetForm({
-      values: {
-        name: '',
-        model: modelValue,
-        instructions: version.prompt ?? '',
-        temperature: settings.temperature ?? 0.1,
-        knowledgeBaseVersionId: vectorStore?.knowledgeBaseVersionId ?? '',
-        knowledgeBaseName: vectorStore?.name ?? '',
-        versionDescription: version.description ?? '',
-        initialFiles:
-          vectorStore?.files?.map((file: any) => ({
-            fileId: file.id,
-            filename: file.name,
-          })) ?? [],
-      },
-    });
-    setHasUnsavedFiles(false);
-  }, [version?.id]);
+  const isSetLiveDisabled = version?.isLive || version?.status === 'failed' || newVersionInProgress || settingLive;
 
   const handleSetLive = () => {
     if (!version) return;
@@ -186,6 +188,7 @@ export const ConfigEditor = ({
   };
 
   const { values: v, initialValues: iv } = formik;
+  const isCreateRequiredFieldsMissing = createMode && (!v.name?.trim() || !v.instructions?.trim());
   const hasUnsavedChanges =
     v.instructions?.trim() !== (iv.instructions || '').trim() ||
     v.model?.label !== iv.model?.label ||
@@ -247,7 +250,7 @@ export const ConfigEditor = ({
       disabled: newVersionInProgress,
     },
     {
-      component: AssistantOptions,
+      component: KnowledgeBaseOptions,
       name: 'assistantOptions',
       formikValues: formik.values,
       setFieldValue: formik.setFieldValue,
@@ -312,17 +315,14 @@ export const ConfigEditor = ({
                   {t('Unsaved changes')}
                 </span>
               )}
-              <Tooltip
-                title={version?.isLive ? t('This version is already live') : t('Set this version as LIVE tooltip')}
-                arrow
-              >
+              <Tooltip title={setLiveTooltip} arrow>
                 <span>
                   <Button
                     variant="outlined"
                     data-testid="setLiveButton"
                     onClick={handleSetLive}
                     loading={settingLive}
-                    disabled={version?.isLive || newVersionInProgress || settingLive}
+                    disabled={isSetLiveDisabled}
                   >
                     {t('Set As LIVE')}
                   </Button>
@@ -340,24 +340,13 @@ export const ConfigEditor = ({
                     data-testid="saveVersionButton"
                     onClick={formik.submitForm}
                     loading={savingChanges || creating}
-                    disabled={newVersionInProgress || savingChanges || creating}
+                    disabled={newVersionInProgress || savingChanges || creating || !hasUnsavedChanges}
                   >
                     {t('Save')}
                   </Button>
                 </span>
               </Tooltip>
             </div>
-          </div>
-        )}
-
-        {createMode && (
-          <div className={styles.CreateActions}>
-            <Button variant="outlined" onClick={onCancel}>
-              {t('Cancel')}
-            </Button>
-            <Button variant="contained" onClick={formik.submitForm} loading={creating}>
-              {t('Save')}
-            </Button>
           </div>
         )}
 
@@ -372,13 +361,25 @@ export const ConfigEditor = ({
                 <Field key={field.name} {...field} />
               </div>
             ))}
-            {!createMode && (
-              <span className={styles.NoEvals} data-testid="noEvalsLink">
-                {t('No evals run. Start New Eval >')}
-              </span>
-            )}
           </div>
         </form>
+
+        {createMode && (
+          <div className={styles.CreateActions}>
+            <Button variant="outlined" onClick={onCancel}>
+              {t('Cancel')}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={formik.submitForm}
+              loading={creating}
+              disabled={creating || isCreateRequiredFieldsMissing}
+              data-testid="createAssistantSaveButton"
+            >
+              {t('Save')}
+            </Button>
+          </div>
+        )}
 
         {instructionsDialog}
       </div>
