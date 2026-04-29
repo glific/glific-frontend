@@ -1,6 +1,6 @@
 .PageContainer {
   height: calc(100vh - 110px);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .TabBar {
@@ -42,13 +42,14 @@
 
 .Content {
   padding: 0;
-  min-height: calc(100vh - 110px);
   background-color: #f8faf5;
 }
 
 .EmptyState {
   padding: 48px;
   text-align: center;
+  font-weight: 700;
+  font-size: 20px;
   color: #9ca3af;
-  font-size: 0.875rem;
+  height: calc(100vh - 120px);
 }

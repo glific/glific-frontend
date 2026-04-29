@@ -1,10 +1,12 @@
+import { useLazyQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
 import DownloadIcon from 'assets/images/icons/Download.svg?react';
+import { setErrorMessage } from 'common/notification';
 import { List } from 'containers/List/List';
-import { COUNT_GOLDEN_QA, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { COUNT_GOLDEN_QA, GET_GOLDEN_QA, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import styles from './GoldenQAList.module.css';
 
 dayjs.extend(relativeTime);
@@ -28,6 +30,25 @@ const columnNames = [
 ];
 
 export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
+  const [fetchGoldenQa] = useLazyQuery(GET_GOLDEN_QA, {
+    onCompleted: (data) => {
+      const signedUrl = data?.goldenQa?.goldenQa?.signedUrl;
+      if (signedUrl) {
+        const link = document.createElement('a');
+        link.href = signedUrl;
+        link.download = ''; // Ensures download rather than opening in browser
+        document.body.appendChild(link); // Required for Firefox
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        setErrorMessage('Failed to generate download URL');
+      }
+    },
+    onError: (error) => {
+      setErrorMessage(error);
+    },
+  });
+
   const getColumns = ({ name, insertedAt }: any) => ({
     name: (
       <div className={styles.TitleCell}>
@@ -38,8 +59,8 @@ export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
     createdOn: dayjs(insertedAt).fromNow(),
   });
 
-  const handleDownload = (_id: string, _item: any) => {
-    // TODO: implement once backend provides a download endpoint for datasetId
+  const handleDownload = (id: string) => {
+    fetchGoldenQa({ variables: { id, includeSignedUrl: true } });
   };
 
   const additionalAction = () => [

@@ -1,16 +1,20 @@
-import { MockedProvider } from '@apollo/client/testing';
-import { render, screen, waitFor } from '@testing-library/react';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
 import {
   getCountGoldenQaEmptyMock,
   getCountGoldenQaMock,
+  getGoldenQaDownloadMock,
   getListGoldenQaEmptyMock,
   getListGoldenQaMock,
 } from 'mocks/AIEvaluations';
 import { GoldenQAList } from './GoldenQAList';
 
-const renderComponent = (searchQuery = '', mocks = [getListGoldenQaMock, getCountGoldenQaMock]) =>
+const renderComponent = (
+  searchQuery = '',
+  mocks: MockedResponse[] = [getListGoldenQaMock, getCountGoldenQaMock]
+) =>
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
@@ -58,5 +62,32 @@ describe('GoldenQAList', () => {
     await waitFor(() => {
       expect(screen.getByRole('combobox', { name: /rows per page/i })).toBeInTheDocument();
     });
+  });
+
+  it('triggers download with signed URL when download button is clicked', async () => {
+    const signedUrl = 'https://storage.example.com/golden-qa-1.csv';
+    const originalCreateElement = document.createElement.bind(document);
+    const linkEl = originalCreateElement('a');
+    const clickSpy = vi.spyOn(linkEl, 'click').mockImplementation(() => {});
+
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string, ...args: any[]) => {
+      if (tag === 'a') return linkEl;
+      return originalCreateElement(tag, ...args);
+    });
+
+    renderComponent('', [getListGoldenQaMock, getCountGoldenQaMock, getGoldenQaDownloadMock('1', signedUrl)]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('additionalButton')).toHaveLength(4);
+    });
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
+
+    await waitFor(() => {
+      expect(linkEl.href).toBe(signedUrl);
+      expect(clickSpy).toHaveBeenCalled();
+    });
+
+    vi.restoreAllMocks();
   });
 });

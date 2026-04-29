@@ -34,8 +34,23 @@ export const LIST_GOLDEN_QA = gql`
     goldenQas(filter: $filter, opts: $opts) {
       id
       name
-      datasetId
       insertedAt
+    }
+  }
+`;
+
+export const GET_GOLDEN_QA = gql`
+  query GetGoldenQa($id: ID!, $includeSignedUrl: Boolean) {
+    goldenQa(id: $id, includeSignedUrl: $includeSignedUrl) {
+      goldenQa {
+        id
+        name
+        signedUrl
+        insertedAt
+      }
+      errors {
+        message
+      }
     }
   }
 `;
