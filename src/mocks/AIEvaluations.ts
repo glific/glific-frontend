@@ -1,5 +1,5 @@
 import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
-import { LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { COUNT_GOLDEN_QA, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 
 export const getListAiEvaluationsMock = {
@@ -182,6 +182,39 @@ export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor:
     },
   },
 });
+
+const goldenQaSampleRows = [
+  { __typename: 'GoldenQa', id: '1', name: 'Diabetescare-0101', datasetId: '101', insertedAt: new Date().toISOString() },
+  { __typename: 'GoldenQa', id: '2', name: 'Healthcare-0102', datasetId: '102', insertedAt: new Date(Date.now() - 86400000).toISOString() },
+  { __typename: 'GoldenQa', id: '3', name: 'Testabc-0801', datasetId: '103', insertedAt: new Date(Date.now() - 7 * 86400000).toISOString() },
+  { __typename: 'GoldenQa', id: '4', name: 'GuideMentalHealth-2111', datasetId: '104', insertedAt: '2024-11-21T00:00:00Z' },
+];
+
+export const getListGoldenQaMock = {
+  request: {
+    query: LIST_GOLDEN_QA,
+    variables: { filter: {}, opts: { limit: 10, offset: 0, orderWith: 'insertedAt', order: 'DESC' } },
+  },
+  result: { data: { goldenQas: goldenQaSampleRows } },
+};
+
+export const getListGoldenQaEmptyMock = {
+  request: {
+    query: LIST_GOLDEN_QA,
+    variables: { filter: {}, opts: { limit: 10, offset: 0, orderWith: 'insertedAt', order: 'DESC' } },
+  },
+  result: { data: { goldenQas: [] } },
+};
+
+export const getCountGoldenQaMock = {
+  request: { query: COUNT_GOLDEN_QA, variables: { filter: {} } },
+  result: { data: { countGoldenQas: 4 } },
+};
+
+export const getCountGoldenQaEmptyMock = {
+  request: { query: COUNT_GOLDEN_QA, variables: { filter: {} } },
+  result: { data: { countGoldenQas: 0 } },
+};
 
 export const createGoldenQaNoMessageErrorMock = {
   request: { query: CREATE_GOLDEN_QA },

@@ -22,3 +22,20 @@ export const LIST_AI_EVALUATIONS = gql`
     }
   }
 `;
+
+export const COUNT_GOLDEN_QA = gql`
+  query countGoldenQas($filter: GoldenQaFilter) {
+    countGoldenQas(filter: $filter)
+  }
+`;
+
+export const LIST_GOLDEN_QA = gql`
+  query GoldenQas($filter: GoldenQaFilter, $opts: Opts) {
+    goldenQas(filter: $filter, opts: $opts) {
+      id
+      name
+      datasetId
+      insertedAt
+    }
+  }
+`;
