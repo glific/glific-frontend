@@ -200,11 +200,11 @@ const goldenQaSampleRows = [
   { __typename: 'GoldenQa', id: '4', name: 'GuideMentalHealth-2111', datasetId: '104', insertedAt: '2024-11-21T00:00:00Z' },
 ];
 
-// Used by AIEvalsPage / GoldenQAList (paginated)
+// Used by AIEvalsPage / GoldenQAList (paginated via List component)
 export const getListGoldenQaMock = {
   request: {
     query: LIST_GOLDEN_QA,
-    variables: { filter: {}, opts: { limit: 10, offset: 0, orderWith: 'inserted_at', order: 'DESC' } },
+    variables: { filter: {}, opts: { limit: 50, offset: 0, orderWith: 'inserted_at', order: 'DESC' } },
   },
   result: { data: { goldenQas: goldenQaSampleRows } },
 };
@@ -212,7 +212,7 @@ export const getListGoldenQaMock = {
 export const getListGoldenQaEmptyMock = {
   request: {
     query: LIST_GOLDEN_QA,
-    variables: { filter: {}, opts: { limit: 10, offset: 0, orderWith: 'inserted_at', order: 'DESC' } },
+    variables: { filter: {}, opts: { limit: 50, offset: 0, orderWith: 'inserted_at', order: 'DESC' } },
   },
   result: { data: { goldenQas: [] } },
 };

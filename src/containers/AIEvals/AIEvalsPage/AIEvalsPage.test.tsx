@@ -1,5 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 
 import {
   getCountGoldenQaMock,
@@ -12,14 +13,16 @@ const defaultMocks = [getListGoldenQaMock, getCountGoldenQaMock];
 const renderComponent = (mocks = defaultMocks) =>
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <AIEvalsPage />
+      <MemoryRouter>
+        <AIEvalsPage />
+      </MemoryRouter>
     </MockedProvider>
   );
 
 describe('AIEvalsPage', () => {
   it('renders page heading', () => {
     renderComponent();
-    expect(screen.getByRole('heading', { name: 'AI Evaluations' })).toBeInTheDocument();
+    expect(screen.getByTestId('headerTitle')).toHaveTextContent('AI Evaluations');
     expect(screen.getByText(/Run evaluations against/i)).toBeInTheDocument();
   });
 
@@ -43,7 +46,7 @@ describe('AIEvalsPage', () => {
     });
   });
 
-  it('renders search bar', () => {
+  it('renders search bar in tab bar', () => {
     renderComponent();
     expect(screen.getByPlaceholderText(/Search/i)).toBeInTheDocument();
   });

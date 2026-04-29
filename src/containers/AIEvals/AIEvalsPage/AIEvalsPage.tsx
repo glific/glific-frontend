@@ -1,4 +1,6 @@
 import { useState } from 'react';
+
+import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { GoldenQAList } from 'containers/AIEvals/GoldenQAList/GoldenQAList';
 import styles from './AIEvalsPage.module.css';
@@ -36,43 +38,42 @@ export default function AIEvalsPage() {
   };
 
   return (
-    <div className={styles.Page}>
-      <div className={styles.Header}>
-        <div>
-          <h1 className={styles.Title}>AI Evaluations</h1>
-          <p className={styles.Subtitle}>Run evaluations against a golden set of questions and answers</p>
+    <>
+      <Heading
+        formTitle="AI Evaluations"
+        headerHelp="Run evaluations against a golden set of questions and answers"
+      />
+      <div className={styles.PageContainer}>
+        <div className={styles.TabBar}>
+          <div className={styles.Tabs}>
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`${styles.Tab} ${activeTab === tab.id ? styles.ActiveTab : ''}`}
+                onClick={() => handleTabChange(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <SearchBar
+            searchMode={searchMode}
+            searchVal={searchQuery}
+            handleSubmit={handleSearch}
+            handleChange={handleSearchChange}
+            onReset={handleSearchReset}
+            className={styles.SearchBar}
+          />
+        </div>
+
+        <div className={styles.Content}>
+          {activeTab === 'golden-qa' && <GoldenQAList searchQuery={searchQuery} />}
+          {activeTab === 'ai-evaluations' && (
+            <div className={styles.EmptyState}>AI Evaluations list coming soon</div>
+          )}
         </div>
       </div>
-
-      <div className={styles.TabBar}>
-        <div className={styles.Tabs}>
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`${styles.Tab} ${activeTab === tab.id ? styles.ActiveTab : ''}`}
-              onClick={() => handleTabChange(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <SearchBar
-          searchMode={searchMode}
-          searchVal={searchQuery}
-          handleSubmit={handleSearch}
-          handleChange={handleSearchChange}
-          onReset={handleSearchReset}
-          className={styles.SearchBar}
-        />
-      </div>
-
-      <div className={styles.Content}>
-        {activeTab === 'golden-qa' && <GoldenQAList searchQuery={searchQuery} />}
-        {activeTab === 'ai-evaluations' && (
-          <div className={styles.EmptyState}>AI Evaluations list coming soon</div>
-        )}
-      </div>
-    </div>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { setNotification } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
@@ -10,7 +11,6 @@ import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
-import { setNotification } from 'common/notification';
 
 import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
@@ -232,7 +232,7 @@ export default function AIEvaluationCreate() {
         title="Create AI Evaluation"
         button="Run Evaluation"
         languageSupport={false}
-        backLinkButton="ai-evaluations"
+        backLinkButton="/ai-evaluations"
         cancelAction={() => window.history.back()}
         getQueryFetchPolicy="cache-first"
         saveOnPageChange={false}

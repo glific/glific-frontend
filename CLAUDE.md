@@ -57,6 +57,13 @@ npx vitest run src/path/to/Component.test.tsx
 | `src/mocks/` | Test mock data for Apollo `MockedProvider` |
 | `src/routes/` | Route trees for authenticated and unauthenticated users |
 
+### UI Component Usage Rules
+
+- Prefer existing components from `src/containers/` for page/feature UI before using raw MUI components.
+- If a required UI cannot be built with existing components, first extend or modify the relevant shared/container components to support the use case.
+- Avoid introducing direct MUI usage in feature/container code unless absolutely unavoidable after attempting component reuse/extension.
+- Keep MUI usage encapsulated inside shared abstractions so feature code remains consistent and maintainable.
+
 ### Import Aliases
 
 `tsconfig.json` sets `baseUrl: "src"`, so all imports are relative to `src/`. Use:

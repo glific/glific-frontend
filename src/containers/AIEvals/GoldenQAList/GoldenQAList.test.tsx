@@ -1,5 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 
 import {
   getCountGoldenQaEmptyMock,
@@ -12,16 +13,20 @@ import { GoldenQAList } from './GoldenQAList';
 const renderComponent = (searchQuery = '', mocks = [getListGoldenQaMock, getCountGoldenQaMock]) =>
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <GoldenQAList searchQuery={searchQuery} />
+      <MemoryRouter>
+        <GoldenQAList searchQuery={searchQuery} />
+      </MemoryRouter>
     </MockedProvider>
   );
 
 describe('GoldenQAList', () => {
-  it('renders table headers', () => {
+  it('renders table headers', async () => {
     renderComponent();
-    expect(screen.getByText('Title')).toBeInTheDocument();
-    expect(screen.getByText('Created On')).toBeInTheDocument();
-    expect(screen.getByText('Actions')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Created On')).toBeInTheDocument();
+      expect(screen.getByText('Actions')).toBeInTheDocument();
+    });
   });
 
   it('renders rows after data loads', async () => {
@@ -37,14 +42,14 @@ describe('GoldenQAList', () => {
   it('renders download button for each row', async () => {
     renderComponent();
     await waitFor(() => {
-      expect(screen.getAllByRole('button', { name: /Download/i })).toHaveLength(4);
+      expect(screen.getAllByTestId('additionalButton')).toHaveLength(4);
     });
   });
 
   it('shows empty state when no data', async () => {
     renderComponent('', [getListGoldenQaEmptyMock, getCountGoldenQaEmptyMock]);
     await waitFor(() => {
-      expect(screen.getByText('No Golden QA datasets found')).toBeInTheDocument();
+      expect(screen.getByText(/There are no Golden QA datasets right now/i)).toBeInTheDocument();
     });
   });
 

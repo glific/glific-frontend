@@ -1,57 +1,38 @@
-.Page {
-  padding: 24px 32px;
-  max-width: 1200px;
-}
-
-.Header {
-  margin-bottom: 16px;
-}
-
-.Title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #073f32;
-  margin: 0 0 4px;
-}
-
-.Subtitle {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
+.PageContainer {
+  height: calc(100vh - 110px);
+  overflow-y: auto;
 }
 
 .TabBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 0;
+  padding: 10px 56px 0px ;
+  background-color: #f8faf5;
 }
 
 .Tabs {
   display: flex;
-  gap: 0;
 }
 
 .Tab {
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
-  padding: 10px 16px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #119656;
   cursor: pointer;
   margin-bottom: -1px;
-  transition: color 0.15s, border-color 0.15s;
 }
 
 .Tab:hover {
-  color: #073f32;
+  color: #073f24;
+  background-color: #71797123;
 }
 
 .ActiveTab {
-  color: #2d9c6f;
   border-bottom-color: #2d9c6f;
 }
 
@@ -60,7 +41,9 @@
 }
 
 .Content {
-  padding-top: 0;
+  padding: 0;
+  min-height: calc(100vh - 110px);
+  background-color: #f8faf5;
 }
 
 .EmptyState {

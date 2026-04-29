@@ -1,19 +1,13 @@
-.Container {
-  width: 100%;
+.TitleColumn {
+  width: 60%;
 }
 
-.HeaderRow {
-  background-color: #f0f5f3;
+.DateColumn {
+  width: 25%;
 }
 
-.HeaderCell {
-  font-weight: 600;
-  color: #073f32;
-  font-size: 0.875rem;
-}
-
-.DataRow:hover {
-  background-color: #f8fbf9;
+.Actions {
+  width: 25%;
 }
 
 .TitleCell {
@@ -28,23 +22,4 @@
   height: 18px;
   flex-shrink: 0;
   color: #6b9e8e;
-}
-
-.DateCell {
-  color: #555;
-}
-
-.DownloadButton {
-  color: #2d9c6f;
-}
-
-.DownloadButton:hover {
-  color: #1b7a52;
-  background-color: #e8f5ee;
-}
-
-.EmptyCell {
-  text-align: center;
-  color: #888;
-  padding: 40px 0;
 }
