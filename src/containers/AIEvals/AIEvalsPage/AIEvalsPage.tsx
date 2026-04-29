@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
@@ -13,6 +14,7 @@ const TABS: { id: ActiveTab; label: string }[] = [
 ];
 
 export default function AIEvalsPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ActiveTab>('ai-evaluations');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMode, setSearchMode] = useState(false);
@@ -42,6 +44,11 @@ export default function AIEvalsPage() {
       <Heading
         formTitle="AI Evaluations"
         headerHelp="Run evaluations against a golden set of questions and answers"
+        button={{
+          show: activeTab === 'ai-evaluations',
+          label: 'Create AI Evaluation',
+          action: () => navigate('/ai-evaluations/create'),
+        }}
       />
       <div className={styles.PageContainer}>
         <div className={styles.TabBar}>
