@@ -1,9 +1,11 @@
 import { useQuery } from '@apollo/client';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
+import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -31,19 +33,29 @@ const goldenQAHelperContent = (
 );
 
 const GoldenQaField = (props: any) => {
-  const { onUploadGoldenQaClick, form, helperText, newlyAddedDatasetId, ...dropdownProps } = props;
+  const { onUploadGoldenQaClick, form, helperText, newlyAddedDataset, options, field, ...rest } = props;
 
   useEffect(() => {
-    if (newlyAddedDatasetId != null) {
-      form.setFieldValue('goldenQaId', newlyAddedDatasetId);
+    if (newlyAddedDataset != null) {
+      form.setFieldValue('goldenQaId', newlyAddedDataset);
     }
-  }, [newlyAddedDatasetId]);
+  }, [newlyAddedDataset]);
 
   return (
     <div>
       <div className={styles.GoldenQaRow}>
         <div className={styles.GoldenQaLeft}>
-          <Dropdown {...dropdownProps} form={form} />
+          <AutoComplete
+            {...rest}
+            field={field}
+            form={form}
+            options={options}
+            optionLabel="label"
+            multiple={false}
+            disableClearable={false}
+            noOptionsText="No Golden QA datasets available"
+            placeholder="Search or select a Golden QA dataset"
+          />
         </div>
         <div className={styles.GoldenQaRight}>
           <Button
@@ -64,30 +76,50 @@ const GoldenQaField = (props: any) => {
 
 const SectionDivider = (_props: any) => null;
 
+interface GoldenQaOption {
+  id: string | number;
+  label: string;
+}
+
 export default function AIEvaluationCreate() {
   const navigate = useNavigate();
-  const [goldenQADatasets, setGoldenQADatasets] = useState<Array<{ datasetId: number; name: string }>>([]);
+  const [uploadedDatasets, setUploadedDatasets] = useState<GoldenQaOption[]>([]);
   const [showUploadGoldenQaDialog, setShowUploadGoldenQaDialog] = useState(false);
   const [selectedGoldenQaFileName, setSelectedGoldenQaFileName] = useState<string | null>(null);
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [newlyAddedDatasetId, setNewlyAddedDatasetId] = useState<number | null>(null);
-
-  const goldenQaOptions =
-    goldenQADatasets.length === 0
-      ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
-      : goldenQADatasets.map(({ datasetId, name }) => ({ id: datasetId, label: name }));
+  const [newlyAddedDataset, setNewlyAddedDataset] = useState<GoldenQaOption | null>(null);
 
   const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
     GET_ASSISTANT_CONFIG_VERSIONS,
     { variables: { filter: {} }, fetchPolicy: 'network-only' }
   );
 
+  const { data: goldenQaData, error: goldenQaError } = useQuery(LIST_GOLDEN_QA, {
+    variables: { filter: {}, opts: {} },
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
     if (versionsError) {
       setNotification(versionsError.message, 'warning');
     }
   }, [versionsError]);
+
+  useEffect(() => {
+    if (goldenQaError) {
+      setNotification(goldenQaError.message, 'warning');
+    }
+  }, [goldenQaError]);
+
+  const backendOptions: GoldenQaOption[] =
+    goldenQaData?.goldenQas?.map((qa: any) => ({ id: qa.datasetId, label: qa.name })) ?? [];
+
+  const uploadedIds = new Set(uploadedDatasets.map((d) => String(d.id)));
+  const goldenQaOptions: GoldenQaOption[] = [
+    ...uploadedDatasets,
+    ...backendOptions.filter((opt) => !uploadedIds.has(String(opt.id))),
+  ];
 
   const assistantOptions = versionsLoading
     ? [{ id: '', label: 'Fetching assistants...' }]
@@ -100,13 +132,13 @@ export default function AIEvaluationCreate() {
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string().required('Evaluation name is required'),
-    goldenQaId: Yup.string().required('Please select a Golden QA dataset'),
+    goldenQaId: Yup.object().nullable().required('Please select a Golden QA dataset'),
     assistantId: Yup.string().required('Please select an AI Assistant'),
   });
 
-  const [states, setStates] = useState<{ evaluationName: string; goldenQaId: number; assistantId: string }>({
+  const [states, setStates] = useState<{ evaluationName: string; goldenQaId: GoldenQaOption | null; assistantId: string }>({
     evaluationName: '',
-    goldenQaId: 0,
+    goldenQaId: null,
     assistantId: '',
   });
 
@@ -128,8 +160,9 @@ export default function AIEvaluationCreate() {
   };
 
   const handleUploadGoldenQaProceed = (values: { datasetId: number; name: string }) => {
-    setGoldenQADatasets((prev) => [{ datasetId: values.datasetId, name: values.name }, ...prev]);
-    setNewlyAddedDatasetId(values.datasetId);
+    const newOption: GoldenQaOption = { id: values.datasetId, label: values.name };
+    setUploadedDatasets((prev) => [newOption, ...prev]);
+    setNewlyAddedDataset(newOption);
     setShowUploadGoldenQaDialog(false);
   };
 
@@ -141,7 +174,7 @@ export default function AIEvaluationCreate() {
       options: goldenQaOptions,
       helperText: goldenQAHelperContent,
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
-      newlyAddedDatasetId,
+      newlyAddedDataset,
     },
     {
       component: SectionDivider,
@@ -170,7 +203,7 @@ export default function AIEvaluationCreate() {
   const handleSetPayload = (payload: any) => {
     const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId);
     return {
-      datasetId: payload.goldenQaId,
+      datasetId: payload.goldenQaId?.id,
       experimentName: payload.evaluationName,
       configId: selectedVersion?.kaapiUuid,
       configVersion: selectedVersion?.id,
