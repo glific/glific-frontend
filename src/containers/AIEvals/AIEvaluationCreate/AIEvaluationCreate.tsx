@@ -78,10 +78,11 @@ export default function AIEvaluationCreate() {
       ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
       : goldenQADatasets.map(({ datasetId, name }) => ({ id: datasetId, label: name }));
 
-  const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
-    GET_ASSISTANT_CONFIG_VERSIONS,
-    { variables: { filter: {} }, fetchPolicy: 'network-only' }
-  );
+  const {
+    data: versionsData,
+    loading: versionsLoading,
+    error: versionsError,
+  } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, { variables: { filter: {} }, fetchPolicy: 'network-only' });
 
   useEffect(() => {
     if (versionsError) {

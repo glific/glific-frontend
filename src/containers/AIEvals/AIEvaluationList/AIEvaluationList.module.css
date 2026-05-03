@@ -1,0 +1,92 @@
+.Name {
+  width: 30%;
+  min-width: 180px;
+}
+
+.StatusColumn {
+  width: 15%;
+  min-width: 120px;
+}
+
+.Metric {
+  width: 15%;
+  min-width: 140px;
+}
+
+.CompletedAt {
+  width: 20%;
+  min-width: 160px;
+}
+
+.Actions {
+  text-align: start;
+}
+
+.NameText {
+  line-height: 20px;
+  margin: 0;
+  font-size: 17px !important;
+  word-break: break-all;
+  color: #191c1a !important;
+  font-weight: 500;
+}
+
+.Status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.CompletedBadge {
+  composes: Status;
+  font-size: 15px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.RunningBadge {
+  composes: Status;
+  font-size: 15px;
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.FailedBadge {
+  composes: Status;
+  font-size: 15px;
+  background-color: #fde8e8;
+  color: #c0392b;
+}
+
+.PendingBadge {
+  composes: Status;
+  font-size: 15px;
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
+
+.MetricValue {
+  font-weight: 500;
+  font-size: 15px;
+  color: #191c1a;
+}
+
+.MetricNA {
+  color: #9ca3af;
+  font-size: 15px;
+}
+
+.HeaderWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ColumnInfoIcon {
+  font-size: 16px !important;
+  color: #9ca3af;
+  cursor: pointer;
+}
