@@ -10,19 +10,17 @@ export interface TerminateFlowProps {
 }
 
 export const TerminateFlow = ({ contactId, setDialog }: TerminateFlowProps) => {
-  const [terminateFlow] = useMutation(TERMINATE_FLOW, {
-    onCompleted: ({ terminateContactFlows }) => {
-      if (terminateContactFlows.success) {
-        setNotification('Flow terminated successfully');
-      } else if (terminateContactFlows.errors) {
-        setNotification(terminateContactFlows.errors[0].message, 'warning');
-      }
-    },
-  });
+  const [terminateFlow] = useMutation(TERMINATE_FLOW);
 
-  const handleTerminateFlow = () => {
-    terminateFlow({ variables: { contactId } });
+  const handleTerminateFlow = async () => {
     setDialog(false);
+    const { data } = await terminateFlow({ variables: { contactId } });
+    const terminateContactFlows = data?.terminateContactFlows;
+    if (terminateContactFlows?.success) {
+      setNotification('Flow terminated successfully');
+    } else if (terminateContactFlows?.errors) {
+      setNotification(terminateContactFlows.errors[0].message, 'warning');
+    }
   };
 
   return (

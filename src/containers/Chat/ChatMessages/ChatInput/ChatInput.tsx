@@ -117,40 +117,47 @@ export const ChatInput = ({
 
   const { data: permission } = useQuery(GET_ATTACHMENT_PERMISSION);
 
-  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
-    onCompleted: (data: any) => {
-      if (data) {
-        onSendMessage('', data.createMessageMedia.messageMedia.id, attachmentType, selectedTemplate, variableParam);
-        setAttachmentAdded(false);
-        setAttachmentURL('');
-        setAttachmentType('');
-      }
-    },
-  });
-  const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB, {
-    onCompleted: (data: any) => {
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
+  const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB);
+
+  const sendMediaMessage = async (input: { caption: string; sourceUrl: string; url: string }, type: string) => {
+    const { data } = await createMediaMessage({ variables: { input } });
+    if (data) {
+      onSendMessage('', data.createMessageMedia.messageMedia.id, type, selectedTemplate, variableParam);
+      setAttachmentAdded(false);
+      setAttachmentURL('');
+      setAttachmentType('');
+    }
+  };
+
+  const uploadAndSendAudio = async (media: string) => {
+    setUploading(true);
+    try {
+      const { data } = await uploadMediaBlob({
+        variables: {
+          media,
+          extension: 'mp3',
+        },
+      });
       if (data) {
         setAttachmentType('AUDIO');
-        createMediaMessage({
-          variables: {
-            input: {
-              caption: '',
-              sourceUrl: data.uploadBlob,
-              url: data.uploadBlob,
-            },
+        await sendMediaMessage(
+          {
+            caption: '',
+            sourceUrl: data.uploadBlob,
+            url: data.uploadBlob,
           },
-        });
-
+          'AUDIO'
+        );
         setClearAudio(true);
         setRecordedAudio('');
-        setUploading(false);
       }
-    },
-    onError: () => {
+    } catch {
       setNotification(t('Sorry, unable to upload audio.'), 'warning');
+    } finally {
       setUploading(false);
-    },
-  });
+    }
+  };
 
   const submitMessage = async (message: string) => {
     // let's check if we are sending voice recording
@@ -163,14 +170,8 @@ export const ChatInput = ({
         // get the part without the tags
         const media = base64String.split(',')[1];
         // save media that will return an URL
-        uploadMediaBlob({
-          variables: {
-            media,
-            extension: 'mp3',
-          },
-        });
+        uploadAndSendAudio(media);
       };
-      setUploading(true);
     }
 
     // check for an empty message or message with just spaces
@@ -184,15 +185,14 @@ export const ChatInput = ({
 
     // check if there is any attachment
     if (attachmentAdded) {
-      createMediaMessage({
-        variables: {
-          input: {
-            caption: message,
-            sourceUrl: attachmentURL,
-            url: attachmentURL,
-          },
+      sendMediaMessage(
+        {
+          caption: message,
+          sourceUrl: attachmentURL,
+          url: attachmentURL,
         },
-      });
+        attachmentType
+      );
       // check if type is list or quick replies
     } else if (interactiveMessageContent && interactiveMessageContent.type) {
       onSendMessage(null, null, interactiveMessageContent.type.toUpperCase(), null, null, Number(selectedTemplate.id));

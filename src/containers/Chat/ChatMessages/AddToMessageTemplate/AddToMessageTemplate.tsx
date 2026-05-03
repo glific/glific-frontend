@@ -23,9 +23,6 @@ export const AddToMessageTemplate = ({ id, message, changeDisplay }: AddToMessag
   const { t } = useTranslation();
 
   const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION, {
-    onCompleted: () => {
-      setNotification(t('Message has been successfully added to speed sends.'));
-    },
     refetchQueries: [
       {
         query: FILTER_TEMPLATES,
@@ -67,11 +64,14 @@ export const AddToMessageTemplate = ({ id, message, changeDisplay }: AddToMessag
     setMessageTemplate(null);
   };
 
-  const handleOKButton = () => {
+  const handleOKButton = async () => {
     if (messageTemplate === '') {
       setRequired(true);
-    } else {
-      saveTemplate({
+      return;
+    }
+
+    try {
+      await saveTemplate({
         variables: {
           messageId: id,
           templateInput: {
@@ -81,6 +81,8 @@ export const AddToMessageTemplate = ({ id, message, changeDisplay }: AddToMessag
           },
         },
       });
+      setNotification(t('Message has been successfully added to speed sends.'));
+    } finally {
       changeDisplay(false);
       setMessageTemplate(null);
     }

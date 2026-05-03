@@ -31,22 +31,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups, afterAdd }: A
     fetchPolicy: 'cache-and-network',
   });
 
-  const [updateCollection] = useMutation(updateMutation, {
-    onCompleted: (data) => {
-      let updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
-      const { groupContacts } = data[updateVariable];
-
-      const numberAdded = groupContacts.length;
-
-      if (numberAdded > 0) {
-        setNotification(`${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`);
-      }
-      if (afterAdd) {
-        afterAdd();
-      }
-      setDialog(false);
-    },
-  });
+  const [updateCollection] = useMutation(updateMutation);
   let entityOptions = [];
 
   if (entityData) {
@@ -62,23 +47,37 @@ export const AddToCollection = ({ collectionId, setDialog, groups, afterAdd }: A
     }
   }
 
-  const handleCollectionAdd = (selectedContacts: any) => {
+  const handleCollectionAdd = async (selectedContacts: any) => {
     if (selectedContacts.length === 0) {
       setDialog(false);
-    } else {
-      const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
-      const deletevariable = groups ? 'deleteWaGroupIds' : 'deleteContactIds';
-
-      updateCollection({
-        variables: {
-          input: {
-            [addvariable]: selectedContacts,
-            groupId: collectionId,
-            [deletevariable]: [],
-          },
-        },
-      });
+      return;
     }
+
+    const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
+    const deletevariable = groups ? 'deleteWaGroupIds' : 'deleteContactIds';
+
+    const { data } = await updateCollection({
+      variables: {
+        input: {
+          [addvariable]: selectedContacts,
+          groupId: collectionId,
+          [deletevariable]: [],
+        },
+      },
+    });
+
+    if (data) {
+      const updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
+      const numberAdded = data[updateVariable]?.groupContacts?.length ?? 0;
+      if (numberAdded > 0) {
+        setNotification(`${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`);
+      }
+    }
+
+    if (afterAdd) {
+      afterAdd();
+    }
+    setDialog(false);
   };
 
   let searchDialogTitle = groups ? t('Add groups to the collection') : t('Add contacts to the collection');
