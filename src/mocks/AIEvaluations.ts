@@ -7,6 +7,59 @@ export const getListAiEvaluationsMock = {
   result: { data: { aiEvaluations: [] } },
 };
 
+const baseEvaluation = {
+  __typename: 'AiEvaluation',
+  failureReason: null,
+  datasetId: 1,
+  assistantConfigVersionId: '1',
+  insertedAt: '2026-05-01T10:00:00Z',
+  updatedAt: '2026-05-01T11:00:00Z',
+};
+
+export const completedEvaluationSummaryScores = {
+  ...baseEvaluation,
+  id: '1',
+  name: 'Cosine Test',
+  status: 'COMPLETED',
+  results: {
+    summary_scores: [
+      { avg: 0.1, std: 0.05, name: 'Cosine Similarity', data_type: 'NUMERIC', total_pairs: 25 },
+      { avg: 0.8, std: 0.1, name: 'LLM-as-judge', data_type: 'NUMERIC', total_pairs: 25 },
+    ],
+  },
+};
+
+export const runningEvaluation = {
+  ...baseEvaluation,
+  id: '2',
+  name: 'Running Eval',
+  status: 'RUNNING',
+  results: null,
+};
+
+export const failedEvaluation = {
+  ...baseEvaluation,
+  id: '3',
+  name: 'Failed Eval',
+  status: 'FAILED',
+  failureReason: 'Timeout',
+  results: null,
+};
+
+export const completedEvaluationFlatFormat = {
+  ...baseEvaluation,
+  id: '4',
+  name: 'Flat Format Eval',
+  status: 'COMPLETED',
+  results: { cosine_similarity: 0.75, llm_as_judge: 0.6 },
+};
+
+export const getListAiEvaluationsWithDataMock = (aiEvaluations: any[]) => ({
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { aiEvaluations } },
+});
+
 const evaluationSuccessResult = {
   data: {
     createEvaluation: {
