@@ -51,25 +51,41 @@ export const contactCollectionsQuery = (id: number, multipleGroups: boolean = fa
   },
 });
 
-export const updateContactCollectionQuery = {
+export const updateContactCollectionQuery = (
+  input: any,
+  result: { contactGroups?: any; numberDeleted?: number } = {}
+) => ({
   request: {
     query: UPDATE_CONTACT_COLLECTIONS,
     variables: {
-      input: { contactId: '2', addGroupIds: [], deleteGroupIds: ['1', '2'] },
+      input,
     },
   },
   result: {
     data: {
       updateContactGroups: {
-        contactGroups: {
-          id: '18',
-          value: null,
-        },
-        numberDeleted: 1,
+        contactGroups: result.contactGroups ?? { id: '18', value: null },
+        numberDeleted: result.numberDeleted ?? 1,
       },
     },
   },
-};
+});
+
+export const contactCollectionsQueryWithGroups = (id: string, contactGroups: any[]) => ({
+  request: {
+    query: GET_CONTACT_COLLECTIONS,
+    variables: { id },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          groups: contactGroups,
+        },
+      },
+    },
+  },
+});
 
 export const getContactSampleQuery = (variables: any, contactDetails?: any) => {
   return {
