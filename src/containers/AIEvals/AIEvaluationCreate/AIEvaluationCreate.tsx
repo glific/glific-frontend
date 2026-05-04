@@ -282,7 +282,7 @@ export default function AIEvaluationCreate() {
         partialPage={false}
         confirmationState={{ show: false, title: '', message: '' }}
         setPayload={handleSetPayload}
-        afterSave={() => navigate('/chat')}
+        afterSave={() => navigate('/ai-evaluations')}
       />
       <input
         ref={fileInputRef}

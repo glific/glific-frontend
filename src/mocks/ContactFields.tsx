@@ -215,7 +215,7 @@ export const contactFieldMocks = [
 export const contactFieldErrorMock = {
   request: {
     query: UPDATE_CONTACT_FIELDS,
-    variables: { id: '2', input: { shortcode: 'dob' } },
+    variables: { id: '2', input: { shortcode: 'age_group' } },
   },
   result: {
     data: {
