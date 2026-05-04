@@ -63,8 +63,12 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
 
     if (collectionId) {
       flowVariables.groupId = collectionId;
-      await addFlowToCollection({ variables: flowVariables });
-      setNotification(t('Your flow will start in a couple of minutes.'));
+      try {
+        await addFlowToCollection({ variables: flowVariables });
+        setNotification(t('Your flow will start in a couple of minutes.'));
+      } catch (error: any) {
+        setErrorMessage(error);
+      }
     }
   };
 
