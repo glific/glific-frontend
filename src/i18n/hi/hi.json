@@ -487,5 +487,18 @@
   "Manage Knowledge Base": "नॉलेज बेस प्रबंधित करें",
   "You are adding more files to existing Knowledge Base": "आप मौजूदा नॉलेज बेस में अधिक फ़ाइलें जोड़ रहे हैं",
   "Selected File(s)": "चयनित फ़ाइल(ें)",
-  "Add Files": "फ़ाइलें जोड़ें"
+  "Add Files": "फ़ाइलें जोड़ें",
+  "No Golden QA datasets available": "कोई Golden QA डेटासेट उपलब्ध नहीं है",
+  "Search or select a Golden QA dataset": "Golden QA डेटासेट खोजें या चुनें",
+  "Fetching assistants...": "असिस्टेंट लोड हो रहे हैं...",
+  "No assistants available": "कोई असिस्टेंट उपलब्ध नहीं है",
+  "Evaluation name is required": "मूल्यांकन का नाम आवश्यक है",
+  "Please select a Golden QA dataset": "कृपया एक Golden QA डेटासेट चुनें",
+  "Please select an AI Assistant": "कृपया एक AI असिस्टेंट चुनें",
+  "Give a unique name for the evaluation experiment": "मूल्यांकन प्रयोग के लिए एक यूनिक नाम दें",
+  "Search or select an AI assistant": "AI असिस्टेंट खोजें या चुनें",
+  "Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the evaluation on.": "मूल्यांकन चलाने के लिए मौजूदा सूची से Golden QA डेटासेट चुनें या CSV प्रारूप में नया Golden QA सेट अपलोड करें।",
+  "Expected CSV Format:": "अपेक्षित CSV प्रारूप:",
+  "Question, Answer": "Question, Answer",
+  "Click Here For The Template Csv": "टेम्पलेट CSV के लिए यहां क्लिक करें"
 }

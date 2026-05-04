@@ -625,5 +625,18 @@
   "AI that answers based on your context": "AI that answers based on your context",
   "Please upload a valid CSV file": "Please upload a valid CSV file",
   "Templates were processed with errors. Please check the csv file for details.": "Templates were processed with errors. Please check the csv file for details.",
-  "Failed to validate flow. Please try again.": "Failed to validate flow. Please try again."
+  "Failed to validate flow. Please try again.": "Failed to validate flow. Please try again.",
+  "No Golden QA datasets available": "No Golden QA datasets available",
+  "Search or select a Golden QA dataset": "Search or select a Golden QA dataset",
+  "Fetching assistants...": "Fetching assistants...",
+  "No assistants available": "No assistants available",
+  "Evaluation name is required": "Evaluation name is required",
+  "Please select a Golden QA dataset": "Please select a Golden QA dataset",
+  "Please select an AI Assistant": "Please select an AI Assistant",
+  "Give a unique name for the evaluation experiment": "Give a unique name for the evaluation experiment",
+  "Search or select an AI assistant": "Search or select an AI assistant",
+  "Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the evaluation on.": "Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the evaluation on.",
+  "Expected CSV Format:": "Expected CSV Format:",
+  "Question, Answer": "Question, Answer",
+  "Click Here For The Template Csv": "Click Here For The Template Csv"
 }

@@ -77,6 +77,12 @@ SVG files are imported as React components using the `?react` suffix:
 import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 ```
 
+### Translation Pattern
+
+- Follow the existing project pattern for UI strings: use `t('English source text')` keys.
+- In component/page files, import `t` from `i18next` and call it directly for labels, placeholders, helper text, empty states, and validation messages.
+- Add matching entries in `src/i18n/en/en.json` and `src/i18n/hi/hi.json` for every newly introduced string.
+
 ### Routing & Role-Based Access
 
 `src/routes/AuthenticatedRoute/AuthenticatedRoute.tsx` defines two route trees:

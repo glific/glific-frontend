@@ -15,7 +15,7 @@ interface GoldenQAListProps {
   searchQuery: string;
 }
 
-const columnStyles = [styles.TitleColumn, styles.DateColumn, styles.Actions, styles.Icons];
+const columnStyles = [styles.TitleColumn, styles.DateColumn, styles.Actions];
 
 const queries = {
   countQuery: COUNT_GOLDEN_QA,
@@ -28,6 +28,19 @@ const columnNames = [
   { name: 'inserted_at', label: 'Created On', sort: true, order: 'desc' },
   { label: 'Actions' },
 ];
+
+const getGoldenQaErrors = (responseData: any): string[] => {
+  const rootErrors = responseData?.goldenQa?.errors;
+  const nestedErrors = responseData?.goldenQa?.goldenQa?.errors;
+  const errors = Array.isArray(rootErrors) ? rootErrors : Array.isArray(nestedErrors) ? nestedErrors : [];
+
+  return errors.map((errorItem) => {
+    if (typeof errorItem === 'string') return errorItem;
+    if (errorItem instanceof Error) return errorItem.message;
+    if (typeof errorItem?.message === 'string') return errorItem.message;
+    return String(errorItem);
+  });
+};
 
 export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
   const [fetchGoldenQa] = useLazyQuery(GET_GOLDEN_QA);
@@ -48,6 +61,12 @@ export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
 
       if (error) {
         setErrorMessage(error);
+        return;
+      }
+
+      const appErrors = getGoldenQaErrors(data);
+      if (appErrors.length) {
+        setErrorMessage(appErrors.join(', '));
         return;
       }
 

@@ -7,6 +7,7 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
 import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
+import { t } from 'i18next';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
@@ -14,18 +15,19 @@ import * as Yup from 'yup';
 import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
 
-const goldenQAHelperContent = (
+const getGoldenQAHelperContent = () => (
   <div className={styles.GoldenQAHelper}>
     <p className={styles.GoldenQAHelperDescription}>
-      Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the
-      evaluation on.
+      {t(
+        'Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the evaluation on.'
+      )}
     </p>
     <div className={styles.CSVFormatBox}>
-      <div className={styles.CSVFormatExample}>Expected CSV Format:</div>
-      <div className={styles.CSVFormatExample}>Question, Answer</div>
+      <div className={styles.CSVFormatExample}>{t('Expected CSV Format:')}</div>
+      <div className={styles.CSVFormatExample}>{t('Question, Answer')}</div>
       <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
       <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
-        Click Here For The Template Csv
+        {t('Click Here For The Template Csv')}
       </a>
     </div>
   </div>
@@ -63,8 +65,8 @@ const GoldenQaField = (props: any) => {
             optionLabel="label"
             multiple={false}
             disableClearable={false}
-            noOptionsText="No Golden QA datasets available"
-            placeholder="Search or select a Golden QA dataset"
+            noOptionsText={t('No Golden QA datasets available')}
+            placeholder={t('Search or select a Golden QA dataset')}
             textFieldProps={goldenQaAutoCompleteTextFieldProps}
           />
         </div>
@@ -146,12 +148,14 @@ export default function AIEvaluationCreate() {
         }))
       : [];
 
-  const assistantNoOptionsText = versionsLoading ? 'Fetching assistants...' : 'No assistants available';
+  const assistantNoOptionsText = versionsLoading
+    ? t('Fetching assistants...')
+    : t('No assistants available');
 
   const validationSchema = Yup.object().shape({
-    evaluationName: Yup.string().required('Evaluation name is required'),
-    goldenQaId: Yup.object().nullable().required('Please select a Golden QA dataset'),
-    assistantId: Yup.object().nullable().required('Please select an AI Assistant'),
+    evaluationName: Yup.string().required(t('Evaluation name is required')),
+    goldenQaId: Yup.object().nullable().required(t('Please select a Golden QA dataset')),
+    assistantId: Yup.object().nullable().required(t('Please select an AI Assistant')),
   });
 
   const [states, setStates] = useState<{
@@ -190,11 +194,16 @@ export default function AIEvaluationCreate() {
 
   const formFields = [
     {
+      component: SectionDivider,
+      name: '__evaluationDetailsDivider',
+      label: <span className={styles.SectionDividerLabel}>Select Golden QA</span>,
+      placeholder: '',
+    },
+    {
       component: GoldenQaField,
       name: 'goldenQaId',
-      label: <strong>Select Golden QA</strong>,
       options: goldenQaOptions,
-      helperText: goldenQAHelperContent,
+      helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
       newlyAddedDataset,
     },
@@ -209,7 +218,7 @@ export default function AIEvaluationCreate() {
       name: 'evaluationName',
       type: 'text',
       label: <strong>Evaluation Name*</strong>,
-      placeholder: 'Give a unique name for the evaluation experiment',
+      placeholder: t('Give a unique name for the evaluation experiment'),
     },
     {
       component: AutoComplete,
@@ -220,7 +229,7 @@ export default function AIEvaluationCreate() {
       multiple: false,
       disableClearable: false,
       noOptionsText: assistantNoOptionsText,
-      placeholder: 'Search or select an AI assistant',
+      placeholder: t('Search or select an AI assistant'),
       openOnFocus: true,
     },
   ];
@@ -259,6 +268,7 @@ export default function AIEvaluationCreate() {
         refetchQueries={[]}
         redirect={false}
         title="Create AI Evaluation"
+        headerHelp=""
         button="Run Evaluation"
         languageSupport={false}
         backLinkButton="/ai-evaluations"
