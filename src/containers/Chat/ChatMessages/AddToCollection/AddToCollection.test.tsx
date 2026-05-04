@@ -112,10 +112,7 @@ test('does not show notification when mutation succeeds with no additions', asyn
     getCollectionContactsQuery,
     getContactsSearchQuery,
     getContactsQuery,
-    updateCollectionContactsQuery(
-      { addContactIds: ['3'], groupId: '1', deleteContactIds: [] },
-      { groupContacts: [] }
-    ),
+    updateCollectionContactsQuery({ addContactIds: ['3'], groupId: '1', deleteContactIds: [] }, { groupContacts: [] }),
     getExcludedContactsQuery({ name: '', excludeGroups: '1' }),
   ];
 
@@ -216,7 +213,7 @@ test('uses plural form when multiple whatsapp groups are added', async () => {
   fireEvent.click(getByText('Save'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('2 groups  were added');
+    expect(setNotification).toHaveBeenCalledWith('2 groups were added');
   });
 });
 

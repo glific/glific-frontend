@@ -70,7 +70,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups, afterAdd }: A
       const updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
       const numberAdded = data[updateVariable]?.groupContacts?.length ?? 0;
       if (numberAdded > 0) {
-        setNotification(`${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`);
+        setNotification(`${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's were'} added`);
       }
     }
 

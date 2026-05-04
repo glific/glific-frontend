@@ -405,7 +405,7 @@ test('shows combined add/remove notification when both occur', async () => {
   fireEvent.click(screen.getByText('Save'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Added to 2 collections  and removed from 2 collections ');
+    expect(setNotification).toHaveBeenCalledWith('Added to 2 collections and removed from 2 collections ');
   });
 });
 

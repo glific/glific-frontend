@@ -180,7 +180,7 @@ export const ConversationHeader = ({
         let notification = `Added to ${numberAdded} collection${numberAdded === 1 ? '' : 's'}`;
         if (numberDeleted > 0 && numberAdded > 0) {
           notification = `Added to ${numberAdded} collection${
-            numberAdded === 1 ? '' : 's  and'
+            numberAdded === 1 ? '' : 's and'
           } removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's '}`;
         } else if (numberDeleted > 0) {
           notification = `Removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's'}`;

@@ -120,13 +120,21 @@ export const ChatInput = ({
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
   const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB);
 
-  const sendMediaMessage = async (input: { caption: string; sourceUrl: string; url: string }, type: string) => {
-    const { data } = await createMediaMessage({ variables: { input } });
-    if (data) {
+  const sendMediaMessage = async (
+    input: { caption: string; sourceUrl: string; url: string },
+    type: string
+  ): Promise<boolean> => {
+    try {
+      const { data } = await createMediaMessage({ variables: { input } });
+      if (!data) return false;
       onSendMessage('', data.createMessageMedia.messageMedia.id, type, selectedTemplate, variableParam);
       setAttachmentAdded(false);
       setAttachmentURL('');
       setAttachmentType('');
+      return true;
+    } catch {
+      setNotification(t('Sorry, unable to send the attachment.'), 'warning');
+      return false;
     }
   };
 
@@ -185,7 +193,7 @@ export const ChatInput = ({
 
     // check if there is any attachment
     if (attachmentAdded) {
-      sendMediaMessage(
+      const sent = await sendMediaMessage(
         {
           caption: message,
           sourceUrl: attachmentURL,
@@ -193,6 +201,8 @@ export const ChatInput = ({
         },
         attachmentType
       );
+      // Keep editor state intact on failure so the user can retry without retyping.
+      if (!sent) return;
       // check if type is list or quick replies
     } else if (interactiveMessageContent && interactiveMessageContent.type) {
       onSendMessage(null, null, interactiveMessageContent.type.toUpperCase(), null, null, Number(selectedTemplate.id));
