@@ -370,7 +370,7 @@ describe('Template flows', () => {
     });
   });
 
-  test('Template flows > should display failed assistants when import has assistant errors', async () => {
+  test('Template flows > should display assistant nodes that need an assistant assigned', async () => {
     const mockImportFlowWithAssistantError = {
       request: { query: IMPORT_FLOW },
       result: {
@@ -378,9 +378,9 @@ describe('Template flows', () => {
           importFlow: {
             status: [
               {
+                assistantNodeUuids: ['3fb647a3-c935-4906-8dd0-c0e63105ee3d', 'b1d2e9ff-1234-4abc-9876-deadbeefcafe'],
                 flowName: 'Test Flow',
-                status:
-                  'Failed to import assistant Assistant ID: a_pJMxxxZfGfDicrgAD Failed to import assistant Assistant ID: asst_testsD',
+                status: 'Successfully imported',
               },
             ],
           },
@@ -433,13 +433,15 @@ describe('Template flows', () => {
     const helpLink = await inDialog.findByText(/create a new assistant/i);
     const para = helpLink.closest('p');
     expect(para).toBeTruthy();
-    expect(normalize(para!.textContent || '')).toContain('flow imported successfully, but failed to import assistants');
+    expect(normalize(para!.textContent || '')).toContain(
+      'flow imported successfully. this flow contains assistant node(s) that need an assistant assigned'
+    );
 
-    const failedLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'failed assistants:');
-    expect(failedLabels.length).toBeGreaterThan(0);
+    const nodeLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'assistant node uuids:');
+    expect(nodeLabels.length).toBeGreaterThan(0);
 
-    expect(inDialog.getByText('a_pJMxxxZfGfDicrgAD')).toBeInTheDocument();
-    expect(inDialog.getByText('asst_testsD')).toBeInTheDocument();
+    expect(inDialog.getByText('3fb647a3-c935-4906-8dd0-c0e63105ee3d')).toBeInTheDocument();
+    expect(inDialog.getByText('b1d2e9ff-1234-4abc-9876-deadbeefcafe')).toBeInTheDocument();
 
     expect(helpLink).toHaveAttribute(
       'href',
