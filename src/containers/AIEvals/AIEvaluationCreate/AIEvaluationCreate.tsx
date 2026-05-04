@@ -268,7 +268,6 @@ export default function AIEvaluationCreate() {
         refetchQueries={[]}
         redirect={false}
         title="Create AI Evaluation"
-        headerHelp=""
         button="Run Evaluation"
         languageSupport={false}
         backLinkButton="/ai-evaluations"
