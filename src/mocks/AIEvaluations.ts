@@ -1,5 +1,5 @@
 import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
-import { LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { COUNT_GOLDEN_QA, GET_GOLDEN_QA, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 
 export const getListAiEvaluationsMock = {
@@ -37,12 +37,6 @@ export const getCreateEvaluationSuccessMock = {
   variableMatcher: () => true,
   result: evaluationSuccessResult,
 };
-
-export const getAIEvaluationCreateMocks = () => [
-  getListAiEvaluationsMock,
-  getCreateEvaluationMock,
-  getAssistantConfigVersionsMock,
-];
 
 export const getAssistantConfigVersionsMock = {
   request: { query: GET_ASSISTANT_CONFIG_VERSIONS, variables: { filter: {} } },
@@ -196,3 +190,110 @@ export const createGoldenQaNoMessageErrorMock = {
     },
   },
 };
+
+// ── Golden QA list mocks ──────────────────────────────────────────────────────
+
+const goldenQaSampleRows = [
+  {
+    __typename: 'GoldenQa',
+    id: '1',
+    name: 'Diabetescare-0101',
+    datasetId: '101',
+    insertedAt: new Date().toISOString(),
+  },
+  {
+    __typename: 'GoldenQa',
+    id: '2',
+    name: 'Healthcare-0102',
+    datasetId: '102',
+    insertedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    __typename: 'GoldenQa',
+    id: '3',
+    name: 'Testabc-0801',
+    datasetId: '103',
+    insertedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+  },
+  {
+    __typename: 'GoldenQa',
+    id: '4',
+    name: 'GuideMentalHealth-2111',
+    datasetId: '104',
+    insertedAt: '2024-11-21T00:00:00Z',
+  },
+];
+
+// Used by AIEvalsPage / GoldenQAList (paginated via List component)
+export const getListGoldenQaMock = {
+  request: {
+    query: LIST_GOLDEN_QA,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, orderWith: 'inserted_at', order: 'DESC' } },
+  },
+  result: { data: { goldenQas: goldenQaSampleRows } },
+};
+
+export const getListGoldenQaEmptyMock = {
+  request: {
+    query: LIST_GOLDEN_QA,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, orderWith: 'inserted_at', order: 'DESC' } },
+  },
+  result: { data: { goldenQas: [] } },
+};
+
+// Used by AIEvaluationCreate (fetch all for dropdown)
+export const getListGoldenQaForCreateMock = {
+  request: { query: LIST_GOLDEN_QA, variables: { filter: {}, opts: {} } },
+  result: { data: { goldenQas: goldenQaSampleRows } },
+};
+
+export const getListGoldenQaForCreateEmptyMock = {
+  request: { query: LIST_GOLDEN_QA, variables: { filter: {}, opts: {} } },
+  result: { data: { goldenQas: [] } },
+};
+
+export const getListGoldenQaForCreateErrorMock = {
+  request: { query: LIST_GOLDEN_QA, variables: { filter: {}, opts: {} } },
+  error: new Error('Failed to fetch golden QA datasets'),
+};
+
+export const getGoldenQaDownloadMock = (id = '1', signedUrl = 'https://storage.example.com/golden-qa-1.csv') => ({
+  request: { query: GET_GOLDEN_QA, variables: { id, includeSignedUrl: true } },
+  result: {
+    data: {
+      goldenQa: {
+        __typename: 'GoldenQaPayload',
+        goldenQa: {
+          __typename: 'GoldenQa',
+          id,
+          name: 'Diabetescare-0101',
+          signedUrl,
+          insertedAt: new Date().toISOString(),
+        },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const getGoldenQaDownloadErrorMock = (id = '1') => ({
+  request: { query: GET_GOLDEN_QA, variables: { id, includeSignedUrl: true } },
+  error: new Error('Failed to generate download URL'),
+});
+
+export const getCountGoldenQaMock = {
+  request: { query: COUNT_GOLDEN_QA, variables: { filter: {} } },
+  result: { data: { countGoldenQas: 4 } },
+};
+
+export const getCountGoldenQaEmptyMock = {
+  request: { query: COUNT_GOLDEN_QA, variables: { filter: {} } },
+  result: { data: { countGoldenQas: 0 } },
+};
+
+export const getAIEvaluationCreateMocks = () => [
+  getListAiEvaluationsMock,
+  getCreateEvaluationMock,
+  getAssistantConfigVersionsMock,
+  getListGoldenQaForCreateMock,
+];

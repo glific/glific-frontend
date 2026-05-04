@@ -1,49 +1,74 @@
 import { useQuery } from '@apollo/client';
+import { setNotification } from 'common/notification';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
+import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
+import { t } from 'i18next';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
-import { setNotification } from 'common/notification';
 
 import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
 
-const goldenQAHelperContent = (
+const getGoldenQAHelperContent = () => (
   <div className={styles.GoldenQAHelper}>
     <p className={styles.GoldenQAHelperDescription}>
-      Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the
-      evaluation on.
+      {t(
+        'Select the Golden QA dataset from the existing list or upload a new set of Golden QA in CSV format to run the evaluation on.'
+      )}
     </p>
     <div className={styles.CSVFormatBox}>
-      <div className={styles.CSVFormatExample}>Expected CSV Format:</div>
-      <div className={styles.CSVFormatExample}>Question, Answer</div>
-      <div className={styles.CSVFormatExample}>{'{"What Is X"},{"Answer"}'}</div>
+      <div className={styles.CSVFormatExample}>{t('Expected CSV Format:')}</div>
+      <div className={styles.CSVFormatExample}>{t('Question, Answer')}</div>
+      <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
       <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
-        Click Here For The Template Csv
+        {t('Click Here For The Template Csv')}
       </a>
     </div>
   </div>
 );
 
+const goldenQaAutoCompleteTextFieldProps = {
+  sx: {
+    '& .MuiAutocomplete-inputRoot': {
+      paddingRight: '72px !important',
+    },
+    '& .MuiAutocomplete-input': {
+      textOverflow: 'ellipsis',
+    },
+  },
+};
+
 const GoldenQaField = (props: any) => {
-  const { onUploadGoldenQaClick, form, helperText, newlyAddedDatasetId, ...dropdownProps } = props;
+  const { onUploadGoldenQaClick, form, helperText, newlyAddedDataset, options, field, ...rest } = props;
 
   useEffect(() => {
-    if (newlyAddedDatasetId != null) {
-      form.setFieldValue('goldenQaId', newlyAddedDatasetId);
+    if (newlyAddedDataset != null) {
+      form.setFieldValue('goldenQaId', newlyAddedDataset);
     }
-  }, [newlyAddedDatasetId]);
+  }, [newlyAddedDataset]);
 
   return (
     <div>
       <div className={styles.GoldenQaRow}>
         <div className={styles.GoldenQaLeft}>
-          <Dropdown {...dropdownProps} form={form} />
+          <AutoComplete
+            {...rest}
+            field={field}
+            form={form}
+            options={options}
+            optionLabel="label"
+            multiple={false}
+            disableClearable={false}
+            noOptionsText={t('No Golden QA datasets available')}
+            placeholder={t('Search or select a Golden QA dataset')}
+            textFieldProps={goldenQaAutoCompleteTextFieldProps}
+          />
         </div>
         <div className={styles.GoldenQaRight}>
           <Button
@@ -64,24 +89,34 @@ const GoldenQaField = (props: any) => {
 
 const SectionDivider = (_props: any) => null;
 
+interface GoldenQaOption {
+  id: string | number;
+  label: string;
+}
+
+interface AssistantOption {
+  id: string | number;
+  label: string;
+}
+
 export default function AIEvaluationCreate() {
   const navigate = useNavigate();
-  const [goldenQADatasets, setGoldenQADatasets] = useState<Array<{ datasetId: number; name: string }>>([]);
+  const [uploadedDatasets, setUploadedDatasets] = useState<GoldenQaOption[]>([]);
   const [showUploadGoldenQaDialog, setShowUploadGoldenQaDialog] = useState(false);
   const [selectedGoldenQaFileName, setSelectedGoldenQaFileName] = useState<string | null>(null);
   const [selectedGoldenQaFile, setSelectedGoldenQaFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [newlyAddedDatasetId, setNewlyAddedDatasetId] = useState<number | null>(null);
-
-  const goldenQaOptions =
-    goldenQADatasets.length === 0
-      ? [{ id: '0', label: 'No Golden QA available, upload one first' }]
-      : goldenQADatasets.map(({ datasetId, name }) => ({ id: datasetId, label: name }));
+  const [newlyAddedDataset, setNewlyAddedDataset] = useState<GoldenQaOption | null>(null);
 
   const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
     GET_ASSISTANT_CONFIG_VERSIONS,
     { variables: { filter: {} }, fetchPolicy: 'network-only' }
   );
+
+  const { data: goldenQaData, error: goldenQaError } = useQuery(LIST_GOLDEN_QA, {
+    variables: { filter: {}, opts: {} },
+    fetchPolicy: 'network-only',
+  });
 
   useEffect(() => {
     if (versionsError) {
@@ -89,25 +124,48 @@ export default function AIEvaluationCreate() {
     }
   }, [versionsError]);
 
-  const assistantOptions = versionsLoading
-    ? [{ id: '', label: 'Fetching assistants...' }]
+  useEffect(() => {
+    if (goldenQaError) {
+      setNotification(goldenQaError.message, 'warning');
+    }
+  }, [goldenQaError]);
+
+  const backendOptions: GoldenQaOption[] =
+    goldenQaData?.goldenQas?.map((qa: any) => ({ id: qa.datasetId, label: qa.name })) ?? [];
+
+  const uploadedIds = new Set(uploadedDatasets.map((d) => String(d.id)));
+  const goldenQaOptions: GoldenQaOption[] = [
+    ...uploadedDatasets,
+    ...backendOptions.filter((opt) => !uploadedIds.has(String(opt.id))),
+  ];
+
+  const assistantOptions: AssistantOption[] = versionsLoading
+    ? []
     : versionsData?.assistantConfigVersions?.length > 0
       ? versionsData.assistantConfigVersions.map((v: any) => ({
           id: v.id,
           label: `${v.assistantName} (Version ${v.versionNumber})`,
         }))
-      : [{ id: '', label: 'No assistants available' }];
+      : [];
+
+  const assistantNoOptionsText = versionsLoading
+    ? t('Fetching assistants...')
+    : t('No assistants available');
 
   const validationSchema = Yup.object().shape({
-    evaluationName: Yup.string().required('Evaluation name is required'),
-    goldenQaId: Yup.string().required('Please select a Golden QA dataset'),
-    assistantId: Yup.string().required('Please select an AI Assistant'),
+    evaluationName: Yup.string().required(t('Evaluation name is required')),
+    goldenQaId: Yup.object().nullable().required(t('Please select a Golden QA dataset')),
+    assistantId: Yup.object().nullable().required(t('Please select an AI Assistant')),
   });
 
-  const [states, setStates] = useState<{ evaluationName: string; goldenQaId: number; assistantId: string }>({
+  const [states, setStates] = useState<{
+    evaluationName: string;
+    goldenQaId: GoldenQaOption | null;
+    assistantId: AssistantOption | null;
+  }>({
     evaluationName: '',
-    goldenQaId: 0,
-    assistantId: '',
+    goldenQaId: null,
+    assistantId: null,
   });
 
   const handleUploadGoldenQaButtonClick = () => {
@@ -128,20 +186,26 @@ export default function AIEvaluationCreate() {
   };
 
   const handleUploadGoldenQaProceed = (values: { datasetId: number; name: string }) => {
-    setGoldenQADatasets((prev) => [{ datasetId: values.datasetId, name: values.name }, ...prev]);
-    setNewlyAddedDatasetId(values.datasetId);
+    const newOption: GoldenQaOption = { id: values.datasetId, label: values.name };
+    setUploadedDatasets((prev) => [newOption, ...prev]);
+    setNewlyAddedDataset(newOption);
     setShowUploadGoldenQaDialog(false);
   };
 
   const formFields = [
     {
+      component: SectionDivider,
+      name: '__evaluationDetailsDivider',
+      label: <span className={styles.SectionDividerLabel}>Select Golden QA</span>,
+      placeholder: '',
+    },
+    {
       component: GoldenQaField,
       name: 'goldenQaId',
-      label: <strong>Select Golden QA</strong>,
       options: goldenQaOptions,
-      helperText: goldenQAHelperContent,
+      helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
-      newlyAddedDatasetId,
+      newlyAddedDataset,
     },
     {
       component: SectionDivider,
@@ -154,23 +218,30 @@ export default function AIEvaluationCreate() {
       name: 'evaluationName',
       type: 'text',
       label: <strong>Evaluation Name*</strong>,
-      placeholder: 'Give a unique name for the evaluation experiment',
+      placeholder: t('Give a unique name for the evaluation experiment'),
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'assistantId',
       label: <strong>AI Assistant*</strong>,
       options: assistantOptions,
-      placeholder: '',
+      optionLabel: 'label',
+      multiple: false,
+      disableClearable: false,
+      noOptionsText: assistantNoOptionsText,
+      placeholder: t('Search or select an AI assistant'),
+      openOnFocus: true,
     },
   ];
 
   const dialogMessage = 'This action cannot be undone.';
 
   const handleSetPayload = (payload: any) => {
-    const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId);
+    const selectedVersion = versionsData?.assistantConfigVersions?.find(
+      (v: any) => v.id === payload.assistantId?.id
+    );
     return {
-      datasetId: payload.goldenQaId,
+      datasetId: payload.goldenQaId?.id,
       experimentName: payload.evaluationName,
       configId: selectedVersion?.kaapiUuid,
       configVersion: selectedVersion?.id,
@@ -197,9 +268,10 @@ export default function AIEvaluationCreate() {
         refetchQueries={[]}
         redirect={false}
         title="Create AI Evaluation"
+        headerHelp=""
         button="Run Evaluation"
         languageSupport={false}
-        backLinkButton="ai-evaluations"
+        backLinkButton="/ai-evaluations"
         cancelAction={() => window.history.back()}
         getQueryFetchPolicy="cache-first"
         saveOnPageChange={false}
@@ -210,7 +282,7 @@ export default function AIEvaluationCreate() {
         partialPage={false}
         confirmationState={{ show: false, title: '', message: '' }}
         setPayload={handleSetPayload}
-        afterSave={() => navigate('/chat')}
+        afterSave={() => navigate('/ai-evaluations')}
       />
       <input
         ref={fileInputRef}
