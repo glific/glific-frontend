@@ -76,7 +76,6 @@ export interface FormLayoutProps {
   restrictDelete?: boolean;
   languageAttributes?: any;
   helpData?: HelpDataProps;
-  headerHelp?: string;
   noHeading?: boolean;
   isView?: boolean;
   partialPage?: boolean;
@@ -147,7 +146,6 @@ export const FormLayout = ({
   entityId = null,
   restrictDelete = false,
   languageAttributes = {},
-  headerHelp: headerHelpOverride,
   noHeading = false,
   partialPage = false,
   confirmationState,
@@ -670,9 +668,6 @@ export const FormLayout = ({
   }
   if (isView) {
     headerHelp = `Please view below details.`;
-  }
-  if (headerHelpOverride !== undefined) {
-    headerHelp = headerHelpOverride;
   }
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 
