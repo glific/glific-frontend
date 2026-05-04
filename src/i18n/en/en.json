@@ -625,5 +625,6 @@
   "AI that answers based on your context": "AI that answers based on your context",
   "Please upload a valid CSV file": "Please upload a valid CSV file",
   "Templates were processed with errors. Please check the csv file for details.": "Templates were processed with errors. Please check the csv file for details.",
-  "Failed to validate flow. Please try again.": "Failed to validate flow. Please try again."
+  "Failed to validate flow. Please try again.": "Failed to validate flow. Please try again.",
+  "Sorry, unable to send the attachment.": "Sorry, unable to send the attachment."
 }
