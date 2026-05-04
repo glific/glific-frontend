@@ -1,0 +1,25 @@
+.TitleColumn {
+  width: 60%;
+}
+
+.DateColumn {
+  width: 25%;
+}
+
+.Actions {
+  width: 25%;
+}
+
+.TitleCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #073f32;
+}
+
+.DocumentIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #6b9e8e;
+}

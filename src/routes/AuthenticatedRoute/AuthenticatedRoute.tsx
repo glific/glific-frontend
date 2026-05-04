@@ -73,6 +73,7 @@ const WhatsAppFormsList = lazy(() => import('containers/WhatsAppForms/WhatsAppFo
 const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'));
 const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
+const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
 
 const staffRoutes = (
   <Routes>
@@ -159,6 +160,7 @@ const adminRoutes = (
       <Route path=":id/edit" element={<WhatsappFormsConfigure />} />
       <Route path=":id/configure" element={<WhatsAppForms />} />
     </Route>
+    <Route path="ai-evaluations" element={<AIEvalsPage />} />
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="/*" element={<Chat />} />
   </>
