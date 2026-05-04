@@ -30,24 +30,7 @@ const columnNames = [
 ];
 
 export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
-  const [fetchGoldenQa] = useLazyQuery(GET_GOLDEN_QA, {
-    onCompleted: (data) => {
-      const signedUrl = data?.goldenQa?.goldenQa?.signedUrl;
-      if (signedUrl) {
-        const link = document.createElement('a');
-        link.href = signedUrl;
-        link.download = ''; // Ensures download rather than opening in browser
-        document.body.appendChild(link); // Required for Firefox
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        setErrorMessage('Failed to generate download URL');
-      }
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
+  const [fetchGoldenQa] = useLazyQuery(GET_GOLDEN_QA);
 
   const getColumns = ({ name, insertedAt }: any) => ({
     name: (
@@ -59,8 +42,29 @@ export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
     createdOn: dayjs(insertedAt).fromNow(),
   });
 
-  const handleDownload = (id: string) => {
-    fetchGoldenQa({ variables: { id, includeSignedUrl: true } });
+  const handleDownload = async (id: string) => {
+    try {
+      const { data, error } = await fetchGoldenQa({ variables: { id, includeSignedUrl: true } });
+
+      if (error) {
+        setErrorMessage(error);
+        return;
+      }
+
+      const signedUrl = data?.goldenQa?.goldenQa?.signedUrl;
+      if (signedUrl) {
+        const link = document.createElement('a');
+        link.href = signedUrl;
+        link.download = ''; // Ensures download rather than opening in browser
+        document.body.appendChild(link); // Required for Firefox
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        setErrorMessage('Failed to generate download URL');
+      }
+    } catch (error) {
+      setErrorMessage(error as Error);
+    }
   };
 
   const additionalAction = () => [

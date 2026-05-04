@@ -39,11 +39,34 @@ const wrapper = (mocks: any[] = defaultMocks) => (
   </MockedProvider>
 );
 
+const getGoldenQaAutocompleteRoot = () =>
+  screen.getAllByTestId('autocomplete-element').find((el) =>
+    within(el).queryByPlaceholderText('Search or select a Golden QA dataset')
+  )!;
+
+const getAssistantAutocompleteRoot = () =>
+  screen.getAllByTestId('autocomplete-element').find((el) =>
+    within(el).queryByPlaceholderText('Search or select an AI assistant')
+  )!;
+
 const openGoldenQaAutocomplete = async () => {
-  const autocomplete = screen.getByTestId('autocomplete-element');
+  const autocomplete = getGoldenQaAutocompleteRoot();
   fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
   await waitFor(() => {
     expect(screen.getByRole('listbox')).toBeInTheDocument();
+  });
+};
+
+const openAssistantAutocomplete = async () => {
+  const root = getAssistantAutocompleteRoot();
+  fireEvent.focus(within(root).getByRole('combobox'));
+  // With zero options, MUI shows noOptionsText in a presentation node, not a listbox.
+  await waitFor(() => {
+    expect(
+      screen.queryByRole('listbox') ||
+        screen.queryByText('Fetching assistants...') ||
+        screen.queryByText('No assistants available')
+    ).toBeTruthy();
   });
 };
 
@@ -63,12 +86,7 @@ const fillAndSubmitForm = async (evaluationName = 'test_evaluation') => {
     target: { value: evaluationName },
   });
 
-  // Assistant dropdown (the only MUI Select on the form)
-  const assistantDropdown = screen.getByTestId('dropdown');
-  const selectTrigger =
-    assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
-  fireEvent.mouseDown(selectTrigger!);
-
+  await openAssistantAutocomplete();
   await waitFor(() => {
     expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
   });
@@ -102,6 +120,7 @@ describe('AIEvaluationCreate', () => {
     expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
     expect(screen.getByText('Evaluation Name*')).toBeInTheDocument();
     expect(screen.getByText('AI Assistant*')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search or select an AI assistant')).toBeInTheDocument();
   });
 
   test('renders the searchable Golden QA autocomplete', async () => {
@@ -111,7 +130,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId('AutocompleteInput')).toBeInTheDocument();
+    expect(within(getGoldenQaAutocompleteRoot()).getByTestId('AutocompleteInput')).toBeInTheDocument();
   });
 
   test('populates Golden QA dropdown with datasets fetched from backend', async () => {
@@ -137,7 +156,7 @@ describe('AIEvaluationCreate', () => {
     });
 
     // Type in the autocomplete input to trigger the popup with noOptionsText
-    const combobox = within(screen.getByTestId('autocomplete-element')).getByRole('combobox');
+    const combobox = within(getGoldenQaAutocompleteRoot()).getByRole('combobox');
     fireEvent.change(combobox, { target: { value: 'x' } });
 
     await waitFor(() => {
@@ -165,7 +184,7 @@ describe('AIEvaluationCreate', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Expected CSV Format:')).toBeInTheDocument();
     expect(screen.getByText('Question, Answer')).toBeInTheDocument();
-    expect(screen.getByText('{"What Is X"},{"Answer"}')).toBeInTheDocument();
+    expect(screen.getByText('"What Is X","Answer"')).toBeInTheDocument();
     expect(screen.getByText('Click Here For The Template Csv')).toBeInTheDocument();
   });
 
@@ -292,10 +311,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    const assistantDropdown = screen.getByTestId('dropdown');
-    const selectTrigger =
-      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
-    fireEvent.mouseDown(selectTrigger!);
+    await openAssistantAutocomplete();
 
     await waitFor(() => {
       expect(screen.getByText('Test Assistant (Version 2)')).toBeInTheDocument();
@@ -321,10 +337,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    const assistantDropdown = screen.getByTestId('dropdown');
-    const selectTrigger =
-      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
-    fireEvent.mouseDown(selectTrigger!);
+    await openAssistantAutocomplete();
 
     await waitFor(() => {
       expect(screen.getByText('Fetching assistants...')).toBeInTheDocument();
@@ -347,10 +360,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    const assistantDropdown = screen.getByTestId('dropdown');
-    const selectTrigger =
-      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
-    fireEvent.mouseDown(selectTrigger!);
+    await openAssistantAutocomplete();
 
     await waitFor(() => {
       expect(screen.getByText('No assistants available')).toBeInTheDocument();
@@ -364,10 +374,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    const assistantDropdown = screen.getByTestId('dropdown');
-    const selectTrigger =
-      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
-    fireEvent.mouseDown(selectTrigger!);
+    await openAssistantAutocomplete();
 
     await waitFor(() => {
       const options = screen.getAllByRole('option');
@@ -385,10 +392,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    const assistantDropdown = screen.getByTestId('dropdown');
-    const selectTrigger =
-      assistantDropdown.querySelector('[role="combobox"]') ?? assistantDropdown.querySelector('button');
-    fireEvent.mouseDown(selectTrigger!);
+    await openAssistantAutocomplete();
 
     await waitFor(() => {
       expect(screen.getByText('Alpha Assistant (Version 1)')).toBeInTheDocument();
@@ -444,7 +448,7 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
-      const autocompleteInput = screen.getByTestId('AutocompleteInput').querySelector('input')!;
+      const autocompleteInput = within(getGoldenQaAutocompleteRoot()).getByTestId('AutocompleteInput').querySelector('input')!;
       expect(autocompleteInput.value).toBe('golden_qa');
     });
   });
@@ -472,7 +476,7 @@ describe('AIEvaluationCreate', () => {
     });
 
     await waitFor(() => {
-      const autocompleteInput = screen.getByTestId('AutocompleteInput').querySelector('input')!;
+      const autocompleteInput = within(getGoldenQaAutocompleteRoot()).getByTestId('AutocompleteInput').querySelector('input')!;
       expect(autocompleteInput.value).toBe('my_dataset');
     });
 
@@ -511,7 +515,7 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
-      const input = screen.getByTestId('AutocompleteInput').querySelector('input')!;
+      const input = within(getGoldenQaAutocompleteRoot()).getByTestId('AutocompleteInput').querySelector('input')!;
       expect(input.value).toBe('first_qa');
     });
 
@@ -531,7 +535,7 @@ describe('AIEvaluationCreate', () => {
     });
 
     await waitFor(() => {
-      const input = screen.getByTestId('AutocompleteInput').querySelector('input')!;
+      const input = within(getGoldenQaAutocompleteRoot()).getByTestId('AutocompleteInput').querySelector('input')!;
       expect(input.value).toBe('second_qa');
     });
 

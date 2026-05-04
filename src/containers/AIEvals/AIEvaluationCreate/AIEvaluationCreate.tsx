@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
@@ -24,13 +23,24 @@ const goldenQAHelperContent = (
     <div className={styles.CSVFormatBox}>
       <div className={styles.CSVFormatExample}>Expected CSV Format:</div>
       <div className={styles.CSVFormatExample}>Question, Answer</div>
-      <div className={styles.CSVFormatExample}>{'{"What Is X"},{"Answer"}'}</div>
+      <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
       <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
         Click Here For The Template Csv
       </a>
     </div>
   </div>
 );
+
+const goldenQaAutoCompleteTextFieldProps = {
+  sx: {
+    '& .MuiAutocomplete-inputRoot': {
+      paddingRight: '72px !important',
+    },
+    '& .MuiAutocomplete-input': {
+      textOverflow: 'ellipsis',
+    },
+  },
+};
 
 const GoldenQaField = (props: any) => {
   const { onUploadGoldenQaClick, form, helperText, newlyAddedDataset, options, field, ...rest } = props;
@@ -55,6 +65,7 @@ const GoldenQaField = (props: any) => {
             disableClearable={false}
             noOptionsText="No Golden QA datasets available"
             placeholder="Search or select a Golden QA dataset"
+            textFieldProps={goldenQaAutoCompleteTextFieldProps}
           />
         </div>
         <div className={styles.GoldenQaRight}>
@@ -77,6 +88,11 @@ const GoldenQaField = (props: any) => {
 const SectionDivider = (_props: any) => null;
 
 interface GoldenQaOption {
+  id: string | number;
+  label: string;
+}
+
+interface AssistantOption {
   id: string | number;
   label: string;
 }
@@ -121,25 +137,31 @@ export default function AIEvaluationCreate() {
     ...backendOptions.filter((opt) => !uploadedIds.has(String(opt.id))),
   ];
 
-  const assistantOptions = versionsLoading
-    ? [{ id: '', label: 'Fetching assistants...' }]
+  const assistantOptions: AssistantOption[] = versionsLoading
+    ? []
     : versionsData?.assistantConfigVersions?.length > 0
       ? versionsData.assistantConfigVersions.map((v: any) => ({
           id: v.id,
           label: `${v.assistantName} (Version ${v.versionNumber})`,
         }))
-      : [{ id: '', label: 'No assistants available' }];
+      : [];
+
+  const assistantNoOptionsText = versionsLoading ? 'Fetching assistants...' : 'No assistants available';
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string().required('Evaluation name is required'),
     goldenQaId: Yup.object().nullable().required('Please select a Golden QA dataset'),
-    assistantId: Yup.string().required('Please select an AI Assistant'),
+    assistantId: Yup.object().nullable().required('Please select an AI Assistant'),
   });
 
-  const [states, setStates] = useState<{ evaluationName: string; goldenQaId: GoldenQaOption | null; assistantId: string }>({
+  const [states, setStates] = useState<{
+    evaluationName: string;
+    goldenQaId: GoldenQaOption | null;
+    assistantId: AssistantOption | null;
+  }>({
     evaluationName: '',
     goldenQaId: null,
-    assistantId: '',
+    assistantId: null,
   });
 
   const handleUploadGoldenQaButtonClick = () => {
@@ -190,18 +212,25 @@ export default function AIEvaluationCreate() {
       placeholder: 'Give a unique name for the evaluation experiment',
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'assistantId',
       label: <strong>AI Assistant*</strong>,
       options: assistantOptions,
-      placeholder: '',
+      optionLabel: 'label',
+      multiple: false,
+      disableClearable: false,
+      noOptionsText: assistantNoOptionsText,
+      placeholder: 'Search or select an AI assistant',
+      openOnFocus: true,
     },
   ];
 
   const dialogMessage = 'This action cannot be undone.';
 
   const handleSetPayload = (payload: any) => {
-    const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId);
+    const selectedVersion = versionsData?.assistantConfigVersions?.find(
+      (v: any) => v.id === payload.assistantId?.id
+    );
     return {
       datasetId: payload.goldenQaId?.id,
       experimentName: payload.evaluationName,
