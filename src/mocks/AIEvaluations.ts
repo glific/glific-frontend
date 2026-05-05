@@ -351,7 +351,7 @@ export const completedEvaluationWithBothMetrics = {
   results: JSON.stringify({
     summary_scores: [
       { name: 'Cosine Similarity', avg: 0.72 },
-      { name: 'LLM-as-judge', avg: 0.90 },
+      { name: 'LLM-as-judge', avg: 0.9 },
     ],
   }),
   failureReason: null,
@@ -367,15 +367,12 @@ export const getListAiEvaluationsWithItemsMock = {
   result: { data: { aiEvaluations: [failedEvaluationItem, completedEvaluationItem] } },
 };
 
-// results field is a string that cannot be JSON.parse'd → hits parseResults catch block
 export const getListAiEvaluationsInvalidResultsMock = {
   request: { query: LIST_AI_EVALUATIONS },
   variableMatcher: () => true,
   result: {
     data: {
-      aiEvaluations: [
-        { ...completedEvaluationItem, id: '5', name: 'bad-results-eval', results: 'not-valid-json{{' },
-      ],
+      aiEvaluations: [{ ...completedEvaluationItem, id: '5', name: 'bad-results-eval', results: 'not-valid-json{{' }],
     },
   },
 };
@@ -500,7 +497,14 @@ export const getEvaluationScoresInvalidRowsMock = (id = '2') => ({
   result: {
     data: {
       evaluationScores: {
-        scores: JSON.stringify({ score: { traces: [[1, 2], [3, 4]] } }),
+        scores: JSON.stringify({
+          score: {
+            traces: [
+              [1, 2],
+              [3, 4],
+            ],
+          },
+        }),
         errors: [],
       },
     },
