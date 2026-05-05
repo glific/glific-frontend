@@ -447,3 +447,28 @@ export const getEvaluationScoresNetworkErrorMock = (id = '2') => ({
   request: { query: GET_EVALUATION_SCORES, variables: { id } },
   error: new Error('Network error'),
 });
+
+export const getEvaluationScoresInvalidJsonMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: 'not-valid-json{{',
+        errors: [],
+      },
+    },
+  },
+});
+
+// traces are arrays (truthy, pass filter(Boolean)) but flattenRow returns null for them → jsonToCsv returns ''
+export const getEvaluationScoresInvalidRowsMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify({ score: { traces: [[1, 2], [3, 4]] } }),
+        errors: [],
+      },
+    },
+  },
+});

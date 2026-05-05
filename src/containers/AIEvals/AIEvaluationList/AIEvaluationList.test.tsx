@@ -9,6 +9,8 @@ import {
   getEvaluationScoresNullMock,
   getEvaluationScoresEmptyTracesMock,
   getEvaluationScoresNetworkErrorMock,
+  getEvaluationScoresInvalidJsonMock,
+  getEvaluationScoresInvalidRowsMock,
   getListAiEvaluationsAllStatusesMock,
   getListAiEvaluationsBothMetricsMock,
   getListAiEvaluationsWithItemsMock,
@@ -136,7 +138,7 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('Download CSV button for failed evaluation has disabled style', async () => {
+  it('Download CSV button for non-completed evaluation has disabled style', async () => {
     renderComponent();
     await waitFor(() => {
       const buttons = screen.getAllByText('Download CSV');
@@ -153,7 +155,7 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('clicking Download CSV on failed evaluation does not fire scores query', async () => {
+  it('clicking Download CSV on non-completed evaluation does not fire scores query', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock]);
     await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
 
@@ -162,6 +164,15 @@ describe('AIEvaluationList', () => {
     await new Promise((r) => setTimeout(r, 100));
     expect(setNotification).not.toHaveBeenCalled();
     expect(setErrorMessage).not.toHaveBeenCalled();
+  });
+
+  it('Download CSV button for running evaluation has disabled style', async () => {
+    renderComponent([getListAiEvaluationsAllStatusesMock]);
+    await waitFor(() => {
+      const buttons = screen.getAllByText('Download CSV');
+      const runningButton = buttons.find((b) => b.className.includes('DownloadCsvButtonDisabled'));
+      expect(runningButton).toBeTruthy();
+    });
   });
 
   it('clicking Download CSV on completed evaluation triggers file download', async () => {
@@ -230,6 +241,28 @@ describe('AIEvaluationList', () => {
 
     await waitFor(() => {
       expect(setErrorMessage).toHaveBeenCalled();
+    });
+  });
+
+  it('shows warning when scores field is not valid JSON', async () => {
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresInvalidJsonMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Invalid scores data received', 'warning');
+    });
+  });
+
+  it('shows warning when all trace rows are invalid and CSV is empty', async () => {
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresInvalidRowsMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('No valid score rows to download', 'warning');
     });
   });
 });

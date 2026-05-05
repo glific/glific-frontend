@@ -238,15 +238,17 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
   };
 
   const additionalAction = (item: any) => {
-    const isFailed = item?.status?.toUpperCase() === 'FAILED';
+    const isNotCompleted = item?.status?.toUpperCase() !== 'COMPLETED';
     return [
       {
         label: 'Download Results',
         icon: (
-          <span className={isFailed ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>Download CSV</span>
+          <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
+            Download CSV
+          </span>
         ),
         parameter: 'id',
-        dialog: isFailed ? () => {} : handleDownload,
+        dialog: isNotCompleted ? () => {} : handleDownload,
       },
     ];
   };
