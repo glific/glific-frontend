@@ -1,5 +1,11 @@
 import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
-import { COUNT_GOLDEN_QA, GET_GOLDEN_QA, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import {
+  COUNT_GOLDEN_QA,
+  GET_EVALUATION_SCORES,
+  GET_GOLDEN_QA,
+  LIST_AI_EVALUATIONS,
+  LIST_GOLDEN_QA,
+} from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT_CONFIG_VERSIONS } from 'graphql/queries/Assistant';
 
 export const getListAiEvaluationsMock = {
@@ -297,3 +303,147 @@ export const getAIEvaluationCreateMocks = () => [
   getAssistantConfigVersionsMock,
   getListGoldenQaForCreateMock,
 ];
+
+// ── AIEvaluationList mocks ────────────────────────────────────────────────────
+
+export const failedEvaluationItem = {
+  id: '1',
+  name: 'failed-eval',
+  status: 'FAILED',
+  results: null,
+  failureReason: 'Something went wrong',
+  datasetId: '10',
+  assistantConfigVersionId: '1',
+  insertedAt: '2026-01-01T00:00:00Z',
+  updatedAt: '2026-01-01T00:01:00Z',
+};
+
+export const completedEvaluationItem = {
+  id: '2',
+  name: 'completed-eval',
+  status: 'COMPLETED',
+  results: JSON.stringify({
+    summary_scores: [{ name: 'Cosine Similarity', avg: 0.85 }],
+  }),
+  failureReason: null,
+  datasetId: '11',
+  assistantConfigVersionId: '1',
+  insertedAt: '2026-01-02T00:00:00Z',
+  updatedAt: '2026-01-02T01:00:00Z',
+};
+
+export const runningEvaluationItem = {
+  id: '3',
+  name: 'running-eval',
+  status: 'RUNNING',
+  results: null,
+  failureReason: null,
+  datasetId: '12',
+  assistantConfigVersionId: '1',
+  insertedAt: '2026-01-03T00:00:00Z',
+  updatedAt: '2026-01-03T00:00:00Z',
+};
+
+export const completedEvaluationWithBothMetrics = {
+  id: '4',
+  name: 'both-metrics-eval',
+  status: 'COMPLETED',
+  results: JSON.stringify({
+    summary_scores: [
+      { name: 'Cosine Similarity', avg: 0.72 },
+      { name: 'LLM-as-judge', avg: 0.90 },
+    ],
+  }),
+  failureReason: null,
+  datasetId: '13',
+  assistantConfigVersionId: '1',
+  insertedAt: '2026-01-04T00:00:00Z',
+  updatedAt: '2026-01-04T02:00:00Z',
+};
+
+export const getListAiEvaluationsWithItemsMock = {
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { aiEvaluations: [failedEvaluationItem, completedEvaluationItem] } },
+};
+
+export const getListAiEvaluationsAllStatusesMock = {
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: {
+    data: {
+      aiEvaluations: [failedEvaluationItem, completedEvaluationItem, runningEvaluationItem],
+    },
+  },
+};
+
+export const getListAiEvaluationsBothMetricsMock = {
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { aiEvaluations: [completedEvaluationWithBothMetrics] } },
+};
+
+export const getEvaluationScoresMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify({
+          score: {
+            traces: [
+              {
+                question_id: 'q1',
+                question: 'What is diabetes?',
+                ground_truth_answer: 'A metabolic disease',
+                llm_answer: 'A chronic condition',
+                scores: [{ name: 'Cosine Similarity', value: 0.85 }],
+              },
+            ],
+          },
+        }),
+        errors: [],
+      },
+    },
+  },
+});
+
+export const getEvaluationScoresErrorMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: null,
+        errors: [{ message: 'Evaluation scores not found' }],
+      },
+    },
+  },
+});
+
+export const getEvaluationScoresNullMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: null,
+        errors: [],
+      },
+    },
+  },
+});
+
+export const getEvaluationScoresEmptyTracesMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify({ score: { traces: [] } }),
+        errors: [],
+      },
+    },
+  },
+});
+
+export const getEvaluationScoresNetworkErrorMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  error: new Error('Network error'),
+});

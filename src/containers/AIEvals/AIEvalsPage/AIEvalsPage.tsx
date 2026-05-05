@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
+import { AIEvaluationList } from 'containers/AIEvals/AIEvaluationList/AIEvaluationList';
 import { GoldenQAList } from 'containers/AIEvals/GoldenQAList/GoldenQAList';
 import styles from './AIEvalsPage.module.css';
 
@@ -76,9 +77,7 @@ export default function AIEvalsPage() {
 
         <div className={styles.Content}>
           {activeTab === 'golden-qa' && <GoldenQAList searchQuery={searchQuery} />}
-          {activeTab === 'ai-evaluations' && (
-            <div className={styles.EmptyState}>AI Evaluations list coming soon</div>
-          )}
+          {activeTab === 'ai-evaluations' && <AIEvaluationList searchQuery={searchQuery} />}
         </div>
       </div>
     </>

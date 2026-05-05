@@ -14,7 +14,6 @@ export const LIST_AI_EVALUATIONS = gql`
       status
       failureReason
       results
-      kaapiEvaluationId
       datasetId
       assistantConfigVersionId
       insertedAt
@@ -35,6 +34,17 @@ export const LIST_GOLDEN_QA = gql`
       id
       name
       insertedAt
+    }
+  }
+`;
+
+export const GET_EVALUATION_SCORES = gql`
+  query EvaluationScores($id: ID!) {
+    evaluationScores(id: $id) {
+      scores
+      errors {
+        message
+      }
     }
   }
 `;
