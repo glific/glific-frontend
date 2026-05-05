@@ -367,6 +367,19 @@ export const getListAiEvaluationsWithItemsMock = {
   result: { data: { aiEvaluations: [failedEvaluationItem, completedEvaluationItem] } },
 };
 
+// results field is a string that cannot be JSON.parse'd → hits parseResults catch block
+export const getListAiEvaluationsInvalidResultsMock = {
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: {
+    data: {
+      aiEvaluations: [
+        { ...completedEvaluationItem, id: '5', name: 'bad-results-eval', results: 'not-valid-json{{' },
+      ],
+    },
+  },
+};
+
 export const getListAiEvaluationsAllStatusesMock = {
   request: { query: LIST_AI_EVALUATIONS },
   variableMatcher: () => true,
@@ -446,6 +459,27 @@ export const getEvaluationScoresEmptyTracesMock = (id = '2') => ({
 export const getEvaluationScoresNetworkErrorMock = (id = '2') => ({
   request: { query: GET_EVALUATION_SCORES, variables: { id } },
   error: new Error('Network error'),
+});
+
+// scores is a flat array (no score.traces wrapper) → hits extractRows fallback branch
+export const getEvaluationScoresFlatArrayMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify([
+          {
+            question_id: 'q1',
+            question: 'What is diabetes?',
+            ground_truth_answer: 'A metabolic disease',
+            llm_answer: 'A chronic condition',
+            scores: [{ name: 'Cosine Similarity', value: 0.85 }],
+          },
+        ]),
+        errors: [],
+      },
+    },
+  },
 });
 
 export const getEvaluationScoresInvalidJsonMock = (id = '2') => ({

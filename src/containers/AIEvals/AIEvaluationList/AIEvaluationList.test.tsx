@@ -11,6 +11,8 @@ import {
   getEvaluationScoresNetworkErrorMock,
   getEvaluationScoresInvalidJsonMock,
   getEvaluationScoresInvalidRowsMock,
+  getEvaluationScoresFlatArrayMock,
+  getListAiEvaluationsInvalidResultsMock,
   getListAiEvaluationsAllStatusesMock,
   getListAiEvaluationsBothMetricsMock,
   getListAiEvaluationsWithItemsMock,
@@ -241,6 +243,37 @@ describe('AIEvaluationList', () => {
 
     await waitFor(() => {
       expect(setErrorMessage).toHaveBeenCalled();
+    });
+  });
+
+  it('renders — for metrics when results field is invalid JSON', async () => {
+    renderComponent([getListAiEvaluationsInvalidResultsMock]);
+    await waitFor(() => {
+      expect(screen.getByText('bad-results-eval')).toBeInTheDocument();
+      const dashes = screen.getAllByText('—');
+      expect(dashes.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('triggers download when scores response is a flat array (no score.traces wrapper)', async () => {
+    const originalCreateElement = document.createElement.bind(document);
+    const linkEl = originalCreateElement('a');
+    const clickSpy = vi.spyOn(linkEl, 'click').mockImplementation(() => {});
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string, ...args: any[]) => {
+      if (tag === 'a') return linkEl;
+      return originalCreateElement(tag, ...args);
+    });
+    const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresFlatArrayMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => {
+      expect(createObjectURLSpy).toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
     });
   });
 

@@ -82,7 +82,6 @@ const flattenRow = (row: any): Record<string, any> | null => {
 };
 
 const jsonToCsv = (rows: any[]): string => {
-  console.log('Flattening rows for CSV conversion:', rows);
   const flat = rows.map(flattenRow).filter((r): r is Record<string, any> => r !== null);
   if (!flat.length) return '';
   // Collect all headers across all rows (rows may have different metric columns)
