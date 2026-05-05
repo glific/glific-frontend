@@ -1,9 +1,7 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { Chip } from '@mui/material';
 
 import { IconButton, Tooltip } from '@mui/material';
 
@@ -57,7 +55,26 @@ const getLastUpdated = (updatedAt: string) => {
   return dayjs(updatedAt).fromNow();
 };
 
-const columnStyles = [styles.NameColumn, styles.VersionColumn, styles.DateColumn, styles.Actions];
+const statusMap: Record<string, { label: string; styleKey: string }> = {
+  in_progress: { label: 'In Progress', styleKey: 'InProgress' },
+  failed: { label: 'Failed', styleKey: 'Failed' },
+  ready: { label: 'Ready', styleKey: 'Ready' },
+};
+
+const getStatus = (status: string) => {
+  const { label, styleKey } = statusMap[status] || statusMap.in_progress;
+  return (
+    <Chip label={label} size="small" className={`${styles.StatusChip} ${styles[styleKey] || ''}`} />
+  );
+};
+
+const columnStyles = [
+  styles.NameColumn,
+  styles.StatusColumn,
+  styles.VersionColumn,
+  styles.DateColumn,
+  styles.Actions,
+];
 
 const queries = {
   countQuery: GET_ASSISTANTS_COUNT,
@@ -139,14 +156,16 @@ export const AssistantList = () => {
     }
   };
 
-  const getColumns = ({ id, name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
+  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, status, updatedAt }: any) => ({
     name: getAssistantName(name, assistantDisplayId),
+    status: getStatus(status),
     liveVersion: getLiveVersion(liveVersionNumber),
     lastUpdated: getLastUpdated(updatedAt),
   });
 
   const columnNames = [
-    { label: t('Assistant Name') },
+    { name: 'name', label: t('Assistant Name') },
+    { label: t('Status') },
     { label: t('Live Version') },
     { name: 'updated_at', label: t('Last Updated'), sort: true, order: 'desc' },
     { label: t('Actions') },

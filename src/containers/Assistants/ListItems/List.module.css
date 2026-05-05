@@ -105,6 +105,17 @@
   color: #c62828;
 }
 
+.StatusActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.CloneIcon {
+  height: 1rem !important;
+  width: 1rem !important;
+}
+
 .NoItems {
   color: #555;
   font-size: 1rem;

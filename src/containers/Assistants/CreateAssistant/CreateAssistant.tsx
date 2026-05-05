@@ -75,8 +75,19 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [createAssistant, { loading: createLoading }] = useMutation(CREATE_ASSISTANT);
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
-  const [cloneInitiated, setCloneInitiated] = useState(false);
-  const [cloneAssistant] = useMutation(CLONE_ASSISTANT);
+  const [cloneAssistant, { loading: cloningAssistant }] = useMutation(CLONE_ASSISTANT, {
+    onCompleted: (data) => {
+      if (data.cloneAssistant.errors?.length) {
+        setNotification(data.cloneAssistant.errors[0].message, 'warning');
+      } else {
+        setNotification(data.cloneAssistant.message || 'Assistant cloned successfully');
+        setUpdateList(!updateList);
+      }
+    },
+    onError: (error) => {
+      setErrorMessage(error);
+    },
+  });
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -456,6 +467,24 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         )}
 
         <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
+          {isEditing && assistantData?.vectorStore?.legacy && (
+            <div className={styles.CloneButtonContainer}>
+              <Tooltip
+                title="This action will clone (with prompts, models, Vector stores) your assistant to work seamlessly with our new, improved AI Assistant experience - without any manual intervention."
+                placement="bottom"
+              >
+                <Button
+                  variant="contained"
+                  data-testid="cloneAssistant"
+                  loading={cloningAssistant}
+                  disabled={cloningAssistant}
+                  onClick={() => cloneAssistant({ variables: { cloneAssistantId: currentId } })}
+                >
+                  Clone Assistant
+                </Button>
+              </Tooltip>
+            </div>
+          )}
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
               <div className={styles.FormSection} key={field.name}>

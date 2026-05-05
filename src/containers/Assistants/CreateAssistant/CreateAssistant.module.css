@@ -135,6 +135,12 @@
   justify-content: end;
 }
 
+.CloneButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
 .NotFound {
   text-align: center;
   margin: 1rem 0;

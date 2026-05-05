@@ -9,6 +9,7 @@ export const GET_ASSISTANTS = gql`
       insertedAt
       name
       status
+      legacy
       newVersionInProgress
       cloneStatus
     }

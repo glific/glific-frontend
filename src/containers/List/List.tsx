@@ -131,6 +131,7 @@ export interface ListProps {
     dialog?: any;
     label?: string;
     button?: any;
+    hidden?: boolean;
   }>;
   deleteModifier?: {
     variables: any;

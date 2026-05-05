@@ -1,10 +1,14 @@
 .NameColumn {
-  width: 40%;
+  width: 30%;
   min-width: 200px;
 }
 
+.StatusColumn {
+  width: 15%;
+}
+
 .VersionColumn {
-  width: 20%;
+  width: 15%;
 }
 
 .DateColumn {
@@ -53,4 +57,25 @@
 
 .NoVersion {
   color: #9ca3af;
+}
+
+.StatusChip {
+  font-size: 0.75rem;
+  font-weight: 500;
+  height: 24px;
+}
+
+.Ready {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.InProgress {
+  background-color: #fff7ed;
+  color: #ea580c;
+}
+
+.Failed {
+  background-color: #fef2f2;
+  color: #dc2626;
 }
