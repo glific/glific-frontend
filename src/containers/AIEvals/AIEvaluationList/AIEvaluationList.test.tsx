@@ -87,18 +87,18 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('renders cosine similarity percentage for completed evaluation', async () => {
+  it('renders cosine similarity score for completed evaluation', async () => {
     renderComponent();
     await waitFor(() => {
-      expect(screen.getByText('85.0%')).toBeInTheDocument();
+      expect(screen.getByText('0.85')).toBeInTheDocument();
     });
   });
 
-  it('renders LLM-as-judge percentage when present in results', async () => {
+  it('renders LLM-as-judge score when present in results', async () => {
     renderComponent([getListAiEvaluationsBothMetricsMock]);
     await waitFor(() => {
-      expect(screen.getByText('72.0%')).toBeInTheDocument();
-      expect(screen.getByText('90.0%')).toBeInTheDocument();
+      expect(screen.getByText('0.72')).toBeInTheDocument();
+      expect(screen.getByText('0.90')).toBeInTheDocument();
     });
   });
 

@@ -125,7 +125,7 @@ const getStatus = (status: string) => {
 
 const getMetric = (value: number | null) => {
   if (value === null || value === undefined) return <span className={styles.MetricNA}>—</span>;
-  return <span className={styles.MetricValue}>{(value * 100).toFixed(1)}%</span>;
+  return <span className={styles.MetricValue}>{value.toFixed(2)}</span>;
 };
 
 const getCompletedAt = (status: string, updatedAt: string) => {
@@ -188,7 +188,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
   const navigate = useNavigate();
   const [fetchEvaluationScores] = useLazyQuery(GET_EVALUATION_SCORES);
 
-  const handleDownload = async (id: string) => {
+  const handleDownload = async (id: string, name: string) => {
     try {
       const { data, error } = await fetchEvaluationScores({ variables: { id } });
 
@@ -230,7 +230,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
         setNotification('No valid score rows to download', 'warning');
         return;
       }
-      triggerCsvDownload(csv, `evaluation_scores_${id}.csv`);
+      triggerCsvDownload(csv, `${name}_scores.csv`);
     } catch (err) {
       setErrorMessage(err as Error);
     }
@@ -247,7 +247,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
           </span>
         ),
         parameter: 'id',
-        dialog: isNotCompleted ? () => {} : handleDownload,
+        dialog: isNotCompleted ? () => {} : (id: string) => handleDownload(id, item.name),
       },
     ];
   };
