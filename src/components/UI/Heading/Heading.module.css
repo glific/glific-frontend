@@ -4,11 +4,11 @@
   background: #f8faf5;
   top: 0;
   display: flex;
-  padding: 22px 52px;
+  padding: 22px 24px 22px 10px;
   z-index: 1000;
   justify-content: space-between;
   align-items: center;
-  min-height: 120px;
+  height: 110px;
 }
 
 .HeadingTitle {
@@ -20,6 +20,7 @@
 }
 
 .HeadingWrapper {
+  margin-left: 46px;
   display: flex;
   gap: 10px;
   align-items: flex-start;
