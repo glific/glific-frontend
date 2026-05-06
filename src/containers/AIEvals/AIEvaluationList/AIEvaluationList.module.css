@@ -48,30 +48,35 @@
   color: #3d3d3d;
 }
 
-.Dot {
+.DotCompleted {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
-}
-
-.DotCompleted {
-  composes: Dot;
   background-color: #4caf50;
 }
 
 .DotRunning {
-  composes: Dot;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
   background-color: #f59e0b;
 }
 
 .DotFailed {
-  composes: Dot;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
   background-color: #e57373;
 }
 
 .DotPending {
-  composes: Dot;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
   background-color: #9ca3af;
 }
 
