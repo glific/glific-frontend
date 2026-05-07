@@ -9,7 +9,7 @@ import SettingsOverscanIcon from '@mui/icons-material/SettingsOverscan';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
-import { Fab, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { CircularProgress, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 
@@ -138,7 +138,6 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
     setConversationName(selected?.title || null);
     setIsLoadingHistory(true);
     setMessages([]);
-    setShowHistory(false);
     setHistoryAnchor(null);
 
     try {
@@ -398,11 +397,23 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
           {/* Chat History Side Panel — sidebar/fullscreen only */}
           {isExpandedMode && showHistory && (
             <div className={styles.HistoryPanel} data-testid="history-panel">
-              <div className={styles.HistoryHeader}>Chat History</div>
+              <div className={styles.HistoryHeader}>
+                <span>Chat History</span>
+                <Tooltip title="Close history">
+                  <IconButton
+                    size="small"
+                    className={styles.HistoryCloseButton}
+                    onClick={() => setShowHistory(false)}
+                    data-testid="close-history-btn"
+                  >
+                    <CloseIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </Tooltip>
+              </div>
               <div className={styles.HistoryList}>
                 {isLoadingConversations && chatHistory.length === 0 && (
-                  <div className={styles.HistoryEmpty} data-testid="conversations-loading">
-                    Loading conversations...
+                  <div className={styles.LoaderCenter} data-testid="conversations-loading">
+                    <CircularProgress size={24} sx={{ color: '#119656' }} />
                   </div>
                 )}
                 {!isLoadingConversations && chatHistory.length === 0 && (
@@ -482,7 +493,9 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
               >
                 {isLoadingConversations && chatHistory.length === 0 && (
                   <MenuItem disabled className={styles.HistoryDropdownItem}>
-                    Loading conversations...
+                    <div className={styles.LoaderCenter}>
+                      <CircularProgress size={20} sx={{ color: '#119656' }} />
+                    </div>
                   </MenuItem>
                 )}
                 {!isLoadingConversations && chatHistory.length === 0 && (
@@ -551,6 +564,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                   <MenuItem
                     onClick={() => {
                       setDisplayMode('sidebar');
+                      setShowHistory(true);
                       setDisplayMenuAnchor(null);
                     }}
                     className={displayMode === 'sidebar' ? styles.DisplayModeItemActive : styles.DisplayModeItem}
@@ -561,6 +575,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                   <MenuItem
                     onClick={() => {
                       setDisplayMode('fullscreen');
+                      setShowHistory(true);
                       setDisplayMenuAnchor(null);
                     }}
                     className={displayMode === 'fullscreen' ? styles.DisplayModeItemActive : styles.DisplayModeItem}
@@ -589,8 +604,11 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
               </div>
             </div>
 
-            {/* Welcome section or Messages */}
-            {!hasMessages && !isLoading ? (
+            {isLoadingHistory && messages.length === 0 ? (
+              <div className={styles.LoaderCenter} data-testid="conversation-loading">
+                <CircularProgress size={32} sx={{ color: '#119656' }} />
+              </div>
+            ) : !hasMessages && !isLoading ? (
               <div className={styles.WelcomeSection}>
                 <div className={styles.WelcomeIcon}>
                   <AskGlificIcon />

@@ -9,6 +9,7 @@ import GlificLogo from 'assets/images/logo/Logo.svg';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import { UserMenu } from 'containers/UserMenu/UserMenu';
 import { TrialExpiryBanner } from 'containers/TrialBanner/TrialExpiryBanner';
+import { getOrganizationServices } from 'services/AuthService';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 import AskGlificIcon from 'assets/images/icons/AskGlific/Green.svg?react';
@@ -19,6 +20,7 @@ export const SideDrawer = () => {
   const [showAskGlific, setShowAskGlific] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { provider } = useContext(ProviderContext);
+  const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
   const drawer = (
     <div className={styles.DrawerContent}>
@@ -93,11 +95,15 @@ export const SideDrawer = () => {
         variant="permanent"
       >
         {drawer}
-        <div className={styles.AskGlificMenu} onClick={() => setShowAskGlific(true)}>
-          <AskGlificIcon />
-          Ask Glific
-        </div>
-        {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
+        {isAskGlificEnabled && (
+          <>
+            <div className={styles.AskGlificMenu} onClick={() => setShowAskGlific(true)}>
+              <AskGlificIcon />
+              Ask Glific
+            </div>
+            {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
+          </>
+        )}
       </Drawer>
       <UserMenu drawerOpen={drawerOpen} />
     </nav>
