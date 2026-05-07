@@ -23,7 +23,8 @@ import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 import * as Notification from 'common/notification';
-import { IMPORT_FLOW } from 'graphql/mutations/Flow';
+import { IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
+import { EXPORT_FLOW } from 'graphql/queries/Flow';
 
 const isActiveFilter = { isActive: true, isTemplate: false };
 
@@ -42,21 +43,17 @@ const mocks = [
   getFlowCountNewQuery,
   getFlowQuery({ id: 1 }),
   getFlowQuery({ id: '1' }),
-  importFlow,
   releaseFlow,
-  exportFlow,
   getFilterTagQuery,
   getRoleNameQuery,
   getFlowCountQuery({ isTemplate: true }),
   filterTemplateFlows,
-  pinFlowQuery('2', true),
-  pinFlowQuery('1'),
   ...getOrganizationQuery,
 ];
 const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 
-const flowList = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+const flowList = (customMocks?: any[]) => (
+  <MockedProvider mocks={customMocks || mocks}>
     <MemoryRouter>
       <FlowList />
     </MemoryRouter>
@@ -81,7 +78,7 @@ const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 describe('<FlowList />', () => {
   test('should render Flow', async () => {
-    const { getByText, getByTestId } = render(flowList);
+    const { getByText, getByTestId } = render(flowList());
     expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Flows'));
@@ -94,7 +91,7 @@ describe('<FlowList />', () => {
   });
 
   test('should search flow and check if flow keywords are present below the name', async () => {
-    const { getByText, getByTestId, queryByPlaceholderText } = render(flowList);
+    const { getByText, getByTestId, queryByPlaceholderText } = render(flowList());
     await waitFor(() => {
       // type "Help Workflow" in search box and enter
       expect(getByTestId('searchInput')).toBeInTheDocument();
@@ -121,7 +118,7 @@ describe('<FlowList />', () => {
   });
 
   test('click on Make a copy', async () => {
-    const { getAllByTestId } = render(flowList);
+    const { getAllByTestId } = render(flowList());
 
     await waitFor(() => {
       expect(getAllByTestId('copy-icon')[0]).toBeInTheDocument();
@@ -135,7 +132,7 @@ describe('<FlowList />', () => {
   });
 
   test('should import flow using json file', async () => {
-    render(flowList);
+    render(flowList([...mocks, importFlow]));
 
     await waitFor(() => {
       expect(screen.getAllByTestId('import-icon')[0]).toBeInTheDocument();
@@ -167,7 +164,7 @@ describe('<FlowList />', () => {
 
   test('should export flow to json file', async () => {
     globalThis.URL.createObjectURL = vi.fn();
-    render(flowList);
+    render(flowList([...mocks, exportFlow]));
 
     await waitFor(() => {
       screen.getAllByTestId('MoreIcon');
@@ -183,7 +180,7 @@ describe('<FlowList />', () => {
   });
 
   test('should create from scratch ', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -203,7 +200,7 @@ describe('<FlowList />', () => {
   });
 
   test('it should pin/unpin the flows', async () => {
-    render(flowList);
+    render(flowList([...mocks, pinFlowQuery('2', true), pinFlowQuery('1')]));
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -223,7 +220,7 @@ describe('<FlowList />', () => {
   });
 
   test('it should navigate to create page with selected tag', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -247,7 +244,7 @@ describe('<FlowList />', () => {
   });
 
   test('should navigate to edit page on clicking the edit button', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -267,7 +264,7 @@ describe('<FlowList />', () => {
   });
 
   test('should open responder link dialog on clicking the share button', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -281,7 +278,7 @@ describe('<FlowList />', () => {
   });
 
   test('should show warning when no keywords are selected and share button is clicked', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -297,7 +294,7 @@ describe('<FlowList />', () => {
 
 describe('Template flows', () => {
   test('it opens and closes dialog box', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -322,7 +319,7 @@ describe('Template flows', () => {
   });
 
   test('it shows and creates a template flows', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -348,7 +345,7 @@ describe('Template flows', () => {
   });
 
   test('click on Use it for templates', async () => {
-    render(flowList);
+    render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
@@ -373,7 +370,7 @@ describe('Template flows', () => {
     });
   });
 
-  test('Template flows > should display failed assistants when import has assistant errors', async () => {
+  test('Template flows > should display assistant nodes that need an assistant assigned', async () => {
     const mockImportFlowWithAssistantError = {
       request: { query: IMPORT_FLOW },
       result: {
@@ -381,9 +378,9 @@ describe('Template flows', () => {
           importFlow: {
             status: [
               {
+                assistantNodeUuids: ['3fb647a3-c935-4906-8dd0-c0e63105ee3d', 'b1d2e9ff-1234-4abc-9876-deadbeefcafe'],
                 flowName: 'Test Flow',
-                status:
-                  'Failed to import assistant Assistant ID: a_pJMxxxZfGfDicrgAD Failed to import assistant Assistant ID: asst_testsD',
+                status: 'Successfully imported',
               },
             ],
           },
@@ -436,13 +433,15 @@ describe('Template flows', () => {
     const helpLink = await inDialog.findByText(/create a new assistant/i);
     const para = helpLink.closest('p');
     expect(para).toBeTruthy();
-    expect(normalize(para!.textContent || '')).toContain('flow imported successfully, but failed to import assistants');
+    expect(normalize(para!.textContent || '')).toContain(
+      'flow imported successfully. this flow contains assistant node(s) that need an assistant assigned'
+    );
 
-    const failedLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'failed assistants:');
-    expect(failedLabels.length).toBeGreaterThan(0);
+    const nodeLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'assistant node uuids:');
+    expect(nodeLabels.length).toBeGreaterThan(0);
 
-    expect(inDialog.getByText('a_pJMxxxZfGfDicrgAD')).toBeInTheDocument();
-    expect(inDialog.getByText('asst_testsD')).toBeInTheDocument();
+    expect(inDialog.getByText('3fb647a3-c935-4906-8dd0-c0e63105ee3d')).toBeInTheDocument();
+    expect(inDialog.getByText('b1d2e9ff-1234-4abc-9876-deadbeefcafe')).toBeInTheDocument();
 
     expect(helpLink).toHaveAttribute(
       'href',
@@ -454,6 +453,97 @@ describe('Template flows', () => {
     fireEvent.click(inDialog.getByTestId('ok-button'));
     await waitFor(() => {
       expect(screen.queryByText(/import flow status/i)).not.toBeInTheDocument();
+    });
+  });
+});
+
+describe('Error handling', () => {
+  test('should show error notification when export flow fails', async () => {
+    const exportFlowError = {
+      request: {
+        query: EXPORT_FLOW,
+        variables: { id: '1' },
+      },
+      error: new Error('Network error'),
+    };
+
+    render(flowList([...mocks, exportFlowError]));
+
+    await waitFor(() => {
+      screen.getAllByTestId('MoreIcon');
+    });
+
+    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('export-icon')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('export-icon')[0]);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('should show error notification when import flow fails', async () => {
+    const importFlowError = {
+      request: {
+        query: IMPORT_FLOW,
+      },
+      error: new Error('Import failed'),
+      variableMatcher: () => true,
+    };
+
+    class FileReaderMock {
+      onload: null | ((e: unknown) => void) = null;
+      result: string | null = null;
+      readAsText() {
+        const text = '{"flows":[]}';
+        this.result = text;
+        setTimeout(() => {
+          if (this.onload) {
+            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
+          }
+        }, 0);
+      }
+    }
+    vi.stubGlobal('FileReader', FileReaderMock);
+
+    render(flowList([...mocks, importFlowError]));
+
+    await screen.findAllByTestId('import-icon');
+    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
+
+    const file = new File(['{}'], 'test.json', { type: 'application/json' });
+    const input = await screen.findByTestId('import');
+    Object.defineProperty(input, 'files', { value: [file] });
+    fireEvent.change(input);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('An error occured while importing the flow', 'warning');
+    });
+  });
+
+  test('should show error notification when pin flow fails', async () => {
+    const pinFlowError = {
+      request: {
+        query: PIN_FLOW,
+        variables: { updateFlowId: '2', input: { isPinned: true } },
+      },
+      error: new Error('Pin failed'),
+    };
+
+    render(flowList([...mocks, pinFlowError]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('pin-button')[0]);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Failed to update pin status', 'warning');
     });
   });
 });

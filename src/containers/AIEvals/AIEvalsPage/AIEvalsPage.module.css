@@ -1,0 +1,55 @@
+.PageContainer {
+  height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.TabBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 56px 0px ;
+  background-color: #f8faf5;
+}
+
+.Tabs {
+  display: flex;
+}
+
+.Tab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #119656;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.Tab:hover {
+  color: #073f24;
+  background-color: #71797123;
+}
+
+.ActiveTab {
+  border-bottom-color: #2d9c6f;
+}
+
+.SearchBar {
+  width: 220px;
+}
+
+.Content {
+  padding: 0;
+  background-color: #f8faf5;
+}
+
+.EmptyState {
+  padding: 48px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 20px;
+  color: #9ca3af;
+  height: calc(100vh - 120px);
+}

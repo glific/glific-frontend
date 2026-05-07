@@ -41,6 +41,7 @@ export interface AutocompleteProps {
   handleCreateItem?: any;
   isFilterType?: boolean;
   showTags?: boolean;
+  openOnFocus?: boolean;
 }
 
 export const AutoComplete = ({
@@ -77,6 +78,7 @@ export const AutoComplete = ({
   placeholder = '',
   isFilterType = false,
   showTags = true,
+  openOnFocus = false,
 }: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -173,6 +175,7 @@ export const AutoComplete = ({
         <Autocomplete
           classes={classStyles}
           multiple={multiple}
+          openOnFocus={openOnFocus}
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...renderedOption, createOption] : renderedOption}
           freeSolo={freeSolo}

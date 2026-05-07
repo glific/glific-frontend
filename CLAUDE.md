@@ -57,6 +57,13 @@ npx vitest run src/path/to/Component.test.tsx
 | `src/mocks/` | Test mock data for Apollo `MockedProvider` |
 | `src/routes/` | Route trees for authenticated and unauthenticated users |
 
+### UI Component Usage Rules
+
+- Prefer existing components from `src/containers/` for page/feature UI before using raw MUI components.
+- If a required UI cannot be built with existing components, first extend or modify the relevant shared/container components to support the use case.
+- Avoid introducing direct MUI usage in feature/container code unless absolutely unavoidable after attempting component reuse/extension.
+- Keep MUI usage encapsulated inside shared abstractions so feature code remains consistent and maintainable.
+
 ### Import Aliases
 
 `tsconfig.json` sets `baseUrl: "src"`, so all imports are relative to `src/`. Use:
@@ -69,6 +76,12 @@ SVG files are imported as React components using the `?react` suffix:
 ```ts
 import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 ```
+
+### Translation Pattern
+
+- Follow the existing project pattern for UI strings: use `t('English source text')` keys.
+- In component/page files, import `t` from `i18next` and call it directly for labels, placeholders, helper text, empty states, and validation messages.
+- Add matching entries in `src/i18n/en/en.json` and `src/i18n/hi/hi.json` for every newly introduced string.
 
 ### Routing & Role-Based Access
 
