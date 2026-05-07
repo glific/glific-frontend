@@ -482,10 +482,12 @@ export const importFlow = {
       importFlow: {
         status: [
           {
+            assistantNodeUuids: [],
             flowName: 'Registration flow',
             status: 'Successfully imported',
           },
           {
+            assistantNodeUuids: [],
             flowName: 'Optin',
             status: 'Successfully imported',
           },

@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.10.0",
+  "version": "6.10.1",
   "private": true,
   "type": "module",
   "license": {
@@ -89,7 +89,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "engines": {
-    "node": ">=20.0.0 <23"
+    "node": ">=22.12.0 <23"
   },
   "eslintConfig": {
     "extends": "react-app"
