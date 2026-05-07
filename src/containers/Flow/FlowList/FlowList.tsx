@@ -75,7 +75,6 @@ export const FlowList = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
   const [selectedtag, setSelectedTag] = useState<any>(null);
-  const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -89,28 +88,10 @@ export const FlowList = () => {
     releaseFlow();
   }, []);
 
-  const [importFlow] = useMutation(IMPORT_FLOW, {
-    onCompleted: (result: any) => {
-      const { status } = result.importFlow;
-      setImportStatus(status);
-      setImporting(false);
-    },
-    onError: (error: any) => {
-      setNotification('An error occured while importing the flow', 'warning');
-      setImporting(false);
-    },
-  });
+  const [importFlow] = useMutation(IMPORT_FLOW);
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlow }) => {
-      const { exportData } = exportFlow;
-      await exportFlowMethod(exportData, flowName);
-      setNotification('Flow exported successfully');
-    },
-    onError: (error: any) => {
-      setErrorMessage(error);
-    },
   });
 
   const [updatePinned] = useMutation(PIN_FLOW);
@@ -123,38 +104,41 @@ export const FlowList = () => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
   };
 
-  const exportFlow = (id: any, item: any) => {
-    setFlowName(item.name);
-    exportFlowMutation({ variables: { id } });
+  const exportFlow = async (id: any, item: any) => {
+    try {
+      const result = await exportFlowMutation({ variables: { id } });
+      const { exportData } = result.data.exportFlow;
+      await exportFlowMethod(exportData, item.name);
+      setNotification('Flow exported successfully');
+    } catch (error: any) {
+      setErrorMessage(error);
+    }
   };
 
-  const handlePin = (updateFlowId: any, pin: boolean = false) => {
-    if (pin) {
-      updatePinned({
+  const handleImport = async (result: string) => {
+    try {
+      const { data } = await importFlow({ variables: { flow: result } });
+      const { status } = data.importFlow;
+      setImportStatus(status);
+    } catch {
+      setNotification('An error occured while importing the flow', 'warning');
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const handlePin = async (updateFlowId: any, pin: boolean = false) => {
+    try {
+      await updatePinned({
         variables: {
           updateFlowId,
-          input: {
-            isPinned: true,
-          },
-        },
-        onCompleted: () => {
-          setRefreshList(!refreshList);
-          setNotification('Flow pinned successfully');
+          input: { isPinned: pin },
         },
       });
-    } else {
-      updatePinned({
-        variables: {
-          updateFlowId,
-          input: {
-            isPinned: false,
-          },
-        },
-        onCompleted: () => {
-          setRefreshList(!refreshList);
-          setNotification('Flow unpinned successfully');
-        },
-      });
+      setRefreshList(!refreshList);
+      setNotification(pin ? 'Flow pinned successfully' : 'Flow unpinned successfully');
+    } catch {
+      setNotification('Failed to update pin status', 'warning');
     }
   };
 
@@ -191,26 +175,14 @@ export const FlowList = () => {
       >
         <div className={styles.ImportDialog}>
           {importStatus.map((status: any) => {
-            const statusText = status.status ?? '';
-            const hasAssistantError = statusText.includes('Failed to import assistant');
+            const assistantNodeUuids: string[] = status.assistantNodeUuids ?? [];
 
-            const warningChunks = statusText
-              .split(/Failed to import assistant/g)
-              .slice(1)
-              .filter(Boolean);
-
-            const assistantIds: string[] = warningChunks
-              .map((chunk: string) => {
-                const m = chunk.match(/Assistant ID:\s*([a-zA-Z0-9_]+)/);
-                return m ? m[1] : null;
-              })
-              .filter((id: string | null): id is string => id !== null);
-
-            if (hasAssistantError && assistantIds.length > 0) {
+            if (assistantNodeUuids.length > 0) {
               return (
-                <div key={status.FlowName} className={styles.StatusContainer}>
+                <div key={status.flowName} className={styles.StatusContainer}>
                   <p className={styles.StatusMessage}>
-                    Flow imported successfully, but failed to import assistants. Please{' '}
+                    Flow imported successfully. This flow contains assistant node(s) that need an assistant assigned.
+                    Please{' '}
                     <a
                       href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
                       className={styles.HelpLink}
@@ -219,15 +191,15 @@ export const FlowList = () => {
                     >
                       create a new assistant
                     </a>{' '}
-                    and replace the existing one in the flow.
+                    and assign it to the following node(s):
                   </p>
                   <div className={styles.SectionTitle}>
-                    <strong>{assistantIds.length === 1 ? 'Failed Assistant:' : 'Failed Assistants:'}</strong>
+                    <strong>{assistantNodeUuids.length === 1 ? 'Assistant Node UUID:' : 'Assistant Node UUIDs:'}</strong>
                   </div>
                   <ol className={styles.AssistantListPlain}>
-                    {assistantIds.map((id: string) => (
-                      <li key={id}>
-                        <code className={styles.AssistantCod}>{id}</code>
+                    {assistantNodeUuids.map((uuid: string) => (
+                      <li key={uuid}>
+                        <code className={styles.AssistantCod}>{uuid}</code>
                       </li>
                     ))}
                   </ol>
@@ -247,11 +219,7 @@ export const FlowList = () => {
   }
 
   const importButton = (
-    <ImportButton
-      title={t('Import flow')}
-      onImport={() => setImporting(true)}
-      afterImport={(result: string) => importFlow({ variables: { flow: result } })}
-    />
+    <ImportButton title={t('Import flow')} onImport={() => setImporting(true)} afterImport={handleImport} />
   );
 
   const templateFlowActions = [

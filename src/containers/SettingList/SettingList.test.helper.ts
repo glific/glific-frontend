@@ -7,7 +7,7 @@ import {
   getOrganizationSettings,
   getCredential,
   getQualityRating,
-  getOrganizationSettingsAllowBot
+  getOrganizationSettingsAllowBot,
 } from 'mocks/Organization';
 import { FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { UPDATE_ORGANIZATION } from 'graphql/mutations/Organization';
@@ -96,7 +96,7 @@ const updateOrganizationMock = {
         setting: {
           lowBalanceThreshold: '10',
           criticalBalanceThreshold: '5',
-          sendWarningMail: false
+          sendWarningMail: false,
         },
       },
     },
@@ -163,7 +163,7 @@ const updateOrganizationMock = {
             criticalBalanceThreshold: '3',
             lowBalanceThreshold: '10',
             sendWarningMail: true,
-            allowBotNumberUpdate: false
+            allowBotNumberUpdate: false,
           },
           shortcode: 'glific',
         },
@@ -185,7 +185,7 @@ const updateOrganizationMock2 = {
         setting: {
           lowBalanceThreshold: '10',
           criticalBalanceThreshold: '5',
-          sendWarningMail: false
+          sendWarningMail: false,
         },
       },
     },
@@ -252,7 +252,7 @@ const updateOrganizationMock2 = {
             criticalBalanceThreshold: '3',
             lowBalanceThreshold: '10',
             sendWarningMail: true,
-            allowBotNumberUpdate: false
+            allowBotNumberUpdate: false,
           },
           shortcode: 'glific',
         },
@@ -269,7 +269,7 @@ export const ORGANIZATION_MOCKS = [
   flowsMock,
   ...getOrganizationQuery,
   updateOrganizationMock,
-  updateOrganizationMock2
+  updateOrganizationMock2,
 ];
 
 export const ORGANIZATION_MOCKS2 = [
@@ -280,5 +280,5 @@ export const ORGANIZATION_MOCKS2 = [
   flowsMock,
   ...getOrganizationSettingsAllowBot,
   updateOrganizationMock,
-  updateOrganizationMock2
-]
+  updateOrganizationMock2,
+];

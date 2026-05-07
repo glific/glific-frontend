@@ -131,6 +131,7 @@ export const IMPORT_FLOW = gql`
   mutation importFlow($flow: Json!) {
     importFlow(flow: $flow) {
       status {
+        assistantNodeUuids
         flowName
         status
       }

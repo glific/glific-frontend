@@ -40,6 +40,8 @@ jobs:
 
       - name: Use latest Node.js
         uses: actions/setup-node@v6
+        with:
+          node-version-file: '.tool-versions'
 
       - name: Setup elixir
         uses: erlef/setup-beam@v1
@@ -174,6 +176,8 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
+          cd cypress-testing
+          git checkout apollo_migration
           cd ..
           yarn add cypress@13.6.2
 
