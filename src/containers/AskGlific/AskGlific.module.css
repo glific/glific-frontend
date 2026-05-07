@@ -180,7 +180,7 @@
 .Message {
   max-width: 80%;
   font-size: 0.8rem;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   line-height: 1.5;
   font-family: Heebo;
   font-weight: 400;
@@ -202,6 +202,16 @@
   color: #2e2e2e;
   padding: 0.6rem 1rem;
   border-radius: 1.25rem;
+}
+
+.Error {
+  composes: Message;
+  align-self: flex-start;
+  color: #c62828;
+  background-color: #fdecea;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f5c2c0;
 }
 
 .SystemWrapper {

@@ -353,7 +353,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
         variables: {
           input: {
             messageId: targetMsg.messageId,
-            rating: rating ?? 'dislike',
+            rating,
           },
         },
       });
@@ -382,7 +382,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = 'auto';
-      textAreaRef.current.style.height = `${Math.min(textAreaRef.current.scrollHeight, 120)} px`;
+      textAreaRef.current.style.height = `${Math.min(textAreaRef.current.scrollHeight, 120)}px`;
     }
   }, [message]);
 
@@ -644,18 +644,23 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                 {messages
                   .filter((i) => !i.prompt)
                   .map((msg) => {
+                    const key = `${msg.timestamp?.toString()}-${msg.content?.slice(0, 5)}`;
                     if (msg.role === 'user') {
                       return (
-                        <div key={`${msg.timestamp?.toString()}-${msg.content?.slice(0, 5)}`} className={styles.User}>
+                        <div key={key} className={styles.User}>
+                          {msg.content}
+                        </div>
+                      );
+                    }
+                    if (msg.role === 'error') {
+                      return (
+                        <div key={key} className={styles.Error} data-testid="error-message">
                           {msg.content}
                         </div>
                       );
                     }
                     return (
-                      <div
-                        key={`${msg.timestamp?.toString()}-${msg.content?.slice(0, 5)}`}
-                        className={styles.SystemWrapper}
-                      >
+                      <div key={key} className={styles.SystemWrapper}>
                         <div className={styles.System}>
                           <Markdown
                             components={{

@@ -1,5 +1,6 @@
 // src/components/UI/Layout/Navigation/SideDrawer/SideDrawer.tsx
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Drawer, Toolbar, Typography, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -16,6 +17,7 @@ import AskGlificIcon from 'assets/images/icons/AskGlific/Green.svg?react';
 import AskGlific from 'containers/AskGlific/AskGlific';
 
 export const SideDrawer = () => {
+  const { t } = useTranslation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
   const [showAskGlific, setShowAskGlific] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -97,9 +99,20 @@ export const SideDrawer = () => {
         {drawer}
         {isAskGlificEnabled && (
           <>
-            <div className={styles.AskGlificMenu} onClick={() => setShowAskGlific(true)}>
+            <div
+              className={styles.AskGlificMenu}
+              role="button"
+              tabIndex={0}
+              onClick={() => setShowAskGlific(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setShowAskGlific(true);
+                }
+              }}
+            >
               <AskGlificIcon />
-              Ask Glific
+              {t('Ask Glific')}
             </div>
             {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
           </>
