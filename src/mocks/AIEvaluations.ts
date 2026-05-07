@@ -29,7 +29,7 @@ export const getCreateEvaluationMock = {
 };
 
 export const getCreateEvaluationWithVariablesMock = (input: {
-  datasetId: number;
+  goldenQaId: string;
   experimentName: string;
   configId: string;
   configVersion: string;
@@ -142,7 +142,7 @@ export const createGoldenQaSuccessMock = {
     data: {
       createGoldenQa: {
         __typename: 'CreateGoldenQaPayload',
-        goldenQa: { __typename: 'GoldenQa', datasetId: '123', name: 'golden_qa', duplication_factor: 1 },
+        goldenQa: { __typename: 'GoldenQa', id: '456', datasetId: '123', name: 'golden_qa', duplication_factor: 1 },
         errors: null,
       },
     },
@@ -169,14 +169,14 @@ export const createGoldenQaNetworkErrorMock = {
   error: new Error('Network error'),
 };
 
-export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor: number, datasetId = '456') => ({
+export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor: number, id = '456', datasetId = '999') => ({
   request: { query: CREATE_GOLDEN_QA },
   variableMatcher: () => true,
   result: {
     data: {
       createGoldenQa: {
         __typename: 'CreateGoldenQaPayload',
-        goldenQa: { __typename: 'GoldenQa', datasetId, name, duplication_factor: duplicationFactor },
+        goldenQa: { __typename: 'GoldenQa', id, datasetId, name, duplication_factor: duplicationFactor },
         errors: null,
       },
     },

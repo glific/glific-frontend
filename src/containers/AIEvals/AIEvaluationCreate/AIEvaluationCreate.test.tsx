@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import { setNotification } from 'common/notification';
 import {
   createGoldenQaCustomSuccessMock,
+  createGoldenQaErrorMock,
   createGoldenQaSuccessMock,
   getAIEvaluationCreateMocks,
   getAssistantConfigVersionsEmptyMock,
@@ -14,6 +15,7 @@ import {
   getAssistantConfigVersionsMock,
   getAssistantConfigVersionsMultipleNamesMock,
   getCreateEvaluationSuccessMock,
+  getCreateEvaluationWithVariablesMock,
   getListAiEvaluationsMock,
   getListGoldenQaForCreateEmptyMock,
   getListGoldenQaForCreateErrorMock,
@@ -474,6 +476,149 @@ describe('AIEvaluationCreate', () => {
       const options = screen.getAllByRole('option');
       expect(options[0]).toHaveTextContent('my_dataset');
     });
+  });
+
+  test('mutation is called with goldenQaId (Glific DB id), not datasetId', async () => {
+    const varCapture: any[] = [];
+    const matchingMock = {
+      ...getCreateEvaluationSuccessMock,
+      variableMatcher: (vars: any) => {
+        varCapture.push(vars);
+        return true;
+      },
+    };
+
+    render(
+      wrapper([
+        getListAiEvaluationsMock,
+        getAssistantConfigVersionsMock,
+        getListGoldenQaForCreateMock,
+        matchingMock,
+      ])
+    );
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(varCapture.length).toBeGreaterThan(0);
+      const input = varCapture[0].input;
+      expect(input).toHaveProperty('goldenQaId');
+      expect(input).not.toHaveProperty('datasetId');
+      expect(input.goldenQaId).toBe('1');
+    });
+  });
+
+  test('goldenQaId is the Glific DB id (qa.id), not the Kaapi datasetId', async () => {
+    const varCapture: any[] = [];
+    const matchingMock = {
+      ...getCreateEvaluationSuccessMock,
+      variableMatcher: (vars: any) => {
+        varCapture.push(vars);
+        return true;
+      },
+    };
+
+    render(
+      wrapper([
+        getListAiEvaluationsMock,
+        getAssistantConfigVersionsMock,
+        getListGoldenQaForCreateMock,
+        matchingMock,
+      ])
+    );
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(varCapture.length).toBeGreaterThan(0);
+      const input = varCapture[0].input;
+      // goldenQaSampleRows[0] has id:'1', datasetId:'101'
+      // We must send id ('1'), not datasetId ('101')
+      expect(input.goldenQaId).toBe('1');
+      expect(input.goldenQaId).not.toBe('101');
+    });
+  });
+
+  test('mutation sends goldenQaId of newly uploaded golden QA (uses its Glific id)', async () => {
+    const varCapture: any[] = [];
+    const matchingMock = {
+      ...getCreateEvaluationSuccessMock,
+      variableMatcher: (vars: any) => {
+        varCapture.push(vars);
+        return true;
+      },
+    };
+
+    render(wrapper([...defaultMocks, createGoldenQaCustomSuccessMock('my_uploaded', 1, '99', '888'), matchingMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Upload Golden QA' }));
+    const fileInput = document.querySelector('input[type="file"][accept=".csv"]');
+    const csvFile = new File(['Question,Answer\nq1,a1'], 'my_uploaded.csv', { type: 'text/csv' });
+    fireEvent.change(fileInput!, { target: { files: [csvFile] } });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
+    });
+
+    const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
+    fireEvent.change(nameInput, { target: { value: 'test_evaluation' } });
+
+    const assistantRoot = screen.getAllByTestId('autocomplete-element')[1];
+    const assistantCombobox = within(assistantRoot).getByRole('combobox');
+    fireEvent.focus(assistantCombobox);
+    fireEvent.keyDown(assistantCombobox, { key: 'ArrowDown' });
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+
+    fireEvent.click(screen.getByText('Run Evaluation'));
+
+    await waitFor(() => {
+      expect(varCapture.length).toBeGreaterThan(0);
+      const input = varCapture[0].input;
+      expect(input.goldenQaId).toBe('99');
+      expect(input.goldenQaId).not.toBe('888');
+    });
+  });
+
+  test('upload failure does not update the autocomplete selection', async () => {
+    render(wrapper([...defaultMocks, createGoldenQaErrorMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    await openGoldenQaAutocomplete();
+    fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
+
+    const goldenQaInput = within(getGoldenQaAutocompleteRoot()).getByRole('combobox') as HTMLInputElement;
+    expect(goldenQaInput.value).toBe('Diabetescare-0101');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Upload Golden QA' }));
+    const fileInput = document.querySelector('input[type="file"][accept=".csv"]');
+    const csvFile = new File(['Question,Answer\nq1,a1'], 'bad.csv', { type: 'text/csv' });
+    fireEvent.change(fileInput!, { target: { files: [csvFile] } });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Name already exists', 'error');
+    });
+
+    expect(goldenQaInput.value).toBe('Diabetescare-0101');
   });
 
   test('when there is an existing golden QA the new uploaded golden QA is pushed to the top and becomes the selected option', async () => {

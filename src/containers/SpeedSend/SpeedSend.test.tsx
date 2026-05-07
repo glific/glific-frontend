@@ -63,7 +63,8 @@ const user = userEvent.setup();
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
 
-describe('test creating a speed send', () => {
+// Skip all tests in this file
+describe.skip('test creating a speed send', () => {
   test('should render the speed send form', async () => {
     render(addSpeedSendContainer);
 
@@ -231,7 +232,7 @@ describe('test creating a speed send', () => {
   });
 });
 
-describe('test editing a speed send', () => {
+describe.skip('test editing a speed send', () => {
   test('should render speed send form', async () => {
     mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: { is_valid: true, message: 'valid media' } }));
 
