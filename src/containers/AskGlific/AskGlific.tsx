@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useSubscription } from '@apollo/client';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -18,6 +18,8 @@ import EditIcon from 'assets/images/icons/Edit.svg?react';
 
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
+import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
+import { getUserSession } from 'services/AuthService';
 import styles from './AskGlific.module.css';
 
 interface Message {
@@ -110,6 +112,41 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
 
   const [askGlific] = useMutation(ASK_GLIFIC);
   const [submitFeedback] = useMutation(ASK_GLIFIC_FEEDBACK);
+
+  useSubscription(ASK_GLIFIC_RESPONSE_SUBSCRIPTION, {
+    variables: { organizationId: getUserSession('organizationId') },
+    skip: !open,
+    onData: ({ data }) => {
+      const result = data?.data?.askGlificResponse;
+      if (!result) return;
+
+      if (result.errors?.length) {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'error', content: result.errors[0].message, timestamp: new Date() },
+        ]);
+        setIsLoading(false);
+        return;
+      }
+
+      if (result.conversationId) setConversationId(result.conversationId);
+      if (result.conversationName) setConversationName(result.conversationName);
+
+      if (result.answer) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'system',
+            content: result.answer,
+            timestamp: new Date(),
+            feedback: null,
+            messageId: result.messageId || undefined,
+          },
+        ]);
+      }
+      setIsLoading(false);
+    },
+  });
   const [fetchConversations, { loading: isLoadingConversations }] = useLazyQuery(GET_ASK_GLIFIC_CONVERSATIONS, {
     fetchPolicy: 'network-only',
   });
@@ -246,7 +283,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
     setIsLoading(true);
 
     try {
-      const { data } = await askGlific({
+      await askGlific({
         variables: {
           input: {
             query: msg.content,
@@ -255,40 +292,6 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
           },
         },
       });
-
-      const result = data?.askGlific;
-      const answer = result?.answer || 'Sorry, Something went wrong. Please try again.';
-
-      if (result?.errors?.length) {
-        const errorMessage: Message = {
-          role: 'error',
-          content: result.errors[0].message,
-          timestamp: new Date(),
-        };
-        setMessages([...currentMessages, errorMessage]);
-        return;
-      }
-
-      if (result?.conversationId) {
-        setConversationId(result.conversationId);
-      }
-
-      if (result?.conversationName) {
-        setConversationName(result.conversationName);
-      }
-
-      const newMessages: Message[] = [
-        ...currentMessages,
-        {
-          role: 'system',
-          content: answer,
-          timestamp: new Date(),
-          feedback: null,
-          messageId: result?.messageId || undefined,
-        },
-      ];
-
-      setMessages(newMessages);
     } catch {
       const errorMessage: Message = {
         role: 'error',
@@ -296,7 +299,6 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
         timestamp: new Date(),
       };
       setMessages([...currentMessages, errorMessage]);
-    } finally {
       setIsLoading(false);
     }
   };
