@@ -575,11 +575,19 @@ export const AssistantOptions = ({
                             )}
                             {file.status === 'failed' && (
                               <Tooltip title={file.errorMessage || 'Failed to upload file'} placement="top" arrow>
-                                <ErrorOutlineIcon data-testid="failedIcon" className={styles.FailedIcon} fontSize="small" />
+                                <ErrorOutlineIcon
+                                  data-testid="failedIcon"
+                                  className={styles.FailedIcon}
+                                  fontSize="small"
+                                />
                               </Tooltip>
                             )}
                             {file.status === 'attached' && (
-                              <CheckCircleIcon data-testid="attachedIcon" className={styles.SuccessIcon} fontSize="small" />
+                              <CheckCircleIcon
+                                data-testid="attachedIcon"
+                                className={styles.SuccessIcon}
+                                fontSize="small"
+                              />
                             )}
                           </>
                         )}

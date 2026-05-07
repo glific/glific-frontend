@@ -21,7 +21,7 @@ type ServiceType =
   | 'ticketingEnabled'
   | 'whatsappGroupEnabled'
   | 'certificateEnabled'
-  | 'askMeBotEnabled'
+  | 'askGlificEnabled'
   | 'whatsappFormsEnabled'
   | 'assistantConfigVersionsEnabled';
 
