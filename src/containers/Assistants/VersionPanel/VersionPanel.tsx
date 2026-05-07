@@ -41,7 +41,7 @@ interface VersionPanelProps {
   onSelectVersion: (version: AssistantVersion) => void;
   onRefetchSelect?: (version: AssistantVersion) => void;
   refetchTrigger?: number;
-  initialVersionId?: string;
+  initialVersionNumber?: number;
 }
 
 
@@ -56,7 +56,7 @@ export const VersionPanel = ({
   onSelectVersion,
   onRefetchSelect,
   refetchTrigger = 0,
-  initialVersionId,
+  initialVersionNumber,
 }: VersionPanelProps) => {
   const { t } = useTranslation();
   const initialSelectionDone = useRef(false);
@@ -74,7 +74,7 @@ export const VersionPanel = ({
   useEffect(() => {
     if (versions.length === 0 || initialSelectionDone.current) return;
     initialSelectionDone.current = true;
-    const versionFromUrl = initialVersionId ? versions.find((v) => v.id === initialVersionId) : null;
+    const versionFromUrl = initialVersionNumber != null ? versions.find((v) => v.versionNumber === initialVersionNumber) : null;
     const target = versionFromUrl ?? versions.find((v) => v.isLive) ?? sorted[0];
 
     if (!target) return;

@@ -131,8 +131,8 @@ const getName = ({
     (assistantConfigVersionNumber != null ? `/Version ${assistantConfigVersionNumber}` : '');
 
   const assistantLink =
-    assistantId && assistantConfigVersionId
-      ? `/assistants/${assistantId}/version/${assistantConfigVersionId}`
+    assistantId && assistantConfigVersionNumber != null
+      ? `/assistants/${assistantId}/version/${assistantConfigVersionNumber}`
       : null;
 
   return (

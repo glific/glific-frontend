@@ -102,8 +102,12 @@ export const AssistantList = () => {
     }
   }, [pollingData]);
 
-  const handleEdit = (id: string) => {
-    navigate(`/assistants/${id}`);
+  const handleEdit = (_id: string, item: any) => {
+    if (item?.liveVersionNumber != null) {
+      navigate(`/assistants/${item.id}/version/${item.liveVersionNumber}`);
+    } else {
+      navigate(`/assistants/${item.id}`);
+    }
   };
 
   const handleCloneClick = (_id: string, item: any) => {
