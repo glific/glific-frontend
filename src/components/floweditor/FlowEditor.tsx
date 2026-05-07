@@ -281,6 +281,8 @@ export const FlowEditor = () => {
   }, [flowId]);
 
   const handlePublishFlow = () => {
+    if (publishLoading) return;
+    setPublishLoading(true);
     publishFlow({ variables: { uuid: params.uuid } });
   };
 
@@ -310,7 +312,6 @@ export const FlowEditor = () => {
         buttonOkLoading={publishLoading}
         buttonMiddle="Publish & go back"
         handleOk={() => {
-          setPublishLoading(true);
           setStayOnPublish(true);
           handlePublishFlow();
         }}
