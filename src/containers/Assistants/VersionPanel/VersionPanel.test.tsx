@@ -120,6 +120,19 @@ describe('VersionPanel', () => {
     });
   });
 
+  it('uses onRefetchSelect for initialVersionId selection', async () => {
+    const onSelectVersion = vi.fn();
+    const onRefetchSelect = vi.fn();
+
+    renderVersionPanel({ onSelectVersion, onRefetchSelect, initialVersionId: 'v2' });
+
+    await waitFor(() => {
+      expect(onRefetchSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'v2' }));
+    });
+
+    expect(onSelectVersion).not.toHaveBeenCalled();
+  });
+
   it('auto-selects the latest version when no live version exists', async () => {
     const versionsNoLive = mockVersions.map((v) => ({ ...v, isLive: false }));
     const onSelectVersion = vi.fn();

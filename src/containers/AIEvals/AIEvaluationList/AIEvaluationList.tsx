@@ -1,5 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { Tooltip } from '@mui/material';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -105,7 +107,61 @@ const triggerCsvDownload = (csv: string, filename: string) => {
   URL.revokeObjectURL(url);
 };
 
-const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
+interface NameCellProps {
+  name: string;
+  assistantId?: string | null;
+  assistantConfigVersionId?: string | null;
+  assistantConfigName?: string | null;
+  assistantConfigVersionNumber?: number | null;
+  goldenQaName?: string | null;
+  goldenQaDuplicationFactor?: number | null;
+}
+
+const getName = ({
+  name,
+  assistantId,
+  assistantConfigVersionId,
+  assistantConfigName,
+  assistantConfigVersionNumber,
+  goldenQaName,
+  goldenQaDuplicationFactor,
+}: NameCellProps) => {
+  const assistantLabel =
+    (assistantConfigName ?? '—') +
+    (assistantConfigVersionNumber != null ? `/Version ${assistantConfigVersionNumber}` : '');
+
+  const assistantLink =
+    assistantId && assistantConfigVersionId
+      ? `/assistants/${assistantId}/version/${assistantConfigVersionId}`
+      : null;
+
+  return (
+    <div>
+      <div className={styles.NameText}>{name}</div>
+      {(assistantConfigName || assistantConfigVersionNumber != null) && (
+        <div className={styles.NameSubInfo}>
+          <PersonOutlineIcon className={styles.SubInfoIcon} />
+          {assistantLink ? (
+            <a href={assistantLink} className={styles.SubInfoLink} data-testid="assistantVersionLink">
+              {assistantLabel}
+            </a>
+          ) : (
+            <span className={styles.SubInfoLink}>{assistantLabel}</span>
+          )}
+        </div>
+      )}
+      {(goldenQaName || goldenQaDuplicationFactor != null) && (
+        <div className={styles.NameSubInfo}>
+          <ArticleOutlinedIcon className={styles.SubInfoIcon} />
+          <span className={styles.SubInfoText}>
+            {goldenQaName ?? '—'}
+            {goldenQaDuplicationFactor != null ? ` | ${goldenQaDuplicationFactor}` : ''}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const getStatus = (status: string) => {
   const normalizedStatus = status?.toUpperCase();
@@ -144,7 +200,7 @@ const getCompletedAt = (status: string, updatedAt: string) => {
 };
 
 const columnNames = [
-  { label: 'Evaluation Name', name: 'name' },
+  { label: 'Evaluation Name' },
   { label: 'Status' },
   {
     label: (
@@ -176,10 +232,29 @@ const columnNames = [
   { name: 'actions', label: 'Actions' },
 ];
 
-const getColumns = ({ name, status, results, completedAt, updatedAt }: Record<string, any>) => {
+const getColumns = ({
+  name,
+  status,
+  results,
+  updatedAt,
+  assistantId,
+  assistantConfigVersionId,
+  assistantConfigName,
+  assistantConfigVersionNumber,
+  goldenQaName,
+  goldenQaDuplicationFactor,
+}: Record<string, any>) => {
   const { cosineSimilarity, llmAsJudge } = parseResults(results);
   return {
-    name: getName(name),
+    name: getName({
+      name,
+      assistantId,
+      assistantConfigVersionId,
+      assistantConfigName,
+      assistantConfigVersionNumber,
+      goldenQaName,
+      goldenQaDuplicationFactor,
+    }),
     status: getStatus(status),
     cosineSimilarity: getMetric(cosineSimilarity),
     llmAsJudge: getMetric(llmAsJudge),
@@ -253,7 +328,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
         label: 'Download Results',
         icon: (
           <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
-            Download CSV
+            Download Results
           </span>
         ),
         parameter: 'id',

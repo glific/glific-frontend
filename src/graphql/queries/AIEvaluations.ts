@@ -16,6 +16,11 @@ export const LIST_AI_EVALUATIONS = gql`
       results
       assistantConfigVersionId
       goldenQaId
+      goldenQaName
+      goldenQaDuplicationFactor
+      assistantConfigName
+      assistantConfigVersionNumber
+      assistantId
       insertedAt
       updatedAt
     }

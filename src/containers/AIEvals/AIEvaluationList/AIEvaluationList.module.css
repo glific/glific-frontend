@@ -148,3 +148,32 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.NameSubInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  line-height: 18px;
+}
+
+.SubInfoIcon {
+  font-size: 14px !important;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.SubInfoLink {
+  font-size: 13px;
+  color: #119656;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+  cursor: pointer;
+}
+
+.SubInfoText {
+  font-size: 13px;
+  color: #6b7280;
+  word-break: break-word;
+}

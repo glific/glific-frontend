@@ -41,6 +41,7 @@ interface VersionPanelProps {
   onSelectVersion: (version: AssistantVersion) => void;
   onRefetchSelect?: (version: AssistantVersion) => void;
   refetchTrigger?: number;
+  initialVersionId?: string;
 }
 
 
@@ -55,6 +56,7 @@ export const VersionPanel = ({
   onSelectVersion,
   onRefetchSelect,
   refetchTrigger = 0,
+  initialVersionId,
 }: VersionPanelProps) => {
   const { t } = useTranslation();
   const initialSelectionDone = useRef(false);
@@ -68,12 +70,21 @@ export const VersionPanel = ({
   const versions: AssistantVersion[] = data?.assistantVersions ?? [];
   const sorted = [...versions].sort((a, b) => b.versionNumber - a.versionNumber);
 
-  // Initial auto-select
+  // Initial auto-select: prefer version from URL param, fall back to live, then latest
   useEffect(() => {
     if (versions.length === 0 || initialSelectionDone.current) return;
     initialSelectionDone.current = true;
-    const live = versions.find((v) => v.isLive) ?? sorted[0];
-    onSelectVersion(live);
+    const versionFromUrl = initialVersionId ? versions.find((v) => v.id === initialVersionId) : null;
+    const target = versionFromUrl ?? versions.find((v) => v.isLive) ?? sorted[0];
+
+    if (!target) return;
+
+    if (versionFromUrl) {
+      (onRefetchSelect ?? onSelectVersion)(target);
+      return;
+    }
+
+    onSelectVersion(target);
   }, [data]);
 
   // Refetch when trigger changes, then select latest bypassing unsaved-changes guard
