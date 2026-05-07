@@ -14,8 +14,8 @@ export const LIST_AI_EVALUATIONS = gql`
       status
       failureReason
       results
-      datasetId
       assistantConfigVersionId
+      goldenQaId
       insertedAt
       updatedAt
     }

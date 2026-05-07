@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
-import { Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Tooltip } from '@mui/material';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
@@ -162,11 +162,11 @@ const columnNames = [
       </div>
     ),
   },
-  { label: 'Completed at' },
+  { label: 'Completed at', name: 'updated_at', sort: true, order: 'desc' },
   { name: 'actions', label: 'Actions' },
 ];
 
-const getColumns = ({ name, status, results, updatedAt }: Record<string, any>) => {
+const getColumns = ({ name, status, results, completedAt, updatedAt }: Record<string, any>) => {
   const { cosineSimilarity, llmAsJudge } = parseResults(results);
   return {
     name: getName(name),
