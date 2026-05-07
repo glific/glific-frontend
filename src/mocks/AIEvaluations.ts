@@ -30,9 +30,8 @@ export const getCreateEvaluationMock = {
 
 export const getCreateEvaluationWithVariablesMock = (input: {
   goldenQaId: string;
-  experimentName: string;
+  evaluationName: string;
   configId: string;
-  configVersion: string;
 }) => ({
   request: { query: CREATE_EVALUATION, variables: { input } },
   result: evaluationSuccessResult,

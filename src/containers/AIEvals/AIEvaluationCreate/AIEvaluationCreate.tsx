@@ -242,9 +242,8 @@ export default function AIEvaluationCreate() {
     );
     return {
       goldenQaId: payload.goldenQaId?.id,
-      experimentName: payload.evaluationName,
-      configId: selectedVersion?.kaapiUuid,
-      configVersion: selectedVersion?.id,
+      evaluationName: payload.evaluationName,
+      configId: selectedVersion?.id,
     };
   };
 

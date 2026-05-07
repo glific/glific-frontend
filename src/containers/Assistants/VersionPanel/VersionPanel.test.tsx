@@ -120,11 +120,11 @@ describe('VersionPanel', () => {
     });
   });
 
-  it('uses onRefetchSelect for initialVersionId selection', async () => {
+  it('uses onRefetchSelect for initialVersionNumber selection', async () => {
     const onSelectVersion = vi.fn();
     const onRefetchSelect = vi.fn();
 
-    renderVersionPanel({ onSelectVersion, onRefetchSelect, initialVersionId: 'v2' });
+    renderVersionPanel({ onSelectVersion, onRefetchSelect, initialVersionNumber: 2 });
 
     await waitFor(() => {
       expect(onRefetchSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'v2' }));
