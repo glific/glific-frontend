@@ -7,7 +7,7 @@ import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
-import { GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
@@ -246,6 +246,7 @@ const getColumns = ({
 const columnAttributes = { columnNames, columns: getColumns, columnStyles };
 
 const queries = {
+  countQuery: COUNT_AI_EVALUATIONS,
   filterItemsQuery: LIST_AI_EVALUATIONS,
   deleteItemQuery: null,
 };
