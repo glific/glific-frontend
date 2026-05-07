@@ -835,17 +835,27 @@ describe('AskGlific', () => {
     });
     fireEvent.click(screen.getByText('Sidebar'));
 
-    fireEvent.click(screen.getByText('New chat'));
-
     await waitFor(() => {
       expect(screen.getByTestId('history-panel')).toBeInTheDocument();
       expect(screen.getByText('Chat History')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Conversation')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Test Conversation'));
 
     await waitFor(() => {
       expect(screen.getByText('Hello bot')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('history-panel')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('close-history-btn'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('history-panel')).not.toBeInTheDocument();
     });
   });
 });
