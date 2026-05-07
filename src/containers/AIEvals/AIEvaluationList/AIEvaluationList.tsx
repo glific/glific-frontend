@@ -108,17 +108,27 @@ const triggerCsvDownload = (csv: string, filename: string) => {
 const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
 
 const getStatus = (status: string) => {
+  const normalizedStatus = status?.toUpperCase();
   const dotMap: Record<string, string> = {
     COMPLETED: styles.DotCompleted,
     RUNNING: styles.DotRunning,
+    PROCESSING: styles.DotRunning,
     FAILED: styles.DotFailed,
   };
-  const dotCls = dotMap[status?.toUpperCase()] ?? styles.DotPending;
-  const label = status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending';
+  const labelMap: Record<string, string> = {
+    PROCESSING: 'In Progress',
+  };
+  const dotCls = dotMap[normalizedStatus] ?? styles.DotPending;
+  const label = labelMap[normalizedStatus] ?? (status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending');
+  const showHelperText = normalizedStatus === 'PROCESSING';
+
   return (
     <span className={styles.StatusCell}>
       <span className={dotCls} />
-      {label}
+      <span className={styles.StatusContent}>
+        <span className={styles.StatusLabel}>{showHelperText ? `${label}.` : label}</span>
+        {showHelperText && <span className={styles.StatusHelperText}>May take about 15 mins.</span>}
+      </span>
     </span>
   );
 };
@@ -141,7 +151,7 @@ const columnNames = [
       <div className={styles.HeaderWithIcon}>
         Cosine Similarity
         <Tooltip
-          title="Cosine similarity measures how close the assistant's answer is to the expected answer in meaning. A higher score (more than 0.7) means the answers convey similar intent and information."
+          title="Cosine similarity measures how close the assistant’s answer is to the expected answer in meaning. A higher score (more than 0.7) means the answers convey similar intent and information. A lower score (less than 0.3) means the response has drifted in meaning, even if some words overlap."
           arrow
         >
           <InfoOutlinedIcon className={styles.ColumnInfoIcon} />

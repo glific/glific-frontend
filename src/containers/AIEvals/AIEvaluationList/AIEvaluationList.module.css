@@ -42,10 +42,26 @@
 
 .StatusCell {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   font-size: 15px;
   color: #3d3d3d;
+}
+
+.StatusContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.StatusLabel {
+  line-height: 20px;
+}
+
+.StatusHelperText {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 16px;
 }
 
 .DotCompleted {
@@ -54,6 +70,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #4caf50;
+  margin-top: 5px;
 }
 
 .DotRunning {
@@ -62,6 +79,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #f59e0b;
+  margin-top: 5px;
 }
 
 .DotFailed {
@@ -70,6 +88,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #e57373;
+  margin-top: 5px;
 }
 
 .DotPending {
@@ -78,6 +97,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #9ca3af;
+  margin-top: 5px;
 }
 
 .MetricValue {
