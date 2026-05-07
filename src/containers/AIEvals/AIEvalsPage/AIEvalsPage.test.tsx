@@ -6,9 +6,16 @@ import {
   getCountGoldenQaMock,
   getListGoldenQaMock,
 } from 'mocks/AIEvaluations';
+import { LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import AIEvalsPage from './AIEvalsPage';
 
-const defaultMocks = [getListGoldenQaMock, getCountGoldenQaMock];
+const aiEvaluationsListMock = {
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { aiEvaluations: [] } },
+};
+
+const defaultMocks = [aiEvaluationsListMock, getListGoldenQaMock, getCountGoldenQaMock];
 
 const renderComponent = (mocks = defaultMocks) =>
   render(
@@ -32,9 +39,18 @@ describe('AIEvalsPage', () => {
     expect(screen.getByRole('button', { name: 'Golden QA' })).toBeInTheDocument();
   });
 
-  it('shows placeholder content on AI Evaluations tab by default', () => {
+  it('shows AI Evaluations list on the default tab', async () => {
     renderComponent();
-    expect(screen.getByText(/AI Evaluations list coming soon/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Evaluation Name')).toBeInTheDocument();
+      expect(screen.getByText('Status')).toBeInTheDocument();
+      expect(screen.getByText('Cosine Similarity')).toBeInTheDocument();
+    });
+  });
+
+  it('shows Create AI Evaluation button on AI Evaluations tab', () => {
+    renderComponent();
+    expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeInTheDocument();
   });
 
   it('switches to Golden QA tab and shows list', async () => {
