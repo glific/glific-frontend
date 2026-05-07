@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import AssistantsIcon from 'assets/images/Assistants.svg?react';
+import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
 import { Tooltip } from '@mui/material';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -19,24 +19,21 @@ const columnStyles = [
   styles.Name,
   styles.StatusColumn,
   styles.Metric,
-  styles.Metric,
   styles.CompletedAt,
   styles.Actions,
 ];
 
 const parseResults = (results: any) => {
-  if (!results) return { cosineSimilarity: null, llmAsJudge: null };
+  if (!results) return { cosineSimilarity: null };
   try {
     const parsed = typeof results === 'string' ? JSON.parse(results) : results;
     const scores: any[] = parsed.summary_scores ?? [];
     const findAvg = (name: string) => scores.find((s: any) => s.name === name)?.avg ?? null;
     return {
       cosineSimilarity: findAvg('Cosine Similarity') ?? parsed.cosine_similarity ?? parsed.cosineSimilarity ?? null,
-      llmAsJudge:
-        findAvg('LLM-as-judge') ?? findAvg('LLM As Judge') ?? parsed.llm_as_judge ?? parsed.llmAsJudge ?? null,
     };
   } catch {
-    return { cosineSimilarity: null, llmAsJudge: null };
+    return { cosineSimilarity: null };
   }
 };
 
@@ -120,7 +117,6 @@ interface NameCellProps {
 const getName = ({
   name,
   assistantId,
-  assistantConfigVersionId,
   assistantConfigName,
   assistantConfigVersionNumber,
   goldenQaName,
@@ -140,7 +136,7 @@ const getName = ({
       <div className={styles.NameText}>{name}</div>
       {(assistantConfigName || assistantConfigVersionNumber != null) && (
         <div className={styles.NameSubInfo}>
-          <PersonOutlineIcon className={styles.SubInfoIcon} />
+          <AssistantsIcon className={styles.SubInfoIcon} />
           {assistantLink ? (
             <a href={assistantLink} className={styles.SubInfoLink} data-testid="assistantVersionLink">
               {assistantLabel}
@@ -152,7 +148,7 @@ const getName = ({
       )}
       {(goldenQaName || goldenQaDuplicationFactor != null) && (
         <div className={styles.NameSubInfo}>
-          <ArticleOutlinedIcon className={styles.SubInfoIcon} />
+          <DocumentIcon className={styles.SubInfoIcon} />
           <span className={styles.SubInfoText}>
             {goldenQaName ?? '—'}
             {goldenQaDuplicationFactor != null ? ` | ${goldenQaDuplicationFactor}` : ''}
@@ -215,19 +211,6 @@ const columnNames = [
       </div>
     ),
   },
-  {
-    label: (
-      <div className={styles.HeaderWithIcon}>
-        LLM-as-judge
-        <Tooltip
-          title="LLM-as-judge uses a language model to evaluate the quality of the assistant's response compared to the expected answer."
-          arrow
-        >
-          <InfoOutlinedIcon className={styles.ColumnInfoIcon} />
-        </Tooltip>
-      </div>
-    ),
-  },
   { label: 'Completed at', name: 'updated_at', sort: true, order: 'desc' },
   { name: 'actions', label: 'Actions' },
 ];
@@ -244,12 +227,11 @@ const getColumns = ({
   goldenQaName,
   goldenQaDuplicationFactor,
 }: Record<string, any>) => {
-  const { cosineSimilarity, llmAsJudge } = parseResults(results);
+  const { cosineSimilarity } = parseResults(results);
   return {
     name: getName({
       name,
       assistantId,
-      assistantConfigVersionId,
       assistantConfigName,
       assistantConfigVersionNumber,
       goldenQaName,
@@ -257,7 +239,6 @@ const getColumns = ({
     }),
     status: getStatus(status),
     cosineSimilarity: getMetric(cosineSimilarity),
-    llmAsJudge: getMetric(llmAsJudge),
     completedAt: getCompletedAt(status, updatedAt),
   };
 };

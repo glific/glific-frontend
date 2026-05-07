@@ -158,8 +158,8 @@
 }
 
 .SubInfoIcon {
-  font-size: 14px !important;
-  color: #6b7280;
+  height: 14px !important;
+  color: #2c2d2f;
   flex-shrink: 0;
 }
 

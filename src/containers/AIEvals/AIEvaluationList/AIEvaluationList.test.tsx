@@ -51,7 +51,6 @@ describe('AIEvaluationList', () => {
       expect(screen.getByText('Evaluation Name')).toBeInTheDocument();
       expect(screen.getByText('Status')).toBeInTheDocument();
       expect(screen.getByText('Cosine Similarity')).toBeInTheDocument();
-      expect(screen.getByText('LLM-as-judge')).toBeInTheDocument();
       expect(screen.getByText('Completed at')).toBeInTheDocument();
       expect(screen.getByText('Actions')).toBeInTheDocument();
     });
@@ -91,14 +90,6 @@ describe('AIEvaluationList', () => {
     renderComponent();
     await waitFor(() => {
       expect(screen.getByText('0.85')).toBeInTheDocument();
-    });
-  });
-
-  it('renders LLM-as-judge score when present in results', async () => {
-    renderComponent([getListAiEvaluationsBothMetricsMock]);
-    await waitFor(() => {
-      expect(screen.getByText('0.72')).toBeInTheDocument();
-      expect(screen.getByText('0.90')).toBeInTheDocument();
     });
   });
 
