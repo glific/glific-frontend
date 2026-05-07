@@ -2,9 +2,47 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
+import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
+import { setUserSession } from 'services/AuthService';
 import AskGlific from './AskGlific';
 
+setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
+
 const now = Math.floor(Date.now() / 1000);
+
+const createSubscriptionMock = (
+  overrides: Partial<{
+    answer: string;
+    conversationId: string;
+    conversationName: string;
+    messageId: string;
+    errors: { message: string }[] | null;
+    delay: number;
+  }> = {}
+) => {
+  const { delay = 30, ...data } = overrides;
+  return {
+    request: {
+      query: ASK_GLIFIC_RESPONSE_SUBSCRIPTION,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        askGlificResponse: {
+          answer: 'This is a mock response from the bot.',
+          conversationId: 'conv-123',
+          conversationName: 'Test Chat',
+          messageId: 'msg-new-001',
+          errors: null,
+          ...data,
+        },
+      },
+    },
+    delay,
+  };
+};
+
+const subscriptionMock = createSubscriptionMock();
 
 const conversationsMock = {
   request: {
@@ -40,7 +78,7 @@ const conversationsWithDataMock = {
             updatedAt: now,
           },
           {
-            id: 'conv-abc',
+            id: 'conv-abc-2',
             name: 'Test Conversation 2',
             status: 'normal',
             createdAt: now - 3600,
@@ -54,7 +92,7 @@ const conversationsWithDataMock = {
             updatedAt: Math.floor(Date.now() / 1000) - 3600 * 3,
           },
           {
-            id: 'conv-y',
+            id: 'conv-y-2',
             name: 'Yesterday Chat',
             status: 'normal',
             createdAt: Math.floor(Date.now() / 1000) - 86400 - 100,
@@ -187,6 +225,18 @@ const defaultProps = () => ({
   setOpen: vi.fn(),
 });
 
+type RenderOptions = {
+  mocks?: any[];
+  props?: Partial<Parameters<typeof AskGlific>[0]>;
+};
+
+const renderAskGlific = ({ mocks = [conversationsMock], props }: RenderOptions = {}) =>
+  render(
+    <MockedProvider mocks={mocks}>
+      <AskGlific {...defaultProps()} {...props} />
+    </MockedProvider>
+  );
+
 describe('AskGlific', () => {
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
     value: vi.fn(),
@@ -199,11 +249,7 @@ describe('AskGlific', () => {
 
   test('should render AskGlific component', async () => {
     const setOpen = vi.fn();
-    render(
-      <MockedProvider mocks={[conversationsMock]}>
-        <AskGlific open={true} setOpen={setOpen} />
-      </MockedProvider>
-    );
+    renderAskGlific({ props: { setOpen } });
 
     await waitFor(() => {
       expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
@@ -215,11 +261,7 @@ describe('AskGlific', () => {
   });
 
   test('it should send messages from suggestion', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock, suggestionMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, subscriptionMock] });
 
     await waitFor(() => {
       expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
@@ -237,11 +279,7 @@ describe('AskGlific', () => {
   });
 
   test('it should allow new chat', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock, suggestionMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, subscriptionMock] });
 
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
@@ -257,11 +295,7 @@ describe('AskGlific', () => {
   });
 
   test('it should show feedback buttons on bot responses', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock, suggestionMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, subscriptionMock] });
 
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
@@ -274,11 +308,9 @@ describe('AskGlific', () => {
   });
 
   test('it should toggle feedback on click', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock, suggestionMock, feedbackMock, feedbackDislikeMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({
+      mocks: [conversationsMock, suggestionMock, subscriptionMock, feedbackMock, feedbackDislikeMock],
+    });
 
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
@@ -300,11 +332,7 @@ describe('AskGlific', () => {
   test('it should send message via text input and Enter key (handleOk + handleKeyDown)', async () => {
     const typedMessageMock = createAskGlificMock('How do flows work?');
 
-    render(
-      <MockedProvider mocks={[conversationsMock, typedMessageMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock, typedMessageMock, subscriptionMock] });
 
     await waitFor(() => {
       expect(screen.getByTestId('textbox')).toBeInTheDocument();
@@ -325,11 +353,7 @@ describe('AskGlific', () => {
   });
 
   test('it should not send message on Shift+Enter', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific();
 
     const textbox = screen.getByTestId('textbox');
     fireEvent.change(textbox, { target: { value: 'test' } });
@@ -339,11 +363,7 @@ describe('AskGlific', () => {
   });
 
   test('it should not send empty message', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific();
 
     const sendButton = screen.getByTestId('send-icon');
     expect(sendButton).toBeDisabled();
@@ -356,11 +376,7 @@ describe('AskGlific', () => {
   });
 
   test('it should show error message on mutation failure', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock, askGlificErrorMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock, askGlificErrorMock, subscriptionMock] });
 
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
@@ -371,12 +387,23 @@ describe('AskGlific', () => {
     });
   });
 
+  test('it should show error message from subscription errors payload', async () => {
+    const errorSubMock = createSubscriptionMock({
+      answer: '',
+      errors: [{ message: 'Dify upstream failure' }],
+    });
+
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, errorSubMock] });
+
+    fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Dify upstream failure')).toBeInTheDocument();
+    });
+  });
+
   test('it should load conversations and select one (loadConversations + handleSelectConversation)', async () => {
-    render(
-      <MockedProvider mocks={[conversationsWithDataMock, messagesMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsWithDataMock, messagesMock] });
 
     await waitFor(() => {
       expect(screen.getByText('New chat')).toBeInTheDocument();
@@ -397,11 +424,7 @@ describe('AskGlific', () => {
   });
 
   test('it should switch display modes', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific();
 
     fireEvent.click(screen.getByTestId('display-mode-btn'));
 
@@ -447,11 +470,7 @@ describe('AskGlific', () => {
         maxUsageCount: Number.MAX_SAFE_INTEGER,
       };
 
-      render(
-        <MockedProvider mocks={[mock]}>
-          <AskGlific {...defaultProps()} />
-        </MockedProvider>
-      );
+      renderAskGlific({ mocks: [mock] });
 
       fireEvent.click(screen.getByText('New chat'));
 
@@ -486,11 +505,7 @@ describe('AskGlific', () => {
         maxUsageCount: Number.MAX_SAFE_INTEGER,
       };
 
-      render(
-        <MockedProvider mocks={[mock]}>
-          <AskGlific {...defaultProps()} />
-        </MockedProvider>
-      );
+      renderAskGlific({ mocks: [mock] });
 
       fireEvent.click(screen.getByText('New chat'));
 
@@ -555,11 +570,7 @@ describe('AskGlific', () => {
       maxUsageCount: Number.MAX_SAFE_INTEGER,
     };
 
-    render(
-      <MockedProvider mocks={[conversationsWithDataMock, messagesWithMoreMock, olderMessagesMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsWithDataMock, messagesWithMoreMock, olderMessagesMock] });
 
     fireEvent.click(screen.getByText('New chat'));
     await waitFor(() => {
@@ -583,11 +594,7 @@ describe('AskGlific', () => {
   });
 
   test('it should highlight active conversation in history', async () => {
-    render(
-      <MockedProvider mocks={[conversationsWithDataMock, messagesMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsWithDataMock, messagesMock] });
 
     fireEvent.click(screen.getByText('New chat'));
     await waitFor(() => {
@@ -648,11 +655,7 @@ describe('AskGlific', () => {
       maxUsageCount: Number.MAX_SAFE_INTEGER,
     };
 
-    render(
-      <MockedProvider mocks={[conversationsPage1, conversationsPage2]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsPage1, conversationsPage2] });
 
     fireEvent.click(screen.getByText('New chat'));
 
@@ -671,11 +674,7 @@ describe('AskGlific', () => {
   });
 
   test('it should close history dropdown when clicking outside', async () => {
-    render(
-      <MockedProvider mocks={[conversationsWithDataMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsWithDataMock] });
 
     fireEvent.click(screen.getByText('New chat'));
 
@@ -694,11 +693,7 @@ describe('AskGlific', () => {
   });
 
   test('it should close display mode menu on item selection', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock] });
 
     fireEvent.click(screen.getByTestId('display-mode-btn'));
 
@@ -714,11 +709,7 @@ describe('AskGlific', () => {
   });
 
   test('it should switch to fullscreen display mode', async () => {
-    render(
-      <MockedProvider mocks={[conversationsMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific();
 
     fireEvent.click(screen.getByTestId('display-mode-btn'));
 
@@ -762,11 +753,7 @@ describe('AskGlific', () => {
       maxUsageCount: Number.MAX_SAFE_INTEGER,
     };
 
-    render(
-      <MockedProvider mocks={[conversationsWithDataMock, messagesWithFeedbackMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsWithDataMock, messagesWithFeedbackMock] });
 
     fireEvent.click(screen.getByText('New chat'));
 
@@ -804,11 +791,7 @@ describe('AskGlific', () => {
       },
     };
 
-    render(
-      <MockedProvider mocks={[conversationsMock, suggestionMock, feedbackMutationMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, subscriptionMock, feedbackMutationMock] });
 
     fireEvent.click(screen.getAllByTestId('suggestion')[0]);
 
@@ -823,11 +806,7 @@ describe('AskGlific', () => {
   });
 
   test('it should show history panel in sidebar mode and select conversation', async () => {
-    render(
-      <MockedProvider mocks={[conversationsWithDataMock, messagesMock]}>
-        <AskGlific {...defaultProps()} />
-      </MockedProvider>
-    );
+    renderAskGlific({ mocks: [conversationsWithDataMock, messagesMock] });
 
     fireEvent.click(screen.getByTestId('display-mode-btn'));
     await waitFor(() => {
