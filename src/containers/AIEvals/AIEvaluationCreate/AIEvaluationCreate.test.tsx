@@ -15,7 +15,6 @@ import {
   getAssistantConfigVersionsMock,
   getAssistantConfigVersionsMultipleNamesMock,
   getCreateEvaluationSuccessMock,
-  getCreateEvaluationWithVariablesMock,
   getListAiEvaluationsMock,
   getListGoldenQaForCreateEmptyMock,
   getListGoldenQaForCreateErrorMock,

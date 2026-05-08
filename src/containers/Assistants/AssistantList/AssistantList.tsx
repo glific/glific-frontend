@@ -103,7 +103,8 @@ export const AssistantList = () => {
   }, [pollingData]);
 
   const handleEdit = (_id: string, item: any) => {
-    if (item?.liveVersionNumber != null) {
+    if (!item) return;
+    if (item.liveVersionNumber != null) {
       navigate(`/assistants/${item.id}/version/${item.liveVersionNumber}`);
     } else {
       navigate(`/assistants/${item.id}`);
@@ -143,7 +144,7 @@ export const AssistantList = () => {
     }
   };
 
-  const getColumns = ({ id, name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
+  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
     name: getAssistantName(name, assistantDisplayId),
     liveVersion: getLiveVersion(liveVersionNumber),
     lastUpdated: getLastUpdated(updatedAt),
