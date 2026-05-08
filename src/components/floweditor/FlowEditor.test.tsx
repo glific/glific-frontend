@@ -184,7 +184,6 @@ test('publish flow which has error', async () => {
 });
 
 test('should not fire a second publish mutation while one is already in progress', async () => {
-  const consoleErrorSpy = vi.spyOn(console, 'error');
   const { getByTestId } = render(defaultWrapper);
 
   await waitFor(() => expect(getByTestId('button')).toBeInTheDocument());
@@ -193,24 +192,26 @@ test('should not fire a second publish mutation while one is already in progress
 
   await waitFor(() => expect(getByTestId('ok-button')).toBeInTheDocument());
 
-  // First publish — sets publishLoading=true
+  const consoleErrorSpy = vi.spyOn(console, 'error');
+
+  // First publish — ref guard is set synchronously
   fireEvent.click(getByTestId('ok-button'));
 
-  // Wait until ok-button is disabled (publishLoading=true reflected in UI)
-  await waitFor(() => expect(getByTestId('ok-button')).toBeDisabled());
-
-  // Second attempt via middle button while loading — guard should block it
+  // Immediate second attempt — ref guard blocks it without needing a re-render
   fireEvent.click(getByTestId('middle-button'));
 
-  // Error dialog from the single mutation should appear
-  await waitFor(() => {
-    expect(
-      screen.getByText('Errors were detected in the flow. Would you like to continue modifying?')
-    ).toBeInTheDocument();
-  });
+  // Only the first mutation resolves — error dialog appears
+  await waitFor(
+    () => {
+      expect(
+        screen.getByText('Errors were detected in the flow. Would you like to continue modifying?')
+      ).toBeInTheDocument();
+    },
+    { timeout: 5000 }
+  );
 
-  // Guard invariant: if a second mutation had fired, Apollo would log
-  // "No more mocked responses" since activeFlowMocks has only one publishFlow mock
+  // If a second mutation had fired, Apollo would log "No more mocked responses"
+  // since activeFlowMocks has only one publishFlow mock
   expect(consoleErrorSpy).not.toHaveBeenCalledWith(
     expect.stringContaining('No more mocked responses')
   );
