@@ -183,6 +183,32 @@ test('publish flow which has error', async () => {
   });
 });
 
+test('should not fire a second publish mutation while one is already in progress', async () => {
+  const { getByTestId } = render(defaultWrapper);
+
+  await waitFor(() => expect(getByTestId('button')).toBeInTheDocument());
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => expect(getByTestId('ok-button')).toBeInTheDocument());
+
+  // First publish — sets publishLoading=true
+  fireEvent.click(getByTestId('ok-button'));
+
+  // Wait until ok-button is disabled (publishLoading=true reflected in UI)
+  await waitFor(() => expect(getByTestId('ok-button')).toBeDisabled());
+
+  // Second attempt via middle button while loading — guard should block it
+  fireEvent.click(getByTestId('middle-button'));
+
+  // Error dialog from the single mutation should appear
+  await waitFor(() => {
+    expect(
+      screen.getByText('Errors were detected in the flow. Would you like to continue modifying?')
+    ).toBeInTheDocument();
+  });
+});
+
 // Need to add appropriate mocks for these calls
 
 // test('test if XMLHTTPRequest works ', async () => {
