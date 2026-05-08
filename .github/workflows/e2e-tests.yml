@@ -127,7 +127,7 @@ jobs:
           git clone https://github.com/glific/glific.git
           echo done. go to dir.
           cd glific
-          git checkout ask-glific
+
           echo done. start dev.secret.exs config
           cd priv
           mkdir cert
@@ -177,7 +177,6 @@ jobs:
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
           cd cypress-testing
-          git checkout apollo_migration
           cd ..
           yarn add cypress@13.6.2
 
