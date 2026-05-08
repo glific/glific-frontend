@@ -184,6 +184,7 @@ test('publish flow which has error', async () => {
 });
 
 test('should not fire a second publish mutation while one is already in progress', async () => {
+  const consoleErrorSpy = vi.spyOn(console, 'error');
   const { getByTestId } = render(defaultWrapper);
 
   await waitFor(() => expect(getByTestId('button')).toBeInTheDocument());
@@ -207,6 +208,13 @@ test('should not fire a second publish mutation while one is already in progress
       screen.getByText('Errors were detected in the flow. Would you like to continue modifying?')
     ).toBeInTheDocument();
   });
+
+  // Guard invariant: if a second mutation had fired, Apollo would log
+  // "No more mocked responses" since activeFlowMocks has only one publishFlow mock
+  expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+    expect.stringContaining('No more mocked responses')
+  );
+  consoleErrorSpy.mockRestore();
 });
 
 // Need to add appropriate mocks for these calls
