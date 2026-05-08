@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
 import { setErrorMessage, setNotification } from 'common/notification';
-import { LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { COUNT_AI_EVALUATIONS, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import {
   getEvaluationScoresEmptyTracesMock,
   getEvaluationScoresErrorMock,
@@ -31,9 +31,15 @@ const emptyListMock = {
   result: { data: { aiEvaluations: [] } },
 };
 
+const countAiEvaluationsMock = {
+  request: { query: COUNT_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { countAiEvaluations: 2 } },
+};
+
 const renderComponent = (mocks: MockedResponse[] = [getListAiEvaluationsWithItemsMock], searchQuery?: string) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={[countAiEvaluationsMock, ...mocks]} addTypename={false}>
       <MemoryRouter>
         <AIEvaluationList searchQuery={searchQuery} />
       </MemoryRouter>
@@ -321,13 +327,8 @@ describe('AIEvaluationList', () => {
               status: 'FAILED',
               results: null,
               failureReason: null,
-              goldenQaId: null,
-              assistantConfigVersionId: null,
-              goldenQaName: null,
-              goldenQaDuplicationFactor: null,
-              assistantConfigName: null,
-              assistantConfigVersionNumber: null,
-              assistantId: null,
+              goldenQa: null,
+              assistantConfigVersion: null,
               insertedAt: '2026-01-05T00:00:00Z',
               updatedAt: '2026-01-05T00:00:00Z',
             },

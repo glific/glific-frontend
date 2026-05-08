@@ -19,6 +19,8 @@ const speedSend = (
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
+// Tests are skipped as the feature is marked for deprecation and
+// the tests are brittle.
 describe.skip('SpeedSendList', () => {
   test('has proper headers', async () => {
     const { getByText, container } = render(speedSend);

@@ -106,35 +106,33 @@ const triggerCsvDownload = (csv: string, filename: string) => {
 
 interface NameCellProps {
   name: string;
-  assistantId?: string | null;
-  assistantConfigVersionId?: string | null;
-  assistantConfigName?: string | null;
-  assistantConfigVersionNumber?: number | null;
-  goldenQaName?: string | null;
-  goldenQaDuplicationFactor?: number | null;
+  goldenQa?: { id?: string | null; name?: string | null; duplicationFactor?: number | null } | null;
+  assistantConfigVersion?: {
+    id?: string | null;
+    versionNumber?: number | null;
+    assistant?: { id?: string | null; name?: string | null } | null;
+  } | null;
 }
 
-const getName = ({
-  name,
-  assistantId,
-  assistantConfigName,
-  assistantConfigVersionNumber,
-  goldenQaName,
-  goldenQaDuplicationFactor,
-}: NameCellProps) => {
+const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
+  const assistantName = assistantConfigVersion?.assistant?.name;
+  const versionNumber = assistantConfigVersion?.versionNumber;
+  const assistantId = assistantConfigVersion?.assistant?.id;
+  const goldenQaName = goldenQa?.name;
+  const goldenQaDuplicationFactor = goldenQa?.duplicationFactor;
+
   const assistantLabel =
-    (assistantConfigName ?? '—') +
-    (assistantConfigVersionNumber != null ? `/Version ${assistantConfigVersionNumber}` : '');
+    (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
 
   const assistantLink =
-    assistantId && assistantConfigVersionNumber != null
-      ? `/assistants/${assistantId}/version/${assistantConfigVersionNumber}`
+    assistantId && versionNumber != null
+      ? `/assistants/${assistantId}/version/${versionNumber}`
       : null;
 
   return (
     <div>
       <div className={styles.NameText}>{name}</div>
-      {(assistantConfigName || assistantConfigVersionNumber != null) && (
+      {(assistantName || versionNumber != null) && (
         <div className={styles.NameSubInfo}>
           <AssistantsIcon className={styles.SubInfoIcon} />
           {assistantLink ? (
@@ -220,23 +218,12 @@ const getColumns = ({
   status,
   results,
   updatedAt,
-  assistantId,
-  assistantConfigVersionId,
-  assistantConfigName,
-  assistantConfigVersionNumber,
-  goldenQaName,
-  goldenQaDuplicationFactor,
+  goldenQa,
+  assistantConfigVersion,
 }: Record<string, any>) => {
   const { cosineSimilarity } = parseResults(results);
   return {
-    name: getName({
-      name,
-      assistantId,
-      assistantConfigName,
-      assistantConfigVersionNumber,
-      goldenQaName,
-      goldenQaDuplicationFactor,
-    }),
+    name: getName({ name, goldenQa, assistantConfigVersion }),
     status: getStatus(status),
     cosineSimilarity: getMetric(cosineSimilarity),
     completedAt: getCompletedAt(status, updatedAt),

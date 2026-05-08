@@ -14,13 +14,19 @@ export const LIST_AI_EVALUATIONS = gql`
       status
       failureReason
       results
-      assistantConfigVersionId
-      goldenQaId
-      goldenQaName
-      goldenQaDuplicationFactor
-      assistantConfigName
-      assistantConfigVersionNumber
-      assistantId
+      goldenQa {
+        id
+        name
+        duplicationFactor
+      }
+      assistantConfigVersion {
+        id
+        versionNumber
+        assistant {
+          id
+          name
+        }
+      }
       insertedAt
       updatedAt
     }

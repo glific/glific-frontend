@@ -1,5 +1,5 @@
 .Name {
-  width: 25%;
+  width: 40%;
   min-width: 160px;
 }
 
@@ -9,7 +9,7 @@
 }
 
 .Metric {
-  width: 16%;
+  width: 15%;
   min-width: 140px;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .Actions {
-  width: 13%;
+  width: 12%;
   text-align: start;
   overflow: hidden;
 }
