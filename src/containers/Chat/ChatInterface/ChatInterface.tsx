@@ -47,7 +47,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const params = useParams();
   const [value, setValue] = useState(tabs[0].link);
   const [appliedFilters, setAppliedFilters] = useState<any>({});
-  const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
+  const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -197,7 +197,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      {!isAskMeBotEnabled && selectedTab === 'contacts' && !savedSearches && (
+      {!isAskGlificEnabled && selectedTab === 'contacts' && !savedSearches && (
         <SimulatorIcon
           data-testid="simulatorIcon"
           className={styles.SimulatorIcon}

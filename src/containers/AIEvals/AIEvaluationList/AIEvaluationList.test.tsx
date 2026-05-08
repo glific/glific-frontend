@@ -2,22 +2,22 @@ import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
-import { setNotification, setErrorMessage } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
+import { COUNT_AI_EVALUATIONS, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import {
-  getEvaluationScoresMock,
-  getEvaluationScoresErrorMock,
-  getEvaluationScoresNullMock,
   getEvaluationScoresEmptyTracesMock,
-  getEvaluationScoresNetworkErrorMock,
+  getEvaluationScoresErrorMock,
+  getEvaluationScoresFlatArrayMock,
   getEvaluationScoresInvalidJsonMock,
   getEvaluationScoresInvalidRowsMock,
-  getEvaluationScoresFlatArrayMock,
-  getListAiEvaluationsInvalidResultsMock,
+  getEvaluationScoresMock,
+  getEvaluationScoresNetworkErrorMock,
+  getEvaluationScoresNullMock,
   getListAiEvaluationsAllStatusesMock,
   getListAiEvaluationsBothMetricsMock,
+  getListAiEvaluationsInvalidResultsMock,
   getListAiEvaluationsWithItemsMock,
 } from 'mocks/AIEvaluations';
-import { LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import { AIEvaluationList } from './AIEvaluationList';
 
 vi.mock('common/notification', () => ({
@@ -31,9 +31,15 @@ const emptyListMock = {
   result: { data: { aiEvaluations: [] } },
 };
 
+const countAiEvaluationsMock = {
+  request: { query: COUNT_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { countAiEvaluations: 2 } },
+};
+
 const renderComponent = (mocks: MockedResponse[] = [getListAiEvaluationsWithItemsMock], searchQuery?: string) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={[countAiEvaluationsMock, ...mocks]} addTypename={false}>
       <MemoryRouter>
         <AIEvaluationList searchQuery={searchQuery} />
       </MemoryRouter>
@@ -51,7 +57,6 @@ describe('AIEvaluationList', () => {
       expect(screen.getByText('Evaluation Name')).toBeInTheDocument();
       expect(screen.getByText('Status')).toBeInTheDocument();
       expect(screen.getByText('Cosine Similarity')).toBeInTheDocument();
-      expect(screen.getByText('LLM-as-judge')).toBeInTheDocument();
       expect(screen.getByText('Completed at')).toBeInTheDocument();
       expect(screen.getByText('Actions')).toBeInTheDocument();
     });
@@ -94,14 +99,6 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('renders LLM-as-judge score when present in results', async () => {
-    renderComponent([getListAiEvaluationsBothMetricsMock]);
-    await waitFor(() => {
-      expect(screen.getByText('0.72')).toBeInTheDocument();
-      expect(screen.getByText('0.90')).toBeInTheDocument();
-    });
-  });
-
   it('shows — dash for null metrics on failed evaluation', async () => {
     renderComponent();
     await waitFor(() => {
@@ -133,33 +130,33 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('shows Download CSV button for every row', async () => {
+  it('shows Download Results button for every row', async () => {
     renderComponent();
     await waitFor(() => {
-      expect(screen.getAllByText('Download CSV')).toHaveLength(2);
+      expect(screen.getAllByText('Download Results')).toHaveLength(2);
     });
   });
 
-  it('Download CSV button for non-completed evaluation has disabled style', async () => {
+  it('Download Results button for non-completed evaluation has disabled style', async () => {
     renderComponent();
     await waitFor(() => {
-      const buttons = screen.getAllByText('Download CSV');
+      const buttons = screen.getAllByText('Download Results');
       expect(buttons[0].className).toMatch(/DownloadCsvButtonDisabled/);
     });
   });
 
-  it('Download CSV button for completed evaluation has active style', async () => {
+  it('Download Results button for completed evaluation has active style', async () => {
     renderComponent();
     await waitFor(() => {
-      const buttons = screen.getAllByText('Download CSV');
+      const buttons = screen.getAllByText('Download Results');
       expect(buttons[1].className).toMatch(/DownloadCsvButton/);
       expect(buttons[1].className).not.toMatch(/DownloadCsvButtonDisabled/);
     });
   });
 
-  it('clicking Download CSV on non-completed evaluation does not fire scores query', async () => {
+  it('clicking Download Results on non-completed evaluation does not fire scores query', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
 
@@ -168,16 +165,16 @@ describe('AIEvaluationList', () => {
     expect(setErrorMessage).not.toHaveBeenCalled();
   });
 
-  it('Download CSV button for running evaluation has disabled style', async () => {
+  it('Download Results button for running evaluation has disabled style', async () => {
     renderComponent([getListAiEvaluationsAllStatusesMock]);
     await waitFor(() => {
-      const buttons = screen.getAllByText('Download CSV');
+      const buttons = screen.getAllByText('Download Results');
       const runningButton = buttons.find((b) => b.className.includes('DownloadCsvButtonDisabled'));
       expect(runningButton).toBeTruthy();
     });
   });
 
-  it('clicking Download CSV on completed evaluation triggers file download', async () => {
+  it('clicking Download Results on completed evaluation triggers file download', async () => {
     const originalCreateElement = document.createElement.bind(document);
     const linkEl = originalCreateElement('a');
     const clickSpy = vi.spyOn(linkEl, 'click').mockImplementation(() => {});
@@ -190,7 +187,7 @@ describe('AIEvaluationList', () => {
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
 
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -204,7 +201,7 @@ describe('AIEvaluationList', () => {
 
   it('shows warning notification when scores field is null', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresNullMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -215,7 +212,7 @@ describe('AIEvaluationList', () => {
 
   it('shows error when evaluationScores returns errors array', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresErrorMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -226,7 +223,7 @@ describe('AIEvaluationList', () => {
 
   it('shows warning notification when traces array is empty', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresEmptyTracesMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -237,7 +234,7 @@ describe('AIEvaluationList', () => {
 
   it('calls setErrorMessage on network error during download', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresNetworkErrorMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -267,7 +264,7 @@ describe('AIEvaluationList', () => {
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
 
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresFlatArrayMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -279,7 +276,7 @@ describe('AIEvaluationList', () => {
 
   it('shows warning when scores field is not valid JSON', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresInvalidJsonMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
@@ -290,12 +287,60 @@ describe('AIEvaluationList', () => {
 
   it('shows warning when all trace rows are invalid and CSV is empty', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresInvalidRowsMock('2')]);
-    await waitFor(() => expect(screen.getAllByText('Download CSV')).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalledWith('No valid score rows to download', 'warning');
+    });
+  });
+
+  it('renders assistant config name and version number as a link in name cell', async () => {
+    renderComponent();
+    await waitFor(() => {
+      expect(screen.getByText('failed-eval')).toBeInTheDocument();
+    });
+    const links = screen.getAllByTestId('assistantVersionLink');
+    expect(links.length).toBeGreaterThan(0);
+    expect(links[0]).toHaveAttribute('href', '/assistants/45/version/1');
+  });
+
+  it('renders golden QA name and duplication factor in name cell', async () => {
+    renderComponent();
+    await waitFor(() => {
+      expect(screen.getByText('test_dataset | 2')).toBeInTheDocument();
+      expect(screen.getByText('healthcare_dataset | 3')).toBeInTheDocument();
+    });
+  });
+
+  it('does not render sub-info lines when all display fields are null', async () => {
+    const nullFieldsMock = {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: () => true,
+      result: {
+        data: {
+          aiEvaluations: [
+            {
+              id: '99',
+              name: 'no-assoc-eval',
+              status: 'FAILED',
+              results: null,
+              failureReason: null,
+              goldenQa: null,
+              assistantConfigVersion: null,
+              insertedAt: '2026-01-05T00:00:00Z',
+              updatedAt: '2026-01-05T00:00:00Z',
+            },
+          ],
+        },
+      },
+    };
+    renderComponent([nullFieldsMock]);
+    await waitFor(() => {
+      expect(screen.getByText('no-assoc-eval')).toBeInTheDocument();
+      expect(screen.queryByText(/Version/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/\|/)).not.toBeInTheDocument();
     });
   });
 });

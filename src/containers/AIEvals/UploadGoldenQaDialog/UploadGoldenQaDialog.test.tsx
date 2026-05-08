@@ -190,7 +190,7 @@ describe('UploadGoldenQaDialog', () => {
       expect(notificationSpy).toHaveBeenCalledWith('Golden QA uploaded successfully', 'success');
     });
     expect(onProceed).toHaveBeenCalledWith({
-      datasetId: 123,
+      id: '456',
       name: 'golden_qa',
       duplicationFactor: 1,
     });
@@ -216,10 +216,27 @@ describe('UploadGoldenQaDialog', () => {
 
     await waitFor(() => {
       expect(onProceed).toHaveBeenCalledWith({
-        datasetId: 456,
+        id: '456',
         name: 'my_custom_name',
         duplicationFactor: 3,
       });
+    });
+  });
+
+  test('onProceed receives Glific id, not Kaapi datasetId', async () => {
+    const onProceed = vi.fn();
+    const mockWithDistinctIds = createGoldenQaCustomSuccessMock('my_qa', 1, '42', '999');
+    render(uploadGoldenQaDialogComponent({ mocks: [mockWithDistinctIds], props: { onProceed } }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() => {
+      expect(onProceed).toHaveBeenCalledWith(
+        expect.objectContaining({ id: '42' })
+      );
+      expect(onProceed).not.toHaveBeenCalledWith(
+        expect.objectContaining({ datasetId: expect.anything() })
+      );
     });
   });
 
