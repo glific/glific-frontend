@@ -131,7 +131,7 @@ export default function AIEvaluationCreate() {
   }, [goldenQaError]);
 
   const backendOptions: GoldenQaOption[] =
-    goldenQaData?.goldenQas?.map((qa: any) => ({ id: qa.datasetId, label: qa.name })) ?? [];
+    goldenQaData?.goldenQas?.map((qa: any) => ({ id: qa.id, label: qa.name })) ?? [];
 
   const uploadedIds = new Set(uploadedDatasets.map((d) => String(d.id)));
   const goldenQaOptions: GoldenQaOption[] = [
@@ -185,8 +185,8 @@ export default function AIEvaluationCreate() {
     setShowUploadGoldenQaDialog(true);
   };
 
-  const handleUploadGoldenQaProceed = (values: { datasetId: number; name: string }) => {
-    const newOption: GoldenQaOption = { id: values.datasetId, label: values.name };
+  const handleUploadGoldenQaProceed = (values: { id: string; name: string }) => {
+    const newOption: GoldenQaOption = { id: values.id, label: values.name };
     setUploadedDatasets((prev) => [newOption, ...prev]);
     setNewlyAddedDataset(newOption);
     setShowUploadGoldenQaDialog(false);
@@ -241,10 +241,9 @@ export default function AIEvaluationCreate() {
       (v: any) => v.id === payload.assistantId?.id
     );
     return {
-      datasetId: payload.goldenQaId?.id,
-      experimentName: payload.evaluationName,
-      configId: selectedVersion?.kaapiUuid,
-      configVersion: selectedVersion?.id,
+      goldenQaId: payload.goldenQaId?.id,
+      evaluationName: payload.evaluationName,
+      configId: selectedVersion?.id,
     };
   };
 

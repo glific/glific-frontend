@@ -1,25 +1,25 @@
 .Name {
-  width: 22%;
+  width: 40%;
   min-width: 160px;
 }
 
 .StatusColumn {
-  width: 13%;
+  width: 15%;
   min-width: 110px;
 }
 
 .Metric {
-  width: 16%;
+  width: 15%;
   min-width: 140px;
 }
 
 .CompletedAt {
-  width: 20%;
+  width: 15%;
   min-width: 160px;
 }
 
 .Actions {
-  width: 13%;
+  width: 12%;
   text-align: start;
   overflow: hidden;
 }
@@ -42,10 +42,26 @@
 
 .StatusCell {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   font-size: 15px;
   color: #3d3d3d;
+}
+
+.StatusContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.StatusLabel {
+  line-height: 20px;
+}
+
+.StatusHelperText {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 16px;
 }
 
 .DotCompleted {
@@ -54,6 +70,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #4caf50;
+  margin-top: 5px;
 }
 
 .DotRunning {
@@ -62,6 +79,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #f59e0b;
+  margin-top: 5px;
 }
 
 .DotFailed {
@@ -70,6 +88,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #e57373;
+  margin-top: 5px;
 }
 
 .DotPending {
@@ -78,6 +97,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   background-color: #9ca3af;
+  margin-top: 5px;
 }
 
 .MetricValue {
@@ -127,4 +147,32 @@
   pointer-events: none;
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.NameSubInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  line-height: 18px;
+}
+
+.SubInfoIcon {
+  height: 14px !important;
+  color: #2c2d2f;
+  flex-shrink: 0;
+}
+
+.SubInfoLink {
+  font-size: 13px;
+  color: #119656;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.SubInfoText {
+  font-size: 13px;
+  color: #6b7280;
+  word-break: break-word;
 }

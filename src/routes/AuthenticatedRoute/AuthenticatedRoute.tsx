@@ -239,6 +239,7 @@ export const AuthenticatedRoute = () => {
           <>
             <Route path="assistants" element={<AssistantList />} />
             <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+            <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
           </>
         ) : (
           <>
