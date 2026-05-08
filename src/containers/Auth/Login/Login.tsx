@@ -37,18 +37,32 @@ export const Login = () => {
     clearUserSession();
   };
 
+  const [organizationServicesSettled, setOrganizationServicesSettled] = useState(false);
+
   // get the information on current user
   const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
-  const [getOrganizationServices, { data: organizationServicesData }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
+  const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES);
+
+  const fetchOrganizationServices = () => {
+    getOrganizationServices()
+      .then((result) => {
+        if (result.data) {
+          setOrganizationServices(JSON.stringify(result.data.organizationServices));
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setOrganizationServicesSettled(true);
+      });
+  };
 
   useEffect(() => {
-    if (userData && organizationServicesData) {
+    if (userData && organizationServicesSettled) {
       const { user } = userData.currentUser;
       const userCopy = JSON.parse(JSON.stringify(user));
       userCopy.roles = user.accessRoles;
       // set the current user object
       setUserSession(JSON.stringify(userCopy));
-      setOrganizationServices(JSON.stringify(organizationServicesData.organizationServices));
 
       // get the roles
       const { accessRoles } = userData.currentUser.user;
@@ -74,7 +88,7 @@ export const Login = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, organizationServicesData]);
+  }, [userData, userError, organizationServicesSettled]);
 
   const formFields = [
     {
@@ -111,7 +125,7 @@ export const Login = () => {
       })
       .then((response: any) => {
         getCurrentUser();
-        getOrganizationServices();
+        fetchOrganizationServices();
         setAuthSession(response.data.data);
       })
       .catch((error) => {
