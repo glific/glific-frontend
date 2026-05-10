@@ -29,10 +29,9 @@ export const getCreateEvaluationMock = {
 };
 
 export const getCreateEvaluationWithVariablesMock = (input: {
-  datasetId: number;
-  experimentName: string;
+  goldenQaId: string;
+  evaluationName: string;
   configId: string;
-  configVersion: string;
 }) => ({
   request: { query: CREATE_EVALUATION, variables: { input } },
   result: evaluationSuccessResult,
@@ -142,7 +141,7 @@ export const createGoldenQaSuccessMock = {
     data: {
       createGoldenQa: {
         __typename: 'CreateGoldenQaPayload',
-        goldenQa: { __typename: 'GoldenQa', datasetId: '123', name: 'golden_qa', duplication_factor: 1 },
+        goldenQa: { __typename: 'GoldenQa', id: '456', datasetId: '123', name: 'golden_qa', duplication_factor: 1 },
         errors: null,
       },
     },
@@ -169,14 +168,14 @@ export const createGoldenQaNetworkErrorMock = {
   error: new Error('Network error'),
 };
 
-export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor: number, datasetId = '456') => ({
+export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor: number, id = '456', datasetId = '999') => ({
   request: { query: CREATE_GOLDEN_QA },
   variableMatcher: () => true,
   result: {
     data: {
       createGoldenQa: {
         __typename: 'CreateGoldenQaPayload',
-        goldenQa: { __typename: 'GoldenQa', datasetId, name, duplication_factor: duplicationFactor },
+        goldenQa: { __typename: 'GoldenQa', id, datasetId, name, duplication_factor: duplicationFactor },
         errors: null,
       },
     },
@@ -312,8 +311,13 @@ export const failedEvaluationItem = {
   status: 'FAILED',
   results: null,
   failureReason: 'Something went wrong',
-  datasetId: '10',
-  assistantConfigVersionId: '1',
+  goldenQa: { __typename: 'AiEvalGoldenQa', id: '10', name: 'test_dataset', duplicationFactor: 2 },
+  assistantConfigVersion: {
+    __typename: 'AiEvalConfigVersion',
+    id: '1',
+    versionNumber: 1,
+    assistant: { __typename: 'AiEvalAssistant', id: '45', name: 'Test Assistant' },
+  },
   insertedAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:01:00Z',
 };
@@ -326,8 +330,13 @@ export const completedEvaluationItem = {
     summary_scores: [{ name: 'Cosine Similarity', avg: 0.85 }],
   }),
   failureReason: null,
-  datasetId: '11',
-  assistantConfigVersionId: '1',
+  goldenQa: { __typename: 'AiEvalGoldenQa', id: '11', name: 'healthcare_dataset', duplicationFactor: 3 },
+  assistantConfigVersion: {
+    __typename: 'AiEvalConfigVersion',
+    id: '1',
+    versionNumber: 2,
+    assistant: { __typename: 'AiEvalAssistant', id: '45', name: 'Health Assistant' },
+  },
   insertedAt: '2026-01-02T00:00:00Z',
   updatedAt: '2026-01-02T01:00:00Z',
 };
@@ -338,8 +347,13 @@ export const runningEvaluationItem = {
   status: 'RUNNING',
   results: null,
   failureReason: null,
-  datasetId: '12',
-  assistantConfigVersionId: '1',
+  goldenQa: { __typename: 'AiEvalGoldenQa', id: '12', name: 'running_dataset', duplicationFactor: 1 },
+  assistantConfigVersion: {
+    __typename: 'AiEvalConfigVersion',
+    id: '1',
+    versionNumber: 1,
+    assistant: { __typename: 'AiEvalAssistant', id: '45', name: 'Test Assistant' },
+  },
   insertedAt: '2026-01-03T00:00:00Z',
   updatedAt: '2026-01-03T00:00:00Z',
 };
@@ -355,8 +369,13 @@ export const completedEvaluationWithBothMetrics = {
     ],
   }),
   failureReason: null,
-  datasetId: '13',
-  assistantConfigVersionId: '1',
+  goldenQa: { __typename: 'AiEvalGoldenQa', id: '13', name: 'metrics_dataset', duplicationFactor: 2 },
+  assistantConfigVersion: {
+    __typename: 'AiEvalConfigVersion',
+    id: '1',
+    versionNumber: 3,
+    assistant: { __typename: 'AiEvalAssistant', id: '46', name: 'Multi Metric Assistant' },
+  },
   insertedAt: '2026-01-04T00:00:00Z',
   updatedAt: '2026-01-04T02:00:00Z',
 };

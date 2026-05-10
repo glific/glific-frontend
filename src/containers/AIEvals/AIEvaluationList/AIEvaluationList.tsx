@@ -1,11 +1,13 @@
 import { useLazyQuery } from '@apollo/client';
-import { Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import AssistantsIcon from 'assets/images/Assistants.svg?react';
+import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
+import { Tooltip } from '@mui/material';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
-import { GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
@@ -17,24 +19,21 @@ const columnStyles = [
   styles.Name,
   styles.StatusColumn,
   styles.Metric,
-  styles.Metric,
   styles.CompletedAt,
   styles.Actions,
 ];
 
 const parseResults = (results: any) => {
-  if (!results) return { cosineSimilarity: null, llmAsJudge: null };
+  if (!results) return { cosineSimilarity: null };
   try {
     const parsed = typeof results === 'string' ? JSON.parse(results) : results;
     const scores: any[] = parsed.summary_scores ?? [];
     const findAvg = (name: string) => scores.find((s: any) => s.name === name)?.avg ?? null;
     return {
       cosineSimilarity: findAvg('Cosine Similarity') ?? parsed.cosine_similarity ?? parsed.cosineSimilarity ?? null,
-      llmAsJudge:
-        findAvg('LLM-as-judge') ?? findAvg('LLM As Judge') ?? parsed.llm_as_judge ?? parsed.llmAsJudge ?? null,
     };
   } catch {
-    return { cosineSimilarity: null, llmAsJudge: null };
+    return { cosineSimilarity: null };
   }
 };
 
@@ -105,20 +104,81 @@ const triggerCsvDownload = (csv: string, filename: string) => {
   URL.revokeObjectURL(url);
 };
 
-const getName = (name: string) => <div className={styles.NameText}>{name}</div>;
+interface NameCellProps {
+  name: string;
+  goldenQa?: { id?: string | null; name?: string | null; duplicationFactor?: number | null } | null;
+  assistantConfigVersion?: {
+    id?: string | null;
+    versionNumber?: number | null;
+    assistant?: { id?: string | null; name?: string | null } | null;
+  } | null;
+}
+
+const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
+  const assistantName = assistantConfigVersion?.assistant?.name;
+  const versionNumber = assistantConfigVersion?.versionNumber;
+  const assistantId = assistantConfigVersion?.assistant?.id;
+  const goldenQaName = goldenQa?.name;
+  const goldenQaDuplicationFactor = goldenQa?.duplicationFactor;
+
+  const assistantLabel =
+    (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
+
+  const assistantLink =
+    assistantId && versionNumber != null
+      ? `/assistants/${assistantId}/version/${versionNumber}`
+      : null;
+
+  return (
+    <div>
+      <div className={styles.NameText}>{name}</div>
+      {(assistantName || versionNumber != null) && (
+        <div className={styles.NameSubInfo}>
+          <AssistantsIcon className={styles.SubInfoIcon} />
+          {assistantLink ? (
+            <a href={assistantLink} className={styles.SubInfoLink} data-testid="assistantVersionLink">
+              {assistantLabel}
+            </a>
+          ) : (
+            <span className={styles.SubInfoLink}>{assistantLabel}</span>
+          )}
+        </div>
+      )}
+      {(goldenQaName || goldenQaDuplicationFactor != null) && (
+        <div className={styles.NameSubInfo}>
+          <DocumentIcon className={styles.SubInfoIcon} />
+          <span className={styles.SubInfoText}>
+            {goldenQaName ?? '—'}
+            {goldenQaDuplicationFactor != null ? ` | ${goldenQaDuplicationFactor}` : ''}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const getStatus = (status: string) => {
+  const normalizedStatus = status?.toUpperCase();
   const dotMap: Record<string, string> = {
     COMPLETED: styles.DotCompleted,
     RUNNING: styles.DotRunning,
+    PROCESSING: styles.DotRunning,
     FAILED: styles.DotFailed,
   };
-  const dotCls = dotMap[status?.toUpperCase()] ?? styles.DotPending;
-  const label = status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending';
+  const labelMap: Record<string, string> = {
+    PROCESSING: 'In Progress',
+  };
+  const dotCls = dotMap[normalizedStatus] ?? styles.DotPending;
+  const label = labelMap[normalizedStatus] ?? (status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending');
+  const showHelperText = normalizedStatus === 'PROCESSING';
+
   return (
     <span className={styles.StatusCell}>
       <span className={dotCls} />
-      {label}
+      <span className={styles.StatusContent}>
+        <span className={styles.StatusLabel}>{showHelperText ? `${label}.` : label}</span>
+        {showHelperText && <span className={styles.StatusHelperText}>May take about 15 mins.</span>}
+      </span>
     </span>
   );
 };
@@ -134,14 +194,14 @@ const getCompletedAt = (status: string, updatedAt: string) => {
 };
 
 const columnNames = [
-  { label: 'Evaluation Name', name: 'name' },
+  { label: 'Evaluation Name' },
   { label: 'Status' },
   {
     label: (
       <div className={styles.HeaderWithIcon}>
         Cosine Similarity
         <Tooltip
-          title="Cosine similarity measures how close the assistant's answer is to the expected answer in meaning. A higher score (more than 0.7) means the answers convey similar intent and information."
+          title="Cosine similarity measures how close the assistant’s answer is to the expected answer in meaning. A higher score (more than 0.7) means the answers convey similar intent and information. A lower score (less than 0.3) means the response has drifted in meaning, even if some words overlap."
           arrow
         >
           <InfoOutlinedIcon className={styles.ColumnInfoIcon} />
@@ -149,30 +209,23 @@ const columnNames = [
       </div>
     ),
   },
-  {
-    label: (
-      <div className={styles.HeaderWithIcon}>
-        LLM-as-judge
-        <Tooltip
-          title="LLM-as-judge uses a language model to evaluate the quality of the assistant's response compared to the expected answer."
-          arrow
-        >
-          <InfoOutlinedIcon className={styles.ColumnInfoIcon} />
-        </Tooltip>
-      </div>
-    ),
-  },
-  { label: 'Completed at' },
+  { label: 'Completed at', name: 'updated_at', sort: true, order: 'desc' },
   { name: 'actions', label: 'Actions' },
 ];
 
-const getColumns = ({ name, status, results, updatedAt }: Record<string, any>) => {
-  const { cosineSimilarity, llmAsJudge } = parseResults(results);
+const getColumns = ({
+  name,
+  status,
+  results,
+  updatedAt,
+  goldenQa,
+  assistantConfigVersion,
+}: Record<string, any>) => {
+  const { cosineSimilarity } = parseResults(results);
   return {
-    name: getName(name),
+    name: getName({ name, goldenQa, assistantConfigVersion }),
     status: getStatus(status),
     cosineSimilarity: getMetric(cosineSimilarity),
-    llmAsJudge: getMetric(llmAsJudge),
     completedAt: getCompletedAt(status, updatedAt),
   };
 };
@@ -180,6 +233,7 @@ const getColumns = ({ name, status, results, updatedAt }: Record<string, any>) =
 const columnAttributes = { columnNames, columns: getColumns, columnStyles };
 
 const queries = {
+  countQuery: COUNT_AI_EVALUATIONS,
   filterItemsQuery: LIST_AI_EVALUATIONS,
   deleteItemQuery: null,
 };
@@ -243,7 +297,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
         label: 'Download Results',
         icon: (
           <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
-            Download CSV
+            Download Results
           </span>
         ),
         parameter: 'id',
