@@ -627,6 +627,7 @@
   "Please upload a valid CSV file": "Please upload a valid CSV file",
   "Templates were processed with errors. Please check the csv file for details.": "Templates were processed with errors. Please check the csv file for details.",
   "Failed to validate flow. Please try again.": "Failed to validate flow. Please try again.",
+  "Sorry, unable to send the attachment.": "Sorry, unable to send the attachment.",
   "No Golden QA datasets available": "No Golden QA datasets available",
   "Search or select a Golden QA dataset": "Search or select a Golden QA dataset",
   "Fetching assistants...": "Fetching assistants...",

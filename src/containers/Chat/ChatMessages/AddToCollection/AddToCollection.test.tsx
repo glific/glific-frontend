@@ -15,7 +15,7 @@ const mocks = [
   getCollectionContactsQuery,
   getContactsSearchQuery,
   getContactsQuery,
-  updateCollectionContactsQuery,
+  updateCollectionContactsQuery(),
   getExcludedContactsQuery({
     name: '',
     excludeGroups: '1',
@@ -32,11 +32,16 @@ const defaultProps = {
 
 afterEach(cleanup);
 
-const addContacts = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <AddToCollection {...defaultProps} />
+const renderAddToCollection = (
+  testMocks: any[] = mocks,
+  props: Partial<Parameters<typeof AddToCollection>[0]> = {}
+) => (
+  <MockedProvider mocks={testMocks} addTypename={false}>
+    <AddToCollection {...defaultProps} {...props} />
   </MockedProvider>
 );
+
+const addContacts = renderAddToCollection();
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -80,7 +85,7 @@ test('save without changing anything', async () => {
   fireEvent.click(getByText('Save'));
 });
 
-test('should add contact to collection', async () => {
+test('should add contact to collection (singular notification)', async () => {
   const { getByTestId, getByText } = render(addContacts);
 
   await waitFor(() => {
@@ -95,7 +100,57 @@ test('should add contact to collection', async () => {
   fireEvent.click(getByText('Save'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(setNotification).toHaveBeenCalledWith('1 contact added');
+  });
+  expect(setDialogMock).toHaveBeenCalledWith(false);
+});
+
+test('does not show notification when mutation succeeds with no additions', async () => {
+  vi.mocked(setNotification).mockClear();
+  const emptyAddMocks = [
+    getCollectionContactsQuery,
+    getCollectionContactsQuery,
+    getContactsSearchQuery,
+    getContactsQuery,
+    updateCollectionContactsQuery({ addContactIds: ['3'], groupId: '1', deleteContactIds: [] }, { groupContacts: [] }),
+    getExcludedContactsQuery({ name: '', excludeGroups: '1' }),
+  ];
+
+  const { getByTestId, getByText } = render(renderAddToCollection(emptyAddMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(getByText('NGO Manager'), { key: 'Enter' });
+  fireEvent.click(getByText('Save'));
+
+  await waitFor(() => {
+    expect(setDialogMock).toHaveBeenCalledWith(false);
+  });
+  expect(setNotification).not.toHaveBeenCalled();
+});
+
+test('invokes afterAdd callback when provided', async () => {
+  vi.mocked(setNotification).mockClear();
+  const afterAddMock = vi.fn();
+  const { getByTestId, getByText } = render(renderAddToCollection(mocks, { afterAdd: afterAddMock }));
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(getByText('NGO Manager'), { key: 'Enter' });
+  fireEvent.click(getByText('Save'));
+
+  await waitFor(() => {
+    expect(afterAddMock).toHaveBeenCalled();
   });
 });
 
@@ -124,8 +179,28 @@ test('it should have "add group to collection" dialog box ', async () => {
   expect(getByText('Add groups to the collection')).toBeInTheDocument();
 });
 
-test('should add whatsapp group to collection', async () => {
-  const { getByTestId, getByText } = render(addGroups);
+test('uses plural form when multiple whatsapp groups are added', async () => {
+  vi.mocked(setNotification).mockClear();
+  const pluralGroupMocks = [
+    getCollectionContactsQuery,
+    getGroupsQuery,
+    updateCollectionWaGroupQuery(
+      { input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] } },
+      {
+        groupContacts: [
+          { id: '5', __typename: 'WaGroupsCollection' },
+          { id: '6', __typename: 'WaGroupsCollection' },
+        ],
+      }
+    ),
+    getGroupsSearchQuery(setVariables({ excludeGroups: '1', term: '' }, 50)),
+  ];
+
+  const { getByTestId, getByText } = render(
+    <MockedProvider mocks={pluralGroupMocks} addTypename={false}>
+      <AddToCollection {...defaultProps} groups={true} />
+    </MockedProvider>
+  );
 
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
@@ -134,13 +209,11 @@ test('should add whatsapp group to collection', async () => {
   const autocomplete = getByTestId('autocomplete-element');
   autocomplete.focus();
   fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-
   fireEvent.click(getByText('Group 1'), { key: 'Enter' });
-
   fireEvent.click(getByText('Save'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(setNotification).toHaveBeenCalledWith('2 groups were added');
   });
 });
 

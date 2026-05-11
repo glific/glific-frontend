@@ -85,6 +85,17 @@ export const addFlowToContactQuery = {
   },
 };
 
+export const addFlowToContactQueryError = {
+  request: {
+    query: ADD_FLOW_TO_CONTACT,
+    variables: {
+      contactId: '1',
+      flowId: '1',
+    },
+  },
+  error: new Error('Network error: Failed to start flow'),
+};
+
 export const addFlowToCollectionQuery = {
   request: {
     query: ADD_FLOW_TO_COLLECTION,
@@ -98,6 +109,14 @@ export const addFlowToCollectionQuery = {
       },
     },
   },
+};
+
+export const addFlowToCollectionQueryError = {
+  request: {
+    query: ADD_FLOW_TO_COLLECTION,
+    variables: { flowId: '1', groupId: '1' },
+  },
+  error: new Error('Network error: Failed to start collection flow'),
 };
 
 export const addFlowToWAGroupQuery = {

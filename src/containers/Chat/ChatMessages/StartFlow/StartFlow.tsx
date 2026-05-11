@@ -34,26 +34,17 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
-  const [addFlow] = useMutation(addFlowMutation, {
-    onCompleted: () => {
-      setNotification(t('Flow started successfully.'));
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
+  const [addFlow] = useMutation(addFlowMutation);
 
-  const [addFlowToCollection] = useMutation(addFlowForCollectionMutation, {
-    onCompleted: () => {
-      setNotification(t('Your flow will start in a couple of minutes.'));
-    },
-  });
+  const [addFlowToCollection] = useMutation(addFlowForCollectionMutation);
 
-  const handleFlowSubmit = (flowId: any) => {
+  const handleFlowSubmit = async (flowId: any) => {
     if (!flowId) return;
     const flowVariables: any = {
       flowId,
     };
+
+    setShowFlowDialog(false);
 
     if (entityId) {
       if (groups) {
@@ -62,19 +53,23 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
         flowVariables.contactId = entityId;
       }
 
-      addFlow({
-        variables: flowVariables,
-      });
+      try {
+        await addFlow({ variables: flowVariables });
+        setNotification(t('Flow started successfully.'));
+      } catch (error: any) {
+        setErrorMessage(error);
+      }
     }
 
     if (collectionId) {
       flowVariables.groupId = collectionId;
-      addFlowToCollection({
-        variables: flowVariables,
-      });
+      try {
+        await addFlowToCollection({ variables: flowVariables });
+        setNotification(t('Your flow will start in a couple of minutes.'));
+      } catch (error: any) {
+        setErrorMessage(error);
+      }
     }
-
-    setShowFlowDialog(false);
   };
 
   const closeFlowDialogBox = () => {

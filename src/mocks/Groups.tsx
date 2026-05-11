@@ -719,7 +719,10 @@ export const getGroupsQuery = {
   },
 };
 
-export const updateCollectionWaGroupQuery = (variables: any) => ({
+export const updateCollectionWaGroupQuery = (
+  variables: any,
+  result: { groupContacts?: any[]; numberDeleted?: number } = {}
+) => ({
   request: {
     query: UPDATE_COLLECTION_WA_GROUP,
     variables,
@@ -728,13 +731,13 @@ export const updateCollectionWaGroupQuery = (variables: any) => ({
     data: {
       updateCollectionWaGroup: {
         __typename: 'CollectionWaGroupResult',
-        groupContacts: [
+        groupContacts: result.groupContacts ?? [
           {
             __typename: 'WaGroupsCollection',
             id: '5',
           },
         ],
-        numberDeleted: 0,
+        numberDeleted: result.numberDeleted ?? 0,
       },
     },
   },
