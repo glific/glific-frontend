@@ -171,6 +171,46 @@ describe('AIEvaluationCreate', () => {
     expect(screen.getByTestId('templateCsvButton')).toBeInTheDocument();
   });
 
+  test('clicking the CSV template button downloads golden_qa_template.csv with correct content', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const mockObjectUrl = 'blob:mock-url';
+    const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue(mockObjectUrl);
+    const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    const mockClick = vi.fn();
+    let capturedAnchor: HTMLAnchorElement | null = null;
+    const originalCreateElement = document.createElement.bind(document);
+    const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+      if (tagName === 'a') {
+        const anchor = originalCreateElement('a') as HTMLAnchorElement;
+        anchor.click = mockClick;
+        capturedAnchor = anchor;
+        return anchor;
+      }
+      return originalCreateElement(tagName as keyof HTMLElementTagNameMap);
+    });
+
+    fireEvent.click(screen.getByTestId('templateCsvButton'));
+
+    expect(createObjectURLSpy).toHaveBeenCalledOnce();
+    const blob = createObjectURLSpy.mock.calls[0][0] as Blob;
+    expect(blob.type).toBe('text/csv;charset=utf-8;');
+
+    expect(capturedAnchor).not.toBeNull();
+    expect(capturedAnchor!.download).toBe('golden_qa_template.csv');
+    expect(mockClick).toHaveBeenCalledOnce();
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith(mockObjectUrl);
+
+    createObjectURLSpy.mockRestore();
+    revokeObjectURLSpy.mockRestore();
+    createElementSpy.mockRestore();
+  });
+
   test('renders Upload Golden QA button', async () => {
     render(wrapper());
 
@@ -390,7 +430,14 @@ describe('AIEvaluationCreate', () => {
   });
 
   test('shows success notification and navigates to chat on successful submission', async () => {
-    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateMock, getCreateEvaluationSuccessMock]));
+    render(
+      wrapper([
+        getListAiEvaluationsMock,
+        getAssistantConfigVersionsMock,
+        getListGoldenQaForCreateMock,
+        getCreateEvaluationSuccessMock,
+      ])
+    );
 
     await fillAndSubmitForm();
 
@@ -488,12 +535,7 @@ describe('AIEvaluationCreate', () => {
     };
 
     render(
-      wrapper([
-        getListAiEvaluationsMock,
-        getAssistantConfigVersionsMock,
-        getListGoldenQaForCreateMock,
-        matchingMock,
-      ])
+      wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateMock, matchingMock])
     );
 
     await fillAndSubmitForm();
@@ -518,12 +560,7 @@ describe('AIEvaluationCreate', () => {
     };
 
     render(
-      wrapper([
-        getListAiEvaluationsMock,
-        getAssistantConfigVersionsMock,
-        getListGoldenQaForCreateMock,
-        matchingMock,
-      ])
+      wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateMock, matchingMock])
     );
 
     await fillAndSubmitForm();
