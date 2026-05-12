@@ -15,6 +15,17 @@ import * as Yup from 'yup';
 import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
 
+const downloadTemplateCsv = () => {
+  const csvContent = 'Question,Answer\n"What is X?","Answer to X"\n"What is Y?","Answer to Y"';
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'golden_qa_template.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
 const getGoldenQAHelperContent = () => (
   <div className={styles.GoldenQAHelper}>
     <p className={styles.GoldenQAHelperDescription}>
@@ -26,9 +37,9 @@ const getGoldenQAHelperContent = () => (
       <div className={styles.CSVFormatExample}>{t('Expected CSV Format:')}</div>
       <div className={styles.CSVFormatExample}>{t('Question, Answer')}</div>
       <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
-      <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
+      <button type="button" data-testid="templateCsvButton" className={styles.TemplateLink} onClick={downloadTemplateCsv}>
         {t('Click Here For The Template Csv')}
-      </a>
+      </button>
     </div>
   </div>
 );

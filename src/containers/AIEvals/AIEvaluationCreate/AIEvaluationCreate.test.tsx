@@ -168,7 +168,7 @@ describe('AIEvaluationCreate', () => {
     });
 
     expect(screen.getByRole('button', { name: 'Upload Golden QA' })).toBeInTheDocument();
-    expect(screen.getByRole('link')).toBeInTheDocument();
+    expect(screen.getByTestId('templateCsvButton')).toBeInTheDocument();
   });
 
   test('renders Upload Golden QA button', async () => {
