@@ -60,6 +60,14 @@ export const GET_EVALUATION_SCORES = gql`
   }
 `;
 
+export const GET_ORG_EVAL_ACCESS_REQUEST = gql`
+  query getOrgEvalAccessRequest {
+    orgEvalAccessRequest {
+      status
+    }
+  }
+`;
+
 export const GET_GOLDEN_QA = gql`
   query GetGoldenQa($id: ID!, $includeSignedUrl: Boolean) {
     goldenQa(id: $id, includeSignedUrl: $includeSignedUrl) {

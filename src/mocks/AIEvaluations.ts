@@ -1,8 +1,9 @@
-import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
+import { CREATE_EVALUATION, CREATE_GOLDEN_QA, REQUEST_AI_EVALUATION_ACCESS } from 'graphql/mutations/AIEvaluations';
 import {
   COUNT_GOLDEN_QA,
   GET_EVALUATION_SCORES,
   GET_GOLDEN_QA,
+  GET_ORG_EVAL_ACCESS_REQUEST,
   LIST_AI_EVALUATIONS,
   LIST_GOLDEN_QA,
 } from 'graphql/queries/AIEvaluations';
@@ -477,7 +478,54 @@ export const getEvaluationScoresNetworkErrorMock = (id = '2') => ({
   error: new Error('Network error'),
 });
 
-// scores is a flat array (no score.traces wrapper) → hits extractRows fallback branch
+// ── AIEvalsLanding mocks ──────────────────────────────────────────────────────
+
+export const getOrgEvalAccessRequestNoneMock = {
+  request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
+  result: { data: { orgEvalAccessRequest: null } },
+};
+
+export const getOrgEvalAccessRequestPendingMock = {
+  request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
+  result: { data: { orgEvalAccessRequest: { status: 'PENDING' } } },
+};
+
+export const requestAiEvaluationAccessSuccessMock = {
+  request: { query: REQUEST_AI_EVALUATION_ACCESS },
+  result: {
+    data: {
+      requestAiEvaluationAccess: {
+        status: 'PENDING',
+        errors: [],
+      },
+    },
+  },
+};
+
+export const requestAiEvaluationAccessApiErrorMock = {
+  request: { query: REQUEST_AI_EVALUATION_ACCESS },
+  result: {
+    data: {
+      requestAiEvaluationAccess: {
+        status: null,
+        errors: [{ message: 'Access request already exists' }],
+      },
+    },
+  },
+};
+
+export const requestAiEvaluationAccessNetworkErrorMock = {
+  request: { query: REQUEST_AI_EVALUATION_ACCESS },
+  error: new Error('Network error'),
+};
+
+export const getOrgEvalAccessRequestLoadingMock = {
+  request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
+  result: { data: { orgEvalAccessRequest: null } },
+  delay: Infinity,
+};
+
+// ── scores flat array (no score.traces wrapper) → hits extractRows fallback branch
 export const getEvaluationScoresFlatArrayMock = (id = '2') => ({
   request: { query: GET_EVALUATION_SCORES, variables: { id } },
   result: {

@@ -19,7 +19,6 @@ export interface Menu {
   children?: Menu[];
   new?: boolean;
 }
-
 // define all the menus in the system
 const menus = (): Menu[] => [
   {
@@ -189,11 +188,28 @@ const menus = (): Menu[] => [
     roles: managerLevel,
   },
   {
-    title: 'AI Assistants',
+    title: 'AI toolkit',
     path: '/assistants',
     icon: 'assistant',
     type: 'sideDrawer',
+    new: true,
     roles: allRoles,
+    children: [
+      {
+        title: 'AI Assistant',
+        path: '/assistants',
+        icon: 'assistant',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+      {
+        title: 'AI Evals',
+        path: getOrganizationServices('aiEvaluationsEnabled') ? '/ai-evaluations' : '/ai-evaluations/intro',
+        icon: 'aiEvals',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+    ],
   },
   {
     title: 'Manage',
