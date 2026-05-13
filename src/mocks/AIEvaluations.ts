@@ -478,7 +478,7 @@ export const getEvaluationScoresNetworkErrorMock = (id = '2') => ({
   error: new Error('Network error'),
 });
 
-// ── AIEvalsLanding mocks ──────────────────────────────────────────────────────
+// ── AIEvalsRequestAccess mocks ────────────────────────────────────────────────
 
 export const getOrgEvalAccessRequestNoneMock = {
   request: { query: GET_ORG_EVAL_ACCESS_REQUEST },

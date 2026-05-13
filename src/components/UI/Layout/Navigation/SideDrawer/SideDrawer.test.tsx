@@ -57,12 +57,12 @@ describe('side drawer testing', () => {
 
     it('hides the menu item when aiEvaluationsEnabled is false', () => {
       setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false }));
-      expect(getAIEvalsMenu()?.show).toBeTruthy();
+      expect(getAIEvalsMenu()).toBeUndefined();
     });
 
     it('hides the menu item when aiEvaluationsEnabled is not set', () => {
       setOrganizationServices(JSON.stringify({}));
-      expect(getAIEvalsMenu()?.show).toBeTruthy();
+      expect(getAIEvalsMenu()).toBeUndefined();
     });
   });
 

@@ -7,7 +7,7 @@ import { REQUEST_AI_EVALUATION_ACCESS } from 'graphql/mutations/AIEvaluations';
 import { t } from 'i18next';
 import React, { useState } from 'react';
 import { Navigate } from 'react-router';
-import styles from './AIEvalsLanding.module.css';
+import styles from './AIEvalsRequestAcess.module.css';
 
 type BenefitText =
   | 'Improve answers on critical topics like health, safety, rights, and legal queries.'
