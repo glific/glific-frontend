@@ -1,24 +1,24 @@
-import { useState, useEffect, forwardRef } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { useLazyQuery } from '@apollo/client';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Divider,
+  List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  List,
-  Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@mui/material';
-import { useLazyQuery } from '@apollo/client';
 import LinkIcon from 'assets/images/icons/UrlLink.svg?react';
-import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import ListIcon from 'components/UI/ListIcon/ListIcon';
-import { getSideDrawerMenus } from 'context/role';
-import styles from './SideMenus.module.css';
-import { useTranslation } from 'react-i18next';
 import { Menu } from 'config/menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { getSideDrawerMenus } from 'context/role';
+import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import { forwardRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NavLink, useLocation } from 'react-router';
+import styles from './SideMenus.module.css';
 
 export interface SideMenusProps {
   opened: boolean;
@@ -209,6 +209,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               />
             )}
           </div>
+          {menu.new && <span className={styles.New}>{'New'}</span>}
           {menu.children && (
             <KeyboardArrowDownIcon
               fontSize="small"
@@ -217,8 +218,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               }}
             />
           )}
-
-          {menu.new && <span className={styles.New}>{'New'}</span>}
         </ListItemButton>
       );
 

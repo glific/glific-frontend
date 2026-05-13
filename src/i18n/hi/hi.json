@@ -531,5 +531,7 @@
   "Submitting...": "सबमिट हो रहा है...",
   "Your request is being processed. We will notify you once done.": "आपका अनुरोध प्रक्रिया में है। हम आपको पूरा होने पर सूचित करेंगे।",
   "Request Pending": "अनुरोध लंबित है",
-  "Your request has been submitted. You will be notified when it gets approved.": "आपका अनुरोध सबमिट हो गया है। अनुमोदित होने पर आपको सूचित किया जाएगा।"
+  "Your request has been submitted. You will be notified when it gets approved.": "आपका अनुरोध सबमिट हो गया है। अनुमोदित होने पर आपको सूचित किया जाएगा।",
+  "Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.": "आपके AI मूल्यांकन एक्सेस की जांच के दौरान कुछ गलत हो गया। कृपया पृष्ठ रीफ़्रेश करें या पुनः प्रयास करें।",
+  "Refresh": "रीफ़्रेश करें"
 }

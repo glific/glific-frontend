@@ -671,5 +671,7 @@
   "Submitting...": "Submitting...",
   "Your request is being processed. We will notify you once done.": "Your request is being processed. We will notify you once done.",
   "Request Pending": "Request Pending",
-  "Your request has been submitted. You will be notified when it gets approved.": "Your request has been submitted. You will be notified when it gets approved."
+  "Your request has been submitted. You will be notified when it gets approved.": "Your request has been submitted. You will be notified when it gets approved.",
+  "Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.": "Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.",
+  "Refresh": "Refresh"
 }

@@ -492,7 +492,7 @@ export const getOrgEvalAccessRequestPendingMock = {
 
 export const getOrgEvalAccessRequestApprovedMock = {
   request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
-  result: { data: { orgEvalAccessRequest: { status: 'APPROVED' } } },
+  result: { data: { orgEvalAccessRequest: { status: 'approved' } } },
 };
 
 export const requestAiEvaluationAccessSuccessMock = {
@@ -528,6 +528,11 @@ export const getOrgEvalAccessRequestLoadingMock = {
   request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
   result: { data: { orgEvalAccessRequest: null } },
   delay: Infinity,
+};
+
+export const getOrgEvalAccessRequestErrorMock = {
+  request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
+  error: new Error('Failed to load org eval access'),
 };
 
 // ── scores flat array (no score.traces wrapper) → hits extractRows fallback branch

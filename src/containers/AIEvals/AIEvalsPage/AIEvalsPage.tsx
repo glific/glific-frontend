@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 
@@ -6,7 +5,8 @@ import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { AIEvaluationList } from 'containers/AIEvals/AIEvaluationList/AIEvaluationList';
 import { GoldenQAList } from 'containers/AIEvals/GoldenQAList/GoldenQAList';
-import { GET_ORG_EVAL_ACCESS_REQUEST } from 'graphql/queries/AIEvaluations';
+import { OrgEvalAccessGateError, OrgEvalAccessGateLoading } from 'containers/AIEvals/OrgEvalAccessGateUi';
+import { useOrgEvalAccessRequest } from 'containers/AIEvals/useOrgEvalAccessRequest';
 import styles from './AIEvalsPage.module.css';
 
 type ActiveTab = 'ai-evaluations' | 'golden-qa';
@@ -18,12 +18,28 @@ const TABS: { id: ActiveTab; label: string }[] = [
 
 export default function AIEvalsPage() {
   const navigate = useNavigate();
-  const { data: accessData, loading: accessLoading } = useQuery(GET_ORG_EVAL_ACCESS_REQUEST);
+  const {
+    shouldShowFullScreenLoading,
+    shouldShowFullScreenError,
+    refetchAccess,
+    accessStatus,
+  } = useOrgEvalAccessRequest();
   const [activeTab, setActiveTab] = useState<ActiveTab>('ai-evaluations');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMode, setSearchMode] = useState(false);
 
-  if (!accessLoading && accessData?.orgEvalAccessRequest?.status !== 'APPROVED') {
+  if (shouldShowFullScreenLoading) {
+    return <OrgEvalAccessGateLoading />;
+  }
+
+  if (shouldShowFullScreenError) {
+    return <OrgEvalAccessGateError onRetry={() => void refetchAccess()} />;
+  }
+
+  if (accessStatus !== 'approved') {
+    if (accessStatus === null) {
+      return <OrgEvalAccessGateLoading />;
+    }
     return <Navigate to="/ai-evaluations/intro" replace />;
   }
 

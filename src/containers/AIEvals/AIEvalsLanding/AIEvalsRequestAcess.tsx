@@ -1,9 +1,12 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { OrgEvalAccessGateError, OrgEvalAccessGateLoading } from 'containers/AIEvals/OrgEvalAccessGateUi';
+import { writeOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
+import { useOrgEvalAccessRequest } from 'containers/AIEvals/useOrgEvalAccessRequest';
+import { REQUEST_AI_EVALUATION_ACCESS } from 'graphql/mutations/AIEvaluations';
 import { t } from 'i18next';
 import React, { useState } from 'react';
-import { REQUEST_AI_EVALUATION_ACCESS } from 'graphql/mutations/AIEvaluations';
-import { GET_ORG_EVAL_ACCESS_REQUEST } from 'graphql/queries/AIEvaluations';
+import { Navigate } from 'react-router';
 import styles from './AIEvalsLanding.module.css';
 
 type BenefitText =
@@ -28,21 +31,27 @@ const WHY_USE_EVALS: BenefitItem[] = [
   },
   {
     text: 'Ensure user safety by catching harmful or inappropriate responses.',
+    boldPrefix: 'Ensure user safety',
   },
   {
     text: 'Build trust with beneficiaries, partners, and donors through tested, reliable performance.',
+    boldPrefix: 'Build trust',
   },
   {
     text: 'Reduce bias and ensure inclusive, culturally sensitive communication.',
+    boldPrefix: 'Reduce bias',
   },
   {
     text: 'Monitor quality at scale without needing large teams to manually check conversations.',
+    boldPrefix: 'Monitor quality at scale',
   },
   {
     text: 'Continuously improve the chatbot by identifying issues early and fixing them quickly.',
+    boldPrefix: 'Continuously improve',
   },
   {
     text: 'Lower legal and compliance risks by verifying that the bot follows policies and guidelines.',
+    boldPrefix: 'Lower legal and compliance risks',
   },
 ];
 
@@ -60,12 +69,29 @@ const renderBenefitText = (item: BenefitItem): React.ReactNode => {
   );
 };
 
-export default function AIEvalsLanding() {
-  const { data: accessData, loading: accessLoading } = useQuery(GET_ORG_EVAL_ACCESS_REQUEST);
-  const alreadyRequested = !!accessData?.orgEvalAccessRequest?.status;
-
+export default function AIEvalsRequestAcess() {
+  const {
+    shouldShowFullScreenLoading,
+    shouldShowFullScreenError,
+    refetchAccess,
+    accessStatus,
+  } = useOrgEvalAccessRequest();
   const [requested, setRequested] = useState(false);
   const [requestAccess, { loading }] = useMutation(REQUEST_AI_EVALUATION_ACCESS);
+
+  const alreadyRequested = accessStatus === 'pending';
+
+  if (shouldShowFullScreenLoading) {
+    return <OrgEvalAccessGateLoading />;
+  }
+
+  if (shouldShowFullScreenError) {
+    return <OrgEvalAccessGateError onRetry={() => void refetchAccess()} />;
+  }
+
+  if (accessStatus === 'approved') {
+    return <Navigate to="/ai-evaluations" replace />;
+  }
 
   const handleRequestAccess = async () => {
     try {
@@ -74,6 +100,7 @@ export default function AIEvalsLanding() {
       if (errors?.length) {
         setErrorMessage(errors[0]);
       } else {
+        writeOrgEvalAccessCache('pending');
         setRequested(true);
         setNotification(
           t('Your request has been submitted. You will be notified when it gets approved.')
@@ -159,7 +186,7 @@ export default function AIEvalsLanding() {
           type="button"
           className={styles.RequestButton}
           onClick={handleRequestAccess}
-          disabled={accessLoading || loading || requested || alreadyRequested}
+          disabled={loading || requested || alreadyRequested}
         >
           {loading
             ? t('Submitting...')

@@ -1,5 +1,5 @@
 import { organizationHasDynamicRole } from 'common/utils';
-import { GLIFIC_DOCS_URL, DISCORD_URL } from 'config';
+import { DISCORD_URL, GLIFIC_DOCS_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
 const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
@@ -187,31 +187,42 @@ const menus = (): Menu[] => [
     showBadge: true,
     roles: managerLevel,
   },
-  {
-    title: 'AI toolkit',
-    path: '/assistants',
-    icon: 'assistant',
-    type: 'sideDrawer',
-    new: true,
-    roles: allRoles,
-    children: [
-      {
-        title: 'AI Assistant',
-        path: '/assistants',
-        icon: 'assistant',
-        type: 'sideDrawer',
-        roles: allRoles,
-      },
-      {
-        title: 'AI Evals',
-        path: '/ai-evaluations',
-        icon: 'aiEvals',
-        type: 'sideDrawer',
-        roles: managerLevel,
-        show: !getOrganizationServices('aiEvaluationsEnabled'),
-      },
-    ],
-  },
+  ...(getOrganizationServices('aiEvaluationsEnabled')
+    ? [
+        {
+          title: 'AI toolkit',
+          path: '/assistants',
+          icon: 'assistant',
+          type: 'sideDrawer',
+          new: true,
+          roles: allRoles,
+          children: [
+            {
+              title: 'AI Assistant',
+              path: '/assistants',
+              icon: 'assistant',
+              type: 'sideDrawer',
+              roles: allRoles,
+            },
+            {
+              title: 'AI Evals',
+              path: '/ai-evaluations',
+              icon: 'aiEvals',
+              type: 'sideDrawer',
+              roles: managerLevel,
+            },
+          ],
+        },
+      ]
+    : [
+        {
+          title: 'AI Assistant',
+          path: '/assistants',
+          icon: 'assistant',
+          type: 'sideDrawer',
+          roles: allRoles,
+        },
+      ]),
   {
     title: 'Manage',
     path: '/collection',
