@@ -657,7 +657,7 @@
   "AI Evals": "AI Evals",
   "Apply for access and tell us what functionality would help you take the most.": "Apply for access and tell us what functionality would help you take the most.",
   "Request Access": "Request Access",
-  "Beta": "Beta",
+  "New Feature": "New Feature",
   "Improve answers on critical topics like health, safety, rights, and legal queries.": "Improve answers on critical topics like health, safety, rights, and legal queries.",
   "Ensure user safety by catching harmful or inappropriate responses.": "Ensure user safety by catching harmful or inappropriate responses.",
   "Build trust with beneficiaries, partners, and donors through tested, reliable performance.": "Build trust with beneficiaries, partners, and donors through tested, reliable performance.",
@@ -670,6 +670,6 @@
   "Your request has been submitted! We will get back to you soon.": "Your request has been submitted! We will get back to you soon.",
   "Submitting...": "Submitting...",
   "Your request is being processed. We will notify you once done.": "Your request is being processed. We will notify you once done.",
-  "Already Requested": "Already Requested",
+  "Request Pending": "Request Pending",
   "Your request has been submitted. You will be notified when it gets approved.": "Your request has been submitted. You will be notified when it gets approved."
 }

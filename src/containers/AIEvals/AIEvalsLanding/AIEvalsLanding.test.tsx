@@ -36,9 +36,9 @@ describe('AIEvalsLanding', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the Beta badge', () => {
+  it('renders the New Feature badge', () => {
     renderComponent();
-    expect(screen.getByText('Beta')).toBeInTheDocument();
+    expect(screen.getByText('New Feature')).toBeInTheDocument();
   });
 
   it('renders the page title', () => {
@@ -69,9 +69,13 @@ describe('AIEvalsLanding', () => {
     });
   });
 
-  it('renders the first benefit text', () => {
+  it('renders the first benefit text with "Improve answers" in bold', () => {
     renderComponent();
-    expect(screen.getByText(/Improve answers on critical topics like health, safety, rights/i)).toBeInTheDocument();
+    const bold = screen.getByText('Improve answers');
+    expect(bold.tagName).toBe('STRONG');
+    expect(bold.closest('span')).toHaveTextContent(
+      'Improve answers on critical topics like health, safety, rights, and legal queries.'
+    );
   });
 
   it('renders the last benefit text', () => {
@@ -121,10 +125,10 @@ describe('AIEvalsLanding', () => {
     });
   });
 
-  it('shows Already Requested and disables button when org already has a pending request', async () => {
+  it('shows Request Pending and disables button when org already has a pending request', async () => {
     renderComponent([getOrgEvalAccessRequestPendingMock]);
     await waitFor(() => {
-      const btn = screen.getByRole('button', { name: 'Already Requested' });
+      const btn = screen.getByRole('button', { name: 'Request Pending' });
       expect(btn).toBeInTheDocument();
       expect(btn).toBeDisabled();
     });
@@ -146,7 +150,7 @@ describe('AIEvalsLanding', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Request Access' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Already Requested' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Request Pending' })).toBeInTheDocument();
     });
   });
 
@@ -160,7 +164,7 @@ describe('AIEvalsLanding', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Request Access' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Already Requested' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Request Pending' })).toBeDisabled();
     });
   });
 
@@ -190,7 +194,7 @@ describe('AIEvalsLanding', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Request Access' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Already Requested' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Request Pending' })).toBeInTheDocument();
     });
 
     expect(setErrorMessage).not.toHaveBeenCalled();

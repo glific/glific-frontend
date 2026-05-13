@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { t } from 'i18next';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { REQUEST_AI_EVALUATION_ACCESS } from 'graphql/mutations/AIEvaluations';
 import { GET_ORG_EVAL_ACCESS_REQUEST } from 'graphql/queries/AIEvaluations';
 import styles from './AIEvalsLanding.module.css';
@@ -17,12 +17,14 @@ type BenefitText =
 
 interface BenefitItem {
   text: BenefitText;
+  boldPrefix?: string;
   avatars?: { label: string; bg: string }[];
 }
 
 const WHY_USE_EVALS: BenefitItem[] = [
   {
     text: 'Improve answers on critical topics like health, safety, rights, and legal queries.',
+    boldPrefix: 'Improve answers',
   },
   {
     text: 'Ensure user safety by catching harmful or inappropriate responses.',
@@ -43,6 +45,20 @@ const WHY_USE_EVALS: BenefitItem[] = [
     text: 'Lower legal and compliance risks by verifying that the bot follows policies and guidelines.',
   },
 ];
+
+const renderBenefitText = (item: BenefitItem): React.ReactNode => {
+  const fullText = t(item.text);
+  if (!item.boldPrefix) return fullText;
+  const idx = fullText.indexOf(item.boldPrefix);
+  if (idx === -1) return fullText;
+  return (
+    <>
+      {fullText.slice(0, idx)}
+      <strong>{fullText.slice(idx, idx + item.boldPrefix.length)}</strong>
+      {fullText.slice(idx + item.boldPrefix.length)}
+    </>
+  );
+};
 
 export default function AIEvalsLanding() {
   const { data: accessData, loading: accessLoading } = useQuery(GET_ORG_EVAL_ACCESS_REQUEST);
@@ -71,7 +87,7 @@ export default function AIEvalsLanding() {
   return (
     <div className={styles.Container}>
       <div className={styles.LeftPanel}>
-        <span className={styles.BetaBadge}>{t('Beta')}</span>
+        <span className={styles.BetaBadge}>{t('New Feature')}</span>
 
         <h1 className={styles.Title}>{t('AI Evaluations')}</h1>
         <p className={styles.Description}>
@@ -103,7 +119,7 @@ export default function AIEvalsLanding() {
                   ))}
                 </span>
               )}
-              <span className={styles.BenefitText}>{t(item.text)}</span>
+              <span className={styles.BenefitText}>{renderBenefitText(item)}</span>
             </li>
           ))}
         </ol>
@@ -148,7 +164,7 @@ export default function AIEvalsLanding() {
           {loading
             ? t('Submitting...')
             : requested || alreadyRequested
-              ? t('Already Requested')
+              ? t('Request Pending')
               : t('Request Access')}
         </button>
       </div>

@@ -517,7 +517,7 @@
   "AI Evals": "AI Evals",
   "Apply for access and tell us what functionality would help you take the most.": "एक्सेस के लिए आवेदन करें और बताएं कि कौन सी कार्यक्षमता आपकी सबसे अधिक मदद करेगी।",
   "Request Access": "एक्सेस का अनुरोध करें",
-  "Beta": "बीटा",
+  "New Feature": "नई सुविधा",
   "Improve answers on critical topics like health, safety, rights, and legal queries.": "स्वास्थ्य, सुरक्षा, अधिकार और कानूनी प्रश्नों जैसे महत्वपूर्ण विषयों पर उत्तरों में सुधार करें।",
   "Ensure user safety by catching harmful or inappropriate responses.": "हानिकारक या अनुचित प्रतिक्रियाओं को पकड़कर उपयोगकर्ता सुरक्षा सुनिश्चित करें।",
   "Build trust with beneficiaries, partners, and donors through tested, reliable performance.": "परीक्षित, विश्वसनीय प्रदर्शन के माध्यम से लाभार्थियों, भागीदारों और दानदाताओं के साथ विश्वास बनाएं।",
@@ -530,6 +530,6 @@
   "Your request has been submitted! We will get back to you soon.": "आपका अनुरोध सबमिट हो गया! हम जल्द ही आपसे संपर्क करेंगे।",
   "Submitting...": "सबमिट हो रहा है...",
   "Your request is being processed. We will notify you once done.": "आपका अनुरोध प्रक्रिया में है। हम आपको पूरा होने पर सूचित करेंगे।",
-  "Already Requested": "पहले से अनुरोधित",
+  "Request Pending": "अनुरोध लंबित है",
   "Your request has been submitted. You will be notified when it gets approved.": "आपका अनुरोध सबमिट हो गया है। अनुमोदित होने पर आपको सूचित किया जाएगा।"
 }
