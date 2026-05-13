@@ -43,6 +43,33 @@ describe('side drawer testing', () => {
     // Todo: Fix this test
   });
 
+  describe('AI Evals menu visibility based on aiEvaluationsEnabled flag', () => {
+    const getAIEvalsMenu = () => {
+      const aiToolkit = getMenus('sideDrawer', 'Manager').find((m) => m.title === 'AI toolkit');
+      return aiToolkit?.children?.find((c) => c.title === 'AI Evals');
+    };
+
+    afterEach(() => {
+      localStorage.removeItem('organizationServices');
+    });
+
+    it('shows the menu item at /ai-evaluations when aiEvaluationsEnabled is true', () => {
+      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
+      expect(getAIEvalsMenu()?.path).toBe('/ai-evaluations');
+      expect(getAIEvalsMenu()?.show).toBeFalsy();
+    });
+
+    it('hides the menu item when aiEvaluationsEnabled is false', () => {
+      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false }));
+      expect(getAIEvalsMenu()).toBeUndefined();
+    });
+
+    it('hides the menu item when aiEvaluationsEnabled is not set', () => {
+      setOrganizationServices(JSON.stringify({}));
+      expect(getAIEvalsMenu()).toBeUndefined();
+    });
+  });
+
   it('it should render component in normal mode', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
