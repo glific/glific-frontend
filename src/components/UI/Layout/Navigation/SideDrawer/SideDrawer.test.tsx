@@ -43,25 +43,26 @@ describe('side drawer testing', () => {
     // Todo: Fix this test
   });
 
-  describe('AI Evals menu path based on aiEvaluationsEnabled flag', () => {
+  describe('AI Evals menu visibility based on aiEvaluationsEnabled flag', () => {
     const getAIEvalsMenu = () => {
       const aiToolkit = getMenus('sideDrawer', 'Manager').find((m) => m.title === 'AI toolkit');
       return aiToolkit?.children?.find((c) => c.title === 'AI Evals');
     };
 
-    it('routes to intro page when aiEvaluationsEnabled is false', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false }));
-      expect(getAIEvalsMenu()?.path).toBe('/ai-evaluations/intro');
-    });
-
-    it('routes to list page when aiEvaluationsEnabled is true', () => {
+    it('shows the menu item at /ai-evaluations when aiEvaluationsEnabled is true', () => {
       setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
       expect(getAIEvalsMenu()?.path).toBe('/ai-evaluations');
+      expect(getAIEvalsMenu()?.show).toBeFalsy();
     });
 
-    it('routes to intro page when aiEvaluationsEnabled is not set', () => {
+    it('hides the menu item when aiEvaluationsEnabled is false', () => {
+      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false }));
+      expect(getAIEvalsMenu()?.show).toBeTruthy();
+    });
+
+    it('hides the menu item when aiEvaluationsEnabled is not set', () => {
       setOrganizationServices(JSON.stringify({}));
-      expect(getAIEvalsMenu()?.path).toBe('/ai-evaluations/intro');
+      expect(getAIEvalsMenu()?.show).toBeTruthy();
     });
   });
 
