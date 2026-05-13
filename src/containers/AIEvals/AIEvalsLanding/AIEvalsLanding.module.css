@@ -3,21 +3,15 @@
   align-items: center;
   justify-content: center;
   gap: 40px;
-
-  min-height: calc(100vh - 64px);
-
+  min-height: 100vh;
   padding: 32px 40px;
   background: #edf4ef;
-
   overflow-y: auto;
 }
-
-/* ───────────────── Left panel ───────────────── */
 
 .LeftPanel {
   flex: 1;
   max-width: 560px;
-
   padding: 0;
   background: transparent;
 }
@@ -114,23 +108,16 @@
   flex: 1;
 }
 
-/* ───────────────── Right panel ───────────────── */
-
 .RightPanel {
   width: 460px;
   flex-shrink: 0;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
   padding: 36px 30px;
-
   background: #ffffff;
   border-radius: 24px;
-
   text-align: center;
-
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
@@ -138,18 +125,14 @@
   font-size: 34px;
   font-weight: 700;
   color: #111827;
-
   line-height: 1.2;
-
   margin: 0 0 14px;
 }
 
 .CTASubtitle {
   font-size: 17px;
   color: #6b7280;
-
   line-height: 1.6;
-
   margin: 0 0 28px;
 }
 
@@ -159,33 +142,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   margin-bottom: 24px;
-
   width: 100%;
 }
 
 .LaptopScreen {
   width: 360px;
   height: 220px;
-
   background: #111827;
-
   border-radius: 18px 18px 0 0;
-
   padding: 12px 12px 8px;
-
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
 }
 
 .LaptopInner {
   width: 100%;
   height: 100%;
-
   background: linear-gradient(135deg, #d9ece8 0%, #cfe8e3 100%);
-
   border-radius: 8px;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,57 +167,39 @@
 
 .PreviewCard {
   background: #ffffff;
-
   border-radius: 16px;
-
   padding: 16px;
-
   display: flex;
   align-items: center;
   gap: 14px;
-
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-
   width: 82%;
-
   position: relative;
 }
 
-/* ───────────────── Graphic ───────────────── */
-
 .CircleGraphic {
   position: relative;
-
   width: 52px;
   height: 52px;
-
   flex-shrink: 0;
 }
 
 .CircleA {
   position: absolute;
-
   width: 36px;
   height: 36px;
-
   border-radius: 50%;
-
   background: rgba(56, 189, 248, 0.5);
-
   top: 0;
   left: 0;
 }
 
 .CircleB {
   position: absolute;
-
   width: 36px;
   height: 36px;
-
   border-radius: 50%;
-
   background: rgba(14, 165, 233, 0.7);
-
   bottom: 0;
   right: 0;
 }
@@ -256,34 +212,25 @@
 .PreviewLabel {
   font-size: 11px;
   color: #9ca3af;
-
   margin: 0 0 4px;
 }
 
 .PreviewTitle {
   font-size: 20px;
   font-weight: 700;
-
   color: #073f24;
-
   margin: 0;
-
   line-height: 1.2;
 }
 
 .GlificBadge {
   background: #119656;
   color: #ffffff;
-
   font-size: 9px;
   font-weight: 700;
-
   padding: 4px 8px;
-
   border-radius: 6px;
-
   letter-spacing: 0.3px;
-
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -294,51 +241,37 @@
 .LaptopHinge {
   width: 370px;
   height: 5px;
-
   background: #374151;
 }
 
 .LaptopBase {
   width: 410px;
   height: 10px;
-
   background: #4b5563;
-
   border-radius: 0 0 8px 8px;
-
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
-
-/* ───────────────── Bottom CTA ───────────────── */
 
 .CTAHelp {
   font-size: 14px;
   color: #9ca3af;
-
   line-height: 1.6;
-
   margin: 0 0 22px;
 }
 
 .RequestButton {
   display: block;
   width: 100%;
-
   background: #119656;
   color: #ffffff;
-
   font-size: 16px;
   font-weight: 600;
-
   padding: 14px 0;
-
   border-radius: 12px;
   border: none;
   cursor: pointer;
-
   text-decoration: none;
   text-align: center;
-
   transition: background 0.2s ease;
 }
 

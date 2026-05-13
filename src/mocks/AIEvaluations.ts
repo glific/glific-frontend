@@ -490,6 +490,11 @@ export const getOrgEvalAccessRequestPendingMock = {
   result: { data: { orgEvalAccessRequest: { status: 'PENDING' } } },
 };
 
+export const getOrgEvalAccessRequestApprovedMock = {
+  request: { query: GET_ORG_EVAL_ACCESS_REQUEST },
+  result: { data: { orgEvalAccessRequest: { status: 'APPROVED' } } },
+};
+
 export const requestAiEvaluationAccessSuccessMock = {
   request: { query: REQUEST_AI_EVALUATION_ACCESS },
   result: {

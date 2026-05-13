@@ -204,10 +204,11 @@ const menus = (): Menu[] => [
       },
       {
         title: 'AI Evals',
-        path: getOrganizationServices('aiEvaluationsEnabled') ? '/ai-evaluations' : '/ai-evaluations/intro',
+        path: '/ai-evaluations',
         icon: 'aiEvals',
         type: 'sideDrawer',
         roles: managerLevel,
+        show: !getOrganizationServices('aiEvaluationsEnabled'),
       },
     ],
   },

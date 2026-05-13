@@ -1,10 +1,12 @@
+import { useQuery } from '@apollo/client';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 
 import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { AIEvaluationList } from 'containers/AIEvals/AIEvaluationList/AIEvaluationList';
 import { GoldenQAList } from 'containers/AIEvals/GoldenQAList/GoldenQAList';
+import { GET_ORG_EVAL_ACCESS_REQUEST } from 'graphql/queries/AIEvaluations';
 import styles from './AIEvalsPage.module.css';
 
 type ActiveTab = 'ai-evaluations' | 'golden-qa';
@@ -16,9 +18,14 @@ const TABS: { id: ActiveTab; label: string }[] = [
 
 export default function AIEvalsPage() {
   const navigate = useNavigate();
+  const { data: accessData, loading: accessLoading } = useQuery(GET_ORG_EVAL_ACCESS_REQUEST);
   const [activeTab, setActiveTab] = useState<ActiveTab>('ai-evaluations');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMode, setSearchMode] = useState(false);
+
+  if (!accessLoading && accessData?.orgEvalAccessRequest?.status !== 'APPROVED') {
+    return <Navigate to="/ai-evaluations/intro" replace />;
+  }
 
   const handleTabChange = (tab: ActiveTab) => {
     setActiveTab(tab);
