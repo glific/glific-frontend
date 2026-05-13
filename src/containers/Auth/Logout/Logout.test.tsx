@@ -34,8 +34,8 @@ describe('<Logout />', () => {
     });
   });
 
-  test('it should clear org eval access request key from session storage on logout', async () => {
-    sessionStorage.setItem(ORG_EVAL_ACCESS_CACHE_KEY, JSON.stringify({ status: 'pending' }));
+  test('it should clear org eval access request key from local storage on logout', async () => {
+    localStorage.setItem(ORG_EVAL_ACCESS_CACHE_KEY, JSON.stringify({ status: 'pending' }));
 
     render(
       <MockedProvider>
@@ -50,6 +50,6 @@ describe('<Logout />', () => {
       fireEvent.click(button);
     });
 
-    expect(sessionStorage.getItem(ORG_EVAL_ACCESS_CACHE_KEY)).toBeNull();
+    expect(localStorage.getItem(ORG_EVAL_ACCESS_CACHE_KEY)).toBeNull();
   });
 });

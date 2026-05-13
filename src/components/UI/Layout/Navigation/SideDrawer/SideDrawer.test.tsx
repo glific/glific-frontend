@@ -49,6 +49,10 @@ describe('side drawer testing', () => {
       return aiToolkit?.children?.find((c) => c.title === 'AI Evals');
     };
 
+    afterEach(() => {
+      localStorage.removeItem('organizationServices');
+    });
+
     it('shows the menu item at /ai-evaluations when aiEvaluationsEnabled is true', () => {
       setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
       expect(getAIEvalsMenu()?.path).toBe('/ai-evaluations');

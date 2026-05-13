@@ -209,7 +209,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               />
             )}
           </div>
-          {menu.new && <span className={styles.New}>{'New'}</span>}
+          {menu.new && <span className={styles.New}>{t('New')}</span>}
           {menu.children && (
             <KeyboardArrowDownIcon
               fontSize="small"
