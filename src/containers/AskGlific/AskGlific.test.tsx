@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
+import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import {
   askGlificErrorMock,
@@ -12,6 +12,7 @@ import {
   feedbackDislikeMock,
   feedbackMock,
   messagesMock,
+  MOCK_REQUEST_ID,
   subscriptionMock,
   suggestionMock,
 } from 'mocks/AskGlific';
@@ -692,6 +693,124 @@ describe('AskGlific', () => {
 
     // The second suggestion's text should not appear as a user message.
     expect(screen.queryByText(suggestions[1].textContent || '')).not.toBeInTheDocument();
+  });
+
+  test('handleSendMessage resets loading state after a mutation error so the user can retry', async () => {
+    const failingSendMock = {
+      request: {
+        query: ASK_GLIFIC,
+        variables: {
+          input: {
+            query: 'Will fail',
+            conversationId: '',
+            pageUrl: window.location.href,
+            requestId: MOCK_REQUEST_ID,
+          },
+        },
+      },
+      error: new Error('Network down'),
+    };
+
+    const retrySendMock = createAskGlificMock('Retry attempt');
+    const retrySubMock = createSubscriptionMock({ answer: 'It worked!', delay: 30 });
+
+    renderAskGlific({ mocks: [conversationsMock, failingSendMock, retrySendMock, retrySubMock] });
+
+    const textbox = screen.getByTestId('textbox');
+    fireEvent.change(textbox, { target: { value: 'Will fail' } });
+    fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Sorry, I encountered an error while processing your request. Please try again.')
+      ).toBeInTheDocument();
+    });
+
+    // After the error, loading must have been cleared (otherwise the retry
+    // Enter press would be blocked by the in-flight guard).
+    fireEvent.change(textbox, { target: { value: 'Retry attempt' } });
+    fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
+
+    await waitFor(() => {
+      expect(screen.getByText('It worked!')).toBeInTheDocument();
+    });
+  });
+
+  test('clicking the title in sidebar mode toggles history and re-fetches conversations on open', async () => {
+    const emptyOnMount = {
+      request: {
+        query: GET_ASK_GLIFIC_CONVERSATIONS,
+        variables: { limit: 10, lastId: '' },
+      },
+      result: {
+        data: {
+          askGlificConversations: {
+            conversations: [],
+            hasMore: false,
+            limit: 10,
+          },
+        },
+      },
+      maxUsageCount: 1,
+    };
+
+    const dataOnRefresh = {
+      request: {
+        query: GET_ASK_GLIFIC_CONVERSATIONS,
+        variables: { limit: 10, lastId: '' },
+      },
+      result: {
+        data: {
+          askGlificConversations: {
+            conversations: [
+              {
+                id: 'conv-new',
+                name: 'Fresh Conversation',
+                status: 'normal',
+                createdAt: now,
+                updatedAt: now,
+              },
+            ],
+            hasMore: false,
+            limit: 10,
+          },
+        },
+      },
+      maxUsageCount: Number.MAX_SAFE_INTEGER,
+    };
+
+    renderAskGlific({ mocks: [emptyOnMount, dataOnRefresh] });
+
+    await waitFor(() => {
+      expect(screen.getByText('Ask Glific! Learn About How It Works?')).toBeInTheDocument();
+    });
+
+    // Switch to sidebar mode (auto-opens the history panel with the empty initial fetch).
+    fireEvent.click(screen.getByTestId('display-mode-btn'));
+    await waitFor(() => {
+      expect(screen.getByText('Sidebar')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Sidebar'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('history-panel')).toBeInTheDocument();
+      expect(screen.getByTestId('no-conversations')).toBeInTheDocument();
+    });
+
+    // Click title to close history panel.
+    const title = screen.getByText('New chat');
+    fireEvent.click(title);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('history-panel')).not.toBeInTheDocument();
+    });
+
+    // Click title again to re-open — triggers a fresh loadConversations.
+    fireEvent.click(title);
+
+    await waitFor(() => {
+      expect(screen.getByText('Fresh Conversation')).toBeInTheDocument();
+    });
   });
 
   test('it should show history panel in sidebar mode and select conversation', async () => {
