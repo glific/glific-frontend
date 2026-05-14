@@ -614,6 +614,86 @@ describe('AskGlific', () => {
     expect(thumbUp.className).toContain('FeedbackButtonActive');
   });
 
+  test('it should ignore subscription events whose requestId was not issued by this tab', async () => {
+    const otherTabSubMock = createSubscriptionMock({ requestId: 'a-different-tab-uuid' });
+
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, otherTabSubMock] });
+
+    fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    // Give the subscription event time to be delivered and rejected.
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(screen.getByText('thinking...')).toBeInTheDocument();
+    expect(screen.queryByText('This is a mock response from the bot.')).not.toBeInTheDocument();
+  });
+
+  test('it should disable the send button while a response is being generated', async () => {
+    const slowSubMock = createSubscriptionMock({ delay: 1000 });
+    const typedMock = createAskGlificMock('Hello');
+
+    renderAskGlific({ mocks: [conversationsMock, typedMock, slowSubMock] });
+
+    const textbox = screen.getByTestId('textbox');
+    fireEvent.change(textbox, { target: { value: 'Hello' } });
+    fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    // Type new text so the button's not-empty condition is satisfied — the
+    // only remaining reason it should be disabled is the in-flight request.
+    fireEvent.change(textbox, { target: { value: 'Another message' } });
+    expect(screen.getByTestId('send-icon')).toBeDisabled();
+  });
+
+  test('it should block Enter-to-send while a response is being generated', async () => {
+    const slowSubMock = createSubscriptionMock({ delay: 1000 });
+    const firstMock = createAskGlificMock('First');
+
+    renderAskGlific({ mocks: [conversationsMock, firstMock, slowSubMock] });
+
+    const textbox = screen.getByTestId('textbox');
+    fireEvent.change(textbox, { target: { value: 'First' } });
+    fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    fireEvent.change(textbox, { target: { value: 'Second' } });
+    fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
+
+    // 'Second' would only show as a user message <div> if the second send went
+    // through. The textarea also contains 'Second' as its value, so scope the
+    // assertion to divs only.
+    expect(screen.queryByText('Second', { selector: 'div' })).not.toBeInTheDocument();
+  });
+
+  test('it should block suggestion clicks while a response is being generated', async () => {
+    const slowSubMock = createSubscriptionMock({ delay: 1000 });
+
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, slowSubMock] });
+
+    const suggestions = screen.getAllByTestId('suggestion');
+    fireEvent.click(suggestions[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('thinking...')).toBeInTheDocument();
+    });
+
+    // Click a different suggestion — should be ignored, no new mutation fired.
+    fireEvent.click(suggestions[1]);
+
+    // The second suggestion's text should not appear as a user message.
+    expect(screen.queryByText(suggestions[1].textContent || '')).not.toBeInTheDocument();
+  });
+
   test('it should show history panel in sidebar mode and select conversation', async () => {
     renderAskGlific({ mocks: [conversationsWithDataMock, messagesMock] });
 
