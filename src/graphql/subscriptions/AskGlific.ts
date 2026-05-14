@@ -7,6 +7,7 @@ export const ASK_GLIFIC_RESPONSE_SUBSCRIPTION = gql`
       conversationId
       conversationName
       messageId
+      requestId
       errors {
         message
       }

@@ -70,6 +70,8 @@ window.fetch = vi.fn() as any;
 
 window.URL.createObjectURL = vi.fn();
 
+(globalThis.crypto as any).randomUUID = () => 'mock-request-id-1234-5678-90ab-cdef00000000';
+
 if (!globalThis.TextEncoder) {
   Object.defineProperty(globalThis, 'TextEncoder', {
     value: TextEncoder,
