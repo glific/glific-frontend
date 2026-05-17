@@ -12,19 +12,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
 
+import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
-
-const downloadTemplateCsv = () => {
-  const csvContent = 'Question,Answer\n"What is X?","Answer to X"\n"What is Y?","Answer to Y"';
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'golden_qa_template.csv';
-  link.click();
-  URL.revokeObjectURL(url);
-};
 
 const getGoldenQAHelperContent = () => (
   <div className={styles.GoldenQAHelper}>
@@ -37,9 +27,15 @@ const getGoldenQAHelperContent = () => (
       <div className={styles.CSVFormatExample}>{t('Expected CSV Format:')}</div>
       <div className={styles.CSVFormatExample}>{t('Question, Answer')}</div>
       <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
-      <button type="button" data-testid="templateCsvButton" className={styles.TemplateLink} onClick={downloadTemplateCsv}>
-        {t('Click Here For The Template Csv')}
-      </button>
+      <a
+        data-testid="templateCsvButton"
+        className={styles.TemplateLink}
+        href={GOLDEN_QA_TEMPLATE_LINK}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {t('Click Here For The Template')}
+      </a>
     </div>
   </div>
 );

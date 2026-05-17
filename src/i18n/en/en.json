@@ -641,6 +641,7 @@
   "Expected CSV Format:": "Expected CSV Format:",
   "Question, Answer": "Question, Answer",
   "Click Here For The Template Csv": "Click Here For The Template Csv",
+  "Click Here For The Template": "Click Here For The Template",
   "AI Evaluations": "AI Evaluations",
   "AI Evaluations is an innovative tool to determine objectively how well the bot would be in answering a set of questions on various topics. It is essentially a benchmarking tool for bot-generated responses.": "AI Evaluations is an innovative tool to determine objectively how well the bot would be in answering a set of questions on various topics. It is essentially a benchmarking tool for bot-generated responses.",
   "AI Evaluations is the process to determine objectively how well the AI assistant is answering a set of questions as compared to human responses for the same questions.": "AI Evaluations is the process to determine objectively how well the AI assistant is answering a set of questions as compared to human responses for the same questions.",
