@@ -493,7 +493,7 @@
   "Fetching assistants...": "असिस्टेंट लोड हो रहे हैं...",
   "No assistants available": "कोई असिस्टेंट उपलब्ध नहीं है",
   "Evaluation name is required": "मूल्यांकन का नाम आवश्यक है",
-  "Please select a Golden QA dataset": "कृपया एक Golden QA डेटासेट चुनें",
+  "Please select a Golden QA": "कृपया एक Golden QA",
   "Please select an AI Assistant": "कृपया एक AI असिस्टेंट चुनें",
   "Give a unique name for the evaluation experiment": "मूल्यांकन प्रयोग के लिए एक यूनिक नाम दें",
   "Give a unique name for the evaluation run": "मूल्यांकन रन के लिए एक यूनिक नाम दें",

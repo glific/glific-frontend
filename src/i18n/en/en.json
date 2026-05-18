@@ -633,7 +633,7 @@
   "Fetching assistants...": "Fetching assistants...",
   "No assistants available": "No assistants available",
   "Evaluation name is required": "Evaluation name is required",
-  "Please select a Golden QA dataset": "Please select a Golden QA dataset",
+  "Please select a Golden QA": "Please select a Golden QA",
   "Please select an AI Assistant": "Please select an AI Assistant",
   "Give a unique name for the evaluation experiment": "Give a unique name for the evaluation experiment",
   "Give a unique name for the evaluation run": "Give a unique name for the evaluation run",

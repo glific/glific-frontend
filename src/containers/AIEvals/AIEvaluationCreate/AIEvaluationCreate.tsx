@@ -158,7 +158,7 @@ export default function AIEvaluationCreate() {
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string().required(t('Evaluation name is required')),
-    goldenQaId: Yup.object().nullable().required(t('Please select a Golden QA dataset')),
+    goldenQaId: Yup.object().nullable().required(t('Please select a Golden QA')),
     assistantId: Yup.object().nullable().required(t('Please select an AI Assistant')),
   });
 
