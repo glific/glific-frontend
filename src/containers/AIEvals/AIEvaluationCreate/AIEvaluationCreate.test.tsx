@@ -106,8 +106,7 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
-    expect(screen.getByText('Evaluation Name*')).toBeInTheDocument();
+    expect(screen.getByText('Evaluation Run*')).toBeInTheDocument();
     expect(screen.getByText('AI Assistant*')).toBeInTheDocument();
     expect(screen.getAllByTestId('autocomplete-element')).toHaveLength(2);
   });
@@ -164,7 +163,7 @@ describe('AIEvaluationCreate', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
     expect(screen.getByRole('button', { name: 'Upload Golden QA' })).toBeInTheDocument();

@@ -73,7 +73,7 @@ const GoldenQaField = (props: any) => {
             multiple={false}
             disableClearable={false}
             noOptionsText={t('No Golden QA datasets available')}
-            placeholder={t('Search or select a Golden QA dataset')}
+            placeholder={t('Search or select a Golden QA')}
             textFieldProps={goldenQaAutoCompleteTextFieldProps}
           />
         </div>
@@ -94,8 +94,6 @@ const GoldenQaField = (props: any) => {
   );
 };
 
-const SectionDivider = (_props: any) => null;
-
 interface GoldenQaOption {
   id: string | number;
   label: string;
@@ -115,10 +113,11 @@ export default function AIEvaluationCreate() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [newlyAddedDataset, setNewlyAddedDataset] = useState<GoldenQaOption | null>(null);
 
-  const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
-    GET_ASSISTANT_CONFIG_VERSIONS,
-    { variables: { filter: {} }, fetchPolicy: 'network-only' }
-  );
+  const {
+    data: versionsData,
+    loading: versionsLoading,
+    error: versionsError,
+  } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, { variables: { filter: {} }, fetchPolicy: 'network-only' });
 
   const { data: goldenQaData, error: goldenQaError } = useQuery(LIST_GOLDEN_QA, {
     variables: { filter: {}, opts: {} },
@@ -155,9 +154,7 @@ export default function AIEvaluationCreate() {
         }))
       : [];
 
-  const assistantNoOptionsText = versionsLoading
-    ? t('Fetching assistants...')
-    : t('No assistants available');
+  const assistantNoOptionsText = versionsLoading ? t('Fetching assistants...') : t('No assistants available');
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string().required(t('Evaluation name is required')),
@@ -201,31 +198,12 @@ export default function AIEvaluationCreate() {
 
   const formFields = [
     {
-      component: SectionDivider,
-      name: '__evaluationDetailsDivider',
-      label: <span className={styles.SectionDividerLabel}>Select Golden QA</span>,
-      placeholder: '',
-    },
-    {
       component: GoldenQaField,
       name: 'goldenQaId',
       options: goldenQaOptions,
       helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
       newlyAddedDataset,
-    },
-    {
-      component: SectionDivider,
-      name: '__evaluationDetailsDivider',
-      label: <span className={styles.SectionDividerLabel}>Evaluation Details</span>,
-      placeholder: '',
-    },
-    {
-      component: Input,
-      name: 'evaluationName',
-      type: 'text',
-      label: <strong>Evaluation Name*</strong>,
-      placeholder: t('Give a unique name for the evaluation experiment'),
     },
     {
       component: AutoComplete,
@@ -239,14 +217,19 @@ export default function AIEvaluationCreate() {
       placeholder: t('Search or select an AI assistant'),
       openOnFocus: true,
     },
+    {
+      component: Input,
+      name: 'evaluationName',
+      type: 'text',
+      label: <strong>Evaluation Run*</strong>,
+      placeholder: t('Give a unique name for the evaluation run'),
+    },
   ];
 
   const dialogMessage = 'This action cannot be undone.';
 
   const handleSetPayload = (payload: any) => {
-    const selectedVersion = versionsData?.assistantConfigVersions?.find(
-      (v: any) => v.id === payload.assistantId?.id
-    );
+    const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId?.id);
     return {
       goldenQaId: payload.goldenQaId?.id,
       evaluationName: payload.evaluationName,
