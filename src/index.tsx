@@ -1,21 +1,27 @@
-import './sentry.config';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router';
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
 import Appsignal from '@appsignal/javascript';
-import { StyledEngineProvider } from '@mui/material/styles';
-import { ErrorBoundary } from '@appsignal/react';
-import * as WindowEvents from '@appsignal/plugin-window-events';
 import * as BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
 import * as PathDecorator from '@appsignal/plugin-path-decorator';
+import * as WindowEvents from '@appsignal/plugin-window-events';
+import { ErrorBoundary } from '@appsignal/react';
+import { CssBaseline } from '@mui/material';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import { PostHogErrorBoundary, PostHogProvider } from '@posthog/react';
+import posthog from 'posthog-js';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
+import './sentry.config';
 
-import theme from './config/theme';
-import { APPSIGNAL_API_KEY } from './config';
-import './index.css';
-import App from './App';
-import packageInfo from '../package.json';
 import { NEW_DOMAIN, OLD_DOMAIN } from 'common/constants';
+import packageInfo from '../package.json';
+import App from './App';
+import { APPSIGNAL_API_KEY } from './config';
+import theme from './config/theme';
+import './index.css';
+
+posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN, {
+  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+  defaults: '2026-01-30',
+});
 
 if (location.hostname.endsWith(OLD_DOMAIN)) {
   location.hostname = location.hostname.replace(OLD_DOMAIN, NEW_DOMAIN) + location.pathname;
@@ -40,11 +46,15 @@ if (location.hostname.endsWith(OLD_DOMAIN)) {
   const root = createRoot(document.getElementById('root')!);
 
   root.render(
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>{appComponent}</BrowserRouter>
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <PostHogProvider client={posthog}>
+      <PostHogErrorBoundary>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>{appComponent}</BrowserRouter>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </PostHogErrorBoundary>
+    </PostHogProvider>
   );
 }
