@@ -301,6 +301,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
       {...queries}
       {...columnAttributes}
       filters={searchQuery ? { name: searchQuery } : null}
+      searchActive={Boolean(searchQuery)}
       showHeader={false}
       showSearch={false}
       button={{ show: true, label: 'Create New Evaluation', action: () => navigate('/ai-evaluations/create') }}

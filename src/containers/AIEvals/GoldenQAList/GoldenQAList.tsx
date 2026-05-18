@@ -106,6 +106,7 @@ export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
       columns={getColumns}
       columnStyles={columnStyles}
       filters={searchQuery ? { name: searchQuery } : null}
+      searchActive={Boolean(searchQuery)}
       showHeader={false}
       showSearch={false}
       button={{ show: false }}
