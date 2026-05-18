@@ -172,6 +172,14 @@ export default function AIEvaluationCreate() {
     assistantId: null,
   });
 
+  const [fieldValues, setFieldValues] = useState({
+    goldenQaId: false,
+    assistantId: false,
+    evaluationName: false,
+  });
+
+  const isRunEnabled = fieldValues.goldenQaId && fieldValues.assistantId && fieldValues.evaluationName;
+
   const handleUploadGoldenQaButtonClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -193,6 +201,7 @@ export default function AIEvaluationCreate() {
     const newOption: GoldenQaOption = { id: values.id, label: values.name };
     setUploadedDatasets((prev) => [newOption, ...prev]);
     setNewlyAddedDataset(newOption);
+    setFieldValues((prev) => ({ ...prev, goldenQaId: true }));
     setShowUploadGoldenQaDialog(false);
   };
 
@@ -204,6 +213,8 @@ export default function AIEvaluationCreate() {
       helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
       newlyAddedDataset,
+      onChange: (value: GoldenQaOption | null) =>
+        setFieldValues((prev) => ({ ...prev, goldenQaId: value != null })),
     },
     {
       component: AutoComplete,
@@ -216,6 +227,8 @@ export default function AIEvaluationCreate() {
       noOptionsText: assistantNoOptionsText,
       placeholder: t('Search or select an AI assistant'),
       openOnFocus: true,
+      onChange: (value: AssistantOption | null) =>
+        setFieldValues((prev) => ({ ...prev, assistantId: value != null })),
     },
     {
       component: Input,
@@ -223,6 +236,7 @@ export default function AIEvaluationCreate() {
       type: 'text',
       label: <strong>Evaluation Run*</strong>,
       placeholder: t('Give a unique name for the evaluation run'),
+      onChange: (value: string) => setFieldValues((prev) => ({ ...prev, evaluationName: value.trim().length > 0 })),
     },
   ];
 
@@ -258,6 +272,7 @@ export default function AIEvaluationCreate() {
         redirect={false}
         title="Create AI Evaluation"
         button="Run Evaluation"
+        buttonState={{ show: true, status: !isRunEnabled, text: 'Run Evaluation' }}
         languageSupport={false}
         backLinkButton="/ai-evaluations"
         cancelAction={() => window.history.back()}
