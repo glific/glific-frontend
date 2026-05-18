@@ -103,6 +103,10 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  // Tracking number for the in-flight mutation. The subscription is org+user wide
+  // (other tabs of the same user receive the same events), so we only accept events
+  // whose echoed requestId matches the one we issued.
+  const pendingRequestIdRef = useRef<string | null>(null);
 
   const [hasMoreConversations, setHasMoreConversations] = useState(false);
   const [lastConversationId, setLastConversationId] = useState('');
@@ -119,6 +123,12 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
     onData: ({ data }) => {
       const result = data?.data?.askGlificResponse;
       if (!result) return;
+
+      // Subscription is org+user wide, so events for other tabs reach us too.
+      // Only accept the event whose echoed requestId matches the one we issued.
+      if (!result.requestId || result.requestId !== pendingRequestIdRef.current) return;
+      pendingRequestIdRef.current = null;
+      const wasNewConversation = !conversationId;
 
       if (result.errors?.length) {
         setMessages((prev) => [
@@ -143,6 +153,11 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
             messageId: result.messageId || undefined,
           },
         ]);
+        // First response of a new conversation — pull it into the history list so
+        // it shows up without a refresh.
+        if (wasNewConversation) {
+          loadConversations();
+        }
       }
       setIsLoading(false);
     },
@@ -282,6 +297,9 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   const handleSendMessage = async (msg: Message, currentMessages = messages) => {
     setIsLoading(true);
 
+    const requestId = crypto.randomUUID();
+    pendingRequestIdRef.current = requestId;
+
     try {
       await askGlific({
         variables: {
@@ -289,10 +307,12 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
             query: msg.content,
             conversationId: conversationId || '',
             pageUrl: window.location.href,
+            requestId,
           },
         },
       });
     } catch {
+      pendingRequestIdRef.current = null;
       const errorMessage: Message = {
         role: 'error',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
@@ -304,7 +324,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   };
 
   const handleOk = () => {
-    if (!message.trim()) return;
+    if (!message.trim() || isLoading) return;
     const userMessage: Message = { role: 'user', content: message, timestamp: new Date() };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
@@ -313,6 +333,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    if (isLoading) return;
     const userMessage: Message = { role: 'user', content: suggestion, timestamp: new Date() };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
@@ -320,7 +341,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey && message.trim()) {
+    if (event.key === 'Enter' && !event.shiftKey && message.trim() && !isLoading) {
       event.preventDefault();
       handleOk();
     }
@@ -462,9 +483,13 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                 className={styles.HeaderLeft}
                 onClick={(e) => {
                   if (isExpandedMode) {
-                    setShowHistory((prev) => !prev);
+                    const willOpen = !showHistory;
+                    setShowHistory(willOpen);
+                    if (willOpen) loadConversations();
                   } else {
-                    setHistoryAnchor(historyAnchor ? null : e.currentTarget);
+                    const willOpen = !historyAnchor;
+                    setHistoryAnchor(willOpen ? e.currentTarget : null);
+                    if (willOpen) loadConversations();
                   }
                 }}
               >
@@ -718,7 +743,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                     <IconButton
                       className={styles.SendButton}
                       onClick={handleOk}
-                      disabled={!message.trim()}
+                      disabled={!message.trim() || isLoading}
                       data-testid="send-icon"
                       size="small"
                     >

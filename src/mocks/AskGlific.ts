@@ -4,12 +4,15 @@ import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlifi
 
 const now = Math.floor(Date.now() / 1000);
 
+export const MOCK_REQUEST_ID = 'mock-request-id-1234-5678-90ab-cdef00000000';
+
 export const createSubscriptionMock = (
   overrides: Partial<{
     answer: string;
     conversationId: string;
     conversationName: string;
     messageId: string;
+    requestId: string;
     errors: { message: string }[] | null;
     delay: number;
   }> = {}
@@ -27,6 +30,7 @@ export const createSubscriptionMock = (
           conversationId: 'conv-123',
           conversationName: 'Test Chat',
           messageId: 'msg-new-001',
+          requestId: MOCK_REQUEST_ID,
           errors: null,
           ...data,
         },
@@ -142,6 +146,7 @@ export const createAskGlificMock = (query: string) => ({
         query,
         conversationId: '',
         pageUrl: window.location.href,
+        requestId: MOCK_REQUEST_ID,
       },
     },
   },
@@ -168,6 +173,7 @@ export const askGlificErrorMock = {
         query: 'Create your first chatbot',
         conversationId: '',
         pageUrl: window.location.href,
+        requestId: MOCK_REQUEST_ID,
       },
     },
   },
