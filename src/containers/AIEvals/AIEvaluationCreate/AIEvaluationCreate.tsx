@@ -136,6 +136,8 @@ export default function AIEvaluationCreate() {
     }
   }, [goldenQaError]);
 
+  const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+
   const backendOptions: GoldenQaOption[] =
     goldenQaData?.goldenQas?.map((qa: any) => ({ id: qa.id, label: qa.name })) ?? [];
 
@@ -143,16 +145,16 @@ export default function AIEvaluationCreate() {
   const goldenQaOptions: GoldenQaOption[] = [
     ...uploadedDatasets,
     ...backendOptions.filter((opt) => !uploadedIds.has(String(opt.id))),
-  ];
+  ].sort((a, b) => collator.compare(a.label, b.label));
 
   const assistantOptions: AssistantOption[] = versionsLoading
     ? []
-    : versionsData?.assistantConfigVersions?.length > 0
-      ? versionsData.assistantConfigVersions.map((v: any) => ({
+    : (versionsData?.assistantConfigVersions ?? [])
+        .map((v: any) => ({
           id: v.id,
           label: `${v.assistantName} (Version ${v.versionNumber})`,
         }))
-      : [];
+        .sort((a: AssistantOption, b: AssistantOption) => collator.compare(a.label, b.label));
 
   const assistantNoOptionsText = versionsLoading ? t('Fetching assistants...') : t('No assistants available');
 
