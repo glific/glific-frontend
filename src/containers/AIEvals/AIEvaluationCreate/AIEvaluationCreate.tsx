@@ -144,8 +144,10 @@ export default function AIEvaluationCreate() {
   const uploadedIds = new Set(uploadedDatasets.map((d) => String(d.id)));
   const goldenQaOptions: GoldenQaOption[] = [
     ...uploadedDatasets,
-    ...backendOptions.filter((opt) => !uploadedIds.has(String(opt.id))),
-  ].sort((a, b) => collator.compare(a.label, b.label));
+    ...backendOptions
+      .filter((opt) => !uploadedIds.has(String(opt.id)))
+      .sort((a, b) => collator.compare(a.label, b.label)),
+  ];
 
   const assistantOptions: AssistantOption[] = versionsLoading
     ? []
