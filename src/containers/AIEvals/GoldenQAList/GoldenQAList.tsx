@@ -7,7 +7,6 @@ import DownloadIcon from 'assets/images/icons/Download.svg?react';
 import { setErrorMessage } from 'common/notification';
 import { List } from 'containers/List/List';
 import { COUNT_GOLDEN_QA, GET_GOLDEN_QA, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
-import posthog from 'posthog-js';
 import styles from './GoldenQAList.module.css';
 
 dayjs.extend(relativeTime);
@@ -56,7 +55,7 @@ export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
     createdOn: dayjs(insertedAt).fromNow(),
   });
 
-  const handleDownload = async (id: string, item?: { name?: string }) => {
+  const handleDownload = async (id: string) => {
     try {
       const { data, error } = await fetchGoldenQa({ variables: { id, includeSignedUrl: true } });
 
@@ -79,10 +78,6 @@ export const GoldenQAList = ({ searchQuery }: GoldenQAListProps) => {
         document.body.appendChild(link); // Required for Firefox
         link.click();
         document.body.removeChild(link);
-        posthog.capture('user_downloaded_dataset_csv', {
-          dataset_id: id,
-          dataset_name: item?.name,
-        });
       } else {
         setErrorMessage('Failed to generate download URL');
       }

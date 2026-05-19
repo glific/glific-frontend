@@ -8,7 +8,6 @@ import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
-import posthog from 'posthog-js';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
@@ -137,19 +136,7 @@ const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
         <div className={styles.NameSubInfo}>
           <AssistantsIcon className={styles.SubInfoIcon} />
           {assistantLink ? (
-            <a
-              href={assistantLink}
-              className={styles.SubInfoLink}
-              data-testid="assistantVersionLink"
-              onClick={() => {
-                posthog.capture('user_clicked_assistant_version_in_ai_evaluations', {
-                  evaluation_name: name,
-                  assistant_id: assistantId,
-                  assistant_name: assistantName,
-                  version_number: versionNumber,
-                });
-              }}
-            >
+            <a href={assistantLink} className={styles.SubInfoLink} data-testid="assistantVersionLink">
               {assistantLabel}
             </a>
           ) : (
@@ -255,8 +242,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
   const navigate = useNavigate();
   const [fetchEvaluationScores] = useLazyQuery(GET_EVALUATION_SCORES);
 
-  const handleDownload = async (id: string, item?: { name?: string }) => {
-    const name = item?.name ?? '';
+  const handleDownload = async (id: string, name: string) => {
     try {
       const { data, error } = await fetchEvaluationScores({ variables: { id } });
 
@@ -299,10 +285,6 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
         return;
       }
       triggerCsvDownload(csv, `${name}_scores.csv`);
-      posthog.capture('user_downloaded_ai_evaluation_results_csv', {
-        evaluation_id: id,
-        evaluation_name: name,
-      });
     } catch (err) {
       setErrorMessage(err as Error);
     }
@@ -319,7 +301,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
           </span>
         ),
         parameter: 'id',
-        dialog: isNotCompleted ? () => {} : handleDownload,
+        dialog: isNotCompleted ? () => {} : (id: string) => handleDownload(id, item.name),
       },
     ];
   };
