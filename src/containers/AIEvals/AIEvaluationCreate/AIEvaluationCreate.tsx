@@ -217,8 +217,7 @@ export default function AIEvaluationCreate() {
       helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
       newlyAddedDataset,
-      onChange: (value: GoldenQaOption | null) =>
-        setFieldValues((prev) => ({ ...prev, goldenQaId: value != null })),
+      onChange: (value: GoldenQaOption | null) => setFieldValues((prev) => ({ ...prev, goldenQaId: value != null })),
     },
     {
       component: AutoComplete,
@@ -231,14 +230,13 @@ export default function AIEvaluationCreate() {
       noOptionsText: assistantNoOptionsText,
       placeholder: t('Search or select an AI assistant'),
       openOnFocus: true,
-      onChange: (value: AssistantOption | null) =>
-        setFieldValues((prev) => ({ ...prev, assistantId: value != null })),
+      onChange: (value: AssistantOption | null) => setFieldValues((prev) => ({ ...prev, assistantId: value != null })),
     },
     {
       component: Input,
       name: 'evaluationName',
       type: 'text',
-      label: <strong>Evaluation Run*</strong>,
+      label: <strong>Evaluation Name*</strong>,
       placeholder: t('Give a unique name for the evaluation run'),
       onChange: (value: string) => setFieldValues((prev) => ({ ...prev, evaluationName: value.trim().length > 0 })),
     },
