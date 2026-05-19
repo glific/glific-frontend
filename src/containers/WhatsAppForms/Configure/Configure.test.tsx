@@ -1530,7 +1530,13 @@ describe('validateFlowJson — all phases', () => {
             type: 'SingleColumnLayout',
             children: [
               { type: 'CalendarPicker', name: 'appt_date', label: 'Pick a date', required: true, mode: 'single' },
-              { type: 'CalendarPicker', name: 'appt_date', label: 'Pick another date', required: false, mode: 'single' },
+              {
+                type: 'CalendarPicker',
+                name: 'appt_date',
+                label: 'Pick another date',
+                required: false,
+                mode: 'single',
+              },
               formWith([footer({ name: 'complete', payload: {} })]),
             ],
           },
@@ -1943,9 +1949,24 @@ describe('round-trip preservation — unsupported components & extra attributes'
 
   test('duplicate Unsupported rawComponent names get _1, _2 suffixes like Text Answer/Selection', () => {
     const flowJSON = makeFlowJSON([
-      { type: 'EmbeddedLink', name: 'promo', text: 'Promo A', 'on-click-action': { name: 'open_url', url: 'https://a.com' } },
-      { type: 'EmbeddedLink', name: 'promo', text: 'Promo B', 'on-click-action': { name: 'open_url', url: 'https://b.com' } },
-      { type: 'EmbeddedLink', name: 'promo', text: 'Promo C', 'on-click-action': { name: 'open_url', url: 'https://c.com' } },
+      {
+        type: 'EmbeddedLink',
+        name: 'promo',
+        text: 'Promo A',
+        'on-click-action': { name: 'open_url', url: 'https://a.com' },
+      },
+      {
+        type: 'EmbeddedLink',
+        name: 'promo',
+        text: 'Promo B',
+        'on-click-action': { name: 'open_url', url: 'https://b.com' },
+      },
+      {
+        type: 'EmbeddedLink',
+        name: 'promo',
+        text: 'Promo C',
+        'on-click-action': { name: 'open_url', url: 'https://c.com' },
+      },
     ]);
 
     const screens = convertFlowJSONToFormBuilder(flowJSON);

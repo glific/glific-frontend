@@ -57,9 +57,7 @@ describe('AIEvalsRequestAcess', () => {
 
   it('renders the description text', async () => {
     renderComponent();
-    expect(
-      await screen.findByText(/AI Evaluations is the process to determine objectively/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/AI Evaluations is the process to determine objectively/i)).toBeInTheDocument();
   });
 
   it('renders the Why Use Evals section heading', async () => {
@@ -122,9 +120,7 @@ describe('AIEvalsRequestAcess', () => {
 
   it('renders the help text below the mockup', async () => {
     renderComponent();
-    expect(
-      await screen.findByText(/Apply for access and tell us what functionality/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Apply for access and tell us what functionality/i)).toBeInTheDocument();
   });
 
   it('redirects to main AI Evaluations when access is already approved', async () => {

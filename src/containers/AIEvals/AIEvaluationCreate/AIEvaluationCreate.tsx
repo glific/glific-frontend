@@ -37,7 +37,12 @@ const getGoldenQAHelperContent = () => (
       <div className={styles.CSVFormatExample}>{t('Expected CSV Format:')}</div>
       <div className={styles.CSVFormatExample}>{t('Question, Answer')}</div>
       <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
-      <button type="button" data-testid="templateCsvButton" className={styles.TemplateLink} onClick={downloadTemplateCsv}>
+      <button
+        type="button"
+        data-testid="templateCsvButton"
+        className={styles.TemplateLink}
+        onClick={downloadTemplateCsv}
+      >
         {t('Click Here For The Template Csv')}
       </button>
     </div>
@@ -119,10 +124,11 @@ export default function AIEvaluationCreate() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [newlyAddedDataset, setNewlyAddedDataset] = useState<GoldenQaOption | null>(null);
 
-  const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
-    GET_ASSISTANT_CONFIG_VERSIONS,
-    { variables: { filter: {} }, fetchPolicy: 'network-only' }
-  );
+  const {
+    data: versionsData,
+    loading: versionsLoading,
+    error: versionsError,
+  } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, { variables: { filter: {} }, fetchPolicy: 'network-only' });
 
   const { data: goldenQaData, error: goldenQaError } = useQuery(LIST_GOLDEN_QA, {
     variables: { filter: {}, opts: {} },
@@ -159,9 +165,7 @@ export default function AIEvaluationCreate() {
         }))
       : [];
 
-  const assistantNoOptionsText = versionsLoading
-    ? t('Fetching assistants...')
-    : t('No assistants available');
+  const assistantNoOptionsText = versionsLoading ? t('Fetching assistants...') : t('No assistants available');
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string().required(t('Evaluation name is required')),
@@ -248,9 +252,7 @@ export default function AIEvaluationCreate() {
   const dialogMessage = 'This action cannot be undone.';
 
   const handleSetPayload = (payload: any) => {
-    const selectedVersion = versionsData?.assistantConfigVersions?.find(
-      (v: any) => v.id === payload.assistantId?.id
-    );
+    const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId?.id);
     return {
       goldenQaId: payload.goldenQaId?.id,
       evaluationName: payload.evaluationName,

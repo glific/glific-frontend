@@ -169,7 +169,12 @@ export const createGoldenQaNetworkErrorMock = {
   error: new Error('Network error'),
 };
 
-export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor: number, id = '456', datasetId = '999') => ({
+export const createGoldenQaCustomSuccessMock = (
+  name: string,
+  duplicationFactor: number,
+  id = '456',
+  datasetId = '999'
+) => ({
   request: { query: CREATE_GOLDEN_QA },
   variableMatcher: () => true,
   result: {

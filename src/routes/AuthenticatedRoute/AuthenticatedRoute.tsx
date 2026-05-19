@@ -76,9 +76,7 @@ const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'
 const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
-const AIEvalsRequestAcess = lazy(() =>
-  import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess')
-);
+const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
 
 const staffRoutes = (
   <Routes>

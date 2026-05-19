@@ -15,13 +15,7 @@ interface AIEvaluationListProps {
   searchQuery?: string;
 }
 
-const columnStyles = [
-  styles.Name,
-  styles.StatusColumn,
-  styles.Metric,
-  styles.CompletedAt,
-  styles.Actions,
-];
+const columnStyles = [styles.Name, styles.StatusColumn, styles.Metric, styles.CompletedAt, styles.Actions];
 
 const parseResults = (results: any) => {
   if (!results) return { cosineSimilarity: null };
@@ -121,13 +115,10 @@ const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
   const goldenQaName = goldenQa?.name;
   const goldenQaDuplicationFactor = goldenQa?.duplicationFactor;
 
-  const assistantLabel =
-    (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
+  const assistantLabel = (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
 
   const assistantLink =
-    assistantId && versionNumber != null
-      ? `/assistants/${assistantId}/version/${versionNumber}`
-      : null;
+    assistantId && versionNumber != null ? `/assistants/${assistantId}/version/${versionNumber}` : null;
 
   return (
     <div>
@@ -213,14 +204,7 @@ const columnNames = [
   { name: 'actions', label: 'Actions' },
 ];
 
-const getColumns = ({
-  name,
-  status,
-  results,
-  updatedAt,
-  goldenQa,
-  assistantConfigVersion,
-}: Record<string, any>) => {
+const getColumns = ({ name, status, results, updatedAt, goldenQa, assistantConfigVersion }: Record<string, any>) => {
   const { cosineSimilarity } = parseResults(results);
   return {
     name: getName({ name, goldenQa, assistantConfigVersion }),

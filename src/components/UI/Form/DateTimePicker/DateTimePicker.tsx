@@ -34,7 +34,7 @@ export const DateTimePicker = ({
   const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
 
-  const handleDateChange = (date: Dayjs | null | string) => {    
+  const handleDateChange = (date: Dayjs | null | string) => {
     const value = date && date.toString() !== 'Invalid Date' ? dayjs(date) : null;
     setFieldValue(field.name, value);
     if (onChange) onChange(value);
