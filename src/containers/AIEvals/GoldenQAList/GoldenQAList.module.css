@@ -10,6 +10,11 @@
   width: 25%;
 }
 
+.Actions > div {
+  justify-content: center;
+  margin-left: -90px;
+}
+
 .TitleCell {
   display: flex;
   align-items: center;
