@@ -16,9 +16,9 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          pattern='^(major|minor|feat|fix|ci|chore|docs|refactor|style|perf): '
+          pattern='^(feat|fix|build|chore|ci|docs|style|refactor|perf|test)!?: '
           if ! echo "$PR_TITLE" | grep -qE "$pattern"; then
-            echo "::error::PR title must start with '<type>: ' where type is one of: major, minor, feat, fix, ci, chore, docs, refactor, style, perf"
+            echo "::error::PR title must start with '<type>: ' where type is one of: feat, fix, build, chore, ci, docs, style, refactor, perf, test (optional ! for breaking changes, e.g. feat!)"
             echo "Current title: $PR_TITLE"
             echo "Example: feat: add AI evaluation list page"
             exit 1
