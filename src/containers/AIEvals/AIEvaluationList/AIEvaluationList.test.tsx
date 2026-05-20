@@ -115,11 +115,12 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('shows formatted date in completed-at for completed evaluation', async () => {
+  it('shows relative date in completed-at for completed evaluation', async () => {
     renderComponent([getListAiEvaluationsBothMetricsMock]);
     await waitFor(() => {
       // completedEvaluationWithBothMetrics.updatedAt = '2026-01-04T02:00:00Z'
-      expect(screen.getByText(/04\/01\/2026/)).toBeInTheDocument();
+      // rendered as relative time, e.g. "4 months ago"
+      expect(screen.getByText(/ago/)).toBeInTheDocument();
     });
   });
 

@@ -70,12 +70,8 @@ const renderBenefitText = (item: BenefitItem): React.ReactNode => {
 };
 
 export default function AIEvalsRequestAcess() {
-  const {
-    shouldShowFullScreenLoading,
-    shouldShowFullScreenError,
-    refetchAccess,
-    accessStatus,
-  } = useOrgEvalAccessRequest();
+  const { shouldShowFullScreenLoading, shouldShowFullScreenError, refetchAccess, accessStatus } =
+    useOrgEvalAccessRequest();
   const [requested, setRequested] = useState(false);
   const [requestAccess, { loading }] = useMutation(REQUEST_AI_EVALUATION_ACCESS);
 
@@ -102,9 +98,7 @@ export default function AIEvalsRequestAcess() {
       } else {
         writeOrgEvalAccessCache('pending');
         setRequested(true);
-        setNotification(
-          t('Your request has been submitted. You will be notified when it gets approved.')
-        );
+        setNotification(t('Your request has been submitted. You will be notified when it gets approved.'));
       }
     } catch (error: any) {
       setErrorMessage(error);
@@ -188,11 +182,7 @@ export default function AIEvalsRequestAcess() {
           onClick={handleRequestAccess}
           disabled={loading || requested || alreadyRequested}
         >
-          {loading
-            ? t('Submitting...')
-            : requested || alreadyRequested
-              ? t('Request Pending')
-              : t('Request Access')}
+          {loading ? t('Submitting...') : requested || alreadyRequested ? t('Request Pending') : t('Request Access')}
         </button>
       </div>
     </div>

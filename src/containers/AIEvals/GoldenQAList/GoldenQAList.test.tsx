@@ -11,10 +11,7 @@ import {
 } from 'mocks/AIEvaluations';
 import { GoldenQAList } from './GoldenQAList';
 
-const renderComponent = (
-  searchQuery = '',
-  mocks: MockedResponse[] = [getListGoldenQaMock, getCountGoldenQaMock]
-) =>
+const renderComponent = (searchQuery = '', mocks: MockedResponse[] = [getListGoldenQaMock, getCountGoldenQaMock]) =>
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>

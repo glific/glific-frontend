@@ -231,12 +231,8 @@ describe('UploadGoldenQaDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     await waitFor(() => {
-      expect(onProceed).toHaveBeenCalledWith(
-        expect.objectContaining({ id: '42' })
-      );
-      expect(onProceed).not.toHaveBeenCalledWith(
-        expect.objectContaining({ datasetId: expect.anything() })
-      );
+      expect(onProceed).toHaveBeenCalledWith(expect.objectContaining({ id: '42' }));
+      expect(onProceed).not.toHaveBeenCalledWith(expect.objectContaining({ datasetId: expect.anything() }));
     });
   });
 

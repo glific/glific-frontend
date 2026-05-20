@@ -7,7 +7,7 @@ import styles from './OrgEvalAccessGateUi.module.css';
 export function OrgEvalAccessGateLoading() {
   return (
     <div className={styles.Panel} data-testid="orgEvalAccessGateLoading">
-      <Loading whiteBackground/>
+      <Loading whiteBackground />
     </div>
   );
 }

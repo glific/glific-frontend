@@ -105,7 +105,7 @@ export const getAssistantConfigVersionsMultipleNamesMock = {
           versionNumber: 1,
           description: 'v1',
           model: 'gpt-4',
-          status: 'ACTIVE',
+          status: 'ready',
           kaapiUuid: 'kaapi-alpha-v1',
         },
         {
@@ -116,7 +116,7 @@ export const getAssistantConfigVersionsMultipleNamesMock = {
           versionNumber: 1,
           description: 'v3',
           model: 'gpt-4',
-          status: 'ACTIVE',
+          status: 'ready',
           kaapiUuid: 'kaapi-beta-v3',
         },
         {
@@ -127,7 +127,7 @@ export const getAssistantConfigVersionsMultipleNamesMock = {
           versionNumber: 2,
           description: 'v1',
           model: 'gpt-4',
-          status: 'ACTIVE',
+          status: 'ready',
           kaapiUuid: 'kaapi-beta-v1',
         },
       ],
@@ -169,7 +169,12 @@ export const createGoldenQaNetworkErrorMock = {
   error: new Error('Network error'),
 };
 
-export const createGoldenQaCustomSuccessMock = (name: string, duplicationFactor: number, id = '456', datasetId = '999') => ({
+export const createGoldenQaCustomSuccessMock = (
+  name: string,
+  duplicationFactor: number,
+  id = '456',
+  datasetId = '999'
+) => ({
   request: { query: CREATE_GOLDEN_QA },
   variableMatcher: () => true,
   result: {

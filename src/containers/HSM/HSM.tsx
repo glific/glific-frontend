@@ -729,8 +729,8 @@ export const HSM = () => {
       helperText: uploadedFile
         ? `File uploaded: ${uploadedFile.name}`
         : t(
-          'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
-        ),
+            'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
+          ),
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value.trim());
