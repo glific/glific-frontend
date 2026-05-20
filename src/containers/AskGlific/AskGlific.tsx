@@ -131,10 +131,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
       const wasNewConversation = !conversationId;
 
       if (result.errors?.length) {
-        setMessages((prev) => [
-          ...prev,
-          { role: 'error', content: result.errors[0].message, timestamp: new Date() },
-        ]);
+        setMessages((prev) => [...prev, { role: 'error', content: result.errors[0].message, timestamp: new Date() }]);
         setIsLoading(false);
         return;
       }

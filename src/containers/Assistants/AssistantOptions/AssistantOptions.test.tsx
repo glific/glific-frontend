@@ -26,7 +26,6 @@ const baseProps = {
   disabled: false,
 };
 
-
 describe('AssistantOptions upload queue behavior', () => {
   test('uses the restricted file type accept list for upload input', () => {
     render(
