@@ -117,7 +117,7 @@ export const AssistantDetail = () => {
       setPendingVersion(version);
     } else {
       setSelectedVersion(version);
-      navigate(`/assistants/${assistantId}/version/${version.versionNumber}`, { replace: true });
+      window.history.replaceState(null, '', `/assistants/${assistantId}/version/${version.versionNumber}`);
     }
   };
 
@@ -125,7 +125,7 @@ export const AssistantDetail = () => {
     if (pendingVersion) {
       setHasUnsavedChanges(false);
       setSelectedVersion(pendingVersion);
-      navigate(`/assistants/${assistantId}/version/${pendingVersion.versionNumber}`, { replace: true });
+      window.history.replaceState(null, '', `/assistants/${assistantId}/version/${pendingVersion.versionNumber}`);
       setPendingVersion(null);
     }
   };

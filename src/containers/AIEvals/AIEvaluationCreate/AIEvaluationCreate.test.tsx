@@ -106,7 +106,6 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
     expect(screen.getByText('Evaluation Name*')).toBeInTheDocument();
     expect(screen.getByText('AI Assistant*')).toBeInTheDocument();
     expect(screen.getAllByTestId('autocomplete-element')).toHaveLength(2);
@@ -164,51 +163,28 @@ describe('AIEvaluationCreate', () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
     expect(screen.getByRole('button', { name: 'Upload Golden QA' })).toBeInTheDocument();
     expect(screen.getByTestId('templateCsvButton')).toBeInTheDocument();
   });
 
-  test('clicking the CSV template button downloads golden_qa_template.csv with correct content', async () => {
+  test('template link points to the Golden QnA Google Sheets template', async () => {
     render(wrapper());
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    const mockObjectUrl = 'blob:mock-url';
-    const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue(mockObjectUrl);
-    const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
-
-    const mockClick = vi.fn();
-    let capturedAnchor: HTMLAnchorElement | null = null;
-    const originalCreateElement = document.createElement.bind(document);
-    const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-      if (tagName === 'a') {
-        const anchor = originalCreateElement('a') as HTMLAnchorElement;
-        anchor.click = mockClick;
-        capturedAnchor = anchor;
-        return anchor;
-      }
-      return originalCreateElement(tagName as keyof HTMLElementTagNameMap);
-    });
-
-    fireEvent.click(screen.getByTestId('templateCsvButton'));
-
-    expect(createObjectURLSpy).toHaveBeenCalledOnce();
-    const blob = createObjectURLSpy.mock.calls[0][0] as Blob;
-    expect(blob.type).toBe('text/csv;charset=utf-8;');
-
-    expect(capturedAnchor).not.toBeNull();
-    expect(capturedAnchor!.download).toBe('golden_qa_template.csv');
-    expect(mockClick).toHaveBeenCalledOnce();
-    expect(revokeObjectURLSpy).toHaveBeenCalledWith(mockObjectUrl);
-
-    createObjectURLSpy.mockRestore();
-    revokeObjectURLSpy.mockRestore();
-    createElementSpy.mockRestore();
+    const templateLink = screen.getByTestId('templateCsvButton');
+    expect(templateLink.tagName).toBe('A');
+    expect(templateLink).toHaveAttribute(
+      'href',
+      'https://docs.google.com/spreadsheets/d/198UpOMeU53s9O-fwbIl0DIJLuD3l24jgkq74CoDfSQM/copy'
+    );
+    expect(templateLink).toHaveAttribute('target', '_blank');
+    expect(templateLink).toHaveAttribute('rel', 'noreferrer');
   });
 
   test('renders Upload Golden QA button', async () => {
@@ -267,7 +243,7 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('shows validation error when evaluation name is empty on submit', async () => {
+  test('Run Evaluation button is disabled when evaluation name is empty', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -278,15 +254,11 @@ describe('AIEvaluationCreate', () => {
     fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
     await openAssistantAutocomplete();
     fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
-    fireEvent.click(screen.getByText('Run Evaluation'));
 
-    await waitFor(() => {
-      const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
-      expect(nameInput).toHaveAttribute('aria-invalid', 'true');
-    });
+    expect(screen.getByTestId('submitActionButton')).toBeDisabled();
   });
 
-  test('shows validation error when AI Assistant is not selected on submit', async () => {
+  test('Run Evaluation button is disabled when AI Assistant is not selected', async () => {
     render(wrapper());
 
     await waitFor(() => {
@@ -298,12 +270,8 @@ describe('AIEvaluationCreate', () => {
 
     const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
     fireEvent.change(nameInput, { target: { value: 'valid_name' } });
-    fireEvent.click(screen.getByText('Run Evaluation'));
 
-    await waitFor(() => {
-      const assistantInput = within(getAssistantAutocompleteRoot()).getByRole('combobox');
-      expect(assistantInput).toHaveAttribute('aria-invalid', 'true');
-    });
+    expect(screen.getByTestId('submitActionButton')).toBeDisabled();
   });
 
   test('shows validation error when evaluation name is cleared after being typed', async () => {
@@ -351,13 +319,13 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('Run Evaluation submit button is visible and enabled', async () => {
+  test('Run Evaluation submit button is disabled until all fields are filled', async () => {
     render(wrapper());
 
     await waitFor(() => {
       expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
       expect(screen.getByTestId('submitActionButton')).toHaveTextContent('Run Evaluation');
-      expect(screen.getByTestId('submitActionButton')).not.toBeDisabled();
+      expect(screen.getByTestId('submitActionButton')).toBeDisabled();
     });
   });
 

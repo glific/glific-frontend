@@ -3,13 +3,15 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AssistantsIcon from 'assets/images/Assistants.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
 import { Tooltip } from '@mui/material';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
+
+dayjs.extend(relativeTime);
 
 interface AIEvaluationListProps {
   searchQuery?: string;
@@ -168,7 +170,7 @@ const getStatus = (status: string) => {
       <span className={dotCls} />
       <span className={styles.StatusContent}>
         <span className={styles.StatusLabel}>{showHelperText ? `${label}.` : label}</span>
-        {showHelperText && <span className={styles.StatusHelperText}>May take about 15 mins.</span>}
+        {showHelperText && <span className={styles.StatusHelperText}>May take about 45 mins.</span>}
       </span>
     </span>
   );
@@ -181,7 +183,7 @@ const getMetric = (value: number | null) => {
 
 const getCompletedAt = (status: string, updatedAt: string) => {
   if (status?.toUpperCase() !== 'COMPLETED' || !updatedAt) return <span className={styles.MetricNA}>—</span>;
-  return <div>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>;
+  return <div>{dayjs(updatedAt).fromNow()}</div>;
 };
 
 const columnNames = [
@@ -299,6 +301,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
       {...queries}
       {...columnAttributes}
       filters={searchQuery ? { name: searchQuery } : null}
+      searchActive={Boolean(searchQuery)}
       showHeader={false}
       showSearch={false}
       button={{ show: true, label: 'Create New Evaluation', action: () => navigate('/ai-evaluations/create') }}
