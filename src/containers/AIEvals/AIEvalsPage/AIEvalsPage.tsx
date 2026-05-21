@@ -18,12 +18,8 @@ const TABS: { id: ActiveTab; label: string }[] = [
 
 export default function AIEvalsPage() {
   const navigate = useNavigate();
-  const {
-    shouldShowFullScreenLoading,
-    shouldShowFullScreenError,
-    refetchAccess,
-    accessStatus,
-  } = useOrgEvalAccessRequest();
+  const { shouldShowFullScreenLoading, shouldShowFullScreenError, refetchAccess, accessStatus } =
+    useOrgEvalAccessRequest();
   const [activeTab, setActiveTab] = useState<ActiveTab>('ai-evaluations');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMode, setSearchMode] = useState(false);

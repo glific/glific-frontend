@@ -83,8 +83,8 @@ export const ConfigEditor = ({
         model: version.model ? { id: version.model, label: version.model } : (modelOptions[0] as any),
         instructions: version.prompt ?? '',
         temperature:
-          (typeof version.settings === 'string' ? JSON.parse(version.settings) : version.settings ?? {}).temperature ??
-          0.1,
+          (typeof version.settings === 'string' ? JSON.parse(version.settings) : (version.settings ?? {}))
+            .temperature ?? 0.1,
         knowledgeBaseVersionId: vectorStore?.knowledgeBaseVersionId ?? '',
         knowledgeBaseName: vectorStore?.name ?? '',
         versionDescription: version.description ?? '',

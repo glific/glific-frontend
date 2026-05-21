@@ -44,7 +44,6 @@ interface VersionPanelProps {
   initialVersionNumber?: number;
 }
 
-
 const statusConfig: Record<string, { label: string; styleKey: string }> = {
   in_progress: { label: 'In Progress', styleKey: 'InProgress' },
   failed: { label: 'Failed', styleKey: 'Failed' },
@@ -74,7 +73,8 @@ export const VersionPanel = ({
   useEffect(() => {
     if (versions.length === 0 || initialSelectionDone.current) return;
     initialSelectionDone.current = true;
-    const versionFromUrl = initialVersionNumber != null ? versions.find((v) => v.versionNumber === initialVersionNumber) : null;
+    const versionFromUrl =
+      initialVersionNumber != null ? versions.find((v) => v.versionNumber === initialVersionNumber) : null;
     const target = versionFromUrl ?? versions.find((v) => v.isLive) ?? sorted[0];
 
     if (!target) return;
@@ -133,9 +133,7 @@ export const VersionPanel = ({
               </div>
               <span className={styles.Model}>
                 {version.model}
-                {version.description && (
-                  <span className={styles.Description}> · {version.description}</span>
-                )}
+                {version.description && <span className={styles.Description}> · {version.description}</span>}
               </span>
             </div>
           ))

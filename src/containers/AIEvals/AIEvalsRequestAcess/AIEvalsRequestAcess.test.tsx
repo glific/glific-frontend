@@ -57,9 +57,7 @@ describe('AIEvalsRequestAcess', () => {
 
   it('renders the description text', async () => {
     renderComponent();
-    expect(
-      await screen.findByText(/See how well your AI assistant answers questions/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/See how well your AI assistant answers questions/i)).toBeInTheDocument();
   });
 
   it('renders the Why Use Evals section heading', async () => {
@@ -87,9 +85,7 @@ describe('AIEvalsRequestAcess', () => {
     await screen.findByText('New Feature');
     const bold = screen.getByText('Catch harmful');
     expect(bold.tagName).toBe('STRONG');
-    expect(bold.closest('span')).toHaveTextContent(
-      'Catch harmful or inaccurate responses before users do'
-    );
+    expect(bold.closest('span')).toHaveTextContent('Catch harmful or inaccurate responses before users do');
   });
 
   it('renders the last benefit text', async () => {
@@ -116,9 +112,7 @@ describe('AIEvalsRequestAcess', () => {
 
   it('renders the help text below the video', async () => {
     renderComponent();
-    expect(
-      await screen.findByText(/Once you request access, we'll enable it within 24 hours/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Once you request access, we'll enable it within 24 hours/i)).toBeInTheDocument();
   });
 
   it('redirects to main AI Evaluations when access is already approved', async () => {

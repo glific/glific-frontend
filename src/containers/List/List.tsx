@@ -717,7 +717,7 @@ export const List = ({
 
   var noItemsText = (
     <div className={styles.NoResults}>
-      {(searchVal || searchActive) ? (
+      {searchVal || searchActive ? (
         <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>

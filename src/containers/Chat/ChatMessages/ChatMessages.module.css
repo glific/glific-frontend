@@ -73,11 +73,11 @@
   margin-right: 13px !important;
 }
 
-.Paper>ul>li:hover {
+.Paper > ul > li:hover {
   background-color: #edf6f2 !important;
 }
 
-.Paper>ul>li {
+.Paper > ul > li {
   color: #073f24;
 }
 
@@ -131,7 +131,7 @@ html {
   align-items: center;
 }
 
-.SessionTimer+div {
+.SessionTimer + div {
   text-align: right;
 }
 

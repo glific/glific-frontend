@@ -45,9 +45,7 @@ describe('KnowledgeBaseOptions', () => {
     fireEvent.click(screen.getByTestId('addFiles'));
 
     await waitFor(() => {
-      expect(
-        screen.getByText('You are adding more files to existing Knowledge Base')
-      ).toBeInTheDocument();
+      expect(screen.getByText('You are adding more files to existing Knowledge Base')).toBeInTheDocument();
     });
   });
 
@@ -1065,10 +1063,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     });
 
     fireEvent.click(
-      screen
-        .getByText('remove.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
+      screen.getByText('remove.txt').closest('[data-testid="fileItem"]')!.querySelector('[data-testid="deleteFile"]')!
     );
 
     await waitFor(() => {
