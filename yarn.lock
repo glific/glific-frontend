@@ -75,41 +75,6 @@
     "@apollo/client" "^3.0.0-beta.23"
     tslib "^1.9.3"
 
-"@appsignal/javascript@=1.6.1", "@appsignal/javascript@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.6.1.tgz#091bac411e587d7d432edcb6fd9e0e44b0993f6f"
-  integrity sha512-jRVkTYsLC7tM5no6V2Fw2Vc325KRKductkEEHzXTS+upZdBgzkxeTQ1MjuPcfN73vUEplaaP6tMkqv7Ids6frg==
-  dependencies:
-    tslib "^2.3.0"
-
-"@appsignal/plugin-breadcrumbs-network@^1.1.24":
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/@appsignal/plugin-breadcrumbs-network/-/plugin-breadcrumbs-network-1.1.24.tgz#3e18a980948c2f5311ebb90888bdf4ddf1b09645"
-  integrity sha512-7RYADVRYHKNuunma3cN38xP40k3BpB5pkkDc3IIePpVe8QDxlTErzgSa9SRDp69ItNr8rU9VUJWqBZb0jnF1Cg==
-  dependencies:
-    "@appsignal/javascript" "=1.6.1"
-
-"@appsignal/plugin-path-decorator@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@appsignal/plugin-path-decorator/-/plugin-path-decorator-1.0.18.tgz#3bc39306100b11bf61a3ac2a14e234066ebf7b5c"
-  integrity sha512-KCm5Lq3eQ4gJ0lAWjp2Ns1/szbXTm/eC5kS45fOEQXIwJycM/w2QB2TO+gtmo98DU5tQdq+1xoFQNDHUB4D17Q==
-  dependencies:
-    "@appsignal/javascript" "=1.6.1"
-
-"@appsignal/plugin-window-events@^1.0.26":
-  version "1.0.26"
-  resolved "https://registry.yarnpkg.com/@appsignal/plugin-window-events/-/plugin-window-events-1.0.26.tgz#ddb5d85d76d3e856ae7cd21570690a5caa6148ba"
-  integrity sha512-0sX5+sq7x+OJzZOdm46qqDeaLNXWFCCxV/HuEJOH08IKV8spHu0+Uej+j0KixBHO6vEKclDbEUrFVQJKkDuM2w==
-  dependencies:
-    "@appsignal/javascript" "=1.6.1"
-
-"@appsignal/react@^1.0.31":
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/@appsignal/react/-/react-1.0.31.tgz#7a0caf0cd3c1d3372e13d7a742723d2e1f12aaf7"
-  integrity sha512-vZ2/HtWeFu+SjyCJW2m58iSjOnDfR9+EKvhyUsnEYZEXytjbiSkPvaw2COMU2m0zl5JOXYuY/hGaD4rFnOsxXA==
-  dependencies:
-    "@appsignal/javascript" "=1.6.1"
-
 "@asamuzakjp/css-color@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@asamuzakjp/css-color/-/css-color-4.1.0.tgz#4c8c6f48ed2e5c1ad9cc1aa23c80d665e56dd458"

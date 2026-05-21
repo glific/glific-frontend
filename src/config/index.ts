@@ -38,7 +38,6 @@ export const RENEW_TOKEN = `${USER_SESSION}/renew`;
 export const FLOW_EDITOR_CONFIGURE_LINK = `${PROTOCOL}//${window.location.host}/flow/configure`;
 export const CONTACT_CHAT_LINK = `${window.location.origin}/chat/`;
 export const GUPSHUP_CALLBACK_URL = `${GLIFIC_BACKEND_URL}/gupshup`;
-export const APPSIGNAL_API_KEY = envVariables.VITE_APPSIGNAL_API_KEY;
 export const POSTHOG_PROJECT_TOKEN = envVariables.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
 export const POSTHOG_HOST = envVariables.VITE_PUBLIC_POSTHOG_HOST;
 export const APP_NAME = appName || 'Glific: Two way communication platform';
