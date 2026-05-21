@@ -53,15 +53,16 @@ const extractRows = (data: any): any[] => {
 };
 
 // Flatten a trace row into readable CSV columns.
-// Output columns: question_id, question, ground_truth_answer, llm_answer, <metric_name per score>
-const TRACE_COLUMNS = ['question_id', 'question', 'ground_truth_answer', 'llm_answer'];
+// Output columns: question_id, question, golden_answer, llm_answer, <metric_name per score>
+const TRACE_COLUMNS = ['question_id', 'question', 'golden_answer', 'llm_answer'];
 
 const flattenRow = (row: any): Record<string, any> | null => {
   if (row === null || row === undefined || typeof row !== 'object' || Array.isArray(row)) return null;
   const flat: Record<string, any> = {};
 
   for (const key of TRACE_COLUMNS) {
-    flat[key] = row[key] ?? '';
+    const sourceKey = key === 'golden_answer' ? 'ground_truth_answer' : key;
+    flat[key] = row[sourceKey] ?? '';
   }
 
   // Expand scores array: { name: "Cosine Similarity", value: 0.11 } → cosine_similarity: 0.11
