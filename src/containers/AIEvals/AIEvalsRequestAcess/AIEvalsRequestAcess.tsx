@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { AI_EVALS_INTRO_VIDEO_URL } from 'config';
 import { OrgEvalAccessGateError, OrgEvalAccessGateLoading } from 'containers/AIEvals/OrgEvalAccessGateUi';
 import { writeOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
 import { useOrgEvalAccessRequest } from 'containers/AIEvals/useOrgEvalAccessRequest';
@@ -115,9 +116,14 @@ export default function AIEvalsRequestAcess() {
         <h2 className={styles.CTATitle}>{t('Set up AI Evals for your NGO')}</h2>
         <p className={styles.CTASubtitle}>{t("Monitor and improve your chatbot's quality.")}</p>
 
-        <div className={styles.VideoPlaceholder} data-testid="videoPlaceholder">
-          <div className={styles.PlayButton}>&#9654;</div>
-        </div>
+        <iframe
+          src={AI_EVALS_INTRO_VIDEO_URL}
+          className={styles.VideoPlaceholder}
+          allow="autoplay"
+          allowFullScreen
+          title="AI Evals intro video"
+          data-testid="videoPlaceholder"
+        />
 
         <p className={styles.CTAHelp}>{t("Once you request access, we'll enable it within 24 hours")}</p>
 

@@ -286,6 +286,35 @@ describe('AIEvaluationList', () => {
     });
   });
 
+  it('downloaded CSV uses golden_answer column header even though backend sends ground_truth_answer', async () => {
+    let capturedBlob: Blob | null = null;
+    vi.spyOn(URL, 'createObjectURL').mockImplementation((obj: Blob | MediaSource) => {
+      capturedBlob = obj as Blob;
+      return 'blob:mock-url';
+    });
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => expect(capturedBlob).not.toBeNull());
+
+    const csvText = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsText(capturedBlob!);
+    });
+    const headers = csvText.split('\n')[0].split(',');
+
+    expect(headers).toContain('golden_answer');
+    expect(headers).not.toContain('ground_truth_answer');
+
+    vi.restoreAllMocks();
+  });
+
   it('shows warning when all trace rows are invalid and CSV is empty', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresInvalidRowsMock('2')]);
     await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
