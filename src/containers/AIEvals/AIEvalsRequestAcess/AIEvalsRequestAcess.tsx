@@ -10,48 +10,32 @@ import { Navigate } from 'react-router';
 import styles from './AIEvalsRequestAcess.module.css';
 
 type BenefitText =
-  | 'Improve answers on critical topics like health, safety, rights, and legal queries.'
-  | 'Ensure user safety by catching harmful or inappropriate responses.'
-  | 'Build trust with beneficiaries, partners, and donors through tested, reliable performance.'
-  | 'Reduce bias and ensure inclusive, culturally sensitive communication.'
-  | 'Monitor quality at scale without needing large teams to manually check conversations.'
-  | 'Continuously improve the chatbot by identifying issues early and fixing them quickly.'
-  | 'Lower legal and compliance risks by verifying that the bot follows policies and guidelines.';
+  | 'Catch harmful or inaccurate responses before users do'
+  | 'Build trust with beneficiaries, partners, and donors'
+  | 'Reduce bias and ensure culturally sensitive communication'
+  | 'Improve continuously — without manual review at scale';
 
 interface BenefitItem {
   text: BenefitText;
   boldPrefix?: string;
-  avatars?: { label: string; bg: string }[];
 }
 
 const WHY_USE_EVALS: BenefitItem[] = [
   {
-    text: 'Improve answers on critical topics like health, safety, rights, and legal queries.',
-    boldPrefix: 'Improve answers',
+    text: 'Catch harmful or inaccurate responses before users do',
+    boldPrefix: 'Catch harmful',
   },
   {
-    text: 'Ensure user safety by catching harmful or inappropriate responses.',
-    boldPrefix: 'Ensure user safety',
-  },
-  {
-    text: 'Build trust with beneficiaries, partners, and donors through tested, reliable performance.',
+    text: 'Build trust with beneficiaries, partners, and donors',
     boldPrefix: 'Build trust',
   },
   {
-    text: 'Reduce bias and ensure inclusive, culturally sensitive communication.',
+    text: 'Reduce bias and ensure culturally sensitive communication',
     boldPrefix: 'Reduce bias',
   },
   {
-    text: 'Monitor quality at scale without needing large teams to manually check conversations.',
-    boldPrefix: 'Monitor quality at scale',
-  },
-  {
-    text: 'Continuously improve the chatbot by identifying issues early and fixing them quickly.',
-    boldPrefix: 'Continuously improve',
-  },
-  {
-    text: 'Lower legal and compliance risks by verifying that the bot follows policies and guidelines.',
-    boldPrefix: 'Lower legal and compliance risks',
+    text: 'Improve continuously — without manual review at scale',
+    boldPrefix: 'Improve continuously',
   },
 ];
 
@@ -118,34 +102,15 @@ export default function AIEvalsRequestAcess() {
 
         <h1 className={styles.Title}>{t('AI Evaluations')}</h1>
         <p className={styles.Description}>
-          {t(
-            'AI Evaluations is the process to determine objectively how well the AI assistant is answering a set of questions as compared to human responses for the same questions.'
-          )}
+          {t('See how well your AI assistant answers questions — compared to what a human would say.')}
         </p>
 
-        <h2 className={styles.SectionTitle}>{t('Why Use Evals?')}</h2>
+        <h2 className={styles.SectionTitle}>{t('Why Use Evals:')}</h2>
 
         <ol className={styles.BenefitsList}>
           {WHY_USE_EVALS.map((item, idx) => (
             <li key={idx} className={styles.BenefitItem}>
               <span className={styles.BenefitNumber}>{idx + 1}.</span>
-              {item.avatars && (
-                <span className={styles.AvatarGroup}>
-                  {item.avatars.map((av, i) => (
-                    <span
-                      key={i}
-                      className={styles.Avatar}
-                      style={{
-                        backgroundColor: av.bg,
-                        marginLeft: i === 0 ? 0 : -8,
-                        zIndex: item.avatars!.length - i,
-                      }}
-                    >
-                      {av.label}
-                    </span>
-                  ))}
-                </span>
-              )}
               <span className={styles.BenefitText}>{renderBenefitText(item)}</span>
             </li>
           ))}
@@ -153,33 +118,15 @@ export default function AIEvalsRequestAcess() {
       </div>
 
       <div className={styles.RightPanel}>
-        <h2 className={styles.CTATitle}>{t('Set up your NGO on Evals')}</h2>
-        <p className={styles.CTASubtitle}>
-          {t('Make your NGO chatbot smarter, safer, and more reliable with AI evals.')}
-        </p>
+        <h2 className={styles.CTATitle}>{t('Set up AI Evals for your NGO')}</h2>
+        <p className={styles.CTASubtitle}>{t('Monitor and improve your chatbot\'s quality.')}</p>
 
-        <div className={styles.LaptopMockup}>
-          <div className={styles.LaptopScreen}>
-            <div className={styles.LaptopInner}>
-              <div className={styles.PreviewCard}>
-                <div className={styles.CircleGraphic}>
-                  <div className={styles.CircleA} />
-                  <div className={styles.CircleB} />
-                </div>
-                <div className={styles.PreviewText}>
-                  <p className={styles.PreviewLabel}>{t('Intro to')}</p>
-                  <p className={styles.PreviewTitle}>{t('AI Evals')}</p>
-                </div>
-                <span className={styles.GlificBadge}>Glific</span>
-              </div>
-            </div>
-          </div>
-          <div className={styles.LaptopHinge} />
-          <div className={styles.LaptopBase} />
+        <div className={styles.VideoPlaceholder} data-testid="videoPlaceholder">
+          <div className={styles.PlayButton}>&#9654;</div>
         </div>
 
         <p className={styles.CTAHelp}>
-          {t('Apply for access and tell us what functionality would help your team the most.')}
+          {t("Once you request access, we'll enable it within 24 hours")}
         </p>
 
         <button
