@@ -14,17 +14,19 @@ import './sentry.config';
 import { NEW_DOMAIN, OLD_DOMAIN } from 'common/constants';
 import packageInfo from '../package.json';
 import App from './App';
-import { APPSIGNAL_API_KEY } from './config';
+import { APPSIGNAL_API_KEY, POSTHOG_HOST, POSTHOG_PROJECT_TOKEN } from './config';
 import theme from './config/theme';
 import './index.css';
 
-posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN, {
-  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-  defaults: '2026-01-30',
-  capture_performance: {
-    web_vitals: true,
-  },
-});
+if (POSTHOG_PROJECT_TOKEN) {
+  posthog.init(POSTHOG_PROJECT_TOKEN, {
+    api_host: POSTHOG_HOST,
+    defaults: '2026-01-30',
+    capture_performance: {
+      web_vitals: true,
+    },
+  });
+}
 
 if (location.hostname.endsWith(OLD_DOMAIN)) {
   location.hostname = location.hostname.replace(OLD_DOMAIN, NEW_DOMAIN) + location.pathname;
