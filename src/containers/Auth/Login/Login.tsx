@@ -13,7 +13,7 @@ import setLogs from 'config/logs';
 import { setUserRolePermissions } from 'context/role';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
-import posthog from 'posthog-js';
+import { usePostHog } from '@posthog/react';
 import {
   clearAuthSession,
   clearUserSession,
@@ -26,6 +26,7 @@ import { Auth } from '../Auth';
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
 export const Login = () => {
+  const posthog = usePostHog();
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
   const location: any = useLocation();
@@ -82,8 +83,8 @@ export const Login = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        posthog.identify(user.id, { organization_id: user.organization.id });
-        posthog.capture('user_logged_in');
+        posthog?.identify(user.id, { organization_id: user.organization.id });
+        posthog?.capture('user_logged_in');
 
         const targetPath = location.state?.to || '/chat';
         navigate(targetPath, { replace: true });
@@ -141,7 +142,7 @@ export const Login = () => {
         } else {
           setAuthError('Something went wrong. Please contact the Glific team.');
         }
-        posthog.capture('user_login_failed', {
+        posthog?.capture('user_login_failed', {
           error: error?.response?.data?.error?.message || 'Unknown error',
           status: error?.response?.status,
         });

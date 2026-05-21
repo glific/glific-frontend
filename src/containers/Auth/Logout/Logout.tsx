@@ -11,7 +11,7 @@ import { clearAuthSession, clearUserSession, getAuthSession } from 'services/Aut
 import { USER_SESSION } from 'config';
 import { clearListSession } from 'services/ListService';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import posthog from 'posthog-js';
+import { usePostHog } from '@posthog/react';
 
 const divStyle: CSSProperties = {
   fontFamily: 'Heebo',
@@ -24,6 +24,7 @@ const divStyle: CSSProperties = {
 };
 
 export const Logout = () => {
+  const posthog = usePostHog();
   const client = useApolloClient();
   const { t } = useTranslation();
   const location = useLocation();
@@ -38,8 +39,8 @@ export const Logout = () => {
   };
 
   const handleLogout = () => {
-    posthog.capture('user_logged_out');
-    posthog.reset();
+    posthog?.capture('user_logged_out');
+    posthog?.reset();
     userLogout();
     // clear local storage auth session
     clearAuthSession();

@@ -44,7 +44,7 @@ describe('AskGlific', () => {
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
     value: vi.fn(),
     writable: true,
-  })
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
