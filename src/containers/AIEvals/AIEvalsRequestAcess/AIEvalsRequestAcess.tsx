@@ -113,15 +113,13 @@ export default function AIEvalsRequestAcess() {
 
       <div className={styles.RightPanel}>
         <h2 className={styles.CTATitle}>{t('Set up AI Evals for your NGO')}</h2>
-        <p className={styles.CTASubtitle}>{t('Monitor and improve your chatbot\'s quality.')}</p>
+        <p className={styles.CTASubtitle}>{t("Monitor and improve your chatbot's quality.")}</p>
 
         <div className={styles.VideoPlaceholder} data-testid="videoPlaceholder">
           <div className={styles.PlayButton}>&#9654;</div>
         </div>
 
-        <p className={styles.CTAHelp}>
-          {t("Once you request access, we'll enable it within 24 hours")}
-        </p>
+        <p className={styles.CTAHelp}>{t("Once you request access, we'll enable it within 24 hours")}</p>
 
         <button
           type="button"
