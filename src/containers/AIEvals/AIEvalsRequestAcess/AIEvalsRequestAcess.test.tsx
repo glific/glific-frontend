@@ -57,70 +57,62 @@ describe('AIEvalsRequestAcess', () => {
 
   it('renders the description text', async () => {
     renderComponent();
-    expect(await screen.findByText(/AI Evaluations is the process to determine objectively/i)).toBeInTheDocument();
+    expect(await screen.findByText(/See how well your AI assistant answers questions/i)).toBeInTheDocument();
   });
 
   it('renders the Why Use Evals section heading', async () => {
     renderComponent();
-    expect(await screen.findByRole('heading', { name: 'Why Use Evals?', level: 2 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Why Use Evals:', level: 2 })).toBeInTheDocument();
   });
 
-  it('renders all 7 benefit items', async () => {
+  it('renders all 4 benefit items', async () => {
     renderComponent();
     await screen.findByText('New Feature');
     const items = screen.getAllByRole('listitem');
-    expect(items).toHaveLength(7);
+    expect(items).toHaveLength(4);
   });
 
   it('renders each benefit item with its number', async () => {
     renderComponent();
     await screen.findByText('New Feature');
-    ['1.', '2.', '3.', '4.', '5.', '6.', '7.'].forEach((num) => {
+    ['1.', '2.', '3.', '4.'].forEach((num) => {
       expect(screen.getByText(num)).toBeInTheDocument();
     });
   });
 
-  it('renders the first benefit text with "Improve answers" in bold', async () => {
+  it('renders the first benefit text with "Catch harmful" in bold', async () => {
     renderComponent();
     await screen.findByText('New Feature');
-    const bold = screen.getByText('Improve answers');
+    const bold = screen.getByText('Catch harmful');
     expect(bold.tagName).toBe('STRONG');
-    expect(bold.closest('span')).toHaveTextContent(
-      'Improve answers on critical topics like health, safety, rights, and legal queries.'
-    );
+    expect(bold.closest('span')).toHaveTextContent('Catch harmful or inaccurate responses before users do');
   });
 
   it('renders the last benefit text', async () => {
     renderComponent();
-    expect(await screen.findByText(/Lower legal and compliance risks/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Improve continuously/i)).toBeInTheDocument();
   });
 
   // ── Right panel static content ───────────────────────────────────────────────
 
   it('renders the CTA heading', async () => {
     renderComponent();
-    expect(await screen.findByRole('heading', { name: 'Set up your NGO on Evals', level: 2 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Set up AI Evals for your NGO', level: 2 })).toBeInTheDocument();
   });
 
   it('renders the CTA subtitle', async () => {
     renderComponent();
-    expect(await screen.findByText(/Make your NGO chatbot smarter, safer/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Monitor and improve your chatbot/i)).toBeInTheDocument();
   });
 
-  it('renders the laptop mockup with Intro to AI Evals card', async () => {
+  it('renders the video placeholder', async () => {
     renderComponent();
-    expect(await screen.findByText('Intro to')).toBeInTheDocument();
-    expect(screen.getByText('AI Evals')).toBeInTheDocument();
+    expect(await screen.findByTestId('videoPlaceholder')).toBeInTheDocument();
   });
 
-  it('renders the Glific badge inside the mockup', async () => {
+  it('renders the help text below the video', async () => {
     renderComponent();
-    expect(await screen.findByText('Glific')).toBeInTheDocument();
-  });
-
-  it('renders the help text below the mockup', async () => {
-    renderComponent();
-    expect(await screen.findByText(/Apply for access and tell us what functionality/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Once you request access, we'll enable it within 24 hours/i)).toBeInTheDocument();
   });
 
   it('redirects to main AI Evaluations when access is already approved', async () => {
