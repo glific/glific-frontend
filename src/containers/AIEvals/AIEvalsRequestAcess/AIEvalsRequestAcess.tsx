@@ -119,9 +119,10 @@ export default function AIEvalsRequestAcess() {
         <iframe
           src={AI_EVALS_INTRO_VIDEO_URL}
           className={styles.VideoPlaceholder}
-          allow="autoplay"
-          allowFullScreen
           title="AI Evals intro video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
           data-testid="videoPlaceholder"
         />
 
