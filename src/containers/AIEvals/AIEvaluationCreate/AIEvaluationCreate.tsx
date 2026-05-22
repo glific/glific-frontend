@@ -213,6 +213,7 @@ export default function AIEvaluationCreate() {
     {
       component: GoldenQaField,
       name: 'goldenQaId',
+      label: <strong>Golden QA*</strong>,
       options: goldenQaOptions,
       helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
