@@ -354,25 +354,23 @@ export const getCollectionInfo = (variables: any) => ({
   },
 });
 
-export const updateCollectionContactsQuery = {
+export const updateCollectionContactsQuery = (
+  input: any = { addContactIds: ['3'], groupId: '1', deleteContactIds: [] },
+  result: { groupContacts?: any[]; numberDeleted?: number } = {}
+) => ({
   request: {
     query: UPDATE_COLLECTION_CONTACTS,
-    variables: { input: { addContactIds: ['3'], groupId: '1', deleteContactIds: [] } },
+    variables: { input },
   },
   result: {
     data: {
       updateGroupContacts: {
-        groupContacts: [
-          {
-            id: '19',
-            value: null,
-          },
-        ],
-        numberDeleted: 0,
+        groupContacts: result.groupContacts ?? [{ id: '19', value: null }],
+        numberDeleted: result.numberDeleted ?? 0,
       },
     },
   },
-};
+});
 
 export const exportCollectionsQuery = {
   request: {

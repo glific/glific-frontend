@@ -194,7 +194,9 @@ export const FlowList = () => {
                     and assign it to the following node(s):
                   </p>
                   <div className={styles.SectionTitle}>
-                    <strong>{assistantNodeUuids.length === 1 ? 'Assistant Node UUID:' : 'Assistant Node UUIDs:'}</strong>
+                    <strong>
+                      {assistantNodeUuids.length === 1 ? 'Assistant Node UUID:' : 'Assistant Node UUIDs:'}
+                    </strong>
                   </div>
                   <ol className={styles.AssistantListPlain}>
                     {assistantNodeUuids.map((uuid: string) => (

@@ -3,25 +3,21 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AssistantsIcon from 'assets/images/Assistants.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
 import { Tooltip } from '@mui/material';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
+
+dayjs.extend(relativeTime);
 
 interface AIEvaluationListProps {
   searchQuery?: string;
 }
 
-const columnStyles = [
-  styles.Name,
-  styles.StatusColumn,
-  styles.Metric,
-  styles.CompletedAt,
-  styles.Actions,
-];
+const columnStyles = [styles.Name, styles.StatusColumn, styles.Metric, styles.CompletedAt, styles.Actions];
 
 const parseResults = (results: any) => {
   if (!results) return { cosineSimilarity: null };
@@ -57,15 +53,16 @@ const extractRows = (data: any): any[] => {
 };
 
 // Flatten a trace row into readable CSV columns.
-// Output columns: question_id, question, ground_truth_answer, llm_answer, <metric_name per score>
-const TRACE_COLUMNS = ['question_id', 'question', 'ground_truth_answer', 'llm_answer'];
+// Output columns: question_id, question, golden_answer, llm_answer, <metric_name per score>
+const TRACE_COLUMNS = ['question_id', 'question', 'golden_answer', 'llm_answer'];
 
 const flattenRow = (row: any): Record<string, any> | null => {
   if (row === null || row === undefined || typeof row !== 'object' || Array.isArray(row)) return null;
   const flat: Record<string, any> = {};
 
   for (const key of TRACE_COLUMNS) {
-    flat[key] = row[key] ?? '';
+    const sourceKey = key === 'golden_answer' ? 'ground_truth_answer' : key;
+    flat[key] = row[sourceKey] ?? '';
   }
 
   // Expand scores array: { name: "Cosine Similarity", value: 0.11 } → cosine_similarity: 0.11
@@ -121,13 +118,10 @@ const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
   const goldenQaName = goldenQa?.name;
   const goldenQaDuplicationFactor = goldenQa?.duplicationFactor;
 
-  const assistantLabel =
-    (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
+  const assistantLabel = (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
 
   const assistantLink =
-    assistantId && versionNumber != null
-      ? `/assistants/${assistantId}/version/${versionNumber}`
-      : null;
+    assistantId && versionNumber != null ? `/assistants/${assistantId}/version/${versionNumber}` : null;
 
   return (
     <div>
@@ -177,7 +171,7 @@ const getStatus = (status: string) => {
       <span className={dotCls} />
       <span className={styles.StatusContent}>
         <span className={styles.StatusLabel}>{showHelperText ? `${label}.` : label}</span>
-        {showHelperText && <span className={styles.StatusHelperText}>May take about 15 mins.</span>}
+        {showHelperText && <span className={styles.StatusHelperText}>May take about 45 mins.</span>}
       </span>
     </span>
   );
@@ -190,7 +184,7 @@ const getMetric = (value: number | null) => {
 
 const getCompletedAt = (status: string, updatedAt: string) => {
   if (status?.toUpperCase() !== 'COMPLETED' || !updatedAt) return <span className={styles.MetricNA}>—</span>;
-  return <div>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>;
+  return <div>{dayjs(updatedAt).fromNow()}</div>;
 };
 
 const columnNames = [
@@ -213,14 +207,7 @@ const columnNames = [
   { name: 'actions', label: 'Actions' },
 ];
 
-const getColumns = ({
-  name,
-  status,
-  results,
-  updatedAt,
-  goldenQa,
-  assistantConfigVersion,
-}: Record<string, any>) => {
+const getColumns = ({ name, status, results, updatedAt, goldenQa, assistantConfigVersion }: Record<string, any>) => {
   const { cosineSimilarity } = parseResults(results);
   return {
     name: getName({ name, goldenQa, assistantConfigVersion }),
@@ -315,6 +302,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
       {...queries}
       {...columnAttributes}
       filters={searchQuery ? { name: searchQuery } : null}
+      searchActive={Boolean(searchQuery)}
       showHeader={false}
       showSearch={false}
       button={{ show: true, label: 'Create New Evaluation', action: () => navigate('/ai-evaluations/create') }}

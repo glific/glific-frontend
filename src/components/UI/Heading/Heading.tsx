@@ -19,13 +19,7 @@ export interface HeadingProps {
   };
 }
 
-export const Heading = ({
-  formTitle,
-  helpData,
-  backLink,
-  headerHelp,
-  button,
-}: HeadingProps) => {
+export const Heading = ({ formTitle, helpData, backLink, headerHelp, button }: HeadingProps) => {
   const navigate = useNavigate();
   const addIcon = <AddIcon className={styles.AddIcon} />;
 

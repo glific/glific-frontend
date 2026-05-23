@@ -51,17 +51,7 @@ export const AddAttachment = ({
 
   const { t } = useTranslation();
 
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
-    onCompleted: (data: any) => {
-      setAttachmentURL(data.uploadMedia);
-      setUploading(false);
-    },
-    onError: () => {
-      setFileName(null);
-      setUploading(false);
-      setNotification(t('An error occured while uploading the file'), 'warning');
-    },
-  });
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA);
 
   const validateURL = () => {
     if (attachmentURL && attachmentType) {
@@ -174,21 +164,32 @@ export const AddAttachment = ({
     setAttachment(false);
   };
 
-  const addAttachment = (event: any) => {
+  const addAttachment = async (event: any) => {
     const media = event.target.files[0];
 
-    if (media) {
-      const mediaName = media.name;
-      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
-      const shortenedName = slicedString(mediaName, 15);
-      setFileName(shortenedName);
-      setUploading(true);
-      uploadMedia({
+    if (!media) return;
+
+    const mediaName = media.name;
+    const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+    const shortenedName = slicedString(mediaName, 15);
+    setFileName(shortenedName);
+    setUploading(true);
+
+    try {
+      const { data } = await uploadMedia({
         variables: {
           media,
           extension,
         },
       });
+      if (data) {
+        setAttachmentURL(data.uploadMedia);
+      }
+    } catch {
+      setFileName(null);
+      setNotification(t('An error occured while uploading the file'), 'warning');
+    } finally {
+      setUploading(false);
     }
   };
 

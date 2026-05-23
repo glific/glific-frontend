@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
 
+import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { UploadGoldenQaDialog } from 'containers/AIEvals/UploadGoldenQaDialog/UploadGoldenQaDialog';
 import styles from './AIEvaluationCreate.module.css';
 
@@ -26,8 +27,14 @@ const getGoldenQAHelperContent = () => (
       <div className={styles.CSVFormatExample}>{t('Expected CSV Format:')}</div>
       <div className={styles.CSVFormatExample}>{t('Question, Answer')}</div>
       <div className={styles.CSVFormatExample}>{'"What Is X","Answer"'}</div>
-      <a href="#" className={styles.TemplateLink} target="_blank" rel="noopener noreferrer">
-        {t('Click Here For The Template Csv')}
+      <a
+        data-testid="templateCsvButton"
+        className={styles.TemplateLink}
+        href={GOLDEN_QA_TEMPLATE_LINK}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {t('Click Here For The Template')}
       </a>
     </div>
   </div>
@@ -66,7 +73,7 @@ const GoldenQaField = (props: any) => {
             multiple={false}
             disableClearable={false}
             noOptionsText={t('No Golden QA datasets available')}
-            placeholder={t('Search or select a Golden QA dataset')}
+            placeholder={t('Search or select a Golden QA')}
             textFieldProps={goldenQaAutoCompleteTextFieldProps}
           />
         </div>
@@ -87,8 +94,6 @@ const GoldenQaField = (props: any) => {
   );
 };
 
-const SectionDivider = (_props: any) => null;
-
 interface GoldenQaOption {
   id: string | number;
   label: string;
@@ -108,10 +113,11 @@ export default function AIEvaluationCreate() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [newlyAddedDataset, setNewlyAddedDataset] = useState<GoldenQaOption | null>(null);
 
-  const { data: versionsData, loading: versionsLoading, error: versionsError } = useQuery(
-    GET_ASSISTANT_CONFIG_VERSIONS,
-    { variables: { filter: {} }, fetchPolicy: 'network-only' }
-  );
+  const {
+    data: versionsData,
+    loading: versionsLoading,
+    error: versionsError,
+  } = useQuery(GET_ASSISTANT_CONFIG_VERSIONS, { variables: { filter: {} }, fetchPolicy: 'network-only' });
 
   const { data: goldenQaData, error: goldenQaError } = useQuery(LIST_GOLDEN_QA, {
     variables: { filter: {}, opts: {} },
@@ -130,31 +136,33 @@ export default function AIEvaluationCreate() {
     }
   }, [goldenQaError]);
 
+  const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+
   const backendOptions: GoldenQaOption[] =
     goldenQaData?.goldenQas?.map((qa: any) => ({ id: qa.id, label: qa.name })) ?? [];
 
   const uploadedIds = new Set(uploadedDatasets.map((d) => String(d.id)));
   const goldenQaOptions: GoldenQaOption[] = [
     ...uploadedDatasets,
-    ...backendOptions.filter((opt) => !uploadedIds.has(String(opt.id))),
+    ...backendOptions
+      .filter((opt) => !uploadedIds.has(String(opt.id)))
+      .sort((a, b) => collator.compare(a.label, b.label)),
   ];
 
   const assistantOptions: AssistantOption[] = versionsLoading
     ? []
-    : versionsData?.assistantConfigVersions?.length > 0
-      ? versionsData.assistantConfigVersions.map((v: any) => ({
+    : (versionsData?.assistantConfigVersions ?? [])
+        .map((v: any) => ({
           id: v.id,
           label: `${v.assistantName} (Version ${v.versionNumber})`,
         }))
-      : [];
+        .sort((a: AssistantOption, b: AssistantOption) => collator.compare(a.label, b.label));
 
-  const assistantNoOptionsText = versionsLoading
-    ? t('Fetching assistants...')
-    : t('No assistants available');
+  const assistantNoOptionsText = versionsLoading ? t('Fetching assistants...') : t('No assistants available');
 
   const validationSchema = Yup.object().shape({
     evaluationName: Yup.string().required(t('Evaluation name is required')),
-    goldenQaId: Yup.object().nullable().required(t('Please select a Golden QA dataset')),
+    goldenQaId: Yup.object().nullable().required(t('Please select a Golden QA')),
     assistantId: Yup.object().nullable().required(t('Please select an AI Assistant')),
   });
 
@@ -167,6 +175,14 @@ export default function AIEvaluationCreate() {
     goldenQaId: null,
     assistantId: null,
   });
+
+  const [fieldValues, setFieldValues] = useState({
+    goldenQaId: false,
+    assistantId: false,
+    evaluationName: false,
+  });
+
+  const isRunEnabled = fieldValues.goldenQaId && fieldValues.assistantId && fieldValues.evaluationName;
 
   const handleUploadGoldenQaButtonClick = () => {
     if (fileInputRef.current) {
@@ -189,36 +205,20 @@ export default function AIEvaluationCreate() {
     const newOption: GoldenQaOption = { id: values.id, label: values.name };
     setUploadedDatasets((prev) => [newOption, ...prev]);
     setNewlyAddedDataset(newOption);
+    setFieldValues((prev) => ({ ...prev, goldenQaId: true }));
     setShowUploadGoldenQaDialog(false);
   };
 
   const formFields = [
     {
-      component: SectionDivider,
-      name: '__evaluationDetailsDivider',
-      label: <span className={styles.SectionDividerLabel}>Select Golden QA</span>,
-      placeholder: '',
-    },
-    {
       component: GoldenQaField,
       name: 'goldenQaId',
+      label: <strong>Golden QA*</strong>,
       options: goldenQaOptions,
       helperText: getGoldenQAHelperContent(),
       onUploadGoldenQaClick: handleUploadGoldenQaButtonClick,
       newlyAddedDataset,
-    },
-    {
-      component: SectionDivider,
-      name: '__evaluationDetailsDivider',
-      label: <span className={styles.SectionDividerLabel}>Evaluation Details</span>,
-      placeholder: '',
-    },
-    {
-      component: Input,
-      name: 'evaluationName',
-      type: 'text',
-      label: <strong>Evaluation Name*</strong>,
-      placeholder: t('Give a unique name for the evaluation experiment'),
+      onChange: (value: GoldenQaOption | null) => setFieldValues((prev) => ({ ...prev, goldenQaId: value != null })),
     },
     {
       component: AutoComplete,
@@ -231,15 +231,22 @@ export default function AIEvaluationCreate() {
       noOptionsText: assistantNoOptionsText,
       placeholder: t('Search or select an AI assistant'),
       openOnFocus: true,
+      onChange: (value: AssistantOption | null) => setFieldValues((prev) => ({ ...prev, assistantId: value != null })),
+    },
+    {
+      component: Input,
+      name: 'evaluationName',
+      type: 'text',
+      label: <strong>Evaluation Name*</strong>,
+      placeholder: t('Give a unique name for the evaluation run'),
+      onChange: (value: string) => setFieldValues((prev) => ({ ...prev, evaluationName: value.trim().length > 0 })),
     },
   ];
 
   const dialogMessage = 'This action cannot be undone.';
 
   const handleSetPayload = (payload: any) => {
-    const selectedVersion = versionsData?.assistantConfigVersions?.find(
-      (v: any) => v.id === payload.assistantId?.id
-    );
+    const selectedVersion = versionsData?.assistantConfigVersions?.find((v: any) => v.id === payload.assistantId?.id);
     return {
       goldenQaId: payload.goldenQaId?.id,
       evaluationName: payload.evaluationName,
@@ -268,6 +275,7 @@ export default function AIEvaluationCreate() {
         redirect={false}
         title="Create AI Evaluation"
         button="Run Evaluation"
+        buttonState={{ show: true, status: !isRunEnabled, text: 'Run Evaluation' }}
         languageSupport={false}
         backLinkButton="/ai-evaluations"
         cancelAction={() => window.history.back()}

@@ -148,6 +148,7 @@ export interface ListProps {
   showHeader?: boolean;
   refreshList?: boolean;
   showSearch?: boolean;
+  searchActive?: boolean;
 
   refetchQueries?: any;
 
@@ -203,6 +204,7 @@ export const List = ({
   showActions = true,
   showHeader = true,
   showSearch = true,
+  searchActive = false,
 
   refetchQueries,
 
@@ -715,7 +717,7 @@ export const List = ({
 
   var noItemsText = (
     <div className={styles.NoResults}>
-      {searchVal ? (
+      {searchVal || searchActive ? (
         <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>

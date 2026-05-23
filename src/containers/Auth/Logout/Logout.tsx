@@ -6,6 +6,7 @@ import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { resetRolePermissions } from 'context/role';
+import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
 import { USER_SESSION } from 'config';
 import { clearListSession } from 'services/ListService';
@@ -48,6 +49,9 @@ export const Logout = () => {
 
     // clear local storage list sort session
     clearListSession();
+
+    // clear org eval request access cache
+    clearOrgEvalAccessCache();
 
     // clear apollo cache
     client.clearStore();

@@ -68,5 +68,9 @@ export const CERTIFICATES_FAQ_FORMAT_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#3-error-1-url-ending-with-slideidp';
 export const CERTIFICATES_PERMISSIONS_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#4-error-2-permission-issues';
+export const GOLDEN_QA_TEMPLATE_LINK =
+  'https://docs.google.com/spreadsheets/d/198UpOMeU53s9O-fwbIl0DIJLuD3l24jgkq74CoDfSQM/copy';
+export const AI_EVALS_INTRO_VIDEO_URL =
+  envVariables.VITE_AI_EVALS_INTRO_VIDEO_URL || 'https://www.youtube.com/embed/pl8pUTkAgwc';
 export const TRIAL_CREATE_USER_API = `${GLIFIC_API_URL}/v1/trial/create-trial-user`;
 export const TRIAL_ALLOCATE_ACCOUNT_API = `${GLIFIC_API_URL}/v1/trial/allocate-account`;

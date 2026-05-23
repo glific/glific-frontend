@@ -115,11 +115,12 @@ describe('AIEvaluationList', () => {
     });
   });
 
-  it('shows formatted date in completed-at for completed evaluation', async () => {
+  it('shows relative date in completed-at for completed evaluation', async () => {
     renderComponent([getListAiEvaluationsBothMetricsMock]);
     await waitFor(() => {
       // completedEvaluationWithBothMetrics.updatedAt = '2026-01-04T02:00:00Z'
-      expect(screen.getByText(/04\/01\/2026/)).toBeInTheDocument();
+      // rendered as relative time, e.g. "4 months ago"
+      expect(screen.getByText(/ago/)).toBeInTheDocument();
     });
   });
 
@@ -283,6 +284,35 @@ describe('AIEvaluationList', () => {
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalledWith('Invalid scores data received', 'warning');
     });
+  });
+
+  it('downloaded CSV uses golden_answer column header even though backend sends ground_truth_answer', async () => {
+    let capturedBlob: Blob | null = null;
+    vi.spyOn(URL, 'createObjectURL').mockImplementation((obj: Blob | MediaSource) => {
+      capturedBlob = obj as Blob;
+      return 'blob:mock-url';
+    });
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => expect(capturedBlob).not.toBeNull());
+
+    const csvText = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsText(capturedBlob!);
+    });
+    const headers = csvText.split('\n')[0].split(',');
+
+    expect(headers).toContain('golden_answer');
+    expect(headers).not.toContain('ground_truth_answer');
+
+    vi.restoreAllMocks();
   });
 
   it('shows warning when all trace rows are invalid and CSV is empty', async () => {
