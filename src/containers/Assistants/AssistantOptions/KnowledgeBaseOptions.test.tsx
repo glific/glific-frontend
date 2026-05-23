@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import { KnowledgeBaseOptions } from './KnowledgeBaseOptions';
 
@@ -295,11 +295,11 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     );
 
     const mocks = [
-      createUploadSuccessMock('state-file-0.txt', 100),
-      createUploadErrorMock('state-file-1.txt', new Error('bad file'), 150),
+      createUploadSuccessMock('state-file-0.txt', 500),
+      createUploadErrorMock('state-file-1.txt', new Error('bad file'), 600),
       ...Array.from({ length: 8 }, (_, i) => createUploadSuccessMock(`state-file-${i + 2}.txt`, Infinity)),
-      createUploadSuccessMock('state-file-10.txt'),
-      createUploadSuccessMock('state-file-11.txt'),
+      createUploadSuccessMock('state-file-10.txt', Infinity),
+      createUploadSuccessMock('state-file-11.txt', Infinity),
     ];
 
     render(
@@ -314,39 +314,37 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('queuedIcon').length).toBeGreaterThan(0);
+      expect(screen.getAllByTestId('uploadingIcon').length).toBe(10);
+      expect(screen.getAllByTestId('queuedIcon').length).toBe(2);
     });
 
-    fireEvent.click(
-      screen
-        .getByText('state-file-10.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
-    );
+    const getFileRow = (filename: string) =>
+      screen.getByText(filename).closest('[data-testid="fileItem"]') as HTMLElement;
+
+    await waitFor(() => {
+      const fileRow = getFileRow('state-file-10.txt');
+      expect(within(fileRow).getByTestId('queuedIcon')).toBeInTheDocument();
+      expect(within(fileRow).getByTestId('deleteFile')).not.toBeDisabled();
+    });
+    fireEvent.click(within(getFileRow('state-file-10.txt')).getByTestId('deleteFile'));
     await waitFor(() => {
       expect(screen.queryByText('state-file-10.txt')).not.toBeInTheDocument();
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
-      expect(screen.getByText('state-file-0.txt')).toBeInTheDocument();
+      expect(within(getFileRow('state-file-0.txt')).getByTestId('attachedIcon')).toBeInTheDocument();
+      expect(within(getFileRow('state-file-1.txt')).getByTestId('failedIcon')).toBeInTheDocument();
     });
 
-    fireEvent.click(
-      screen
-        .getByText('state-file-1.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
-    );
-    expect(screen.queryByText('state-file-1.txt')).not.toBeInTheDocument();
+    fireEvent.click(within(getFileRow('state-file-1.txt')).getByTestId('deleteFile'));
+    await waitFor(() => {
+      expect(screen.queryByText('state-file-1.txt')).not.toBeInTheDocument();
+    });
 
-    fireEvent.click(
-      screen
-        .getByText('state-file-0.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
-    );
-    expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
+    fireEvent.click(within(getFileRow('state-file-0.txt')).getByTestId('deleteFile'));
+    await waitFor(() => {
+      expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
+    });
   });
 
   test('shows warning notification on proceed when files have failed uploads', async () => {

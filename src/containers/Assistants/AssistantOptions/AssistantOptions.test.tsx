@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import { AssistantOptions } from './AssistantOptions';
 
@@ -358,11 +358,11 @@ describe('AssistantOptions upload queue behavior', () => {
     );
 
     const mocks = [
-      // state-file-0.txt (attached after delayed resolve)
+      // state-file-0.txt (attached after delayed resolve; keep delay generous for CI)
       {
         request: { query: UPLOAD_FILE_TO_KAAPI },
         variableMatcher: (variables: any) => variables?.media?.name === 'state-file-0.txt',
-        delay: 100,
+        delay: 500,
         result: {
           data: {
             uploadFilesearchFile: {
@@ -378,7 +378,7 @@ describe('AssistantOptions upload queue behavior', () => {
       {
         request: { query: UPLOAD_FILE_TO_KAAPI },
         variableMatcher: (variables: any) => variables?.media?.name === 'state-file-1.txt',
-        delay: 150,
+        delay: 600,
         error: new Error('bad file'),
       },
       // Keep state-file-2..state-file-9 stuck "uploading" so state-file-10 and state-file-11
@@ -398,10 +398,11 @@ describe('AssistantOptions upload queue behavior', () => {
           },
         },
       })),
-      // Provide mocks for queued uploads that will start after a slot frees up.
+      // Mocks for files that may start after a slot frees; keep in-flight until after queued delete.
       ...['state-file-10.txt', 'state-file-11.txt'].map((name) => ({
         request: { query: UPLOAD_FILE_TO_KAAPI },
         variableMatcher: (variables: any) => variables?.media?.name === name,
+        delay: Infinity,
         result: {
           data: {
             uploadFilesearchFile: {
@@ -427,43 +428,35 @@ describe('AssistantOptions upload queue behavior', () => {
     });
 
     await waitFor(() => {
-      // All except 0 and 1 should be queued (or resolved instantly), so at least some will be "queued"
-      expect(screen.getAllByTestId('queuedIcon').length).toBeGreaterThan(0);
+      expect(screen.getAllByTestId('uploadingIcon').length).toBe(10);
+      expect(screen.getAllByTestId('queuedIcon').length).toBe(2);
     });
 
-    // Delete a queued file (state-file-10.txt). Should disappear immediately.
-    fireEvent.click(
-      screen
-        .getByText('state-file-10.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
-    );
+    // Delete state-file-10 while still queued (delete is disabled during upload).
+    const getFileRow = (filename: string) =>
+      screen.getByText(filename).closest('[data-testid="fileItem"]') as HTMLElement;
+
+    await waitFor(() => {
+      const fileRow = getFileRow('state-file-10.txt');
+      expect(within(fileRow).getByTestId('queuedIcon')).toBeInTheDocument();
+      expect(within(fileRow).getByTestId('deleteFile')).not.toBeDisabled();
+    });
+    fireEvent.click(within(getFileRow('state-file-10.txt')).getByTestId('deleteFile'));
     await waitFor(() => {
       expect(screen.queryByText('state-file-10.txt')).not.toBeInTheDocument();
     });
 
-    // Now state-file-0.txt succeeds and state-file-1.txt fails (via mocks).
     await waitFor(() => {
-      expect(screen.getByTestId('failedIcon')).toBeInTheDocument();
-      expect(screen.getByText('state-file-0.txt')).toBeInTheDocument();
+      expect(within(getFileRow('state-file-0.txt')).getByTestId('attachedIcon')).toBeInTheDocument();
+      expect(within(getFileRow('state-file-1.txt')).getByTestId('failedIcon')).toBeInTheDocument();
     });
 
-    // Delete failed file (state-file-1.txt)
-    fireEvent.click(
-      screen
-        .getByText('state-file-1.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
-    );
-    expect(screen.queryByText('state-file-1.txt')).not.toBeInTheDocument();
+    fireEvent.click(within(getFileRow('state-file-1.txt')).getByTestId('deleteFile'));
+    await waitFor(() => {
+      expect(screen.queryByText('state-file-1.txt')).not.toBeInTheDocument();
+    });
 
-    // Delete attached file (state-file-0.txt)
-    fireEvent.click(
-      screen
-        .getByText('state-file-0.txt')
-        .closest('[data-testid="fileItem"]')!
-        .querySelector('[data-testid="deleteFile"]')!
-    );
+    fireEvent.click(within(getFileRow('state-file-0.txt')).getByTestId('deleteFile'));
     await waitFor(() => {
       expect(screen.queryByText('state-file-0.txt')).not.toBeInTheDocument();
     });
