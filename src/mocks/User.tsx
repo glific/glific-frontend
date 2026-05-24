@@ -148,6 +148,12 @@ export const getCurrentUserInvalidRoleQuery = {
           name: 'John Doe',
           phone: '+919820198765',
           roles: ['None'],
+          accessRoles: [
+            {
+              id: '1',
+              label: 'None',
+            },
+          ],
           contact: {
             id: '1',
           },

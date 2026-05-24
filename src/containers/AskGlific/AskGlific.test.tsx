@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import {
@@ -48,6 +48,10 @@ describe('AskGlific', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   test('should render AskGlific component', async () => {
@@ -696,6 +700,8 @@ describe('AskGlific', () => {
   });
 
   test('handleSendMessage resets loading state after a mutation error so the user can retry', async () => {
+    vi.useFakeTimers();
+
     const failingSendMock = {
       request: {
         query: ASK_GLIFIC,
@@ -712,7 +718,9 @@ describe('AskGlific', () => {
     };
 
     const retrySendMock = createAskGlificMock('Retry attempt');
-    const retrySubMock = createSubscriptionMock({ answer: 'It worked!', delay: 30 });
+    // Large delay so the subscription doesn't fire at mount — we advance timers
+    // manually after the retry Enter, when pendingRequestIdRef.current is set.
+    const retrySubMock = createSubscriptionMock({ answer: 'It worked!', delay: 10_000 });
 
     renderAskGlific({ mocks: [conversationsMock, failingSendMock, retrySendMock, retrySubMock] });
 
@@ -720,20 +728,28 @@ describe('AskGlific', () => {
     fireEvent.change(textbox, { target: { value: 'Will fail' } });
     fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
 
-    await waitFor(() => {
-      expect(
-        screen.getByText('Sorry, I encountered an error while processing your request. Please try again.')
-      ).toBeInTheDocument();
+    // Advance 100ms: flushes Apollo's async mutation resolution but stays well
+    // below the subscription mock delay (10_000ms), so the subscription doesn't fire yet.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100);
     });
+
+    expect(
+      screen.getByText('Sorry, I encountered an error while processing your request. Please try again.')
+    ).toBeInTheDocument();
 
     // After the error, loading must have been cleared (otherwise the retry
     // Enter press would be blocked by the in-flight guard).
     fireEvent.change(textbox, { target: { value: 'Retry attempt' } });
     fireEvent.keyDown(textbox, { key: 'Enter', shiftKey: false });
 
-    await waitFor(() => {
-      expect(screen.getByText('It worked!')).toBeInTheDocument();
+    // pendingRequestIdRef.current is now MOCK_REQUEST_ID — advance past the
+    // subscription delay to fire the mock while the ref holds the correct id.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10_000);
     });
+
+    expect(screen.getByText('It worked!')).toBeInTheDocument();
   });
 
   test('clicking the title in sidebar mode toggles history and re-fetches conversations on open', async () => {
