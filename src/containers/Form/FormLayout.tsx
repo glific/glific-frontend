@@ -591,7 +591,7 @@ export const FormLayout = ({
                 loading={saveClick}
                 disabled={buttonState.status}
               >
-                {buttonState.status ? buttonState.text : button}
+                {buttonState.status ? t(buttonState.text as any) : t(button as any)}
               </Button>
             )}
             {additionalAction ? (
@@ -614,7 +614,7 @@ export const FormLayout = ({
             ) : null}
             {errorButtonState?.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {errorButtonState?.text}
+                {t(errorButtonState?.text as any)}
               </Button>
             )}
 
@@ -654,20 +654,20 @@ export const FormLayout = ({
   }
 
   let formTitle = '';
-  let headerHelp: string = `Please enter below details.`;
+  let headerHelp: string = t('Please enter below details.');
 
   // set title if there is a title
   if (title) {
-    formTitle = title;
+    formTitle = t(title as any);
   } else if (type === 'copy') {
-    formTitle = `Copy ${listItemName}`; // case when copying an item
+    formTitle = t(`Copy ${listItemName}` as any); // case when copying an item
   } else if (itemId) {
-    formTitle = isView ? `${listItemName}` : `Edit ${listItemName}`; // case when editing a item
+    formTitle = isView ? t(listItemName as any) : t(`Edit ${listItemName}` as any); // case when editing a item
   } else {
-    formTitle = `Create a new ${listItemName}`; // case when adding a new item
+    formTitle = t(`Create a new ${listItemName}` as any); // case when adding a new item
   }
   if (isView) {
-    headerHelp = `Please view below details.`;
+    headerHelp = t('Please view below details.');
   }
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 

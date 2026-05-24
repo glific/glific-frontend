@@ -39,7 +39,7 @@ export const WaPollsList = () => {
 
   const [deletePoll, { loading }] = useMutation(DELETE_POLL);
 
-  const columnNames = [{ name: 'label', label: 'Title' }, { label: 'Content' }, { label: t('Actions') }];
+  const columnNames = [{ name: 'label', label: t('Title') }, { label: t('Content')}, { label: t('Actions') }];
   const title = t('Group Polls');
   const dialogMessage = t("You won't be able to use this collection again.");
   const columnStyles = [styles.Label, styles.Content, styles.Actions];

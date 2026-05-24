@@ -715,13 +715,16 @@ export const List = ({
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
 
+  const emptyListItemName = noItemText ? t(noItemText as any) : t(listItemName as any);
+
   var noItemsText = (
     <div className={styles.NoResults}>
       {searchVal || searchActive ? (
         <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>
-          There are no {noItemText || listItemName}s right now. {button.show && t('Please create one.')}
+          {t('There are no {{item}}s right now.', { item: emptyListItemName })}{' '}
+          {button.show && t('Please create one.')}
         </div>
       )}
     </div>

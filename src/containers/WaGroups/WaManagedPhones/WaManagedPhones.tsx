@@ -53,7 +53,7 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
           <AutoComplete
             classes={{ inputRoot: styles.DropDown }}
             isFilterType
-            placeholder="Phone Number"
+            placeholder={t('Phone Number')}
             options={
               data?.waManagedPhones
                 ? data?.waManagedPhones?.map((phone: any) => ({
@@ -88,7 +88,7 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
         aria-hidden="true"
         onClick={() => handleSyncGroups()}
       >
-        {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
+        {loading ? <CircularProgress data-testid="loading" size={20} /> : t('Sync')}
       </Button>
     </div>
   );
