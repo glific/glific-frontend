@@ -540,7 +540,7 @@ export const FormLayout = ({
         disabled={restrictButtonStatus?.status}
       >
         <DeleteIcon className={styles.DeleteIcon} />
-        {restrictButtonStatus?.text || 'Remove'}
+        {restrictButtonStatus?.text || t('Remove')}
       </Button>
     ) : null;
 

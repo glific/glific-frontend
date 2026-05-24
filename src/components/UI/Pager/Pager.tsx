@@ -119,7 +119,8 @@ const tableHeadColumns = (
   tableVals: any,
   handleTableChange: Function,
   totalRows: number,
-  checkboxSupport?: { action: any; icon: any; selectedItems: any }
+  checkboxSupport?: { action: any; icon: any; selectedItems: any },
+  t?: Function
 ) => {
   let headerRow;
 
@@ -128,7 +129,12 @@ const tableHeadColumns = (
       <TableRow className={styles.TableHeadRow}>
         <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>{columnNames[0].label}</TableCell>
         <TableCell className={styles.SelectedItems}>
-          {checkboxSupport?.selectedItems.length} of {totalRows} selected
+          {t
+            ? t('{{selected}} of {{total}} selected', {
+                selected: checkboxSupport?.selectedItems.length,
+                total: totalRows,
+              })
+            : `${checkboxSupport?.selectedItems.length} of ${totalRows} selected`}
         </TableCell>
         <TableCell colSpan={3} className={styles.Icon}>
           <span
@@ -221,7 +227,8 @@ export const Pager = ({
     tableVals,
     handleTableChange,
     totalRows,
-    checkboxSupport
+    checkboxSupport,
+    t
   );
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals, t('Rows per page'));
 

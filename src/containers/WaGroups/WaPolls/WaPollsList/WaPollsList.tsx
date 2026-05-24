@@ -115,18 +115,20 @@ export const WaPollsList = () => {
 
   const deletedialog = (
     <DialogBox
-      title={`Do you want to delete this poll?`}
+      title={t('Do you want to delete this poll?')}
       handleOk={handleDelete}
       handleCancel={() => setDeleteWaPollId(null)}
       alignButtons="center"
       colorOk={'warning'}
-      buttonOk={'Delete'}
+      buttonOk={t('Delete')}
+      buttonCancel={t('Cancel')}
       buttonOkLoading={loading}
       disableOk={loading}
     >
       <p data-testid="delete-dialog" className={styles.DialogText}>
-        This action is permanent and cannot be undone. Deleting this poll will remove all associated responses and data
-        from the platform.
+        {t(
+          'This action is permanent and cannot be undone. Deleting this poll will remove all associated responses and data from the platform.'
+        )}
       </p>
     </DialogBox>
   );

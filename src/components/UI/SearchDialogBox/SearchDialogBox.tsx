@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FormControl } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -31,6 +32,7 @@ export interface SearchDialogBoxProps {
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
+  const { t } = useTranslation();
   const {
     asyncSearch,
     icon,
@@ -90,7 +92,8 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       handleCancel={handleCancel}
       titleAlign="left"
       colorOk={colorOk}
-      buttonOk={buttonOk}
+      buttonOk={t(buttonOk as any)}
+      buttonCancel={t('Cancel')}
       fullWidth={fullWidth}
     >
       <div>

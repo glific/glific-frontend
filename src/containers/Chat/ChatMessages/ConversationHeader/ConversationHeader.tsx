@@ -320,7 +320,7 @@ export const ConversationHeader = ({
         }}
       >
         <FlowIcon className={styles.Icon} />
-        Start a flow
+        {t('Start a flow')}
       </Button>
     );
   } else if (
@@ -338,7 +338,7 @@ export const ConversationHeader = ({
         }}
       >
         <FlowIcon className={styles.Icon} />
-        Start a flow
+        {t('Start a flow')}
       </Button>
     );
   } else {
@@ -361,7 +361,7 @@ export const ConversationHeader = ({
             }}
           >
             {disabled ? <FlowUnselectedIcon className={styles.Icon} /> : <FlowIcon className={styles.Icon} />}
-            Start a flow
+            {t('Start a flow')}
           </Button>
         </span>
       </Tooltip>
@@ -394,7 +394,7 @@ export const ConversationHeader = ({
       }}
     >
       <ProfileIcon className={styles.Icon} />
-      {groups ? 'View group details' : 'View contact profile'}
+      {groups ? t('View group details') : t('View contact profile')}
     </Button>
   ) : (
     <Button
@@ -426,7 +426,7 @@ export const ConversationHeader = ({
       }}
     >
       <AddContactIcon className={styles.Icon} />
-      Add to collection
+      {t('Add to collection')}
     </Button>
   ) : (
     <Button
@@ -437,7 +437,7 @@ export const ConversationHeader = ({
       }}
     >
       <AddContactIcon className={styles.Icon} />
-      Add {groups ? 'groups' : 'contacts'}
+      {groups ? t('Add groups') : t('Add contacts')}
     </Button>
   );
 
