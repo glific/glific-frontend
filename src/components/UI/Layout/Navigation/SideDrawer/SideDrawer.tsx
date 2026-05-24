@@ -1,5 +1,6 @@
 // src/components/UI/Layout/Navigation/SideDrawer/SideDrawer.tsx
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Drawer, Toolbar, Typography, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -9,13 +10,19 @@ import GlificLogo from 'assets/images/logo/Logo.svg';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import { UserMenu } from 'containers/UserMenu/UserMenu';
 import { TrialExpiryBanner } from 'containers/TrialBanner/TrialExpiryBanner';
+import { getOrganizationServices } from 'services/AuthService';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Green.svg?react';
+import AskGlific from 'containers/AskGlific/AskGlific';
 
 export const SideDrawer = () => {
+  const { t } = useTranslation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
+  const [showAskGlific, setShowAskGlific] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { provider } = useContext(ProviderContext);
+  const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
   const drawer = (
     <div className={styles.DrawerContent}>
@@ -90,6 +97,26 @@ export const SideDrawer = () => {
         variant="permanent"
       >
         {drawer}
+        {isAskGlificEnabled && (
+          <>
+            <div
+              className={styles.AskGlificMenu}
+              role="button"
+              tabIndex={0}
+              onClick={() => setShowAskGlific(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setShowAskGlific(true);
+                }
+              }}
+            >
+              <AskGlificIcon />
+              {t('Ask Glific')}
+            </div>
+            {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
+          </>
+        )}
       </Drawer>
       <UserMenu drawerOpen={drawerOpen} />
     </nav>

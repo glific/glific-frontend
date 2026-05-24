@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { AskMeBot } from 'containers/AskMeBot/AskMeBot';
+import AskGlific from 'containers/AskGlific/AskGlific';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import Billing from 'containers/SettingList/Billing/Billing';
 import Organization from 'containers/SettingList/Organization/Organization';
@@ -20,6 +20,8 @@ import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
 import { useToast } from 'services/ToastService';
 import styles from './AuthenticatedRoute.module.css';
+import { Fab, Tooltip } from '@mui/material';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -73,6 +75,8 @@ const WhatsAppFormsList = lazy(() => import('containers/WhatsAppForms/WhatsAppFo
 const WhatsAppForms = lazy(() => import('containers/WhatsAppForms/WhatsAppForms'));
 const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Configure/Configure'));
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
+const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
+const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
 
 const staffRoutes = (
   <Routes>
@@ -159,6 +163,8 @@ const adminRoutes = (
       <Route path=":id/edit" element={<WhatsappFormsConfigure />} />
       <Route path=":id/configure" element={<WhatsAppForms />} />
     </Route>
+    <Route path="ai-evaluations" element={<AIEvalsPage />} />
+    <Route path="ai-evaluations/intro" element={<AIEvalsRequestAcess />} />
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="/*" element={<Chat />} />
   </>
@@ -191,7 +197,8 @@ export const AuthenticatedRoute = () => {
   const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
 
   const [provider, setProvider] = useState<string>('');
-  const isAskMeBotEnabled = getOrganizationServices('askMeBotEnabled');
+  const [showAskGlific, setShowAskGlific] = useState(false);
+  const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
   const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
   useEffect(() => {
@@ -234,6 +241,7 @@ export const AuthenticatedRoute = () => {
           <>
             <Route path="assistants" element={<AssistantList />} />
             <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+            <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
           </>
         ) : (
           <>
@@ -256,7 +264,33 @@ export const AuthenticatedRoute = () => {
           <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
             <ErrorBoundary>
               {route}
-              {isAskMeBotEnabled && <AskMeBot />}
+              {isAskGlificEnabled && (
+                <>
+                  {!showAskGlific && (
+                    <Tooltip title="Ask Glific" placement="left" arrow>
+                      <Fab
+                        data-testid="ask-glific-fab"
+                        color="primary"
+                        aria-label="ask glific"
+                        onClick={() => setShowAskGlific(true)}
+                        sx={{
+                          position: 'fixed',
+                          bottom: 16,
+                          right: 16,
+                          background: '#119656',
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s ease-in-out',
+                          zIndex: 99,
+                          boxShadow: '0 8px 32px rgba(0, 200, 81, 0.4)',
+                        }}
+                      >
+                        <AskGlificIcon />
+                      </Fab>
+                    </Tooltip>
+                  )}
+                  {showAskGlific && <AskGlific open={showAskGlific} setOpen={setShowAskGlific} />}
+                </>
+              )}
             </ErrorBoundary>
           </Suspense>
         </Layout>

@@ -143,31 +143,18 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
     ? SEND_MESSAGE_IN_WA_GROUP_COLLECTION
     : CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION;
   // create message mutation
-  const [createAndSendMessage] = useMutation(sendChatMessageMutation, {
-    onCompleted: () => {
-      scrollToLatestMessage();
-    },
-    onError: (error: any) => {
-      const { message } = error;
-      if (message) {
-        setNotification(message, 'warning');
-      }
-      return null;
-    },
-  });
+  const [createAndSendMessage] = useMutation(sendChatMessageMutation);
 
-  const [markAsRead] = useMutation(MARK_AS_READ, {
-    onCompleted: (data) => {
-      if (data.markContactMessagesAsRead) {
-        updateContactCache(client, entityId);
-      }
-    },
-  });
+  const [markAsRead] = useMutation(MARK_AS_READ);
 
   useEffect(() => {
     if (!groups && entityId) {
       markAsRead({
         variables: { contactId: entityId.toString() },
+      }).then(({ data }) => {
+        if (data?.markContactMessagesAsRead) {
+          updateContactCache(client, entityId);
+        }
       });
     }
   }, []);
@@ -215,47 +202,47 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
     }
   };
   /* istanbul ignore next */
-  const [getSearchParameterQuery, { called: parameterCalled, data: parameterdata, loading: parameterLoading }] =
-    useLazyQuery<any>(SEARCH_QUERY, {
-      onCompleted: (searchData) => {
-        if (searchData && searchData.search.length > 0) {
-          // get the conversations from cache
-          const conversations = groups
-            ? getCachedGroupConverations(queryVariables)
-            : getCachedConverations(queryVariables);
+  const handleSearchParameterCompleted = (searchData: any) => {
+    if (!searchData || searchData.search.length === 0) return;
 
-          const conversationCopy = JSON.parse(JSON.stringify(searchData));
-          conversationCopy.search[0].messages
-            .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
-            .reverse();
-          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+    // get the conversations from cache
+    const conversations = groups ? getCachedGroupConverations(queryVariables) : getCachedConverations(queryVariables);
 
-          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-            const conversationObj = conversation;
-            if (collectionId) {
-              // If the collection(group) is present in the cache
-              if (conversationObj.group?.id === collectionId.toString()) {
-                conversationObj.messages = conversationCopy.search[0].messages;
-              }
-              // If the contact is present in the cache
-            } else if (conversationObj[chatType]?.id === entityId?.toString()) {
-              conversationObj.messages = conversationCopy.search[0].messages;
-            }
-            return conversationObj;
-          });
+    if (!conversations) return;
 
-          // update the conversation cache
-          if (groups) {
-            updateGroupConversationsCache(conversationsCopy, queryVariables);
-          } else {
-            updateConversationsCache(conversationsCopy, queryVariables);
-          }
+    const conversationCopy = JSON.parse(JSON.stringify(searchData));
+    conversationCopy.search[0].messages
+      .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+      .reverse();
+    const conversationsCopy = JSON.parse(JSON.stringify(conversations));
 
-          // need to display Load more messages button
-          setShowLoadMore(true);
+    conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+      const conversationObj = conversation;
+      if (collectionId) {
+        // If the collection(group) is present in the cache
+        if (conversationObj.group?.id === collectionId.toString()) {
+          conversationObj.messages = conversationCopy.search[0].messages;
         }
-      },
+        // If the contact is present in the cache
+      } else if (conversationObj[chatType]?.id === entityId?.toString()) {
+        conversationObj.messages = conversationCopy.search[0].messages;
+      }
+      return conversationObj;
     });
+
+    // update the conversation cache
+    if (groups) {
+      updateGroupConversationsCache(conversationsCopy, queryVariables);
+    } else {
+      updateConversationsCache(conversationsCopy, queryVariables);
+    }
+
+    // need to display Load more messages button
+    setShowLoadMore(true);
+  };
+
+  const [getSearchParameterQuery, { called: parameterCalled, data: parameterdata, loading: parameterLoading }] =
+    useLazyQuery<any>(SEARCH_QUERY);
 
   useEffect(() => {
     // scroll to the particular message after loading
@@ -266,17 +253,14 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
   const [sendMessageToCollection] = useMutation(sendCollectionMessageMutation, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
-    onCompleted: () => {
-      scrollToLatestMessage();
-    },
-    onError: (collectionError: any) => {
-      const { message } = collectionError;
-      if (message) {
-        setNotification(message, 'warning');
-      }
-      return null;
-    },
   });
+
+  const handleMutationError = (error: any) => {
+    const message = error?.message;
+    if (message) {
+      setNotification(message, 'warning');
+    }
+  };
 
   const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
     const payloadCopy = payload;
@@ -289,15 +273,20 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
     return payloadCopy;
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     setDialogbox('');
-    sendMessageToCollection({
-      variables: collectionVariables,
-    });
+    try {
+      await sendMessageToCollection({
+        variables: collectionVariables,
+      });
+      scrollToLatestMessage();
+    } catch (error) {
+      handleMutationError(error);
+    }
   };
 
   // this function is called when the message is sent collection
-  const sendCollectionMessageHandler = (
+  const sendCollectionMessageHandler = async (
     body: string,
     mediaId: string,
     messageType: string,
@@ -313,12 +302,17 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
         message: body,
         type: messageType,
       };
-      sendMessageToCollection({
-        variables: {
-          groupId: collectionId,
-          input: payload,
-        },
-      });
+      try {
+        await sendMessageToCollection({
+          variables: {
+            groupId: collectionId,
+            input: payload,
+          },
+        });
+        scrollToLatestMessage();
+      } catch (error) {
+        handleMutationError(error);
+      }
     } else {
       setDialogbox('collection');
       payload = {
@@ -338,7 +332,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
-    (
+    async (
       body: any,
       mediaId: string,
       messageType: string,
@@ -369,9 +363,14 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
         payload = updatePayload(payload, selectedTemplate, variableParam);
       }
 
-      createAndSendMessage({
-        variables: { input: payload },
-      });
+      try {
+        await createAndSendMessage({
+          variables: { input: payload },
+        });
+        scrollToLatestMessage();
+      } catch (error) {
+        handleMutationError(error);
+      }
     },
     [createAndSendMessage, entityId, phoneId, conversationInfo]
   );
@@ -451,7 +450,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
         getSearchParameterQuery({
           variables,
-        });
+        }).then(({ data }) => handleSearchParameterCompleted(data));
       }
     }
   };
@@ -816,7 +815,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
       getSearchParameterQuery({
         variables,
-      });
+      }).then(({ data }) => handleSearchParameterCompleted(data));
     }
 
     scrollToLatestMessage();

@@ -1,0 +1,26 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-title:
+    name: Validate PR title format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|build|chore|ci|docs|style|refactor|perf|test)!?: '
+          if ! echo "$PR_TITLE" | grep -qE "$pattern"; then
+            echo "::error::PR title must start with '<type>: ' where type is one of: feat, fix, build, chore, ci, docs, style, refactor, perf, test (optional ! for breaking changes, e.g. feat!)"
+            echo "Current title: $PR_TITLE"
+            echo "Example: feat: add AI evaluation list page"
+            exit 1
+          fi
+          echo "PR title is valid: $PR_TITLE"

@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 import * as Notification from 'common/notification';
 import { TRIGGER_MOCKS, createTriggerQuery, getTriggerQuery } from 'mocks/Trigger';
+import { VALIDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
 import utc from 'dayjs';
@@ -601,6 +602,49 @@ describe('Whatsapp group collections', () => {
 
     await waitFor(() => {
       expect(radioButton).toBeChecked();
+    });
+  });
+});
+
+describe('handleFlowChange error handling', () => {
+  test('should show warning when flow validation fails with network error', async () => {
+    const validateTriggerError = {
+      request: {
+        query: VALIDATE_TRIGGER,
+        variables: { input: { flowId: '2' } },
+      },
+      error: new Error('Network error'),
+    };
+
+    const mocksWithError = [
+      validateTriggerError,
+      ...MOCKS.filter(
+        (m: any) => !(m?.request?.query === VALIDATE_TRIGGER && m?.request?.variables?.input?.flowId === '2')
+      ),
+    ];
+
+    render(
+      <MockedProvider mocks={mocksWithError} addTypename={false}>
+        <MemoryRouter initialEntries={['/trigger/add']}>
+          <Routes>
+            <Route path="trigger/add" element={<Trigger />} />
+            <Route path="trigger" element={<TriggerList />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Select flow*')).toBeInTheDocument();
+    });
+
+    const flowAutocomplete = screen.getAllByRole('combobox')[0];
+    flowAutocomplete.focus();
+    fireEvent.keyDown(flowAutocomplete, { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('SoL Feedback'));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to validate flow/)).toBeInTheDocument();
     });
   });
 });

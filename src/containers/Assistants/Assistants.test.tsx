@@ -105,6 +105,7 @@ test('it creates an assistant', async () => {
 
   await waitFor(() => {
     expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+    expect(screen.getByTestId('ok-button')).not.toBeDisabled();
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
@@ -304,8 +305,6 @@ test('it updates the assistant', async () => {
     expect(screen.getByText('Instructions (Prompt)*')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByTestId('copyCurrentAssistantId'));
-
   const autocompletes = screen.getAllByTestId('AutocompleteInput');
   const inputs = screen.getAllByRole('textbox');
 
@@ -329,6 +328,7 @@ test('it updates the assistant', async () => {
 
   await waitFor(() => {
     expect(screen.getAllByTestId('fileItem').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByTestId('ok-button')).not.toBeDisabled();
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));

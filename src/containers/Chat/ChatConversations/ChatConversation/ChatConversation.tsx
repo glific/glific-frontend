@@ -115,13 +115,7 @@ const ChatConversation = ({
   const location = useLocation();
 
   let groups: boolean = location.pathname.includes('group');
-  const [markAsRead] = useMutation(MARK_AS_READ, {
-    onCompleted: (data) => {
-      if (data.markContactMessagesAsRead) {
-        updateContactCache(client, entityId);
-      }
-    },
-  });
+  const [markAsRead] = useMutation(MARK_AS_READ);
 
   // Need to handle following cases:
   // a. there might be some cases when there are no conversations against the contact
@@ -173,15 +167,18 @@ const ChatConversation = ({
     avatar = <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />;
   }
 
-  let handleOnClick = () => {
+  let handleOnClick = async () => {
     if (onClick) onClick(index);
     setSearchOffset(client, messageNumber);
     if (entityType === 'contact') {
       Track(groups ? 'View Group Details' : 'View contact');
       if (!groups) {
-        markAsRead({
+        const { data } = await markAsRead({
           variables: { contactId: entityId.toString() },
         });
+        if (data?.markContactMessagesAsRead) {
+          updateContactCache(client, entityId);
+        }
       }
     }
   };

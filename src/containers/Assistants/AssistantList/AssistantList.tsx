@@ -102,8 +102,13 @@ export const AssistantList = () => {
     }
   }, [pollingData]);
 
-  const handleEdit = (id: string) => {
-    navigate(`/assistants/${id}`);
+  const handleEdit = (_id: string, item: any) => {
+    if (!item) return;
+    if (item.liveVersionNumber != null) {
+      navigate(`/assistants/${item.id}/version/${item.liveVersionNumber}`);
+    } else {
+      navigate(`/assistants/${item.id}`);
+    }
   };
 
   const handleCloneClick = (_id: string, item: any) => {
@@ -139,7 +144,7 @@ export const AssistantList = () => {
     }
   };
 
-  const getColumns = ({ id, name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
+  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
     name: getAssistantName(name, assistantDisplayId),
     liveVersion: getLiveVersion(liveVersionNumber),
     lastUpdated: getLastUpdated(updatedAt),

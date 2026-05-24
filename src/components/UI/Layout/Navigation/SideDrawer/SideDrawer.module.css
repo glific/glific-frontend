@@ -112,6 +112,20 @@
   margin-bottom: 8px;
 }
 
+.AskGlificMenu {
+  padding: 1rem;
+  background: #f0f7f1;
+  border-radius: 0.8rem;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: #119656;
+  margin: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 768px) {
   .NavClose {
     width: 0px;

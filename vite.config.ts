@@ -1,14 +1,14 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
-import { defineConfig, ConfigEnv, UserConfigExport, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import { ConfigEnv, UserConfigExport, defineConfig, loadEnv } from 'vite';
 // import eslint from 'vite-plugin-eslint';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
+import viteTsconfigPaths from 'vite-tsconfig-paths';
 
-import fs from 'fs';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import fs from 'fs';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
@@ -74,7 +74,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           'X-XSS-Protection': '1; mode=block',
           'X-Frame-Options': 'deny',
           'Content-Security-Policy':
-            "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com ; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
+            "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },

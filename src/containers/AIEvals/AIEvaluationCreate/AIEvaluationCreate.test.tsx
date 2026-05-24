@@ -3,24 +3,86 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
+import { setNotification } from 'common/notification';
 import {
   createGoldenQaCustomSuccessMock,
+  createGoldenQaErrorMock,
   createGoldenQaSuccessMock,
   getAIEvaluationCreateMocks,
+  getAssistantConfigVersionsEmptyMock,
+  getAssistantConfigVersionsErrorMock,
+  getAssistantConfigVersionsLoadingMock,
+  getAssistantConfigVersionsMock,
+  getAssistantConfigVersionsMultipleNamesMock,
+  getCreateEvaluationSuccessMock,
+  getListAiEvaluationsMock,
+  getListGoldenQaForCreateEmptyMock,
+  getListGoldenQaForCreateErrorMock,
+  getListGoldenQaForCreateMock,
 } from 'mocks/AIEvaluations';
-import AIEvaluationCreate, { DUMMY_CREATE, DUMMY_GET_ITEM } from './AIEvaluationCreate';
+import AIEvaluationCreate from './AIEvaluationCreate';
 
-const defaultMocks = getAIEvaluationCreateMocks(DUMMY_GET_ITEM, DUMMY_CREATE);
+vi.mock('common/notification', () => ({
+  setNotification: vi.fn(),
+  setErrorMessage: vi.fn(),
+}));
+
+const defaultMocks = getAIEvaluationCreateMocks();
 
 const wrapper = (mocks: any[] = defaultMocks) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/ai-evaluations/create']}>
       <Routes>
         <Route path="/ai-evaluations/create" element={<AIEvaluationCreate />} />
+        <Route path="/ai-evaluations" element={<div>AI Evaluations Page</div>} />
       </Routes>
     </MemoryRouter>
   </MockedProvider>
 );
+
+const getGoldenQaAutocompleteRoot = () => screen.getAllByTestId('autocomplete-element')[0];
+
+const getAssistantAutocompleteRoot = () => screen.getAllByTestId('autocomplete-element')[1];
+
+const openGoldenQaAutocomplete = async () => {
+  const combobox = within(getGoldenQaAutocompleteRoot()).getByRole('combobox');
+  fireEvent.focus(combobox);
+  fireEvent.keyDown(combobox, { key: 'ArrowDown' });
+  await waitFor(() => {
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+  });
+};
+
+const openAssistantAutocomplete = async () => {
+  const root = getAssistantAutocompleteRoot();
+  const combobox = within(root).getByRole('combobox');
+  fireEvent.focus(combobox);
+  fireEvent.keyDown(combobox, { key: 'ArrowDown' });
+};
+
+const fillAndSubmitForm = async (evaluationName = 'test_evaluation') => {
+  await waitFor(() => {
+    expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+  });
+
+  // Select golden QA from the autocomplete
+  await openGoldenQaAutocomplete();
+  await waitFor(() => {
+    expect(screen.getByRole('option', { name: 'Diabetescare-0101' })).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
+
+  const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
+  fireEvent.change(nameInput, { target: { value: evaluationName } });
+
+  await openAssistantAutocomplete();
+  await waitFor(() => {
+    expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+
+  fireEvent.click(screen.getByText('Run Evaluation'));
+};
 
 describe('AIEvaluationCreate', () => {
   beforeEach(() => {
@@ -44,35 +106,86 @@ describe('AIEvaluationCreate', () => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
-    expect(screen.getByText('Evaluation Name*')).toBeInTheDocument();
+    expect(screen.getByText('Golden QA*')).toBeInTheDocument();
     expect(screen.getByText('AI Assistant*')).toBeInTheDocument();
+    expect(screen.getByText('Evaluation Name*')).toBeInTheDocument();
+    expect(screen.getAllByTestId('autocomplete-element')).toHaveLength(2);
   });
 
-  test('shows No Golden QA available when no datasets are uploaded', async () => {
+  test('renders the searchable Golden QA autocomplete', async () => {
     render(wrapper());
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('No Golden QA available, upload one first')).toBeInTheDocument();
+    expect(within(getGoldenQaAutocompleteRoot()).getByTestId('AutocompleteInput')).toBeInTheDocument();
+  });
+
+  test('populates Golden QA dropdown with datasets fetched from backend', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    await openGoldenQaAutocomplete();
+
+    await waitFor(() => {
+      expect(screen.getByText('Diabetescare-0101')).toBeInTheDocument();
+      expect(screen.getByText('Healthcare-0102')).toBeInTheDocument();
+    });
+  });
+
+  test('shows no options text when backend returns empty list', async () => {
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateEmptyMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const openButton = within(getGoldenQaAutocompleteRoot()).getByRole('button', { name: 'Open' });
+    fireEvent.click(openButton);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    });
+  });
+
+  test('shows error notification when fetching golden QA datasets fails', async () => {
+    render(wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateErrorMock]));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Failed to fetch golden QA datasets', 'warning');
+    });
   });
 
   test('shows Golden QA helper content with CSV format and template link', async () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByText('Select Golden QA')).toBeInTheDocument();
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByText(/Select the Golden QA dataset from the existing list or upload a new set/)
-    ).toBeInTheDocument();
-    expect(screen.getByText('Expected CSV Format:')).toBeInTheDocument();
-    expect(screen.getByText('Question,Answer')).toBeInTheDocument();
-    expect(screen.getByText('What is the capital of France?,Paris')).toBeInTheDocument();
-    expect(screen.getByText('Click here for the template CSV')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Upload Golden QA' })).toBeInTheDocument();
+    expect(screen.getByTestId('templateCsvButton')).toBeInTheDocument();
+  });
+
+  test('template link points to the Golden QnA Google Sheets template', async () => {
+    render(wrapper());
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const templateLink = screen.getByTestId('templateCsvButton');
+    expect(templateLink.tagName).toBe('A');
+    expect(templateLink).toHaveAttribute(
+      'href',
+      'https://docs.google.com/spreadsheets/d/198UpOMeU53s9O-fwbIl0DIJLuD3l24jgkq74CoDfSQM/copy'
+    );
+    expect(templateLink).toHaveAttribute('target', '_blank');
+    expect(templateLink).toHaveAttribute('rel', 'noreferrer');
   });
 
   test('renders Upload Golden QA button', async () => {
@@ -103,7 +216,6 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Upload Golden QA');
-      // Dialog shows file name (e.g. golden-qa.csv) and name field defaults to sanitized name (golden_qa)
       expect(screen.getByText('golden-qa.csv')).toBeInTheDocument();
     });
   });
@@ -132,82 +244,175 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('shows validation error when evaluation name is empty on submit', async () => {
+  test('Run Evaluation button is disabled when evaluation name is empty', async () => {
     render(wrapper());
 
     await waitFor(() => {
       expect(screen.getByText('Run Evaluation')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('Run Evaluation'));
+    await openGoldenQaAutocomplete();
+    fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
+    await openAssistantAutocomplete();
+    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
 
-    await waitFor(() => {
-      expect(screen.getByText('Evaluation name is required')).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('submitActionButton')).toBeDisabled();
   });
 
-  test('shows validation error when AI Assistant is not selected on submit', async () => {
+  test('Run Evaluation button is disabled when AI Assistant is not selected', async () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByTestId('outlinedInput')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    await openGoldenQaAutocomplete();
+    fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
+
+    const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
     fireEvent.change(nameInput, { target: { value: 'valid_name' } });
-    fireEvent.click(screen.getByText('Run Evaluation'));
 
-    await waitFor(() => {
-      expect(screen.getByText('Please select an AI Assistant')).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('submitActionButton')).toBeDisabled();
   });
 
-  test('shows validation error for invalid evaluation name pattern', async () => {
+  test('shows validation error when evaluation name is cleared after being typed', async () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByTestId('outlinedInput')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
-    fireEvent.change(nameInput, { target: { value: 'invalid name with spaces' } });
-    fireEvent.click(screen.getByText('Run Evaluation'));
+    const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
+    fireEvent.change(nameInput, { target: { value: 'some_name' } });
+    fireEvent.change(nameInput, { target: { value: '' } });
+    fireEvent.blur(nameInput);
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid evaluation name')).toBeInTheDocument();
+      expect(nameInput).toHaveAttribute('aria-invalid', 'true');
     });
   });
 
-  test('accepts valid evaluation name with alphanumeric, underscore and hyphen', async () => {
+  test('accepts any non-empty evaluation name', async () => {
     render(wrapper());
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Give a unique name for the evaluation experiment.')).toBeInTheDocument();
+      expect(screen.getByTestId('outlinedInput')).toBeInTheDocument();
     });
 
-    const nameInput = screen.getByPlaceholderText('Give a unique name for the evaluation experiment.');
+    const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
     fireEvent.change(nameInput, { target: { value: 'valid_evaluation-name123' } });
 
     expect((nameInput as HTMLInputElement).value).toBe('valid_evaluation-name123');
   });
 
-  test('shows assistant helper text', async () => {
-    render(wrapper());
+  test('shows assistant options from query using assistantName and versionNumber', async () => {
+    render(wrapper([...defaultMocks]));
 
     await waitFor(() => {
       expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
-    expect(screen.getByText("This list includes all assistants and versions you've created.")).toBeInTheDocument();
+    await openAssistantAutocomplete();
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Assistant (Version 2)')).toBeInTheDocument();
+      expect(screen.getByText('Test Assistant (Version 1)')).toBeInTheDocument();
+    });
   });
 
-  test('Run Evaluation submit button is visible and enabled', async () => {
+  test('Run Evaluation submit button is disabled until all fields are filled', async () => {
     render(wrapper());
 
     await waitFor(() => {
       expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
       expect(screen.getByTestId('submitActionButton')).toHaveTextContent('Run Evaluation');
-      expect(screen.getByTestId('submitActionButton')).not.toBeDisabled();
+      expect(screen.getByTestId('submitActionButton')).toBeDisabled();
+    });
+  });
+
+  test('shows Fetching assistants... while assistant config versions are loading', async () => {
+    const mocks = [getAssistantConfigVersionsLoadingMock, getListGoldenQaForCreateMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const assistantInput = within(getAssistantAutocompleteRoot()).getByRole('combobox');
+    expect(assistantInput).toBeInTheDocument();
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+  });
+
+  test('shows error notification when fetching assistant config versions fails', async () => {
+    render(wrapper([getAssistantConfigVersionsErrorMock, getListGoldenQaForCreateMock]));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Failed to fetch assistants', 'warning');
+    });
+  });
+
+  test('shows No assistants available when assistant config versions list is empty', async () => {
+    const mocks = [getAssistantConfigVersionsEmptyMock, getListGoldenQaForCreateMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    const assistantInput = within(getAssistantAutocompleteRoot()).getByRole('combobox');
+    expect(assistantInput).toBeInTheDocument();
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+  });
+
+  test('renders assistant options in the order of their version numbers', async () => {
+    render(wrapper([getAssistantConfigVersionsMultipleNamesMock, getListGoldenQaForCreateMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    await openAssistantAutocomplete();
+
+    await waitFor(() => {
+      const options = screen.getAllByRole('option');
+      expect(options[0]).toHaveTextContent('Alpha Assistant (Version 1)');
+      expect(options[1]).toHaveTextContent('Beta Assistant (Version 1)');
+      expect(options[2]).toHaveTextContent('Beta Assistant (Version 2)');
+    });
+  });
+
+  test('shows all assistant config versions with correct labels for multiple assistant names', async () => {
+    const mocks = [getAssistantConfigVersionsMultipleNamesMock, getListGoldenQaForCreateMock];
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    await openAssistantAutocomplete();
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 2)')).toBeInTheDocument();
+    });
+  });
+
+  test('shows success notification and navigates to chat on successful submission', async () => {
+    render(
+      wrapper([
+        getListAiEvaluationsMock,
+        getAssistantConfigVersionsMock,
+        getListGoldenQaForCreateMock,
+        getCreateEvaluationSuccessMock,
+      ])
+    );
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('AI evaluation created successfully!');
+      expect(screen.getByText('AI Evaluations Page')).toBeInTheDocument();
     });
   });
 
@@ -227,7 +432,7 @@ describe('AIEvaluationCreate', () => {
     });
   });
 
-  test('after uploading golden QA the dropdown updates to set the file uploaded as the selected option', async () => {
+  test('after uploading golden QA the autocomplete updates to show the uploaded dataset as selected', async () => {
     render(wrapper([...defaultMocks, createGoldenQaSuccessMock]));
 
     await waitFor(() => {
@@ -247,16 +452,16 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
-      // Dropdown shows the uploaded dataset as the selected option
-      expect(screen.getByText('golden_qa')).toBeInTheDocument();
+      const autocompleteInput = within(getGoldenQaAutocompleteRoot()).getByRole('combobox') as HTMLInputElement;
+      expect(autocompleteInput.value).toBe('golden_qa');
     });
   });
 
-  test('when there is no existing file, the default option is removed after upload', async () => {
+  test('newly uploaded dataset appears first and is selected; backend datasets follow', async () => {
     render(wrapper([...defaultMocks, createGoldenQaCustomSuccessMock('my_dataset', 1)]));
 
     await waitFor(() => {
-      expect(screen.getByText('No Golden QA available, upload one first')).toBeInTheDocument();
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Upload Golden QA' }));
@@ -275,17 +480,158 @@ describe('AIEvaluationCreate', () => {
     });
 
     await waitFor(() => {
-      expect(screen.queryByText('No Golden QA available, upload one first')).not.toBeInTheDocument();
-      expect(screen.getByText('my_dataset')).toBeInTheDocument();
+      const autocompleteInput = within(getGoldenQaAutocompleteRoot()).getByRole('combobox') as HTMLInputElement;
+      expect(autocompleteInput.value).toBe('my_dataset');
     });
+
+    // Open the autocomplete and verify newly uploaded appears first
+    await openGoldenQaAutocomplete();
+
+    await waitFor(() => {
+      const options = screen.getAllByRole('option');
+      expect(options[0]).toHaveTextContent('my_dataset');
+    });
+  });
+
+  test('mutation is called with goldenQaId (Glific DB id), not datasetId', async () => {
+    const varCapture: any[] = [];
+    const matchingMock = {
+      ...getCreateEvaluationSuccessMock,
+      variableMatcher: (vars: any) => {
+        varCapture.push(vars);
+        return true;
+      },
+    };
+
+    render(
+      wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateMock, matchingMock])
+    );
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(varCapture.length).toBeGreaterThan(0);
+      const input = varCapture[0].input;
+      expect(input).toHaveProperty('goldenQaId');
+      expect(input).not.toHaveProperty('datasetId');
+      expect(input.goldenQaId).toBe('1');
+    });
+  });
+
+  test('goldenQaId is the Glific DB id (qa.id), not the Kaapi datasetId', async () => {
+    const varCapture: any[] = [];
+    const matchingMock = {
+      ...getCreateEvaluationSuccessMock,
+      variableMatcher: (vars: any) => {
+        varCapture.push(vars);
+        return true;
+      },
+    };
+
+    render(
+      wrapper([getListAiEvaluationsMock, getAssistantConfigVersionsMock, getListGoldenQaForCreateMock, matchingMock])
+    );
+
+    await fillAndSubmitForm();
+
+    await waitFor(() => {
+      expect(varCapture.length).toBeGreaterThan(0);
+      const input = varCapture[0].input;
+      // goldenQaSampleRows[0] has id:'1', datasetId:'101'
+      // We must send id ('1'), not datasetId ('101')
+      expect(input.goldenQaId).toBe('1');
+      expect(input.goldenQaId).not.toBe('101');
+    });
+  });
+
+  test('mutation sends goldenQaId of newly uploaded golden QA (uses its Glific id)', async () => {
+    const varCapture: any[] = [];
+    const matchingMock = {
+      ...getCreateEvaluationSuccessMock,
+      variableMatcher: (vars: any) => {
+        varCapture.push(vars);
+        return true;
+      },
+    };
+
+    render(wrapper([...defaultMocks, createGoldenQaCustomSuccessMock('my_uploaded', 1, '99', '888'), matchingMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Upload Golden QA' }));
+    const fileInput = document.querySelector('input[type="file"][accept=".csv"]');
+    const csvFile = new File(['Question,Answer\nq1,a1'], 'my_uploaded.csv', { type: 'text/csv' });
+    fireEvent.change(fileInput!, { target: { files: [csvFile] } });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
+    });
+
+    const nameInput = screen.getByTestId('outlinedInput').querySelector('input')!;
+    fireEvent.change(nameInput, { target: { value: 'test_evaluation' } });
+
+    const assistantRoot = screen.getAllByTestId('autocomplete-element')[1];
+    const assistantCombobox = within(assistantRoot).getByRole('combobox');
+    fireEvent.focus(assistantCombobox);
+    fireEvent.keyDown(assistantCombobox, { key: 'ArrowDown' });
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+
+    fireEvent.click(screen.getByText('Run Evaluation'));
+
+    await waitFor(() => {
+      expect(varCapture.length).toBeGreaterThan(0);
+      const input = varCapture[0].input;
+      expect(input.goldenQaId).toBe('99');
+      expect(input.goldenQaId).not.toBe('888');
+    });
+  });
+
+  test('upload failure does not update the autocomplete selection', async () => {
+    render(wrapper([...defaultMocks, createGoldenQaErrorMock]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create AI Evaluation')).toBeInTheDocument();
+    });
+
+    await openGoldenQaAutocomplete();
+    fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
+
+    const goldenQaInput = within(getGoldenQaAutocompleteRoot()).getByRole('combobox') as HTMLInputElement;
+    expect(goldenQaInput.value).toBe('Diabetescare-0101');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Upload Golden QA' }));
+    const fileInput = document.querySelector('input[type="file"][accept=".csv"]');
+    const csvFile = new File(['Question,Answer\nq1,a1'], 'bad.csv', { type: 'text/csv' });
+    fireEvent.change(fileInput!, { target: { files: [csvFile] } });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Name already exists', 'error');
+    });
+
+    expect(goldenQaInput.value).toBe('Diabetescare-0101');
   });
 
   test('when there is an existing golden QA the new uploaded golden QA is pushed to the top and becomes the selected option', async () => {
     render(
       wrapper([
         ...defaultMocks,
-        createGoldenQaCustomSuccessMock('first_qa', 1),
-        createGoldenQaCustomSuccessMock('second_qa', 1),
+        createGoldenQaCustomSuccessMock('first_qa', 1, '100'),
+        createGoldenQaCustomSuccessMock('second_qa', 1, '200'),
       ])
     );
 
@@ -306,7 +652,8 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
-      expect(screen.getByText('first_qa')).toBeInTheDocument();
+      const input = within(getGoldenQaAutocompleteRoot()).getByRole('combobox') as HTMLInputElement;
+      expect(input.value).toBe('first_qa');
     });
 
     // Second upload: second_qa.csv (should appear at top and be selected)
@@ -324,21 +671,16 @@ describe('AIEvaluationCreate', () => {
       expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
     });
 
-    // New upload is selected (displayed in the closed Select)
     await waitFor(() => {
-      expect(screen.getByText('second_qa')).toBeInTheDocument();
+      const input = within(getGoldenQaAutocompleteRoot()).getByRole('combobox') as HTMLInputElement;
+      expect(input.value).toBe('second_qa');
     });
 
-    // Open Golden QA dropdown (first dropdown on the form) and assert new upload is first (top) and both options exist
-    const dropdowns = screen.getAllByTestId('dropdown');
-    const goldenQaDropdown = dropdowns[0];
-    const selectTrigger =
-      goldenQaDropdown.querySelector('[role="combobox"]') ?? goldenQaDropdown.querySelector('button');
-    fireEvent.mouseDown(selectTrigger!);
+    // Open the autocomplete and verify second_qa is first
+    await openGoldenQaAutocomplete();
 
     await waitFor(() => {
       const options = screen.getAllByRole('option');
-      expect(options.length).toBe(2);
       expect(options[0]).toHaveTextContent('second_qa');
       expect(options[1]).toHaveTextContent('first_qa');
     });
