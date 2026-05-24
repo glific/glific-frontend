@@ -34,12 +34,18 @@ export const Organization = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState('');
   const [phone, setPhone] = useState<string>('');
-  const [tier, setTier] = useState();
   const [lowBalanceThreshold, setLowBalanceThreshold] = useState('');
   const [criticalBalanceThreshold, setCriticalBalanceThreshold] = useState('');
   const [sendWarningMail, setSendWarningMail] = useState<boolean>(false);
 
   const { t } = useTranslation();
+
+  const { data: languages } = useQuery(GET_LANGUAGES, {
+    variables: { opts: { order: 'ASC' } },
+  });
+
+  const { data: tierData } = useQuery(GET_QUALITY_RATING);
+  const qualityRatingTier = tierData?.qualityRating?.currentLimit;
 
   const States = {
     name,
@@ -47,21 +53,11 @@ export const Organization = () => {
     defaultLanguage,
     signaturePhrase,
     phone,
-    tier,
+    tier: qualityRatingTier,
     lowBalanceThreshold,
     criticalBalanceThreshold,
     sendWarningMail,
   };
-
-  const { data: languages } = useQuery(GET_LANGUAGES, {
-    variables: { opts: { order: 'ASC' } },
-  });
-
-  useQuery(GET_QUALITY_RATING, {
-    onCompleted: (tierData) => {
-      if (tierData) setTier(tierData.qualityRating?.currentLimit);
-    },
-  });
 
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
@@ -202,7 +198,7 @@ export const Organization = () => {
       type: 'text',
       placeholder: t('WhatsApp tier'),
       label: t('WhatsApp tier'),
-      skip: !tier,
+      skip: !qualityRatingTier,
       disabled: true,
     },
     {

@@ -2,7 +2,7 @@ import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
-import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
+import { DocumentNode, useQuery, useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -153,18 +153,28 @@ export const FormLayout = ({
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
   const [saveClick, onSaveClick] = useState(false);
-  const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
 
-  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+  let itemId = entityId;
+  if (!itemId) {
+    itemId = params.id;
+  }
+
+  let variables: any = itemId ? { [idType]: itemId } : false;
+  if (listItem === 'credential') {
+    variables = params.type ? { shortcode: params.type } : false;
+  }
+
+  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any, isSaveClick: boolean = false) => {
     let payload = {
       ...itemData,
       ...defaultAttribute,
@@ -198,20 +208,107 @@ export const FormLayout = ({
             const payloadCopy = payload;
             delete payloadCopy.attachmentURL;
             payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
-            performTask(payloadCopy);
+            performTask(payloadCopy, isSaveClick);
           }
         })
         .catch((e: any) => {
           setErrorMessage(e);
         });
     } else {
-      performTask(payload);
+      performTask(payload, isSaveClick);
     }
   };
 
-  const performTask = (payload: any) => {
-    if (itemId) {
-      if (isLoadedData) {
+  const handleUpdateCompleted = (data: any, isSaveClick: boolean) => {
+    setShowConfirmationDialog(false);
+    let itemUpdatedObject: any = Object.keys(data)[0];
+    itemUpdatedObject = data[itemUpdatedObject];
+    const updatedItem = itemUpdatedObject[listItem];
+    const { errors, message } = itemUpdatedObject;
+
+    if (errors) {
+      if (customHandler) {
+        customHandler(errors);
+      } else {
+        setErrorMessage(errors[0]);
+      }
+    } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
+      if (customError) {
+        const codeErrors = { code: 'Failed to compile code. Please check again' };
+        customError.setErrors(codeErrors);
+      }
+    } else {
+      if (type === 'copy') setLink(updatedItem[linkParameter]);
+      if (additionalQuery) {
+        additionalQuery(itemId);
+      }
+
+      if (saveOnPageChange || isSaveClick) {
+        setFormSubmitted(true);
+        let notificationMessage = `${capitalListItemName} edited successfully!`;
+        if (type === 'copy') {
+          notificationMessage = copyNotification;
+        }
+        setNotification(notificationMessage);
+      } else {
+        setNotification('Your changes have been autosaved');
+      }
+      if (afterSave) {
+        afterSave(data, isSaveClick, message);
+      }
+    }
+    onSaveClick(false);
+  };
+
+  const handleCreateCompleted = (data: any, isSaveClick: boolean) => {
+    setShowConfirmationDialog(false);
+    let itemCreatedObject: any = `create${camelCaseItem}`;
+    itemCreatedObject = data[itemCreatedObject];
+    const itemCreated = itemCreatedObject[listItem];
+
+    const { errors } = itemCreatedObject;
+    if (errors) {
+      if (customHandler) {
+        customHandler(errors);
+      } else {
+        setErrorMessage(errors[0]);
+      }
+    } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
+      if (customError) {
+        const codeErrors = { code: 'Failed to compile code. Please check again' };
+        customError.setErrors(codeErrors);
+      }
+    } else {
+      if (additionalQuery) {
+        additionalQuery(itemCreated.id);
+      }
+      if (!itemId) setLink(itemCreated[linkParameter]);
+      if (saveOnPageChange || isSaveClick) {
+        setFormSubmitted(true);
+        setNotification(`${capitalListItemName} created successfully!`);
+      } else {
+        setNotification('Your changes have been autosaved');
+      }
+      if (afterSave) {
+        afterSave(data, isSaveClick);
+      }
+    }
+    onSaveClick(false);
+  };
+
+  const handleMutationError = (e: any) => {
+    setShowConfirmationDialog(false);
+    onSaveClick(false);
+    if (customHandler) {
+      customHandler(e.message);
+    } else {
+      setErrorMessage(e);
+    }
+  };
+
+  const performTask = async (payload: any, isSaveClick: boolean) => {
+    try {
+      if (itemId && isLoadedData) {
         let idKey = idType;
         let idVal = itemId;
 
@@ -225,31 +322,66 @@ export const FormLayout = ({
         if (idType === 'organizationId') {
           idKey = 'id';
           idVal = payloadBody.billingId;
-          // Clearning unnecessary fields
           delete payloadBody.billingId;
         }
 
-        updateItem({
+        const { data } = await updateItem({
           variables: {
             [idKey]: idVal,
             input: payloadBody,
           },
         });
+        if (data) handleUpdateCompleted(data, isSaveClick);
       } else {
-        createItem({
+        const { data } = await createItem({
           variables: {
             input: payload,
           },
         });
+        if (data) handleCreateCompleted(data, isSaveClick);
       }
-    } else {
-      createItem({
-        variables: {
-          input: payload,
-        },
-      });
+    } catch (e: any) {
+      handleMutationError(e);
     }
   };
+
+  const organization = useQuery(USER_LANGUAGES, {
+    skip: !languageSupport,
+  });
+
+  const {
+    loading,
+    error,
+    data: itemData,
+    refetch,
+  } = useQuery(getItemQuery, {
+    variables,
+    skip: !itemId,
+    fetchPolicy: getQueryFetchPolicy,
+  });
+
+  const fetchedItem: any = itemData
+    ? (itemData[listItem]?.[listItem] ?? itemData[Object.keys(itemData)[0]]?.[listItem] ?? null)
+    : null;
+
+  useEffect(() => {
+    if (fetchedItem && setStates) {
+      setStates(fetchedItem);
+    }
+  }, [itemData]);
+
+  const isLoadedData = Boolean(fetchedItem);
+
+  const getLanguageIdValue = () => {
+    if (fetchedItem) {
+      return languageSupport ? (fetchedItem.language?.id ?? '') : null;
+    }
+    if (!itemId && organization.data) {
+      return organization.data.currentUser.user.organization.defaultLanguage.id;
+    }
+    return '';
+  };
+  const languageId = getLanguageIdValue();
 
   const formik = useFormik({
     initialValues: {
@@ -284,25 +416,7 @@ export const FormLayout = ({
     }
   }, [entityId]);
 
-  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
-  let item: any = null;
-
-  let itemId = entityId;
-  if (!itemId) {
-    itemId = params.id;
-  }
-
-  let variables: any = itemId ? { [idType]: itemId } : false;
-
   const [deleteItem] = useMutation(deleteItemQuery, {
-    onCompleted: () => {
-      setNotification(`${capitalListItemName} deleted successfully`);
-      setDeleted(true);
-    },
-    onError: (err: ApolloError) => {
-      setShowDialog(false);
-      setErrorMessage(err);
-    },
     awaitRefetchQueries: true,
     refetchQueries: [
       {
@@ -312,96 +426,7 @@ export const FormLayout = ({
     ],
   });
 
-  // get the organization for current user and have languages option set to that.
-
-  const organization = useQuery(USER_LANGUAGES, {
-    skip: !languageSupport,
-    onCompleted: (data: any) => {
-      if (!itemId) {
-        setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
-      }
-    },
-  });
-  if (listItem === 'credential') {
-    variables = params.type ? { shortcode: params.type } : false;
-  }
-
-  const { loading, error, refetch } = useQuery(getItemQuery, {
-    variables,
-    skip: !itemId,
-    fetchPolicy: getQueryFetchPolicy,
-    onCompleted: (data) => {
-      if (data) {
-        item = data[listItem] ? data[listItem][listItem] : data[Object.keys(data)[0]][listItem];
-        if (item) {
-          setIsLoadedData(true);
-          setLink(data[listItem] ? data[listItem][listItem][linkParameter] : item.linkParameter);
-          setLanguageId(languageSupport ? item.language.id : null);
-          if (setStates) {
-            setStates(item);
-          }
-        }
-      }
-    },
-  });
-
-  const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
-
   const [updateItem] = useMutation(updateItemQuery, {
-    onCompleted: (data) => {
-      setShowConfirmationDialog(false);
-      let itemUpdatedObject: any = Object.keys(data)[0];
-      itemUpdatedObject = data[itemUpdatedObject];
-      const updatedItem = itemUpdatedObject[listItem];
-      const { errors, message } = itemUpdatedObject;
-
-      if (errors) {
-        if (customHandler) {
-          customHandler(errors);
-        } else {
-          setErrorMessage(errors[0]);
-        }
-      } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
-        if (customError) {
-          // this is a custom error for extensions. We need to move this out of this component
-          const codeErrors = { code: 'Failed to compile code. Please check again' };
-          customError.setErrors(codeErrors);
-        }
-      } else {
-        if (type === 'copy') setLink(updatedItem[linkParameter]);
-        if (additionalQuery) {
-          additionalQuery(itemId);
-        }
-
-        if (saveOnPageChange || saveClick) {
-          setFormSubmitted(true);
-          // display successful message after update
-          let message = `${capitalListItemName} edited successfully!`;
-          if (type === 'copy') {
-            message = copyNotification;
-          }
-          setNotification(message);
-        } else {
-          setNotification('Your changes have been autosaved');
-        }
-        // emit data after save
-        if (afterSave) {
-          afterSave(data, saveClick, message);
-        }
-      }
-      onSaveClick(false);
-    },
-    onError: (e: ApolloError) => {
-      setShowConfirmationDialog(false);
-      onSaveClick(false);
-      if (customHandler) {
-        customHandler(e.message);
-      } else {
-        setErrorMessage(e);
-      }
-
-      return null;
-    },
     refetchQueries: () => {
       if (refetchQueries)
         return refetchQueries.map((refetchQuery: any) => ({
@@ -413,44 +438,6 @@ export const FormLayout = ({
   });
 
   const [createItem] = useMutation(createItemQuery, {
-    onCompleted: (data) => {
-      setShowConfirmationDialog(false);
-      let itemCreatedObject: any = `create${camelCaseItem}`;
-      itemCreatedObject = data[itemCreatedObject];
-      const itemCreated = itemCreatedObject[listItem];
-
-      const { errors } = itemCreatedObject;
-      if (errors) {
-        if (customHandler) {
-          customHandler(errors);
-        } else {
-          setErrorMessage(errors[0]);
-        }
-      } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
-        if (customError) {
-          const codeErrors = { code: 'Failed to compile code. Please check again' };
-          customError.setErrors(codeErrors);
-        }
-      } else {
-        if (additionalQuery) {
-          additionalQuery(itemCreated.id);
-        }
-        if (!itemId) setLink(itemCreated[linkParameter]);
-        if (saveOnPageChange || saveClick) {
-          setFormSubmitted(true);
-          // display successful message after create
-          setNotification(`${capitalListItemName} created successfully!`);
-        } else {
-          setNotification('Your changes have been autosaved');
-        }
-        // emit data after save
-        if (afterSave) {
-          afterSave(data, saveClick);
-        }
-      }
-      setIsLoadedData(true);
-      onSaveClick(false);
-    },
     refetchQueries: () => {
       if (refetchQueries)
         return refetchQueries.map((refetchQuery: any) => ({
@@ -460,22 +447,16 @@ export const FormLayout = ({
 
       return [];
     },
-    onError: (e: ApolloError) => {
-      setShowConfirmationDialog(false);
-      onSaveClick(false);
-      if (customHandler) {
-        customHandler(e.message);
-      } else {
-        setErrorMessage(e);
-      }
-
-      return null;
-    },
   });
 
   if (loading) return <Loading />;
+
   if (error) {
     setErrorMessage(error);
+    return null;
+  }
+  if (languageSupport && organization.error) {
+    setErrorMessage(organization.error);
     return null;
   }
 
@@ -563,13 +544,6 @@ export const FormLayout = ({
       </Button>
     ) : null;
 
-  const onSaveButtonClick = (errors: any) => {
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-    onSaveClick(true);
-  };
-
   const form = (
     <LexicalWrapper>
       <form onSubmit={formik.handleSubmit}>
@@ -599,8 +573,17 @@ export const FormLayout = ({
                 color="primary"
                 onClick={() => {
                   formik.validateForm().then((errors) => {
-                    onSaveButtonClick(errors);
-                    formik.submitForm();
+                    if (Object.keys(errors).length > 0) {
+                      formik.submitForm();
+                      return;
+                    }
+                    onSaveClick(true);
+                    if (confirmationState?.show) {
+                      setShowConfirmationDialog(true);
+                    } else {
+                      setCustomError({ setErrors: formik.setErrors });
+                      saveHandler(formik.values, true);
+                    }
                   });
                 }}
                 className={styles.Button}
@@ -642,8 +625,15 @@ export const FormLayout = ({
     </LexicalWrapper>
   );
 
-  const handleDeleteItem = () => {
-    deleteItem({ variables: { id: itemId } });
+  const handleDeleteItem = async () => {
+    try {
+      await deleteItem({ variables: { id: itemId } });
+      setNotification(`${capitalListItemName} deleted successfully`);
+      setDeleted(true);
+    } catch (err: any) {
+      setShowDialog(false);
+      setErrorMessage(err);
+    }
   };
 
   let dialogBox;
@@ -687,7 +677,7 @@ export const FormLayout = ({
       <DialogBox
         title={confirmationState?.title || 'Are you sure you want to proceed?'}
         handleOk={() => {
-          saveHandler(formik.values);
+          saveHandler(formik.values, true);
         }}
         handleCancel={() => {
           onSaveClick(false);

@@ -161,7 +161,7 @@ export const MyAccount = () => {
   ];
 
   const userForm = (
-    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => { }}>
+    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => {}}>
       <Form>
         {userformFields.map((field) => (
           <div className={styles.UserField} key={field.name}>

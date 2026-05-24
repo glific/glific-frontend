@@ -246,24 +246,26 @@ export const Trigger = () => {
     variables: isEditing ? setVariables() : setVariables({ groupType }),
   });
 
-  const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
-    onCompleted: ({ validateTrigger }) => {
-      if (!validateTrigger.success && validateTrigger.errors && validateTrigger.errors.length > 0) {
-        setTriggerFlowWarning(validateTrigger.errors[0].message);
-      }
-    },
-  });
+  const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER);
 
-  const handleFlowChange = (flow: any) => {
+  const handleFlowChange = async (input: any) => {
     setTriggerFlowWarning(undefined);
-    if (flow) {
-      validateTriggerFlow({
-        variables: {
-          input: {
-            flowId: flow.id,
+    if (input) {
+      try {
+        const result = await validateTriggerFlow({
+          variables: {
+            input: {
+              flowId: input.id,
+            },
           },
-        },
-      });
+        });
+        const { validateTrigger } = result.data;
+        if (!validateTrigger.success && validateTrigger.errors && validateTrigger.errors.length > 0) {
+          setTriggerFlowWarning(validateTrigger.errors[0].message);
+        }
+      } catch {
+        setTriggerFlowWarning(t('Failed to validate flow. Please try again.'));
+      }
     }
   };
 

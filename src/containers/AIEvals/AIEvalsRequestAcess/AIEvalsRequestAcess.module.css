@@ -1,0 +1,182 @@
+.Container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  min-height: 100vh;
+  padding: 32px 40px;
+  background: #edf4ef;
+  overflow-y: auto;
+}
+
+.LeftPanel {
+  flex: 1;
+  max-width: 560px;
+  padding: 0;
+  background: transparent;
+}
+
+.BetaBadge {
+  display: inline-block;
+  background-color: #119656;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+.Title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 14px;
+  line-height: 1.1;
+}
+
+.Description {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0 0 32px;
+  max-width: 520px;
+}
+
+.SectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 18px;
+}
+
+.BenefitsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.BenefitItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.BenefitNumber {
+  font-size: 15px;
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 20px;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.AvatarGroup {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.Avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 26px;
+  height: 26px;
+
+  border-radius: 50%;
+
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+
+  border: 2px solid #edf4ef;
+
+  position: relative;
+}
+
+.BenefitText {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.7;
+  flex: 1;
+}
+
+.RightPanel {
+  width: 460px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 30px;
+  background: #ffffff;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.CTATitle {
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  margin: 0 0 14px;
+  white-space: nowrap;
+}
+
+.CTASubtitle {
+  font-size: 17px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+/* ───────────────── Video placeholder ───────────────── */
+
+.VideoPlaceholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 0;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.CTAHelp {
+  font-size: 14px;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin: 0 0 22px;
+}
+
+.RequestButton {
+  display: block;
+  width: 100%;
+  background: #119656;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 0;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.RequestButton:hover:not(:disabled) {
+  background: #0d7a42;
+  color: #ffffff;
+}
+
+.RequestButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}

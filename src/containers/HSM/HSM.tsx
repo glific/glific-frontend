@@ -127,20 +127,9 @@ export const HSM = () => {
     setUploadedFile(null);
   };
 
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
-    onCompleted: (data: { uploadMedia: string }) => {
-      setAttachmentURL(data.uploadMedia);
-      setNotification('File uploaded successfully');
-      setUploadingFile(false);
-    },
-    onError: (error: Error) => {
-      console.error('Upload error:', error);
-      setNotification('File upload failed. Please try again.');
-      resetUploadState();
-    },
-  });
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA);
 
-  const handleFileUpload = (file: File): void => {
+  const handleFileUpload = async (file: File): Promise<void> => {
     if (!file) return;
 
     const mediaName = file.name;
@@ -156,12 +145,16 @@ export const HSM = () => {
       setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
     }
 
-    uploadMedia({
-      variables: {
-        media: file,
-        extension,
-      },
-    });
+    try {
+      const result = await uploadMedia({ variables: { media: file, extension } });
+      setAttachmentURL(result.data.uploadMedia);
+      setNotification('File uploaded successfully');
+      setUploadingFile(false);
+    } catch (error) {
+      console.error('Upload error:', error);
+      setNotification('File upload failed. Please try again.', 'error');
+      resetUploadState();
+    }
   };
 
   let attachmentOptions = mediaOptions;

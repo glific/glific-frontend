@@ -4,9 +4,11 @@ import ConversationHeader from './ConversationHeader';
 import {
   blockContactQuery,
   contactCollectionsQuery,
+  contactCollectionsQueryWithGroups,
   updateContactCollectionQuery,
   clearMessagesQuery,
   terminateFlowQuery,
+  getExcludedContactsQuery,
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getCollectionInfo, getCollectionUsersQuery2, getCollectionsQuery } from '../../../../mocks/Collection';
@@ -22,7 +24,7 @@ const mocks = [
   ...getCollectionsQuery,
   getPublishedFlowQuery,
   blockContactQuery,
-  updateContactCollectionQuery,
+  updateContactCollectionQuery({ contactId: '2', addGroupIds: [], deleteGroupIds: ['1', '2'] }),
   addFlowToContactQuery,
   addFlowToCollectionQuery,
   getCollectionUsersQuery2,
@@ -46,13 +48,19 @@ const propsWithBspStatusNone = {
   },
 };
 
-const component = (
-  <MockedProvider mocks={[...mocks, terminateFlowQuery()]} addTypename={false}>
-    <MemoryRouter>
-      <ConversationHeader {...defaultProps} />
+const renderHeader = (
+  testMocks: any[] = mocks,
+  props: Partial<Parameters<typeof ConversationHeader>[0]> = {},
+  initialEntries: string[] = ['/']
+) => (
+  <MockedProvider mocks={testMocks} addTypename={false}>
+    <MemoryRouter initialEntries={initialEntries}>
+      <ConversationHeader {...defaultProps} {...props} />
     </MemoryRouter>
   </MockedProvider>
 );
+
+const component = renderHeader([...mocks, terminateFlowQuery()]);
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -124,8 +132,12 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('collectionButton'));
     await waitFor(() => {
       expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
-      const button = screen.getByText('Save');
-      fireEvent.click(button);
+    });
+
+    fireEvent.click(screen.getByText('Save'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 
@@ -206,6 +218,7 @@ describe('Menu test', () => {
 
   test('view contact profile', async () => {
     fireEvent.click(screen.getByTestId('viewProfile'));
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/contact-profile/2');
   });
 
   const componentWithBspStatusNone = (
@@ -344,6 +357,96 @@ test('it navigates to group details', async () => {
   await waitFor(() => {
     let item = screen.getByTestId('viewProfile');
     fireEvent.click(item);
-    expect(mockedUsedNavigate).toHaveBeenCalled();
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/group-details/1');
+  });
+});
+
+test('clicking start a flow in whatsapp group context opens the flow dialog', async () => {
+  render(groupsComponent);
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  fireEvent.click(screen.getByTestId('flowButton'));
+
+  await waitFor(() => {
+    expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+  });
+});
+
+test('shows combined add/remove notification when both occur', async () => {
+  render(
+    renderHeader([
+      ...mocks,
+      updateContactCollectionQuery(
+        { contactId: '2', addGroupIds: [], deleteGroupIds: ['2'] },
+        {
+          contactGroups: [
+            { id: '18', value: null },
+            { id: '19', value: null },
+          ],
+          numberDeleted: 2,
+        }
+      ),
+    ])
+  );
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  fireEvent.click(screen.getByTestId('collectionButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Staff group')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Added to 2 collections and removed from 2 collections ');
+  });
+});
+
+test('closes dialog without firing mutation when selection is unchanged', async () => {
+  vi.mocked(setNotification).mockClear();
+  render(renderHeader([...mocks, contactCollectionsQueryWithGroups('4', [])], { entityId: '4' }));
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  fireEvent.click(screen.getByTestId('collectionButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Add contact to collection')).not.toBeInTheDocument();
+  });
+  expect(setNotification).not.toHaveBeenCalled();
+});
+
+test('opens AddToCollection dialog from collection-mode add member button', async () => {
+  render(
+    renderHeader([...mocks, getExcludedContactsQuery({ name: '', excludeGroups: '2' })], {
+      entityId: undefined,
+      collectionId: '2',
+      displayName: 'Default Collection',
+    })
+  );
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  fireEvent.click(screen.getByTestId('collectionButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Add contacts to the collection')).toBeInTheDocument();
   });
 });

@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ELIXIR_VERSION: "1.18.3-otp-27"
-      OTP_VERSION: "27.3.3"
+      ELIXIR_VERSION: '1.18.3-otp-27'
+      OTP_VERSION: '27.3.3'
 
     services:
       postgres:
@@ -40,6 +40,8 @@ jobs:
 
       - name: Use latest Node.js
         uses: actions/setup-node@v6
+        with:
+          node-version-file: '.tool-versions'
 
       - name: Setup elixir
         uses: erlef/setup-beam@v1
@@ -125,6 +127,7 @@ jobs:
           git clone https://github.com/glific/glific.git
           echo done. go to dir.
           cd glific
+
           echo done. start dev.secret.exs config
           cd priv
           mkdir cert
@@ -173,6 +176,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
+          cd cypress-testing
           cd ..
           yarn add cypress@13.6.2
 

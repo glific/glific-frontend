@@ -29,6 +29,7 @@ const renderAssistantList = (mocks: any[] = [filterAssistantsMock, countAssistan
           <Route path="/assistants" element={<AssistantList />} />
           <Route path="/assistants/add" element={<div data-testid="create-page" />} />
           <Route path="/assistants/:id" element={<div data-testid="edit-page" />} />
+          <Route path="/assistants/:id/version/:versionNumber" element={<div data-testid="edit-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>

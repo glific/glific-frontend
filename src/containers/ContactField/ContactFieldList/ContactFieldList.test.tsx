@@ -78,6 +78,7 @@ const listError = (
 );
 
 test('it renders component, edits field, saves and error occurs', async () => {
+  const user = userEvent.setup();
   render(listError);
   expect(screen.getByTestId('loading')).toBeInTheDocument();
 
@@ -85,11 +86,12 @@ test('it renders component, edits field, saves and error occurs', async () => {
     const editButtons = screen.getAllByTestId('edit-icon');
     expect(editButtons[3]).toBeInTheDocument();
     fireEvent.click(editButtons[3]);
-
-    // Edit, clears value and click save
-    const inputFields = screen.getAllByRole('textbox');
-    userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
   });
+
+  // Edit, clears value and click save
+  const inputFields = await screen.findAllByRole('textbox');
+  await user.clear(inputFields[1]);
+  await user.type(inputFields[1], 'age_group');
 
   const saveButton = screen.getByTestId('save-button');
   fireEvent.click(saveButton);
