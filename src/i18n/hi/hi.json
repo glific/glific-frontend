@@ -12,7 +12,7 @@
   "There are no chat conversations to display.": "प्रदर्शित करने के लिए कोई चैट वार्तालाप नहीं हैं।",
   "Contacts": "संपर्क",
   "Collections": "संग्रह",
-  "Saved searches": "Saved searches",
+  "Saved searches": "सहेजी गई खोजें",
   "Search": "खोज",
   "The search will be updated as per new filters": "नए फिल्टर के अनुसार खोज को अपडेट किया जाएगा",
   "Create a new search": "एक नई खोज बनाएं",
@@ -564,5 +564,12 @@
   "Staff":"स्टाफ",
   "Resources":"संसाधन",
   "Discord":"डिस्कॉर्ड",
-  "Ask Glific":"ग्लिफिक से पूछें"
+  "Ask Glific":"ग्लिफिक से पूछें",
+  "Time left":"शेष समय",
+  "All": "सभी",
+  "Unread": "अपठित",
+  "Not replied": "जवाब नहीं दिया",
+  "Not Responded": "उत्तर नहीं दिया गया",
+  "Optin": "ऑप्ट-इन",
+  "Optout": "ऑप्ट-आउट"
 }

@@ -686,5 +686,14 @@
   "Request Pending": "Request Pending",
   "Your request has been submitted. You will be notified when it gets approved.": "Your request has been submitted. You will be notified when it gets approved.",
   "Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.": "Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.",
-  "Refresh": "Refresh"
+  "Refresh": "Refresh",
+  "Time left":"Time left",
+  "Saved searches": "Saved searches",
+  "Searches":"Searches",
+  "All": "All",
+  "Unread": "Unread",
+  "Not replied": "Not replied",
+  "Not Responded": "Not Responded",
+  "Optin": "Optin",
+  "Optout": "Optout"
 }

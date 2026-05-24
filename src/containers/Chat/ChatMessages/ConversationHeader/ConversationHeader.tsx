@@ -487,7 +487,7 @@ export const ConversationHeader = ({
   if (selectedCollections.length > 0) {
     contactCollections = (
       <div className={styles.SessionTimer}>
-        <span>Collections:</span>
+        <span>{t('Collections')}:</span>
         <span className={styles.CollectionsName} data-testid="collectionNames">
           {selectedCollectionsName}
         </span>
@@ -497,7 +497,7 @@ export const ConversationHeader = ({
 
   const timeleft: any = (
     <div className={styles.SessionTimer} data-testid="sessionTimer">
-      <span>Time left:</span>
+      <span>{t('Time left')}:</span>
       <Timer
         time={contact?.lastMessageTime}
         contactStatus={contact?.contactStatus}
