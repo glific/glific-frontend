@@ -1,7 +1,6 @@
 const envVariables = import.meta.env;
 
 const appName = envVariables.VITE_APPLICATION_NAME;
-
 const API_PORT = envVariables.VITE_GLIFIC_API_PORT;
 const BACKEND_URL = envVariables.VITE_GLIFIC_BACKEND_URL;
 const PROTOCOL = window.location.protocol;
@@ -39,7 +38,8 @@ export const RENEW_TOKEN = `${USER_SESSION}/renew`;
 export const FLOW_EDITOR_CONFIGURE_LINK = `${PROTOCOL}//${window.location.host}/flow/configure`;
 export const CONTACT_CHAT_LINK = `${window.location.origin}/chat/`;
 export const GUPSHUP_CALLBACK_URL = `${GLIFIC_BACKEND_URL}/gupshup`;
-export const APPSIGNAL_API_KEY = envVariables.VITE_APPSIGNAL_API_KEY;
+export const POSTHOG_PROJECT_TOKEN = envVariables.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
+export const POSTHOG_HOST = envVariables.VITE_PUBLIC_POSTHOG_HOST;
 export const APP_NAME = appName || 'Glific: Two way communication platform';
 export const GLIFIC_DOCS_URL = 'http://docs.glific.org';
 export const CORS_PROXY_URL = 'https://cors-anywhere.tides.coloredcow.com';
@@ -68,6 +68,9 @@ export const CERTIFICATES_FAQ_FORMAT_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#3-error-1-url-ending-with-slideidp';
 export const CERTIFICATES_PERMISSIONS_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#4-error-2-permission-issues';
-export const ASK_ME_BOT_ENDPOINT = `${GLIFIC_API_URL}/v1/askme`;
+export const GOLDEN_QA_TEMPLATE_LINK =
+  'https://docs.google.com/spreadsheets/d/198UpOMeU53s9O-fwbIl0DIJLuD3l24jgkq74CoDfSQM/copy';
+export const AI_EVALS_INTRO_VIDEO_URL =
+  envVariables.VITE_AI_EVALS_INTRO_VIDEO_URL || 'https://www.youtube.com/embed/pl8pUTkAgwc';
 export const TRIAL_CREATE_USER_API = `${GLIFIC_API_URL}/v1/trial/create-trial-user`;
 export const TRIAL_ALLOCATE_ACCOUNT_API = `${GLIFIC_API_URL}/v1/trial/allocate-account`;

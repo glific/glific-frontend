@@ -6,10 +6,12 @@ import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { resetRolePermissions } from 'context/role';
+import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
 import { USER_SESSION } from 'config';
 import { clearListSession } from 'services/ListService';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { usePostHog } from '@posthog/react';
 
 const divStyle: CSSProperties = {
   fontFamily: 'Heebo',
@@ -22,6 +24,7 @@ const divStyle: CSSProperties = {
 };
 
 export const Logout = () => {
+  const posthog = usePostHog();
   const client = useApolloClient();
   const { t } = useTranslation();
   const location = useLocation();
@@ -36,6 +39,8 @@ export const Logout = () => {
   };
 
   const handleLogout = () => {
+    posthog?.capture('user_logged_out');
+    posthog?.reset();
     userLogout();
     // clear local storage auth session
     clearAuthSession();
@@ -48,6 +53,9 @@ export const Logout = () => {
 
     // clear local storage list sort session
     clearListSession();
+
+    // clear org eval request access cache
+    clearOrgEvalAccessCache();
 
     // clear apollo cache
     client.clearStore();

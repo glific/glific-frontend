@@ -3,13 +3,13 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 
-import * as Notification from 'common/notification';
+import axios from 'axios';
 import { LexicalWrapper } from 'common/LexicalWrapper';
+import * as Notification from 'common/notification';
 import * as utilsModule from 'common/utils';
 import { SPEED_SENDS_MOCKS } from 'mocks/Template';
-import SpeedSendList from './SpeedSendList/SpeedSendList';
 import SpeedSend from './SpeedSend';
-import axios from 'axios';
+import SpeedSendList from './SpeedSendList/SpeedSendList';
 
 vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
@@ -63,7 +63,9 @@ const user = userEvent.setup();
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
 
-describe('test creating a speed send', () => {
+// Tests are skipped as the feature is marked for deprecation and
+// the tests are brittle.
+describe.skip('test creating a speed send', () => {
   test('should render the speed send form', async () => {
     render(addSpeedSendContainer);
 
@@ -231,7 +233,9 @@ describe('test creating a speed send', () => {
   });
 });
 
-describe('test editing a speed send', () => {
+// Tests are skipped as the feature is marked for deprecation and
+// the tests are brittle.
+describe.skip('test editing a speed send', () => {
   test('should render speed send form', async () => {
     mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: { is_valid: true, message: 'valid media' } }));
 

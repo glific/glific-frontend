@@ -21,9 +21,10 @@ type ServiceType =
   | 'ticketingEnabled'
   | 'whatsappGroupEnabled'
   | 'certificateEnabled'
-  | 'askMeBotEnabled'
+  | 'askGlificEnabled'
   | 'whatsappFormsEnabled'
-  | 'assistantConfigVersionsEnabled';
+  | 'assistantConfigVersionsEnabled'
+  | 'aiEvaluationsEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {

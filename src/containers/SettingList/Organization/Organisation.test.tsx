@@ -10,7 +10,7 @@ const user = userEvent.setup();
 const mocks = ORGANIZATION_MOCKS;
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/settings/organization']}>
       <Organization />
     </MemoryRouter>
@@ -60,7 +60,7 @@ test('it renders component and clicks cancel', async () => {
 
 test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
+    <MockedProvider mocks={[...ORGANIZATION_MOCKS]}>
       <Router>
         <Organization />
       </Router>
@@ -98,7 +98,7 @@ test('it renders component in edit mode', async () => {
 
 test('it renders confirmation popup with new phone number when allowBotNumberUpdate is true', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
+    <MockedProvider mocks={[...ORGANIZATION_MOCKS]}>
       <Router>
         <Organization />
       </Router>
@@ -130,7 +130,7 @@ test('it renders confirmation popup with new phone number when allowBotNumberUpd
 
 test('It does not show confirmation popup with new phone number when allowBotNumberUpdate is false', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={ORGANIZATION_MOCKS2} addTypename={false}>
+    <MockedProvider mocks={ORGANIZATION_MOCKS2}>
       <Router>
         <Organization />
       </Router>

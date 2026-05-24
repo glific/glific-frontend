@@ -1,30 +1,32 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router';
-import axios from 'axios';
-import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router';
+import * as Yup from 'yup';
 
-import { USER_SESSION } from 'config';
-import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
-import { Input } from 'components/UI/Form/Input/Input';
-import {
-  setAuthSession,
-  clearAuthSession,
-  setUserSession,
-  clearUserSession,
-  setOrganizationServices,
-} from 'services/AuthService';
-import { GET_CURRENT_USER } from 'graphql/queries/User';
-import { setUserRolePermissions } from 'context/role';
-import setLogs from 'config/logs';
-import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
-import { Auth } from '../Auth';
 import { setErrorMessage } from 'common/notification';
+import { Input } from 'components/UI/Form/Input/Input';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { USER_SESSION } from 'config';
+import setLogs from 'config/logs';
+import { setUserRolePermissions } from 'context/role';
+import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
+import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { usePostHog } from '@posthog/react';
+import {
+  clearAuthSession,
+  clearUserSession,
+  setAuthSession,
+  setOrganizationServices,
+  setUserSession,
+} from 'services/AuthService';
+import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
 export const Login = () => {
+  const posthog = usePostHog();
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
   const location: any = useLocation();
@@ -37,18 +39,32 @@ export const Login = () => {
     clearUserSession();
   };
 
+  const [organizationServicesSettled, setOrganizationServicesSettled] = useState(false);
+
   // get the information on current user
   const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
-  const [getOrganizationServices, { data: organizationServicesData }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
+  const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES);
+
+  const fetchOrganizationServices = () => {
+    getOrganizationServices()
+      .then((result) => {
+        if (result.data) {
+          setOrganizationServices(JSON.stringify(result.data.organizationServices));
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setOrganizationServicesSettled(true);
+      });
+  };
 
   useEffect(() => {
-    if (userData && organizationServicesData) {
+    if (userData && organizationServicesSettled) {
       const { user } = userData.currentUser;
       const userCopy = JSON.parse(JSON.stringify(user));
       userCopy.roles = user.accessRoles;
       // set the current user object
       setUserSession(JSON.stringify(userCopy));
-      setOrganizationServices(JSON.stringify(organizationServicesData.organizationServices));
 
       // get the roles
       const { accessRoles } = userData.currentUser.user;
@@ -67,6 +83,9 @@ export const Login = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
+        posthog?.identify(user.id, { organization_id: user.organization.id });
+        posthog?.capture('user_logged_in');
+
         const targetPath = location.state?.to || '/chat';
         navigate(targetPath, { replace: true });
       }
@@ -74,7 +93,7 @@ export const Login = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, organizationServicesData]);
+  }, [userData, userError, organizationServicesSettled]);
 
   const formFields = [
     {
@@ -111,7 +130,7 @@ export const Login = () => {
       })
       .then((response: any) => {
         getCurrentUser();
-        getOrganizationServices();
+        fetchOrganizationServices();
         setAuthSession(response.data.data);
       })
       .catch((error) => {
@@ -123,6 +142,10 @@ export const Login = () => {
         } else {
           setAuthError('Something went wrong. Please contact the Glific team.');
         }
+        posthog?.capture('user_login_failed', {
+          error: error?.response?.data?.error?.message || 'Unknown error',
+          status: error?.response?.status,
+        });
         setLogs(error, 'error', true);
       });
   };

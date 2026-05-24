@@ -41,8 +41,8 @@ interface VersionPanelProps {
   onSelectVersion: (version: AssistantVersion) => void;
   onRefetchSelect?: (version: AssistantVersion) => void;
   refetchTrigger?: number;
+  initialVersionNumber?: number;
 }
-
 
 const statusConfig: Record<string, { label: string; styleKey: string }> = {
   in_progress: { label: 'In Progress', styleKey: 'InProgress' },
@@ -55,6 +55,7 @@ export const VersionPanel = ({
   onSelectVersion,
   onRefetchSelect,
   refetchTrigger = 0,
+  initialVersionNumber,
 }: VersionPanelProps) => {
   const { t } = useTranslation();
   const initialSelectionDone = useRef(false);
@@ -68,12 +69,22 @@ export const VersionPanel = ({
   const versions: AssistantVersion[] = data?.assistantVersions ?? [];
   const sorted = [...versions].sort((a, b) => b.versionNumber - a.versionNumber);
 
-  // Initial auto-select
+  // Initial auto-select: prefer version from URL param, fall back to live, then latest
   useEffect(() => {
     if (versions.length === 0 || initialSelectionDone.current) return;
     initialSelectionDone.current = true;
-    const live = versions.find((v) => v.isLive) ?? sorted[0];
-    onSelectVersion(live);
+    const versionFromUrl =
+      initialVersionNumber != null ? versions.find((v) => v.versionNumber === initialVersionNumber) : null;
+    const target = versionFromUrl ?? versions.find((v) => v.isLive) ?? sorted[0];
+
+    if (!target) return;
+
+    if (versionFromUrl) {
+      (onRefetchSelect ?? onSelectVersion)(target);
+      return;
+    }
+
+    onSelectVersion(target);
   }, [data]);
 
   // Refetch when trigger changes, then select latest bypassing unsaved-changes guard
@@ -122,9 +133,7 @@ export const VersionPanel = ({
               </div>
               <span className={styles.Model}>
                 {version.model}
-                {version.description && (
-                  <span className={styles.Description}> · {version.description}</span>
-                )}
+                {version.description && <span className={styles.Description}> · {version.description}</span>}
               </span>
             </div>
           ))
