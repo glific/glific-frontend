@@ -724,8 +724,8 @@ export const List = ({
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
 
-  const emptyListItemName = noItemText ? t(noItemText as any) : t(listItemName as any);
-  const emptyListMessage = t('There are no {{item}}s right now.', { item: emptyListItemName });
+  const emptyListItemName = String(noItemText ? t(noItemText as any) : t(listItemName as any));
+  const emptyListMessage = String(t('There are no {{item}}s right now.', { item: emptyListItemName }));
   const resolvedEmptyListMessage = emptyListMessage.includes('{{item}}')
     ? emptyListMessage.replace('{{item}}', emptyListItemName)
     : emptyListMessage;
