@@ -725,6 +725,10 @@ export const List = ({
   }
 
   const emptyListItemName = noItemText ? t(noItemText as any) : t(listItemName as any);
+  const emptyListMessage = t('There are no {{item}}s right now.', { item: emptyListItemName });
+  const resolvedEmptyListMessage = emptyListMessage.includes('{{item}}')
+    ? emptyListMessage.replace('{{item}}', emptyListItemName)
+    : emptyListMessage;
 
   var noItemsText = (
     <div className={styles.NoResults}>
@@ -732,8 +736,7 @@ export const List = ({
         <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>
-          {t('There are no {{item}}s right now.', { item: emptyListItemName })}{' '}
-          {button.show && t('Please create one.')}
+          {resolvedEmptyListMessage} {button.show && t('Please create one.')}
         </div>
       )}
     </div>
