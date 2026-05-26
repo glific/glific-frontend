@@ -9,18 +9,24 @@ vi.mock('react-router', async () => ({
   useNavigate: () => mockedUsedNavigate,
 }));
 
+let shouldThrow = true;
 const ThrowingChild = () => {
-  throw new Error('Test error');
+  if (shouldThrow) {
+    throw new Error('Test error');
+  }
+  return <div data-testid="recovered-child">Recovered</div>;
 };
 
-const renderWithError = () =>
-  render(
+const renderWithError = () => {
+  shouldThrow = true;
+  return render(
     <MemoryRouter>
       <ErrorBoundary>
         <ThrowingChild />
       </ErrorBoundary>
     </MemoryRouter>
   );
+};
 
 describe('ErrorBoundary', () => {
   // suppress the expected error log from React when the child throws
@@ -42,16 +48,21 @@ describe('ErrorBoundary', () => {
     expect(getByText('Close')).toBeInTheDocument();
   });
 
-  test('Close button navigates to /chat', async () => {
-    const { getByTestId } = renderWithError();
+  test('Close button navigates to /chat and dismisses the dialog', async () => {
+    const { getByTestId, queryByTestId } = renderWithError();
 
     await waitFor(() => {
-      expect(getByTestId('cancel-button')).toBeInTheDocument();
+      expect(getByTestId('ok-button')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('cancel-button'));
+    // simulate route change: the throwing child would unmount, so future renders shouldn't throw
+    shouldThrow = false;
+    fireEvent.click(getByTestId('ok-button'));
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/chat');
+    await waitFor(() => {
+      expect(queryByTestId('errorMessage')).not.toBeInTheDocument();
+    });
   });
 
   test('Retry button reloads the page', async () => {
@@ -65,10 +76,10 @@ describe('ErrorBoundary', () => {
     const { getByTestId } = renderWithError();
 
     await waitFor(() => {
-      expect(getByTestId('ok-button')).toBeInTheDocument();
+      expect(getByTestId('cancel-button')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('ok-button'));
+    fireEvent.click(getByTestId('cancel-button'));
 
     expect(reloadMock).toHaveBeenCalled();
 

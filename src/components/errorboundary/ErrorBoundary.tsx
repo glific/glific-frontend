@@ -48,13 +48,14 @@ class ErrorBoundary extends Component<any, any> {
                 title="Error !"
                 colorCancel="warning"
                 handleOk={() => {
-                  window.location.reload();
-                }}
-                handleCancel={() => {
+                  this.setState({ hasError: false });
                   navigate('/chat');
                 }}
-                buttonOk="Retry"
-                buttonCancel="Close"
+                handleCancel={() => {
+                  window.location.reload();
+                }}
+                buttonOk="Close"
+                buttonCancel="Retry"
                 alignButtons="center"
                 contentAlign="center"
               >
