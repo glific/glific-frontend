@@ -51,10 +51,10 @@ class ErrorBoundary extends Component<any, any> {
                   window.location.reload();
                 }}
                 handleCancel={() => {
-                  navigate('/logout/user');
+                  navigate('/chat');
                 }}
                 buttonOk="Retry"
-                buttonCancel="Logout"
+                buttonCancel="Close"
                 alignButtons="center"
                 contentAlign="center"
               >
