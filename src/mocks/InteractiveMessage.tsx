@@ -506,6 +506,27 @@ export const getTemplateMocks4 = [
 
 export const getTemplateMocks5 = [...mocks, getTemplateByType('5', markdownMock), getTemplateByType('5', markdownMock)];
 
+const listMarkdownMock = {
+  id: '6',
+  type: 'LIST',
+  interactiveContent:
+    '{"type":"list","title":"test list","body":"*bold body text*","globalButtons":[{"type":"text","title":"*button*"}],"items":[{"title":"Section 1","subtitle":"Section 1","options":[{"type":"text","title":"*Option 1*","description":"desc"}]}]}',
+  label: 'test list',
+  language: {
+    id: '1',
+    label: 'English',
+  },
+  sendWithTitle: true,
+  translations:
+    '{"1":{"type":"list","title":"test list","body":"*bold body text*","globalButtons":[{"type":"text","title":"*button*"}],"items":[{"title":"Section 1","subtitle":"Section 1","options":[{"type":"text","title":"*Option 1*","description":"desc"}]}]}}',
+};
+
+export const getTemplateMocks6 = [
+  ...mocks,
+  getTemplateByType('6', listMarkdownMock),
+  getTemplateByType('6', listMarkdownMock),
+];
+
 export const translateWithoutTrimmingMocks = [
   ...getTemplateMocks1,
   translateInteractiveTemplateMock(),
