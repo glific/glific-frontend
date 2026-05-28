@@ -153,12 +153,14 @@ export const InteractiveMessage = () => {
       case QUICK_REPLY:
         return { ...interactiveContent, options: cleanMarkdown(interactiveContent.options) };
 
-      case LIST:
-        interactiveContent.items = interactiveContent.items.map((item: any) => ({
+      case LIST: {
+        const cleanedItems = interactiveContent.items.map((item: any) => ({
           ...item,
           options: cleanMarkdown(item.options),
         }));
-        return cleanMarkdown(interactiveContent);
+        const { body, items, ...rest } = interactiveContent;
+        return { ...cleanMarkdown(rest), items: cleanedItems, body };
+      }
 
       default:
         return interactiveContent;
