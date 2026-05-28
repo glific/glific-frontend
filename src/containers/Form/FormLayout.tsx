@@ -655,16 +655,18 @@ export const FormLayout = ({
 
   let formTitle = '';
   let headerHelp: string = t('Please enter below details.');
+  const translateFormTitle = (translationKey: 'Copy {{item}}' | 'Edit {{item}}' | 'Create a new {{item}}') =>
+    t(translationKey, { item: listItemName }).replace('{{item}}', listItemName);
 
   // set title if there is a title
   if (title) {
     formTitle = t(title as any);
   } else if (type === 'copy') {
-    formTitle = t(`Copy ${listItemName}` as any); // case when copying an item
+    formTitle = translateFormTitle('Copy {{item}}'); // case when copying an item
   } else if (itemId) {
-    formTitle = isView ? t(listItemName as any) : t(`Edit ${listItemName}` as any); // case when editing a item
+    formTitle = isView ? t(listItemName as any) : translateFormTitle('Edit {{item}}'); // case when editing a item
   } else {
-    formTitle = t(`Create a new ${listItemName}` as any); // case when adding a new item
+    formTitle = translateFormTitle('Create a new {{item}}'); // case when adding a new item
   }
   if (isView) {
     headerHelp = t('Please view below details.');
