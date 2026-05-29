@@ -2,11 +2,13 @@ import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import StartAFlow from './StartFlow';
 import {
   addFlowToCollectionQuery,
+  addFlowToCollectionQueryError,
   addFlowToContactQuery,
+  addFlowToContactQueryError,
   addFlowToWAGroupQuery,
   getPublishedFlowQuery,
 } from 'mocks/Flow';
@@ -38,6 +40,7 @@ vi.mock('common/notification', async (importOriginal) => {
   return {
     ...mod,
     setNotification: vi.fn(),
+    setErrorMessage: vi.fn(),
   };
 });
 
@@ -164,4 +167,87 @@ test('should start a flow for whatsapp group', async () => {
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
   });
+});
+
+test('does nothing when Start is clicked without selecting a flow', async () => {
+  vi.mocked(setNotification).mockClear();
+  setShowFlowDialogMock.mockClear();
+  const { getByTestId, getByText } = render(renderWrapper());
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Start'));
+
+  // The handler returns early so neither the mutation toast nor the dialog
+  // close (the next line after the early return) should fire.
+  await waitFor(() => {
+    expect(setShowFlowDialogMock).not.toHaveBeenCalled();
+  });
+  expect(setNotification).not.toHaveBeenCalled();
+});
+
+test('shows error toast when contact flow mutation fails', async () => {
+  vi.mocked(setNotification).mockClear();
+  vi.mocked(setErrorMessage).mockClear();
+
+  const errorMocks = [getPublishedFlowQuery, addFlowToContactQueryError];
+  const { getByTestId, getByText, getByRole } = render(
+    <MockedProvider mocks={errorMocks} addTypename={false}>
+      <StartAFlow collectionId="" entityId="1" groups={false} setShowFlowDialog={setShowFlowDialogMock} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(getByText('Help Workflow'));
+
+  await waitFor(() => {
+    expect(getByRole('combobox')).toHaveValue('Help Workflow');
+  });
+
+  fireEvent.click(getByText('Start'));
+
+  await waitFor(() => {
+    expect(setErrorMessage).toHaveBeenCalled();
+  });
+  expect(setNotification).not.toHaveBeenCalled();
+});
+
+test('shows error toast when collection flow mutation fails', async () => {
+  vi.mocked(setNotification).mockClear();
+  vi.mocked(setErrorMessage).mockClear();
+
+  const errorMocks = [getPublishedFlowQuery, addFlowToCollectionQueryError];
+  const { getByTestId, getByText, getByRole } = render(
+    <MockedProvider mocks={errorMocks} addTypename={false}>
+      <StartAFlow collectionId="1" entityId="" groups={false} setShowFlowDialog={setShowFlowDialogMock} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(getByText('Help Workflow'));
+
+  await waitFor(() => {
+    expect(getByRole('combobox')).toHaveValue('Help Workflow');
+  });
+
+  fireEvent.click(getByText('Start'));
+
+  await waitFor(() => {
+    expect(setErrorMessage).toHaveBeenCalled();
+  });
+  expect(setNotification).not.toHaveBeenCalled();
 });

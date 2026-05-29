@@ -25,6 +25,7 @@ const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId 
       <MemoryRouter initialEntries={[`/assistants/${assistantId}`]}>
         <Routes>
           <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
           <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
@@ -37,6 +38,7 @@ const renderCreateMode = (mocks: any = []) =>
       <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
           <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
           <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
@@ -349,6 +351,7 @@ test('create mode save navigates to the new assistant page', async () => {
       <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
           <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>

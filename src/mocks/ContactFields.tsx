@@ -1,5 +1,5 @@
-import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS, GET_CONTACT_FIELD_BY_ID } from 'graphql/queries/ContactFields';
 import { CREATE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
+import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS, GET_CONTACT_FIELD_BY_ID } from 'graphql/queries/ContactFields';
 
 const contactFieldsListMock = [
   {
@@ -215,7 +215,7 @@ export const contactFieldMocks = [
 export const contactFieldErrorMock = {
   request: {
     query: UPDATE_CONTACT_FIELDS,
-    variables: { id: '2', input: { shortcode: 'dob' } },
+    variables: { id: '2', input: { shortcode: 'age_group' } },
   },
   result: {
     data: {

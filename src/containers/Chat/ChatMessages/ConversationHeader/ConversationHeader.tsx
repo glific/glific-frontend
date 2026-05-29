@@ -117,43 +117,16 @@ export const ConversationHeader = ({
 
   // mutation to update the contact collections
   const [updateCollection] = useMutation(updateQuery, {
-    onCompleted: (result: any) => {
-      let resultVariable = groups ? 'updateWaGroupCollection' : 'updateContactGroups';
-      const { numberDeleted, contactGroups } = result[resultVariable];
-      const numberAdded = contactGroups.length;
-      let notification = `Added to ${numberAdded} collection${numberAdded === 1 ? '' : 's'}`;
-      if (numberDeleted > 0 && numberAdded > 0) {
-        notification = `Added to ${numberDeleted} collection${
-          numberDeleted === 1 ? '' : 's  and'
-        } removed from ${numberAdded} collection${numberAdded === 1 ? '' : 's '}`;
-      } else if (numberDeleted > 0) {
-        notification = `Removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's'}`;
-      }
-      setNotification(notification);
-    },
     refetchQueries: [{ query: GET_CONTACT_COLLECTIONS, variables: { id: entityId } }],
   });
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
-    onCompleted: () => {
-      setShowBlockDialog(false);
-      setNotification(t('Contact blocked successfully.'));
-      navigate('/chat');
-    },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
-    onError: () => {
-      setShowBlockDialog(false);
-      setNotification(t('Sorry! An error occurred!'), 'warning');
-    },
   });
 
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
     variables: { contactId: entityId },
-    onCompleted: () => {
-      setClearChatDialog(false);
-      setNotification(t('Conversation cleared for this contact.'), 'warning');
-    },
   });
 
   let collectionOptions = [];
@@ -175,7 +148,7 @@ export const ConversationHeader = ({
 
   let dialogBox = null;
 
-  const handleCollectionDialogOk = (selectedCollectionIds: any) => {
+  const handleCollectionDialogOk = async (selectedCollectionIds: any) => {
     const finalSelectedCollections = selectedCollectionIds.filter(
       (selectedCollectionId: any) => !initialSelectedCollectionIds.includes(selectedCollectionId)
     );
@@ -183,9 +156,14 @@ export const ConversationHeader = ({
       (gId: any) => !selectedCollectionIds.includes(gId)
     );
 
-    if (finalSelectedCollections.length > 0 || finalRemovedCollections.length > 0) {
-      let entityVariable = groups ? 'waGroupId' : 'contactId';
-      updateCollection({
+    if (finalSelectedCollections.length === 0 && finalRemovedCollections.length === 0) {
+      setShowCollectionDialog(false);
+      return;
+    }
+
+    let entityVariable = groups ? 'waGroupId' : 'contactId';
+    try {
+      const { data: result } = await updateCollection({
         variables: {
           input: {
             [entityVariable]: entityId,
@@ -194,9 +172,25 @@ export const ConversationHeader = ({
           },
         },
       });
-    }
 
-    setShowCollectionDialog(false);
+      if (result) {
+        let resultVariable = groups ? 'updateWaGroupCollection' : 'updateContactGroups';
+        const { numberDeleted, contactGroups } = result[resultVariable];
+        const numberAdded = contactGroups.length;
+        let notification = `Added to ${numberAdded} collection${numberAdded === 1 ? '' : 's'}`;
+        if (numberDeleted > 0 && numberAdded > 0) {
+          notification = `Added to ${numberAdded} collection${
+            numberAdded === 1 ? '' : 's and'
+          } removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's '}`;
+        } else if (numberDeleted > 0) {
+          notification = `Removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's'}`;
+        }
+        setNotification(notification);
+      }
+      setShowCollectionDialog(false);
+    } catch {
+      setNotification(t('Sorry! An error occurred!'), 'warning');
+    }
   };
 
   const handleCollectionDialogCancel = () => {
@@ -228,10 +222,22 @@ export const ConversationHeader = ({
     );
   }
 
-  const handleClearChatSubmit = () => {
-    clearMessages();
-    setClearChatDialog(false);
-    handleAction();
+  const handleClearChatSubmit = async () => {
+    try {
+      const { data } = await clearMessages();
+      const result = data?.clearMessages;
+      if (result?.success) {
+        setClearChatDialog(false);
+        handleAction();
+        setNotification(t('Conversation cleared for this contact.'), 'warning');
+      } else if (result?.errors?.length) {
+        setNotification(result.errors[0].message, 'warning');
+      } else {
+        setNotification(t('Sorry! An error occurred!'), 'warning');
+      }
+    } catch {
+      setNotification(t('Sorry! An error occurred!'), 'warning');
+    }
   };
 
   if (showClearChatDialog) {
@@ -253,15 +259,22 @@ export const ConversationHeader = ({
     );
   }
 
-  const handleBlock = () => {
-    blockContact({
-      variables: {
-        id: entityId,
-        input: {
-          status: 'BLOCKED',
+  const handleBlock = async () => {
+    setShowBlockDialog(false);
+    try {
+      await blockContact({
+        variables: {
+          id: entityId,
+          input: {
+            status: 'BLOCKED',
+          },
         },
-      },
-    });
+      });
+      setNotification(t('Contact blocked successfully.'));
+      navigate('/chat');
+    } catch {
+      setNotification(t('Sorry! An error occurred!'), 'warning');
+    }
   };
 
   if (showBlockDialog) {

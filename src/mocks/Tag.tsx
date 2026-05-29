@@ -85,12 +85,10 @@ export const getFilterTagQuery = {
     data: {
       tags: [
         {
-          __typename: 'Tag',
           id: '1',
           label: 'Messages',
         },
         {
-          __typename: 'Tag',
           id: '2',
           label: 'Contacts',
         },

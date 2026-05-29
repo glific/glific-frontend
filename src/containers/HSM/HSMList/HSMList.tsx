@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import dayjs from 'dayjs';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -16,7 +16,7 @@ import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
 import { RaiseToGupShup } from 'containers/HSM/RaiseToGupshupDialog/RaiseToGupShup';
-import { GUPSHUP_ENTERPRISE_SHORTCODE, STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { templateInfo, templateStatusInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
 import { WhatsAppToJsx } from 'common/RichEditor';
@@ -30,16 +30,10 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { GET_TAGS } from 'graphql/queries/Tags';
-import {
-  BULK_APPLY_TEMPLATES,
-  DELETE_TEMPLATE,
-  IMPORT_TEMPLATES,
-  SYNC_HSM_TEMPLATES,
-} from 'graphql/mutations/Template';
+import { BULK_APPLY_TEMPLATES, DELETE_TEMPLATE, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 import styles from './HSMList.module.css';
-import { ProviderContext } from 'context/session';
 import { useSearchParams } from 'react-router';
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
@@ -86,49 +80,11 @@ export const HSMList = () => {
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { provider } = useContext(ProviderContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES, {
-    onCompleted: (data: any) => {
-      setImporting(false);
-      if (data && data.bulkApplyTemplates) {
-        exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
-        setNotification(t('Templates applied successfully. Please check the csv file for the results'));
-      }
-    },
-    onError: () => {
-      setImporting(false);
-      setNotification(t('An error occured! Please check the format of the file'), 'warning');
-    },
-  });
-
-  const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, {
-    fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      if (data.errors) {
-        setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
-      } else {
-        setNotification(t('HSM queued for sync. Check notifications for updates.'), 'success');
-      }
-      setSyncTemplateLoad(false);
-    },
-    onError: () => {
-      setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
-      setSyncTemplateLoad(false);
-    },
-  });
-
-  const [importTemplatesMutation] = useMutation(IMPORT_TEMPLATES, {
-    onCompleted: (data: any) => {
-      setImporting(false);
-      const { errors } = data.importTemplates;
-      if (errors && errors.length > 0) {
-        setNotification(t('Error importing templates'), 'warning');
-      }
-    },
-  });
+  const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES);
+  const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, { fetchPolicy: 'network-only' });
 
   const { data: tags } = useQuery(GET_TAGS, {
     variables: {},
@@ -222,9 +178,46 @@ export const HSMList = () => {
     columnStyles,
   };
 
-  const handleHsmUpdates = () => {
+  const handleHsmUpdates = async () => {
     setSyncTemplateLoad(true);
-    syncHsmTemplates();
+    try {
+      const { data } = await syncHsmTemplates();
+      const errors = data?.syncHsmTemplate?.errors;
+      if (!data?.syncHsmTemplate || errors?.length) {
+        setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
+      } else {
+        setNotification(t('HSM queued for sync. Check notifications for updates.'), 'success');
+      }
+    } catch {
+      setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
+    } finally {
+      setSyncTemplateLoad(false);
+    }
+  };
+
+  const handleBulkApply = async (result: string, media: any) => {
+    const extension = getFileExtension(media.name);
+    if (extension !== 'csv') {
+      setNotification(t('Please upload a valid CSV file'), 'warning');
+      setImporting(false);
+    } else {
+      try {
+        const { data } = await bulkApplyTemplates({ variables: { data: result } });
+        const response = data?.bulkApplyTemplates;
+        if (response?.csv_rows) {
+          exportCsvFile(response.csv_rows, 'result');
+        }
+        if (response?.errors?.length) {
+          setNotification(t('Templates were processed with errors. Please check the csv file for details.'), 'warning');
+        } else if (response) {
+          setNotification(t('Templates applied successfully. Please check the csv file for the results'));
+        }
+      } catch {
+        setNotification(t('An error occured! Please check the format of the file'), 'warning');
+      } finally {
+        setImporting(false);
+      }
+    }
   };
 
   let filterValue: any = '';
@@ -268,7 +261,7 @@ export const HSMList = () => {
       loading={syncTemplateLoad}
       className={styles.HsmUpdates}
       data-testid="updateHsm"
-      onClick={() => handleHsmUpdates()}
+      onClick={handleHsmUpdates}
       aria-hidden="true"
     >
       SYNC HSM
@@ -348,44 +341,10 @@ export const HSMList = () => {
         <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
           View Sample
         </a>
-        <ImportButton
-          title={t('Bulk apply')}
-          onImport={() => setImporting(true)}
-          afterImport={(result: string, media: any) => {
-            const extension = getFileExtension(media.name);
-            if (extension !== 'csv') {
-              setNotification('Please upload a valid CSV file', 'warning');
-              setImporting(false);
-            } else {
-              bulkApplyTemplates({ variables: { data: result } });
-            }
-          }}
-        />
+        <ImportButton title={t('Bulk apply')} onImport={() => setImporting(true)} afterImport={handleBulkApply} />
       </div>
     </div>
   );
-
-  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
-    secondaryButton = (
-      <div className={styles.SecondaryButton}>
-        {syncHSMButton}
-        <ImportButton
-          title={t('Import templates')}
-          onImport={() => setImporting(true)}
-          afterImport={(result: string, media: any) => {
-            const extension = getFileExtension(media.name);
-            if (extension !== 'csv') {
-              setNotification('Please upload a valid CSV file', 'warning');
-              setImporting(false);
-            } else {
-              importTemplatesMutation({ variables: { data: result } });
-            }
-          }}
-        />
-      </div>
-    );
-    button.show = false;
-  }
 
   const handleView = (id: any) => {
     navigate(`/template/${id}/edit`);

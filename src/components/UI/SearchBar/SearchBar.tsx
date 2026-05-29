@@ -19,7 +19,7 @@ export interface SearchBarProps {
   endAdornment?: any;
   searchMode: boolean;
   iconFront?: boolean;
-  searchParam?:any
+  searchParam?: any;
 }
 
 export const SearchBar = ({
@@ -32,7 +32,7 @@ export const SearchBar = ({
   handleChange,
   className,
   iconFront = false,
-  searchParam
+  searchParam,
 }: SearchBarProps) => {
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();
@@ -78,7 +78,7 @@ export const SearchBar = ({
             }}
             className={styles.FilterIcon}
           >
-            <AdvancedSearch isActive={searchParam && Object.keys(searchParam).length !== 0 } />
+            <AdvancedSearch isActive={searchParam && Object.keys(searchParam).length !== 0} />
           </IconButton>
         </Tooltip>
       </InputAdornment>
