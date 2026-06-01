@@ -50,11 +50,11 @@ describe('TrialRegistration', () => {
     render(wrapper);
 
     const orgNameInput = screen.getByPlaceholderText('Organization Name');
-    fireEvent.change(orgNameInput, { target: { value: '123' } });
+    fireEvent.change(orgNameInput, { target: { value: 'Organization 123 @' } });
     fireEvent.blur(orgNameInput);
 
     await waitFor(() => {
-      expect(screen.getByText('Organization name can only contain alphabets and spaces')).toBeInTheDocument();
+      expect(screen.getByText('Organization name can only contain letters, numbers, spaces, and special characters (&, ., -, ,)')).toBeInTheDocument();
     });
   });
 
@@ -82,7 +82,7 @@ describe('TrialRegistration', () => {
     render(wrapper);
 
     fireEvent.change(screen.getByPlaceholderText('Organization Name'), {
-      target: { value: 'Testing Org' },
+      target: { value: 'Testing Org 1' },
     });
     fireEvent.change(screen.getByPlaceholderText('Your name'), {
       target: { value: 'Amisha' },
