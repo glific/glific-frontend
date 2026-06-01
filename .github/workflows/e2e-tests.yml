@@ -178,6 +178,7 @@ jobs:
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
           cd cypress-testing
           yarn
+          yarn add cypress@15.15.0
           cd ..
 
       - name: Run glific frontend
