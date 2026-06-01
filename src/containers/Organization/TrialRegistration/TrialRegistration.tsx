@@ -52,7 +52,11 @@ export const TrialRegistration = () => {
   const FormSchema = Yup.object().shape({
     organizationName: Yup.string()
       .required('Organization name is required')
-      .matches(/^[A-Za-z0-9\s&.,\-]+$/, 'Organization name can only contain letters, numbers, spaces, and special characters (&, ., -, ,)')
+      .trim()
+      .matches(
+        /^[A-Za-z0-9 &.,-]+$/,
+        'Organization name can only contain letters, numbers, spaces, and special characters (&, ., -, ,)'
+      )
       .min(2, 'Organization must be at least 2 characters'),
     username: Yup.string()
       .required('Your name is required')

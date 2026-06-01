@@ -54,8 +54,27 @@ describe('TrialRegistration', () => {
     fireEvent.blur(orgNameInput);
 
     await waitFor(() => {
-      expect(screen.getByText('Organization name can only contain letters, numbers, spaces, and special characters (&, ., -, ,)')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Organization name can only contain letters, numbers, spaces, and special characters (&, ., -, ,)'
+        )
+      ).toBeInTheDocument();
     });
+  });
+
+  test('should accept organization names with allowed special characters', async () => {
+    render(wrapper);
+
+    const orgNameInput = screen.getByPlaceholderText('Organization Name');
+
+    for (const name of ['People4Good', 'Jan Sahas 2.0', 'Health & Care, Inc.']) {
+      fireEvent.change(orgNameInput, { target: { value: name } });
+      fireEvent.blur(orgNameInput);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/Organization name can only contain/)).not.toBeInTheDocument();
+      });
+    }
   });
 
   test('should show validation error for invalid username', async () => {
