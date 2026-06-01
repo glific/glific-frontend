@@ -198,7 +198,7 @@ jobs:
 
       - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
-          cd cypress-testing
+          cd project/glific
           yarn run cypress run  --config excludeSpecPattern=cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
         env:
           SPLIT: 3
