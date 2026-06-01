@@ -176,10 +176,8 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
-          cd cypress-testing
-          yarn
-          yarn add cypress@15.15.0
           cd ..
+          yarn add cypress@15.15.0
 
       - name: Run glific frontend
         run: |
@@ -199,8 +197,7 @@ jobs:
 
       - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
-          cd project/glific
-          yarn run cypress run  --config excludeSpecPattern=cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          yarn run cypress run --config excludeSpecPattern=cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
         env:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.shard }}
