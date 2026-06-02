@@ -117,9 +117,9 @@ jobs:
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
           mkdir -p project
           cd project
-          echo clone glific repo
           git clone https://github.com/glific/glific.git
           cd glific
+
           cd priv
           mkdir cert
           cd cert
@@ -167,7 +167,7 @@ jobs:
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
           cd ..
-          yarn add cypress@13.6.2
+          yarn add cypress@15.15.0
 
       - name: Run glific frontend
         run: |
@@ -175,7 +175,7 @@ jobs:
 
       - name: Run glific backend
         run: |
-          cd project/glific/
+          cd project/glific
           ENABLE_DB_SSL=false OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server > phoenix-server.log 2>&1 &
           echo "artifacts_path=${PWD}/phoenix-server.log" >> $GITHUB_ENV
 
@@ -187,7 +187,10 @@ jobs:
 
       - name: Cypress run
         run: |
-          yarn run cypress run --spec cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          yarn run cypress run \
+            --spec cypress/e2e/filesearch/Filesearch.spec.ts \
+            --record \
+            --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
 
       - name: Upload Phoenix server & ngrok logs
         if: always()
