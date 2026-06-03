@@ -16,8 +16,10 @@ import { Login } from './Login';
 
 const mocks = [getCurrentUserQuery, getOrganizationServicesQuery, getOrganizationStatus('ACTIVE')];
 
-const { mockPosthogCapture } = vi.hoisted(() => ({
+const { mockPosthogCapture, mockPosthogIdentify, mockPosthogGroup } = vi.hoisted(() => ({
   mockPosthogCapture: vi.fn(),
+  mockPosthogIdentify: vi.fn(),
+  mockPosthogGroup: vi.fn(),
 }));
 
 vi.mock('axios');
@@ -28,7 +30,8 @@ vi.mock('pino-logflare', () => ({
 vi.mock('@posthog/react', () => ({
   usePostHog: () => ({
     capture: mockPosthogCapture,
-    identify: vi.fn(),
+    identify: mockPosthogIdentify,
+    group: mockPosthogGroup,
   }),
 }));
 vi.mock('config/logs', () => ({
@@ -98,6 +101,19 @@ describe('<Login />', () => {
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(USER_SESSION, expect.any(Object));
       expect(localStorageSpy).toHaveBeenCalled();
+    });
+  });
+
+  it('identifies user and organization group in PostHog on successful login', async () => {
+    mockAxiosPost('success');
+    const { container } = render(wrapper(mocks));
+
+    await userAction(container);
+
+    await waitFor(() => {
+      expect(mockPosthogIdentify).toHaveBeenCalledWith('1', { access_roles: ['Admin'] });
+      expect(mockPosthogGroup).toHaveBeenCalledWith('organization', '1');
+      expect(mockPosthogCapture).toHaveBeenCalledWith('user_logged_in');
     });
   });
 
