@@ -197,7 +197,7 @@ export const Collection = () => {
       languageSupport={false}
       setStates={setStates}
       validationSchema={FormSchema}
-      listItemName="collection"
+      listItemName={t('collection')}
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink={redirectLink}

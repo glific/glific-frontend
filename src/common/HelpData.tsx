@@ -98,8 +98,8 @@ export const contactManagementInfo: HelpDataProps = {
 };
 
 export const blockedContactsInfo: HelpDataProps = {
-  heading:
-    'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.',
+  heading:t(
+    'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.'),
   link: 'https://glific.github.io/docs/docs/Product%20Features/Others/All%20product%20features/#block-contacts', // Replace with the actual Glific documentation link
 };
 
@@ -141,16 +141,16 @@ export const templateStatusInfo: HelpDataProps = {
 };
 
 export const pollsInfo: HelpDataProps = {
-  heading: 'An overview of all the polls created to date',
+  heading: t('An overview of all the polls created to date'),
   link: 'https://glific.github.io/docs/docs/WhatsApp%20Groups%20Automation/Sending%20Polls%20To%20WhatsApp%20Groups',
 };
 
 export const certificatesInfo: HelpDataProps = {
-  heading: 'An overview of all the certificates created to date',
+  heading: t('An overview of all the certificates created to date'),
   link: 'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates',
 };
 
 export const whatsappFormsInfo: HelpDataProps = {
-  heading: 'An overview of all the whatsapp forms created to date',
+  heading: t('An overview of all the whatsapp forms created to date'),
   link: 'https://glific.github.io/docs/docs/Product%20Features/WhatsApp%20Forms',
 };

@@ -33,6 +33,7 @@ export interface SearchDialogBoxProps {
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const { t } = useTranslation();
+  
   const {
     asyncSearch,
     icon,
@@ -48,7 +49,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     renderTags = true,
     textFieldPlaceholder = '',
     multiple = true,
-    buttonOk = 'Save',
+    buttonOk = undefined,
     description = '',
     colorOk,
     fullWidth = false,
@@ -57,6 +58,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     noOptionsText,
   } = props;
 
+  const resolvedButtonOk = buttonOk || t('Save');
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
   const [optionsData, setOptionsData] = useState<any>(options);
@@ -92,7 +94,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       handleCancel={handleCancel}
       titleAlign="left"
       colorOk={colorOk}
-      buttonOk={t(buttonOk as any)}
+      buttonOk={resolvedButtonOk}
       buttonCancel={t('Cancel')}
       fullWidth={fullWidth}
     >

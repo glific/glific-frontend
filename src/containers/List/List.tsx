@@ -463,7 +463,7 @@ export const List = ({
     const deleteDialogTitle =
       dialogTitle ||
       t('Are you sure you want to delete the {{item}} "{{name}}"?', {
-        item: t(listItemName as any),
+        item: listItemName,
         name: deleteItemName,
       });
 
@@ -724,7 +724,7 @@ export const List = ({
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
 
-  const emptyListItemName = String(noItemText ? t(noItemText as any) : t(listItemName as any));
+  const emptyListItemName = noItemText ?? listItemName;
   const emptyListMessage = String(t('There are no {{item}}s right now.', { item: emptyListItemName }));
   const resolvedEmptyListMessage = emptyListMessage.includes('{{item}}')
     ? emptyListMessage.replace('{{item}}', emptyListItemName)

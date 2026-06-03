@@ -735,5 +735,11 @@
   "Poll Options": "Poll Options",
   "Option": "Option",
   "Add Option": "Add Option",
-  "Allow multiple options": "Allow multiple options"
+  "Allow multiple options": "Allow multiple options",
+  "WhatsApp Form":"WhatsApp Form",
+  "Edit WhatsApp Form":"Edit WhatsApp Form",
+  "Create WhatsApp Form":"Create WhatsApp Form",
+  "An overview of all the certificates created to date":"An overview of all the certificates created to date",
+  "An overview of all the whatsapp forms created to date":"An overview of all the whatsapp forms created to date",
+  "Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.":"Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff."
 }

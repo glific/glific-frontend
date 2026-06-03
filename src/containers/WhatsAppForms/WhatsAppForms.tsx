@@ -14,6 +14,9 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_FORM, DELETE_FORM, UPDATE_FORM } from 'graphql/mutations/WhatsAppForm';
 import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAppForm';
 import styles from './WhatsAppForm.module.css';
+import { useTranslation } from 'react-i18next';
+
+const {t} = useTranslation();
 
 const queries = {
   getItemQuery: GET_WHATSAPP_FORM,
@@ -156,10 +159,10 @@ export const WhatsAppForms = () => {
   return (
     <>
       <Heading
-        formTitle={isEditing ? (disabled ? 'WhatsApp Form' : 'Edit WhatsApp Form') : 'Create WhatsApp Form'}
+        formTitle={isEditing ? (disabled ? t('WhatsApp Form') : t('Edit WhatsApp Form')) :t('Create WhatsApp Form')}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
-        headerHelp={disabled ? 'Please view below details' : 'Please enter below details.'}
+        headerHelp={disabled ? t('Please view below details.') : t('Please enter below details.')}
       />
       <div className={styles.FormSection}>
         <FormLayout

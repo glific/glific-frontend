@@ -106,7 +106,7 @@ export const FormLayout = ({
   redirectionLink,
   errorButtonState = {
     show: true,
-    text: 'Cancel',
+    text: undefined,
   },
   listItem,
   getItemQuery,
@@ -127,7 +127,7 @@ export const FormLayout = ({
   // Todo: lets move advanced search out of here as this is not generic
   advanceSearch,
   cancelAction,
-  button = 'Save',
+  button = undefined,
   buttonState = { text: '', status: false, styles: '', show: true },
   type,
   afterSave,
@@ -401,7 +401,8 @@ export const FormLayout = ({
   });
 
   const { t } = useTranslation();
-
+  const resolvedButtonText = button || t('Save');
+  const resolvedCancelText = errorButtonState?.text || t('Cancel');
   const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
 
   useEffect(() => {
@@ -591,7 +592,7 @@ export const FormLayout = ({
                 loading={saveClick}
                 disabled={buttonState.status}
               >
-                {buttonState.status ? t(buttonState.text as any) : t(button as any)}
+                {buttonState.status ? buttonState.text : resolvedButtonText}
               </Button>
             )}
             {additionalAction ? (
@@ -614,7 +615,7 @@ export const FormLayout = ({
             ) : null}
             {errorButtonState?.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {t(errorButtonState?.text as any)}
+                {resolvedCancelText}
               </Button>
             )}
 
@@ -660,11 +661,11 @@ export const FormLayout = ({
 
   // set title if there is a title
   if (title) {
-    formTitle = t(title as any);
+    formTitle = title;
   } else if (type === 'copy') {
     formTitle = translateFormTitle('Copy {{item}}'); // case when copying an item
   } else if (itemId) {
-    formTitle = isView ? t(listItemName as any) : translateFormTitle('Edit {{item}}'); // case when editing a item
+    formTitle = isView ? `${listItemName}` : translateFormTitle('Edit {{item}}'); // case when editing a item
   } else {
     formTitle = translateFormTitle('Create a new {{item}}'); // case when adding a new item
   }

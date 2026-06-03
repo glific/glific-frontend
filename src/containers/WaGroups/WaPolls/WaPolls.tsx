@@ -186,7 +186,7 @@ export const WaPolls = () => {
         languageSupport={false}
         setStates={setStates}
         validationSchema={FormSchema}
-        listItemName="Poll"
+        listItemName={t('Poll')}
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink={'group/polls'}

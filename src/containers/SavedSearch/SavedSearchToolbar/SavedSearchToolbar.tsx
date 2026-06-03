@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useSubscription } from '@apollo/client';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 
 import OptionsIcon from 'assets/images/icons/MoreOptions/More.svg?react';
 
@@ -34,7 +33,6 @@ export const SavedSearchToolbar = ({
   const Ref = useRef(null);
   const open = Boolean(anchorEl);
   const variables = { organizationId: getUserSession('organizationId') };
-  const { t } = useTranslation();
 
   const { data: collectionCount } = useSubscription(COLLECTION_COUNT_SUBSCRIPTION, { variables });
 
@@ -131,7 +129,7 @@ export const SavedSearchToolbar = ({
           className={`${styles.SavedSearchItemLabel} ${active && styles.SavedSearchItemSelected}`}
           data-testid="editor-label"
         >
-          {t(savedSearch.shortcode)}
+          {savedSearch.shortcode}
           <div className={styles.SavedSearchCount}>{`(${numberToAbbreviation(count)})`}</div>
         </div>
       </div>
@@ -157,7 +155,7 @@ export const SavedSearchToolbar = ({
                   onClick={() => handleAdditionalSavedSearch(search)}
                   aria-hidden="true"
                 >
-                  <div>{t(search.shortcode)}</div>
+                  <div>{search.shortcode}</div>
                   <div className={styles.Count}>{`(${numberToAbbreviation(count)})`}</div>
                 </div>
               );
