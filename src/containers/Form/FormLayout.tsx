@@ -161,6 +161,7 @@ export const FormLayout = ({
   const [customError, setCustomError] = useState<any>(null);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
+  const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
@@ -400,7 +401,6 @@ export const FormLayout = ({
     },
   });
 
-  const { t } = useTranslation();
   const resolvedButtonText = button || t('Save');
   const resolvedCancelText = errorButtonState?.text || t('Cancel');
   const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
@@ -657,7 +657,7 @@ export const FormLayout = ({
   let formTitle = '';
   let headerHelp: string = t('Please enter below details.');
   const translateFormTitle = (translationKey: 'Copy {{item}}' | 'Edit {{item}}' | 'Create a new {{item}}') =>
-    t(translationKey, { item: listItemName }).replace('{{item}}', listItemName);
+    t(translationKey, { item: listItemName });
 
   // set title if there is a title
   if (title) {

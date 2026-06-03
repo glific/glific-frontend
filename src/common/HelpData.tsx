@@ -1,5 +1,3 @@
-import { t } from 'i18next';
-
 export interface HelpDataProps {
   heading: any;
   link?: string;
@@ -98,22 +96,22 @@ export const contactManagementInfo: HelpDataProps = {
 };
 
 export const blockedContactsInfo: HelpDataProps = {
-  heading:t(
-    'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.'),
+  heading:
+    'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.',
   link: 'https://glific.github.io/docs/docs/Product%20Features/Others/All%20product%20features/#block-contacts', // Replace with the actual Glific documentation link
 };
 
 export const assistantsInfo: HelpDataProps = {
-  heading: t(
+  heading: 
     'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.'
-  ),
+  ,
   link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/',
 };
 
 export const assistantListInfo: HelpDataProps = {
-  heading: t(
+  heading:
     'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.'
-  ),
+  ,
   link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/',
 };
 
@@ -141,16 +139,16 @@ export const templateStatusInfo: HelpDataProps = {
 };
 
 export const pollsInfo: HelpDataProps = {
-  heading: t('An overview of all the polls created to date'),
+  heading: 'An overview of all the polls created to date',
   link: 'https://glific.github.io/docs/docs/WhatsApp%20Groups%20Automation/Sending%20Polls%20To%20WhatsApp%20Groups',
 };
 
 export const certificatesInfo: HelpDataProps = {
-  heading: t('An overview of all the certificates created to date'),
+  heading: 'An overview of all the certificates created to date',
   link: 'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates',
 };
 
 export const whatsappFormsInfo: HelpDataProps = {
-  heading: t('An overview of all the whatsapp forms created to date'),
+  heading: 'An overview of all the whatsapp forms created to date',
   link: 'https://glific.github.io/docs/docs/Product%20Features/WhatsApp%20Forms',
 };

@@ -16,7 +16,6 @@ import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAp
 import styles from './WhatsAppForm.module.css';
 import { useTranslation } from 'react-i18next';
 
-const {t} = useTranslation();
 
 const queries = {
   getItemQuery: GET_WHATSAPP_FORM,
@@ -53,6 +52,7 @@ export const WhatsAppForms = () => {
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const params = useParams();
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   useQuery(GET_WHATSAPP_FORM, {
     skip: !params.id,

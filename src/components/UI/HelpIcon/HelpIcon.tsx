@@ -31,7 +31,7 @@ export const HelpIcon = ({
           {helpData && (
             <div>
               <div className={styles.HoverPopUpText}>
-                {helpData.heading}
+                {typeof helpData.heading === 'string' ? t(helpData.heading as any) : helpData.heading}
                 {helpData.link && (
                   <div
                     className={styles.HoverLink}
