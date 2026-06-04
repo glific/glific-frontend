@@ -656,8 +656,10 @@ export const FormLayout = ({
 
   let formTitle = '';
   let headerHelp: string = t('Please enter below details.');
-  const translateFormTitle = (translationKey: 'Copy {{item}}' | 'Edit {{item}}' | 'Create a new {{item}}') =>
-    t(translationKey, { item: listItemName });
+  const translateFormTitle = (translationKey: 'Copy {{item}}' | 'Edit {{item}}' | 'Create a new {{item}}') => {
+    const translatedTitle = String(t(translationKey, { item: listItemName }));
+    return translatedTitle.includes('{{item}}') ? translatedTitle.replace('{{item}}', listItemName) : translatedTitle;
+  };
 
   // set title if there is a title
   if (title) {

@@ -30,15 +30,13 @@ export const formatError = (str: string) => {
 };
 
 const GoogleSheetUrlComponent = ({ field, disabled }: any) => {
+  const {t} = useTranslation();
   return (
     <div className={styles.GoogleSheetContainer}>
-      <h3>Data Storage (Optional)</h3>
-      <Input field={field} placeholder="Add your google sheet link here" disabled={disabled} />
+      <h3>{t('Data Storage (Optional)')}</h3>
+      <Input field={field} placeholder={t('Add your google sheet link here')} disabled={disabled} />
 
-      <p>
-        Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see
-        and share responses more easily.
-      </p>
+      <p>{t("Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see and share responses more easily.")}</p>
     </div>
   );
 };
@@ -117,18 +115,18 @@ export const WhatsAppForms = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      label: 'Title *',
-      placeholder: 'Enter form title',
+      label: t('Title *'),
+      placeholder: t('Enter form title'),
       disabled: disabled,
     },
     {
       component: Input,
       name: 'description',
       type: 'text',
-      label: 'Description',
+      label: t('Description'),
       textArea: true,
       rows: 2,
-      placeholder: 'Enter form description',
+      placeholder: t('Enter form description'),
       disabled: disabled,
     },
     {
@@ -136,10 +134,10 @@ export const WhatsAppForms = () => {
       name: 'formCategories',
       options: categories,
       optionLabel: 'name',
-      label: 'Categories *',
-      placeholder: 'Select categories',
+      label: t('Categories *'),
+      placeholder: t('Select categories'),
       helperText:
-        'Choose categories that represent your form. Multiple values are possible, but at least one is required.',
+        t('Choose categories that represent your form. Multiple values are possible, but at least one is required.'),
       disabled: disabled,
     },
     {
@@ -173,19 +171,19 @@ export const WhatsAppForms = () => {
           setStates={setStates}
           isView={disabled}
           validationSchema={FormSchema}
-          listItemName="Whatsapp Form"
+          listItemName={t('Whatsapp Form')}
           formFields={formFields}
-          errorButtonState={{ text: disabled ? 'Go Back' : 'Cancel', show: true }}
+          errorButtonState={{ text: disabled ? t('Go Back') : t('Cancel'), show: true }}
           redirectionLink={'whatsapp-forms'}
           listItem="whatsappForm"
           icon={<Update />}
           helpData={whatsappFormsInfo}
           backLinkButton={`/whatsapp-forms`}
           noHeading
-          dialogMessage={'The form will be permanently deleted and cannot be recovered.'}
+          dialogMessage={t('The form will be permanently deleted and cannot be recovered.')}
           redirect={false}
           buttonState={{
-            text: 'Save Form',
+            text: t('Save Form'),
             status: disabled,
             show: !disabled,
           }}
