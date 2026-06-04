@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 import * as Yup from 'yup';
 
+import { usePostHog } from '@posthog/react';
 import { setErrorMessage } from 'common/notification';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
@@ -13,14 +14,15 @@ import setLogs from 'config/logs';
 import { setUserRolePermissions } from 'context/role';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
-import { usePostHog } from '@posthog/react';
 import {
   clearAuthSession,
   clearUserSession,
+  getAuthSession,
   setAuthSession,
   setOrganizationServices,
   setUserSession,
 } from 'services/AuthService';
+import { setupPostHogUserAndOrganization } from 'services/PostHogService';
 import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
@@ -83,7 +85,15 @@ export const Login = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        posthog?.identify(user.id, { organization_id: user.organization.id });
+        const isTrial = getAuthSession('is_trial');
+        setupPostHogUserAndOrganization(
+          posthog,
+          { id: user.id, accessRoleLabels: userAccessRoles },
+          {
+            id: user.organization.id,
+            isTrial: isTrial === null || isTrial === undefined ? undefined : Boolean(isTrial),
+          }
+        );
         posthog?.capture('user_logged_in');
 
         const targetPath = location.state?.to || '/chat';
