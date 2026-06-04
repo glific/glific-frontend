@@ -4,11 +4,11 @@ import react from '@vitejs/plugin-react';
 import { ConfigEnv, UserConfigExport, defineConfig, loadEnv } from 'vite';
 // import eslint from 'vite-plugin-eslint';
 import checker from 'vite-plugin-checker';
+import mkcert from 'vite-plugin-mkcert';
 import svgr from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import fs from 'fs';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
@@ -55,7 +55,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   // dev specific config
   if (command === 'serve') {
     return defineConfig({
-      plugins: plugins.concat([checker({ typescript: true })]),
+      plugins: plugins.concat([checker({ typescript: true }), mkcert({ hosts: ['glific.test'] })]),
       // dev specific config
       build: {
         sourcemap: true, // Source map generation must be turned on
@@ -65,10 +65,6 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         host: 'glific.test',
         port: 3000,
         open: 'https://glific.test:3000/',
-        https: {
-          key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
-          cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
-        },
         headers: {
           'X-Content-Type-Options': 'nosniff',
           'X-XSS-Protection': '1; mode=block',
