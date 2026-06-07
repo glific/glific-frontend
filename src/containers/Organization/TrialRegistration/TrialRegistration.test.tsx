@@ -50,12 +50,31 @@ describe('TrialRegistration', () => {
     render(wrapper);
 
     const orgNameInput = screen.getByPlaceholderText('Organization Name');
-    fireEvent.change(orgNameInput, { target: { value: '123' } });
+    fireEvent.change(orgNameInput, { target: { value: 'Organization 123 @' } });
     fireEvent.blur(orgNameInput);
 
     await waitFor(() => {
-      expect(screen.getByText('Organization name can only contain alphabets and spaces')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Organization name can only contain letters, numbers, spaces, and special characters (&, ., -, ,)'
+        )
+      ).toBeInTheDocument();
     });
+  });
+
+  test('should accept organization names with allowed special characters', async () => {
+    render(wrapper);
+
+    const orgNameInput = screen.getByPlaceholderText('Organization Name');
+
+    for (const name of ['People4Good', 'Jan Sahas 2.0', 'Health & Care, Inc.']) {
+      fireEvent.change(orgNameInput, { target: { value: name } });
+      fireEvent.blur(orgNameInput);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/Organization name can only contain/)).not.toBeInTheDocument();
+      });
+    }
   });
 
   test('should show validation error for invalid username', async () => {
@@ -82,7 +101,7 @@ describe('TrialRegistration', () => {
     render(wrapper);
 
     fireEvent.change(screen.getByPlaceholderText('Organization Name'), {
-      target: { value: 'Testing Org' },
+      target: { value: 'Testing Org 1' },
     });
     fireEvent.change(screen.getByPlaceholderText('Your name'), {
       target: { value: 'Amisha' },
