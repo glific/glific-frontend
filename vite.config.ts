@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
 import react from '@vitejs/plugin-react';
-import { ConfigEnv, UserConfigExport, defineConfig, loadEnv } from 'vite';
+import { ConfigEnv, PluginOption, UserConfigExport, defineConfig, loadEnv } from 'vite';
 // import eslint from 'vite-plugin-eslint';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
@@ -16,7 +16,7 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
   const isBuild = command === 'build';
   const enableSentry = isBuild && !!env.VITE_SENTRY_AUTH_TOKEN;
 
-  const plugins = [
+  const plugins: PluginOption[] = [
     react(),
     viteTsconfigPaths(),
     svgr(),
