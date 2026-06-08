@@ -259,7 +259,12 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
         return;
       }
 
-      const scores = extractRows(parsed);
+      const scores = extractRows(parsed).sort((a, b) => {
+        const aNum = Number(a.question_id);
+        const bNum = Number(b.question_id);
+        if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
+        return String(a.question_id ?? '').localeCompare(String(b.question_id ?? ''));
+      });
 
       if (!scores.length) {
         setNotification('No scores available to download', 'warning');
