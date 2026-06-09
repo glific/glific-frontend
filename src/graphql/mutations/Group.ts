@@ -53,3 +53,26 @@ export const SEND_MESSAGE_IN_WA_GROUP_COLLECTION = gql`
     }
   }
 `;
+
+export const SET_PRIMARY_PHONE = gql`
+  mutation SetPrimaryPhone($waGroupId: ID!, $waManagedPhoneId: ID!) {
+    setPrimaryPhone(waGroupId: $waGroupId, waManagedPhoneId: $waManagedPhoneId) {
+      waGroupPhone {
+        id
+        isPrimary
+        isActive
+        waManagedPhone {
+          id
+          phone
+          label
+          status
+        }
+      }
+      warning
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
