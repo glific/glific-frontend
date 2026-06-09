@@ -189,9 +189,7 @@ export const GroupDetails = () => {
       />
     );
   } else if (contentToShow === 'phones') {
-    contentBody = (
-      <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />
-    );
+    contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
   } else {
     contentBody = (
       <ContactDescription
