@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
 
-import WhatsappIcon from 'assets/images/icons/Social/Whatsapp.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -67,7 +66,6 @@ export const PhonesPanel = ({ phones, waGroupId }: PhonesPanelProps) => {
 
     return (
       <div key={row.id} className={styles.PhoneRow} data-testid={`phone-row-${phone.id}`}>
-       
         <div className={styles.PhoneInfo}>
           <div className={styles.PhoneNumber}>{phone.label || phone.phone}</div>
           <div className={styles.PhoneSubtitle}>
@@ -85,12 +83,7 @@ export const PhonesPanel = ({ phones, waGroupId }: PhonesPanelProps) => {
         </div>
         <div className={styles.Badges}>
           {row.isPrimary && (
-            <Chip
-              data-testid="primary-badge"
-              label={t('Primary')}
-              size="small"
-              className={styles.PrimaryBadge}
-            />
+            <Chip data-testid="primary-badge" label={t('Primary')} size="small" className={styles.PrimaryBadge} />
           )}
         </div>
         <div className={styles.Action}>
