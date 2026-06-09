@@ -349,6 +349,76 @@ describe('<ChatMessage />', () => {
     );
   });
 
+  describe('phone label for WA group messages', () => {
+    const groupOutboundProps = (waManagedPhone: any) =>
+      getProps({
+        type: 'TEXT',
+        groups: true,
+        status: 'sent',
+        waManagedPhone,
+      });
+
+    test('renders the managed phone label on outgoing WA group messages', () => {
+      render(
+        <MockedProvider addTypename={false}>
+          <ChatMessage {...groupOutboundProps({ phone: '917834811200', label: 'Bot phone' })} />
+        </MockedProvider>
+      );
+      expect(screen.getByTestId('phoneLabel')).toHaveTextContent('Sent from: Bot phone');
+    });
+
+    test('falls back to contact name when label is missing', () => {
+      render(
+        <MockedProvider addTypename={false}>
+          <ChatMessage
+            {...groupOutboundProps({ phone: '917834811200', label: null, contact: { name: 'Org WA' } })}
+          />
+        </MockedProvider>
+      );
+      expect(screen.getByTestId('phoneLabel')).toHaveTextContent('Sent from: Org WA');
+    });
+
+    test('falls back to phone number when both label and contact name are missing', () => {
+      render(
+        <MockedProvider addTypename={false}>
+          <ChatMessage {...groupOutboundProps({ phone: '917834811200' })} />
+        </MockedProvider>
+      );
+      expect(screen.getByTestId('phoneLabel')).toHaveTextContent('Sent from: 917834811200');
+    });
+
+    test('does NOT render the phone label on incoming WA group messages', () => {
+      render(
+        <MockedProvider addTypename={false}>
+          <ChatMessage
+            {...getProps({
+              type: 'TEXT',
+              groups: true,
+              status: 'received',
+              contact: { name: 'Group member' },
+              waManagedPhone: { phone: '917834811200', label: 'Bot phone' },
+            })}
+          />
+        </MockedProvider>
+      );
+      expect(screen.queryByTestId('phoneLabel')).not.toBeInTheDocument();
+    });
+
+    test('does NOT render the phone label on normal (non-group) chat messages', () => {
+      render(
+        <MockedProvider addTypename={false}>
+          <ChatMessage
+            {...getProps({
+              type: 'TEXT',
+              waManagedPhone: { phone: '917834811200', label: 'Bot phone' },
+            })}
+          />
+        </MockedProvider>
+      );
+      expect(screen.queryByTestId('phoneLabel')).not.toBeInTheDocument();
+    });
+  });
+
   test('should render location request template', async () => {
     render(
       <MockedProvider addTypename={false}>
