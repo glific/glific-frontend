@@ -106,7 +106,7 @@ export const FormLayout = ({
   redirectionLink,
   errorButtonState = {
     show: true,
-    text: 'Cancel',
+    text: undefined,
   },
   listItem,
   getItemQuery,
@@ -127,7 +127,7 @@ export const FormLayout = ({
   // Todo: lets move advanced search out of here as this is not generic
   advanceSearch,
   cancelAction,
-  button = 'Save',
+  button = undefined,
   buttonState = { text: '', status: false, styles: '', show: true },
   type,
   afterSave,
@@ -161,6 +161,7 @@ export const FormLayout = ({
   const [customError, setCustomError] = useState<any>(null);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
+  const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
@@ -400,8 +401,8 @@ export const FormLayout = ({
     },
   });
 
-  const { t } = useTranslation();
-
+  const resolvedButtonText = button || t('Save');
+  const resolvedCancelText = errorButtonState?.text || t('Cancel');
   const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
 
   useEffect(() => {
@@ -540,7 +541,7 @@ export const FormLayout = ({
         disabled={restrictButtonStatus?.status}
       >
         <DeleteIcon className={styles.DeleteIcon} />
-        {restrictButtonStatus?.text || 'Remove'}
+        {restrictButtonStatus?.text || t('Remove')}
       </Button>
     ) : null;
 
@@ -591,7 +592,7 @@ export const FormLayout = ({
                 loading={saveClick}
                 disabled={buttonState.status}
               >
-                {buttonState.status ? buttonState.text : button}
+                {buttonState.status ? buttonState.text : resolvedButtonText}
               </Button>
             )}
             {additionalAction ? (
@@ -614,7 +615,7 @@ export const FormLayout = ({
             ) : null}
             {errorButtonState?.show && (
               <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-                {errorButtonState?.text}
+                {resolvedCancelText}
               </Button>
             )}
 
@@ -654,20 +655,24 @@ export const FormLayout = ({
   }
 
   let formTitle = '';
-  let headerHelp: string = `Please enter below details.`;
+  let headerHelp: string = t('Please enter below details.');
+  const translateFormTitle = (translationKey: 'Copy {{item}}' | 'Edit {{item}}' | 'Create a new {{item}}') => {
+    const translatedTitle = String(t(translationKey, { item: listItemName }));
+    return translatedTitle.includes('{{item}}') ? translatedTitle.replace('{{item}}', listItemName) : translatedTitle;
+  };
 
   // set title if there is a title
   if (title) {
     formTitle = title;
   } else if (type === 'copy') {
-    formTitle = `Copy ${listItemName}`; // case when copying an item
+    formTitle = translateFormTitle('Copy {{item}}'); // case when copying an item
   } else if (itemId) {
-    formTitle = isView ? `${listItemName}` : `Edit ${listItemName}`; // case when editing a item
+    formTitle = isView ? `${listItemName}` : translateFormTitle('Edit {{item}}'); // case when editing a item
   } else {
-    formTitle = `Create a new ${listItemName}`; // case when adding a new item
+    formTitle = translateFormTitle('Create a new {{item}}'); // case when adding a new item
   }
   if (isView) {
-    headerHelp = `Please view below details.`;
+    headerHelp = t('Please view below details.');
   }
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
 

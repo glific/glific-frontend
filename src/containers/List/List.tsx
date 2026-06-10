@@ -460,12 +460,21 @@ export const List = ({
   let dialogBox;
   if (deleteItemID) {
     const { component, props } = useDelete(dialogMessage);
+    const deleteDialogTitle =
+      dialogTitle ||
+      t('Are you sure you want to delete the {{item}} "{{name}}"?', {
+        item: listItemName,
+        name: deleteItemName,
+      });
+
     dialogBox = (
       <DialogBox
-        title={dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`}
+        title={deleteDialogTitle}
         handleCancel={closeDialogBox}
         colorOk="warning"
         alignButtons="center"
+        buttonCancel={t('Cancel')}
+        buttonOk={t('Confirm')}
         {...props}
       >
         <div className={styles.DialogText}>
@@ -513,7 +522,7 @@ export const List = ({
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
-          <Tooltip title="Edit" placement="top">
+          <Tooltip title={t('Edit')} placement="top">
             <IconButton className={styles.additonalButton}>
               <div aria-label={t('Edit')} data-testid="EditIcon">
                 <div className={styles.IconWithText}>
@@ -530,14 +539,14 @@ export const List = ({
         <div aria-label={t('Delete')} data-testid="DeleteIcon" onClick={() => showDialogHandler(Id, text)}>
           <div className={styles.IconWithText}>
             <DeleteIcon className={styles.IconSize} />
-            <div className={styles.TextButton}>Delete</div>
+            <div className={styles.TextButton}>{t('Delete')}</div>
           </div>
         </div>
       ) : null;
 
     const deleteButtonIcon = (Id: any, text: string) =>
       allowedAction.delete ? (
-        <Tooltip title="Delete" placement="top">
+        <Tooltip title={t('Delete')} placement="top">
           <IconButton
             className={styles.additonalButton}
             data-testid="DeleteIcon"
@@ -715,13 +724,19 @@ export const List = ({
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
 
+  const emptyListItemName = noItemText ?? listItemName;
+  const emptyListMessage = String(t('There are no {{item}}s right now.', { item: emptyListItemName }));
+  const resolvedEmptyListMessage = emptyListMessage.includes('{{item}}')
+    ? emptyListMessage.replace('{{item}}', emptyListItemName)
+    : emptyListMessage;
+
   var noItemsText = (
     <div className={styles.NoResults}>
       {searchVal || searchActive ? (
         <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>
-          There are no {noItemText || listItemName}s right now. {button.show && t('Please create one.')}
+          {resolvedEmptyListMessage} {button.show && t('Please create one.')}
         </div>
       )}
     </div>

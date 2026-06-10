@@ -3,6 +3,7 @@ import InfoIcon from 'assets/images/info.svg?react';
 import LightInfoIcon from 'assets/images/infoLight.svg?react';
 import { Tooltip } from '@mui/material';
 import { HelpDataProps } from 'common/HelpData';
+import { useTranslation } from 'react-i18next';
 
 export interface HelpIconProps {
   helpData?: HelpDataProps;
@@ -16,6 +17,8 @@ export const HelpIcon = ({
   },
   darkIcon = true,
 }: HelpIconProps) => {
+  const { t } = useTranslation();
+
   return (
     <Tooltip
       classes={{
@@ -28,7 +31,7 @@ export const HelpIcon = ({
           {helpData && (
             <div>
               <div className={styles.HoverPopUpText}>
-                {helpData.heading}
+                {typeof helpData.heading === 'string' ? t(helpData.heading as any) : helpData.heading}
                 {helpData.link && (
                   <div
                     className={styles.HoverLink}
@@ -36,7 +39,7 @@ export const HelpIcon = ({
                       window.open(helpData.link);
                     }}
                   >
-                    Learn more
+                    {t('Learn more')}
                   </div>
                 )}
               </div>

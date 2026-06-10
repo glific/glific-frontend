@@ -136,7 +136,7 @@ export const WaPolls = () => {
       component: Input,
       name: 'content',
       type: 'text',
-      label: 'Content',
+      label: t('Content'),
       textArea: true,
       rows: 6,
       disabled: isEditing,
@@ -161,7 +161,7 @@ export const WaPolls = () => {
       name: 'allowMultiple',
       title: (
         <Typography className={styles.AllowMultiple} variant="h6">
-          Allow multiple options
+          {t('Allow multiple options')}
         </Typography>
       ),
       darkCheckbox: true,
@@ -186,7 +186,7 @@ export const WaPolls = () => {
         languageSupport={false}
         setStates={setStates}
         validationSchema={FormSchema}
-        listItemName="Poll"
+        listItemName={t('Poll')}
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink={'group/polls'}

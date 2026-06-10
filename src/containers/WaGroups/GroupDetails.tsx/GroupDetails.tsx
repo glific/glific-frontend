@@ -27,7 +27,7 @@ export const GroupDetails = () => {
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
-  const columnNames = [{ label: t('Contact') }, { label: 'All WhatsApp Groups' }, { label: t('Actions') }];
+  const columnNames = [{ label: t('Contact') }, { label: t('All WhatsApp Groups') }, { label: t('Actions') }];
 
   const list = [
     {
@@ -144,14 +144,16 @@ export const GroupDetails = () => {
   if (showDeleteDialog) {
     dialog = (
       <DialogBox
-        title={`Are you sure you want to remove contact from this group?`}
+        title={t('Are you sure you want to remove contact from this group?')}
         handleOk={handleRemoveContact}
         handleCancel={() => setShowDeleteDialog(false)}
         colorOk="warning"
         alignButtons="center"
+        buttonCancel={t('Cancel')}
+        buttonOk={t('Confirm')}
         buttonOkLoading={loading}
       >
-        <div className={styles.dialogText}>The contact will no longer receive messages sent to this group</div>
+        <div className={styles.dialogText}>{t('The contact will no longer receive messages sent to this group')}</div>
       </DialogBox>
     );
   }
