@@ -321,7 +321,7 @@ export const ChatMessage = ({
   if (groups && !isSender && waManagedPhone?.phone) {
     phoneLabel = (
       <div className={styles.PhoneLabel} data-testid="phoneLabel">
-        {t('Sent from')}: {waManagedPhone.label || waManagedPhone.contact?.name || waManagedPhone.phone}
+        {t('Sent from')}: {waManagedPhone.phone}
       </div>
     );
   }
