@@ -10,6 +10,7 @@ import {
   getEvaluationScoresFlatArrayMock,
   getEvaluationScoresInvalidJsonMock,
   getEvaluationScoresInvalidRowsMock,
+  getEvaluationScoresOutOfOrderMock,
   getEvaluationScoresMock,
   getEvaluationScoresNetworkErrorMock,
   getEvaluationScoresNullMock,
@@ -342,6 +343,38 @@ describe('AIEvaluationList', () => {
       expect(screen.getByText('test_dataset | 2')).toBeInTheDocument();
       expect(screen.getByText('healthcare_dataset | 3')).toBeInTheDocument();
     });
+  });
+
+  it('downloaded CSV rows are sorted by question_id', async () => {
+    let capturedBlob: Blob | null = null;
+    vi.spyOn(URL, 'createObjectURL').mockImplementation((obj: Blob | MediaSource) => {
+      capturedBlob = obj as Blob;
+      return 'blob:mock-url';
+    });
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresOutOfOrderMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => expect(capturedBlob).not.toBeNull());
+
+    const csvText = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsText(capturedBlob!);
+    });
+
+    const [headerRow, ...dataRows] = csvText.split('\n');
+    const headers = headerRow.split(',');
+    const questionIdIndex = headers.indexOf('question_id');
+
+    const questionIds = dataRows.map((row) => Number(row.split(',')[questionIdIndex]));
+    expect(questionIds).toEqual([1, 2, 3]);
+
+    vi.restoreAllMocks();
   });
 
   it('does not render sub-info lines when all display fields are null', async () => {
