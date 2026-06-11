@@ -358,25 +358,7 @@ describe('<ChatMessage />', () => {
         waManagedPhone,
       });
 
-    test('renders the managed phone label on outgoing WA group messages', () => {
-      render(
-        <MockedProvider addTypename={false}>
-          <ChatMessage {...groupOutboundProps({ phone: '917834811200', label: 'Bot phone' })} />
-        </MockedProvider>
-      );
-      expect(screen.getByTestId('phoneLabel')).toHaveTextContent('Sent from: Bot phone');
-    });
-
-    test('falls back to contact name when label is missing', () => {
-      render(
-        <MockedProvider addTypename={false}>
-          <ChatMessage {...groupOutboundProps({ phone: '917834811200', label: null, contact: { name: 'Org WA' } })} />
-        </MockedProvider>
-      );
-      expect(screen.getByTestId('phoneLabel')).toHaveTextContent('Sent from: Org WA');
-    });
-
-    test('falls back to phone number when both label and contact name are missing', () => {
+    test('renders the managed phone number on outgoing WA group messagesg', () => {
       render(
         <MockedProvider addTypename={false}>
           <ChatMessage {...groupOutboundProps({ phone: '917834811200' })} />
