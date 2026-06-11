@@ -370,9 +370,7 @@ describe('<ChatMessage />', () => {
     test('falls back to contact name when label is missing', () => {
       render(
         <MockedProvider addTypename={false}>
-          <ChatMessage
-            {...groupOutboundProps({ phone: '917834811200', label: null, contact: { name: 'Org WA' } })}
-          />
+          <ChatMessage {...groupOutboundProps({ phone: '917834811200', label: null, contact: { name: 'Org WA' } })} />
         </MockedProvider>
       );
       expect(screen.getByTestId('phoneLabel')).toHaveTextContent('Sent from: Org WA');
