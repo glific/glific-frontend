@@ -135,7 +135,13 @@
     width: 0px;
   }
 
+  .Drawer {
+    width: clamp(120px, 30vw, 203px);
+    white-space: normal;
+  }
+
   .DrawerOpen {
-    width: 100%;
+    width: clamp(120px, 30vw, 203px);
+    overflow-x: hidden;
   }
 }
