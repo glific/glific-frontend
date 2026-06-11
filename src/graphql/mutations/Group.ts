@@ -57,7 +57,7 @@ export const SEND_MESSAGE_IN_WA_GROUP_COLLECTION = gql`
 export const SET_PRIMARY_PHONE = gql`
   mutation SetPrimaryPhone($waGroupId: ID!, $waManagedPhoneId: ID!) {
     setPrimaryPhone(waGroupId: $waGroupId, waManagedPhoneId: $waManagedPhoneId) {
-      waGroupPhone {
+      primaryPhone {
         id
         isPrimary
         isActive

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
@@ -37,26 +37,25 @@ export const PhonesPanel = ({ phones, waGroupId }: PhonesPanelProps) => {
 
   const [setPrimaryPhone, { loading }] = useMutation(SET_PRIMARY_PHONE, {
     refetchQueries: [{ query: GET_WA_GROUP, variables: { waGroupId } }],
-    onCompleted: (data: any) => {
-      const result = data?.setPrimaryPhone;
-      if (result?.warning) {
-        setNotification(result.warning, 'warning');
+  });
+
+  const handleConfirm = async () => {
+    if (!targetPhone) return;
+    try {
+      const { data } = await setPrimaryPhone({
+        variables: { waGroupId, waManagedPhoneId: targetPhone.waManagedPhone.id },
+      });
+      const warning = data?.setPrimaryPhone?.warning;
+      if (warning) {
+        setNotification(warning, 'warning');
       } else {
         setNotification(t('Primary phone updated successfully.'), 'success');
       }
+    } catch (error) {
+      setErrorMessage(error as Error);
+    } finally {
       setTargetPhone(null);
-    },
-    onError: (error: any) => {
-      setErrorMessage(error);
-      setTargetPhone(null);
-    },
-  });
-
-  const handleConfirm = () => {
-    if (!targetPhone) return;
-    setPrimaryPhone({
-      variables: { waGroupId, waManagedPhoneId: targetPhone.waManagedPhone.id },
-    });
+    }
   };
 
   const renderPhoneRow = (row: PhoneRow) => {
@@ -109,7 +108,7 @@ export const PhonesPanel = ({ phones, waGroupId }: PhonesPanelProps) => {
       ? t("This phone's status is")
       : null;
 
-  let dialog: any;
+  let dialog: ReactNode = null;
   if (targetPhone) {
     dialog = (
       <DialogBox
@@ -137,9 +136,6 @@ export const PhonesPanel = ({ phones, waGroupId }: PhonesPanelProps) => {
     );
   }
 
-  // Removed phones (`isActive: false`) live on in `wa_groups_phones` so we
-  // keep the audit trail, but the panel only surfaces currently-linked
-  // phones — matches the contacts side where removed members disappear.
   const activePhones = (phones || []).filter((p) => p.isActive);
 
   if (activePhones.length === 0) {

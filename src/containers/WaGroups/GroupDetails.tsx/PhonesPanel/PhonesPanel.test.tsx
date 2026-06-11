@@ -50,7 +50,7 @@ const setPrimaryMock = (managedPhoneId: string, warning: string | null = null) =
   result: {
     data: {
       setPrimaryPhone: {
-        waGroupPhone: {
+        primaryPhone: {
           id: '999',
           isPrimary: true,
           isActive: true,
