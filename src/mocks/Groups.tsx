@@ -62,6 +62,13 @@ export const waGroup = {
               __typename: 'Contact',
               name: 'default reciever',
             },
+            waManagedPhone: {
+              __typename: 'WaManagedPhone',
+              id: '1',
+              phone: '8238389740',
+              label: null,
+              contact: { __typename: 'Contact', name: 'managed phone contact' },
+            },
             contextMessage: null,
             errors: null,
             id: '11',
@@ -86,6 +93,13 @@ export const waGroup = {
             contact: {
               __typename: 'Contact',
               name: 'test',
+            },
+            waManagedPhone: {
+              __typename: 'WaManagedPhone',
+              id: '1',
+              phone: '8238389740',
+              label: null,
+              contact: { __typename: 'Contact', name: 'managed phone contact' },
             },
             contextMessage: null,
             errors: null,
@@ -129,6 +143,13 @@ const sampleMessage = {
   contact: {
     __typename: 'Contact',
     name: 'Default receiver',
+  },
+  waManagedPhone: {
+    __typename: 'WaManagedPhone',
+    id: '1',
+    phone: '8238389740',
+    label: null,
+    contact: { __typename: 'Contact', name: 'managed phone contact' },
   },
   contextMessage: null,
   errors: null,
