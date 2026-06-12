@@ -358,7 +358,7 @@ describe('<ChatMessage />', () => {
         waManagedPhone,
       });
 
-    test('renders the managed phone number on outgoing WA group messagesg', () => {
+    test('renders the managed phone number on outgoing WA group messages', () => {
       render(
         <MockedProvider addTypename={false}>
           <ChatMessage {...groupOutboundProps({ phone: '917834811200' })} />
