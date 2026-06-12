@@ -35,10 +35,10 @@ export const GroupDetails = () => {
       name: t('Members'),
       section: 'members',
     },
-    {
-      name: t('Phones'),
-      section: 'phones',
-    },
+    // {
+    //   name: t('Phones'),
+    //   section: 'phones',
+    // },
     {
       name: t('Details'),
       section: 'details',
@@ -188,8 +188,8 @@ export const GroupDetails = () => {
         customStyles={styles.Table}
       />
     );
-  } else if (contentToShow === 'phones') {
-    contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
+  // } else if (contentToShow === 'phones') {
+  //   contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
   } else {
     contentBody = (
       <ContactDescription
