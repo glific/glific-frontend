@@ -49,7 +49,7 @@ cache.writeQuery({
           id: '6',
           label: 'WA Group 1',
           lastCommunicationAt: '2024-03-11T14:12:55Z',
-          waManagedPhone: {
+          primaryPhone: {
             __typename: 'WaManagedPhone',
             id: '3',
             label: null,
@@ -95,7 +95,7 @@ cache.writeQuery({
           id: '9',
           label: 'WA Group 18',
           lastCommunicationAt: '2024-03-11T23:28:45Z',
-          waManagedPhone: {
+          primaryPhone: {
             __typename: 'WaManagedPhone',
             id: '3',
             label: null,
@@ -166,7 +166,7 @@ cache.writeQuery({
           id: '1',
           label: 'Oklahoma sheep',
           lastCommunicationAt: '2024-03-12T14:12:30Z',
-          waManagedPhone: {
+          primaryPhone: {
             __typename: 'WaManagedPhone',
             id: '1',
             label: null,

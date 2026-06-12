@@ -46,7 +46,7 @@ export const waGroup = {
           id: '2',
           label: 'Oklahoma sheep',
           lastCommunicationAt: '2024-03-12T14:12:30Z',
-          waManagedPhone: {
+          primaryPhone: {
             __typename: 'WaManagedPhone',
             id: '1',
             label: null,
@@ -123,7 +123,7 @@ export const waGroup = {
           id: '1',
           label: 'WA Group 18',
           lastCommunicationAt: '2024-03-11T23:28:45Z',
-          waManagedPhone: {
+          primaryPhone: {
             __typename: 'WaManagedPhone',
             id: '3',
             label: null,
@@ -182,7 +182,7 @@ const sampleSearchQueryResult = [
       id: '1',
       label: 'Oklahoma sheep',
       lastCommunicationAt: '2024-03-12T14:12:30Z',
-      waManagedPhone: {
+      primaryPhone: {
         __typename: 'WaManagedPhone',
         id: '1',
         label: null,
@@ -269,7 +269,7 @@ export const searchGroupQuery = [
               id: '7',
               lastCommunicationAt: '2024-03-11T16:12:30Z',
               name: 'Group 20',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -283,7 +283,7 @@ export const searchGroupQuery = [
               id: '6',
               lastCommunicationAt: '2024-03-11T14:12:55Z',
               name: 'Group 21',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -297,7 +297,7 @@ export const searchGroupQuery = [
               id: '4',
               lastCommunicationAt: '2024-03-11T11:12:30Z',
               name: 'group 23',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -311,7 +311,7 @@ export const searchGroupQuery = [
               id: '26',
               lastCommunicationAt: '2024-03-11T07:12:30Z',
               name: 'Group 2',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -325,7 +325,7 @@ export const searchGroupQuery = [
               id: '5',
               lastCommunicationAt: '2024-03-08T14:12:30Z',
               name: 'Group 22',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -339,7 +339,7 @@ export const searchGroupQuery = [
               id: '3',
               lastCommunicationAt: '2024-03-02T14:12:30Z',
               name: 'group 24',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -495,7 +495,7 @@ export const searchCollectionGroupQuery = [
               id: '7',
               lastCommunicationAt: '2024-03-11T16:12:30Z',
               name: 'Group 20',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -509,7 +509,7 @@ export const searchCollectionGroupQuery = [
               id: '6',
               lastCommunicationAt: '2024-03-11T14:12:55Z',
               name: 'Group 21',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -523,7 +523,7 @@ export const searchCollectionGroupQuery = [
               id: '4',
               lastCommunicationAt: '2024-03-11T11:12:30Z',
               name: 'group 23',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -537,7 +537,7 @@ export const searchCollectionGroupQuery = [
               id: '26',
               lastCommunicationAt: '2024-03-11T07:12:30Z',
               name: 'Group 2',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -551,7 +551,7 @@ export const searchCollectionGroupQuery = [
               id: '5',
               lastCommunicationAt: '2024-03-08T14:12:30Z',
               name: 'Group 22',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -565,7 +565,7 @@ export const searchCollectionGroupQuery = [
               id: '3',
               lastCommunicationAt: '2024-03-02T14:12:30Z',
               name: 'group 24',
-              waManagedPhone: {
+              primaryPhone: {
                 __typename: 'WaManagedPhone',
                 id: '3',
                 label: null,
@@ -994,7 +994,7 @@ export const waGroupContacts = {
           waGroup: {
             id: '20',
             label: 'Group 12',
-            waManagedPhone: {
+            primaryPhone: {
               phone: '918657048983',
             },
           },
@@ -1019,7 +1019,7 @@ export const waGroupContacts = {
             __typename: 'WaGroup',
             id: '20',
             label: 'Group 12',
-            waManagedPhone: {
+            primaryPhone: {
               __typename: 'WaManagedPhone',
               phone: '918657048983',
             },
@@ -1199,10 +1199,18 @@ export const getWaGroupQuery = {
           lastCommunicationAt: '2024-03-28T10:41:18Z',
           fields: '{}',
           groups: null,
-          waManagedPhone: {
+          primaryPhone: {
             id: '1',
             phone: '468/236-8754',
           },
+          phones: [
+            {
+              id: '5001',
+              isPrimary: true,
+              isActive: true,
+              waManagedPhone: { id: '1', phone: '468/236-8754', label: null, status: 'active' },
+            },
+          ],
         },
       },
     },

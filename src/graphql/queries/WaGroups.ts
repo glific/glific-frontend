@@ -13,7 +13,7 @@ export const GROUP_SEARCH_QUERY = gql`
         id
         label
         lastCommunicationAt
-        waManagedPhone {
+        primaryPhone {
           id
           label
           phone
@@ -76,7 +76,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
         id
         name: label
         lastCommunicationAt
-        waManagedPhone {
+        primaryPhone {
           id
           label
           phone
@@ -161,7 +161,7 @@ export const LIST_CONTACTS_WA_GROUPS = gql`
       waGroup {
         id
         label
-        waManagedPhone {
+        primaryPhone {
           phone
         }
       }
@@ -184,9 +184,20 @@ export const GET_WA_GROUP = gql`
         lastCommunicationAt
         bspId
         fields
-        waManagedPhone {
+        primaryPhone {
           phone
           id
+        }
+        phones {
+          id
+          isPrimary
+          isActive
+          waManagedPhone {
+            id
+            phone
+            label
+            status
+          }
         }
         groups {
           id
