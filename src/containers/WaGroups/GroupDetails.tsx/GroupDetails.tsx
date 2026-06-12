@@ -14,7 +14,7 @@ import { List } from 'containers/List/List';
 import { ContactDescription } from 'containers/Profile/Contact/ContactDescription/ContactDescription';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
 import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
-import { PhonesPanel } from './PhonesPanel/PhonesPanel';
+// import { PhonesPanel } from './PhonesPanel/PhonesPanel';
 import styles from './GroupDetails.module.css';
 
 export const GroupDetails = () => {
@@ -188,8 +188,8 @@ export const GroupDetails = () => {
         customStyles={styles.Table}
       />
     );
-  // } else if (contentToShow === 'phones') {
-  //   contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
+    // } else if (contentToShow === 'phones') {
+    //   contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
   } else {
     contentBody = (
       <ContactDescription
