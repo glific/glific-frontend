@@ -171,3 +171,35 @@ test('it should show "Contact import is in progress" message', async () => {
     });
   });
 });
+
+test('it should surface multi-phone failover notifications and link to the group', async () => {
+  render(notifications(getStatus));
+
+  // Phase 4 warning failover notification renders with its message body
+  await waitFor(() => {
+    expect(
+      screen.getByText(
+        'Primary phone 919999999999 for group Maytapi Test Group is unavailable; switched to phone 918888888888.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  // Phase 4 critical "no active phones" notification renders
+  expect(screen.getByText('No active managed phones available for group Maytapi Test Group.')).toBeInTheDocument();
+
+  // both surface under the "WA Group" category and show both severities
+  expect(screen.getAllByText('WA Group').length).toBeGreaterThanOrEqual(2);
+  expect(screen.getAllByText('Warning').length).toBeGreaterThanOrEqual(1);
+  expect(screen.getAllByText('Critical').length).toBeGreaterThanOrEqual(1);
+
+  // the group label (entity.label) is surfaced in the Entity column
+  expect(screen.getAllByText(/Maytapi Test Group/).length).toBeGreaterThanOrEqual(1);
+
+  // clicking the row action routes to the group's chat page (/group/chat/:groupId)
+  const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+  arrowButtons.forEach((button) => fireEvent.click(button));
+
+  await waitFor(() => {
+    expect(window.open).toHaveBeenCalledWith('/group/chat/4', '_blank', 'noopener,noreferrer');
+  });
+});

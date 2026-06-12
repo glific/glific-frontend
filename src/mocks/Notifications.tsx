@@ -62,12 +62,22 @@ export const getNotificationsQuery = {
         },
         {
           category: 'WA Group',
-          entity: '{"id":4,"body":"hi"}',
+          entity: '{"id":4,"label":"Maytapi Test Group"}',
           id: '6',
           isRead: true,
-          message: 'Error sending message: You dont own the phone[3446].',
-          severity: '"Critical"',
+          message:
+            'Primary phone 919999999999 for group Maytapi Test Group is unavailable; switched to phone 918888888888.',
+          severity: '"Warning"',
           updatedAt: '2024-03-29T11:14:13Z',
+        },
+        {
+          category: 'WA Group',
+          entity: '{"id":4,"label":"Maytapi Test Group"}',
+          id: '10',
+          isRead: true,
+          message: 'No active managed phones available for group Maytapi Test Group.',
+          severity: '"Critical"',
+          updatedAt: '2024-03-29T11:15:13Z',
         },
         {
           category: 'Contact Upload',

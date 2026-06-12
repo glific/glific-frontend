@@ -141,6 +141,9 @@ export const NotificationList = () => {
     }
 
     const entityObj = JSON.parse(croppedtext);
+    // WA Group (failover) notifications carry the group name as `label`; other
+    // categories use `name`. Fall back so the entity column stays readable.
+    const displayName = entityObj.name || entityObj.label;
 
     const Menus = [
       {
@@ -163,9 +166,9 @@ export const NotificationList = () => {
     return (
       <Menu menus={Menus}>
         <div className={styles.CroppedText} data-testid="NotificationRowMenu" ref={menuRef} aria-hidden="true">
-          {entityObj.name ? (
+          {displayName ? (
             <span>
-              Name: {entityObj.name}
+              Name: {displayName}
               <br />
               {croppedtext.slice(0, 25)}...
             </span>
