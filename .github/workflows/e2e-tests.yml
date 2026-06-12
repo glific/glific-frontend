@@ -125,8 +125,6 @@ jobs:
           cd project
           git clone https://github.com/glific/glific.git
           cd glific
-          git checkout multiple_numbers/graphql-primary-phone
-
           cd priv
           mkdir cert
           cd cert

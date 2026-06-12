@@ -16,6 +16,14 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
       contact {
         name
       }
+      waManagedPhone {
+        id
+        phone
+        label
+        contact {
+          name
+        }
+      }
       media {
         url
         caption
@@ -56,6 +64,14 @@ export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
       insertedAt
       waGroup {
         id
+      }
+      waManagedPhone {
+        id
+        phone
+        label
+        contact {
+          name
+        }
       }
       media {
         url
@@ -100,6 +116,14 @@ export const SENT_MESSAGE_WA_GROUP_COLLECTION = gql`
       messageNumber
       insertedAt
       groupId
+      waManagedPhone {
+        id
+        phone
+        label
+        contact {
+          name
+        }
+      }
       media {
         url
         caption

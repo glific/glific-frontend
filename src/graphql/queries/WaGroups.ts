@@ -34,6 +34,14 @@ export const GROUP_SEARCH_QUERY = gql`
         contact {
           name
         }
+        waManagedPhone {
+          id
+          phone
+          label
+          contact {
+            name
+          }
+        }
         errors
         contextMessage {
           body
