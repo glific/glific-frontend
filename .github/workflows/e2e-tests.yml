@@ -125,7 +125,6 @@ jobs:
           cd project
           git clone https://github.com/glific/glific.git
           cd glific
-
           cd priv
           mkdir cert
           cd cert
