@@ -573,6 +573,26 @@ export const getEvaluationScoresInvalidJsonMock = (id = '2') => ({
   },
 });
 
+export const getEvaluationScoresOutOfOrderMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify({
+          score: {
+            traces: [
+              { question_id: 3, question: 'Q3', ground_truth_answer: 'A3', llm_answer: 'L3', scores: [] },
+              { question_id: 1, question: 'Q1', ground_truth_answer: 'A1', llm_answer: 'L1', scores: [] },
+              { question_id: 2, question: 'Q2', ground_truth_answer: 'A2', llm_answer: 'L2', scores: [] },
+            ],
+          },
+        }),
+        errors: [],
+      },
+    },
+  },
+});
+
 // traces are arrays (truthy, pass filter(Boolean)) but flattenRow returns null for them → jsonToCsv returns ''
 export const getEvaluationScoresInvalidRowsMock = (id = '2') => ({
   request: { query: GET_EVALUATION_SCORES, variables: { id } },

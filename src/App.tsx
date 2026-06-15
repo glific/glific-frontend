@@ -5,6 +5,7 @@ import 'i18n/config';
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SideDrawerContext } from 'context/session';
+import { PosthogSession } from 'components/PosthogSession/PosthogSession';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
 import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
@@ -43,6 +44,7 @@ const App = () => {
 
   return (
     <ApolloProvider client={gqlClient(navigate)}>
+      <PosthogSession />
       <ErrorHandler />
       <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
     </ApolloProvider>

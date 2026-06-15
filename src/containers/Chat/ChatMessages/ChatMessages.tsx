@@ -344,7 +344,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       if (groups) {
         payload = {
           message: body,
-          waManagedPhoneId: conversationInfo?.waGroup?.waManagedPhone?.id,
+          waManagedPhoneId: conversationInfo?.waGroup?.primaryPhone?.id,
           waGroupId: entityId,
           type: messageType,
           mediaId,

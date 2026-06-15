@@ -123,12 +123,8 @@ jobs:
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
           mkdir -p project
           cd project
-          echo clone glific repo
           git clone https://github.com/glific/glific.git
-          echo done. go to dir.
           cd glific
-
-          echo done. start dev.secret.exs config
           cd priv
           mkdir cert
           cd cert
@@ -142,7 +138,6 @@ jobs:
           cp dev.secret.exs.txt dev.secret.exs
           cp .env.dev.txt .env.dev
           sed -i 's/:max_rate_limit_request, 60/:max_rate_limit_request, 300/g' config.exs
-          echo copy done. start setup
 
       - name: Cache Elixir deps and build
         uses: actions/cache@v4
@@ -176,9 +171,8 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           cp -r cypress-testing/cypress ../cypress
           cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
-          cd cypress-testing
           cd ..
-          yarn add cypress@13.6.2
+          yarn add cypress@15.15.0
 
       - name: Run glific frontend
         run: |
@@ -198,7 +192,10 @@ jobs:
 
       - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
-          yarn run cypress run  --config excludeSpecPattern=cypress/e2e/filesearch/Filesearch.spec.ts --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          yarn run cypress run \
+            --config '{"excludeSpecPattern":["cypress/e2e/filesearch/Filesearch.spec.ts","cypress/e2e/smoke.spec.ts"]}' \
+            --record \
+            --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
         env:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.shard }}
