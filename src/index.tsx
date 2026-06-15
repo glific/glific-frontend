@@ -29,8 +29,6 @@ function initPostHog(): boolean {
         web_vitals: true,
       },
     });
-    // expose to the flow editor bundle which runs in a separate JS context
-    window.posthog = posthog;
     return true;
   } catch {
     return false;
