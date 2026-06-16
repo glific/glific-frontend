@@ -17,6 +17,7 @@ yarn serve               # Preview production build locally
 ```
 
 **Run a single test file:**
+
 ```bash
 npx vitest run src/path/to/Component.test.tsx
 ```
@@ -34,6 +35,7 @@ npx vitest run src/path/to/Component.test.tsx
 ## Architecture Overview
 
 ### Tech Stack
+
 - **React 19** + **TypeScript** (strict mode), built with **Vite**
 - **Apollo Client** for GraphQL — HTTP for queries/mutations, WebSocket for subscriptions
 - **MUI v7** for UI components; custom theme at `src/config/theme.tsx`
@@ -44,19 +46,19 @@ npx vitest run src/path/to/Component.test.tsx
 
 ### Directory Structure
 
-| Path | Purpose |
-|------|---------|
-| `src/components/UI/` | Pure, reusable UI components (Button, Input, DialogBox, etc.) |
-| `src/containers/` | Feature/page-level components with business logic |
-| `src/graphql/queries/` | Apollo `gql` query definitions |
-| `src/graphql/mutations/` | Apollo `gql` mutation definitions |
-| `src/graphql/subscriptions/` | Apollo `gql` subscription definitions |
-| `src/config/` | Apollo client setup, app constants/URLs, menu config, theme |
-| `src/context/` | React contexts: `session.ts` (SideDrawer, Provider), `role.ts` (permissions) |
-| `src/services/` | Service layer: Auth, Toast, Chat, Subscription, Tracking |
-| `src/common/` | Shared utilities, constants, notification helpers |
-| `src/mocks/` | Test mock data for Apollo `MockedProvider` |
-| `src/routes/` | Route trees for authenticated and unauthenticated users |
+| Path                         | Purpose                                                                      |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `src/components/UI/`         | Pure, reusable UI components (Button, Input, DialogBox, etc.)                |
+| `src/containers/`            | Feature/page-level components with business logic                            |
+| `src/graphql/queries/`       | Apollo `gql` query definitions                                               |
+| `src/graphql/mutations/`     | Apollo `gql` mutation definitions                                            |
+| `src/graphql/subscriptions/` | Apollo `gql` subscription definitions                                        |
+| `src/config/`                | Apollo client setup, app constants/URLs, menu config, theme                  |
+| `src/context/`               | React contexts: `session.ts` (SideDrawer, Provider), `role.ts` (permissions) |
+| `src/services/`              | Service layer: Auth, Toast, Chat, Subscription, Tracking                     |
+| `src/common/`                | Shared utilities, constants, notification helpers                            |
+| `src/mocks/`                 | Test mock data for Apollo `MockedProvider`                                   |
+| `src/routes/`                | Route trees for authenticated and unauthenticated users                      |
 
 ### UI Component Usage Rules
 
@@ -68,12 +70,14 @@ npx vitest run src/path/to/Component.test.tsx
 ### Import Aliases
 
 `tsconfig.json` sets `baseUrl: "src"`, so all imports are relative to `src/`. Use:
+
 ```ts
 import { Button } from 'components/UI/Form/Button/Button';
 import { GET_FLOW } from 'graphql/queries/Flow';
 ```
 
 SVG files are imported as React components using the `?react` suffix:
+
 ```ts
 import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 ```
@@ -87,6 +91,7 @@ import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 ### Routing & Role-Based Access
 
 `src/routes/AuthenticatedRoute/AuthenticatedRoute.tsx` defines two route trees:
+
 - **`routeStaff`** — limited routes for Staff role
 - **`routeAdmin`** — full routes for Manager/Admin/Glific_admin roles
 
@@ -97,6 +102,7 @@ The `UnauthenticatedRoute` handles login, OTP, registration, and password reset 
 ### Apollo Client (`src/config/apolloclient.ts`)
 
 The Apollo client uses a split link:
+
 - **Subscriptions** → `GraphQLWsLink` (WebSocket)
 - **Queries/Mutations** → `RetryLink` → `TokenRefreshLink` → `errorLink` → `authLink` → HTTP
 
@@ -107,10 +113,11 @@ Local Apollo cache is used for in-app notifications — do **not** use component
 ### Notification / Toast Pattern
 
 To show a success/error message anywhere in the app, write directly to the Apollo cache:
+
 ```ts
 import { setNotification, setErrorMessage } from 'common/notification';
 
-setNotification('Saved successfully');           // success toast
+setNotification('Saved successfully'); // success toast
 setNotification('Warning text', 'warning');
 setErrorMessage(apolloError, 'Optional Title'); // error dialog
 ```
@@ -143,6 +150,16 @@ posthog?.capture(event, properties); // optional chaining guards against undefin
 // ❌ wrong — direct import bypasses initialization check
 import posthog from 'posthog-js';
 posthog.capture(event, properties);
+```
+
+For capturing events **on component mount** (e.g. page views), use `useEffect` with `[posthog]` as a dependency — this ensures the event fires even if PostHog wasn't ready on the first render:
+
+```ts
+const posthog = usePostHog();
+
+useEffect(() => {
+  posthog?.capture('page_viewed');
+}, [posthog]); // re-runs when posthog becomes available
 ```
 
 For plain helper functions (non-components) that need to fire PostHog events, accept the posthog instance as an optional parameter from the calling component rather than importing it directly. Use `import type { PostHog }` for TypeScript typing — it is erased at build time and has no runtime cost.

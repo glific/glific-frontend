@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePostHog } from '@posthog/react';
+
 import InfoIcon from '@mui/icons-material/Info';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, Navigate, useParams } from 'react-router';
@@ -35,6 +36,11 @@ export const FlowEditor = () => {
   const { uuid } = params;
   const navigate = useNavigate();
   const posthog = usePostHog();
+
+  useEffect(() => {
+    posthog?.capture('flow_editor_opened');
+  }, [posthog]);
+
   const [publishDialog, setPublishDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
@@ -70,6 +76,7 @@ export const FlowEditor = () => {
   const loadFlowEditor = (forceReadOnly = false) => {
     const readOnlyMode = forceReadOnly || isReadOnly;
     const config = setConfig(uuid, skipValidation, readOnlyMode, posthog);
+
     showFlowEditor(document.getElementById('flow'), config);
     setLoading(false);
   };
