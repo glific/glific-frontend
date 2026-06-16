@@ -130,6 +130,35 @@ These functions write to `@client` Apollo fields (`NOTIFICATION`, `ERROR_MESSAGE
 - `getOrganizationServices(service)` — feature flags stored in `localStorage.organizationServices`
 - `setAuthHeaders()` — monkey-patches `fetch` and `XMLHttpRequest` to inject auth token on all requests (called once at app start)
 
+### PostHog Usage
+
+Always access the PostHog instance via `usePostHog()` from `@posthog/react` inside React components — never import `posthog` directly from `posthog-js` and call methods on it. Always guard calls with optional chaining since `usePostHog()` returns `undefined` when PostHog is not initialized (e.g. no token configured, or `PostHogProvider` not rendered).
+
+```ts
+// ✅ correct — in a React component
+import { usePostHog } from '@posthog/react';
+const posthog = usePostHog();
+posthog?.capture(event, properties); // optional chaining guards against undefined
+
+// ❌ wrong — direct import bypasses initialization check
+import posthog from 'posthog-js';
+posthog.capture(event, properties);
+```
+
+For plain helper functions (non-components) that need to fire PostHog events, accept the posthog instance as an optional parameter from the calling component rather than importing it directly. Use `import type { PostHog }` for TypeScript typing — it is erased at build time and has no runtime cost.
+
+```ts
+// helper function
+import type { PostHog } from 'posthog-js';
+export const myHelper = (posthog?: PostHog) => {
+  posthog?.capture(event, properties);
+};
+
+// calling component
+const posthog = usePostHog();
+myHelper(posthog);
+```
+
 ### Testing Conventions
 
 Tests use `MockedProvider` from `@apollo/client/testing`. Mock data lives in `src/mocks/` organized by domain (e.g., `Chat.tsx`, `Flow.tsx`, `User.tsx`).
