@@ -5,17 +5,25 @@ import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
+import { getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { Button } from 'components/UI/Form/Button/Button';
+import { Input } from 'components/UI/Form/Input/Input';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { List } from 'containers/List/List';
 import { ContactDescription } from 'containers/Profile/Contact/ContactDescription/ContactDescription';
-import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import { UPDATE_GROUP_CONTACT, UPDATE_WA_GROUP_SUBJECT } from 'graphql/mutations/Group';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
-// import { PhonesPanel } from './PhonesPanel/PhonesPanel';
+import { PhonesPanel } from './PhonesPanel/PhonesPanel';
 import styles from './GroupDetails.module.css';
+import { Field, Form, Formik } from 'formik';
+import * as Yup from 'yup';
 
 export const GroupDetails = () => {
   const params = useParams();
@@ -24,6 +32,9 @@ export const GroupDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
   const [contentToShow, setContentToShow] = useState('members');
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
+  const [showAddMembersDialog, setShowAddMembersDialog] = useState(false);
+  const [memberSearchTerm, setMemberSearchTerm] = useState('');
 
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
@@ -35,10 +46,10 @@ export const GroupDetails = () => {
       name: t('Members'),
       section: 'members',
     },
-    // {
-    //   name: t('Phones'),
-    //   section: 'phones',
-    // },
+    {
+      name: t('Phones'),
+      section: 'phones',
+    },
     {
       name: t('Details'),
       section: 'details',
@@ -49,6 +60,68 @@ export const GroupDetails = () => {
     onCompleted: () => {
       setNotification('Removed Contact from Group', 'success');
       setShowDeleteDialog(false);
+    },
+  });
+
+  const [addMembers] = useMutation(UPDATE_GROUP_CONTACT, {
+    refetchQueries: [
+      { query: GET_WA_GROUP, variables: { waGroupId: params.id } },
+      { query: LIST_CONTACTS_WA_GROUPS, variables: { filter: { waGroupId: params.id } } },
+    ],
+    onCompleted: (responseData) => {
+      const added = responseData?.updateContactWaGroups?.waGroupContacts?.length || 0;
+      setNotification(
+        added > 0 ? `${added} ${added === 1 ? 'contact' : 'contacts'} added` : t('No contacts added'),
+        added > 0 ? 'success' : 'warning'
+      );
+      setShowAddMembersDialog(false);
+    },
+    onError: () => {
+      setNotification(t('Could not add contacts to the group'), 'warning');
+    },
+  });
+
+  const { data: memberSearchData, loading: memberSearchLoading } = useQuery(GET_CONTACTS_LIST, {
+    variables: setVariables({ name: memberSearchTerm, excludeWaGroups: params.id }, 50),
+    fetchPolicy: 'cache-and-network',
+    skip: !showAddMembersDialog,
+  });
+
+  const memberSearchOptions =
+    memberSearchData?.contacts?.map((c: any) => ({
+      ...c,
+      name: getDisplayName(c),
+    })) || [];
+
+  const handleAddMembers = (selectedContactIds: any[]) => {
+    if (!selectedContactIds.length) {
+      setShowAddMembersDialog(false);
+      return;
+    }
+    addMembers({
+      variables: {
+        input: {
+          addWaContactIds: selectedContactIds,
+          deleteWaContactIds: [],
+          waGroupId: params.id,
+        },
+      },
+    });
+  };
+
+  const [renameGroup, { loading: renaming }] = useMutation(UPDATE_WA_GROUP_SUBJECT, {
+    refetchQueries: [{ query: GET_WA_GROUP, variables: { waGroupId: params.id } }],
+    onCompleted: (responseData) => {
+      const errors = responseData?.updateWaGroupSubject?.errors;
+      if (errors?.length) {
+        setNotification(errors.map((e: any) => e?.message).filter(Boolean).join('; '), 'warning');
+        return;
+      }
+      setNotification(t('Group renamed'), 'success');
+      setShowRenameDialog(false);
+    },
+    onError: () => {
+      setNotification(t('Could not rename group'), 'warning');
     },
   });
 
@@ -161,35 +234,134 @@ export const GroupDetails = () => {
     );
   }
 
+  if (showAddMembersDialog) {
+    dialog = (
+      <SearchDialogBox
+        title={t('Add members to this group')}
+        handleOk={handleAddMembers}
+        handleCancel={() => setShowAddMembersDialog(false)}
+        options={memberSearchOptions}
+        optionLabel="name"
+        additionalOptionLabel="phone"
+        asyncSearch
+        disableClearable
+        selectedOptions={[]}
+        fullWidth
+        showTags={false}
+        noOptionsText={memberSearchLoading ? t('Loading...') : t('No options available')}
+        onChange={(value: any) => {
+          if (typeof value === 'string') {
+            setMemberSearchTerm(value);
+          }
+        }}
+      />
+    );
+  }
+
+  if (showRenameDialog) {
+    const primaryPhoneId = groupData?.primaryPhone?.id;
+
+    const handleRename = (values: { subject: string }) => {
+      if (!primaryPhoneId) {
+        setNotification(t('This group has no primary phone yet — set one before renaming.'), 'warning');
+        return;
+      }
+      renameGroup({
+        variables: {
+          id: params.id,
+          waManagedPhoneId: primaryPhoneId,
+          subject: values.subject.trim(),
+        },
+      });
+    };
+
+    dialog = (
+      <Formik
+        enableReinitialize
+        validationSchema={Yup.object().shape({
+          subject: Yup.string().required(t('Group name is required')).max(100, t('Name is too long')),
+        })}
+        initialValues={{ subject: groupData?.label || '' }}
+        onSubmit={handleRename}
+      >
+        {({ submitForm }) => (
+          <Form>
+            <DialogBox
+              title={t('Rename group')}
+              titleAlign="left"
+              buttonOk={t('Rename')}
+              buttonCancel={t('Cancel')}
+              alignButtons="right"
+              buttonOkLoading={renaming}
+              disableOk={renaming || !primaryPhoneId}
+              skipCancel={renaming}
+              handleOk={() => submitForm()}
+              handleCancel={() => {
+                if (!renaming) setShowRenameDialog(false);
+              }}
+              fullWidth
+            >
+              <Field
+                name="subject"
+                component={Input}
+                type="text"
+                inputLabel={t('New name')}
+                placeholder={t('New name')}
+                required
+                helperText={
+                  primaryPhoneId
+                    ? t('The change is pushed to WhatsApp via the group’s primary phone.')
+                    : t('No primary phone is set — assign one in the Phones tab first.')
+                }
+              />
+            </DialogBox>
+          </Form>
+        )}
+      </Formik>
+    );
+  }
+
   let contentBody;
   if (contentToShow === 'members') {
     contentBody = (
-      <List
-        backLink={`/group/chat/${params.id}`}
-        dialogTitle={dialogTitle}
-        columnNames={columnNames}
-        title={groupData?.label}
-        listItem="waGroupContact"
-        listItemName="waGroupContact"
-        searchParameter={['term']}
-        filters={{ waGroupId: params.id }}
-        button={{ show: false, label: '' }}
-        pageLink="waGroupsContact"
-        additionalAction={additionalActions}
-        restrictedAction={restrictedAction}
-        listIcon={collectionIcon}
-        editSupport={false}
-        showActions={true}
-        dialogMessage={dialogMessage}
-        {...queries}
-        {...columnAttributes}
-        showSearch={false}
-        showHeader={false}
-        customStyles={styles.Table}
-      />
+      <>
+        <div className={styles.MembersHeader}>
+          <Button
+            variant="contained"
+            color="primary"
+            data-testid="addMembers"
+            onClick={() => setShowAddMembersDialog(true)}
+          >
+            {t('Add members')}
+          </Button>
+        </div>
+        <List
+          backLink={`/group/chat/${params.id}`}
+          dialogTitle={dialogTitle}
+          columnNames={columnNames}
+          title={groupData?.label}
+          listItem="waGroupContact"
+          listItemName="waGroupContact"
+          searchParameter={['term']}
+          filters={{ waGroupId: params.id }}
+          button={{ show: false, label: '' }}
+          pageLink="waGroupsContact"
+          additionalAction={additionalActions}
+          restrictedAction={restrictedAction}
+          listIcon={collectionIcon}
+          editSupport={false}
+          showActions={true}
+          dialogMessage={dialogMessage}
+          {...queries}
+          {...columnAttributes}
+          showSearch={false}
+          showHeader={false}
+          customStyles={styles.Table}
+        />
+      </>
     );
-    // } else if (contentToShow === 'phones') {
-    //   contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
+  } else if (contentToShow === 'phones') {
+    contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
   } else {
     contentBody = (
       <ContactDescription
@@ -207,6 +379,15 @@ export const GroupDetails = () => {
         <AvatarDisplay name={groupData?.label} />
 
         <div className={styles.GroupHeaderTitle}>{groupData?.label}</div>
+
+        <Button
+          variant="text"
+          color="primary"
+          data-testid="renameGroup"
+          onClick={() => setShowRenameDialog(true)}
+        >
+          {t('Rename')}
+        </Button>
       </div>
       <div className={styles.GroupHeaderElements}>
         {list.map((data: any, index: number) => {

@@ -9,6 +9,7 @@ import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useState } from 'react';
+import { CreateGroupDialog } from '../CreateGroupDialog/CreateGroupDialog';
 
 interface WaManagedPhonesProps {
   phonenumber: any;
@@ -17,6 +18,7 @@ interface WaManagedPhonesProps {
 const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
     variables: {
@@ -90,6 +92,23 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
       >
         {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
       </Button>
+
+      <Button
+        variant="contained"
+        color="primary"
+        className={styles.syncButton}
+        data-testid="createGroup"
+        onClick={() => setCreateOpen(true)}
+      >
+        {t('New group')}
+      </Button>
+
+      <CreateGroupDialog
+        open={createOpen}
+        phones={data?.waManagedPhones || []}
+        defaultPhone={phonenumber?.[0] ? data?.waManagedPhones?.find((p: any) => p.id === phonenumber[0].id) : null}
+        onClose={() => setCreateOpen(false)}
+      />
     </div>
   );
 };

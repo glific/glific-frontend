@@ -76,3 +76,34 @@ export const SET_PRIMARY_PHONE = gql`
     }
   }
 `;
+
+export const CREATE_WA_GROUP = gql`
+  mutation CreateWaGroup($input: CreateWaGroupInput!) {
+    createWaGroup(input: $input) {
+      waGroup {
+        id
+        label
+        bspId
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const UPDATE_WA_GROUP_SUBJECT = gql`
+  mutation UpdateWaGroupSubject($id: ID!, $waManagedPhoneId: ID!, $subject: String!) {
+    updateWaGroupSubject(id: $id, waManagedPhoneId: $waManagedPhoneId, subject: $subject) {
+      waGroup {
+        id
+        label
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
