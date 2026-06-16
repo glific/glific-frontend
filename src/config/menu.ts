@@ -87,13 +87,6 @@ const menus = (): Menu[] => [
         roles: managerLevel,
       },
       {
-        title: 'Contact variables',
-        path: '/contact-fields',
-        icon: 'fields',
-        type: 'sideDrawer',
-        roles: managerLevel,
-      },
-      {
         title: 'Support tickets',
         path: '/ticket',
         icon: 'tickets',
@@ -257,6 +250,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         icon: 'block',
         roles: staffLevel,
+      },
+      {
+        title: 'Contact variables',
+        path: '/contact-fields',
+        icon: 'fields',
+        type: 'sideDrawer',
+        roles: managerLevel,
       },
       {
         title: 'Roles',
