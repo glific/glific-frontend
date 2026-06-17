@@ -147,7 +147,7 @@ describe('AIEvaluationList', () => {
     renderComponent();
     await waitFor(() => {
       const buttons = screen.getAllByText('Download Results');
-      expect(buttons[0].className).toMatch(/DownloadCsvButtonDisabled/);
+      expect(buttons[0].parentElement?.className).toMatch(/DownloadCsvButtonDisabled/);
     });
   });
 
@@ -155,8 +155,8 @@ describe('AIEvaluationList', () => {
     renderComponent();
     await waitFor(() => {
       const buttons = screen.getAllByText('Download Results');
-      expect(buttons[1].className).toMatch(/DownloadCsvButton/);
-      expect(buttons[1].className).not.toMatch(/DownloadCsvButtonDisabled/);
+      expect(buttons[1].parentElement?.className).toMatch(/DownloadCsvButton/);
+      expect(buttons[1].parentElement?.className).not.toMatch(/DownloadCsvButtonDisabled/);
     });
   });
 
@@ -175,7 +175,7 @@ describe('AIEvaluationList', () => {
     renderComponent([getListAiEvaluationsAllStatusesMock]);
     await waitFor(() => {
       const buttons = screen.getAllByText('Download Results');
-      const runningButton = buttons.find((b) => b.className.includes('DownloadCsvButtonDisabled'));
+      const runningButton = buttons.find((b) => b.parentElement?.className.includes('DownloadCsvButtonDisabled'));
       expect(runningButton).toBeTruthy();
     });
   });
@@ -381,26 +381,21 @@ describe('AIEvaluationList', () => {
     vi.restoreAllMocks();
   });
 
-  it('shows spinner and hides Download Results text while download is in-flight', async () => {
-    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
-    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
-
+  it('shows spinner overlay while download is in-flight without changing button size', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresSlowMock('2')]);
     await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
     fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
 
     await waitFor(() => {
-      expect(screen.getByText('Downloading…')).toBeInTheDocument();
+      // spinner wrapper appears on the in-flight row
       expect(screen.getByTestId('downloadSpinner')).toBeInTheDocument();
-      // only one "Download Results" remains (the non-completed row)
-      expect(screen.getAllByText('Download Results')).toHaveLength(1);
+      // "Download Results" text nodes remain in DOM (visibility:hidden) — no layout shift
+      expect(screen.getAllByText('Download Results')).toHaveLength(2);
     });
-
-    vi.restoreAllMocks();
   });
 
-  it('restores Download Results text after a failed download', async () => {
+  it('removes spinner after a failed download', async () => {
     renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresNetworkErrorMock('2')]);
     await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
 
@@ -410,15 +405,10 @@ describe('AIEvaluationList', () => {
       expect(setErrorMessage).toHaveBeenCalled();
     });
 
-    // spinner is gone, button text is restored
-    expect(screen.queryByText('Downloading…')).not.toBeInTheDocument();
-    expect(screen.getAllByText('Download Results')).toHaveLength(2);
+    expect(screen.queryByTestId('downloadSpinner')).not.toBeInTheDocument();
   });
 
-  it('shows spinner for all evaluations when multiple downloads are triggered in parallel', async () => {
-    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
-    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
-
+  it('shows spinner on all rows when multiple downloads are triggered in parallel', async () => {
     renderComponent([
       getListAiEvaluationsTwoCompletedMock,
       getEvaluationScoresSlowMock('2'),
@@ -431,11 +421,8 @@ describe('AIEvaluationList', () => {
     fireEvent.click(buttons[1]);
 
     await waitFor(() => {
-      expect(screen.getAllByText('Downloading…')).toHaveLength(2);
-      expect(screen.queryByText('Download Results')).not.toBeInTheDocument();
+      expect(screen.getAllByTestId('downloadSpinner')).toHaveLength(2);
     });
-
-    vi.restoreAllMocks();
   });
 
   it('does not render sub-info lines when all display fields are null', async () => {

@@ -297,15 +297,20 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
     const isDownloading = downloadingIds.has(item?.id);
     return [
       {
-        label: isDownloading ? t('Downloading…') : t('Download Results'),
-        icon: isDownloading ? (
-          <span className={styles.DownloadCsvButton} data-testid="downloadSpinner">
-            <CircularProgress size={14} thickness={5} />
-            {t('Downloading…')}
-          </span>
-        ) : (
-          <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
-            {t('Download Results')}
+        label: t('Download Results'),
+        icon: (
+          <span
+            className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}
+            data-testid={isDownloading ? 'downloadSpinner' : undefined}
+          >
+            <span className={isDownloading ? styles.DownloadButtonTextHidden : styles.DownloadButtonText}>
+              {t('Download Results')}
+            </span>
+            {isDownloading && (
+              <span className={styles.DownloadSpinnerOverlay}>
+                <CircularProgress size={14} thickness={5} color="inherit" />
+              </span>
+            )}
           </span>
         ),
         parameter: 'id',
