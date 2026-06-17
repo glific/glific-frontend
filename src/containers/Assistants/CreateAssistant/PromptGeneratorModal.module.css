@@ -1,0 +1,81 @@
+.ModalBox {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Container {
+  background-color: #fff;
+  width: 50%;
+  max-width: 640px;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.Title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.ProgressWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.StepCount {
+  font-size: 13px;
+  color: #555;
+  align-self: flex-end;
+}
+
+.Question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.QuestionLabel {
+  font-weight: 500;
+}
+
+.Footer {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 0.75rem;
+}
+
+.LoadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+}
+
+.ErrorState {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ErrorText {
+  color: #b00020;
+}
+
+.ReviewNotice {
+  font-size: 13px;
+  color: #555;
+  font-style: italic;
+}
+
+.PreviewInput {
+  width: 100%;
+}
