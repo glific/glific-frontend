@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import { setVariables } from 'common/constants';
-import { getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -46,13 +45,7 @@ const validationSchema = Yup.object().shape({
   contacts: Yup.array().min(1, 'Pick at least one member'),
 });
 
-export const CreateGroupDialog = ({
-  open,
-  phones,
-  defaultPhone,
-  onClose,
-  onCreated,
-}: CreateGroupDialogProps) => {
+export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreated }: CreateGroupDialogProps) => {
   const { t } = useTranslation();
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   // asyncSearch mode keeps the selected options here (independent of the
@@ -68,9 +61,9 @@ export const CreateGroupDialog = ({
     name: '',
     waManagedPhone: defaultPhone
       ? {
-        id: defaultPhone.id,
-        label: defaultPhone.label ? `${defaultPhone.label} — ${defaultPhone.phone}` : defaultPhone.phone,
-      }
+          id: defaultPhone.id,
+          label: defaultPhone.label ? `${defaultPhone.label} — ${defaultPhone.phone}` : defaultPhone.phone,
+        }
       : null,
     contacts: [],
   };
@@ -105,7 +98,10 @@ export const CreateGroupDialog = ({
       const { waGroup, errors } = data?.createWaGroup || {};
 
       if (errors && errors.length > 0) {
-        const msg = errors.map((e: any) => e?.message).filter(Boolean).join('; ');
+        const msg = errors
+          .map((e: any) => e?.message)
+          .filter(Boolean)
+          .join('; ');
         setNotification(msg || t('Could not create WhatsApp group'), 'warning');
         return;
       }

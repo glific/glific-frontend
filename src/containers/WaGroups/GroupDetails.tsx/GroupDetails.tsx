@@ -7,7 +7,6 @@ import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
-import { getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -64,7 +63,13 @@ export const GroupDetails = () => {
     onCompleted: (responseData) => {
       const errors = responseData?.updateWaGroup?.errors;
       if (errors?.length) {
-        setNotification(errors.map((e: any) => e?.message).filter(Boolean).join('; '), 'warning');
+        setNotification(
+          errors
+            .map((e: any) => e?.message)
+            .filter(Boolean)
+            .join('; '),
+          'warning'
+        );
         return;
       }
       setNotification('Removed Contact from Group', 'success');
@@ -112,7 +117,13 @@ export const GroupDetails = () => {
     });
     const errors = responseData?.updateWaGroup?.errors;
     if (errors?.length) {
-      setNotification(errors.map((e: any) => e?.message).filter(Boolean).join('; '), 'warning');
+      setNotification(
+        errors
+          .map((e: any) => e?.message)
+          .filter(Boolean)
+          .join('; '),
+        'warning'
+      );
       return;
     }
     if (responseData?.updateWaGroup?.waGroup) {
@@ -127,7 +138,13 @@ export const GroupDetails = () => {
     onCompleted: (responseData) => {
       const errors = responseData?.updateWaGroup?.errors;
       if (errors?.length) {
-        setNotification(errors.map((e: any) => e?.message).filter(Boolean).join('; '), 'warning');
+        setNotification(
+          errors
+            .map((e: any) => e?.message)
+            .filter(Boolean)
+            .join('; '),
+          'warning'
+        );
         return;
       }
       setNotification(t('Group renamed'), 'success');
