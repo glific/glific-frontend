@@ -23,6 +23,8 @@ import {
 } from 'mocks/AIEvaluations';
 import { AIEvaluationList } from './AIEvaluationList';
 
+vi.mock('i18next', () => ({ t: (key: string) => key }));
+
 vi.mock('common/notification', () => ({
   setNotification: vi.fn(),
   setErrorMessage: vi.fn(),

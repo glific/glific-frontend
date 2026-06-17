@@ -8,7 +8,8 @@ import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
-import { useState } from 'react';
+import { t } from 'i18next';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
@@ -230,9 +231,12 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
   const navigate = useNavigate();
   const [fetchEvaluationScores] = useLazyQuery(GET_EVALUATION_SCORES);
   const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
+  const downloadingIdsRef = useRef<Set<string>>(new Set());
 
   const handleDownload = async (id: string, name: string) => {
-    setDownloadingIds((prev) => new Set(prev).add(id));
+    if (downloadingIdsRef.current.has(id)) return;
+    downloadingIdsRef.current.add(id);
+    setDownloadingIds(new Set(downloadingIdsRef.current));
     try {
       const { data, error } = await fetchEvaluationScores({ variables: { id } });
 
@@ -283,11 +287,8 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
     } catch (err) {
       setErrorMessage(err as Error);
     } finally {
-      setDownloadingIds((prev) => {
-        const next = new Set(prev);
-        next.delete(id);
-        return next;
-      });
+      downloadingIdsRef.current.delete(id);
+      setDownloadingIds(new Set(downloadingIdsRef.current));
     }
   };
 
@@ -296,15 +297,15 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
     const isDownloading = downloadingIds.has(item?.id);
     return [
       {
-        label: isDownloading ? 'Downloading…' : 'Download Results',
+        label: isDownloading ? t('Downloading…') : t('Download Results'),
         icon: isDownloading ? (
           <span className={styles.DownloadCsvButton} data-testid="downloadSpinner">
             <CircularProgress size={14} thickness={5} />
-            Downloading…
+            {t('Downloading…')}
           </span>
         ) : (
           <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
-            Download Results
+            {t('Download Results')}
           </span>
         ),
         parameter: 'id',
