@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -25,6 +26,7 @@ import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
+import { PromptGeneratorModal } from './PromptGeneratorModal';
 
 import styles from './CreateAssistant.module.css';
 
@@ -53,7 +55,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  const [showPromptGenerator, setShowPromptGenerator] = useState(false);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
+  const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
   const shouldResetFormRef = useRef(true);
 
   let isEditing = false;
@@ -203,6 +207,18 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
+      {isPromptGeneratorEnabled && !newVersionInProgress && (
+        <Button
+          variant="text"
+          size="small"
+          onClick={() => setShowPromptGenerator(true)}
+          data-testid="generateWithAiButton"
+          className={styles.GenerateWithAiButton}
+        >
+          {t('Generate with AI')}
+          <span className={styles.BetaBadge}>{t('BETA')}</span>
+        </Button>
+      )}
       <ExpandIcon data-testid="expandIcon" onClick={() => setOpenInstructions(true)} className={styles.ExpandButton} />
     </InputAdornment>
   );
@@ -492,6 +508,17 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         {dialog}
         {cloneConfirmDialog}
         {instructionsDialog}
+        {showPromptGenerator && (
+          <PromptGeneratorModal
+            open={showPromptGenerator}
+            onClose={() => setShowPromptGenerator(false)}
+            onApply={(text) => {
+              formik.setFieldValue('instructions', text);
+              setShowPromptGenerator(false);
+              setNotification(t('Prompt added to Instructions'), 'success');
+            }}
+          />
+        )}
       </div>
     </FormikProvider>
   );

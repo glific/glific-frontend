@@ -89,6 +89,25 @@
   max-height: none;
 }
 
+.GenerateWithAiButton {
+  text-transform: none;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-right: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.BetaBadge {
+  margin-left: 0.35rem;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background-color: #119656;
+  color: #fff;
+}
+
 .ExpandButton {
   cursor: pointer;
 }
