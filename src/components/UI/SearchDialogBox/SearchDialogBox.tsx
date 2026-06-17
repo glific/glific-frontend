@@ -22,6 +22,8 @@ export interface SearchDialogBoxProps {
   textFieldPlaceholder?: any;
   multiple?: boolean;
   buttonOk?: string;
+  buttonOkLoading?: boolean;
+  disableOk?: boolean;
   description?: string;
   colorOk?: string;
   fullWidth?: boolean;
@@ -47,6 +49,8 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     textFieldPlaceholder = '',
     multiple = true,
     buttonOk = 'Save',
+    buttonOkLoading,
+    disableOk,
     description = '',
     colorOk,
     fullWidth = false,
@@ -91,6 +95,8 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       titleAlign="left"
       colorOk={colorOk}
       buttonOk={buttonOk}
+      buttonOkLoading={buttonOkLoading}
+      disableOk={disableOk}
       fullWidth={fullWidth}
     >
       <div>

@@ -96,7 +96,7 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
       <Button
         variant="contained"
         color="primary"
-        className={styles.syncButton}
+        className={styles.createButton}
         data-testid="createGroup"
         onClick={() => setCreateOpen(true)}
       >

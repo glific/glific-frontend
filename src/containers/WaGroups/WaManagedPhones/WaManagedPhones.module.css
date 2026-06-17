@@ -41,3 +41,19 @@
 .Autocomplete {
   max-width: 180px;
 }
+
+.createButton {
+  margin: 0 8px;
+  cursor: pointer;
+  height: 36px;
+  border-radius: 27px;
+  background: #2ea36a;
+  color: #ffffff;
+  font-size: 14px;
+  white-space: nowrap;
+  padding: 0 20px;
+}
+
+.createButton:hover {
+  background: #27905d;
+}

@@ -93,12 +93,13 @@ export const CREATE_WA_GROUP = gql`
   }
 `;
 
-export const UPDATE_WA_GROUP_SUBJECT = gql`
-  mutation UpdateWaGroupSubject($id: ID!, $waManagedPhoneId: ID!, $subject: String!) {
-    updateWaGroupSubject(id: $id, waManagedPhoneId: $waManagedPhoneId, subject: $subject) {
+export const UPDATE_WA_GROUP = gql`
+  mutation UpdateWaGroup($input: UpdateWaGroupInput!) {
+    updateWaGroup(input: $input) {
       waGroup {
         id
         label
+        bspId
       }
       errors {
         key

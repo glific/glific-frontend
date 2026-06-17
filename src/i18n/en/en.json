@@ -728,5 +728,7 @@
   "Add members": "Add members",
   "Add members to this group": "Add members to this group",
   "No contacts added": "No contacts added",
-  "Could not add contacts to the group": "Could not add contacts to the group"
+  "Could not add contacts to the group": "Could not add contacts to the group",
+  "Could not remove contact from the group": "Could not remove contact from the group",
+  "The change is pushed to WhatsApp via the group’s admin phone.": "The change is pushed to WhatsApp via the group’s admin phone."
 }

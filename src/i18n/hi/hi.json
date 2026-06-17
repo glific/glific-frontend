@@ -588,5 +588,7 @@
   "Add members": "सदस्य जोड़ें",
   "Add members to this group": "इस समूह में सदस्य जोड़ें",
   "No contacts added": "कोई संपर्क नहीं जोड़ा गया",
-  "Could not add contacts to the group": "समूह में संपर्क नहीं जोड़े जा सके"
+  "Could not add contacts to the group": "समूह में संपर्क नहीं जोड़े जा सके",
+  "Could not remove contact from the group": "समूह से संपर्क नहीं हटाया जा सका",
+  "The change is pushed to WhatsApp via the group’s admin phone.": "यह बदलाव समूह के एडमिन फ़ोन के ज़रिए व्हाट्सऐप पर भेजा जाता है।"
 }

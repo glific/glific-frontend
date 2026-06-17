@@ -111,10 +111,30 @@
 
 .GroupHeader {
   display: flex;
+  flex-direction: column;
   box-shadow: 0px 1px 1px 0px #00000029;
   padding: 15px;
+  gap: 12px;
+}
+
+.GroupHeaderTop {
+  display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.HeaderActions {
+  display: flex;
+  gap: 8px;
+}
+
+.HeaderActionButton {
+  border-radius: 20px !important;
+  text-transform: none !important;
+  font-size: 13px !important;
+  height: 32px;
+  padding: 4px 18px !important;
+  box-shadow: none !important;
 }
 
 .GroupHeaderTitle {
@@ -138,10 +158,4 @@
   background-color: #f8faf5 !important;
   width: 100%;
   height: 100%;
-}
-
-.MembersHeader {
-  display: flex;
-  justify-content: flex-end;
-  padding: 8px 16px;
 }

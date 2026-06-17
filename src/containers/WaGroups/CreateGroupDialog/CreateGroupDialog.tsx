@@ -12,6 +12,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { CREATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
+import styles from './CreateGroupDialog.module.css';
 
 export interface ManagedPhoneOption {
   id: string;
@@ -54,6 +55,9 @@ export const CreateGroupDialog = ({
 }: CreateGroupDialogProps) => {
   const { t } = useTranslation();
   const [contactSearchTerm, setContactSearchTerm] = useState('');
+  // asyncSearch mode keeps the selected options here (independent of the
+  // search-filtered `options`); AutoComplete also mirrors them into Formik.
+  const [selectedContacts, setSelectedContacts] = useState<ContactOption[]>([]);
 
   const phoneOptions = phones.map((p) => ({
     id: p.id,
@@ -64,9 +68,9 @@ export const CreateGroupDialog = ({
     name: '',
     waManagedPhone: defaultPhone
       ? {
-          id: defaultPhone.id,
-          label: defaultPhone.label ? `${defaultPhone.label} — ${defaultPhone.phone}` : defaultPhone.phone,
-        }
+        id: defaultPhone.id,
+        label: defaultPhone.label ? `${defaultPhone.label} — ${defaultPhone.phone}` : defaultPhone.phone,
+      }
       : null,
     contacts: [],
   };
@@ -80,7 +84,7 @@ export const CreateGroupDialog = ({
   const contactOptions: ContactOption[] =
     contactsData?.contacts?.map((c: any) => ({
       id: c.id,
-      name: getDisplayName(c),
+      name: c.name || c.phone,
       phone: c.phone,
     })) || [];
 
@@ -112,6 +116,8 @@ export const CreateGroupDialog = ({
       }
 
       setNotification(t('WhatsApp group created'), 'success');
+      setSelectedContacts([]);
+      setContactSearchTerm('');
       onCreated?.(waGroup);
       onClose();
     } catch (error: any) {
@@ -141,11 +147,14 @@ export const CreateGroupDialog = ({
             skipCancel={loading}
             handleOk={() => submitForm()}
             handleCancel={() => {
-              if (!loading) onClose();
+              if (loading) return;
+              setSelectedContacts([]);
+              setContactSearchTerm('');
+              onClose();
             }}
             fullWidth
           >
-            <div>
+            <div className={styles.Fields}>
               <Field
                 name="name"
                 component={Input}
@@ -176,6 +185,7 @@ export const CreateGroupDialog = ({
                 additionalOptionLabel="phone"
                 multiple
                 asyncSearch
+                asyncValues={{ value: selectedContacts, setValue: setSelectedContacts }}
                 disableClearable={false}
                 onChange={(value: any) => {
                   if (typeof value === 'string') {

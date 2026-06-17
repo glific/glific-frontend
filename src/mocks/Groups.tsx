@@ -5,7 +5,7 @@ import {
   setVariables,
 } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
-import { SYNC_GROUPS, UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import { SYNC_GROUPS, UPDATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
   COUNT_COUNTACTS_WA_GROUPS,
@@ -1044,16 +1044,16 @@ export const countWaGroupContacts = {
 
 export const removeContactQuery = {
   request: {
-    query: UPDATE_GROUP_CONTACT,
+    query: UPDATE_WA_GROUP,
     variables: {
-      input: { addWaContactIds: [], deleteWaContactIds: ['18'], waGroupId: '1' },
+      input: { id: '1', removeContactId: '18' },
     },
   },
   result: {
     data: {
-      updateContactWaGroups: {
-        numberDeleted: 1,
-        waGroupContacts: [],
+      updateWaGroup: {
+        waGroup: { id: '1', label: 'Arkansas ducks', bspId: '221976952534635194@g.us' },
+        errors: null,
       },
     },
   },
