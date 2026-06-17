@@ -2,12 +2,13 @@ import { useLazyQuery } from '@apollo/client';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AssistantsIcon from 'assets/images/Assistants.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
-import { Tooltip } from '@mui/material';
+import { CircularProgress, Tooltip } from '@mui/material';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
@@ -228,8 +229,10 @@ const queries = {
 export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
   const navigate = useNavigate();
   const [fetchEvaluationScores] = useLazyQuery(GET_EVALUATION_SCORES);
+  const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
 
   const handleDownload = async (id: string, name: string) => {
+    setDownloadingIds((prev) => new Set(prev).add(id));
     try {
       const { data, error } = await fetchEvaluationScores({ variables: { id } });
 
@@ -279,21 +282,33 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
       triggerCsvDownload(csv, `${name}_scores.csv`);
     } catch (err) {
       setErrorMessage(err as Error);
+    } finally {
+      setDownloadingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
   };
 
   const additionalAction = (item: any) => {
     const isNotCompleted = item?.status?.toUpperCase() !== 'COMPLETED';
+    const isDownloading = downloadingIds.has(item.id);
     return [
       {
-        label: 'Download Results',
-        icon: (
+        label: isDownloading ? 'Downloading…' : 'Download Results',
+        icon: isDownloading ? (
+          <span className={styles.DownloadCsvButton} data-testid="downloadSpinner">
+            <CircularProgress size={14} thickness={5} />
+            Downloading…
+          </span>
+        ) : (
           <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
             Download Results
           </span>
         ),
         parameter: 'id',
-        dialog: isNotCompleted ? () => {} : (id: string) => handleDownload(id, item.name),
+        dialog: isNotCompleted || isDownloading ? () => {} : (id: string) => handleDownload(id, item.name),
       },
     ];
   };

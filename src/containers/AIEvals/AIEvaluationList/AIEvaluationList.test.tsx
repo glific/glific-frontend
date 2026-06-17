@@ -14,9 +14,11 @@ import {
   getEvaluationScoresMock,
   getEvaluationScoresNetworkErrorMock,
   getEvaluationScoresNullMock,
+  getEvaluationScoresSlowMock,
   getListAiEvaluationsAllStatusesMock,
   getListAiEvaluationsBothMetricsMock,
   getListAiEvaluationsInvalidResultsMock,
+  getListAiEvaluationsTwoCompletedMock,
   getListAiEvaluationsWithItemsMock,
 } from 'mocks/AIEvaluations';
 import { AIEvaluationList } from './AIEvaluationList';
@@ -373,6 +375,63 @@ describe('AIEvaluationList', () => {
 
     const questionIds = dataRows.map((row) => Number(row.split(',')[questionIdIndex]));
     expect(questionIds).toEqual([1, 2, 3]);
+
+    vi.restoreAllMocks();
+  });
+
+  it('shows spinner and hides Download Results text while download is in-flight', async () => {
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresSlowMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Downloading…')).toBeInTheDocument();
+      expect(screen.getByTestId('downloadSpinner')).toBeInTheDocument();
+      // only one "Download Results" remains (the non-completed row)
+      expect(screen.getAllByText('Download Results')).toHaveLength(1);
+    });
+
+    vi.restoreAllMocks();
+  });
+
+  it('restores Download Results text after a failed download', async () => {
+    renderComponent([getListAiEvaluationsWithItemsMock, getEvaluationScoresNetworkErrorMock('2')]);
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
+
+    fireEvent.click(screen.getAllByTestId('additionalButton')[1]);
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
+
+    // spinner is gone, button text is restored
+    expect(screen.queryByText('Downloading…')).not.toBeInTheDocument();
+    expect(screen.getAllByText('Download Results')).toHaveLength(2);
+  });
+
+  it('shows spinner for all evaluations when multiple downloads are triggered in parallel', async () => {
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    renderComponent([
+      getListAiEvaluationsTwoCompletedMock,
+      getEvaluationScoresSlowMock('2'),
+      getEvaluationScoresSlowMock('5'),
+    ]);
+    await waitFor(() => expect(screen.getAllByText('Download Results')).toHaveLength(2));
+
+    const buttons = screen.getAllByTestId('additionalButton');
+    fireEvent.click(buttons[0]);
+    fireEvent.click(buttons[1]);
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Downloading…')).toHaveLength(2);
+      expect(screen.queryByText('Download Results')).not.toBeInTheDocument();
+    });
 
     vi.restoreAllMocks();
   });
