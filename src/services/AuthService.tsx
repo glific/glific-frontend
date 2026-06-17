@@ -24,7 +24,8 @@ type ServiceType =
   | 'askGlificEnabled'
   | 'whatsappFormsEnabled'
   | 'assistantConfigVersionsEnabled'
-  | 'aiEvaluationsEnabled';
+  | 'aiEvaluationsEnabled'
+  | 'promptGeneratorEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
