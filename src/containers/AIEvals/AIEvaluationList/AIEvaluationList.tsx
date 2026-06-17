@@ -293,7 +293,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
 
   const additionalAction = (item: any) => {
     const isNotCompleted = item?.status?.toUpperCase() !== 'COMPLETED';
-    const isDownloading = downloadingIds.has(item.id);
+    const isDownloading = downloadingIds.has(item?.id);
     return [
       {
         label: isDownloading ? 'Downloading…' : 'Download Results',
