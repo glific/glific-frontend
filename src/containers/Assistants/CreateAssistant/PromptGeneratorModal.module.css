@@ -7,8 +7,9 @@
 
 .Container {
   background-color: #fff;
-  width: 50%;
-  max-width: 640px;
+  width: 60%;
+  max-width: 720px;
+  max-height: 85vh;
   padding: 1.5rem;
   border-radius: 1rem;
   display: flex;
@@ -16,36 +17,128 @@
   gap: 1rem;
 }
 
-.Title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.4;
+.Header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.ProgressWrapper {
+.HeaderText {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
+}
+
+.Title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
   gap: 0.5rem;
 }
 
-.StepCount {
+.Subtitle {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.BetaBadge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #92722a;
+  background-color: #fdf2cf;
+  border: 1px solid #f5dd9a;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.CloseButton {
+  margin: -0.5rem -0.5rem 0 0;
+}
+
+.BetaBanner {
+  background-color: #f3faf4;
+  border: 1px solid #d8efdc;
+  color: #2e7d4f;
   font-size: 13px;
-  color: #555;
-  align-self: flex-end;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.ScrollArea {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-right: 0.25rem;
 }
 
 .Question {
   display: flex;
   flex-direction: column;
+  gap: 0.375rem;
+}
+
+.QuestionHeader {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
 }
 
-.QuestionLabel {
+.Number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #e7f5ec;
+  color: #119656;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.QuestionTitle {
+  color: #119656;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.QuestionText {
+  margin: 0;
   font-weight: 500;
+  font-size: 15px;
+  color: #1a1a1a;
+}
+
+.Example {
+  margin: 0;
+  font-style: italic;
+  font-size: 13px;
+  color: #6b7280;
 }
 
 .Footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.FooterNote {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.ButtonRow {
   width: 100%;
   display: flex;
   justify-content: end;

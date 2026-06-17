@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { CircularProgress, LinearProgress, Modal, OutlinedInput, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
@@ -35,9 +36,10 @@ type Answers = Record<AnswerKey, string>;
 
 interface Question {
   key: AnswerKey;
-  label: string;
-  helperText: string;
-  textArea?: boolean;
+  title: string;
+  question: string;
+  example: string;
+  placeholder: string;
 }
 
 const initialAnswers: Answers = {
@@ -59,50 +61,66 @@ const MAX_POLL_DURATION = 20000;
 const getQuestions = (t: TFunction): Question[] => [
   {
     key: 'name',
-    label: t('Organisation & chatbot name'),
-    helperText: t('e.g. "Pratham; the bot is called Saathi"'),
+    title: t('Name'),
+    question: t("What is your organisation's name and the name you want to give this AI assistant?"),
+    example: t('E.g. "Chatbot name: SNEHA DIDI, by org: SNEHA"'),
+    placeholder: t('Organisation name and chatbot name...'),
   },
   {
     key: 'purpose',
-    label: t('What does the assistant help with?'),
-    helperText: t('Describe in 1-2 sentences what the assistant should do.'),
-    textArea: true,
+    title: t('Core purpose'),
+    question: t('In one or two sentences, what is this assistant supposed to help people with?'),
+    example: t('E.g. "Responds to queries from women on early childhood healthcare, pregnancy, government schemes."'),
+    placeholder: t('Describe the core purpose...'),
   },
   {
     key: 'audience',
-    label: t('Who chats with the bot?'),
-    helperText: t('Describe literacy, language familiarity and context of your users.'),
+    title: t('Audience'),
+    question: t('Who will be chatting with the assistant? Describe in as much detail as possible.'),
+    example: t('E.g. "Pregnant or new mothers from urban slums, low literacy, familiar with everyday Hindi or Urdu."'),
+    placeholder: t('Describe your audience...'),
   },
   {
     key: 'language',
-    label: t('Language policy'),
-    helperText: t('e.g. English only / Hindi / match the user / Hinglish'),
+    title: t('Language'),
+    question: t("What language(s) should it reply in — always English, always Hindi, or match the user's language?"),
+    example: t('Specify Hinglish, Hindi script, regional languages, or match the input language.'),
+    placeholder: t('Language preference...'),
   },
   {
     key: 'tone',
-    label: t('Tone'),
-    helperText: t('e.g. Simple & friendly / Formal / Instructional'),
+    title: t('Tone'),
+    question: t('What tone? (Simple & friendly / formal / instructional like a health worker)'),
+    example: t('E.g. "Language a 5-year-old will understand" or "Formal structured responses."'),
+    placeholder: t('Describe the tone...'),
   },
   {
     key: 'format',
-    label: t('Response format'),
-    helperText: t('Length and structure: bullets / numbered / short paragraphs'),
+    title: t('Response format'),
+    question: t('How long should responses be, and in what format (bullet points, short paragraphs, numbered steps)?'),
+    example: t('E.g. "Max 3 short sentences" or "Use numbered steps for instructions."'),
+    placeholder: t('Describe the response format...'),
   },
   {
     key: 'offLimits',
-    label: t('Off-limits topics'),
-    helperText: t('Topics the bot must avoid, or type NA.'),
+    title: t('Off-limits'),
+    question: t('Are there any topics the assistant must never respond to?'),
+    example: t('E.g. "No medical diagnosis or legal advice." Type NA if none.'),
+    placeholder: t('List off-limits topics, or NA...'),
   },
   {
     key: 'fallback',
-    label: t('Fallback message'),
-    helperText: t("The exact text to send when the bot doesn't know the answer."),
-    textArea: true,
+    title: t('Fallback'),
+    question: t("What should the assistant say when it doesn't know the answer?"),
+    example: t('E.g. "Sorry, I\'m not sure about that — please contact our helpline."'),
+    placeholder: t('Exact fallback message...'),
   },
   {
     key: 'escalation',
-    label: t('Escalation path'),
-    helperText: t('Phone/email/next step when the bot cannot help, or type NA.'),
+    title: t('Escalation'),
+    question: t('How should users reach a human or escalate urgent / out-of-scope queries?'),
+    example: t('E.g. "Call 1800-xxx-xxx" or "Reply AGENT to talk to staff." Type NA if none.'),
+    placeholder: t('Escalation path, or NA...'),
   },
 ];
 
@@ -111,15 +129,16 @@ type Phase = 'questions' | 'generating' | 'ready' | 'error';
 export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGeneratorModalProps) => {
   const { t } = useTranslation();
   const questions = getQuestions(t);
-  const totalSteps = questions.length;
 
-  const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
   const [phase, setPhase] = useState<Phase>('questions');
   const [generatedText, setGeneratedText] = useState('');
   const [inlineError, setInlineError] = useState('');
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // all fields are mandatory — generation is only allowed once every question is answered
+  const allAnswered = questions.every((question) => answers[question.key].trim() !== '');
 
   const [generatePrompt, { loading: generating }] = useMutation(GENERATE_PROMPT);
   const [pollPromptGeneration, { data: pollData, error: pollError, stopPolling, startPolling }] = useLazyQuery(
@@ -143,16 +162,20 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     setPhase('error');
   };
 
+  const markReady = (text: string) => {
+    clearTimers();
+    stopPolling();
+    setGeneratedText(text);
+    setPhase('ready');
+  };
+
   // derive state from polling results (Apollo recommends derived state over
   // onCompleted/onError when those callbacks set local state)
   useEffect(() => {
     const result = pollData?.promptGeneration?.promptGeneration;
     if (!result) return;
     if (result.status === 'ready') {
-      clearTimers();
-      stopPolling();
-      setGeneratedText(result.generatedPrompt || '');
-      setPhase('ready');
+      markReady(result.generatedPrompt || '');
     } else if (result.status === 'failed') {
       handleFailure(result.errorMessage || t('Prompt generation failed. Please try again.'));
     }
@@ -183,7 +206,6 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   const resetAll = () => {
     clearTimers();
     stopPolling();
-    setStep(0);
     setAnswers(initialAnswers);
     setPhase('questions');
     setGeneratedText('');
@@ -213,8 +235,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
           return;
         }
         if (generation.status === 'ready') {
-          setGeneratedText(generation.generatedPrompt || '');
-          setPhase('ready');
+          markReady(generation.generatedPrompt || '');
           return;
         }
         if (generation.status === 'failed') {
@@ -248,64 +269,44 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
 
   const isGenerating = phase === 'generating' || generating;
 
-  const renderQuestions = () => {
-    const question = questions[step];
-    const isLastStep = step === totalSteps - 1;
-    const progress = ((step + 1) / totalSteps) * 100;
+  const renderQuestions = () => (
+    <>
+      <div className={styles.BetaBanner} data-testid="betaBanner">
+        {t('This is a beta feature, currently in testing — shared for feedback & testing only.')}
+      </div>
 
-    return (
-      <>
-        <div className={styles.ProgressWrapper}>
-          <LinearProgress variant="determinate" value={progress} data-testid="progressBar" />
-          <span className={styles.StepCount}>
-            {t('Step')} {step + 1} / {totalSteps}
-          </span>
-        </div>
+      <div className={styles.ScrollArea}>
+        {questions.map((question, index) => (
+          <div className={styles.Question} key={question.key}>
+            <div className={styles.QuestionHeader}>
+              <span className={styles.Number}>{index + 1}</span>
+              <span className={styles.QuestionTitle}>{question.title}</span>
+            </div>
+            <p className={styles.QuestionText}>{question.question}</p>
+            <p className={styles.Example}>{question.example}</p>
+            <Input
+              field={{
+                name: question.key,
+                value: answers[question.key],
+                onChange: handleChange(question.key),
+                onBlur: () => {},
+              }}
+              placeholder={question.placeholder}
+              textArea
+              rows={3}
+            />
+          </div>
+        ))}
+      </div>
 
-        <div className={styles.Question}>
-          <Typography variant="h5" className={styles.QuestionLabel}>
-            {question.label}
-          </Typography>
-          <Input
-            field={{
-              name: question.key,
-              value: answers[question.key],
-              onChange: handleChange(question.key),
-              onBlur: () => {},
-            }}
-            placeholder={question.helperText}
-            textArea={question.textArea}
-            rows={question.textArea ? 4 : undefined}
-            helperText={question.helperText}
-          />
-        </div>
-
-        <div className={styles.Footer}>
-          <Button
-            variant="outlined"
-            onClick={() => setStep((prev) => Math.max(0, prev - 1))}
-            disabled={step === 0}
-            data-testid="backButton"
-          >
-            {t('Back')}
-          </Button>
-          {isLastStep ? (
-            <Button variant="contained" onClick={handleGenerate} data-testid="generatePromptButton">
-              {t('Generate Prompt')}
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              onClick={() => setStep((prev) => Math.min(totalSteps - 1, prev + 1))}
-              data-testid="nextButton"
-            >
-              {t('Next')}
-            </Button>
-          )}
-        </div>
-      </>
-    );
-  };
+      <div className={styles.Footer}>
+        <span className={styles.FooterNote}>{t('All 9 questions help generate a better prompt')}</span>
+        <Button variant="contained" onClick={handleGenerate} disabled={!allAnswered} data-testid="generatePromptButton">
+          {t('Generate Prompt')}
+        </Button>
+      </div>
+    </>
+  );
 
   const renderGenerating = () => (
     <div className={styles.LoadingState} data-testid="generatingState">
@@ -319,7 +320,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
       <Typography className={styles.ErrorText} data-testid="promptError">
         {inlineError}
       </Typography>
-      <div className={styles.Footer}>
+      <div className={styles.ButtonRow}>
         <Button variant="outlined" onClick={handleClose} data-testid="errorCloseButton">
           {t('Close')}
         </Button>
@@ -345,7 +346,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
         data-testid="generatedPrompt"
         inputProps={{ 'data-testid': 'generatedPromptInput' }}
       />
-      <div className={styles.Footer}>
+      <div className={styles.ButtonRow}>
         <Button variant="outlined" onClick={handleClose} data-testid="readyCancelButton">
           {t('Cancel')}
         </Button>
@@ -371,7 +372,23 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     <Modal open={open} onClose={handleClose} data-testid="promptGeneratorModal">
       <div className={styles.ModalBox}>
         <div className={styles.Container}>
-          <h5 className={styles.Title}>{t('Generate Prompt with AI')}</h5>
+          <div className={styles.Header}>
+            <div className={styles.HeaderText}>
+              <h5 className={styles.Title}>
+                {t('Generate Prompt with AI')}
+                <span className={styles.BetaBadge}>{t('BETA')}</span>
+              </h5>
+              <span className={styles.Subtitle}>{t('Answer 9 questions to get a tailored assistant prompt')}</span>
+            </div>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              data-testid="closePromptGenerator"
+              className={styles.CloseButton}
+            >
+              <CloseIcon />
+            </IconButton>
+          </div>
           {body}
         </div>
       </div>

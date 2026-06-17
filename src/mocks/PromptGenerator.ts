@@ -1,16 +1,19 @@
 import { GENERATE_PROMPT } from 'graphql/mutations/PromptGenerator';
 import { PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
 
+// All fields are mandatory, so the mocked mutation variables use filled answers.
+// Tests fill the 9 textareas with these exact values (in question order) so the
+// MockedProvider variable match succeeds.
 export const sampleAnswers = {
-  name: '',
-  purpose: '',
-  audience: '',
-  language: '',
-  tone: '',
-  format: '',
-  offLimits: '',
-  fallback: '',
-  escalation: '',
+  name: 'SNEHA DIDI by SNEHA',
+  purpose: 'Answers maternal and child health queries',
+  audience: 'New and expecting mothers, low literacy',
+  language: 'Hindi and English',
+  tone: 'Simple and friendly',
+  format: 'Short messages, max 3 sentences',
+  offLimits: 'No medical diagnosis',
+  fallback: 'Sorry, please contact our helpline',
+  escalation: 'Reply AGENT to reach staff',
 };
 
 export const generatedPromptText = 'You are a helpful WhatsApp assistant...';
