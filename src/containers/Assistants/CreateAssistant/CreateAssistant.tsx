@@ -4,6 +4,7 @@ import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
+import { usePostHog } from '@posthog/react';
 
 import * as Yup from 'yup';
 
@@ -56,8 +57,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
   const [showPromptGenerator, setShowPromptGenerator] = useState(false);
+  const [appliedPrompt, setAppliedPrompt] = useState<string | null>(null);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
   const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
+  const posthog = usePostHog();
   const shouldResetFormRef = useRef(true);
 
   let isEditing = false;
@@ -90,6 +93,11 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   });
 
   const handleCreate = (values: typeof initialValues) => {
+    // M4 funnel: a generated prompt was applied and then edited before saving
+    if (appliedPrompt !== null && values.instructions !== appliedPrompt) {
+      posthog?.capture('prompt_edited');
+    }
+
     const payload: Record<string, any> = {
       instructions: values.instructions,
       model: values.model?.label,
@@ -211,7 +219,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         <Button
           variant="text"
           size="small"
-          onClick={() => setShowPromptGenerator(true)}
+          onClick={() => {
+            posthog?.capture('prompt_generator_opened');
+            setShowPromptGenerator(true);
+          }}
           data-testid="generateWithAiButton"
           className={styles.GenerateWithAiButton}
         >
@@ -514,6 +525,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
             onClose={() => setShowPromptGenerator(false)}
             onApply={(text) => {
               formik.setFieldValue('instructions', text);
+              setAppliedPrompt(text);
               setShowPromptGenerator(false);
               setNotification(t('Prompt added to Instructions'), 'success');
             }}

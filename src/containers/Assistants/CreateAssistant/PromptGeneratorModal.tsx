@@ -3,6 +3,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
+import { usePostHog } from '@posthog/react';
 import type { TFunction } from 'i18next';
 
 import { setErrorMessage } from 'common/notification';
@@ -128,6 +129,7 @@ type Phase = 'questions' | 'generating' | 'ready' | 'error';
 
 export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGeneratorModalProps) => {
   const { t } = useTranslation();
+  const posthog = usePostHog();
   const questions = getQuestions(t);
 
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
@@ -136,7 +138,12 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   const [inlineError, setInlineError] = useState('');
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // the unedited text returned by the LLM (to detect preview edits) + a guard so
+  // prompt_generated fires exactly once per generation
+  const originalGeneratedRef = useRef('');
+  const generatedCapturedRef = useRef(false);
 
+  const answersFilledCount = Object.values(answers).filter((value) => value.trim() !== '').length;
   // all fields are mandatory — generation is only allowed once every question is answered
   const allAnswered = questions.every((question) => answers[question.key].trim() !== '');
 
@@ -162,11 +169,17 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     setPhase('error');
   };
 
+  // Transition to the ready state and fire prompt_generated exactly once (M4 funnel).
   const markReady = (text: string) => {
     clearTimers();
     stopPolling();
+    originalGeneratedRef.current = text;
     setGeneratedText(text);
     setPhase('ready');
+    if (!generatedCapturedRef.current) {
+      generatedCapturedRef.current = true;
+      posthog?.capture('prompt_generated', { answers_filled_count: answersFilledCount });
+    }
   };
 
   // derive state from polling results (Apollo recommends derived state over
@@ -210,6 +223,8 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     setPhase('questions');
     setGeneratedText('');
     setInlineError('');
+    originalGeneratedRef.current = '';
+    generatedCapturedRef.current = false;
   };
 
   const handleClose = () => {
@@ -262,6 +277,10 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   };
 
   const handleApply = () => {
+    posthog?.capture('prompt_applied', {
+      answers_filled_count: answersFilledCount,
+      edited_in_preview: generatedText !== originalGeneratedRef.current,
+    });
     handleClose();
     onApply(generatedText);
     resetAll();

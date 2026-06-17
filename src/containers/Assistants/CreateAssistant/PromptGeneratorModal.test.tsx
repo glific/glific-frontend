@@ -11,6 +11,11 @@ import {
 
 import { PromptGeneratorModal } from './PromptGeneratorModal';
 
+const mockPosthogCapture = vi.fn();
+vi.mock('@posthog/react', () => ({
+  usePostHog: () => ({ capture: mockPosthogCapture }),
+}));
+
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
 beforeEach(() => {
@@ -80,6 +85,12 @@ test('generates a prompt, polls to ready and shows the editable preview', async 
   );
 
   expect(screen.getByTestId('generatedPromptInput')).toHaveValue(generatedPromptText);
+
+  // M4: prompt_generated fires once on ready, with a no-PII count
+  expect(mockPosthogCapture).toHaveBeenCalledWith(
+    'prompt_generated',
+    expect.objectContaining({ answers_filled_count: expect.any(Number) })
+  );
 });
 
 test('editing the preview and clicking Use this Prompt calls onApply with edited text', async () => {
@@ -101,6 +112,12 @@ test('editing the preview and clicking Use this Prompt calls onApply with edited
   await waitFor(() => {
     expect(onApply).toHaveBeenCalledWith('Edited prompt text');
   });
+
+  // M4: prompt_applied fires on apply, flagging that the preview was edited
+  expect(mockPosthogCapture).toHaveBeenCalledWith(
+    'prompt_applied',
+    expect.objectContaining({ edited_in_preview: true })
+  );
 });
 
 test('shows error state with retry when generation fails', async () => {

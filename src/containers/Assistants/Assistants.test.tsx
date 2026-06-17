@@ -20,11 +20,20 @@ import {
 import { MemoryRouter, Route, Routes } from 'react-router';
 import Assistants from './Assistants';
 
+const mockPosthogCapture = vi.fn();
+vi.mock('@posthog/react', () => ({
+  usePostHog: () => ({ capture: mockPosthogCapture }),
+}));
+
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
 beforeEach(() => {
   vi.clearAllMocks();
+});
+
+afterEach(() => {
+  localStorage.removeItem('organizationServices');
 });
 
 const assistantsComponent = (mocks: any = MOCKS) => (
@@ -753,4 +762,24 @@ test('it shows error when clone mutation fails', async () => {
   await waitFor(() => {
     expect(errorMessageSpy).toHaveBeenCalled();
   });
+});
+
+test('fires prompt_generator_opened when the Generate with AI button is clicked', async () => {
+  localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+
+  render(assistantsComponent(MOCKS));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('generateWithAiButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('generateWithAiButton'));
+
+  expect(mockPosthogCapture).toHaveBeenCalledWith('prompt_generator_opened');
 });
