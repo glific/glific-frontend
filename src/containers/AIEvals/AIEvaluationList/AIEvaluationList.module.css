@@ -131,7 +131,10 @@
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   pointer-events: none;
 }
 
@@ -143,10 +146,29 @@
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   pointer-events: none;
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.DownloadButtonText {
+  visibility: visible;
+}
+
+.DownloadButtonTextHidden {
+  visibility: hidden;
+}
+
+.DownloadSpinnerOverlay {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
 }
 
 .NameSubInfo {
