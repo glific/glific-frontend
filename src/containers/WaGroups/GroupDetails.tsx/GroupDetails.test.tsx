@@ -143,10 +143,7 @@ test('should close dialog box', async () => {
 });
 
 const renderWith = (extraMocks: any[] = []) => (
-  <MockedProvider
-    mocks={[waGroupContacts, countWaGroupContacts, getWaGroupQuery, ...extraMocks]}
-    addTypename={false}
-  >
+  <MockedProvider mocks={[waGroupContacts, countWaGroupContacts, getWaGroupQuery, ...extraMocks]} addTypename={false}>
     <MemoryRouter>
       <GroupDetails />
     </MemoryRouter>
@@ -192,7 +189,9 @@ test('renames the group', async () => {
 });
 
 test('adds members to the group', async () => {
-  render(renderWith([contactsListExcludeGroup, addMembersQuery, getWaGroupQuery, waGroupContacts, countWaGroupContacts]));
+  render(
+    renderWith([contactsListExcludeGroup, addMembersQuery, getWaGroupQuery, waGroupContacts, countWaGroupContacts])
+  );
 
   await waitFor(() => {
     expect(screen.getByTestId('addMembers')).toBeInTheDocument();
