@@ -135,6 +135,8 @@
   height: 32px;
   padding: 4px 18px !important;
   box-shadow: none !important;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .GroupHeaderTitle {
