@@ -752,5 +752,7 @@
   "Escalation path, or NA...": "Escalation path, or NA...",
   "This is a beta feature, currently in testing — shared for feedback & testing only.": "This is a beta feature, currently in testing — shared for feedback & testing only.",
   "Answer 9 questions to get a tailored assistant prompt": "Answer 9 questions to get a tailored assistant prompt",
-  "All 9 questions help generate a better prompt": "All 9 questions help generate a better prompt"
+  "All 9 questions help generate a better prompt": "All 9 questions help generate a better prompt",
+  "Expand": "Expand",
+  "Collapse": "Collapse"
 }

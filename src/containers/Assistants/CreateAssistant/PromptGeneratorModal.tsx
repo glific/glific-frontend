@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { useTranslation } from 'react-i18next';
 import { usePostHog } from '@posthog/react';
 import type { TFunction } from 'i18next';
@@ -136,6 +138,8 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   const [phase, setPhase] = useState<Phase>('questions');
   const [generatedText, setGeneratedText] = useState('');
   const [inlineError, setInlineError] = useState('');
+  // expand the preview so the whole generated prompt is visible without scrolling
+  const [expanded, setExpanded] = useState(false);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // the unedited text returned by the LLM (to detect preview edits) + a guard so
@@ -245,6 +249,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     setPhase('questions');
     setGeneratedText('');
     setInlineError('');
+    setExpanded(false);
     originalGeneratedRef.current = '';
     generatedCapturedRef.current = false;
   };
@@ -374,16 +379,26 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
 
   const renderReady = () => (
     <>
-      <Typography className={styles.ReviewNotice} data-testid="reviewNotice">
-        {t('This is an AI generated prompt. Please review and edit if required.')}
-      </Typography>
+      <div className={styles.PreviewHeader}>
+        <Typography className={styles.ReviewNotice} data-testid="reviewNotice">
+          {t('This is an AI generated prompt. Please review and edit if required.')}
+        </Typography>
+        <IconButton
+          size="small"
+          onClick={() => setExpanded((value) => !value)}
+          aria-label={expanded ? t('Collapse') : t('Expand')}
+          data-testid="togglePreviewSize"
+        >
+          {expanded ? <CloseFullscreenIcon fontSize="small" /> : <OpenInFullIcon fontSize="small" />}
+        </IconButton>
+      </div>
       <OutlinedInput
         name="generated-prompt"
         value={generatedText}
         onChange={(event) => setGeneratedText(event.target.value)}
         className={styles.PreviewInput}
         multiline
-        rows={12}
+        rows={expanded ? 26 : 12}
         data-testid="generatedPrompt"
         inputProps={{ 'data-testid': 'generatedPromptInput' }}
       />
@@ -412,7 +427,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   return (
     <Modal open={open} onClose={handleClose} data-testid="promptGeneratorModal">
       <div className={styles.ModalBox}>
-        <div className={styles.Container}>
+        <div className={`${styles.Container} ${expanded && phase === 'ready' ? styles.ContainerExpanded : ''}`}>
           <div className={styles.Header}>
             <div className={styles.HeaderText}>
               <h5 className={styles.Title}>
