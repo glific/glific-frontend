@@ -300,6 +300,13 @@
   font-weight: bold;
 }
 
+.PhoneLabel {
+  color: #555;
+  font-size: 11px;
+  font-style: italic;
+  padding-top: 4px;
+}
+
 .NoIcon {
   margin: 0 1rem;
 }

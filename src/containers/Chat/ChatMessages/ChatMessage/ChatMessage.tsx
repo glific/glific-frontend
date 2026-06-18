@@ -62,6 +62,7 @@ export interface ChatMessageProps {
   pollContent?: any;
   showIcon?: boolean;
   whatsappFormResponse?: any;
+  waManagedPhone?: { phone?: string; label?: string; contact?: { name?: string } | null } | null;
 }
 
 export const ChatMessage = ({
@@ -91,6 +92,7 @@ export const ChatMessage = ({
   pollContent,
   showIcon = true,
   whatsappFormResponse,
+  waManagedPhone,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -315,6 +317,15 @@ export const ChatMessage = ({
     contactName = <div className={styles.ContactName}>{contact?.name}</div>;
   }
 
+  let phoneLabel: any;
+  if (groups && !isSender && waManagedPhone?.phone) {
+    phoneLabel = (
+      <div className={styles.PhoneLabel} data-testid="phoneLabel">
+        {t('Sent from')}: {waManagedPhone.phone}
+      </div>
+    );
+  }
+
   let messageBody: any;
   if (isInteractiveContentPresent && !isSender) {
     messageBody = template;
@@ -346,6 +357,7 @@ export const ChatMessage = ({
       <>
         {contactName}
         <ChatMessageType type={type} media={media} body={bodyText} location={location} isSender={isSender} />
+        {phoneLabel}
         {dateAndSendBy}
       </>
     );
