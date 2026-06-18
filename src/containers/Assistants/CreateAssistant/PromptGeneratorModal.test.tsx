@@ -5,6 +5,7 @@ import * as Notification from 'common/notification';
 import {
   generatedPromptText,
   promptGeneratorErrorMocks,
+  promptGeneratorPrefillMocks,
   promptGeneratorSuccessMocks,
   sampleAnswers,
 } from 'mocks/PromptGenerator';
@@ -37,6 +38,15 @@ const fillAllAnswers = () => {
     fireEvent.change(inputs[index], { target: { value } });
   });
 };
+
+test('pre-fills the wizard with the user previous answers', async () => {
+  renderModal(promptGeneratorPrefillMocks);
+
+  await waitFor(() => {
+    expect(screen.getAllByRole('textbox')[0]).toHaveValue(sampleAnswers.name);
+  });
+  expect(screen.getAllByRole('textbox')[1]).toHaveValue(sampleAnswers.purpose);
+});
 
 test('renders the header, beta notice and all 9 questions as a single form', () => {
   renderModal();

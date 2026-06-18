@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
 
 import { GENERATE_PROMPT } from 'graphql/mutations/PromptGenerator';
-import { PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
+import { LATEST_PROMPT_GENERATION, PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
 
 import styles from './PromptGeneratorModal.module.css';
 
@@ -136,6 +136,28 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   const [inlineError, setInlineError] = useState('');
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prefilledRef = useRef(false);
+
+  // Pre-fill the wizard with the user's previous answers so they can tweak instead of
+  // starting from scratch (the answers are stored server-side on the last request).
+  const { data: latestData } = useQuery(LATEST_PROMPT_GENERATION, { fetchPolicy: 'network-only' });
+
+  useEffect(() => {
+    if (prefilledRef.current) return;
+    const previous = latestData?.latestPromptGeneration?.promptGeneration?.inputs;
+    if (!previous) return;
+
+    prefilledRef.current = true;
+    setAnswers((current) => {
+      const seeded = { ...current };
+      (Object.keys(initialAnswers) as AnswerKey[]).forEach((key) => {
+        if (typeof previous[key] === 'string' && previous[key] !== '') {
+          seeded[key] = previous[key];
+        }
+      });
+      return seeded;
+    });
+  }, [latestData]);
 
   // all fields are mandatory — generation is only allowed once every question is answered
   const allAnswered = questions.every((question) => answers[question.key].trim() !== '');

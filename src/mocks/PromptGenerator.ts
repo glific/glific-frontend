@@ -1,5 +1,5 @@
 import { GENERATE_PROMPT } from 'graphql/mutations/PromptGenerator';
-import { PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
+import { LATEST_PROMPT_GENERATION, PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
 
 // All fields are mandatory, so the mocked mutation variables use filled answers.
 // Tests fill the 9 textareas with these exact values (in question order) so the
@@ -106,10 +106,25 @@ const generatePromptFailedStatusMock = {
   },
 };
 
+// The modal queries the user's previous answers on mount. `inputs: null` means
+// "no previous request" (no pre-fill); a filled object pre-fills the wizard.
+const latestPromptGenerationMock = (inputs: typeof sampleAnswers | null = null) => ({
+  request: { query: LATEST_PROMPT_GENERATION },
+  result: {
+    data: {
+      latestPromptGeneration: {
+        promptGeneration: inputs ? { id: '99', status: 'ready', inputs } : null,
+        errors: null,
+      },
+    },
+  },
+});
+
 // success path: mutation -> in_progress poll -> ready poll.
 // Extra ready mocks act as a buffer in case an additional poll tick fires
-// before stopPolling takes effect.
+// before stopPolling takes effect. Leads with the (empty) latest-answers query.
 export const promptGeneratorSuccessMocks = [
+  latestPromptGenerationMock(),
   generatePromptMock(),
   promptGenerationInProgressMock,
   promptGenerationReadyMock,
@@ -118,7 +133,10 @@ export const promptGeneratorSuccessMocks = [
 ];
 
 // network error path on the mutation
-export const promptGeneratorErrorMocks = [generatePromptErrorMock];
+export const promptGeneratorErrorMocks = [latestPromptGenerationMock(), generatePromptErrorMock];
 
 // failed status returned directly from the mutation
-export const promptGeneratorFailedStatusMocks = [generatePromptFailedStatusMock];
+export const promptGeneratorFailedStatusMocks = [latestPromptGenerationMock(), generatePromptFailedStatusMock];
+
+// pre-fill path: the modal seeds the wizard from the user's previous answers
+export const promptGeneratorPrefillMocks = [latestPromptGenerationMock(sampleAnswers)];
