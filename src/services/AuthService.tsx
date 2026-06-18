@@ -25,6 +25,7 @@ type ServiceType =
   | 'whatsappFormsEnabled'
   | 'assistantConfigVersionsEnabled'
   | 'aiEvaluationsEnabled'
+  | 'copyNodeEnabled'
   | 'promptGeneratorEnabled';
 
 // get the current authentication session

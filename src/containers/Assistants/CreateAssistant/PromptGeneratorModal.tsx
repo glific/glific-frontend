@@ -214,7 +214,11 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     const result = pollData?.promptGeneration?.promptGeneration;
     if (!result) return;
     if (result.status === 'ready') {
-      markReady(result.generatedPrompt || '');
+      if (result.generatedPrompt?.trim()) {
+        markReady(result.generatedPrompt);
+      } else {
+        handleFailure(t('Prompt generation failed. Please try again.'));
+      }
     } else if (result.status === 'failed') {
       handleFailure(result.errorMessage || t('Prompt generation failed. Please try again.'));
     }

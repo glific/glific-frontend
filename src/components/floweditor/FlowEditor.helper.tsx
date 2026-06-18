@@ -1,13 +1,14 @@
 import Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from 'config/index';
 import '@nyaruka/temba-components/dist/temba-components.js';
+import type { PostHog } from 'posthog-js';
 
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './FlowEditor.module.css';
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolean) => {
+export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolean, posthog?: PostHog) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
   const config = {
@@ -82,6 +83,10 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
       interactives: `${glificBase}interactive-templates`,
       contact: CONTACT_CHAT_LINK,
       optins: `${glificBase}optins`,
+    },
+    copyNodeEnabled: !!services.copyNodeEnabled,
+    onEvent: (event: string, properties: Record<string, any>) => {
+      posthog?.capture(event, properties);
     },
   };
 
