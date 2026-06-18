@@ -156,6 +156,19 @@ test('it shows error message', async () => {
   });
 });
 
+test('resolves the selected phone as the create dialog default', async () => {
+  render(
+    <ApolloProvider client={client}>
+      <WaManagedPhones phonenumber={[{ id: '1', label: '7535988655' }]} setPhonenumber={vi.fn()} />
+    </ApolloProvider>
+  );
+
+  // with a selected phone + populated data, defaultPhone runs
+  // data.waManagedPhones.find(...) for the create dialog
+  fireEvent.click(screen.getByTestId('createGroup'));
+  expect(await screen.findByText('Create WhatsApp group')).toBeInTheDocument();
+});
+
 test('it opens and closes the create group dialog', async () => {
   render(
     <MockedProvider mocks={mock}>

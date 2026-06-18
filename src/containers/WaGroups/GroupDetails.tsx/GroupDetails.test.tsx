@@ -9,7 +9,13 @@ import {
   waGroupContacts,
   contactsListExcludeGroup,
   addMembersQuery,
+  addMembersErrorResponse,
+  addMembersNetworkError,
   renameGroupQuery,
+  renameGroupErrorResponse,
+  renameGroupNetworkError,
+  removeContactErrorResponse,
+  removeContactNetworkError,
 } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
@@ -209,5 +215,158 @@ test('adds members to the group', async () => {
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+const openRemoveAndConfirm = async () => {
+  await waitFor(() => {
+    expect(screen.getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
+  });
+  fireEvent.click(screen.getAllByTestId('removeContact')[0]);
+  await screen.findByTestId('dialogBox');
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('warns when removing a contact returns errors', async () => {
+  render(renderWith([removeContactErrorResponse, getWaGroupQuery, waGroupContacts, countWaGroupContacts]));
+  await openRemoveAndConfirm();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Remove failed', 'warning');
+  });
+});
+
+test('warns when removing a contact errors out', async () => {
+  render(renderWith([removeContactNetworkError]));
+  await openRemoveAndConfirm();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not remove contact from the group', 'warning');
+  });
+});
+
+const openAddAndSelect = async () => {
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+
+  const [autocompleteEl] = await screen.findAllByTestId('autocomplete-element');
+  autocompleteEl.focus();
+  fireEvent.keyDown(autocompleteEl, { key: 'ArrowDown' });
+  fireEvent.click(await screen.findByText('Contact A'));
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('warns when adding members returns errors', async () => {
+  render(renderWith([contactsListExcludeGroup, addMembersErrorResponse]));
+  await openAddAndSelect();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not add member', 'warning');
+  });
+});
+
+test('warns when adding members errors out', async () => {
+  render(renderWith([contactsListExcludeGroup, addMembersNetworkError]));
+  await openAddAndSelect();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not add contacts to the group', 'warning');
+  });
+});
+
+test('closes the add-members dialog when nothing is selected', async () => {
+  render(renderWith([contactsListExcludeGroup]));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+  await screen.findAllByTestId('autocomplete-element');
+
+  // confirm without selecting any contact -> handleAddMembers([]) just closes
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Add members to this group')).not.toBeInTheDocument();
+  });
+});
+
+const openRenameAndSubmit = async () => {
+  await waitFor(() => {
+    expect(screen.getByTestId('renameGroup')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('renameGroup'));
+  const nameInput = await screen.findByPlaceholderText('New name');
+  fireEvent.change(nameInput, { target: { value: 'Renamed Group' } });
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('warns when renaming returns errors', async () => {
+  render(renderWith([renameGroupErrorResponse, getWaGroupQuery]));
+  await openRenameAndSubmit();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Rename failed', 'warning');
+  });
+});
+
+test('warns when renaming errors out', async () => {
+  render(renderWith([renameGroupNetworkError]));
+  await openRenameAndSubmit();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not rename group', 'warning');
+  });
+});
+
+test('cancels the add-members dialog', async () => {
+  render(renderWith([contactsListExcludeGroup]));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+  await screen.findAllByTestId('autocomplete-element');
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Add members to this group')).not.toBeInTheDocument();
+  });
+});
+
+test('updates the member search term when typing', async () => {
+  render(renderWith([contactsListExcludeGroup]));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+  const [autocompleteEl] = await screen.findAllByTestId('autocomplete-element');
+  const input = autocompleteEl.querySelector('input') as HTMLInputElement;
+
+  fireEvent.change(input, { target: { value: 'Co' } });
+
+  await waitFor(() => {
+    expect(input.value).toBe('Co');
+  });
+});
+
+test('cancels the rename dialog', async () => {
+  render(renderWith());
+
+  await waitFor(() => {
+    expect(screen.getByTestId('renameGroup')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('renameGroup'));
+  await screen.findByPlaceholderText('New name');
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByPlaceholderText('New name')).not.toBeInTheDocument();
   });
 });

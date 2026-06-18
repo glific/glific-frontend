@@ -7,8 +7,11 @@ import {
   createWaGroupQuery,
   createWaGroupWithErrors,
   createWaGroupNetworkError,
+  createWaGroupNoGroup,
+  newGroupConversation,
 } from 'mocks/Groups';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { saveGroupConversation } from 'services/GroupMessageService';
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -18,6 +21,10 @@ vi.mock('common/notification', async (importOriginal) => {
     setErrorMessage: vi.fn(),
   };
 });
+
+vi.mock('services/GroupMessageService', () => ({
+  saveGroupConversation: vi.fn(),
+}));
 
 const phones = [{ id: '1', phone: '919999999999', label: 'Phone 1' }];
 
@@ -80,10 +87,10 @@ const fillAndSubmit = async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 };
 
-test('creates the group on submit', async () => {
+test('creates the group on submit and adds it to the cache', async () => {
   const onCreated = vi.fn();
   const onClose = vi.fn();
-  renderDialog([contactsListForCreateGroup, createWaGroupQuery], { onCreated, onClose });
+  renderDialog([contactsListForCreateGroup, createWaGroupQuery, newGroupConversation], { onCreated, onClose });
 
   await screen.findByText('Create WhatsApp group');
   await fillAndSubmit();
@@ -93,6 +100,37 @@ test('creates the group on submit', async () => {
   });
   expect(onCreated).toHaveBeenCalledWith({ id: '99', label: 'Test Group', bspId: '120363000000000000@g.us' });
   expect(onClose).toHaveBeenCalled();
+
+  // the new group's conversation is written into the cached list
+  await waitFor(() => {
+    expect(saveGroupConversation).toHaveBeenCalled();
+  });
+});
+
+test('warns when the server returns no group', async () => {
+  renderDialog([contactsListForCreateGroup, createWaGroupNoGroup]);
+
+  await screen.findByText('Create WhatsApp group');
+  await fillAndSubmit();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not create WhatsApp group', 'warning');
+  });
+});
+
+test('updates the contact search term when typing', async () => {
+  renderDialog();
+
+  await screen.findByText('Create WhatsApp group');
+  const [, contactInput] = screen.getAllByTestId('AutocompleteInput');
+  const input = contactInput.querySelector('input') as HTMLInputElement;
+
+  fireEvent.change(input, { target: { value: 'Con' } });
+
+  // typing routes through onChange(string) -> setContactSearchTerm
+  await waitFor(() => {
+    expect(input.value).toBe('Con');
+  });
 });
 
 test('surfaces server errors on submit', async () => {

@@ -1245,6 +1245,50 @@ export const createWaGroupWithErrors = {
   },
 };
 
+// success: false shape — no waGroup and no errors returned.
+export const createWaGroupNoGroup = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: null,
+        errors: null,
+      },
+    },
+  },
+};
+
+// GROUP_SEARCH_QUERY fetch used by CreateGroupDialog.addGroupToCache after a
+// successful create (waGroup id "99").
+export const newGroupConversation = {
+  request: {
+    query: GROUP_SEARCH_QUERY,
+    variables: {
+      waMessageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+      waGroupOpts: { limit: DEFAULT_ENTITY_LIMIT },
+      filter: { id: '99' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'wa_group_99',
+          group: null,
+          waGroup: {
+            bspId: '120363000000000000@g.us',
+            id: '99',
+            label: 'Test Group',
+            lastCommunicationAt: null,
+            primaryPhone: { id: '1', label: 'Phone 1', phone: '919999999999', phoneId: 1 },
+          },
+          messages: [],
+        },
+      ],
+    },
+  },
+};
+
 export const createWaGroupNetworkError = {
   request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
   error: new Error('Network error'),
@@ -1265,6 +1309,29 @@ export const addMembersQuery = {
   },
 };
 
+export const addMembersErrorResponse = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', addContactIds: ['10'] } },
+  },
+  result: {
+    data: {
+      updateWaGroup: {
+        waGroup: null,
+        errors: [{ key: 'contacts', message: 'Could not add member' }],
+      },
+    },
+  },
+};
+
+export const addMembersNetworkError = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', addContactIds: ['10'] } },
+  },
+  error: new Error('Network error'),
+};
+
 export const renameGroupQuery = {
   request: {
     query: UPDATE_WA_GROUP,
@@ -1278,6 +1345,52 @@ export const renameGroupQuery = {
       },
     },
   },
+};
+
+export const renameGroupErrorResponse = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', name: 'Renamed Group' } },
+  },
+  result: {
+    data: {
+      updateWaGroup: {
+        waGroup: null,
+        errors: [{ key: 'name', message: 'Rename failed' }],
+      },
+    },
+  },
+};
+
+export const renameGroupNetworkError = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', name: 'Renamed Group' } },
+  },
+  error: new Error('Network error'),
+};
+
+export const removeContactErrorResponse = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', removeContactId: '18' } },
+  },
+  result: {
+    data: {
+      updateWaGroup: {
+        waGroup: null,
+        errors: [{ key: 'contact', message: 'Remove failed' }],
+      },
+    },
+  },
+};
+
+export const removeContactNetworkError = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', removeContactId: '18' } },
+  },
+  error: new Error('Network error'),
 };
 
 export const getWaGroupQuery = {
