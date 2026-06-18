@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 import AppsIcon from '@mui/icons-material/Apps';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { t } from 'i18next';
 
@@ -18,11 +18,40 @@ import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import HSMExpandableTable from 'components/UI/HSMExpandableTable/HSMExpandableTable';
 
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { GET_HSM_CATEGORIES, GROUPED_HSM_TEMPLATES } from 'graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
-import type { GroupedTemplate } from './HSMList.types';
+import type { GroupedTemplate, LanguageVariant } from './HSMList.types';
 import styles from './HSMListV2.module.css';
+
+const groupTemplates = (flatList: any[]): GroupedTemplate[] => {
+  const map = new Map<string, GroupedTemplate>();
+  for (const item of flatList) {
+    if (!map.has(item.shortcode)) {
+      map.set(item.shortcode, {
+        shortcode: item.shortcode,
+        label: item.label,
+        category: item.category,
+        tag: item.tag ?? null,
+        languageVariants: [],
+      });
+    }
+    const variant: LanguageVariant = {
+      id: item.id,
+      bspId: item.bspId ?? null,
+      body: item.body,
+      category: item.category,
+      language: item.language,
+      status: item.status,
+      quality: item.quality ?? null,
+      reason: item.reason ?? null,
+      updatedAt: item.updatedAt,
+      isActive: item.isActive,
+    };
+    map.get(item.shortcode)!.languageVariants.push(variant);
+  }
+  return Array.from(map.values());
+};
 
 const HSMListV2 = () => {
   const navigate = useNavigate();
@@ -39,14 +68,10 @@ const HSMListV2 = () => {
   const { data: tagsData } = useQuery(GET_TAGS, { fetchPolicy: 'network-only' });
   const { data: categoriesData } = useQuery(GET_HSM_CATEGORIES);
 
-  const { data, loading } = useQuery(GROUPED_HSM_TEMPLATES, {
+  const { data, loading } = useQuery(FILTER_TEMPLATES, {
     variables: {
-      filter: {
-        category: selectedCategory || undefined,
-        tagIds: selectedTagId ? [parseInt(selectedTagId)] : undefined,
-        term: searchTerm || undefined,
-      },
-      opts: { limit: 50, offset: 0 },
+      filter: { isHsm: true },
+      opts: { limit: 500, offset: 0, orderWith: 'label', order: 'ASC' },
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -58,6 +83,23 @@ const HSMListV2 = () => {
     const tagId = searchParams.get('tag');
     setSelectedTagId(tagId ?? '');
   }, [searchParams]);
+
+  const templates = useMemo(() => {
+    const flat: any[] = data?.sessionTemplates ?? [];
+    const grouped = groupTemplates(flat);
+
+    return grouped.filter((g) => {
+      if (selectedCategory && !g.languageVariants.some((v) => v.category === selectedCategory))
+        return false;
+      if (selectedTagId && g.tag?.id !== selectedTagId) return false;
+      if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        if (!g.label.toLowerCase().includes(q) && !g.shortcode.toLowerCase().includes(q))
+          return false;
+      }
+      return true;
+    });
+  }, [data, selectedCategory, selectedTagId, searchTerm]);
 
   const handleSync = async () => {
     setSyncLoading(true);
@@ -116,11 +158,9 @@ const HSMListV2 = () => {
   }
 
   const categories: string[] = categoriesData?.whatsappHsmCategories ?? [];
-  const templates: GroupedTemplate[] = data?.groupedHsmTemplates ?? [];
 
   return (
     <div className={styles.Container}>
-      {/* page header */}
       <div className={styles.Header}>
         <div className={styles.TitleSection}>
           <div className={styles.TitleRow}>
@@ -195,7 +235,6 @@ const HSMListV2 = () => {
         </div>
       </div>
 
-      {/* filter bar */}
       <div className={styles.FilterBar}>
         <div className={styles.FilterLeft}>
           <FormControl>
@@ -274,7 +313,6 @@ const HSMListV2 = () => {
         </div>
       </div>
 
-      {/* table */}
       <div className={styles.TableWrapper}>
         {loading && !data ? (
           <Loading />

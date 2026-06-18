@@ -34,6 +34,10 @@ export const FILTER_TEMPLATES = gql`
       isReserved
       isActive
       numberParameters
+      tag {
+        id
+        label
+      }
       MessageMedia {
         id
         caption
