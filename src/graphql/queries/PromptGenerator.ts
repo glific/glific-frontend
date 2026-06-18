@@ -6,17 +6,7 @@ export const LATEST_PROMPT_GENERATION = gql`
       promptGeneration {
         id
         status
-        inputs {
-          name
-          purpose
-          audience
-          language
-          tone
-          format
-          offLimits
-          fallback
-          escalation
-        }
+        inputs
       }
       errors {
         key

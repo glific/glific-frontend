@@ -154,15 +154,25 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
 
   useEffect(() => {
     if (prefilledRef.current) return;
-    const previous = latestData?.latestPromptGeneration?.promptGeneration?.inputs;
-    if (!previous) return;
+    const raw = latestData?.latestPromptGeneration?.promptGeneration?.inputs;
+    if (!raw) return;
+
+    // inputs is a flexible JSON map (serialized as a string by the :json scalar) with
+    // snake_case keys; parse it and camelize keys to match the wizard's answer keys.
+    let previous: Record<string, unknown>;
+    try {
+      previous = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    } catch {
+      return;
+    }
 
     prefilledRef.current = true;
     setAnswers((current) => {
       const seeded = { ...current };
-      (Object.keys(initialAnswers) as AnswerKey[]).forEach((key) => {
-        if (typeof previous[key] === 'string' && previous[key] !== '') {
-          seeded[key] = previous[key];
+      Object.entries(previous).forEach(([rawKey, value]) => {
+        const key = rawKey.replace(/_([a-z])/g, (_match, c) => c.toUpperCase()) as AnswerKey;
+        if (key in seeded && typeof value === 'string' && value !== '') {
+          seeded[key] = value;
         }
       });
       return seeded;

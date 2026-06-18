@@ -108,12 +108,13 @@ const generatePromptFailedStatusMock = {
 
 // The modal queries the user's previous answers on mount. `inputs: null` means
 // "no previous request" (no pre-fill); a filled object pre-fills the wizard.
+// inputs is a flexible :json map serialized as a JSON string by the scalar.
 const latestPromptGenerationMock = (inputs: typeof sampleAnswers | null = null) => ({
   request: { query: LATEST_PROMPT_GENERATION },
   result: {
     data: {
       latestPromptGeneration: {
-        promptGeneration: inputs ? { id: '99', status: 'ready', inputs } : null,
+        promptGeneration: inputs ? { id: '99', status: 'ready', inputs: JSON.stringify(inputs) } : null,
         errors: null,
       },
     },
