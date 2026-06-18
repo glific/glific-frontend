@@ -612,5 +612,7 @@
   "Escalation path, or NA...": "एस्केलेशन पथ, या NA...",
   "This is a beta feature, currently in testing — shared for feedback & testing only.": "यह एक बीटा फीचर है, जो वर्तमान में परीक्षण में है — केवल फीडबैक और परीक्षण के लिए साझा किया गया है।",
   "Answer 9 questions to get a tailored assistant prompt": "एक अनुकूलित असिस्टेंट प्रॉम्प्ट पाने के लिए 9 प्रश्नों के उत्तर दें",
-  "All 9 questions help generate a better prompt": "सभी 9 प्रश्न बेहतर प्रॉम्प्ट बनाने में मदद करते हैं"
+  "All 9 questions help generate a better prompt": "सभी 9 प्रश्न बेहतर प्रॉम्प्ट बनाने में मदद करते हैं",
+  "Expand": "बड़ा करें",
+  "Collapse": "छोटा करें"
 }
