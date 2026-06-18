@@ -91,6 +91,35 @@ export const GET_SHORTCODES = gql`
   }
 `;
 
+export const GROUPED_HSM_TEMPLATES = gql`
+  query groupedHsmTemplates($filter: SessionTemplateFilter, $opts: Opts) {
+    groupedHsmTemplates(filter: $filter, opts: $opts) {
+      shortcode
+      label
+      category
+      tag {
+        id
+        label
+      }
+      languageVariants {
+        id
+        bspId
+        body
+        category
+        language {
+          id
+          label
+        }
+        status
+        quality
+        reason
+        updatedAt
+        isActive
+      }
+    }
+  }
+`;
+
 export const GET_SPEED_SEND = gql`
   query SessionTemplate($id: ID!) {
     sessionTemplate(id: $id) {

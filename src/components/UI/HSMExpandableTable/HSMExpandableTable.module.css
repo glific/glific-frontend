@@ -1,0 +1,346 @@
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* header row */
+.HeaderRow {
+  display: grid;
+  grid-template-columns: 40px 2fr 180px 1.5fr 160px 120px;
+  align-items: center;
+  padding: 10px 20px;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* parent group row */
+.Row {
+  display: grid;
+  grid-template-columns: 40px 2fr 180px 1.5fr 160px 120px;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.Row:hover {
+  background: #f9fafb;
+}
+
+.RowExpanded {
+  background: #f9fafb;
+  border-bottom: none;
+}
+
+/* chevron cell */
+.Chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  transition: transform 0.2s;
+}
+
+.ChevronOpen {
+  transform: rotate(180deg);
+}
+
+/* title cell */
+.TitleCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.TemplateLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+.TagPill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: #15803d;
+  width: fit-content;
+  border: 1px solid #bbf7d0;
+}
+
+/* body cell */
+.BodyCell {
+  font-size: 13px;
+  color: #374151;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  padding-right: 16px;
+  line-height: 1.5;
+}
+
+/* category cell */
+.CategoryCell {
+  font-size: 13px;
+  color: #374151;
+}
+
+.MixedCategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.CategoryBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* per-category color overrides */
+.Cat_UTILITY {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.Cat_MARKETING {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.Cat_AUTHENTICATION {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.Cat_SERVICE {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* "Utility by Meta" — special override badge */
+.Cat_UTILITY_BY_META {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* language chips cell */
+.LangChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.LangChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 500;
+  background: #ffffff;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.ChipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ChipApproved {
+  color: #16a34a;
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.ChipApproved .ChipDot {
+  background: #16a34a;
+}
+
+.ChipPending {
+  color: #d97706;
+  border-color: #d97706;
+  background: #fffbeb;
+}
+
+.ChipPending .ChipDot {
+  background: #d97706;
+}
+
+.ChipRejected {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: #fff1f2;
+}
+
+.ChipRejected .ChipDot {
+  background: #dc2626;
+}
+
+.ChipFailed {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: #fff1f2;
+}
+
+.ChipFailed .ChipDot {
+  background: #dc2626;
+}
+
+.MoreChip {
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: #e5e7eb;
+}
+
+/* status summary (shown when issues exist on collapsed row) */
+.StatusSummary {
+  font-size: 11px;
+  color: #dc2626;
+  margin-top: 2px;
+}
+
+/* actions cell */
+.ActionsCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ActionIcon {
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.ActionIcon:hover {
+  color: #2ea36a;
+  background: #f0fdf4;
+}
+
+/* sub-rows — same grid as parent row */
+.SubRow {
+  display: grid;
+  grid-template-columns: 40px 2fr 180px 1.5fr 160px 120px;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #f9fafb;
+  font-size: 13px;
+  border-left: 3px solid #2ea36a;
+}
+
+.SubRow:last-child {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.SubRowIndent {
+  /* empty chevron column keeps alignment */
+}
+
+.SubRowTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.SubRowLang {
+  font-weight: 600;
+  color: #111827;
+  font-size: 14px;
+}
+
+.SubRowActions {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  align-items: center;
+}
+
+.SubRowActionLink {
+  color: #2ea36a;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.SubRowActionLink:hover {
+  text-decoration: underline;
+}
+
+.SubRowActionDanger {
+  color: #dc2626;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* status badge */
+.StatusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.StatusApproved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.StatusPending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.StatusRejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.StatusFailed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.LastModified {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* empty state */
+.EmptyState {
+  text-align: center;
+  padding: 60px 0;
+  color: #9ca3af;
+  font-size: 14px;
+}

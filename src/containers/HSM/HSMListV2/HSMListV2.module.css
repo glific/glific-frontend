@@ -1,0 +1,176 @@
+.Container {
+  padding: 20px 24px;
+  background: #f5f5f0;
+  min-height: 100%;
+}
+
+/* header */
+.Header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.TitleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.TitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.Title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.Subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.HeaderActions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.SyncWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.ViewSample {
+  font-size: 11px;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.ViewSample:hover {
+  text-decoration: underline;
+}
+
+.OutlinedButton {
+  height: 36px;
+  border: 1.5px solid #d1d5db !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  color: #1a1a1a !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+  gap: 5px;
+}
+
+.OutlinedButton:hover {
+  border-color: #9ca3af !important;
+  background: #f9fafb !important;
+}
+
+.SyncButton {
+  border-color: #2ea36a !important;
+  color: #2ea36a !important;
+}
+
+.SyncButton:hover {
+  border-color: #22864f !important;
+  background: #f0fdf4 !important;
+  color: #22864f !important;
+}
+
+.CreateButton {
+  height: 36px;
+  border-radius: 10px !important;
+  white-space: nowrap;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+/* filter bar */
+.FilterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.FilterLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.FilterRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.DropDown {
+  border-radius: 10px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  background: #ffffff !important;
+  font-size: 13px;
+  min-width: 130px;
+}
+
+.DropDown fieldset {
+  border-radius: 10px !important;
+  border-color: #c7cdd8 !important;
+}
+
+.DropDown:hover fieldset {
+  border-color: #9ca3af !important;
+}
+
+.SearchBar {
+  width: 300px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  border: 1px solid #d1d5db !important;
+  height: 36px !important;
+  margin: 0 !important;
+}
+
+.FilterIconButton {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 15px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.FilterIconButton:hover {
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+/* table */
+.TableWrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
