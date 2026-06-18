@@ -2,7 +2,15 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import GroupDetails from './GroupDetails';
-import { countWaGroupContacts, removeContactQuery, getWaGroupQuery, waGroupContacts } from 'mocks/Groups';
+import {
+  countWaGroupContacts,
+  removeContactQuery,
+  getWaGroupQuery,
+  waGroupContacts,
+  contactsListExcludeGroup,
+  addMembersQuery,
+  renameGroupQuery,
+} from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 const mocks = [
@@ -131,5 +139,76 @@ test('should close dialog box', async () => {
 
   await waitFor(() => {
     expect(dialogBox).not.toBeInTheDocument();
+  });
+});
+
+const renderWith = (extraMocks: any[] = []) => (
+  <MockedProvider
+    mocks={[waGroupContacts, countWaGroupContacts, getWaGroupQuery, ...extraMocks]}
+    addTypename={false}
+  >
+    <MemoryRouter>
+      <GroupDetails />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+test('switches to the Phones and Details tabs', async () => {
+  render(renderWith());
+
+  await waitFor(() => {
+    expect(screen.getByText('Phones')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Phones'));
+  await waitFor(() => {
+    expect(screen.getByText('Details')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Details'));
+  // ContactDescription renders the details panel
+  await waitFor(() => {
+    expect(screen.getByText('Details')).toBeInTheDocument();
+  });
+});
+
+test('renames the group', async () => {
+  render(renderWith([renameGroupQuery, getWaGroupQuery]));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('renameGroup')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('renameGroup'));
+
+  const nameInput = await screen.findByPlaceholderText('New name');
+  fireEvent.change(nameInput, { target: { value: 'Renamed Group' } });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('adds members to the group', async () => {
+  render(renderWith([contactsListExcludeGroup, addMembersQuery, getWaGroupQuery, waGroupContacts, countWaGroupContacts]));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('addMembers'));
+
+  // SearchDialogBox opens; pick the first contact once the query resolves
+  const [autocompleteEl] = await screen.findAllByTestId('autocomplete-element');
+  autocompleteEl.focus();
+  fireEvent.keyDown(autocompleteEl, { key: 'ArrowDown' });
+  fireEvent.click(await screen.findByText('Contact A'));
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
   });
 });

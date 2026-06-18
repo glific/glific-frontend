@@ -5,7 +5,8 @@ import {
   setVariables,
 } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
-import { SYNC_GROUPS, UPDATE_WA_GROUP } from 'graphql/mutations/Group';
+import { CREATE_WA_GROUP, SYNC_GROUPS, UPDATE_WA_GROUP } from 'graphql/mutations/Group';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
   COUNT_COUNTACTS_WA_GROUPS,
@@ -1184,6 +1185,101 @@ export const searchFilterQuery = {
   },
 };
 
+// --- CreateGroupDialog / add-members / rename mocks ---
+
+const createGroupContact = {
+  id: '10',
+  name: 'Contact A',
+  fields: '{}',
+  phone: '918888888888',
+  groups: [],
+};
+
+// GET_CONTACTS_LIST as used by CreateGroupDialog (no excludeWaGroups filter).
+export const contactsListForCreateGroup = {
+  request: {
+    query: GET_CONTACTS_LIST,
+    variables: { filter: { name: '' }, opts: { limit: 50, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: { contacts: [createGroupContact] },
+  },
+};
+
+// GET_CONTACTS_LIST as used by GroupDetails add-members dialog (excludes current group).
+export const contactsListExcludeGroup = {
+  request: {
+    query: GET_CONTACTS_LIST,
+    variables: { filter: { name: '', excludeWaGroups: '1' }, opts: { limit: 50, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: { contacts: [createGroupContact] },
+  },
+};
+
+const createWaGroupVariables = {
+  input: { name: 'Test Group', waManagedPhoneId: '1', numbers: ['918888888888'] },
+};
+
+export const createWaGroupQuery = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: { id: '99', label: 'Test Group', bspId: '120363000000000000@g.us' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const createWaGroupWithErrors = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: null,
+        errors: [{ key: 'name', message: 'Group already exists' }],
+      },
+    },
+  },
+};
+
+export const createWaGroupNetworkError = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  error: new Error('Network error'),
+};
+
+export const addMembersQuery = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', addContactIds: ['10'] } },
+  },
+  result: {
+    data: {
+      updateWaGroup: {
+        waGroup: { id: '1', label: 'Arkansas ducks', bspId: '221976952534635194@g.us' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const renameGroupQuery = {
+  request: {
+    query: UPDATE_WA_GROUP,
+    variables: { input: { id: '1', name: 'Renamed Group' } },
+  },
+  result: {
+    data: {
+      updateWaGroup: {
+        waGroup: { id: '1', label: 'Renamed Group', bspId: '221976952534635194@g.us' },
+        errors: null,
+      },
+    },
+  },
+};
+
 export const getWaGroupQuery = {
   request: {
     query: GET_WA_GROUP,
@@ -1198,7 +1294,7 @@ export const getWaGroupQuery = {
           label: 'Arkansas ducks',
           lastCommunicationAt: '2024-03-28T10:41:18Z',
           fields: '{}',
-          groups: null,
+          groups: [],
           primaryPhone: {
             id: '1',
             phone: '468/236-8754',

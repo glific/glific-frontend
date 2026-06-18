@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { setVariables } from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, GROUP_QUERY_VARIABLES, setVariables } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { CREATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { saveGroupConversation } from 'services/GroupMessageService';
 import styles from './CreateGroupDialog.module.css';
 
 export interface ManagedPhoneOption {
@@ -82,6 +84,30 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
     })) || [];
 
   const [createWaGroup, { loading }] = useMutation(CREATE_WA_GROUP);
+  const [fetchNewGroup] = useLazyQuery(GROUP_SEARCH_QUERY, { fetchPolicy: 'network-only' });
+
+  // Add the freshly created group to the cached conversation list so it shows
+  // up in the sidebar without a manual refresh. Mirrors the missing-group
+  // fetch used by GroupMessageSubscription: fetch the group's conversation and
+  // prepend it to the GROUP_SEARCH_QUERY cache. Best-effort — if the list cache
+  // isn't warm yet, the next refetch picks it up.
+  const addGroupToCache = async (waGroupId: string) => {
+    try {
+      const { data: conversation } = await fetchNewGroup({
+        variables: {
+          waMessageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+          waGroupOpts: { limit: DEFAULT_ENTITY_LIMIT },
+          filter: { id: waGroupId },
+        },
+      });
+
+      if (conversation?.search?.length > 0) {
+        saveGroupConversation(conversation, GROUP_QUERY_VARIABLES);
+      }
+    } catch {
+      // best-effort cache update; ignore failures
+    }
+  };
 
   const handleSubmit = async (values: FormValues) => {
     try {
@@ -112,6 +138,9 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
       }
 
       setNotification(t('WhatsApp group created'), 'success');
+      // fire-and-forget so the dialog closes immediately; the cache write
+      // doesn't depend on this component staying mounted.
+      addGroupToCache(waGroup.id);
       setSelectedContacts([]);
       setContactSearchTerm('');
       onCreated?.(waGroup);

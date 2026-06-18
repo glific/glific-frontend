@@ -155,3 +155,21 @@ test('it shows error message', async () => {
     expect(setNotification).toHaveBeenCalled();
   });
 });
+
+test('it opens and closes the create group dialog', async () => {
+  render(
+    <MockedProvider mocks={mock}>
+      <WaManagedPhones phonenumber={[{ id: '1', label: '7535988655' }]} setPhonenumber={vi.fn()} />
+    </MockedProvider>
+  );
+
+  fireEvent.click(screen.getByTestId('createGroup'));
+
+  expect(await screen.findByText('Create WhatsApp group')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Create WhatsApp group')).not.toBeInTheDocument();
+  });
+});
