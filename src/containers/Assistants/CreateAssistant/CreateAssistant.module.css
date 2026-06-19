@@ -30,7 +30,8 @@
   margin-bottom: 0.5rem;
 }
 
-/* label on the left, the "Generate with AI" action on the top-right of the field */
+/* heading on the left, the "Generate with AI" action on the right — used by both the
+   inline Instructions label and the expanded "Edit system instructions" dialog header */
 .LabelRow {
   display: flex;
   align-items: center;
@@ -144,14 +145,6 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.4;
-}
-
-/* title on the left, the "Generate with AI" action on the right of the expanded editor */
-.InstructionsHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
 }
 
 .Instructions {
