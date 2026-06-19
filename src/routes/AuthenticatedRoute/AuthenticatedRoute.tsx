@@ -124,7 +124,7 @@ const adminRoutes = (
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
     <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="myaccount" element={<MyAccount />} />
-    <Route path="template" element={<HSMList />} />
+    <Route path="template" element={<HSMListV2 />} />
     <Route path="template/add" element={<HSM />} />
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="template-v2" element={<HSMListV2 />} />
