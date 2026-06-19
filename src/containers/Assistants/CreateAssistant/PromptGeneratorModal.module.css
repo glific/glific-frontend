@@ -5,23 +5,18 @@
   justify-content: center;
 }
 
+/* large by default for both steps (questions + preview) so there's room to read and
+   edit without a separate expand action */
 .Container {
   background-color: #fff;
-  width: 60%;
-  max-width: 720px;
-  max-height: 85vh;
+  width: 80vw;
+  max-width: 980px;
+  max-height: 90vh;
   padding: 1.5rem;
   border-radius: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-/* expanded preview — fill most of the viewport so the whole prompt is visible */
-.ContainerExpanded {
-  width: 90vw;
-  max-width: 1100px;
-  max-height: 92vh;
 }
 
 .PreviewHeader {
@@ -191,12 +186,6 @@
   line-height: 1.5;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-}
-
-.PreviewToolbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -0.25rem;
 }
 
 .PreviewInput {

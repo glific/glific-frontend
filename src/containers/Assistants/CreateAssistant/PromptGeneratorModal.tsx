@@ -2,8 +2,6 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
@@ -139,8 +137,6 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   const [phase, setPhase] = useState<Phase>('questions');
   const [generatedText, setGeneratedText] = useState('');
   const [inlineError, setInlineError] = useState('');
-  // expand the preview so the whole generated prompt is visible without scrolling
-  const [expanded, setExpanded] = useState(false);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -279,7 +275,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   const renderQuestions = () => (
     <>
       <div className={styles.BetaBanner} data-testid="betaBanner">
-        {t('This is a beta feature, currently in testing — shared for feedback & testing only.')}
+        {t('This feature is in early beta — we’d love your feedback while we fine-tune it.')}
       </div>
 
       <div className={styles.ScrollArea}>
@@ -354,23 +350,13 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
         <strong>{t('This is an AI generated prompt.')}</strong>{' '}
         {t('Please review and edit if required before adding it to your assistant.')}
       </div>
-      <div className={styles.PreviewToolbar}>
-        <IconButton
-          size="small"
-          onClick={() => setExpanded((value) => !value)}
-          aria-label={expanded ? t('Collapse') : t('Expand')}
-          data-testid="togglePreviewSize"
-        >
-          {expanded ? <CloseFullscreenIcon fontSize="small" /> : <OpenInFullIcon fontSize="small" />}
-        </IconButton>
-      </div>
       <OutlinedInput
         name="generated-prompt"
         value={generatedText}
         onChange={(event) => setGeneratedText(event.target.value)}
         className={styles.PreviewInput}
         multiline
-        rows={expanded ? 26 : 12}
+        rows={20}
         data-testid="generatedPrompt"
         inputProps={{ 'data-testid': 'generatedPromptInput' }}
       />
@@ -399,7 +385,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   return (
     <Modal open={open} onClose={handleClose} data-testid="promptGeneratorModal">
       <div className={styles.ModalBox}>
-        <div className={`${styles.Container} ${expanded && phase === 'ready' ? styles.ContainerExpanded : ''}`}>
+        <div className={styles.Container}>
           <div className={styles.Header}>
             <div className={styles.HeaderText}>
               <h5 className={styles.Title}>
