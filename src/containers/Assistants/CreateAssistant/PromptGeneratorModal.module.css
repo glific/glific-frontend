@@ -75,11 +75,11 @@
 }
 
 .BetaBanner {
-  background-color: #f3faf4;
-  border: 1px solid #d8efdc;
-  color: #2e7d4f;
+  background-color: #fdf8e7;
+  border-left: 4px solid #d4a017;
+  color: #5c4a1a;
   font-size: 13px;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 0.5rem 0.75rem;
 }
 
