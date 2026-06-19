@@ -146,6 +146,14 @@
   line-height: 1.4;
 }
 
+/* title on the left, the "Generate with AI" action on the right of the expanded editor */
+.InstructionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .Instructions {
   display: flex;
   flex-direction: column;

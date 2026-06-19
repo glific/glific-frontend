@@ -402,7 +402,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       <Modal open={openInstructions} onClose={() => setOpenInstructions(false)}>
         <div className={styles.InstructionsBox}>
           <div className={styles.Instructions}>
-            <h5>Edit system instructions</h5>
+            <div className={styles.InstructionsHeader}>
+              <h5>Edit system instructions</h5>
+              {generateWithAiButton}
+            </div>
             <OutlinedInput
               name="expand-instructions"
               onChange={(event) => formik.setFieldValue('instructions', event.target.value)}
