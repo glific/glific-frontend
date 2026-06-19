@@ -761,11 +761,9 @@
   "How should users reach a human or escalate urgent / out-of-scope queries?": "How should users reach a human or escalate urgent / out-of-scope queries?",
   "E.g. \"Call 1800-xxx-xxx\" or \"Reply AGENT to talk to staff.\" Type NA if none.": "E.g. \"Call 1800-xxx-xxx\" or \"Reply AGENT to talk to staff.\" Type NA if none.",
   "Escalation path, or NA...": "Escalation path, or NA...",
-  "This is a beta feature, currently in testing — shared for feedback & testing only.": "This is a beta feature, currently in testing — shared for feedback & testing only.",
+  "This feature is in early beta — we’d love your feedback while we fine-tune it.": "This feature is in early beta — we’d love your feedback while we fine-tune it.",
   "Answer 9 questions to get a tailored assistant prompt": "Answer 9 questions to get a tailored assistant prompt",
   "All 9 questions help generate a better prompt": "All 9 questions help generate a better prompt",
-  "Expand": "Expand",
-  "Collapse": "Collapse",
   "This is an AI generated prompt.": "This is an AI generated prompt.",
   "Please review and edit if required before adding it to your assistant.": "Please review and edit if required before adding it to your assistant.",
   "Clear": "Clear"

@@ -621,11 +621,9 @@
   "How should users reach a human or escalate urgent / out-of-scope queries?": "उपयोगकर्ता किसी व्यक्ति तक कैसे पहुंचें या तत्काल / दायरे से बाहर के सवालों को कैसे आगे बढ़ाएं?",
   "E.g. \"Call 1800-xxx-xxx\" or \"Reply AGENT to talk to staff.\" Type NA if none.": "उदा. \"1800-xxx-xxx पर कॉल करें\" या \"स्टाफ से बात करने के लिए AGENT लिखें।\" यदि कोई नहीं तो NA लिखें।",
   "Escalation path, or NA...": "एस्केलेशन पथ, या NA...",
-  "This is a beta feature, currently in testing — shared for feedback & testing only.": "यह एक बीटा फीचर है, जो वर्तमान में परीक्षण में है — केवल फीडबैक और परीक्षण के लिए साझा किया गया है।",
+  "This feature is in early beta — we’d love your feedback while we fine-tune it.": "यह फीचर अर्ली बीटा में है — इसे बेहतर बनाते समय हमें आपकी प्रतिक्रिया का इंतज़ार रहेगा।",
   "Answer 9 questions to get a tailored assistant prompt": "एक अनुकूलित असिस्टेंट प्रॉम्प्ट पाने के लिए 9 प्रश्नों के उत्तर दें",
   "All 9 questions help generate a better prompt": "सभी 9 प्रश्न बेहतर प्रॉम्प्ट बनाने में मदद करते हैं",
-  "Expand": "बड़ा करें",
-  "Collapse": "छोटा करें",
   "This is an AI generated prompt.": "यह एक AI द्वारा जेनरेट किया गया प्रॉम्प्ट है।",
   "Please review and edit if required before adding it to your assistant.": "इसे अपने असिस्टेंट में जोड़ने से पहले कृपया समीक्षा करें और आवश्यकता होने पर संपादित करें।",
   "Clear": "साफ़ करें"

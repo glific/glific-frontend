@@ -30,6 +30,7 @@ const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
 beforeEach(() => {
   vi.clearAllMocks();
+  localStorage.removeItem('organizationServices');
 });
 
 afterEach(() => {
@@ -764,7 +765,7 @@ test('it shows error when clone mutation fails', async () => {
   });
 });
 
-test('fires prompt_generator_opened when the Generate with AI button is clicked', async () => {
+test('opens the prompt generator from the Generate with AI button and fires prompt_generator_opened', async () => {
   localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
 
   render(assistantsComponent(MOCKS));
@@ -773,6 +774,7 @@ test('fires prompt_generator_opened when the Generate with AI button is clicked'
     expect(screen.getByText('AI Assistants')).toBeInTheDocument();
   });
 
+  // start creating a new assistant, where the prompt generator entry point lives
   fireEvent.click(screen.getByTestId('headingButton'));
 
   await waitFor(() => {
@@ -782,4 +784,9 @@ test('fires prompt_generator_opened when the Generate with AI button is clicked'
   fireEvent.click(screen.getByTestId('generateWithAiButton'));
 
   expect(mockPosthogCapture).toHaveBeenCalledWith('prompt_generator_opened');
+
+  // the modal opens to the questions step
+  await waitFor(() => {
+    expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
+  });
 });
