@@ -89,13 +89,11 @@ const HSMListV2 = () => {
     const grouped = groupTemplates(flat);
 
     return grouped.filter((g) => {
-      if (selectedCategory && !g.languageVariants.some((v) => v.category === selectedCategory))
-        return false;
+      if (selectedCategory && !g.languageVariants.some((v) => v.category === selectedCategory)) return false;
       if (selectedTagId && g.tag?.id !== selectedTagId) return false;
       if (searchTerm) {
         const q = searchTerm.toLowerCase();
-        if (!g.label.toLowerCase().includes(q) && !g.shortcode.toLowerCase().includes(q))
-          return false;
+        if (!g.label.toLowerCase().includes(q) && !g.shortcode.toLowerCase().includes(q)) return false;
       }
       return true;
     });
@@ -128,21 +126,18 @@ const HSMListV2 = () => {
     }
     setImporting(true);
     const fileReader = new FileReader();
-    fileReader.onload = () => handleBulkApply(fileReader.result as string, media);
+    fileReader.onload = () => handleBulkApply(fileReader.result as string);
     fileReader.readAsText(media);
     event.target.value = '';
   };
 
-  const handleBulkApply = async (result: string, media: any) => {
+  const handleBulkApply = async (result: string) => {
     try {
       const { data: bulkData } = await bulkApplyTemplates({ variables: { data: result } });
       const response = bulkData?.bulkApplyTemplates;
       if (response?.csv_rows) exportCsvFile(response.csv_rows, 'result');
       if (response?.errors?.length) {
-        setNotification(
-          t('Templates were processed with errors. Please check the csv file for details.'),
-          'warning'
-        );
+        setNotification(t('Templates were processed with errors. Please check the csv file for details.'), 'warning');
       } else if (response) {
         setNotification(t('Templates applied successfully. Please check the csv file for the results'));
       }
@@ -171,14 +166,7 @@ const HSMListV2 = () => {
         </div>
 
         <div className={styles.HeaderActions}>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".csv"
-            hidden
-            onChange={handleFileChange}
-            data-testid="import"
-          />
+          <input ref={fileInputRef} type="file" accept=".csv" hidden onChange={handleFileChange} data-testid="import" />
           <Button
             variant="outlined"
             className={styles.OutlinedButton}
@@ -200,12 +188,7 @@ const HSMListV2 = () => {
             >
               {t('Sync HSM')}
             </Button>
-            <a
-              href={BULK_APPLY_SAMPLE_LINK}
-              target="_blank"
-              rel="noreferrer"
-              className={styles.ViewSample}
-            >
+            <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.ViewSample}>
               {t('View sample')}
             </a>
           </div>
@@ -290,11 +273,7 @@ const HSMListV2 = () => {
       </div>
 
       <div className={styles.TableWrapper}>
-        {loading && !data ? (
-          <Loading />
-        ) : (
-          <HSMExpandableTable templates={templates} />
-        )}
+        {loading && !data ? <Loading /> : <HSMExpandableTable templates={templates} />}
       </div>
     </div>
   );

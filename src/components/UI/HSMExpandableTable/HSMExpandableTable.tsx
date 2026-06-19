@@ -26,24 +26,10 @@ const STATUS_CHIP_CLASS: Record<StatusType, string> = {
   FAILED: styles.ChipFailed,
 };
 
-const STATUS_BADGE_CLASS: Record<StatusType, string> = {
-  APPROVED: styles.StatusApproved,
-  PENDING: styles.StatusPending,
-  REJECTED: styles.StatusRejected,
-  FAILED: styles.StatusFailed,
-};
-
-const STATUS_LABEL: Record<StatusType, 'Approved' | 'Pending' | 'Rejected' | 'Failed'> = {
-  APPROVED: 'Approved',
-  PENDING: 'Pending',
-  REJECTED: 'Rejected',
-  FAILED: 'Failed',
-};
-
 const LanguageChip = ({ variant }: { variant: LanguageVariant }) => (
   <span className={`${styles.LangChip} ${STATUS_CHIP_CLASS[variant.status]}`}>
     <span className={styles.ChipDot} />
-    {variant.language.label.slice(0, 2).toUpperCase()}
+    {variant.language.label.slice(0, 2).toUpperCase() || '--'}
   </span>
 );
 
@@ -66,10 +52,6 @@ const SingleLangChip = ({ variant }: { variant: LanguageVariant }) => (
   </div>
 );
 
-const StatusBadge = ({ status }: { status: StatusType }) => (
-  <span className={`${styles.StatusBadge} ${STATUS_BADGE_CLASS[status]}`}>{t(STATUS_LABEL[status])}</span>
-);
-
 const formatCategory = (category: string) => {
   if (category === 'UTILITY_BY_META') return 'Utility by Meta';
   return category.charAt(0) + category.slice(1).toLowerCase().replace(/_/g, ' ');
@@ -83,7 +65,6 @@ const CategoryLabel = ({ category }: { category: string }) => (
 );
 
 const MixedCategories = ({ variants }: { variants: LanguageVariant[] }) => {
-  console.log('variants', variants);
   const counts = variants.reduce<Record<string, number>>((acc, v) => {
     acc[v.category] = (acc[v.category] || 0) + 1;
     return acc;
@@ -118,7 +99,11 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
   };
 
   if (templates.length === 0) {
-    return <div className={styles.EmptyState} data-testid="emptyState">{t('No templates found')}</div>;
+    return (
+      <div className={styles.EmptyState} data-testid="emptyState">
+        {t('No templates found')}
+      </div>
+    );
   }
 
   return (
@@ -136,6 +121,8 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
         const isExpanded = expandedRows.has(template.shortcode);
         const firstVariant = template.languageVariants[0];
 
+        if (!firstVariant) return null;
+
         const parentMenuItems = [
           {
             title: t('Copy UUID'),
@@ -149,15 +136,13 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
             title: t('Duplicate template'),
             icon: <FileCopyIcon sx={{ fontSize: 15, color: '#6b7280' }} />,
             className: styles.MenuItem,
-            onClick: () =>
-              navigate('/template-v2/add', { state: { mode: 'copy', shortcode: template.shortcode } }),
+            onClick: () => navigate('/template-v2/add', { state: { mode: 'copy', shortcode: template.shortcode } }),
           },
           {
             title: t('Send broadcast'),
             icon: <SendIcon sx={{ fontSize: 15, color: '#6b7280' }} />,
             className: styles.MenuItem,
-            onClick: () =>
-              navigate('/broadcast/add', { state: { templateId: firstVariant?.id } }),
+            onClick: () => navigate('/broadcast/add', { state: { templateId: firstVariant?.id } }),
           },
         ];
 

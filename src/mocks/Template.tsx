@@ -1,4 +1,10 @@
-import { BULK_APPLY_TEMPLATES, CREATE_TEMPLATE, IMPORT_TEMPLATES, SYNC_HSM_TEMPLATES, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+import {
+  BULK_APPLY_TEMPLATES,
+  CREATE_TEMPLATE,
+  IMPORT_TEMPLATES,
+  SYNC_HSM_TEMPLATES,
+  UPDATE_TEMPLATE,
+} from 'graphql/mutations/Template';
 import type { GroupedTemplate } from 'containers/HSM/HSMListV2/HSMList.types';
 import {
   FILTER_SESSION_TEMPLATES,
@@ -895,12 +901,7 @@ export const filterTemplatesV2Mock = {
   },
 };
 
-export const HSM_LIST_V2 = [
-  filterTemplatesV2Mock,
-  filterTemplatesV2Mock,
-  getCategoriesMock,
-  getCategoriesMock,
-];
+export const HSM_LIST_V2 = [filterTemplatesV2Mock, filterTemplatesV2Mock, getCategoriesMock, getCategoriesMock];
 
 export const syncHsmSuccessMock = {
   request: { query: SYNC_HSM_TEMPLATES },

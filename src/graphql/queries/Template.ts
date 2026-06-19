@@ -95,7 +95,6 @@ export const GET_SHORTCODES = gql`
   }
 `;
 
-
 export const GET_SPEED_SEND = gql`
   query SessionTemplate($id: ID!) {
     sessionTemplate(id: $id) {

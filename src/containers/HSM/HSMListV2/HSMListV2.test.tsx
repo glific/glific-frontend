@@ -5,12 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 import { setNotification } from 'common/notification';
 import { getFilterTagQuery } from 'mocks/Tag';
-import {
-  HSM_LIST_V2,
-  syncHsmSuccessMock,
-  syncHsmErrorMock,
-  bulkApplyV2Mock,
-} from 'mocks/Template';
+import { HSM_LIST_V2, syncHsmSuccessMock, syncHsmErrorMock, bulkApplyV2Mock } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
 
 vi.mock('i18next', () => ({ t: (str: string) => str }));
@@ -127,10 +122,7 @@ test('shows success notification after Sync HSM', async () => {
   userEvent.click(screen.getByTestId('syncHsm'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith(
-      'HSM queued for sync. Check notifications for updates.',
-      'success'
-    );
+    expect(setNotification).toHaveBeenCalledWith('HSM queued for sync. Check notifications for updates.', 'success');
   });
 });
 
