@@ -6,6 +6,8 @@ import * as Notification from 'common/notification';
 import {
   generatedPromptText,
   promptGeneratorErrorMocks,
+  promptGeneratorFailedStatusMocks,
+  promptGeneratorPollFailedMocks,
   promptGeneratorSuccessMocks,
   sampleAnswers,
 } from 'mocks/PromptGenerator';
@@ -142,4 +144,29 @@ test('shows error state with retry when generation fails', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('generatePromptButton')).toBeInTheDocument();
   });
+});
+
+test('shows error when the mutation returns a failed status directly', async () => {
+  renderModal(promptGeneratorFailedStatusMocks);
+
+  fillAllAnswers();
+  fireEvent.click(screen.getByTestId('generatePromptButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('promptError')).toBeInTheDocument();
+  });
+});
+
+test('shows error when polling resolves to a failed status', async () => {
+  renderModal(promptGeneratorPollFailedMocks);
+
+  fillAllAnswers();
+  fireEvent.click(screen.getByTestId('generatePromptButton'));
+
+  await waitFor(
+    () => {
+      expect(screen.getByTestId('promptError')).toBeInTheDocument();
+    },
+    { timeout: 5000 }
+  );
 });

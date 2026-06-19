@@ -78,6 +78,26 @@ const promptGenerationReadyMock = {
   },
 };
 
+const promptGenerationFailedMock = {
+  request: {
+    query: PROMPT_GENERATION,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      promptGeneration: {
+        promptGeneration: {
+          id: '1',
+          status: 'failed',
+          generatedPrompt: null,
+          errorMessage: 'Kaapi could not generate a prompt',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
 const generatePromptErrorMock = {
   request: {
     query: GENERATE_PROMPT,
@@ -122,3 +142,11 @@ export const promptGeneratorErrorMocks = [generatePromptErrorMock];
 
 // failed status returned directly from the mutation
 export const promptGeneratorFailedStatusMocks = [generatePromptFailedStatusMock];
+
+// mutation accepted (in_progress) but polling then resolves to a failed status
+export const promptGeneratorPollFailedMocks = [
+  generatePromptMock(),
+  promptGenerationInProgressMock,
+  promptGenerationFailedMock,
+  promptGenerationFailedMock,
+];
