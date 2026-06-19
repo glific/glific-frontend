@@ -413,7 +413,7 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       <Modal open={openInstructions} onClose={() => setOpenInstructions(false)}>
         <div className={styles.InstructionsBox}>
           <div className={styles.Instructions}>
-            <div className={styles.InstructionsHeader}>
+            <div className={styles.LabelRow}>
               <h5>Edit system instructions</h5>
               {generateWithAiButton}
             </div>
