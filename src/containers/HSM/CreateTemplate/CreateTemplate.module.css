@@ -1,0 +1,695 @@
+/* ─────────────────────────────────────────
+   Page shell
+   ───────────────────────────────────────── */
+.Page {
+  background: #f5f5f0;
+  min-height: 100vh;
+  padding: 28px 32px 48px;
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────────────────
+   Header
+   ───────────────────────────────────────── */
+.BackLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0;
+  margin-bottom: 18px;
+  transition: color 0.15s;
+}
+.BackLink:hover {
+  color: #119656;
+}
+
+.TitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.PageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.InfoIcon {
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.PageSubtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 28px;
+}
+
+/* ─────────────────────────────────────────
+   Two-column grid
+   ───────────────────────────────────────── */
+.ContentGrid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ─────────────────────────────────────────
+   Form column
+   ───────────────────────────────────────── */
+.FormColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─────────────────────────────────────────
+   Section cards
+   ───────────────────────────────────────── */
+.Card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.CardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.CardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 20px;
+}
+
+/* When CardTitle is inside CardHeaderRow, no bottom margin */
+.CardHeaderRow .CardTitle {
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────
+   Template Library button
+   ───────────────────────────────────────── */
+.LibraryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid #119656;
+  color: #119656;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.LibraryBtn:hover {
+  background: #f0faf5;
+}
+
+/* ─────────────────────────────────────────
+   Fields
+   ───────────────────────────────────────── */
+.Field {
+  margin-bottom: 20px;
+}
+.Field:last-child {
+  margin-bottom: 0;
+}
+
+.FieldLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.Required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.Optional {
+  color: #9ca3af;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.FieldHint {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.FieldError {
+  display: block;
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+.HelpIcon {
+  color: #9ca3af;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+/* ─────────────────────────────────────────
+   Text inputs
+   ───────────────────────────────────────── */
+.TextInput {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+.TextInput::placeholder {
+  color: #9ca3af;
+}
+.TextInput:focus {
+  border-color: #119656;
+  box-shadow: 0 0 0 3px rgba(17, 150, 86, 0.1);
+}
+
+.InputError {
+  border-color: #ef4444;
+}
+
+/* ─────────────────────────────────────────
+   Shortcode status
+   ───────────────────────────────────────── */
+.ShortcodeStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.StatusIcon {
+  font-size: 14px !important;
+}
+.Status_checking {
+  color: #6b7280;
+}
+.Status_available {
+  color: #059669;
+}
+.Status_taken {
+  color: #ef4444;
+}
+
+/* ─────────────────────────────────────────
+   Category radio cards
+   ───────────────────────────────────────── */
+.CategoryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.CategoryCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: #fff;
+}
+.CategoryCard:hover {
+  border-color: #6ee7b7;
+  background: #f9fafb;
+}
+.CategoryCardSelected {
+  border-color: #119656;
+  background: #f0faf5;
+}
+
+.RadioHidden {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.RadioCircle {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+.RadioCircleSelected {
+  border-color: #119656;
+  background: #119656;
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.CategoryName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.CategoryDesc {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────
+   Message body box
+   ───────────────────────────────────────── */
+.BodyBox {
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+.BodyBox:focus-within {
+  border-color: #119656;
+  box-shadow: 0 0 0 3px rgba(17, 150, 86, 0.1);
+}
+.BodyBoxError {
+  border-color: #ef4444;
+}
+
+.BodyTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 14px;
+  font-size: 14px;
+  color: #111827;
+  font-family: inherit;
+  line-height: 1.6;
+  min-height: 120px;
+}
+.BodyTextarea::placeholder {
+  color: #9ca3af;
+}
+
+.BodyToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid #f3f4f6;
+  background: #fafafa;
+  gap: 8px;
+}
+
+.BodyFormats {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.FormatBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.FormatBtn:hover {
+  background: #f3f4f6;
+}
+
+.AddVarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1.5px solid #119656;
+  border-radius: 6px;
+  background: none;
+  color: #119656;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+.AddVarBtn:hover {
+  background: #f0faf5;
+}
+
+.AiAssistBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1.5px solid #6366f1;
+  border-radius: 6px;
+  background: none;
+  color: #6366f1;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.AiAssistBtn:hover {
+  background: #f5f3ff;
+}
+
+.CharCount {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.CharCountOver {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────
+   Variable example rows
+   ───────────────────────────────────────── */
+.VariableSection {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.VariableRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.VariableLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #119656;
+  background: #f0faf5;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.VariableInput {
+  flex: 1;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #111827;
+  outline: none;
+  font-family: inherit;
+}
+.VariableInput:focus {
+  border-color: #119656;
+}
+
+/* ─────────────────────────────────────────
+   Footer meta row
+   ───────────────────────────────────────── */
+.FooterMeta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.FooterMeta .FieldHint {
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────
+   Button type selector
+   ───────────────────────────────────────── */
+.ButtonTypeRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.ButtonTypeCard {
+  flex: 1;
+  min-width: 130px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  text-align: center;
+}
+.ButtonTypeCard:hover {
+  border-color: #6ee7b7;
+  color: #059669;
+}
+.ButtonTypeCardSelected {
+  border-color: #119656;
+  background: #f0faf5;
+  color: #059669;
+}
+
+/* ─────────────────────────────────────────
+   Media attachment cards
+   ───────────────────────────────────────── */
+.MediaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.MediaCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  padding: 16px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+}
+.MediaCard:hover {
+  border-color: #6ee7b7;
+  background: #f9fafb;
+}
+.MediaCardSelected {
+  border-color: #119656;
+  background: #f0faf5;
+}
+
+.MediaIcon {
+  font-size: 28px !important;
+  color: #6b7280;
+}
+.MediaCardSelected .MediaIcon {
+  color: #119656;
+}
+
+.MediaLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.MediaFormats {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.MediaSize {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ─────────────────────────────────────────
+   Action buttons
+   ───────────────────────────────────────── */
+.Actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0 8px;
+}
+
+.SubmitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+.SubmitBtnActive {
+  background: #119656;
+  color: #fff;
+}
+.SubmitBtnActive:hover {
+  background: #0d7a44;
+}
+.SubmitBtnDisabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.CancelBtn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.CancelBtn:hover {
+  color: #374151;
+}
+
+/* ─────────────────────────────────────────
+   Live Preview panel
+   ───────────────────────────────────────── */
+.PreviewColumn {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+}
+
+.PreviewCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.PreviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.PreviewTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.PreviewEmoji {
+  font-size: 22px;
+}
+
+.PhoneScreen {
+  background: #2d5547;
+  min-height: 420px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.MessageBubble {
+  background: #dcf8c6;
+  border-radius: 10px 0 10px 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #1a1a1a;
+  max-width: 90%;
+  word-break: break-word;
+  line-height: 1.55;
+  text-align: left;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.MessageBubblePlaceholder {
+  color: #6b7280;
+  font-style: italic;
+  background: #f0faf5;
+}
+
+.PreviewFooter {
+  font-size: 11px;
+  color: #6b7280;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 8px;
+  padding-top: 6px;
+}
+
+/* ─────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .ContentGrid {
+    grid-template-columns: 1fr;
+  }
+  .PreviewColumn {
+    position: static;
+  }
+  .CategoryGrid {
+    grid-template-columns: 1fr;
+  }
+}
