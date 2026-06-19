@@ -31,9 +31,11 @@ const renderModal = (
     </MockedProvider>
   );
 
-// fill all 9 mandatory questions, in order, with the mocked answer values
-const fillAllAnswers = () => {
-  const inputs = screen.getAllByRole('textbox');
+// fill all 9 mandatory questions, in order, with the mocked answer values.
+// Waits for the form first — the modal shows a brief loading state while it fetches
+// the user's previous answers.
+const fillAllAnswers = async () => {
+  const inputs = await screen.findAllByRole('textbox');
   Object.values(sampleAnswers).forEach((value, index) => {
     fireEvent.change(inputs[index], { target: { value } });
   });
@@ -48,34 +50,46 @@ test('pre-fills the wizard with the user previous answers', async () => {
   expect(screen.getAllByRole('textbox')[1]).toHaveValue(sampleAnswers.purpose);
 });
 
-test('renders the header, beta notice and all 9 questions as a single form', () => {
+test('renders the header, beta notice and all 9 questions as a single form', async () => {
   renderModal();
 
   expect(screen.getByText(/Generate Prompt with AI/)).toBeInTheDocument();
   expect(screen.getByText('BETA')).toBeInTheDocument();
   expect(screen.getByText('Answer 9 questions to get a tailored assistant prompt')).toBeInTheDocument();
-  expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
 
-  // all 9 questions are visible at once (no stepper)
+  // the form appears once the previous-answers query resolves
+  expect(await screen.findByTestId('betaBanner')).toBeInTheDocument();
   expect(screen.getByText('Name')).toBeInTheDocument();
   expect(screen.getByText('Escalation')).toBeInTheDocument();
   expect(screen.getAllByRole('textbox')).toHaveLength(9);
 });
 
-test('Generate is disabled until every mandatory field is answered', () => {
+test('Generate is disabled until every mandatory field is answered', async () => {
   renderModal();
 
-  expect(screen.getByTestId('generatePromptButton')).toBeDisabled();
+  expect(await screen.findByTestId('generatePromptButton')).toBeDisabled();
 
-  fillAllAnswers();
+  await fillAllAnswers();
 
   expect(screen.getByTestId('generatePromptButton')).toBeEnabled();
+});
+
+test('Clear resets all answers', async () => {
+  renderModal();
+
+  await fillAllAnswers();
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue(sampleAnswers.name);
+
+  fireEvent.click(screen.getByTestId('clearAnswersButton'));
+
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
+  expect(screen.getByTestId('generatePromptButton')).toBeDisabled();
 });
 
 test('generates a prompt, polls to ready and shows the editable preview', async () => {
   renderModal();
 
-  fillAllAnswers();
+  await fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
   await waitFor(() => {
@@ -95,7 +109,7 @@ test('generates a prompt, polls to ready and shows the editable preview', async 
 test('editing the preview and clicking Use this Prompt calls onApply with edited text', async () => {
   renderModal();
 
-  fillAllAnswers();
+  await fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
   await waitFor(
@@ -116,7 +130,7 @@ test('editing the preview and clicking Use this Prompt calls onApply with edited
 test('shows error state with retry when generation fails', async () => {
   renderModal(promptGeneratorErrorMocks);
 
-  fillAllAnswers();
+  await fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
   await waitFor(() => {

@@ -144,7 +144,12 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
 
   // Pre-fill the wizard with the user's previous answers so they can tweak instead of
   // starting from scratch (the answers are stored server-side on the last request).
-  const { data: latestData } = useQuery(LATEST_PROMPT_GENERATION, { fetchPolicy: 'network-only' });
+  // cache-and-network so reopening the modal shows previous answers instantly (from cache)
+  // while it refreshes in the background; only the first load hits the network.
+  const { data: latestData, loading: latestLoading } = useQuery(LATEST_PROMPT_GENERATION, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const loadingPreviousAnswers = latestLoading && !latestData;
 
   useEffect(() => {
     if (prefilledRef.current) return;
@@ -302,6 +307,10 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     setPhase('questions');
   };
 
+  const handleClear = () => {
+    setAnswers(initialAnswers);
+  };
+
   const handleApply = () => {
     handleClose();
     onApply(generatedText);
@@ -342,11 +351,28 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
 
       <div className={styles.Footer}>
         <span className={styles.FooterNote}>{t('All 9 questions help generate a better prompt')}</span>
-        <Button variant="contained" onClick={handleGenerate} disabled={!allAnswered} data-testid="generatePromptButton">
-          {t('Generate Prompt')}
-        </Button>
+        <div className={styles.FooterActions}>
+          <Button variant="outlined" onClick={handleClear} data-testid="clearAnswersButton">
+            {t('Clear')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleGenerate}
+            disabled={!allAnswered}
+            data-testid="generatePromptButton"
+          >
+            {t('Generate Prompt')}
+          </Button>
+        </div>
       </div>
     </>
+  );
+
+  const renderLoadingAnswers = () => (
+    <div className={styles.LoadingState} data-testid="loadingPreviousAnswers">
+      <CircularProgress size={28} />
+      <Typography>{t('Loading your previous answers…')}</Typography>
+    </div>
   );
 
   const renderGenerating = () => (
@@ -416,6 +442,8 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     body = renderReady();
   } else if (phase === 'error') {
     body = renderError();
+  } else if (loadingPreviousAnswers) {
+    body = renderLoadingAnswers();
   } else {
     body = renderQuestions();
   }
