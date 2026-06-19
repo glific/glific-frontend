@@ -152,6 +152,12 @@
   color: #6b7280;
 }
 
+.FooterActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .ButtonRow {
   width: 100%;
   display: flex;
