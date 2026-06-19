@@ -139,16 +139,20 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   const [phase, setPhase] = useState<Phase>('questions');
   const [generatedText, setGeneratedText] = useState('');
   const [inlineError, setInlineError] = useState('');
+  // once the user tries to generate with gaps, highlight the unanswered fields in red
+  const [showErrors, setShowErrors] = useState(false);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // the unedited text returned by the LLM (to detect preview edits) + a guard so
   // prompt_generated fires exactly once per generation
   const originalGeneratedRef = useRef('');
   const generatedCapturedRef = useRef(false);
+  // per-question wrappers, so we can scroll to the first unanswered field on a failed attempt
+  const fieldRefs = useRef<Partial<Record<AnswerKey, HTMLDivElement | null>>>({});
 
-  const answersFilledCount = Object.values(answers).filter((value) => value.trim() !== '').length;
-  // all fields are mandatory — generation is only allowed once every question is answered
-  const allAnswered = questions.every((question) => answers[question.key].trim() !== '');
+  // all fields are mandatory; track how many are filled so we can show progress + gaps
+  const answersFilledCount = questions.filter((question) => answers[question.key].trim() !== '').length;
+  const allAnswered = answersFilledCount === questions.length;
 
   const [generatePrompt, { loading: generating }] = useMutation(GENERATE_PROMPT);
   const [pollPromptGeneration, { data: pollData, error: pollError, stopPolling, startPolling }] = useLazyQuery(
@@ -230,6 +234,18 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   };
 
   const handleGenerate = () => {
+    // all 9 are mandatory — if any are blank, surface the gaps and jump to the first one
+    // instead of generating (the button stays enabled so the click gives feedback)
+    if (!allAnswered) {
+      setShowErrors(true);
+      const firstMissing = questions.find((question) => answers[question.key].trim() === '');
+      if (firstMissing) {
+        fieldRefs.current[firstMissing.key]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    setShowErrors(false);
     setInlineError('');
     setPhase('generating');
     generatePrompt({
@@ -274,6 +290,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
 
   const handleClear = () => {
     setAnswers(initialPromptAnswers);
+    setShowErrors(false);
   };
 
   const handleApply = () => {
@@ -296,41 +313,50 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
       </div>
 
       <div className={styles.ScrollArea}>
-        {questions.map((question, index) => (
-          <div className={styles.Question} key={question.key}>
-            <div className={styles.QuestionHeader}>
-              <span className={styles.Number}>{index + 1}</span>
-              <span className={styles.QuestionTitle}>{question.title}</span>
-            </div>
-            <p className={styles.QuestionText}>{question.question}</p>
-            <p className={styles.Example}>{question.example}</p>
-            <Input
-              field={{
-                name: question.key,
-                value: answers[question.key],
-                onChange: handleChange(question.key),
-                onBlur: () => {},
+        {questions.map((question, index) => {
+          const missing = showErrors && answers[question.key].trim() === '';
+          return (
+            <div
+              className={`${styles.Question} ${missing ? styles.QuestionError : ''}`}
+              key={question.key}
+              ref={(el) => {
+                fieldRefs.current[question.key] = el;
               }}
-              placeholder={question.placeholder}
-              textArea
-              rows={3}
-            />
-          </div>
-        ))}
+            >
+              <div className={styles.QuestionHeader}>
+                <span className={styles.Number}>{index + 1}</span>
+                <span className={styles.QuestionTitle}>{question.title}</span>
+              </div>
+              <p className={styles.QuestionText}>{question.question}</p>
+              <p className={styles.Example}>{question.example}</p>
+              <Input
+                field={{
+                  name: question.key,
+                  value: answers[question.key],
+                  onChange: handleChange(question.key),
+                  onBlur: () => {},
+                }}
+                placeholder={question.placeholder}
+                textArea
+                rows={3}
+              />
+            </div>
+          );
+        })}
       </div>
 
       <div className={styles.Footer}>
-        <span className={styles.FooterNote}>{t('All 9 questions help generate a better prompt')}</span>
+        <span
+          className={`${styles.FooterNote} ${showErrors && !allAnswered ? styles.FooterNoteError : ''}`}
+          data-testid="answeredCount"
+        >
+          {answersFilledCount}/{questions.length} {t('answered')}
+        </span>
         <div className={styles.FooterActions}>
           <Button variant="outlined" onClick={handleClear} data-testid="clearAnswersButton">
             {t('Clear')}
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleGenerate}
-            disabled={!allAnswered}
-            data-testid="generatePromptButton"
-          >
+          <Button variant="contained" onClick={handleGenerate} data-testid="generatePromptButton">
             {t('Generate Prompt')}
           </Button>
         </div>

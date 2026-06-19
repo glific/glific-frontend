@@ -763,7 +763,7 @@
   "Escalation path, or NA...": "Escalation path, or NA...",
   "This feature is in early beta — we’d love your feedback while we fine-tune it.": "This feature is in early beta — we’d love your feedback while we fine-tune it.",
   "Answer 9 questions to get a tailored assistant prompt": "Answer 9 questions to get a tailored assistant prompt",
-  "All 9 questions help generate a better prompt": "All 9 questions help generate a better prompt",
+  "answered": "answered",
   "This is an AI generated prompt.": "This is an AI generated prompt.",
   "Please review and edit if required before adding it to your assistant.": "Please review and edit if required before adding it to your assistant.",
   "Clear": "Clear"

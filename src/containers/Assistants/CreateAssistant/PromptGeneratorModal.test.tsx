@@ -21,6 +21,9 @@ vi.mock('@posthog/react', () => ({
 
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
+// jsdom doesn't implement scrollIntoView; the modal calls it to jump to the first gap
+Element.prototype.scrollIntoView = vi.fn();
+
 beforeEach(() => {
   vi.clearAllMocks();
 });
@@ -70,14 +73,18 @@ test('renders the header, beta notice and all 9 questions as a single form', () 
   expect(screen.getAllByRole('textbox')).toHaveLength(9);
 });
 
-test('Generate is disabled until every mandatory field is answered', () => {
+test('Generate validates gaps before generating and tracks progress', () => {
   renderModal();
 
-  expect(screen.getByTestId('generatePromptButton')).toBeDisabled();
+  expect(screen.getByTestId('answeredCount')).toHaveTextContent('0/9 answered');
+
+  // clicking with gaps surfaces the error and does not start generating
+  fireEvent.click(screen.getByTestId('generatePromptButton'));
+  expect(screen.queryByTestId('generatingState')).not.toBeInTheDocument();
+  expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
 
   fillAllAnswers();
-
-  expect(screen.getByTestId('generatePromptButton')).toBeEnabled();
+  expect(screen.getByTestId('answeredCount')).toHaveTextContent('9/9 answered');
 });
 
 test('Clear resets all answers', () => {
@@ -85,11 +92,12 @@ test('Clear resets all answers', () => {
 
   fillAllAnswers();
   expect(screen.getAllByRole('textbox')[0]).toHaveValue(sampleAnswers.name);
+  expect(screen.getByTestId('answeredCount')).toHaveTextContent('9/9 answered');
 
   fireEvent.click(screen.getByTestId('clearAnswersButton'));
 
   expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
-  expect(screen.getByTestId('generatePromptButton')).toBeDisabled();
+  expect(screen.getByTestId('answeredCount')).toHaveTextContent('0/9 answered');
 });
 
 test('generates a prompt, polls to ready and shows the editable preview', async () => {
