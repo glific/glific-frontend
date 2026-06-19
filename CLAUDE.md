@@ -110,6 +110,20 @@ Authentication tokens are stored in `localStorage` under key `glific_session`. T
 
 Local Apollo cache is used for in-app notifications — do **not** use component state for toast messages.
 
+**Do not use `onCompleted` / `onError`** (deprecated in our Apollo version). Instead:
+
+- **Mutations** — `await` the mutate function and handle the result/error with `try/catch`:
+  ```ts
+  const [doThing] = useMutation(DO_THING);
+  try {
+    const { data } = await doThing({ variables });
+    // handle data
+  } catch (error) {
+    setErrorMessage(error);
+  }
+  ```
+- **Queries** — derive state from the returned `data` (and `error`) via `useEffect`, rather than passing `onCompleted`/`onError` callbacks that set local state.
+
 ### Notification / Toast Pattern
 
 To show a success/error message anywhere in the app, write directly to the Apollo cache:

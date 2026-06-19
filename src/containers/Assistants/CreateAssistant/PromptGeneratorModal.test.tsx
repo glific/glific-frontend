@@ -8,6 +8,7 @@ import {
   promptGeneratorErrorMocks,
   promptGeneratorFailedStatusMocks,
   promptGeneratorPollFailedMocks,
+  promptGeneratorReadyEmptyMocks,
   promptGeneratorSuccessMocks,
   sampleAnswers,
 } from 'mocks/PromptGenerator';
@@ -156,6 +157,17 @@ test('shows error state with retry when generation fails', async () => {
 
 test('shows error when the mutation returns a failed status directly', async () => {
   renderModal(promptGeneratorFailedStatusMocks);
+
+  fillAllAnswers();
+  fireEvent.click(screen.getByTestId('generatePromptButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('promptError')).toBeInTheDocument();
+  });
+});
+
+test('treats a ready response with no prompt text as a failure', async () => {
+  renderModal(promptGeneratorReadyEmptyMocks);
 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
