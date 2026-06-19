@@ -301,12 +301,14 @@ export const FlowEditor = () => {
 
   const errorMsg = () => (
     <div className={styles.DialogError}>
-      {flowValidation.map((message: any) => (
-        <div key={message.message} className={styles.ErrorMsg}>
-          <WarningIcon className={styles.ErrorMsgIcon} />
-          {message.message}
-        </div>
-      ))}
+      {flowValidation
+        .filter((msg: any, i: number, self: any[]) => self.findIndex((m: any) => m.message === msg.message) === i)
+        .map((message: any) => (
+          <div key={message.message} className={styles.ErrorMsg}>
+            <WarningIcon className={styles.ErrorMsgIcon} />
+            {message.message}
+          </div>
+        ))}
     </div>
   );
 
