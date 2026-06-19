@@ -215,23 +215,24 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
 
   const expandIcon = (
     <InputAdornment className={styles.Expand} position="end">
-      {isPromptGeneratorEnabled && !newVersionInProgress && (
-        <Button
-          variant="text"
-          size="small"
-          onClick={() => {
-            posthog?.capture('prompt_generator_opened');
-            setShowPromptGenerator(true);
-          }}
-          data-testid="generateWithAiButton"
-          className={styles.GenerateWithAiButton}
-        >
-          {t('Generate with AI')}
-          <span className={styles.BetaBadge}>{t('BETA')}</span>
-        </Button>
-      )}
       <ExpandIcon data-testid="expandIcon" onClick={() => setOpenInstructions(true)} className={styles.ExpandButton} />
     </InputAdornment>
+  );
+
+  const generateWithAiButton = isPromptGeneratorEnabled && !newVersionInProgress && (
+    <Button
+      variant="text"
+      size="small"
+      onClick={() => {
+        posthog?.capture('prompt_generator_opened');
+        setShowPromptGenerator(true);
+      }}
+      data-testid="generateWithAiButton"
+      className={styles.GenerateWithAiButton}
+    >
+      {t('Generate with AI')}
+      <span className={styles.BetaBadge}>{t('BETA')}</span>
+    </Button>
   );
 
   const formFields: any = [
@@ -486,9 +487,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
               <div className={styles.FormSection} key={field.name}>
-                <Typography className={styles.Label} variant="h5">
-                  {field.label}
-                </Typography>
+                <div className={styles.LabelRow}>
+                  <Typography className={styles.Label} variant="h5">
+                    {field.label}
+                  </Typography>
+                  {field.name === 'instructions' && generateWithAiButton}
+                </div>
 
                 <Field key={field.name} {...field} />
               </div>

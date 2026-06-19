@@ -30,6 +30,14 @@
   margin-bottom: 0.5rem;
 }
 
+/* label on the left, the "Generate with AI" action on the top-right of the field */
+.LabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .FormFields {
   display: flex;
   flex-direction: column;

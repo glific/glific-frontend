@@ -393,10 +393,11 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
 
   const renderReady = () => (
     <>
-      <div className={styles.PreviewHeader}>
-        <Typography className={styles.ReviewNotice} data-testid="reviewNotice">
-          {t('This is an AI generated prompt. Please review and edit if required.')}
-        </Typography>
+      <div className={styles.ReviewNotice} data-testid="reviewNotice">
+        <strong>{t('This is an AI generated prompt.')}</strong>{' '}
+        {t('Please review and edit if required before adding it to your assistant.')}
+      </div>
+      <div className={styles.PreviewToolbar}>
         <IconButton
           size="small"
           onClick={() => setExpanded((value) => !value)}

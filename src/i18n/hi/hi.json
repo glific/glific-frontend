@@ -570,7 +570,6 @@
   "Generating…": "जेनरेट किया जा रहा है…",
   "Use this Prompt": "इस प्रॉम्प्ट का उपयोग करें",
   "Prompt added to Instructions": "प्रॉम्प्ट निर्देशों में जोड़ा गया",
-  "This is an AI generated prompt. Please review and edit if required.": "यह एक AI द्वारा जेनरेट किया गया प्रॉम्प्ट है। कृपया समीक्षा करें और आवश्यकता होने पर संपादित करें।",
   "Prompt generation failed. Please try again.": "प्रॉम्प्ट जेनरेशन विफल रहा। कृपया पुनः प्रयास करें।",
   "Prompt generation timed out. Please try again.": "प्रॉम्प्ट जेनरेशन का समय समाप्त हो गया। कृपया पुनः प्रयास करें।",
   "e.g. \"Pratham; the bot is called Saathi\"": "उदा. \"प्रथम; बॉट का नाम साथी है\"",
@@ -626,5 +625,7 @@
   "Answer 9 questions to get a tailored assistant prompt": "एक अनुकूलित असिस्टेंट प्रॉम्प्ट पाने के लिए 9 प्रश्नों के उत्तर दें",
   "All 9 questions help generate a better prompt": "सभी 9 प्रश्न बेहतर प्रॉम्प्ट बनाने में मदद करते हैं",
   "Expand": "बड़ा करें",
-  "Collapse": "छोटा करें"
+  "Collapse": "छोटा करें",
+  "This is an AI generated prompt.": "यह एक AI द्वारा जेनरेट किया गया प्रॉम्प्ट है।",
+  "Please review and edit if required before adding it to your assistant.": "इसे अपने असिस्टेंट में जोड़ने से पहले कृपया समीक्षा करें और आवश्यकता होने पर संपादित करें।"
 }
