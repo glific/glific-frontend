@@ -92,6 +92,15 @@
   gap: 0.375rem;
 }
 
+/* highlight an unanswered field after a failed Generate attempt */
+.QuestionError :global(.MuiOutlinedInput-notchedOutline) {
+  border-color: #d32f2f;
+}
+
+.QuestionError .QuestionTitle {
+  color: #d32f2f;
+}
+
 .QuestionHeader {
   display: flex;
   align-items: center;
@@ -145,6 +154,11 @@
 .FooterNote {
   font-size: 13px;
   color: #6b7280;
+}
+
+.FooterNoteError {
+  color: #d32f2f;
+  font-weight: 500;
 }
 
 .FooterActions {
