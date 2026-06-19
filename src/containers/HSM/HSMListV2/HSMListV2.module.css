@@ -1,7 +1,9 @@
 .Container {
   padding: 20px 24px;
   background: #f5f5f0;
-  min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* header */
@@ -137,6 +139,10 @@
   border-color: #9ca3af !important;
 }
 
+.DropDown:focus-within fieldset {
+  border-color: #2ea36a !important;
+}
+
 .SearchBar {
   width: 300px;
   border-radius: 10px !important;
@@ -173,4 +179,5 @@
   border-radius: 8px;
   overflow: hidden;
   background: #ffffff;
+  flex: 1;
 }

@@ -158,8 +158,9 @@
   padding: 2px 7px;
   border-radius: 999px;
   font-weight: 500;
-  background: #ffffff;
-  border: 1.5px solid transparent;
+  background: #f3f4f6;
+  border: 1.5px solid #9ca3af;
+  color: #6b7280;
   white-space: nowrap;
 }
 
@@ -168,6 +169,7 @@
   height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
+  background: #9ca3af;
 }
 
 .ChipApproved {
@@ -335,6 +337,11 @@
 .LastModified {
   font-size: 13px;
   color: #6b7280;
+}
+
+.MenuItem {
+  font-size: 13px;
+  color: #111827;
 }
 
 /* empty state */

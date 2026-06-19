@@ -5,6 +5,9 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import SendIcon from '@mui/icons-material/Send';
 import MoreOptionsIcon from 'assets/images/icons/MoreOptions/More.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import AddLanguageIcon from 'assets/images/icons/AddLanguage.svg?react';
@@ -37,7 +40,6 @@ const STATUS_LABEL: Record<StatusType, 'Approved' | 'Pending' | 'Rejected' | 'Fa
   FAILED: 'Failed',
 };
 
-
 const LanguageChip = ({ variant }: { variant: LanguageVariant }) => (
   <span className={`${styles.LangChip} ${STATUS_CHIP_CLASS[variant.status]}`}>
     <span className={styles.ChipDot} />
@@ -65,9 +67,7 @@ const SingleLangChip = ({ variant }: { variant: LanguageVariant }) => (
 );
 
 const StatusBadge = ({ status }: { status: StatusType }) => (
-  <span className={`${styles.StatusBadge} ${STATUS_BADGE_CLASS[status]}`}>
-    {t(STATUS_LABEL[status])}
-  </span>
+  <span className={`${styles.StatusBadge} ${STATUS_BADGE_CLASS[status]}`}>{t(STATUS_LABEL[status])}</span>
 );
 
 const formatCategory = (category: string) => {
@@ -83,6 +83,7 @@ const CategoryLabel = ({ category }: { category: string }) => (
 );
 
 const MixedCategories = ({ variants }: { variants: LanguageVariant[] }) => {
+  console.log('variants', variants);
   const counts = variants.reduce<Record<string, number>>((acc, v) => {
     acc[v.category] = (acc[v.category] || 0) + 1;
     return acc;
@@ -92,7 +93,8 @@ const MixedCategories = ({ variants }: { variants: LanguageVariant[] }) => {
     <div className={styles.MixedCategories}>
       {Object.entries(counts).map(([cat, count]) => (
         <span key={cat} className={`${styles.CategoryBadge} ${(styles as Record<string, string>)[`Cat_${cat}`] ?? ''}`}>
-          {formatCategory(cat)}{count > 1 ? `×${count}` : ''}
+          {formatCategory(cat)}
+          {count > 1 ? `×${count}` : ''}
         </span>
       ))}
     </div>
@@ -116,7 +118,7 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
   };
 
   if (templates.length === 0) {
-    return <div className={styles.EmptyState}>{t('No templates found')}</div>;
+    return <div className={styles.EmptyState} data-testid="emptyState">{t('No templates found')}</div>;
   }
 
   return (
@@ -137,14 +139,25 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
         const parentMenuItems = [
           {
             title: t('Copy UUID'),
+            icon: <ContentCopyIcon sx={{ fontSize: 15, color: '#6b7280' }} />,
+            className: styles.MenuItem,
             onClick: () => {
               if (firstVariant?.bspId) copyToClipboardMethod(firstVariant.bspId);
             },
           },
           {
-            title: t('Duplicate'),
+            title: t('Duplicate template'),
+            icon: <FileCopyIcon sx={{ fontSize: 15, color: '#6b7280' }} />,
+            className: styles.MenuItem,
             onClick: () =>
               navigate('/template-v2/add', { state: { mode: 'copy', shortcode: template.shortcode } }),
+          },
+          {
+            title: t('Send broadcast'),
+            icon: <SendIcon sx={{ fontSize: 15, color: '#6b7280' }} />,
+            className: styles.MenuItem,
+            onClick: () =>
+              navigate('/broadcast/add', { state: { templateId: firstVariant?.id } }),
           },
         ];
 
@@ -183,6 +196,7 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
                 <span
                   className={styles.ActionIcon}
                   title={t('Add new language')}
+                  data-testid="addLanguageBtn"
                   onClick={() =>
                     navigate('/template-v2/add', {
                       state: { mode: 'add-language', shortcode: template.shortcode },
@@ -198,6 +212,7 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
                 <span
                   className={styles.ActionIcon}
                   title={t('View')}
+                  data-testid="viewBtn"
                   onClick={() => navigate(`/template/${firstVariant?.id}/edit`)}
                   role="button"
                   tabIndex={0}

@@ -182,7 +182,6 @@ const HSMListV2 = () => {
           <Button
             variant="outlined"
             className={styles.OutlinedButton}
-            sx={{ borderRadius: '10px !important', boxShadow: 'none !important', border: '1.5px solid #d1d5db !important', color: '#1a1a1a !important', height: '36px !important' }}
             startIcon={<SyncIcon fontSize="small" />}
             onClick={() => fileInputRef.current?.click()}
             data-testid="bulkApply"
@@ -194,7 +193,6 @@ const HSMListV2 = () => {
             <Button
               variant="outlined"
               className={styles.OutlinedButton}
-              sx={{ borderRadius: '10px !important', boxShadow: 'none !important', border: '1.5px solid #2ea36a !important', color: '#2ea36a !important', height: '36px !important' }}
               startIcon={<SyncIcon fontSize="small" />}
               loading={syncLoading}
               onClick={handleSync}
@@ -215,7 +213,6 @@ const HSMListV2 = () => {
           <Button
             variant="outlined"
             className={styles.OutlinedButton}
-            sx={{ borderRadius: '10px !important', boxShadow: 'none !important', border: '1.5px solid #d1d5db !important', color: '#1a1a1a !important', height: '36px !important' }}
             startIcon={<AppsIcon fontSize="small" />}
             onClick={() => {}}
             data-testid="templateLibrary"
@@ -226,7 +223,6 @@ const HSMListV2 = () => {
           <Button
             variant="contained"
             className={styles.CreateButton}
-            sx={{ borderRadius: '10px !important', height: '36px !important' }}
             onClick={() => navigate('/template-v2/add')}
             data-testid="createTemplate"
           >
@@ -244,16 +240,6 @@ const HSMListV2 = () => {
               className={styles.DropDown}
               displayEmpty
               data-testid="categoryFilter"
-              sx={{
-                height: '36px',
-                borderRadius: '10px',
-                background: '#fff',
-                fontSize: '13px',
-                minWidth: '130px',
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#c7cdd8', borderRadius: '10px' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#9ca3af' },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#2ea36a' },
-              }}
             >
               <MenuItem value="">{t('All Categories')}</MenuItem>
               {categories.map((cat: string) => (
@@ -271,16 +257,6 @@ const HSMListV2 = () => {
               className={styles.DropDown}
               displayEmpty
               data-testid="tagFilter"
-              sx={{
-                height: '36px',
-                borderRadius: '10px',
-                background: '#fff',
-                fontSize: '13px',
-                minWidth: '130px',
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#c7cdd8', borderRadius: '10px' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#9ca3af' },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#2ea36a' },
-              }}
             >
               <MenuItem value="">{t('All Tags')}</MenuItem>
               {(tagsData?.tags ?? []).map((tag: any) => (
