@@ -14,7 +14,7 @@ const GENERATED_PROMPT = 'You are MatsyaMitra, a friendly assistant for small-sc
 // the 9 mandatory answers, keyed by each question's unique placeholder so we target
 // the modal's fields (not the create-assistant form behind it)
 const ANSWERS: Array<[string, string]> = [
-  ['Organisation name and chatbot name...', 'MatsyaMitra by BlueWater Aqua'],
+  ['Organization name and chatbot name...', 'MatsyaMitra by BlueWater Aqua'],
   ['Describe the core purpose...', 'Helps fish farmers with pond and water-quality questions'],
   ['Describe your audience...', 'Small freshwater fish farmers in rural India, low literacy'],
   ['Language preference...', 'Reply in the language the user writes in'],
