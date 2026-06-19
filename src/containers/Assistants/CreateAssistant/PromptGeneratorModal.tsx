@@ -67,9 +67,9 @@ const getQuestions = (t: TFunction): Question[] => [
   {
     key: 'name',
     title: t('Name'),
-    question: t("What is your organisation's name and the name you want to give this AI assistant?"),
+    question: t("What is your organization's name and the name you want to give this AI assistant?"),
     example: t('E.g. "Chatbot name: SNEHA DIDI, by org: SNEHA"'),
-    placeholder: t('Organisation name and chatbot name...'),
+    placeholder: t('Organization name and chatbot name...'),
   },
   {
     key: 'purpose',
@@ -233,7 +233,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
     onClose();
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     // all 9 are mandatory — if any are blank, surface the gaps and jump to the first one
     // instead of generating (the button stays enabled so the click gives feedback)
     if (!allAnswered) {
@@ -248,39 +248,45 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
     setShowErrors(false);
     setInlineError('');
     setPhase('generating');
-    generatePrompt({
-      variables: { input: answers },
-      onCompleted: (data) => {
-        const generation = data?.generatePrompt?.promptGeneration;
-        const errors = data?.generatePrompt?.errors;
-        if (errors && errors.length > 0) {
-          handleFailure(errors[0].message || t('Prompt generation failed. Please try again.'));
-          return;
-        }
-        if (!generation?.id) {
-          handleFailure(t('Prompt generation failed. Please try again.'));
-          return;
-        }
-        if (generation.status === 'ready') {
-          markReady(generation.generatedPrompt || '');
-          return;
-        }
-        if (generation.status === 'failed') {
-          handleFailure(generation.errorMessage || t('Prompt generation failed. Please try again.'));
-          return;
-        }
-        // status is in_progress -> start polling
-        pollPromptGeneration({ variables: { id: generation.id } });
-        startPolling(POLL_INTERVAL);
-        timeoutRef.current = setTimeout(() => {
-          handleFailure(t('Prompt generation timed out. Please try again.'));
-        }, MAX_POLL_DURATION);
-      },
-      onError: (error) => {
-        setErrorMessage(error);
+
+    // await the mutation + try/catch instead of onCompleted/onError (both deprecated)
+    try {
+      const { data } = await generatePrompt({ variables: { input: answers } });
+      const generation = data?.generatePrompt?.promptGeneration;
+      const errors = data?.generatePrompt?.errors;
+
+      if (errors && errors.length > 0) {
+        handleFailure(errors[0].message || t('Prompt generation failed. Please try again.'));
+        return;
+      }
+      if (!generation?.id) {
         handleFailure(t('Prompt generation failed. Please try again.'));
-      },
-    });
+        return;
+      }
+      if (generation.status === 'ready') {
+        // a ready response without prompt text is a failure, not a blank success
+        if (generation.generatedPrompt?.trim()) {
+          markReady(generation.generatedPrompt);
+        } else {
+          handleFailure(t('Prompt generation failed. Please try again.'));
+        }
+        return;
+      }
+      if (generation.status === 'failed') {
+        handleFailure(generation.errorMessage || t('Prompt generation failed. Please try again.'));
+        return;
+      }
+
+      // status is in_progress -> start polling
+      pollPromptGeneration({ variables: { id: generation.id } });
+      startPolling(POLL_INTERVAL);
+      timeoutRef.current = setTimeout(() => {
+        handleFailure(t('Prompt generation timed out. Please try again.'));
+      }, MAX_POLL_DURATION);
+    } catch (error) {
+      setErrorMessage(error);
+      handleFailure(t('Prompt generation failed. Please try again.'));
+    }
   };
 
   const handleRetry = () => {

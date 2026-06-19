@@ -143,6 +143,24 @@ export const promptGeneratorErrorMocks = [generatePromptErrorMock];
 // failed status returned directly from the mutation
 export const promptGeneratorFailedStatusMocks = [generatePromptFailedStatusMock];
 
+// mutation returns :ready but with no prompt text — treated as a failure, not a blank success
+const generatePromptReadyEmptyMock = {
+  request: {
+    query: GENERATE_PROMPT,
+    variables: { input: sampleAnswers },
+  },
+  result: {
+    data: {
+      generatePrompt: {
+        promptGeneration: { id: '4', status: 'ready', generatedPrompt: '', errorMessage: null },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const promptGeneratorReadyEmptyMocks = [generatePromptReadyEmptyMock];
+
 // mutation accepted (in_progress) but polling then resolves to a failed status
 export const promptGeneratorPollFailedMocks = [
   generatePromptMock(),
