@@ -27,7 +27,7 @@ import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
-import { PromptGeneratorModal } from './PromptGeneratorModal';
+import { PromptGeneratorModal, initialPromptAnswers, PromptAnswers } from './PromptGeneratorModal';
 
 import styles from './CreateAssistant.module.css';
 
@@ -57,6 +57,9 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
   const [showPromptGenerator, setShowPromptGenerator] = useState(false);
+  // prompt-generator answers live here (not inside the modal) so they survive closing
+  // and reopening the modal while the user is on this assistant page
+  const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>(initialPromptAnswers);
   const [appliedPrompt, setAppliedPrompt] = useState<string | null>(null);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
   const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
@@ -167,6 +170,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       getAssistant({ variables: { assistantId: currentId } });
     }
   }, [currentId, isEditing]);
+
+  // start with a blank prompt-generator form whenever the assistant changes, so one
+  // assistant's answers never carry over to another
+  useEffect(() => {
+    setPromptAnswers(initialPromptAnswers);
+  }, [currentId]);
 
   useEffect(() => {
     if (assistantData && shouldResetFormRef.current) {
@@ -526,6 +535,8 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         {showPromptGenerator && (
           <PromptGeneratorModal
             open={showPromptGenerator}
+            answers={promptAnswers}
+            setAnswers={setPromptAnswers}
             onClose={() => setShowPromptGenerator(false)}
             onApply={(text) => {
               formik.setFieldValue('instructions', text);

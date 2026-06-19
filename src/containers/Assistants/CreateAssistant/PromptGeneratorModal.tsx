@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
@@ -14,15 +14,9 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
 
 import { GENERATE_PROMPT } from 'graphql/mutations/PromptGenerator';
-import { LATEST_PROMPT_GENERATION, PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
+import { PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
 
 import styles from './PromptGeneratorModal.module.css';
-
-export interface PromptGeneratorModalProps {
-  open: boolean;
-  onClose: () => void;
-  onApply: (text: string) => void;
-}
 
 type AnswerKey =
   | 'name'
@@ -35,7 +29,17 @@ type AnswerKey =
   | 'fallback'
   | 'escalation';
 
-type Answers = Record<AnswerKey, string>;
+export type PromptAnswers = Record<AnswerKey, string>;
+
+export interface PromptGeneratorModalProps {
+  open: boolean;
+  onClose: () => void;
+  onApply: (text: string) => void;
+  // answers are owned by the parent page so they survive closing/reopening the modal
+  // (e.g. generate → not happy → reopen → tweak) without a round-trip to the server
+  answers: PromptAnswers;
+  setAnswers: Dispatch<SetStateAction<PromptAnswers>>;
+}
 
 interface Question {
   key: AnswerKey;
@@ -45,7 +49,7 @@ interface Question {
   placeholder: string;
 }
 
-const initialAnswers: Answers = {
+export const initialPromptAnswers: PromptAnswers = {
   name: '',
   purpose: '',
   audience: '',
@@ -129,12 +133,11 @@ const getQuestions = (t: TFunction): Question[] => [
 
 type Phase = 'questions' | 'generating' | 'ready' | 'error';
 
-export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGeneratorModalProps) => {
+export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswers }: PromptGeneratorModalProps) => {
   const { t } = useTranslation();
   const posthog = usePostHog();
   const questions = getQuestions(t);
 
-  const [answers, setAnswers] = useState<Answers>(initialAnswers);
   const [phase, setPhase] = useState<Phase>('questions');
   const [generatedText, setGeneratedText] = useState('');
   const [inlineError, setInlineError] = useState('');
@@ -146,43 +149,6 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   // prompt_generated fires exactly once per generation
   const originalGeneratedRef = useRef('');
   const generatedCapturedRef = useRef(false);
-  const prefilledRef = useRef(false);
-
-  // Pre-fill the wizard with the user's previous answers so they can tweak instead of
-  // starting from scratch (the answers are stored server-side on the last request).
-  // cache-and-network so reopening the modal shows previous answers instantly (from cache)
-  // while it refreshes in the background; only the first load hits the network.
-  const { data: latestData, loading: latestLoading } = useQuery(LATEST_PROMPT_GENERATION, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const loadingPreviousAnswers = latestLoading && !latestData;
-
-  useEffect(() => {
-    if (prefilledRef.current) return;
-    const raw = latestData?.latestPromptGeneration?.promptGeneration?.inputs;
-    if (!raw) return;
-
-    // inputs is a flexible JSON map (serialized as a string by the :json scalar) with
-    // snake_case keys; parse it and camelize keys to match the wizard's answer keys.
-    let previous: Record<string, unknown>;
-    try {
-      previous = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    } catch {
-      return;
-    }
-
-    prefilledRef.current = true;
-    setAnswers((current) => {
-      const seeded = { ...current };
-      Object.entries(previous).forEach(([rawKey, value]) => {
-        const key = rawKey.replace(/_([a-z])/g, (_match, c) => c.toUpperCase()) as AnswerKey;
-        if (key in seeded && typeof value === 'string' && value !== '') {
-          seeded[key] = value;
-        }
-      });
-      return seeded;
-    });
-  }, [latestData]);
 
   const answersFilledCount = Object.values(answers).filter((value) => value.trim() !== '').length;
   // all fields are mandatory — generation is only allowed once every question is answered
@@ -261,18 +227,6 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     setAnswers((prev) => ({ ...prev, [key]: event.target.value }));
   };
 
-  const resetAll = () => {
-    clearTimers();
-    stopPolling();
-    setAnswers(initialAnswers);
-    setPhase('questions');
-    setGeneratedText('');
-    setInlineError('');
-    setExpanded(false);
-    originalGeneratedRef.current = '';
-    generatedCapturedRef.current = false;
-  };
-
   const handleClose = () => {
     clearTimers();
     stopPolling();
@@ -323,7 +277,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
   };
 
   const handleClear = () => {
-    setAnswers(initialAnswers);
+    setAnswers(initialPromptAnswers);
   };
 
   const handleApply = () => {
@@ -331,9 +285,10 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
       answers_filled_count: answersFilledCount,
       edited_in_preview: generatedText !== originalGeneratedRef.current,
     });
+    // keep the answers in the parent page so reopening the modal still shows them;
+    // closing unmounts the modal, which resets the local phase/preview state.
     handleClose();
     onApply(generatedText);
-    resetAll();
   };
 
   const isGenerating = phase === 'generating' || generating;
@@ -385,13 +340,6 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
         </div>
       </div>
     </>
-  );
-
-  const renderLoadingAnswers = () => (
-    <div className={styles.LoadingState} data-testid="loadingPreviousAnswers">
-      <CircularProgress size={28} />
-      <Typography>{t('Loading your previous answers…')}</Typography>
-    </div>
   );
 
   const renderGenerating = () => (
@@ -461,8 +409,6 @@ export const PromptGeneratorModal = ({ open, onClose, onApply }: PromptGenerator
     body = renderReady();
   } else if (phase === 'error') {
     body = renderError();
-  } else if (loadingPreviousAnswers) {
-    body = renderLoadingAnswers();
   } else {
     body = renderQuestions();
   }
