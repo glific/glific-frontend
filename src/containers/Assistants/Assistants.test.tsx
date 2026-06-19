@@ -25,6 +25,7 @@ const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
 beforeEach(() => {
   vi.clearAllMocks();
+  localStorage.removeItem('organizationServices');
 });
 
 const assistantsComponent = (mocks: any = MOCKS) => (
@@ -752,5 +753,29 @@ test('it shows error when clone mutation fails', async () => {
 
   await waitFor(() => {
     expect(errorMessageSpy).toHaveBeenCalled();
+  });
+});
+
+test('opens the prompt generator modal from the Generate with AI button', async () => {
+  localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+
+  render(assistantsComponent(MOCKS));
+
+  await waitFor(() => {
+    expect(screen.getByText('AI Assistants')).toBeInTheDocument();
+  });
+
+  // start creating a new assistant, where the prompt generator entry point lives
+  fireEvent.click(screen.getByTestId('headingButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('generateWithAiButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('generateWithAiButton'));
+
+  // the modal opens to the questions step
+  await waitFor(() => {
+    expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
   });
 });
