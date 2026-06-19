@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
@@ -5,12 +6,11 @@ import * as Notification from 'common/notification';
 import {
   generatedPromptText,
   promptGeneratorErrorMocks,
-  promptGeneratorPrefillMocks,
   promptGeneratorSuccessMocks,
   sampleAnswers,
 } from 'mocks/PromptGenerator';
 
-import { PromptGeneratorModal } from './PromptGeneratorModal';
+import { initialPromptAnswers, PromptAnswers, PromptGeneratorModal } from './PromptGeneratorModal';
 
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
@@ -21,63 +21,62 @@ beforeEach(() => {
 const onClose = vi.fn();
 const onApply = vi.fn();
 
-const renderModal = (
-  mocks: any = promptGeneratorSuccessMocks,
-  props: Partial<Parameters<typeof PromptGeneratorModal>[0]> = {}
-) =>
+// the answers are owned by the parent page, so the test wraps the modal in a stateful
+// harness that holds them (mirroring CreateAssistant)
+const Harness = ({ initial = initialPromptAnswers }: { initial?: PromptAnswers }) => {
+  const [answers, setAnswers] = useState<PromptAnswers>(initial);
+  return <PromptGeneratorModal open onClose={onClose} onApply={onApply} answers={answers} setAnswers={setAnswers} />;
+};
+
+const renderModal = (mocks: any = promptGeneratorSuccessMocks, initial?: PromptAnswers) =>
   render(
     <MockedProvider mocks={mocks}>
-      <PromptGeneratorModal open onClose={onClose} onApply={onApply} {...props} />
+      <Harness initial={initial} />
     </MockedProvider>
   );
 
 // fill all 9 mandatory questions, in order, with the mocked answer values.
-// Waits for the form first — the modal shows a brief loading state while it fetches
-// the user's previous answers.
-const fillAllAnswers = async () => {
-  const inputs = await screen.findAllByRole('textbox');
+const fillAllAnswers = () => {
+  const inputs = screen.getAllByRole('textbox');
   Object.values(sampleAnswers).forEach((value, index) => {
     fireEvent.change(inputs[index], { target: { value } });
   });
 };
 
-test('pre-fills the wizard with the user previous answers', async () => {
-  renderModal(promptGeneratorPrefillMocks);
+test('pre-fills the wizard with answers supplied by the parent page', () => {
+  renderModal(promptGeneratorSuccessMocks, sampleAnswers as PromptAnswers);
 
-  await waitFor(() => {
-    expect(screen.getAllByRole('textbox')[0]).toHaveValue(sampleAnswers.name);
-  });
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue(sampleAnswers.name);
   expect(screen.getAllByRole('textbox')[1]).toHaveValue(sampleAnswers.purpose);
 });
 
-test('renders the header, beta notice and all 9 questions as a single form', async () => {
+test('renders the header, beta notice and all 9 questions as a single form', () => {
   renderModal();
 
   expect(screen.getByText(/Generate Prompt with AI/)).toBeInTheDocument();
   expect(screen.getByText('BETA')).toBeInTheDocument();
   expect(screen.getByText('Answer 9 questions to get a tailored assistant prompt')).toBeInTheDocument();
 
-  // the form appears once the previous-answers query resolves
-  expect(await screen.findByTestId('betaBanner')).toBeInTheDocument();
+  expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
   expect(screen.getByText('Name')).toBeInTheDocument();
   expect(screen.getByText('Escalation')).toBeInTheDocument();
   expect(screen.getAllByRole('textbox')).toHaveLength(9);
 });
 
-test('Generate is disabled until every mandatory field is answered', async () => {
+test('Generate is disabled until every mandatory field is answered', () => {
   renderModal();
 
-  expect(await screen.findByTestId('generatePromptButton')).toBeDisabled();
+  expect(screen.getByTestId('generatePromptButton')).toBeDisabled();
 
-  await fillAllAnswers();
+  fillAllAnswers();
 
   expect(screen.getByTestId('generatePromptButton')).toBeEnabled();
 });
 
-test('Clear resets all answers', async () => {
+test('Clear resets all answers', () => {
   renderModal();
 
-  await fillAllAnswers();
+  fillAllAnswers();
   expect(screen.getAllByRole('textbox')[0]).toHaveValue(sampleAnswers.name);
 
   fireEvent.click(screen.getByTestId('clearAnswersButton'));
@@ -89,7 +88,7 @@ test('Clear resets all answers', async () => {
 test('generates a prompt, polls to ready and shows the editable preview', async () => {
   renderModal();
 
-  await fillAllAnswers();
+  fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
   await waitFor(() => {
@@ -109,7 +108,7 @@ test('generates a prompt, polls to ready and shows the editable preview', async 
 test('editing the preview and clicking Use this Prompt calls onApply with edited text', async () => {
   renderModal();
 
-  await fillAllAnswers();
+  fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
   await waitFor(
@@ -130,7 +129,7 @@ test('editing the preview and clicking Use this Prompt calls onApply with edited
 test('shows error state with retry when generation fails', async () => {
   renderModal(promptGeneratorErrorMocks);
 
-  await fillAllAnswers();
+  fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
   await waitFor(() => {
