@@ -178,9 +178,19 @@
 }
 
 .ReviewNotice {
-  font-size: 13px;
-  color: #555;
-  font-style: italic;
+  background-color: #fdf8e7;
+  border-left: 4px solid #d4a017;
+  color: #5c4a1a;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+}
+
+.PreviewToolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.25rem;
 }
 
 .PreviewInput {

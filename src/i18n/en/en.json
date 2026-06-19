@@ -710,7 +710,6 @@
   "Generating…": "Generating…",
   "Use this Prompt": "Use this Prompt",
   "Prompt added to Instructions": "Prompt added to Instructions",
-  "This is an AI generated prompt. Please review and edit if required.": "This is an AI generated prompt. Please review and edit if required.",
   "Prompt generation failed. Please try again.": "Prompt generation failed. Please try again.",
   "Prompt generation timed out. Please try again.": "Prompt generation timed out. Please try again.",
   "e.g. \"Pratham; the bot is called Saathi\"": "e.g. \"Pratham; the bot is called Saathi\"",
@@ -766,5 +765,7 @@
   "Answer 9 questions to get a tailored assistant prompt": "Answer 9 questions to get a tailored assistant prompt",
   "All 9 questions help generate a better prompt": "All 9 questions help generate a better prompt",
   "Expand": "Expand",
-  "Collapse": "Collapse"
+  "Collapse": "Collapse",
+  "This is an AI generated prompt.": "This is an AI generated prompt.",
+  "Please review and edit if required before adding it to your assistant.": "Please review and edit if required before adding it to your assistant."
 }
