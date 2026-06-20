@@ -33,7 +33,7 @@ export interface SearchDialogBoxProps {
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const { t } = useTranslation();
-  
+
   const {
     asyncSearch,
     icon,

@@ -16,7 +16,6 @@ import { GET_WHATSAPP_FORM, LIST_FORM_CATEGORIES } from 'graphql/queries/WhatsAp
 import styles from './WhatsAppForm.module.css';
 import { useTranslation } from 'react-i18next';
 
-
 const queries = {
   getItemQuery: GET_WHATSAPP_FORM,
   createItemQuery: CREATE_FORM,
@@ -30,13 +29,17 @@ export const formatError = (str: string) => {
 };
 
 const GoogleSheetUrlComponent = ({ field, disabled }: any) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   return (
     <div className={styles.GoogleSheetContainer}>
       <h3>{t('Data Storage (Optional)')}</h3>
       <Input field={field} placeholder={t('Add your google sheet link here')} disabled={disabled} />
 
-      <p>{t("Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see and share responses more easily.")}</p>
+      <p>
+        {t(
+          "Responses will get saved in your Big Query project by default. Add a writable Google Sheet if you'd like to see and share responses more easily."
+        )}
+      </p>
     </div>
   );
 };
@@ -50,7 +53,7 @@ export const WhatsAppForms = () => {
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const params = useParams();
   const navigate = useNavigate();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   useQuery(GET_WHATSAPP_FORM, {
     skip: !params.id,
@@ -136,8 +139,9 @@ export const WhatsAppForms = () => {
       optionLabel: 'name',
       label: t('Categories *'),
       placeholder: t('Select categories'),
-      helperText:
-        t('Choose categories that represent your form. Multiple values are possible, but at least one is required.'),
+      helperText: t(
+        'Choose categories that represent your form. Multiple values are possible, but at least one is required.'
+      ),
       disabled: disabled,
     },
     {
@@ -157,7 +161,7 @@ export const WhatsAppForms = () => {
   return (
     <>
       <Heading
-        formTitle={isEditing ? (disabled ? t('WhatsApp Form') : t('Edit WhatsApp Form')) :t('Create WhatsApp Form')}
+        formTitle={isEditing ? (disabled ? t('WhatsApp Form') : t('Edit WhatsApp Form')) : t('Create WhatsApp Form')}
         helpData={whatsappFormsInfo}
         backLink="/whatsapp-forms"
         headerHelp={disabled ? t('Please view below details.') : t('Please enter below details.')}
