@@ -573,6 +573,76 @@ export const getEvaluationScoresInvalidJsonMock = (id = '2') => ({
   },
 });
 
+export const getEvaluationScoresOutOfOrderMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify({
+          score: {
+            traces: [
+              { question_id: 3, question: 'Q3', ground_truth_answer: 'A3', llm_answer: 'L3', scores: [] },
+              { question_id: 1, question: 'Q1', ground_truth_answer: 'A1', llm_answer: 'L1', scores: [] },
+              { question_id: 2, question: 'Q2', ground_truth_answer: 'A2', llm_answer: 'L2', scores: [] },
+            ],
+          },
+        }),
+        errors: [],
+      },
+    },
+  },
+});
+
+export const getEvaluationScoresSlowMock = (id = '2') => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: {
+    data: {
+      evaluationScores: {
+        scores: JSON.stringify({
+          score: {
+            traces: [
+              {
+                question_id: 'q1',
+                question: 'What is diabetes?',
+                ground_truth_answer: 'A metabolic disease',
+                llm_answer: 'A chronic condition',
+                scores: [{ name: 'Cosine Similarity', value: 0.85 }],
+              },
+            ],
+          },
+        }),
+        errors: [],
+      },
+    },
+  },
+  delay: Infinity,
+});
+
+export const secondCompletedEvaluationItem = {
+  id: '5',
+  name: 'second-completed-eval',
+  status: 'COMPLETED',
+  results: JSON.stringify({
+    summary_scores: [{ name: 'Cosine Similarity', avg: 0.75 }],
+  }),
+  failureReason: null,
+  goldenQa: { __typename: 'AiEvalGoldenQa', id: '15', name: 'second_dataset', duplicationFactor: 1 },
+  assistantConfigVersion: {
+    __typename: 'AiEvalConfigVersion',
+    id: '2',
+    versionNumber: 1,
+    assistant: { __typename: 'AiEvalAssistant', id: '50', name: 'Second Assistant' },
+  },
+  insertedAt: '2026-02-01T00:00:00Z',
+  updatedAt: '2026-02-01T01:00:00Z',
+};
+
+export const getListAiEvaluationsTwoCompletedMock = {
+  request: { query: LIST_AI_EVALUATIONS },
+  variableMatcher: () => true,
+  result: { data: { aiEvaluations: [completedEvaluationItem, secondCompletedEvaluationItem] } },
+};
+
 // traces are arrays (truthy, pass filter(Boolean)) but flattenRow returns null for them → jsonToCsv returns ''
 export const getEvaluationScoresInvalidRowsMock = (id = '2') => ({
   request: { query: GET_EVALUATION_SCORES, variables: { id } },

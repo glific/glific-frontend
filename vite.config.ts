@@ -1,23 +1,22 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
 import react from '@vitejs/plugin-react';
-import { ConfigEnv, UserConfigExport, defineConfig, loadEnv } from 'vite';
+import { ConfigEnv, PluginOption, UserConfigExport, defineConfig, loadEnv } from 'vite';
 // import eslint from 'vite-plugin-eslint';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import fs from 'fs';
 
 // https://vitejs.dev/config/
-export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> => {
   const env = loadEnv(mode, process.cwd(), '');
 
   const isBuild = command === 'build';
   const enableSentry = isBuild && !!env.VITE_SENTRY_AUTH_TOKEN;
 
-  const plugins = [
+  const plugins: PluginOption[] = [
     react(),
     viteTsconfigPaths(),
     svgr(),
@@ -54,8 +53,11 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
 
   // dev specific config
   if (command === 'serve') {
+    // mkcert is a devDependency used only for the local HTTPS dev server; import it
+    // lazily so production builds (which don't install devDependencies) never resolve it.
+    const { default: mkcert } = await import('vite-plugin-mkcert');
     return defineConfig({
-      plugins: plugins.concat([checker({ typescript: true })]),
+      plugins: plugins.concat([checker({ typescript: true }), mkcert({ hosts: ['glific.test'] })]),
       // dev specific config
       build: {
         sourcemap: true, // Source map generation must be turned on
@@ -65,10 +67,6 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         host: 'glific.test',
         port: 3000,
         open: 'https://glific.test:3000/',
-        https: {
-          key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
-          cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
-        },
         headers: {
           'X-Content-Type-Options': 'nosniff',
           'X-XSS-Protection': '1; mode=block',

@@ -12,6 +12,7 @@ import {
   getTemplateMocks3,
   getTemplateMocks4,
   getTemplateMocks5,
+  getTemplateMocks6,
   mocks,
   translateInteractiveTemplateMock,
   translateWitTrimmingMocks,
@@ -417,6 +418,25 @@ describe('Edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+  });
+
+  test('it preserves body bold formatting while stripping markdown from LIST item options', async () => {
+    render(renderInteractiveMessage('6', getTemplateMocks6));
+
+    await waitFor(() => {
+      expect(screen.getByText('Markdown content removed')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const bodyEditor = screen.getByTestId('editor-body');
+      expect(bodyEditor).toHaveTextContent('*bold body text*');
     });
   });
 });

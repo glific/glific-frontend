@@ -258,6 +258,8 @@ export const getOrganizationServicesQuery = {
         autoTranslationEnabled: true,
         whatsappGroupEnabled: true,
         assistantConfigVersionsEnabled: false,
+        copyNodeEnabled: false,
+        promptGeneratorEnabled: false,
       },
     },
   },
