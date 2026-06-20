@@ -500,6 +500,115 @@
 }
 
 /* ─────────────────────────────────────────
+   Interactive button rows
+   ───────────────────────────────────────── */
+.ButtonRows {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ButtonRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafa;
+}
+
+.ButtonRowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ButtonRowRadios {
+  display: flex;
+  gap: 18px;
+}
+
+.RadioOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+.RadioOption input {
+  accent-color: #119656;
+  cursor: pointer;
+}
+
+.QuickReplyRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.RemoveRowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.RemoveRowBtn:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.AddButtonBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  border: 1.5px solid #119656;
+  border-radius: 8px;
+  background: none;
+  color: #119656;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.AddButtonBtn:hover {
+  background: #f0faf5;
+}
+
+/* Buttons inside the live preview */
+.PreviewButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 90%;
+  margin-top: 2px;
+}
+
+.PreviewButton {
+  background: #fff;
+  color: #00a5f4;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ─────────────────────────────────────────
    Media attachment cards
    ───────────────────────────────────────── */
 .MediaGrid {
@@ -553,6 +662,88 @@
 .MediaSize {
   font-size: 11px;
   color: #9ca3af;
+}
+
+/* ─────────────────────────────────────────
+   Attachment method (URL vs Upload)
+   ───────────────────────────────────────── */
+.ClearAttachmentBtn {
+  display: inline-block;
+  margin-top: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ClearAttachmentBtn:hover {
+  text-decoration: underline;
+}
+
+.AttachmentMethodRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.AttachmentMethodBtn {
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.AttachmentMethodBtn:hover {
+  border-color: #6ee7b7;
+}
+.AttachmentMethodBtnSelected {
+  border-color: #119656;
+  background: #f0faf5;
+  color: #059669;
+}
+
+.Dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 40px 20px;
+  background: #fafafa;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  outline: none;
+}
+.Dropzone:hover,
+.Dropzone:focus-visible {
+  border-color: #119656;
+  background: #f0faf5;
+}
+
+.DropzoneTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.DropzoneHint {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.DropzoneSuccessIcon {
+  color: #119656;
+  font-size: 32px !important;
 }
 
 /* ─────────────────────────────────────────
