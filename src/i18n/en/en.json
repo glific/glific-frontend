@@ -766,5 +766,9 @@
   "answered": "answered",
   "This is an AI generated prompt.": "This is an AI generated prompt.",
   "Please review and edit if required before adding it to your assistant.": "Please review and edit if required before adding it to your assistant.",
-  "Clear": "Clear"
+  "Clear": "Clear",
+  "Unable to load the analytics dashboard.": "Unable to load the analytics dashboard.",
+  "Please": "Please",
+  "refresh the page": "refresh the page",
+  "contact support": "contact support"
 }

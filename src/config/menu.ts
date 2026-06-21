@@ -209,13 +209,17 @@ const menus = (): Menu[] => [
           roles: allRoles,
         },
       ]),
-  {
-    title: 'Data Analytics',
-    path: '/analytics',
-    icon: 'analytics',
-    type: 'sideDrawer',
-    roles: managerLevel,
-  },
+  ...(getOrganizationServices('supersetEnabled')
+    ? [
+        {
+          title: 'Data Analytics',
+          path: '/analytics',
+          icon: 'analytics',
+          type: 'sideDrawer',
+          roles: managerLevel,
+        },
+      ]
+    : []),
   {
     title: 'Manage',
     path: '/collection',
