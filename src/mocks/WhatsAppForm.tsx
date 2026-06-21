@@ -423,6 +423,34 @@ const getWhatsAppForm = {
   },
 };
 
+const getWhatsAppFormPublished = {
+  request: {
+    query: GET_WHATSAPP_FORM,
+    variables: {
+      id: '2',
+    },
+  },
+  result: {
+    data: {
+      whatsappForm: {
+        whatsappForm: {
+          categories: ['customer_support'],
+          revision: {
+            id: '2',
+            definition: JSON.stringify(formJson),
+          },
+          description: 'This is a published form',
+          id: '2',
+          metaFlowId: '1473834353902270',
+          name: 'Published Form',
+          status: 'PUBLISHED',
+          sheet: null,
+        },
+      },
+    },
+  },
+};
+
 const syncWhatsappFormQueryWithErrors = {
   request: {
     query: SYNC_FORM,
@@ -659,8 +687,11 @@ const revertWhatsappFormRevisionMock = {
 
 export const WHATSAPP_FORM_MOCKS = [
   whatsappFormCategories,
+  whatsappFormCategories,
   createWhatsAppFormQuery,
   getWhatsAppForm,
+  getWhatsAppFormPublished,
+  getWhatsAppFormPublished,
   listAllWatsappForms,
   listWhatsappForms(''),
   listWhatsappForms('DRAFT'),
