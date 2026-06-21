@@ -302,19 +302,18 @@ export const FlowEditor = () => {
   const errorMsg = () => (
     <div className={styles.DialogError}>
       {(() => {
-          const seen = new Set<string>();
-          return flowValidation.filter((msg: any) => {
-            if (seen.has(msg.message)) return false;
-            seen.add(msg.message);
-            return true;
-          });
-        })()
-        .map((message: any) => (
-          <div key={message.message} className={styles.ErrorMsg}>
-            <WarningIcon className={styles.ErrorMsgIcon} />
-            {message.message}
-          </div>
-        ))}
+        const seen = new Set<string>();
+        return flowValidation.filter((msg: any) => {
+          if (seen.has(msg.message)) return false;
+          seen.add(msg.message);
+          return true;
+        });
+      })().map((message: any) => (
+        <div key={message.message} className={styles.ErrorMsg}>
+          <WarningIcon className={styles.ErrorMsgIcon} />
+          {message.message}
+        </div>
+      ))}
     </div>
   );
 
