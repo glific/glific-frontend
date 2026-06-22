@@ -484,6 +484,7 @@ export const getOrganizationServicesQuery = {
       organizationServices: {
         dialogflow: false,
         googleCloudStorage: true,
+        promptGeneratorEnabled: false,
       },
     },
   },
