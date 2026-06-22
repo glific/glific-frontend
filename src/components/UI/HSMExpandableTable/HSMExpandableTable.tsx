@@ -33,7 +33,7 @@ const LanguageChip = ({ variant }: { variant: LanguageVariant }) => (
   </span>
 );
 
-const LanguageChips = ({ variants }: { variants: LanguageVariant[] }) => {
+const MultiLanguageChips = ({ variants }: { variants: LanguageVariant[] }) => {
   const visible = variants.slice(0, 4);
   const extra = variants.length - 4;
   return (
@@ -166,7 +166,7 @@ const HSMExpandableTable = ({ templates }: HSMExpandableTableProps) => {
               </div>
 
               <div onClick={(e) => e.stopPropagation()}>
-                <LanguageChips variants={template.languageVariants} />
+                <MultiLanguageChips variants={template.languageVariants} />
               </div>
 
               <div className={styles.CategoryCell}>

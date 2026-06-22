@@ -469,6 +469,7 @@
   "Translate": "Translate",
   "back": "back",
   "Sorry, failed to sync HSM updates.": "Sorry, failed to sync HSM updates.",
+  "Sorry, failed to sync HSM updates. Please try again.": "Sorry, failed to sync HSM updates. Please try again.",
   "HSM queued for sync. Check notifications for updates.": "HSM queued for sync. Check notifications for updates.",
   "Preview": "Preview",
   "An error occured while translating flows.": "An error occured while translating flows.",

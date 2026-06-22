@@ -130,7 +130,7 @@ test('navigates to create template page on Create click', async () => {
   });
 
   fireEvent.click(screen.getByTestId('createTemplate'));
-  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add');
+  expect(mockedNavigate).toHaveBeenCalledWith('/template/add');
 });
 
 test('shows success notification after Sync HSM', async () => {
@@ -157,7 +157,7 @@ test('shows warning notification when Sync HSM fails', async () => {
   userEvent.click(screen.getByTestId('syncHsm'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates.', 'warning');
+    expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates. Please try again.', 'warning');
   });
 });
 
@@ -254,7 +254,7 @@ test('shows warning notification when Sync HSM throws a network error', async ()
   userEvent.click(screen.getByTestId('syncHsm'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates.', 'warning');
+    expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates. Please try again.', 'warning');
   });
 });
 
@@ -269,7 +269,9 @@ test('exports results and shows success notification after a successful bulk app
   fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Templates applied successfully. Please check the csv file for the results');
+    expect(setNotification).toHaveBeenCalledWith(
+      'Templates applied successfully. Please check the csv file for the results'
+    );
   });
   expect(exportCsvFile).toHaveBeenCalledWith('Title,Status\nTest,Success', 'result');
 });

@@ -192,7 +192,7 @@ myHelper(posthog);
 
 ### Design-to-Code Patterns
 
-See `src/containers/HSM/PATTERNS.md` for HSM-specific design-to-code patterns (component hierarchy, Formik, Lexical, i18n, design tokens).
+See `src/containers/PATTERNS.md` for HSM-specific design-to-code patterns (component hierarchy, Formik, Lexical, i18n, design tokens).
 
 ### Testing Conventions
 
