@@ -225,7 +225,7 @@ export const ConfigEditor = ({
 
   const generateWithAiButton = isPromptGeneratorEnabled && !newVersionInProgress && (
     <Button
-      variant="text"
+      variant="outlined"
       size="small"
       onClick={() => setShowPromptGenerator(true)}
       data-testid="generateWithAiButton"
