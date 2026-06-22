@@ -163,13 +163,6 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: managerLevel,
       },
-      {
-        title: 'Tags',
-        path: '/tag',
-        icon: 'tag',
-        type: 'sideDrawer',
-        roles: managerLevel,
-      },
     ],
   },
   {
@@ -255,6 +248,13 @@ const menus = (): Menu[] => [
         title: 'Contact variables',
         path: '/contact-fields',
         icon: 'fields',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'Tags',
+        path: '/tag',
+        icon: 'tag',
         type: 'sideDrawer',
         roles: managerLevel,
       },

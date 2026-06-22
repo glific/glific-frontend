@@ -140,6 +140,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       assistantConfigVersionsEnabled
       aiEvaluationsEnabled
       copyNodeEnabled
+      promptGeneratorEnabled
     }
   }
 `;
