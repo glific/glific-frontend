@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { setErrorMessage, setNotification } from 'common/notification';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -17,6 +18,7 @@ import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { KnowledgeBaseOptions } from '../AssistantOptions/KnowledgeBaseOptions';
+import { PromptGeneratorModal, initialPromptAnswers, PromptAnswers } from '../CreateAssistant/PromptGeneratorModal';
 import type { AssistantVersion } from '../VersionPanel/VersionPanel';
 
 import styles from './ConfigEditor.module.css';
@@ -72,6 +74,11 @@ export const ConfigEditor = ({
   const { t } = useTranslation();
   const [openInstructions, setOpenInstructions] = useState(false);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
+  const [showPromptGenerator, setShowPromptGenerator] = useState(false);
+  // prompt-generator answers live here (not inside the modal) so they survive closing
+  // and reopening the modal while the user stays on this version
+  const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>(initialPromptAnswers);
+  const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
 
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
   const [createAssistant, { loading: creating }] = useMutation(CREATE_ASSISTANT);
@@ -216,6 +223,19 @@ export const ConfigEditor = ({
     </InputAdornment>
   );
 
+  const generateWithAiButton = isPromptGeneratorEnabled && !newVersionInProgress && (
+    <Button
+      variant="text"
+      size="small"
+      onClick={() => setShowPromptGenerator(true)}
+      data-testid="generateWithAiButton"
+      className={styles.GenerateWithAiButton}
+    >
+      {t('Generate with AI')}
+      <span className={styles.BetaBadge}>{t('BETA')}</span>
+    </Button>
+  );
+
   const formFields: any[] = [
     ...(createMode
       ? [
@@ -280,7 +300,10 @@ export const ConfigEditor = ({
     <Modal open onClose={() => setOpenInstructions(false)}>
       <div className={styles.InstructionsBox}>
         <div className={styles.Instructions}>
-          <h5>Edit system instructions</h5>
+          <div className={styles.LabelRow}>
+            <h5>Edit system instructions</h5>
+            {generateWithAiButton}
+          </div>
           <OutlinedInput
             name="expand-instructions"
             onChange={(event) => formik.setFieldValue('instructions', event.target.value)}
@@ -355,9 +378,12 @@ export const ConfigEditor = ({
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
               <div className={styles.FormSection} key={field.name}>
-                <Typography className={styles.Label} variant="h5">
-                  {field.label}
-                </Typography>
+                <div className={styles.LabelRow}>
+                  <Typography className={styles.Label} variant="h5">
+                    {field.label}
+                  </Typography>
+                  {field.name === 'instructions' && generateWithAiButton}
+                </div>
                 <Field key={field.name} {...field} />
               </div>
             ))}
@@ -382,6 +408,19 @@ export const ConfigEditor = ({
         )}
 
         {instructionsDialog}
+        {showPromptGenerator && (
+          <PromptGeneratorModal
+            open={showPromptGenerator}
+            answers={promptAnswers}
+            setAnswers={setPromptAnswers}
+            onClose={() => setShowPromptGenerator(false)}
+            onApply={(text) => {
+              formik.setFieldValue('instructions', text);
+              setShowPromptGenerator(false);
+              setNotification(t('Prompt added to Instructions'), 'success');
+            }}
+          />
+        )}
       </div>
     </FormikProvider>
   );

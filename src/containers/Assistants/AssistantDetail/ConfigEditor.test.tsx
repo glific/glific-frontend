@@ -338,3 +338,35 @@ describe('ConfigEditor — expand instructions modal', () => {
     expect(screen.getByTestId('unsavedIndicator')).toBeInTheDocument();
   });
 });
+
+describe('ConfigEditor — Generate with AI button (prompt generator)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.removeItem('organizationServices');
+  });
+
+  it('shows the Generate with AI button when promptGeneratorEnabled is true', () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+    renderCreate();
+    expect(screen.getByTestId('generateWithAiButton')).toBeInTheDocument();
+  });
+
+  it('hides the Generate with AI button when the flag is off', () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: false }));
+    renderCreate();
+    expect(screen.queryByTestId('generateWithAiButton')).not.toBeInTheDocument();
+  });
+
+  it('hides the button while a new version is in progress', () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+    renderEdit({ newVersionInProgress: true });
+    expect(screen.queryByTestId('generateWithAiButton')).not.toBeInTheDocument();
+  });
+
+  it('opens the prompt generator modal when the button is clicked', () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+    renderCreate();
+    fireEvent.click(screen.getByTestId('generateWithAiButton'));
+    expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
+  });
+});
