@@ -11,6 +11,7 @@ import {
   getFlowWithoutKeyword,
   getOrganizationServicesQuery,
   publishFlow,
+  publishFlowWithDuplicateErrors,
   getFreeFlow,
   resetFlowCount,
   getFlowTranslations,
@@ -180,6 +181,46 @@ test('publish flow which has error', async () => {
 
     expect(getByTestId('ok-button')).toBeInTheDocument();
     fireEvent.click(getByTestId('ok-button'));
+  });
+});
+
+test('publish flow with duplicate errors shows each error only once', async () => {
+  const duplicateErrorMocks = [
+    messageReceivedSubscription({ organizationId: null }),
+    messageSendSubscription({ organizationId: null }),
+    conversationQuery,
+    simulatorReleaseSubscription({ organizationId: null }),
+    simulatorReleaseQuery,
+    simulatorGetQuery,
+    simulatorGetQuery,
+    simulatorSearchQuery,
+    simulatorSearchQuery,
+    publishFlowWithDuplicateErrors,
+    getOrganizationServicesQuery,
+    getFreeFlow,
+    getFreeFlow,
+    getFlowTranslations,
+    exportFlow,
+    getActiveFlow,
+  ];
+
+  const { getByTestId, getAllByText } = render(wrapperFunction(duplicateErrorMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    const errorMessages = getAllByText('"stop" has already been used as a keyword for a flow');
+    expect(errorMessages).toHaveLength(1);
   });
 });
 
