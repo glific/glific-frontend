@@ -456,6 +456,25 @@ export const publishFlow = {
   },
 };
 
+export const publishFlowWithDuplicateErrors = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: Array(5).fill({
+          message: '"stop" has already been used as a keyword for a flow',
+        }),
+        success: null,
+      },
+    },
+  },
+};
+
 export const getOrganizationServicesQuery = {
   request: {
     query: GET_ORGANIZATION_SERVICES,
