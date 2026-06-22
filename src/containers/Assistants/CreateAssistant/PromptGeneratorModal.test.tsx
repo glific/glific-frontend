@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import * as Notification from 'common/notification';
 import {
@@ -20,8 +20,27 @@ const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 // jsdom doesn't implement scrollIntoView; the modal calls it to jump to the first gap
 Element.prototype.scrollIntoView = vi.fn();
 
+// The modal polls on a real 2s interval with a 20s timeout. Driving those with the
+// real clock makes the suite slow and flaky under CI load (event-loop starvation can
+// race waitFor against the poll), so we run the async tests on a fake clock and advance
+// it deterministically — the generation flow then resolves on demand, not on wall-time.
+const POLL_INTERVAL = 2000;
+
+// flush the mutation promise + any scheduled poll ticks/timeouts on the fake clock
+const advanceGeneration = async (ms: number = POLL_INTERVAL * 3) => {
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(ms);
+  });
+};
+
 beforeEach(() => {
+  vi.useFakeTimers();
   vi.clearAllMocks();
+});
+
+afterEach(() => {
+  vi.runOnlyPendingTimers();
+  vi.useRealTimers();
 });
 
 const onClose = vi.fn();
@@ -102,17 +121,12 @@ test('generates a prompt, polls to ready and shows the editable preview', async 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
 
-  await waitFor(() => {
-    expect(screen.getByTestId('generatingState')).toBeInTheDocument();
-  });
+  // phase flips to 'generating' synchronously on click, before the mutation resolves
+  expect(screen.getByTestId('generatingState')).toBeInTheDocument();
 
-  await waitFor(
-    () => {
-      expect(screen.getByTestId('reviewNotice')).toBeInTheDocument();
-    },
-    { timeout: 5000 }
-  );
+  await advanceGeneration();
 
+  expect(screen.getByTestId('reviewNotice')).toBeInTheDocument();
   expect(screen.getByTestId('generatedPromptInput')).toHaveValue(generatedPromptText);
 });
 
@@ -121,20 +135,12 @@ test('editing the preview and clicking Use this Prompt calls onApply with edited
 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
-
-  await waitFor(
-    () => {
-      expect(screen.getByTestId('generatedPromptInput')).toBeInTheDocument();
-    },
-    { timeout: 5000 }
-  );
+  await advanceGeneration();
 
   fireEvent.change(screen.getByTestId('generatedPromptInput'), { target: { value: 'Edited prompt text' } });
   fireEvent.click(screen.getByTestId('usePromptButton'));
 
-  await waitFor(() => {
-    expect(onApply).toHaveBeenCalledWith('Edited prompt text');
-  });
+  expect(onApply).toHaveBeenCalledWith('Edited prompt text');
 });
 
 test('shows error state with retry when generation fails', async () => {
@@ -142,17 +148,14 @@ test('shows error state with retry when generation fails', async () => {
 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
+  await advanceGeneration();
 
-  await waitFor(() => {
-    expect(screen.getByTestId('promptError')).toBeInTheDocument();
-    expect(errorMessageSpy).toHaveBeenCalled();
-  });
+  expect(screen.getByTestId('promptError')).toBeInTheDocument();
+  expect(errorMessageSpy).toHaveBeenCalled();
 
   // retry returns to the form
   fireEvent.click(screen.getByTestId('retryButton'));
-  await waitFor(() => {
-    expect(screen.getByTestId('generatePromptButton')).toBeInTheDocument();
-  });
+  expect(screen.getByTestId('generatePromptButton')).toBeInTheDocument();
 });
 
 test('shows error when the mutation returns a failed status directly', async () => {
@@ -160,10 +163,9 @@ test('shows error when the mutation returns a failed status directly', async () 
 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
+  await advanceGeneration();
 
-  await waitFor(() => {
-    expect(screen.getByTestId('promptError')).toBeInTheDocument();
-  });
+  expect(screen.getByTestId('promptError')).toBeInTheDocument();
 });
 
 test('treats a ready response with no prompt text as a failure', async () => {
@@ -171,10 +173,9 @@ test('treats a ready response with no prompt text as a failure', async () => {
 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
+  await advanceGeneration();
 
-  await waitFor(() => {
-    expect(screen.getByTestId('promptError')).toBeInTheDocument();
-  });
+  expect(screen.getByTestId('promptError')).toBeInTheDocument();
 });
 
 test('shows error when polling resolves to a failed status', async () => {
@@ -182,11 +183,7 @@ test('shows error when polling resolves to a failed status', async () => {
 
   fillAllAnswers();
   fireEvent.click(screen.getByTestId('generatePromptButton'));
+  await advanceGeneration();
 
-  await waitFor(
-    () => {
-      expect(screen.getByTestId('promptError')).toBeInTheDocument();
-    },
-    { timeout: 5000 }
-  );
+  expect(screen.getByTestId('promptError')).toBeInTheDocument();
 });
