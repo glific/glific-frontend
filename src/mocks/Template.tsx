@@ -923,6 +923,49 @@ export const bulkApplyV2Mock = {
   },
 };
 
+export const syncHsmNetworkErrorMock = {
+  request: { query: SYNC_HSM_TEMPLATES },
+  error: new Error('Network error'),
+};
+
+export const bulkApplyV2ErrorsMock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  result: {
+    data: {
+      bulkApplyTemplates: {
+        errors: [{ key: 'row_2', message: 'Invalid template' }],
+        csv_rows: 'Title,Status\nTest,Failed',
+      },
+    },
+  },
+};
+
+export const bulkApplyV2NetworkErrorMock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  error: new Error('Network error'),
+};
+
+export const getCategoriesV2Mock = {
+  request: { query: GET_HSM_CATEGORIES, variables: {} },
+  result: { data: { whatsappHsmCategories: ['UTILITY', 'MARKETING'] } },
+};
+
+export const bulkApplyV2EmptyMock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  result: {
+    data: { bulkApplyTemplates: null },
+  },
+};
+
 export const hsmGroupedTemplates: GroupedTemplate[] = [
   {
     shortcode: 'welcome_msg',

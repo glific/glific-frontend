@@ -105,12 +105,12 @@ const HSMListV2 = () => {
       const { data: syncData } = await syncHsmTemplates();
       const errors = syncData?.syncHsmTemplate?.errors;
       if (!syncData?.syncHsmTemplate || errors?.length) {
-        setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
+        setNotification(t('Sorry, failed to sync HSM updates. Please try again.'), 'warning');
       } else {
         setNotification(t('HSM queued for sync. Check notifications for updates.'), 'success');
       }
     } catch {
-      setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
+      setNotification(t('Sorry, failed to sync HSM updates. Please try again.'), 'warning');
     } finally {
       setSyncLoading(false);
     }
@@ -206,7 +206,7 @@ const HSMListV2 = () => {
           <Button
             variant="contained"
             className={styles.CreateButton}
-            onClick={() => navigate('/template-v2/add')}
+            onClick={() => navigate('/template/add')}
             data-testid="createTemplate"
           >
             + {t('Create')}
