@@ -190,6 +190,10 @@ const posthog = usePostHog();
 myHelper(posthog);
 ```
 
+### Design-to-Code Patterns
+
+See `src/containers/PATTERNS.md` for HSM-specific design-to-code patterns (component hierarchy, Formik, Lexical, i18n, design tokens).
+
 ### Testing Conventions
 
 Tests use `MockedProvider` from `@apollo/client/testing`. Mock data lives in `src/mocks/` organized by domain (e.g., `Chat.tsx`, `Flow.tsx`, `User.tsx`).
