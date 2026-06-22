@@ -97,6 +97,7 @@ describe('index', () => {
       api_host: configValues.POSTHOG_HOST,
       defaults: '2026-01-30',
       capture_performance: { web_vitals: true },
+      session_recording: { maskAllInputs: false, maskInputOptions: { password: true } },
     });
     expect(screen.getByTestId('posthog-provider')).toBeInTheDocument();
     expect(screen.getByTestId('mock-app')).toBeInTheDocument();

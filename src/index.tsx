@@ -28,6 +28,17 @@ function initPostHog(): boolean {
       capture_performance: {
         web_vitals: true,
       },
+      // Session Replay privacy posture. Recording is OFF until enabled in the PostHog
+      // project settings, and — critically — it must be scoped there to the
+      // assistant/prompt-generator pages **by URL** (not by feature flag, which records
+      // the whole session). That URL scope is what keeps chat (contact numbers) and login
+      // (credentials) out of recordings entirely. Within that scope the prompt-generator
+      // inputs aren't sensitive, so we leave inputs/text visible — but always mask
+      // password fields as a safety net for credentials.
+      session_recording: {
+        maskAllInputs: false,
+        maskInputOptions: { password: true },
+      },
     });
     return true;
   } catch {
