@@ -14,6 +14,24 @@ import {
 
 import { ConfigEditor } from './ConfigEditor';
 
+// Stub the prompt generator modal so the apply-flow is exercised without its real
+// polling timers (which are slow and can leak across test files in CI).
+const MOCK_GENERATED_PROMPT = 'Generated prompt from modal';
+vi.mock('../CreateAssistant/PromptGeneratorModal', () => ({
+  initialPromptAnswers: {},
+  PromptGeneratorModal: ({ open, onApply, onClose }: any) =>
+    open ? (
+      <div data-testid="promptGeneratorModal">
+        <button type="button" data-testid="mockApplyPrompt" onClick={() => onApply(MOCK_GENERATED_PROMPT)}>
+          apply
+        </button>
+        <button type="button" data-testid="mockClosePrompt" onClick={onClose}>
+          close
+        </button>
+      </div>
+    ) : null,
+}));
+
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 const mockVersion = mockVersions[0];
@@ -367,6 +385,31 @@ describe('ConfigEditor — Generate with AI button (prompt generator)', () => {
     localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
     renderCreate();
     fireEvent.click(screen.getByTestId('generateWithAiButton'));
-    expect(screen.getByTestId('betaBanner')).toBeInTheDocument();
+    expect(screen.getByTestId('promptGeneratorModal')).toBeInTheDocument();
+  });
+
+  it('applies a generated prompt into the instructions field', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+    renderCreate();
+
+    fireEvent.click(screen.getByTestId('generateWithAiButton'));
+    fireEvent.click(screen.getByTestId('mockApplyPrompt'));
+
+    // modal closes and the generated prompt lands in the instructions field
+    await waitFor(() => expect(screen.queryByTestId('promptGeneratorModal')).not.toBeInTheDocument());
+    const instructions = screen.getAllByRole('textbox').find((el) => el.getAttribute('name') === 'instructions');
+    expect(instructions).toHaveValue(MOCK_GENERATED_PROMPT);
+    expect(notificationSpy).toHaveBeenCalledWith('Prompt added to Instructions', 'success');
+  });
+
+  it('closes the prompt generator modal on close', () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ promptGeneratorEnabled: true }));
+    renderCreate();
+
+    fireEvent.click(screen.getByTestId('generateWithAiButton'));
+    expect(screen.getByTestId('promptGeneratorModal')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('mockClosePrompt'));
+    expect(screen.queryByTestId('promptGeneratorModal')).not.toBeInTheDocument();
   });
 });
