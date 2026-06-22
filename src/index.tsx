@@ -17,7 +17,13 @@ function redirectOldDomain(): void {
 }
 
 function initPostHog(): boolean {
-  if (!POSTHOG_PROJECT_TOKEN) {
+  // PostHog is OFF in local dev by default, so developer machines don't pump events — and
+  // PII session recordings — into the shared project. A dev who wants to test PostHog
+  // locally can opt in by setting VITE_PUBLIC_POSTHOG_ENABLE_DEV=true in their .env.
+  // Staging/prod builds always send (when a token is present).
+  const isDev = import.meta.env.MODE === 'development';
+  const enabledInDev = import.meta.env.VITE_PUBLIC_POSTHOG_ENABLE_DEV === 'true';
+  if (!POSTHOG_PROJECT_TOKEN || (isDev && !enabledInDev)) {
     return false;
   }
 
