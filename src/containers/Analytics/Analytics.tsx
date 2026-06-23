@@ -46,7 +46,7 @@ export const Analytics: React.FC = () => {
         setLoading(false);
         const mountHTMLElement: HTMLElement | null = document.getElementById('dashboard-container');
         if (mountHTMLElement && token) {
-          embedDashboard({
+          await embedDashboard({
             id: SUPERSET_DASHBOARD_ID,
             supersetDomain: 'https://moonshine.projecttech4dev.org',
             mountPoint: mountHTMLElement,
@@ -63,7 +63,11 @@ export const Analytics: React.FC = () => {
             },
           });
         }
-        intervalRef.current = setInterval(fetchAndCacheToken, 4.5 * 60 * 1000);
+        intervalRef.current = setInterval(() => {
+          fetchAndCacheToken().catch(() => {
+            // failure already sent to Sentry in fetchEmbedToken
+          });
+        }, 4.5 * 60 * 1000);
       } catch {
         setLoading(false);
         setEmbedError(true);

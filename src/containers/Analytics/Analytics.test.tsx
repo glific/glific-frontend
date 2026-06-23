@@ -113,6 +113,45 @@ describe('<Analytics />', () => {
     });
   });
 
+  it('clicking refresh button calls window.location.reload', async () => {
+    const reloadMock = vi.fn();
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: { reload: reloadMock },
+    });
+
+    vi.mocked(axios.post).mockRejectedValue(new Error('Network error'));
+
+    render(<Analytics />);
+
+    const refreshButton = await screen.findByRole('button', { name: 'refresh the page' });
+    await userEvent.click(refreshButton);
+
+    expect(reloadMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-fetches token when interval fires', async () => {
+    let capturedCallback: (() => Promise<void>) | undefined;
+    vi.spyOn(globalThis, 'setInterval').mockImplementation((cb: any) => {
+      capturedCallback = cb;
+      return 1 as any;
+    });
+
+    vi.mocked(axios.post).mockResolvedValue({ data: { token: 'tok' } });
+
+    render(<Analytics />);
+
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledTimes(1);
+    });
+
+    expect(capturedCallback).toBeDefined();
+    await capturedCallback!();
+
+    expect(axios.post).toHaveBeenCalledTimes(2);
+  });
+
   it('clears interval on unmount', async () => {
     vi.mocked(axios.post).mockResolvedValue({ data: { token: 'tok' } });
 
