@@ -1,6 +1,7 @@
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { ClickAwayListener, FormControl, FormHelperText, IconButton, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import EmojiPicker from 'components/UI/EmojiPicker/EmojiPicker';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -25,6 +26,8 @@ export const WaPollOptions = ({
   isEditing,
   setPreviewData,
 }: WaPollOptionsProps) => {
+  const { t } = useTranslation();
+
   const handleAddOption = () => {
     const lastId = values.options[values.options.length - 1]?.id;
     const newOptions = [...values.options, { name: '', id: lastId + 1 }];
@@ -80,7 +83,7 @@ export const WaPollOptions = ({
   return (
     <div className={styles.Container}>
       <Typography className={styles.Title} variant="h6">
-        Poll Options
+        {t('Poll Options')}
       </Typography>
       <div className={styles.Options}>
         {values.options.map((option: any, ind: number) => (
@@ -103,7 +106,7 @@ export const WaPollOptions = ({
 
         {values.options.length < 12 && !isEditing && (
           <Button data-testid="add-btn" variant="outlined" onClick={handleAddOption}>
-            Add Option
+            {t('Add Option')}
           </Button>
         )}
       </div>
@@ -135,6 +138,7 @@ const PollOption = ({
   ind,
 }: PollOptionProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { t } = useTranslation();
   const hasError = errors && typeof errors !== 'string' && touched && errors[ind] && touched[ind];
 
   return (
@@ -143,7 +147,7 @@ const PollOption = ({
         <TextField
           className={styles.TextField}
           variant="outlined"
-          placeholder={`Option ${ind + 1}`}
+          placeholder={`${t('Option')} ${ind + 1}`}
           value={option?.name}
           onChange={(event) => handleInput(event.target.value, option?.id)}
           disabled={isEditing}

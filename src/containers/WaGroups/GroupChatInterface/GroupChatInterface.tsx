@@ -23,7 +23,10 @@ const tabs = [
     label: 'Collections',
     link: '/group/chat/collection',
   },
-];
+] as const;
+
+type TabLink = (typeof tabs)[number]['link'];
+
 export interface GroupChatInterfaceProps {
   collections?: boolean;
 }
@@ -31,7 +34,7 @@ export interface GroupChatInterfaceProps {
 export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [value, setValue] = useState(tabs[0].link);
+  const [value, setValue] = useState<TabLink>(tabs[0].link);
   const params = useParams();
   const location = useLocation();
   const [phonenumber, setPhonenumber] = useState<any>(null);
@@ -91,7 +94,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   let listingContent;
   let phonesDropDown: any;
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: TabLink) => {
     setValue(newValue);
     navigate(newValue);
   };
@@ -100,7 +103,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
 
   if (selectedCollectionId || selectedTab === 'collections') {
     listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
-    heading = 'Group Collections';
+    heading = t('Group Collections');
   } else {
     // let's enable simulator only when group tab is shown
     phonesDropDown = <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />;
@@ -108,7 +111,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <ChatConversations phonenumber={phonenumber} filterComponent={phonesDropDown} entityId={selectedGroupId} />
     );
 
-    heading = 'Groups';
+    heading = t('Groups');
   }
 
   const groupChatInterface: any = (
@@ -141,7 +144,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
                 key={tab.label}
                 classes={{ selected: styles.TabSelected }}
                 className={styles.Tab}
-                label={tab.label}
+                label={t(tab.label)}
                 value={tab.link}
                 disableRipple
               />

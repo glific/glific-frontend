@@ -10,6 +10,7 @@ import {
   TableContainer,
   Skeleton,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
@@ -118,7 +119,8 @@ const tableHeadColumns = (
   tableVals: any,
   handleTableChange: Function,
   totalRows: number,
-  checkboxSupport?: { action: any; icon: any; selectedItems: any }
+  checkboxSupport?: { action: any; icon: any; selectedItems: any },
+  t?: Function
 ) => {
   let headerRow;
 
@@ -127,7 +129,12 @@ const tableHeadColumns = (
       <TableRow className={styles.TableHeadRow}>
         <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>{columnNames[0].label}</TableCell>
         <TableCell className={styles.SelectedItems}>
-          {checkboxSupport?.selectedItems.length} of {totalRows} selected
+          {t
+            ? t('{{selected}} of {{total}} selected', {
+                selected: checkboxSupport?.selectedItems.length,
+                total: totalRows,
+              })
+            : `${checkboxSupport?.selectedItems.length} of ${totalRows} selected`}
         </TableCell>
         <TableCell colSpan={3} className={styles.Icon}>
           <span
@@ -173,12 +180,19 @@ const tableHeadColumns = (
   return headerRow;
 };
 
-const pagination = (columnNames: Array<any>, totalRows: number, handleTableChange: Function, tableVals: any) => (
+const pagination = (
+  columnNames: Array<any>,
+  totalRows: number,
+  handleTableChange: Function,
+  tableVals: any,
+  labelRowsPerPage: string
+) => (
   <TablePagination
     component="div"
     className={styles.FooterRow}
     colSpan={columnNames.length}
     count={totalRows}
+    labelRowsPerPage={labelRowsPerPage}
     onPageChange={(e, newPage) => {
       handleTableChange('pageNum', newPage);
     }}
@@ -205,6 +219,7 @@ export const Pager = ({
   showPagination = true,
   checkboxSupport,
 }: PagerProps) => {
+  const { t } = useTranslation();
   const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
     columnNames,
@@ -212,9 +227,10 @@ export const Pager = ({
     tableVals,
     handleTableChange,
     totalRows,
-    checkboxSupport
+    checkboxSupport,
+    t
   );
-  const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
+  const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals, t('Rows per page'));
 
   return (
     <div className={styles.TableContainer}>

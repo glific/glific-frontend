@@ -78,6 +78,17 @@ describe('<WhatsAppForms />', () => {
     });
   });
 
+  test('it should render a published form in disabled/view-only mode', async () => {
+    const { getByText } = render(wrapper('/whatsapp-forms/2/edit'));
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('WhatsApp Form')).toBeInTheDocument();
+      expect(getByText('Please view below details.')).toBeInTheDocument();
+      expect(getByText('Go Back')).toBeInTheDocument();
+    });
+  });
+
   test('error should include form instead of flow', async () => {
     const setErrorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
     const { getByTestId, getByText, getAllByRole } = render(wrapper());

@@ -109,27 +109,29 @@ export const GroupCollectionList = () => {
         setAddGroupsDialogShow(true);
       }}
     >
-      Add groups
+      {t('Add groups')}
     </Button>
   );
 
   const removeDialogBox = (
     <DialogBox
-      title={'Are you sure you want to remove group from this collection?'}
+      title={t('Are you sure you want to remove group from this collection?')}
       handleCancel={() => setRemoveGroupsDialogShow(false)}
       colorOk="warning"
       alignButtons="center"
       handleOk={handleCollectionRemove}
+      buttonCancel={t('Cancel')}
+      buttonOk={t('Confirm')}
     >
       <div className={styles.DialogText}>
-        <p>{'The group will no longer receive messages sent to this collection'}</p>
+        <p>{t('The group will no longer receive messages sent to this collection')}</p>
       </div>
     </DialogBox>
   );
 
   const title = collection.data ? collection.data.group.group.label : t('Collection');
 
-  const columnNames = [{ name: 'label', label: 'Group' }, { label: t('Actions') }];
+  const columnNames = [{ name: 'label', label: t('Group') }, { label: t('Actions') }];
 
   const additionalAction = () => [
     {
