@@ -63,11 +63,14 @@ export const Analytics: React.FC = () => {
             },
           });
         }
-        intervalRef.current = setInterval(() => {
-          fetchAndCacheToken().catch(() => {
-            // failure already sent to Sentry in fetchEmbedToken
-          });
-        }, 4.5 * 60 * 1000);
+        intervalRef.current = setInterval(
+          () => {
+            fetchAndCacheToken().catch(() => {
+              // failure already sent to Sentry in fetchEmbedToken
+            });
+          },
+          4.5 * 60 * 1000
+        );
       } catch {
         setLoading(false);
         setEmbedError(true);
