@@ -15,9 +15,7 @@ export function ErrorPage({ title, onRefresh }: ErrorPageProps) {
     <div className={styles.container}>
       <GlificErrorIcon className={styles.icon} aria-hidden="true" />
       <p className={styles.title}>{title}</p>
-      <p className={styles.subtitle}>
-        {t('Click refresh to try again or contact our support team for help')}
-      </p>
+      <p className={styles.subtitle}>{t('Click refresh to try again or contact our support team for help')}</p>
       <Button variant="outlined" color="primary" onClick={handleRefresh}>
         {t('Refresh')}
       </Button>

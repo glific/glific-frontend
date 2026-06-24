@@ -29,9 +29,7 @@ describe('<ErrorPage />', () => {
 
   it('renders the subtitle hint text', () => {
     render(<ErrorPage title="Something went wrong." />);
-    expect(
-      screen.getByText('Click refresh to try again or contact our support team for help')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Click refresh to try again or contact our support team for help')).toBeInTheDocument();
   });
 
   it('renders a Refresh button', () => {
