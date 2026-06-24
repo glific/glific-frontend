@@ -19,10 +19,7 @@ type OrgEvalAccessGateErrorProps = {
 export function OrgEvalAccessGateError({ onRetry }: OrgEvalAccessGateErrorProps) {
   return (
     <div className={styles.Panel} data-testid="orgEvalAccessGateError">
-      <ErrorPage
-        title={t('Something went wrong while checking your AI Evaluations access.')}
-        onRefresh={onRetry}
-      />
+      <ErrorPage title={t('Something went wrong while checking your AI Evaluations access.')} onRefresh={onRetry} />
     </div>
   );
 }

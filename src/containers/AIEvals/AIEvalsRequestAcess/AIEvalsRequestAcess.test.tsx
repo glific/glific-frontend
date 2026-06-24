@@ -163,11 +163,7 @@ describe('AIEvalsRequestAcess', () => {
   it('shows full-screen error when the access check query fails', async () => {
     renderComponent([getOrgEvalAccessRequestErrorMock]);
     expect(await screen.findByTestId('orgEvalAccessGateError')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Something went wrong while checking your AI Evaluations access.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong while checking your AI Evaluations access.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
   });
 
