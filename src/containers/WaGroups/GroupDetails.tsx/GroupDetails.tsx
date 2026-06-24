@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
-import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Heading } from 'components/UI/Heading/Heading';
@@ -13,13 +12,12 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { List } from 'containers/List/List';
 import { ContactDescription } from 'containers/Profile/Contact/ContactDescription/ContactDescription';
 import { UPDATE_WA_GROUP } from 'graphql/mutations/Group';
-import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
 import { PhonesPanel } from './PhonesPanel/PhonesPanel';
+import { AddMembersDialog } from './AddMembersDialog/AddMembersDialog';
 import styles from './GroupDetails.module.css';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -33,7 +31,6 @@ export const GroupDetails = () => {
   const [contentToShow, setContentToShow] = useState('members');
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [showAddMembersDialog, setShowAddMembersDialog] = useState(false);
-  const [memberSearchTerm, setMemberSearchTerm] = useState('');
 
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
@@ -80,58 +77,6 @@ export const GroupDetails = () => {
     },
   });
 
-  const [addMembers, { loading: addingMembers }] = useMutation(UPDATE_WA_GROUP, {
-    refetchQueries: [
-      { query: GET_WA_GROUP, variables: { waGroupId: params.id } },
-      { query: LIST_CONTACTS_WA_GROUPS, variables: { filter: { waGroupId: params.id } } },
-    ],
-    onError: () => {
-      setNotification(t('Could not add contacts to the group'), 'warning');
-    },
-  });
-
-  const { data: memberSearchData, loading: memberSearchLoading } = useQuery(GET_CONTACTS_LIST, {
-    variables: setVariables({ name: memberSearchTerm, excludeWaGroups: params.id }, 50),
-    fetchPolicy: 'cache-and-network',
-    skip: !showAddMembersDialog,
-  });
-
-  const memberSearchOptions =
-    memberSearchData?.contacts?.map((c: any) => ({
-      ...c,
-      name: c.name || c.phone,
-    })) || [];
-
-  const handleAddMembers = async (selectedContactIds: any[]) => {
-    if (!selectedContactIds.length) {
-      setShowAddMembersDialog(false);
-      return;
-    }
-    const { data: responseData } = await addMembers({
-      variables: {
-        input: {
-          id: params.id,
-          addContactIds: selectedContactIds,
-        },
-      },
-    });
-    const errors = responseData?.updateWaGroup?.errors;
-    if (errors?.length) {
-      setNotification(
-        errors
-          .map((e: any) => e?.message)
-          .filter(Boolean)
-          .join('; '),
-        'warning'
-      );
-      return;
-    }
-    if (responseData?.updateWaGroup?.waGroup) {
-      const added = selectedContactIds.length;
-      setNotification(`${added} ${added === 1 ? 'contact' : 'contacts'} added`, 'success');
-      setShowAddMembersDialog(false);
-    }
-  };
 
   const [renameGroup, { loading: renaming }] = useMutation(UPDATE_WA_GROUP, {
     refetchQueries: [{ query: GET_WA_GROUP, variables: { waGroupId: params.id } }],
@@ -266,29 +211,7 @@ export const GroupDetails = () => {
   }
 
   if (showAddMembersDialog) {
-    dialog = (
-      <SearchDialogBox
-        title={t('Add members to this group')}
-        handleOk={handleAddMembers}
-        handleCancel={() => setShowAddMembersDialog(false)}
-        buttonOkLoading={addingMembers}
-        disableOk={addingMembers}
-        options={memberSearchOptions}
-        optionLabel="name"
-        additionalOptionLabel="phone"
-        asyncSearch
-        disableClearable
-        selectedOptions={[]}
-        fullWidth
-        showTags={false}
-        noOptionsText={memberSearchLoading ? t('Loading...') : t('No options available')}
-        onChange={(value: any) => {
-          if (typeof value === 'string') {
-            setMemberSearchTerm(value);
-          }
-        }}
-      />
-    );
+    dialog = <AddMembersDialog waGroupId={params.id!} onClose={() => setShowAddMembersDialog(false)} />;
   }
 
   if (showRenameDialog) {

@@ -590,5 +590,12 @@
   "No contacts added": "कोई संपर्क नहीं जोड़ा गया",
   "Could not add contacts to the group": "समूह में संपर्क नहीं जोड़े जा सके",
   "Could not remove contact from the group": "समूह से संपर्क नहीं हटाया जा सका",
-  "The change is pushed to WhatsApp via the group’s admin phone.": "यह बदलाव समूह के एडमिन फ़ोन के ज़रिए व्हाट्सऐप पर भेजा जाता है।"
+  "The change is pushed to WhatsApp via the group’s admin phone.": "यह बदलाव समूह के एडमिन फ़ोन के ज़रिए व्हाट्सऐप पर भेजा जाता है।",
+  "Upload CSV": "CSV अपलोड करें",
+  "Could not upload members": "सदस्य अपलोड नहीं हो सके",
+  "Member upload started. Check notifications for the report.": "सदस्य अपलोड शुरू हुआ। रिपोर्ट के लिए सूचनाएँ देखें।",
+  "Upload a CSV with a single \"phone\" column.": "एक ही \"phone\" कॉलम वाली CSV अपलोड करें।",
+  "CSV with a phone column; name optional.": "phone कॉलम वाली CSV; name वैकल्पिक है।",
+  "Could not start the member upload": "सदस्य अपलोड शुरू नहीं हो सका",
+  "WhatsApp group created. Members are being imported — check notifications for the report.": "व्हाट्सऐप समूह बन गया। सदस्य आयात हो रहे हैं — रिपोर्ट के लिए सूचनाएँ देखें।"
 }

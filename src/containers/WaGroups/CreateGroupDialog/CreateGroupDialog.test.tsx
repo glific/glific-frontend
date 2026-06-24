@@ -8,6 +8,7 @@ import {
   createWaGroupWithErrors,
   createWaGroupNetworkError,
   createWaGroupNoGroup,
+  createWaGroupCsvQuery,
   newGroupConversation,
 } from 'mocks/Groups';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -153,4 +154,37 @@ test('surfaces network errors on submit', async () => {
   await waitFor(() => {
     expect(setErrorMessage).toHaveBeenCalled();
   });
+});
+
+test('creates the group and imports members from a CSV', async () => {
+  const onClose = vi.fn();
+  renderDialog([contactsListForCreateGroup, createWaGroupCsvQuery, newGroupConversation], { onClose });
+
+  await screen.findByText('Create WhatsApp group');
+
+  // name + creator phone (the phone autocomplete is always the first one)
+  fireEvent.change(screen.getByPlaceholderText('Group name'), { target: { value: 'Test Group' } });
+  const [phoneEl] = screen.getAllByTestId('autocomplete-element');
+  phoneEl.focus();
+  fireEvent.keyDown(phoneEl, { key: 'ArrowDown' });
+  fireEvent.click(await screen.findByText('Phone 1 — 919999999999'));
+
+  // switch to CSV mode and upload a file
+  fireEvent.click(screen.getByTestId('csvMode'));
+  const input = screen.getByTestId('createGroupCsv');
+  const file = new File(['phone\n919900112233\n'], 'members.csv', { type: 'text/csv' });
+  fireEvent.change(input, { target: { files: [file] } });
+
+  await waitFor(() => {
+    expect(screen.getByTestId('ok-button')).not.toBeDisabled();
+  });
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith(
+      'WhatsApp group created. Members are being imported — check notifications for the report.',
+      'success'
+    );
+  });
+  expect(onClose).toHaveBeenCalled();
 });

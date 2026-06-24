@@ -3,6 +3,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, GROUP_QUERY_VARIABLES, setVariables } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -13,6 +14,8 @@ import { CREATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { saveGroupConversation } from 'services/GroupMessageService';
+import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
+import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import styles from './CreateGroupDialog.module.css';
 
 export interface ManagedPhoneOption {
@@ -41,11 +44,7 @@ interface FormValues {
   contacts: ContactOption[];
 }
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Group name is required').max(100, 'Name is too long'),
-  waManagedPhone: Yup.object().nullable().required('Pick the managed phone that will create the group'),
-  contacts: Yup.array().min(1, 'Pick at least one member'),
-});
+type MemberMode = 'select' | 'csv';
 
 export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreated }: CreateGroupDialogProps) => {
   const { t } = useTranslation();
@@ -53,6 +52,17 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
   // asyncSearch mode keeps the selected options here (independent of the
   // search-filtered `options`); AutoComplete also mirrors them into Formik.
   const [selectedContacts, setSelectedContacts] = useState<ContactOption[]>([]);
+  const [memberMode, setMemberMode] = useState<MemberMode>('select');
+  const [fileName, setFileName] = useState('');
+  const [csvContent, setCsvContent] = useState<string | ArrayBuffer | null>('');
+
+  // Members are required only in the dropdown mode; in CSV mode the file (guarded
+  // by disableOk) supplies them, so `contacts` stays empty.
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Group name is required').max(100, 'Name is too long'),
+    waManagedPhone: Yup.object().nullable().required('Pick the managed phone that will create the group'),
+    contacts: memberMode === 'select' ? Yup.array().min(1, 'Pick at least one member') : Yup.array(),
+  });
 
   const phoneOptions = phones.map((p) => ({
     id: p.id,
@@ -86,6 +96,30 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
   const [createWaGroup, { loading }] = useMutation(CREATE_WA_GROUP);
   const [fetchNewGroup] = useLazyQuery(GROUP_SEARCH_QUERY, { fetchPolicy: 'network-only' });
 
+  const handleFile = (event: any) => {
+    const media = event.target.files?.[0];
+    if (!media) return;
+    const reader = new FileReader();
+    reader.readAsText(media);
+    reader.onload = () => {
+      const extension = media.name.split('.').pop();
+      if (extension !== 'csv') {
+        setNotification(t('Please upload a valid CSV file'), 'warning');
+        return;
+      }
+      setFileName(media.name);
+      setCsvContent(reader.result);
+    };
+  };
+
+  const resetMembers = () => {
+    setSelectedContacts([]);
+    setContactSearchTerm('');
+    setFileName('');
+    setCsvContent('');
+    setMemberMode('select');
+  };
+
   // Add the freshly created group to the cached conversation list so it shows
   // up in the sidebar without a manual refresh. Mirrors the missing-group
   // fetch used by GroupMessageSubscription: fetch the group's conversation and
@@ -111,12 +145,16 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
 
   const handleSubmit = async (values: FormValues) => {
     try {
+      const isCsv = memberMode === 'csv';
       const { data } = await createWaGroup({
         variables: {
           input: {
             name: values.name.trim(),
             waManagedPhoneId: values.waManagedPhone!.id,
-            numbers: values.contacts.map((c) => c.phone),
+            // dropdown sends the picked members' phones; CSV sends the file —
+            // the backend seeds the group with its phones and enriches the
+            // contacts (name/fields/collection) in a background job.
+            ...(isCsv ? { importData: csvContent } : { numbers: values.contacts.map((c) => c.phone) }),
           },
         },
       });
@@ -137,12 +175,15 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
         return;
       }
 
-      setNotification(t('WhatsApp group created'), 'success');
-      // fire-and-forget so the dialog closes immediately; the cache write
-      // doesn't depend on this component staying mounted.
+      setNotification(
+        isCsv
+          ? t('WhatsApp group created. Members are being imported — check notifications for the report.')
+          : t('WhatsApp group created'),
+        'success'
+      );
+
       addGroupToCache(waGroup.id);
-      setSelectedContacts([]);
-      setContactSearchTerm('');
+      resetMembers();
       onCreated?.(waGroup);
       onClose();
     } catch (error: any) {
@@ -168,13 +209,12 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
             buttonCancel={t('Cancel')}
             alignButtons="right"
             buttonOkLoading={loading}
-            disableOk={loading}
+            disableOk={loading || (memberMode === 'csv' && !csvContent)}
             skipCancel={loading}
             handleOk={() => submitForm()}
             handleCancel={() => {
               if (loading) return;
-              setSelectedContacts([]);
-              setContactSearchTerm('');
+              resetMembers();
               onClose();
             }}
             fullWidth
@@ -200,26 +240,79 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
                   'The managed phone that will create the group on WhatsApp; it becomes the primary phone in Glific.'
                 )}
               />
-              <Field
-                name="contacts"
-                component={AutoComplete}
-                placeholder={t('Search contacts')}
-                inputLabel={t('Members')}
-                options={contactOptions}
-                optionLabel="name"
-                additionalOptionLabel="phone"
-                multiple
-                asyncSearch
-                asyncValues={{ value: selectedContacts, setValue: setSelectedContacts }}
-                disableClearable={false}
-                onChange={(value: any) => {
-                  if (typeof value === 'string') {
-                    setContactSearchTerm(value);
-                  }
-                }}
-                noOptionsText={contactsLoading ? t('Loading...') : t('No options available')}
-                helperText={t('Pick the contacts to invite. Type to search by name.')}
-              />
+
+              <div className={styles.Toggle}>
+                <ToggleButtonGroup
+                  value={memberMode}
+                  exclusive
+                  size="small"
+                  onChange={(_event, value) => value && setMemberMode(value)}
+                  aria-label="member mode"
+                >
+                  <ToggleButton value="select" data-testid="selectMode">
+                    {t('Select contacts')}
+                  </ToggleButton>
+                  <ToggleButton value="csv" data-testid="csvMode">
+                    {t('Upload CSV')}
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </div>
+
+              {memberMode === 'csv' ? (
+                <div className={styles.UploadContainer}>
+                  <label className={styles.Upload} htmlFor="createGroupCsv">
+                    <span className={styles.FileInput}>
+                      {fileName ? (
+                        <>
+                          {fileName}
+                          <CrossIcon
+                            data-testid="cross-icon"
+                            className={styles.CrossIcon}
+                            onClick={(event: any) => {
+                              event.preventDefault();
+                              setFileName('');
+                              setCsvContent('');
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <span className={styles.UploadFile}>
+                          <UploadIcon /> {t('Upload File')}
+                        </span>
+                      )}
+                      <input
+                        type="file"
+                        id="createGroupCsv"
+                        disabled={!!fileName}
+                        data-testid="createGroupCsv"
+                        onChange={handleFile}
+                      />
+                    </span>
+                  </label>
+                  <div className={styles.Sample}>{t('CSV with a phone column; name optional.')}</div>
+                </div>
+              ) : (
+                <Field
+                  name="contacts"
+                  component={AutoComplete}
+                  placeholder={t('Search contacts')}
+                  inputLabel={t('Members')}
+                  options={contactOptions}
+                  optionLabel="name"
+                  additionalOptionLabel="phone"
+                  multiple
+                  asyncSearch
+                  asyncValues={{ value: selectedContacts, setValue: setSelectedContacts }}
+                  disableClearable={false}
+                  onChange={(value: any) => {
+                    if (typeof value === 'string') {
+                      setContactSearchTerm(value);
+                    }
+                  }}
+                  noOptionsText={contactsLoading ? t('Loading...') : t('No options available')}
+                  helperText={t('Pick the contacts to invite. Type to search by name.')}
+                />
+              )}
             </div>
           </DialogBox>
         </Form>

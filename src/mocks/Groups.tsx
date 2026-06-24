@@ -5,7 +5,7 @@ import {
   setVariables,
 } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
-import { CREATE_WA_GROUP, SYNC_GROUPS, UPDATE_WA_GROUP } from 'graphql/mutations/Group';
+import { CREATE_WA_GROUP, IMPORT_WA_GROUP_CONTACTS, SYNC_GROUPS, UPDATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
@@ -1233,6 +1233,37 @@ export const createWaGroupQuery = {
   },
 };
 
+// CSV-at-create: the CSV is sent as `importData` in a single createWaGroup call;
+// the backend seeds the group with its phones and enriches contacts in a job.
+export const createWaGroupCsvQuery = {
+  request: {
+    query: CREATE_WA_GROUP,
+    variables: {
+      input: { name: 'Test Group', waManagedPhoneId: '1', importData: 'phone\n919900112233\n' },
+    },
+  },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: { id: '99', label: 'Test Group', bspId: '120363000000000000@g.us' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const importWaGroupContactsQuery = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '99', type: 'DATA', data: 'phone\n919900112233\n' },
+  },
+  result: {
+    data: {
+      importWaGroupContacts: { status: 'WA group member import is in progress', errors: null },
+    },
+  },
+};
+
 export const createWaGroupWithErrors = {
   request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
   result: {
@@ -1297,7 +1328,7 @@ export const createWaGroupNetworkError = {
 export const addMembersQuery = {
   request: {
     query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', addContactIds: ['10'] } },
+    variables: { input: { id: '1', addPhones: ['918888888888'] } },
   },
   result: {
     data: {
@@ -1312,7 +1343,7 @@ export const addMembersQuery = {
 export const addMembersErrorResponse = {
   request: {
     query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', addContactIds: ['10'] } },
+    variables: { input: { id: '1', addPhones: ['918888888888'] } },
   },
   result: {
     data: {
@@ -1327,7 +1358,7 @@ export const addMembersErrorResponse = {
 export const addMembersNetworkError = {
   request: {
     query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', addContactIds: ['10'] } },
+    variables: { input: { id: '1', addPhones: ['918888888888'] } },
   },
   error: new Error('Network error'),
 };

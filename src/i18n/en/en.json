@@ -730,5 +730,12 @@
   "No contacts added": "No contacts added",
   "Could not add contacts to the group": "Could not add contacts to the group",
   "Could not remove contact from the group": "Could not remove contact from the group",
-  "The change is pushed to WhatsApp via the group’s admin phone.": "The change is pushed to WhatsApp via the group’s admin phone."
+  "The change is pushed to WhatsApp via the group’s admin phone.": "The change is pushed to WhatsApp via the group’s admin phone.",
+  "Upload CSV": "Upload CSV",
+  "Could not upload members": "Could not upload members",
+  "Member upload started. Check notifications for the report.": "Member upload started. Check notifications for the report.",
+  "Upload a CSV with a single \"phone\" column.": "Upload a CSV with a single \"phone\" column.",
+  "CSV with a phone column; name optional.": "CSV with a phone column; name optional.",
+  "Could not start the member upload": "Could not start the member upload",
+  "WhatsApp group created. Members are being imported — check notifications for the report.": "WhatsApp group created. Members are being imported — check notifications for the report."
 }

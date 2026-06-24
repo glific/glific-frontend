@@ -277,7 +277,7 @@ test('warns when adding members errors out', async () => {
   });
 });
 
-test('closes the add-members dialog when nothing is selected', async () => {
+test('disables Save until a contact is selected', async () => {
   render(renderWith([contactsListExcludeGroup]));
 
   await waitFor(() => {
@@ -286,12 +286,8 @@ test('closes the add-members dialog when nothing is selected', async () => {
   fireEvent.click(screen.getByTestId('addMembers'));
   await screen.findAllByTestId('autocomplete-element');
 
-  // confirm without selecting any contact -> handleAddMembers([]) just closes
-  fireEvent.click(screen.getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(screen.queryByText('Add members to this group')).not.toBeInTheDocument();
-  });
+  // nothing selected yet -> the Save button is disabled
+  expect(screen.getByTestId('ok-button')).toBeDisabled();
 });
 
 const openRenameAndSubmit = async () => {
