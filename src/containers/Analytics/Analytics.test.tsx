@@ -13,6 +13,15 @@ vi.mock('components/UI/Layout/Loading/Loading', () => ({
   Loading: () => <div data-testid="loading-spinner" />,
 }));
 
+vi.mock('components/UI/ErrorPage/ErrorPage', () => ({
+  ErrorPage: ({ title, onRefresh }: { title: string; onRefresh?: () => void }) => (
+    <div data-testid="error-page">
+      <p>{title}</p>
+      <button onClick={onRefresh ?? (() => window.location.reload())}>refresh to try again</button>
+    </div>
+  ),
+}));
+
 vi.mock('axios');
 
 vi.mock('services/AuthService', () => ({
@@ -96,10 +105,8 @@ describe('<Analytics />', () => {
 
     render(<Analytics />);
 
-    await screen.findByText('Unable to load the analytics dashboard.');
-    expect(screen.getByRole('button', { name: 'refresh the page' })).toBeInTheDocument();
-    const link = screen.getByRole('link', { name: 'contact support' });
-    expect(link).toHaveAttribute('href', 'mailto:support@glific.org');
+    await screen.findByTestId('error-page');
+    expect(screen.getByText('Unable to load the analytics dashboard.')).toBeInTheDocument();
   });
 
   it('calls setLogs with error severity when fetch fails', async () => {
@@ -125,7 +132,7 @@ describe('<Analytics />', () => {
 
     render(<Analytics />);
 
-    const refreshButton = await screen.findByRole('button', { name: 'refresh the page' });
+    const refreshButton = await screen.findByRole('button', { name: 'refresh to try again' });
     await userEvent.click(refreshButton);
 
     expect(reloadMock).toHaveBeenCalledTimes(1);

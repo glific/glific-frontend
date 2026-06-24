@@ -138,7 +138,7 @@ describe('AIEvalsPage', () => {
     expect(await screen.findByTestId('orgEvalAccessGateError')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.'
+        'Something went wrong while checking your AI Evaluations access.'
       )
     ).toBeInTheDocument();
   });

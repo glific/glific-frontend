@@ -1,4 +1,11 @@
-import { BULK_APPLY_TEMPLATES, CREATE_TEMPLATE, IMPORT_TEMPLATES, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+import {
+  BULK_APPLY_TEMPLATES,
+  CREATE_TEMPLATE,
+  IMPORT_TEMPLATES,
+  SYNC_HSM_TEMPLATES,
+  UPDATE_TEMPLATE,
+} from 'graphql/mutations/Template';
+import type { GroupedTemplate } from 'containers/HSM/HSMListV2/HSMList.types';
 import {
   FILTER_SESSION_TEMPLATES,
   FILTER_TEMPLATES,
@@ -67,7 +74,7 @@ const getShortCodeQuery = {
   },
 };
 
-const getCategoriesMock = {
+export const getCategoriesMock = {
   request: {
     query: GET_HSM_CATEGORIES,
     variables: {},
@@ -811,6 +818,227 @@ export const SPEED_SENDS_MOCKS = [
     url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
   }),
 ];
+
+export const hsmV2TemplatesData = [
+  {
+    id: '1',
+    bspId: 'bsp-001',
+    label: 'Welcome Message',
+    body: 'Hi {{1}}, welcome!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'APPROVED',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: 'HIGH',
+    language: { id: '1', label: 'English' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
+  {
+    id: '2',
+    bspId: null,
+    label: 'Welcome Message',
+    body: 'नमस्ते {{1}}, स्वागत है!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'PENDING',
+    reason: null,
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '2', label: 'Hindi' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
+  {
+    id: '3',
+    bspId: null,
+    label: 'Feedback Form',
+    body: 'Please share your feedback.',
+    footer: null,
+    shortcode: 'feedback_form',
+    category: 'MARKETING',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-01-10T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '1', label: 'English' },
+    tag: null,
+    MessageMedia: null,
+  },
+];
+
+export const filterTemplatesV2Mock = {
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: { isHsm: true },
+      opts: { limit: 500, offset: 0, orderWith: 'label', order: 'ASC' },
+    },
+  },
+  result: {
+    data: { sessionTemplates: hsmV2TemplatesData },
+  },
+};
+
+export const HSM_LIST_V2 = [filterTemplatesV2Mock, filterTemplatesV2Mock, getCategoriesMock, getCategoriesMock];
+
+export const syncHsmSuccessMock = {
+  request: { query: SYNC_HSM_TEMPLATES },
+  result: { data: { syncHsmTemplate: { errors: null, message: 'success' } } },
+};
+
+export const syncHsmErrorMock = {
+  request: { query: SYNC_HSM_TEMPLATES },
+  result: { data: { syncHsmTemplate: null } },
+};
+
+export const bulkApplyV2Mock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  result: {
+    data: { bulkApplyTemplates: { errors: null, csv_rows: 'Title,Status\nTest,Success' } },
+  },
+};
+
+export const syncHsmNetworkErrorMock = {
+  request: { query: SYNC_HSM_TEMPLATES },
+  error: new Error('Network error'),
+};
+
+export const bulkApplyV2ErrorsMock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  result: {
+    data: {
+      bulkApplyTemplates: {
+        errors: [{ key: 'row_2', message: 'Invalid template' }],
+        csv_rows: 'Title,Status\nTest,Failed',
+      },
+    },
+  },
+};
+
+export const bulkApplyV2NetworkErrorMock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  error: new Error('Network error'),
+};
+
+export const getCategoriesV2Mock = {
+  request: { query: GET_HSM_CATEGORIES, variables: {} },
+  result: { data: { whatsappHsmCategories: ['UTILITY', 'MARKETING'] } },
+};
+
+export const bulkApplyV2EmptyMock = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: { data: 'csv content' },
+  },
+  result: {
+    data: { bulkApplyTemplates: null },
+  },
+};
+
+export const hsmGroupedTemplates: GroupedTemplate[] = [
+  {
+    shortcode: 'welcome_msg',
+    label: 'Welcome Message',
+    category: 'UTILITY',
+    tag: { id: '1', label: 'Messages' },
+    languageVariants: [
+      {
+        id: '1',
+        bspId: 'bsp-001',
+        body: 'Hi {{1}}, welcome!',
+        category: 'UTILITY',
+        language: { id: '1', label: 'English' },
+        status: 'APPROVED',
+        quality: 'HIGH',
+        reason: null,
+        updatedAt: '2024-01-15T10:00:00Z',
+        isActive: true,
+      },
+      {
+        id: '2',
+        bspId: null,
+        body: 'नमस्ते {{1}}, स्वागत है!',
+        category: 'UTILITY',
+        language: { id: '2', label: 'Hindi' },
+        status: 'PENDING',
+        quality: null,
+        reason: null,
+        updatedAt: '2024-01-15T10:00:00Z',
+        isActive: false,
+      },
+    ],
+  },
+  {
+    shortcode: 'feedback_form',
+    label: 'Feedback Form',
+    category: 'MARKETING',
+    tag: null,
+    languageVariants: [
+      {
+        id: '3',
+        bspId: null,
+        body: 'Please share your feedback.',
+        category: 'MARKETING',
+        language: { id: '1', label: 'English' },
+        status: 'REJECTED',
+        quality: null,
+        reason: 'Content policy violation',
+        updatedAt: '2024-01-10T08:00:00Z',
+        isActive: false,
+      },
+    ],
+  },
+];
+
+export const hsmMultiLanguageTemplate: GroupedTemplate = {
+  shortcode: 'multi_lang',
+  label: 'Multi Language',
+  category: 'UTILITY',
+  tag: null,
+  languageVariants: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada'].map((lang, i) => ({
+    id: String(i + 10),
+    bspId: null,
+    body: `Body in ${lang}`,
+    category: 'UTILITY',
+    language: { id: String(i + 1), label: lang },
+    status: 'APPROVED' as const,
+    quality: null,
+    reason: null,
+    updatedAt: '2024-01-15T10:00:00Z',
+    isActive: true,
+  })),
+};
 
 export const HSM_LIST = [
   ...HSM_TEMPLATE_MOCKS,

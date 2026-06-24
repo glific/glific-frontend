@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getAuthSession } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { ErrorPage } from 'components/UI/ErrorPage/ErrorPage';
 import styles from './Analytics.module.css';
 
 export const Analytics: React.FC = () => {
@@ -81,22 +82,7 @@ export const Analytics: React.FC = () => {
   }, [fetchAndCacheToken]);
 
   if (embedError) {
-    return (
-      <div className={styles.errorContainer}>
-        <p className={styles.errorTitle}>{t('Unable to load the analytics dashboard.')}</p>
-        <p className={styles.errorBody}>
-          {t('Please')}{' '}
-          <button className={styles.refreshButton} onClick={() => window.location.reload()}>
-            {t('refresh the page')}
-          </button>{' '}
-          {t('or')}{' '}
-          <a className={styles.supportLink} href="mailto:support@glific.org">
-            {t('contact support')}
-          </a>
-          .
-        </p>
-      </div>
-    );
+    return <ErrorPage title={t('Unable to load the analytics dashboard.')} />;
   }
 
   return (

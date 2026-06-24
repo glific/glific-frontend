@@ -1,5 +1,5 @@
-import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { ErrorPage } from 'components/UI/ErrorPage/ErrorPage';
 import { t } from 'i18next';
 
 import styles from './OrgEvalAccessGateUi.module.css';
@@ -19,12 +19,10 @@ type OrgEvalAccessGateErrorProps = {
 export function OrgEvalAccessGateError({ onRetry }: OrgEvalAccessGateErrorProps) {
   return (
     <div className={styles.Panel} data-testid="orgEvalAccessGateError">
-      <p className={styles.ErrorText}>
-        {t('Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.')}
-      </p>
-      <Button variant="contained" color="primary" onClick={onRetry}>
-        {t('Refresh')}
-      </Button>
+      <ErrorPage
+        title={t('Something went wrong while checking your AI Evaluations access.')}
+        onRefresh={onRetry}
+      />
     </div>
   );
 }
