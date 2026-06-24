@@ -26,7 +26,8 @@ type ServiceType =
   | 'assistantConfigVersionsEnabled'
   | 'aiEvaluationsEnabled'
   | 'copyNodeEnabled'
-  | 'promptGeneratorEnabled';
+  | 'promptGeneratorEnabled'
+  | 'supersetEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
