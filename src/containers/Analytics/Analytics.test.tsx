@@ -17,7 +17,7 @@ vi.mock('components/UI/ErrorPage/ErrorPage', () => ({
   ErrorPage: ({ title, onRefresh }: { title: string; onRefresh?: () => void }) => (
     <div data-testid="error-page">
       <p>{title}</p>
-      <button onClick={onRefresh ?? (() => window.location.reload())}>refresh to try again</button>
+      <button onClick={onRefresh ?? (() => window.location.reload())}>Refresh</button>
     </div>
   ),
 }));
@@ -132,7 +132,7 @@ describe('<Analytics />', () => {
 
     render(<Analytics />);
 
-    const refreshButton = await screen.findByRole('button', { name: 'refresh to try again' });
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' });
     await userEvent.click(refreshButton);
 
     expect(reloadMock).toHaveBeenCalledTimes(1);
