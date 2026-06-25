@@ -13,10 +13,3 @@
   text-align: center;
   box-sizing: border-box;
 }
-
-.ErrorText {
-  max-width: 420px;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #073f24;
-}
