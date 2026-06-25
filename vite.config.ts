@@ -71,8 +71,18 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
           'X-Content-Type-Options': 'nosniff',
           'X-XSS-Protection': '1; mode=block',
           'X-Frame-Options': 'deny',
+          // CSP rollout mirrors production (config/nginx.conf.erb): the permissive policy is
+          // still ENFORCED so local dev is unaffected, while the tightened policy is sent as
+          // Report-Only. Violations of the tightened policy show up as warnings in the
+          // browser console, letting developers spot breakage before it is enforced.
+          // Notes on the tightened policy: `unsafe-inline` stays because Vite's runtime and
+          // MUI/emotion inject inline scripts/styles; img-src/media-src stay broad because
+          // chat renders WhatsApp media from arbitrary external CDNs; `unsafe-eval` is
+          // required by the flow editor (@nyaruka/temba-components uses `new Function(...)`).
           'Content-Security-Policy':
             "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
+          'Content-Security-Policy-Report-Only':
+            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; frame-src 'self' https://js.stripe.com https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org data:; worker-src 'self' blob:; connect-src 'self' https://glific.test:* wss://glific.test:* https://api.glific.test:* wss://api.glific.test:* http://localhost:* ws://localhost:* https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.tides.coloredcow.com https://storage.googleapis.com; object-src 'none'; base-uri 'self';",
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
