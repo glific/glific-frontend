@@ -136,11 +136,7 @@ describe('AIEvalsPage', () => {
   it('shows full-screen error when the access check query fails', async () => {
     renderComponent([getOrgEvalAccessRequestErrorMock]);
     expect(await screen.findByTestId('orgEvalAccessGateError')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Something went wrong while checking your AI Evaluations access. Please refresh the page or try again.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong while checking your AI Evaluations access.')).toBeInTheDocument();
   });
 
   it('renders the page when access is approved in localStorage without the access query mock', async () => {
