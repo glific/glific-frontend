@@ -238,10 +238,6 @@ export const FormLayout = ({
         customError.setErrors(codeErrors);
       }
     } else {
-      console.log('type', type);
-      console.log('updatedItem', updatedItem);
-      console.log('linkParameter', linkParameter);
-      console.log('updatedItem[linkParameter]', updatedItem[linkParameter]);
       if (linkParameter && updatedItem) setLink(updatedItem[linkParameter]);
       if (additionalQuery) {
         additionalQuery(itemId);
