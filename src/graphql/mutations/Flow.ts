@@ -132,6 +132,7 @@ export const IMPORT_FLOW = gql`
     importFlow(flow: $flow) {
       status {
         assistantNodeUuids
+        invalidSheetNodeUuids
         flowName
         status
       }

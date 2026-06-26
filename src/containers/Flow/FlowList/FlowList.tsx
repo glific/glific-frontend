@@ -176,35 +176,64 @@ export const FlowList = () => {
         <div className={styles.ImportDialog}>
           {importStatus.map((status: any) => {
             const assistantNodeUuids: string[] = status.assistantNodeUuids ?? [];
+            const invalidSheetNodeUuids: string[] = status.invalidSheetNodeUuids ?? [];
 
-            if (assistantNodeUuids.length > 0) {
+            if (assistantNodeUuids.length > 0 || invalidSheetNodeUuids.length > 0) {
               return (
                 <div key={status.flowName} className={styles.StatusContainer}>
-                  <p className={styles.StatusMessage}>
-                    Flow imported successfully. This flow contains assistant node(s) that need an assistant assigned.
-                    Please{' '}
-                    <a
-                      href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
-                      className={styles.HelpLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      create a new assistant
-                    </a>{' '}
-                    and assign it to the following node(s):
-                  </p>
-                  <div className={styles.SectionTitle}>
-                    <strong>
-                      {assistantNodeUuids.length === 1 ? 'Assistant Node UUID:' : 'Assistant Node UUIDs:'}
-                    </strong>
-                  </div>
-                  <ol className={styles.AssistantListPlain}>
-                    {assistantNodeUuids.map((uuid: string) => (
-                      <li key={uuid}>
-                        <code className={styles.AssistantCod}>{uuid}</code>
-                      </li>
-                    ))}
-                  </ol>
+                  {assistantNodeUuids.length > 0 && (
+                    <div className={styles.WarningSection}>
+                      <p className={styles.StatusMessage}>
+                        Flow imported successfully. This flow contains assistant node(s) that need an assistant
+                        assigned. Please{' '}
+                        <a
+                          href="https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/#how-to-create-an-openai-assistant-in-glific"
+                          className={styles.HelpLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          create a new assistant
+                        </a>{' '}
+                        and assign it to the following node(s):
+                      </p>
+                      <div className={styles.SectionTitle}>
+                        <strong>
+                          {assistantNodeUuids.length === 1 ? 'Assistant Node UUID:' : 'Assistant Node UUIDs:'}
+                        </strong>
+                      </div>
+                      <ol className={styles.AssistantListPlain}>
+                        {assistantNodeUuids.map((uuid: string) => (
+                          <li key={uuid}>
+                            <code className={styles.AssistantCod}>{uuid}</code>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
+                  {invalidSheetNodeUuids.length > 0 && (
+                    <div className={styles.WarningSection}>
+                      <p className={styles.StatusMessage}>
+                        Flow imported successfully. This flow contains Google Sheet node(s) with an invalid or
+                        unconfigured sheet URL, so they were imported without a linked sheet. Please upload and
+                        configure your Google Sheet and update the following node(s):
+                      </p>
+                      <div className={styles.SectionTitle}>
+                        <strong>
+                          {invalidSheetNodeUuids.length === 1
+                            ? 'Google Sheet Node UUID:'
+                            : 'Google Sheet Node UUIDs:'}
+                        </strong>
+                      </div>
+                      <ol className={styles.AssistantListPlain}>
+                        {invalidSheetNodeUuids.map((uuid: string) => (
+                          <li key={uuid}>
+                            <code className={styles.AssistantCod}>{uuid}</code>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
                 </div>
               );
             }

@@ -503,11 +503,13 @@ export const importFlow = {
         status: [
           {
             assistantNodeUuids: [],
+            invalidSheetNodeUuids: [],
             flowName: 'Registration flow',
             status: 'Successfully imported',
           },
           {
             assistantNodeUuids: [],
+            invalidSheetNodeUuids: [],
             flowName: 'Optin',
             status: 'Successfully imported',
           },

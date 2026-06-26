@@ -379,6 +379,7 @@ describe('Template flows', () => {
             status: [
               {
                 assistantNodeUuids: ['3fb647a3-c935-4906-8dd0-c0e63105ee3d', 'b1d2e9ff-1234-4abc-9876-deadbeefcafe'],
+                invalidSheetNodeUuids: [],
                 flowName: 'Test Flow',
                 status: 'Successfully imported',
               },
@@ -449,6 +450,85 @@ describe('Template flows', () => {
     );
     expect(helpLink).toHaveAttribute('target', '_blank');
     expect(helpLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+    fireEvent.click(inDialog.getByTestId('ok-button'));
+    await waitFor(() => {
+      expect(screen.queryByText(/import flow status/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test('Template flows > should display google sheet nodes with an invalid sheet url', async () => {
+    const mockImportFlowWithSheetError = {
+      request: { query: IMPORT_FLOW },
+      result: {
+        data: {
+          importFlow: {
+            status: [
+              {
+                assistantNodeUuids: [],
+                invalidSheetNodeUuids: ['ee3d', 'cafe'],
+                flowName: 'Test Flow',
+                status: 'Successfully imported',
+              },
+            ],
+          },
+        },
+      },
+      variableMatcher: () => true,
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
+    const testMocks = [mockImportFlowWithSheetError, ...baseWithoutImport];
+
+    class FileReaderMock {
+      onload: null | ((e: unknown) => void) = null;
+      result: string | null = null;
+
+      readAsText() {
+        const text = JSON.stringify(testJSON);
+        this.result = text;
+        setTimeout(() => {
+          if (this.onload) {
+            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
+          }
+        }, 0);
+      }
+    }
+
+    vi.stubGlobal('FileReader', FileReaderMock);
+
+    render(
+      <MockedProvider mocks={testMocks} addTypename={false}>
+        <MemoryRouter>
+          <FlowList />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await screen.findAllByTestId('import-icon');
+    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
+
+    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
+    const input = await screen.findByTestId('import');
+    Object.defineProperty(input, 'files', { value: [file] });
+    fireEvent.change(input);
+
+    const title = await screen.findByText(/import flow status/i);
+    const dialog = title.closest('div')!;
+    const inDialog = within(dialog);
+
+    const para = (await inDialog.findByText(/contains google sheet node/i)).closest('p');
+    expect(para).toBeTruthy();
+    expect(normalize(para!.textContent || '')).toContain(
+      'this flow contains google sheet node(s) with an invalid or unconfigured sheet url'
+    );
+
+    const nodeLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'google sheet node uuids:');
+    expect(nodeLabels.length).toBeGreaterThan(0);
+
+    expect(inDialog.getByText('ee3d')).toBeInTheDocument();
+    expect(inDialog.getByText('cafe')).toBeInTheDocument();
 
     fireEvent.click(inDialog.getByTestId('ok-button'));
     await waitFor(() => {
