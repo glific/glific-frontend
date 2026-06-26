@@ -48,6 +48,7 @@ const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/HSM/HSMList/HSMList'));
 const HSM = lazy(() => import('containers/HSM/HSM'));
 const HSMListV2 = lazy(() => import('containers/HSM/HSMListV2/HSMListV2'));
+const CreateTemplate = lazy(() => import('containers/HSM/CreateTemplate/CreateTemplate'));
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
 const BlockContactList = lazy(() => import('containers/BlockContact/BlockContactList/BlockContactList'));
@@ -125,10 +126,11 @@ const adminRoutes = (
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
     <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="myaccount" element={<MyAccount />} />
-    <Route path="template" element={<HSMList />} />
+    <Route path="template" element={<HSMListV2 />} />
     <Route path="template/add" element={<HSM />} />
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="template-v2" element={<HSMListV2 />} />
+    <Route path="template-v2/add" element={<CreateTemplate />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="settings" element={<SettingList />}>
       <Route path="" element={<Navigate to="organization" />} />

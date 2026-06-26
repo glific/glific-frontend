@@ -206,7 +206,7 @@ const HSMListV2 = () => {
           <Button
             variant="contained"
             className={styles.CreateButton}
-            onClick={() => navigate('/template/add')}
+            onClick={() => navigate('/template-v2/add')}
             data-testid="createTemplate"
           >
             + {t('Create')}
