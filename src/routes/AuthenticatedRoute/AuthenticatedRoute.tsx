@@ -1,6 +1,9 @@
 import { useQuery } from '@apollo/client';
+import { Fab, Tooltip } from '@mui/material';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import Analytics from 'containers/Analytics/Analytics';
 import AskGlific from 'containers/AskGlific/AskGlific';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import Billing from 'containers/SettingList/Billing/Billing';
@@ -20,8 +23,6 @@ import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
 import { useToast } from 'services/ToastService';
 import styles from './AuthenticatedRoute.module.css';
-import { Fab, Tooltip } from '@mui/material';
-import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -155,6 +156,7 @@ const adminRoutes = (
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
+    <Route path="analytics" element={<Analytics />} />
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
