@@ -220,9 +220,7 @@ export const FlowList = () => {
                       </p>
                       <div className={styles.SectionTitle}>
                         <strong>
-                          {invalidSheetNodeUuids.length === 1
-                            ? 'Google Sheet Node UUID:'
-                            : 'Google Sheet Node UUIDs:'}
+                          {invalidSheetNodeUuids.length === 1 ? 'Google Sheet Node UUID:' : 'Google Sheet Node UUIDs:'}
                         </strong>
                       </div>
                       <ol className={styles.AssistantListPlain}>

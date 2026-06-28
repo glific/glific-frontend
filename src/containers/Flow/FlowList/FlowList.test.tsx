@@ -490,7 +490,9 @@ describe('Template flows', () => {
       'this flow contains google sheet node(s) with an invalid or unconfigured sheet url'
     );
 
-    const nodeLabels = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'google sheet node uuids:');
+    const nodeLabels = inDialog.getAllByText(
+      (_, el) => normalize(el?.textContent || '') === 'google sheet node uuids:'
+    );
     expect(nodeLabels.length).toBeGreaterThan(0);
 
     expect(inDialog.getByText('ee3d')).toBeInTheDocument();
@@ -549,12 +551,12 @@ describe('Template flows', () => {
     expect(inDialog.getByText(/contains google sheet node/i)).toBeInTheDocument();
 
     // Singular labels should be used when a single node uuid is present
-    const assistantLabel = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'assistant node uuid:');
+    const assistantLabel = inDialog.getAllByText(
+      (_, el) => normalize(el?.textContent || '') === 'assistant node uuid:'
+    );
     expect(assistantLabel.length).toBeGreaterThan(0);
 
-    const sheetLabel = inDialog.getAllByText(
-      (_, el) => normalize(el?.textContent || '') === 'google sheet node uuid:'
-    );
+    const sheetLabel = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'google sheet node uuid:');
     expect(sheetLabel.length).toBeGreaterThan(0);
 
     expect(inDialog.getByText('assistant-uuid-1')).toBeInTheDocument();
