@@ -39,7 +39,7 @@ export const WithButton: Story = {
     button: {
       show: true,
       label: 'Add Contact',
-      action: () => alert('Add Contact clicked'),
+      action: () => console.log('Add Contact clicked'),
     },
   },
 };

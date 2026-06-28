@@ -12,7 +12,7 @@ const meta: Meta<typeof ListIcon> = {
         'chat', 'flow', 'search', 'analytics', 'speed-send', 'template', 'trigger',
         'notification', 'interactive-message', 'help', 'sheets', 'tickets', 'webhook',
         'fields', 'manage', 'collection', 'staff', 'contact', 'block', 'tag',
-        'profile', 'account', 'settings', 'logout', 'organization', 'consulting',
+        'profile', 'account', 'settings', 'logout', 'organization', 'consulting', 'new',
         'waGroupCollection', 'waGroupChat', 'waGroup', 'assistant', 'aiEvals',
         'discord', 'waPolls', 'certificate', 'form',
       ],
@@ -51,8 +51,8 @@ export const AllIcons: Story = {
         'trigger', 'notification', 'interactive-message', 'help', 'sheets',
         'tickets', 'webhook', 'fields', 'manage', 'collection', 'staff',
         'contact', 'block', 'tag', 'profile', 'account', 'settings',
-        'logout', 'organization', 'consulting', 'waGroupCollection', 'waGroupChat',
-        'waGroup', 'assistant', 'aiEvals', 'discord', 'certificate', 'form',
+        'logout', 'organization', 'consulting', 'new', 'waGroupCollection', 'waGroupChat',
+        'waGroup', 'assistant', 'aiEvals', 'discord', 'waPolls', 'certificate', 'form',
       ].map((icon) => (
         <div key={icon} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
           <ListIcon icon={icon} />

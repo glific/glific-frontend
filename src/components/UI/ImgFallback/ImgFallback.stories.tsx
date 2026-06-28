@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import ImgFallback from './ImgFallback';
+import sampleImage from 'assets/images/phone.png';
 
 const meta: Meta<typeof ImgFallback> = {
   title: 'UI/ImgFallback',
@@ -12,7 +13,7 @@ type Story = StoryObj<typeof ImgFallback>;
 
 export const ValidImage: Story = {
   args: {
-    src: 'https://picsum.photos/200/150',
+    src: sampleImage,
     alt: 'Sample image',
     style: { borderRadius: 8 },
   },
@@ -20,7 +21,7 @@ export const ValidImage: Story = {
 
 export const BrokenImage: Story = {
   args: {
-    src: 'https://broken-url.example.com/image.png',
+    src: '/this-path-does-not-exist.png',
     alt: 'Broken image — shows fallback',
   },
 };

@@ -12,8 +12,8 @@ export default meta;
 type Story = StoryObj<typeof SearchBar>;
 
 const SearchBarControlled = (args: any) => {
-  const [searchMode, setSearchMode] = useState(false);
-  const [searchVal, setSearchVal] = useState('');
+  const [searchMode, setSearchMode] = useState(args.searchMode ?? false);
+  const [searchVal, setSearchVal] = useState(args.searchVal ?? '');
 
   return (
     <SearchBar
@@ -42,9 +42,9 @@ export const WithIconFront: Story = {
 };
 
 export const WithExistingValue: Story = {
+  render: (args) => <SearchBarControlled {...args} />,
   args: {
     searchMode: true,
     searchVal: 'John',
-    onReset: () => {},
   },
 };

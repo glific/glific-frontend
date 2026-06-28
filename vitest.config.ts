@@ -17,11 +17,7 @@ export default defineConfig({
       provider: 'istanbul',
       // or 'c8',
       include: ['src/**/**'],
-<<<<<<< Updated upstream
       exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**', './src/mocks/**', '**/*.md'],
-=======
-      exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**', './src/mocks/**']
->>>>>>> Stashed changes
     },
     projects: [{
       extends: true,

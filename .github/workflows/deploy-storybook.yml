@@ -5,11 +5,9 @@ on:
     branches: [feat/add_storybook]
   workflow_dispatch:
 
-# Permissions required by the official GitHub Pages deployment actions
+# Keep workflow-level permissions read-only; the deploy job widens its own scope
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Allow only one concurrent deployment; don't cancel in-progress runs
 concurrency:
@@ -22,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -43,6 +43,11 @@ jobs:
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
+    # Permissions required by the official GitHub Pages deployment actions,
+    # scoped to this job only
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
