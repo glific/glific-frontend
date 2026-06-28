@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import ImgFallback from './ImgFallback';
-import sampleImage from 'assets/images/phone.png';
+import sampleImage from '../../../assets/images/phone.png';
 
 const meta: Meta<typeof ImgFallback> = {
   title: 'UI/ImgFallback',

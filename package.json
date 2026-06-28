@@ -141,12 +141,9 @@
     "storybook": "^10.4.6",
     "@storybook/react-vite": "^10.4.6",
     "@chromatic-com/storybook": "^5.2.1",
-    "@storybook/addon-vitest": "^10.4.6",
     "@storybook/addon-a11y": "^10.4.6",
     "@storybook/addon-docs": "^10.4.6",
     "@storybook/addon-mcp": "^0.6.0",
-    "eslint-plugin-storybook": "^10.4.6",
-    "playwright": "^1.61.0",
-    "@vitest/browser-playwright": "4.0.15"
+    "eslint-plugin-storybook": "^10.4.6"
   }
 }

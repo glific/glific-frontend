@@ -1,28 +1,13 @@
 {
-  "extends": [
-    "airbnb",
-    "prettier",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:storybook/recommended"
-  ],
-  "plugins": [
-    "prettier",
-    "@typescript-eslint"
-  ],
+  "extends": ["airbnb", "prettier", "plugin:@typescript-eslint/recommended", "plugin:storybook/recommended"],
+  "plugins": ["prettier", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "rules": {
-    "prettier/prettier": [
-      "error"
-    ],
+    "prettier/prettier": ["error"],
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     ],
     "import/extensions": [
@@ -36,11 +21,7 @@
       }
     ],
     "react/react-in-jsx-scope": "off",
-    "no-restricted-globals": [
-      "error",
-      "event",
-      "fdescribe"
-    ],
+    "no-restricted-globals": ["error", "event", "fdescribe"],
     "react/prop-types": "off",
     "jsx-a11y/anchor-has-content": "off",
     "react/jsx-curly-newline": "off",
@@ -58,15 +39,8 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": [
-          "src"
-        ],
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   }
