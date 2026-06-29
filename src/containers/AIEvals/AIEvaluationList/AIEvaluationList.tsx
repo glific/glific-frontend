@@ -2,12 +2,14 @@ import { useLazyQuery } from '@apollo/client';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AssistantsIcon from 'assets/images/Assistants.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
-import { Tooltip } from '@mui/material';
+import { CircularProgress, Tooltip } from '@mui/material';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
+import { t } from 'i18next';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
@@ -228,8 +230,13 @@ const queries = {
 export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
   const navigate = useNavigate();
   const [fetchEvaluationScores] = useLazyQuery(GET_EVALUATION_SCORES);
+  const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
+  const downloadingIdsRef = useRef<Set<string>>(new Set());
 
   const handleDownload = async (id: string, name: string) => {
+    if (downloadingIdsRef.current.has(id)) return;
+    downloadingIdsRef.current.add(id);
+    setDownloadingIds(new Set(downloadingIdsRef.current));
     try {
       const { data, error } = await fetchEvaluationScores({ variables: { id } });
 
@@ -279,21 +286,35 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
       triggerCsvDownload(csv, `${name}_scores.csv`);
     } catch (err) {
       setErrorMessage(err as Error);
+    } finally {
+      downloadingIdsRef.current.delete(id);
+      setDownloadingIds(new Set(downloadingIdsRef.current));
     }
   };
 
   const additionalAction = (item: any) => {
     const isNotCompleted = item?.status?.toUpperCase() !== 'COMPLETED';
+    const isDownloading = downloadingIds.has(item?.id);
     return [
       {
-        label: 'Download Results',
+        label: t('Download Results'),
         icon: (
-          <span className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}>
-            Download Results
+          <span
+            className={isNotCompleted ? styles.DownloadCsvButtonDisabled : styles.DownloadCsvButton}
+            data-testid={isDownloading ? 'downloadSpinner' : undefined}
+          >
+            <span className={isDownloading ? styles.DownloadButtonTextHidden : styles.DownloadButtonText}>
+              {t('Download Results')}
+            </span>
+            {isDownloading && (
+              <span className={styles.DownloadSpinnerOverlay}>
+                <CircularProgress size={14} thickness={5} color="inherit" />
+              </span>
+            )}
           </span>
         ),
         parameter: 'id',
-        dialog: isNotCompleted ? () => {} : (id: string) => handleDownload(id, item.name),
+        dialog: isNotCompleted || isDownloading ? () => {} : (id: string) => handleDownload(id, item.name),
       },
     ];
   };

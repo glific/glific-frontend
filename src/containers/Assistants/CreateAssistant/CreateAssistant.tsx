@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -25,6 +26,7 @@ import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
+import { PromptGeneratorModal, initialPromptAnswers, PromptAnswers } from './PromptGeneratorModal';
 
 import styles from './CreateAssistant.module.css';
 
@@ -53,7 +55,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [openInstructions, setOpenInstructions] = useState(false);
+  const [showPromptGenerator, setShowPromptGenerator] = useState(false);
+  // prompt-generator answers live here (not inside the modal) so they survive closing
+  // and reopening the modal while the user is on this assistant page
+  const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>(initialPromptAnswers);
   const [hasUnsavedFiles, setHasUnsavedFiles] = useState(false);
+  const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
   const shouldResetFormRef = useRef(true);
 
   let isEditing = false;
@@ -156,6 +163,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     }
   }, [currentId, isEditing]);
 
+  // start with a blank prompt-generator form whenever the assistant changes, so one
+  // assistant's answers never carry over to another
+  useEffect(() => {
+    setPromptAnswers(initialPromptAnswers);
+  }, [currentId]);
+
   useEffect(() => {
     if (assistantData && shouldResetFormRef.current) {
       shouldResetFormRef.current = false;
@@ -205,6 +218,19 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
     <InputAdornment className={styles.Expand} position="end">
       <ExpandIcon data-testid="expandIcon" onClick={() => setOpenInstructions(true)} className={styles.ExpandButton} />
     </InputAdornment>
+  );
+
+  const generateWithAiButton = isPromptGeneratorEnabled && !newVersionInProgress && (
+    <Button
+      variant="text"
+      size="small"
+      onClick={() => setShowPromptGenerator(true)}
+      data-testid="generateWithAiButton"
+      className={styles.GenerateWithAiButton}
+    >
+      {t('Generate with AI')}
+      <span className={styles.BetaBadge}>{t('BETA')}</span>
+    </Button>
   );
 
   const formFields: any = [
@@ -376,7 +402,10 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
       <Modal open={openInstructions} onClose={() => setOpenInstructions(false)}>
         <div className={styles.InstructionsBox}>
           <div className={styles.Instructions}>
-            <h5>Edit system instructions</h5>
+            <div className={styles.LabelRow}>
+              <h5>Edit system instructions</h5>
+              {generateWithAiButton}
+            </div>
             <OutlinedInput
               name="expand-instructions"
               onChange={(event) => formik.setFieldValue('instructions', event.target.value)}
@@ -459,9 +488,12 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
           <div className={styles.FormFields}>
             {formFields.map((field: any) => (
               <div className={styles.FormSection} key={field.name}>
-                <Typography className={styles.Label} variant="h5">
-                  {field.label}
-                </Typography>
+                <div className={styles.LabelRow}>
+                  <Typography className={styles.Label} variant="h5">
+                    {field.label}
+                  </Typography>
+                  {field.name === 'instructions' && generateWithAiButton}
+                </div>
 
                 <Field key={field.name} {...field} />
               </div>
@@ -492,6 +524,19 @@ const CreateAssistant = ({ setUpdateList, updateList }: CreateAssistantProps) =>
         {dialog}
         {cloneConfirmDialog}
         {instructionsDialog}
+        {showPromptGenerator && (
+          <PromptGeneratorModal
+            open={showPromptGenerator}
+            answers={promptAnswers}
+            setAnswers={setPromptAnswers}
+            onClose={() => setShowPromptGenerator(false)}
+            onApply={(text) => {
+              formik.setFieldValue('instructions', text);
+              setShowPromptGenerator(false);
+              setNotification(t('Prompt added to Instructions'), 'success');
+            }}
+          />
+        )}
       </div>
     </FormikProvider>
   );

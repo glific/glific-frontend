@@ -24,7 +24,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const { t } = useTranslation();
   const { provider } = useContext(ProviderContext);
 
-  const balanceString = t('Wallet balance');
+  const balanceString = t('Message balance');
 
   const { data: orgData, loading: orgLoading } = useQuery(GET_ORGANIZATION_STATUS);
 
