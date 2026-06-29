@@ -5,6 +5,7 @@ export const POSTHOG_GROUP_TYPE_ORGANIZATION = 'organization';
 
 export interface PostHogOrganizationGroup {
   id: string;
+  name?: string;
   isTrial?: boolean;
 }
 
@@ -58,14 +59,22 @@ export function identifyPostHogOrganizationGroup(
     return;
   }
 
-  if (organization.isTrial === undefined) {
-    posthog.group(POSTHOG_GROUP_TYPE_ORGANIZATION, organization.id);
+  const groupProperties: Record<string, unknown> = {};
+
+  if (organization.name) {
+    groupProperties.name = organization.name;
+  }
+
+  if (organization.isTrial !== undefined) {
+    groupProperties.is_trial = organization.isTrial;
+  }
+
+  if (Object.keys(groupProperties).length) {
+    posthog.group(POSTHOG_GROUP_TYPE_ORGANIZATION, organization.id, groupProperties);
     return;
   }
 
-  posthog.group(POSTHOG_GROUP_TYPE_ORGANIZATION, organization.id, {
-    is_trial: organization.isTrial,
-  });
+  posthog.group(POSTHOG_GROUP_TYPE_ORGANIZATION, organization.id);
 }
 
 export function setupPostHogUserAndOrganization(
@@ -79,7 +88,8 @@ export function setupPostHogUserAndOrganization(
 
 export function setupPostHogFromStoredSession(posthog: PostHogAnalyticsClient): void {
   const userId = getUserSession('id');
-  const organizationId = getUserSession('organizationId');
+  const organization = getUserSession('organization') as { id?: string | number; name?: string } | null;
+  const organizationId = organization?.id;
 
   if (!userId || !organizationId) {
     return;
@@ -92,6 +102,7 @@ export function setupPostHogFromStoredSession(posthog: PostHogAnalyticsClient): 
   const userParams = { id: String(userId), accessRoleLabels };
   const orgParams = {
     id: String(organizationId),
+    name: organization?.name,
     isTrial: isTrial === null || isTrial === undefined ? undefined : Boolean(isTrial),
   };
 

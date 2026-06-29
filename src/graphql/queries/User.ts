@@ -96,6 +96,7 @@ export const GET_CURRENT_USER = gql`
         }
         organization {
           id
+          name
           contact {
             phone
           }

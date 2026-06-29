@@ -124,8 +124,8 @@ describe('PostHogService', () => {
         if (key === 'id') {
           return '7';
         }
-        if (key === 'organizationId') {
-          return '3';
+        if (key === 'organization') {
+          return { id: '3', name: 'Acme NGO' };
         }
         if (key === 'roles') {
           return [{ label: 'Staff' }];
@@ -138,6 +138,7 @@ describe('PostHogService', () => {
 
       expect(posthog.identify).toHaveBeenCalledWith('7', { access_roles: ['Staff'] });
       expect(posthog.group).toHaveBeenCalledWith(POSTHOG_GROUP_TYPE_ORGANIZATION, '3', {
+        name: 'Acme NGO',
         is_trial: false,
       });
     });
@@ -148,8 +149,8 @@ describe('PostHogService', () => {
         if (key === 'id') {
           return '7';
         }
-        if (key === 'organizationId') {
-          return '3';
+        if (key === 'organization') {
+          return { id: '3' };
         }
         return null;
       });

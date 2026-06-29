@@ -91,6 +91,7 @@ export const Login = () => {
           { id: user.id, accessRoleLabels: userAccessRoles },
           {
             id: user.organization.id,
+            name: user.organization.name,
             isTrial: isTrial === null || isTrial === undefined ? undefined : Boolean(isTrial),
           }
         );
