@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../../storybookHelpers';
 import { DateTimePicker } from './DateTimePicker';
 
 const meta: Meta<typeof DateTimePicker> = {
   title: 'UI/Form/DateTimePicker',
   component: DateTimePicker,
   tags: ['autodocs'],
+  argTypes: {
+    placeholder: { control: 'text' },
+    label: { control: 'text' },
+    format: { control: 'text' },
+    ...hideControls('field', 'form', 'variant', 'inputVariant', 'minDate', 'onChange'),
+  },
 };
 
 export default meta;

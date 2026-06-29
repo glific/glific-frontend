@@ -1,10 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../storybookHelpers';
 import { HelpIcon } from './HelpIcon';
 
 const meta: Meta<typeof HelpIcon> = {
   title: 'UI/HelpIcon',
   component: HelpIcon,
   tags: ['autodocs'],
+  argTypes: {
+    darkIcon: { control: 'boolean' },
+    ...hideControls('helpData'),
+  },
 };
 
 export default meta;

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../storybookHelpers';
 import ImgFallback from './ImgFallback';
 import sampleImage from '../../../assets/images/phone.png';
 
@@ -6,6 +7,11 @@ const meta: Meta<typeof ImgFallback> = {
   title: 'UI/ImgFallback',
   component: ImgFallback,
   tags: ['autodocs'],
+  argTypes: {
+    src: { control: 'text' },
+    alt: { control: 'text' },
+    ...hideControls('style', 'onClick'),
+  },
 };
 
 export default meta;

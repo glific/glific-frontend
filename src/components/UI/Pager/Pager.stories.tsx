@@ -2,11 +2,28 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import Pager from './Pager';
 import type { ColumnNames } from 'containers/List/List';
+import { hideControls } from '../storybookHelpers';
 
 const meta: Meta<typeof Pager> = {
   title: 'UI/Pager',
   component: Pager,
   tags: ['autodocs'],
+  argTypes: {
+    totalRows: { control: 'number' },
+    collapseOpen: { control: 'boolean' },
+    loadingList: { control: 'boolean' },
+    showPagination: { control: 'boolean' },
+    noItemsText: { control: 'text' },
+    ...hideControls(
+      'columnNames',
+      'data',
+      'columnStyles',
+      'handleTableChange',
+      'tableVals',
+      'collapseRow',
+      'checkboxSupport'
+    ),
+  },
 };
 
 export default meta;

@@ -5,6 +5,11 @@ const meta: Meta<typeof AvatarDisplay> = {
   title: 'UI/AvatarDisplay',
   component: AvatarDisplay,
   tags: ['autodocs'],
+  argTypes: {
+    name: { control: 'text' },
+    type: { control: 'inline-radio', options: ['normal', 'large'] },
+    badgeDisplay: { control: 'boolean' },
+  },
 };
 
 export default meta;

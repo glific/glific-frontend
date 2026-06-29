@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import dayjs from 'dayjs';
 import { Timer } from './Timer';
+import { hideControls } from '../storybookHelpers';
 
 const meta: Meta<typeof Timer> = {
   title: 'UI/Timer',
@@ -8,6 +9,9 @@ const meta: Meta<typeof Timer> = {
   tags: ['autodocs'],
   argTypes: {
     variant: { control: 'select', options: ['primary', 'secondary'] },
+    contactStatus: { control: 'text' },
+    contactBspStatus: { control: 'text' },
+    ...hideControls('time'),
   },
 };
 

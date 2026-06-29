@@ -1,11 +1,26 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../storybookHelpers';
 import { SearchBar } from './SearchBar';
 
 const meta: Meta<typeof SearchBar> = {
   title: 'UI/SearchBar',
   component: SearchBar,
   tags: ['autodocs'],
+  argTypes: {
+    searchVal: { control: 'text' },
+    searchMode: { control: 'boolean' },
+    iconFront: { control: 'boolean' },
+    ...hideControls(
+      'handleChange',
+      'handleSubmit',
+      'onReset',
+      'handleClick',
+      'endAdornment',
+      'className',
+      'searchParam'
+    ),
+  },
 };
 
 export default meta;

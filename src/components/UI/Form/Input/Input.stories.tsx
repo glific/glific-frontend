@@ -1,11 +1,39 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../../storybookHelpers';
 import { Input } from './Input';
 
 const meta: Meta<typeof Input> = {
   title: 'UI/Form/Input',
   component: Input,
   tags: ['autodocs'],
+  argTypes: {
+    type: { control: 'text' },
+    placeholder: { control: 'text' },
+    label: { control: 'text' },
+    inputLabel: { control: 'text' },
+    helperText: { control: 'text' },
+    translation: { control: 'text' },
+    autoComplete: { control: 'text' },
+    rows: { control: 'number' },
+    textArea: { control: 'boolean' },
+    darkMode: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+    togglePassword: { control: 'boolean' },
+    ...hideControls(
+      'field',
+      'form',
+      'editor',
+      'emojiPicker',
+      'endAdornment',
+      'endAdornmentCallback',
+      'validate',
+      'onChange',
+      'inputProp',
+      'inputLabelSubtext',
+      'customFieldError'
+    ),
+  },
 };
 
 export default meta;

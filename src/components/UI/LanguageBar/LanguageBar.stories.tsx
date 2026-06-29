@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
+import { hideControls } from '../storybookHelpers';
 import { LanguageBar } from './LanguageBar';
 
 const meta: Meta<typeof LanguageBar> = {
   title: 'UI/LanguageBar',
   component: LanguageBar,
   tags: ['autodocs'],
+  args: { onSubmit: fn() },
+  argTypes: {
+    ...hideControls('options', 'form', 'onLanguageChange', 'selectedLangauge'),
+  },
 };
 
 export default meta;

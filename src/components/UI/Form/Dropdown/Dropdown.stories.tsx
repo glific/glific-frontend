@@ -1,11 +1,19 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../../storybookHelpers';
 import { Dropdown } from './Dropdown';
 
 const meta: Meta<typeof Dropdown> = {
   title: 'UI/Form/Dropdown',
   component: Dropdown,
   tags: ['autodocs'],
+  argTypes: {
+    placeholder: { control: 'text' },
+    label: { control: 'text' },
+    helperText: { control: 'text' },
+    disabled: { control: 'boolean' },
+    ...hideControls('field', 'form', 'options', 'type', 'validate', 'fieldChange', 'fieldValue'),
+  },
 };
 
 export default meta;

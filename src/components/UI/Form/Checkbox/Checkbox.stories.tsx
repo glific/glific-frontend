@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../../storybookHelpers';
 import { Checkbox } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
   title: 'UI/Form/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
+  argTypes: {
+    title: { control: 'text' },
+    disabled: { control: 'boolean' },
+    darkCheckbox: { control: 'boolean' },
+    addLabelStyle: { control: 'boolean' },
+    infoType: { control: 'inline-radio', options: ['tooltip', 'dialog'] },
+    ...hideControls('field', 'form', 'handleChange', 'handleInfoClick', 'info', 'className'),
+  },
 };
 
 export default meta;

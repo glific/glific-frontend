@@ -30,6 +30,17 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    docs: {
+      source: {
+        // React 19 changed the element marker to Symbol(react.transitional.element),
+        // which Storybook's bundled react-element-to-jsx-string doesn't recognise.
+        // The default 'dynamic' source serialises the rendered element and throws
+        // "Objects are not valid as a React child" for stories with JSX args
+        // (e.g. `children: <p>…</p>`). Forcing 'code' shows the static story source
+        // from the CSF file instead, sidestepping the serialiser.
+        type: 'code',
+      },
+    },
   },
 };
 

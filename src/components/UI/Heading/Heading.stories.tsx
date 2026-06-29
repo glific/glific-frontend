@@ -1,10 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../storybookHelpers';
 import { Heading } from './Heading';
 
 const meta: Meta<typeof Heading> = {
   title: 'UI/Heading',
   component: Heading,
   tags: ['autodocs'],
+  argTypes: {
+    formTitle: { control: 'text' },
+    backLink: { control: 'text' },
+    headerHelp: { control: 'text' },
+    ...hideControls('helpData', 'button'),
+  },
 };
 
 export default meta;

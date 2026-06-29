@@ -1,11 +1,19 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../../storybookHelpers';
 import { RadioInput } from './RadioInput';
 
 const meta: Meta<typeof RadioInput> = {
   title: 'UI/Form/RadioInput',
   component: RadioInput,
   tags: ['autodocs'],
+  argTypes: {
+    radioTitle: { control: 'text' },
+    labelYes: { control: 'text' },
+    labelNo: { control: 'text' },
+    row: { control: 'boolean' },
+    ...hideControls('field', 'form', 'handleChange'),
+  },
 };
 
 export default meta;

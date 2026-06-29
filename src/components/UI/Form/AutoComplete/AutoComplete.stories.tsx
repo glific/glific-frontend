@@ -1,11 +1,43 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { hideControls } from '../../storybookHelpers';
 import { AutoComplete } from './AutoComplete';
 
 const meta: Meta<typeof AutoComplete> = {
   title: 'UI/Form/AutoComplete',
   component: AutoComplete,
   tags: ['autodocs'],
+  argTypes: {
+    optionLabel: { control: 'text' },
+    additionalOptionLabel: { control: 'text' },
+    placeholder: { control: 'text' },
+    helperText: { control: 'text' },
+    multiple: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+    freeSolo: { control: 'boolean' },
+    autoSelect: { control: 'boolean' },
+    disableClearable: { control: 'boolean' },
+    openOnFocus: { control: 'boolean' },
+    ...hideControls(
+      'field',
+      'form',
+      'options',
+      'icon',
+      'chipIcon',
+      'textFieldProps',
+      'listBoxProps',
+      'classes',
+      'validate',
+      'onChange',
+      'onInputChange',
+      'asyncValues',
+      'noOptionsText',
+      'helpLink',
+      'questionText',
+      'selectedOptionsIds',
+      'handleCreateItem'
+    ),
+  },
 };
 
 export default meta;

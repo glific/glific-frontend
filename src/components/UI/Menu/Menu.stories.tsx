@@ -2,18 +2,22 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { fn } from 'storybook/test';
+import { hideControls } from '../storybookHelpers';
 import Menu from './Menu';
 
 const meta: Meta<typeof Menu> = {
   title: 'UI/Menu',
   component: Menu,
   tags: ['autodocs'],
+  args: { onOpen: fn(), onClose: fn() },
   argTypes: {
     placement: {
       control: 'select',
       options: ['top', 'bottom', 'left', 'right', 'bottom-start', 'bottom-end'],
     },
     eventType: { control: 'select', options: ['Click', 'MouseEnter'] },
+    ...hideControls('menus', 'children', 'onOpen', 'onClose'),
   },
 };
 
