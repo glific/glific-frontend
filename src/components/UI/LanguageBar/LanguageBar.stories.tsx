@@ -19,13 +19,7 @@ type Story = StoryObj<typeof LanguageBar>;
 
 const LanguageBarControlled = (args: any) => {
   const [selected, setSelected] = useState<string | null>(args.options[0] ?? null);
-  return (
-    <LanguageBar
-      {...args}
-      selectedLangauge={selected}
-      onLanguageChange={(lang: string) => setSelected(lang)}
-    />
-  );
+  return <LanguageBar {...args} selectedLangauge={selected} onLanguageChange={(lang: string) => setSelected(lang)} />;
 };
 
 export const Default: Story = {

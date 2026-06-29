@@ -96,5 +96,11 @@ export const Disabled: Story = {
 export const DarkMode: Story = {
   render: (args) => <Controlled {...args} />,
   args: { placeholder: 'Dark mode input', darkMode: true },
-  decorators: [(Story) => <div style={{ background: '#073F24', padding: 16 }}><Story /></div>],
+  decorators: [
+    (Story) => (
+      <div style={{ background: '#073F24', padding: 16 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };

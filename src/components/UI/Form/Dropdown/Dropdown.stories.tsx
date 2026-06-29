@@ -28,12 +28,7 @@ const languageOptions = [
 
 const Controlled = (args: any) => {
   const [value, setValue] = useState('');
-  return (
-    <Dropdown
-      {...args}
-      field={{ name: 'dropdown', value, onChange: (e: any) => setValue(e.target.value) }}
-    />
-  );
+  return <Dropdown {...args} field={{ name: 'dropdown', value, onChange: (e: any) => setValue(e.target.value) }} />;
 };
 
 export const Default: Story = {

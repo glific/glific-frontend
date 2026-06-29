@@ -173,21 +173,31 @@ export const AllSVGIcons: Story = {
         <p style={{ color: '#555', fontSize: 14, marginTop: 0 }}>
           All <code>.svg</code> files from <code>src/assets/images/icons/</code>, grouped by folder.
         </p>
-        {Object.entries(groups).sort(([a], [b]) => a.localeCompare(b)).map(([group, icons]) => (
-          <div key={group} style={sectionStyle}>
-            <h3 style={{ fontSize: 14, color: '#073F24', marginBottom: 12, borderBottom: '1px solid #eee', paddingBottom: 6 }}>
-              {group}
-            </h3>
-            <div style={gridStyle}>
-              {icons.map(({ name, url }) => (
-                <div key={name} style={iconCellStyle}>
-                  <img src={url} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
-                  <span style={labelStyle}>{name}</span>
-                </div>
-              ))}
+        {Object.entries(groups)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([group, icons]) => (
+            <div key={group} style={sectionStyle}>
+              <h3
+                style={{
+                  fontSize: 14,
+                  color: '#073F24',
+                  marginBottom: 12,
+                  borderBottom: '1px solid #eee',
+                  paddingBottom: 6,
+                }}
+              >
+                {group}
+              </h3>
+              <div style={gridStyle}>
+                {icons.map(({ name, url }) => (
+                  <div key={name} style={iconCellStyle}>
+                    <img src={url} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                    <span style={labelStyle}>{name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     );
   },

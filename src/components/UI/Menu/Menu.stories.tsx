@@ -26,7 +26,12 @@ type Story = StoryObj<typeof Menu>;
 
 const menus = [
   { title: 'Edit', path: '', icon: <EditIcon fontSize="small" />, onClick: () => alert('Edit clicked') },
-  { title: 'Duplicate', path: '', icon: <ContentCopyIcon fontSize="small" />, onClick: () => alert('Duplicate clicked') },
+  {
+    title: 'Duplicate',
+    path: '',
+    icon: <ContentCopyIcon fontSize="small" />,
+    onClick: () => alert('Duplicate clicked'),
+  },
   { title: 'Delete', path: '', icon: <DeleteIcon fontSize="small" />, onClick: () => alert('Delete clicked') },
 ];
 
@@ -35,11 +40,7 @@ export const ClickTrigger: Story = {
     menus,
     placement: 'bottom-start',
     eventType: 'Click',
-    children: (
-      <button style={{ cursor: 'pointer', padding: '6px 12px' }}>
-        ⋯ Options
-      </button>
-    ),
+    children: <button style={{ cursor: 'pointer', padding: '6px 12px' }}>⋯ Options</button>,
   },
 };
 

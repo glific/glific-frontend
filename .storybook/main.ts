@@ -11,12 +11,7 @@ const allowedHosts = process.env.STORYBOOK_ALLOWED_HOSTS
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
-  addons: [
-    '@chromatic-com/storybook',
-    '@storybook/addon-a11y',
-    '@storybook/addon-docs',
-    '@storybook/addon-mcp',
-  ],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-a11y', '@storybook/addon-docs', '@storybook/addon-mcp'],
   framework: '@storybook/react-vite',
   // Storybook's own host guard, separate from Vite's server.allowedHosts below.
   // Only the explicitly allowed tunnel hosts (if any) are permitted.

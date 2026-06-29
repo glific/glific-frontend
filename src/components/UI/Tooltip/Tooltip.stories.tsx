@@ -56,9 +56,7 @@ export const WithRichContent: Story = {
         </>
       }
     >
-      <span style={{ display: 'inline-block', padding: '8px 16px', background: '#eee' }}>
-        Hover for rich tooltip
-      </span>
+      <span style={{ display: 'inline-block', padding: '8px 16px', background: '#eee' }}>Hover for rich tooltip</span>
     </Tooltip>
   ),
 };
