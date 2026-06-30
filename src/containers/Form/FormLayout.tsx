@@ -238,7 +238,9 @@ export const FormLayout = ({
         customError.setErrors(codeErrors);
       }
     } else {
-      setLink(updatedItem[linkParameter]);
+      if (updatedItem) {
+        setLink(updatedItem[linkParameter]);
+      }
       if (additionalQuery) {
         additionalQuery(itemId);
       }
