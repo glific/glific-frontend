@@ -904,19 +904,28 @@ const sessionTemplatesV2Mock = (filter: any, data: any) => ({
   result: { data: { sessionTemplates: data } },
 });
 
-export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true }, hsmV2TemplatesData);
-export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock({ isHsm: true, category: 'UTILITY' }, [
+// HSMListV2 defaults the status filter to APPROVED, so every list query carries
+// `status: 'APPROVED'` alongside the other filters.
+export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData);
+export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
+  [hsmV2TemplatesData[0]]
+);
+export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED', tagIds: [1] }, [
   hsmV2TemplatesData[0],
 ]);
-export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, tagIds: [1] }, [hsmV2TemplatesData[0]]);
-export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock({ isHsm: true, label: 'feedback' }, [
-  hsmV2TemplatesData[1],
-]);
+export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'APPROVED', label: 'feedback' },
+  [hsmV2TemplatesData[1]]
+);
 
-export const templateCountV2Mock = templateCountQuery({ isHsm: true }, hsmV2TemplatesData.length);
-export const templateCountV2CategoryMock = templateCountQuery({ isHsm: true, category: 'UTILITY' }, 1);
-export const templateCountV2TagMock = templateCountQuery({ isHsm: true, tagIds: [1] }, 1);
-export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, label: 'feedback' }, 1);
+export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
+export const templateCountV2CategoryMock = templateCountQuery(
+  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
+  1
+);
+export const templateCountV2TagMock = templateCountQuery({ isHsm: true, status: 'APPROVED', tagIds: [1] }, 1);
+export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, status: 'APPROVED', label: 'feedback' }, 1);
 
 export const getCategoriesV2Mock = {
   request: { query: GET_HSM_CATEGORIES, variables: {} },

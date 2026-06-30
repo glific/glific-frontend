@@ -152,20 +152,18 @@ const languageChip = (variant: any, key: string | number) => {
 
 const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_').join(' ').toLowerCase());
 
-const getTitle = (title: string, tag: { label: string } | undefined, primary: any) => (
+const getTitle = (title: string, quality: string, primary: any) => (
   <div className={styles.LabelContainer}>
     <Tooltip title={messagePreview(primary, title)} placement="bottom-start" arrow slotProps={previewSlotProps}>
       <div className={styles.LabelText}>{title}</div>
     </Tooltip>
-    {tag?.label && <div className={styles.TagChip}>{tag.label}</div>}
+    <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
   </div>
 );
 
 // the Languages column shows one chip per language variant, coloured by status.
 const getLanguages = (variants: any[] = []) => (
-  <div className={styles.ChipRow}>
-    {variants.map((variant, index) => languageChip(variant, variant.id ?? index))}
-  </div>
+  <div className={styles.ChipRow}>{variants.map((variant, index) => languageChip(variant, variant.id ?? index))}</div>
 );
 
 // the Category column aggregates the variants' categories, e.g. "Utility ×2".
@@ -262,9 +260,9 @@ const buildVariantData = (variants: any[] = []) =>
     return acc;
   }, {});
 
-const getColumns = ({ id, label, shortcode, tag, updatedAt, variants, body, footer, language }: any) => ({
+const getColumns = ({ id, label, shortcode, quality, updatedAt, variants, body, footer, language }: any) => ({
   id,
-  label: getTitle(shortcode || label, tag, { body, footer, language }),
+  label: getTitle(shortcode || label, quality, { body, footer, language }),
   languages: getLanguages(variants),
   category: getCategories(variants),
   updatedAt: getUpdatedAt(updatedAt),

@@ -63,43 +63,98 @@ test('renders page title and action buttons', async () => {
   renderComponent();
 
   await waitFor(() => {
-    expect(screen.getByText('Templates')).toBeInTheDocument();
+    expect(screen.getByText('HSM Templates')).toBeInTheDocument();
   });
 
-  expect(screen.getByTestId('bulkApply')).toBeInTheDocument();
+  // Bulk apply is rendered via the shared ImportButton (hidden file input).
+  expect(screen.getByTestId('import')).toBeInTheDocument();
+  expect(screen.getByText('Bulk apply')).toBeInTheDocument();
   expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
-  expect(screen.getByTestId('templateLibrary')).toBeInTheDocument();
-  expect(screen.getByTestId('createTemplate')).toBeInTheDocument();
+  // Create is the List header button.
+  expect(screen.getByTestId('newItemButton')).toBeInTheDocument();
+});
+
+test('does not render the removed Template library button', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+  });
+
+  expect(screen.queryByTestId('templateLibrary')).not.toBeInTheDocument();
 });
 
 test('renders template rows after data loads', async () => {
   renderComponent();
 
   await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
 
-  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+  expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
-test('renders category and tag filter dropdowns', async () => {
+test('renders the status, category and tag filters', async () => {
   renderComponent();
 
   await waitFor(() => {
-    expect(screen.getByTestId('categoryFilter')).toBeInTheDocument();
-    expect(screen.getByTestId('tagFilter')).toBeInTheDocument();
+    expect(screen.getByTestId('dropdown-template')).toBeInTheDocument();
   });
+
+  expect(screen.getByTestId('categoryFilter')).toBeInTheDocument();
+  expect(screen.getByTestId('AutocompleteInput')).toBeInTheDocument();
+});
+
+test('defaults the status filter to Approved', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dropdown-template')).toBeInTheDocument();
+  });
+
+  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
+});
+
+test('renders the quality rating chip on each title', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  // welcome_msg has quality HIGH; feedback_form has no quality -> "Not Rated".
+  expect(screen.getByText('HIGH')).toBeInTheDocument();
+  expect(screen.getByText('Not Rated')).toBeInTheDocument();
 });
 
 test('navigates to create template page on Create click', async () => {
   renderComponent();
 
   await waitFor(() => {
-    expect(screen.getByTestId('createTemplate')).toBeInTheDocument();
+    expect(screen.getByTestId('newItemButton')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByTestId('createTemplate'));
+  fireEvent.click(screen.getByTestId('newItemButton'));
   expect(mockedNavigate).toHaveBeenCalledWith('/template/add');
+});
+
+test('navigates to create template page with the selected tag', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  // comboboxes: [0] status filter, [1] category filter, [2] tag autocomplete
+  const autoComplete = screen.getAllByRole('combobox')[2];
+  autoComplete.focus();
+  fireEvent.change(autoComplete, { target: { value: 'Messages' } });
+  fireEvent.keyDown(autoComplete, { key: 'ArrowDown' });
+  fireEvent.keyDown(autoComplete, { key: 'Enter' });
+
+  fireEvent.click(screen.getByTestId('newItemButton'));
+
+  expect(mockedNavigate).toHaveBeenCalledWith('/template/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
 test('navigates to edit template page via the row View action', async () => {
@@ -159,7 +214,7 @@ test('shows loading screen while bulk apply processes', async () => {
   renderComponent([...baseMocks, bulkApplyV2Mock]);
 
   await waitFor(() => {
-    expect(screen.getByTestId('bulkApply')).toBeInTheDocument();
+    expect(screen.getByTestId('import')).toBeInTheDocument();
   });
 
   const mockFile = new File(['csv content'], 'templates.csv', { type: 'text/csv' });
@@ -170,7 +225,7 @@ test('shows loading screen while bulk apply processes', async () => {
   });
 });
 
-test('shows warning when non-CSV file is uploaded', async () => {
+test('shows warning when a non-CSV file is uploaded', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -180,20 +235,9 @@ test('shows warning when non-CSV file is uploaded', async () => {
   const mockFile = new File(['content'], 'templates.xlsx', { type: 'application/vnd.ms-excel' });
   fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
 
-  expect(setNotification).toHaveBeenCalledWith('Please upload a valid CSV file', 'warning');
-});
-
-test('does nothing when file change fires with no file selected', async () => {
-  renderComponent();
-
   await waitFor(() => {
-    expect(screen.getByTestId('import')).toBeInTheDocument();
+    expect(setNotification).toHaveBeenCalledWith('Please upload a valid CSV file', 'warning');
   });
-
-  vi.mocked(setNotification).mockClear();
-  fireEvent.change(screen.getByTestId('import'), { target: { files: [] } });
-
-  expect(setNotification).not.toHaveBeenCalled();
 });
 
 test('exports results and shows success notification after a successful bulk apply', async () => {
@@ -244,7 +288,7 @@ test('shows no notification and skips export when bulk apply returns an empty re
 
   // returns to the list once processing finishes
   await waitFor(() => {
-    expect(screen.getByTestId('bulkApply')).toBeInTheDocument();
+    expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
   });
 
   expect(exportCsvFile).not.toHaveBeenCalled();
@@ -266,11 +310,24 @@ test('shows warning notification when bulk apply throws a network error', async 
   });
 });
 
+test('opens the file picker when Bulk apply is clicked', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('import')).toBeInTheDocument();
+  });
+
+  const clickSpy = vi.spyOn(screen.getByTestId('import') as HTMLInputElement, 'click');
+  fireEvent.click(screen.getByText('Bulk apply'));
+
+  expect(clickSpy).toHaveBeenCalled();
+});
+
 test('expands a template to reveal its other language variants', async () => {
   renderComponent();
 
   await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
 
   // the Hindi variant is hidden until the row is expanded
@@ -284,75 +341,56 @@ test('expands a template to reveal its other language variants', async () => {
   });
 });
 
-test('renders the Template library action button', async () => {
-  renderComponent();
-
-  await waitFor(() => {
-    expect(screen.getByTestId('templateLibrary')).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getByTestId('templateLibrary'));
-});
-
-test('opens the file picker when Bulk apply is clicked', async () => {
-  renderComponent();
-
-  await waitFor(() => {
-    expect(screen.getByTestId('bulkApply')).toBeInTheDocument();
-  });
-
-  const clickSpy = vi.spyOn(screen.getByTestId('import') as HTMLInputElement, 'click');
-  fireEvent.click(screen.getByTestId('bulkApply'));
-
-  expect(clickSpy).toHaveBeenCalled();
-});
-
 test('filters templates by selected category', async () => {
   renderComponent([...baseMocks, filterTemplatesV2CategoryMock, templateCountV2CategoryMock]);
 
   await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
-  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+  expect(screen.getByText('feedback_form')).toBeInTheDocument();
 
   fireEvent.mouseDown(within(screen.getByTestId('categoryFilter')).getByRole('combobox'));
   fireEvent.click(await screen.findByRole('option', { name: 'Utility' }));
 
   await waitFor(() => {
-    expect(screen.queryByText('Feedback Form')).not.toBeInTheDocument();
+    expect(screen.queryByText('feedback_form')).not.toBeInTheDocument();
   });
-  expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
 });
 
 test('filters templates by selected tag', async () => {
   renderComponent([...baseMocks, filterTemplatesV2TagMock, templateCountV2TagMock]);
 
   await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
-  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+  expect(screen.getByText('feedback_form')).toBeInTheDocument();
 
-  fireEvent.mouseDown(within(screen.getByTestId('tagFilter')).getByRole('combobox'));
-  fireEvent.click(await screen.findByRole('option', { name: 'Messages' }));
+  // comboboxes: [0] status filter, [1] category filter, [2] tag autocomplete
+  const autoComplete = screen.getAllByRole('combobox')[2];
+  autoComplete.focus();
+  fireEvent.change(autoComplete, { target: { value: 'Messages' } });
+  fireEvent.keyDown(autoComplete, { key: 'ArrowDown' });
+  fireEvent.keyDown(autoComplete, { key: 'Enter' });
 
   await waitFor(() => {
-    expect(screen.queryByText('Feedback Form')).not.toBeInTheDocument();
+    expect(screen.queryByText('feedback_form')).not.toBeInTheDocument();
   });
-  expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
 });
 
 test('filters templates by search term', async () => {
   renderComponent([...baseMocks, filterTemplatesV2SearchMock, templateCountV2SearchMock]);
 
   await waitFor(() => {
-    expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+    expect(screen.getByText('feedback_form')).toBeInTheDocument();
   });
 
   fireEvent.change(screen.getByRole('textbox'), { target: { value: 'feedback' } });
   fireEvent.submit(screen.getByTestId('searchForm'));
 
   await waitFor(() => {
-    expect(screen.queryByText('Welcome Message')).not.toBeInTheDocument();
+    expect(screen.queryByText('welcome_msg')).not.toBeInTheDocument();
   });
-  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+  expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });

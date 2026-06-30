@@ -104,10 +104,7 @@ const customCollapsedRowData = (
       <TableRow key={`collapsedRowData-${recordId}-${index}`} className={styles.CollapseRowCustom}>
         {expandableRows ? <TableCell className={styles.ChevronCell} /> : null}
         {cells.map((cell, cellIndex) => (
-          <TableCell
-            key={cellIndex}
-            className={`${columnStyles && columnStyles[cellIndex]} ${styles.RowStyle}`}
-          >
+          <TableCell key={cellIndex} className={`${columnStyles && columnStyles[cellIndex]} ${styles.RowStyle}`}>
             {cell}
           </TableCell>
         ))}
@@ -298,15 +295,7 @@ export const Pager = ({
   onToggleRow,
   collapsedColumns,
 }: PagerProps) => {
-  const rows = createRows(
-    data,
-    columnStyles,
-    collapseRow,
-    collapseOpen,
-    expandableRows,
-    onToggleRow,
-    collapsedColumns
-  );
+  const rows = createRows(data, columnStyles, collapseRow, collapseOpen, expandableRows, onToggleRow, collapsedColumns);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,
