@@ -26,7 +26,8 @@ type ServiceType =
   | 'assistantConfigVersionsEnabled'
   | 'aiEvaluationsEnabled'
   | 'copyNodeEnabled'
-  | 'promptGeneratorEnabled';
+  | 'promptGeneratorEnabled'
+  | 'supersetEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
@@ -117,7 +118,7 @@ export const clearAuthSession = () => {
 };
 
 // service to sent the OTP based on the phone number
-export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
+export const sendOTP = (phoneNumber: string, registrationToken?: string, timeout?: number) => {
   const user: RegisterRequest = {
     phone: phoneNumber,
     registration: 'false',
@@ -129,9 +130,7 @@ export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
   }
 
   return axios
-    .post(VITE_GLIFIC_AUTHENTICATION_API, {
-      user,
-    })
+    .post(VITE_GLIFIC_AUTHENTICATION_API, { user }, timeout ? { timeout } : undefined)
     .then((response) => response)
     .catch((error) => {
       throw error;

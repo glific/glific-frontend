@@ -74,3 +74,5 @@ export const AI_EVALS_INTRO_VIDEO_URL =
   envVariables.VITE_AI_EVALS_INTRO_VIDEO_URL || 'https://www.youtube.com/embed/pl8pUTkAgwc';
 export const TRIAL_CREATE_USER_API = `${GLIFIC_API_URL}/v1/trial/create-trial-user`;
 export const TRIAL_ALLOCATE_ACCOUNT_API = `${GLIFIC_API_URL}/v1/trial/allocate-account`;
+export const ANALYTICS_ENDPOINT = `${GLIFIC_API_URL}/v1/get-embed-token`;
+export const SUPERSET_DASHBOARD_ID = envVariables.VITE_SUPERSET_DASHBOARD_ID;
