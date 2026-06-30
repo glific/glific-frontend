@@ -27,7 +27,8 @@ export const ResetPasswordPhone = () => {
         setRedirect(true);
       })
       .catch((error) => {
-        let errorMsg = error?.response?.data?.error?.message;
+        const errorData = error?.response?.data?.error;
+        let errorMsg = typeof errorData === 'string' ? errorData : errorData?.message;
         if (!errorMsg) {
           errorMsg = 'We are unable to generate an OTP, kindly contact your technical team.';
         }
