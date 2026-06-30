@@ -140,6 +140,22 @@ export const templateStatusInfo: HelpDataProps = {
   link: 'https://docs.gupshup.io/docs/message-template-approvals-statuses',
 };
 
+export const templateLanguageInfo: HelpDataProps = {
+  heading: (
+    <div>
+      <p>
+        <b>Green:</b> Approved — the template in this language is approved.
+      </p>
+      <p>
+        <b>Yellow:</b> Pending — the template in this language is pending.
+      </p>
+      <p>
+        <b>Red:</b> Rejected / Failed — the template in this language was rejected or failed.
+      </p>
+    </div>
+  ),
+};
+
 export const pollsInfo: HelpDataProps = {
   heading: 'An overview of all the polls created to date',
   link: 'https://glific.github.io/docs/docs/WhatsApp%20Groups%20Automation/Sending%20Polls%20To%20WhatsApp%20Groups',

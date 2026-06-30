@@ -805,5 +805,9 @@
   "View sample": "View sample",
   "All Tags": "All Tags",
   "Add new language": "Add new language",
-  "Filter": "Filter"
+  "Filter": "Filter",
+  "the template in this language is approved.": "the template in this language is approved.",
+  "the template in this language is pending.": "the template in this language is pending.",
+  "the template in this language was rejected.": "the template in this language was rejected.",
+  "the template in this language failed.": "the template in this language failed."
 }

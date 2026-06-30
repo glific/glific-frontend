@@ -14,6 +14,12 @@
   min-width: 160px;
 }
 
+.HeaderWithIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .Category {
   width: 22%;
   min-width: 160px;
@@ -39,10 +45,9 @@
 }
 
 .LabelText {
-  font-weight: 600;
-  font-size: 16px;
-  color: #0c1f14;
-  word-break: break-word;
+  font-weight: 500;
+  font-size: 17px;
+  word-break: break-all;
 }
 
 .TagChip {
@@ -106,44 +111,68 @@
   background: #dc2626;
 }
 
-/* Category column badges */
-.CatBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 12px;
+/* WhatsApp-style status tooltip shown on language chip hover */
+.PreviewTooltip {
+  background: #ece5dd !important;
+  color: #0c1f14 !important;
+  padding: 10px !important;
+  border-radius: 10px !important;
+  max-width: 280px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+.PreviewArrow {
+  color: #ece5dd !important;
+}
+
+.PreviewCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.PreviewHeader {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #667781;
+}
+
+.PreviewBubble {
+  background: #e7ffdb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+}
+
+.PreviewBody {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #0c1f14;
+  white-space: pre-line;
+}
+
+.PreviewVar {
+  background: #c6efaf;
+  color: #0c6b2e;
+  border-radius: 4px;
+  padding: 0 3px;
   font-weight: 600;
-  border-radius: 6px;
-  padding: 3px 8px;
 }
 
-.CatCount {
-  opacity: 0.7;
-  font-weight: 500;
-}
-
-.CatUtility {
-  background: #e8f5ee;
-  color: #119656;
-}
-.CatMarketing {
-  background: #f3e8ff;
-  color: #7c3aed;
-}
-.CatAuthentication {
-  background: #fff0e8;
-  color: #c2410c;
-}
-.CatService {
-  background: #e8f4ff;
-  color: #1d4ed8;
+.PreviewFooter {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  color: #667781;
 }
 
 /* expanded child rows */
 .CollapseBody {
   margin: 0;
-  font-size: 13px;
-  color: #6b7280;
+  font-size: 14px;
+  color: #93a29b;
   line-height: 1.4;
   white-space: pre-line;
   padding-right: 16px;
@@ -175,30 +204,40 @@
 }
 
 /* header actions */
-.SecondaryActions {
+.SecondaryButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 0 0.5rem;
 }
 
-.SyncWrapper {
+.HsmUpdates {
+  margin-left: 8px;
+  cursor: pointer;
+  height: 36px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  box-shadow: none;
+  font-size: 14px;
+  color: #2ea36a;
+}
+
+.ImportButton {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
 
-.ViewSample {
+.HelperText {
   position: absolute;
-  bottom: -16px;
-  font-size: 10px;
   color: #2ea36a;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.ViewSample:hover {
-  text-decoration: underline;
+  font-weight: 400;
+  font-size: 10px;
+  bottom: -20px;
+  right: 10px;
+  text-decoration: none !important;
+  padding: 0 12px;
 }
 
 /* filters */
