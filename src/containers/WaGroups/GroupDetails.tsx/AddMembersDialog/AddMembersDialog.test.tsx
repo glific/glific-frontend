@@ -3,7 +3,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { AddMembersDialog } from './AddMembersDialog';
 import { IMPORT_WA_GROUP_CONTACTS } from 'graphql/mutations/Group';
-import { contactsListExcludeGroup } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 vi.mock('common/notification', async (importOriginal) => {
@@ -28,7 +27,7 @@ const importMock = {
   },
 };
 
-const renderDialog = (mocks: any[] = [contactsListExcludeGroup], onClose = vi.fn()) =>
+const renderDialog = (mocks: any[] = [], onClose = vi.fn()) =>
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <AddMembersDialog waGroupId="1" onClose={onClose} />
@@ -37,19 +36,19 @@ const renderDialog = (mocks: any[] = [contactsListExcludeGroup], onClose = vi.fn
 
 beforeEach(() => vi.clearAllMocks());
 
-test('renders the select-contacts mode by default', async () => {
+test('renders the CSV upload', async () => {
   renderDialog();
   expect(await screen.findByText('Add members to this group')).toBeInTheDocument();
-  // the contact search autocomplete is shown
-  expect(await screen.findByTestId('autocomplete-element')).toBeInTheDocument();
+  expect(screen.getByTestId('uploadWaMembers')).toBeInTheDocument();
+  // no CSV yet → Upload disabled
+  expect(screen.getByTestId('ok-button')).toBeDisabled();
 });
 
-test('uploads a CSV in CSV mode', async () => {
+test('uploads a CSV and reports the import started in the background', async () => {
   const onClose = vi.fn();
-  renderDialog([contactsListExcludeGroup, importMock], onClose);
+  renderDialog([importMock], onClose);
 
   await screen.findByText('Add members to this group');
-  fireEvent.click(screen.getByTestId('csvMode'));
 
   const input = screen.getByTestId('uploadWaMembers');
   const file = new File([csv], 'members.csv', { type: 'text/csv' });
@@ -64,7 +63,7 @@ test('uploads a CSV in CSV mode', async () => {
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith(
-      'Member upload started. Check notifications for the report.',
+      "Member upload started in the background — you'll be notified when it's done.",
       'success'
     );
   });
@@ -75,7 +74,6 @@ test('rejects a non-CSV file', async () => {
   renderDialog();
 
   await screen.findByText('Add members to this group');
-  fireEvent.click(screen.getByTestId('csvMode'));
 
   const input = screen.getByTestId('uploadWaMembers');
   const file = new File(['nope'], 'members.txt', { type: 'text/plain' });

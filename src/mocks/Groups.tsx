@@ -833,6 +833,24 @@ export const syncWaGroupContactsQueryWithError = {
   },
 };
 
+export const syncWaGroupContactsNoActivePhones = {
+  request: {
+    query: SYNC_GROUPS,
+  },
+  result: {
+    data: {
+      syncWaGroupContacts: null,
+    },
+    errors: [
+      {
+        message: 'No active phones available',
+        path: ['syncWaGroupContacts'],
+        locations: [{ line: 2, column: 3 }],
+      },
+    ],
+  },
+};
+
 export const waMessageReceivedSubscription = {
   request: {
     query: WA_MESSAGE_RECEIVED_SUBSCRIPTION,
@@ -1217,8 +1235,10 @@ export const contactsListExcludeGroup = {
   },
 };
 
+// Members are always supplied via CSV now (sent as `importData`); the backend
+// seeds the group and imports contacts in a background job.
 const createWaGroupVariables = {
-  input: { name: 'Test Group', waManagedPhoneId: '1', numbers: ['918888888888'] },
+  input: { name: 'Test Group', waManagedPhoneId: '1', importData: 'phone\n919900112233\n' },
 };
 
 export const createWaGroupQuery = {
@@ -1359,6 +1379,41 @@ export const addMembersNetworkError = {
   request: {
     query: UPDATE_WA_GROUP,
     variables: { input: { id: '1', addPhones: ['918888888888'] } },
+  },
+  error: new Error('Network error'),
+};
+
+// CSV member import (background) for the group rendered in GroupDetails (id "1").
+const importMembersCsv = 'phone\n919900112233\n';
+
+export const importMembersQuery = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '1', type: 'DATA', data: importMembersCsv },
+  },
+  result: {
+    data: {
+      importWaGroupContacts: { status: 'WA group member import is in progress', errors: null },
+    },
+  },
+};
+
+export const importMembersErrorResponse = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '1', type: 'DATA', data: importMembersCsv },
+  },
+  result: {
+    data: {
+      importWaGroupContacts: { status: null, errors: [{ key: 'csv', message: 'Could not add member' }] },
+    },
+  },
+};
+
+export const importMembersNetworkError = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '1', type: 'DATA', data: importMembersCsv },
   },
   error: new Error('Network error'),
 };

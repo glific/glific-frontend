@@ -7,10 +7,9 @@ import {
   removeContactQuery,
   getWaGroupQuery,
   waGroupContacts,
-  contactsListExcludeGroup,
-  addMembersQuery,
-  addMembersErrorResponse,
-  addMembersNetworkError,
+  importMembersQuery,
+  importMembersErrorResponse,
+  importMembersNetworkError,
   renameGroupQuery,
   renameGroupErrorResponse,
   renameGroupNetworkError,
@@ -194,27 +193,36 @@ test('renames the group', async () => {
   });
 });
 
-test('adds members to the group', async () => {
-  render(
-    renderWith([contactsListExcludeGroup, addMembersQuery, getWaGroupQuery, waGroupContacts, countWaGroupContacts])
-  );
+const uploadCsv = () => {
+  const input = screen.getByTestId('uploadWaMembers');
+  const file = new File(['phone\n919900112233\n'], 'members.csv', { type: 'text/csv' });
+  fireEvent.change(input, { target: { files: [file] } });
+};
 
+const openAddAndUpload = async () => {
   await waitFor(() => {
     expect(screen.getByTestId('addMembers')).toBeInTheDocument();
   });
-
   fireEvent.click(screen.getByTestId('addMembers'));
 
-  // SearchDialogBox opens; pick the first contact once the query resolves
-  const [autocompleteEl] = await screen.findAllByTestId('autocomplete-element');
-  autocompleteEl.focus();
-  fireEvent.keyDown(autocompleteEl, { key: 'ArrowDown' });
-  fireEvent.click(await screen.findByText('Contact A'));
-
-  fireEvent.click(screen.getByTestId('ok-button'));
+  await screen.findByTestId('uploadWaMembers');
+  uploadCsv();
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(screen.getByTestId('ok-button')).not.toBeDisabled();
+  });
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('adds members to the group via CSV upload', async () => {
+  render(renderWith([importMembersQuery, getWaGroupQuery, waGroupContacts, countWaGroupContacts]));
+  await openAddAndUpload();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith(
+      "Member upload started in the background — you'll be notified when it's done.",
+      'success'
+    );
   });
 });
 
@@ -245,48 +253,34 @@ test('warns when removing a contact errors out', async () => {
   });
 });
 
-const openAddAndSelect = async () => {
-  await waitFor(() => {
-    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
-  });
-  fireEvent.click(screen.getByTestId('addMembers'));
-
-  const [autocompleteEl] = await screen.findAllByTestId('autocomplete-element');
-  autocompleteEl.focus();
-  fireEvent.keyDown(autocompleteEl, { key: 'ArrowDown' });
-  fireEvent.click(await screen.findByText('Contact A'));
-
-  fireEvent.click(screen.getByTestId('ok-button'));
-};
-
-test('warns when adding members returns errors', async () => {
-  render(renderWith([contactsListExcludeGroup, addMembersErrorResponse]));
-  await openAddAndSelect();
+test('warns when the member import returns errors', async () => {
+  render(renderWith([importMembersErrorResponse]));
+  await openAddAndUpload();
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('Could not add member', 'warning');
   });
 });
 
-test('warns when adding members errors out', async () => {
-  render(renderWith([contactsListExcludeGroup, addMembersNetworkError]));
-  await openAddAndSelect();
+test('warns when the member import errors out', async () => {
+  render(renderWith([importMembersNetworkError]));
+  await openAddAndUpload();
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Could not add contacts to the group', 'warning');
+    expect(setNotification).toHaveBeenCalledWith('Could not upload members', 'warning');
   });
 });
 
-test('disables Save until a contact is selected', async () => {
-  render(renderWith([contactsListExcludeGroup]));
+test('disables Upload until a CSV is added', async () => {
+  render(renderWith());
 
   await waitFor(() => {
     expect(screen.getByTestId('addMembers')).toBeInTheDocument();
   });
   fireEvent.click(screen.getByTestId('addMembers'));
-  await screen.findAllByTestId('autocomplete-element');
+  await screen.findByTestId('uploadWaMembers');
 
-  // nothing selected yet -> the Save button is disabled
+  // nothing uploaded yet -> the Upload button is disabled
   expect(screen.getByTestId('ok-button')).toBeDisabled();
 });
 
@@ -319,35 +313,18 @@ test('warns when renaming errors out', async () => {
 });
 
 test('cancels the add-members dialog', async () => {
-  render(renderWith([contactsListExcludeGroup]));
+  render(renderWith());
 
   await waitFor(() => {
     expect(screen.getByTestId('addMembers')).toBeInTheDocument();
   });
   fireEvent.click(screen.getByTestId('addMembers'));
-  await screen.findAllByTestId('autocomplete-element');
+  await screen.findByTestId('uploadWaMembers');
 
   fireEvent.click(screen.getByTestId('cancel-button'));
 
   await waitFor(() => {
     expect(screen.queryByText('Add members to this group')).not.toBeInTheDocument();
-  });
-});
-
-test('updates the member search term when typing', async () => {
-  render(renderWith([contactsListExcludeGroup]));
-
-  await waitFor(() => {
-    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
-  });
-  fireEvent.click(screen.getByTestId('addMembers'));
-  const [autocompleteEl] = await screen.findAllByTestId('autocomplete-element');
-  const input = autocompleteEl.querySelector('input') as HTMLInputElement;
-
-  fireEvent.change(input, { target: { value: 'Co' } });
-
-  await waitFor(() => {
-    expect(input.value).toBe('Co');
   });
 });
 
