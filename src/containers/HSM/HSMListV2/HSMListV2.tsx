@@ -344,7 +344,7 @@ const HSMListV2 = () => {
     if (item.bspId) {
       copyToClipboardMethod(item.bspId);
     } else {
-      setNotification('Sorry! UUID not found', 'warning');
+      setNotification(t('Sorry! UUID not found'), 'warning');
     }
   };
 
@@ -482,15 +482,17 @@ const HSMListV2 = () => {
         optionLabel="label"
         multiple={false}
         onChange={(value: any) => {
-          if (value) {
-            setSearchParams({
-              tag: value.label,
-            });
-          } else {
-            setSearchParams({
-              tag: '',
-            });
-          }
+          // preserve any other existing query params (e.g. List's search) when
+          // updating the tag filter instead of replacing the whole query string.
+          setSearchParams((params) => {
+            const next = new URLSearchParams(params);
+            if (value) {
+              next.set('tag', value.label);
+            } else {
+              next.delete('tag');
+            }
+            return next;
+          });
         }}
         form={{ setFieldValue: () => {} }}
         field={{
