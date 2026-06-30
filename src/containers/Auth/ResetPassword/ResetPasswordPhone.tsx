@@ -30,7 +30,7 @@ export const ResetPasswordPhone = () => {
         const errorData = error?.response?.data?.error;
         let errorMsg = typeof errorData === 'string' ? errorData : errorData?.message;
         if (!errorMsg) {
-          errorMsg = 'We are unable to generate an OTP, kindly contact your technical team.';
+          errorMsg = `Cannot send the otp to ${data.phoneNumber}`;
         }
         setAuthError(errorMsg);
       });

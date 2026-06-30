@@ -130,9 +130,7 @@ export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
   }
 
   return axios
-    .post(VITE_GLIFIC_AUTHENTICATION_API, {
-      user,
-    })
+    .post(VITE_GLIFIC_AUTHENTICATION_API, { user }, { timeout: 7000 })
     .then((response) => response)
     .catch((error) => {
       throw error;
