@@ -15,8 +15,12 @@ import {
   bulkApplyV2ErrorsMock,
   bulkApplyV2NetworkErrorMock,
   bulkApplyV2EmptyMock,
-  getCategoriesV2Mock,
-  filterTemplatesV2Mock,
+  filterTemplatesV2CategoryMock,
+  templateCountV2CategoryMock,
+  filterTemplatesV2TagMock,
+  templateCountV2TagMock,
+  filterTemplatesV2SearchMock,
+  templateCountV2SearchMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
 
@@ -38,9 +42,11 @@ vi.mock('react-router', async () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-const defaultMocks = [...HSM_LIST_V2, getFilterTagQuery, getFilterTagQuery];
+// the shared List component fires the filter/count queries multiple times
+// (initial + refetch on mount), so duplicate the base mocks generously.
+const baseMocks = [...HSM_LIST_V2, ...HSM_LIST_V2, getFilterTagQuery, getFilterTagQuery, getFilterTagQuery];
 
-const renderComponent = (mocks: any[] = defaultMocks) =>
+const renderComponent = (mocks: any[] = baseMocks) =>
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
@@ -62,10 +68,11 @@ test('renders page title and action buttons', async () => {
 
   expect(screen.getByTestId('bulkApply')).toBeInTheDocument();
   expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
+  expect(screen.getByTestId('templateLibrary')).toBeInTheDocument();
   expect(screen.getByTestId('createTemplate')).toBeInTheDocument();
 });
 
-test('renders grouped template rows after data loads', async () => {
+test('renders template rows after data loads', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -73,44 +80,6 @@ test('renders grouped template rows after data loads', async () => {
   });
 
   expect(screen.getByText('Feedback Form')).toBeInTheDocument();
-});
-
-test('filters templates by search term', async () => {
-  renderComponent();
-
-  await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-  });
-
-  const searchInput = screen.getByRole('textbox');
-  fireEvent.change(searchInput, { target: { value: 'feedback' } });
-
-  await waitFor(() => {
-    expect(screen.queryByText('Welcome Message')).not.toBeInTheDocument();
-    expect(screen.getByText('Feedback Form')).toBeInTheDocument();
-  });
-});
-
-test('clears search and shows all templates on reset', async () => {
-  renderComponent();
-
-  await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-  });
-
-  const searchInput = screen.getByRole('textbox');
-  fireEvent.change(searchInput, { target: { value: 'feedback' } });
-
-  await waitFor(() => {
-    expect(screen.queryByText('Welcome Message')).not.toBeInTheDocument();
-  });
-
-  fireEvent.change(searchInput, { target: { value: '' } });
-
-  await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-    expect(screen.getByText('Feedback Form')).toBeInTheDocument();
-  });
 });
 
 test('renders category and tag filter dropdowns', async () => {
@@ -133,8 +102,19 @@ test('navigates to create template page on Create click', async () => {
   expect(mockedNavigate).toHaveBeenCalledWith('/template/add');
 });
 
+test('navigates to edit template page via the row View action', async () => {
+  renderComponent();
+
+  const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+  fireEvent.click(viewIcons[0]);
+
+  await waitFor(() => {
+    expect(mockedNavigate).toHaveBeenCalledWith('/template/1/edit');
+  });
+});
+
 test('shows success notification after Sync HSM', async () => {
-  renderComponent([...defaultMocks, syncHsmSuccessMock]);
+  renderComponent([...baseMocks, syncHsmSuccessMock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
@@ -148,7 +128,21 @@ test('shows success notification after Sync HSM', async () => {
 });
 
 test('shows warning notification when Sync HSM fails', async () => {
-  renderComponent([...defaultMocks, syncHsmErrorMock]);
+  renderComponent([...baseMocks, syncHsmErrorMock]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
+  });
+
+  userEvent.click(screen.getByTestId('syncHsm'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates. Please try again.', 'warning');
+  });
+});
+
+test('shows warning notification when Sync HSM throws a network error', async () => {
+  renderComponent([...baseMocks, syncHsmNetworkErrorMock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
@@ -162,7 +156,7 @@ test('shows warning notification when Sync HSM fails', async () => {
 });
 
 test('shows loading screen while bulk apply processes', async () => {
-  renderComponent([...defaultMocks, bulkApplyV2Mock]);
+  renderComponent([...baseMocks, bulkApplyV2Mock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('bulkApply')).toBeInTheDocument();
@@ -202,64 +196,8 @@ test('does nothing when file change fires with no file selected', async () => {
   expect(setNotification).not.toHaveBeenCalled();
 });
 
-test('filters templates by selected category', async () => {
-  const categoryMocks = [
-    filterTemplatesV2Mock,
-    filterTemplatesV2Mock,
-    getCategoriesV2Mock,
-    getCategoriesV2Mock,
-    getFilterTagQuery,
-    getFilterTagQuery,
-  ];
-  renderComponent(categoryMocks);
-
-  await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-  });
-  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
-
-  fireEvent.mouseDown(within(screen.getByTestId('categoryFilter')).getByRole('combobox'));
-  fireEvent.click(await screen.findByRole('option', { name: 'Utility' }));
-
-  await waitFor(() => {
-    expect(screen.queryByText('Feedback Form')).not.toBeInTheDocument();
-  });
-  expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-});
-
-test('filters templates by selected tag', async () => {
-  renderComponent();
-
-  await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-  });
-  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
-
-  fireEvent.mouseDown(within(screen.getByTestId('tagFilter')).getByRole('combobox'));
-  fireEvent.click(await screen.findByRole('option', { name: 'Messages' }));
-
-  await waitFor(() => {
-    expect(screen.queryByText('Feedback Form')).not.toBeInTheDocument();
-  });
-  expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-});
-
-test('shows warning notification when Sync HSM throws a network error', async () => {
-  renderComponent([...defaultMocks, syncHsmNetworkErrorMock]);
-
-  await waitFor(() => {
-    expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
-  });
-
-  userEvent.click(screen.getByTestId('syncHsm'));
-
-  await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates. Please try again.', 'warning');
-  });
-});
-
 test('exports results and shows success notification after a successful bulk apply', async () => {
-  renderComponent([...defaultMocks, bulkApplyV2Mock]);
+  renderComponent([...baseMocks, bulkApplyV2Mock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('import')).toBeInTheDocument();
@@ -277,7 +215,7 @@ test('exports results and shows success notification after a successful bulk app
 });
 
 test('shows warning notification when bulk apply returns row errors', async () => {
-  renderComponent([...defaultMocks, bulkApplyV2ErrorsMock]);
+  renderComponent([...baseMocks, bulkApplyV2ErrorsMock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('import')).toBeInTheDocument();
@@ -295,7 +233,7 @@ test('shows warning notification when bulk apply returns row errors', async () =
 });
 
 test('shows no notification and skips export when bulk apply returns an empty response', async () => {
-  renderComponent([...defaultMocks, bulkApplyV2EmptyMock]);
+  renderComponent([...baseMocks, bulkApplyV2EmptyMock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('import')).toBeInTheDocument();
@@ -311,6 +249,39 @@ test('shows no notification and skips export when bulk apply returns an empty re
 
   expect(exportCsvFile).not.toHaveBeenCalled();
   expect(setNotification).not.toHaveBeenCalled();
+});
+
+test('shows warning notification when bulk apply throws a network error', async () => {
+  renderComponent([...baseMocks, bulkApplyV2NetworkErrorMock]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('import')).toBeInTheDocument();
+  });
+
+  const mockFile = new File(['csv content'], 'templates.csv', { type: 'text/csv' });
+  fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('An error occured! Please check the format of the file', 'warning');
+  });
+});
+
+test('expands a template to reveal its other language variants', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+  });
+
+  // the Hindi variant is hidden until the row is expanded
+  expect(screen.queryByText('Namaste {{1}}, swagat hai!')).not.toBeInTheDocument();
+
+  const expandIcons = await screen.findAllByTestId('expand-toggle');
+  fireEvent.click(expandIcons[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Namaste {{1}}, swagat hai!')).toBeInTheDocument();
+  });
 });
 
 test('renders the Template library action button', async () => {
@@ -336,39 +307,52 @@ test('opens the file picker when Bulk apply is clicked', async () => {
   expect(clickSpy).toHaveBeenCalled();
 });
 
-test('resets the search via the reset button', async () => {
-  renderComponent();
+test('filters templates by selected category', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2CategoryMock, templateCountV2CategoryMock]);
 
   await waitFor(() => {
     expect(screen.getByText('Welcome Message')).toBeInTheDocument();
   });
+  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
 
-  const searchInput = screen.getByRole('textbox');
-  fireEvent.change(searchInput, { target: { value: 'feedback' } });
+  fireEvent.mouseDown(within(screen.getByTestId('categoryFilter')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Utility' }));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Feedback Form')).not.toBeInTheDocument();
+  });
+  expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+});
+
+test('filters templates by selected tag', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2TagMock, templateCountV2TagMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+  });
+  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+
+  fireEvent.mouseDown(within(screen.getByTestId('tagFilter')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Messages' }));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Feedback Form')).not.toBeInTheDocument();
+  });
+  expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+});
+
+test('filters templates by search term', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2SearchMock, templateCountV2SearchMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Feedback Form')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'feedback' } });
+  fireEvent.submit(screen.getByTestId('searchForm'));
 
   await waitFor(() => {
     expect(screen.queryByText('Welcome Message')).not.toBeInTheDocument();
   });
-
-  fireEvent.click(screen.getByTestId('resetButton'));
-
-  await waitFor(() => {
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
-    expect(screen.getByText('Feedback Form')).toBeInTheDocument();
-  });
-});
-
-test('shows warning notification when bulk apply throws a network error', async () => {
-  renderComponent([...defaultMocks, bulkApplyV2NetworkErrorMock]);
-
-  await waitFor(() => {
-    expect(screen.getByTestId('import')).toBeInTheDocument();
-  });
-
-  const mockFile = new File(['csv content'], 'templates.csv', { type: 'text/csv' });
-  fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
-
-  await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('An error occured! Please check the format of the file', 'warning');
-  });
+  expect(screen.getByText('Feedback Form')).toBeInTheDocument();
 });

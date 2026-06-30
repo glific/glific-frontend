@@ -141,6 +141,14 @@ export interface ListProps {
   restrictedAction?: any;
   collapseOpen?: boolean;
   collapseRow?: string;
+  expandableRows?: boolean;
+  onToggleRow?: (id: string) => void;
+  // Opt-in transform applied to the fetched rows before they are rendered,
+  // e.g. to group flat per-language rows into one row per template.
+  groupRows?: (items: any[]) => any[];
+  // Opt-in renderer for the cells of each collapsed sub-row. Returns one node
+  // per data column; when omitted the default label+body sub-row is used.
+  collapsedColumns?: (entry: any) => React.ReactNode[];
   showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
@@ -199,6 +207,10 @@ export const List = ({
   restrictedAction,
   collapseOpen = false,
   collapseRow = undefined,
+  expandableRows = false,
+  onToggleRow,
+  groupRows,
+  collapsedColumns,
   noItemText = null,
   customStyles,
   showActions = true,
@@ -701,7 +713,8 @@ export const List = ({
   // Get item data and total number of items.
   let itemList: any = [];
   if (data) {
-    itemList = formatList(data[listItem]);
+    const rawItems = data[listItem];
+    itemList = formatList(groupRows ? groupRows(rawItems) : rawItems);
   }
 
   if (userCollections) {
@@ -762,6 +775,9 @@ export const List = ({
       tableVals={tableVals}
       collapseOpen={collapseOpen}
       collapseRow={collapseRow}
+      expandableRows={expandableRows}
+      onToggleRow={onToggleRow}
+      collapsedColumns={collapsedColumns}
       loadingList={loadingList || loading || l || loadingCollections}
       noItemsText={noItemsText}
       showPagination={countQuery ? true : false}

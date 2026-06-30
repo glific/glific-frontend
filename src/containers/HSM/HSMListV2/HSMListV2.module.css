@@ -1,185 +1,227 @@
-.Container {
-  padding: 20px 24px;
-  background: #f5f5f0;
-  min-height: 100vh;
+.TemplateIcon {
+  width: 29px;
+  height: 29px;
+}
+
+/* column widths — Title / Languages / Category / Last updated / Actions */
+.Name {
+  width: 28%;
+  min-width: 220px;
+}
+
+.Languages {
+  width: 22%;
+  min-width: 160px;
+}
+
+.Category {
+  width: 22%;
+  min-width: 160px;
+}
+
+.LastModified {
+  width: 16%;
+  min-width: 120px;
+  color: #93a29b;
+}
+
+.Actions {
+  width: 12%;
+  max-width: 200px;
+  text-align: start;
+}
+
+/* cell content */
+.LabelContainer {
   display: flex;
   flex-direction: column;
+  row-gap: 0.4rem;
 }
 
-/* header */
-.Header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 16px;
+.LabelText {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0c1f14;
+  word-break: break-word;
 }
 
-.TitleSection {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.TagChip {
+  font-size: 12px;
+  width: fit-content;
+  padding: 2px 8px;
+  background: #f0f7f1;
+  color: #555555;
+  border-radius: 8px;
 }
 
-.TitleRow {
+/* Languages column chips */
+.ChipRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
 }
 
-.Title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #111827;
-  margin: 0;
+.LangChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 2px 8px;
+  border: 1px solid;
 }
 
-.Subtitle {
+.LangDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.ChipApproved {
+  background: #f0faf5;
+  border-color: #28a745;
+  color: #073f24;
+}
+.ChipApproved .LangDot {
+  background: #28a745;
+}
+
+.ChipPending {
+  background: #fffbeb;
+  border-color: #ffc107;
+  color: #856404;
+}
+.ChipPending .LangDot {
+  background: #ffc107;
+}
+
+.ChipRejected {
+  background: #fff5f5;
+  border-color: #dc2626;
+  color: #b91c1c;
+}
+.ChipRejected .LangDot {
+  background: #dc2626;
+}
+
+/* Category column badges */
+.CatBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-size: 12px;
-  color: #6b7280;
-  margin: 0;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 3px 8px;
 }
 
-.HeaderActions {
+.CatCount {
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.CatUtility {
+  background: #e8f5ee;
+  color: #119656;
+}
+.CatMarketing {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+.CatAuthentication {
+  background: #fff0e8;
+  color: #c2410c;
+}
+.CatService {
+  background: #e8f4ff;
+  color: #1d4ed8;
+}
+
+/* expanded child rows */
+.CollapseBody {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.LastModifiedText {
+  font-size: 13px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.TableText {
+  text-align: left;
+  font-size: 14px;
+  color: #93a29b;
+  white-space: pre-line;
+  margin: 0;
+  padding: 0;
+}
+
+.StatusCell {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.StatusCell svg {
+  margin-right: 8px;
+}
+
+/* header actions */
+.SecondaryActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .SyncWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
 }
 
 .ViewSample {
-  font-size: 11px;
-  color: #6b7280;
+  position: absolute;
+  bottom: -16px;
+  font-size: 10px;
+  color: #2ea36a;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .ViewSample:hover {
   text-decoration: underline;
 }
 
-.OutlinedButton {
-  height: 36px;
-  border: 1.5px solid #d1d5db !important;
-  border-radius: 10px !important;
-  background: #ffffff !important;
-  box-shadow: none !important;
-  color: #1a1a1a !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  white-space: nowrap;
-  gap: 5px;
-}
-
-.OutlinedButton:hover {
-  border-color: #9ca3af !important;
-  background: #f9fafb !important;
-}
-
-.SyncButton {
-  border-color: #2ea36a !important;
-  color: #2ea36a !important;
-}
-
-.SyncButton:hover {
-  border-color: #22864f !important;
-  background: #f0fdf4 !important;
-  color: #22864f !important;
-}
-
-.CreateButton {
-  height: 36px;
-  border-radius: 10px !important;
-  white-space: nowrap;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-}
-
-/* filter bar */
-.FilterBar {
+/* filters */
+.FilterContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 12px;
+  gap: 0.25rem;
 }
 
-.FilterLeft {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.FilterRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.FormStyle {
+  width: 150px !important;
 }
 
 .DropDown {
-  border-radius: 10px !important;
-  height: 36px !important;
-  min-height: 36px !important;
-  background: #ffffff !important;
-  font-size: 13px;
-  min-width: 130px;
-}
-
-.DropDown fieldset {
-  border-radius: 10px !important;
-  border-color: #c7cdd8 !important;
-}
-
-.DropDown:hover fieldset {
-  border-color: #9ca3af !important;
-}
-
-.DropDown:focus-within fieldset {
-  border-color: #2ea36a !important;
-}
-
-.SearchBar {
-  width: 300px;
-  border-radius: 10px !important;
-  box-shadow: none !important;
-  border: 1px solid #d1d5db !important;
-  height: 36px !important;
-  margin: 0 !important;
-}
-
-.FilterIconButton {
-  width: 36px;
-  height: 36px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
-  cursor: pointer;
-  font-size: 15px;
-  color: #6b7280;
+  border-radius: 24px;
+  border: 1px solid #cccccc;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
-}
-
-.FilterIconButton:hover {
-  border-color: #9ca3af;
-  color: #374151;
-}
-
-/* table */
-.TableWrapper {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
+  width: 130px;
+  margin: auto;
+  height: 36px !important;
   background: #ffffff;
-  flex: 1;
+  min-height: 36px !important;
+}
+
+.DropDown > fieldset {
+  border: none !important;
 }

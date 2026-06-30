@@ -653,6 +653,12 @@
   "Sync HSM": "HSM सिंक करें",
   "Sorry, failed to sync HSM updates. Please try again.": "क्षमा करें, HSM अपडेट सिंक करने में विफल। कृपया पुनः प्रयास करें।",
   "Template library": "टेम्पलेट लाइब्रेरी",
+  "Browse and copy approved templates": "स्वीकृत टेम्पलेट ब्राउज़ करें और कॉपी करें",
+  "Search templates": "टेम्पलेट खोजें",
+  "Select a template to preview": "पूर्वावलोकन के लिए एक टेम्पलेट चुनें",
+  "Use this template": "इस टेम्पलेट का उपयोग करें",
+  "Copied the template. Review and submit it for approval.": "टेम्पलेट कॉपी किया गया। समीक्षा करें और अनुमोदन के लिए सबमिट करें।",
+
   "All Categories": "सभी श्रेणियाँ",
   "View sample": "नमूना देखें",
   "All Tags": "सभी टैग",

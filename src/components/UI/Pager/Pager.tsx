@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 import {
   Table,
   TableHead,
@@ -11,6 +11,7 @@ import {
   Skeleton,
 } from '@mui/material';
 import { ColumnNames } from 'containers/List/List';
+import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 import styles from './Pager.module.css';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
@@ -32,14 +33,27 @@ interface PagerProps {
   noItemsText?: any;
   showPagination?: boolean;
   checkboxSupport?: { action: any; icon: any; selectedItems: any };
+  // Opt-in: render a leading expand/collapse chevron on each row that has
+  // collapsible content (used by the HSM template list for language variants).
+  // Off by default so existing consumers (e.g. SpeedSendList) are unaffected.
+  expandableRows?: boolean;
+  onToggleRow?: (id: string) => void;
+  // Opt-in renderer for the cells of each collapsed sub-row; returns one node
+  // per data column. When omitted the default label+body sub-row is used.
+  collapsedColumns?: (entry: any) => ReactNode[];
 }
 
 // TODO: cleanup the translations code
-const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
+const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any, expandableRows: boolean = false) => {
+  // when a leading chevron column is present, keep the sub-rows aligned under
+  // the data columns by prepending an empty spacer cell.
+  const leadingSpacer = expandableRows ? <TableCell className={styles.ChevronCell} /> : null;
+
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
     return (
       <TableRow className={styles.CollapseTableRow}>
+        {leadingSpacer}
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -56,7 +70,8 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
     const body = typeof dataObj[key].body === 'string' ? dataObj[key].body : dataObj[key].body.text;
 
     return (
-      <TableRow key={rowIdentifier}>
+      <TableRow key={rowIdentifier} className={expandableRows ? styles.CollapseTableRow : ''}>
+        {leadingSpacer}
         <TableCell className={`${columnStyles ? columnStyles[0] : null}`}>
           <div>
             <div className={styles.LabelText}>{dataObj[key].label}</div>
@@ -74,7 +89,41 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   return additionalRowInformation;
 };
 
-const createRows = (data: any, columnStyles: any, collapseRow?: string, collapseOpen: boolean = false) => {
+// Custom collapsed sub-rows: one row per entry, with the caller supplying the
+// cell contents (one node per data column) via `collapsedColumns`.
+const customCollapsedRowData = (
+  dataObj: any,
+  columnStyles: any,
+  recordId: any,
+  expandableRows: boolean,
+  collapsedColumns: (entry: any) => ReactNode[]
+) =>
+  Object.keys(dataObj).map((key, index) => {
+    const cells = collapsedColumns(dataObj[key]);
+    return (
+      <TableRow key={`collapsedRowData-${recordId}-${index}`} className={styles.CollapseRowCustom}>
+        {expandableRows ? <TableCell className={styles.ChevronCell} /> : null}
+        {cells.map((cell, cellIndex) => (
+          <TableCell
+            key={cellIndex}
+            className={`${columnStyles && columnStyles[cellIndex]} ${styles.RowStyle}`}
+          >
+            {cell}
+          </TableCell>
+        ))}
+      </TableRow>
+    );
+  });
+
+const createRows = (
+  data: any,
+  columnStyles: any,
+  collapseRow?: string,
+  collapseOpen: boolean = false,
+  expandableRows: boolean = false,
+  onToggleRow?: (id: string) => void,
+  collapsedColumns?: (entry: any) => ReactNode[]
+) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
     return Object.keys(entry).map((item: any) => {
@@ -96,16 +145,50 @@ const createRows = (data: any, columnStyles: any, collapseRow?: string, collapse
     });
   };
 
+  // leading chevron cell that toggles the row's collapsible content. Rows with
+  // no collapsible content render an empty spacer so columns stay aligned.
+  const chevronCell = (entry: any, hasVariants: boolean, isOpen: boolean) => {
+    if (!hasVariants) {
+      return <TableCell className={styles.ChevronCell} />;
+    }
+    return (
+      <TableCell className={styles.ChevronCell}>
+        <button
+          type="button"
+          data-testid="expand-toggle"
+          aria-label="Toggle language variants"
+          aria-expanded={isOpen}
+          className={`${styles.ChevronBtn} ${isOpen ? styles.ChevronOpen : ''}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleRow?.(entry.id);
+          }}
+        >
+          <ChevronIcon />
+        </button>
+      </TableCell>
+    );
+  };
+
   return data.map((entry: any) => {
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
+    const hasVariants = !!dataObj && Object.keys(dataObj).length > 0;
+    const isOpen = collapseOpen && entry.id === collapseRow;
+    const parentRowClass = `${isActiveRow} ${isOpen && expandableRows ? styles.ExpandedParent : ''}`;
+
     return (
       <Fragment key={entry.recordId}>
-        <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
-        {collapseOpen && dataObj && entry.id === collapseRow
-          ? collapsedRowData(dataObj, columnStyles, entry.recordId)
+        <TableRow className={parentRowClass}>
+          {expandableRows ? chevronCell(entry, hasVariants, isOpen) : null}
+          {createRow(entry)}
+        </TableRow>
+        {isOpen && dataObj
+          ? collapsedColumns
+            ? customCollapsedRowData(dataObj, columnStyles, entry.recordId, expandableRows, collapsedColumns)
+            : collapsedRowData(dataObj, columnStyles, entry.recordId, expandableRows)
           : null}
       </Fragment>
     );
@@ -118,13 +201,19 @@ const tableHeadColumns = (
   tableVals: any,
   handleTableChange: Function,
   totalRows: number,
-  checkboxSupport?: { action: any; icon: any; selectedItems: any }
+  checkboxSupport?: { action: any; icon: any; selectedItems: any },
+  expandableRows: boolean = false
 ) => {
   let headerRow;
+  // matches the leading chevron column rendered on each body row.
+  const leadingHeadSpacer = expandableRows ? (
+    <TableCell className={`${styles.ChevronCell} ${styles.RowHeadStyle}`} />
+  ) : null;
 
   if (checkboxSupport?.selectedItems && checkboxSupport?.selectedItems.length > 0) {
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
+        {leadingHeadSpacer}
         <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>{columnNames[0].label}</TableCell>
         <TableCell className={styles.SelectedItems}>
           {checkboxSupport?.selectedItems.length} of {totalRows} selected
@@ -143,6 +232,7 @@ const tableHeadColumns = (
   } else {
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
+        {leadingHeadSpacer}
         {columnNames.map((field: any, i: number) => (
           <TableCell key={field.label} className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}>
             {i !== columnNames.length - 1 && field.name ? (
@@ -204,15 +294,27 @@ export const Pager = ({
   noItemsText,
   showPagination = true,
   checkboxSupport,
+  expandableRows = false,
+  onToggleRow,
+  collapsedColumns,
 }: PagerProps) => {
-  const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
+  const rows = createRows(
+    data,
+    columnStyles,
+    collapseRow,
+    collapseOpen,
+    expandableRows,
+    onToggleRow,
+    collapsedColumns
+  );
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,
     tableVals,
     handleTableChange,
     totalRows,
-    checkboxSupport
+    checkboxSupport,
+    expandableRows
   );
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
