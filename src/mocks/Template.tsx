@@ -824,7 +824,7 @@ export const hsmV2TemplatesData = [
     bspId: 'bsp-001',
     label: 'Welcome Message',
     body: 'Hi {{1}}, welcome!',
-    footer: null,
+    footer: 'Reply STOP to opt out',
     shortcode: 'welcome_msg',
     category: 'UTILITY',
     isReserved: false,
@@ -889,6 +889,52 @@ export const hsmV2TemplatesData = [
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
   },
+  {
+    // Marathi variant (PENDING) — exercises the pending chip styling/tooltip.
+    id: '4',
+    bspId: 'bsp-004',
+    label: 'Welcome Message',
+    body: 'Namaskar {{1}}, swagat aahe!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'PENDING',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '3', label: 'Marathi' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
+  {
+    // Tamil variant (FAILED) — exercises the failed chip styling/tooltip.
+    id: '5',
+    bspId: 'bsp-005',
+    label: 'Welcome Message',
+    body: 'Vanakkam {{1}}!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'FAILED',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '4', label: 'Tamil' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
 ];
 
 // HSMListV2 drives the shared `List` component, so mocks must mirror the exact
@@ -918,8 +964,15 @@ export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
   { isHsm: true, status: 'APPROVED', label: 'feedback' },
   [hsmV2TemplatesData[1]]
 );
+export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
+  hsmV2TemplatesData[1],
+]);
+// "All" status applies no status filter at all, returning every template.
+export const filterTemplatesV2AllMock = sessionTemplatesV2Mock({ isHsm: true }, hsmV2TemplatesData);
 
 export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
+export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
+export const templateCountV2AllMock = templateCountQuery({ isHsm: true }, hsmV2TemplatesData.length);
 export const templateCountV2CategoryMock = templateCountQuery(
   { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
   1

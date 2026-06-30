@@ -193,16 +193,6 @@
   padding: 0;
 }
 
-.StatusCell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.StatusCell svg {
-  margin-right: 8px;
-}
-
 /* header actions */
 .SecondaryButton {
   display: flex;

@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 
 import { setNotification } from 'common/notification';
-import { exportCsvFile } from 'common/utils';
+import { copyToClipboardMethod, exportCsvFile } from 'common/utils';
 import { getFilterTagQuery } from 'mocks/Tag';
 import {
   HSM_LIST_V2,
@@ -21,6 +21,10 @@ import {
   templateCountV2TagMock,
   filterTemplatesV2SearchMock,
   templateCountV2SearchMock,
+  filterTemplatesV2RejectedMock,
+  templateCountV2RejectedMock,
+  filterTemplatesV2AllMock,
+  templateCountV2AllMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
 
@@ -33,7 +37,7 @@ vi.mock('common/notification', async (importOriginal) => {
 
 vi.mock('common/utils', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/utils')>();
-  return { ...mod, exportCsvFile: vi.fn() };
+  return { ...mod, exportCsvFile: vi.fn(), copyToClipboardMethod: vi.fn() };
 });
 
 const mockedNavigate = vi.fn();
@@ -338,6 +342,91 @@ test('expands a template to reveal its other language variants', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Namaste {{1}}, swagat hai!')).toBeInTheDocument();
+  });
+
+  // clicking the same row again collapses it back
+  fireEvent.click(expandIcons[0]);
+
+  await waitFor(() => {
+    expect(screen.queryByText('Namaste {{1}}, swagat hai!')).not.toBeInTheDocument();
+  });
+});
+
+test('copies the bsp UUID via the row Copy UUID action', async () => {
+  renderComponent();
+
+  const copyIcons = await screen.findAllByTestId('copy-button');
+  fireEvent.click(copyIcons[0]);
+
+  expect(copyToClipboardMethod).toHaveBeenCalledWith('bsp-001');
+});
+
+test('warns when copying the UUID of a template without a bsp id', async () => {
+  renderComponent();
+
+  const copyIcons = await screen.findAllByTestId('copy-button');
+  // feedback_form (second row) has no bspId
+  fireEvent.click(copyIcons[1]);
+
+  expect(setNotification).toHaveBeenCalledWith('Sorry! UUID not found', 'warning');
+});
+
+test('filters templates by selected status', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2RejectedMock, templateCountV2RejectedMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
+
+  await waitFor(() => {
+    expect(screen.queryByText('welcome_msg')).not.toBeInTheDocument();
+  });
+  expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('shows templates of every status when the All filter is selected', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2AllMock, templateCountV2AllMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'All' }));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('All');
+  });
+  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('clears the tag filter and restores the full list', async () => {
+  const { container } = renderComponent([...baseMocks, filterTemplatesV2TagMock, templateCountV2TagMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('feedback_form')).toBeInTheDocument();
+  });
+
+  // comboboxes: [0] status filter, [1] category filter, [2] tag autocomplete
+  const autoComplete = screen.getAllByRole('combobox')[2];
+  autoComplete.focus();
+  fireEvent.change(autoComplete, { target: { value: 'Messages' } });
+  fireEvent.keyDown(autoComplete, { key: 'ArrowDown' });
+  fireEvent.keyDown(autoComplete, { key: 'Enter' });
+
+  await waitFor(() => {
+    expect(screen.queryByText('feedback_form')).not.toBeInTheDocument();
+  });
+
+  // clearing the tag resets the filter and brings the other templates back
+  fireEvent.click(container.querySelector('.MuiAutocomplete-clearIndicator') as HTMLElement);
+
+  await waitFor(() => {
+    expect(screen.getByText('feedback_form')).toBeInTheDocument();
   });
 });
 

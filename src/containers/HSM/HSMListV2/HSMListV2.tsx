@@ -358,7 +358,9 @@ const HSMListV2 = () => {
   };
 
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
+    const value = event.target.value;
+    // "All" clears every status so the backend returns templates of any status.
+    setFilters(value === 'All' ? { ...statusFilter } : { ...statusFilter, [value.toUpperCase()]: true });
   };
 
   useEffect(() => {
@@ -400,13 +402,16 @@ const HSMListV2 = () => {
   const categories: string[] = categoriesData?.whatsappHsmCategories ?? [];
 
   let filterValue: any = '';
-  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
+  const statusList = ['All', 'Approved', 'Pending', 'Rejected', 'Failed'];
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
   if (filterStatusName.length === 1) {
     [filterValue] = filterStatusName;
   }
 
-  const appliedFilters: any = { isHsm: true, status: filterValue };
+  // "All" leaves filterValue empty, so no status filter is sent and every
+  // template is returned regardless of status.
+  const appliedFilters: any = { isHsm: true };
+  if (filterValue) appliedFilters.status = filterValue;
   if (selectedCategory) appliedFilters.category = selectedCategory;
 
   const syncHSMButton = (
@@ -441,7 +446,7 @@ const HSMListV2 = () => {
         <Select
           aria-label="template-type"
           name="template-type"
-          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          value={statusList.find((status) => filters[status.toUpperCase()]) ?? 'All'}
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
