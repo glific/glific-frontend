@@ -341,7 +341,6 @@ export const Flow = () => {
       redirectionLink={backLink}
       cancelLink={backLink}
       linkParameter="uuid"
-      setLinkOnUpdate
       listItem="flow"
       icon={flowIcon}
       additionalAction={additionalAction}

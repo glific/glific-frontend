@@ -43,7 +43,6 @@ export interface FormLayoutProps {
   additionalAction?: any;
   additionalQuery?: Function | null;
   linkParameter?: any;
-  setLinkOnUpdate?: boolean;
   cancelLink?: string | null;
   languageSupport?: boolean;
   setPayload?: Function;
@@ -116,7 +115,6 @@ export const FormLayout = ({
   additionalQuery = null,
   defaultAttribute = null,
   additionalAction,
-  setLinkOnUpdate = false,
   icon,
   idType = 'id',
   additionalState,
@@ -240,7 +238,7 @@ export const FormLayout = ({
         customError.setErrors(codeErrors);
       }
     } else {
-      if ((type === 'copy' || setLinkOnUpdate) && updatedItem) setLink(updatedItem[linkParameter]);
+      setLink(updatedItem[linkParameter]);
       if (additionalQuery) {
         additionalQuery(itemId);
       }
