@@ -73,8 +73,11 @@ export const FlowEditor = () => {
   let flowTitle: any;
   let flowKeywords;
 
-  const loadFlowEditor = (forceReadOnly = false) => {
-    const readOnlyMode = forceReadOnly || isReadOnly;
+  const loadFlowEditor = (readOnlyOverride?: boolean) => {
+    // `readOnlyOverride` lets callers force the editor's mutability explicitly:
+    // `true` forces view-only, `false` forces editable (e.g. right after a takeover),
+    // and `undefined` falls back to the current `isReadOnly` state.
+    const readOnlyMode = readOnlyOverride ?? isReadOnly;
     const config = setConfig(uuid, skipValidation, readOnlyMode, posthog);
 
     showFlowEditor(document.getElementById('flow'), config);
@@ -139,7 +142,11 @@ export const FlowEditor = () => {
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: () => {
-      loadFlowEditor();
+      // After a forced takeover the flow is now ours, so reload the editor in
+      // editable mode. We must force `false` here because the `isReadOnly` state
+      // is still `true` at this point (the read-only banner was showing), so
+      // relying on it would re-initialize the editor as view-only.
+      loadFlowEditor(false);
       setReadOnlyMessage('');
       setIsReadOnly(false);
     },

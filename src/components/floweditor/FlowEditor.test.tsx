@@ -13,6 +13,7 @@ import {
   publishFlow,
   publishFlowWithDuplicateErrors,
   getFreeFlow,
+  getFreeFlowForced,
   resetFlowCount,
   getFlowTranslations,
   getTemplateFlow,
@@ -28,9 +29,7 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
-import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
 import * as FlowEditorHelper from './FlowEditor.helper';
 
@@ -432,84 +431,69 @@ test('should show warning when no keywords are present and share responder link 
 test('should display read-only banner when flow is being edited by another user', async () => {
   mockedAxios.post.mockResolvedValue({ data: {} });
 
+  // make the flow-editor script-load callback fire so the `flowGet` query runs
   // @ts-expect-error - Mock implementation with simplified types for testing
   vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
     setTimeout(callback, 0);
-    return {}; // Simple object return instead of 'as unknown'
+    return {};
   });
 
-  const errorData = {
-    flowGet: {
-      flow: null,
-      errors: [
-        {
-          key: 'error',
-          message: 'The flow is being edited by NGO Main Account',
-        },
-      ],
-    },
-  };
+  const { container } = render(wrapperFunction(activeFlowMocks));
 
-  let getFreeFlowCalled = false;
-  const realUseLazyQuery = Apollo.useLazyQuery;
+  await screen.findByTestId('flowName');
 
-  const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: unknown, options?: unknown) => {
-    if (query === GET_FREE_FLOW) {
-      const mockGetFreeFlow = vi.fn(() => {
-        if (!getFreeFlowCalled) {
-          getFreeFlowCalled = true;
-          if (options && typeof options === 'object' && 'onCompleted' in options) {
-            const { onCompleted } = options as { onCompleted?: (data: unknown) => void };
-            if (onCompleted) {
-              setTimeout(() => onCompleted(errorData), 0);
-            }
-          }
-        }
-        return Promise.resolve({ data: errorData });
-      });
-
-      return [
-        mockGetFreeFlow,
-        {
-          called: false,
-          loading: false,
-          data: null,
-        },
-      ] as unknown;
-    }
-
-    // @ts-expect-error - Mocking Apollo Client's useLazyQuery with unknown types
-    return (realUseLazyQuery as unknown)(query, options);
+  await waitFor(() => {
+    expect(screen.getByTestId('ReadOnlyBanner')).toBeInTheDocument();
   });
 
-  try {
-    const { container } = render(wrapperFunction(activeFlowMocks));
+  const banner = container.querySelector('[class*="ReadOnlyBanner"]');
+  expect(banner).toHaveTextContent('View Only Mode');
+  expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
 
-    await screen.findByTestId('flowName');
+  expect(screen.getByTestId('button')).toBeDisabled();
+  expect(screen.getByTestId('translateButton')).toBeDisabled();
+});
 
-    await waitFor(
-      () => {
-        const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
-        expect(readOnlyBanner).toBeInTheDocument();
-      },
-      { timeout: 5000, interval: 200 }
-    );
+test('should reload the editor in editable mode after taking over the flow', async () => {
+  mockedAxios.post.mockResolvedValue({ data: {} });
 
-    const banner = container.querySelector('[class*="ReadOnlyBanner"]');
-    expect(banner).toHaveTextContent('View Only Mode');
-    expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
+  const setConfigSpy = vi.spyOn(FlowEditorHelper, 'setConfig');
 
-    expect(screen.getByTestId('button')).toBeDisabled();
-    expect(screen.getByTestId('translateButton')).toBeDisabled();
+  // make the flow-editor script-load callback fire so the `flowGet` query runs
+  // @ts-expect-error - Mock implementation with simplified types for testing
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
+    setTimeout(callback, 0);
+    return {};
+  });
 
-    fireEvent.click(screen.getByText('Take Over'));
+  const takeoverMocks = [...activeFlowMocks, getFreeFlowForced];
+  render(wrapperFunction(takeoverMocks));
 
-    await waitFor(() => {
-      expect(screen.queryByAltText('ReadOnlyBanner')).not.toBeInTheDocument();
-    });
-  } finally {
-    useLazyQuerySpy.mockRestore();
-  }
+  // flow is initially locked by another user -> editor loads in view-only mode
+  await waitFor(() => {
+    expect(screen.getByTestId('ReadOnlyBanner')).toBeInTheDocument();
+  });
+  await waitFor(() => {
+    expect(setConfigSpy).toHaveBeenCalled();
+  });
+  // 3rd argument of setConfig is `isReadOnly`; it must be `true` while locked
+  expect(setConfigSpy.mock.calls.at(-1)?.[2]).toBe(true);
+
+  setConfigSpy.mockClear();
+
+  // take over the flow
+  fireEvent.click(screen.getByText('Take Over'));
+
+  // the editor must be re-initialized in editable (mutable) mode without a refresh
+  await waitFor(() => {
+    expect(setConfigSpy).toHaveBeenCalled();
+    expect(setConfigSpy.mock.calls.at(-1)?.[2]).toBe(false);
+  });
+
+  // and the read-only banner should disappear
+  await waitFor(() => {
+    expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
+  });
 });
 
 test('should not display read-only banner when flow is available for editing', async () => {
