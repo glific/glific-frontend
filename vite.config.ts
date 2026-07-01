@@ -56,6 +56,22 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
     // mkcert is a devDependency used only for the local HTTPS dev server; import it
     // lazily so production builds (which don't install devDependencies) never resolve it.
     const { default: mkcert } = await import('vite-plugin-mkcert');
+
+    // CSP rollout mirrors production (config/nginx.conf.erb):
+    //   1. The permissive policy is ENFORCED so local dev is unaffected.
+    //   2. The tightened policy (`strictCsp`) is sent as Content-Security-Policy-Report-Only,
+    //      but only when VITE_CSP_REPORT_URI is set — same gating as the nginx CSP_REPORT_URI
+    //      block. Point it at a Sentry security endpoint to exercise report ingestion locally.
+    // Notes on the tightened policy: `unsafe-inline` stays because Vite's runtime and
+    // MUI/emotion inject inline scripts/styles; img-src/media-src stay broad because chat
+    // renders WhatsApp media from arbitrary external CDNs; `unsafe-eval` is required by the
+    // flow editor (@nyaruka/temba-components uses `new Function(...)`).
+    const enforcedCsp =
+      "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;";
+    const cspReportUri = env.VITE_CSP_REPORT_URI;
+    const strictCsp =
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; frame-src 'self' https://js.stripe.com https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org data:; worker-src 'self' blob:; connect-src 'self' https://glific.test:* wss://glific.test:* https://api.glific.test:* wss://api.glific.test:* http://localhost:* ws://localhost:* https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.tides.coloredcow.com https://storage.googleapis.com; object-src 'none'; base-uri 'self';";
+
     return defineConfig({
       plugins: plugins.concat([checker({ typescript: true }), mkcert({ hosts: ['glific.test'] })]),
       // dev specific config
@@ -71,18 +87,13 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
           'X-Content-Type-Options': 'nosniff',
           'X-XSS-Protection': '1; mode=block',
           'X-Frame-Options': 'deny',
-          // CSP rollout mirrors production (config/nginx.conf.erb): the permissive policy is
-          // still ENFORCED so local dev is unaffected, while the tightened policy is sent as
-          // Report-Only. Violations of the tightened policy show up as warnings in the
-          // browser console, letting developers spot breakage before it is enforced.
-          // Notes on the tightened policy: `unsafe-inline` stays because Vite's runtime and
-          // MUI/emotion inject inline scripts/styles; img-src/media-src stay broad because
-          // chat renders WhatsApp media from arbitrary external CDNs; `unsafe-eval` is
-          // required by the flow editor (@nyaruka/temba-components uses `new Function(...)`).
-          'Content-Security-Policy':
-            "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
-          'Content-Security-Policy-Report-Only':
-            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; frame-src 'self' https://js.stripe.com https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org data:; worker-src 'self' blob:; connect-src 'self' https://glific.test:* wss://glific.test:* https://api.glific.test:* wss://api.glific.test:* http://localhost:* ws://localhost:* https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.tides.coloredcow.com https://storage.googleapis.com; object-src 'none'; base-uri 'self';",
+          'Content-Security-Policy': enforcedCsp,
+          ...(cspReportUri
+            ? {
+                'Reporting-Endpoints': `csp-endpoint="${cspReportUri}"`,
+                'Content-Security-Policy-Report-Only': `${strictCsp} report-to csp-endpoint; report-uri ${cspReportUri};`,
+              }
+            : {}),
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
