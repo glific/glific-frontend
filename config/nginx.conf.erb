@@ -28,7 +28,7 @@ http {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Frame-Options "deny" always;
     add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload" always;
-<%-
+<%
       # --- Content Security Policy ----------------------------------------------------------
       # Rollout is in two stages so production behaviour cannot break:
       #   1. The current PERMISSIVE policy is still ENFORCED (the Content-Security-Policy
@@ -61,12 +61,12 @@ http {
         "worker-src 'self' blob:; " \
         "connect-src 'self' https://*.glific.com wss://*.glific.com https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.tides.coloredcow.com https://storage.googleapis.com; " \
         "object-src 'none'; base-uri 'self';"
-    -%>
+    %>
     add_header Content-Security-Policy "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;" always;
-    <%- if csp_report_uri && !csp_report_uri.empty? -%>
+    <% if csp_report_uri && !csp_report_uri.empty? %>
     add_header Reporting-Endpoints 'csp-endpoint="<%= csp_report_uri %>"' always;
     add_header Content-Security-Policy-Report-Only "<%= strict_csp %> report-to csp-endpoint; report-uri <%= csp_report_uri %>;" always;
-    <%- end -%>
+    <% end %>
 
     if ($http_x_forwarded_proto != "https") {
       return 301 https://$host$request_uri;
