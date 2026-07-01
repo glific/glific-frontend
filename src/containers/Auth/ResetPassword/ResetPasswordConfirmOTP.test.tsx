@@ -36,6 +36,24 @@ describe('<ResetPasswordConfirmOTP />', () => {
     });
   });
 
+  test('it should display the neutral OTP info message passed via router state', async () => {
+    const infoMessage = 'If you have an account, you will receive an OTP to confirm';
+    const wrapperWithInfoMessage = (
+      <MemoryRouter initialEntries={[{ state: { phoneNumber: '919967665667', otpInfoMessage: infoMessage } }]}>
+        <Routes>
+          <Route path="/" element={<ResetPasswordConfirmOTP />} />
+          <Route path="/login" element={<div>Login page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const { findByTestId } = render(wrapperWithInfoMessage);
+    const resetPassword = await findByTestId('AuthContainer');
+    await waitFor(() => {
+      expect(resetPassword).toHaveTextContent(infoMessage);
+    });
+  });
+
   test('it should submit the form correctly', async () => {
     // let's mock successful reset password
     const responseData = { data: { data: { data: {} } } };

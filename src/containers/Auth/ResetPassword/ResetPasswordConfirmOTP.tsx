@@ -19,11 +19,13 @@ export const ResetPasswordConfirmOTP = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [otpInfoMessage, setOtpInfoMessage] = useState('');
 
   useEffect(() => {
     const state = location.state as any;
     if (state) {
       setPhoneNumber(state.phoneNumber);
+      setOtpInfoMessage(state.otpInfoMessage ?? '');
     }
   }, [location]);
 
@@ -101,6 +103,7 @@ export const ResetPasswordConfirmOTP = () => {
       alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
+      titleSubText={otpInfoMessage}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}

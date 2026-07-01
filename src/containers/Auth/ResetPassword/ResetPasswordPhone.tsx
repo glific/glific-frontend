@@ -11,18 +11,25 @@ export const ResetPasswordPhone = () => {
   const [values, setValues] = useState({ phoneNumber: '' });
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [otpInfoMessage, setOtpInfoMessage] = useState('');
   const { t } = useTranslation();
 
   if (redirect) {
     const stateObject = {
       phoneNumber: values.phoneNumber,
+      // Carry the backend's neutral message so the OTP screen can display it. The API
+      // deliberately returns the same success response whether or not an account exists
+      // (to avoid account enumeration), so this is the only place the user learns that an
+      // OTP will arrive *only if* the account exists.
+      otpInfoMessage,
     };
     return <Navigate to="/resetpassword-confirmotp" state={stateObject} />;
   }
 
   const onSubmitPhone = (data: any) => {
     sendOTP(data.phoneNumber, undefined, 7000)
-      .then(() => {
+      .then((response) => {
+        setOtpInfoMessage(response?.data?.data?.message ?? '');
         setValues(data);
         setRedirect(true);
       })
