@@ -59,9 +59,10 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
 
     // CSP rollout mirrors production (config/nginx.conf.erb):
     //   1. The permissive policy is ENFORCED so local dev is unaffected.
-    //   2. The tightened policy (`strictCsp`) is sent as Content-Security-Policy-Report-Only,
-    //      but only when VITE_CSP_REPORT_URI is set — same gating as the nginx CSP_REPORT_URI
-    //      block. Point it at a Sentry security endpoint to exercise report ingestion locally.
+    //   2. The tightened policy (`strictCsp`) is always sent as Content-Security-Policy-Report-Only
+    //      so violations surface as browser-console warnings during dev. Setting
+    //      VITE_CSP_REPORT_URI additionally POSTs those reports to that endpoint (e.g. a Sentry
+    //      security endpoint), which is how you exercise report ingestion locally.
     // Notes on the tightened policy: `unsafe-inline` stays because Vite's runtime and
     // MUI/emotion inject inline scripts/styles; img-src/media-src stay broad because chat
     // renders WhatsApp media from arbitrary external CDNs; `unsafe-eval` is required by the
@@ -93,7 +94,7 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
                 'Reporting-Endpoints': `csp-endpoint="${cspReportUri}"`,
                 'Content-Security-Policy-Report-Only': `${strictCsp} report-to csp-endpoint; report-uri ${cspReportUri};`,
               }
-            : {}),
+            : { 'Content-Security-Policy-Report-Only': strictCsp }),
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
