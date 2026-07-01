@@ -103,7 +103,7 @@ export const ResetPasswordConfirmOTP = () => {
       alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
-      titleSubText={otpInfoMessage}
+      infoMessage={otpInfoMessage}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}
