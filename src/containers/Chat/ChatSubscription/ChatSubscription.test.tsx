@@ -8,6 +8,25 @@ import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { ChatSubscription } from './ChatSubscription';
 
+const { capturedUpdateQueries } = vi.hoisted(() => ({
+  capturedUpdateQueries: [] as Array<(prev: any, options: any) => any>,
+}));
+
+vi.mock('@apollo/client', async () => {
+  const actual = await vi.importActual<any>('@apollo/client');
+  const subscribeToMore = (options: any) => {
+    if (options?.updateQuery) {
+      capturedUpdateQueries.push(options.updateQuery);
+    }
+    return vi.fn();
+  };
+  return {
+    ...actual,
+    useQuery: () => ({ loading: false, error: undefined, data: undefined, refetch: vi.fn(), subscribeToMore }),
+    useLazyQuery: () => [vi.fn(() => Promise.resolve({ data: { search: [] } })), { loading: false }],
+  };
+});
+
 const mocks: any = CONVERSATION_MOCKS;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
@@ -183,5 +202,36 @@ describe('<ChatSubscription />', () => {
     // there is nothing to assert here just waiting for all the mock calls working
     await waitFor(() => {});
     await waitFor(() => {});
+  });
+});
+
+describe('<ChatSubscription /> updateConversations cache guards', () => {
+  const subscriptionOptions = { subscriptionData: { data: { receivedMessage: { id: '1' } } } };
+
+  beforeEach(() => {
+    capturedUpdateQueries.length = 0;
+    render(<ChatSubscription {...ChatSubscriptionParams} />);
+  });
+
+  afterEach(cleanup);
+
+  test('registers updateQuery handlers for the chat subscriptions', () => {
+    expect(capturedUpdateQueries.length).toBeGreaterThan(0);
+  });
+
+  test('returns null without throwing when the cached result has no `search` field', () => {
+    expect(capturedUpdateQueries.length).toBeGreaterThan(0);
+    capturedUpdateQueries.forEach((updateQuery) => {
+      expect(() => updateQuery({}, subscriptionOptions)).not.toThrow();
+      expect(updateQuery({}, subscriptionOptions)).toBeNull();
+    });
+  });
+
+  test('returns null without throwing when there are no cached conversations', () => {
+    expect(capturedUpdateQueries.length).toBeGreaterThan(0);
+    capturedUpdateQueries.forEach((updateQuery) => {
+      expect(() => updateQuery(null, subscriptionOptions)).not.toThrow();
+      expect(updateQuery(null, subscriptionOptions)).toBeNull();
+    });
   });
 });

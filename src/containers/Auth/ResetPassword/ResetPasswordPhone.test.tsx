@@ -64,6 +64,27 @@ describe('<ResetPasswordPhone />', () => {
     });
   });
 
+  test('test the form submission with string error response', async () => {
+    const errorMessage = {
+      response: {
+        data: {
+          error: 'Cannot send the otp to 919978776554',
+        },
+      },
+    };
+    mockedAxios.post.mockImplementation(() => Promise.reject(errorMessage));
+    const { container } = render(wrapper);
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
+
+    const continueButton = screen.getByText('Generate OTP to confirm');
+    user.click(continueButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(errorMessage.response.data.error);
+    });
+  });
+
   test('test the form submission with phone', async () => {
     const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
     const promise = () => Promise.resolve('some_fake_token');
