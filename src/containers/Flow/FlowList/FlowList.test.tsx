@@ -64,6 +64,52 @@ const flowList = (customMocks?: any[]) => (
   </MockedProvider>
 );
 
+const stubFileReader = (jsonText: string = JSON.stringify(testJSON)) => {
+  class FileReaderMock {
+    onload: null | ((e: unknown) => void) = null;
+    result: string | null = null;
+
+    readAsText() {
+      this.result = jsonText;
+      setTimeout(() => {
+        if (this.onload) {
+          this.onload({ target: { result: jsonText } } as unknown as ProgressEvent<FileReader>);
+        }
+      }, 0);
+    }
+  }
+
+  vi.stubGlobal('FileReader', FileReaderMock);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderImportFlowDialog = async (importMock: any) => {
+  const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
+  const testMocks = [importMock, ...baseWithoutImport];
+
+  stubFileReader();
+
+  render(
+    <MockedProvider mocks={testMocks} addTypename={false}>
+      <MemoryRouter>
+        <FlowList />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await screen.findAllByTestId('import-icon');
+  fireEvent.click(screen.getAllByTestId('import-icon')[0]);
+
+  const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
+  const input = await screen.findByTestId('import');
+  Object.defineProperty(input, 'files', { value: [file] });
+  fireEvent.change(input);
+
+  const title = await screen.findByText(/import flow status/i);
+  const dialog = title.closest('div')!;
+  return within(dialog);
+};
+
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const mockedUsedNavigate = vi.fn();
@@ -375,46 +421,7 @@ describe('Template flows', () => {
   });
 
   test('Template flows > should display assistant nodes that need an assistant assigned', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
-    const testMocks = [importFlowWithAssistantError, ...baseWithoutImport];
-
-    class FileReaderMock {
-      onload: null | ((e: unknown) => void) = null;
-      result: string | null = null;
-
-      readAsText() {
-        const text = JSON.stringify(testJSON);
-        this.result = text;
-        setTimeout(() => {
-          if (this.onload) {
-            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
-          }
-        }, 0);
-      }
-    }
-
-    vi.stubGlobal('FileReader', FileReaderMock);
-
-    render(
-      <MockedProvider mocks={testMocks} addTypename={false}>
-        <MemoryRouter>
-          <FlowList />
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await screen.findAllByTestId('import-icon');
-    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
-
-    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
-    const input = await screen.findByTestId('import');
-    Object.defineProperty(input, 'files', { value: [file] });
-    fireEvent.change(input);
-
-    const title = await screen.findByText(/import flow status/i);
-    const dialog = title.closest('div')!;
-    const inDialog = within(dialog);
+    const inDialog = await renderImportFlowDialog(importFlowWithAssistantError);
 
     const helpLink = await inDialog.findByText(/create a new assistant/i);
     const para = helpLink.closest('p');
@@ -443,46 +450,7 @@ describe('Template flows', () => {
   });
 
   test('Template flows > should display google sheet nodes with an invalid sheet url', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
-    const testMocks = [importFlowWithSheetError, ...baseWithoutImport];
-
-    class FileReaderMock {
-      onload: null | ((e: unknown) => void) = null;
-      result: string | null = null;
-
-      readAsText() {
-        const text = JSON.stringify(testJSON);
-        this.result = text;
-        setTimeout(() => {
-          if (this.onload) {
-            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
-          }
-        }, 0);
-      }
-    }
-
-    vi.stubGlobal('FileReader', FileReaderMock);
-
-    render(
-      <MockedProvider mocks={testMocks} addTypename={false}>
-        <MemoryRouter>
-          <FlowList />
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await screen.findAllByTestId('import-icon');
-    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
-
-    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
-    const input = await screen.findByTestId('import');
-    Object.defineProperty(input, 'files', { value: [file] });
-    fireEvent.change(input);
-
-    const title = await screen.findByText(/import flow status/i);
-    const dialog = title.closest('div')!;
-    const inDialog = within(dialog);
+    const inDialog = await renderImportFlowDialog(importFlowWithSheetError);
 
     const para = (await inDialog.findByText(/contains google sheet node/i)).closest('p');
     expect(para).toBeTruthy();
@@ -505,46 +473,7 @@ describe('Template flows', () => {
   });
 
   test('Template flows > should render both assistant and google sheet warnings with singular labels for a single node each', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
-    const testMocks = [importFlowWithAssistantAndSheetError, ...baseWithoutImport];
-
-    class FileReaderMock {
-      onload: null | ((e: unknown) => void) = null;
-      result: string | null = null;
-
-      readAsText() {
-        const text = JSON.stringify(testJSON);
-        this.result = text;
-        setTimeout(() => {
-          if (this.onload) {
-            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
-          }
-        }, 0);
-      }
-    }
-
-    vi.stubGlobal('FileReader', FileReaderMock);
-
-    render(
-      <MockedProvider mocks={testMocks} addTypename={false}>
-        <MemoryRouter>
-          <FlowList />
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await screen.findAllByTestId('import-icon');
-    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
-
-    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
-    const input = await screen.findByTestId('import');
-    Object.defineProperty(input, 'files', { value: [file] });
-    fireEvent.change(input);
-
-    const title = await screen.findByText(/import flow status/i);
-    const dialog = title.closest('div')!;
-    const inDialog = within(dialog);
+    const inDialog = await renderImportFlowDialog(importFlowWithAssistantAndSheetError);
 
     // Both warning sections should be visible at the same time
     await inDialog.findByText(/create a new assistant/i);
@@ -569,46 +498,7 @@ describe('Template flows', () => {
   });
 
   test('Template flows > should fall back gracefully when node uuid fields are absent from the response', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
-    const testMocks = [importFlowWithoutNodeFields, ...baseWithoutImport];
-
-    class FileReaderMock {
-      onload: null | ((e: unknown) => void) = null;
-      result: string | null = null;
-
-      readAsText() {
-        const text = JSON.stringify(testJSON);
-        this.result = text;
-        setTimeout(() => {
-          if (this.onload) {
-            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
-          }
-        }, 0);
-      }
-    }
-
-    vi.stubGlobal('FileReader', FileReaderMock);
-
-    render(
-      <MockedProvider mocks={testMocks} addTypename={false}>
-        <MemoryRouter>
-          <FlowList />
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await screen.findAllByTestId('import-icon');
-    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
-
-    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
-    const input = await screen.findByTestId('import');
-    Object.defineProperty(input, 'files', { value: [file] });
-    fireEvent.change(input);
-
-    const title = await screen.findByText(/import flow status/i);
-    const dialog = title.closest('div')!;
-    const inDialog = within(dialog);
+    const inDialog = await renderImportFlowDialog(importFlowWithoutNodeFields);
 
     // No warning sections should render; only the plain flow status line is shown
     expect(inDialog.queryByText(/create a new assistant/i)).not.toBeInTheDocument();
