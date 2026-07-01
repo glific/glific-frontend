@@ -144,13 +144,13 @@ export const templateLanguageInfo: HelpDataProps = {
   heading: (
     <div>
       <p>
-        <b>Green:</b> Approved — the template in this language is approved.
+        <b>{t('Green:')}</b> {t('Approved — the template in this language is approved.')}
       </p>
       <p>
-        <b>Yellow:</b> Pending — the template in this language is pending.
+        <b>{t('Yellow:')}</b> {t('Pending — the template in this language is pending.')}
       </p>
       <p>
-        <b>Red:</b> Rejected / Failed — the template in this language was rejected or failed.
+        <b>{t('Red:')}</b> {t('Rejected / Failed — the template in this language was rejected or failed.')}
       </p>
     </div>
   ),

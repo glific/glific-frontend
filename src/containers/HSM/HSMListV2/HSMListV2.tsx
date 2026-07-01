@@ -157,7 +157,7 @@ const getTitle = (title: string, quality: string, primary: any) => (
     <Tooltip title={messagePreview(primary, title)} placement="bottom-start" arrow slotProps={previewSlotProps}>
       <div className={styles.LabelText}>{title}</div>
     </Tooltip>
-    <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
+    <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : t('Not Rated')}</div>
   </div>
 );
 
@@ -223,8 +223,12 @@ const collapsedColumns = (variant: any) => [
     <p className={styles.CollapseBody}>{WhatsAppToJsx(variant.body)}</p>
   </Tooltip>,
   languageChip(variant, 'lang'),
-  <p className={styles.TableText}>{categoryLabel(variant.category)}</p>,
-  <div className={styles.LastModifiedText}>{dayjs(variant.updatedAt).fromNow()}</div>,
+  <p key="category" className={styles.TableText}>
+    {categoryLabel(variant.category)}
+  </p>,
+  <div key="updated" className={styles.LastModifiedText}>
+    {dayjs(variant.updatedAt).fromNow()}
+  </div>,
   <div key="actions" className={styles.Actions} />,
 ];
 
@@ -422,9 +426,8 @@ const HSMListV2 = () => {
       className={styles.HsmUpdates}
       data-testid="syncHsm"
       onClick={handleSync}
-      aria-hidden="true"
     >
-      SYNC HSM
+      {t('SYNC HSM')}
     </Button>
   );
 
@@ -433,7 +436,7 @@ const HSMListV2 = () => {
       {syncHSMButton}
       <div className={styles.ImportButton}>
         <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
-          View Sample
+          {t('View Sample')}
         </a>
         <ImportButton title={t('Bulk apply')} onImport={() => setImporting(true)} afterImport={handleBulkApply} />
       </div>
@@ -444,7 +447,7 @@ const HSMListV2 = () => {
     <div className={styles.FilterContainer}>
       <FormControl className={styles.FormStyle}>
         <Select
-          aria-label="template-type"
+          aria-label={t('Filter by status')}
           name="template-type"
           value={statusList.find((status) => filters[status.toUpperCase()]) ?? 'All'}
           onChange={handleCheckedBox}
@@ -461,6 +464,7 @@ const HSMListV2 = () => {
       <HelpIcon darkIcon={false} helpData={templateStatusInfo} />
       <FormControl className={styles.FormStyle}>
         <Select
+          aria-label={t('Filter by category')}
           value={selectedCategory}
           onChange={(event) => setSelectedCategory(event.target.value)}
           className={styles.DropDown}
@@ -477,7 +481,7 @@ const HSMListV2 = () => {
       </FormControl>
       <AutoComplete
         isFilterType
-        placeholder="Select tag"
+        placeholder={t('Select tag')}
         options={tagsData ? tagsData.tags : []}
         optionLabel="label"
         multiple={false}
@@ -505,9 +509,9 @@ const HSMListV2 = () => {
   return (
     <>
       <List
-        title={'HSM Templates'}
+        title={t('HSM Templates')}
         listItem={'sessionTemplates'}
-        listItemName={'HSM Template'}
+        listItemName={t('HSM Template')}
         pageLink={'template'}
         listIcon={templateIcon}
         helpData={templateInfo}
