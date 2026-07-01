@@ -63,7 +63,6 @@ export const ResetPasswordConfirmOTP = () => {
       name: 'password',
       type: 'password',
       placeholder: t('New Password'),
-      label: t('New Password'),
     },
   ];
 

@@ -32,7 +32,9 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resetPassword = await findByTestId('AuthContainer');
     await waitFor(() => {
       expect(resetPassword).toHaveTextContent('Reset your password');
-      expect(resetPassword).toHaveTextContent('New Password');
+      // The new-password field is identified by its placeholder (no redundant heading label,
+      // consistent with the OTP field).
+      expect(screen.getByPlaceholderText('New Password')).toBeInTheDocument();
     });
   });
 
