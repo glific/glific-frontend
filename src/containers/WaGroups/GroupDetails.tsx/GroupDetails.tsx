@@ -11,16 +11,13 @@ import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Input } from 'components/UI/Form/Input/Input';
 import { List } from 'containers/List/List';
 import { ContactDescription } from 'containers/Profile/Contact/ContactDescription/ContactDescription';
-import { UPDATE_WA_GROUP } from 'graphql/mutations/Group';
+import { REMOVE_WA_GROUP_CONTACT } from 'graphql/mutations/Group';
 import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
 import { PhonesPanel } from './PhonesPanel/PhonesPanel';
 import { AddMembersDialog } from './AddMembersDialog/AddMembersDialog';
 import styles from './GroupDetails.module.css';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
 
 export const GroupDetails = () => {
   const params = useParams();
@@ -29,7 +26,6 @@ export const GroupDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
   const [contentToShow, setContentToShow] = useState('members');
-  const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [showAddMembersDialog, setShowAddMembersDialog] = useState(false);
 
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
@@ -52,13 +48,13 @@ export const GroupDetails = () => {
     },
   ];
 
-  const [removeContact, { loading }] = useMutation(UPDATE_WA_GROUP, {
+  const [removeContact, { loading }] = useMutation(REMOVE_WA_GROUP_CONTACT, {
     refetchQueries: [
       { query: GET_WA_GROUP, variables: { waGroupId: params.id } },
       { query: LIST_CONTACTS_WA_GROUPS, variables: { filter: { waGroupId: params.id } } },
     ],
     onCompleted: (responseData) => {
-      const errors = responseData?.updateWaGroup?.errors;
+      const errors = responseData?.removeWaGroupContact?.errors;
       if (errors?.length) {
         setNotification(
           errors
@@ -74,28 +70,6 @@ export const GroupDetails = () => {
     },
     onError: () => {
       setNotification(t('Could not remove contact from the group'), 'warning');
-    },
-  });
-
-  const [renameGroup, { loading: renaming }] = useMutation(UPDATE_WA_GROUP, {
-    refetchQueries: [{ query: GET_WA_GROUP, variables: { waGroupId: params.id } }],
-    onCompleted: (responseData) => {
-      const errors = responseData?.updateWaGroup?.errors;
-      if (errors?.length) {
-        setNotification(
-          errors
-            .map((e: { message?: string }) => e?.message)
-            .filter(Boolean)
-            .join('; '),
-          'warning'
-        );
-        return;
-      }
-      setNotification(t('Group renamed'), 'success');
-      setShowRenameDialog(false);
-    },
-    onError: () => {
-      setNotification(t('Could not rename group'), 'warning');
     },
   });
 
@@ -185,10 +159,8 @@ export const GroupDetails = () => {
   const handleRemoveContact = () => {
     removeContact({
       variables: {
-        input: {
-          id: params.id,
-          removeContactId: deleteVariables?.contactId,
-        },
+        waGroupId: params.id,
+        contactId: deleteVariables?.contactId,
       },
     });
   };
@@ -211,60 +183,6 @@ export const GroupDetails = () => {
 
   if (showAddMembersDialog) {
     dialog = <AddMembersDialog waGroupId={params.id!} onClose={() => setShowAddMembersDialog(false)} />;
-  }
-
-  if (showRenameDialog) {
-    const handleRename = (values: { subject: string }) => {
-      renameGroup({
-        variables: {
-          input: {
-            id: params.id,
-            name: values.subject.trim(),
-          },
-        },
-      });
-    };
-
-    dialog = (
-      <Formik
-        enableReinitialize
-        validationSchema={Yup.object().shape({
-          subject: Yup.string().trim().required(t('Group name is required')).max(100, t('Name is too long')),
-        })}
-        initialValues={{ subject: groupData?.label || '' }}
-        onSubmit={handleRename}
-      >
-        {({ submitForm }) => (
-          <Form>
-            <DialogBox
-              title={t('Rename group')}
-              titleAlign="left"
-              buttonOk={t('Rename')}
-              buttonCancel={t('Cancel')}
-              alignButtons="right"
-              buttonOkLoading={renaming}
-              disableOk={renaming}
-              skipCancel={renaming}
-              handleOk={() => submitForm()}
-              handleCancel={() => {
-                if (!renaming) setShowRenameDialog(false);
-              }}
-              fullWidth
-            >
-              <Field
-                name="subject"
-                component={Input}
-                type="text"
-                inputLabel={t('New name')}
-                placeholder={t('New name')}
-                required
-                helperText={t('The change is pushed to WhatsApp via the group’s admin phone.')}
-              />
-            </DialogBox>
-          </Form>
-        )}
-      </Formik>
-    );
   }
 
   let contentBody;
@@ -316,15 +234,6 @@ export const GroupDetails = () => {
         </div>
 
         <div className={styles.HeaderActions}>
-          <Button
-            variant="outlined"
-            color="primary"
-            className={styles.HeaderActionButton}
-            data-testid="renameGroup"
-            onClick={() => setShowRenameDialog(true)}
-          >
-            {t('Rename')}
-          </Button>
           <Button
             variant="contained"
             color="primary"

@@ -10,9 +10,6 @@ import {
   importMembersQuery,
   importMembersErrorResponse,
   importMembersNetworkError,
-  renameGroupQuery,
-  renameGroupErrorResponse,
-  renameGroupNetworkError,
   removeContactErrorResponse,
   removeContactNetworkError,
 } from 'mocks/Groups';
@@ -174,25 +171,6 @@ test('switches to the Phones and Details tabs', async () => {
   expect(screen.queryByTestId('phone-row-1')).not.toBeInTheDocument();
 });
 
-test('renames the group', async () => {
-  render(renderWith([renameGroupQuery, getWaGroupQuery]));
-
-  await waitFor(() => {
-    expect(screen.getByTestId('renameGroup')).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getByTestId('renameGroup'));
-
-  const nameInput = await screen.findByPlaceholderText('New name');
-  fireEvent.change(nameInput, { target: { value: 'Renamed Group' } });
-
-  fireEvent.click(screen.getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
-  });
-});
-
 const uploadCsv = () => {
   const input = screen.getByTestId('uploadWaMembers');
   const file = new File(['phone\n919900112233\n'], 'members.csv', { type: 'text/csv' });
@@ -284,34 +262,6 @@ test('disables Upload until a CSV is added', async () => {
   expect(screen.getByTestId('ok-button')).toBeDisabled();
 });
 
-const openRenameAndSubmit = async () => {
-  await waitFor(() => {
-    expect(screen.getByTestId('renameGroup')).toBeInTheDocument();
-  });
-  fireEvent.click(screen.getByTestId('renameGroup'));
-  const nameInput = await screen.findByPlaceholderText('New name');
-  fireEvent.change(nameInput, { target: { value: 'Renamed Group' } });
-  fireEvent.click(screen.getByTestId('ok-button'));
-};
-
-test('warns when renaming returns errors', async () => {
-  render(renderWith([renameGroupErrorResponse, getWaGroupQuery]));
-  await openRenameAndSubmit();
-
-  await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Rename failed', 'warning');
-  });
-});
-
-test('warns when renaming errors out', async () => {
-  render(renderWith([renameGroupNetworkError]));
-  await openRenameAndSubmit();
-
-  await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Could not rename group', 'warning');
-  });
-});
-
 test('cancels the add-members dialog', async () => {
   render(renderWith());
 
@@ -325,21 +275,5 @@ test('cancels the add-members dialog', async () => {
 
   await waitFor(() => {
     expect(screen.queryByText('Add members to this group')).not.toBeInTheDocument();
-  });
-});
-
-test('cancels the rename dialog', async () => {
-  render(renderWith());
-
-  await waitFor(() => {
-    expect(screen.getByTestId('renameGroup')).toBeInTheDocument();
-  });
-  fireEvent.click(screen.getByTestId('renameGroup'));
-  await screen.findByPlaceholderText('New name');
-
-  fireEvent.click(screen.getByTestId('cancel-button'));
-
-  await waitFor(() => {
-    expect(screen.queryByPlaceholderText('New name')).not.toBeInTheDocument();
   });
 });

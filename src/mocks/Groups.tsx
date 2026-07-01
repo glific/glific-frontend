@@ -5,7 +5,12 @@ import {
   setVariables,
 } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
-import { CREATE_WA_GROUP, IMPORT_WA_GROUP_CONTACTS, SYNC_GROUPS, UPDATE_WA_GROUP } from 'graphql/mutations/Group';
+import {
+  CREATE_WA_GROUP,
+  IMPORT_WA_GROUP_CONTACTS,
+  REMOVE_WA_GROUP_CONTACT,
+  SYNC_GROUPS,
+} from 'graphql/mutations/Group';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
@@ -1063,14 +1068,12 @@ export const countWaGroupContacts = {
 
 export const removeContactQuery = {
   request: {
-    query: UPDATE_WA_GROUP,
-    variables: {
-      input: { id: '1', removeContactId: '18' },
-    },
+    query: REMOVE_WA_GROUP_CONTACT,
+    variables: { waGroupId: '1', contactId: '18' },
   },
   result: {
     data: {
-      updateWaGroup: {
+      removeWaGroupContact: {
         waGroup: { id: '1', label: 'Arkansas ducks', bspId: '221976952534635194@g.us' },
         errors: null,
       },
@@ -1345,44 +1348,6 @@ export const createWaGroupNetworkError = {
   error: new Error('Network error'),
 };
 
-export const addMembersQuery = {
-  request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', addPhones: ['918888888888'] } },
-  },
-  result: {
-    data: {
-      updateWaGroup: {
-        waGroup: { id: '1', label: 'Arkansas ducks', bspId: '221976952534635194@g.us' },
-        errors: null,
-      },
-    },
-  },
-};
-
-export const addMembersErrorResponse = {
-  request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', addPhones: ['918888888888'] } },
-  },
-  result: {
-    data: {
-      updateWaGroup: {
-        waGroup: null,
-        errors: [{ key: 'contacts', message: 'Could not add member' }],
-      },
-    },
-  },
-};
-
-export const addMembersNetworkError = {
-  request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', addPhones: ['918888888888'] } },
-  },
-  error: new Error('Network error'),
-};
-
 // CSV member import (background) for the group rendered in GroupDetails (id "1").
 const importMembersCsv = 'phone\n919900112233\n';
 
@@ -1418,52 +1383,14 @@ export const importMembersNetworkError = {
   error: new Error('Network error'),
 };
 
-export const renameGroupQuery = {
-  request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', name: 'Renamed Group' } },
-  },
-  result: {
-    data: {
-      updateWaGroup: {
-        waGroup: { id: '1', label: 'Renamed Group', bspId: '221976952534635194@g.us' },
-        errors: null,
-      },
-    },
-  },
-};
-
-export const renameGroupErrorResponse = {
-  request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', name: 'Renamed Group' } },
-  },
-  result: {
-    data: {
-      updateWaGroup: {
-        waGroup: null,
-        errors: [{ key: 'name', message: 'Rename failed' }],
-      },
-    },
-  },
-};
-
-export const renameGroupNetworkError = {
-  request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', name: 'Renamed Group' } },
-  },
-  error: new Error('Network error'),
-};
-
 export const removeContactErrorResponse = {
   request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', removeContactId: '18' } },
+    query: REMOVE_WA_GROUP_CONTACT,
+    variables: { waGroupId: '1', contactId: '18' },
   },
   result: {
     data: {
-      updateWaGroup: {
+      removeWaGroupContact: {
         waGroup: null,
         errors: [{ key: 'contact', message: 'Remove failed' }],
       },
@@ -1473,8 +1400,8 @@ export const removeContactErrorResponse = {
 
 export const removeContactNetworkError = {
   request: {
-    query: UPDATE_WA_GROUP,
-    variables: { input: { id: '1', removeContactId: '18' } },
+    query: REMOVE_WA_GROUP_CONTACT,
+    variables: { waGroupId: '1', contactId: '18' },
   },
   error: new Error('Network error'),
 };

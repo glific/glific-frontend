@@ -93,9 +93,9 @@ export const CREATE_WA_GROUP = gql`
   }
 `;
 
-export const UPDATE_WA_GROUP = gql`
-  mutation UpdateWaGroup($input: UpdateWaGroupInput!) {
-    updateWaGroup(input: $input) {
+export const REMOVE_WA_GROUP_CONTACT = gql`
+  mutation RemoveWaGroupContact($waGroupId: ID!, $contactId: ID!) {
+    removeWaGroupContact(waGroupId: $waGroupId, contactId: $contactId) {
       waGroup {
         id
         label
