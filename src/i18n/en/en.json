@@ -840,5 +840,9 @@
   "Member upload started in the background — you'll be notified when it's done.": "Member upload started in the background — you'll be notified when it's done.",
   "Download Sample": "Download Sample",
   "No active WhatsApp phones": "No active WhatsApp phones",
-  "None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again.": "None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again."
+  "None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again.": "None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again.",
+  "Pick the managed phone that will create the group": "Pick the managed phone that will create the group",
+  "Remove file": "Remove file",
+  "Okay": "Okay",
+  "Removed Contact from Group": "Removed Contact from Group"
 }

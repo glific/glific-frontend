@@ -110,7 +110,7 @@ export const UPDATE_WA_GROUP = gql`
 `;
 
 export const IMPORT_WA_GROUP_CONTACTS = gql`
-  mutation ImportWaGroupContacts($waGroupId: ID!, $data: String!, $type: ImportContactsTypeEnum) {
+  mutation ImportWaGroupContacts($waGroupId: ID!, $data: String!, $type: ImportContactsTypeEnum!) {
     importWaGroupContacts(waGroupId: $waGroupId, data: $data, type: $type) {
       status
       errors {

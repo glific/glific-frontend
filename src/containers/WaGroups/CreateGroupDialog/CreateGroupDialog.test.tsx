@@ -46,7 +46,8 @@ const renderDialog = (mocks: any[] = [contactsListForCreateGroup], props = {}) =
     </MockedProvider>
   );
 
-const CREATION_STARTED = "Group creation started. Members are being imported in the background — you'll be notified when it's done.";
+const CREATION_STARTED =
+  "Group creation started. Members are being imported in the background — you'll be notified when it's done.";
 
 beforeEach(() => {
   vi.clearAllMocks();

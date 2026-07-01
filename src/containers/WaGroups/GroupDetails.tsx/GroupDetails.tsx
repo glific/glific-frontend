@@ -62,21 +62,20 @@ export const GroupDetails = () => {
       if (errors?.length) {
         setNotification(
           errors
-            .map((e: any) => e?.message)
+            .map((e: { message?: string }) => e?.message)
             .filter(Boolean)
             .join('; '),
           'warning'
         );
         return;
       }
-      setNotification('Removed Contact from Group', 'success');
+      setNotification(t('Removed Contact from Group'), 'success');
       setShowDeleteDialog(false);
     },
     onError: () => {
       setNotification(t('Could not remove contact from the group'), 'warning');
     },
   });
-
 
   const [renameGroup, { loading: renaming }] = useMutation(UPDATE_WA_GROUP, {
     refetchQueries: [{ query: GET_WA_GROUP, variables: { waGroupId: params.id } }],
@@ -85,7 +84,7 @@ export const GroupDetails = () => {
       if (errors?.length) {
         setNotification(
           errors
-            .map((e: any) => e?.message)
+            .map((e: { message?: string }) => e?.message)
             .filter(Boolean)
             .join('; '),
           'warning'
@@ -230,7 +229,7 @@ export const GroupDetails = () => {
       <Formik
         enableReinitialize
         validationSchema={Yup.object().shape({
-          subject: Yup.string().required(t('Group name is required')).max(100, t('Name is too long')),
+          subject: Yup.string().trim().required(t('Group name is required')).max(100, t('Name is too long')),
         })}
         initialValues={{ subject: groupData?.label || '' }}
         onSubmit={handleRename}

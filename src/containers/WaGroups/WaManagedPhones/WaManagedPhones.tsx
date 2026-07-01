@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { useState } from 'react';
-import { CreateGroupDialog } from '../CreateGroupDialog/CreateGroupDialog';
+import { CreateGroupDialog } from 'containers/WaGroups/CreateGroupDialog/CreateGroupDialog';
 
 // The sync fails with this message when every managed phone is disconnected on
 // Maytapi; we surface a reconnect prompt instead of a generic error.
@@ -123,7 +123,7 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
           title={t('No active WhatsApp phones')}
           handleOk={() => setShowReconnect(false)}
           handleCancel={() => setShowReconnect(false)}
-          buttonOk={'Okay'}
+          buttonOk={t('Okay')}
           skipCancel
           alignButtons="center"
         >

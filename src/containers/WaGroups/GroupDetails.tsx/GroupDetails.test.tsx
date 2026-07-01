@@ -164,14 +164,14 @@ test('switches to the Phones and Details tabs', async () => {
 
   fireEvent.click(screen.getByText('Phones'));
   await waitFor(() => {
-    expect(screen.getByText('Details')).toBeInTheDocument();
+    expect(screen.getByTestId('phone-row-1')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByText('Details'));
-  // ContactDescription renders the details panel
   await waitFor(() => {
-    expect(screen.getByText('Details')).toBeInTheDocument();
+    expect(screen.getByText('Collections')).toBeInTheDocument();
   });
+  expect(screen.queryByTestId('phone-row-1')).not.toBeInTheDocument();
 });
 
 test('renames the group', async () => {

@@ -699,5 +699,9 @@
   "Member upload started in the background — you'll be notified when it's done.": "सदस्य अपलोड पृष्ठभूमि में शुरू हो गया — पूरा होने पर आपको सूचित किया जाएगा।",
   "Download Sample": "नमूना डाउनलोड करें",
   "No active WhatsApp phones": "कोई सक्रिय व्हाट्सऐप फ़ोन नहीं",
-  "None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again.": "आपका कोई भी व्हाट्सऐप फ़ोन कनेक्ट नहीं है। कृपया Maytapi कंसोल पर अपना फ़ोन फिर से कनेक्ट करें और फिर से सिंक करने का प्रयास करें।"
+  "None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again.": "आपका कोई भी व्हाट्सऐप फ़ोन कनेक्ट नहीं है। कृपया Maytapi कंसोल पर अपना फ़ोन फिर से कनेक्ट करें और फिर से सिंक करने का प्रयास करें।",
+  "Pick the managed phone that will create the group": "Pick the managed phone that will create the group",
+  "Remove file": "Remove file",
+  "Okay": "Okay",
+  "Removed Contact from Group": "Removed Contact from Group"
 }

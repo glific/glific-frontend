@@ -21,24 +21,7 @@ export const AddMembersDialog = ({ waGroupId, onClose }: AddMembersDialogProps) 
   const [fileName, setFileName] = useState('');
   const [csvContent, setCsvContent] = useState<string | ArrayBuffer | null>('');
 
-  const [importMembers, { loading: importing }] = useMutation(IMPORT_WA_GROUP_CONTACTS, {
-    onCompleted: (data: any) => {
-      const errors = data?.importWaGroupContacts?.errors;
-      if (errors?.length) {
-        setNotification(
-          errors
-            .map((e: any) => e?.message)
-            .filter(Boolean)
-            .join('; '),
-          'warning'
-        );
-        return;
-      }
-      setNotification(t("Member upload started in the background — you'll be notified when it's done."), 'success');
-      onClose();
-    },
-    onError: () => setNotification(t('Could not upload members'), 'warning'),
-  });
+  const [importMembers, { loading: importing }] = useMutation(IMPORT_WA_GROUP_CONTACTS);
 
   const handleFile = (event: any) => {
     const media = event.target.files?.[0];
@@ -56,8 +39,27 @@ export const AddMembersDialog = ({ waGroupId, onClose }: AddMembersDialogProps) 
     };
   };
 
-  const handleCsvSubmit = () => {
-    importMembers({ variables: { waGroupId, type: 'DATA', data: csvContent } });
+  const handleCsvSubmit = async () => {
+    try {
+      const { data } = await importMembers({ variables: { waGroupId, type: 'DATA', data: csvContent } });
+
+      const errors = data?.importWaGroupContacts?.errors;
+      if (errors?.length) {
+        setNotification(
+          errors
+            .map((error: { message?: string }) => error?.message)
+            .filter(Boolean)
+            .join('; '),
+          'warning'
+        );
+        return;
+      }
+
+      setNotification(t("Member upload started in the background — you'll be notified when it's done."), 'success');
+      onClose();
+    } catch {
+      setNotification(t('Could not upload members'), 'warning');
+    }
   };
 
   return (
@@ -65,10 +67,13 @@ export const AddMembersDialog = ({ waGroupId, onClose }: AddMembersDialogProps) 
       title={t('Add members to this group')}
       titleAlign="left"
       handleOk={handleCsvSubmit}
-      handleCancel={onClose}
+      handleCancel={() => {
+        if (!importing) onClose();
+      }}
       buttonOk={t('Upload')}
       buttonOkLoading={importing}
-      disableOk={!csvContent}
+      disableOk={!csvContent || importing}
+      skipCancel={importing}
       fullWidth
     >
       <div className={styles.UploadContainer}>
@@ -77,15 +82,20 @@ export const AddMembersDialog = ({ waGroupId, onClose }: AddMembersDialogProps) 
             {fileName ? (
               <>
                 {fileName}
-                <CrossIcon
+                <button
+                  type="button"
                   data-testid="cross-icon"
                   className={styles.CrossIcon}
-                  onClick={(event: any) => {
+                  aria-label={t('Remove file')}
+                  onClick={(event) => {
                     event.preventDefault();
+                    event.stopPropagation();
                     setFileName('');
                     setCsvContent('');
                   }}
-                />
+                >
+                  <CrossIcon />
+                </button>
               </>
             ) : (
               <span className={styles.UploadFile}>

@@ -43,8 +43,8 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
   const [csvContent, setCsvContent] = useState<string | ArrayBuffer | null>('');
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('Group name is required').max(100, 'Name is too long'),
-    waManagedPhone: Yup.object().nullable().required('Pick the managed phone that will create the group'),
+    name: Yup.string().trim().required(t('Group name is required')).max(100, t('Name is too long')),
+    waManagedPhone: Yup.object().nullable().required(t('Pick the managed phone that will create the group')),
   });
 
   const phoneOptions = phones
@@ -118,9 +118,6 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
           input: {
             name: values.name.trim(),
             waManagedPhoneId: values.waManagedPhone!.id,
-            // Members come from the uploaded CSV. The backend seeds the group
-            // with its phones and enriches the contacts (name/fields/collection)
-            // in a background job — the operator is notified when it finishes.
             importData: csvContent,
           },
         },
@@ -128,17 +125,12 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
 
       const { waGroup, errors } = data?.createWaGroup || {};
 
-      if (errors && errors.length > 0) {
-        const msg = errors
-          .map((e: any) => e?.message)
+      if (!waGroup) {
+        const msg = (errors || [])
+          .map((e: { message?: string }) => e?.message)
           .filter(Boolean)
           .join('; ');
         setNotification(msg || t('Could not create WhatsApp group'), 'warning');
-        return;
-      }
-
-      if (!waGroup) {
-        setNotification(t('Could not create WhatsApp group'), 'warning');
         return;
       }
 
@@ -212,15 +204,20 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
                     {fileName ? (
                       <>
                         {fileName}
-                        <CrossIcon
+                        <button
+                          type="button"
                           data-testid="cross-icon"
                           className={styles.CrossIcon}
-                          onClick={(event: any) => {
+                          aria-label={t('Remove file')}
+                          onClick={(event) => {
                             event.preventDefault();
+                            event.stopPropagation();
                             setFileName('');
                             setCsvContent('');
                           }}
-                        />
+                        >
+                          <CrossIcon />
+                        </button>
                       </>
                     ) : (
                       <span className={styles.UploadFile}>
