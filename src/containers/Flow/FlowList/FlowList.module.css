@@ -206,8 +206,14 @@
   font-size: 18px;
 }
 
+.WarningSection + .WarningSection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
 .StatusMessage {
-  text-align: center;
+  text-align: left;
   margin: 8px 0 10px;
   color: #333;
   font-size: 15px;
