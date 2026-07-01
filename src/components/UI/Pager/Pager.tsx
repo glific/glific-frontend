@@ -10,6 +10,7 @@ import {
   TableContainer,
   Skeleton,
 } from '@mui/material';
+import { t } from 'i18next';
 import { ColumnNames } from 'containers/List/List';
 import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 import styles from './Pager.module.css';
@@ -153,12 +154,12 @@ const createRows = (
         <button
           type="button"
           data-testid="expand-toggle"
-          aria-label="Toggle language variants"
+          aria-label={t('Toggle language variants')}
           aria-expanded={isOpen}
           className={`${styles.ChevronBtn} ${isOpen ? styles.ChevronOpen : ''}`}
           onClick={(event) => {
             event.stopPropagation();
-            onToggleRow?.(entry.id);
+            onToggleRow?.(entry.recordId);
           }}
         >
           <ChevronIcon />
@@ -173,7 +174,7 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     const hasVariants = !!dataObj && Object.keys(dataObj).length > 0;
-    const isOpen = collapseOpen && entry.id === collapseRow;
+    const isOpen = collapseOpen && entry.recordId === collapseRow;
     const parentRowClass = `${isActiveRow} ${isOpen && expandableRows ? styles.ExpandedParent : ''}`;
 
     return (

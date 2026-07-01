@@ -164,8 +164,14 @@ test('navigates to create template page with the selected tag', async () => {
 test('navigates to edit template page via the row View action', async () => {
   renderComponent();
 
-  const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
-  fireEvent.click(viewIcons[0]);
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  // scope the action to the welcome_msg row so a sort/order change can't make
+  // this assertion target a different template's View icon.
+  const row = screen.getByText('welcome_msg').closest('tr') as HTMLElement;
+  fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
     expect(mockedNavigate).toHaveBeenCalledWith('/template/1/edit');
@@ -179,7 +185,7 @@ test('shows success notification after Sync HSM', async () => {
     expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
   });
 
-  userEvent.click(screen.getByTestId('syncHsm'));
+  await userEvent.click(screen.getByTestId('syncHsm'));
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('HSM queued for sync. Check notifications for updates.', 'success');
@@ -193,7 +199,7 @@ test('shows warning notification when Sync HSM fails', async () => {
     expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
   });
 
-  userEvent.click(screen.getByTestId('syncHsm'));
+  await userEvent.click(screen.getByTestId('syncHsm'));
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates. Please try again.', 'warning');
@@ -207,7 +213,7 @@ test('shows warning notification when Sync HSM throws a network error', async ()
     expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
   });
 
-  userEvent.click(screen.getByTestId('syncHsm'));
+  await userEvent.click(screen.getByTestId('syncHsm'));
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates. Please try again.', 'warning');
@@ -355,8 +361,13 @@ test('expands a template to reveal its other language variants', async () => {
 test('copies the bsp UUID via the row Copy UUID action', async () => {
   renderComponent();
 
-  const copyIcons = await screen.findAllByTestId('copy-button');
-  fireEvent.click(copyIcons[0]);
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  // scope to the welcome_msg row so ordering changes can't target another row.
+  const row = screen.getByText('welcome_msg').closest('tr') as HTMLElement;
+  fireEvent.click(within(row).getByTestId('copy-button'));
 
   expect(copyToClipboardMethod).toHaveBeenCalledWith('bsp-001');
 });
@@ -364,9 +375,13 @@ test('copies the bsp UUID via the row Copy UUID action', async () => {
 test('warns when copying the UUID of a template without a bsp id', async () => {
   renderComponent();
 
-  const copyIcons = await screen.findAllByTestId('copy-button');
-  // feedback_form (second row) has no bspId
-  fireEvent.click(copyIcons[1]);
+  await waitFor(() => {
+    expect(screen.getByText('feedback_form')).toBeInTheDocument();
+  });
+
+  // feedback_form has no bspId; scope to its row instead of relying on order.
+  const row = screen.getByText('feedback_form').closest('tr') as HTMLElement;
+  fireEvent.click(within(row).getByTestId('copy-button'));
 
   expect(setNotification).toHaveBeenCalledWith('Sorry! UUID not found', 'warning');
 });
