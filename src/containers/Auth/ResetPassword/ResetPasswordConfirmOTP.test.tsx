@@ -32,7 +32,27 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resetPassword = await findByTestId('AuthContainer');
     await waitFor(() => {
       expect(resetPassword).toHaveTextContent('Reset your password');
-      expect(resetPassword).toHaveTextContent('New Password');
+      // The new-password field is identified by its placeholder (no redundant heading label,
+      // consistent with the OTP field).
+      expect(screen.getByPlaceholderText('New Password')).toBeInTheDocument();
+    });
+  });
+
+  test('it should display the neutral OTP info message passed via router state', async () => {
+    const infoMessage = 'If you have an account, you will receive an OTP to confirm';
+    const wrapperWithInfoMessage = (
+      <MemoryRouter initialEntries={[{ state: { phoneNumber: '919967665667', otpInfoMessage: infoMessage } }]}>
+        <Routes>
+          <Route path="/" element={<ResetPasswordConfirmOTP />} />
+          <Route path="/login" element={<div>Login page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const { findByTestId } = render(wrapperWithInfoMessage);
+    const resetPassword = await findByTestId('AuthContainer');
+    await waitFor(() => {
+      expect(resetPassword).toHaveTextContent(infoMessage);
     });
   });
 
@@ -57,7 +77,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
   });
 
   it('test successful resend functionality', async () => {
-    const sendOptMock = vi.fn();
+    const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
     vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
     // set the mock
     const responseData = {
@@ -73,7 +93,45 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resendButton = screen.getByTestId('resendOtp');
     user.click(resendButton);
     await waitFor(() => {
+      // Resends against the prepopulated phone number carried from the previous screen.
       expect(sendOptMock).toHaveBeenCalledWith('919967665667');
+    });
+  });
+
+  it('shows a retry hint when resend fails', async () => {
+    const sendOptMock = vi.fn(() => Promise.reject(new Error('too soon')));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    render(wrapper);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
+        'Could not resend the OTP. Please try again in 30 seconds.'
+      );
+    });
+  });
+
+  it('falls back gracefully when no phone number is provided in state', async () => {
+    const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    const wrapperWithoutPhone = (
+      <MemoryRouter initialEntries={[{ state: { otpInfoMessage: 'some message' } }]}>
+        <Routes>
+          <Route path="/" element={<ResetPasswordConfirmOTP />} />
+          <Route path="/login" element={<div>Login page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+    render(wrapperWithoutPhone);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      // No phone in state and none in the (empty) form field, so resend falls back to ''.
+      expect(sendOptMock).toHaveBeenCalledWith('');
     });
   });
 });

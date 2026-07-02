@@ -39,13 +39,15 @@ describe('<ResetPasswordPhone />', () => {
     expect(resetPassword).toHaveTextContent('Generate OTP to confirm');
   });
 
-  test('test the form submission with incorrect phone', async () => {
-    // set the mock
+  test('test the form submission when the backend returns an error', async () => {
+    // The backend no longer discloses whether an account exists (a missing account now
+    // returns a neutral 200). This exercises the remaining error path, e.g. a genuine
+    // delivery/validation failure, which is still surfaced to the user.
     const errorMessage = {
       response: {
         data: {
           error: {
-            message: 'Account with phone number 919425010449 does not exist',
+            message: 'Cannot send the otp to 919978776554',
           },
         },
       },

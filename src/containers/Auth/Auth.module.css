@@ -134,6 +134,7 @@
   height: auto;
   width: 395px;
   border-color: #eaedec;
+  background-color: white;
   border-style: solid;
   border-width: 2px;
 }
@@ -143,6 +144,7 @@
   height: auto;
   width: 395px;
   border-color: #eaedec;
+  background-color: white;
   border-style: solid;
   border-width: 2px;
 }
@@ -195,6 +197,20 @@
   color: red;
   width: 333px;
   padding-bottom: 10px;
+}
+
+.InfoBanner {
+  margin: 12px 16px 4px;
+  padding: 12px 14px;
+  background-color: #e7f5ee;
+  border: 1px solid #119656;
+  border-left-width: 4px;
+  border-radius: 6px;
+  color: #0b5c37;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
 }
 
 .SuccessMessage {
