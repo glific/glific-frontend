@@ -1,0 +1,127 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Colors" />
+
+# Colors
+
+The Glific color system is built on a green-first brand palette applied through the MUI theme at `src/config/theme.tsx`.
+
+---
+
+## Brand Palette
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginBottom: 40 }}>
+
+  {/* Primary Green */}
+  <div>
+    <div style={{ background: '#119656', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Primary Green</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#119656</code><br/>
+      MUI: <code>palette.primary.main</code>
+    </div>
+  </div>
+
+  {/* Dark Green */}
+  <div>
+    <div style={{ background: '#073F24', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Dark Green</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#073F24</code><br/>
+      Used for body text and dark UI elements
+    </div>
+  </div>
+
+  {/* Hover Green */}
+  <div>
+    <div style={{ background: '#EDF6F2', borderRadius: 8, height: 80, marginBottom: 8, border: '1px solid #e0e0e0' }} />
+    <strong>Light Green (Hover)</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#EDF6F2</code><br/>
+      MenuItem hover, selection states
+    </div>
+  </div>
+
+  {/* Secondary Grey */}
+  <div>
+    <div style={{ background: '#777777', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Secondary Grey</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#777777</code><br/>
+      MUI: <code>palette.secondary.main</code>
+    </div>
+  </div>
+
+</div>
+
+---
+
+## Semantic Colors
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginBottom: 40 }}>
+
+  <div>
+    <div style={{ background: '#fb5c5c', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Error</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#fb5c5c</code><br/>
+      MUI: <code>palette.error.main</code>
+    </div>
+  </div>
+
+  <div>
+    <div style={{ background: '#DD1F1F', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Warning</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#DD1F1F</code><br/>
+      MUI: <code>palette.warning.main</code>
+    </div>
+  </div>
+
+  <div>
+    <div style={{ background: '#ccd4d0', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Table Header</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#ccd4d0</code><br/>
+      MUI: table head cell text
+    </div>
+  </div>
+
+  <div>
+    <div style={{ background: '#EFEFEF', borderRadius: 8, height: 80, marginBottom: 8 }} />
+    <strong>Divider</strong>
+    <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>
+      <code>#EFEFEF</code><br/>
+      MUI: divider border color
+    </div>
+  </div>
+
+</div>
+
+---
+
+## Icon States
+
+<div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginBottom: 40 }}>
+
+  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+    <div style={{ width: 32, height: 32, borderRadius: 4, background: '#073f24' }} />
+    <span><code>#073f24</code> — Selected icon</span>
+  </div>
+
+  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+    <div style={{ width: 32, height: 32, borderRadius: 4, background: '#999999' }} />
+    <span><code>#999999</code> — Unselected icon</span>
+  </div>
+
+</div>
+
+---
+
+## Usage Guidelines
+
+- Use **Primary Green** for primary buttons, active states, and interactive elements.
+- Use **Dark Green** for headings and body text where strong contrast is needed.
+- Use **Light Green (#EDF6F2)** for hover states and subtle selection backgrounds.
+- Reserve **Error** and **Warning** for validation messages and destructive actions only.
+- Never use raw hex values in component code — use MUI theme tokens or CSS variables.

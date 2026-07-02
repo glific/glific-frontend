@@ -39,3 +39,5 @@ cypress/videos
 
 # Claude worktrees
 .claude/worktrees/
+*storybook.log
+storybook-static

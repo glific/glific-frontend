@@ -1,0 +1,108 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Spacing" />
+
+# Spacing & Layout
+
+Glific follows the **MUI spacing system** with an 8px base unit. `theme.spacing(n)` = `n × 8px`.
+
+---
+
+## Spacing Scale
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '16px 0 32px' }}>
+  {[
+    { token: 'spacing(0.5)', px: 4,  label: 'Extra tight — icon gaps, badge offsets' },
+    { token: 'spacing(1)',   px: 8,  label: 'Tight — inline gaps, small padding' },
+    { token: 'spacing(1.5)', px: 12, label: 'Compact — button vertical padding' },
+    { token: 'spacing(2)',   px: 16, label: 'Default — card padding, form fields' },
+    { token: 'spacing(3)',   px: 24, label: 'Relaxed — section spacing, dialog margins' },
+    { token: 'spacing(4)',   px: 32, label: 'Loose — page padding, large gaps' },
+    { token: 'spacing(5)',   px: 40, label: 'Extra loose — top nav height offset' },
+    { token: 'spacing(6)',   px: 48, label: 'Jumbo — page-level vertical rhythm' },
+    { token: 'spacing(8)',   px: 64, label: 'Giant — hero sections, full-height offsets' },
+  ].map(({ token, px, label }) => (
+    <div key={px} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: px, height: 24, background: '#119656', borderRadius: 3, flexShrink: 0 }} />
+      <div style={{ minWidth: 100, fontSize: 13, fontFamily: 'monospace' }}>{px}px</div>
+      <div style={{ minWidth: 140, fontSize: 13, color: '#555', fontFamily: 'monospace' }}>{token}</div>
+      <div style={{ fontSize: 13, color: '#888' }}>{label}</div>
+    </div>
+  ))}
+</div>
+
+---
+
+## Border Radius
+
+<div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', padding: '16px 0 32px' }}>
+
+  <div style={{ textAlign: 'center' }}>
+    <div style={{ width: 80, height: 80, background: '#EDF6F2', border: '2px solid #119656', borderRadius: 12, marginBottom: 8 }} />
+    <strong>12px</strong>
+    <div style={{ fontSize: 12, color: '#555' }}>
+      <code>MuiOutlinedInput</code><br/>
+      Form inputs, selects
+    </div>
+  </div>
+
+  <div style={{ textAlign: 'center' }}>
+    <div style={{ width: 80, height: 80, background: '#EDF6F2', border: '2px solid #119656', borderRadius: 6, marginBottom: 8 }} />
+    <strong>6px</strong>
+    <div style={{ fontSize: 12, color: '#555' }}>
+      <code>--curvature: 6px</code><br/>
+      Flow editor widgets
+    </div>
+  </div>
+
+  <div style={{ textAlign: 'center' }}>
+    <div style={{ width: 80, height: 80, background: '#EDF6F2', border: '2px solid #119656', borderRadius: 25, marginBottom: 8 }} />
+    <strong>25px</strong>
+    <div style={{ fontSize: 12, color: '#555' }}>
+      Tabs indicator pill
+    </div>
+  </div>
+
+  <div style={{ textAlign: 'center' }}>
+    <div style={{ width: 80, height: 80, background: '#EDF6F2', border: '2px solid #119656', borderRadius: '50%', marginBottom: 8 }} />
+    <strong>50%</strong>
+    <div style={{ fontSize: 12, color: '#555' }}>
+      Avatar, badge dots
+    </div>
+  </div>
+
+</div>
+
+---
+
+## Layout Constants
+
+| Constant | Value | Where used |
+|---|---|---|
+| `#canvas-container` margin-top | `70px` | Flow editor main canvas offset |
+| Scrollbar width | `3px` | Custom scrollbar (`::-webkit-scrollbar`) |
+| Scrollbar height | `5px` | Custom scrollbar (`::-webkit-scrollbar`) |
+| Tab height | `32px` | `MuiTabs` / `MuiTab` override in theme |
+| `IconButton` padding | `12px` | `MuiIconButton` override in theme |
+| Input border width | `2px` | `MuiOutlinedInput notchedOutline` |
+
+---
+
+## Elevation / Shadows
+
+These shadow values come from `index.css` (flow editor CSS variables):
+
+| Token | Value | Usage |
+|---|---|---|
+| `--shadow` | `0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)` | Default widget shadow |
+| `--shadow-widget` | `0 3px 20px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)` | Subtle widget shadow |
+| `--options-shadow` | `0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)` | Dropdown menu shadow |
+| `--dropdown-shadow` | `rgb(0 0 0/30%) 0px 0px 60px, rgb(0 0 0/12%) 0px 6px 12px` | Large dropdown panels |
+
+---
+
+## Usage Guidelines
+
+- Always use `theme.spacing()` in `sx` props or `styled()` — never raw `px` values in component code.
+- Form inputs use `borderRadius: 12px` from the MUI theme override; don't add border-radius to inputs manually.
+- Icon padding: the `MuiIconButton` override sets `12px` globally — avoid overriding per-component unless absolutely needed.
