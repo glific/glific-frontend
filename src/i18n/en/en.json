@@ -822,5 +822,12 @@
   "Pick the managed phone that will create the group": "Pick the managed phone that will create the group",
   "Remove file": "Remove file",
   "Okay": "Okay",
-  "Removed Contact from Group": "Removed Contact from Group"
+  "Removed Contact from Group": "Removed Contact from Group",
+  "Set primary phone": "Set primary phone",
+  "Set primary phone for the collection": "Set primary phone for the collection",
+  "Apply": "Apply",
+  "This phone becomes the primary for every WhatsApp group in the collection where it is an active member. Groups where it is not a member are skipped and reported.": "This phone becomes the primary for every WhatsApp group in the collection where it is an active member. Groups where it is not a member are skipped and reported.",
+  "Select a phone": "Select a phone",
+  "Setting the primary phone across the collection has started in the background.": "Setting the primary phone across the collection has started in the background.",
+  "Downloaded the collection primary-phone report": "Downloaded the collection primary-phone report"
 }

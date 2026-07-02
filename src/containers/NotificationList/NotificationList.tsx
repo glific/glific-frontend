@@ -17,6 +17,7 @@ import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import styles from './NotificationList.module.css';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
+import { WA_GROUP_COLLECTION_PRIMARY_REPORT } from 'graphql/queries/WaGroups';
 import { setErrorMessage, setNotification } from 'common/notification';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
@@ -82,6 +83,28 @@ export const NotificationList = () => {
     }, 1000);
   }, []);
 
+  // The collection primary-phone report is a query (not a mutation like the
+  // upload reports), so fetch it imperatively and download the skipped-groups CSV.
+  const downloadCollectionPrimaryReport = async (userJobId: string) => {
+    try {
+      const { data } = await client.query({
+        query: WA_GROUP_COLLECTION_PRIMARY_REPORT,
+        variables: { userJobId },
+        fetchPolicy: 'network-only',
+      });
+
+      const { csvRows, error } = data?.waGroupCollectionPrimaryReport || {};
+      if (error) {
+        setNotification(error, 'warning');
+        return;
+      }
+      exportCsvFile(csvRows, 'Collection_Primary_Phone_Status');
+      setNotification(t('Downloaded the collection primary-phone report'), 'success');
+    } catch (error) {
+      setErrorMessage(error as Error);
+    }
+  };
+
   const setDialog = (id: any, item: any) => {
     const category = item.category;
     const entity = JSON.parse(item.entity);
@@ -114,6 +137,9 @@ export const NotificationList = () => {
             userJobId: entity?.user_job_id,
           },
         });
+        break;
+      case 'Collection Primary Phone':
+        downloadCollectionPrimaryReport(entity?.user_job_id);
         break;
       case 'Custom Certificates':
         destination = `/certificate/${entity?.template_id}/edit`;

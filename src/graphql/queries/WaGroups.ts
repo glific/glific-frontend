@@ -220,3 +220,12 @@ export const GET_WA_MANAGED_PHONES_STATUS = gql`
     }
   }
 `;
+
+export const WA_GROUP_COLLECTION_PRIMARY_REPORT = gql`
+  query WaGroupCollectionPrimaryReport($userJobId: ID!) {
+    waGroupCollectionPrimaryReport(userJobId: $userJobId) {
+      csvRows
+      error
+    }
+  }
+`;
