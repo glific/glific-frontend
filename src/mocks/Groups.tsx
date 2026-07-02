@@ -5,7 +5,13 @@ import {
   setVariables,
 } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
-import { SYNC_GROUPS, UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import {
+  CREATE_WA_GROUP,
+  IMPORT_WA_GROUP_CONTACTS,
+  REMOVE_WA_GROUP_CONTACT,
+  SYNC_GROUPS,
+} from 'graphql/mutations/Group';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
   COUNT_COUNTACTS_WA_GROUPS,
@@ -832,6 +838,24 @@ export const syncWaGroupContactsQueryWithError = {
   },
 };
 
+export const syncWaGroupContactsNoActivePhones = {
+  request: {
+    query: SYNC_GROUPS,
+  },
+  result: {
+    data: {
+      syncWaGroupContacts: null,
+    },
+    errors: [
+      {
+        message: 'No active phones available',
+        path: ['syncWaGroupContacts'],
+        locations: [{ line: 2, column: 3 }],
+      },
+    ],
+  },
+};
+
 export const waMessageReceivedSubscription = {
   request: {
     query: WA_MESSAGE_RECEIVED_SUBSCRIPTION,
@@ -1044,16 +1068,14 @@ export const countWaGroupContacts = {
 
 export const removeContactQuery = {
   request: {
-    query: UPDATE_GROUP_CONTACT,
-    variables: {
-      input: { addWaContactIds: [], deleteWaContactIds: ['18'], waGroupId: '1' },
-    },
+    query: REMOVE_WA_GROUP_CONTACT,
+    variables: { waGroupId: '1', contactId: '18' },
   },
   result: {
     data: {
-      updateContactWaGroups: {
-        numberDeleted: 1,
-        waGroupContacts: [],
+      removeWaGroupContact: {
+        waGroup: { id: '1', label: 'Arkansas ducks', bspId: '221976952534635194@g.us' },
+        errors: null,
       },
     },
   },
@@ -1184,6 +1206,164 @@ export const searchFilterQuery = {
   },
 };
 
+// --- CreateGroupDialog / add-members / rename mocks ---
+
+const createGroupContact = {
+  id: '10',
+  name: 'Contact A',
+  fields: '{}',
+  phone: '918888888888',
+  groups: [],
+};
+
+// GET_CONTACTS_LIST as used by CreateGroupDialog (no excludeWaGroups filter).
+export const contactsListForCreateGroup = {
+  request: {
+    query: GET_CONTACTS_LIST,
+    variables: { filter: { name: '' }, opts: { limit: 50, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: { contacts: [createGroupContact] },
+  },
+};
+
+// Members are always supplied via CSV now (sent as `importData`); the backend
+// seeds the group and imports contacts in a background job.
+const createWaGroupVariables = {
+  input: { name: 'Test Group', waManagedPhoneId: '1', importData: 'phone\n919900112233\n' },
+};
+
+export const createWaGroupQuery = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: { id: '99', label: 'Test Group', bspId: '120363000000000000@g.us' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const createWaGroupWithErrors = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: null,
+        errors: [{ key: 'name', message: 'Group already exists' }],
+      },
+    },
+  },
+};
+
+// success: false shape — no waGroup and no errors returned.
+export const createWaGroupNoGroup = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  result: {
+    data: {
+      createWaGroup: {
+        waGroup: null,
+        errors: null,
+      },
+    },
+  },
+};
+
+// GROUP_SEARCH_QUERY fetch used by CreateGroupDialog.addGroupToCache after a
+// successful create (waGroup id "99").
+export const newGroupConversation = {
+  request: {
+    query: GROUP_SEARCH_QUERY,
+    variables: {
+      waMessageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+      waGroupOpts: { limit: DEFAULT_ENTITY_LIMIT },
+      filter: { id: '99' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'wa_group_99',
+          group: null,
+          waGroup: {
+            bspId: '120363000000000000@g.us',
+            id: '99',
+            label: 'Test Group',
+            lastCommunicationAt: null,
+            primaryPhone: { id: '1', label: 'Phone 1', phone: '919999999999', phoneId: 1 },
+          },
+          messages: [],
+        },
+      ],
+    },
+  },
+};
+
+export const createWaGroupNetworkError = {
+  request: { query: CREATE_WA_GROUP, variables: createWaGroupVariables },
+  error: new Error('Network error'),
+};
+
+// CSV member import (background) for the group rendered in GroupDetails (id "1").
+const importMembersCsv = 'phone\n919900112233\n';
+
+export const importMembersQuery = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '1', type: 'DATA', data: importMembersCsv },
+  },
+  result: {
+    data: {
+      importWaGroupContacts: { status: 'WA group member import is in progress', errors: null },
+    },
+  },
+};
+
+export const importMembersErrorResponse = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '1', type: 'DATA', data: importMembersCsv },
+  },
+  result: {
+    data: {
+      importWaGroupContacts: { status: null, errors: [{ key: 'csv', message: 'Could not add member' }] },
+    },
+  },
+};
+
+export const importMembersNetworkError = {
+  request: {
+    query: IMPORT_WA_GROUP_CONTACTS,
+    variables: { waGroupId: '1', type: 'DATA', data: importMembersCsv },
+  },
+  error: new Error('Network error'),
+};
+
+export const removeContactErrorResponse = {
+  request: {
+    query: REMOVE_WA_GROUP_CONTACT,
+    variables: { waGroupId: '1', contactId: '18' },
+  },
+  result: {
+    data: {
+      removeWaGroupContact: {
+        waGroup: null,
+        errors: [{ key: 'contact', message: 'Remove failed' }],
+      },
+    },
+  },
+};
+
+export const removeContactNetworkError = {
+  request: {
+    query: REMOVE_WA_GROUP_CONTACT,
+    variables: { waGroupId: '1', contactId: '18' },
+  },
+  error: new Error('Network error'),
+};
+
 export const getWaGroupQuery = {
   request: {
     query: GET_WA_GROUP,
@@ -1198,7 +1378,7 @@ export const getWaGroupQuery = {
           label: 'Arkansas ducks',
           lastCommunicationAt: '2024-03-28T10:41:18Z',
           fields: '{}',
-          groups: null,
+          groups: [],
           primaryPhone: {
             id: '1',
             phone: '468/236-8754',

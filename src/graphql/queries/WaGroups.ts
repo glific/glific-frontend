@@ -124,6 +124,7 @@ export const GET_WA_MANAGED_PHONES = gql`
       id
       phone
       label
+      status
     }
   }
 `;
