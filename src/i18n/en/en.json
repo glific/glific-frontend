@@ -773,7 +773,6 @@
   "Something went wrong while checking your AI Evaluations access.": "Something went wrong while checking your AI Evaluations access.",
   "Please": "Please",
   "Click refresh to try again or contact our support team for help": "Click refresh to try again or contact our support team for help",
-  "Refresh": "Refresh",
   "Data Analytics": "Data Analytics",
   "No templates found": "No templates found",
   "Languages": "Languages",
@@ -799,5 +798,12 @@
   "View sample": "View sample",
   "All Tags": "All Tags",
   "Add new language": "Add new language",
-  "Filter": "Filter"
+  "Filter": "Filter",
+  "Set primary phone": "Set primary phone",
+  "Set primary phone for the collection": "Set primary phone for the collection",
+  "Apply": "Apply",
+  "This phone becomes the primary for every WhatsApp group in the collection where it is an active member. Groups where it is not a member are skipped and reported.": "This phone becomes the primary for every WhatsApp group in the collection where it is an active member. Groups where it is not a member are skipped and reported.",
+  "Select a phone": "Select a phone",
+  "Setting the primary phone across the collection has started in the background.": "Setting the primary phone across the collection has started in the background.",
+  "Downloaded the collection primary-phone report": "Downloaded the collection primary-phone report"
 }

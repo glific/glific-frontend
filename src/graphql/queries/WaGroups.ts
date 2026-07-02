@@ -124,6 +124,7 @@ export const GET_WA_MANAGED_PHONES = gql`
       id
       phone
       label
+      status
     }
   }
 `;
@@ -216,6 +217,15 @@ export const GET_WA_MANAGED_PHONES_STATUS = gql`
     waManagedPhones {
       status
       phone
+    }
+  }
+`;
+
+export const WA_GROUP_COLLECTION_PRIMARY_REPORT = gql`
+  query WaGroupCollectionPrimaryReport($userJobId: ID!) {
+    waGroupCollectionPrimaryReport(userJobId: $userJobId) {
+      csvRows
+      error
     }
   }
 `;

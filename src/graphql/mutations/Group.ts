@@ -76,3 +76,16 @@ export const SET_PRIMARY_PHONE = gql`
     }
   }
 `;
+
+export const SET_PRIMARY_PHONE_FOR_COLLECTION = gql`
+  mutation SetPrimaryPhoneForCollection($collectionId: ID!, $waManagedPhoneId: ID!) {
+    setPrimaryPhoneForCollection(collectionId: $collectionId, waManagedPhoneId: $waManagedPhoneId) {
+      status
+      userJobId
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
