@@ -2,7 +2,12 @@ import { MockedProvider } from '@apollo/client/testing';
 import WaManagedPhones from './WaManagedPhones';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { setNotification } from 'common/notification';
-import { syncWaGroupContactsQuery, syncWaGroupContactsQueryWithError, waManagedPhonesQuery } from 'mocks/Groups';
+import {
+  syncWaGroupContactsQuery,
+  syncWaGroupContactsQueryWithError,
+  syncWaGroupContactsNoActivePhones,
+  waManagedPhonesQuery,
+} from 'mocks/Groups';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
 
@@ -20,18 +25,21 @@ cache.writeQuery({
         id: '1',
         label: null,
         phone: '7535988655',
+        status: 'active',
       },
       {
         __typename: 'WaManagedPhone',
         id: '2',
         label: null,
         phone: '411395483',
+        status: 'active',
       },
       {
         __typename: 'WaManagedPhone',
         id: '3',
         label: null,
         phone: '2666135435',
+        status: 'active',
       },
     ],
   },
@@ -153,5 +161,50 @@ test('it shows error message', async () => {
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('prompts to reconnect on Maytapi when there are no active phones', async () => {
+  const { getByTestId } = render(
+    <MockedProvider mocks={[...mock, syncWaGroupContactsNoActivePhones]}>
+      <WaManagedPhones phonenumber={[]} setPhonenumber={vi.fn()} />
+    </MockedProvider>
+  );
+
+  fireEvent.click(getByTestId('syncGroups'));
+
+  // the reconnect popup is shown instead of a generic error toast
+  expect(await screen.findByText('No active WhatsApp phones')).toBeInTheDocument();
+  expect(screen.getByTestId('reconnectDialog')).toBeInTheDocument();
+});
+
+test('resolves the selected phone as the create dialog default', async () => {
+  render(
+    <ApolloProvider client={client}>
+      <WaManagedPhones phonenumber={[{ id: '1', label: '7535988655' }]} setPhonenumber={vi.fn()} />
+    </ApolloProvider>
+  );
+
+  // with a selected phone + populated data, defaultPhone runs
+  // data.waManagedPhones.find(...) for the create dialog
+  fireEvent.click(screen.getByTestId('createGroup'));
+  expect(await screen.findByText('Create WhatsApp group')).toBeInTheDocument();
+});
+
+test('it opens and closes the create group dialog', async () => {
+  render(
+    <MockedProvider mocks={mock}>
+      <WaManagedPhones phonenumber={[{ id: '1', label: '7535988655' }]} setPhonenumber={vi.fn()} />
+    </MockedProvider>
+  );
+
+  fireEvent.click(screen.getByTestId('createGroup'));
+
+  expect(await screen.findByText('Create WhatsApp group')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Create WhatsApp group')).not.toBeInTheDocument();
   });
 });

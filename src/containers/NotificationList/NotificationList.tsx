@@ -131,6 +131,7 @@ export const NotificationList = () => {
         destination = `/group/chat/${entity.id}`;
         break;
       case 'Contact Upload':
+      case 'WA Group Member Upload':
         getStatus({
           variables: {
             userJobId: entity?.user_job_id,
