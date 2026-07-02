@@ -143,14 +143,17 @@ export const templateStatusInfo: HelpDataProps = {
 export const templateLanguageInfo: HelpDataProps = {
   heading: (
     <div>
+      {/* i18next's default nsSeparator is ':' and treats single-word keys like 'Green:' as a
+          namespace:key pair, silently resolving to an empty string. Keep the colon outside t(). */}
       <p>
-        <b>{t('Green:')}</b> {t('Approved — the template in this language is approved.')}
+        <b style={{ color: '#28a745' }}>{t('Green')}:</b> {t('Approved — the template in this language is approved.')}
       </p>
       <p>
-        <b>{t('Yellow:')}</b> {t('Pending — the template in this language is pending.')}
+        <b style={{ color: '#856404' }}>{t('Yellow')}:</b> {t('Pending — the template in this language is pending.')}
       </p>
       <p>
-        <b>{t('Red:')}</b> {t('Rejected / Failed — the template in this language was rejected or failed.')}
+        <b style={{ color: '#dc2626' }}>{t('Red')}:</b>{' '}
+        {t('Rejected / Failed — the template in this language was rejected or failed.')}
       </p>
     </div>
   ),

@@ -31,6 +31,12 @@
   color: #93a29b;
 }
 
+.Reason {
+  width: 16%;
+  min-width: 120px;
+  word-break: break-word;
+}
+
 .Actions {
   width: 12%;
   max-width: 200px;
@@ -50,13 +56,15 @@
   word-break: break-all;
 }
 
-.Quality {
-  font-size: 12px;
+.ShortCode {
+  font-size: 10px;
   width: fit-content;
-  padding: 2px 6px;
-  background: #f0f7f1;
-  color: #555555;
-  border-radius: 8px;
+  padding: 3px 12px;
+  color: #119656;
+  background: #f0faf5;
+  border: 1px solid #b7e0c8;
+  border-radius: 100px;
+  word-break: break-all;
 }
 
 /* Languages column chips */
@@ -254,4 +262,12 @@
 
 .DropDown > fieldset {
   border: none !important;
+}
+
+.BulkApplyProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 320px;
+  padding: 8px 0 16px;
 }

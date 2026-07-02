@@ -727,6 +727,11 @@ export const List = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
+  // Grouped lists collapse several records into fewer rows, so the flat server
+  // count no longer matches the rows on screen; use the grouped row count.
+  if (groupRows && data) {
+    itemCount = itemList.length;
+  }
 
   var noItemsText = (
     <div className={styles.NoResults}>

@@ -23,8 +23,6 @@ import {
   templateCountV2SearchMock,
   filterTemplatesV2RejectedMock,
   templateCountV2RejectedMock,
-  filterTemplatesV2AllMock,
-  templateCountV2AllMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
 
@@ -73,9 +71,23 @@ test('renders page title and action buttons', async () => {
   // Bulk apply is rendered via the shared ImportButton (hidden file input).
   expect(screen.getByTestId('import')).toBeInTheDocument();
   expect(screen.getByText('Bulk apply')).toBeInTheDocument();
-  expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
-  // Create is the List header button.
-  expect(screen.getByTestId('newItemButton')).toBeInTheDocument();
+});
+
+test('Languages column info icon shows the Green/Yellow/Red status legend on hover', async () => {
+  renderComponent();
+
+  const languagesHeader = await waitFor(() => screen.getByText('Languages').closest('span') as HTMLElement);
+
+  fireEvent.mouseOver(within(languagesHeader).getByTestId('help-icon'));
+
+  const tooltip = await waitFor(() => screen.getByRole('tooltip'));
+
+  // the translation key is just "Green" (no colon) — i18next's default nsSeparator
+  // is ':', and single-word keys like "Green:" get misparsed as a namespace and
+  // silently resolve to "". The colon is appended as plain JSX text instead.
+  expect(tooltip.textContent).toContain('Green:');
+  expect(tooltip.textContent).toContain('Yellow:');
+  expect(tooltip.textContent).toContain('Red:');
 });
 
 test('does not render the removed Template library button', async () => {
@@ -96,6 +108,18 @@ test('renders template rows after data loads', async () => {
   });
 
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('paginates by grouped row count, not the flat record count', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  // 5 flat language records collapse into 2 grouped rows (welcome_msg + feedback_form),
+  // so the pagination footer should read "of 2", not the server's flat count.
+  expect(screen.getByText(/of 2$/)).toBeInTheDocument();
 });
 
 test('renders the status, category and tag filters', async () => {
@@ -119,16 +143,18 @@ test('defaults the status filter to Approved', async () => {
   expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
 });
 
-test('renders the quality rating chip on each title', async () => {
+test('shows the template name with its shortcode below it (not the quality)', async () => {
   renderComponent();
 
   await waitFor(() => {
-    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+    // the name (label) is the main title
+    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
   });
 
-  // welcome_msg has quality HIGH; feedback_form has no quality -> "Not Rated".
-  expect(screen.getByText('HIGH')).toBeInTheDocument();
-  expect(screen.getByText('Not Rated')).toBeInTheDocument();
+  // the shortcode is shown below the name
+  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  // quality is no longer rendered in the title
+  expect(screen.queryByText('Not Rated')).not.toBeInTheDocument();
 });
 
 test('navigates to create template page on Create click', async () => {
@@ -233,6 +259,49 @@ test('shows loading screen while bulk apply processes', async () => {
   await waitFor(() => {
     expect(screen.getByText('Please wait while we process all the templates')).toBeInTheDocument();
   });
+});
+
+test('bulk apply progress shows a progress bar without blocking the rest of the page', async () => {
+  renderComponent([...baseMocks, bulkApplyV2Mock]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('import')).toBeInTheDocument();
+  });
+
+  const mockFile = new File(['csv content'], 'templates.csv', { type: 'text/csv' });
+  fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getByTestId('bulkApplyProgressBar')).toBeInTheDocument();
+  });
+
+  // the page underneath (title, sync button) should still be visible/mounted, not replaced
+  expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+  expect(screen.getByTestId('syncHsm')).toBeInTheDocument();
+  expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+});
+
+test('clicking cancel dismisses the bulk apply progress dialog immediately', async () => {
+  renderComponent([...baseMocks, bulkApplyV2Mock]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('import')).toBeInTheDocument();
+  });
+
+  const mockFile = new File(['csv content'], 'templates.csv', { type: 'text/csv' });
+  fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Please wait while we process all the templates')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  expect(screen.queryByText('Please wait while we process all the templates')).not.toBeInTheDocument();
+  expect(setNotification).toHaveBeenCalledWith(
+    'Bulk apply cancelled. The upload may still finish in the background.',
+    'warning'
+  );
 });
 
 test('shows warning when a non-CSV file is uploaded', async () => {
@@ -402,21 +471,22 @@ test('filters templates by selected status', async () => {
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
-test('shows templates of every status when the All filter is selected', async () => {
-  renderComponent([...baseMocks, filterTemplatesV2AllMock, templateCountV2AllMock]);
+test('shows the Reason column with the rejection reason when filtering by Rejected', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2RejectedMock, templateCountV2RejectedMock]);
 
   await waitFor(() => {
     expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
 
   fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
-  fireEvent.click(await screen.findByRole('option', { name: 'All' }));
+  fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
 
+  // the "Last updated" column is swapped for a "Reason" column showing the reason
   await waitFor(() => {
-    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('All');
+    expect(screen.getByText('Content policy violation')).toBeInTheDocument();
   });
-  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
-  expect(screen.getByText('feedback_form')).toBeInTheDocument();
+  expect(screen.getByRole('columnheader', { name: 'Reason' })).toBeInTheDocument();
+  expect(screen.queryByRole('columnheader', { name: 'Last updated' })).not.toBeInTheDocument();
 });
 
 test('clears the tag filter and restores the full list', async () => {

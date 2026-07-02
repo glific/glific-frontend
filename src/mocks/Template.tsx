@@ -967,12 +967,9 @@ export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
 export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
   hsmV2TemplatesData[1],
 ]);
-// "All" status applies no status filter at all, returning every template.
-export const filterTemplatesV2AllMock = sessionTemplatesV2Mock({ isHsm: true }, hsmV2TemplatesData);
 
 export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
 export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
-export const templateCountV2AllMock = templateCountQuery({ isHsm: true }, hsmV2TemplatesData.length);
 export const templateCountV2CategoryMock = templateCountQuery(
   { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
   1
