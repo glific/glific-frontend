@@ -76,12 +76,7 @@ export const SetCollectionPrimaryPhone = ({ collectionId }: SetCollectionPrimary
 
   return (
     <>
-      <Button
-        variant="outlined"
-        color="primary"
-        data-testid="setCollectionPrimaryBtn"
-        onClick={() => setOpen(true)}
-      >
+      <Button variant="outlined" color="primary" data-testid="setCollectionPrimaryBtn" onClick={() => setOpen(true)}>
         {t('Set primary phone')}
       </Button>
 
