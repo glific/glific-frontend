@@ -85,7 +85,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
         <IconButton
           aria-label="resend otp"
           data-testid="resendOtp"
-          onClick={() => endAdornmentCallback(form?.values)}
+          onClick={() => endAdornmentCallback?.(form?.values)}
           edge="end"
           disableRipple
           sx={{ '&:hover': { backgroundColor: 'transparent' } }}

@@ -112,4 +112,26 @@ describe('<ResetPasswordConfirmOTP />', () => {
       );
     });
   });
+
+  it('falls back gracefully when no phone number is provided in state', async () => {
+    const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    const wrapperWithoutPhone = (
+      <MemoryRouter initialEntries={[{ state: { otpInfoMessage: 'some message' } }]}>
+        <Routes>
+          <Route path="/" element={<ResetPasswordConfirmOTP />} />
+          <Route path="/login" element={<div>Login page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+    render(wrapperWithoutPhone);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      // No phone in state and none in the (empty) form field, so resend falls back to ''.
+      expect(sendOptMock).toHaveBeenCalledWith('');
+    });
+  });
 });

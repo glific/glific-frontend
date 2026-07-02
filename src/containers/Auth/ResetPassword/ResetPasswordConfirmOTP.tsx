@@ -33,8 +33,8 @@ export const ResetPasswordConfirmOTP = () => {
 
   // Resend against the phone currently in the form (the user may have edited the prepopulated
   // one), and surface a retry hint if the request fails, e.g. it was requested too soon.
-  const handleResend = (values?: { phoneNumber?: string }) => {
-    const phone = values?.phoneNumber || phoneNumber;
+  const handleResend = (values: { phoneNumber?: string } = {}) => {
+    const phone = values.phoneNumber || phoneNumber;
     sendOTP(phone)
       .then(() => setAuthError(''))
       .catch(() => setAuthError('Could not resend the OTP. Please try again in 30 seconds.'));
