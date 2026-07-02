@@ -11,7 +11,7 @@ export interface InputProps {
   disabled?: any;
   editor?: any;
   label?: string;
-  form?: { touched: any; errors: any };
+  form?: { touched: any; errors: any; values?: any };
   placeholder: any;
   rows?: number;
   helperText?: any;
@@ -82,7 +82,14 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
     fieldType = 'text';
     fieldEndAdorment = (
       <InputAdornment position="end">
-        <IconButton aria-label="resend otp" data-testid="resendOtp" onClick={endAdornmentCallback} edge="end">
+        <IconButton
+          aria-label="resend otp"
+          data-testid="resendOtp"
+          onClick={() => endAdornmentCallback(form?.values)}
+          edge="end"
+          disableRipple
+          sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+        >
           <p className={styles.Resend}>resend</p> <RefreshIcon classes={{ root: styles.ResendButton }} />
         </IconButton>
       </InputAdornment>

@@ -77,7 +77,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
   });
 
   it('test successful resend functionality', async () => {
-    const sendOptMock = vi.fn();
+    const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
     vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
     // set the mock
     const responseData = {
@@ -93,7 +93,23 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resendButton = screen.getByTestId('resendOtp');
     user.click(resendButton);
     await waitFor(() => {
+      // Resends against the prepopulated phone number carried from the previous screen.
       expect(sendOptMock).toHaveBeenCalledWith('919967665667');
+    });
+  });
+
+  it('shows a retry hint when resend fails', async () => {
+    const sendOptMock = vi.fn(() => Promise.reject(new Error('too soon')));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    render(wrapper);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
+        'Could not resend the OTP. Please try again in 30 seconds.'
+      );
     });
   });
 });

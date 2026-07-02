@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -8,9 +8,7 @@ import { RESET_PASSWORD } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { yupPasswordValidation } from 'common/constants';
-// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
-import setLogs from 'config/logs';
 import { Auth } from '../Auth';
 
 export const ResetPasswordConfirmOTP = () => {
@@ -18,16 +16,11 @@ export const ResetPasswordConfirmOTP = () => {
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
   const location = useLocation();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otpInfoMessage, setOtpInfoMessage] = useState('');
-
-  useEffect(() => {
-    const state = location.state as any;
-    if (state) {
-      setPhoneNumber(state.phoneNumber);
-      setOtpInfoMessage(state.otpInfoMessage ?? '');
-    }
-  }, [location]);
+  // Read the state synchronously so the phone number is prepopulated on the very first render
+  // (Formik captures initialValues once, so an async useEffect would leave the field blank).
+  const locationState = (location.state as any) || {};
+  const [phoneNumber] = useState<string>(locationState.phoneNumber ?? '');
+  const [otpInfoMessage] = useState<string>(locationState.otpInfoMessage ?? '');
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -38,8 +31,13 @@ export const ResetPasswordConfirmOTP = () => {
     return <Navigate to="/login" />;
   }
 
-  const handleResend = () => {
-    sendOTP(phoneNumber);
+  // Resend against the phone currently in the form (the user may have edited the prepopulated
+  // one), and surface a retry hint if the request fails, e.g. it was requested too soon.
+  const handleResend = (values?: { phoneNumber?: string }) => {
+    const phone = values?.phoneNumber || phoneNumber;
+    sendOTP(phone)
+      .then(() => setAuthError(''))
+      .catch(() => setAuthError('Could not resend the OTP. Please try again in 30 seconds.'));
   };
 
   const formFields = [
