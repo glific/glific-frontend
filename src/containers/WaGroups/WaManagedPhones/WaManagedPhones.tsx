@@ -12,8 +12,6 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { useState } from 'react';
 import { CreateGroupDialog } from 'containers/WaGroups/CreateGroupDialog/CreateGroupDialog';
 
-// The sync fails with this message when every managed phone is disconnected on
-// Maytapi; we surface a reconnect prompt instead of a generic error.
 const NO_ACTIVE_PHONES = 'No active phones available';
 
 const isNoActivePhonesError = (error: any): boolean => {

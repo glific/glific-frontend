@@ -1227,17 +1227,6 @@ export const contactsListForCreateGroup = {
   },
 };
 
-// GET_CONTACTS_LIST as used by GroupDetails add-members dialog (excludes current group).
-export const contactsListExcludeGroup = {
-  request: {
-    query: GET_CONTACTS_LIST,
-    variables: { filter: { name: '', excludeWaGroups: '1' }, opts: { limit: 50, offset: 0, order: 'ASC' } },
-  },
-  result: {
-    data: { contacts: [createGroupContact] },
-  },
-};
-
 // Members are always supplied via CSV now (sent as `importData`); the backend
 // seeds the group and imports contacts in a background job.
 const createWaGroupVariables = {
@@ -1252,37 +1241,6 @@ export const createWaGroupQuery = {
         waGroup: { id: '99', label: 'Test Group', bspId: '120363000000000000@g.us' },
         errors: null,
       },
-    },
-  },
-};
-
-// CSV-at-create: the CSV is sent as `importData` in a single createWaGroup call;
-// the backend seeds the group with its phones and enriches contacts in a job.
-export const createWaGroupCsvQuery = {
-  request: {
-    query: CREATE_WA_GROUP,
-    variables: {
-      input: { name: 'Test Group', waManagedPhoneId: '1', importData: 'phone\n919900112233\n' },
-    },
-  },
-  result: {
-    data: {
-      createWaGroup: {
-        waGroup: { id: '99', label: 'Test Group', bspId: '120363000000000000@g.us' },
-        errors: null,
-      },
-    },
-  },
-};
-
-export const importWaGroupContactsQuery = {
-  request: {
-    query: IMPORT_WA_GROUP_CONTACTS,
-    variables: { waGroupId: '99', type: 'DATA', data: 'phone\n919900112233\n' },
-  },
-  result: {
-    data: {
-      importWaGroupContacts: { status: 'WA group member import is in progress', errors: null },
     },
   },
 };

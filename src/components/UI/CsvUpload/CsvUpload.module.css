@@ -1,9 +1,3 @@
-.Toggle {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
 .UploadContainer {
   display: flex;
   flex-direction: column;
@@ -41,8 +35,23 @@
   align-items: center;
 }
 
+/* The clear control is a real <button> for accessibility; strip the default
+   button chrome so it renders as a bare icon. */
 .CrossIcon {
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  line-height: 0;
+}
+
+.CrossIcon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .Sample {

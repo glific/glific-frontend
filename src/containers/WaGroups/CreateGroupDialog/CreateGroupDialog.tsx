@@ -9,13 +9,13 @@ import { WA_GROUP_MEMBERS_SAMPLE } from 'config';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { CsvUpload } from 'components/UI/CsvUpload/CsvUpload';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { CREATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { saveGroupConversation } from 'services/GroupMessageService';
-import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import styles from './CreateGroupDialog.module.css';
+import setLogs from 'config/logs';
 
 export interface ManagedPhoneOption {
   id: string;
@@ -54,12 +54,16 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
       label: p.label ? `${p.label} — ${p.phone}` : p.phone,
     }));
 
+  const activeDefaultPhone = defaultPhone?.status === 'active' ? defaultPhone : null;
+
   const initialValues: FormValues = {
     name: '',
-    waManagedPhone: defaultPhone
+    waManagedPhone: activeDefaultPhone
       ? {
-          id: defaultPhone.id,
-          label: defaultPhone.label ? `${defaultPhone.label} — ${defaultPhone.phone}` : defaultPhone.phone,
+          id: activeDefaultPhone.id,
+          label: activeDefaultPhone.label
+            ? `${activeDefaultPhone.label} — ${activeDefaultPhone.phone}`
+            : activeDefaultPhone.phone,
         }
       : null,
   };
@@ -67,32 +71,11 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
   const [createWaGroup, { loading }] = useMutation(CREATE_WA_GROUP);
   const [fetchNewGroup] = useLazyQuery(GROUP_SEARCH_QUERY, { fetchPolicy: 'network-only' });
 
-  const handleFile = (event: any) => {
-    const media = event.target.files?.[0];
-    if (!media) return;
-    const reader = new FileReader();
-    reader.readAsText(media);
-    reader.onload = () => {
-      const extension = media.name.split('.').pop();
-      if (extension !== 'csv') {
-        setNotification(t('Please upload a valid CSV file'), 'warning');
-        return;
-      }
-      setFileName(media.name);
-      setCsvContent(reader.result);
-    };
-  };
-
   const resetMembers = () => {
     setFileName('');
     setCsvContent('');
   };
 
-  // Add the freshly created group to the cached conversation list so it shows
-  // up in the sidebar without a manual refresh. Mirrors the missing-group
-  // fetch used by GroupMessageSubscription: fetch the group's conversation and
-  // prepend it to the GROUP_SEARCH_QUERY cache. Best-effort — if the list cache
-  // isn't warm yet, the next refetch picks it up.
   const addGroupToCache = async (waGroupId: string) => {
     try {
       const { data: conversation } = await fetchNewGroup({
@@ -106,8 +89,8 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
       if (conversation?.search?.length > 0) {
         saveGroupConversation(conversation, GROUP_QUERY_VARIABLES);
       }
-    } catch {
-      // best-effort cache update; ignore failures
+    } catch (error: any) {
+      setLogs(`Error fetching new group after creation: ${error?.message || 'Unknown error'}`, 'error');
     }
   };
 
@@ -198,48 +181,19 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
                 )}
               />
 
-              <div className={styles.UploadContainer}>
-                <label className={styles.Upload} htmlFor="createGroupCsv">
-                  <span className={styles.FileInput}>
-                    {fileName ? (
-                      <>
-                        {fileName}
-                        <button
-                          type="button"
-                          data-testid="cross-icon"
-                          className={styles.CrossIcon}
-                          aria-label={t('Remove file')}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            setFileName('');
-                            setCsvContent('');
-                          }}
-                        >
-                          <CrossIcon />
-                        </button>
-                      </>
-                    ) : (
-                      <span className={styles.UploadFile}>
-                        <UploadIcon /> {t('Upload File')}
-                      </span>
-                    )}
-                    <input
-                      type="file"
-                      id="createGroupCsv"
-                      disabled={!!fileName}
-                      data-testid="createGroupCsv"
-                      onChange={handleFile}
-                    />
-                  </span>
-                </label>
-                <div className={styles.Sample}>
-                  {t('CSV with a phone column; name optional.')}{' '}
-                  <a href={WA_GROUP_MEMBERS_SAMPLE} download="wa_group_members_sample.csv">
-                    {t('Download Sample')}
-                  </a>
-                </div>
-              </div>
+              <CsvUpload
+                fileName={fileName}
+                onFileSelect={(content, name) => {
+                  setCsvContent(content);
+                  setFileName(name);
+                }}
+                onClear={resetMembers}
+                inputId="createGroupCsv"
+                inputTestId="createGroupCsv"
+                sampleUrl={WA_GROUP_MEMBERS_SAMPLE}
+                sampleFileName="wa_group_members_sample.csv"
+                sampleText={t('CSV with a phone column; name optional.')}
+              />
             </div>
           </DialogBox>
         </Form>
