@@ -133,6 +133,25 @@ export const templateStatusInfo: HelpDataProps = {
   link: 'https://docs.gupshup.io/docs/message-template-approvals-statuses',
 };
 
+export const templateLanguageInfo: HelpDataProps = {
+  heading: (
+    <div>
+      {/* i18next's default nsSeparator is ':' and treats single-word keys like 'Green:' as a
+          namespace:key pair, silently resolving to an empty string. Keep the colon outside t(). */}
+      <p>
+        <b style={{ color: '#28a745' }}>{t('Green')}:</b> {t('Approved — the template in this language is approved.')}
+      </p>
+      <p>
+        <b style={{ color: '#856404' }}>{t('Yellow')}:</b> {t('Pending — the template in this language is pending.')}
+      </p>
+      <p>
+        <b style={{ color: '#dc2626' }}>{t('Red')}:</b>{' '}
+        {t('Rejected / Failed — the template in this language was rejected or failed.')}
+      </p>
+    </div>
+  ),
+};
+
 export const pollsInfo: HelpDataProps = {
   heading: 'An overview of all the polls created to date',
   link: 'https://glific.github.io/docs/docs/WhatsApp%20Groups%20Automation/Sending%20Polls%20To%20WhatsApp%20Groups',

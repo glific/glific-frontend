@@ -144,3 +144,65 @@
 .Checkbox {
   padding: 1rem;
 }
+
+/* Leading expand/collapse chevron column (opt-in via Pager expandableRows). */
+.ChevronCell {
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 0 16px;
+}
+
+.ChevronBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ChevronBtn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.ChevronBtn svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+.ChevronOpen {
+  color: #374151;
+}
+
+.ChevronOpen svg {
+  transform: rotate(180deg);
+}
+
+.CollapseTableRow {
+  background-color: #f9faf9;
+}
+
+/* Expanded parent + its custom child rows get a green left accent (HSM list). */
+.ExpandedParent {
+  background-color: #f5faf7;
+  box-shadow: inset 3px 0 0 0 #28a745;
+}
+
+.CollapseRowCustom {
+  background-color: #fff;
+  box-shadow: inset 3px 0 0 0 #28a745;
+  border-bottom: 1px solid #eeede9;
+}
+
+.CollapseRowCustom:hover {
+  background-color: #f5f4f0;
+}
