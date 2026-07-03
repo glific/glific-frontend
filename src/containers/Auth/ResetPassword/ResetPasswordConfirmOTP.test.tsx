@@ -43,7 +43,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resetPassword = await findByTestId('AuthContainer');
     await waitFor(() => {
       expect(resetPassword).toHaveTextContent(
-        "If this number is registered, you'll get an OTP on WhatsApp — enter it below."
+        "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password."
       );
     });
   });

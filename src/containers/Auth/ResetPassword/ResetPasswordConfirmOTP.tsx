@@ -24,7 +24,8 @@ export const ResetPasswordConfirmOTP = () => {
   // Neutral, non-disclosing note: shown to everyone regardless of whether the account exists,
   // so a user whose number isn't registered understands why no OTP arrives (and can fix a typo
   // in the editable phone field above) without the API ever confirming account existence.
-  const otpInfoSubText = "If this number is registered, you'll get an OTP on WhatsApp — enter it below.";
+  const otpInfoNote =
+    "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password.";
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -104,7 +105,7 @@ export const ResetPasswordConfirmOTP = () => {
       alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
-      titleSubText={otpInfoSubText}
+      infoMessage={otpInfoNote}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}
