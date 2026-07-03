@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
@@ -38,6 +39,7 @@ export interface AuthProps {
   loading?: boolean;
   inlineSuccessMessage?: string;
   infoMessage?: string;
+  infoSuccess?: boolean;
 }
 
 export const Auth = ({
@@ -58,6 +60,7 @@ export const Auth = ({
   loading: externalLoading,
   inlineSuccessMessage,
   infoMessage,
+  infoSuccess,
 }: AuthProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -169,8 +172,15 @@ export const Auth = ({
         <div className={styles.SubText}>{titleSubText}</div>
 
         {infoMessage && (
-          <div className={styles.InfoNote} data-testid="infoMessage">
-            <InfoOutlinedIcon className={styles.InfoNoteIcon} />
+          <div
+            className={`${styles.InfoNote} ${infoSuccess ? styles.InfoNoteSuccess : ''}`}
+            data-testid="infoMessage"
+          >
+            {infoSuccess ? (
+              <CheckCircleOutlineIcon className={styles.InfoNoteIcon} />
+            ) : (
+              <InfoOutlinedIcon className={styles.InfoNoteIcon} />
+            )}
             <span>{infoMessage}</span>
           </div>
         )}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -11,9 +11,21 @@ import { yupPasswordValidation } from 'common/constants';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
+// Neutral, non-disclosing note: shown to everyone regardless of whether the account exists,
+// so a user whose number isn't registered understands why no OTP arrives (and can fix a typo
+// in the editable phone field above) without the API ever confirming account existence.
+const OTP_INFO_NOTE =
+  "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password.";
+const OTP_INFO_NOTE_TIMEOUT = 15000;
+const RESEND_SUCCESS_TIMEOUT = 2000;
+
 export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
+  // The note area doubles as transient resend feedback: neutral info on load, then a brief
+  // success confirmation after a resend. `infoSuccess` switches it to the success (green) style.
+  const [infoMessage, setInfoMessage] = useState<string>(OTP_INFO_NOTE);
+  const [infoSuccess, setInfoSuccess] = useState(false);
   const { t } = useTranslation();
   const location = useLocation();
   // Read the state synchronously so the phone number is prepopulated on the very first render
@@ -21,11 +33,13 @@ export const ResetPasswordConfirmOTP = () => {
   const locationState = (location.state as any) || {};
   const [phoneNumber] = useState<string>(locationState.phoneNumber ?? '');
 
-  // Neutral, non-disclosing note: shown to everyone regardless of whether the account exists,
-  // so a user whose number isn't registered understands why no OTP arrives (and can fix a typo
-  // in the editable phone field above) without the API ever confirming account existence.
-  const otpInfoNote =
-    "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password.";
+  // Auto-hide the neutral note after a while so it doesn't linger next to resend feedback.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInfoMessage((current) => (current === OTP_INFO_NOTE ? '' : current));
+    }, OTP_INFO_NOTE_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -37,12 +51,25 @@ export const ResetPasswordConfirmOTP = () => {
   }
 
   // Resend against the phone currently in the form (the user may have edited the prepopulated
-  // one), and surface a retry hint if the request fails, e.g. it was requested too soon.
+  // one). Briefly confirm success so the user knows the OTP went out; on failure show a retry
+  // hint (e.g. it was requested too soon) and clear the note so both don't show at once.
   const handleResend = (values: { phoneNumber?: string } = {}) => {
     const phone = values.phoneNumber || phoneNumber;
     sendOTP(phone)
-      .then(() => setAuthError(''))
-      .catch(() => setAuthError('Could not resend the OTP. Please try again in 30 seconds.'));
+      .then(() => {
+        setAuthError('');
+        setInfoSuccess(true);
+        setInfoMessage('OTP sent successfully.');
+        setTimeout(() => {
+          setInfoSuccess(false);
+          setInfoMessage('');
+        }, RESEND_SUCCESS_TIMEOUT);
+      })
+      .catch(() => {
+        setInfoSuccess(false);
+        setInfoMessage('');
+        setAuthError('Could not resend the OTP. Please try again in 30 seconds.');
+      });
   };
 
   const formFields = [
@@ -105,7 +132,8 @@ export const ResetPasswordConfirmOTP = () => {
       alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
-      infoMessage={otpInfoNote}
+      infoMessage={infoMessage}
+      infoSuccess={infoSuccess}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}

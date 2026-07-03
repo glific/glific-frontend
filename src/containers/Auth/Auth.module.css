@@ -52,10 +52,9 @@
 .BoxTitle {
   justify-content: flex-start;
   margin-bottom: 10px;
-  margin-top: 32px;
+  margin-top: 16px;
   margin-left: 32px;
   font-weight: bold;
-  width: 320px;
 }
 
 .RegistrationBoxTitle {
@@ -63,11 +62,20 @@
 }
 
 .LoginBoxTitle {
-  color: #073f24;
+  color: #119656;
 }
 
 .TitleText {
   font-weight: bold;
+  /* Keep auth headings on a single line; size to fit the longest title instead of wrapping. */
+  font-size: 1.6rem;
+  white-space: nowrap;
+}
+
+/* The reset headings are shorter than register/login, so give them a bit more size. */
+.FirstResetBox .TitleText,
+.SecondResetBox .TitleText {
+  font-size: 1.9rem;
 }
 
 .CenterBox {
@@ -219,6 +227,11 @@
   font-size: 18px !important;
   margin-top: 1px;
   flex-shrink: 0;
+}
+
+.InfoNoteSuccess {
+  background-color: #e7f5ee;
+  color: #0b5c37;
 }
 
 .SuccessMessage {

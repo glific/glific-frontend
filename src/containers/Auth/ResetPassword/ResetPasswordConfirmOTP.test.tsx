@@ -88,6 +88,10 @@ describe('<ResetPasswordConfirmOTP />', () => {
       // Resends against the prepopulated phone number carried from the previous screen.
       expect(sendOptMock).toHaveBeenCalledWith('919967665667');
     });
+    // Brief confirmation so the user knows the OTP was sent.
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent('OTP sent successfully.');
+    });
   });
 
   it('shows a retry hint when resend fails', async () => {
