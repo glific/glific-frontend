@@ -138,7 +138,12 @@ const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_
 
 const getTitle = (name: string, shortcode: string, primary: any) => (
   <div className={styles.LabelContainer}>
-    <Tooltip title={messagePreview(primary, shortcode || name)} placement="bottom-start" arrow slotProps={previewSlotProps}>
+    <Tooltip
+      title={messagePreview(primary, shortcode || name)}
+      placement="bottom-start"
+      arrow
+      slotProps={previewSlotProps}
+    >
       <div className={styles.LabelText}>{name}</div>
     </Tooltip>
     {shortcode && <div className={styles.ShortCode}>{shortcode}</div>}
