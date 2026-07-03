@@ -72,8 +72,9 @@
   white-space: nowrap;
 }
 
-/* Reset screens: center the heading + subtitle, give the (shorter) heading more size, and
-   sit closer to the top of the card. */
+/* Login & reset screens: center the heading + subtitle, give the (shorter) heading more size,
+   and sit closer to the top of the card. */
+.LoginBox .BoxTitle,
 .FirstResetBox .BoxTitle,
 .SecondResetBox .BoxTitle {
   justify-content: center;
@@ -84,11 +85,13 @@
   width: 100%;
 }
 
+.LoginBox .TitleText,
 .FirstResetBox .TitleText,
 .SecondResetBox .TitleText {
   font-size: 1.9rem;
 }
 
+.LoginBox .SubText,
 .FirstResetBox .SubText,
 .SecondResetBox .SubText {
   justify-content: center;
