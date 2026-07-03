@@ -101,6 +101,11 @@
   width: 100%;
 }
 
+/* A little breathing room between the New Password field and the Save button. */
+.SecondResetBox .CenterButton {
+  margin-top: 10px;
+}
+
 .CenterBox {
   display: flex;
   align-items: center;
