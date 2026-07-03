@@ -339,7 +339,10 @@ export const FlowList = () => {
   const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
-    { label: 'Template', value: 'isTemplate' },
+    // Template filter option temporarily hidden while we decide whether to keep
+    // the templates feature (glific/glific#5332). All isTemplate handling is left
+    // intact — restore by uncommenting the line below.
+    // { label: 'Template', value: 'isTemplate' },
   ];
   const { data: tags } = useQuery(GET_TAGS, {
     variables: {},
