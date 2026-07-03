@@ -189,7 +189,7 @@ export const Auth = ({
         <div className={styles.SubText}>{titleSubText}</div>
 
         {infoMessage && (
-          <div className={infoNoteClass} data-testid="infoMessage">
+          <div className={infoNoteClass} data-testid="infoMessage" role="status" aria-live="polite">
             <InfoNoteIcon className={styles.InfoNoteIcon} />
             <span>{infoMessage}</span>
           </div>
