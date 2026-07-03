@@ -641,6 +641,24 @@ export const getFreeFlow = {
   },
 };
 
+export const getFreeFlowForced = {
+  request: {
+    query: GET_FREE_FLOW,
+    variables: { id: '1', isForced: true },
+  },
+  result: {
+    data: {
+      flowGet: {
+        flow: {
+          id: '1',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+        errors: [],
+      },
+    },
+  },
+};
+
 export const resetFlowCount = {
   request: {
     query: RESET_FLOW_COUNT,
