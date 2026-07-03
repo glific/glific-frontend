@@ -1,4 +1,5 @@
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import { WA_GROUP_COLLECTION_PRIMARY_REPORT } from 'graphql/queries/WaGroups';
 import { MARK_NOTIFICATIONS_AS_READ } from 'graphql/mutations/Notifications';
 import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
 
@@ -261,3 +262,34 @@ export const getStatusWithError = {
     },
   },
 };
+
+// Mocks for the "Collection Primary Phone" notification + its skip-report download.
+export const collectionPrimaryRow = {
+  request: {
+    query: FILTER_NOTIFICATIONS,
+    variables: {
+      filter: { severity: '' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
+    },
+  },
+  result: {
+    data: {
+      notifications: [
+        {
+          category: 'Collection Primary Phone',
+          entity: '{"user_job_id":5}',
+          id: '99',
+          isRead: true,
+          message: 'Setting the primary phone across the collection has completed.',
+          severity: '"Information"',
+          updatedAt: '2024-03-29T11:14:13Z',
+        },
+      ],
+    },
+  },
+};
+
+export const collectionReport = (error: string | null = null) => ({
+  request: { query: WA_GROUP_COLLECTION_PRIMARY_REPORT, variables: { userJobId: 5 } },
+  result: { data: { waGroupCollectionPrimaryReport: { csvRows: 'Group,Reason', error } } },
+});

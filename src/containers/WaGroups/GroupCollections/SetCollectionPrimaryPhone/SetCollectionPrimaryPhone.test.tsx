@@ -1,8 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
-import { SET_PRIMARY_PHONE_FOR_COLLECTION } from 'graphql/mutations/Group';
+import {
+  collectionManagedPhonesMock as phonesMock,
+  setPrimaryForCollectionMock as setPrimaryMock,
+  COLLECTION_PRIMARY_STATUS as STATUS,
+} from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 import { SetCollectionPrimaryPhone } from './SetCollectionPrimaryPhone';
@@ -14,33 +17,6 @@ vi.mock('common/notification', async (importOriginal) => {
 
 const mockRole = vi.hoisted(() => ({ value: ['Admin'] }));
 vi.mock('context/role', () => ({ getUserRole: () => mockRole.value }));
-
-const phonesMock = {
-  request: { query: GET_WA_MANAGED_PHONES, variables: { filter: {} } },
-  result: {
-    data: {
-      waManagedPhones: [
-        { id: '1', phone: '918416933261', label: 'Main', status: 'active' },
-        // inactive phone is filtered out of the options
-        { id: '2', phone: '918416933262', label: null, status: 'loading' },
-      ],
-    },
-  },
-};
-
-const STATUS = 'Setting the primary phone across the collection has started in the background.';
-
-const setPrimaryMock = {
-  request: {
-    query: SET_PRIMARY_PHONE_FOR_COLLECTION,
-    variables: { collectionId: '5', waManagedPhoneId: '1' },
-  },
-  result: {
-    data: {
-      setPrimaryPhoneForCollection: { status: STATUS, userJobId: '77', errors: null },
-    },
-  },
-};
 
 const renderComponent = (mocks: any[] = [phonesMock]) =>
   render(
@@ -87,5 +63,9 @@ test('applying a phone fires the bulk mutation and shows the background notifica
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith(STATUS, 'success');
+  });
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('setCollectionPrimaryDialog')).not.toBeInTheDocument();
   });
 });

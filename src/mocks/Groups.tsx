@@ -9,6 +9,7 @@ import {
   CREATE_WA_GROUP,
   IMPORT_WA_GROUP_CONTACTS,
   REMOVE_WA_GROUP_CONTACT,
+  SET_PRIMARY_PHONE_FOR_COLLECTION,
   SYNC_GROUPS,
 } from 'graphql/mutations/Group';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
@@ -1393,6 +1394,35 @@ export const getWaGroupQuery = {
           ],
         },
       },
+    },
+  },
+};
+
+// Mocks for SetCollectionPrimaryPhone (WA group collection primary-phone action).
+export const COLLECTION_PRIMARY_STATUS =
+  'Setting the primary phone across the collection has started in the background.';
+
+export const collectionManagedPhonesMock = {
+  request: { query: GET_WA_MANAGED_PHONES, variables: { filter: {} } },
+  result: {
+    data: {
+      waManagedPhones: [
+        { id: '1', phone: '918416933261', label: 'Main', status: 'active' },
+        // inactive phone is filtered out of the options
+        { id: '2', phone: '918416933262', label: null, status: 'loading' },
+      ],
+    },
+  },
+};
+
+export const setPrimaryForCollectionMock = {
+  request: {
+    query: SET_PRIMARY_PHONE_FOR_COLLECTION,
+    variables: { collectionId: '5', waManagedPhoneId: '1' },
+  },
+  result: {
+    data: {
+      setPrimaryPhoneForCollection: { status: COLLECTION_PRIMARY_STATUS, userJobId: '77', errors: null },
     },
   },
 };

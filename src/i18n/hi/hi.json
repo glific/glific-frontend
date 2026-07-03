@@ -559,7 +559,6 @@
   "Your request is being processed. We will notify you once done.": "आपका अनुरोध प्रक्रिया में है। हम आपको पूरा होने पर सूचित करेंगे।",
   "Request Pending": "अनुरोध लंबित है",
   "Your request has been submitted. You will be notified when it gets approved.": "आपका अनुरोध सबमिट हो गया है। अनुमोदित होने पर आपको सूचित किया जाएगा।",
-  "Refresh": "रीफ्रेश",
   "Generate with AI": "AI से जेनरेट करें",
   "BETA": "बीटा",
   "Generate Prompt with AI": "AI से प्रॉम्प्ट जेनरेट करें",
@@ -631,6 +630,7 @@
   "Something went wrong while checking your AI Evaluations access.": "आपके AI मूल्यांकन एक्सेस की जांच के दौरान कुछ गलत हो गया।",
   "Please": "कृपया",
   "Click refresh to try again or contact our support team for help": "पुनः प्रयास करने के लिए रीफ्रेश करें या सहायता के लिए हमारी सहायता टीम से संपर्क करें",
+  "Refresh": "रीफ़्रेश करें",
   "Data Analytics": "डेटा एनालिटिक्स",
   "No templates found": "कोई टेम्पलेट नहीं मिला",
   "Languages": "भाषाएँ",
@@ -688,5 +688,6 @@
   "This phone becomes the primary for every WhatsApp group in the collection where it is an active member. Groups where it is not a member are skipped and reported.": "यह फ़ोन संग्रह के हर उस WhatsApp समूह के लिए प्राइमरी बन जाता है जिसमें यह एक सक्रिय सदस्य है। जिन समूहों में यह सदस्य नहीं है उन्हें छोड़ दिया जाता है और रिपोर्ट किया जाता है।",
   "Select a phone": "एक फ़ोन चुनें",
   "Setting the primary phone across the collection has started in the background.": "संग्रह में प्राइमरी फ़ोन सेट करना पृष्ठभूमि में शुरू हो गया है।",
-  "Downloaded the collection primary-phone report": "संग्रह प्राइमरी-फ़ोन रिपोर्ट डाउनलोड की गई"
+  "Downloaded the collection primary-phone report": "संग्रह प्राइमरी-फ़ोन रिपोर्ट डाउनलोड की गई",
+  "The collection primary-phone report is not ready yet.": "संग्रह प्राइमरी-फ़ोन रिपोर्ट अभी तैयार नहीं है।"
 }

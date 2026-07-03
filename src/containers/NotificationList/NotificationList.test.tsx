@@ -12,12 +12,12 @@ import {
   getInfoNotificationsQuery,
   getStatus,
   getStatusWithError,
+  collectionPrimaryRow,
+  collectionReport,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
 import * as Notification from 'common/notification';
-import { FILTER_NOTIFICATIONS } from 'graphql/queries/Notifications';
-import { WA_GROUP_COLLECTION_PRIMARY_REPORT } from 'graphql/queries/WaGroups';
 import { exportCsvFile } from 'common/utils';
 
 vi.mock('common/utils', async (importOriginal) => {
@@ -27,6 +27,7 @@ vi.mock('common/utils', async (importOriginal) => {
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
+beforeEach(() => vi.clearAllMocks());
 afterEach(cleanup);
 const mocks: any = [
   getUnFitleredNotificationCountQuery,
@@ -157,36 +158,6 @@ test('it should have Info, Warning and critical checkbox', async () => {
   });
 });
 
-const collectionPrimaryRow = {
-  request: {
-    query: FILTER_NOTIFICATIONS,
-    variables: {
-      filter: { severity: '' },
-      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
-    },
-  },
-  result: {
-    data: {
-      notifications: [
-        {
-          category: 'Collection Primary Phone',
-          entity: '{"user_job_id":5}',
-          id: '99',
-          isRead: true,
-          message: 'Setting the primary phone across the collection has completed.',
-          severity: '"Information"',
-          updatedAt: '2024-03-29T11:14:13Z',
-        },
-      ],
-    },
-  },
-};
-
-const collectionReport = (error: string | null = null) => ({
-  request: { query: WA_GROUP_COLLECTION_PRIMARY_REPORT, variables: { userJobId: 5 } },
-  result: { data: { waGroupCollectionPrimaryReport: { csvRows: 'Group,Reason', error } } },
-});
-
 const renderCollection = (reportMock: any) =>
   render(
     <MockedProvider
@@ -225,7 +196,6 @@ test('downloads the collection primary-phone report from its notification action
 });
 
 test('warns when the collection primary-phone report returns an error', async () => {
-  vi.mocked(exportCsvFile).mockClear();
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   renderCollection(collectionReport('Report not ready'));
 

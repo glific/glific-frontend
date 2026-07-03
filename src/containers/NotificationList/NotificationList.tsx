@@ -85,7 +85,7 @@ export const NotificationList = () => {
 
   // The collection primary-phone report is a query (not a mutation like the
   // upload reports), so fetch it imperatively and download the skipped-groups CSV.
-  const downloadCollectionPrimaryReport = async (userJobId: string) => {
+  const downloadCollectionPrimaryReport = async (userJobId: number) => {
     try {
       const { data } = await client.query({
         query: WA_GROUP_COLLECTION_PRIMARY_REPORT,
@@ -96,6 +96,10 @@ export const NotificationList = () => {
       const { csvRows, error } = data?.waGroupCollectionPrimaryReport || {};
       if (error) {
         setNotification(error, 'warning');
+        return;
+      }
+      if (!csvRows) {
+        setNotification(t('The collection primary-phone report is not ready yet.'), 'warning');
         return;
       }
       exportCsvFile(csvRows, 'Collection_Primary_Phone_Status');

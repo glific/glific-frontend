@@ -9,6 +9,7 @@ import { setErrorMessage, setNotification } from 'common/notification';
 import { getUserRole } from 'context/role';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
 import { SET_PRIMARY_PHONE_FOR_COLLECTION } from 'graphql/mutations/Group';
+import { toActivePhoneOptions } from 'containers/WaGroups/managedPhones';
 
 export interface SetCollectionPrimaryPhoneProps {
   collectionId: string;
@@ -24,16 +25,16 @@ export const SetCollectionPrimaryPhone = ({ collectionId }: SetCollectionPrimary
   const [open, setOpen] = useState(false);
   const [selectedPhone, setSelectedPhone] = useState<{ id: string; label: string } | null>(null);
 
-  const isAdmin = getUserRole().some((role: string) => role === 'Admin' || role === 'Glific_admin');
+  // Only Admin / Glific_admin can drive the collection-wide primary phone.
+  const roles = getUserRole();
+  const isAdmin = roles.includes('Admin') || roles.includes('Glific');
 
-  const { data } = useQuery(GET_WA_MANAGED_PHONES, { variables: { filter: {} } });
+  const { data } = useQuery(GET_WA_MANAGED_PHONES, {
+    variables: { filter: {} },
+    skip: !isAdmin || !open,
+  });
 
-  const phoneOptions = (data?.waManagedPhones || [])
-    .filter((phone: any) => phone.status === 'active')
-    .map((phone: any) => ({
-      id: phone.id,
-      label: phone.label ? `${phone.label} — ${phone.phone}` : phone.phone,
-    }));
+  const phoneOptions = toActivePhoneOptions(data?.waManagedPhones);
 
   const [setPrimaryForCollection, { loading }] = useMutation(SET_PRIMARY_PHONE_FOR_COLLECTION);
 
