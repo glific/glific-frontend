@@ -120,7 +120,7 @@ export const ResetPasswordConfirmOTP = () => {
       .then(() => {
         setRedirect(true);
       })
-      .catch((error) => {
+      .catch(() => {
         setAuthError(t('We are unable to update your password, please enter the correct OTP.'));
       });
   };
