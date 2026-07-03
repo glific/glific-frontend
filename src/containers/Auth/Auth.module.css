@@ -62,7 +62,7 @@
 }
 
 .LoginBoxTitle {
-  color: #119656;
+  color: #073f24;
 }
 
 .TitleText {
@@ -72,10 +72,30 @@
   white-space: nowrap;
 }
 
-/* The reset headings are shorter than register/login, so give them a bit more size. */
+/* Reset screens: center the heading + subtitle, give the (shorter) heading more size, and
+   sit closer to the top of the card. */
+.FirstResetBox .BoxTitle,
+.SecondResetBox .BoxTitle {
+  justify-content: center;
+  text-align: center;
+  margin-top: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
 .FirstResetBox .TitleText,
 .SecondResetBox .TitleText {
   font-size: 1.9rem;
+}
+
+.FirstResetBox .SubText,
+.SecondResetBox .SubText {
+  justify-content: center;
+  text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
 }
 
 .CenterBox {
