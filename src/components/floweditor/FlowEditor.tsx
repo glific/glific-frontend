@@ -73,8 +73,8 @@ export const FlowEditor = () => {
   let flowTitle: any;
   let flowKeywords;
 
-  const loadFlowEditor = (forceReadOnly = false) => {
-    const readOnlyMode = forceReadOnly || isReadOnly;
+  const loadFlowEditor = (forceReadOnly?: boolean) => {
+    const readOnlyMode = forceReadOnly ?? isReadOnly;
     const config = setConfig(uuid, skipValidation, readOnlyMode, posthog);
 
     showFlowEditor(document.getElementById('flow'), config);
@@ -139,7 +139,7 @@ export const FlowEditor = () => {
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: () => {
-      loadFlowEditor();
+      loadFlowEditor(false);
       setReadOnlyMessage('');
       setIsReadOnly(false);
     },
