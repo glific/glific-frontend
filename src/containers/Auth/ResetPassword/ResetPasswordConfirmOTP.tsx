@@ -17,7 +17,7 @@ import { Auth } from '../Auth';
 const OTP_INFO_NOTE =
   "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password.";
 const OTP_INFO_NOTE_TIMEOUT = 15000;
-const RESEND_SUCCESS_TIMEOUT = 2000;
+const RESEND_SUCCESS_TIMEOUT = 5000;
 
 export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
