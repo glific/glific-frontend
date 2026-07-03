@@ -1,0 +1,63 @@
+.TableText {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Column widths applied by the List container via columnStyles */
+.Phone {
+  width: 22%;
+}
+
+.Label {
+  width: 22%;
+}
+
+.Status {
+  width: 18%;
+}
+
+.LastChecked {
+  width: 22%;
+}
+
+.Badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.Healthy {
+  background: #d9f2e3;
+  color: #119656;
+}
+
+.Unhealthy {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.QrWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+.Qr {
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.QrStatus {
+  color: #7c8b85;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}

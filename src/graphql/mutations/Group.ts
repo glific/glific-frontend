@@ -132,3 +132,31 @@ export const SET_PRIMARY_PHONE_FOR_COLLECTION = gql`
     }
   }
 `;
+
+export const SYNC_WA_MANAGED_PHONE_STATUSES = gql`
+  mutation SyncWaManagedPhoneStatuses {
+    syncWaManagedPhoneStatuses {
+      message
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const RECONNECT_WA_MANAGED_PHONE = gql`
+  mutation ReconnectWaManagedPhone($waManagedPhoneId: ID!) {
+    reconnectWaManagedPhone(waManagedPhoneId: $waManagedPhoneId) {
+      waManagedPhone {
+        id
+        phone
+        status
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

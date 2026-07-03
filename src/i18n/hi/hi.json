@@ -689,5 +689,21 @@
   "Select a phone": "एक फ़ोन चुनें",
   "Setting the primary phone across the collection has started in the background.": "संग्रह में प्राइमरी फ़ोन सेट करना पृष्ठभूमि में शुरू हो गया है।",
   "Downloaded the collection primary-phone report": "संग्रह प्राइमरी-फ़ोन रिपोर्ट डाउनलोड की गई",
-  "The collection primary-phone report is not ready yet.": "संग्रह प्राइमरी-फ़ोन रिपोर्ट अभी तैयार नहीं है।"
+  "The collection primary-phone report is not ready yet.": "संग्रह प्राइमरी-फ़ोन रिपोर्ट अभी तैयार नहीं है।",
+  "WhatsApp phones": "व्हाट्सएप फ़ोन",
+  "WhatsApp Phones": "व्हाट्सएप फ़ोन",
+  "Monitor the health of your WhatsApp numbers and reconnect a disconnected one without leaving Glific.": "अपने व्हाट्सएप नंबरों की स्थिति देखें और डिस्कनेक्ट हुए नंबर को Glific से ही दोबारा कनेक्ट करें।",
+  "Phone": "फ़ोन",
+  "Last checked": "अंतिम जाँच",
+  "No WhatsApp phones found.": "कोई व्हाट्सएप फ़ोन नहीं मिला।",
+  "unknown": "अज्ञात",
+  "Reconnect": "पुनः कनेक्ट करें",
+  "Log out & refresh QR": "लॉग आउट करें और QR रीफ़्रेश करें",
+  "On the phone open WhatsApp, go to Linked devices, tap Link a device, then scan this QR code.": "फ़ोन पर व्हाट्सएप खोलें, लिंक किए गए डिवाइस पर जाएँ, डिवाइस लिंक करें पर टैप करें, फिर यह QR कोड स्कैन करें।",
+  "WhatsApp QR code": "व्हाट्सएप QR कोड",
+  "The QR code is not available yet. Try refreshing.": "QR कोड अभी उपलब्ध नहीं है। कृपया रीफ़्रेश करें।",
+  "WhatsApp phone reconnected.": "व्हाट्सएप फ़ोन पुनः कनेक्ट हो गया।",
+  "Logged the phone out. Scan the new QR code to reconnect.": "फ़ोन लॉग आउट कर दिया गया। पुनः कनेक्ट करने के लिए नया QR कोड स्कैन करें।",
+  "Sync statuses": "स्थिति सिंक करें",
+  "WhatsApp phone statuses have been refreshed.": "व्हाट्सएप फ़ोन की स्थिति रीफ़्रेश कर दी गई है।"
 }

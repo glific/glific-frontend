@@ -57,6 +57,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'WhatsApp Phones',
+        path: '/group/phones',
+        icon: 'waGroup',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
     ],
   },
   {

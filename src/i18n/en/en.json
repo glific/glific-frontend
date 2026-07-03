@@ -830,5 +830,21 @@
   "Select a phone": "Select a phone",
   "Setting the primary phone across the collection has started in the background.": "Setting the primary phone across the collection has started in the background.",
   "Downloaded the collection primary-phone report": "Downloaded the collection primary-phone report",
-  "The collection primary-phone report is not ready yet.": "The collection primary-phone report is not ready yet."
+  "The collection primary-phone report is not ready yet.": "The collection primary-phone report is not ready yet.",
+  "WhatsApp phones": "WhatsApp phones",
+  "WhatsApp Phones": "WhatsApp Phones",
+  "Monitor the health of your WhatsApp numbers and reconnect a disconnected one without leaving Glific.": "Monitor the health of your WhatsApp numbers and reconnect a disconnected one without leaving Glific.",
+  "Phone": "Phone",
+  "Last checked": "Last checked",
+  "No WhatsApp phones found.": "No WhatsApp phones found.",
+  "unknown": "unknown",
+  "Reconnect": "Reconnect",
+  "Log out & refresh QR": "Log out & refresh QR",
+  "On the phone open WhatsApp, go to Linked devices, tap Link a device, then scan this QR code.": "On the phone open WhatsApp, go to Linked devices, tap Link a device, then scan this QR code.",
+  "WhatsApp QR code": "WhatsApp QR code",
+  "The QR code is not available yet. Try refreshing.": "The QR code is not available yet. Try refreshing.",
+  "WhatsApp phone reconnected.": "WhatsApp phone reconnected.",
+  "Logged the phone out. Scan the new QR code to reconnect.": "Logged the phone out. Scan the new QR code to reconnect.",
+  "Sync statuses": "Sync statuses",
+  "WhatsApp phone statuses have been refreshed.": "WhatsApp phone statuses have been refreshed."
 }

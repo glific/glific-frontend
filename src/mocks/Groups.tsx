@@ -20,10 +20,13 @@ import {
   GET_WA_GROUP,
   GET_WA_GROUPS,
   GET_WA_MANAGED_PHONES,
+  GET_WA_MANAGED_PHONES_COUNT,
   GROUP_SEARCH_MULTI_QUERY,
   GROUP_SEARCH_QUERY,
   LIST_CONTACTS_WA_GROUPS,
+  WHATSAPP_PHONE_SCREEN,
 } from 'graphql/queries/WaGroups';
+import { RECONNECT_WA_MANAGED_PHONE, SYNC_WA_MANAGED_PHONE_STATUSES } from 'graphql/mutations/Group';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
   UPDATE_WA_MESSAGE_STATUS,
@@ -1465,4 +1468,83 @@ export const setPrimaryForCollectionNetworkErrorMock = {
     variables: { collectionId: '5', waManagedPhoneId: '1' },
   },
   error: new Error('Network error'),
+};
+
+// --- WhatsApp Phone Management page (#5104 / #5105) ---
+// One healthy phone and one disconnected phone (the disconnected one gets the
+// admin-only Reconnect action).
+const managedPhonesListVars = {
+  filter: {},
+  opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'phone' },
+};
+
+export const managedPhonesCountMock = {
+  request: { query: GET_WA_MANAGED_PHONES_COUNT, variables: { filter: {} } },
+  result: { data: { countWaManagedPhones: 2 } },
+};
+
+export const managedPhonesHealthMock = {
+  request: { query: GET_WA_MANAGED_PHONES, variables: managedPhonesListVars },
+  result: {
+    data: {
+      waManagedPhones: [
+        {
+          id: '1',
+          phone: '918416933261',
+          phoneId: 101,
+          label: 'Main',
+          status: 'active',
+          lastStatusCheckedAt: '2026-07-03T10:00:00Z',
+        },
+        {
+          id: '2',
+          phone: '918416933262',
+          phoneId: 102,
+          label: 'Backup',
+          status: 'qr-screen',
+          lastStatusCheckedAt: '2026-07-03T10:00:00Z',
+        },
+      ],
+    },
+  },
+};
+
+export const phoneScreenMock = {
+  request: { query: WHATSAPP_PHONE_SCREEN, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      whatsappPhoneScreen: {
+        waPhoneScreen: {
+          code: 'data:image/png;base64,QQ==',
+          status: 'qr-screen',
+          expiresAt: '2026-07-03T10:00:20Z',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const reconnectPhoneMock = {
+  request: { query: RECONNECT_WA_MANAGED_PHONE, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      reconnectWaManagedPhone: {
+        waManagedPhone: { id: '2', phone: '918416933262', status: 'qr-screen' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const syncPhoneStatusesMock = {
+  request: { query: SYNC_WA_MANAGED_PHONE_STATUSES },
+  result: {
+    data: {
+      syncWaManagedPhoneStatuses: {
+        message: 'WhatsApp phone statuses have been refreshed.',
+        errors: null,
+      },
+    },
+  },
 };
