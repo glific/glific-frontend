@@ -65,7 +65,6 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
-const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
 const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
@@ -203,7 +202,6 @@ export const AuthenticatedRoute = () => {
   const [provider, setProvider] = useState<string>('');
   const [showAskGlific, setShowAskGlific] = useState(false);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
-  const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -241,19 +239,9 @@ export const AuthenticatedRoute = () => {
     route = (
       <Routes>
         {adminRoutes}
-        {isAssistantConfigVersionsEnabled ? (
-          <>
-            <Route path="assistants" element={<AssistantList />} />
-            <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-            <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
-          </>
-        ) : (
-          <>
-            <Route path="assistants" element={<Assistant />} />
-            <Route path="assistants/add" element={<Assistant />} />
-            <Route path="assistants/:assistantId" element={<Assistant />} />
-          </>
-        )}
+        <Route path="assistants" element={<AssistantList />} />
+        <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+        <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
       </Routes>
     );
   }
