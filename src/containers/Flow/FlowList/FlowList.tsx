@@ -481,7 +481,15 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create'), action: () => setShowDialog(true) }}
+        // Templates on hold (glific/glific#5332): skip the "Create from Scratch /
+        // from Template" dialog and create a flow directly. Restore by switching
+        // the action back to `() => setShowDialog(true)`.
+        button={{
+          show: true,
+          label: t('Create'),
+          action: () =>
+            selectedtag?.label ? navigate('/flow/add', { state: { tag: selectedtag } }) : navigate('/flow/add'),
+        }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}
