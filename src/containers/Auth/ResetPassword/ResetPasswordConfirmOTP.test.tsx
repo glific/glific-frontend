@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import axios from 'axios';
@@ -130,5 +130,62 @@ describe('<ResetPasswordConfirmOTP />', () => {
       // No phone in state and none in the (empty) form field, so resend falls back to ''.
       expect(sendOptMock).toHaveBeenCalledWith('');
     });
+  });
+
+  it('falls back to the default warning when the reject has no backend message', async () => {
+    const sendOptMock = vi.fn(() => Promise.reject(new Error('network')));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    render(wrapper);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
+        'An OTP was just sent. Please try again in 30 seconds.'
+      );
+    });
+  });
+
+  it('auto-hides the neutral note after the timeout and cleans up on unmount', async () => {
+    vi.useFakeTimers();
+    try {
+      const { unmount } = render(wrapper);
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent('If this number is registered');
+
+      act(() => {
+        vi.advanceTimersByTime(15000);
+      });
+
+      expect(screen.getByTestId('AuthContainer')).not.toHaveTextContent('If this number is registered');
+
+      // Unmount runs the effect cleanup (clearTimeout).
+      unmount();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('clears the success confirmation after its timeout', async () => {
+    vi.useFakeTimers();
+    try {
+      const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
+      vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+      render(wrapper);
+
+      fireEvent.click(screen.getByTestId('resendOtp'));
+      // Flush the resolved sendOTP promise so the success note is set.
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent('OTP sent successfully.');
+
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      expect(screen.getByTestId('AuthContainer')).not.toHaveTextContent('OTP sent successfully.');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
