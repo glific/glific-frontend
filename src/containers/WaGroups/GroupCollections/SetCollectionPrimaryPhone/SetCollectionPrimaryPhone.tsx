@@ -27,7 +27,7 @@ export const SetCollectionPrimaryPhone = ({ collectionId }: SetCollectionPrimary
 
   // Only Admin / Glific_admin can drive the collection-wide primary phone.
   const roles = getUserRole();
-  const isAdmin = roles.includes('Admin') || roles.includes('Glific');
+  const isAdmin = roles.includes('Admin') || roles.includes('Glific_admin');
 
   const { data } = useQuery(GET_WA_MANAGED_PHONES, {
     variables: { filter: {} },

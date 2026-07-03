@@ -14,6 +14,7 @@ import {
   getStatusWithError,
   collectionPrimaryRow,
   collectionReport,
+  collectionReportNotReady,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
@@ -207,6 +208,22 @@ test('warns when the collection primary-phone report returns an error', async ()
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith('Report not ready', 'warning');
+  });
+  expect(exportCsvFile).not.toHaveBeenCalled();
+});
+
+test('warns when the collection primary-phone report has no rows yet', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  renderCollection(collectionReportNotReady);
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('ArrowForwardIcon')[0]);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('The collection primary-phone report is not ready yet.', 'warning');
   });
   expect(exportCsvFile).not.toHaveBeenCalled();
 });

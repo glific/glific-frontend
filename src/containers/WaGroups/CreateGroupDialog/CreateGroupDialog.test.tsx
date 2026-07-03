@@ -12,6 +12,7 @@ import {
 } from 'mocks/Groups';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { saveGroupConversation } from 'services/GroupMessageService';
+import { toActivePhoneOptions } from 'containers/WaGroups/managedPhones';
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -161,5 +162,30 @@ test('surfaces network errors on submit', async () => {
 
   await waitFor(() => {
     expect(setErrorMessage).toHaveBeenCalled();
+  });
+});
+
+// the shared helper backing both CreateGroupDialog and SetCollectionPrimaryPhone
+describe('toActivePhoneOptions', () => {
+  test('returns an empty list for undefined, null or empty input', () => {
+    expect(toActivePhoneOptions()).toEqual([]);
+    expect(toActivePhoneOptions(null as any)).toEqual([]);
+    expect(toActivePhoneOptions([])).toEqual([]);
+  });
+
+  test('keeps only active phones and formats the label as "Label — number"', () => {
+    const options = toActivePhoneOptions([
+      { id: '1', phone: '911111111111', label: 'Main', status: 'active' },
+      // active but unlabeled -> falls back to the bare number
+      { id: '2', phone: '922222222222', label: null, status: 'active' },
+      // non-active phones are dropped
+      { id: '3', phone: '933333333333', label: 'Loading', status: 'loading' },
+      { id: '4', phone: '944444444444', label: 'No status' },
+    ]);
+
+    expect(options).toEqual([
+      { id: '1', label: 'Main — 911111111111' },
+      { id: '2', label: '922222222222' },
+    ]);
   });
 });

@@ -1426,3 +1426,43 @@ export const setPrimaryForCollectionMock = {
     },
   },
 };
+
+// mutation succeeds but returns no status string -> component uses its i18n fallback
+export const setPrimaryForCollectionNoStatusMock = {
+  request: {
+    query: SET_PRIMARY_PHONE_FOR_COLLECTION,
+    variables: { collectionId: '5', waManagedPhoneId: '1' },
+  },
+  result: {
+    data: {
+      setPrimaryPhoneForCollection: { status: null, userJobId: '77', errors: null },
+    },
+  },
+};
+
+// mutation resolves with field-level errors (e.g. phone not a member of any group)
+export const setPrimaryForCollectionErrorMessage = 'Phone is not a member of any group in the collection';
+export const setPrimaryForCollectionErrorsMock = {
+  request: {
+    query: SET_PRIMARY_PHONE_FOR_COLLECTION,
+    variables: { collectionId: '5', waManagedPhoneId: '1' },
+  },
+  result: {
+    data: {
+      setPrimaryPhoneForCollection: {
+        status: null,
+        userJobId: null,
+        errors: [{ key: 'phone', message: setPrimaryForCollectionErrorMessage }],
+      },
+    },
+  },
+};
+
+// mutation rejects at the network level -> component falls into its catch/setErrorMessage
+export const setPrimaryForCollectionNetworkErrorMock = {
+  request: {
+    query: SET_PRIMARY_PHONE_FOR_COLLECTION,
+    variables: { collectionId: '5', waManagedPhoneId: '1' },
+  },
+  error: new Error('Network error'),
+};

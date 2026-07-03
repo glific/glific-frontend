@@ -293,3 +293,9 @@ export const collectionReport = (error: string | null = null) => ({
   request: { query: WA_GROUP_COLLECTION_PRIMARY_REPORT, variables: { userJobId: 5 } },
   result: { data: { waGroupCollectionPrimaryReport: { csvRows: 'Group,Reason', error } } },
 });
+
+// report not finished yet: no error, but no rows either
+export const collectionReportNotReady = {
+  request: { query: WA_GROUP_COLLECTION_PRIMARY_REPORT, variables: { userJobId: 5 } },
+  result: { data: { waGroupCollectionPrimaryReport: { csvRows: null, error: null } } },
+};
