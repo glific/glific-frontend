@@ -18,14 +18,15 @@ const OTP_INFO_NOTE =
   "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password.";
 const OTP_INFO_NOTE_TIMEOUT = 15000;
 const RESEND_SUCCESS_TIMEOUT = 5000;
+const RESEND_RATE_LIMIT_MESSAGE = 'An OTP was just sent. Please try again in 30 seconds.';
 
 export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
-  // The note area doubles as transient resend feedback: neutral info on load, then a brief
-  // success confirmation after a resend. `infoSuccess` switches it to the success (green) style.
+  // The note area doubles as transient resend feedback: neutral info on load, a success
+  // confirmation after a resend, or a warning when a resend is rejected (e.g. rate limited).
   const [infoMessage, setInfoMessage] = useState<string>(OTP_INFO_NOTE);
-  const [infoSuccess, setInfoSuccess] = useState(false);
+  const [infoVariant, setInfoVariant] = useState<'success' | 'warning' | undefined>(undefined);
   const { t } = useTranslation();
   const location = useLocation();
   // Read the state synchronously so the phone number is prepopulated on the very first render
@@ -51,24 +52,24 @@ export const ResetPasswordConfirmOTP = () => {
   }
 
   // Resend against the phone currently in the form (the user may have edited the prepopulated
-  // one). Briefly confirm success so the user knows the OTP went out; on failure show a retry
-  // hint (e.g. it was requested too soon) and clear the note so both don't show at once.
+  // one). Briefly confirm success so the user knows the OTP went out; on failure surface the
+  // backend's message (e.g. the rate-limit notice) as a warning — not a red error, since it's
+  // a "please wait" rather than a failure.
   const handleResend = (values: { phoneNumber?: string } = {}) => {
     const phone = values.phoneNumber || phoneNumber;
     sendOTP(phone)
       .then(() => {
-        setAuthError('');
-        setInfoSuccess(true);
+        setInfoVariant('success');
         setInfoMessage('OTP sent successfully.');
         setTimeout(() => {
-          setInfoSuccess(false);
+          setInfoVariant(undefined);
           setInfoMessage('');
         }, RESEND_SUCCESS_TIMEOUT);
       })
-      .catch(() => {
-        setInfoSuccess(false);
-        setInfoMessage('');
-        setAuthError('Could not resend the OTP. Please try again in 30 seconds.');
+      .catch((error) => {
+        const backendMessage = error?.response?.data?.error?.message;
+        setInfoVariant('warning');
+        setInfoMessage(backendMessage || RESEND_RATE_LIMIT_MESSAGE);
       });
   };
 
@@ -133,7 +134,7 @@ export const ResetPasswordConfirmOTP = () => {
       mode="secondreset"
       formFields={formFields}
       infoMessage={infoMessage}
-      infoSuccess={infoSuccess}
+      infoVariant={infoVariant}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}

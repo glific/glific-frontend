@@ -262,6 +262,15 @@
   color: #0b5c37;
 }
 
+.InfoNoteWarning {
+  background-color: #fdf3e2;
+  color: #8a5300;
+}
+
+.InfoNoteWarning .InfoNoteIcon {
+  color: #b45309;
+}
+
 .SuccessMessage {
   font-size: 16px;
   margin-top: 100px;

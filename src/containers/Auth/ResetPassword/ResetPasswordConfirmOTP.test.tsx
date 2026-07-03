@@ -94,8 +94,11 @@ describe('<ResetPasswordConfirmOTP />', () => {
     });
   });
 
-  it('shows a retry hint when resend fails', async () => {
-    const sendOptMock = vi.fn(() => Promise.reject(new Error('too soon')));
+  it('surfaces the backend message when resend is rejected', async () => {
+    const backendMessage = 'An OTP was just sent. Please try again in 30 seconds.';
+    const sendOptMock = vi.fn(() =>
+      Promise.reject({ response: { data: { error: { message: backendMessage } } } } as any)
+    );
     vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
     render(wrapper);
 
@@ -103,9 +106,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     await user.click(resendButton);
 
     await waitFor(() => {
-      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
-        'Could not resend the OTP. Please try again in 30 seconds.'
-      );
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(backendMessage);
     });
   });
 

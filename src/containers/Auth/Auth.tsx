@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
@@ -39,7 +40,8 @@ export interface AuthProps {
   loading?: boolean;
   inlineSuccessMessage?: string;
   infoMessage?: string;
-  infoSuccess?: boolean;
+  // Visual tone of the info note: neutral (default), a success confirmation, or a warning.
+  infoVariant?: 'success' | 'warning';
 }
 
 export const Auth = ({
@@ -60,7 +62,7 @@ export const Auth = ({
   loading: externalLoading,
   inlineSuccessMessage,
   infoMessage,
-  infoSuccess,
+  infoVariant,
 }: AuthProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -173,11 +175,19 @@ export const Auth = ({
 
         {infoMessage && (
           <div
-            className={`${styles.InfoNote} ${infoSuccess ? styles.InfoNoteSuccess : ''}`}
+            className={`${styles.InfoNote} ${
+              infoVariant === 'success'
+                ? styles.InfoNoteSuccess
+                : infoVariant === 'warning'
+                  ? styles.InfoNoteWarning
+                  : ''
+            }`}
             data-testid="infoMessage"
           >
-            {infoSuccess ? (
+            {infoVariant === 'success' ? (
               <CheckCircleOutlineIcon className={styles.InfoNoteIcon} />
+            ) : infoVariant === 'warning' ? (
+              <AccessTimeOutlinedIcon className={styles.InfoNoteIcon} />
             ) : (
               <InfoOutlinedIcon className={styles.InfoNoteIcon} />
             )}
