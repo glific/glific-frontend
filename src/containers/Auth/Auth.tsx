@@ -18,6 +18,16 @@ import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 
+// Per-variant styling + icon for the info note (neutral default, success, warning).
+const INFO_NOTE_VARIANT_CLASS: Record<string, string> = {
+  success: styles.InfoNoteSuccess,
+  warning: styles.InfoNoteWarning,
+};
+const INFO_NOTE_VARIANT_ICON: Record<string, typeof InfoOutlinedIcon> = {
+  success: CheckCircleOutlineIcon,
+  warning: AccessTimeOutlinedIcon,
+};
+
 export interface AuthProps {
   pageTitle: string;
   buttonText: string;
@@ -147,6 +157,9 @@ export const Auth = ({
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
   }
 
+  const infoNoteClass = `${styles.InfoNote} ${(infoVariant && INFO_NOTE_VARIANT_CLASS[infoVariant]) || ''}`;
+  const InfoNoteIcon = (infoVariant && INFO_NOTE_VARIANT_ICON[infoVariant]) || InfoOutlinedIcon;
+
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -174,23 +187,8 @@ export const Auth = ({
         <div className={styles.SubText}>{titleSubText}</div>
 
         {infoMessage && (
-          <div
-            className={`${styles.InfoNote} ${
-              infoVariant === 'success'
-                ? styles.InfoNoteSuccess
-                : infoVariant === 'warning'
-                  ? styles.InfoNoteWarning
-                  : ''
-            }`}
-            data-testid="infoMessage"
-          >
-            {infoVariant === 'success' ? (
-              <CheckCircleOutlineIcon className={styles.InfoNoteIcon} />
-            ) : infoVariant === 'warning' ? (
-              <AccessTimeOutlinedIcon className={styles.InfoNoteIcon} />
-            ) : (
-              <InfoOutlinedIcon className={styles.InfoNoteIcon} />
-            )}
+          <div className={infoNoteClass} data-testid="infoMessage">
+            <InfoNoteIcon className={styles.InfoNoteIcon} />
             <span>{infoMessage}</span>
           </div>
         )}
