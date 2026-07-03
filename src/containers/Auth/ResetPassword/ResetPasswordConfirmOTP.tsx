@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -33,13 +33,20 @@ export const ResetPasswordConfirmOTP = () => {
   // (Formik captures initialValues once, so an async useEffect would leave the field blank).
   const locationState = (location.state as any) || {};
   const [phoneNumber] = useState<string>(locationState.phoneNumber ?? '');
+  const successTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Auto-hide the neutral note after a while so it doesn't linger next to resend feedback.
+  // Also clear any pending resend-success timer on unmount to avoid a state update after unmount.
   useEffect(() => {
     const timer = setTimeout(() => {
       setInfoMessage((current) => (current === OTP_INFO_NOTE ? '' : current));
     }, OTP_INFO_NOTE_TIMEOUT);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (successTimerRef.current) {
+        clearTimeout(successTimerRef.current);
+      }
+    };
   }, []);
 
   // Let's not allow direct navigation to this page
@@ -61,7 +68,7 @@ export const ResetPasswordConfirmOTP = () => {
       .then(() => {
         setInfoVariant('success');
         setInfoMessage('OTP sent successfully.');
-        setTimeout(() => {
+        successTimerRef.current = setTimeout(() => {
           setInfoVariant(undefined);
           setInfoMessage('');
         }, RESEND_SUCCESS_TIMEOUT);
