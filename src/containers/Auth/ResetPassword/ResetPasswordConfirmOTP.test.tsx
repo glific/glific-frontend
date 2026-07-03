@@ -38,21 +38,13 @@ describe('<ResetPasswordConfirmOTP />', () => {
     });
   });
 
-  test('it should display the neutral OTP info message passed via router state', async () => {
-    const infoMessage = 'If you have an account, you will receive an OTP to confirm';
-    const wrapperWithInfoMessage = (
-      <MemoryRouter initialEntries={[{ state: { phoneNumber: '919967665667', otpInfoMessage: infoMessage } }]}>
-        <Routes>
-          <Route path="/" element={<ResetPasswordConfirmOTP />} />
-          <Route path="/login" element={<div>Login page</div>} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    const { findByTestId } = render(wrapperWithInfoMessage);
+  test('it should display the neutral, non-disclosing OTP note', async () => {
+    const { findByTestId } = render(wrapper);
     const resetPassword = await findByTestId('AuthContainer');
     await waitFor(() => {
-      expect(resetPassword).toHaveTextContent(infoMessage);
+      expect(resetPassword).toHaveTextContent(
+        "If this number is registered, you'll get an OTP on WhatsApp — enter it below."
+      );
     });
   });
 
@@ -117,7 +109,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
     vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
     const wrapperWithoutPhone = (
-      <MemoryRouter initialEntries={[{ state: { otpInfoMessage: 'some message' } }]}>
+      <MemoryRouter initialEntries={[{ state: { from: '/resetpassword-phone' } }]}>
         <Routes>
           <Route path="/" element={<ResetPasswordConfirmOTP />} />
           <Route path="/login" element={<div>Login page</div>} />

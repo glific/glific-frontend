@@ -20,7 +20,11 @@ export const ResetPasswordConfirmOTP = () => {
   // (Formik captures initialValues once, so an async useEffect would leave the field blank).
   const locationState = (location.state as any) || {};
   const [phoneNumber] = useState<string>(locationState.phoneNumber ?? '');
-  const [otpInfoMessage] = useState<string>(locationState.otpInfoMessage ?? '');
+
+  // Neutral, non-disclosing note: shown to everyone regardless of whether the account exists,
+  // so a user whose number isn't registered understands why no OTP arrives (and can fix a typo
+  // in the editable phone field above) without the API ever confirming account existence.
+  const otpInfoSubText = "If this number is registered, you'll get an OTP on WhatsApp — enter it below.";
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -100,7 +104,7 @@ export const ResetPasswordConfirmOTP = () => {
       alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
-      infoMessage={otpInfoMessage}
+      titleSubText={otpInfoSubText}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}

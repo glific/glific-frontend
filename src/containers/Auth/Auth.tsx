@@ -36,7 +36,6 @@ export interface AuthProps {
   successMessage?: string;
   loading?: boolean;
   inlineSuccessMessage?: string;
-  infoMessage?: string;
 }
 
 export const Auth = ({
@@ -56,7 +55,6 @@ export const Auth = ({
   successMessage,
   loading: externalLoading,
   inlineSuccessMessage,
-  infoMessage,
 }: AuthProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -166,12 +164,6 @@ export const Auth = ({
           </Typography>
         </div>
         <div className={styles.SubText}>{titleSubText}</div>
-
-        {infoMessage && (
-          <div className={styles.InfoBanner} data-testid="infoMessage">
-            {infoMessage}
-          </div>
-        )}
 
         <Formik
           initialValues={initialFormValues}
