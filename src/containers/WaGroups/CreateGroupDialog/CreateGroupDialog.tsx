@@ -14,15 +14,11 @@ import { setErrorMessage, setNotification } from 'common/notification';
 import { CREATE_WA_GROUP } from 'graphql/mutations/Group';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { saveGroupConversation } from 'services/GroupMessageService';
+import { ManagedPhoneOption, toActivePhoneOptions } from 'containers/WaGroups/managedPhones';
 import styles from './CreateGroupDialog.module.css';
 import setLogs from 'config/logs';
 
-export interface ManagedPhoneOption {
-  id: string;
-  phone: string;
-  label?: string | null;
-  status?: string | null;
-}
+export type { ManagedPhoneOption };
 
 export interface CreateGroupDialogProps {
   open: boolean;
@@ -47,12 +43,7 @@ export const CreateGroupDialog = ({ open, phones, defaultPhone, onClose, onCreat
     waManagedPhone: Yup.object().nullable().required(t('Pick the managed phone that will create the group')),
   });
 
-  const phoneOptions = phones
-    .filter((p) => p.status === 'active')
-    .map((p) => ({
-      id: p.id,
-      label: p.label ? `${p.label} — ${p.phone}` : p.phone,
-    }));
+  const phoneOptions = toActivePhoneOptions(phones);
 
   const activeDefaultPhone = defaultPhone?.status === 'active' ? defaultPhone : null;
 

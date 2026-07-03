@@ -16,6 +16,7 @@ import { setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
+import { SetCollectionPrimaryPhone } from './SetCollectionPrimaryPhone/SetCollectionPrimaryPhone';
 
 const getName = (label: string) => (
   <div>
@@ -100,17 +101,20 @@ export const GroupCollectionList = () => {
     );
   }
 
-  const addGroupsButton = (
-    <Button
-      variant="contained"
-      color="primary"
-      data-testid="addBtn"
-      onClick={() => {
-        setAddGroupsDialogShow(true);
-      }}
-    >
-      Add groups
-    </Button>
+  const secondaryButtons = (
+    <>
+      <SetCollectionPrimaryPhone collectionId={collectionId} />
+      <Button
+        variant="contained"
+        color="primary"
+        data-testid="addBtn"
+        onClick={() => {
+          setAddGroupsDialogShow(true);
+        }}
+      >
+        Add groups
+      </Button>
+    </>
   );
 
   const removeDialogBox = (
@@ -157,7 +161,7 @@ export const GroupCollectionList = () => {
         listItem="waGroups"
         listItemName="waGroups"
         searchParameter={['term']}
-        secondaryButton={addGroupsButton}
+        secondaryButton={secondaryButtons}
         filters={{ includeGroups: collectionId }}
         button={{ show: false, label: '' }}
         pageLink="group"

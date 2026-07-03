@@ -681,5 +681,13 @@
   "Pick the managed phone that will create the group": "समूह बनाने वाला प्रबंधित फ़ोन चुनें",
   "Remove file": "फ़ाइल हटाएँ",
   "Okay": "ठीक है",
-  "Removed Contact from Group": "संपर्क को समूह से हटा दिया गया"
+  "Removed Contact from Group": "संपर्क को समूह से हटा दिया गया",
+  "Set primary phone": "प्राइमरी फ़ोन सेट करें",
+  "Set primary phone for the collection": "संग्रह के लिए प्राइमरी फ़ोन सेट करें",
+  "Apply": "लागू करें",
+  "This phone becomes the primary for every WhatsApp group in the collection where it is an active member. Groups where it is not a member are skipped and reported.": "यह फ़ोन संग्रह के हर उस WhatsApp समूह के लिए प्राइमरी बन जाता है जिसमें यह एक सक्रिय सदस्य है। जिन समूहों में यह सदस्य नहीं है उन्हें छोड़ दिया जाता है और रिपोर्ट किया जाता है।",
+  "Select a phone": "एक फ़ोन चुनें",
+  "Setting the primary phone across the collection has started in the background.": "संग्रह में प्राइमरी फ़ोन सेट करना पृष्ठभूमि में शुरू हो गया है।",
+  "Downloaded the collection primary-phone report": "संग्रह प्राइमरी-फ़ोन रिपोर्ट डाउनलोड की गई",
+  "The collection primary-phone report is not ready yet.": "संग्रह प्राइमरी-फ़ोन रिपोर्ट अभी तैयार नहीं है।"
 }
