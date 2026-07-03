@@ -172,7 +172,9 @@ export const Auth = ({
   const handlePhone =
     () =>
     (value: string): void => {
-      initialFormValues.phone = value;
+      if (initialFormValues) {
+        initialFormValues.phone = value;
+      }
     };
 
   let formElements;
