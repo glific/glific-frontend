@@ -23,7 +23,6 @@ type ServiceType =
   | 'certificateEnabled'
   | 'askGlificEnabled'
   | 'whatsappFormsEnabled'
-  | 'assistantConfigVersionsEnabled'
   | 'aiEvaluationsEnabled'
   | 'copyNodeEnabled'
   | 'promptGeneratorEnabled'
