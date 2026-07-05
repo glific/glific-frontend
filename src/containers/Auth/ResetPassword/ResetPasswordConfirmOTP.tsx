@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -33,21 +33,31 @@ export const ResetPasswordConfirmOTP = () => {
   // (Formik captures initialValues once, so an async useEffect would leave the field blank).
   const locationState = (location.state as any) || {};
   const [phoneNumber] = useState<string>(locationState.phoneNumber ?? '');
-  const successTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Token bumped on each resend success so the auto-hide effect below re-arms; reset to 0
+  // on a warning to cancel a pending success auto-hide.
+  const [successFlash, setSuccessFlash] = useState(0);
 
   // Auto-hide the neutral note after a while so it doesn't linger next to resend feedback.
-  // Also clear any pending resend-success timer on unmount to avoid a state update after unmount.
   useEffect(() => {
     const timer = setTimeout(() => {
       setInfoMessage((current) => (current === t(OTP_INFO_NOTE) ? '' : current));
     }, OTP_INFO_NOTE_TIMEOUT);
-    return () => {
-      clearTimeout(timer);
-      if (successTimerRef.current) {
-        clearTimeout(successTimerRef.current);
-      }
-    };
+    return () => clearTimeout(timer);
   }, []);
+
+  // Auto-hide the transient resend-success flash. Keyed on successFlash so each new success
+  // re-arms (the effect cleanup clears the prior timer) and a warning cancels it. The timer
+  // is a local, so it's cleaned up on unmount without reading a ref in the cleanup.
+  useEffect(() => {
+    if (successFlash === 0) {
+      return undefined;
+    }
+    const timer = setTimeout(() => {
+      setInfoVariant(undefined);
+      setInfoMessage('');
+    }, RESEND_SUCCESS_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, [successFlash]);
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -64,25 +74,19 @@ export const ResetPasswordConfirmOTP = () => {
   // a "please wait" rather than a failure.
   const handleResend = (values: { phoneNumber?: string } = {}) => {
     const phone = values.phoneNumber || phoneNumber;
-    // Cancel any pending resend-success timer so an older one can't clear a newer
-    // success/warning message once this resend resolves.
-    if (successTimerRef.current) {
-      clearTimeout(successTimerRef.current);
-      successTimerRef.current = undefined;
-    }
     sendOTP(phone)
       .then(() => {
         setInfoVariant('success');
         setInfoMessage(t('OTP sent successfully.'));
-        successTimerRef.current = setTimeout(() => {
-          setInfoVariant(undefined);
-          setInfoMessage('');
-        }, RESEND_SUCCESS_TIMEOUT);
+        // Re-arm the auto-hide effect (its cleanup clears any prior success timer).
+        setSuccessFlash((token) => token + 1);
       })
       .catch((error) => {
         const backendMessage = error?.response?.data?.error?.message;
         setInfoVariant('warning');
         setInfoMessage(backendMessage || t(RESEND_RATE_LIMIT_MESSAGE));
+        // Cancel any pending success auto-hide so it can't clear this warning.
+        setSuccessFlash(0);
       });
   };
 
