@@ -21,14 +21,14 @@ const RESEND_SUCCESS_TIMEOUT = 5000;
 const RESEND_RATE_LIMIT_MESSAGE = 'An OTP was just sent. Please try again in 30 seconds.';
 
 export const ResetPasswordConfirmOTP = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
   // The note area doubles as transient resend feedback: neutral info on load, a success
   // confirmation after a resend, or a warning when a resend is rejected (e.g. rate limited).
-  const [infoMessage, setInfoMessage] = useState<string>(OTP_INFO_NOTE);
+  const [infoMessage, setInfoMessage] = useState<string>(t(OTP_INFO_NOTE));
   const [infoVariant, setInfoVariant] = useState<'success' | 'warning' | undefined>(undefined);
-  const { t } = useTranslation();
-  const location = useLocation();
   // Read the state synchronously so the phone number is prepopulated on the very first render
   // (Formik captures initialValues once, so an async useEffect would leave the field blank).
   const locationState = (location.state as any) || {};
@@ -39,7 +39,7 @@ export const ResetPasswordConfirmOTP = () => {
   // Also clear any pending resend-success timer on unmount to avoid a state update after unmount.
   useEffect(() => {
     const timer = setTimeout(() => {
-      setInfoMessage((current) => (current === OTP_INFO_NOTE ? '' : current));
+      setInfoMessage((current) => (current === t(OTP_INFO_NOTE) ? '' : current));
     }, OTP_INFO_NOTE_TIMEOUT);
     return () => {
       clearTimeout(timer);
@@ -64,10 +64,16 @@ export const ResetPasswordConfirmOTP = () => {
   // a "please wait" rather than a failure.
   const handleResend = (values: { phoneNumber?: string } = {}) => {
     const phone = values.phoneNumber || phoneNumber;
+    // Cancel any pending resend-success timer so an older one can't clear a newer
+    // success/warning message once this resend resolves.
+    if (successTimerRef.current) {
+      clearTimeout(successTimerRef.current);
+      successTimerRef.current = undefined;
+    }
     sendOTP(phone)
       .then(() => {
         setInfoVariant('success');
-        setInfoMessage('OTP sent successfully.');
+        setInfoMessage(t('OTP sent successfully.'));
         successTimerRef.current = setTimeout(() => {
           setInfoVariant(undefined);
           setInfoMessage('');
@@ -76,7 +82,7 @@ export const ResetPasswordConfirmOTP = () => {
       .catch((error) => {
         const backendMessage = error?.response?.data?.error?.message;
         setInfoVariant('warning');
-        setInfoMessage(backendMessage || RESEND_RATE_LIMIT_MESSAGE);
+        setInfoMessage(backendMessage || t(RESEND_RATE_LIMIT_MESSAGE));
       });
   };
 
