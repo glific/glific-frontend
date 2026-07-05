@@ -59,8 +59,9 @@ export const ResetPasswordConfirmOTP = () => {
     return () => clearTimeout(timer);
   }, [successFlash]);
 
-  // Let's not allow direct navigation to this page
-  if (location && location.state === undefined) {
+  // Let's not allow direct navigation to this page. `location` from useLocation() is
+  // always defined (and its .state is already read above), so no null guard is needed.
+  if (location.state === undefined) {
     return <Navigate to="/resetpassword-phone" />;
   }
 
