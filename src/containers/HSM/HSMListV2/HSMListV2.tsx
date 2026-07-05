@@ -111,9 +111,9 @@ const HSMListV2 = () => {
 
   const navigateToCreate = () => {
     if (selectedTag?.label) {
-      navigate('/template/add', { state: { tag: selectedTag } });
+      navigate('/template-v2/add', { state: { tag: selectedTag } });
     } else {
-      navigate('/template/add');
+      navigate('/template-v2/add');
     }
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };

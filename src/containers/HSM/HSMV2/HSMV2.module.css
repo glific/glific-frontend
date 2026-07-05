@@ -1,0 +1,422 @@
+.Page {
+  padding: 20px 32px 48px;
+  background-color: #f7f7f5;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.BackLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 12px;
+  color: #6b6f6c;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.PageTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.PageTitle {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111111;
+  margin: 0;
+}
+
+.PageSubtitle {
+  font-size: 14px;
+  color: #6b6f6c;
+  margin: 6px 0 0;
+}
+
+.FormColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 720px;
+  margin-top: 20px;
+}
+
+.Card {
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 24px 28px 28px;
+}
+
+/* Applied to the last field Card so it visually fuses with .Buttons below it
+   (no gap, square shared corners) instead of floating as a separate box. */
+.LastCard {
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+}
+
+/* Overrides FormLayout's default fixed-width .Form shell (width: 530px;
+   padding: 16px 53px) so our cards can lay out full-width inside the grid
+   column. !important is needed since class order between the two CSS
+   modules in the compiled bundle isn't guaranteed. */
+.CustomFormShell {
+  width: 100% !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.CardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #073f24;
+  margin: 0 0 20px;
+}
+
+.CardSubtitle {
+  font-size: 13px;
+  color: #73716f;
+  margin: -12px 0 20px;
+}
+
+.FieldGroup {
+  margin-bottom: 20px;
+}
+
+.FieldGroup:last-child {
+  margin-bottom: 0;
+}
+
+.FieldLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #202125;
+  margin: 0 0 10px;
+}
+
+.Required {
+  color: #de3707;
+  margin-left: 2px;
+}
+
+.OptionalLabel {
+  color: #83847d;
+  font-weight: 400;
+}
+
+.HelperText {
+  font-size: 12px;
+  color: #83847d;
+  margin-top: 6px;
+}
+
+.DangerText {
+  color: #de3707 !important;
+}
+
+/* Tiles shared styles */
+
+.TileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.CategoryTile {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.TileRadio {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 50%;
+  border: 2px solid #b7b7b7;
+  margin-top: 2px;
+  position: relative;
+}
+
+.TileSelectedGreen .TileRadio {
+  border-color: #119656;
+}
+
+.TileSelectedGreen .TileRadio::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background-color: #119656;
+}
+
+.TileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.TileTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #202125;
+}
+
+.TileDescription {
+  font-size: 12px;
+  color: #83847d;
+  line-height: 1.4;
+}
+
+/* selected state used by Category / Attachment Type / Provide URL-Upload File tiles */
+.TileSelectedGreen {
+  border-color: #119656 !important;
+  background-color: #f2f9f5 !important;
+}
+
+/* selected state used by the Interactive Buttons "Button Type" tiles */
+.TileSelectedBlue {
+  border-color: #1565c0 !important;
+  background-color: #f2f7fd !important;
+  color: #1565c0 !important;
+}
+
+/* Button type tiles (Interactive Buttons) */
+
+.ButtonTypeTileRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.ButtonTypeTile {
+  flex: 1 1 160px;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #073f24;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ButtonTypeTile:disabled,
+.AttachmentTile:disabled,
+.MethodToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ClearSelectionLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #de3707;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-family: inherit;
+}
+
+/* Media attachment tiles */
+
+.AttachmentTileRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.AttachmentTile {
+  flex: 1 1 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
+.AttachmentTileIcon {
+  display: flex;
+  color: #717971;
+  margin-bottom: 8px;
+}
+
+.AttachmentTile.TileSelectedGreen .AttachmentTileIcon {
+  color: #119656;
+}
+
+.AttachmentTileMeta {
+  font-size: 13px;
+  color: #83847d;
+}
+
+.MethodToggleRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.MethodToggle {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #073f24;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Message content toolbar row */
+
+.MessageToolbarRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.CharCount {
+  margin-left: auto;
+  font-size: 12px;
+  color: #83847d;
+}
+
+/* Upload button (kept from legacy HSM look) */
+
+.UploadButtonContainer {
+  margin-top: 8px;
+}
+
+.UploadLabel {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.UploadLabel[data-uploading='true'] {
+  cursor: not-allowed;
+}
+
+.UploadButton {
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #119656;
+  border-radius: 6px;
+  width: 100%;
+  background-color: #fafafa;
+  min-height: 48px;
+  position: relative;
+}
+
+.UploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.UploadTypeIcon {
+  display: flex;
+  color: #119656;
+  margin-bottom: 8px;
+}
+
+.UploadHint {
+  font-size: 13px;
+  font-weight: 400;
+  color: #83847d;
+}
+
+.UploadText {
+  font-size: 14px;
+  font-weight: 700;
+  color: #202125;
+}
+
+.UploadSpinner {
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #119656;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 0.8s linear infinite;
+}
+
+.UploadIcon {
+  width: 20px;
+  height: 20px;
+  color: #119656;
+}
+
+.HiddenFileInput {
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Bottom action buttons */
+
+.Buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: -20px;
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 24px 28px 28px;
+}
+
+.CancelButton {
+  color: #202125 !important;
+  font-weight: 500 !important;
+}
+
+.DeleteButton {
+  margin-left: auto !important;
+}
+
+.DeleteIcon {
+  margin-right: 9px !important;
+}

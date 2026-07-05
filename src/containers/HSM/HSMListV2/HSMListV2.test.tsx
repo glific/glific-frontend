@@ -165,7 +165,7 @@ test('navigates to create template page on Create click', async () => {
   });
 
   fireEvent.click(screen.getByTestId('newItemButton'));
-  expect(mockedNavigate).toHaveBeenCalledWith('/template/add');
+  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add');
 });
 
 test('navigates to create template page with the selected tag', async () => {
@@ -184,7 +184,7 @@ test('navigates to create template page with the selected tag', async () => {
 
   fireEvent.click(screen.getByTestId('newItemButton'));
 
-  expect(mockedNavigate).toHaveBeenCalledWith('/template/add', { state: { tag: { label: 'Messages', id: '1' } } });
+  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
 test('navigates to edit template page via the row View action', async () => {
