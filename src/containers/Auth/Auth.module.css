@@ -2,7 +2,7 @@
   overflow: auto;
   width: 100%;
   background: #f8faf5;
-  height: 100vh;
+  height: 100%;
 }
 
 .Auth {
@@ -298,7 +298,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100%;
   padding-top: 5vh;
 }
 

@@ -2,7 +2,7 @@
   display: flex;
   column-gap: 1rem;
   width: 100% !important;
-  height: 100vh !important;
+  height: calc(100% - 110px) !important;
   background-color: #f8faf5;
   padding: 1rem;
   color: #000;

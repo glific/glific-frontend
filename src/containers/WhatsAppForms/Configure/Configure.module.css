@@ -35,7 +35,7 @@
 
 .ConfigureContainer {
   display: flex;
-  height: calc(100vh - 80px);
+  height: calc(100% - 80px);
   gap: 20px;
   padding: 20px;
   background-color: #fff;
