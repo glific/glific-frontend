@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -57,9 +57,11 @@ export const PhoneManagement = () => {
   const [refreshList, setRefreshList] = useState(false);
 
   const [syncStatuses] = useMutation(SYNC_WA_MANAGED_PHONE_STATUSES);
+  const syncing = useRef(false);
 
-  // Re-poll Maytapi for every phone's status, then refresh the list in place.
   const handleSync = async () => {
+    if (syncing.current) return;
+    syncing.current = true;
     try {
       const { data } = await syncStatuses();
       const result = data?.syncWaManagedPhoneStatuses;
@@ -78,6 +80,8 @@ export const PhoneManagement = () => {
       setRefreshList((previous) => !previous);
     } catch (error) {
       setErrorMessage(error as Error);
+    } finally {
+      syncing.current = false;
     }
   };
 
@@ -141,7 +145,10 @@ export const PhoneManagement = () => {
         <ReconnectDialog
           phone={reconnectPhone}
           onClose={() => setReconnectPhone(null)}
-          onReconnected={() => setReconnectPhone(null)}
+          onReconnected={() => {
+            setReconnectPhone(null);
+            setRefreshList((previous) => !previous);
+          }}
         />
       )}
     </>

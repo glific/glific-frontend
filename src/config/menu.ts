@@ -62,7 +62,7 @@ const menus = (): Menu[] => [
         path: '/group/phones',
         icon: 'waGroup',
         type: 'sideDrawer',
-        roles: allRoles,
+        roles: managerLevel,
       },
     ],
   },
