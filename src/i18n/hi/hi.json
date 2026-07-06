@@ -702,5 +702,8 @@
   "WhatsApp phone reconnected.": "व्हाट्सएप फ़ोन पुनः कनेक्ट हो गया।",
   "Logged the phone out. Scan the new QR code to reconnect.": "फ़ोन लॉग आउट कर दिया गया। पुनः कनेक्ट करने के लिए नया QR कोड स्कैन करें।",
   "Sync statuses": "स्थिति सिंक करें",
-  "WhatsApp phone statuses have been refreshed.": "व्हाट्सएप फ़ोन की स्थिति रीफ़्रेश कर दी गई है।"
+  "WhatsApp phone statuses have been refreshed.": "व्हाट्सएप फ़ोन की स्थिति रीफ़्रेश कर दी गई है।",
+  "Group": "समूह",
+  "Primary phone": "प्राइमरी फ़ोन",
+  "Actions": "क्रियाएँ"
 }

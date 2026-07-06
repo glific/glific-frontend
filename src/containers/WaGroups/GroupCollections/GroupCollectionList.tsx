@@ -24,14 +24,20 @@ const getName = (label: string) => (
   </div>
 );
 
+const getPrimaryPhone = (primaryPhone: any) => {
+  const phone = primaryPhone ? primaryPhone.label || primaryPhone.phone : '—';
+  return <div className={styles.PrimaryPhoneText}>{phone}</div>;
+};
+
 const getColumns = (fields: any) => {
-  const { label } = fields;
+  const { label, primaryPhone } = fields;
   return {
     label: getName(label),
+    primaryPhone: getPrimaryPhone(primaryPhone),
   };
 };
 
-const columnStyles = [styles.Name, styles.Actions];
+const columnStyles = [styles.Name, styles.PrimaryPhone, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -133,7 +139,7 @@ export const GroupCollectionList = () => {
 
   const title = collection.data ? collection.data.group.group.label : t('Collection');
 
-  const columnNames = [{ name: 'label', label: 'Group' }, { label: t('Actions') }];
+  const columnNames = [{ name: 'label', label: t('Group') }, { label: t('Primary phone') }, { label: t('Actions') }];
 
   const additionalAction = () => [
     {

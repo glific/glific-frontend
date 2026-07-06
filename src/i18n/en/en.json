@@ -843,5 +843,7 @@
   "WhatsApp phone reconnected.": "WhatsApp phone reconnected.",
   "Logged the phone out. Scan the new QR code to reconnect.": "Logged the phone out. Scan the new QR code to reconnect.",
   "Sync statuses": "Sync statuses",
-  "WhatsApp phone statuses have been refreshed.": "WhatsApp phone statuses have been refreshed."
+  "WhatsApp phone statuses have been refreshed.": "WhatsApp phone statuses have been refreshed.",
+  "Group":"Group",
+  "Primary phone": "Primary phone"
 }

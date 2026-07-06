@@ -122,7 +122,7 @@ export const AutoComplete = ({
 
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
     if (!showTags) return null;
-    let tagsToRender = value;
+    let tagsToRender = Array.isArray(value) ? value : [];
 
     /**
      * when renderTags is true,
@@ -217,7 +217,7 @@ export const AutoComplete = ({
           value={getValue}
           disabled={disabled}
           disableCloseOnSelect={multiple}
-          renderTags={getRenderTags}
+          renderValue={getRenderTags}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
               {multiple && (

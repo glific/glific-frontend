@@ -4,6 +4,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .FormStyle {
@@ -24,36 +25,16 @@
 .DropDown > fieldset {
   border: none !important;
 }
+.Buttons {
+  display: flex;
+  align-items: center;
+}
 
-.syncButton {
-  margin: 0 8px;
-  cursor: pointer;
-  height: 36px;
-  border: 1px solid #cccccc;
-  border-radius: 27px;
-  background: #ffffff;
-  box-shadow: none;
-  color: #2ea36a;
-  font-size: 14px;
-  width: 25%;
+.Buttons Button {
+  font-size: 0.8rem;
+  width: 100%;
 }
 
 .Autocomplete {
   max-width: 180px;
-}
-
-.createButton {
-  margin: 0 8px;
-  cursor: pointer;
-  height: 36px;
-  border-radius: 27px;
-  background: #2ea36a;
-  color: #ffffff;
-  font-size: 14px;
-  white-space: nowrap;
-  padding: 0 20px;
-}
-
-.createButton:hover {
-  background: #27905d;
 }

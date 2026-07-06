@@ -1134,12 +1134,14 @@ export const getGroups = {
           id: '19',
           label: 'Group 12',
           lastCommunicationAt: '2024-03-14T05:31:46Z',
+          primaryPhone: { id: '1', phone: '918416933261', label: 'Main' },
         },
         {
           bspId: '120363254553139323@g.us',
           id: '24',
           label: 'Group 7',
           lastCommunicationAt: '2024-03-14T03:57:42Z',
+          primaryPhone: null,
         },
         {
           bspId: '120363255430686472@g.us',

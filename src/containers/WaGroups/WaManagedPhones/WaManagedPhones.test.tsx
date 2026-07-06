@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import WaManagedPhones from './WaManagedPhones';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -97,11 +98,22 @@ test('it should change the value', async () => {
 });
 
 test('it should clear the value', async () => {
-  const { getByTitle } = render(
-    <ApolloProvider client={client}>
-      <WaManagedPhones phonenumber={[]} setPhonenumber={setPhoneNumberMock} />
-    </ApolloProvider>
-  );
+  const Wrapper = () => {
+    const [phones, setPhones] = useState<any>(null);
+    return (
+      <ApolloProvider client={client}>
+        <WaManagedPhones
+          phonenumber={phones}
+          setPhonenumber={(value: any) => {
+            setPhones(value);
+            setPhoneNumberMock(value);
+          }}
+        />
+      </ApolloProvider>
+    );
+  };
+
+  const { getByTitle } = render(<Wrapper />);
   const autoComplete = screen.getByTestId('AutocompleteInput');
 
   fireEvent.mouseDown(autoComplete);
@@ -114,10 +126,11 @@ test('it should clear the value', async () => {
     expect(setPhoneNumberMock).toHaveBeenCalled();
   });
 
+  // clearing the multi-select resets the filter to null
   fireEvent.click(getByTitle('Clear'));
 
   await waitFor(() => {
-    expect(setPhoneNumberMock).toHaveBeenCalled();
+    expect(setPhoneNumberMock).toHaveBeenLastCalledWith(null);
   });
 });
 
