@@ -1,13 +1,12 @@
-import { Tooltip } from '@mui/material';
+import { Tooltip as MuiTooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { t } from 'i18next';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
-import { templateLanguageInfo } from 'common/HelpData';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { capitalizeFirstLetter } from 'common/utils';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
@@ -94,38 +93,25 @@ const previewSlotProps = {
   arrow: { className: styles.PreviewArrow },
 };
 
-// status meta drives the label (header) and sentence (body) shown in the chip tooltip.
-const statusMeta = (status: string) => {
+// status label shown in the language chip tooltip.
+const statusLabel = (status: string) => {
   switch ((status || '').toUpperCase()) {
     case 'PENDING':
-      return { label: t('Pending'), text: t('the template in this language is pending.') };
+      return t('Pending');
     case 'REJECTED':
-      return { label: t('Rejected'), text: t('the template in this language was rejected.') };
+      return t('Rejected');
     case 'FAILED':
-      return { label: t('Failed'), text: t('the template in this language failed.') };
+      return t('Failed');
     default:
-      return { label: t('Approved'), text: t('the template in this language is approved.') };
+      return t('Approved');
   }
-};
-
-// designed status tooltip, styled like a WhatsApp message card.
-const statusTooltip = (status: string) => {
-  const meta = statusMeta(status);
-  return (
-    <div className={styles.PreviewCard}>
-      <div className={styles.PreviewHeader}>{meta.label}</div>
-      <div className={styles.PreviewBubble}>
-        <div className={styles.PreviewBody}>{meta.text}</div>
-      </div>
-    </div>
-  );
 };
 
 const languageChip = (variant: any, key: string | number) => {
   const status = variant.status;
   const label = variant.language?.label ?? variant.language;
   return (
-    <Tooltip key={key} title={statusTooltip(status)} placement="top" arrow slotProps={previewSlotProps}>
+    <Tooltip key={key} title={statusLabel(status)} placement="top">
       <span className={`${styles.LangChip} ${statusChipClass(status)}`}>
         <span className={styles.LangDot} />
         {languageCode(label)}
@@ -138,14 +124,14 @@ const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_
 
 const getTitle = (name: string, shortcode: string, primary: any) => (
   <div className={styles.LabelContainer}>
-    <Tooltip
+    <MuiTooltip
       title={messagePreview(primary, shortcode || name)}
       placement="bottom-start"
       arrow
       slotProps={previewSlotProps}
     >
       <div className={styles.LabelText}>{name}</div>
-    </Tooltip>
+    </MuiTooltip>
     {shortcode && <div className={styles.ShortCode}>{shortcode}</div>}
   </div>
 );
@@ -208,7 +194,7 @@ export const groupByShortcode = (items: any[] = []) => {
 // language chip + its category badge + relative date (or reason when filtering
 // by Rejected/Failed), aligned to the columns.
 export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
-  <Tooltip
+  <MuiTooltip
     key="body"
     title={messagePreview(variant, variant.title)}
     placement="bottom-start"
@@ -216,7 +202,7 @@ export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
     slotProps={previewSlotProps}
   >
     <p className={styles.CollapseBody}>{WhatsAppToJsx(variant.body)}</p>
-  </Tooltip>,
+  </MuiTooltip>,
   languageChip(variant, 'lang'),
   <p key="category" className={styles.TableText}>
     {categoryLabel(variant.category)}
@@ -235,14 +221,7 @@ export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
 
 export const getColumnNames = (showReason: boolean): any => [
   { name: 'label', label: t('Title') },
-  {
-    label: (
-      <span className={styles.HeaderWithIcon}>
-        {t('Languages')}
-        <HelpIcon darkIcon={false} helpData={templateLanguageInfo} />
-      </span>
-    ),
-  },
+  { label: t('Languages') },
   { label: t('Category') },
   showReason ? { label: t('Reason') } : { name: 'updated_at', label: t('Last updated') },
   { label: t('Actions') },

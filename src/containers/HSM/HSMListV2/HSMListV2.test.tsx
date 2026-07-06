@@ -73,23 +73,6 @@ test('renders page title and action buttons', async () => {
   expect(screen.getByText('Bulk apply')).toBeInTheDocument();
 });
 
-test('Languages column info icon shows the Green/Yellow/Red status legend on hover', async () => {
-  renderComponent();
-
-  const languagesHeader = await waitFor(() => screen.getByText('Languages').closest('span') as HTMLElement);
-
-  fireEvent.mouseOver(within(languagesHeader).getByTestId('help-icon'));
-
-  const tooltip = await waitFor(() => screen.getByRole('tooltip'));
-
-  // the translation key is just "Green" (no colon) — i18next's default nsSeparator
-  // is ':', and single-word keys like "Green:" get misparsed as a namespace and
-  // silently resolve to "". The colon is appended as plain JSX text instead.
-  expect(tooltip.textContent).toContain('Green:');
-  expect(tooltip.textContent).toContain('Yellow:');
-  expect(tooltip.textContent).toContain('Red:');
-});
-
 test('does not render the removed Template library button', async () => {
   renderComponent();
 

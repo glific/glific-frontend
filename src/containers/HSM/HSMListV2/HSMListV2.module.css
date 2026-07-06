@@ -14,12 +14,6 @@
   min-width: 160px;
 }
 
-.HeaderWithIcon {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
 .Category {
   width: 22%;
   min-width: 160px;
