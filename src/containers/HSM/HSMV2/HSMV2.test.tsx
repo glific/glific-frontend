@@ -13,19 +13,7 @@ import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
-import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import * as utilsModule from 'common/utils';
-import {
-  getTemplateAndButton,
-  getButtonTemplatePayload,
-  buildTemplatePayload,
-  buildSimulatorMessage,
-  buildTemplateButtonsList,
-  buildUpdatedButtons,
-  buildValidationSchema,
-  getField,
-  renderTextField,
-} from './HSMV2.helper';
 
 const uploadPhotoMock = {
   request: {
