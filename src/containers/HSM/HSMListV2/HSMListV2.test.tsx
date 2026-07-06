@@ -93,7 +93,7 @@ test('renders template rows after data loads', async () => {
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
-test('paginates by grouped row count, not the flat record count', async () => {
+test('paginates by the flat record count, not the grouped row count', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -101,8 +101,9 @@ test('paginates by grouped row count, not the flat record count', async () => {
   });
 
   // 5 flat language records collapse into 2 grouped rows (welcome_msg + feedback_form),
-  // so the pagination footer should read "of 2", not the server's flat count.
-  expect(screen.getByText(/of 2$/)).toBeInTheDocument();
+  // but the pager's offset/limit paginate the flat data, so the pagination footer
+  // must read "of 5" (the server's flat count) or later pages become unreachable.
+  expect(screen.getByText(/of 5$/)).toBeInTheDocument();
 });
 
 test('renders the status, category and tag filters', async () => {

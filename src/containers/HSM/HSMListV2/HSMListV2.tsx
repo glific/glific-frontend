@@ -313,10 +313,8 @@ const HSMListV2 = () => {
         dialogMessage={t('It will stop showing when you draft a customized message')}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
-        expandableRows
-        onToggleRow={toggleLanguages}
         groupRows={groupByShortcode}
-        collapsedColumns={getCollapsedColumns(showReason)}
+        expandableRow={{ onToggle: toggleLanguages, renderColumns: getCollapsedColumns(showReason) }}
         {...queries}
       />
     </>
