@@ -338,9 +338,11 @@
   margin-bottom: 24px;
 }
 
-/* Tighter spacing when the note sits directly above the form fields (login/registration hint) */
+/* Login/registration hint: give it room below the title but sit it close to the first
+   field (the negative bottom margin offsets the field's shared 15px .Spacing). */
 .InformationTextTight {
-  margin-bottom: 4px;
+  margin-top: 28px;
+  margin-bottom: -6px;
 }
 
 .Captcha {
