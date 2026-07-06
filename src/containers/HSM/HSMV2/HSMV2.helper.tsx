@@ -302,8 +302,8 @@ export interface ValidationSchemaContext {
 export const buildValidationSchema = ({ t, isAddButtonChecked, templateType }: ValidationSchemaContext) => {
   const validation: any = {
     language: Yup.object().nullable().required('Language is required.'),
-    // no separate Title field — label mirrors newShortcode, which is already validated
-    // below, so no independent validation is needed here.
+    // no Title field — the backend derives the label from shortcode + language, and
+    // newShortcode (below) already carries its own required/format validation.
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {

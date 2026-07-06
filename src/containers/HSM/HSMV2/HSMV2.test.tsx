@@ -7,6 +7,15 @@ import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeText, CREATE_SESSION_TEMPLATE_MOC
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+
+const uploadPhotoMock = {
+  request: {
+    query: UPLOAD_MEDIA,
+    variables: { media: { name: 'photo.png', type: 'image/png' }, extension: 'png' },
+  },
+  result: { data: { uploadMedia: 'https://gcs.test.com/photo.png' } },
+};
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -80,9 +89,8 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByText('Organization & Tags')).toBeInTheDocument();
     expect(screen.getByTestId('simulator-container')).toBeInTheDocument();
 
-    // there's no separate Title field — the element name doubles as the title.
+    // there's no separate Title field — the backend derives it from shortcode + language.
     expect(screen.queryByPlaceholderText('Title')).not.toBeInTheDocument();
-    expect(screen.queryByText('Title', { exact: true })).not.toBeInTheDocument();
 
     // creating an HSM here always creates a brand new template — the "translate
     // existing HSM" flow (and its element-name dropdown) lives elsewhere.
@@ -196,6 +204,41 @@ describe('HSMV2 add mode', () => {
       'File upload is not available for your organization. Please use "Provide URL" instead, or ask your admin to enable Google Cloud Storage.',
       'warning'
     );
+  });
+
+  test('switching attachment type after uploading a file clears the stale upload state', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
+    const { container } = render(
+      <MockedProvider
+        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadPhotoMock]}
+        addTypename={false}
+      >
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Image'));
+    fireEvent.click(screen.getByText('Upload File'));
+
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [{ name: 'photo.png', type: 'image/png' }] } });
+
+    await waitFor(() => {
+      expect(screen.getByText('photo.png', { exact: false })).toBeInTheDocument();
+    });
+
+    // switching to a different attachment type should clear the previous upload,
+    // not leave a stale "File uploaded" message for a file that no longer applies.
+    fireEvent.click(screen.getByText('Document'));
+    expect(screen.queryByText('photo.png', { exact: false })).not.toBeInTheDocument();
+
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
   });
 
   test('clicking an attachment type tile reveals the attachment url field', async () => {

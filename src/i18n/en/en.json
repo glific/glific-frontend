@@ -612,6 +612,8 @@
   "Temperature": "Temperature",
   "Upload File": "Upload File",
   "File upload is not available for your organization. Please use \"Provide URL\" instead, or ask your admin to enable Google Cloud Storage.": "File upload is not available for your organization. Please use \"Provide URL\" instead, or ask your admin to enable Google Cloud Storage.",
+  "File uploaded:": "File uploaded:",
+  "Change file": "Change file",
   "Manage Files": "Manage Files",
   "Allowed file formats: .csv, .doc, .docx, .htm, .html, .md, .markdown, .pdf, .txt": "Allowed file formats: .csv, .doc, .docx, .htm, .html, .md, .markdown, .pdf, .txt",
   "Manage Knowledge Base": "Manage Knowledge Base",

@@ -240,6 +240,8 @@
   "Provide URL": "URL प्रदान करें",
   "Uploading...": "अपलोड हो रहा है...",
   "File upload is not available for your organization. Please use \"Provide URL\" instead, or ask your admin to enable Google Cloud Storage.": "फ़ाइल अपलोड आपके संगठन के लिए उपलब्ध नहीं है। कृपया इसके बजाय \"URL प्रदान करें\" का उपयोग करें, या Google Cloud Storage सक्षम करने के लिए अपने व्यवस्थापक से संपर्क करें।",
+  "File uploaded:": "फ़ाइल अपलोड हो गई:",
+  "Change file": "फ़ाइल बदलें",
   "Click to upload or drag and drop": "अपलोड करने के लिए क्लिक करें या खींचकर छोड़ें",
   "Upload a sample file for approval. You can send different content when using the template.": "अनुमोदन के लिए एक नमूना फ़ाइल अपलोड करें। टेम्पलेट का उपयोग करते समय आप अलग सामग्री भेज सकते हैं।",
   "https://example.com/image.jpg": "https://example.com/image.jpg",
