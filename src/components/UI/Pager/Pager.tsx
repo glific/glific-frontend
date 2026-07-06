@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment } from 'react';
 import {
   Table,
   TableHead,
@@ -32,71 +32,59 @@ interface PagerProps {
   noItemsText?: any;
   showPagination?: boolean;
   checkboxSupport?: { action: any; icon: any; selectedItems: any };
-  // Opt-in: fully replace the default label+body sub-row with the caller's own
-  // <TableRow> markup (used by the HSM template list to show richer per-language
-  // cells — status chip, category, date — than plain text can express via the
-  // JSON-serialized `translations` field). Undefined by default, so existing
-  // consumers (e.g. InteractiveMessageList) keep the default rendering below.
-  renderCollapsedRow?: (entry: any, key: string) => ReactNode;
 }
 
 // TODO: cleanup the translations code
-const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
-  // label + body only use the first two columns; empty trailing cells keep the
-  // sub-row's width aligned with the parent row when there are more columns.
-  const trailingCellCount = columnStyles ? Math.max(columnStyles.length - 2, 0) : 0;
-  const trailingCells = (keyPrefix: string) =>
-    Array.from({ length: trailingCellCount }, (_, i) => (
-      <TableCell key={`${keyPrefix}-${i}`} className={columnStyles[i + 2]} />
-    ));
+// Each entry is either the generic { label, body } pair (InteractiveMessageList)
+// or a caller-built { cells: [...] } array with one node per column (HSM
+// template list, whose per-language rows need a status chip/category/date
+// rather than plain text). Falls back to label+body when cells isn't given.
+const rowCells = (entryData: any) => {
+  if (Array.isArray(entryData.cells)) return entryData.cells;
 
+  // This is for location translation type where the text is inside body.
+  const body = typeof entryData.body === 'string' ? entryData.body : entryData.body.text;
+  return [
+    <div key="label">
+      <div className={styles.LabelText}>{entryData.label}</div>
+    </div>,
+    <div key="body">
+      <p className={styles.TableText}>{body}</p>
+    </div>,
+  ];
+};
+
+const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
     return (
-      <TableRow className={styles.CollapseTableRow}>
+      <TableRow>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
           </div>
         </TableCell>
-        {trailingCells('empty')}
       </TableRow>
     );
   }
 
-  const additionalRowInformation = Object.keys(dataObj).map((key, index) => {
+  return Object.keys(dataObj).map((key, index) => {
     const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
-
-    // This is for location translation type where the text is inside body.
-    const body = typeof dataObj[key].body === 'string' ? dataObj[key].body : dataObj[key].body.text;
+    const cells = rowCells(dataObj[key]);
 
     return (
       <TableRow key={rowIdentifier}>
-        <TableCell className={`${columnStyles ? columnStyles[0] : null}`}>
-          <div>
-            <div className={styles.LabelText}>{dataObj[key].label}</div>
-          </div>
-        </TableCell>
-        <TableCell className={`${columnStyles ? columnStyles[1] : null}`}>
-          <div>
-            <p className={styles.TableText}>{body}</p>
-          </div>
-        </TableCell>
-        {trailingCells(rowIdentifier)}
+        {cells.map((cell: any, cellIndex: number) => (
+          <TableCell key={cellIndex} className={`${columnStyles && columnStyles[cellIndex]} ${styles.RowStyle}`}>
+            {cell}
+          </TableCell>
+        ))}
       </TableRow>
     );
   });
-
-  return additionalRowInformation;
 };
 
-const createRows = (
-  data: any,
-  columnStyles: any,
-  collapseRow?: string,
-  collapseOpen: boolean = false,
-  renderCollapsedRow?: (entry: any, key: string) => ReactNode
-) => {
+const createRows = (data: any, columnStyles: any, collapseRow?: string, collapseOpen: boolean = false) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
     return Object.keys(entry).map((item: any) => {
@@ -121,18 +109,17 @@ const createRows = (
   return data.map((entry: any) => {
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
-    if (entry.translations) dataObj = JSON.parse(entry.translations);
+    // translations can be a JSON string (InteractiveMessageList, sent as-is from
+    // a GraphQL field) or a plain object built client-side (HSM template list,
+    // whose cells carry JSX that can't round-trip through JSON).
+    if (entry.translations) {
+      dataObj = typeof entry.translations === 'string' ? JSON.parse(entry.translations) : entry.translations;
+    }
 
     return (
       <Fragment key={entry.recordId}>
         <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
-        {collapseOpen && dataObj && entry.id === collapseRow
-          ? renderCollapsedRow
-            ? Object.keys(dataObj).map((key, index) =>
-                renderCollapsedRow(dataObj[key], `collapsedRowData-${entry.recordId}-${index}`)
-              )
-            : collapsedRowData(dataObj, columnStyles, entry.recordId)
-          : null}
+        {collapseOpen && dataObj && entry.id === collapseRow ? collapsedRowData(dataObj, columnStyles, entry.recordId) : null}
       </Fragment>
     );
   });
@@ -230,9 +217,8 @@ export const Pager = ({
   noItemsText,
   showPagination = true,
   checkboxSupport,
-  renderCollapsedRow,
 }: PagerProps) => {
-  const rows = createRows(data, columnStyles, collapseRow, collapseOpen, renderCollapsedRow);
+  const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,

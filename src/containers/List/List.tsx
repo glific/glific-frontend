@@ -144,9 +144,6 @@ export interface ListProps {
   // Opt-in transform applied to the fetched rows before they are rendered,
   // e.g. to group flat per-language rows into one row per template.
   groupRows?: (items: any[]) => any[];
-  // Opt-in: fully replace the default label+body sub-row with the caller's own
-  // <TableRow> markup (used only by the HSM template list today).
-  renderCollapsedRow?: (entry: any, key: string) => React.ReactNode;
   showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
@@ -206,7 +203,6 @@ export const List = ({
   collapseOpen = false,
   collapseRow = undefined,
   groupRows,
-  renderCollapsedRow,
   noItemText = null,
   customStyles,
   showActions = true,
@@ -776,7 +772,6 @@ export const List = ({
       tableVals={tableVals}
       collapseOpen={collapseOpen}
       collapseRow={collapseRow}
-      renderCollapsedRow={renderCollapsedRow}
       loadingList={loadingList || loading || l || loadingCollections}
       noItemsText={noItemsText}
       showPagination={countQuery ? true : false}

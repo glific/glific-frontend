@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { FormControl, LinearProgress, MenuItem, Select, TableCell, TableRow } from '@mui/material';
+import { FormControl, LinearProgress, MenuItem, Select } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { t } from 'i18next';
@@ -25,7 +25,6 @@ import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Temp
 
 import styles from './HSMListV2.module.css';
 import {
-  getCollapsedColumns,
   getColumnNames,
   getColumnStyles,
   getColumns,
@@ -35,22 +34,6 @@ import {
   statusFilter,
   templateIcon,
 } from './HSMListV2.helper';
-
-// one fully-built row per language variant, using the same column widths as
-// the parent row so the sub-row lines up under Title/Languages/Category/etc.
-const renderCollapsedRow = (showReason: boolean) => {
-  const renderColumns = getCollapsedColumns(showReason);
-  const columnStyles = getColumnStyles(showReason);
-  return (entry: any, key: string) => (
-    <TableRow key={key} className={styles.CollapseRowCustom}>
-      {renderColumns(entry).map((cell, index) => (
-        <TableCell key={index} className={`${columnStyles[index]} ${styles.RowStyle}`}>
-          {cell}
-        </TableCell>
-      ))}
-    </TableRow>
-  );
-};
 
 const HSMListV2 = () => {
   const navigate = useNavigate();
@@ -330,7 +313,6 @@ const HSMListV2 = () => {
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
         groupRows={groupByShortcode}
-        renderCollapsedRow={renderCollapsedRow(showReason)}
         {...queries}
       />
     </>

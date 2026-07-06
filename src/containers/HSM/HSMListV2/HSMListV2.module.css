@@ -211,22 +211,6 @@
   padding-right: 16px;
 }
 
-/* matches Pager's default cell padding, since these rows are built here. */
-.RowStyle {
-  padding: 15px 20px 15px 25px;
-}
-
-/* child rows get a green left accent to visually nest under the parent. */
-.CollapseRowCustom {
-  background-color: #fff;
-  box-shadow: inset 3px 0 0 0 #28a745;
-  border-bottom: 1px solid #eeede9;
-}
-
-.CollapseRowCustom:hover {
-  background-color: #f5f4f0;
-}
-
 .LastModifiedText {
   font-size: 13px;
   color: #6b7280;
