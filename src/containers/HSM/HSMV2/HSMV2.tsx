@@ -392,12 +392,10 @@ export const HSMV2 = () => {
       name: 'newShortcode',
       placeholder: `${t('Element name')}`,
       disabled: isEditing,
-      // the backend derives the template's title (label) from shortcode + language —
-      // there's no separate Title field for the user to fill in.
-      onChange: (value: any) => {
-        setNewShortcode(value);
-        setLabel(value);
-      },
+      // the backend derives the template's title (label) from shortcode + language when
+      // label is blank — there's no separate Title field for the user to fill in, so we
+      // send label as-is (empty in create mode) and let the backend name it.
+      onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
     {
