@@ -195,6 +195,14 @@ export const Auth = ({
           </div>
         )}
 
+        {(mode === 'login' || mode === 'registration') && (
+          <div className={styles.InformationText} data-testid="whatsAppNumberHint">
+            {t(
+              "Use your personal WhatsApp number to log in or create your account. Do not use your chatbot's WhatsApp number."
+            )}
+          </div>
+        )}
+
         <Formik
           initialValues={initialFormValues}
           validationSchema={validationSchema}
