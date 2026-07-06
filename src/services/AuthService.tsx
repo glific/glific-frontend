@@ -87,7 +87,6 @@ export const checkAuthStatusService = () => {
     if (tokenExpiryTime.getTime() - now.getTime() > bufferMs) {
       // token is still valid (with buffer) return true
       authStatus = true;
-      setLogs(`Token valid. Expires in ${Math.floor((tokenExpiryTime.getTime() - now.getTime()) / 1000)}s`, 'info');
     } else {
       // this means token has expired or is about to expire
       authStatus = false;

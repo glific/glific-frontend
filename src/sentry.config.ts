@@ -29,7 +29,7 @@ Sentry.init({
   environment,
   debug: false,
 
-  tracesSampleRate: isProduction ? 0.1 : 1,
+  tracesSampleRate: isProduction ? 0.5 : 1,
   attachStacktrace: true,
   replaysOnErrorSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
@@ -44,7 +44,6 @@ Sentry.init({
   denyUrls: DENY_URLS,
 
   beforeSend(event) {
-    if (event.level && !['error', 'fatal'].includes(event.level)) return null;
     if (event.exception && !hasInAppFrame(event)) return null;
     return event;
   },

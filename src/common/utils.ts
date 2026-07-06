@@ -106,7 +106,7 @@ export const copyToClipboardMethod = (text: string) => {
 export { copyToClipboardMethod as copyToClipboard };
 
 export const addLogsMethod = (event: string, logData: any) => {
-  setLogs(`${event} with data ${JSON.stringify(logData)}`, 'info', true);
+  setLogs(`${event} with data ${JSON.stringify(logData)}`, 'info', false);
 };
 
 export const downloadFile = (url: string, filename: string) => {
