@@ -4,6 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { t } from 'i18next';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
+import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { capitalizeFirstLetter } from 'common/utils';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
@@ -122,16 +123,34 @@ const languageChip = (variant: any, key: string | number) => {
 
 const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_').join(' ').toLowerCase());
 
-const getTitle = (name: string, shortcode: string, primary: any) => (
+// leading chevron toggles the row's language variants open/closed. Always
+// shown so the column stays aligned across rows, even for single-language
+// templates.
+const getTitle = (name: string, shortcode: string, primary: any, isOpen: boolean, onToggle: () => void) => (
   <div className={styles.LabelContainer}>
-    <MuiTooltip
-      title={messagePreview(primary, shortcode || name)}
-      placement="bottom-start"
-      arrow
-      slotProps={previewSlotProps}
-    >
-      <div className={styles.LabelText}>{name}</div>
-    </MuiTooltip>
+    <div className={styles.TitleRow}>
+      <button
+        type="button"
+        data-testid="expand-toggle"
+        aria-label={t('Toggle language variants')}
+        aria-expanded={isOpen}
+        className={`${styles.ChevronBtn} ${isOpen ? styles.ChevronOpen : ''}`}
+        onClick={(event) => {
+          event.stopPropagation();
+          onToggle();
+        }}
+      >
+        <DownArrow />
+      </button>
+      <MuiTooltip
+        title={messagePreview(primary, shortcode || name)}
+        placement="bottom-start"
+        arrow
+        slotProps={previewSlotProps}
+      >
+        <div className={styles.LabelText}>{name}</div>
+      </MuiTooltip>
+    </div>
     {shortcode && <div className={styles.ShortCode}>{shortcode}</div>}
   </div>
 );
@@ -167,32 +186,10 @@ const getReason = (reason: string) => <p className={styles.TableText}>{reason}</
 // the Reason column replaces "Last updated" when filtering by Rejected/Failed.
 export const showReasonColumn = (status: string) => status === 'REJECTED' || status === 'FAILED';
 
-// HSM templates come back from the backend as flat, one-row-per-language records.
-// Group them by shortcode so each template shows as a single parent row, keeping
-// the full variant list so the parent can render the Languages/Category columns
-// and the expand chevron can reveal each language as a child row. Templates
-// without a shortcode can't be grouped, so they stay standalone (keyed by id).
-export const groupByShortcode = (items: any[] = []) => {
-  const groups = new Map<string, any[]>();
-  items.forEach((item) => {
-    const key = item.shortcode ? `sc:${item.shortcode}` : `id:${item.id}`;
-    const group = groups.get(key);
-    if (group) group.push(item);
-    else groups.set(key, [item]);
-  });
-
-  return Array.from(groups.values()).map((variants) => {
-    // show the English variant as the parent row when present, else the first.
-    const primary = variants.find((variant) => variant.language?.label === 'English') ?? variants[0];
-    // most recently updated variant drives the parent's "last updated".
-    const latest = variants.reduce((a, b) => (dayjs(b.updatedAt).isAfter(dayjs(a.updatedAt)) ? b : a));
-    return { ...primary, updatedAt: latest.updatedAt, variants };
-  });
-};
-
-// each child row of an expanded group renders the variant's body + a single
-// language chip + its category badge + relative date (or reason when filtering
-// by Rejected/Failed), aligned to the columns.
+// each expanded child row renders the variant's body + a single language chip
+// + its category badge + relative date (or reason when filtering by
+// Rejected/Failed), aligned to the same columns as the parent row. Returns
+// cell content only — HSMListV2.tsx wraps this into the actual <TableRow>.
 export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
   <MuiTooltip
     key="body"
@@ -219,6 +216,29 @@ export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
   <div key="actions" className={styles.Actions} />,
 ];
 
+// HSM templates come back from the backend as flat, one-row-per-language records.
+// Group them by shortcode so each template shows as a single parent row, keeping
+// the full variant list so the parent can render the Languages/Category columns
+// and the expand chevron can reveal each language as a child row. Templates
+// without a shortcode can't be grouped, so they stay standalone (keyed by id).
+export const groupByShortcode = (items: any[] = []) => {
+  const groups = new Map<string, any[]>();
+  items.forEach((item) => {
+    const key = item.shortcode ? `sc:${item.shortcode}` : `id:${item.id}`;
+    const group = groups.get(key);
+    if (group) group.push(item);
+    else groups.set(key, [item]);
+  });
+
+  return Array.from(groups.values()).map((variants) => {
+    // show the English variant as the parent row when present, else the first.
+    const primary = variants.find((variant) => variant.language?.label === 'English') ?? variants[0];
+    // most recently updated variant drives the parent's "last updated".
+    const latest = variants.reduce((a, b) => (dayjs(b.updatedAt).isAfter(dayjs(a.updatedAt)) ? b : a));
+    return { ...primary, updatedAt: latest.updatedAt, variants };
+  });
+};
+
 export const getColumnNames = (showReason: boolean): any => [
   { name: 'label', label: t('Title') },
   { label: t('Languages') },
@@ -235,7 +255,10 @@ export const getColumnStyles = (showReason: boolean): any => [
   styles.Actions,
 ];
 
-// build the per-variant data the collapse renderer reads, keyed by language id.
+// Per-variant data the collapse renderer reads, keyed by language id. Passed
+// through Pager as a JSON string (parsed back into a plain object before
+// getCollapsedColumns turns it into JSX), so every field here must stay
+// plain/serializable.
 const buildVariantData = (variants: any[] = []) =>
   variants.reduce((acc: Record<string, any>, variant, index) => {
     acc[variant.language?.id ?? `v-${index}`] = {
@@ -252,10 +275,12 @@ const buildVariantData = (variants: any[] = []) =>
   }, {});
 
 export const getColumns =
-  (showReason: boolean) =>
+  (showReason: boolean, collapseOpen: boolean, collapseRow: string | undefined, onToggle: (id: string) => void) =>
   ({ id, label, shortcode, updatedAt, reason, variants, body, footer, language }: any) => ({
     id,
-    label: getTitle(label || shortcode, shortcode, { body, footer, language }),
+    label: getTitle(label || shortcode, shortcode, { body, footer, language }, collapseOpen && collapseRow === id, () =>
+      onToggle(id)
+    ),
     languages: getLanguages(variants),
     category: getCategories(variants),
     ...(showReason ? { reason: getReason(reason) } : { updatedAt: getUpdatedAt(updatedAt) }),

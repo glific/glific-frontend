@@ -144,17 +144,9 @@ export interface ListProps {
   // Opt-in transform applied to the fetched rows before they are rendered,
   // e.g. to group flat per-language rows into one row per template.
   groupRows?: (items: any[]) => any[];
-  // Opt-in expandable sub-rows (used only by the HSM template list today, to
-  // show language variants under a parent template row). The caller supplies
-  // every piece of rendering/styling, so this single-consumer feature doesn't
-  // spread generic-list code (List/Pager) with HSM-specific markup.
-  expandableRow?: {
-    onToggle: (id: string) => void;
-    renderToggleCell: (hasVariants: boolean, isOpen: boolean, onToggle: () => void) => React.ReactNode;
-    renderHeadSpacer: () => React.ReactNode;
-    renderCollapsedRow: (entry: any, key: string) => React.ReactNode;
-    parentRowClassName?: (isOpen: boolean) => string;
-  };
+  // Opt-in: fully replace the default label+body sub-row with the caller's own
+  // <TableRow> markup (used only by the HSM template list today).
+  renderCollapsedRow?: (entry: any, key: string) => React.ReactNode;
   showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
@@ -214,7 +206,7 @@ export const List = ({
   collapseOpen = false,
   collapseRow = undefined,
   groupRows,
-  expandableRow,
+  renderCollapsedRow,
   noItemText = null,
   customStyles,
   showActions = true,
@@ -784,7 +776,7 @@ export const List = ({
       tableVals={tableVals}
       collapseOpen={collapseOpen}
       collapseRow={collapseRow}
-      expandableRow={expandableRow}
+      renderCollapsedRow={renderCollapsedRow}
       loadingList={loadingList || loading || l || loadingCollections}
       noItemsText={noItemsText}
       showPagination={countQuery ? true : false}

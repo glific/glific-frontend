@@ -396,6 +396,8 @@ test('expands a template to reveal its other language variants', async () => {
   // the Hindi variant is hidden until the row is expanded
   expect(screen.queryByText('Namaste {{1}}, swagat hai!')).not.toBeInTheDocument();
 
+  // chevron sits inline with the title and drives the same collapseOpen/collapseRow state
+  // InteractiveMessageList uses, just rendered as part of the label cell instead of a separate column.
   const expandIcons = await screen.findAllByTestId('expand-toggle');
   fireEvent.click(expandIcons[0]);
 
