@@ -3,11 +3,29 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSMV2 } from './HSMV2';
-import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeText, CREATE_SESSION_TEMPLATE_MOCK } from 'mocks/Template';
+import {
+  HSM_TEMPLATE_MOCKS,
+  getHSMTemplateTypeText,
+  getHSMTemplateTypeMedia,
+  CREATE_SESSION_TEMPLATE_MOCK,
+} from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import * as utilsModule from 'common/utils';
+import {
+  getTemplateAndButton,
+  getButtonTemplatePayload,
+  buildTemplatePayload,
+  buildSimulatorMessage,
+  buildTemplateButtonsList,
+  buildUpdatedButtons,
+  buildValidationSchema,
+  getField,
+  renderTextField,
+} from './HSMV2.helper';
 
 const uploadPhotoMock = {
   request: {
@@ -39,6 +57,8 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   };
 });
 
+const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
+
 describe('HSMV2 edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
@@ -58,6 +78,50 @@ describe('HSMV2 edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('account_balance');
+    });
+  });
+
+  test('edit mode with a media attachment and Call to Action buttons loads the media/type/button state', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
+    });
+  });
+
+  test('copy mode prefixes the label with "Copy of" and leaves the element name blank', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, ...CREATE_SESSION_TEMPLATE_MOCK];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/templates/1/edit', state: 'copy' }]}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Copy HSM Template')).toBeInTheDocument();
+    });
+
+    // shortcode/isActive aren't carried over in copy mode — only the label is prefilled
+    // (with a "Copy of" prefix), so the user has to type a fresh element name.
+    await waitFor(() => {
+      expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
     });
   });
 });
@@ -252,5 +316,209 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByText('Clear attachment selection')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('https://example.com/image.jpg')).toBeInTheDocument();
     expect(screen.getByText('Max file size:', { exact: false })).toBeInTheDocument();
+  });
+
+  test('clicking Clear attachment selection resets the attachment type', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Image'));
+    expect(screen.getByText('Clear attachment selection')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Clear attachment selection'));
+    expect(screen.queryByText('Clear attachment selection')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('https://example.com/image.jpg')).not.toBeInTheDocument();
+  });
+
+  test('switching from Upload File back to Provide URL brings back the URL field', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Image'));
+    fireEvent.click(screen.getByText('Upload File'));
+    expect(screen.getByText('Click to upload or drag and drop')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Provide URL'));
+    expect(screen.queryByText('Click to upload or drag and drop')).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText('https://example.com/image.jpg')).toBeInTheDocument();
+
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
+  });
+
+  test('uploading a PDF for the Document type shows the upload success state', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
+    const uploadPdfMock = {
+      request: {
+        query: UPLOAD_MEDIA,
+        variables: { media: { name: 'sample.pdf', type: 'application/pdf' }, extension: 'pdf' },
+      },
+      result: { data: { uploadMedia: 'https://gcs.test.com/sample.pdf' } },
+    };
+    const { container } = render(
+      <MockedProvider
+        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadPdfMock]}
+        addTypename={false}
+      >
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Document'));
+    fireEvent.click(screen.getByText('Upload File'));
+
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [{ name: 'sample.pdf', type: 'application/pdf' }] } });
+
+    await waitFor(() => {
+      expect(screen.getByText('sample.pdf', { exact: false })).toBeInTheDocument();
+    });
+
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
+  });
+
+  test('upload failure shows an error notification and resets the upload state', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
+    const uploadFailureMock = {
+      request: {
+        query: UPLOAD_MEDIA,
+        variables: { media: { name: 'broken.png', type: 'image/png' }, extension: 'png' },
+      },
+      error: new Error('upload failed'),
+    };
+    const { container } = render(
+      <MockedProvider
+        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadFailureMock]}
+        addTypename={false}
+      >
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Image'));
+    fireEvent.click(screen.getByText('Upload File'));
+
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [{ name: 'broken.png', type: 'image/png' }] } });
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('File upload failed. Please try again.', 'error');
+    });
+    // the dropzone should come back since the upload state was reset after the failure
+    expect(screen.getByText('Click to upload or drag and drop')).toBeInTheDocument();
+
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
+  });
+
+  test('typing an attachment URL triggers media validation', async () => {
+    validateMediaSpy.mockResolvedValueOnce({ data: { is_valid: true } } as any);
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Image'));
+    const urlInput = screen.getByPlaceholderText('https://example.com/image.jpg');
+    fireEvent.change(urlInput, { target: { value: '  https://example.com/img.png  ' } });
+    fireEvent.blur(urlInput);
+
+    await waitFor(() => {
+      expect(validateMediaSpy).toHaveBeenCalledWith('https://example.com/img.png', 'IMAGE', false);
+    });
+  });
+
+  test('selecting a language updates the language field', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    expect(screen.getAllByRole('combobox')[0]).toHaveValue('Marathi');
+  });
+
+  test('selecting a tag updates the tag field', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    const tagCombo = autocompletes[autocompletes.length - 1];
+    tagCombo.focus();
+    fireEvent.keyDown(tagCombo, { key: 'ArrowDown' });
+
+    fireEvent.click(await screen.findByText('Messages'));
+
+    expect(screen.getAllByRole('combobox').at(-1)).toHaveValue('Messages');
+  });
+
+  test('navigating to Call to Action lets you add, edit, and remove buttons', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Call to Action'));
+    fireEvent.click(screen.getByText('Phone number'));
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('Button Value'), { target: { value: '9876543210' } });
+
+    // adding a second button while a phone_number button already exists defaults it to "url"
+    fireEvent.click(screen.getByTestId('addButton'));
+    const urlTypeCombo = await screen.findByLabelText('Select URL Type');
+    fireEvent.mouseDown(urlTypeCombo);
+    fireEvent.click(await screen.findByText('Dynamic'));
+
+    expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
+    fireEvent.click(screen.getAllByTestId('delete-icon')[1]);
+    expect(screen.queryAllByTestId('delete-icon')).toHaveLength(0);
+  });
+
+  test('clicking Back to templates navigates back to the HSM list', async () => {
+    render(
+      <MockedProvider mocks={[...mocks, ...WHATSAPP_FORM_MOCKS]} addTypename={false}>
+        <MemoryRouter initialEntries={['/template-v2/add']}>
+          <Routes>
+            <Route path="/template-v2/add" element={<HSMV2 />} />
+            <Route path="/template-v2" element={<div>HSM list page</div>} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Back to templates'));
+    expect(screen.getByText('HSM list page')).toBeInTheDocument();
   });
 });
