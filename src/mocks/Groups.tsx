@@ -1548,3 +1548,63 @@ export const syncPhoneStatusesMock = {
     },
   },
 };
+
+export const syncPhoneStatusesErrorsMock = {
+  request: { query: SYNC_WA_MANAGED_PHONE_STATUSES },
+  result: {
+    data: {
+      syncWaManagedPhoneStatuses: {
+        message: null,
+        errors: [{ key: 'maytapi', message: 'Maytapi is not active' }],
+      },
+    },
+  },
+};
+
+export const syncPhoneStatusesNetworkErrorMock = {
+  request: { query: SYNC_WA_MANAGED_PHONE_STATUSES },
+  error: new Error('Network error'),
+};
+
+// screen poll returns the phone reconnected (used to drive the pending -> active flow)
+export const phoneScreenActiveMock = {
+  request: { query: WHATSAPP_PHONE_SCREEN, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      whatsappPhoneScreen: {
+        waPhoneScreen: { code: 'data:image/png;base64,QQ==', status: 'active', expiresAt: '2026-07-03T10:00:20Z' },
+        errors: null,
+      },
+    },
+  },
+};
+
+// screen with no QR payload yet
+export const phoneScreenNoCodeMock = {
+  request: { query: WHATSAPP_PHONE_SCREEN, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      whatsappPhoneScreen: {
+        waPhoneScreen: { code: null, status: 'qr-screen', expiresAt: null },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const reconnectPhoneErrorsMock = {
+  request: { query: RECONNECT_WA_MANAGED_PHONE, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      reconnectWaManagedPhone: {
+        waManagedPhone: null,
+        errors: [{ key: 'phone', message: 'This WhatsApp phone is already connected.' }],
+      },
+    },
+  },
+};
+
+export const reconnectPhoneNetworkErrorMock = {
+  request: { query: RECONNECT_WA_MANAGED_PHONE, variables: { waManagedPhoneId: '2' } },
+  error: new Error('Network error'),
+};
