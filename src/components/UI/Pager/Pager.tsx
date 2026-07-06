@@ -119,7 +119,9 @@ const createRows = (data: any, columnStyles: any, collapseRow?: string, collapse
     return (
       <Fragment key={entry.recordId}>
         <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
-        {collapseOpen && dataObj && entry.id === collapseRow ? collapsedRowData(dataObj, columnStyles, entry.recordId) : null}
+        {collapseOpen && dataObj && entry.id === collapseRow
+          ? collapsedRowData(dataObj, columnStyles, entry.recordId)
+          : null}
       </Fragment>
     );
   });

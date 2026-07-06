@@ -231,37 +231,39 @@ export const getColumnStyles = (showReason: boolean): any => [
 // live JSX (not JSON-serialized), so Pager's generic collapsedRowData can
 // render these `cells` directly instead of only the plain label+body pair
 // InteractiveMessageList uses.
-const buildVariantData = (showReason: boolean) => (variants: any[] = []) =>
-  variants.reduce((acc: Record<string, any>, variant, index) => {
-    acc[variant.language?.id ?? `v-${index}`] = {
-      cells: [
-        <MuiTooltip
-          key="body"
-          title={messagePreview(variant, variant.shortcode || variant.label)}
-          placement="bottom-start"
-          arrow
-          slotProps={previewSlotProps}
-        >
-          <p className={styles.CollapseBody}>{WhatsAppToJsx(variant.body)}</p>
-        </MuiTooltip>,
-        languageChip(variant, 'lang'),
-        <p key="category" className={styles.TableText}>
-          {categoryLabel(variant.category)}
-        </p>,
-        showReason ? (
-          <p key="reason" className={styles.TableText}>
-            {variant.reason}
-          </p>
-        ) : (
-          <div key="updated" className={styles.LastModifiedText}>
-            {dayjs(variant.updatedAt).fromNow()}
-          </div>
-        ),
-        <div key="actions" className={styles.Actions} />,
-      ],
-    };
-    return acc;
-  }, {});
+const buildVariantData =
+  (showReason: boolean) =>
+  (variants: any[] = []) =>
+    variants.reduce((acc: Record<string, any>, variant, index) => {
+      acc[variant.language?.id ?? `v-${index}`] = {
+        cells: [
+          <MuiTooltip
+            key="body"
+            title={messagePreview(variant, variant.shortcode || variant.label)}
+            placement="bottom-start"
+            arrow
+            slotProps={previewSlotProps}
+          >
+            <p className={styles.CollapseBody}>{WhatsAppToJsx(variant.body)}</p>
+          </MuiTooltip>,
+          languageChip(variant, 'lang'),
+          <p key="category" className={styles.TableText}>
+            {categoryLabel(variant.category)}
+          </p>,
+          showReason ? (
+            <p key="reason" className={styles.TableText}>
+              {variant.reason}
+            </p>
+          ) : (
+            <div key="updated" className={styles.LastModifiedText}>
+              {dayjs(variant.updatedAt).fromNow()}
+            </div>
+          ),
+          <div key="actions" className={styles.Actions} />,
+        ],
+      };
+      return acc;
+    }, {});
 
 export const getColumns =
   (showReason: boolean, collapseOpen: boolean, collapseRow: string | undefined, onToggle: (id: string) => void) =>
