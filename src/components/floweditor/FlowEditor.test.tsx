@@ -542,24 +542,7 @@ test('flow editor becomes editable immediately after Take Over succeeds, without
 
   const setConfigSpy = vi.spyOn(FlowEditorHelper, 'setConfig');
 
-  const takeOverMocks = [
-    messageReceivedSubscription({ organizationId: null }),
-    messageSendSubscription({ organizationId: null }),
-    conversationQuery,
-    simulatorReleaseSubscription({ organizationId: null }),
-    simulatorReleaseQuery,
-    simulatorGetQuery,
-    simulatorGetQuery,
-    simulatorSearchQuery,
-    simulatorSearchQuery,
-    publishFlow,
-    getOrganizationServicesQuery,
-    getFreeFlow,
-    getFreeFlowForced,
-    getFlowTranslations,
-    exportFlow,
-    getActiveFlow,
-  ];
+  const takeOverMocks = [...mocks, getFreeFlowForced, getActiveFlow];
 
   const { container } = render(wrapperFunction(takeOverMocks));
 
