@@ -229,23 +229,19 @@ describe('<FlowList />', () => {
     });
   });
 
-  test('should create from scratch ', async () => {
+  test('should create a flow directly (no template dialog)', async () => {
     render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
     });
 
+    // Create now goes straight to the flow editor — no "from Scratch / from
+    // Template" dialog (templates on hold, glific/glific#5332).
     fireEvent.click(screen.getByTestId('newItemButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('middle-button'));
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/add');
     });
   });
 
@@ -286,7 +282,6 @@ describe('<FlowList />', () => {
     fireEvent.keyDown(autoComplete, { key: 'Enter' });
 
     fireEvent.click(screen.getByTestId('newItemButton'));
-    fireEvent.click(screen.getByTestId('middle-button'));
 
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/add', { state: { tag: { id: '1', label: 'Messages' } } });
@@ -343,82 +338,10 @@ describe('<FlowList />', () => {
 });
 
 describe('Template flows', () => {
-  test('it opens and closes dialog box', async () => {
-    render(flowList());
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    // test if it closes the dialog
-    fireEvent.click(screen.getByTestId('CloseIcon'));
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
-  });
-
-  test('it shows and creates a template flows', async () => {
-    render(flowList());
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Template Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('viewIt')[0]);
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
-  });
-
-  test('click on Use it for templates', async () => {
-    render(flowList());
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Template Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('copyTemplate')[0]);
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
-  });
+  // NOTE: the "Create from Scratch / from Template" dialog and the template-list
+  // view/copy actions are no longer reachable from the UI while templates are on
+  // hold (glific/glific#5332), so their tests were removed. The template code and
+  // the import-flow rendering below are unchanged and still covered.
 
   test('Template flows > should display assistant nodes that need an assistant assigned', async () => {
     const inDialog = await renderImportFlowDialog(importFlowWithAssistantError);
