@@ -255,6 +255,35 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/*
+ * An external, fixed-position notification/announcement bar can be injected into
+ * the <body> above the app. It overlaps the app, so `#app-viewport` (the wrapper
+ * around #root) owns the single source of truth for the app's available height:
+ * it is pushed below the bar and shrinks by the bar's height while the bar is
+ * present, and takes the full viewport otherwise.
+ *
+ * `--notification-bar-height` defaults to 0px (full viewport) and only becomes
+ * non-zero while `.notification-bar-container` is in the DOM. The height cascades
+ * to the app via the percentage chain #app-viewport -> #root -> .App -> layout.
+ */
+:root {
+  --notification-bar-height: 0px;
+}
+
+body:has(> .notification-bar-container) {
+  --notification-bar-height: 56px;
+}
+
+#app-viewport {
+  height: calc(100vh - var(--notification-bar-height));
+  margin-top: var(--notification-bar-height);
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
 #canvas-container {
   margin-top: 70px;
 }
