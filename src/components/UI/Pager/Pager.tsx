@@ -10,12 +10,30 @@ import {
   TableContainer,
   Skeleton,
 } from '@mui/material';
-import { t } from 'i18next';
 import { ColumnNames } from 'containers/List/List';
-import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 import styles from './Pager.module.css';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
+
+// Opt-in expandable sub-rows (used only by the HSM template list today, to
+// show language variants under a parent template row). Pager owns none of
+// the rendering/styling for this — the caller supplies every piece of markup,
+// so Pager stays generic for consumers that don't need it (e.g. SpeedSendList,
+// InteractiveMessageList, which use the default label+body sub-row below).
+interface ExpandableRowConfig {
+  onToggle: (id: string) => void;
+  // Renders the leading cell of a parent row: a toggle control when
+  // hasVariants is true, or an empty (but width-matched) spacer otherwise.
+  renderToggleCell: (hasVariants: boolean, isOpen: boolean, onToggle: () => void) => ReactNode;
+  // Renders the leading spacer cell in the table header, aligned with
+  // renderToggleCell's column.
+  renderHeadSpacer: () => ReactNode;
+  // Renders one fully-built <TableRow> for a collapsed sub-row entry.
+  renderCollapsedRow: (entry: any, key: string) => ReactNode;
+  // Extra class name applied to the parent row while it's expanded.
+  parentRowClassName?: (isOpen: boolean) => string;
+}
+
 interface PagerProps {
   columnNames: Array<ColumnNames>;
   data: any;
@@ -34,27 +52,18 @@ interface PagerProps {
   noItemsText?: any;
   showPagination?: boolean;
   checkboxSupport?: { action: any; icon: any; selectedItems: any };
-  // Opt-in: render a leading expand/collapse chevron on each row that has
-  // collapsible content (used by the HSM template list for language variants).
-  // Off by default so existing consumers (e.g. SpeedSendList) are unaffected.
-  expandableRows?: boolean;
-  onToggleRow?: (id: string) => void;
-  // Opt-in renderer for the cells of each collapsed sub-row; returns one node
-  // per data column. When omitted the default label+body sub-row is used.
-  collapsedColumns?: (entry: any) => ReactNode[];
+  expandableRow?: ExpandableRowConfig;
 }
 
 // TODO: cleanup the translations code
-const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any, expandableRows: boolean = false) => {
-  // when a leading chevron column is present, keep the sub-rows aligned under
-  // the data columns by prepending an empty spacer cell.
-  const leadingSpacer = expandableRows ? <TableCell className={styles.ChevronCell} /> : null;
-
+// Default sub-row renderer: plain label+body per language, driven by the
+// `translations` JSON field on the parent record. Used by any consumer that
+// doesn't supply `expandableRow` (e.g. InteractiveMessageList).
+const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
     return (
-      <TableRow className={styles.CollapseTableRow}>
-        {leadingSpacer}
+      <TableRow>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -71,8 +80,7 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any, expand
     const body = typeof dataObj[key].body === 'string' ? dataObj[key].body : dataObj[key].body.text;
 
     return (
-      <TableRow key={rowIdentifier} className={expandableRows ? styles.CollapseTableRow : ''}>
-        {leadingSpacer}
+      <TableRow key={rowIdentifier}>
         <TableCell className={`${columnStyles ? columnStyles[0] : null}`}>
           <div>
             <div className={styles.LabelText}>{dataObj[key].label}</div>
@@ -90,37 +98,12 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any, expand
   return additionalRowInformation;
 };
 
-// Custom collapsed sub-rows: one row per entry, with the caller supplying the
-// cell contents (one node per data column) via `collapsedColumns`.
-const customCollapsedRowData = (
-  dataObj: any,
-  columnStyles: any,
-  recordId: any,
-  expandableRows: boolean,
-  collapsedColumns: (entry: any) => ReactNode[]
-) =>
-  Object.keys(dataObj).map((key, index) => {
-    const cells = collapsedColumns(dataObj[key]);
-    return (
-      <TableRow key={`collapsedRowData-${recordId}-${index}`} className={styles.CollapseRowCustom}>
-        {expandableRows ? <TableCell className={styles.ChevronCell} /> : null}
-        {cells.map((cell, cellIndex) => (
-          <TableCell key={cellIndex} className={`${columnStyles && columnStyles[cellIndex]} ${styles.RowStyle}`}>
-            {cell}
-          </TableCell>
-        ))}
-      </TableRow>
-    );
-  });
-
 const createRows = (
   data: any,
   columnStyles: any,
   collapseRow?: string,
   collapseOpen: boolean = false,
-  expandableRows: boolean = false,
-  onToggleRow?: (id: string) => void,
-  collapsedColumns?: (entry: any) => ReactNode[]
+  expandableRow?: ExpandableRowConfig
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
@@ -143,31 +126,6 @@ const createRows = (
     });
   };
 
-  // leading chevron cell that toggles the row's collapsible content. Rows with
-  // no collapsible content render an empty spacer so columns stay aligned.
-  const chevronCell = (entry: any, hasVariants: boolean, isOpen: boolean) => {
-    if (!hasVariants) {
-      return <TableCell className={styles.ChevronCell} />;
-    }
-    return (
-      <TableCell className={styles.ChevronCell}>
-        <button
-          type="button"
-          data-testid="expand-toggle"
-          aria-label={t('Toggle language variants')}
-          aria-expanded={isOpen}
-          className={`${styles.ChevronBtn} ${isOpen ? styles.ChevronOpen : ''}`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onToggleRow?.(entry.recordId);
-          }}
-        >
-          <ChevronIcon />
-        </button>
-      </TableCell>
-    );
-  };
-
   return data.map((entry: any) => {
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
@@ -175,18 +133,24 @@ const createRows = (
 
     const hasVariants = !!dataObj && Object.keys(dataObj).length > 0;
     const isOpen = collapseOpen && entry.recordId === collapseRow;
-    const parentRowClass = `${isActiveRow} ${isOpen && expandableRows ? styles.ExpandedParent : ''}`;
+    const parentRowClass = `${isActiveRow} ${isOpen ? (expandableRow?.parentRowClassName?.(isOpen) ?? '') : ''}`;
+
+    const toggleCell = expandableRow
+      ? expandableRow.renderToggleCell(hasVariants, isOpen, () => expandableRow.onToggle(entry.recordId))
+      : null;
 
     return (
       <Fragment key={entry.recordId}>
         <TableRow className={parentRowClass}>
-          {expandableRows ? chevronCell(entry, hasVariants, isOpen) : null}
+          {toggleCell}
           {createRow(entry)}
         </TableRow>
         {isOpen && dataObj
-          ? collapsedColumns
-            ? customCollapsedRowData(dataObj, columnStyles, entry.recordId, expandableRows, collapsedColumns)
-            : collapsedRowData(dataObj, columnStyles, entry.recordId, expandableRows)
+          ? expandableRow
+            ? Object.keys(dataObj).map((key, index) =>
+                expandableRow.renderCollapsedRow(dataObj[key], `collapsedRowData-${entry.recordId}-${index}`)
+              )
+            : collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
       </Fragment>
     );
@@ -200,13 +164,10 @@ const tableHeadColumns = (
   handleTableChange: Function,
   totalRows: number,
   checkboxSupport?: { action: any; icon: any; selectedItems: any },
-  expandableRows: boolean = false
+  renderHeadSpacer?: () => ReactNode
 ) => {
   let headerRow;
-  // matches the leading chevron column rendered on each body row.
-  const leadingHeadSpacer = expandableRows ? (
-    <TableCell className={`${styles.ChevronCell} ${styles.RowHeadStyle}`} />
-  ) : null;
+  const leadingHeadSpacer = renderHeadSpacer ? renderHeadSpacer() : null;
 
   if (checkboxSupport?.selectedItems && checkboxSupport?.selectedItems.length > 0) {
     headerRow = (
@@ -292,11 +253,9 @@ export const Pager = ({
   noItemsText,
   showPagination = true,
   checkboxSupport,
-  expandableRows = false,
-  onToggleRow,
-  collapsedColumns,
+  expandableRow,
 }: PagerProps) => {
-  const rows = createRows(data, columnStyles, collapseRow, collapseOpen, expandableRows, onToggleRow, collapsedColumns);
+  const rows = createRows(data, columnStyles, collapseRow, collapseOpen, expandableRow);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,
@@ -304,7 +263,7 @@ export const Pager = ({
     handleTableChange,
     totalRows,
     checkboxSupport,
-    expandableRows
+    expandableRow?.renderHeadSpacer
   );
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 

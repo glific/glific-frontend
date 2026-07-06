@@ -265,3 +265,74 @@
   min-width: 320px;
   padding: 8px 0 16px;
 }
+
+/* Leading expand/collapse chevron column for the language-variant rows. */
+.ChevronCell {
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 0 16px;
+}
+
+/* Same leading column, styled to match the table header row. */
+.ChevronHeadCell {
+  composes: ChevronCell;
+  background-color: #dfece2;
+  z-index: 100;
+}
+
+/* Matches Pager's default cell padding for the custom collapsed sub-rows,
+   which are built here rather than by Pager itself. */
+.RowStyle {
+  padding: 15px 20px 15px 25px;
+}
+
+.ChevronBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ChevronBtn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.ChevronBtn svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+.ChevronOpen {
+  color: #374151;
+}
+
+.ChevronOpen svg {
+  transform: rotate(180deg);
+}
+
+/* Expanded parent + its custom child rows get a green left accent. */
+.ExpandedParent {
+  background-color: #f5faf7;
+  box-shadow: inset 3px 0 0 0 #28a745;
+}
+
+.CollapseRowCustom {
+  background-color: #fff;
+  box-shadow: inset 3px 0 0 0 #28a745;
+  border-bottom: 1px solid #eeede9;
+}
+
+.CollapseRowCustom:hover {
+  background-color: #f5f4f0;
+}
