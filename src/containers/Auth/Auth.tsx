@@ -196,7 +196,7 @@ export const Auth = ({
         )}
 
         {(mode === 'login' || mode === 'registration') && (
-          <div className={styles.InformationText} data-testid="whatsAppNumberHint">
+          <div className={`${styles.InformationText} ${styles.InformationTextTight}`} data-testid="whatsAppNumberHint">
             {t(
               "Use your personal WhatsApp number to log in or create your account. Do not use your chatbot's WhatsApp number."
             )}

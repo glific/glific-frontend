@@ -338,6 +338,11 @@
   margin-bottom: 24px;
 }
 
+/* Tighter spacing when the note sits directly above the form fields (login/registration hint) */
+.InformationTextTight {
+  margin-bottom: 4px;
+}
+
 .Captcha {
   display: flex;
   justify-content: center;
