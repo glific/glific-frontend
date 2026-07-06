@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { FormControl, LinearProgress, MenuItem, Select, TableCell, TableRow } from '@mui/material';
+import { FormControl, LinearProgress, MenuItem, Select } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { t } from 'i18next';
@@ -7,7 +7,6 @@ import { t } from 'i18next';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
-import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
@@ -26,7 +25,6 @@ import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Temp
 
 import styles from './HSMListV2.module.css';
 import {
-  getCollapsedColumns,
   getColumnNames,
   getColumnStyles,
   getColumns,
@@ -36,53 +34,6 @@ import {
   statusFilter,
   templateIcon,
 } from './HSMListV2.helper';
-
-// leading chevron cell that toggles a parent row's language variants. Rows
-// with no variants render an empty spacer so columns stay aligned.
-const renderExpandToggleCell = (hasVariants: boolean, isOpen: boolean, onToggle: () => void) => {
-  if (!hasVariants) {
-    return <TableCell className={styles.ChevronCell} />;
-  }
-  return (
-    <TableCell className={styles.ChevronCell}>
-      <button
-        type="button"
-        data-testid="expand-toggle"
-        aria-label={t('Toggle language variants')}
-        aria-expanded={isOpen}
-        className={`${styles.ChevronBtn} ${isOpen ? styles.ChevronOpen : ''}`}
-        onClick={(event) => {
-          event.stopPropagation();
-          onToggle();
-        }}
-      >
-        <ChevronIcon />
-      </button>
-    </TableCell>
-  );
-};
-
-// matches the leading chevron column rendered on each body row.
-const renderExpandHeadSpacer = () => <TableCell className={styles.ChevronHeadCell} />;
-
-const parentRowClassName = (isOpen: boolean) => (isOpen ? styles.ExpandedParent : '');
-
-// one fully-built row per language variant, using the same column widths as
-// the parent row (skipping the leading chevron column with a spacer cell).
-const renderCollapsedRow = (showReason: boolean) => {
-  const renderColumns = getCollapsedColumns(showReason);
-  const columnStyles = getColumnStyles(showReason);
-  return (entry: any, key: string) => (
-    <TableRow key={key} className={styles.CollapseRowCustom}>
-      <TableCell className={styles.ChevronCell} />
-      {renderColumns(entry).map((cell, index) => (
-        <TableCell key={index} className={`${columnStyles[index]} ${styles.RowStyle}`}>
-          {cell}
-        </TableCell>
-      ))}
-    </TableRow>
-  );
-};
 
 const HSMListV2 = () => {
   const navigate = useNavigate();
@@ -355,20 +306,13 @@ const HSMListV2 = () => {
         filters={selectedTag?.id ? { ...appliedFilters, tagIds: [parseInt(selectedTag.id)] } : appliedFilters}
         columnNames={getColumnNames(showReason)}
         columnStyles={getColumnStyles(showReason)}
-        columns={getColumns(showReason)}
+        columns={getColumns(showReason, { collapseRow, collapseOpen, onToggle: toggleLanguages })}
         additionalAction={additionalAction}
         restrictedAction={() => ({ edit: false })}
         dialogMessage={t('It will stop showing when you draft a customized message')}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
         groupRows={groupByShortcode}
-        expandableRow={{
-          onToggle: toggleLanguages,
-          renderToggleCell: renderExpandToggleCell,
-          renderHeadSpacer: renderExpandHeadSpacer,
-          renderCollapsedRow: renderCollapsedRow(showReason),
-          parentRowClassName,
-        }}
         {...queries}
       />
     </>

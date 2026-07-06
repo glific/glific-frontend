@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment } from 'react';
 import {
   Table,
   TableHead,
@@ -13,26 +13,9 @@ import {
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
-const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
-
-// Opt-in expandable sub-rows (used only by the HSM template list today, to
-// show language variants under a parent template row). Pager owns none of
-// the rendering/styling for this — the caller supplies every piece of markup,
-// so Pager stays generic for consumers that don't need it (e.g. SpeedSendList,
-// InteractiveMessageList, which use the default label+body sub-row below).
-interface ExpandableRowConfig {
-  onToggle: (id: string) => void;
-  // Renders the leading cell of a parent row: a toggle control when
-  // hasVariants is true, or an empty (but width-matched) spacer otherwise.
-  renderToggleCell: (hasVariants: boolean, isOpen: boolean, onToggle: () => void) => ReactNode;
-  // Renders the leading spacer cell in the table header, aligned with
-  // renderToggleCell's column.
-  renderHeadSpacer: () => ReactNode;
-  // Renders one fully-built <TableRow> for a collapsed sub-row entry.
-  renderCollapsedRow: (entry: any, key: string) => ReactNode;
-  // Extra class name applied to the parent row while it's expanded.
-  parentRowClassName?: (isOpen: boolean) => string;
-}
+// `collapseContent` carries a caller pre-rendered sub-row block (see the HSM
+// template list); `translations` is the default label+body JSON path.
+const removeDisplayColumns = ['recordId', 'translations', 'collapseContent', 'id', 'isActive'];
 
 interface PagerProps {
   columnNames: Array<ColumnNames>;
@@ -52,13 +35,13 @@ interface PagerProps {
   noItemsText?: any;
   showPagination?: boolean;
   checkboxSupport?: { action: any; icon: any; selectedItems: any };
-  expandableRow?: ExpandableRowConfig;
 }
 
 // TODO: cleanup the translations code
 // Default sub-row renderer: plain label+body per language, driven by the
-// `translations` JSON field on the parent record. Used by any consumer that
-// doesn't supply `expandableRow` (e.g. InteractiveMessageList).
+// `translations` JSON field on the parent record (e.g. InteractiveMessageList,
+// SpeedSendList). Callers that need richer sub-rows pass a pre-rendered
+// `collapseContent` node on the record instead.
 const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
@@ -98,13 +81,7 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   return additionalRowInformation;
 };
 
-const createRows = (
-  data: any,
-  columnStyles: any,
-  collapseRow?: string,
-  collapseOpen: boolean = false,
-  expandableRow?: ExpandableRowConfig
-) => {
+const createRows = (data: any, columnStyles: any, collapseRow?: string, collapseOpen: boolean = false) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
     return Object.keys(entry).map((item: any) => {
@@ -131,26 +108,13 @@ const createRows = (
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
-    const hasVariants = !!dataObj && Object.keys(dataObj).length > 0;
     const isOpen = collapseOpen && entry.recordId === collapseRow;
-    const parentRowClass = `${isActiveRow} ${isOpen ? (expandableRow?.parentRowClassName?.(isOpen) ?? '') : ''}`;
-
-    const toggleCell = expandableRow
-      ? expandableRow.renderToggleCell(hasVariants, isOpen, () => expandableRow.onToggle(entry.recordId))
-      : null;
 
     return (
       <Fragment key={entry.recordId}>
-        <TableRow className={parentRowClass}>
-          {toggleCell}
-          {createRow(entry)}
-        </TableRow>
-        {isOpen && dataObj
-          ? expandableRow
-            ? Object.keys(dataObj).map((key, index) =>
-                expandableRow.renderCollapsedRow(dataObj[key], `collapsedRowData-${entry.recordId}-${index}`)
-              )
-            : collapsedRowData(dataObj, columnStyles, entry.recordId)
+        <TableRow className={isActiveRow}>{createRow(entry)}</TableRow>
+        {isOpen
+          ? (entry.collapseContent ?? (dataObj ? collapsedRowData(dataObj, columnStyles, entry.recordId) : null))
           : null}
       </Fragment>
     );
@@ -163,16 +127,13 @@ const tableHeadColumns = (
   tableVals: any,
   handleTableChange: Function,
   totalRows: number,
-  checkboxSupport?: { action: any; icon: any; selectedItems: any },
-  renderHeadSpacer?: () => ReactNode
+  checkboxSupport?: { action: any; icon: any; selectedItems: any }
 ) => {
   let headerRow;
-  const leadingHeadSpacer = renderHeadSpacer ? renderHeadSpacer() : null;
 
   if (checkboxSupport?.selectedItems && checkboxSupport?.selectedItems.length > 0) {
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
-        {leadingHeadSpacer}
         <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>{columnNames[0].label}</TableCell>
         <TableCell className={styles.SelectedItems}>
           {checkboxSupport?.selectedItems.length} of {totalRows} selected
@@ -191,7 +152,6 @@ const tableHeadColumns = (
   } else {
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
-        {leadingHeadSpacer}
         {columnNames.map((field: any, i: number) => (
           <TableCell key={field.label} className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}>
             {i !== columnNames.length - 1 && field.name ? (
@@ -253,17 +213,15 @@ export const Pager = ({
   noItemsText,
   showPagination = true,
   checkboxSupport,
-  expandableRow,
 }: PagerProps) => {
-  const rows = createRows(data, columnStyles, collapseRow, collapseOpen, expandableRow);
+  const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,
     tableVals,
     handleTableChange,
     totalRows,
-    checkboxSupport,
-    expandableRow?.renderHeadSpacer
+    checkboxSupport
   );
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 

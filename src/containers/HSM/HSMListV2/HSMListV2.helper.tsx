@@ -1,9 +1,10 @@
-import { Tooltip as MuiTooltip } from '@mui/material';
+import { TableCell, TableRow, Tooltip as MuiTooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { t } from 'i18next';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
+import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { capitalizeFirstLetter } from 'common/utils';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
@@ -122,17 +123,33 @@ const languageChip = (variant: any, key: string | number) => {
 
 const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_').join(' ').toLowerCase());
 
-const getTitle = (name: string, shortcode: string, primary: any) => (
-  <div className={styles.LabelContainer}>
-    <MuiTooltip
-      title={messagePreview(primary, shortcode || name)}
-      placement="bottom-start"
-      arrow
-      slotProps={previewSlotProps}
-    >
-      <div className={styles.LabelText}>{name}</div>
-    </MuiTooltip>
-    {shortcode && <div className={styles.ShortCode}>{shortcode}</div>}
+// `expand`, when provided, renders a chevron to the left of the name that
+// toggles the row's language-variant sub-rows.
+const getTitle = (name: string, shortcode: string, primary: any, expand?: any) => (
+  <div className={styles.TitleRow}>
+    {expand && (
+      <button
+        type="button"
+        data-testid="expand-toggle"
+        aria-label={t('Toggle language variants')}
+        aria-expanded={expand.isOpen}
+        className={`${styles.ChevronBtn} ${expand.isOpen ? styles.ChevronOpen : ''}`}
+        onClick={() => expand.onToggle(expand.id)}
+      >
+        <ChevronIcon />
+      </button>
+    )}
+    <div className={styles.LabelContainer}>
+      <MuiTooltip
+        title={messagePreview(primary, shortcode || name)}
+        placement="bottom-start"
+        arrow
+        slotProps={previewSlotProps}
+      >
+        <div className={styles.LabelText}>{name}</div>
+      </MuiTooltip>
+      {shortcode && <div className={styles.ShortCode}>{shortcode}</div>}
+    </div>
   </div>
 );
 
@@ -196,7 +213,7 @@ export const groupByShortcode = (items: any[] = []) => {
 export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
   <MuiTooltip
     key="body"
-    title={messagePreview(variant, variant.title)}
+    title={messagePreview(variant, variant.shortcode || variant.label)}
     placement="bottom-start"
     arrow
     slotProps={previewSlotProps}
@@ -235,29 +252,42 @@ export const getColumnStyles = (showReason: boolean): any => [
   styles.Actions,
 ];
 
-// build the per-variant data the collapse renderer reads, keyed by language id.
-const buildVariantData = (variants: any[] = []) =>
-  variants.reduce((acc: Record<string, any>, variant, index) => {
-    acc[variant.language?.id ?? `v-${index}`] = {
-      language: variant.language?.label,
-      title: variant.shortcode || variant.label,
-      body: variant.body,
-      footer: variant.footer,
-      category: variant.category,
-      status: variant.status,
-      reason: variant.reason,
-      updatedAt: variant.updatedAt,
-    };
-    return acc;
-  }, {});
+// the expanded block: one <TableRow> per language variant, aligned to the same
+// columns as the parent row. Rendered once here and carried on the row as
+// `collapseContent`, so Pager just drops it in when the row is open — no
+// per-cell renderer prop and no JSON round-trip.
+const renderCollapsedRows = (variants: any[] = [], showReason: boolean) => {
+  const renderColumns = getCollapsedColumns(showReason);
+  const columnStyles = getColumnStyles(showReason);
+  return (
+    <>
+      {variants.map((variant, index) => (
+        <TableRow key={variant.id ?? index} className={styles.CollapseRowCustom}>
+          {renderColumns(variant).map((cell, cellIndex) => (
+            <TableCell key={cellIndex} className={`${columnStyles[cellIndex]} ${styles.RowStyle}`}>
+              {cell}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))}
+    </>
+  );
+};
 
 export const getColumns =
-  (showReason: boolean) =>
+  (showReason: boolean, collapse?: { collapseRow: string; collapseOpen: boolean; onToggle: (id: string) => void }) =>
   ({ id, label, shortcode, updatedAt, reason, variants, body, footer, language }: any) => ({
     id,
-    label: getTitle(label || shortcode, shortcode, { body, footer, language }),
+    label: getTitle(
+      label || shortcode,
+      shortcode,
+      { body, footer, language },
+      collapse
+        ? { isOpen: collapse.collapseOpen && collapse.collapseRow === id, onToggle: collapse.onToggle, id }
+        : undefined
+    ),
     languages: getLanguages(variants),
     category: getCategories(variants),
     ...(showReason ? { reason: getReason(reason) } : { updatedAt: getUpdatedAt(updatedAt) }),
-    translations: JSON.stringify(buildVariantData(variants)),
+    collapseContent: renderCollapsedRows(variants, showReason),
   });
