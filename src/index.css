@@ -273,7 +273,7 @@ body {
   --notification-bar-height: 0px;
 }
 
-body:has(> .notification-bar-container:not([style*="display: none"])) {
+body:has(> .notification-bar-container:not([style*='display: none'])) {
   --notification-bar-height: 56px;
 }
 
