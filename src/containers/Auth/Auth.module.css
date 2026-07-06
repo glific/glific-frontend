@@ -340,10 +340,10 @@
   margin-bottom: 24px;
 }
 
-/* Login/registration hint: give it room below the title but sit it close to the first
+/* Login/registration hint: sit it roughly centered between the title and the first
    field (the negative bottom margin offsets the field's shared 15px .Spacing). */
 .InformationTextTight {
-  margin-top: 24px;
+  margin-top: 4px;
   margin-bottom: -4px;
 }
 
