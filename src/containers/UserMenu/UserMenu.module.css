@@ -5,17 +5,12 @@
 }
 
 .UserAccount {
-  z-index: 4000;
-  width: 203px;
   cursor: pointer;
   background-color: white;
-  position: absolute;
-  bottom: 0px;
 }
 
 .UserAccountClosed {
   composes: UserAccount;
-  width: 92px;
 }
 
 .UserAccount:hover {

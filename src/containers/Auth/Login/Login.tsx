@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 import * as Yup from 'yup';
 
 import { usePostHog } from '@posthog/react';
@@ -32,7 +32,6 @@ export const Login = () => {
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
   const location: any = useLocation();
-  const navigate = useNavigate();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -96,8 +95,10 @@ export const Login = () => {
         );
         posthog?.capture('user_logged_in');
 
+        // Full page navigation so PostHog reinitialises and re-runs onLoad,
+        // which re-evaluates banners/site-apps for the newly authenticated user.
         const targetPath = location.state?.to || '/chat';
-        navigate(targetPath, { replace: true });
+        window.location.href = targetPath;
       }
     }
     if (userError) {

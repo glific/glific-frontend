@@ -24,6 +24,27 @@ export const SideDrawer = () => {
   const { provider } = useContext(ProviderContext);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
+  const askGlificMenu = isAskGlificEnabled && (
+    <>
+      <div
+        className={styles.AskGlificMenu}
+        role="button"
+        tabIndex={0}
+        onClick={() => setShowAskGlific(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setShowAskGlific(true);
+          }
+        }}
+      >
+        <AskGlificIcon />
+        {t('Ask Glific')}
+      </div>
+      {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
+    </>
+  );
+
   const drawer = (
     <div className={styles.DrawerContent}>
       <Toolbar className={styles.AnotherToolBar}>
@@ -56,6 +77,10 @@ export const SideDrawer = () => {
 
       {/* Trial Expiry Banner - No wrapper, no conditional */}
       {drawerOpen && <TrialExpiryBanner />}
+
+      {askGlificMenu}
+
+      <UserMenu drawerOpen={drawerOpen} />
     </div>
   );
 
@@ -94,31 +119,18 @@ export const SideDrawer = () => {
         classes={{
           paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,
         }}
+        slotProps={{
+          paper: {
+            sx: {
+              top: 'var(--notification-bar-height)',
+              height: 'calc(100vh - var(--notification-bar-height))',
+            },
+          },
+        }}
         variant="permanent"
       >
         {drawer}
-        {isAskGlificEnabled && (
-          <>
-            <div
-              className={styles.AskGlificMenu}
-              role="button"
-              tabIndex={0}
-              onClick={() => setShowAskGlific(true)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setShowAskGlific(true);
-                }
-              }}
-            >
-              <AskGlificIcon />
-              {t('Ask Glific')}
-            </div>
-            {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
-          </>
-        )}
       </Drawer>
-      <UserMenu drawerOpen={drawerOpen} />
     </nav>
   );
 };

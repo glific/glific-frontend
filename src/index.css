@@ -256,27 +256,29 @@ body {
 }
 
 /*
- * An external, fixed-position notification/announcement bar can be injected into
- * the <body> above the app. It overlaps the app, so `#app-viewport` (the wrapper
- * around #root) owns the single source of truth for the app's available height:
- * it is pushed below the bar and shrinks by the bar's height while the bar is
- * present, and takes the full viewport otherwise.
+ * An external notification/announcement bar can be injected into the <body>
+ * above the app. Its `.notification-bar-container` sits in normal flow as the
+ * first <body> child and already reserves its own height, so it pushes
+ * `#app-viewport` down on its own — we must NOT add a margin-top too, or the app
+ * gets offset twice (a blank gap above the content plus a page scrollbar).
  *
- * `--notification-bar-height` defaults to 0px (full viewport) and only becomes
- * non-zero while `.notification-bar-container` is in the DOM. The height cascades
- * to the app via the percentage chain #app-viewport -> #root -> .App -> layout.
+ * `#app-viewport` (the wrapper around #root) owns the single source of truth for
+ * the app's available height: it only needs to shrink by the bar's height so it
+ * still fits the remaining viewport. `--notification-bar-height` defaults to 0px
+ * (full viewport) and becomes non-zero while `.notification-bar-container` is in
+ * the DOM. The height cascades to the app via the percentage chain
+ * #app-viewport -> #root -> .App -> layout.
  */
 :root {
   --notification-bar-height: 0px;
 }
 
-body:has(> .notification-bar-container) {
+body:has(> .notification-bar-container:not([style*="display: none"])) {
   --notification-bar-height: 56px;
 }
 
 #app-viewport {
   height: calc(100vh - var(--notification-bar-height));
-  margin-top: var(--notification-bar-height);
   overflow: hidden;
 }
 

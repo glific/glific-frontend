@@ -16,6 +16,7 @@
  */
 .MainContent {
   height: 100%;
+  overflow: hidden;
 }
 
 .MobileHeader {

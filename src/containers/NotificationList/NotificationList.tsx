@@ -1,23 +1,23 @@
-import { useEffect, useState, useRef } from 'react';
-import { Popover, FormControlLabel, RadioGroup, Radio } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { FormControlLabel, Popover, Radio, RadioGroup } from '@mui/material';
 import dayjs from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import CopyIcon from 'assets/images/icons/Copy.png';
 import NotificationIcon from 'assets/images/icons/Notification/Notification-dark-icon.svg?react';
 import ViewIcon from 'assets/images/icons/View.svg?react';
-import CopyIcon from 'assets/images/icons/Copy.png';
-import { List } from 'containers/List/List';
-import Menu from 'components/UI/Menu/Menu';
-import { Button } from 'components/UI/Form/Button/Button';
-import { copyToClipboard, exportCsvFile } from 'common/utils';
-import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
-import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
-import styles from './NotificationList.module.css';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
-import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { copyToClipboard, exportCsvFile } from 'common/utils';
+import { Button } from 'components/UI/Form/Button/Button';
+import Menu from 'components/UI/Menu/Menu';
+import { List } from 'containers/List/List';
+import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
+import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
+import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import styles from './NotificationList.module.css';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
@@ -252,7 +252,7 @@ export const NotificationList = () => {
     </div>
   );
   return (
-    <div>
+    <>
       <List
         title="Notifications"
         listItem="notifications"
@@ -270,7 +270,7 @@ export const NotificationList = () => {
         filterList={filterOnSeverity}
       />
       {popover}
-    </div>
+    </>
   );
 };
 
