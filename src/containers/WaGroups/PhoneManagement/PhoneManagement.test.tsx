@@ -16,9 +16,12 @@ import * as Notification from 'common/notification';
 import { PhoneManagement } from './PhoneManagement';
 
 const mockRole = vi.hoisted(() => ({ value: ['Admin'] }));
+const isAdmin = () => mockRole.value.includes('Admin') || mockRole.value.includes('Glific_admin');
 vi.mock('context/role', () => ({
   getUserRole: () => mockRole.value,
   getUserRolePermissions: () => ({ manageCollections: true, manageSavedSearches: true }),
+  isAdminRole: () => isAdmin(),
+  isManagerRole: () => isAdmin() || mockRole.value.includes('Manager'),
 }));
 
 const baseMocks = [managedPhonesCountMock, managedPhonesHealthMock, managedPhonesCountMock, managedPhonesHealthMock];

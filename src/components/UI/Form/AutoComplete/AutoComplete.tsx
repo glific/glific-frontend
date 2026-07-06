@@ -217,7 +217,7 @@ export const AutoComplete = ({
           value={getValue}
           disabled={disabled}
           disableCloseOnSelect={multiple}
-          renderValue={getRenderTags}
+          renderTags={getRenderTags}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
               {multiple && (

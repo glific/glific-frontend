@@ -20,6 +20,11 @@
   width: 22%;
 }
 
+.Actions {
+  width: 16%;
+  text-align: right;
+}
+
 .Badge {
   display: inline-block;
   padding: 0.15rem 0.6rem;

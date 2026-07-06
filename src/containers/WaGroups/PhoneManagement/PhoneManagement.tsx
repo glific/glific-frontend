@@ -6,7 +6,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import SyncIcon from '@mui/icons-material/Sync';
 
 import { List } from 'containers/List/List';
-import { getUserRole } from 'context/role';
+import { isAdminRole, isManagerRole } from 'context/role';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { GET_WA_MANAGED_PHONES, GET_WA_MANAGED_PHONES_COUNT } from 'graphql/queries/WaGroups';
 import { SYNC_WA_MANAGED_PHONE_STATUSES } from 'graphql/mutations/Group';
@@ -15,10 +15,7 @@ import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
 import { ReconnectDialog } from './ReconnectDialog';
 import styles from './PhoneManagement.module.css';
 
-// A phone in these Maytapi states can still send/receive; anything else is
-// surfaced as unhealthy (mirrors the backend classification).
-const HEALTHY_STATUSES = ['active', 'loading'];
-const isHealthy = (status?: string | null) => !!status && HEALTHY_STATUSES.includes(status);
+const isHealthy = (status?: string | null) => status === 'active';
 
 const queries = {
   countQuery: GET_WA_MANAGED_PHONES_COUNT,
@@ -37,7 +34,7 @@ const getStatusBadge = (status?: string | null) => (
   </span>
 );
 
-const columnStyles = [styles.Phone, styles.Label, styles.Status, styles.LastChecked];
+const columnStyles = [styles.Phone, styles.Label, styles.Status, styles.LastChecked, styles.Actions];
 
 interface ManagedPhone {
   id: string;
@@ -49,9 +46,8 @@ interface ManagedPhone {
 
 export const PhoneManagement = () => {
   const { t } = useTranslation();
-  const roles = getUserRole();
-  const isAdmin = roles.includes('Admin') || roles.includes('Glific_admin');
-  const canSync = isAdmin || roles.includes('Manager');
+  const isAdmin = isAdminRole();
+  const canSync = isManagerRole();
 
   const [reconnectPhone, setReconnectPhone] = useState<ManagedPhone | null>(null);
   const [refreshList, setRefreshList] = useState(false);
@@ -65,7 +61,11 @@ export const PhoneManagement = () => {
     try {
       const { data } = await syncStatuses();
       const result = data?.syncWaManagedPhoneStatuses;
-      const errors = result?.errors;
+      if (!result) {
+        setNotification(t('Could not refresh WhatsApp phone statuses. Please try again.'), 'warning');
+        return;
+      }
+      const errors = result.errors;
       if (errors?.length) {
         setNotification(
           errors
@@ -76,7 +76,7 @@ export const PhoneManagement = () => {
         );
         return;
       }
-      setNotification(result?.message || t('WhatsApp phone statuses have been refreshed.'), 'success');
+      setNotification(result.message || t('WhatsApp phone statuses have been refreshed.'), 'success');
       setRefreshList((previous) => !previous);
     } catch (error) {
       setErrorMessage(error as Error);

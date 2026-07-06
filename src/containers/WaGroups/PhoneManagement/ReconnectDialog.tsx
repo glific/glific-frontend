@@ -33,17 +33,10 @@ export const ReconnectDialog = ({ phone, onClose, onReconnected }: ReconnectDial
   const screen = data?.whatsappPhoneScreen?.waPhoneScreen;
   const status = screen?.status;
 
-  // A phone that is already `active` when the dialog opens hasn't "reconnected" —
-  // only treat a flip to active as success once we've actually seen it in a
-  // pending (non-active) state during this session (i.e. after a log out + rescan).
-  const seenPending = useRef(false);
+  const reconnectRequested = useRef(false);
 
   useEffect(() => {
-    if (!status) return;
-
-    if (status !== 'active') {
-      seenPending.current = true;
-    } else if (seenPending.current) {
+    if (status === 'active' && reconnectRequested.current) {
       setNotification(t('WhatsApp phone reconnected.'), 'success');
       onReconnected();
     }
@@ -52,7 +45,12 @@ export const ReconnectDialog = ({ phone, onClose, onReconnected }: ReconnectDial
   const handleReconnect = async () => {
     try {
       const { data: response } = await reconnect({ variables: { waManagedPhoneId: phone.id } });
-      const errors = response?.reconnectWaManagedPhone?.errors;
+      const result = response?.reconnectWaManagedPhone;
+      if (!result) {
+        setNotification(t('Could not start reconnect. Please try again.'), 'warning');
+        return;
+      }
+      const errors = result.errors;
       if (errors?.length) {
         setNotification(
           errors
@@ -63,6 +61,7 @@ export const ReconnectDialog = ({ phone, onClose, onReconnected }: ReconnectDial
         );
         return;
       }
+      reconnectRequested.current = true;
       setNotification(t('Logged the phone out. Scan the new QR code to reconnect.'), 'success');
       refetch();
     } catch (error) {
@@ -74,10 +73,13 @@ export const ReconnectDialog = ({ phone, onClose, onReconnected }: ReconnectDial
     <DialogBox
       title={`${t('Reconnect')} ${phone.label || phone.phone}`}
       handleOk={handleReconnect}
-      handleCancel={onClose}
+      handleCancel={() => {
+        if (!reconnecting) onClose();
+      }}
       buttonOk={t('Log out & refresh QR')}
       buttonOkLoading={reconnecting}
       buttonCancel={t('Close')}
+      skipCancel={reconnecting}
       alignButtons="center"
     >
       <div className={styles.QrWrapper} data-testid="reconnectDialog">

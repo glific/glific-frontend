@@ -844,6 +844,8 @@
   "Logged the phone out. Scan the new QR code to reconnect.": "Logged the phone out. Scan the new QR code to reconnect.",
   "Sync statuses": "Sync statuses",
   "WhatsApp phone statuses have been refreshed.": "WhatsApp phone statuses have been refreshed.",
-  "Group":"Group",
-  "Primary phone": "Primary phone"
+  "Group": "Group",
+  "Primary phone": "Primary phone",
+  "Could not refresh WhatsApp phone statuses. Please try again.": "Could not refresh WhatsApp phone statuses. Please try again.",
+  "Could not start reconnect. Please try again.": "Could not start reconnect. Please try again."
 }
