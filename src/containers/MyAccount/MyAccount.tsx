@@ -113,8 +113,8 @@ export const MyAccount = () => {
     });
   };
 
-  // save the updated email
-  const saveEmailHandler = async (values: { email: string }) => {
+  // update the user's email
+  const updateEmailHandler = async (values: { email: string }) => {
     try {
       await updateEmail({ variables: { input: { email: values.email } } });
       setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
@@ -181,7 +181,7 @@ export const MyAccount = () => {
       enableReinitialize
       initialValues={{ name: userName, phone: userPhone, email: userEmail }}
       validationSchema={EmailFormSchema}
-      onSubmit={saveEmailHandler}
+      onSubmit={updateEmailHandler}
     >
       {({ submitForm, isSubmitting }) => (
         <Form>
@@ -201,9 +201,9 @@ export const MyAccount = () => {
               color="primary"
               onClick={submitForm}
               loading={isSubmitting}
-              data-testid="saveEmailButton"
+              data-testid="updateEmailButton"
             >
-              {t('Save Email')}
+              {t('Update Email')}
             </Button>
           </div>
         </Form>

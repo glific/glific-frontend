@@ -217,8 +217,8 @@ describe('<MyAccount />', () => {
     await user.clear(emailInput);
     await user.type(emailInput, 'newemail@domain.com');
 
-    const saveEmailButton = screen.getByTestId('saveEmailButton');
-    await user.click(saveEmailButton);
+    const updateEmailButton = screen.getByTestId('updateEmailButton');
+    await user.click(updateEmailButton);
 
     await waitFor(() => {
       expect(screen.getByText('Email updated successfully!')).toBeInTheDocument();
