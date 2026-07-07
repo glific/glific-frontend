@@ -251,7 +251,7 @@ export const setAuthHeaders = () => {
         // @ts-ignore
         if (!this.renewGlificCall && this.status === 401) {
           setLogs('XMLHttpRequest: Received 401, logging out', 'error');
-          window.location.href = '/logout/user';
+          window.location.replace('/logout/user');
         }
       });
 

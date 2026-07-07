@@ -1,17 +1,17 @@
 // eslint-disable-next-line
-import { useEffect, CSSProperties } from 'react';
-import axios from 'axios';
-import { useLocation, useParams, useNavigate } from 'react-router';
 import { useApolloClient } from '@apollo/client';
+import axios from 'axios';
+import { CSSProperties, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
-import { resetRolePermissions } from 'context/role';
-import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
-import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
-import { USER_SESSION } from 'config';
-import { clearListSession } from 'services/ListService';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { usePostHog } from '@posthog/react';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { USER_SESSION } from 'config';
+import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
+import { resetRolePermissions } from 'context/role';
+import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
+import { clearListSession } from 'services/ListService';
 
 const divStyle: CSSProperties = {
   fontFamily: 'Heebo',
@@ -27,21 +27,21 @@ export const Logout = () => {
   const posthog = usePostHog();
   const client = useApolloClient();
   const { t } = useTranslation();
-  const location = useLocation();
   const params = useParams();
-  const navigate = useNavigate();
 
   // let's notify the backend when user logs out
-  const userLogout = () => {
+  const userLogout = async () => {
     // get the auth token from session
     axios.defaults.headers.common.authorization = getAuthSession('access_token');
-    axios.delete(USER_SESSION);
+    await axios.delete(USER_SESSION);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     posthog?.capture('user_logged_out');
     posthog?.reset();
-    userLogout();
+
+    await userLogout();
+
     // clear local storage auth session
     clearAuthSession();
 
@@ -58,9 +58,11 @@ export const Logout = () => {
     clearOrgEvalAccessCache();
 
     // clear apollo cache
-    client.clearStore();
+    await client.clearStore();
 
-    navigate('/login', { replace: true, state: { to: location.state } });
+    // Full page navigation so PostHog reinitialises on the login page and any
+    // site-app banners are cleanly torn down without manual DOM cleanup.
+    window.location.replace('/login');
   };
 
   useEffect(() => {

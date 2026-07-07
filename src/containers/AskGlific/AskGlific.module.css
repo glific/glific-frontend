@@ -363,10 +363,10 @@
 
 .SidebarWrapper {
   position: fixed;
-  top: 0;
+  top: var(--notification-bar-height);
   right: 0;
   width: 680px;
-  height: 100vh;
+  height: calc(100vh - var(--notification-bar-height));
   z-index: 1300;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 10%);
   overflow: hidden;
@@ -383,10 +383,10 @@
 
 .FullscreenWrapper {
   position: fixed;
-  top: 0;
+  top: var(--notification-bar-height);
   right: 0;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - var(--notification-bar-height));
   z-index: 1300;
   overflow: hidden;
   display: flex;

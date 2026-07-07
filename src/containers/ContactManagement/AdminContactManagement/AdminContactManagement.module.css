@@ -1,13 +1,15 @@
 .Container {
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 50%;
-  max-height: 65%;
+  height: 600px;
   background-color: #fff;
   border-radius: 15px;
   padding: 1.5rem 2rem;
-  height: auto;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-scrollbar: none;
 }
 
 .Instructions {

@@ -26,7 +26,8 @@
 }
 
 .ItemAdd {
-  height: 100vh;
+  height: 100%;
+  overflow-y: auto;
   background-color: #ffffff;
 }
 
