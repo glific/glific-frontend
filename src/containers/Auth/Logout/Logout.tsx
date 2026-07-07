@@ -30,16 +30,18 @@ export const Logout = () => {
   const params = useParams();
 
   // let's notify the backend when user logs out
-  const userLogout = () => {
+  const userLogout = async () => {
     // get the auth token from session
     axios.defaults.headers.common.authorization = getAuthSession('access_token');
-    axios.delete(USER_SESSION);
+    await axios.delete(USER_SESSION);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     posthog?.capture('user_logged_out');
     posthog?.reset();
-    userLogout();
+
+    await userLogout();
+
     // clear local storage auth session
     clearAuthSession();
 
@@ -56,7 +58,7 @@ export const Logout = () => {
     clearOrgEvalAccessCache();
 
     // clear apollo cache
-    client.clearStore();
+    await client.clearStore();
 
     // Full page navigation so PostHog reinitialises on the login page and any
     // site-app banners are cleanly torn down without manual DOM cleanup.
