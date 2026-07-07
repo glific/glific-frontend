@@ -20,7 +20,6 @@ export const SideDrawer = () => {
   const { t } = useTranslation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
   const [showAskGlific, setShowAskGlific] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { provider } = useContext(ProviderContext);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
 
@@ -84,8 +83,6 @@ export const SideDrawer = () => {
     </div>
   );
 
-  const container = window !== undefined ? () => window.document.body : undefined;
-
   // set the appropriate styles to display bottom menus correctly
   const bottonMenuClasses = [styles.BottomMenus];
   if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
@@ -97,24 +94,6 @@ export const SideDrawer = () => {
 
   return (
     <nav className={drawerOpen ? styles.Drawer : styles.NavClose} aria-label="navigation menus" data-testid="navbar">
-      <Drawer
-        container={container}
-        variant="temporary"
-        anchor="left"
-        open={mobileOpen}
-        onClose={() => {
-          setMobileOpen(!mobileOpen);
-        }}
-        classes={{
-          paper: styles.DrawerPaper,
-        }}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{ display: { xs: 'none', md: 'block' } }}
-      >
-        {drawer}
-      </Drawer>
       <Drawer
         classes={{
           paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,
