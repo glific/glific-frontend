@@ -1,50 +1,8 @@
 .Page {
-  padding: 20px 32px 48px;
-  background-color: #f7f7f5;
+  padding: 0 32px 48px 0;
+  background-color: #ffffff;
   min-height: 100vh;
   box-sizing: border-box;
-}
-
-.BackLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  background: none;
-  border: none;
-  padding: 0;
-  margin-bottom: 12px;
-  color: #6b6f6c;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.PageTitleRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.PageTitle {
-  font-size: 32px;
-  font-weight: 800;
-  color: #111111;
-  margin: 0;
-}
-
-.PageSubtitle {
-  font-size: 14px;
-  color: #6b6f6c;
-  margin: 6px 0 0;
-}
-
-.FormColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 720px;
-  margin-top: 20px;
 }
 
 .Card {
@@ -68,10 +26,14 @@
    modules in the compiled bundle isn't guaranteed. */
 .CustomFormShell {
   width: 100% !important;
+  max-width: 720px !important;
   padding: 0 !important;
   display: flex;
   flex-direction: column;
-  gap: 0px;
+  gap: 0;
+  /* aligns cards with the Heading title text: Heading's own 10px left padding
+     plus its .HeadingWrapper's 46px margin-left. */
+  margin: 0 0 0 56px;
 }
 
 .CardTitle {
@@ -96,9 +58,9 @@
 }
 
 .FieldLabel {
-  font-size: 14px;
-  font-weight: 600;
-  color: #202125;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555555;
   margin: 0 0 10px;
 }
 
@@ -189,42 +151,6 @@
   background-color: #f2f9f5 !important;
 }
 
-/* selected state used by the Interactive Buttons "Button Type" tiles */
-.TileSelectedBlue {
-  border-color: #1565c0 !important;
-  background-color: #f2f7fd !important;
-  color: #1565c0 !important;
-}
-
-/* Button type tiles (Interactive Buttons) */
-
-.ButtonTypeTileRow {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-
-.ButtonTypeTile {
-  flex: 1 1 160px;
-  padding: 14px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #073f24;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.ButtonTypeTile:disabled,
-.AttachmentTile:disabled,
-.MethodToggle:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .ClearSelectionLink {
   background: none;
   border: none;
@@ -235,79 +161,6 @@
   cursor: pointer;
   margin-bottom: 16px;
   font-family: inherit;
-}
-
-/* Media attachment tiles */
-
-.AttachmentTileRow {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-
-.AttachmentTile {
-  flex: 1 1 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 20px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  cursor: pointer;
-  font-family: inherit;
-  text-align: center;
-}
-
-.AttachmentTileIcon {
-  display: flex;
-  color: #717971;
-  margin-bottom: 8px;
-}
-
-.AttachmentTile.TileSelectedGreen .AttachmentTileIcon {
-  color: #119656;
-}
-
-.AttachmentTileMeta {
-  font-size: 13px;
-  color: #83847d;
-}
-
-.MethodToggleRow {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.MethodToggle {
-  flex: 1;
-  padding: 14px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #073f24;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-/* Message content toolbar row */
-
-.MessageToolbarRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 8px;
-}
-
-.CharCount {
-  margin-left: auto;
-  font-size: 12px;
-  color: #83847d;
 }
 
 /* Upload button (kept from legacy HSM look) */

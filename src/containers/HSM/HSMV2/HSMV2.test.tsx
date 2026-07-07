@@ -25,6 +25,8 @@ const uploadPhotoMock = {
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
+vi.mock('i18next', () => ({ t: (str: string) => str }));
+
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
   return {
@@ -61,7 +63,7 @@ describe('HSMV2 edit mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Edit HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('HSM Template')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -82,7 +84,7 @@ describe('HSMV2 edit mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Edit HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('HSM Template')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -130,10 +132,10 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Back to templates')).toBeInTheDocument();
+    expect(screen.getByTestId('back-button')).toBeInTheDocument();
     expect(screen.getByText('Template Details')).toBeInTheDocument();
     expect(screen.getByText('Message Content')).toBeInTheDocument();
     expect(screen.getByText('Interactive Buttons')).toBeInTheDocument();
@@ -161,7 +163,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -207,7 +209,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Quick Reply'));
@@ -223,7 +225,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Document'));
@@ -235,7 +237,7 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByText('Click to upload or drag and drop')).toBeInTheDocument();
     expect(screen.getByText('PDF (max 16MB)')).toBeInTheDocument();
     // the Document tile should remain selected while the upload method is active
-    expect(screen.getByText('Document').closest('button')?.className).toMatch(/TileSelectedGreen/);
+    expect(screen.getByText('Document').closest('button')?.className).toMatch(/TileSelected/);
 
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
   });
@@ -245,7 +247,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Document'));
@@ -272,7 +274,7 @@ describe('HSMV2 add mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Image'));
@@ -297,7 +299,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Image'));
@@ -310,7 +312,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Image'));
@@ -326,7 +328,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Image'));
@@ -361,7 +363,7 @@ describe('HSMV2 add mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Document'));
@@ -398,7 +400,7 @@ describe('HSMV2 add mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Image'));
@@ -421,7 +423,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Image'));
@@ -438,7 +440,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     const autocompletes = screen.getAllByTestId('autocomplete-element');
@@ -454,7 +456,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     const autocompletes = screen.getAllByTestId('autocomplete-element');
@@ -471,7 +473,7 @@ describe('HSMV2 add mode', () => {
     render(template);
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Call to Action'));
@@ -490,7 +492,7 @@ describe('HSMV2 add mode', () => {
     expect(screen.queryAllByTestId('delete-icon')).toHaveLength(0);
   });
 
-  test('clicking Back to templates navigates back to the HSM list', async () => {
+  test('clicking the back icon navigates back to the HSM list', async () => {
     render(
       <MockedProvider mocks={[...mocks, ...WHATSAPP_FORM_MOCKS]} addTypename={false}>
         <MemoryRouter initialEntries={['/template-v2/add']}>
@@ -503,10 +505,10 @@ describe('HSMV2 add mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Create HSM Template')).toBeInTheDocument();
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('Back to templates'));
+    fireEvent.click(screen.getByTestId('back-button'));
     expect(screen.getByText('HSM list page')).toBeInTheDocument();
   });
 });

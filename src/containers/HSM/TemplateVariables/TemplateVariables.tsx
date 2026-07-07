@@ -48,6 +48,8 @@ export const TemplateVariables = ({
         onClick={handleAddVariable}
         variant="outlined"
         color="primary"
+        size="small"
+        sx={{ boxShadow: 'none' }}
       >
         <AddIcon className={styles.AddIcon} />
         <span> Add Variable</span>
@@ -64,6 +66,7 @@ export const TemplateVariables = ({
                       paddingLeft: '14px',
                     },
                   }}
+                  size="small"
                   startAdornment={<div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>}
                   fullWidth
                   label="Name"

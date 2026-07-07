@@ -156,6 +156,7 @@ export const FormLayout = ({
   confirmationState,
   restrictButtonStatus,
   renderFields,
+  helpData,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -679,7 +680,7 @@ export const FormLayout = ({
   if (isView) {
     headerHelp = `Please view below details.`;
   }
-  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} />;
+  let heading = <Heading backLink={backLinkButton} formTitle={formTitle} headerHelp={headerHelp} helpData={helpData} />;
 
   let confirmationDialog;
   if (showConfirmationDialog) {

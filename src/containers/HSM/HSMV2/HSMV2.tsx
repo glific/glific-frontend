@@ -1,10 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { FormHelperText } from '@mui/material';
 import Upload from '@mui/icons-material/Upload';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -17,8 +16,12 @@ import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/Create
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import Simulator from 'components/simulator/Simulator';
+import { ButtonTypeSelector } from 'components/UI/Form/ButtonTypeSelector/ButtonTypeSelector';
+import {
+  AttachmentTypeSelector,
+  attachmentTileMeta,
+} from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { getOrganizationServices } from 'services/AuthService';
@@ -47,7 +50,6 @@ import {
   dialogMessage,
   categoryDescriptions,
   titleCase,
-  attachmentTileMeta,
   getField,
   renderTextField,
   getTemplateAndButton,
@@ -61,7 +63,6 @@ import styles from './HSMV2.module.css';
 
 export const HSMV2 = () => {
   const location: any = useLocation();
-  const navigate = useNavigate();
   const [language, setLanguageId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
@@ -410,13 +411,6 @@ export const HSMV2 = () => {
       defaultValue: (isEditing || isCopyState) && editorState,
     },
     {
-      component: TemplateVariables,
-      message: body,
-      variables: variables,
-      setVariables: setVariables,
-      isEditing: isEditing,
-    },
-    {
       component: Input,
       name: 'footer',
       disabled: isEditing,
@@ -598,16 +592,13 @@ export const HSMV2 = () => {
             <span className={styles.Required}>*</span>
           </p>
           {renderTextField(formFieldItems, 'body')}
-          <div className={styles.MessageToolbarRow}>
-            <Field
-              component={TemplateVariables}
-              message={body}
-              variables={variables}
-              setVariables={setVariables}
-              isEditing={isEditing}
-            />
-            <span className={styles.CharCount}>{(body || '').length} / 1024</span>
-          </div>
+          <Field
+            component={TemplateVariables}
+            message={body}
+            variables={variables}
+            setVariables={setVariables}
+            isEditing={isEditing}
+          />
           <div className={styles.HelperText}>
             You can provide variable values in your HSM templates to personalize the message. To add: click on the
             variable button and provide an example value for the variable in the field provided below
@@ -624,29 +615,16 @@ export const HSMV2 = () => {
 
       <section className={styles.Card}>
         <h2 className={styles.CardTitle}>{t('Interactive Buttons')}</h2>
-        <p className={styles.FieldLabel}>{t('Button Type')}</p>
-        <div className={styles.ButtonTypeTileRow}>
-          {BUTTON_OPTIONS.filter(
+        <ButtonTypeSelector
+          options={BUTTON_OPTIONS.filter(
             (option: any) => option.id !== 'WHATSAPP_FORM' || getOrganizationServices('whatsappFormsEnabled')
-          ).map((option: any) => (
-            <button
-              type="button"
-              key={option.id}
-              disabled={disabled}
-              className={`${styles.ButtonTypeTile} ${
-                isAddButtonChecked && templateType?.id === option.id ? styles.TileSelectedBlue : ''
-              }`}
-              onClick={() => handleTemplateTypeChange(option)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-        {isAddButtonChecked && (
-          <button type="button" className={styles.ClearSelectionLink} onClick={clearButtonSelection}>
-            {t('Clear button selection')}
-          </button>
-        )}
+          )}
+          value={templateType}
+          selected={isAddButtonChecked}
+          onChange={handleTemplateTypeChange}
+          onClear={clearButtonSelection}
+          disabled={disabled}
+        />
 
         <Field
           component={TemplateOptions}
@@ -671,55 +649,16 @@ export const HSMV2 = () => {
           {t('Not supported: Audio, Stickers')}
         </p>
 
-        <p className={styles.FieldLabel}>{t('Attachment Type')}</p>
-        <div className={styles.AttachmentTileRow}>
-          {mediaOptions.map((option: any) => {
-            const meta = attachmentTileMeta[option.id];
-            return (
-              <button
-                type="button"
-                key={option.id}
-                disabled={disabled}
-                className={`${styles.AttachmentTile} ${type?.id === option.id ? styles.TileSelectedGreen : ''}`}
-                onClick={() => selectAttachmentType(option)}
-              >
-                {meta?.icon && <span className={styles.AttachmentTileIcon}>{meta.icon}</span>}
-                <span className={styles.TileTitle}>{titleCase(option.id)}</span>
-                {meta?.format && <span className={styles.AttachmentTileMeta}>{meta.format}</span>}
-                {meta?.maxSizeLabel && <span className={styles.AttachmentTileMeta}>{meta.maxSizeLabel}</span>}
-              </button>
-            );
-          })}
-        </div>
-        {type ? (
-          <button type="button" className={styles.ClearSelectionLink} onClick={clearAttachmentSelection}>
-            {t('Clear attachment selection')}
-          </button>
-        ) : null}
-
-        {type ? (
-          <>
-            <p className={styles.FieldLabel}>{t('How would you like to provide the attachment?')}</p>
-            <div className={styles.MethodToggleRow}>
-              <button
-                type="button"
-                disabled={disabled}
-                className={`${styles.MethodToggle} ${attachmentMethod === 'url' ? styles.TileSelectedGreen : ''}`}
-                onClick={selectUrlMethod}
-              >
-                {t('Provide URL')}
-              </button>
-              <button
-                type="button"
-                disabled={disabled}
-                className={`${styles.MethodToggle} ${attachmentMethod === 'upload' ? styles.TileSelectedGreen : ''}`}
-                onClick={selectUploadMethod}
-              >
-                {t('Upload File')}
-              </button>
-            </div>
-          </>
-        ) : null}
+        <AttachmentTypeSelector
+          options={mediaOptions}
+          value={type}
+          onChange={selectAttachmentType}
+          onClear={clearAttachmentSelection}
+          method={attachmentMethod}
+          onSelectUrlMethod={selectUrlMethod}
+          onSelectUploadMethod={selectUploadMethod}
+          disabled={disabled}
+        />
 
         {showUploadButton && (
           <div className={styles.FieldGroup}>
@@ -835,62 +774,43 @@ export const HSMV2 = () => {
 
   return (
     <div className={styles.Page}>
-      <button type="button" className={styles.BackLink} onClick={() => navigate(`/${backButton}`)}>
-        <ChevronLeftIcon fontSize="small" />
-        {t('Back to templates')}
-      </button>
-
-      <div className={styles.PageTitleRow}>
-        <h1 className={styles.PageTitle}>
-          {isEditing ? t('Edit HSM Template') : isCopyState ? `${t('Copy')} HSM Template` : t('Create HSM Template')}
-        </h1>
-        <HelpIcon helpData={templateInfo} />
-      </div>
-      <p className={styles.PageSubtitle}>
-        {isEditing
-          ? t('Please view/edit the details below.')
-          : t('Fill in the details below to create a new template for WhatsApp Business messaging')}
-      </p>
-
-      <div className={styles.FormColumn}>
-        <FormLayout
-          {...queries}
-          states={states}
-          isView={isEditing}
-          setStates={setStates}
-          setPayload={setPayload}
-          validationSchema={isEditing ? Yup.object() : FormSchema}
-          listItemName="HSM Template"
-          dialogMessage={dialogMessage}
-          formFields={fields}
-          redirectionLink={backButton}
-          listItem="sessionTemplate"
-          icon={templateIcon}
-          getLanguageId={getLanguageId}
-          languageSupport={false}
-          errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
-          isAttachment
-          getQueryFetchPolicy="cache-and-network"
-          button={!isEditing ? t('Submit for Approval') : t('Save')}
-          buttonState={{
-            text: t('Validating URL'),
-            status: validatingURL,
-            show: !isEditing,
-            styles: styles.Buttons,
-          }}
-          saveOnPageChange={false}
-          type={mode}
-          copyNotification={copyMessage}
-          backLinkButton={`/${backButton}`}
-          cancelLink={backButton}
-          getMediaId={getMediaId}
-          entityId={params.id}
-          noHeading
-          partialPage
-          customStyles={styles.CustomFormShell}
-          renderFields={renderFields}
-        />
-      </div>
+      <FormLayout
+        {...queries}
+        states={states}
+        isView={isEditing}
+        setStates={setStates}
+        setPayload={setPayload}
+        validationSchema={isEditing ? Yup.object() : FormSchema}
+        listItemName="HSM Template"
+        dialogMessage={dialogMessage}
+        formFields={fields}
+        redirectionLink={backButton}
+        listItem="sessionTemplate"
+        icon={templateIcon}
+        helpData={templateInfo}
+        getLanguageId={getLanguageId}
+        languageSupport={false}
+        errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+        isAttachment
+        getQueryFetchPolicy="cache-and-network"
+        button={!isEditing ? t('Submit for Approval') : t('Save')}
+        buttonState={{
+          text: t('Validating URL'),
+          status: validatingURL,
+          show: !isEditing,
+          styles: styles.Buttons,
+        }}
+        saveOnPageChange={false}
+        type={mode}
+        copyNotification={copyMessage}
+        backLinkButton={`/${backButton}`}
+        cancelLink={backButton}
+        getMediaId={getMediaId}
+        entityId={params.id}
+        partialPage
+        customStyles={styles.CustomFormShell}
+        renderFields={renderFields}
+      />
 
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

@@ -1,9 +1,6 @@
 import { Field } from 'formik';
 import * as Yup from 'yup';
 
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
 import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
@@ -35,32 +32,6 @@ export const categoryDescriptions: { [key: string]: string } = {
 };
 
 export const titleCase = (value: string) => (value ? value.charAt(0) + value.slice(1).toLowerCase() : value);
-
-export const attachmentTileMeta: {
-  [key: string]: { icon: any; format: string; maxSizeLabel: string; maxSizeMB: number; accept: string };
-} = {
-  IMAGE: {
-    icon: <ImageOutlinedIcon />,
-    format: 'JPG, PNG',
-    maxSizeLabel: 'Max 5 MB',
-    maxSizeMB: 5,
-    accept: 'image/*',
-  },
-  DOCUMENT: {
-    icon: <InsertDriveFileOutlinedIcon />,
-    format: 'PDF',
-    maxSizeLabel: 'Max 16 MB',
-    maxSizeMB: 16,
-    accept: 'application/pdf',
-  },
-  VIDEO: {
-    icon: <VideocamOutlinedIcon />,
-    format: 'MP4',
-    maxSizeLabel: 'Max 16 MB',
-    maxSizeMB: 16,
-    accept: 'video/*',
-  },
-};
 
 // looks up a named field descriptor out of the array FormLayout hands to renderFields.
 export const getField = (fieldItems: any[], name: string) => fieldItems.find((field: any) => field.name === name);
