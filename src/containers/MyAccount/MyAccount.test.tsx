@@ -218,7 +218,7 @@ describe('<MyAccount />', () => {
     expect(screen.getByTestId('cancelEmailButton')).toBeInTheDocument();
   });
 
-  test('editing and saving email succeeds', async () => {
+  test('update email success flow: edit, save, and verify success toast + disabled field', async () => {
     const emailMocks = [getCurrentUserQuery, updateEmailQuery, getOrganizationLanguagesQuery];
     const { container } = renderMyAccount(emailMocks);
 
@@ -237,7 +237,6 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       expect(screen.getByText('Email updated successfully!')).toBeInTheDocument();
     });
-    // saving successfully returns the field to its disabled, read-only state
     expect(emailInput).toBeDisabled();
     expect(screen.queryByTestId('saveEmailButton')).not.toBeInTheDocument();
   });
@@ -262,7 +261,6 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('has already been taken')).toBeInTheDocument();
     });
     expect(screen.queryByText('Email updated successfully!')).not.toBeInTheDocument();
-    // the field stays editable so the user can correct and retry
     expect(emailInput).toBeEnabled();
   });
 
