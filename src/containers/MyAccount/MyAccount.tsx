@@ -183,7 +183,7 @@ export const MyAccount = () => {
       validationSchema={EmailFormSchema}
       onSubmit={saveEmailHandler}
     >
-      {({ submitForm }) => (
+      {({ submitForm, isSubmitting }) => (
         <Form>
           {userformFields.map((field) => (
             <div className={styles.UserField} key={field.name}>
@@ -195,15 +195,17 @@ export const MyAccount = () => {
               <Field key={field.name} {...field}></Field>
             </div>
           ))}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={submitForm}
-            className={styles.Button}
-            data-testid="saveEmailButton"
-          >
-            {t('Save Email')}
-          </Button>
+          <div className={styles.EmailButton}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={submitForm}
+              loading={isSubmitting}
+              data-testid="saveEmailButton"
+            >
+              {t('Save Email')}
+            </Button>
+          </div>
         </Form>
       )}
     </Formik>

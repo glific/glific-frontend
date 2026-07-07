@@ -40,6 +40,10 @@
   padding: 0px 20px;
 }
 
+.EmailButton {
+  margin: 8px 20px 24px;
+}
+
 .ChangePasswordField {
   margin-bottom: 20px;
 }
