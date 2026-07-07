@@ -56,9 +56,9 @@ const mockAxiosPost = (loginResult: 'success' | 'reject', payload?: unknown) => 
   });
 };
 
-const wrapper = (mocks: any) => (
+const wrapper = (mocks: any, initialEntry?: { pathname: string; state?: { to?: string } }) => (
   <MockedProvider mocks={mocks}>
-    <MemoryRouter>
+    <MemoryRouter initialEntries={initialEntry ? [initialEntry] : undefined}>
       <Login />
     </MemoryRouter>
   </MockedProvider>
@@ -80,8 +80,25 @@ const userAction = async (container: any) => {
 };
 
 describe('<Login />', () => {
+  const originalLocation = window.location;
+  let locationReplaceMock: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
     vi.resetAllMocks();
+    locationReplaceMock = vi.fn();
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: { ...originalLocation, replace: locationReplaceMock },
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    });
   });
 
   it('renders component properly', async () => {
@@ -114,6 +131,28 @@ describe('<Login />', () => {
       expect(mockPosthogIdentify).toHaveBeenCalledWith('1', { access_roles: ['Admin'] });
       expect(mockPosthogGroup).toHaveBeenCalledWith('organization', '1');
       expect(mockPosthogCapture).toHaveBeenCalledWith('user_logged_in');
+    });
+  });
+
+  it('redirects with window.location.replace to /chat after successful login', async () => {
+    mockAxiosPost('success');
+    const { container } = render(wrapper(mocks));
+
+    await userAction(container);
+
+    await waitFor(() => {
+      expect(locationReplaceMock).toHaveBeenCalledWith('/chat');
+    });
+  });
+
+  it('redirects with window.location.replace to location.state.to when provided', async () => {
+    mockAxiosPost('success');
+    const { container } = render(wrapper(mocks, { pathname: '/login', state: { to: '/flow/2' } }));
+
+    await userAction(container);
+
+    await waitFor(() => {
+      expect(locationReplaceMock).toHaveBeenCalledWith('/flow/2');
     });
   });
 

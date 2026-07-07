@@ -98,7 +98,7 @@ export const Login = () => {
         // Full page navigation so PostHog reinitialises and re-runs onLoad,
         // which re-evaluates banners/site-apps for the newly authenticated user.
         const targetPath = location.state?.to || '/chat';
-        window.location.href = targetPath;
+        window.location.replace(targetPath);
       }
     }
     if (userError) {

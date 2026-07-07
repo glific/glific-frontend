@@ -60,7 +60,7 @@ export const Logout = () => {
 
     // Full page navigation so PostHog reinitialises on the login page and any
     // site-app banners are cleanly torn down without manual DOM cleanup.
-    window.location.href = '/login';
+    window.location.replace('/login');
   };
 
   useEffect(() => {
