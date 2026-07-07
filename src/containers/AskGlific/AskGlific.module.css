@@ -26,7 +26,6 @@
 .HeaderLeft {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   cursor: pointer;
 }
 
@@ -43,21 +42,6 @@
 .HeaderLeft svg {
   width: 20px;
   height: 20px;
-}
-
-.BetaTag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.2rem 0.6rem;
-  border-radius: 1rem;
-  background-color: #e8f5ee;
-  color: #119656 !important;
-  font-family: Heebo;
-  font-weight: 600;
-  font-size: 0.6rem;
-  line-height: 14px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
 }
 
 .ChatIcon {
