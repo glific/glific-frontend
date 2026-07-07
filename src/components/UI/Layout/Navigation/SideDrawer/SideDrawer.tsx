@@ -69,17 +69,17 @@ export const SideDrawer = () => {
         )}
       </Toolbar>
       <WalletBalance fullOpen={drawerOpen} />
-      <SideMenus opened={drawerOpen} />
+      <div className={styles.MenuScrollArea}>
+        <SideMenus opened={drawerOpen} />
+      </div>
 
-      {/* Spacer to push banner to bottom */}
-      <div style={{ flex: 1 }} />
+      <div className={styles.BottomSection}>
+        {drawerOpen && <TrialExpiryBanner />}
 
-      {/* Trial Expiry Banner - No wrapper, no conditional */}
-      {drawerOpen && <TrialExpiryBanner />}
+        {askGlificMenu}
 
-      {askGlificMenu}
-
-      <UserMenu drawerOpen={drawerOpen} />
+        <UserMenu drawerOpen={drawerOpen} />
+      </div>
     </div>
   );
 
