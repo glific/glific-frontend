@@ -296,3 +296,17 @@
   min-width: 320px;
   padding: 8px 0 16px;
 }
+
+.RowStyle {
+  padding: 15px 20px 15px 25px;
+}
+
+.CollapseRowCustom {
+  background-color: #fff;
+  box-shadow: inset 3px 0 0 0 #28a745;
+  border-bottom: 1px solid #eeede9;
+}
+
+.CollapseRowCustom:hover {
+  background-color: #f5f4f0;
+}

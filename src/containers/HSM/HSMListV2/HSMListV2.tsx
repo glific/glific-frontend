@@ -306,7 +306,7 @@ const HSMListV2 = () => {
         filters={selectedTag?.id ? { ...appliedFilters, tagIds: [parseInt(selectedTag.id)] } : appliedFilters}
         columnNames={getColumnNames(showReason)}
         columnStyles={getColumnStyles(showReason)}
-        columns={getColumns(showReason, collapseOpen, collapseRow, toggleLanguages)}
+        columns={getColumns(showReason, { collapseRow, collapseOpen, onToggle: toggleLanguages })}
         additionalAction={additionalAction}
         restrictedAction={() => ({ edit: false })}
         dialogMessage={t('It will stop showing when you draft a customized message')}

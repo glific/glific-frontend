@@ -13,7 +13,10 @@ import {
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
-const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
+// `CollapseContent` carries a caller pre-rendered sub-row block (see the HSM
+// template list); `translations` is the default label+body JSON path.
+const removeDisplayColumns = ['recordId', 'translations', 'collapseContent', 'id', 'isActive'];
+
 interface PagerProps {
   columnNames: Array<ColumnNames>;
   data: any;
@@ -35,25 +38,10 @@ interface PagerProps {
 }
 
 // TODO: cleanup the translations code
-// Each entry is either the generic { label, body } pair (InteractiveMessageList)
-// or a caller-built { cells: [...] } array with one node per column (HSM
-// template list, whose per-language rows need a status chip/category/date
-// rather than plain text). Falls back to label+body when cells isn't given.
-const rowCells = (entryData: any) => {
-  if (Array.isArray(entryData.cells)) return entryData.cells;
-
-  // This is for location translation type where the text is inside body.
-  const body = typeof entryData.body === 'string' ? entryData.body : entryData.body.text;
-  return [
-    <div key="label">
-      <div className={styles.LabelText}>{entryData.label}</div>
-    </div>,
-    <div key="body">
-      <p className={styles.TableText}>{body}</p>
-    </div>,
-  ];
-};
-
+// Default sub-row renderer: plain label+body per language, driven by the
+// `translations` JSON field on the parent record (e.g. InteractiveMessageList,
+// SpeedSendList). Callers that need richer sub-rows pass a pre-rendered
+// `collapseContent` node on the record instead.
 const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
@@ -68,20 +56,29 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
     );
   }
 
-  return Object.keys(dataObj).map((key, index) => {
+  const additionalRowInformation = Object.keys(dataObj).map((key, index) => {
     const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
-    const cells = rowCells(dataObj[key]);
+
+    // This is for location translation type where the text is inside body.
+    const body = typeof dataObj[key].body === 'string' ? dataObj[key].body : dataObj[key].body.text;
 
     return (
       <TableRow key={rowIdentifier}>
-        {cells.map((cell: any, cellIndex: number) => (
-          <TableCell key={cellIndex} className={`${columnStyles && columnStyles[cellIndex]} ${styles.RowStyle}`}>
-            {cell}
-          </TableCell>
-        ))}
+        <TableCell className={`${columnStyles ? columnStyles[0] : null}`}>
+          <div>
+            <div className={styles.LabelText}>{dataObj[key].label}</div>
+          </div>
+        </TableCell>
+        <TableCell className={`${columnStyles ? columnStyles[1] : null}`}>
+          <div>
+            <p className={styles.TableText}>{body}</p>
+          </div>
+        </TableCell>
       </TableRow>
     );
   });
+
+  return additionalRowInformation;
 };
 
 const createRows = (data: any, columnStyles: any, collapseRow?: string, collapseOpen: boolean = false) => {
@@ -109,18 +106,15 @@ const createRows = (data: any, columnStyles: any, collapseRow?: string, collapse
   return data.map((entry: any) => {
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
-    // translations can be a JSON string (InteractiveMessageList, sent as-is from
-    // a GraphQL field) or a plain object built client-side (HSM template list,
-    // whose cells carry JSX that can't round-trip through JSON).
-    if (entry.translations) {
-      dataObj = typeof entry.translations === 'string' ? JSON.parse(entry.translations) : entry.translations;
-    }
+    if (entry.translations) dataObj = JSON.parse(entry.translations);
+
+    const isOpen = collapseOpen && entry.recordId === collapseRow;
 
     return (
       <Fragment key={entry.recordId}>
-        <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
-        {collapseOpen && dataObj && entry.id === collapseRow
-          ? collapsedRowData(dataObj, columnStyles, entry.recordId)
+        <TableRow className={isActiveRow}>{createRow(entry)}</TableRow>
+        {isOpen
+          ? (entry.collapseContent ?? (dataObj ? collapsedRowData(dataObj, columnStyles, entry.recordId) : null))
           : null}
       </Fragment>
     );
