@@ -4,13 +4,46 @@ set -uo pipefail
 commit_sha="${GIGALIXIR__RELEASE_SHA:-unknown}"
 version="${GIGALIXIR__RELEASE_VERSION:-unknown}"
 app_name="${GIGALIXIR__APP_NAME:-unknown}"
-trailer="\`${version}\` (\`${commit_sha}\`) on $(hostname)"
+node_name="${app_name}@$(hostname)"
+
+json_escape() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  printf '%s' "$s"
+}
 
 notify() {
+  local title="$1" description="$2" color="$3"
   [ -n "${DISCORD_WEBHOOK_URL:-}" ] || return 0
+
+  local now
+  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  local payload
+  payload=$(cat <<JSON
+{
+  "username": "release-alert",
+  "embeds": [{
+    "title": "$(json_escape "$title")",
+    "description": "$(json_escape "$description")",
+    "color": ${color},
+    "fields": [
+      {"name": "🏷️ App", "value": "$(json_escape "$app_name")", "inline": true},
+      {"name": "🔀 SHA", "value": "$(json_escape "$commit_sha")", "inline": true},
+      {"name": "📕 Release", "value": "$(json_escape "$version")", "inline": true},
+      {"name": "💻 Node", "value": "$(json_escape "$node_name")", "inline": true}
+    ],
+    "footer": {"text": "Gigalixir rolling deployment"},
+    "timestamp": "${now}"
+  }]
+}
+JSON
+)
+
   curl -fsS -m 10 -X POST "$DISCORD_WEBHOOK_URL" \
     -H 'Content-Type: application/json' \
-    -d "{\"content\": \"$1 - ${trailer}\"}" >/dev/null || true
+    -d "$payload" >/dev/null || true
 }
 
 # nginx runs in the foreground, so watch it from a backgrounded subshell.
@@ -19,12 +52,16 @@ notify() {
     # XFP header avoids the http->https 301 in nginx.conf.erb, so we get a real 200.
     if curl -fsS -o /dev/null -m 2 -H 'X-Forwarded-Proto: https' \
          "http://127.0.0.1:${PORT}/"; then
-      notify "✅ ${app_name} up and serving"
+      notify "🚀 Deployment Healthy" \
+        "A new revision has passed health checks and is now serving traffic." \
+        5763719
       exit 0
     fi
     sleep 2
   done
-  notify "⚠️ ${app_name} did not become healthy in 120s"
+  notify "⚠️ Deployment Unhealthy" \
+    "The new revision did not become healthy within 120s." \
+    15548997
 ) &
 
 exec bin/start-nginx-static
