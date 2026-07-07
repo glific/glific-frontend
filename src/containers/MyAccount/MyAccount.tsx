@@ -66,6 +66,9 @@ export const MyAccount = () => {
     },
   });
 
+  // separate mutation for the email save flow, kept independent of the OTP/password onCompleted logic above
+  const [updateEmail] = useMutation(UPDATE_CURRENT_USER);
+
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
 
@@ -110,6 +113,16 @@ export const MyAccount = () => {
     });
   };
 
+  // save the updated email
+  const saveEmailHandler = async (values: { email: string }) => {
+    try {
+      await updateEmail({ variables: { input: { email: values.email } } });
+      setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
+    } catch (error) {
+      setToastMessageInfo({ severity: 'error', message: t('Failed to update email.') });
+    }
+  };
+
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -139,6 +152,10 @@ export const MyAccount = () => {
     password: yupPasswordValidation(t),
   });
 
+  const EmailFormSchema = Yup.object().shape({
+    email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
+  });
+
   const userformFields = [
     {
       component: Input,
@@ -156,24 +173,39 @@ export const MyAccount = () => {
       component: Input,
       name: 'email',
       label: t('Email'),
-      disabled: true,
     },
   ];
 
   const userForm = (
-    <Formik initialValues={{ name: userName, phone: userPhone, email: userEmail }} onSubmit={() => {}}>
-      <Form>
-        {userformFields.map((field) => (
-          <div className={styles.UserField} key={field.name}>
-            {field.label && (
-              <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                {field.label}
-              </Typography>
-            )}
-            <Field key={field.name} {...field}></Field>
-          </div>
-        ))}
-      </Form>
+    <Formik
+      enableReinitialize
+      initialValues={{ name: userName, phone: userPhone, email: userEmail }}
+      validationSchema={EmailFormSchema}
+      onSubmit={saveEmailHandler}
+    >
+      {({ submitForm }) => (
+        <Form>
+          {userformFields.map((field) => (
+            <div className={styles.UserField} key={field.name}>
+              {field.label && (
+                <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                  {field.label}
+                </Typography>
+              )}
+              <Field key={field.name} {...field}></Field>
+            </div>
+          ))}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={submitForm}
+            className={styles.Button}
+            data-testid="saveEmailButton"
+          >
+            {t('Save Email')}
+          </Button>
+        </Form>
+      )}
     </Formik>
   );
 

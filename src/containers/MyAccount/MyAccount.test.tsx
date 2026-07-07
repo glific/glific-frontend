@@ -5,7 +5,7 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
+import { getCurrentUserQuery, updateUserQuery, updateEmailQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -147,13 +147,13 @@ describe('<MyAccount />', () => {
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    user.click(input);
-    user.keyboard('1234');
+    await user.click(input);
+    await user.keyboard('1234');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    user.click(password);
-    user.keyboard('pass123456');
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
@@ -183,13 +183,13 @@ describe('<MyAccount />', () => {
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    user.click(input);
-    user.keyboard('4567');
+    await user.click(input);
+    await user.keyboard('4567');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    user.click(password);
-    user.keyboard('pass123456');
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
@@ -197,5 +197,31 @@ describe('<MyAccount />', () => {
     });
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
+  });
+
+  test('editing and saving email succeeds', async () => {
+    const emailMocks = [getCurrentUserQuery, updateEmailQuery, getOrganizationLanguagesQuery];
+    const { container } = render(
+      <MockedProvider mocks={emailMocks} addTypename={false}>
+        <MemoryRouter>
+          <MyAccount />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
+    });
+
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    await user.clear(emailInput);
+    await user.type(emailInput, 'newemail@domain.com');
+
+    const saveEmailButton = screen.getByTestId('saveEmailButton');
+    await user.click(saveEmailButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Email updated successfully!')).toBeInTheDocument();
+    });
   });
 });

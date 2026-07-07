@@ -129,6 +129,25 @@ export const updateUserQuery = [
   },
 ];
 
+export const updateEmailQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { email: 'newemail@domain.com' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: null,
+        user: {
+          id: '1',
+          name: 'John Doe',
+          email: 'newemail@domain.com',
+        },
+      },
+    },
+  },
+};
+
 export const getCurrentUserErrorQuery = {
   request: {
     query: GET_CURRENT_USER,
