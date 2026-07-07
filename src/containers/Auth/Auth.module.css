@@ -52,10 +52,9 @@
 .BoxTitle {
   justify-content: flex-start;
   margin-bottom: 10px;
-  margin-top: 32px;
+  margin-top: 16px;
   margin-left: 32px;
   font-weight: bold;
-  width: 320px;
 }
 
 .RegistrationBoxTitle {
@@ -68,6 +67,45 @@
 
 .TitleText {
   font-weight: bold;
+  /* Keep auth headings on a single line; size to fit the longest title instead of wrapping. */
+  font-size: 1.6rem;
+  white-space: nowrap;
+}
+
+/* Login & reset screens: center the heading + subtitle, give the (shorter) heading more size,
+   and sit closer to the top of the card. */
+.LoginBox .BoxTitle,
+.RegistrationBox .BoxTitle,
+.FirstResetBox .BoxTitle,
+.SecondResetBox .BoxTitle {
+  justify-content: center;
+  text-align: center;
+  margin-top: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
+.LoginBox .TitleText,
+.RegistrationBox .TitleText,
+.FirstResetBox .TitleText,
+.SecondResetBox .TitleText {
+  font-size: 1.9rem;
+}
+
+.LoginBox .SubText,
+.FirstResetBox .SubText,
+.SecondResetBox .SubText {
+  justify-content: center;
+  text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
+/* A little breathing room between the New Password field and the Save button. */
+.SecondResetBox .CenterButton {
+  margin-top: 10px;
 }
 
 .CenterBox {
@@ -134,6 +172,7 @@
   height: auto;
   width: 395px;
   border-color: #eaedec;
+  background-color: white;
   border-style: solid;
   border-width: 2px;
 }
@@ -143,6 +182,7 @@
   height: auto;
   width: 395px;
   border-color: #eaedec;
+  background-color: white;
   border-style: solid;
   border-width: 2px;
 }
@@ -195,6 +235,42 @@
   color: red;
   width: 333px;
   padding-bottom: 10px;
+}
+
+.InfoNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 16px 4px;
+  padding: 10px 12px;
+  background-color: #f2f5f4;
+  border-radius: 8px;
+  color: #55665e;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.InfoNoteIcon {
+  color: #119656;
+  font-size: 18px !important;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.InfoNoteSuccess {
+  background-color: #e7f5ee;
+  color: #0b5c37;
+}
+
+.InfoNoteWarning {
+  background-color: #fdf3e2;
+  color: #8a5300;
+}
+
+.InfoNoteWarning .InfoNoteIcon {
+  color: #b45309;
 }
 
 .SuccessMessage {
@@ -262,6 +338,13 @@
   color: #93a29b;
   font-weight: 400;
   margin-bottom: 24px;
+}
+
+/* Login/registration hint: sit it roughly centered between the title and the first
+   field (the negative bottom margin offsets the field's shared 15px .Spacing). */
+.InformationTextTight {
+  margin-top: 4px;
+  margin-bottom: -4px;
 }
 
 .Captcha {
