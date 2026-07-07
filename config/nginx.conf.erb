@@ -28,7 +28,45 @@ http {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Frame-Options "deny" always;
     add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload" always;
+<%
+      # --- Content Security Policy ----------------------------------------------------------
+      # Rollout is in two stages so production behaviour cannot break:
+      #   1. The current PERMISSIVE policy is still ENFORCED (the Content-Security-Policy
+      #      header below) — production behaves exactly as before.
+      #   2. The TIGHTENED policy is sent as Content-Security-Policy-Report-Only: the browser
+      #      does NOT block on it, it only reports what it *would* block to CSP_REPORT_URI
+      #      (recommended: a Sentry CSP endpoint). When those reports are clean, replace the
+      #      enforced policy below with `strict_csp` and drop this report-only block.
+      # Keep `strict_csp` in sync with the dev-server CSP in vite.config.ts.
+      #
+      # The backend is served per deployment at api.<host> under *.glific.com (no custom
+      # domains), so `https://*.glific.com wss://*.glific.com` covers every backend HTTP +
+      # WebSocket origin. CSP wildcards are only valid as the leftmost label, and
+      # `*.glific.com` matches multi-level hosts like api.tides.glific.com.
+      #
+      # CSP_REPORT_URI: where violation reports are sent; if unset, no report-only header is
+      #   emitted and this change is a no-op in production.
+      # `unsafe-eval`: required by the flow editor (@nyaruka/temba-components uses
+      #   `new Function(...)` for event handlers); there is no nonce/hash alternative.
+      csp_report_uri = ENV['CSP_REPORT_URI']
+      strict_csp =
+        "default-src 'self'; " \
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; " \
+        "script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; " \
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " \
+        "font-src 'self' data: https://fonts.gstatic.com; " \
+        "img-src 'self' data: blob: https:; " \
+        "media-src 'self' data: blob: https:; " \
+        "frame-src 'self' https://js.stripe.com https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org data:; " \
+        "worker-src 'self' blob:; " \
+        "connect-src 'self' https://*.glific.com wss://*.glific.com https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.glific.com https://storage.googleapis.com; " \
+        "object-src 'none'; base-uri 'self';"
+    %>
     add_header Content-Security-Policy "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;" always;
+    <% if csp_report_uri && !csp_report_uri.empty? %>
+    add_header Reporting-Endpoints 'csp-endpoint="<%= csp_report_uri %>"' always;
+    add_header Content-Security-Policy-Report-Only "<%= strict_csp %> report-to csp-endpoint; report-uri <%= csp_report_uri %>;" always;
+    <% end %>
 
     if ($http_x_forwarded_proto != "https") {
       return 301 https://$host$request_uri;

@@ -91,6 +91,15 @@ describe('<Login />', () => {
     expect(authContainer).toHaveTextContent('Login to your account');
   });
 
+  it('shows the WhatsApp number instruction hint', async () => {
+    mockAxiosPost('success');
+    const { findByTestId } = render(wrapper(mocks));
+    const hint = await findByTestId('whatsAppNumberHint');
+    expect(hint).toHaveTextContent(
+      "Use your personal WhatsApp number to log in or create your account. Do not use your chatbot's WhatsApp number."
+    );
+  });
+
   it('test the login form submission with correct creds', async () => {
     const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
     mockAxiosPost('success');
