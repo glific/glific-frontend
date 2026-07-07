@@ -19,10 +19,13 @@ const DENY_URLS: RegExp[] = [
   /^safari-web-extension:\/\//i,
 ];
 
-// Has a usable stack. The browser SDK sets in_app:true on every frame, so this
-// only weeds out frameless cross-origin "Script error." events, not app vs lib.
-const hasInAppFrame = (event: Sentry.ErrorEvent): boolean =>
-  (event.exception?.values ?? []).some((v) => (v.stacktrace?.frames ?? []).some((f) => f.in_app === true));
+// True if the exception carries at least one resolved stack frame. We check for
+// a usable stack rather than `in_app` (which the browser SDK sets to true on
+// every frame at capture time, and which Sentry can reclassify server-side) so
+// we never risk dropping real errors. Its only job is to weed out frameless
+// cross-origin "Script error." events, which carry no actionable signal.
+const hasUsableStack = (event: Sentry.ErrorEvent): boolean =>
+  (event.exception?.values ?? []).some((v) => (v.stacktrace?.frames ?? []).length > 0);
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -31,8 +34,6 @@ Sentry.init({
 
   tracesSampleRate: isProduction ? 0.5 : 1,
   attachStacktrace: true,
-  replaysOnErrorSampleRate: 1.0,
-  replaysSessionSampleRate: 0.1,
 
   integrations: [
     Sentry.browserTracingIntegration(),
@@ -44,7 +45,7 @@ Sentry.init({
   denyUrls: DENY_URLS,
 
   beforeSend(event) {
-    if (event.exception && !hasInAppFrame(event)) return null;
+    if (event.exception && !hasUsableStack(event)) return null;
     return event;
   },
 });
