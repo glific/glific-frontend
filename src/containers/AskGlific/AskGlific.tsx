@@ -496,6 +496,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                   </div>
                 )}
                 <span>{getChatTitle()}</span>
+
                 <KeyboardArrowDownIcon
                   sx={{
                     fontSize: 20,
@@ -504,6 +505,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                     transition: 'transform 0.2s',
                   }}
                 />
+                <span className={styles.BetaTag}>Beta</span>
               </div>
 
               {/* Chat History Dropdown — floating mode only */}
