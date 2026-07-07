@@ -116,8 +116,15 @@ export const MyAccount = () => {
   // update the user's email
   const updateEmailHandler = async (values: { email: string }) => {
     try {
-      await updateEmail({ variables: { input: { email: values.email } } });
-      setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
+      const response = await updateEmail({ variables: { input: { email: values.email } } });
+      if (response.data?.updateCurrentUser?.errors) {
+        setToastMessageInfo({
+          severity: 'error',
+          message: response.data.updateCurrentUser.errors[0].message,
+        });
+      } else {
+        setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
+      }
     } catch (error) {
       setToastMessageInfo({ severity: 'error', message: t('Failed to update email.') });
     }

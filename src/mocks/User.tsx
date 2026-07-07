@@ -148,6 +148,21 @@ export const updateEmailQuery = {
   },
 };
 
+export const updateEmailErrorQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { email: 'taken@domain.com' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: [{ key: 'email', message: 'has already been taken' }],
+        user: null,
+      },
+    },
+  },
+};
+
 export const getCurrentUserErrorQuery = {
   request: {
     query: GET_CURRENT_USER,

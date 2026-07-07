@@ -5,7 +5,7 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { getCurrentUserQuery, updateUserQuery, updateEmailQuery } from 'mocks/User';
+import { getCurrentUserQuery, updateUserQuery, updateEmailQuery, updateEmailErrorQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -21,17 +21,18 @@ vi.mock('axios');
 const mockedAxios = axios as any;
 const user = userEvent.setup();
 
-const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <MemoryRouter>
-      <MyAccount />
-    </MemoryRouter>
-  </MockedProvider>
-);
+const renderMyAccount = (mockedResponses: any[] = mocks) =>
+  render(
+    <MockedProvider mocks={mockedResponses} addTypename={false}>
+      <MemoryRouter>
+        <MyAccount />
+      </MemoryRouter>
+    </MockedProvider>
+  );
 
 describe('<MyAccount />', () => {
   test('it should render', async () => {
-    const { getByText, findByTestId } = render(wrapper);
+    const { getByText, findByTestId } = renderMyAccount();
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
@@ -44,7 +45,7 @@ describe('<MyAccount />', () => {
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    render(wrapper);
+    renderMyAccount();
 
     await waitFor(() => {
       // click on generate OTP
@@ -91,7 +92,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error response', async () => {
-    const { findByTestId } = render(wrapper);
+    const { findByTestId } = renderMyAccount();
 
     // let's mock error case sending of OTP
     const errorMessage = 'Cannot register 919967665667';
@@ -112,7 +113,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP success flow with cancel', async () => {
-    render(wrapper);
+    renderMyAccount();
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
@@ -133,7 +134,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with incorrect OTP', async () => {
-    const { container } = render(wrapper);
+    const { container } = renderMyAccount();
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
@@ -169,7 +170,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with too many attempts', async () => {
-    const { container } = render(wrapper);
+    const { container } = renderMyAccount();
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
@@ -201,13 +202,7 @@ describe('<MyAccount />', () => {
 
   test('editing and saving email succeeds', async () => {
     const emailMocks = [getCurrentUserQuery, updateEmailQuery, getOrganizationLanguagesQuery];
-    const { container } = render(
-      <MockedProvider mocks={emailMocks} addTypename={false}>
-        <MemoryRouter>
-          <MyAccount />
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    const { container } = renderMyAccount(emailMocks);
 
     await waitFor(() => {
       expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
@@ -223,5 +218,26 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       expect(screen.getByText('Email updated successfully!')).toBeInTheDocument();
     });
+  });
+
+  test('editing email surfaces a backend validation error instead of a false success toast', async () => {
+    const emailMocks = [getCurrentUserQuery, updateEmailErrorQuery, getOrganizationLanguagesQuery];
+    const { container } = renderMyAccount(emailMocks);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
+    });
+
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    await user.clear(emailInput);
+    await user.type(emailInput, 'taken@domain.com');
+
+    const updateEmailButton = screen.getByTestId('updateEmailButton');
+    await user.click(updateEmailButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('has already been taken')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Email updated successfully!')).not.toBeInTheDocument();
   });
 });
