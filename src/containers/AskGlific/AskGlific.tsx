@@ -21,6 +21,7 @@ import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/q
 import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
 import { getUserSession } from 'services/AuthService';
 import styles from './AskGlific.module.css';
+import BetaTag from 'components/UI/BetaTag/BetaTag';
 
 interface Message {
   role: 'user' | 'system' | 'error';
@@ -505,7 +506,10 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                     transition: 'transform 0.2s',
                   }}
                 />
-                <span className={styles.BetaTag}>Beta</span>
+
+                <span onClick={(e) => e.stopPropagation()}>
+                  <BetaTag />
+                </span>
               </div>
 
               {/* Chat History Dropdown — floating mode only */}
@@ -561,6 +565,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
+
                 <Tooltip title="Display mode">
                   <IconButton
                     className={styles.HeaderIconButton}
