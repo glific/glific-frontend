@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+commit_sha="${GIGALIXIR__RELEASE_SHA:-unknown}"
+version="${GIGALIXIR__RELEASE_VERSION:-unknown}"
+app_name="${GIGALIXIR__APP_NAME:-unknown}"
+trailer="\`${version}\` (\`${commit_sha}\`) on $(hostname)"
+
+notify() {
+  [ -n "${DISCORD_WEBHOOK_URL:-}" ] || return 0
+  curl -fsS -m 10 -X POST "$DISCORD_WEBHOOK_URL" \
+    -H 'Content-Type: application/json' \
+    -d "{\"content\": \"$1 - ${trailer}\"}" >/dev/null || true
+}
+
+# nginx runs in the foreground, so watch it from a backgrounded subshell.
+(
+  for _ in $(seq 1 60); do
+    # XFP header avoids the http->https 301 in nginx.conf.erb, so we get a real 200.
+    if curl -fsS -o /dev/null -m 2 -H 'X-Forwarded-Proto: https' \
+         "http://127.0.0.1:${PORT}/"; then
+      notify "✅ ${app_name} up and serving"
+      exit 0
+    fi
+    sleep 2
+  done
+  notify "⚠️ ${app_name} did not become healthy in 120s"
+) &
+
+exec bin/start-nginx-static
