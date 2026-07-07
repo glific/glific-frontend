@@ -20,9 +20,29 @@ export const SideDrawer = () => {
   const { t } = useTranslation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
   const [showAskGlific, setShowAskGlific] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { provider } = useContext(ProviderContext);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
+
+  const askGlificMenu = isAskGlificEnabled && (
+    <>
+      <div
+        className={styles.AskGlificMenu}
+        role="button"
+        tabIndex={0}
+        onClick={() => setShowAskGlific(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setShowAskGlific(true);
+          }
+        }}
+      >
+        <AskGlificIcon />
+        {t('Ask Glific')}
+      </div>
+      {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
+    </>
+  );
 
   const drawer = (
     <div className={styles.DrawerContent}>
@@ -49,17 +69,19 @@ export const SideDrawer = () => {
         )}
       </Toolbar>
       <WalletBalance fullOpen={drawerOpen} />
-      <SideMenus opened={drawerOpen} />
+      <div className={styles.MenuScrollArea}>
+        <SideMenus opened={drawerOpen} />
+      </div>
 
-      {/* Spacer to push banner to bottom */}
-      <div style={{ flex: 1 }} />
+      <div className={styles.BottomSection}>
+        {drawerOpen && <TrialExpiryBanner />}
 
-      {/* Trial Expiry Banner - No wrapper, no conditional */}
-      {drawerOpen && <TrialExpiryBanner />}
+        {askGlificMenu}
+
+        <UserMenu drawerOpen={drawerOpen} />
+      </div>
     </div>
   );
-
-  const container = window !== undefined ? () => window.document.body : undefined;
 
   // set the appropriate styles to display bottom menus correctly
   const bottonMenuClasses = [styles.BottomMenus];
@@ -73,52 +95,21 @@ export const SideDrawer = () => {
   return (
     <nav className={drawerOpen ? styles.Drawer : styles.NavClose} aria-label="navigation menus" data-testid="navbar">
       <Drawer
-        container={container}
-        variant="temporary"
-        anchor="left"
-        open={mobileOpen}
-        onClose={() => {
-          setMobileOpen(!mobileOpen);
-        }}
-        classes={{
-          paper: styles.DrawerPaper,
-        }}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{ display: { xs: 'none', md: 'block' } }}
-      >
-        {drawer}
-      </Drawer>
-      <Drawer
         classes={{
           paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              top: 'var(--notification-bar-height)',
+              height: 'calc(100vh - var(--notification-bar-height))',
+            },
+          },
         }}
         variant="permanent"
       >
         {drawer}
-        {isAskGlificEnabled && (
-          <>
-            <div
-              className={styles.AskGlificMenu}
-              role="button"
-              tabIndex={0}
-              onClick={() => setShowAskGlific(true)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setShowAskGlific(true);
-                }
-              }}
-            >
-              <AskGlificIcon />
-              {t('Ask Glific')}
-            </div>
-            {showAskGlific && <AskGlific open={showAskGlific} setOpen={() => setShowAskGlific(false)} />}
-          </>
-        )}
       </Drawer>
-      <UserMenu drawerOpen={drawerOpen} />
     </nav>
   );
 };

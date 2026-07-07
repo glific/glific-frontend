@@ -1,9 +1,9 @@
-import dayjs from 'dayjs';
-import { useTranslation } from 'react-i18next';
-import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import setLogs from 'config/logs';
 import { List } from 'containers/List/List';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import dayjs from 'dayjs';
+import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
+import { useTranslation } from 'react-i18next';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
@@ -104,6 +104,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
       <List
+        customStyles={styles.ListBody}
         title={t('Contact History')}
         listItem="contactHistory"
         listItemName="contactHistory"

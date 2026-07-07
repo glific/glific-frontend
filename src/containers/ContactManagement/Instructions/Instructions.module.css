@@ -1,27 +1,21 @@
 .Instructions {
-  height: 85%;
-  overflow-y: scroll;
-  -webkit-scrollbar: none;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
+  h5 {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    margin: 0;
+    color: #000;
+  }
 
-.Instructions h5 {
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  margin: 0;
-  color: #000;
-}
+  div {
+    margin-bottom: 1rem;
+  }
 
-.Instructions div {
-  margin-bottom: 1rem;
-}
+  ul {
+    padding-left: 1rem;
+    margin: 0;
+  }
 
-.Instructions ul {
-  padding-left: 1rem;
-  margin: 0;
-}
-
-.Instructions ul li {
-  font-size: 0.875rem;
+  ul li {
+    font-size: 0.875rem;
+  }
 }

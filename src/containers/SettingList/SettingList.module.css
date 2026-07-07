@@ -1,5 +1,6 @@
 .SettingsContainer {
   display: flex;
+  height: calc(100% - 110px);
 }
 
 .Drawer {
@@ -9,7 +10,7 @@
   background-color: white;
   width: fit-content;
   border-right: 1px solid #efefef;
-  height: calc(100vh - 110px) !important;
+  height: 100% !important;
 }
 
 .Tab {
@@ -39,7 +40,7 @@
 }
 
 .SettingBody {
-  height: calc(100vh - 110px) !important;
+  height: 100% !important;
   overflow-y: scroll;
   width: 100%;
 }
