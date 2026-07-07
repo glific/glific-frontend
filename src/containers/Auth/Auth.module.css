@@ -75,6 +75,7 @@
 /* Login & reset screens: center the heading + subtitle, give the (shorter) heading more size,
    and sit closer to the top of the card. */
 .LoginBox .BoxTitle,
+.RegistrationBox .BoxTitle,
 .FirstResetBox .BoxTitle,
 .SecondResetBox .BoxTitle {
   justify-content: center;
@@ -86,6 +87,7 @@
 }
 
 .LoginBox .TitleText,
+.RegistrationBox .TitleText,
 .FirstResetBox .TitleText,
 .SecondResetBox .TitleText {
   font-size: 1.9rem;
@@ -336,6 +338,13 @@
   color: #93a29b;
   font-weight: 400;
   margin-bottom: 24px;
+}
+
+/* Login/registration hint: sit it roughly centered between the title and the first
+   field (the negative bottom margin offsets the field's shared 15px .Spacing). */
+.InformationTextTight {
+  margin-top: 4px;
+  margin-bottom: -4px;
 }
 
 .Captcha {
