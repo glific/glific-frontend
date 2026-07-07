@@ -200,6 +200,24 @@ describe('<MyAccount />', () => {
     await user.click(saveButton);
   });
 
+  test('clicking the pencil icon makes the email field editable and shows Save/Cancel', async () => {
+    const { container } = renderMyAccount();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
+    });
+
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    expect(emailInput).toBeDisabled();
+    expect(screen.queryByTestId('saveEmailButton')).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId('editEmailButton'));
+
+    expect(emailInput).toBeEnabled();
+    expect(screen.getByTestId('saveEmailButton')).toBeInTheDocument();
+    expect(screen.getByTestId('cancelEmailButton')).toBeInTheDocument();
+  });
+
   test('editing and saving email succeeds', async () => {
     const emailMocks = [getCurrentUserQuery, updateEmailQuery, getOrganizationLanguagesQuery];
     const { container } = renderMyAccount(emailMocks);
@@ -208,16 +226,20 @@ describe('<MyAccount />', () => {
       expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
     });
 
+    await user.click(screen.getByTestId('editEmailButton'));
+
     const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
     await user.clear(emailInput);
     await user.type(emailInput, 'newemail@domain.com');
 
-    const updateEmailButton = screen.getByTestId('updateEmailButton');
-    await user.click(updateEmailButton);
+    await user.click(screen.getByTestId('saveEmailButton'));
 
     await waitFor(() => {
       expect(screen.getByText('Email updated successfully!')).toBeInTheDocument();
     });
+    // saving successfully returns the field to its disabled, read-only state
+    expect(emailInput).toBeDisabled();
+    expect(screen.queryByTestId('saveEmailButton')).not.toBeInTheDocument();
   });
 
   test('editing email surfaces a backend validation error instead of a false success toast', async () => {
@@ -228,16 +250,39 @@ describe('<MyAccount />', () => {
       expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
     });
 
+    await user.click(screen.getByTestId('editEmailButton'));
+
     const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
     await user.clear(emailInput);
     await user.type(emailInput, 'taken@domain.com');
 
-    const updateEmailButton = screen.getByTestId('updateEmailButton');
-    await user.click(updateEmailButton);
+    await user.click(screen.getByTestId('saveEmailButton'));
 
     await waitFor(() => {
       expect(screen.getByText('has already been taken')).toBeInTheDocument();
     });
     expect(screen.queryByText('Email updated successfully!')).not.toBeInTheDocument();
+    // the field stays editable so the user can correct and retry
+    expect(emailInput).toBeEnabled();
+  });
+
+  test('cancelling an email edit discards the change and re-disables the field', async () => {
+    const { container } = renderMyAccount();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('editEmailButton'));
+
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    await user.clear(emailInput);
+    await user.type(emailInput, 'discarded@domain.com');
+
+    await user.click(screen.getByTestId('cancelEmailButton'));
+
+    expect(emailInput).toBeDisabled();
+    expect(emailInput.value).toBe('you@domain.com');
+    expect(screen.queryByTestId('saveEmailButton')).not.toBeInTheDocument();
   });
 });

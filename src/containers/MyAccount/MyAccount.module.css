@@ -40,8 +40,13 @@
   padding: 0px 20px;
 }
 
-.EmailButton {
-  margin: 8px 20px 24px;
+.Buttons {
+  display: flex;
+  margin-top: 16px;
+}
+
+.Buttons > :not(:last-child) {
+  margin-right: 16px;
 }
 
 .ChangePasswordField {

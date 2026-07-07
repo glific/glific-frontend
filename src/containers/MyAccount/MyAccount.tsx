@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { Typography } from '@mui/material';
+import { Typography, InputAdornment, IconButton } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Navigate } from 'react-router';
@@ -18,6 +18,7 @@ import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
 import styles from './MyAccount.module.css';
 import { Heading } from 'components/UI/Heading/Heading';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
 
 export const MyAccount = () => {
   // set the validation / errors / success message
@@ -34,6 +35,9 @@ export const MyAccount = () => {
 
   // user language selection
   const [userLanguage, setUserLanguage] = useState('');
+
+  // whether the email field is currently editable
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
 
   const [message, setMessage] = useState<string>('');
 
@@ -124,6 +128,7 @@ export const MyAccount = () => {
         });
       } else {
         setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
+        setIsEditingEmail(false);
       }
     } catch (error) {
       setToastMessageInfo({ severity: 'error', message: t('Failed to update email.') });
@@ -176,11 +181,6 @@ export const MyAccount = () => {
       label: t('Phone number'),
       disabled: true,
     },
-    {
-      component: Input,
-      name: 'email',
-      label: t('Email'),
-    },
   ];
 
   const userForm = (
@@ -190,7 +190,7 @@ export const MyAccount = () => {
       validationSchema={EmailFormSchema}
       onSubmit={updateEmailHandler}
     >
-      {({ submitForm, isSubmitting }) => (
+      {({ submitForm, isSubmitting, resetForm }) => (
         <Form>
           {userformFields.map((field) => (
             <div className={styles.UserField} key={field.name}>
@@ -202,16 +202,53 @@ export const MyAccount = () => {
               <Field key={field.name} {...field}></Field>
             </div>
           ))}
-          <div className={styles.EmailButton}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={submitForm}
-              loading={isSubmitting}
-              data-testid="updateEmailButton"
-            >
-              {t('Update Email')}
-            </Button>
+          <div className={styles.UserField}>
+            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+              {t('Email')}
+            </Typography>
+            <Field
+              component={Input}
+              name="email"
+              disabled={!isEditingEmail}
+              endAdornment={
+                !isEditingEmail && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="edit email"
+                      data-testid="editEmailButton"
+                      onClick={() => setIsEditingEmail(true)}
+                      edge="end"
+                      size="small"
+                    >
+                      <EditIcon data-testid="editEmailIcon" />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+            />
+            {isEditingEmail && (
+              <div className={styles.Buttons}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={submitForm}
+                  loading={isSubmitting}
+                  data-testid="saveEmailButton"
+                >
+                  {t('Save')}
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    resetForm();
+                    setIsEditingEmail(false);
+                  }}
+                  data-testid="cancelEmailButton"
+                >
+                  {t('Cancel')}
+                </Button>
+              </div>
+            )}
           </div>
         </Form>
       )}
