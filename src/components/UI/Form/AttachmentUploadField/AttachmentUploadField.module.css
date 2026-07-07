@@ -1,0 +1,115 @@
+.FieldGroup {
+  margin-bottom: 20px;
+}
+
+.FieldLabel {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555555;
+  margin: 0 0 10px;
+}
+
+.Required {
+  color: #de3707;
+  margin-left: 2px;
+}
+
+.HelperText {
+  font-size: 12px;
+  color: #83847d;
+  margin-top: 6px;
+}
+
+.ClearSelectionLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #de3707;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-family: inherit;
+}
+
+.UploadButtonContainer {
+  margin-top: 8px;
+}
+
+.UploadLabel {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.UploadLabel[data-uploading='true'] {
+  cursor: not-allowed;
+}
+
+.UploadButton {
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #119656;
+  border-radius: 6px;
+  width: 100%;
+  background-color: #fafafa;
+  min-height: 48px;
+  position: relative;
+}
+
+.UploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.UploadTypeIcon {
+  display: flex;
+  color: #119656;
+  margin-bottom: 8px;
+}
+
+.UploadHint {
+  font-size: 13px;
+  font-weight: 400;
+  color: #83847d;
+}
+
+.UploadText {
+  font-size: 14px;
+  font-weight: 700;
+  color: #202125;
+}
+
+.UploadSpinner {
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #119656;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 0.8s linear infinite;
+}
+
+.UploadIcon {
+  width: 20px;
+  height: 20px;
+  color: #119656;
+}
+
+.HiddenFileInput {
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

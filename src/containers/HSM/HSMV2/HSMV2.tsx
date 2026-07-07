@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { FormHelperText } from '@mui/material';
-import Upload from '@mui/icons-material/Upload';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
@@ -18,10 +17,8 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { ButtonTypeSelector } from 'components/UI/Form/ButtonTypeSelector/ButtonTypeSelector';
-import {
-  AttachmentTypeSelector,
-  attachmentTileMeta,
-} from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
+import { AttachmentTypeSelector } from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
+import { AttachmentUploadField } from 'components/UI/Form/AttachmentUploadField/AttachmentUploadField';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { getOrganizationServices } from 'services/AuthService';
@@ -660,96 +657,16 @@ export const HSMV2 = () => {
           disabled={disabled}
         />
 
-        {showUploadButton && (
-          <div className={styles.FieldGroup}>
-            <p className={styles.FieldLabel}>
-              {t('Upload File')}
-              <span className={styles.Required}>*</span>
-            </p>
-            {!uploadingFile && uploadedFile && attachmentURL ? (
-              <>
-                <div className={styles.HelperText}>
-                  {t('File uploaded:')} {uploadedFile.name}
-                </div>
-                <button type="button" className={styles.ClearSelectionLink} onClick={resetUploadState}>
-                  {t('Change file')}
-                </button>
-              </>
-            ) : (
-              <>
-                <div className={styles.UploadButtonContainer}>
-                  <label className={styles.UploadLabel} data-uploading={uploadingFile}>
-                    <div className={styles.UploadButton}>
-                      {uploadingFile ? (
-                        <div className={styles.UploadContent}>
-                          <div className={styles.UploadSpinner} />
-                          <span className={styles.UploadText}>{t('Uploading...')}</span>
-                        </div>
-                      ) : (
-                        <div className={styles.UploadContent}>
-                          {attachmentTileMeta[type?.id]?.icon ? (
-                            <span className={styles.UploadTypeIcon}>{attachmentTileMeta[type?.id].icon}</span>
-                          ) : (
-                            <Upload className={styles.UploadIcon} />
-                          )}
-                          <span className={styles.UploadText}>{t('Click to upload or drag and drop')}</span>
-                          {attachmentTileMeta[type?.id] && (
-                            <span className={styles.UploadHint}>
-                              {attachmentTileMeta[type.id].format.replace(', ', ' or ')} (max{' '}
-                              {attachmentTileMeta[type.id].maxSizeMB}MB)
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      type="file"
-                      accept={attachmentTileMeta[type?.id]?.accept || 'image/*,video/*,application/pdf'}
-                      onChange={(e: any) => {
-                        const file = e.target.files?.[0];
-                        if (file && !uploadingFile) {
-                          handleFileUpload(file);
-                        }
-                      }}
-                      className={styles.HiddenFileInput}
-                      disabled={uploadingFile}
-                    />
-                  </label>
-                </div>
-                <div className={styles.HelperText}>
-                  {t('Upload a sample file for approval. You can send different content when using the template.')}
-                </div>
-              </>
-            )}
-          </div>
-        )}
-
-        {type && !showUploadButton && (
-          <div className={styles.FieldGroup}>
-            <p className={styles.FieldLabel}>
-              {t('Attachment URL')}
-              <span className={styles.Required}>*</span>
-            </p>
-            <Field
-              {...getField(formFieldItems, 'attachmentURL')}
-              placeholder={t('https://example.com/image.jpg')}
-              helperText={
-                uploadedFile ? (
-                  `File uploaded: ${uploadedFile.name}`
-                ) : (
-                  <>
-                    {t(
-                      'Provide a sample attachment URL for approval. You can send different content when using the template.'
-                    )}{' '}
-                    <strong>
-                      {t('Max file size:')} {attachmentTileMeta[type?.id]?.maxSizeMB ?? 16} MB
-                    </strong>
-                  </>
-                )
-              }
-            />
-          </div>
-        )}
+        <AttachmentUploadField
+          type={type}
+          showUploadButton={showUploadButton}
+          uploadingFile={uploadingFile}
+          uploadedFile={uploadedFile}
+          attachmentURL={attachmentURL}
+          onFileSelect={handleFileUpload}
+          onResetUpload={resetUploadState}
+          urlField={getField(formFieldItems, 'attachmentURL')}
+        />
       </section>
 
       <section className={`${styles.Card} ${styles.LastCard}`}>
