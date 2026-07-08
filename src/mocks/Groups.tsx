@@ -20,10 +20,13 @@ import {
   GET_WA_GROUP,
   GET_WA_GROUPS,
   GET_WA_MANAGED_PHONES,
+  GET_WA_MANAGED_PHONES_COUNT,
   GROUP_SEARCH_MULTI_QUERY,
   GROUP_SEARCH_QUERY,
   LIST_CONTACTS_WA_GROUPS,
+  WHATSAPP_PHONE_SCREEN,
 } from 'graphql/queries/WaGroups';
+import { RECONNECT_WA_MANAGED_PHONE, SYNC_WA_MANAGED_PHONE_STATUSES } from 'graphql/mutations/Group';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
   UPDATE_WA_MESSAGE_STATUS,
@@ -1131,12 +1134,14 @@ export const getGroups = {
           id: '19',
           label: 'Group 12',
           lastCommunicationAt: '2024-03-14T05:31:46Z',
+          primaryPhone: { id: '1', phone: '918416933261', label: 'Main' },
         },
         {
           bspId: '120363254553139323@g.us',
           id: '24',
           label: 'Group 7',
           lastCommunicationAt: '2024-03-14T03:57:42Z',
+          primaryPhone: null,
         },
         {
           bspId: '120363255430686472@g.us',
@@ -1464,5 +1469,144 @@ export const setPrimaryForCollectionNetworkErrorMock = {
     query: SET_PRIMARY_PHONE_FOR_COLLECTION,
     variables: { collectionId: '5', waManagedPhoneId: '1' },
   },
+  error: new Error('Network error'),
+};
+
+// --- WhatsApp Phone Management page (#5104 / #5105) ---
+// One healthy phone and one disconnected phone (the disconnected one gets the
+// admin-only Reconnect action).
+const managedPhonesListVars = {
+  filter: {},
+  opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'phone' },
+};
+
+export const managedPhonesCountMock = {
+  request: { query: GET_WA_MANAGED_PHONES_COUNT, variables: { filter: {} } },
+  result: { data: { countWaManagedPhones: 2 } },
+};
+
+export const managedPhonesHealthMock = {
+  request: { query: GET_WA_MANAGED_PHONES, variables: managedPhonesListVars },
+  result: {
+    data: {
+      waManagedPhones: [
+        {
+          id: '1',
+          phone: '918416933261',
+          phoneId: 101,
+          label: 'Main',
+          status: 'active',
+          lastStatusCheckedAt: '2026-07-03T10:00:00Z',
+        },
+        {
+          id: '2',
+          phone: '918416933262',
+          phoneId: 102,
+          label: 'Backup',
+          status: 'qr-screen',
+          lastStatusCheckedAt: '2026-07-03T10:00:00Z',
+        },
+      ],
+    },
+  },
+};
+
+export const phoneScreenMock = {
+  request: { query: WHATSAPP_PHONE_SCREEN, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      whatsappPhoneScreen: {
+        waPhoneScreen: {
+          code: 'data:image/png;base64,QQ==',
+          status: 'qr-screen',
+          expiresAt: '2026-07-03T10:00:20Z',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const reconnectPhoneMock = {
+  request: { query: RECONNECT_WA_MANAGED_PHONE, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      reconnectWaManagedPhone: {
+        waManagedPhone: { id: '2', phone: '918416933262', status: 'qr-screen' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const syncPhoneStatusesMock = {
+  request: { query: SYNC_WA_MANAGED_PHONE_STATUSES },
+  result: {
+    data: {
+      syncWaManagedPhoneStatuses: {
+        message: 'WhatsApp phone statuses have been refreshed.',
+        errors: null,
+      },
+    },
+  },
+};
+
+export const syncPhoneStatusesErrorsMock = {
+  request: { query: SYNC_WA_MANAGED_PHONE_STATUSES },
+  result: {
+    data: {
+      syncWaManagedPhoneStatuses: {
+        message: null,
+        errors: [{ key: 'maytapi', message: 'Maytapi is not active' }],
+      },
+    },
+  },
+};
+
+export const syncPhoneStatusesNetworkErrorMock = {
+  request: { query: SYNC_WA_MANAGED_PHONE_STATUSES },
+  error: new Error('Network error'),
+};
+
+// screen poll returns the phone reconnected (used to drive the pending -> active flow)
+export const phoneScreenActiveMock = {
+  request: { query: WHATSAPP_PHONE_SCREEN, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      whatsappPhoneScreen: {
+        waPhoneScreen: { code: 'data:image/png;base64,QQ==', status: 'active', expiresAt: '2026-07-03T10:00:20Z' },
+        errors: null,
+      },
+    },
+  },
+};
+
+// screen with no QR payload yet
+export const phoneScreenNoCodeMock = {
+  request: { query: WHATSAPP_PHONE_SCREEN, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      whatsappPhoneScreen: {
+        waPhoneScreen: { code: null, status: 'qr-screen', expiresAt: null },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const reconnectPhoneErrorsMock = {
+  request: { query: RECONNECT_WA_MANAGED_PHONE, variables: { waManagedPhoneId: '2' } },
+  result: {
+    data: {
+      reconnectWaManagedPhone: {
+        waManagedPhone: null,
+        errors: [{ key: 'phone', message: 'This WhatsApp phone is already connected.' }],
+      },
+    },
+  },
+};
+
+export const reconnectPhoneNetworkErrorMock = {
+  request: { query: RECONNECT_WA_MANAGED_PHONE, variables: { waManagedPhoneId: '2' } },
   error: new Error('Network error'),
 };

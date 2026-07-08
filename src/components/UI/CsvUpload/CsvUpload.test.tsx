@@ -32,7 +32,7 @@ test('renders the upload prompt and sample link when no file is selected', () =>
   expect(screen.getByText('Upload File')).toBeInTheDocument();
   expect(screen.getByText('CSV with a phone column; name optional.')).toBeInTheDocument();
 
-  const sample = screen.getByText('Download Sample');
+  const sample = screen.getByText('View Sample');
   expect(sample).toHaveAttribute('href', 'https://example.com/sample.csv');
   expect(sample).toHaveAttribute('download', 'sample.csv');
 

@@ -61,7 +61,13 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
           <AutoComplete
             classes={{ inputRoot: styles.DropDown }}
             isFilterType
-            placeholder="Phone Number"
+            showTags={false}
+            listBoxProps={{ style: { fontSize: '0.8rem' } }}
+            placeholder={
+              phonenumber?.length
+                ? `${phonenumber.length} phone${phonenumber.length > 1 ? 's' : ''} selected`
+                : 'Phone Number'
+            }
             options={
               data?.waManagedPhones
                 ? data?.waManagedPhones?.map((phone: any) => ({
@@ -70,44 +76,42 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
                   }))
                 : []
             }
-            multiple={false}
+            multiple
             optionLabel="label"
             onChange={(value: any) => {
-              if (value) {
-                setPhonenumber([value]);
-              } else {
-                setPhonenumber(null);
-              }
+              setPhonenumber(value && value.length ? value : null);
             }}
             form={{ setFieldValue: () => {} }}
             field={{
               name: 'phonenumber',
-              value: phonenumber?.label,
+              value: phonenumber || [],
             }}
           />
         </div>
       </FormControl>
 
-      <Button
-        variant="outlined"
-        color="primary"
-        className={styles.syncButton}
-        data-testid="syncGroups"
-        aria-hidden="true"
-        onClick={() => handleSyncGroups()}
-      >
-        {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
-      </Button>
+      <div className={styles.Buttons}>
+        <Button
+          variant="outlined"
+          color="primary"
+          className={styles.syncButton}
+          data-testid="syncGroups"
+          aria-hidden="true"
+          onClick={() => handleSyncGroups()}
+        >
+          {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
+        </Button>
 
-      <Button
-        variant="contained"
-        color="primary"
-        className={styles.createButton}
-        data-testid="createGroup"
-        onClick={() => setCreateOpen(true)}
-      >
-        {t('New group')}
-      </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          className={styles.createButton}
+          data-testid="createGroup"
+          onClick={() => setCreateOpen(true)}
+        >
+          {t('New group')}
+        </Button>
+      </div>
 
       <CreateGroupDialog
         open={createOpen}
