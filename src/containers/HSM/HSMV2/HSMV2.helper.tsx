@@ -30,8 +30,6 @@ export const categoryDescriptions: { [key: string]: string } = {
   MARKETING: 'Promotional content, offers, announcements, product launches, and sales campaigns',
 };
 
-export const titleCase = (value: string) => (value ? value.charAt(0) + value.slice(1).toLowerCase() : value);
-
 // languages already used by some variant of the template shouldn't be offered
 // again when adding a new language version.
 export const filterAvailableLanguages = (allLanguages: any[] = [], excludeLanguageIds: any[] = []) => {

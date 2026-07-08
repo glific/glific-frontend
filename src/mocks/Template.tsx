@@ -1060,6 +1060,41 @@ export const getWelcomeTemplateHindiMock = {
   },
 };
 
+// GET_TEMPLATE detail for a template with a media attachment and an
+// interactive button (id '3') — used to exercise the "add a new language"
+// draft prefilling buttons/media from the anchor, not just plain text.
+export const getPromoTemplateMock = {
+  request: { query: GET_TEMPLATE, variables: { id: '3' } },
+  result: {
+    data: {
+      sessionTemplate: {
+        sessionTemplate: {
+          __typename: 'SessionTemplate',
+          id: '3',
+          body: 'Check out our sale!',
+          footer: null,
+          label: 'Promo',
+          isHsm: true,
+          updatedAt: '2024-01-15T10:00:00Z',
+          translations: null,
+          type: 'TEXT',
+          quality: 'HIGH',
+          language: { __typename: 'Language', id: '1', label: 'English' },
+          isActive: true,
+          MessageMedia: null,
+          tag: null,
+          category: 'MARKETING',
+          shortcode: 'promo_banner',
+          example: 'Check out our sale!',
+          hasButtons: true,
+          buttons: '[{"type":"QUICK_REPLY","text":"Shop now"}]',
+          buttonType: 'QUICK_REPLY',
+        },
+      },
+    },
+  },
+};
+
 export const HSM_LANGUAGE_MOCKS = [
   getWelcomeTemplateMock,
   getWelcomeTemplateMock,

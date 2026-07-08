@@ -125,7 +125,8 @@ const HSMListV2 = () => {
   // extra fetch. "View" is its own route (read-only, id in the URL so a
   // reload doesn't lose it); "Add new language" reuses the create route with
   // the anchor id in state, opening the editable "add a language" draft.
-  const handleView = (id: any, item: any) => navigate(`/template-v2/${id}/view`, { state: { variants: item.variants } });
+  const handleView = (id: any, item: any) =>
+    navigate(`/template-v2/${id}/view`, { state: { variants: item.variants } });
 
   const handleAddLanguage = (id: any, item: any) =>
     navigate('/template-v2/add', {

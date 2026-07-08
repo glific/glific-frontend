@@ -10,6 +10,7 @@ import {
   CREATE_SESSION_TEMPLATE_MOCK,
   getWelcomeTemplateMock,
   getWelcomeTemplateHindiMock,
+  getPromoTemplateMock,
   getCategoriesV2Mock,
 } from 'mocks/Template';
 import { getOrganizationLanguagesQueryByOrder } from 'mocks/Organization';
@@ -676,7 +677,7 @@ describe('HSMV2 language mode', () => {
     expect(elementNameInput).toBeDisabled();
   });
 
-  test('Add route\'s own View link previews a sibling variant in place, without navigating away', async () => {
+  test("Add route's own View link previews a sibling variant in place, without navigating away", async () => {
     renderAtPath('/template-v2/add', {
       languageAnchorId: '1',
       excludeLanguageIds: ['1', '2'],
@@ -694,5 +695,93 @@ describe('HSMV2 language mode', () => {
     });
     // still read-only, still on the same /add URL — no navigation happened.
     expect(screen.queryByTestId('submitActionButton')).not.toBeInTheDocument();
+  });
+
+  test('excludes already-used languages from the Language dropdown when adding a new language', async () => {
+    // getOrganizationLanguagesQueryByOrder's org has English (id '1') and
+    // Marathi (id '2') — excluding English should leave only Marathi offered.
+    renderAtPath('/template-v2/add', {
+      languageAnchorId: '1',
+      excludeLanguageIds: ['1'],
+      variants: welcomeVariants,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
+    });
+
+    const languageCombo = screen.getAllByRole('combobox')[0];
+    languageCombo.focus();
+    fireEvent.keyDown(languageCombo, { key: 'ArrowDown' });
+
+    const options = await screen.findAllByRole('option');
+    expect(options.map((option) => option.textContent)).toEqual(['Marathi']);
+  });
+
+  test('prefills the interactive buttons too when the anchor template has them', async () => {
+    render(
+      <MockedProvider
+        mocks={[
+          getPromoTemplateMock,
+          getPromoTemplateMock,
+          getOrganizationLanguagesQueryByOrder,
+          getOrganizationLanguagesQueryByOrder,
+          getCategoriesV2Mock,
+          getCategoriesV2Mock,
+          getFilterTagQuery,
+          getFilterTagQuery,
+        ]}
+        addTypename={false}
+      >
+        <MemoryRouter
+          initialEntries={[{ pathname: '/template-v2/add', state: { languageAnchorId: '3', variants: [] } }]}
+        >
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Check out our sale!', { exact: false }).length).toBeGreaterThan(0);
+    });
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Shop now')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Quick Reply').closest('button')?.className).toMatch(/TileSelected/);
+  });
+
+  test('groups variants by status into the In Progress and Rejected tabs too', async () => {
+    const mixedVariants = [
+      { id: '1', language: { id: '1', label: 'English', locale: 'en' }, status: 'APPROVED', category: 'UTILITY' },
+      { id: '2', language: { id: '2', label: 'Hindi', locale: 'hi' }, status: 'PENDING', category: 'UTILITY' },
+      { id: '3', language: { id: '3', label: 'Marathi', locale: 'mr' }, status: 'REJECTED', category: 'UTILITY' },
+    ];
+
+    renderAtPath('/template-v2/1/view', { variants: mixedVariants });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('language-versions-list')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('status-tab-Approved')).toHaveTextContent('1');
+    expect(screen.getByTestId('status-tab-In Progress')).toHaveTextContent('1');
+    expect(screen.getByTestId('status-tab-Rejected')).toHaveTextContent('1');
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    expect(screen.getByText('Hindi')).toBeInTheDocument();
+    expect(screen.queryByText('English')).not.toBeInTheDocument();
+    expect(screen.queryByText('Marathi')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    expect(screen.getByText('Marathi')).toBeInTheDocument();
   });
 });

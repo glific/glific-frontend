@@ -184,7 +184,10 @@ test('navigates to the create page (viewing that variant) via the row View actio
   fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/view', expect.objectContaining({ state: expect.anything() }));
+    expect(mockedNavigate).toHaveBeenCalledWith(
+      '/template-v2/1/view',
+      expect.objectContaining({ state: expect.anything() })
+    );
   });
 });
 

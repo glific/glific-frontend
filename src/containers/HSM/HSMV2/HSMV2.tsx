@@ -624,7 +624,12 @@ export const HSMV2 = () => {
         setLanguageId(englishLang || lang[0]);
       }
     }
-  }, [languages]);
+    // re-run when switching between the read-only preview and the editable
+    // draft on the add route (isAddingLanguage) — languageOptions must be
+    // re-filtered, not left as whichever list was computed on first load.
+    // (excludeLanguageIds itself never changes during a page visit, and
+    // `|| []` makes it an unstable dependency, so it's deliberately omitted.)
+  }, [languages, isAddingLanguage]);
 
   // seed the form from the anchor template once it's loaded, so adding a
   // language only requires changing the wording, not rebuilding the structure.
@@ -697,7 +702,12 @@ export const HSMV2 = () => {
     setVariables(getVariables(body, variables));
   }, [body]);
 
-  if (languageLoading || categoryLoading || tagLoading || (isLanguageMode && languageAnchorLoading && !languageAnchor)) {
+  if (
+    languageLoading ||
+    categoryLoading ||
+    tagLoading ||
+    (isLanguageMode && languageAnchorLoading && !languageAnchor)
+  ) {
     return <Loading />;
   }
 
