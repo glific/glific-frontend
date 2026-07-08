@@ -8,27 +8,60 @@ import { RESET_PASSWORD } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { yupPasswordValidation } from 'common/constants';
-// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
-import setLogs from 'config/logs';
 import { Auth } from '../Auth';
 
+// Neutral, non-disclosing note: shown to everyone regardless of whether the account exists,
+// so a user whose number isn't registered understands why no OTP arrives (and can fix a typo
+// in the editable phone field above) without the API ever confirming account existence.
+const OTP_INFO_NOTE =
+  "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password.";
+const OTP_INFO_NOTE_TIMEOUT = 15000;
+const RESEND_SUCCESS_TIMEOUT = 5000;
+const RESEND_RATE_LIMIT_MESSAGE = 'An OTP was just sent. Please try again in 30 seconds.';
+
 export const ResetPasswordConfirmOTP = () => {
-  const [redirect, setRedirect] = useState(false);
-  const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
   const location = useLocation();
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [redirect, setRedirect] = useState(false);
+  const [authError, setAuthError] = useState('');
+  // The note area doubles as transient resend feedback: neutral info on load, a success
+  // confirmation after a resend, or a warning when a resend is rejected (e.g. rate limited).
+  const [infoMessage, setInfoMessage] = useState<string>(t(OTP_INFO_NOTE));
+  const [infoVariant, setInfoVariant] = useState<'success' | 'warning' | undefined>(undefined);
+  // Read the state synchronously so the phone number is prepopulated on the very first render
+  // (Formik captures initialValues once, so an async useEffect would leave the field blank).
+  const locationState = (location.state as any) || {};
+  const [phoneNumber] = useState<string>(locationState.phoneNumber ?? '');
+  // Token bumped on each resend success so the auto-hide effect below re-arms; reset to 0
+  // on a warning to cancel a pending success auto-hide.
+  const [successFlash, setSuccessFlash] = useState(0);
 
+  // Auto-hide the neutral note after a while so it doesn't linger next to resend feedback.
   useEffect(() => {
-    const state = location.state as any;
-    if (state) {
-      setPhoneNumber(state.phoneNumber);
-    }
-  }, [location]);
+    const timer = setTimeout(() => {
+      setInfoMessage((current) => (current === t(OTP_INFO_NOTE) ? '' : current));
+    }, OTP_INFO_NOTE_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Let's not allow direct navigation to this page
-  if (location && location.state === undefined) {
+  // Auto-hide the transient resend-success flash. Keyed on successFlash so each new success
+  // re-arms (the effect cleanup clears the prior timer) and a warning cancels it. The timer
+  // is a local, so it's cleaned up on unmount without reading a ref in the cleanup.
+  useEffect(() => {
+    if (successFlash === 0) {
+      return undefined;
+    }
+    const timer = setTimeout(() => {
+      setInfoVariant(undefined);
+      setInfoMessage('');
+    }, RESEND_SUCCESS_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, [successFlash]);
+
+  // Let's not allow direct navigation to this page. `location` from useLocation() is
+  // always defined (and its .state is already read above), so no null guard is needed.
+  if (location.state === undefined) {
     return <Navigate to="/resetpassword-phone" />;
   }
 
@@ -36,8 +69,26 @@ export const ResetPasswordConfirmOTP = () => {
     return <Navigate to="/login" />;
   }
 
-  const handleResend = () => {
-    sendOTP(phoneNumber);
+  // Resend against the phone currently in the form (the user may have edited the prepopulated
+  // one). Briefly confirm success so the user knows the OTP went out; on failure surface the
+  // backend's message (e.g. the rate-limit notice) as a warning — not a red error, since it's
+  // a "please wait" rather than a failure.
+  const handleResend = (values: { phoneNumber?: string } = {}) => {
+    const phone = values.phoneNumber || phoneNumber;
+    sendOTP(phone)
+      .then(() => {
+        setInfoVariant('success');
+        setInfoMessage(t('OTP sent successfully.'));
+        // Re-arm the auto-hide effect (its cleanup clears any prior success timer).
+        setSuccessFlash((token) => token + 1);
+      })
+      .catch((error) => {
+        const backendMessage = error?.response?.data?.error?.message;
+        setInfoVariant('warning');
+        setInfoMessage(backendMessage || t(RESEND_RATE_LIMIT_MESSAGE));
+        // Cancel any pending success auto-hide so it can't clear this warning.
+        setSuccessFlash(0);
+      });
   };
 
   const formFields = [
@@ -61,7 +112,6 @@ export const ResetPasswordConfirmOTP = () => {
       name: 'password',
       type: 'password',
       placeholder: t('New Password'),
-      label: t('New Password'),
     },
   ];
 
@@ -88,7 +138,7 @@ export const ResetPasswordConfirmOTP = () => {
       .then(() => {
         setRedirect(true);
       })
-      .catch((error) => {
+      .catch(() => {
         setAuthError(t('We are unable to update your password, please enter the correct OTP.'));
       });
   };
@@ -101,6 +151,8 @@ export const ResetPasswordConfirmOTP = () => {
       alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
+      infoMessage={infoMessage}
+      infoVariant={infoVariant}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}

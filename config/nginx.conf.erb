@@ -59,7 +59,7 @@ http {
         "media-src 'self' data: blob: https:; " \
         "frame-src 'self' https://js.stripe.com https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org data:; " \
         "worker-src 'self' blob:; " \
-        "connect-src 'self' https://*.glific.com wss://*.glific.com https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.tides.coloredcow.com https://storage.googleapis.com; " \
+        "connect-src 'self' https://*.glific.com wss://*.glific.com https://*.posthog.com https://*.i.posthog.com https://moonshine.projecttech4dev.org https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://www.google.com https://cors-anywhere.glific.com https://storage.googleapis.com; " \
         "object-src 'none'; base-uri 'self';"
     %>
     add_header Content-Security-Policy "default-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://js.stripe.com https://*.posthog.com https://moonshine.projecttech4dev.org; frame-src 'self' https://js.stripe.com/ https://www.google.com https://www.canva.com https://www.gstatic.com https://www.youtube.com https://moonshine.projecttech4dev.org/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;" always;

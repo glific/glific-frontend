@@ -73,23 +73,6 @@ test('renders page title and action buttons', async () => {
   expect(screen.getByText('Bulk apply')).toBeInTheDocument();
 });
 
-test('Languages column info icon shows the Green/Yellow/Red status legend on hover', async () => {
-  renderComponent();
-
-  const languagesHeader = await waitFor(() => screen.getByText('Languages').closest('span') as HTMLElement);
-
-  fireEvent.mouseOver(within(languagesHeader).getByTestId('help-icon'));
-
-  const tooltip = await waitFor(() => screen.getByRole('tooltip'));
-
-  // the translation key is just "Green" (no colon) — i18next's default nsSeparator
-  // is ':', and single-word keys like "Green:" get misparsed as a namespace and
-  // silently resolve to "". The colon is appended as plain JSX text instead.
-  expect(tooltip.textContent).toContain('Green:');
-  expect(tooltip.textContent).toContain('Yellow:');
-  expect(tooltip.textContent).toContain('Red:');
-});
-
 test('does not render the removed Template library button', async () => {
   renderComponent();
 
@@ -110,7 +93,7 @@ test('renders template rows after data loads', async () => {
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
-test('paginates by grouped row count, not the flat record count', async () => {
+test('paginates by the flat record count, not the grouped row count', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -118,8 +101,9 @@ test('paginates by grouped row count, not the flat record count', async () => {
   });
 
   // 5 flat language records collapse into 2 grouped rows (welcome_msg + feedback_form),
-  // so the pagination footer should read "of 2", not the server's flat count.
-  expect(screen.getByText(/of 2$/)).toBeInTheDocument();
+  // but the pager's offset/limit paginate the flat data, so the pagination footer
+  // must read "of 5" (the server's flat count) or later pages become unreachable.
+  expect(screen.getByText(/of 5$/)).toBeInTheDocument();
 });
 
 test('renders the status, category and tag filters', async () => {
@@ -165,7 +149,7 @@ test('navigates to create template page on Create click', async () => {
   });
 
   fireEvent.click(screen.getByTestId('newItemButton'));
-  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add');
+  expect(mockedNavigate).toHaveBeenCalledWith('/template/add');
 });
 
 test('navigates to create template page with the selected tag', async () => {
@@ -184,7 +168,7 @@ test('navigates to create template page with the selected tag', async () => {
 
   fireEvent.click(screen.getByTestId('newItemButton'));
 
-  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { tag: { label: 'Messages', id: '1' } } });
+  expect(mockedNavigate).toHaveBeenCalledWith('/template/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
 test('navigates to edit template page via the row View action', async () => {
@@ -412,6 +396,8 @@ test('expands a template to reveal its other language variants', async () => {
   // the Hindi variant is hidden until the row is expanded
   expect(screen.queryByText('Namaste {{1}}, swagat hai!')).not.toBeInTheDocument();
 
+  // chevron sits inline with the title and drives the same collapseOpen/collapseRow state
+  // InteractiveMessageList uses, just rendered as part of the label cell instead of a separate column.
   const expandIcons = await screen.findAllByTestId('expand-toggle');
   fireEvent.click(expandIcons[0]);
 

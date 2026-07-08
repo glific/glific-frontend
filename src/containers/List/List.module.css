@@ -188,7 +188,7 @@
 }
 
 .Body {
-  height: calc(100vh - 200px);
+  height: calc(100% - 200px);
 }
 
 .TextList {
@@ -270,12 +270,12 @@
 }
 
 .ListContainer {
-  height: 100vh;
+  height: 100%;
   background-color: #f8faf5;
 }
 
 .FullHeight {
-  height: 100vh;
+  height: 100%;
 }
 
 .Checkbox {

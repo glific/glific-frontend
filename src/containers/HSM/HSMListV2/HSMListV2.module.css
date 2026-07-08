@@ -1,23 +1,9 @@
-.TemplateIcon {
-  width: 29px;
-  height: 29px;
-}
-
-/* column widths — Title / Languages / Category / Last updated / Actions */
-.Name {
-  width: 28%;
-  min-width: 220px;
-}
-
-.Languages {
-  width: 22%;
-  min-width: 160px;
-}
-
-.HeaderWithIcon {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.Container {
+  padding: 20px 24px;
+  background: #f5f5f0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .Category {
@@ -50,10 +36,43 @@
   row-gap: 0.4rem;
 }
 
+/* Languages column chips */
+.ChipRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .LabelText {
   font-weight: 500;
   font-size: 17px;
   word-break: break-all;
+}
+
+/* leading chevron that toggles a template's language variants open/closed. */
+.ChevronBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #6b7280;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.ChevronBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ChevronOpen {
+  transform: rotate(180deg);
 }
 
 .ShortCode {
@@ -270,4 +289,18 @@
   gap: 16px;
   min-width: 320px;
   padding: 8px 0 16px;
+}
+
+.RowStyle {
+  padding: 15px 20px 15px 25px;
+}
+
+.CollapseRowCustom {
+  background-color: #fff;
+  box-shadow: inset 3px 0 0 0 #28a745;
+  border-bottom: 1px solid #eeede9;
+}
+
+.CollapseRowCustom:hover {
+  background-color: #f5f4f0;
 }

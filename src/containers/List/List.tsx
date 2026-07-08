@@ -141,14 +141,9 @@ export interface ListProps {
   restrictedAction?: any;
   collapseOpen?: boolean;
   collapseRow?: string;
-  expandableRows?: boolean;
-  onToggleRow?: (id: string) => void;
   // Opt-in transform applied to the fetched rows before they are rendered,
   // e.g. to group flat per-language rows into one row per template.
   groupRows?: (items: any[]) => any[];
-  // Opt-in renderer for the cells of each collapsed sub-row. Returns one node
-  // per data column; when omitted the default label+body sub-row is used.
-  collapsedColumns?: (entry: any) => React.ReactNode[];
   showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
@@ -207,10 +202,7 @@ export const List = ({
   restrictedAction,
   collapseOpen = false,
   collapseRow = undefined,
-  expandableRows = false,
-  onToggleRow,
   groupRows,
-  collapsedColumns,
   noItemText = null,
   customStyles,
   showActions = true,
@@ -727,11 +719,11 @@ export const List = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
-  // Grouped lists collapse several records into fewer rows, so the flat server
-  // count no longer matches the rows on screen; use the grouped row count.
-  if (groupRows && data) {
-    itemCount = itemList.length;
-  }
+  // Grouped lists (groupRows) collapse several flat records into fewer rows on
+  // screen, so this count won't match the row count exactly. Still use the flat
+  // server count (not the current page's post-grouping length) for pagination:
+  // the offset/limit query params paginate the flat data, so total pages must be
+  // derived from the flat total or later pages become unreachable.
 
   var noItemsText = (
     <div className={styles.NoResults}>

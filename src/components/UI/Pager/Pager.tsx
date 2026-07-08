@@ -15,7 +15,10 @@ import { ColumnNames } from 'containers/List/List';
 import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 import styles from './Pager.module.css';
 
-const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
+// `CollapseContent` carries a caller pre-rendered sub-row block (see the HSM
+// template list); `translations` is the default label+body JSON path.
+const removeDisplayColumns = ['recordId', 'translations', 'collapseContent', 'id', 'isActive'];
+
 interface PagerProps {
   columnNames: Array<ColumnNames>;
   data: any;
@@ -45,16 +48,15 @@ interface PagerProps {
 }
 
 // TODO: cleanup the translations code
-const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any, expandableRows: boolean = false) => {
-  // when a leading chevron column is present, keep the sub-rows aligned under
-  // the data columns by prepending an empty spacer cell.
-  const leadingSpacer = expandableRows ? <TableCell className={styles.ChevronCell} /> : null;
-
+// Default sub-row renderer: plain label+body per language, driven by the
+// `translations` JSON field on the parent record (e.g. InteractiveMessageList,
+// SpeedSendList). Callers that need richer sub-rows pass a pre-rendered
+// `collapseContent` node on the record instead.
+const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
     return (
-      <TableRow className={styles.CollapseTableRow}>
-        {leadingSpacer}
+      <TableRow>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -173,20 +175,13 @@ const createRows = (
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
-    const hasVariants = !!dataObj && Object.keys(dataObj).length > 0;
     const isOpen = collapseOpen && entry.recordId === collapseRow;
-    const parentRowClass = `${isActiveRow} ${isOpen && expandableRows ? styles.ExpandedParent : ''}`;
 
     return (
       <Fragment key={entry.recordId}>
-        <TableRow className={parentRowClass}>
-          {expandableRows ? chevronCell(entry, hasVariants, isOpen) : null}
-          {createRow(entry)}
-        </TableRow>
-        {isOpen && dataObj
-          ? collapsedColumns
-            ? customCollapsedRowData(dataObj, columnStyles, entry.recordId, expandableRows, collapsedColumns)
-            : collapsedRowData(dataObj, columnStyles, entry.recordId, expandableRows)
+        <TableRow className={isActiveRow}>{createRow(entry)}</TableRow>
+        {isOpen
+          ? (entry.collapseContent ?? (dataObj ? collapsedRowData(dataObj, columnStyles, entry.recordId) : null))
           : null}
       </Fragment>
     );

@@ -14,6 +14,8 @@ export const ResetPasswordPhone = () => {
   const { t } = useTranslation();
 
   if (redirect) {
+    // The API returns the same success response whether or not an account exists (to avoid
+    // account enumeration); the OTP screen shows a neutral note explaining what to expect.
     const stateObject = {
       phoneNumber: values.phoneNumber,
     };
