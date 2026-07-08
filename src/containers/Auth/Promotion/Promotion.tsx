@@ -1,25 +1,55 @@
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
+import SellIcon from '@mui/icons-material/Sell';
+import ChatIcon from '@mui/icons-material/Chat';
+import HeadsetIcon from '@mui/icons-material/Headset';
+import RedeemIcon from '@mui/icons-material/Redeem';
+
+interface Benefit {
+  icon: ReactNode;
+  title: string;
+  desc: string;
+}
+
+const benefits: Benefit[] = [
+  {
+    icon: <SellIcon />,
+    title: '₹15,000 setup fee waived',
+    desc: "We'll cover their one-time setup fee.",
+  },
+  {
+    icon: <ChatIcon />,
+    title: 'Complimentary use case discovery session',
+    desc: "We'll help them find the right use of Glific.",
+  },
+  {
+    icon: <HeadsetIcon />,
+    title: 'Guided onboarding support',
+    desc: "We'll support them every step of the way.",
+  },
+];
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
 
-  const APPLY_LINK = 'https://forms.gle/PuYdT1tKMBNRWPCn8';
-  const LEARN_MORE_LINK = 'https://drive.google.com/file/d/1UjpG_WAV9OcUKYD0VXA4AMQOvg20gT60/view?usp=drive_link';
+  const REFER_LINK = 'https://forms.gle/PuYdT1tKMBNRWPCn8';
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
       <div className={styles.CardHeader} onClick={() => setMinimized(!minimized)}>
         <div className={styles.Header}>
-          <div className={styles.Dot} />
-          <div className={styles.HeaderText}>ANNOUNCEMENT!</div>
+          <>
+            <div className={styles.Dot} />
+            <div className={styles.HeaderText}>ANNOUNCEMENT!</div>
+          </>
+
+          {minimized && <div className={styles.GiftCard}>Friends of Glific</div>}
         </div>
 
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>Glific AI Chatbot Accelerator</div>
             <MaximizeIcon className={styles.AccordianIcon} />
           </>
         ) : (
@@ -29,43 +59,50 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>
-            <span className={styles.Title}>Glific AI Chatbot Accelerator</span>
-            <span className={styles.Subtitle}>Applications OPEN NOW!</span>
-            <span className={styles.Caption}>For NGOs already using Glific</span>
+          <div className={styles.Hero}>
+            <span className={styles.HeroIcon}>{/* <GroupsIcon /> */}</span>
+            <span className={styles.Title}>Friends of Glific</span>
           </div>
 
-          <div className={styles.Points}>
-            <div className={styles.BodyListText}>
-              <p>
-                A <b>selective, funded, hands-on 6-month cohort</b> for Glific NGOs like yours — starting or deepening
-                their AI journey.
-              </p>
+          <div className={styles.Intro}>
+            <p className={styles.IntroLead}>
+              The best organizations on Glific come through referrals from our community.
+            </p>
+            <p className={styles.IntroPrompt}>
+              Know someone who should explore Glific? <span className={styles.Emphasis}>Introduce us.</span>
+            </p>
+          </div>
 
-              <p className={styles.Perks}>
-                <b>What you get:</b> SaaS advantage—platform fees waived, AI & messaging credits to experiment, Expert
-                1:1 mentorship to guide you forward, Performance-based grants to scale.
-              </p>
+          <div className={styles.Benefits}>
+            <p className={styles.BenefitsHeading}>If they come on board, they&apos;ll receive:</p>
 
-              <p>
-                All this for a <b>one-time fee of ₹30K – no additional costs for 6 months</b> (₹2.5L+ value).
-              </p>
-            </div>
+            {benefits.map((benefit) => (
+              <div className={styles.BenefitRow} key={benefit.title}>
+                <span className={styles.BenefitIcon}>{benefit.icon}</span>
+                <div className={styles.BenefitText}>
+                  <span className={styles.BenefitTitle}>{benefit.title}</span>
+                  <span className={styles.BenefitDesc}>{benefit.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
 
-            <div className={styles.ApplyBy}>
-              🗓️ <strong>[Extended] Apply by: 1st March 2026</strong>
-            </div>
+          <div className={styles.Reward}>
+            <span className={styles.RewardIcon}>
+              <RedeemIcon />
+            </span>
+            <p className={styles.RewardText}>
+              As a thank you, we&apos;ll <b>waive 3 months of your platform fees</b> (₹27,500 value).
+            </p>
           </div>
 
           <div className={styles.ButtonContainer}>
-            <a className={styles.PrimaryButton} href={APPLY_LINK} target="_blank" rel="noreferrer">
-              Apply Now
-            </a>
-
-            <a className={styles.SecondaryButton} href={LEARN_MORE_LINK} target="_blank" rel="noreferrer">
-              Learn More
+            <a className={styles.PrimaryButton} href={REFER_LINK} target="_blank" rel="noreferrer">
+              Refer an NGO <span className={styles.Arrow}>→</span>
             </a>
           </div>
+
+          <p className={styles.Deadline}>Refer by 31st July 2026</p>
         </>
       )}
     </div>
