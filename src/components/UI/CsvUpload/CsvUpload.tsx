@@ -74,8 +74,8 @@ export const CsvUpload = ({
       </label>
       <div className={styles.Sample}>
         {sampleText}{' '}
-        <a href={sampleUrl} download={sampleFileName}>
-          {t('Download Sample')}
+        <a href={sampleUrl} download={sampleFileName} target="_blank" rel="noopener noreferrer">
+          {t('View Sample')}
         </a>
       </div>
     </div>
