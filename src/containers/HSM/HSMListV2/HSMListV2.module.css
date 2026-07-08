@@ -6,180 +6,299 @@
   flex-direction: column;
 }
 
-/* header */
-.Header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 16px;
+.Category {
+  width: 22%;
+  min-width: 160px;
 }
 
-.TitleSection {
+.LastModified {
+  width: 16%;
+  min-width: 120px;
+  color: #93a29b;
+}
+
+.Reason {
+  width: 16%;
+  min-width: 120px;
+  word-break: break-word;
+}
+
+.Actions {
+  width: 12%;
+  max-width: 200px;
+  text-align: start;
+}
+
+/* cell content */
+.LabelContainer {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  row-gap: 0.4rem;
 }
 
 .TitleRow {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.Title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #111827;
-  margin: 0;
-}
-
-.Subtitle {
-  font-size: 12px;
-  color: #6b7280;
-  margin: 0;
-}
-
-.HeaderActions {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.SyncWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-
-.ViewSample {
-  font-size: 11px;
-  color: #6b7280;
-  text-decoration: none;
-}
-
-.ViewSample:hover {
-  text-decoration: underline;
-}
-
-.OutlinedButton {
-  height: 36px;
-  border: 1.5px solid #d1d5db !important;
-  border-radius: 10px !important;
-  background: #ffffff !important;
-  box-shadow: none !important;
-  color: #1a1a1a !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  white-space: nowrap;
-  gap: 5px;
-}
-
-.OutlinedButton:hover {
-  border-color: #9ca3af !important;
-  background: #f9fafb !important;
-}
-
-.SyncButton {
-  border-color: #2ea36a !important;
-  color: #2ea36a !important;
-}
-
-.SyncButton:hover {
-  border-color: #22864f !important;
-  background: #f0fdf4 !important;
-  color: #22864f !important;
-}
-
-.CreateButton {
-  height: 36px;
-  border-radius: 10px !important;
-  white-space: nowrap;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-}
-
-/* filter bar */
-.FilterBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 12px;
-}
-
-.FilterLeft {
-  display: flex;
-  align-items: center;
   gap: 8px;
 }
 
-.FilterRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.LabelText {
+  font-weight: 500;
+  font-size: 17px;
+  word-break: break-all;
 }
 
-.DropDown {
-  border-radius: 10px !important;
-  height: 36px !important;
-  min-height: 36px !important;
-  background: #ffffff !important;
-  font-size: 13px;
-  min-width: 130px;
-}
-
-.DropDown fieldset {
-  border-radius: 10px !important;
-  border-color: #c7cdd8 !important;
-}
-
-.DropDown:hover fieldset {
-  border-color: #9ca3af !important;
-}
-
-.DropDown:focus-within fieldset {
-  border-color: #2ea36a !important;
-}
-
-.SearchBar {
-  width: 300px;
-  border-radius: 10px !important;
-  box-shadow: none !important;
-  border: 1px solid #d1d5db !important;
-  height: 36px !important;
-  margin: 0 !important;
-}
-
-.FilterIconButton {
-  width: 36px;
-  height: 36px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
-  cursor: pointer;
-  font-size: 15px;
-  color: #6b7280;
+/* leading chevron that toggles a template's language variants open/closed. */
+.ChevronBtn {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #6b7280;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.FilterIconButton:hover {
-  border-color: #9ca3af;
-  color: #374151;
+.ChevronBtn svg {
+  width: 18px;
+  height: 18px;
 }
 
-/* table */
-.TableWrapper {
-  border: 1px solid #e5e7eb;
+.ChevronOpen {
+  transform: rotate(180deg);
+}
+
+.ShortCode {
+  font-size: 10px;
+  width: fit-content;
+  padding: 3px 12px;
+  color: #119656;
+  background: #f0faf5;
+  border: 1px solid #b7e0c8;
+  border-radius: 100px;
+  word-break: break-all;
+}
+
+/* Languages column chips */
+.ChipRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.LangChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+
+.LangDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.ChipApproved {
+  background: #f0faf5;
+  border-color: #28a745;
+  color: #073f24;
+}
+.ChipApproved .LangDot {
+  background: #28a745;
+}
+
+.ChipPending {
+  background: #fffbeb;
+  border-color: #ffc107;
+  color: #856404;
+}
+.ChipPending .LangDot {
+  background: #ffc107;
+}
+
+.ChipRejected {
+  background: #fff5f5;
+  border-color: #dc2626;
+  color: #b91c1c;
+}
+.ChipRejected .LangDot {
+  background: #dc2626;
+}
+
+/* WhatsApp-style status tooltip shown on language chip hover */
+.PreviewTooltip {
+  background: #ece5dd !important;
+  color: #0c1f14 !important;
+  padding: 10px !important;
+  border-radius: 10px !important;
+  max-width: 280px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+.PreviewArrow {
+  color: #ece5dd !important;
+}
+
+.PreviewCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.PreviewHeader {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #667781;
+}
+
+.PreviewBubble {
+  background: #e7ffdb;
   border-radius: 8px;
-  overflow: hidden;
+  padding: 8px 10px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+}
+
+.PreviewBody {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #0c1f14;
+  white-space: pre-line;
+}
+
+.PreviewVar {
+  background: #c6efaf;
+  color: #0c6b2e;
+  border-radius: 4px;
+  padding: 0 3px;
+  font-weight: 600;
+}
+
+.PreviewFooter {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  color: #667781;
+}
+
+/* expanded child rows */
+.CollapseBody {
+  margin: 0;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.4;
+  white-space: pre-line;
+  padding-right: 16px;
+}
+
+.LastModifiedText {
+  font-size: 13px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.TableText {
+  text-align: left;
+  font-size: 14px;
+  color: #93a29b;
+  white-space: pre-line;
+  margin: 0;
+  padding: 0;
+}
+
+/* header actions */
+.SecondaryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0.5rem;
+}
+
+.HsmUpdates {
+  margin-left: 8px;
+  cursor: pointer;
+  height: 36px;
+  border: 1px solid #cccccc;
   background: #ffffff;
-  flex: 1;
+  box-shadow: none;
+  font-size: 14px;
+  color: #2ea36a;
+}
+
+.ImportButton {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.HelperText {
+  position: absolute;
+  color: #2ea36a;
+  font-weight: 400;
+  font-size: 10px;
+  bottom: -20px;
+  right: 10px;
+  text-decoration: none !important;
+  padding: 0 12px;
+}
+
+/* filters */
+.FilterContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.FormStyle {
+  width: 150px !important;
+}
+
+.DropDown {
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  display: flex;
+  width: 130px;
+  margin: auto;
+  height: 36px !important;
+  background: #ffffff;
+  min-height: 36px !important;
+}
+
+.DropDown > fieldset {
+  border: none !important;
+}
+
+.BulkApplyProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 320px;
+  padding: 8px 0 16px;
+}
+
+.RowStyle {
+  padding: 15px 20px 15px 25px;
+}
+
+.CollapseRowCustom {
+  background-color: #fff;
+  box-shadow: inset 3px 0 0 0 #28a745;
+  border-bottom: 1px solid #eeede9;
+}
+
+.CollapseRowCustom:hover {
+  background-color: #f5f4f0;
 }
