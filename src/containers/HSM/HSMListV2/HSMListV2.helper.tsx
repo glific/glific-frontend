@@ -30,26 +30,7 @@ export const statusFilter = {
   FAILED: false,
 };
 
-// Two-letter chips for the Languages column. Falls back to the first two letters
-// of the language name when a code isn't mapped.
-const LANGUAGE_CODES: Record<string, string> = {
-  English: 'EN',
-  Hindi: 'HI',
-  Marathi: 'MR',
-  Tamil: 'TA',
-  Telugu: 'TE',
-  Kannada: 'KN',
-  Malayalam: 'ML',
-  Gujarati: 'GU',
-  Bengali: 'BN',
-  Punjabi: 'PA',
-  Odia: 'OR',
-  Urdu: 'UR',
-  Assamese: 'AS',
-  Spanish: 'ES',
-  French: 'FR',
-};
-const languageCode = (label = '') => LANGUAGE_CODES[label] ?? label.slice(0, 2).toUpperCase();
+const languageCode = (locale = '') => locale.slice(0, 2).toUpperCase();
 
 const statusChipClass = (status: string) => {
   switch (status) {
@@ -63,7 +44,6 @@ const statusChipClass = (status: string) => {
   }
 };
 
-// highlight {{1}}, {{2}} ... variables in the body like a WhatsApp message preview.
 const highlightVariables = (text = '') =>
   text.split(/(\{\{\d+\}\})/g).map((part, index) =>
     /^\{\{\d+\}\}$/.test(part) ? (
@@ -75,11 +55,10 @@ const highlightVariables = (text = '') =>
     )
   );
 
-// WhatsApp-style message preview shown when hovering a title / body.
 const messagePreview = (variant: any, title: string) => (
   <div className={styles.PreviewCard}>
     <div className={styles.PreviewHeader}>
-      {(title || '').toUpperCase()} · {languageCode(variant.language?.label ?? variant.language)}
+      {(title || '').toUpperCase()} · {languageCode(variant.language?.locale)}
     </div>
     <div className={styles.PreviewBubble}>
       <div className={styles.PreviewBody}>{highlightVariables(variant.body)}</div>
@@ -88,43 +67,30 @@ const messagePreview = (variant: any, title: string) => (
   </div>
 );
 
-// shared tooltip slot styling for the WhatsApp-style cards.
 const previewSlotProps = {
   tooltip: { className: styles.PreviewTooltip },
   arrow: { className: styles.PreviewArrow },
 };
 
-// status label shown in the language chip tooltip.
-const statusLabel = (status: string) => {
-  switch ((status || '').toUpperCase()) {
-    case 'PENDING':
-      return t('Pending');
-    case 'REJECTED':
-      return t('Rejected');
-    case 'FAILED':
-      return t('Failed');
-    default:
-      return t('Approved');
-  }
+const statusLabel = (status = '') => {
+  const label = capitalizeFirstLetter(status.toLowerCase());
+  return t(label, label);
 };
 
 const languageChip = (variant: any, key: string | number) => {
   const status = variant.status;
-  const label = variant.language?.label ?? variant.language;
   return (
     <Tooltip key={key} title={statusLabel(status)} placement="top">
       <span className={`${styles.LangChip} ${statusChipClass(status)}`}>
         <span className={styles.LangDot} />
-        {languageCode(label)}
+        {languageCode(variant.language?.locale)}
       </span>
     </Tooltip>
   );
 };
 
-const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_').join(' ').toLowerCase());
+export const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_').join(' ').toLowerCase());
 
-// `Expand`, when provided, renders a chevron to the left of the name that
-// toggles the row's language-variant sub-rows.
 const getTitle = (name: string, shortcode: string, primary: any, expand?: any) => (
   <div className={styles.TitleRow}>
     {expand && (
@@ -153,12 +119,10 @@ const getTitle = (name: string, shortcode: string, primary: any, expand?: any) =
   </div>
 );
 
-// the Languages column shows one chip per language variant, coloured by status.
 const getLanguages = (variants: any[] = []) => (
   <div className={styles.ChipRow}>{variants.map((variant, index) => languageChip(variant, variant.id ?? index))}</div>
 );
 
-// the Category column aggregates the variants' categories, e.g. "Utility ×2".
 const getCategories = (variants: any[] = []) => {
   const counts = new Map<string, number>();
   variants.forEach((variant) => {
@@ -181,14 +145,8 @@ const getUpdatedAt = (date: string) => <div className={styles.LastModifiedText}>
 
 const getReason = (reason: string) => <p className={styles.TableText}>{reason}</p>;
 
-// the Reason column replaces "Last updated" when filtering by Rejected/Failed.
 export const showReasonColumn = (status: string) => status === 'REJECTED' || status === 'FAILED';
 
-// HSM templates come back from the backend as flat, one-row-per-language records.
-// Group them by shortcode so each template shows as a single parent row, keeping
-// the full variant list so the parent can render the Languages/Category columns
-// and the expand chevron can reveal each language as a child row. Templates
-// without a shortcode can't be grouped, so they stay standalone (keyed by id).
 export const groupByShortcode = (items: any[] = []) => {
   const groups = new Map<string, any[]>();
   items.forEach((item) => {
@@ -199,17 +157,12 @@ export const groupByShortcode = (items: any[] = []) => {
   });
 
   return Array.from(groups.values()).map((variants) => {
-    // show the English variant as the parent row when present, else the first.
     const primary = variants.find((variant) => variant.language?.label === 'English') ?? variants[0];
-    // most recently updated variant drives the parent's "last updated".
     const latest = variants.reduce((a, b) => (dayjs(b.updatedAt).isAfter(dayjs(a.updatedAt)) ? b : a));
     return { ...primary, updatedAt: latest.updatedAt, variants };
   });
 };
 
-// each child row of an expanded group renders the variant's body + a single
-// language chip + its category badge + relative date (or reason when filtering
-// by Rejected/Failed), aligned to the columns.
 export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
   <MuiTooltip
     key="body"
@@ -252,10 +205,6 @@ export const getColumnStyles = (showReason: boolean): any => [
   styles.Actions,
 ];
 
-// The expanded block: one <TableRow> per language variant, aligned to the same
-// columns as the parent row. Rendered once here and carried on the row as
-// `collapseContent`, so Pager just drops it in when the row is open — no
-// per-cell renderer prop and no JSON round-trip.
 const renderCollapsedRows = (variants: any[] = [], showReason: boolean) => {
   const renderColumns = getCollapsedColumns(showReason);
   const columnStyles = getColumnStyles(showReason);

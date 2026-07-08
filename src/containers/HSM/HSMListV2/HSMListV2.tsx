@@ -12,7 +12,7 @@ import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
 import { templateInfo, templateStatusInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
-import { capitalizeFirstLetter, copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
+import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -25,6 +25,7 @@ import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Temp
 
 import styles from './HSMListV2.module.css';
 import {
+  categoryLabel,
   getColumnNames,
   getColumnStyles,
   getColumns,
@@ -186,7 +187,6 @@ const HSMListV2 = () => {
   const appliedFilters: any = { isHsm: true, status: filterValue };
   if (selectedCategory) appliedFilters.category = selectedCategory;
 
-  // when filtering by Rejected/Failed, swap "Last updated" for a "Reason" column.
   const showReason = showReasonColumn(filterValue);
 
   const syncHSMButton = (
@@ -245,7 +245,7 @@ const HSMListV2 = () => {
           <MenuItem value="">{t('All Categories')}</MenuItem>
           {categories.map((category: string) => (
             <MenuItem key={category} value={category}>
-              {capitalizeFirstLetter(category.split('_').join(' ').toLowerCase())}
+              {categoryLabel(category)}
             </MenuItem>
           ))}
         </Select>
@@ -257,8 +257,6 @@ const HSMListV2 = () => {
         optionLabel="label"
         multiple={false}
         onChange={(value: any) => {
-          // preserve any other existing query params (e.g. List's search) when
-          // updating the tag filter instead of replacing the whole query string.
           setSearchParams((params) => {
             const next = new URLSearchParams(params);
             if (value) {
