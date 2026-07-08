@@ -1,4 +1,3 @@
-import { Field } from 'formik';
 import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
@@ -32,16 +31,6 @@ export const categoryDescriptions: { [key: string]: string } = {
 };
 
 export const titleCase = (value: string) => (value ? value.charAt(0) + value.slice(1).toLowerCase() : value);
-
-// looks up a named field descriptor out of the array FormLayout hands to renderFields.
-export const getField = (fieldItems: any[], name: string) => fieldItems.find((field: any) => field.name === name);
-
-// renders a named field through the same <Field> wrapper FormLayout's default loop uses,
-// so Formik still injects `field`/`form` the way AutoComplete/Input/etc. expect.
-export const renderTextField = (fieldItems: any[], name: string) => {
-  const field = getField(fieldItems, name);
-  return field ? <Field {...field} /> : null;
-};
 
 // splits a body string into the message and any trailing "| [button, ...]" gupshup markup.
 export const getTemplateAndButton = (text: string) => {

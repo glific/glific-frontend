@@ -92,11 +92,6 @@ export interface FormLayoutProps {
     show?: boolean;
     text?: string;
   };
-  // Escape hatch for callers that need a custom layout (e.g. grouping fields into
-  // sections/cards) instead of FormLayout's default single-column field list.
-  // When provided, FormLayout still owns all data/query/mutation/validation/submit
-  // logic — only the field markup is handed back to the caller to arrange.
-  renderFields?: (formFieldItems: Array<any>, formik: any) => React.ReactNode;
 }
 
 export const FormLayout = ({
@@ -155,7 +150,6 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
-  renderFields,
   helpData,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -553,30 +547,28 @@ export const FormLayout = ({
       </Button>
     ) : null;
 
-  const defaultFields = formFieldItems.map((field, index) => {
-    const key = index;
-
-    if (field.skip) {
-      return null;
-    }
-
-    return (
-      <Fragment key={key}>
-        {field.label && (
-          <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-            {field.label}
-          </Typography>
-        )}
-        <Field key={key} {...field} onSubmit={formik.submitForm} />
-      </Fragment>
-    );
-  });
-
   const form = (
     <LexicalWrapper>
       <form onSubmit={formik.handleSubmit}>
         <div className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
-          {renderFields ? renderFields(formFieldItems, formik) : defaultFields}
+          {formFieldItems.map((field, index) => {
+            const key = index;
+
+            if (field.skip) {
+              return null;
+            }
+
+            return (
+              <Fragment key={key}>
+                {field.label && (
+                  <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                    {field.label}
+                  </Typography>
+                )}
+                <Field key={key} {...field} onSubmit={formik.submitForm} />
+              </Fragment>
+            );
+          })}
           <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
             {buttonState.show && (
               <Button

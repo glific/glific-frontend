@@ -41,7 +41,7 @@ export const ButtonTypeSelector = ({
         </button>
       ))}
     </div>
-    {selected && (
+    {selected && !disabled && (
       <button type="button" className={styles.ClearSelectionLink} onClick={onClear}>
         {t('Clear button selection')}
       </button>

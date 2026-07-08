@@ -21,6 +21,10 @@
 }
 
 .ClearSelectionLink {
+  display: block;
+  width: fit-content;
+  text-align: left;
+  align-self: flex-start;
   background: none;
   border: none;
   padding: 0;

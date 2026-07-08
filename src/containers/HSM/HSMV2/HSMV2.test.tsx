@@ -128,7 +128,7 @@ describe('HSMV2 add mode', () => {
 
   const user = userEvent.setup();
 
-  test('renders the new card layout with tile pickers', async () => {
+  test('renders the form with tile pickers', async () => {
     render(template);
 
     await waitFor(() => {
@@ -136,11 +136,6 @@ describe('HSMV2 add mode', () => {
     });
 
     expect(screen.getByTestId('back-button')).toBeInTheDocument();
-    expect(screen.getByText('Template Details')).toBeInTheDocument();
-    expect(screen.getByText('Message Content')).toBeInTheDocument();
-    expect(screen.getByText('Interactive Buttons')).toBeInTheDocument();
-    expect(screen.getByText('Media Attachment')).toBeInTheDocument();
-    expect(screen.getByText('Organization & Tags')).toBeInTheDocument();
     expect(screen.getByTestId('simulator-container')).toBeInTheDocument();
 
     // there's no separate Title field — the backend derives it from shortcode + language.

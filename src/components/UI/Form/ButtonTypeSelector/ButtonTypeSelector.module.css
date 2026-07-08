@@ -1,8 +1,11 @@
 .FieldLabel {
-  font-size: 14px;
-  font-weight: 600;
-  color: #202125;
-  margin: 0 0 10px;
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
 }
 
 .TileRow {
@@ -37,6 +40,10 @@
 }
 
 .ClearSelectionLink {
+  display: block;
+  width: fit-content;
+  text-align: left;
+  align-self: flex-start;
   background: none;
   border: none;
   padding: 0;

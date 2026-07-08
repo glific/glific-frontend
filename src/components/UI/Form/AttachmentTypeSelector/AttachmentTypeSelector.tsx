@@ -83,7 +83,7 @@ export const AttachmentTypeSelector = ({
         );
       })}
     </div>
-    {value ? (
+    {value && !disabled ? (
       <button type="button" className={styles.ClearSelectionLink} onClick={onClear}>
         {t('Clear attachment selection')}
       </button>

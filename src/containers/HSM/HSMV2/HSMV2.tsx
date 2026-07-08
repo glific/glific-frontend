@@ -1,9 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { FormHelperText } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
-import { Field } from 'formik';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS } from 'common/constants';
@@ -19,6 +17,7 @@ import Simulator from 'components/simulator/Simulator';
 import { ButtonTypeSelector } from 'components/UI/Form/ButtonTypeSelector/ButtonTypeSelector';
 import { AttachmentTypeSelector } from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
 import { AttachmentUploadField } from 'components/UI/Form/AttachmentUploadField/AttachmentUploadField';
+import { CategorySelector } from 'components/UI/Form/CategorySelector/CategorySelector';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { getOrganizationServices } from 'services/AuthService';
@@ -46,9 +45,6 @@ import {
   templateIcon,
   dialogMessage,
   categoryDescriptions,
-  titleCase,
-  getField,
-  renderTextField,
   getTemplateAndButton,
   buildTemplatePayload,
   buildSimulatorMessage,
@@ -372,13 +368,26 @@ export const HSMV2 = () => {
     resetUploadState();
   };
 
-  // Same field descriptors HSM.tsx feeds to FormLayout — Category, Attachment Type,
-  // and the "Add buttons" checkbox are intentionally left out here since renderFields
-  // (below) renders those as tiles bound to the same state instead of via <Field>.
+  // the field descriptor FormLayout's default renderer uses for the attachment URL —
+  // shared between its own slot (skipped, since AttachmentUploadField renders it inline
+  // once a type is picked) and the urlField it hands to AttachmentUploadField.
+  const attachmentURLField = {
+    component: Input,
+    name: 'attachmentURL',
+    type: 'text',
+    validate: () => isUrlValid,
+    disabled: isEditing || uploadingFile,
+    helperText: uploadedFile ? `File uploaded: ${uploadedFile.name}` : undefined,
+    inputProp: {
+      onBlur: (event: any) => setAttachmentURL(event.target.value.trim()),
+    },
+  };
+
   const fields = [
     {
       component: AutoComplete,
       name: 'language',
+      label: `${t('Language')}*`,
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
@@ -388,6 +397,7 @@ export const HSMV2 = () => {
     {
       component: Input,
       name: 'newShortcode',
+      label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}`,
       disabled: isEditing,
       // the backend derives the template's title (label) from shortcode + language when
@@ -396,6 +406,22 @@ export const HSMV2 = () => {
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
+    isEditing
+      ? {
+          component: Input,
+          name: 'category',
+          label: t('Category'),
+          type: 'text',
+          disabled: true,
+        }
+      : {
+          component: CategorySelector,
+          name: 'category',
+          options: categoryOpn,
+          value: category,
+          descriptions: categoryDescriptions,
+          onChange: setCategory,
+        },
     {
       component: EmojiInput,
       name: 'body',
@@ -408,15 +434,37 @@ export const HSMV2 = () => {
       defaultValue: (isEditing || isCopyState) && editorState,
     },
     {
+      component: TemplateVariables,
+      name: 'variables',
+      message: body,
+      variables,
+      setVariables,
+      isEditing,
+    },
+    {
       component: Input,
       name: 'footer',
+      label: `${t('Footer')} (${t('optional')})`,
       disabled: isEditing,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
     },
     {
+      component: ButtonTypeSelector,
+      name: 'templateType',
+      options: BUTTON_OPTIONS.filter(
+        (option: any) => option.id !== 'WHATSAPP_FORM' || getOrganizationServices('whatsappFormsEnabled')
+      ),
+      value: templateType,
+      selected: isAddButtonChecked,
+      onChange: handleTemplateTypeChange,
+      onClear: clearButtonSelection,
+      disabled: isEditing,
+    },
+    {
       component: TemplateOptions,
+      name: 'templateButtons',
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
@@ -430,32 +478,42 @@ export const HSMV2 = () => {
       hideTypeSelector: true,
     },
     {
-      component: Input,
-      name: 'category',
-      type: 'text',
-      disabled: true,
-      skip: !isEditing,
+      component: AttachmentTypeSelector,
+      name: 'type',
+      options: mediaOptions,
+      value: type,
+      onChange: selectAttachmentType,
+      onClear: clearAttachmentSelection,
+      method: attachmentMethod,
+      onSelectUrlMethod: selectUrlMethod,
+      onSelectUploadMethod: selectUploadMethod,
+      disabled: isEditing,
     },
     {
-      component: Input,
-      name: 'attachmentURL',
-      type: 'text',
-      validate: () => isUrlValid,
-      disabled: isEditing || uploadingFile,
-      helperText: uploadedFile ? `File uploaded: ${uploadedFile.name}` : undefined,
-      inputProp: {
-        onBlur: (event: any) => setAttachmentURL(event.target.value.trim()),
-      },
+      component: AttachmentUploadField,
+      name: 'attachmentUpload',
+      type,
+      showUploadButton,
+      uploadingFile,
+      uploadedFile,
+      attachmentURL,
+      onFileSelect: handleFileUpload,
+      onResetUpload: resetUploadState,
+      urlField: attachmentURLField,
     },
+    { ...attachmentURLField, skip: true },
     {
       component: CreateAutoComplete,
       name: 'tagId',
+      label: `${t('Tag')} (${t('optional')})`,
       options: tag ? tag.tags : [],
       optionLabel: 'label',
       disabled: isEditing,
       hasCreateOption: true,
       multiple: false,
       onChange: (value: any) => setTagId(value),
+      placeholder: t('Search or create a tag...'),
+      helperText: t('Pick a suggestion or type your own — tags help you filter and organise templates later.'),
     },
   ];
 
@@ -520,171 +578,6 @@ export const HSMV2 = () => {
     setVariables(getVariables(body, variables));
   }, [body]);
 
-  const disabled = isEditing;
-
-  const renderFields = (formFieldItems: any[], formik: any) => (
-    <>
-      <section className={styles.Card}>
-        <h2 className={styles.CardTitle}>{t('Template Details')}</h2>
-
-        <div className={styles.FieldGroup}>
-          <p className={styles.FieldLabel}>
-            {t('Language')}
-            <span className={styles.Required}>*</span>
-          </p>
-          {renderTextField(formFieldItems, 'language')}
-        </div>
-
-        <div className={styles.FieldGroup}>
-          <p className={styles.FieldLabel}>
-            {t('Element name')}
-            <span className={styles.Required}>*</span>
-          </p>
-          {renderTextField(formFieldItems, 'newShortcode')}
-        </div>
-
-        <div className={styles.FieldGroup}>
-          <p className={styles.FieldLabel}>
-            {t('Category')}
-            <span className={styles.Required}>*</span>
-          </p>
-          {!isEditing ? (
-            <>
-              <div className={styles.TileGrid}>
-                {categoryOpn.map((option: any) => (
-                  <button
-                    type="button"
-                    key={option.id}
-                    className={`${styles.CategoryTile} ${
-                      category?.label === option.label ? styles.TileSelectedGreen : ''
-                    }`}
-                    onClick={() => setCategory(option)}
-                  >
-                    <span className={styles.TileRadio} />
-                    <span className={styles.TileBody}>
-                      <span className={styles.TileTitle}>{titleCase(option.label)}</span>
-                      {categoryDescriptions[option.label] && (
-                        <span className={styles.TileDescription}>{categoryDescriptions[option.label]}</span>
-                      )}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              {formik.touched.category && formik.errors.category ? (
-                <FormHelperText className={styles.DangerText}>{formik.errors.category as string}</FormHelperText>
-              ) : null}
-            </>
-          ) : (
-            renderTextField(formFieldItems, 'category')
-          )}
-        </div>
-      </section>
-
-      <section className={styles.Card}>
-        <h2 className={styles.CardTitle}>{t('Message Content')}</h2>
-
-        <div className={styles.FieldGroup}>
-          <p className={styles.FieldLabel}>
-            {t('Message Body')}
-            <span className={styles.Required}>*</span>
-          </p>
-          {renderTextField(formFieldItems, 'body')}
-          <Field
-            component={TemplateVariables}
-            message={body}
-            variables={variables}
-            setVariables={setVariables}
-            isEditing={isEditing}
-          />
-          <div className={styles.HelperText}>
-            You can provide variable values in your HSM templates to personalize the message. To add: click on the
-            variable button and provide an example value for the variable in the field provided below
-          </div>
-        </div>
-
-        <div className={styles.FieldGroup}>
-          <p className={styles.FieldLabel}>
-            {t('Footer')} <span className={styles.OptionalLabel}>({t('optional')})</span>
-          </p>
-          {renderTextField(formFieldItems, 'footer')}
-        </div>
-      </section>
-
-      <section className={styles.Card}>
-        <h2 className={styles.CardTitle}>{t('Interactive Buttons')}</h2>
-        <ButtonTypeSelector
-          options={BUTTON_OPTIONS.filter(
-            (option: any) => option.id !== 'WHATSAPP_FORM' || getOrganizationServices('whatsappFormsEnabled')
-          )}
-          value={templateType}
-          selected={isAddButtonChecked}
-          onChange={handleTemplateTypeChange}
-          onClear={clearButtonSelection}
-          disabled={disabled}
-        />
-
-        <Field
-          component={TemplateOptions}
-          isAddButtonChecked={isAddButtonChecked}
-          templateType={templateType}
-          inputFields={templateButtons}
-          disabled={disabled}
-          onAddClick={addTemplateButtons}
-          onRemoveClick={removeTemplateButtons}
-          onInputChange={handeInputChange}
-          onTemplateTypeChange={handleTemplateTypeChange}
-          onDynamicParamsChange={handleDynamicParamsChange}
-          setType={setType}
-          hideTypeSelector
-        />
-      </section>
-
-      <section className={styles.Card}>
-        <h2 className={styles.CardTitle}>{t('Media Attachment')}</h2>
-        <p className={styles.CardSubtitle}>
-          {t('Supported formats: Image (JPG, PNG), Document (PDF), Video (MP4)')} ·{' '}
-          {t('Not supported: Audio, Stickers')}
-        </p>
-
-        <AttachmentTypeSelector
-          options={mediaOptions}
-          value={type}
-          onChange={selectAttachmentType}
-          onClear={clearAttachmentSelection}
-          method={attachmentMethod}
-          onSelectUrlMethod={selectUrlMethod}
-          onSelectUploadMethod={selectUploadMethod}
-          disabled={disabled}
-        />
-
-        <AttachmentUploadField
-          type={type}
-          showUploadButton={showUploadButton}
-          uploadingFile={uploadingFile}
-          uploadedFile={uploadedFile}
-          attachmentURL={attachmentURL}
-          onFileSelect={handleFileUpload}
-          onResetUpload={resetUploadState}
-          urlField={getField(formFieldItems, 'attachmentURL')}
-        />
-      </section>
-
-      <section className={`${styles.Card} ${styles.LastCard}`}>
-        <h2 className={styles.CardTitle}>{t('Organization & Tags')}</h2>
-        <div className={styles.FieldGroup}>
-          <p className={styles.FieldLabel}>
-            {t('Tag')} <span className={styles.OptionalLabel}>({t('optional')})</span>
-          </p>
-          <Field
-            {...getField(formFieldItems, 'tagId')}
-            placeholder={t('Search or create a tag...')}
-            helperText={t('Pick a suggestion or type your own — tags help you filter and organise templates later.')}
-          />
-        </div>
-      </section>
-    </>
-  );
-
   if (languageLoading || categoryLoading || tagLoading) {
     return <Loading />;
   }
@@ -726,7 +619,6 @@ export const HSMV2 = () => {
         entityId={params.id}
         partialPage
         customStyles={styles.CustomFormShell}
-        renderFields={renderFields}
       />
 
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />

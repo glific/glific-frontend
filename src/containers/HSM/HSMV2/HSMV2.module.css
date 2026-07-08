@@ -3,7 +3,7 @@
    provides a scroll container (.ItemAdd) when NOT partialPage; here we pass
    partialPage, so it renders .ItemAddDialog which has no scroll. Keep this at
    the shell's real height and own the vertical scroll here, otherwise the
-   lower cards (buttons, media, submit) get clipped with no scrollbar. */
+   lower fields (buttons, media, submit) get clipped with no scrollbar. */
 .Page {
   padding: 0 32px 48px 0;
   background-color: #ffffff;
@@ -12,25 +12,10 @@
   box-sizing: border-box;
 }
 
-.Card {
-  background-color: #ffffff;
-  border: 1px solid #eeeeee;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  padding: 24px 28px 28px;
-}
-
-/* Applied to the last field Card so it visually fuses with .Buttons below it
-   (no gap, square shared corners) instead of floating as a separate box. */
-.LastCard {
-  border-bottom: none;
-  border-radius: 12px 12px 0 0;
-}
-
 /* Overrides FormLayout's default fixed-width .Form shell (width: 530px;
-   padding: 16px 53px) so our cards can lay out full-width inside the grid
-   column. !important is needed since class order between the two CSS
-   modules in the compiled bundle isn't guaranteed. */
+   padding: 16px 53px) so fields lay out full-width inside the grid column.
+   !important is needed since class order between the two CSS modules in the
+   compiled bundle isn't guaranteed. */
 .CustomFormShell {
   width: 100% !important;
   max-width: 720px !important;
@@ -38,124 +23,9 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  /* aligns cards with the Heading title text: Heading's own 10px left padding
+  /* aligns fields with the Heading title text: Heading's own 10px left padding
      plus its .HeadingWrapper's 46px margin-left. */
   margin: 0 0 0 56px;
-}
-
-.CardTitle {
-  font-size: 20px;
-  font-weight: 700;
-  color: #073f24;
-  margin: 0 0 20px;
-}
-
-.CardSubtitle {
-  font-size: 13px;
-  color: #73716f;
-  margin: -12px 0 20px;
-}
-
-.FieldGroup {
-  margin-bottom: 20px;
-}
-
-.FieldGroup:last-child {
-  margin-bottom: 0;
-}
-
-.FieldLabel {
-  font-size: 16px;
-  font-weight: 500;
-  color: #555555;
-  margin: 0 0 10px;
-}
-
-.Required {
-  color: #de3707;
-  margin-left: 2px;
-}
-
-.OptionalLabel {
-  color: #83847d;
-  font-weight: 400;
-}
-
-.HelperText {
-  font-size: 12px;
-  color: #83847d;
-  margin-top: 6px;
-}
-
-.DangerText {
-  color: #de3707 !important;
-}
-
-/* Tiles shared styles */
-
-.TileGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.CategoryTile {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  text-align: left;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.TileRadio {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  border-radius: 50%;
-  border: 2px solid #b7b7b7;
-  margin-top: 2px;
-  position: relative;
-}
-
-.TileSelectedGreen .TileRadio {
-  border-color: #119656;
-}
-
-.TileSelectedGreen .TileRadio::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border-radius: 50%;
-  background-color: #119656;
-}
-
-.TileBody {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.TileTitle {
-  font-size: 15px;
-  font-weight: 600;
-  color: #202125;
-}
-
-.TileDescription {
-  font-size: 12px;
-  color: #83847d;
-  line-height: 1.4;
-}
-
-/* selected state used by Category / Attachment Type / Provide URL-Upload File tiles */
-.TileSelectedGreen {
-  border-color: #119656 !important;
-  background-color: #f2f9f5 !important;
 }
 
 /* Bottom action buttons */
@@ -164,12 +34,7 @@
   display: flex;
   gap: 16px;
   align-items: center;
-  margin-top: -20px;
-  background-color: #ffffff;
-  border: 1px solid #eeeeee;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  padding: 24px 28px 28px;
+  margin-top: 20px;
 }
 
 .CancelButton {

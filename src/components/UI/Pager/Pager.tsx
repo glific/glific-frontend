@@ -13,7 +13,7 @@ import {
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
-// `collapseContent` carries a caller pre-rendered sub-row block (see the HSM
+// `CollapseContent` carries a caller pre-rendered sub-row block (see the HSM
 // template list); `translations` is the default label+body JSON path.
 const removeDisplayColumns = ['recordId', 'translations', 'collapseContent', 'id', 'isActive'];
 
