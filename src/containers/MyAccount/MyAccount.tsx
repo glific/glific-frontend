@@ -78,7 +78,7 @@ export const MyAccount = () => {
 
   const userName = userData.currentUser.user.name;
   const userPhone = userData.currentUser.user.phone;
-  const userEmail = userData.currentUser.user.email ?? '';
+  const userEmail = userData.currentUser.user.email;
   // filter languages that support localization
   const languageOptions = organizationData.currentUser.user.organization.activeLanguages
     .filter((lang: any) => lang.localized)

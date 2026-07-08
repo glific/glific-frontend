@@ -49,53 +49,6 @@ export const getCurrentUserQuery = {
   },
 };
 
-export const getCurrentUserNullEmailQuery = {
-  request: {
-    query: GET_CURRENT_USER,
-  },
-  result: {
-    data: {
-      currentUser: {
-        user: {
-          id: '1',
-          name: 'John Doe',
-          phone: '+919820198765',
-          roles: ['admin'],
-          email: null,
-          contact: {
-            id: '1',
-            name: 'Glific user',
-            phone: '9876543210',
-          },
-          accessRoles: [
-            {
-              id: '1',
-              label: 'Admin',
-            },
-          ],
-          groups: [
-            {
-              id: '1',
-              label: 'Default Collection',
-              description: '',
-            },
-          ],
-          organization: {
-            id: '1',
-            contact: {
-              phone: '917834811114',
-            },
-          },
-          language: {
-            id: '1',
-            locale: 'en',
-          },
-        },
-      },
-    },
-  },
-};
-
 export const getUsersQuery = {
   request: {
     query: GET_USERS,
