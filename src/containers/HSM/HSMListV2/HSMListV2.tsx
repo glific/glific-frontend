@@ -111,16 +111,16 @@ const HSMListV2 = () => {
 
   const navigateToCreate = () => {
     if (selectedTag?.label) {
-      navigate('/template/add', { state: { tag: selectedTag } });
+      navigate('/template-v2/add', { state: { tag: selectedTag } });
     } else {
-      navigate('/template/add');
+      navigate('/template-v2/add');
     }
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
-  const handleView = (id: any) => navigate(`/template/${id}/edit`);
+  const handleView = (id: any) => navigate(`/template-v2/${id}/edit`);
 
-  const setCopyDialog = (id: any) => navigate(`/template/${id}/edit`, { state: 'copy' });
+  const setCopyDialog = (id: any) => navigate(`/template-v2/${id}/edit`, { state: 'copy' });
 
   const copyUuid = (_id: string, item: any) => {
     if (item.bspId) {

@@ -1,7 +1,14 @@
+/* The app shell (Layout.module.css .MainContent) clips overflow at a fixed
+   height and expects each page to scroll within that height. FormLayout only
+   provides a scroll container (.ItemAdd) when NOT partialPage; here we pass
+   partialPage, so it renders .ItemAddDialog which has no scroll. Keep this at
+   the shell's real height and own the vertical scroll here, otherwise the
+   lower cards (buttons, media, submit) get clipped with no scrollbar. */
 .Page {
   padding: 0 32px 48px 0;
   background-color: #ffffff;
-  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
   box-sizing: border-box;
 }
 

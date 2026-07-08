@@ -6,6 +6,22 @@
   flex-direction: column;
 }
 
+.TemplateIcon {
+  width: 29px;
+  height: 29px;
+}
+
+/* column widths — Title / Languages / Category / Last updated / Actions */
+.Name {
+  width: 28%;
+  min-width: 220px;
+}
+
+.Languages {
+  width: 22%;
+  min-width: 160px;
+}
+
 .Category {
   width: 22%;
   min-width: 160px;
@@ -34,6 +50,12 @@
   display: flex;
   flex-direction: column;
   row-gap: 0.4rem;
+}
+
+.TitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Languages column chips */
