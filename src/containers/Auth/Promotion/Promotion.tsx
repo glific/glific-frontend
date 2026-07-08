@@ -38,7 +38,7 @@ export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
   const posthog = usePostHog();
 
-  // The org's shortcode is the first label of its subdomain (e.g. `tides` in tides.tap.glific.org).
+  // The org's shortcode is the first label of its subdomain (e.g. `tap` in tap.glific.org).
   const shortcode = window.location.hostname.split('.')[0];
 
   const trackReferral = (channel: 'email' | 'whatsapp') => {
