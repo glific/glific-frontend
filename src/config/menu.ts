@@ -180,7 +180,6 @@ const menus = (): Menu[] => [
           path: '/assistants',
           icon: 'assistant',
           type: 'sideDrawer',
-          new: true,
           roles: allRoles,
           children: [
             {
@@ -216,6 +215,7 @@ const menus = (): Menu[] => [
           path: '/analytics',
           icon: 'analytics',
           type: 'sideDrawer',
+          new: true,
           roles: managerLevel,
         },
       ]

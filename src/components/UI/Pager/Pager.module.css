@@ -20,7 +20,7 @@
 .TableContainer {
   padding: 18px 56px;
   overflow: hidden;
-  height: calc(100vh - 200px);
+  height: 100%;
 }
 
 .TableFooter {

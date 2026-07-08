@@ -1,14 +1,50 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
+import axios from 'axios';
 
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 import { ORG_EVAL_ACCESS_CACHE_KEY } from 'containers/AIEvals/orgEvalAccessCache';
 
+const { mockPosthogCapture, mockPosthogReset } = vi.hoisted(() => ({
+  mockPosthogCapture: vi.fn(),
+  mockPosthogReset: vi.fn(),
+}));
+
 vi.mock('axios');
+vi.mock('@posthog/react', () => ({
+  usePostHog: () => ({
+    capture: mockPosthogCapture,
+    reset: mockPosthogReset,
+  }),
+}));
+
+const mockedAxios = axios as any;
 
 describe('<Logout />', () => {
+  const originalLocation = window.location;
+  let locationReplaceMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mockedAxios.delete.mockResolvedValue({});
+    locationReplaceMock = vi.fn();
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: { ...originalLocation, replace: locationReplaceMock },
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    });
+  });
+
   test('it should logout user', async () => {
     render(
       <MockedProvider>
@@ -51,5 +87,70 @@ describe('<Logout />', () => {
     });
 
     expect(localStorage.getItem(ORG_EVAL_ACCESS_CACHE_KEY)).toBeNull();
+  });
+
+  test('completes delete session action before navigating to login page', async () => {
+    let resolveDeleteRequest: (value: unknown) => void = () => {};
+    mockedAxios.delete.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveDeleteRequest = resolve;
+        })
+    );
+
+    render(
+      <MockedProvider>
+        <MemoryRouter>
+          <Logout />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+    expect(locationReplaceMock).not.toHaveBeenCalled();
+
+    resolveDeleteRequest({});
+
+    await waitFor(() => {
+      expect(locationReplaceMock).toHaveBeenCalledWith('/login');
+    });
+  });
+
+  test('tracks logout in posthog before redirect', async () => {
+    render(
+      <MockedProvider>
+        <MemoryRouter>
+          <Logout />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      fireEvent.click(screen.getByTestId('ok-button'));
+    });
+
+    await waitFor(() => {
+      expect(mockPosthogCapture).toHaveBeenCalledWith('user_logged_out');
+      expect(mockPosthogReset).toHaveBeenCalled();
+      expect(locationReplaceMock).toHaveBeenCalledWith('/login');
+    });
+  });
+
+  test('redirects to login with window.location.replace on user-initiated logout', async () => {
+    render(
+      <MockedProvider>
+        <MemoryRouter initialEntries={['/logout/user']}>
+          <Routes>
+            <Route path="/logout/:mode" element={<Logout />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(locationReplaceMock).toHaveBeenCalledWith('/login');
+    });
   });
 });
