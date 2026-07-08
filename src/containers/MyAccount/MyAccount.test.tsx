@@ -5,7 +5,13 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { getCurrentUserQuery, updateUserQuery, updateEmailQuery, updateEmailErrorQuery } from 'mocks/User';
+import {
+  getCurrentUserQuery,
+  getCurrentUserNullEmailQuery,
+  updateUserQuery,
+  updateEmailQuery,
+  updateEmailErrorQuery,
+} from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -262,6 +268,25 @@ describe('<MyAccount />', () => {
     });
     expect(screen.queryByText('Email updated successfully!')).not.toBeInTheDocument();
     expect(emailInput).toBeEnabled();
+  });
+
+  test('a null email from the backend renders as an empty, disabled field instead of crashing', async () => {
+    const nullEmailMocks = [getCurrentUserNullEmailQuery, getOrganizationLanguagesQuery];
+    const { container } = renderMyAccount(nullEmailMocks);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('MyAccount')).toBeInTheDocument();
+    });
+
+    const emailInput = container.querySelector('input[name="email"]') as HTMLInputElement;
+    expect(emailInput.value).toBe('');
+    expect(emailInput).toBeDisabled();
+    expect(screen.getByTestId('editEmailButton')).toBeInTheDocument();
+
+    // editing still works normally starting from an empty field
+    await user.click(screen.getByTestId('editEmailButton'));
+    expect(emailInput).toBeEnabled();
+    expect(screen.getByTestId('saveEmailButton')).toBeInTheDocument();
   });
 
   test('cancelling an email edit discards the change and re-disables the field', async () => {

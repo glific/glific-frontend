@@ -78,7 +78,7 @@ export const MyAccount = () => {
 
   const userName = userData.currentUser.user.name;
   const userPhone = userData.currentUser.user.phone;
-  const userEmail = userData.currentUser.user.email;
+  const userEmail = userData.currentUser.user.email ?? '';
   // filter languages that support localization
   const languageOptions = organizationData.currentUser.user.organization.activeLanguages
     .filter((lang: any) => lang.localized)
@@ -129,6 +129,12 @@ export const MyAccount = () => {
       } else {
         setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
         setIsEditingEmail(false);
+        const userDataCopy = JSON.parse(JSON.stringify(userData));
+        userDataCopy.currentUser.user.email = values.email;
+        client.writeQuery({
+          query: GET_CURRENT_USER,
+          data: userDataCopy,
+        });
       }
     } catch (error) {
       setToastMessageInfo({ severity: 'error', message: t('Failed to update email.') });
