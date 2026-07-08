@@ -1,10 +1,10 @@
 .embeddedsuperset {
   width: 100%;
-  height: inherit;
+  height: 100%;
 }
 
 .embeddedsuperset iframe {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   border: none;
   /* -webkit-transform: scale(0.9, 1); */

@@ -68,7 +68,7 @@
 
 .Container {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 110px);
   display: flex;
   background-color: #f8faf5;
 }
@@ -81,7 +81,7 @@
 .Drawer {
   width: fit-content;
   border-right: 1px solid #efefef;
-  height: calc(100vh - 110px) !important;
+  height: 100% !important;
 }
 
 .Tab {
