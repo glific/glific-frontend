@@ -8,7 +8,12 @@ import {
   getHSMTemplateTypeText,
   getHSMTemplateTypeMedia,
   CREATE_SESSION_TEMPLATE_MOCK,
+  getWelcomeTemplateMock,
+  getWelcomeTemplateHindiMock,
+  getCategoriesV2Mock,
 } from 'mocks/Template';
+import { getOrganizationLanguagesQueryByOrder } from 'mocks/Organization';
+import { getFilterTagQuery } from 'mocks/Tag';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
@@ -505,5 +510,189 @@ describe('HSMV2 add mode', () => {
 
     fireEvent.click(screen.getByTestId('back-button'));
     expect(screen.getByText('HSM list page')).toBeInTheDocument();
+  });
+
+  test('adding a new language prefills the form from the anchor template and locks the element name', async () => {
+    render(
+      <MockedProvider
+        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, getWelcomeTemplateMock, getWelcomeTemplateMock]}
+        addTypename={false}
+      >
+        <MemoryRouter
+          initialEntries={[
+            { pathname: '/template-v2/add', state: { languageAnchorId: '1', excludeLanguageIds: ['1'] } },
+          ]}
+        >
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    // Landing here shows the anchor read-only first, as a reference — its own
+    // "welcome_msg" title (not FormLayout's generic create title).
+    await waitFor(() => {
+      expect(screen.getByText('welcome_msg', { exact: false })).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('submitActionButton')).not.toBeInTheDocument();
+
+    // clicking "+ Add new language" switches to the editable draft.
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    // shortcode is prefilled from the anchor and locked — every language
+    // variant of a template shares the same shortcode.
+    await waitFor(() => {
+      const elementNameInput = screen.getByPlaceholderText('Element name') as HTMLInputElement;
+      expect(elementNameInput).toHaveValue('welcome_msg');
+      expect(elementNameInput).toBeDisabled();
+    });
+
+    // body is prefilled but stays editable, so the translator only has to
+    // change the wording.
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+
+    // category tiles stay editable too (not disabled, unlike isEditing mode).
+    expect(screen.getByText('Account_update').closest('button')).not.toBeDisabled();
+  });
+});
+
+describe('HSMV2 language mode', () => {
+  // matches the shape HSMListV2's row carries on `item.variants` (see
+  // HSMListV2.helper's getColumns) and passes through navigation state.
+  const welcomeVariants = [
+    { id: '1', language: { id: '1', label: 'English', locale: 'en' }, status: 'APPROVED', category: 'UTILITY' },
+    { id: '2', language: { id: '2', label: 'Hindi', locale: 'hi' }, status: 'APPROVED', category: 'UTILITY' },
+  ];
+
+  const languageModeMocks = [
+    // GET_TEMPLATE for the current variant is fetched twice on each landing —
+    // once by HSMV2's own "language anchor" query, once by FormLayout's
+    // entityId-driven fetch (both point at the same id in View mode).
+    getWelcomeTemplateMock,
+    getWelcomeTemplateMock,
+    getWelcomeTemplateHindiMock,
+    getWelcomeTemplateHindiMock,
+    getOrganizationLanguagesQueryByOrder,
+    getOrganizationLanguagesQueryByOrder,
+    getCategoriesV2Mock,
+    getCategoriesV2Mock,
+    getFilterTagQuery,
+    getFilterTagQuery,
+  ];
+
+  const renderAtPath = (pathname: string, state?: any) =>
+    render(
+      <MockedProvider mocks={languageModeMocks} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname, state }]}>
+          <Routes>
+            <Route path="/template-v2/add" element={<HSMV2 />} />
+            <Route path="/template-v2/:id/view" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+  test('View route shows the Template Details card with language versions grouped under the Approved tab', async () => {
+    renderAtPath('/template-v2/1/view', { variants: welcomeVariants });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('language-versions-list')).toBeInTheDocument();
+    });
+
+    // the Template Details card only shows the language-versions list — the
+    // form below it already has its own "Element name" field for this.
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Element name')).toHaveValue('welcome_msg');
+    });
+    expect(screen.getAllByTestId('language-version-row')).toHaveLength(2);
+    expect(screen.getByText('English')).toBeInTheDocument();
+    expect(screen.getByText('Hindi')).toBeInTheDocument();
+  });
+
+  test('View route shows that variant read-only, with fields locked, and no Add new language link', async () => {
+    renderAtPath('/template-v2/1/view', { variants: welcomeVariants });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+
+    // no submit button while viewing — isEditing is false here (no :id/edit in
+    // the URL), so submitting would otherwise create a duplicate template.
+    expect(screen.queryByTestId('submitActionButton')).not.toBeInTheDocument();
+    // viewing a variant shows Category as a locked plain text field (like
+    // isEditing mode), not the editable tile picker.
+    expect(screen.getByDisplayValue('UTILITY')).toBeDisabled();
+    // "Add new language" only belongs on the create route, not View.
+    expect(screen.queryByTestId('add-language-link')).not.toBeInTheDocument();
+  });
+
+  test('clicking View on a sibling variant navigates to its own /view route and loads its content', async () => {
+    renderAtPath('/template-v2/1/view', { variants: welcomeVariants });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('view-language-2'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Namaste {{1}}, swagat hai!', { exact: false })).toBeInTheDocument();
+    });
+  });
+
+  test('Add route shows the anchor read-only first, then the editable draft after clicking Add new language', async () => {
+    renderAtPath('/template-v2/add', {
+      languageAnchorId: '1',
+      excludeLanguageIds: ['1', '2'],
+      variants: welcomeVariants,
+    });
+
+    // read-only preview of the anchor by default — no submit button yet.
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('submitActionButton')).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue('UTILITY')).toBeDisabled();
+    // "Add new language" is available on this route even in the preview state.
+    expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    // category tiles are editable in the "add" draft.
+    const categoryTexts = screen.getAllByText('Utility');
+    expect(categoryTexts.at(-1)?.closest('button')).not.toBeDisabled();
+    // the shortcode stays locked to the anchor's.
+    const elementNameInput = screen.getByPlaceholderText('Element name') as HTMLInputElement;
+    expect(elementNameInput).toHaveValue('welcome_msg');
+    expect(elementNameInput).toBeDisabled();
+  });
+
+  test('Add route\'s own View link previews a sibling variant in place, without navigating away', async () => {
+    renderAtPath('/template-v2/add', {
+      languageAnchorId: '1',
+      excludeLanguageIds: ['1', '2'],
+      variants: welcomeVariants,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}, welcome!', { exact: false })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('view-language-2'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Namaste {{1}}, swagat hai!', { exact: false })).toBeInTheDocument();
+    });
+    // still read-only, still on the same /add URL — no navigation happened.
+    expect(screen.queryByTestId('submitActionButton')).not.toBeInTheDocument();
   });
 });

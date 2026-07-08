@@ -171,7 +171,7 @@ test('navigates to create template page with the selected tag', async () => {
   expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
-test('navigates to edit template page via the row View action', async () => {
+test('navigates to the create page (viewing that variant) via the row View action', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -184,7 +184,27 @@ test('navigates to edit template page via the row View action', async () => {
   fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/edit');
+    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/view', expect.objectContaining({ state: expect.anything() }));
+  });
+});
+
+test('navigates to the create page (prefilled) via the row Add new language action', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  // scope the action to the welcome_msg row so a sort/order change can't make
+  // this assertion target a different template's Add new language icon.
+  const row = screen.getByText('welcome_msg').closest('tr') as HTMLElement;
+  fireEvent.click(within(row).getByTestId('add-language-icon'));
+
+  await waitFor(() => {
+    expect(mockedNavigate).toHaveBeenCalledWith(
+      '/template-v2/add',
+      expect.objectContaining({ state: expect.objectContaining({ languageAnchorId: '1' }) })
+    );
   });
 });
 

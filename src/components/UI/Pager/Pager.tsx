@@ -14,8 +14,10 @@ import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
 // `CollapseContent` carries a caller pre-rendered sub-row block (see the HSM
-// template list); `translations` is the default label+body JSON path.
-const removeDisplayColumns = ['recordId', 'translations', 'collapseContent', 'id', 'isActive'];
+// template list); `translations` is the default label+body JSON path;
+// `variants` is opt-in raw data some callers carry through for row actions
+// (e.g. HSM's "View"/"Add new language") without rendering it as a column.
+const removeDisplayColumns = ['recordId', 'translations', 'collapseContent', 'variants', 'id', 'isActive'];
 
 interface PagerProps {
   columnNames: Array<ColumnNames>;

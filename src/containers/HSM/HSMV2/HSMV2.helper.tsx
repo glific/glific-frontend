@@ -2,11 +2,11 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
-import { getExampleFromBody, removeFirstLineBreak } from '../HSM.helper';
+import { getExampleFromBody, getExampleValue, getTemplateAndButtons, removeFirstLineBreak } from '../HSM.helper';
 
 export const queries = {
   getItemQuery: GET_TEMPLATE,
@@ -31,6 +31,62 @@ export const categoryDescriptions: { [key: string]: string } = {
 };
 
 export const titleCase = (value: string) => (value ? value.charAt(0) + value.slice(1).toLowerCase() : value);
+
+// languages already used by some variant of the template shouldn't be offered
+// again when adding a new language version.
+export const filterAvailableLanguages = (allLanguages: any[] = [], excludeLanguageIds: any[] = []) => {
+  const usedIds = new Set(excludeLanguageIds);
+  return allLanguages.filter((language: any) => !usedIds.has(language.id));
+};
+
+// prefill values for the "add a new language" flow, seeded from the anchor
+// template so the translator only has to change the wording, not rebuild the
+// structure. Keeps the same shortcode — only the language differs. Label is
+// intentionally left for the backend to derive from shortcode + language
+// (same as a blank create), rather than copying the anchor's label verbatim.
+export const buildLanguageDraft = (template: any) => {
+  const variables = getExampleValue(template?.example || '');
+  const templateType = template?.hasButtons
+    ? BUTTON_OPTIONS.find((option: any) => option.id === template.buttonType)
+    : null;
+  const templateButtons = template?.hasButtons
+    ? getTemplateAndButtons(template.buttonType, template.example, template.buttons).buttons
+    : [];
+
+  return {
+    newShortcode: template?.shortcode || '',
+    body: template?.body || '',
+    footer: template?.footer || '',
+    category: template?.category ? { label: template.category } : null,
+    variables,
+    type: template?.type && template.type !== 'TEXT' ? { id: template.type, label: template.type } : null,
+    attachmentURL: template?.MessageMedia?.sourceUrl || '',
+    templateType,
+    templateButtons,
+    isAddButtonChecked: Boolean(template?.hasButtons),
+    tagId: template?.tag || null,
+  };
+};
+
+// the three tabs shown in the "language versions" summary, and which variant
+// statuses roll up into each one.
+export const STATUS_TABS = ['Approved', 'In Progress', 'Rejected'] as const;
+export type StatusTab = (typeof STATUS_TABS)[number];
+
+export const statusTabFor = (status: string): StatusTab => {
+  const normalized = (status || '').toUpperCase();
+  if (normalized === 'PENDING') return 'In Progress';
+  if (normalized === 'REJECTED' || normalized === 'FAILED') return 'Rejected';
+  return 'Approved';
+};
+
+export const groupVariantsByTab = (variants: any[] = []): Record<StatusTab, any[]> => {
+  const groups: Record<StatusTab, any[]> = { Approved: [], 'In Progress': [], Rejected: [] };
+  variants.forEach((variant) => {
+    groups[statusTabFor(variant.status)].push(variant);
+  });
+  return groups;
+};
 
 // splits a body string into the message and any trailing "| [button, ...]" gupshup markup.
 export const getTemplateAndButton = (text: string) => {

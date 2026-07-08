@@ -994,6 +994,83 @@ export const HSM_LIST_V2 = [
   getCategoriesV2Mock,
 ];
 
+export const getWelcomeTemplateMock = {
+  request: { query: GET_TEMPLATE, variables: { id: '1' } },
+  result: {
+    data: {
+      sessionTemplate: {
+        sessionTemplate: {
+          __typename: 'SessionTemplate',
+          id: '1',
+          body: 'Hi {{1}}, welcome!',
+          footer: 'Reply STOP to opt out',
+          label: 'Welcome Message',
+          isHsm: true,
+          updatedAt: '2024-01-15T10:00:00Z',
+          translations: null,
+          type: 'TEXT',
+          quality: 'HIGH',
+          language: { __typename: 'Language', id: '1', label: 'English' },
+          isActive: true,
+          MessageMedia: null,
+          tag: { id: '1', label: 'Messages' },
+          category: 'UTILITY',
+          shortcode: 'welcome_msg',
+          example: 'Hi [Jane], welcome!',
+          hasButtons: false,
+          buttons: null,
+          buttonType: null,
+        },
+      },
+    },
+  },
+};
+
+// GET_TEMPLATE detail for the Hindi variant (id '2') — used to exercise
+// switching the "View" panel to a sibling language.
+export const getWelcomeTemplateHindiMock = {
+  request: { query: GET_TEMPLATE, variables: { id: '2' } },
+  result: {
+    data: {
+      sessionTemplate: {
+        sessionTemplate: {
+          __typename: 'SessionTemplate',
+          id: '2',
+          body: 'Namaste {{1}}, swagat hai!',
+          footer: null,
+          label: 'Welcome Message',
+          isHsm: true,
+          updatedAt: '2024-01-15T10:00:00Z',
+          translations: null,
+          type: 'TEXT',
+          quality: 'HIGH',
+          language: { __typename: 'Language', id: '2', label: 'Hindi' },
+          isActive: true,
+          MessageMedia: null,
+          tag: { id: '1', label: 'Messages' },
+          category: 'UTILITY',
+          shortcode: 'welcome_msg',
+          example: 'Namaste [Jane], swagat hai!',
+          hasButtons: false,
+          buttons: null,
+          buttonType: null,
+        },
+      },
+    },
+  },
+};
+
+export const HSM_LANGUAGE_MOCKS = [
+  getWelcomeTemplateMock,
+  getWelcomeTemplateMock,
+  getOrganizationLanguagesQueryByOrder,
+  getOrganizationLanguagesQueryByOrder,
+  getCategoriesV2Mock,
+  getCategoriesV2Mock,
+  getFilterTagQuery,
+  getFilterTagQuery,
+];
+
 // Template library modal: browses only APPROVED HSM templates via FILTER_TEMPLATES.
 export const libraryTemplatesData = [
   {

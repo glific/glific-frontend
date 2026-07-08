@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS } from 'common/constants';
@@ -13,6 +13,7 @@ import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/Create
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Heading } from 'components/UI/Heading/Heading';
 import Simulator from 'components/simulator/Simulator';
 import { ButtonTypeSelector } from 'components/UI/Form/ButtonTypeSelector/ButtonTypeSelector';
 import { AttachmentTypeSelector } from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
@@ -24,7 +25,7 @@ import { getOrganizationServices } from 'services/AuthService';
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { GET_HSM_CATEGORIES, GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
@@ -51,11 +52,19 @@ import {
   buildTemplateButtonsList,
   buildUpdatedButtons,
   buildValidationSchema,
+  buildLanguageDraft,
+  filterAvailableLanguages,
+  groupVariantsByTab,
+  statusTabFor,
+  STATUS_TABS,
 } from './HSMV2.helper';
+import type { StatusTab } from './HSMV2.helper';
+import { languageCode, categoryLabel } from '../HSMListV2/HSMListV2.helper';
 import styles from './HSMV2.module.css';
 
 export const HSMV2 = () => {
   const location: any = useLocation();
+  const navigate = useNavigate();
   const [language, setLanguageId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
@@ -80,6 +89,7 @@ export const HSMV2 = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState<boolean>(false);
   const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
+  const [languageDraftReady, setLanguageDraftReady] = useState(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -137,7 +147,6 @@ export const HSMV2 = () => {
     }
   };
 
-  let isEditing = false;
   let mode;
   const copyMessage = t('Copy of the template has been created!');
 
@@ -148,9 +157,85 @@ export const HSMV2 = () => {
   } else {
     queries.updateItemQuery = UPDATE_TEMPLATE;
   }
-  if (params.id && !isCopyState) {
-    isEditing = true;
-  }
+
+  // /template-v2/:id/view is its own route (read-only, id in the URL so a
+  // reload doesn't lose it) — distinct from /template-v2/:id/edit, which
+  // shares the same :id param shape but means isEditing instead.
+  const isViewRoute = location.pathname.endsWith('/view');
+  const isEditing = Boolean(params.id && !isCopyState && !isViewRoute);
+
+  // "View" (its own route, anchor id in the URL) and "Add new language" (the
+  // create route, anchor id in state) both render a "language versions"
+  // summary card above the form — "variants" (carried through on the row, see
+  // HSMListV2.helper's getColumns) lets it render immediately, no extra fetch.
+  const languageAnchorId = isViewRoute ? params.id : location.state?.languageAnchorId;
+  const excludeLanguageIds = location.state?.excludeLanguageIds || [];
+  const familyVariants: any[] = location.state?.variants || [];
+  const isLanguageMode = Boolean(languageAnchorId) && !isEditing && !isCopyState;
+  // /template-v2/add with a languageAnchorId is the "Add new language" route —
+  // landing here shows the anchor read-only first (a reference for what
+  // you're translating), and only switches to the editable draft once
+  // "+ Add new language" is clicked (see addPagePanel below). Switching
+  // between sibling variants here (its own "View" links) stays on this same
+  // URL too — unlike the list page's View icon, which goes to its own
+  // /:id/view route instead.
+  const isAddRoute = isLanguageMode && !isViewRoute;
+  const [addPagePanel, setAddPagePanel] = useState<'view' | 'add'>('view');
+  const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
+
+  const isAddingLanguage = isAddRoute && addPagePanel === 'add';
+  const isViewingVariant = (isLanguageMode && isViewRoute) || (isAddRoute && addPagePanel === 'view');
+  // fields that stay locked once a template/variant already exists — either
+  // editing your own record, or looking at a sibling language read-only.
+  const fieldsLocked = isEditing || isViewingVariant;
+
+  // default to whichever tab the variant you arrived on belongs to, so "View"
+  // from the list doesn't land you looking at an empty tab.
+  const [activeTab, setActiveTab] = useState<StatusTab>(() => {
+    const initialVariant = familyVariants.find((variant: any) => variant.id === languageAnchorId);
+    return initialVariant ? statusTabFor(initialVariant.status) : 'Approved';
+  });
+
+  const { data: languageAnchorData, loading: languageAnchorLoading } = useQuery(GET_TEMPLATE, {
+    variables: { id: languageAnchorId },
+    skip: !isLanguageMode,
+  });
+  const languageAnchor = languageAnchorData?.sessionTemplate?.sessionTemplate;
+
+  const variantsByTab = groupVariantsByTab(familyVariants);
+  const entityId = isEditing
+    ? params.id
+    : isLanguageMode && isViewRoute
+      ? languageAnchorId
+      : isAddRoute && addPagePanel === 'view'
+        ? addPagePreviewId || languageAnchorId
+        : undefined;
+
+  // Resolve the Language field straight from our own anchor/preview fetch
+  // instead of FormLayout's setStates callback: setStates only sets it once
+  // languageOptions is already populated, and since that query races
+  // independently against the template fetch, it can resolve first and leave
+  // the field blank. This sidesteps that race, and re-runs correctly when
+  // switching between sibling variants (dedicated /view route, or the "View"
+  // links within the add route's own Language versions card).
+  const { data: previewData } = useQuery(GET_TEMPLATE, {
+    variables: { id: addPagePreviewId },
+    skip: !(isAddRoute && addPagePanel === 'view' && addPagePreviewId),
+  });
+  const viewingLanguage =
+    isAddRoute && addPagePanel === 'view' && addPagePreviewId
+      ? previewData?.sessionTemplate?.sessionTemplate?.language
+      : languageAnchor?.language;
+  useEffect(() => {
+    if (isViewingVariant) {
+      if (viewingLanguage && languageOptions.length > 0) {
+        const matched = languageOptions.find((option: any) => option.id === viewingLanguage.id);
+        setLanguageId(matched || null);
+      } else {
+        setLanguageId(null);
+      }
+    }
+  }, [isViewingVariant, viewingLanguage, languageOptions]);
 
   const categoryOpn: any = [];
   if (categoryList) {
@@ -209,7 +294,11 @@ export const HSMV2 = () => {
   }: any) => {
     let vars: any = [];
 
-    if (languageOptions.length > 0 && languageIdValue) {
+    // View mode's Language field is owned by the languageAnchor/preview-driven
+    // effect above instead — this block's `else { setLanguageId(language) }` is
+    // a stale no-op keyed off a render-time closure, which races that effect
+    // and can clobber it back to the previously viewed variant's language.
+    if (languageOptions.length > 0 && languageIdValue && !isViewingVariant) {
       if (!language?.id) {
         const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
         setLanguageId(selectedLangauge);
@@ -376,7 +465,7 @@ export const HSMV2 = () => {
     name: 'attachmentURL',
     type: 'text',
     validate: () => isUrlValid,
-    disabled: isEditing || uploadingFile,
+    disabled: fieldsLocked || uploadingFile,
     helperText: uploadedFile ? `File uploaded: ${uploadedFile.name}` : undefined,
     inputProp: {
       onBlur: (event: any) => setAttachmentURL(event.target.value.trim()),
@@ -391,7 +480,7 @@ export const HSMV2 = () => {
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       onChange: getLanguageId,
     },
     {
@@ -399,14 +488,16 @@ export const HSMV2 = () => {
       name: 'newShortcode',
       label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}`,
-      disabled: isEditing,
+      // locked when adding OR viewing a language too — every variant of a
+      // template shares the same shortcode, only the language/content differs.
+      disabled: isEditing || isLanguageMode,
       // the backend derives the template's title (label) from shortcode + language when
       // label is blank — there's no separate Title field for the user to fill in, so we
       // send label as-is (empty in create mode) and let the backend name it.
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
-    isEditing
+    fieldsLocked
       ? {
           component: Input,
           name: 'category',
@@ -429,9 +520,9 @@ export const HSMV2 = () => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       handleChange: (value: any) => setBody(value),
-      defaultValue: (isEditing || isCopyState) && editorState,
+      defaultValue: (fieldsLocked || isCopyState || isAddingLanguage) && editorState,
     },
     {
       component: TemplateVariables,
@@ -439,13 +530,13 @@ export const HSMV2 = () => {
       message: body,
       variables,
       setVariables,
-      isEditing,
+      isEditing: fieldsLocked,
     },
     {
       component: Input,
       name: 'footer',
       label: `${t('Footer')} (${t('optional')})`,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
@@ -460,7 +551,7 @@ export const HSMV2 = () => {
       selected: isAddButtonChecked,
       onChange: handleTemplateTypeChange,
       onClear: clearButtonSelection,
-      disabled: isEditing,
+      disabled: fieldsLocked,
     },
     {
       component: TemplateOptions,
@@ -468,7 +559,7 @@ export const HSMV2 = () => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
@@ -487,7 +578,7 @@ export const HSMV2 = () => {
       method: attachmentMethod,
       onSelectUrlMethod: selectUrlMethod,
       onSelectUploadMethod: selectUploadMethod,
-      disabled: isEditing,
+      disabled: fieldsLocked,
     },
     {
       component: AttachmentUploadField,
@@ -508,7 +599,7 @@ export const HSMV2 = () => {
       label: `${t('Tag')} (${t('optional')})`,
       options: tag ? tag.tags : [],
       optionLabel: 'label',
-      disabled: isEditing,
+      disabled: fieldsLocked,
       hasCreateOption: true,
       multiple: false,
       onChange: (value: any) => setTagId(value),
@@ -523,24 +614,52 @@ export const HSMV2 = () => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
-      setLanguageOptions(lang);
-      if (!isEditing) {
+      setLanguageOptions(isAddingLanguage ? filterAvailableLanguages(lang, excludeLanguageIds) : lang);
+      // Adding a language means picking one that isn't taken yet — don't
+      // auto-select a default (it may well be one of the excluded ones).
+      // Viewing a variant shows its actual language instead (see the
+      // languageAnchor/preview-driven effect above), not a default.
+      if (!isEditing && !isAddingLanguage && !isViewingVariant) {
         const englishLang = lang.find((l: any) => l.label.toLowerCase() === 'english');
         setLanguageId(englishLang || lang[0]);
       }
     }
   }, [languages]);
 
+  // seed the form from the anchor template once it's loaded, so adding a
+  // language only requires changing the wording, not rebuilding the structure.
+  useEffect(() => {
+    if (isAddingLanguage && languageAnchor && !languageDraftReady) {
+      const draft = buildLanguageDraft(languageAnchor);
+      setNewShortcode(draft.newShortcode);
+      setBody(draft.body);
+      setEditorState(draft.body);
+      setFooter(draft.footer);
+      setCategory(draft.category);
+      setVariables(draft.variables);
+      setType(draft.type);
+      setAttachmentURL(draft.attachmentURL);
+      setTemplateType(draft.templateType);
+      setTemplateButtons(draft.templateButtons);
+      setIsAddButtonChecked(draft.isAddButtonChecked);
+      setTagId(draft.tagId);
+      setLanguageDraftReady(true);
+    }
+  }, [isAddingLanguage, languageAnchor, languageDraftReady]);
+
   useEffect(() => {
     setSimulatorMessage(getExampleFromBody(body, variables));
 
-    if ((type === '' || type) && attachmentURL && !isEditing) {
+    if ((type === '' || type) && attachmentURL && !fieldsLocked) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
 
   useEffect(() => {
-    if (templateType?.id && !isEditing) {
+    // guarded against isAddingLanguage/isViewingVariant too — both prefill
+    // templateType together with the matching templateButtons already loaded
+    // from the source template, so this must not reset them to a blank button.
+    if (templateType?.id && !isEditing && !isAddingLanguage && !isViewingVariant) {
       addTemplateButtons(false);
     }
   }, [templateType]);
@@ -578,19 +697,105 @@ export const HSMV2 = () => {
     setVariables(getVariables(body, variables));
   }, [body]);
 
-  if (languageLoading || categoryLoading || tagLoading) {
+  if (languageLoading || categoryLoading || tagLoading || (isLanguageMode && languageAnchorLoading && !languageAnchor)) {
     return <Loading />;
   }
 
+  const languageModeTitle = isAddingLanguage
+    ? `${t('Add Language')} — ${languageAnchor?.shortcode}`
+    : languageAnchor?.shortcode || t('HSM Template');
+  const languageModeHelp = isAddingLanguage
+    ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
+    : t('View the content and language versions for this template.');
+
   return (
     <div className={styles.Page}>
+      {isLanguageMode && (
+        <Heading
+          backLink={`/${backButton}`}
+          formTitle={languageModeTitle}
+          headerHelp={languageModeHelp}
+          helpData={templateInfo}
+        />
+      )}
+      {isLanguageMode && (
+        <div className={styles.TemplateDetailsCard}>
+          {/* the form below already has its own "Element name" field (locked
+              to the same shortcode) — showing it here too was a duplicate. */}
+          <p className={styles.LanguageVersionsTitle}>{t('Language versions')}</p>
+          <div className={styles.LanguageVersionsContainer}>
+            <div className={styles.StatusTabsRow} data-testid="status-tabs">
+              {STATUS_TABS.map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  className={`${styles.StatusTab} ${activeTab === tab ? styles.StatusTabActive : ''}`}
+                  onClick={() => setActiveTab(tab)}
+                  data-testid={`status-tab-${tab}`}
+                >
+                  <span className={`${styles.StatusDot} ${styles[`StatusDot${tab.replace(' ', '')}`]}`} />
+                  {t(tab)}
+                  <span className={styles.StatusTabCount}>{variantsByTab[tab].length}</span>
+                </button>
+              ))}
+            </div>
+            <div className={styles.LanguageVersionsList} data-testid="language-versions-list">
+              {variantsByTab[activeTab].length === 0 ? (
+                <p className={styles.EmptyTabText}>{t('No languages in this status.')}</p>
+              ) : (
+                variantsByTab[activeTab].map((variant: any) => (
+                  <div key={variant.id} className={styles.LanguageVersionRow} data-testid="language-version-row">
+                    <span className={styles.LangName}>
+                      {variant.language?.label}
+                      <span className={styles.LangCode}>{languageCode(variant.language?.locale)}</span>
+                    </span>
+                    <span className={styles.CategoryChip}>{categoryLabel(variant.category)}</span>
+                    <span className={styles.RowSpacer} />
+                    <button
+                      type="button"
+                      className={styles.ViewLink}
+                      onClick={() => {
+                        // on the add route, "View" previews a variant in place
+                        // (same URL) — the list page's own View icon is the only
+                        // thing that goes to the dedicated /:id/view route.
+                        if (isAddRoute) {
+                          setAddPagePanel('view');
+                          setAddPagePreviewId(variant.id);
+                        } else {
+                          navigate(`/template-v2/${variant.id}/view`, { state: { variants: familyVariants } });
+                        }
+                      }}
+                      data-testid={`view-language-${variant.id}`}
+                    >
+                      {t('View')}
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          {isAddRoute && (
+            <button
+              type="button"
+              className={styles.AddLanguageLink}
+              onClick={() => {
+                setAddPagePanel('add');
+                setAddPagePreviewId(null);
+              }}
+              data-testid="add-language-link"
+            >
+              + {t('Add new language')}
+            </button>
+          )}
+        </div>
+      )}
       <FormLayout
         {...queries}
         states={states}
-        isView={isEditing}
+        isView={fieldsLocked}
         setStates={setStates}
         setPayload={setPayload}
-        validationSchema={isEditing ? Yup.object() : FormSchema}
+        validationSchema={fieldsLocked ? Yup.object() : FormSchema}
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
         formFields={fields}
@@ -598,16 +803,23 @@ export const HSMV2 = () => {
         listItem="sessionTemplate"
         icon={templateIcon}
         helpData={templateInfo}
+        // language mode renders its own Heading above the Template Details
+        // card instead — FormLayout's own heading would otherwise land
+        // between that card and the form fields.
+        noHeading={isLanguageMode}
         getLanguageId={getLanguageId}
         languageSupport={false}
-        errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+        errorButtonState={{ text: fieldsLocked ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
-        button={!isEditing ? t('Submit for Approval') : t('Save')}
+        button={!fieldsLocked ? t('Submit for Approval') : t('Save')}
         buttonState={{
           text: t('Validating URL'),
           status: validatingURL,
-          show: !isEditing,
+          // hidden entirely while viewing a sibling variant read-only — since
+          // isEditing is false here (no :id in the URL), submitting would
+          // otherwise create a duplicate template instead of doing nothing.
+          show: !fieldsLocked,
           styles: styles.Buttons,
         }}
         saveOnPageChange={false}
@@ -616,7 +828,7 @@ export const HSMV2 = () => {
         backLinkButton={`/${backButton}`}
         cancelLink={backButton}
         getMediaId={getMediaId}
-        entityId={params.id}
+        entityId={entityId}
         partialPage
         customStyles={styles.CustomFormShell}
       />
