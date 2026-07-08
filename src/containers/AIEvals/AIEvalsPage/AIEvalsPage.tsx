@@ -70,7 +70,7 @@ export default function AIEvalsPage() {
           action: () => navigate('/ai-evaluations/create'),
         }}
       />
-      <div className={styles.PageContainer}>
+      <>
         <div className={styles.TabBar}>
           <div className={styles.Tabs}>
             {TABS.map((tab) => (
@@ -94,11 +94,11 @@ export default function AIEvalsPage() {
           />
         </div>
 
-        <div className={styles.Content}>
+        <>
           {activeTab === 'golden-qa' && <GoldenQAList searchQuery={searchQuery} />}
           {activeTab === 'ai-evaluations' && <AIEvaluationList searchQuery={searchQuery} />}
-        </div>
-      </div>
+        </>
+      </>
     </>
   );
 }

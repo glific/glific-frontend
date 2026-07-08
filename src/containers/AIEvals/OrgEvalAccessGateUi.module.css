@@ -1,4 +1,4 @@
-/* Fills the app main column (Layout main is position: relative + 100vh), not the viewport over the side nav. */
+/* Fills the app main column (Layout main is position: relative + height: 100%), not the viewport over the side nav. */
 .Panel {
   position: absolute;
   inset: 0;

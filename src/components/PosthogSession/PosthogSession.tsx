@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { usePostHog } from '@posthog/react';
+import { useEffect } from 'react';
 
 import { getAuthSession } from 'services/AuthService';
 import { setupPostHogFromStoredSession } from 'services/PostHogService';

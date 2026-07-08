@@ -156,7 +156,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
           </Tabs>
         </div>
 
-        <div>{listingContent}</div>
+        <div className={styles.ListingWrapper}>{listingContent}</div>
       </div>
     </>
   );
@@ -168,7 +168,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   }
 
   return (
-    <Paper>
+    <Paper className={styles.ChatPaper}>
       <div className={styles.Chat} data-testid="chatContainer">
         {groupChatInterface}
       </div>

@@ -12,6 +12,7 @@
 
 .ContactProfile {
   display: flex;
+  height: calc(100% - 110px);
 }
 
 .RadioLabel {
@@ -28,7 +29,7 @@
   width: fit-content;
   min-width: 260px;
   border-right: 1px solid #efefef;
-  height: calc(100vh - 110px) !important;
+  height: 100% !important;
 }
 
 .Tab {
@@ -57,7 +58,7 @@
 }
 
 .ProfileBody {
-  height: calc(100vh - 110px) !important;
+  height: 100% !important;
   overflow-y: scroll;
   width: 100%;
 }
