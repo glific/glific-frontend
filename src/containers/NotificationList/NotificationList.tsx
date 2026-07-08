@@ -18,6 +18,7 @@ import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
 import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import styles from './NotificationList.module.css';
+import { WA_GROUP_COLLECTION_PRIMARY_REPORT } from 'graphql/queries/WaGroups';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
