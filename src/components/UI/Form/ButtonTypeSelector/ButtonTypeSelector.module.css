@@ -18,8 +18,8 @@
 .Tile {
   flex: 1 1 160px;
   padding: 14px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
   background-color: #ffffff;
   color: #073f24;
   font-size: 15px;
