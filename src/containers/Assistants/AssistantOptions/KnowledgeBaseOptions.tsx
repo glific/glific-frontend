@@ -537,7 +537,7 @@ export const KnowledgeBaseOptions = ({
                       <input
                         data-testid="uploadFile"
                         type="file"
-                        accept=".csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt"
+                        accept=".csv,.doc,.docx,.html,.htm,.json,.md,.markdown,.pdf,.txt"
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
                         multiple
@@ -623,7 +623,7 @@ export const KnowledgeBaseOptions = ({
                     <br />
                     <b>{t('Allowed file formats:')}</b>
                     <br />
-                    {t('.csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt')}
+                    {t('.csv, .doc, .docx, .html, .htm, .json, .md, .markdown, .pdf, .txt')}
                   </p>
                   <p className={styles.FileLimitText}>
                     <strong>Individual File Limit: {MAX_FILE_SIZE_MB}MB</strong>

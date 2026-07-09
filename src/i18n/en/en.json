@@ -644,7 +644,7 @@
   "Leave": "Leave",
   "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.": "Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access files provided by you to generate answers from.",
   "Allowed file formats:": "Allowed file formats:",
-  ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt": ".csv, .doc, .docx, .html, .htm, .md, .markdown, .pdf, .txt",
+  ".csv, .doc, .docx, .html, .htm, .json, .md, .markdown, .pdf, .txt": ".csv, .doc, .docx, .html, .htm, .json, .md, .markdown, .pdf, .txt",
   "AI that answers based on your context": "AI that answers based on your context",
   "Please upload a valid CSV file": "Please upload a valid CSV file",
   "Templates were processed with errors. Please check the csv file for details.": "Templates were processed with errors. Please check the csv file for details.",

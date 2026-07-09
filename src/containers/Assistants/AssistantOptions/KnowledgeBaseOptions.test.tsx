@@ -128,7 +128,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     fireEvent.click(screen.getByTestId('addFiles'));
 
     const uploadInput = screen.getByTestId('uploadFile');
-    expect(uploadInput).toHaveAttribute('accept', '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt');
+    expect(uploadInput).toHaveAttribute('accept', '.csv,.doc,.docx,.html,.htm,.json,.md,.markdown,.pdf,.txt');
   });
 
   test('uploads at most 10 files concurrently and starts next queued file on completion', async () => {
