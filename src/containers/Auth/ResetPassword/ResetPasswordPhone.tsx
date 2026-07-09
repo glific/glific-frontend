@@ -14,6 +14,8 @@ export const ResetPasswordPhone = () => {
   const { t } = useTranslation();
 
   if (redirect) {
+    // The API returns the same success response whether or not an account exists (to avoid
+    // account enumeration); the OTP screen shows a neutral note explaining what to expect.
     const stateObject = {
       phoneNumber: values.phoneNumber,
     };
@@ -21,13 +23,14 @@ export const ResetPasswordPhone = () => {
   }
 
   const onSubmitPhone = (data: any) => {
-    sendOTP(data.phoneNumber)
+    sendOTP(data.phoneNumber, undefined, 7000)
       .then(() => {
         setValues(data);
         setRedirect(true);
       })
       .catch((error) => {
-        let errorMsg = error?.response?.data?.error?.message;
+        const errorData = error?.response?.data?.error;
+        let errorMsg = typeof errorData === 'string' ? errorData : errorData?.message;
         if (!errorMsg) {
           errorMsg = 'We are unable to generate an OTP, kindly contact your technical team.';
         }

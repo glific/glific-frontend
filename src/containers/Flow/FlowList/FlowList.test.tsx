@@ -14,6 +14,10 @@ import {
   releaseFlow,
   filterTemplateFlows,
   pinFlowQuery,
+  importFlowWithAssistantError,
+  importFlowWithSheetError,
+  importFlowWithAssistantAndSheetError,
+  importFlowWithoutNodeFields,
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
@@ -59,6 +63,52 @@ const flowList = (customMocks?: any[]) => (
     </MemoryRouter>
   </MockedProvider>
 );
+
+const stubFileReader = (jsonText: string = JSON.stringify(testJSON)) => {
+  class FileReaderMock {
+    onload: null | ((e: unknown) => void) = null;
+    result: string | null = null;
+
+    readAsText() {
+      this.result = jsonText;
+      setTimeout(() => {
+        if (this.onload) {
+          this.onload({ target: { result: jsonText } } as unknown as ProgressEvent<FileReader>);
+        }
+      }, 0);
+    }
+  }
+
+  vi.stubGlobal('FileReader', FileReaderMock);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderImportFlowDialog = async (importMock: any) => {
+  const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
+  const testMocks = [importMock, ...baseWithoutImport];
+
+  stubFileReader();
+
+  render(
+    <MockedProvider mocks={testMocks} addTypename={false}>
+      <MemoryRouter>
+        <FlowList />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await screen.findAllByTestId('import-icon');
+  fireEvent.click(screen.getAllByTestId('import-icon')[0]);
+
+  const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
+  const input = await screen.findByTestId('import');
+  Object.defineProperty(input, 'files', { value: [file] });
+  fireEvent.change(input);
+
+  const title = await screen.findByText(/import flow status/i);
+  const dialog = title.closest('div')!;
+  return within(dialog);
+};
 
 HTMLAnchorElement.prototype.click = vi.fn();
 
@@ -179,23 +229,19 @@ describe('<FlowList />', () => {
     });
   });
 
-  test('should create from scratch ', async () => {
+  test('should create a flow directly (no template dialog)', async () => {
     render(flowList());
 
     await waitFor(() => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
     });
 
+    // Create now goes straight to the flow editor — no "from Scratch / from
+    // Template" dialog (templates on hold, glific/glific#5332).
     fireEvent.click(screen.getByTestId('newItemButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('middle-button'));
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/add');
     });
   });
 
@@ -236,7 +282,6 @@ describe('<FlowList />', () => {
     fireEvent.keyDown(autoComplete, { key: 'Enter' });
 
     fireEvent.click(screen.getByTestId('newItemButton'));
-    fireEvent.click(screen.getByTestId('middle-button'));
 
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/add', { state: { tag: { id: '1', label: 'Messages' } } });
@@ -293,142 +338,13 @@ describe('<FlowList />', () => {
 });
 
 describe('Template flows', () => {
-  test('it opens and closes dialog box', async () => {
-    render(flowList());
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    // test if it closes the dialog
-    fireEvent.click(screen.getByTestId('CloseIcon'));
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
-  });
-
-  test('it shows and creates a template flows', async () => {
-    render(flowList());
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Template Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('viewIt')[0]);
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
-  });
-
-  test('click on Use it for templates', async () => {
-    render(flowList());
-
-    await waitFor(() => {
-      expect(screen.getByText('Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('newItemButton'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Create flow')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Template Flows')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getAllByTestId('copyTemplate')[0]);
-
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
-  });
+  // NOTE: the "Create from Scratch / from Template" dialog and the template-list
+  // view/copy actions are no longer reachable from the UI while templates are on
+  // hold (glific/glific#5332), so their tests were removed. The template code and
+  // the import-flow rendering below are unchanged and still covered.
 
   test('Template flows > should display assistant nodes that need an assistant assigned', async () => {
-    const mockImportFlowWithAssistantError = {
-      request: { query: IMPORT_FLOW },
-      result: {
-        data: {
-          importFlow: {
-            status: [
-              {
-                assistantNodeUuids: ['3fb647a3-c935-4906-8dd0-c0e63105ee3d', 'b1d2e9ff-1234-4abc-9876-deadbeefcafe'],
-                flowName: 'Test Flow',
-                status: 'Successfully imported',
-              },
-            ],
-          },
-        },
-      },
-      variableMatcher: () => true,
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const baseWithoutImport = mocks.filter((m) => (m as any)?.request?.query !== IMPORT_FLOW);
-    const testMocks = [mockImportFlowWithAssistantError, ...baseWithoutImport];
-
-    class FileReaderMock {
-      onload: null | ((e: unknown) => void) = null;
-      result: string | null = null;
-
-      readAsText() {
-        const text = JSON.stringify(testJSON);
-        this.result = text;
-        setTimeout(() => {
-          if (this.onload) {
-            this.onload({ target: { result: text } } as unknown as ProgressEvent<FileReader>);
-          }
-        }, 0);
-      }
-    }
-
-    vi.stubGlobal('FileReader', FileReaderMock);
-
-    render(
-      <MockedProvider mocks={testMocks} addTypename={false}>
-        <MemoryRouter>
-          <FlowList />
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await screen.findAllByTestId('import-icon');
-    fireEvent.click(screen.getAllByTestId('import-icon')[0]);
-
-    const file = new File([JSON.stringify(testJSON)], 'test.json', { type: 'application/json' });
-    const input = await screen.findByTestId('import');
-    Object.defineProperty(input, 'files', { value: [file] });
-    fireEvent.change(input);
-
-    const title = await screen.findByText(/import flow status/i);
-    const dialog = title.closest('div')!;
-    const inDialog = within(dialog);
+    const inDialog = await renderImportFlowDialog(importFlowWithAssistantError);
 
     const helpLink = await inDialog.findByText(/create a new assistant/i);
     const para = helpLink.closest('p');
@@ -449,6 +365,68 @@ describe('Template flows', () => {
     );
     expect(helpLink).toHaveAttribute('target', '_blank');
     expect(helpLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+    fireEvent.click(inDialog.getByTestId('ok-button'));
+    await waitFor(() => {
+      expect(screen.queryByText(/import flow status/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test('Template flows > should display google sheet nodes with an invalid sheet url', async () => {
+    const inDialog = await renderImportFlowDialog(importFlowWithSheetError);
+
+    const para = (await inDialog.findByText(/contains google sheet node/i)).closest('p');
+    expect(para).toBeTruthy();
+    expect(normalize(para!.textContent || '')).toContain(
+      'this flow contains google sheet node(s) with an invalid or unconfigured sheet url'
+    );
+
+    const nodeLabels = inDialog.getAllByText(
+      (_, el) => normalize(el?.textContent || '') === 'google sheet node uuids:'
+    );
+    expect(nodeLabels.length).toBeGreaterThan(0);
+
+    expect(inDialog.getByText('ee3d')).toBeInTheDocument();
+    expect(inDialog.getByText('cafe')).toBeInTheDocument();
+
+    fireEvent.click(inDialog.getByTestId('ok-button'));
+    await waitFor(() => {
+      expect(screen.queryByText(/import flow status/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test('Template flows > should render both assistant and google sheet warnings with singular labels for a single node each', async () => {
+    const inDialog = await renderImportFlowDialog(importFlowWithAssistantAndSheetError);
+
+    // Both warning sections should be visible at the same time
+    await inDialog.findByText(/create a new assistant/i);
+    expect(inDialog.getByText(/contains google sheet node/i)).toBeInTheDocument();
+
+    // Singular labels should be used when a single node uuid is present
+    const assistantLabel = inDialog.getAllByText(
+      (_, el) => normalize(el?.textContent || '') === 'assistant node uuid:'
+    );
+    expect(assistantLabel.length).toBeGreaterThan(0);
+
+    const sheetLabel = inDialog.getAllByText((_, el) => normalize(el?.textContent || '') === 'google sheet node uuid:');
+    expect(sheetLabel.length).toBeGreaterThan(0);
+
+    expect(inDialog.getByText('assistant-uuid-1')).toBeInTheDocument();
+    expect(inDialog.getByText('sheet-uuid-1')).toBeInTheDocument();
+
+    fireEvent.click(inDialog.getByTestId('ok-button'));
+    await waitFor(() => {
+      expect(screen.queryByText(/import flow status/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test('Template flows > should fall back gracefully when node uuid fields are absent from the response', async () => {
+    const inDialog = await renderImportFlowDialog(importFlowWithoutNodeFields);
+
+    // No warning sections should render; only the plain flow status line is shown
+    expect(inDialog.queryByText(/create a new assistant/i)).not.toBeInTheDocument();
+    expect(inDialog.queryByText(/contains google sheet node/i)).not.toBeInTheDocument();
+    expect(inDialog.getByText('Successfully imported')).toBeInTheDocument();
 
     fireEvent.click(inDialog.getByTestId('ok-button'));
     await waitFor(() => {
