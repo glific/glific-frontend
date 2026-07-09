@@ -139,7 +139,6 @@ export const HSMV2 = () => {
   const copyMessage = t('Copy of the template has been created!');
 
   const isCopyState = location.state === 'copy';
-  console.log(isCopyState, 'isCopyState');
   const updateItemQuery = isCopyState ? CREATE_TEMPLATE : UPDATE_TEMPLATE;
   if (isCopyState) {
     mode = 'copy';
@@ -147,7 +146,6 @@ export const HSMV2 = () => {
   if (params.id && !isCopyState) {
     isEditing = true;
   }
-  console.log(updateItemQuery, 'updateItemQuery');
 
   const categoryOpn: any = [];
   if (categoryList) {
@@ -222,20 +220,12 @@ export const HSMV2 = () => {
     setTagId(tagIdValue);
     vars = getExampleValue(exampleValue);
     setVariables(vars);
-    setSampleMessages((prev) => ({ ...prev, body: getExampleFromBody(bodyValue, vars) }));
 
     if (hasButtons) {
       const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
       setTemplateButtons(buttonsVal);
       setTemplateType(BUTTON_OPTIONS.find((btn: any) => btn.id === templateButtonType));
       setIsAddButtonChecked(hasButtons);
-      const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
-      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
-      const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, vars));
-      const sampleText: any = parsedText && message + parsedText;
-      setSimulatorMessage(sampleText, footerValue || '');
-    } else {
-      setSimulatorMessage(getExampleFromBody(bodyValue, vars), footerValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -286,7 +276,7 @@ export const HSMV2 = () => {
     setTemplateButtons(templateButtons.filter((_val, idx) => idx !== index));
   };
 
-  const handeInputChange = (value: any, row: any, index: any, eventType: any) => {
+  const handleInputChange = (value: any, row: any, index: any, eventType: any) => {
     setTemplateButtons(buildUpdatedButtons(templateButtons, value, row, index, eventType));
   };
 
@@ -357,9 +347,6 @@ export const HSMV2 = () => {
     resetUploadState();
   };
 
-  // the field descriptor FormLayout's default renderer uses for the attachment URL —
-  // shared between its own slot (skipped, since AttachmentUploadField renders it inline
-  // once a type is picked) and the urlField it hands to AttachmentUploadField.
   const attachmentURLField = {
     component: Input,
     name: 'attachmentURL',
@@ -462,7 +449,7 @@ export const HSMV2 = () => {
       disabled: isEditing,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
-      onInputChange: handeInputChange,
+      onInputChange: handleInputChange,
       onTemplateTypeChange: handleTemplateTypeChange,
       onDynamicParamsChange: handleDynamicParamsChange,
       setType,
@@ -498,7 +485,6 @@ export const HSMV2 = () => {
       onResetUpload: resetUploadState,
       urlField: attachmentURLField,
     },
-    { ...attachmentURLField, skip: true },
     {
       component: CreateAutoComplete,
       name: 'tagId',
@@ -528,10 +514,26 @@ export const HSMV2 = () => {
     }
   }, [languages]);
 
-  useEffect(() => {
-    setSimulatorMessage(getExampleFromBody(body, variables));
+  // single source of truth for the simulator preview text — recomputed whenever any
+  // input that affects it changes, instead of being pieced together across several effects.
+  const computeSampleText = () => {
+    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
 
-    if ((type === '' || type) && attachmentURL && !isEditing) {
+    if (!isAddButtonChecked || templateButtons.length === 0) {
+      return message || '';
+    }
+
+    const parse = convertButtonsToTemplate(templateButtons, templateType?.id);
+    const parsedText = parse.length ? `| ${parse.join(' | ')}` : '';
+    return parsedText ? (message || ' ') + parsedText : message || '';
+  };
+
+  useEffect(() => {
+    setSimulatorMessage(computeSampleText(), footer);
+  }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked]);
+
+  useEffect(() => {
+    if (!isEditing && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
@@ -541,35 +543,6 @@ export const HSMV2 = () => {
       addTemplateButtons(false);
     }
   }, [templateType]);
-
-  useEffect(() => {
-    if (!isEditing) {
-      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-      setSimulatorMessage(message || '');
-    }
-  }, [isAddButtonChecked]);
-
-  useEffect(() => {
-    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-
-    if (!isEditing) {
-      let parse: any = [];
-      if (templateButtons.length > 0) {
-        parse = convertButtonsToTemplate(templateButtons, templateType?.id);
-      }
-
-      const parsedText = parse.length ? `| ${parse.join(' | ')}` : '';
-
-      let sampleText: any = message;
-      if (parsedText) {
-        sampleText = (message || ' ') + parsedText;
-      }
-
-      if (sampleText) {
-        setSimulatorMessage(sampleText, footer);
-      }
-    }
-  }, [templateButtons, body, variables, footer]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
