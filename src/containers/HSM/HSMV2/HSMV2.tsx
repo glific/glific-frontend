@@ -403,8 +403,6 @@ export const HSMV2 = () => {
       name: 'body',
       label: `${t('Message')}*`,
       rows: 5,
-      convertToWhatsApp: true,
-      textArea: true,
       disabled: isEditing,
       handleChange: (value: any) => setBody(value),
       defaultValue: (isEditing || isCopyState) && editorState,

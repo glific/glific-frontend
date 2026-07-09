@@ -19,8 +19,6 @@ export interface EmojiInputProps {
   inputProp?: any;
   translation?: string;
   defaultValue?: any;
-  convertToWhatsApp?: boolean;
-  textArea?: boolean;
 }
 
 interface EmojiPickerProps {

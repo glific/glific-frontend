@@ -359,7 +359,7 @@ export const buildValidationSchema = ({
   hasLanguageVariant,
 }: ValidationSchemaContext) => {
   const validation: any = {
-    language: Yup.object().nullable().required('Language is required.'),
+    language: Yup.object().nullable().required(t('Language is required.')),
     ...(hasTitleField
       ? { label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')) }
       : {}),
@@ -376,11 +376,11 @@ export const buildValidationSchema = ({
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
     footer: Yup.string().max(60, t('Footer value can be at most 60 characters')),
-    body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
+    body: Yup.string().required(t('Message is required.')).max(1024, t('Maximum 1024 characters are allowed')),
     category: Yup.object().nullable().required(t('Category is required.')),
     variables: Yup.array().of(
       Yup.object().shape({
-        text: Yup.string().required('Variable is required').min(1, 'Text cannot be empty'),
+        text: Yup.string().required(t('Variable is required')).min(1, t('Text cannot be empty')),
       })
     ),
     ...(hasLanguageVariant
@@ -391,7 +391,7 @@ export const buildValidationSchema = ({
             otherwise: (schema) =>
               schema
                 .required(t('Element name is required.'))
-                .matches(regexForShortcode, 'Only lowercase alphanumeric characters and underscores are allowed.'),
+                .matches(regexForShortcode, t('Only lowercase alphanumeric characters and underscores are allowed.')),
           }),
           existingShortcode: Yup.object().when('languageVariant', {
             is: (val: any) => val === true,
@@ -402,26 +402,26 @@ export const buildValidationSchema = ({
       : {
           newShortcode: Yup.string()
             .required(t('Element name is required.'))
-            .matches(regexForShortcode, 'Only lowercase alphanumeric characters and underscores are allowed.'),
+            .matches(regexForShortcode, t('Only lowercase alphanumeric characters and underscores are allowed.')),
         }),
     templateButtons: Yup.array().of(
       Yup.lazy(() => {
         if (isAddButtonChecked) {
           if (templateType?.id === 'CALL_TO_ACTION') {
             return Yup.object().shape({
-              type: Yup.string().required('Type is required.'),
-              title: Yup.string().required('Title is required.'),
-              value: Yup.string().required('Value is required.'),
+              type: Yup.string().required(t('Type is required.')),
+              title: Yup.string().required(t('Title is required.')),
+              value: Yup.string().required(t('Value is required.')),
             });
           } else if (templateType?.id === 'QUICK_REPLY') {
             return Yup.object().shape({
-              value: Yup.string().required('Value is required.'),
+              value: Yup.string().required(t('Value is required.')),
             });
           } else if (templateType?.id === 'WHATSAPP_FORM') {
             return Yup.object().shape({
-              form_id: Yup.string().required('Form is required.'),
-              text: Yup.string().required('Button title is required.'),
-              navigate_screen: Yup.string().required('Screen is required.'),
+              form_id: Yup.string().required(t('Form is required.')),
+              text: Yup.string().required(t('Button title is required.')),
+              navigate_screen: Yup.string().required(t('Screen is required.')),
             });
           }
           return Yup.object().shape({});

@@ -1,3 +1,5 @@
+import { t } from 'i18next';
+
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
@@ -16,7 +18,7 @@ export const queries = {
 };
 
 export const templateIcon = <TemplateIcon />;
-export const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+export const dialogMessage = t('It will stop showing when you draft a customized message');
 
 export interface AttachmentTileMeta {
   icon: any;
@@ -51,8 +53,8 @@ export const attachmentTileMeta: { [key: string]: AttachmentTileMeta } = {
 };
 
 export const categoryDescriptions: { [key: string]: string } = {
-  UTILITY: 'Account updates, order confirmations, shipping notifications, alerts, and transactional messages',
-  MARKETING: 'Promotional content, offers, announcements, product launches, and sales campaigns',
+  UTILITY: t('Account updates, order confirmations, shipping notifications, alerts, and transactional messages'),
+  MARKETING: t('Promotional content, offers, announcements, product launches, and sales campaigns'),
 };
 
 export interface SimulatorMessageContext {

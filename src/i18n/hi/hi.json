@@ -706,5 +706,14 @@
   "the template in this language is approved.": "इस भाषा में टेम्पलेट स्वीकृत है।",
   "the template in this language is pending.": "इस भाषा में टेम्पलेट लंबित है।",
   "the template in this language was rejected.": "इस भाषा में टेम्पलेट अस्वीकृत कर दिया गया था।",
-  "the template in this language failed.": "इस भाषा में टेम्पलेट विफल हो गया।"
+  "the template in this language failed.": "इस भाषा में टेम्पलेट विफल हो गया।",
+  "Language is required.": "भाषा आवश्यक है।",
+  "Variable is required": "वेरिएबल आवश्यक है",
+  "Text cannot be empty": "टेक्स्ट खाली नहीं हो सकता",
+  "Value is required.": "मान आवश्यक है।",
+  "Form is required.": "फ़ॉर्म आवश्यक है।",
+  "Button title is required.": "बटन शीर्षक आवश्यक है।",
+  "Screen is required.": "स्क्रीन आवश्यक है।",
+  "Account updates, order confirmations, shipping notifications, alerts, and transactional messages": "खाता अपडेट, ऑर्डर पुष्टिकरण, शिपिंग सूचनाएं, अलर्ट और लेन-देन संबंधी संदेश",
+  "Promotional content, offers, announcements, product launches, and sales campaigns": "प्रचार सामग्री, ऑफ़र, घोषणाएं, उत्पाद लॉन्च और बिक्री अभियान"
 }

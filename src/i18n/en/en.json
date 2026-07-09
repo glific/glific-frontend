@@ -849,5 +849,14 @@
   "the template in this language is approved.": "the template in this language is approved.",
   "the template in this language is pending.": "the template in this language is pending.",
   "the template in this language was rejected.": "the template in this language was rejected.",
-  "the template in this language failed.": "the template in this language failed."
+  "the template in this language failed.": "the template in this language failed.",
+  "Language is required.": "Language is required.",
+  "Variable is required": "Variable is required",
+  "Text cannot be empty": "Text cannot be empty",
+  "Value is required.": "Value is required.",
+  "Form is required.": "Form is required.",
+  "Button title is required.": "Button title is required.",
+  "Screen is required.": "Screen is required.",
+  "Account updates, order confirmations, shipping notifications, alerts, and transactional messages": "Account updates, order confirmations, shipping notifications, alerts, and transactional messages",
+  "Promotional content, offers, announcements, product launches, and sales campaigns": "Promotional content, offers, announcements, product launches, and sales campaigns"
 }
