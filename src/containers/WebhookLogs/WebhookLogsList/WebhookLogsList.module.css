@@ -123,7 +123,3 @@
   margin-left: auto;
   margin-right: 0px !important;
 }
-
-.Container > div:nth-of-type(2) {
-  height: calc(100% - 88px);
-}
