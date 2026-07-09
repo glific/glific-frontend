@@ -141,6 +141,9 @@ export interface ListProps {
   restrictedAction?: any;
   collapseOpen?: boolean;
   collapseRow?: string;
+  // Opt-in transform applied to the fetched rows before they are rendered,
+  // e.g. to group flat per-language rows into one row per template.
+  groupRows?: (items: any[]) => any[];
   showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
@@ -199,6 +202,7 @@ export const List = ({
   restrictedAction,
   collapseOpen = false,
   collapseRow = undefined,
+  groupRows,
   noItemText = null,
   customStyles,
   showActions = true,
@@ -701,7 +705,8 @@ export const List = ({
   // Get item data and total number of items.
   let itemList: any = [];
   if (data) {
-    itemList = formatList(data[listItem]);
+    const rawItems = data[listItem];
+    itemList = formatList(groupRows ? groupRows(rawItems) : rawItems);
   }
 
   if (userCollections) {
@@ -714,6 +719,11 @@ export const List = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
+  // Grouped lists (groupRows) collapse several flat records into fewer rows on
+  // screen, so this count won't match the row count exactly. Still use the flat
+  // server count (not the current page's post-grouping length) for pagination:
+  // the offset/limit query params paginate the flat data, so total pages must be
+  // derived from the flat total or later pages become unreachable.
 
   var noItemsText = (
     <div className={styles.NoResults}>

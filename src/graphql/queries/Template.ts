@@ -14,6 +14,7 @@ const templateFields = `
     language {
       id
       label
+      locale
     }
 `;
 
