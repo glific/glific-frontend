@@ -56,12 +56,10 @@ import styles from './HSMV2.module.css';
 export const HSMV2 = () => {
   const location: any = useLocation();
   const [language, setLanguageId] = useState<any>(null);
-  const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
   const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [attachmentMethod, setAttachmentMethod] = useState<'url' | 'upload'>('url');
-  const [isActive, setIsActive] = useState<boolean>(true);
   const [category, setCategory] = useState<any>([]);
   const [footer, setFooter] = useState('');
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
@@ -141,15 +139,15 @@ export const HSMV2 = () => {
   const copyMessage = t('Copy of the template has been created!');
 
   const isCopyState = location.state === 'copy';
+  console.log(isCopyState, 'isCopyState');
+  const updateItemQuery = isCopyState ? CREATE_TEMPLATE : UPDATE_TEMPLATE;
   if (isCopyState) {
-    queries.updateItemQuery = CREATE_TEMPLATE;
     mode = 'copy';
-  } else {
-    queries.updateItemQuery = UPDATE_TEMPLATE;
   }
   if (params.id && !isCopyState) {
     isEditing = true;
   }
+  console.log(updateItemQuery, 'updateItemQuery');
 
   const categoryOpn: any = [];
   if (categoryList) {
@@ -160,14 +158,12 @@ export const HSMV2 = () => {
 
   const states = {
     language,
-    label,
     body,
     footer,
     type,
     attachmentURL,
     category,
     tagId,
-    isActive,
     templateButtons,
     isAddButtonChecked,
     variables,
@@ -191,9 +187,7 @@ export const HSMV2 = () => {
   };
 
   const setStates = ({
-    isActive: isActiveValue,
     language: languageIdValue,
-    label: labelValue,
     body: bodyValue,
     footer: footerValue,
     example: exampleValue,
@@ -217,12 +211,8 @@ export const HSMV2 = () => {
       }
     }
 
-    if (isCopyState) {
-      setLabel(`Copy of ${labelValue}`);
-    } else {
-      setLabel(labelValue);
+    if (!isCopyState) {
       setNewShortcode(shortcodeValue);
-      setIsActive(isActiveValue);
     }
 
     setBody(bodyValue);
@@ -399,9 +389,6 @@ export const HSMV2 = () => {
       label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}`,
       disabled: isEditing,
-      // the backend derives the template's title (label) from shortcode + language when
-      // label is blank — there's no separate Title field for the user to fill in, so we
-      // send label as-is (empty in create mode) and let the backend name it.
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
@@ -596,6 +583,7 @@ export const HSMV2 = () => {
     <div className={styles.Page}>
       <FormLayout
         {...queries}
+        updateItemQuery={updateItemQuery}
         states={states}
         isView={isEditing}
         setStates={setStates}
