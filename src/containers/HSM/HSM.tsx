@@ -37,7 +37,6 @@ import {
   getExampleValue,
   getTemplateAndButtons,
   getTemplateAndButton,
-  getButtonTemplatePayload,
   buildTemplatePayload,
   buildTemplateButtonsList,
   buildUpdatedButtons,
