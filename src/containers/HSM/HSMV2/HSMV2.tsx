@@ -35,23 +35,17 @@ import {
   getVariables,
   getExampleValue,
   getTemplateAndButtons,
+  getTemplateAndButton,
+  buildTemplatePayload,
+  buildTemplateButtonsList,
+  buildUpdatedButtons,
+  buildValidationSchema,
   mediaOptions,
   CallToActionTemplate,
   QuickReplyTemplate,
   WhatsappFormTemplate,
 } from '../HSM.helper';
-import {
-  queries,
-  templateIcon,
-  dialogMessage,
-  categoryDescriptions,
-  getTemplateAndButton,
-  buildTemplatePayload,
-  buildSimulatorMessage,
-  buildTemplateButtonsList,
-  buildUpdatedButtons,
-  buildValidationSchema,
-} from './HSMV2.helper';
+import { queries, templateIcon, dialogMessage, categoryDescriptions, buildSimulatorMessage } from './HSMV2.helper';
 import styles from './HSMV2.module.css';
 
 export const HSMV2 = () => {
