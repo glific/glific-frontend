@@ -1,4 +1,7 @@
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
@@ -14,6 +17,38 @@ export const queries = {
 
 export const templateIcon = <TemplateIcon />;
 export const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+
+export interface AttachmentTileMeta {
+  icon: any;
+  format: string;
+  maxSizeLabel: string;
+  maxSizeMB: number;
+  accept: string;
+}
+
+export const attachmentTileMeta: { [key: string]: AttachmentTileMeta } = {
+  IMAGE: {
+    icon: <ImageOutlinedIcon />,
+    format: 'JPG, PNG',
+    maxSizeLabel: 'Max 5 MB',
+    maxSizeMB: 5,
+    accept: 'image/*',
+  },
+  DOCUMENT: {
+    icon: <InsertDriveFileOutlinedIcon />,
+    format: 'PDF',
+    maxSizeLabel: 'Max 16 MB',
+    maxSizeMB: 16,
+    accept: 'application/pdf',
+  },
+  VIDEO: {
+    icon: <VideocamOutlinedIcon />,
+    format: 'MP4',
+    maxSizeLabel: 'Max 16 MB',
+    maxSizeMB: 16,
+    accept: 'video/*',
+  },
+};
 
 export const categoryDescriptions: { [key: string]: string } = {
   UTILITY: 'Account updates, order confirmations, shipping notifications, alerts, and transactional messages',

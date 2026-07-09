@@ -14,10 +14,8 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
-import { ButtonTypeSelector } from 'components/UI/Form/ButtonTypeSelector/ButtonTypeSelector';
-import { AttachmentTypeSelector } from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
+import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
 import { AttachmentUploadField } from 'components/UI/Form/AttachmentUploadField/AttachmentUploadField';
-import { CategorySelector } from 'components/UI/Form/CategorySelector/CategorySelector';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { getOrganizationServices } from 'services/AuthService';
@@ -45,7 +43,14 @@ import {
   QuickReplyTemplate,
   WhatsappFormTemplate,
 } from '../HSM.helper';
-import { queries, templateIcon, dialogMessage, categoryDescriptions, buildSimulatorMessage } from './HSMV2.helper';
+import {
+  queries,
+  templateIcon,
+  dialogMessage,
+  categoryDescriptions,
+  buildSimulatorMessage,
+  attachmentTileMeta,
+} from './HSMV2.helper';
 import styles from './HSMV2.module.css';
 
 export const HSMV2 = () => {
@@ -409,12 +414,15 @@ export const HSMV2 = () => {
           disabled: true,
         }
       : {
-          component: CategorySelector,
+          component: TileSelector,
           name: 'category',
           options: categoryOpn,
           value: category,
+          variant: 'radio',
+          matchBy: 'label',
           descriptions: categoryDescriptions,
           onChange: setCategory,
+          label: t('Category'),
         },
     {
       component: EmojiInput,
@@ -445,7 +453,7 @@ export const HSMV2 = () => {
       },
     },
     {
-      component: ButtonTypeSelector,
+      component: TileSelector,
       name: 'templateType',
       options: BUTTON_OPTIONS.filter(
         (option: any) => option.id !== 'WHATSAPP_FORM' || getOrganizationServices('whatsappFormsEnabled')
@@ -454,7 +462,9 @@ export const HSMV2 = () => {
       selected: isAddButtonChecked,
       onChange: handleTemplateTypeChange,
       onClear: clearButtonSelection,
+      clearLabel: t('Clear button selection'),
       disabled: isEditing,
+      label: t('Button Type'),
     },
     {
       component: TemplateOptions,
@@ -472,16 +482,22 @@ export const HSMV2 = () => {
       hideTypeSelector: true,
     },
     {
-      component: AttachmentTypeSelector,
+      component: TileSelector,
       name: 'type',
       options: mediaOptions,
       value: type,
+      variant: 'icon',
+      tileMeta: attachmentTileMeta,
       onChange: selectAttachmentType,
       onClear: clearAttachmentSelection,
-      method: attachmentMethod,
-      onSelectUrlMethod: selectUrlMethod,
-      onSelectUploadMethod: selectUploadMethod,
+      clearLabel: t('Clear attachment selection'),
+      methodToggle: {
+        method: attachmentMethod,
+        onSelectUrl: selectUrlMethod,
+        onSelectUpload: selectUploadMethod,
+      },
       disabled: isEditing,
+      label: t('Attachment Type'),
     },
     {
       component: AttachmentUploadField,

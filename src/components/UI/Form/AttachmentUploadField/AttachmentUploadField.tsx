@@ -3,15 +3,13 @@ import { Field } from 'formik';
 
 import Upload from '@mui/icons-material/Upload';
 
-import {
-  attachmentTileMeta,
-  AttachmentTypeOption,
-} from 'components/UI/Form/AttachmentTypeSelector/AttachmentTypeSelector';
+import { attachmentTileMeta } from 'containers/HSM/HSMV2/HSMV2.helper';
+import { TileOption } from 'components/UI/Form/TileSelector/TileSelector';
 
 import styles from './AttachmentUploadField.module.css';
 
 export interface AttachmentUploadFieldProps {
-  type: AttachmentTypeOption | null;
+  type: TileOption | null;
   showUploadButton: boolean;
   uploadingFile: boolean;
   uploadedFile: File | null;
