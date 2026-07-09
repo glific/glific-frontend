@@ -86,7 +86,9 @@ export const HSMV2 = () => {
   });
   const { t } = useTranslation();
   const params = useParams();
-  let backButton = location.state?.tag?.label ? `template-v2?tag=${location.state?.tag?.label}` : 'template-v2';
+  const backButton = location.state?.tag?.label
+    ? `template-v2?tag=${encodeURIComponent(location.state.tag.label)}`
+    : 'template-v2';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
 
@@ -202,8 +204,8 @@ export const HSMV2 = () => {
 
     if (languageOptions.length > 0 && languageIdValue) {
       if (!language?.id) {
-        const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
-        setLanguageId(selectedLangauge);
+        const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
+        setLanguageId(selectedLanguage);
       } else {
         setLanguageId(language);
       }

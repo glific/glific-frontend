@@ -111,7 +111,7 @@ export const AttachmentUploadField = ({
         placeholder={t('https://example.com/image.jpg')}
         helperText={
           uploadedFile ? (
-            `File uploaded: ${uploadedFile.name}`
+            `${t('File uploaded:')} ${uploadedFile.name}`
           ) : (
             <>
               {t(
