@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { t } from 'i18next';
 import { Field } from 'formik';
@@ -43,9 +43,21 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
 
   const showUploadButton = method === 'upload';
 
+  const latestRef = useRef({ type, attachmentURL, validatingURL });
   useEffect(() => {
-    onChange?.({ type, attachmentURL, validatingURL });
-  }, [type, attachmentURL, validatingURL]);
+    latestRef.current = { type, attachmentURL, validatingURL };
+  });
+
+  const report = (patch: Partial<AttachmentFieldChange>) => {
+    const current = latestRef.current;
+    const next = {
+      type: 'type' in patch ? patch.type! : current.type,
+      attachmentURL: 'attachmentURL' in patch ? patch.attachmentURL! : current.attachmentURL,
+      validatingURL: 'validatingURL' in patch ? patch.validatingURL! : current.validatingURL,
+    };
+    latestRef.current = next;
+    onChange?.(next);
+  };
 
   const resetUploadState = () => {
     setUploadingFile(false);
@@ -55,27 +67,26 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
   const setTypeValue = (value: TileOption | null) => form?.setFieldValue('type', value);
   const setAttachmentURLValue = (value: string) => form?.setFieldValue('attachmentURL', value);
 
-  const validateURL = (value: string) => {
-    if (!value || !type) {
+  const validateURL = (value: string, typeOption: TileOption | null) => {
+    if (disabled || !value || !typeOption) {
       return;
     }
     setValidatingURL(true);
-    validateMedia(value, String(type.id), false).then((response: any) => {
+    report({ validatingURL: true });
+    validateMedia(value, String(typeOption.id), false).then((response: any) => {
       setIsUrlValid(response.data.is_valid ? '' : response.data.message);
       setValidatingURL(false);
+      report({ validatingURL: false });
     });
   };
 
-  useEffect(() => {
-    if (!disabled && type && attachmentURL) {
-      validateURL(attachmentURL);
-    }
-  }, [type, attachmentURL]);
-
   const handleTypeChange = (option: TileOption) => {
     setTypeValue(option);
+    setAttachmentURLValue('');
+    setIsUrlValid(undefined);
     setMethod('url');
     resetUploadState();
+    report({ type: option, attachmentURL: '' });
   };
 
   const handleClearType = () => {
@@ -84,6 +95,14 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
     setAttachmentURLValue('');
     setMethod('url');
     resetUploadState();
+    report({ type: null, attachmentURL: '' });
+  };
+
+  const clearAttachmentValue = () => {
+    setIsUrlValid(undefined);
+    setAttachmentURLValue('');
+    resetUploadState();
+    report({ attachmentURL: '' });
   };
 
   const handleSelectUploadMethod = () => {
@@ -97,11 +116,12 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
       return;
     }
     setMethod('upload');
+    clearAttachmentValue();
   };
 
   const handleSelectUrlMethod = () => {
     setMethod('url');
-    resetUploadState();
+    clearAttachmentValue();
   };
 
   const handleFileSelect = async (file: File) => {
@@ -113,11 +133,14 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
     setUploadedFile(file);
     setUploadingFile(true);
 
+    let resolvedType = type;
     const fileType = file.type.split('/')[0].toUpperCase();
     if (['IMAGE', 'VIDEO'].includes(fileType)) {
-      setTypeValue({ id: fileType, label: fileType });
+      resolvedType = { id: fileType, label: fileType };
+      setTypeValue(resolvedType);
     } else if (file.type === 'application/pdf') {
-      setTypeValue({ id: 'DOCUMENT', label: 'DOCUMENT' });
+      resolvedType = { id: 'DOCUMENT', label: 'DOCUMENT' };
+      setTypeValue(resolvedType);
     }
 
     try {
@@ -125,11 +148,20 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
       setAttachmentURLValue(result.data.uploadMedia);
       setNotification('File uploaded successfully');
       setUploadingFile(false);
+      report({ type: resolvedType, attachmentURL: result.data.uploadMedia });
+      validateURL(result.data.uploadMedia, resolvedType);
     } catch (error) {
       console.error('Upload error:', error);
       setNotification('File upload failed. Please try again.', 'error');
       resetUploadState();
     }
+  };
+
+  const handleURLBlur = (event: any) => {
+    const value = event.target.value.trim();
+    setAttachmentURLValue(value);
+    report({ attachmentURL: value });
+    validateURL(value, type);
   };
 
   const urlField = {
@@ -140,7 +172,7 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
     disabled: disabled || uploadingFile,
     helperText: uploadedFile ? `File uploaded: ${uploadedFile.name}` : undefined,
     inputProp: {
-      onBlur: (event: any) => setAttachmentURLValue(event.target.value.trim()),
+      onBlur: handleURLBlur,
     },
   };
 
