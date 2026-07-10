@@ -20,7 +20,6 @@ export interface AttachmentFieldProps {
   onChange: (option: TileOption) => void;
   onClear?: () => void;
   clearLabel?: string;
-  showUploadButton: boolean;
   uploadingFile: boolean;
   uploadedFile: File | null;
   attachmentURL: string;
@@ -38,7 +37,6 @@ export const AttachmentField = ({
   onChange,
   onClear,
   clearLabel,
-  showUploadButton,
   uploadingFile,
   uploadedFile,
   attachmentURL,
@@ -52,6 +50,7 @@ export const AttachmentField = ({
 }: AttachmentFieldProps) => {
   const type = field?.value ?? null;
   const meta = type?.id ? attachmentTileMeta[type.id] : undefined;
+  const showUploadButton = methodToggle?.method === 'upload';
 
   const methodToggleRow = methodToggle && type && (
     <>

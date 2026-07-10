@@ -75,7 +75,6 @@ export const HSMV2 = () => {
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState<boolean>(false);
-  const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -313,7 +312,6 @@ export const HSMV2 = () => {
 
   const selectAttachmentType = (option: any) => {
     setType(option);
-    setShowUploadButton(false);
     setAttachmentMethod('url');
     resetUploadState();
   };
@@ -321,7 +319,6 @@ export const HSMV2 = () => {
   const clearAttachmentSelection = () => {
     setIsUrlValid(undefined);
     setType(null);
-    setShowUploadButton(false);
     setAttachmentMethod('url');
     resetUploadState();
   };
@@ -340,12 +337,10 @@ export const HSMV2 = () => {
       return;
     }
     setAttachmentMethod('upload');
-    setShowUploadButton(true);
   };
 
   const selectUrlMethod = () => {
     setAttachmentMethod('url');
-    setShowUploadButton(false);
     resetUploadState();
   };
 
@@ -456,7 +451,6 @@ export const HSMV2 = () => {
       onChange: selectAttachmentType,
       onClear: clearAttachmentSelection,
       clearLabel: t('Clear attachment selection'),
-      showUploadButton,
       uploadingFile,
       uploadedFile,
       attachmentURL,
