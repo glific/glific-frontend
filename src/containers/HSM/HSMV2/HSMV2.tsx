@@ -516,7 +516,7 @@ export const HSMV2 = () => {
 
   useEffect(() => {
     setSimulatorMessage(computeSampleText(), footer);
-  }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked]);
+  }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
 
   useEffect(() => {
     if (!isEditing && (type === '' || type) && attachmentURL) {

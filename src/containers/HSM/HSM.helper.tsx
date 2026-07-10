@@ -286,6 +286,7 @@ export const buildTemplatePayload = (
 
   delete payloadCopy.isAddButtonChecked;
   delete payloadCopy.templateButtons;
+  delete payloadCopy.templateType;
   delete payloadCopy.language;
   delete payloadCopy.languageVariant;
   delete payloadCopy.variables;
