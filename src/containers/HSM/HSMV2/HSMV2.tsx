@@ -15,7 +15,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
-import { AttachmentUploadField } from 'components/UI/Form/AttachmentUploadField/AttachmentUploadField';
+import { AttachmentField } from 'components/UI/Form/AttachmentField/AttachmentField';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { getOrganizationServices } from 'services/AuthService';
@@ -164,6 +164,7 @@ export const HSMV2 = () => {
     category,
     tagId,
     templateButtons,
+    templateType,
     isAddButtonChecked,
     variables,
     newShortcode,
@@ -392,7 +393,6 @@ export const HSMV2 = () => {
           component: TileSelector,
           name: 'category',
           options: categoryOpn,
-          value: category,
           variant: 'radio',
           onChange: setCategory,
           label: t('Category'),
@@ -427,7 +427,6 @@ export const HSMV2 = () => {
       component: TileSelector,
       name: 'templateType',
       options: BUTTON_OPTIONS,
-      value: templateType,
       selected: isAddButtonChecked,
       onChange: handleTemplateTypeChange,
       onClear: clearButtonSelection,
@@ -451,26 +450,12 @@ export const HSMV2 = () => {
       hideTypeSelector: true,
     },
     {
-      component: TileSelector,
+      component: AttachmentField,
       name: 'type',
       options: attachmentTypeOptions,
-      value: type,
-      variant: 'icon',
       onChange: selectAttachmentType,
       onClear: clearAttachmentSelection,
       clearLabel: t('Clear attachment selection'),
-      methodToggle: {
-        method: attachmentMethod,
-        onSelectUrl: selectUrlMethod,
-        onSelectUpload: selectUploadMethod,
-      },
-      disabled: isEditing,
-      label: t('Attachment Type'),
-    },
-    {
-      component: AttachmentUploadField,
-      name: 'attachmentUpload',
-      type,
       showUploadButton,
       uploadingFile,
       uploadedFile,
@@ -478,6 +463,13 @@ export const HSMV2 = () => {
       onFileSelect: handleFileUpload,
       onResetUpload: resetUploadState,
       urlField: attachmentURLField,
+      methodToggle: {
+        method: attachmentMethod,
+        onSelectUrl: selectUrlMethod,
+        onSelectUpload: selectUploadMethod,
+      },
+      disabled: isEditing,
+      label: t('Attachment Type'),
     },
     {
       component: CreateAutoComplete,

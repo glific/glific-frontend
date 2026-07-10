@@ -108,6 +108,35 @@
   display: none;
 }
 
+.MethodToggleRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.MethodToggle {
+  flex: 1;
+  padding: 14px 16px;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #073f24;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.MethodToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.MethodToggleSelected {
+  border-color: #119656 !important;
+  background-color: #f2f9f5 !important;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

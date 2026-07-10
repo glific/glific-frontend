@@ -1,13 +1,3 @@
-.FieldLabel {
-  margin-top: 24px;
-  vertical-align: middle;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 18px;
-  color: #555555;
-  padding-bottom: 14px;
-}
-
 .TileRow {
   display: flex;
   gap: 12px;
@@ -122,8 +112,7 @@
   line-height: 1.4;
 }
 
-/* shared "selected" look for icon/radio variants (green) — pill overrides
-   this above with its own blue accent */
+/* shared "selected" look across all variants */
 .icon.TileSelected,
 .radio.TileSelected {
   border-color: #119656 !important;
@@ -156,33 +145,4 @@
   color: #de3707;
   font-size: 13px;
   margin: 0 0 8px;
-}
-
-.MethodToggleRow {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.MethodToggle {
-  flex: 1;
-  padding: 14px 16px;
-  border: 2px solid rgba(0, 0, 0, 0.23);
-  border-radius: 12px;
-  background-color: #ffffff;
-  color: #073f24;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.MethodToggle:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.MethodToggle.TileSelected {
-  border-color: #119656 !important;
-  background-color: #f2f9f5 !important;
 }

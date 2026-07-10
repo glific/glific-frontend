@@ -14,39 +14,30 @@ export interface TileOption {
 
 export type TileSelectorVariant = 'pill' | 'icon' | 'radio';
 
-export interface TileMethodToggle {
-  method: 'url' | 'upload';
-  onSelectUrl: () => void;
-  onSelectUpload: () => void;
-}
-
 export interface TileSelectorProps {
   options: TileOption[];
-  value: TileOption | null;
   onChange: (option: TileOption) => void;
   onClear?: () => void;
   clearLabel?: string;
   selected?: boolean;
   disabled?: boolean;
   variant?: TileSelectorVariant;
-  methodToggle?: TileMethodToggle;
-  field?: { name: string };
+  field?: { name: string; value: TileOption | null };
   form?: { touched: any; errors: any };
 }
 
 export const TileSelector = ({
   options,
-  value,
   onChange,
   onClear,
   clearLabel,
   selected,
   disabled = false,
   variant = 'pill',
-  methodToggle,
   field,
   form,
 }: TileSelectorProps) => {
+  const value = field?.value ?? null;
   const isActiveSelection = selected ?? Boolean(value);
   const isOptionActive = (option: TileOption) => isActiveSelection && value?.id !== undefined && value.id === option.id;
   const showError = Boolean(field && form && form.errors[field.name] && form.touched[field.name]);
@@ -114,30 +105,6 @@ export const TileSelector = ({
       )}
 
       {showError && <p className={styles.ErrorText}>{form!.errors[field!.name]}</p>}
-
-      {methodToggle && value && (
-        <>
-          <p className={styles.FieldLabel}>{t('How would you like to provide the attachment?')}</p>
-          <div className={styles.MethodToggleRow}>
-            <button
-              type="button"
-              disabled={disabled}
-              className={`${styles.MethodToggle} ${methodToggle.method === 'url' ? styles.TileSelected : ''}`}
-              onClick={methodToggle.onSelectUrl}
-            >
-              {t('Provide URL')}
-            </button>
-            <button
-              type="button"
-              disabled={disabled}
-              className={`${styles.MethodToggle} ${methodToggle.method === 'upload' ? styles.TileSelected : ''}`}
-              onClick={methodToggle.onSelectUpload}
-            >
-              {t('Upload File')}
-            </button>
-          </div>
-        </>
-      )}
     </>
   );
 };
