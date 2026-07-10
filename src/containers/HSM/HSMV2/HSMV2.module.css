@@ -49,3 +49,7 @@
 .DeleteIcon {
   margin-right: 9px !important;
 }
+
+.Page [data-testid='simulator-container'] {
+  top: 160px !important;
+}

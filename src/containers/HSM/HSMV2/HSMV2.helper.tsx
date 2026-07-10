@@ -65,7 +65,6 @@ export interface SimulatorMessageContext {
   type: any;
 }
 
-// recomputes the sample message object shown in the Simulator preview.
 export const buildSimulatorMessage = (
   { sampleMessages, body, variables, attachmentURL, type }: SimulatorMessageContext,
   messages: string,

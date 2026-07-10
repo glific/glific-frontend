@@ -429,9 +429,7 @@ export const HSMV2 = () => {
     {
       component: TileSelector,
       name: 'templateType',
-      options: BUTTON_OPTIONS.filter(
-        (option: any) => option.id !== 'WHATSAPP_FORM' || getOrganizationServices('whatsappFormsEnabled')
-      ),
+      options: BUTTON_OPTIONS,
       value: templateType,
       selected: isAddButtonChecked,
       onChange: handleTemplateTypeChange,

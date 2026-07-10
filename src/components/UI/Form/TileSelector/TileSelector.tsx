@@ -28,21 +28,13 @@ export interface TileSelectorProps {
   onChange: (option: TileOption) => void;
   onClear?: () => void;
   clearLabel?: string;
-  // Whether the current `value` should be shown as active, separate from
-  // `value` itself — needed for the "Button Type" usage, whose `value`
-  // (templateType) stays set even while the button section is toggled off.
-  // Defaults to Boolean(value), which is right for the simpler cases
-  // (attachment/category) where value is null until something is picked.
   selected?: boolean;
   disabled?: boolean;
   variant?: TileSelectorVariant;
-  // matches options against `value` by this field — category values are
-  // sometimes prefilled from an anchor template with only a label and no
-  // stable id, so that usage must match on label instead of id.
   matchBy?: 'id' | 'label';
-  descriptions?: { [key: string]: string }; // radio variant
-  tileMeta?: { [key: string]: TileMeta }; // icon variant
-  methodToggle?: TileMethodToggle; // icon variant's "Provide URL / Upload File" toggle, shown once a value is picked
+  descriptions?: { [key: string]: string };
+  tileMeta?: { [key: string]: TileMeta };
+  methodToggle?: TileMethodToggle;
   field?: { name: string };
   form?: { touched: any; errors: any };
 }

@@ -134,7 +134,6 @@ export const buttonTypes: any = {
   WHATSAPP_FORM: { type: 'whatsapp_form', form_id: '', text: '', navigate_screen: '' },
 };
 
-// splits a body string into the message and any trailing "| [button, ...]" gupshup markup.
 export const getTemplateAndButton = (text: string) => {
   const exp = /(\|\s\[)|(\|\[)/;
   const areButtonsPresent = text.search(exp);
@@ -157,7 +156,6 @@ export interface ButtonTemplatePayloadArgs {
   variables: Array<any>;
 }
 
-// builds the buttons/example/body payload fragment for whichever button type is selected.
 export const getButtonTemplatePayload = ({
   templateButtons,
   templateType,
@@ -233,8 +231,6 @@ export interface BuildTemplatePayloadContext {
   tagId: any;
 }
 
-// the setPayload handed to FormLayout — turns the raw Formik values into the
-// SessionTemplateInput shape the create/update mutations expect.
 export const buildTemplatePayload = (
   payload: any,
   {
@@ -253,14 +249,10 @@ export const buildTemplatePayload = (
   if (isEditing) {
     payloadCopy.shortcode = payloadCopy.newShortcode;
   } else if (payload.languageVariant) {
-    // HSM.tsx's "translate existing HSM" flow: reuse an existing shortcode
-    // (picked from a dropdown) instead of typing a brand new one.
+    // HSM.tsx "translate existing HSM" flow: reuse an existing shortcode instead of a new one
     payloadCopy.category = category.label;
     payloadCopy.shortcode = payloadCopy.existingShortcode.label;
   } else {
-    // HSMV2.tsx (and HSM.tsx's plain create) always create a brand new
-    // template — the "translate existing HSM" flow is the only place that
-    // reuses a shortcode, and only HSM.tsx exposes that toggle.
     payloadCopy.category = category.label;
     payloadCopy.shortcode = payloadCopy.newShortcode;
   }
@@ -302,7 +294,6 @@ export const buildTemplatePayload = (
   return payloadCopy;
 };
 
-// the next templateButtons array after adding a new button row for the given type.
 export const buildTemplateButtonsList = (
   templateButtons: Array<any>,
   templateType: any,
@@ -325,7 +316,6 @@ export const buildTemplateButtonsList = (
   return buttons;
 };
 
-// the next templateButtons array after editing one field of one button row.
 export const buildUpdatedButtons = (templateButtons: Array<any>, value: any, row: any, index: any, eventType: any) => {
   let obj = { ...row };
 
@@ -342,15 +332,10 @@ export interface ValidationSchemaContext {
   t: any;
   isAddButtonChecked: boolean;
   templateType: any;
-  // HSM.tsx has a separate "Title" field; HSMV2.tsx derives the title from
-  // shortcode + language on the backend and has no such field.
   hasTitleField?: boolean;
-  // HSM.tsx's "translate existing HSM" toggle — reusing an existing shortcode
-  // instead of typing a new one. HSMV2.tsx always creates brand new templates.
   hasLanguageVariant?: boolean;
 }
 
-// the Yup schema used for validating the create/edit form (skipped entirely in edit mode).
 export const buildValidationSchema = ({
   t,
   isAddButtonChecked,
