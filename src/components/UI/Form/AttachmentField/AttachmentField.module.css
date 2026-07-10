@@ -25,12 +25,16 @@
   width: fit-content;
   text-align: left;
   align-self: flex-start;
-  background: none;
-  border: none;
-  padding: 0;
-  color: #de3707;
-  font-size: 13px;
-  font-weight: 600;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin-right: 0 !important;
+  color: #de3707 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   cursor: pointer;
   margin-bottom: 16px;
   font-family: inherit;
@@ -116,15 +120,18 @@
 
 .MethodToggle {
   flex: 1;
-  padding: 14px 16px;
+  padding: 14px 16px !important;
   border: 2px solid rgba(0, 0, 0, 0.23);
-  border-radius: 12px;
+  border-radius: 12px !important;
   background-color: #ffffff;
   color: #073f24;
-  font-size: 15px;
+  font-size: 15px !important;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
+  margin-right: 0 !important;
+  box-shadow: none !important;
+  min-width: 0 !important;
 }
 
 .MethodToggle:disabled {

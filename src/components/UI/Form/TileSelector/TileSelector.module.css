@@ -14,10 +14,13 @@
 
 .Tile {
   border: 2px solid rgba(0, 0, 0, 0.23);
-  border-radius: 12px;
+  border-radius: 12px !important;
   background-color: #ffffff;
   cursor: pointer;
   font-family: inherit;
+  margin-right: 0 !important;
+  box-shadow: none !important;
+  min-width: 0 !important;
 }
 
 .Tile:disabled {
@@ -29,9 +32,9 @@
 
 .pill {
   flex: 1 1 160px;
-  padding: 14px 16px;
+  padding: 14px 16px !important;
   color: #073f24;
-  font-size: 15px;
+  font-size: 15px !important;
   font-weight: 600;
 }
 
@@ -49,7 +52,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 20px 16px;
+  padding: 20px 16px !important;
   text-align: center;
 }
 
@@ -75,7 +78,7 @@
   align-items: flex-start;
   gap: 10px;
   text-align: left;
-  padding: 16px;
+  padding: 16px !important;
 }
 
 .TileRadio {
@@ -130,12 +133,16 @@
   width: fit-content;
   text-align: left;
   align-self: flex-start;
-  background: none;
-  border: none;
-  padding: 0;
-  color: #de3707;
-  font-size: 13px;
-  font-weight: 600;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin-right: 0 !important;
+  color: #de3707 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   cursor: pointer;
   margin-bottom: 16px;
   font-family: inherit;

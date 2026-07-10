@@ -5,6 +5,7 @@ import Upload from '@mui/icons-material/Upload';
 
 import { attachmentTileMeta } from 'containers/HSM/HSMV2/HSMV2.helper';
 import { TileSelector, TileOption } from 'components/UI/Form/TileSelector/TileSelector';
+import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './AttachmentField.module.css';
 
@@ -56,22 +57,20 @@ export const AttachmentField = ({
     <>
       <p className={styles.FieldLabel}>{t('How would you like to provide the attachment?')}</p>
       <div className={styles.MethodToggleRow}>
-        <button
-          type="button"
+        <Button
           disabled={disabled}
           className={`${styles.MethodToggle} ${methodToggle.method === 'url' ? styles.MethodToggleSelected : ''}`}
           onClick={methodToggle.onSelectUrl}
         >
           {t('Provide URL')}
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
           disabled={disabled}
           className={`${styles.MethodToggle} ${methodToggle.method === 'upload' ? styles.MethodToggleSelected : ''}`}
           onClick={methodToggle.onSelectUpload}
         >
           {t('Upload File')}
-        </button>
+        </Button>
       </div>
     </>
   );
@@ -102,9 +101,9 @@ export const AttachmentField = ({
               <div className={styles.HelperText}>
                 {t('File uploaded:')} {uploadedFile.name}
               </div>
-              <button type="button" className={styles.ClearSelectionLink} onClick={onResetUpload}>
+              <Button className={styles.ClearSelectionLink} onClick={onResetUpload}>
                 {t('Change file')}
-              </button>
+              </Button>
             </>
           ) : (
             <>

@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 
 import { capitalizeFirstLetter } from 'common/utils';
+import { Button } from 'components/UI/Form/Button/Button';
 import styles from './TileSelector.module.css';
 
 export interface TileOption {
@@ -51,57 +52,39 @@ export const TileSelector = ({
 
           if (variant === 'icon') {
             return (
-              <button
-                type="button"
-                key={option.id}
-                disabled={disabled}
-                className={tileClassName}
-                onClick={() => onChange(option)}
-              >
+              <Button key={option.id} disabled={disabled} className={tileClassName} onClick={() => onChange(option)}>
                 {option.icon && <span className={styles.TileIcon}>{option.icon}</span>}
                 <span className={styles.TileTitle}>{capitalizeFirstLetter(String(option.id).toLowerCase())}</span>
                 {option.format && <span className={styles.TileMeta}>{option.format}</span>}
                 {option.maxSizeLabel && <span className={styles.TileMeta}>{option.maxSizeLabel}</span>}
-              </button>
+              </Button>
             );
           }
 
           if (variant === 'radio') {
             return (
-              <button
-                type="button"
-                key={option.id}
-                disabled={disabled}
-                className={tileClassName}
-                onClick={() => onChange(option)}
-              >
+              <Button key={option.id} disabled={disabled} className={tileClassName} onClick={() => onChange(option)}>
                 <span className={styles.TileRadio} />
                 <span className={styles.TileBody}>
                   <span className={styles.TileTitle}>{capitalizeFirstLetter(option.label.toLowerCase())}</span>
                   {option.description && <span className={styles.TileDescription}>{option.description}</span>}
                 </span>
-              </button>
+              </Button>
             );
           }
 
           return (
-            <button
-              type="button"
-              key={option.id}
-              disabled={disabled}
-              className={tileClassName}
-              onClick={() => onChange(option)}
-            >
+            <Button key={option.id} disabled={disabled} className={tileClassName} onClick={() => onChange(option)}>
               {option.label}
-            </button>
+            </Button>
           );
         })}
       </div>
 
       {onClear && isActiveSelection && !disabled && (
-        <button type="button" className={styles.ClearSelectionLink} onClick={onClear}>
+        <Button className={styles.ClearSelectionLink} onClick={onClear}>
           {clearLabel || t('Clear selection')}
-        </button>
+        </Button>
       )}
 
       {showError && <p className={styles.ErrorText}>{form!.errors[field!.name]}</p>}
