@@ -38,7 +38,6 @@ import {
   buildTemplateButtonsList,
   buildUpdatedButtons,
   buildValidationSchema,
-  mediaOptions,
   CallToActionTemplate,
   QuickReplyTemplate,
   WhatsappFormTemplate,
@@ -49,7 +48,7 @@ import {
   dialogMessage,
   categoryDescriptions,
   buildSimulatorMessage,
-  attachmentTileMeta,
+  attachmentTypeOptions,
 } from './HSMV2.helper';
 import styles from './HSMV2.module.css';
 
@@ -151,8 +150,8 @@ export const HSMV2 = () => {
 
   const categoryOpn: any = [];
   if (categoryList) {
-    categoryList.whatsappHsmCategories.forEach((categories: any, index: number) => {
-      categoryOpn.push({ label: categories, id: index });
+    categoryList.whatsappHsmCategories.forEach((categories: any) => {
+      categoryOpn.push({ label: categories, id: categories, description: categoryDescriptions[categories] });
     });
   }
 
@@ -395,8 +394,6 @@ export const HSMV2 = () => {
           options: categoryOpn,
           value: category,
           variant: 'radio',
-          matchBy: 'label',
-          descriptions: categoryDescriptions,
           onChange: setCategory,
           label: t('Category'),
         },
@@ -456,10 +453,9 @@ export const HSMV2 = () => {
     {
       component: TileSelector,
       name: 'type',
-      options: mediaOptions,
+      options: attachmentTypeOptions,
       value: type,
       variant: 'icon',
-      tileMeta: attachmentTileMeta,
       onChange: selectAttachmentType,
       onClear: clearAttachmentSelection,
       clearLabel: t('Clear attachment selection'),

@@ -6,15 +6,13 @@ import styles from './TileSelector.module.css';
 export interface TileOption {
   id: string | number;
   label: string;
-}
-
-export type TileSelectorVariant = 'pill' | 'icon' | 'radio';
-
-export interface TileMeta {
+  description?: string;
   icon?: any;
   format?: string;
   maxSizeLabel?: string;
 }
+
+export type TileSelectorVariant = 'pill' | 'icon' | 'radio';
 
 export interface TileMethodToggle {
   method: 'url' | 'upload';
@@ -31,9 +29,6 @@ export interface TileSelectorProps {
   selected?: boolean;
   disabled?: boolean;
   variant?: TileSelectorVariant;
-  matchBy?: 'id' | 'label';
-  descriptions?: { [key: string]: string };
-  tileMeta?: { [key: string]: TileMeta };
   methodToggle?: TileMethodToggle;
   field?: { name: string };
   form?: { touched: any; errors: any };
@@ -48,16 +43,12 @@ export const TileSelector = ({
   selected,
   disabled = false,
   variant = 'pill',
-  matchBy = 'id',
-  descriptions = {},
-  tileMeta = {},
   methodToggle,
   field,
   form,
 }: TileSelectorProps) => {
   const isActiveSelection = selected ?? Boolean(value);
-  const isOptionActive = (option: TileOption) =>
-    isActiveSelection && value?.[matchBy] !== undefined && value[matchBy] === option[matchBy];
+  const isOptionActive = (option: TileOption) => isActiveSelection && value?.id !== undefined && value.id === option.id;
   const showError = Boolean(field && form && form.errors[field.name] && form.touched[field.name]);
 
   return (
@@ -68,7 +59,6 @@ export const TileSelector = ({
           const tileClassName = `${styles.Tile} ${styles[variant]} ${isSelected ? styles.TileSelected : ''}`;
 
           if (variant === 'icon') {
-            const meta = tileMeta[option.id];
             return (
               <button
                 type="button"
@@ -77,10 +67,10 @@ export const TileSelector = ({
                 className={tileClassName}
                 onClick={() => onChange(option)}
               >
-                {meta?.icon && <span className={styles.TileIcon}>{meta.icon}</span>}
+                {option.icon && <span className={styles.TileIcon}>{option.icon}</span>}
                 <span className={styles.TileTitle}>{capitalizeFirstLetter(String(option.id).toLowerCase())}</span>
-                {meta?.format && <span className={styles.TileMeta}>{meta.format}</span>}
-                {meta?.maxSizeLabel && <span className={styles.TileMeta}>{meta.maxSizeLabel}</span>}
+                {option.format && <span className={styles.TileMeta}>{option.format}</span>}
+                {option.maxSizeLabel && <span className={styles.TileMeta}>{option.maxSizeLabel}</span>}
               </button>
             );
           }
@@ -97,9 +87,7 @@ export const TileSelector = ({
                 <span className={styles.TileRadio} />
                 <span className={styles.TileBody}>
                   <span className={styles.TileTitle}>{capitalizeFirstLetter(option.label.toLowerCase())}</span>
-                  {descriptions[option.label] && (
-                    <span className={styles.TileDescription}>{descriptions[option.label]}</span>
-                  )}
+                  {option.description && <span className={styles.TileDescription}>{option.description}</span>}
                 </span>
               </button>
             );

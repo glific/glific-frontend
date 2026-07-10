@@ -8,7 +8,9 @@ import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
-import { getExampleFromBody, removeFirstLineBreak } from '../HSM.helper';
+import { TileOption } from 'components/UI/Form/TileSelector/TileSelector';
+
+import { getExampleFromBody, mediaOptions, removeFirstLineBreak } from '../HSM.helper';
 
 export const queries = {
   getItemQuery: GET_TEMPLATE,
@@ -51,6 +53,13 @@ export const attachmentTileMeta: { [key: string]: AttachmentTileMeta } = {
     accept: 'video/*',
   },
 };
+
+export const attachmentTypeOptions: TileOption[] = mediaOptions.map((option) => ({
+  ...option,
+  icon: attachmentTileMeta[option.id]?.icon,
+  format: attachmentTileMeta[option.id]?.format,
+  maxSizeLabel: attachmentTileMeta[option.id]?.maxSizeLabel,
+}));
 
 export const categoryDescriptions: { [key: string]: string } = {
   UTILITY: t('Account updates, order confirmations, shipping notifications, alerts, and transactional messages'),
