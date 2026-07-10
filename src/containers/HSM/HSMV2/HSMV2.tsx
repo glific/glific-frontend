@@ -5,8 +5,6 @@ import { useLocation, useParams } from 'react-router';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS } from 'common/constants';
-import { validateMedia } from 'common/utils';
-import { setNotification } from 'common/notification';
 import { templateInfo } from 'common/HelpData';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
@@ -15,15 +13,14 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
-import { AttachmentField } from 'components/UI/Form/AttachmentField/AttachmentField';
+import { AttachmentField, AttachmentFieldChange } from 'components/UI/Form/AttachmentField/AttachmentField';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
-import { getOrganizationServices } from 'services/AuthService';
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
-import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
@@ -42,14 +39,7 @@ import {
   QuickReplyTemplate,
   WhatsappFormTemplate,
 } from '../HSM.helper';
-import {
-  queries,
-  templateIcon,
-  dialogMessage,
-  categoryDescriptions,
-  buildSimulatorMessage,
-  attachmentTypeOptions,
-} from './HSMV2.helper';
+import { queries, templateIcon, dialogMessage, categoryDescriptions, buildSimulatorMessage } from './HSMV2.helper';
 import styles from './HSMV2.module.css';
 
 export const HSMV2 = () => {
@@ -58,7 +48,6 @@ export const HSMV2 = () => {
   const [body, setBody] = useState<any>('');
   const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>('');
-  const [attachmentMethod, setAttachmentMethod] = useState<'url' | 'upload'>('url');
   const [category, setCategory] = useState<any>([]);
   const [footer, setFooter] = useState('');
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
@@ -71,10 +60,7 @@ export const HSMV2 = () => {
   const [newShortcode, setNewShortcode] = useState('');
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
-  const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadingFile, setUploadingFile] = useState<boolean>(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -99,40 +85,6 @@ export const HSMV2 = () => {
     variables: { opts: { order: 'ASC' } },
   });
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA);
-
-  const resetUploadState = (): void => {
-    setUploadingFile(false);
-    setUploadedFile(null);
-  };
-
-  const handleFileUpload = async (file: File): Promise<void> => {
-    if (!file) return;
-
-    const mediaName = file.name;
-    const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
-
-    setUploadedFile(file);
-    setUploadingFile(true);
-
-    const fileType = file.type.split('/')[0].toUpperCase();
-    if (['IMAGE', 'VIDEO'].includes(fileType)) {
-      setType({ id: fileType, label: fileType });
-    } else if (file.type === 'application/pdf') {
-      setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
-    }
-
-    try {
-      const result = await uploadMedia({ variables: { media: file, extension } });
-      setAttachmentURL(result.data.uploadMedia);
-      setNotification('File uploaded successfully');
-      setUploadingFile(false);
-    } catch (error) {
-      console.error('Upload error:', error);
-      setNotification('File upload failed. Please try again.', 'error');
-      resetUploadState();
-    }
-  };
 
   let isEditing = false;
   let mode;
@@ -255,18 +207,14 @@ export const HSMV2 = () => {
       tagId,
     });
 
-  const validateURL = (value: string) => {
-    if (value && type) {
-      setValidatingURL(true);
-      validateMedia(value, type.id, false).then((response: any) => {
-        if (!response.data.is_valid) {
-          setIsUrlValid(response.data.message);
-        } else {
-          setIsUrlValid('');
-        }
-        setValidatingURL(false);
-      });
-    }
+  const handleAttachmentChange = ({
+    type: nextType,
+    attachmentURL: nextURL,
+    validatingURL: nextValidating,
+  }: AttachmentFieldChange) => {
+    setType(nextType);
+    setAttachmentURL(nextURL);
+    setValidatingURL(nextValidating);
   };
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
@@ -308,52 +256,6 @@ export const HSMV2 = () => {
     setSampleMessages((prev) =>
       buildSimulatorMessage({ sampleMessages: prev, body, variables, attachmentURL, type }, messages, footerValue)
     );
-  };
-
-  const selectAttachmentType = (option: any) => {
-    setType(option);
-    setAttachmentMethod('url');
-    resetUploadState();
-  };
-
-  const clearAttachmentSelection = () => {
-    setIsUrlValid(undefined);
-    setType(null);
-    setAttachmentMethod('url');
-    resetUploadState();
-  };
-
-  const selectUploadMethod = () => {
-    // uploadMedia needs Google Cloud Storage configured for the org to have anywhere
-    // to store the file — without it every upload fails, so tell the user up front
-    // instead of letting them hit a generic "File upload failed" error later.
-    if (!getOrganizationServices('googleCloudStorage')) {
-      setNotification(
-        t(
-          'File upload is not available for your organization. Please use "Provide URL" instead, or ask your admin to enable Google Cloud Storage.'
-        ),
-        'warning'
-      );
-      return;
-    }
-    setAttachmentMethod('upload');
-  };
-
-  const selectUrlMethod = () => {
-    setAttachmentMethod('url');
-    resetUploadState();
-  };
-
-  const attachmentURLField = {
-    component: Input,
-    name: 'attachmentURL',
-    type: 'text',
-    validate: () => isUrlValid,
-    disabled: isEditing || uploadingFile,
-    helperText: uploadedFile ? `File uploaded: ${uploadedFile.name}` : undefined,
-    inputProp: {
-      onBlur: (event: any) => setAttachmentURL(event.target.value.trim()),
-    },
   };
 
   const fields = [
@@ -447,21 +349,7 @@ export const HSMV2 = () => {
     {
       component: AttachmentField,
       name: 'type',
-      options: attachmentTypeOptions,
-      onChange: selectAttachmentType,
-      onClear: clearAttachmentSelection,
-      clearLabel: t('Clear attachment selection'),
-      uploadingFile,
-      uploadedFile,
-      attachmentURL,
-      onFileSelect: handleFileUpload,
-      onResetUpload: resetUploadState,
-      urlField: attachmentURLField,
-      methodToggle: {
-        method: attachmentMethod,
-        onSelectUrl: selectUrlMethod,
-        onSelectUpload: selectUploadMethod,
-      },
+      onChange: handleAttachmentChange,
       disabled: isEditing,
       label: t('Attachment Type'),
     },
@@ -511,12 +399,6 @@ export const HSMV2 = () => {
   useEffect(() => {
     setSimulatorMessage(computeSampleText(), footer);
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
-
-  useEffect(() => {
-    if (!isEditing && (type === '' || type) && attachmentURL) {
-      validateURL(attachmentURL);
-    }
-  }, [type, attachmentURL]);
 
   useEffect(() => {
     if (templateType?.id && !isEditing) {
