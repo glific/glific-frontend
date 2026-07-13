@@ -564,6 +564,7 @@ export const FormLayout = ({
                     {field.label}
                   </Typography>
                 )}
+
                 <Field key={key} {...field} onSubmit={formik.submitForm} />
               </Fragment>
             );

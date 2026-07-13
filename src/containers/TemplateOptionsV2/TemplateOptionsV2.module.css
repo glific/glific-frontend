@@ -1,0 +1,188 @@
+.Container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: #f8faf5;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  margin-top: 18px;
+}
+
+.HintText {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.AddButton {
+  align-self: flex-start !important;
+}
+
+.RadioHint {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.ButtonCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.ButtonCard + .ButtonCard {
+  margin-top: 16px;
+}
+
+.ButtonCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ChipRow {
+  display: flex;
+  gap: 12px;
+}
+
+.Chip {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px !important;
+  border-radius: 999px !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.23);
+  background-color: #ffffff;
+  box-shadow: none !important;
+  margin-right: 0 !important;
+  min-width: 0 !important;
+}
+
+.Chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ChipSelected {
+  border-color: #119656 !important;
+  background-color: #f2f9f5 !important;
+}
+
+.ChipIcon {
+  display: flex;
+  color: #6b7280;
+}
+
+.ChipIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ChipSelected .ChipIcon {
+  color: #119656;
+}
+
+.ChipLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  font-family: inherit;
+}
+
+.ChipSelected .ChipLabel {
+  font-weight: 600;
+  color: #073f24;
+}
+
+.DeleteIcon {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.FieldsRow {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.Field {
+  flex: 1;
+}
+
+.FieldLabel {
+  font-weight: 500;
+  font-size: 14px;
+  color: #202125;
+  margin: 0 0 8px;
+}
+
+.TextField {
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.AdvancedToggle {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: #6b7280 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+}
+
+.AdvancedToggle svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.AdvancedIconOpen {
+  transform: rotate(180deg);
+}
+
+.AdvancedSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.StartAdornment {
+  padding-right: 0.5rem;
+}
+
+.QuickReplyRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.QuickReplyRow + .QuickReplyRow {
+  margin-top: 16px;
+}
+
+.CharCount {
+  text-align: right;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.WhatsAppFormRow {
+  display: flex;
+  gap: 20px;
+}
+
+.Errors {
+  color: #d32f2f;
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+}

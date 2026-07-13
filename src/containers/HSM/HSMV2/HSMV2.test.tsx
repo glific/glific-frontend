@@ -152,6 +152,16 @@ describe('HSMV2 add mode', () => {
     // interactive button type tiles
     expect(screen.getByText('Quick Reply')).toBeInTheDocument();
     expect(screen.getByText('Call to Action')).toBeInTheDocument();
+
+    expect(screen.queryByText('Maximum 10 quick reply buttons allowed per template')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('e.g., Yes, No, More Info')).not.toBeInTheDocument();
+    expect(screen.queryByText('Clear button selection')).not.toBeInTheDocument();
+    expect(screen.getByText('Template Details')).toBeInTheDocument();
+    expect(screen.getByText('Message Content')).toBeInTheDocument();
+    expect(screen.getByText('Interactive Buttons')).toBeInTheDocument();
+    expect(screen.getByText('Media Attachment')).toBeInTheDocument();
+    expect(screen.getByText('Organization & Tags')).toBeInTheDocument();
+    expect(screen.getByTestId('help-icon')).toBeInTheDocument();
   });
 
   test('it should create a template message using the tile pickers', async () => {
@@ -184,7 +194,7 @@ describe('HSMV2 add mode', () => {
 
     fireEvent.click(screen.getByText('Quick Reply'));
 
-    fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('e.g., Yes, No, More Info'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
@@ -209,10 +219,95 @@ describe('HSMV2 add mode', () => {
 
     fireEvent.click(screen.getByText('Quick Reply'));
     expect(screen.getByText('Clear button selection')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Quick reply 1 title')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('e.g., Yes, No, More Info')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Clear button selection'));
     expect(screen.queryByText('Clear button selection')).not.toBeInTheDocument();
+  });
+
+  test('quick reply buttons show a live character count and can be added/removed', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Quick Reply'));
+    expect(screen.getByText('Maximum 10 quick reply buttons allowed per template')).toBeInTheDocument();
+
+    const firstReply = screen.getByPlaceholderText('e.g., Yes, No, More Info');
+    expect(screen.getByText('0 / 20')).toBeInTheDocument();
+    fireEvent.change(firstReply, { target: { value: 'Yes' } });
+    expect(screen.getByText('3 / 20')).toBeInTheDocument();
+
+    expect(screen.queryAllByTestId('delete-icon')).toHaveLength(0);
+
+    fireEvent.click(screen.getByTestId('addButton'));
+    expect(screen.getAllByPlaceholderText('e.g., Yes, No, More Info')).toHaveLength(2);
+    expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByTestId('delete-icon')[1]);
+    expect(screen.getAllByPlaceholderText('e.g., Yes, No, More Info')).toHaveLength(1);
+  });
+
+  test('call to action chips disable once their limit is reached', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Call to Action'));
+    fireEvent.click(screen.getByRole('button', { name: 'Phone number' }));
+    expect(screen.getByRole('button', { name: 'Phone number' })).toBeDisabled();
+  });
+
+  test('Advanced section reveals URL type and, for Dynamic, a sample suffix field', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Call to Action'));
+    fireEvent.click(screen.getByRole('button', { name: 'URL' }));
+
+    expect(screen.queryByText('Static URL')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Advanced'));
+    expect(screen.queryByPlaceholderText('Sample Suffix')).not.toBeInTheDocument();
+    expect(screen.getByText('Static URL')).toBeInTheDocument();
+    expect(screen.getByText('Dynamic URL')).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByText('Dynamic URL'));
+
+    expect(await screen.findByPlaceholderText('Sample Suffix')).toBeInTheDocument();
+  });
+
+  test('WhatsApp Form button lets you pick a form, screen, and button title', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","whatsappFormsEnabled":true}');
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('WhatsApp Form'));
+
+    expect(screen.getByText('Select Form*')).toBeInTheDocument();
+    expect(screen.getByText('Screen Name*')).toBeInTheDocument();
+    expect(screen.getByText('Button Title*')).toBeInTheDocument();
+
+    const formCombo = screen.getByPlaceholderText('Select a form');
+    fireEvent.mouseDown(formCombo);
+    fireEvent.click(await screen.findByText('This is form name'));
+
+    const screenCombo = await screen.findByPlaceholderText('e.g., contact_us');
+    fireEvent.mouseDown(screenCombo);
+    fireEvent.click(await screen.findByText('RECOMMEND'));
+
+    fireEvent.change(screen.getByPlaceholderText('e.g., Fill Form'), { target: { value: 'Continue' } });
+    expect(screen.getByPlaceholderText('e.g., Fill Form')).toHaveValue('Continue');
   });
 
   test('every attachment type offers both Provide URL and Upload File, and switching to upload keeps the tile selected', async () => {
@@ -473,14 +568,13 @@ describe('HSMV2 add mode', () => {
 
     fireEvent.click(screen.getByText('Call to Action'));
     fireEvent.click(screen.getByText('Phone number'));
-    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
-    fireEvent.change(screen.getByPlaceholderText('Button Value'), { target: { value: '9876543210' } });
+    fireEvent.change(screen.getByPlaceholderText('e.g., Call Us'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('+91 98765 43210'), { target: { value: '9876543210' } });
 
     // adding a second button while a phone_number button already exists defaults it to "url"
     fireEvent.click(screen.getByTestId('addButton'));
-    const urlTypeCombo = await screen.findByLabelText('Select URL Type');
-    fireEvent.mouseDown(urlTypeCombo);
-    fireEvent.click(await screen.findByText('Dynamic'));
+    fireEvent.click(await screen.findByText('Advanced'));
+    fireEvent.click(await screen.findByText('Dynamic URL'));
 
     expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
     fireEvent.click(screen.getAllByTestId('delete-icon')[1]);

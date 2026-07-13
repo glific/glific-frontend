@@ -53,3 +53,18 @@
 .Page [data-testid='simulator-container'] {
   top: 160px !important;
 }
+
+.SectionTitleWrapper {
+  width: 100%;
+  margin-top: 32px;
+}
+
+.SectionTitle {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  color: #202125 !important;
+  padding-bottom: 14px;
+}

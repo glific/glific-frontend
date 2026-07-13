@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { t } from 'i18next';
 import { Field } from 'formik';
@@ -17,14 +17,14 @@ import { attachmentTileMeta, attachmentTypeOptions } from 'containers/HSM/HSMV2/
 import styles from './AttachmentField.module.css';
 
 export interface AttachmentFieldChange {
-  type: TileOption | null;
-  attachmentURL: string;
-  validatingURL: boolean;
+  type?: TileOption | null;
+  attachmentURL?: string;
+  validatingURL?: boolean;
 }
 
 export interface AttachmentFieldProps {
   disabled?: boolean;
-  onChange?: (next: AttachmentFieldChange) => void;
+  onChange?: (patch: AttachmentFieldChange) => void;
   field?: { name: string; value: TileOption | null };
   form?: { touched: any; errors: any; values: any; setFieldValue: (field: string, value: any) => void };
 }
@@ -43,21 +43,7 @@ export const AttachmentField = ({ disabled = false, onChange, field, form }: Att
 
   const showUploadButton = method === 'upload';
 
-  const latestRef = useRef({ type, attachmentURL, validatingURL });
-  useEffect(() => {
-    latestRef.current = { type, attachmentURL, validatingURL };
-  });
-
-  const report = (patch: Partial<AttachmentFieldChange>) => {
-    const current = latestRef.current;
-    const next = {
-      type: 'type' in patch ? patch.type! : current.type,
-      attachmentURL: 'attachmentURL' in patch ? patch.attachmentURL! : current.attachmentURL,
-      validatingURL: 'validatingURL' in patch ? patch.validatingURL! : current.validatingURL,
-    };
-    latestRef.current = next;
-    onChange?.(next);
-  };
+  const report = (patch: AttachmentFieldChange) => onChange?.(patch);
 
   const resetUploadState = () => {
     setUploadingFile(false);

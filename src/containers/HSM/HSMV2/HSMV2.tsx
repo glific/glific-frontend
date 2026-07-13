@@ -2,10 +2,11 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
+import { Typography } from '@mui/material';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS } from 'common/constants';
-import { templateInfo } from 'common/HelpData';
+import { templateInfo, interactiveButtonsInfo, HelpDataProps } from 'common/HelpData';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
@@ -14,8 +15,9 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
 import { AttachmentField, AttachmentFieldChange } from 'components/UI/Form/AttachmentField/AttachmentField';
+import { HelpIcon } from 'components/UI/HelpIcon/HelpIcon';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
+import { TemplateOptionsV2 } from 'containers/TemplateOptionsV2/TemplateOptionsV2';
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -41,6 +43,15 @@ import {
 } from '../HSM.helper';
 import { queries, templateIcon, dialogMessage, categoryDescriptions, buildSimulatorMessage } from './HSMV2.helper';
 import styles from './HSMV2.module.css';
+
+const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataProps }) => (
+  <div className={styles.SectionTitleWrapper}>
+    <Typography variant="h4" className={styles.SectionTitle}>
+      {title}
+      {helpData && <HelpIcon helpData={helpData} />}
+    </Typography>
+  </div>
+);
 
 export const HSMV2 = () => {
   const location: any = useLocation();
@@ -169,7 +180,11 @@ export const HSMV2 = () => {
     setBody(bodyValue);
     setFooter(footerValue || '');
     setEditorState(bodyValue);
-    setCategory(categoryValue);
+    setCategory(
+      categoryValue
+        ? { id: categoryValue, label: categoryValue, description: categoryDescriptions[categoryValue] }
+        : null
+    );
     setTagId(tagIdValue);
     vars = getExampleValue(exampleValue);
     setVariables(vars);
@@ -207,14 +222,16 @@ export const HSMV2 = () => {
       tagId,
     });
 
-  const handleAttachmentChange = ({
-    type: nextType,
-    attachmentURL: nextURL,
-    validatingURL: nextValidating,
-  }: AttachmentFieldChange) => {
-    setType(nextType);
-    setAttachmentURL(nextURL);
-    setValidatingURL(nextValidating);
+  const handleAttachmentChange = (patch: AttachmentFieldChange) => {
+    if ('type' in patch) {
+      setType(patch.type);
+    }
+    if ('attachmentURL' in patch) {
+      setAttachmentURL(patch.attachmentURL);
+    }
+    if ('validatingURL' in patch) {
+      setValidatingURL(patch.validatingURL!);
+    }
   };
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
@@ -260,6 +277,11 @@ export const HSMV2 = () => {
 
   const fields = [
     {
+      component: SectionTitle,
+      name: '__sectionTemplateDetails',
+      title: t('Template Details'),
+    },
+    {
       component: AutoComplete,
       name: 'language',
       label: `${t('Language')}*`,
@@ -278,22 +300,20 @@ export const HSMV2 = () => {
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
-    isEditing
-      ? {
-          component: Input,
-          name: 'category',
-          label: t('Category'),
-          type: 'text',
-          disabled: true,
-        }
-      : {
-          component: TileSelector,
-          name: 'category',
-          options: categoryOpn,
-          variant: 'radio',
-          onChange: setCategory,
-          label: t('Category'),
-        },
+    {
+      component: TileSelector,
+      name: 'category',
+      options: categoryOpn,
+      variant: 'radio',
+      onChange: setCategory,
+      disabled: isEditing,
+      label: t('Category'),
+    },
+    {
+      component: SectionTitle,
+      name: '__sectionMessageContent',
+      title: t('Message Content'),
+    },
     {
       component: EmojiInput,
       name: 'body',
@@ -321,6 +341,12 @@ export const HSMV2 = () => {
       },
     },
     {
+      component: SectionTitle,
+      name: '__sectionInteractiveButtons',
+      title: t('Interactive Buttons'),
+      helpData: interactiveButtonsInfo,
+    },
+    {
       component: TileSelector,
       name: 'templateType',
       options: BUTTON_OPTIONS,
@@ -332,7 +358,7 @@ export const HSMV2 = () => {
       label: t('Button Type'),
     },
     {
-      component: TemplateOptions,
+      component: TemplateOptionsV2,
       name: 'templateButtons',
       isAddButtonChecked,
       templateType,
@@ -341,10 +367,12 @@ export const HSMV2 = () => {
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handleInputChange,
-      onTemplateTypeChange: handleTemplateTypeChange,
       onDynamicParamsChange: handleDynamicParamsChange,
-      setType,
-      hideTypeSelector: true,
+    },
+    {
+      component: SectionTitle,
+      name: '__sectionMediaAttachment',
+      title: t('Media Attachment'),
     },
     {
       component: AttachmentField,
@@ -352,6 +380,11 @@ export const HSMV2 = () => {
       onChange: handleAttachmentChange,
       disabled: isEditing,
       label: t('Attachment Type'),
+    },
+    {
+      component: SectionTitle,
+      name: '__sectionOrganizationTags',
+      title: t('Organization & Tags'),
     },
     {
       component: CreateAutoComplete,
@@ -382,8 +415,6 @@ export const HSMV2 = () => {
     }
   }, [languages]);
 
-  // single source of truth for the simulator preview text — recomputed whenever any
-  // input that affects it changes, instead of being pieced together across several effects.
   const computeSampleText = () => {
     const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
 
