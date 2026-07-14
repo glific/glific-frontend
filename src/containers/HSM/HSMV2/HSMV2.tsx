@@ -14,7 +14,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
 import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
-import { AttachmentField, AttachmentFieldChange } from 'components/UI/Form/AttachmentField/AttachmentField';
+import { AttachmentField, AttachmentFieldChange } from 'containers/HSM/AttachmentField/AttachmentField';
 import { HelpIcon } from 'components/UI/HelpIcon/HelpIcon';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptionsV2 } from 'containers/TemplateOptionsV2/TemplateOptionsV2';
