@@ -6,7 +6,6 @@ const isProduction = environment === 'production';
 const KNOWN_BENIGN_EXCEPTIONS: (string | RegExp)[] = [
   'ResizeObserver loop limit exceeded',
   'ResizeObserver loop completed with undelivered notifications',
-  'Script error.',
 ];
 
 // Errors from browser extensions / injected scripts, matched by frame source URL
