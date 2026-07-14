@@ -59,7 +59,7 @@ export const HSMV2 = () => {
   const [body, setBody] = useState<any>('');
   const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>('');
-  const [category, setCategory] = useState<any>([]);
+  const [category, setCategory] = useState<any>(null);
   const [footer, setFooter] = useState('');
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);

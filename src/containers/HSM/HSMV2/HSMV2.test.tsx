@@ -164,6 +164,21 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByTestId('help-icon')).toBeInTheDocument();
   });
 
+  test('submitting without a category shows a friendly required message, not a raw Yup type error', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Category is required.')).toBeInTheDocument();
+    });
+    expect(screen.queryByText(/category must be a `object` type/)).not.toBeInTheDocument();
+  });
+
   test('it should create a template message using the tile pickers', async () => {
     render(template);
 
