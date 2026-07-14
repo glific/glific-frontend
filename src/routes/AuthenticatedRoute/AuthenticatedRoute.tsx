@@ -131,6 +131,7 @@ const adminRoutes = (
     <Route path="template-v2" element={<HSMListV2 />} />
     <Route path="template-v2/add" element={<HSMV2 />} />
     <Route path="template-v2/:id/edit" element={<HSMV2 />} />
+    <Route path="template-v2/:id/view" element={<HSMV2 />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="settings" element={<SettingList />}>
       <Route path="" element={<Navigate to="organization" />} />

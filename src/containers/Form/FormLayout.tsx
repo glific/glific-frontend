@@ -56,6 +56,10 @@ export interface FormLayoutProps {
     show?: boolean;
   };
   type?: string;
+  // awaited right before create/update fires, so a consumer can run an async
+  // step (e.g. deleting a row that would otherwise collide) as part of the
+  // same submit instead of on some earlier, separate interaction.
+  beforeSubmit?: (payload: any) => Promise<any>;
   afterSave?: Function;
   afterDelete?: { link: string };
   refetchQueries?: Array<any>;
@@ -130,6 +134,7 @@ export const FormLayout = ({
   button = 'Save',
   buttonState = { text: '', status: false, styles: '', show: true },
   type,
+  beforeSubmit,
   afterSave,
   afterDelete,
   refetchQueries,
@@ -200,22 +205,34 @@ export const FormLayout = ({
         delete payload[field.name];
       }
     });
-    // for template create media for attachment
-    if (isAttachment && payload.type !== 'TEXT' && payload.type && !entityId) {
-      getMediaId(payload)
-        .then((data: any) => {
-          if (data) {
-            const payloadCopy = payload;
-            delete payloadCopy.attachmentURL;
-            payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
-            performTask(payloadCopy, isSaveClick);
-          }
-        })
+    const proceedToSave = (finalPayload: any) => {
+      // for template create media for attachment
+      if (isAttachment && finalPayload.type !== 'TEXT' && finalPayload.type && !entityId) {
+        getMediaId(finalPayload)
+          .then((data: any) => {
+            if (data) {
+              const payloadCopy = finalPayload;
+              delete payloadCopy.attachmentURL;
+              payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
+              performTask(payloadCopy, isSaveClick);
+            }
+          })
+          .catch((e: any) => {
+            setErrorMessage(e);
+          });
+      } else {
+        performTask(finalPayload, isSaveClick);
+      }
+    };
+
+    if (beforeSubmit) {
+      beforeSubmit(payload)
+        .then(() => proceedToSave(payload))
         .catch((e: any) => {
           setErrorMessage(e);
         });
     } else {
-      performTask(payload, isSaveClick);
+      proceedToSave(payload);
     }
   };
 

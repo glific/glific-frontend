@@ -66,9 +66,12 @@ export const getTemplateAndButtons = (templateType: string, message: string, but
   const templateButtons = JSON.parse(buttons);
   let result: any;
   if (templateType === CALL_TO_ACTION) {
+    // stored buttons use Gupshup's uppercase type convention (PHONE_NUMBER/URL);
+    // the rest of the UI (chip options, typeObj in getButtonTemplatePayload) expects lowercase
+    const typeMap: any = { PHONE_NUMBER: 'phone_number', URL: 'url' };
     result = templateButtons.map((button: any) => {
       const { phone_number: phoneNo, url, type, text } = button;
-      return { type, value: url || phoneNo, title: text };
+      return { type: typeMap[type] || type, value: url || phoneNo, title: text };
     });
   }
 

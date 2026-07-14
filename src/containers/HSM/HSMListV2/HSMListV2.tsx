@@ -7,6 +7,7 @@ import { t } from 'i18next';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
+import AddLanguageIcon from 'assets/images/icons/AddLanguage.svg?react';
 
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
@@ -118,7 +119,17 @@ const HSMListV2 = () => {
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
-  const handleView = (id: any) => navigate(`/template-v2/${id}/edit`);
+  const handleView = (id: any, item: any) =>
+    navigate(`/template-v2/${id}/view`, { state: { variants: item.variants } });
+
+  const handleAddLanguage = (id: any, item: any) =>
+    navigate('/template-v2/add', {
+      state: {
+        languageAnchorId: id,
+        excludeLanguageIds: (item.variants ?? []).map((variant: any) => variant.language?.id),
+        variants: item.variants,
+      },
+    });
 
   const setCopyDialog = (id: any) => navigate(`/template-v2/${id}/edit`, { state: 'copy' });
 
@@ -160,6 +171,12 @@ const HSMListV2 = () => {
       icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
       dialog: handleView,
+    },
+    {
+      label: t('Add new language'),
+      icon: <AddLanguageIcon data-testid="add-language-icon" />,
+      parameter: 'id',
+      dialog: handleAddLanguage,
     },
     {
       label: t('Copy UUID'),

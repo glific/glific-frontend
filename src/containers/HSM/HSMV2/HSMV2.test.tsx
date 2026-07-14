@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, within } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
@@ -8,20 +8,17 @@ import {
   getHSMTemplateTypeText,
   getHSMTemplateTypeMedia,
   CREATE_SESSION_TEMPLATE_MOCK,
+  templateEditMock,
+  deleteTemplateMock,
+  sessionTemplatesV2Mock,
 } from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
+import { uploadMediaSuccessMock, uploadMediaFailureMock } from 'mocks/Attachment';
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
-import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import * as utilsModule from 'common/utils';
 
-const uploadPhotoMock = {
-  request: {
-    query: UPLOAD_MEDIA,
-    variables: { media: { name: 'photo.png', type: 'image/png' }, extension: 'png' },
-  },
-  result: { data: { uploadMedia: 'https://gcs.test.com/photo.png' } },
-};
+const uploadPhotoMock = uploadMediaSuccessMock('photo.png', 'image/png', 'https://gcs.test.com/photo.png');
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -449,13 +446,7 @@ describe('HSMV2 add mode', () => {
 
   test('uploading a PDF for the Document type shows the upload success state', async () => {
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
-    const uploadPdfMock = {
-      request: {
-        query: UPLOAD_MEDIA,
-        variables: { media: { name: 'sample.pdf', type: 'application/pdf' }, extension: 'pdf' },
-      },
-      result: { data: { uploadMedia: 'https://gcs.test.com/sample.pdf' } },
-    };
+    const uploadPdfMock = uploadMediaSuccessMock('sample.pdf', 'application/pdf', 'https://gcs.test.com/sample.pdf');
     const { container } = render(
       <MockedProvider
         mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadPdfMock]}
@@ -486,13 +477,7 @@ describe('HSMV2 add mode', () => {
 
   test('upload failure shows an error notification and resets the upload state', async () => {
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
-    const uploadFailureMock = {
-      request: {
-        query: UPLOAD_MEDIA,
-        variables: { media: { name: 'broken.png', type: 'image/png' }, extension: 'png' },
-      },
-      error: new Error('upload failed'),
-    };
+    const uploadFailureMock = uploadMediaFailureMock('broken.png', 'image/png', 'upload failed');
     const { container } = render(
       <MockedProvider
         mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadFailureMock]}
@@ -614,5 +599,335 @@ describe('HSMV2 add mode', () => {
 
     fireEvent.click(screen.getByTestId('back-button'));
     expect(screen.getByText('HSM list page')).toBeInTheDocument();
+  });
+});
+
+describe('HSMV2 language versions', () => {
+  const familyVariants = [
+    { id: '1', language: { id: '1', label: 'English', locale: 'en' }, category: 'ACCOUNT_UPDATE', status: 'APPROVED' },
+    { id: '2', language: { id: '2', label: 'Hindi', locale: 'hi' }, category: 'ACCOUNT_UPDATE', status: 'PENDING' },
+  ];
+
+  test('the dedicated /view route shows the language versions summary read-only, with no "Add new language" option', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/templates/1/view', state: { variants: familyVariants } }]}>
+          <Routes>
+            <Route path="/templates/:id/view" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
+    expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
+    expect(within(screen.getByTestId('status-tab-Rejected')).getByText('0')).toBeInTheDocument();
+
+    expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
+    expect(screen.queryByTestId('view-language-2')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
+
+    expect(screen.queryByTestId('add-language-link')).not.toBeInTheDocument();
+  });
+
+  test('the dedicated /view route never offers Delete — only the add-language flow does', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/templates/1/view', state: { variants: familyVariants } }]}>
+          <Routes>
+            <Route path="/templates/:id/view" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('delete-language-1')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    expect(screen.queryByTestId('delete-language-2')).not.toBeInTheDocument();
+  });
+
+  test('deleting a non-anchor sibling from the add-language flow asks for confirmation, then removes it from the list', async () => {
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, deleteTemplateMock('2')];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    fireEvent.click(screen.getByTestId('delete-language-2'));
+
+    // clicking Delete doesn't delete immediately — a confirmation dialog gates it.
+    expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(screen.queryByTestId('view-language-2')).not.toBeInTheDocument();
+    });
+    expect(within(screen.getByTestId('status-tab-In Progress')).getByText('0')).toBeInTheDocument();
+  });
+
+  test('deleting the anchor variant itself navigates back to the template list', async () => {
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, deleteTemplateMock('1')];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+            <Route path="/template-v2" element={<div>HSM list page</div>} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('delete-language-1'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM list page')).toBeInTheDocument();
+    });
+  });
+
+  test('Rejected variants offer "Edit & Re-apply" instead of "View" on the add-language flow', async () => {
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText];
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: variantsWithRejected } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    expect(screen.getByTestId('edit-reapply-language-3')).toBeInTheDocument();
+    expect(screen.queryByTestId('view-language-3')).not.toBeInTheDocument();
+  });
+
+  test('the dedicated /view route shows "View" (not "Edit & Re-apply") for Rejected variants', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText];
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/templates/1/view', state: { variants: variantsWithRejected } }]}>
+          <Routes>
+            <Route path="/templates/:id/view" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    expect(screen.getByTestId('view-language-3')).toBeInTheDocument();
+    expect(screen.queryByTestId('edit-reapply-language-3')).not.toBeInTheDocument();
+  });
+
+  test('clicking "Edit & Re-apply" opens the draft immediately (no dialog, no delete yet); Save deletes the rejected variant, waits for it, then creates and shows the replacement in its real status without leaving the page', async () => {
+    const familyRefetchMock = sessionTemplatesV2Mock({ isHsm: true, status: '' }, [
+      {
+        id: '1',
+        bspId: 'bsp-001',
+        label: 'Account Balance',
+        body: 'body',
+        footer: null,
+        shortcode: 'element_name',
+        status: 'APPROVED',
+        category: 'ACCOUNT_UPDATE',
+        reason: null,
+        isHsm: true,
+        isReserved: false,
+        isActive: true,
+        updatedAt: '2024-01-15T10:00:00Z',
+        numberParameters: 0,
+        translations: null,
+        type: 'TEXT',
+        quality: 'HIGH',
+        language: { id: '1', label: 'English', locale: 'en' },
+        tag: null,
+        MessageMedia: null,
+      },
+      {
+        id: '101',
+        bspId: null,
+        label: 'Account Balance',
+        body: 'body',
+        footer: null,
+        shortcode: 'element_name',
+        status: 'PENDING',
+        category: 'ACCOUNT_UPDATE',
+        reason: null,
+        isHsm: true,
+        isReserved: false,
+        isActive: true,
+        updatedAt: '2024-01-15T10:00:00Z',
+        numberParameters: 0,
+        translations: null,
+        type: 'TEXT',
+        quality: null,
+        language: { id: '3', label: 'Spanish', locale: 'es' },
+        tag: null,
+        MessageMedia: null,
+      },
+    ]);
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      getHSMTemplateTypeText,
+
+      templateEditMock('3', { hasButtons: false, buttons: null, buttonType: null }),
+      templateEditMock('3', { hasButtons: false, buttons: null, buttonType: null }),
+      templateEditMock('101', { hasButtons: false, buttons: null, buttonType: null }),
+      templateEditMock('101', { hasButtons: false, buttons: null, buttonType: null }),
+      deleteTemplateMock('3'),
+      ...CREATE_SESSION_TEMPLATE_MOCK,
+      familyRefetchMock,
+    ];
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: variantsWithRejected } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    fireEvent.click(screen.getByTestId('edit-reapply-language-3'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('account_balance')).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('English')).toBeInTheDocument();
+    });
+    const languageInput = screen.getAllByRole('combobox')[0];
+    expect(languageInput).not.toBeDisabled();
+
+    expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.queryByText(/is required/i)).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('0')).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
+    });
+  });
+
+  test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              pathname: '/add',
+              state: { languageAnchorId: '1', excludeLanguageIds: ['1'], variants: familyVariants },
+            },
+          ]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    const addLanguageButton = screen.getByTestId('add-language-link');
+    expect(addLanguageButton).toBeInTheDocument();
+
+    fireEvent.click(addLanguageButton);
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('account_balance')).toBeInTheDocument();
+    });
+
+    const languageInput = screen.getAllByRole('combobox')[0];
+    expect(languageInput).not.toBeDisabled();
+
+    languageInput.focus();
+    fireEvent.keyDown(languageInput, { key: 'ArrowDown' });
+
+    const listbox = await screen.findByRole('listbox');
+    expect(within(listbox).getByText('Marathi')).toBeInTheDocument();
+    expect(within(listbox).queryByText('English')).not.toBeInTheDocument();
   });
 });

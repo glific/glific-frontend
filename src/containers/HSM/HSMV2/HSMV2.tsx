@@ -1,17 +1,20 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { Typography } from '@mui/material';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS } from 'common/constants';
 import { templateInfo, interactiveButtonsInfo, HelpDataProps } from 'common/HelpData';
+import { setNotification, setErrorMessage } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Heading } from 'components/UI/Heading/Heading';
 import Simulator from 'components/simulator/Simulator';
 import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
 import { AttachmentField, AttachmentFieldChange } from 'containers/HSM/AttachmentField/AttachmentField';
@@ -21,10 +24,11 @@ import { TemplateOptionsV2 } from 'containers/TemplateOptionsV2/TemplateOptionsV
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_HSM_CATEGORIES, GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
+import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 import {
   convertButtonsToTemplate,
@@ -41,7 +45,19 @@ import {
   QuickReplyTemplate,
   WhatsappFormTemplate,
 } from '../HSM.helper';
-import { queries, templateIcon, dialogMessage, categoryDescriptions, buildSimulatorMessage } from './HSMV2.helper';
+import {
+  queries,
+  templateIcon,
+  dialogMessage,
+  categoryDescriptions,
+  buildSimulatorMessage,
+  filterAvailableLanguages,
+  buildLanguageDraft,
+  groupVariantsByTab,
+  statusTabFor,
+} from './HSMV2.helper';
+import type { StatusTab } from './HSMV2.helper';
+import { LanguageVersionsCard } from './LanguageVersionsCard/LanguageVersionsCard';
 import styles from './HSMV2.module.css';
 
 const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataProps }) => (
@@ -55,6 +71,7 @@ const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataP
 
 export const HSMV2 = () => {
   const location: any = useLocation();
+  const navigate = useNavigate();
   const [language, setLanguageId] = useState<any>(null);
   const [body, setBody] = useState<any>('');
   const [type, setType] = useState<any>(null);
@@ -72,6 +89,10 @@ export const HSMV2 = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
+  const [languageDraftReady, setLanguageDraftReady] = useState(false);
+  const [addPagePanel, setAddPagePanel] = useState<'view' | 'add' | 'edit'>('view');
+  const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -96,8 +117,9 @@ export const HSMV2 = () => {
     variables: { opts: { order: 'ASC' } },
   });
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
+  const [deleteTemplate, { loading: deleteLoading }] = useMutation(DELETE_TEMPLATE);
+  const [fetchFamilyVariants] = useLazyQuery(FILTER_TEMPLATES, { fetchPolicy: 'network-only' });
 
-  let isEditing = false;
   let mode;
   const copyMessage = t('Copy of the template has been created!');
 
@@ -106,9 +128,66 @@ export const HSMV2 = () => {
   if (isCopyState) {
     mode = 'copy';
   }
-  if (params.id && !isCopyState) {
-    isEditing = true;
-  }
+
+  const isViewRoute = location.pathname.endsWith('/view');
+  const isEditing = Boolean(params.id && !isCopyState && !isViewRoute);
+  const languageAnchorId = isViewRoute ? params.id : location.state?.languageAnchorId;
+
+  const excludeLanguageIds = useMemo(() => location.state?.excludeLanguageIds || [], [location.state]);
+  // local state (not a plain derived const) so deleting a variant from the
+  // Language versions card can drop it from the list immediately, without a
+  // refetch/renavigation.
+  const [familyVariants, setFamilyVariants] = useState<any[]>(location.state?.variants || []);
+  const isLanguageMode = Boolean(languageAnchorId) && !isEditing && !isCopyState;
+  const isAddRoute = isLanguageMode && !isViewRoute;
+  const isAddingLanguage = isAddRoute && addPagePanel === 'add';
+  const isViewingVariant = (isLanguageMode && isViewRoute) || (isAddRoute && addPagePanel === 'view');
+  const isEditingVariant = isAddRoute && addPagePanel === 'edit';
+  const fieldsLocked = isEditing || isViewingVariant;
+
+  const [activeTab, setActiveTab] = useState<StatusTab>(() => {
+    const initialVariant = familyVariants.find((variant: any) => variant.id === languageAnchorId);
+    return initialVariant ? statusTabFor(initialVariant.status) : 'Approved';
+  });
+
+  const { data: languageAnchorData, loading: languageAnchorLoading } = useQuery(GET_TEMPLATE, {
+    variables: { id: languageAnchorId },
+    skip: !isLanguageMode,
+  });
+  const languageAnchor = languageAnchorData?.sessionTemplate?.sessionTemplate;
+
+  const variantsByTab = groupVariantsByTab(familyVariants);
+
+  const { data: previewData } = useQuery(GET_TEMPLATE, {
+    variables: { id: addPagePreviewId },
+    skip: !(isAddRoute && (addPagePanel === 'view' || addPagePanel === 'edit') && addPagePreviewId),
+  });
+  const viewingLanguage =
+    isAddRoute && (addPagePanel === 'view' || addPagePanel === 'edit') && addPagePreviewId
+      ? previewData?.sessionTemplate?.sessionTemplate?.language
+      : languageAnchor?.language;
+  useEffect(() => {
+    if (isViewingVariant || isEditingVariant) {
+      if (viewingLanguage && languageOptions.length > 0) {
+        const matched = languageOptions.find((option: any) => option.id === viewingLanguage.id);
+        setLanguageId(matched || null);
+      } else {
+        setLanguageId(null);
+      }
+    }
+  }, [isViewingVariant, isEditingVariant, viewingLanguage, languageOptions]);
+
+  // "Edit & Re-apply" deliberately leaves entityId unset, same as "Add new
+  // language" — FormLayout treats a missing entityId as create-not-update, so
+  // Save submits a new template (the rejected one is a separate row you
+  // delete yourself) instead of overwriting the rejected record in place.
+  const entityId = isEditing
+    ? params.id
+    : isLanguageMode && isViewRoute
+      ? languageAnchorId
+      : isAddRoute && addPagePanel === 'view'
+        ? addPagePreviewId || languageAnchorId
+        : undefined;
 
   const categoryOpn: any = [];
   if (categoryList) {
@@ -164,7 +243,7 @@ export const HSMV2 = () => {
   }: any) => {
     let vars: any = [];
 
-    if (languageOptions.length > 0 && languageIdValue) {
+    if (languageOptions.length > 0 && languageIdValue && !isViewingVariant && !isEditingVariant) {
       if (!language?.id) {
         const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
         setLanguageId(selectedLanguage);
@@ -275,6 +354,92 @@ export const HSMV2 = () => {
     );
   };
 
+  const requestDeleteVariant = (variantId: string) => {
+    const variant = familyVariants.find((familyVariant: any) => familyVariant.id === variantId);
+    const label = variant ? `${variant.language?.label} (${languageCode(variant.language?.locale)})` : variantId;
+    setDeleteTarget({ id: variantId, label });
+  };
+
+  const confirmDeleteVariant = async () => {
+    if (!deleteTarget) {
+      return;
+    }
+    const { id } = deleteTarget;
+    try {
+      await deleteTemplate({ variables: { id } });
+      setNotification(t('Template deleted successfully'));
+      // the anchor is what this whole page is built from (draft prefill, page
+      // title, entityId) — deleting it leaves nothing sensible to keep showing.
+      if (id === languageAnchorId) {
+        navigate(`/${backButton}`);
+        return;
+      }
+      setFamilyVariants((prev) => prev.filter((variant) => variant.id !== id));
+      // if the deleted row was the one being previewed, fall back to the
+      // anchor's own content instead of pointing at a variant that's gone.
+      if (addPagePreviewId === id) {
+        setAddPagePreviewId(null);
+      }
+    } catch (error) {
+      setErrorMessage(error);
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
+
+  const openEditReapply = (variantId: string) => {
+    setAddPagePanel('edit');
+    setAddPagePreviewId(variantId);
+  };
+
+  const openAddLanguage = () => {
+    setAddPagePanel('add');
+    setAddPagePreviewId(null);
+    // otherwise the anchor's own language (shown while previewing it above)
+    // stays selected — picking a language you're translating into should
+    // start blank, not preloaded with one that's already taken.
+    setLanguageId(null);
+  };
+
+  const viewVariant = (variantId: string) => {
+    // on the add route, "View" previews a variant in place (same URL) — the
+    // list page's own View icon is the only thing that goes to the
+    // dedicated /:id/view route.
+    if (isAddRoute) {
+      setAddPagePanel('view');
+      setAddPagePreviewId(variantId);
+    } else {
+      navigate(`/template-v2/${variantId}/view`, { state: { variants: familyVariants } });
+    }
+  };
+
+  const handleVariantCreated = async (data: any) => {
+    const created = data?.createSessionTemplate?.sessionTemplate;
+    if (!created) {
+      return;
+    }
+    try {
+      const { data: familyData } = await fetchFamilyVariants({
+        variables: {
+          filter: { isHsm: true, status: '' },
+          opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+        },
+      });
+      const shortcodeToMatch = created.shortcode || newShortcode;
+      const freshVariants = (familyData?.sessionTemplates || []).filter(
+        (item: any) => item.shortcode === shortcodeToMatch
+      );
+      setFamilyVariants(freshVariants);
+      const createdFresh = freshVariants.find((variant: any) => variant.id === created.id);
+      setActiveTab(statusTabFor(createdFresh?.status || 'PENDING'));
+    } catch (error) {
+      setErrorMessage(error);
+    }
+    setAddPagePanel('view');
+    setAddPagePreviewId(created.id);
+    setLanguageDraftReady(false);
+  };
+
   const fields = [
     {
       component: SectionTitle,
@@ -288,7 +453,7 @@ export const HSMV2 = () => {
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       onChange: getLanguageId,
     },
     {
@@ -296,7 +461,7 @@ export const HSMV2 = () => {
       name: 'newShortcode',
       label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}`,
-      disabled: isEditing,
+      disabled: isEditing || isLanguageMode,
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
@@ -306,7 +471,7 @@ export const HSMV2 = () => {
       options: categoryOpn,
       variant: 'radio',
       onChange: setCategory,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       label: t('Category'),
     },
     {
@@ -319,9 +484,9 @@ export const HSMV2 = () => {
       name: 'body',
       label: `${t('Message')}*`,
       rows: 5,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       handleChange: (value: any) => setBody(value),
-      defaultValue: (isEditing || isCopyState) && editorState,
+      defaultValue: (fieldsLocked || isCopyState || isAddingLanguage || isEditingVariant) && editorState,
     },
     {
       component: TemplateVariables,
@@ -329,13 +494,13 @@ export const HSMV2 = () => {
       message: body,
       variables,
       setVariables,
-      isEditing,
+      isEditing: fieldsLocked,
     },
     {
       component: Input,
       name: 'footer',
       label: `${t('Footer')} (${t('optional')})`,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
@@ -354,7 +519,7 @@ export const HSMV2 = () => {
       onChange: handleTemplateTypeChange,
       onClear: clearButtonSelection,
       clearLabel: t('Clear button selection'),
-      disabled: isEditing,
+      disabled: fieldsLocked,
       label: t('Button Type'),
     },
     {
@@ -363,7 +528,7 @@ export const HSMV2 = () => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handleInputChange,
@@ -378,7 +543,7 @@ export const HSMV2 = () => {
       component: AttachmentField,
       name: 'type',
       onChange: handleAttachmentChange,
-      disabled: isEditing,
+      disabled: fieldsLocked,
       label: t('Attachment Type'),
     },
     {
@@ -392,7 +557,7 @@ export const HSMV2 = () => {
       label: `${t('Tag')} (${t('optional')})`,
       options: tag ? tag.tags : [],
       optionLabel: 'label',
-      disabled: isEditing,
+      disabled: fieldsLocked,
       hasCreateOption: true,
       multiple: false,
       onChange: (value: any) => setTagId(value),
@@ -407,13 +572,41 @@ export const HSMV2 = () => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
-      setLanguageOptions(lang);
-      if (!isEditing) {
+      setLanguageOptions(isAddingLanguage ? filterAvailableLanguages(lang, excludeLanguageIds) : lang);
+      // Adding a language means picking one that isn't taken yet — don't
+      // auto-select a default (it may well be one of the excluded ones).
+      if (!isEditing && !isAddingLanguage && !isViewingVariant && !isEditingVariant) {
         const englishLang = lang.find((l: any) => l.label.toLowerCase() === 'english');
         setLanguageId(englishLang || lang[0]);
       }
     }
-  }, [languages]);
+  }, [languages, isAddingLanguage, excludeLanguageIds, isEditing, isViewingVariant, isEditingVariant]);
+
+  const languageDraftSource = isEditingVariant ? previewData?.sessionTemplate?.sessionTemplate : languageAnchor;
+  useEffect(() => {
+    if ((isAddingLanguage || isEditingVariant) && languageDraftSource && !languageDraftReady) {
+      const draft = buildLanguageDraft(languageDraftSource);
+      setNewShortcode(draft.newShortcode);
+      setBody(draft.body);
+      setEditorState(draft.body);
+      setFooter(draft.footer);
+      setCategory(draft.category);
+      setVariables(draft.variables);
+      setType(draft.type);
+      setAttachmentURL(draft.attachmentURL);
+      setTemplateType(draft.templateType);
+      setTemplateButtons(draft.templateButtons);
+      setIsAddButtonChecked(draft.isAddButtonChecked);
+      setTagId(draft.tagId);
+      setLanguageDraftReady(true);
+    }
+  }, [isAddingLanguage, isEditingVariant, languageDraftSource, languageDraftReady]);
+
+  const deleteRejectedVariantBeforeSubmit = async () => {
+    if (isEditingVariant && addPagePreviewId) {
+      await deleteTemplate({ variables: { id: addPagePreviewId } });
+    }
+  };
 
   const computeSampleText = () => {
     const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
@@ -432,7 +625,7 @@ export const HSMV2 = () => {
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
 
   useEffect(() => {
-    if (templateType?.id && !isEditing) {
+    if (templateType?.id && !isEditing && !isAddingLanguage && !isViewingVariant && !isEditingVariant) {
       addTemplateButtons(false);
     }
   }, [templateType]);
@@ -441,20 +634,64 @@ export const HSMV2 = () => {
     setVariables(getVariables(body, variables));
   }, [body]);
 
-  if (languageLoading || categoryLoading || tagLoading) {
+  if (
+    languageLoading ||
+    categoryLoading ||
+    tagLoading ||
+    (isLanguageMode && languageAnchorLoading && !languageAnchor)
+  ) {
     return <Loading />;
   }
 
+  const languageModeTitle = isAddingLanguage
+    ? `${t('Add Language')} — ${languageAnchor?.shortcode}`
+    : languageAnchor?.shortcode || t('HSM Template');
+  const languageModeHelp = isAddingLanguage
+    ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
+    : t('View the content and language versions for this template.');
+
   return (
     <div className={styles.Page}>
+      {isLanguageMode && (
+        <Heading
+          backLink={`/${backButton}`}
+          formTitle={languageModeTitle}
+          headerHelp={languageModeHelp}
+          helpData={templateInfo}
+        />
+      )}
+      {isLanguageMode && (
+        <LanguageVersionsCard
+          variantsByTab={variantsByTab}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          showAddLanguage={isAddRoute}
+          showDelete={isAddRoute}
+          onView={viewVariant}
+          onEditReapply={openEditReapply}
+          onAddLanguage={openAddLanguage}
+          onDelete={requestDeleteVariant}
+        />
+      )}
+      {deleteTarget && (
+        <DialogBox
+          title={`${t('Are you sure you want to delete the')} "${deleteTarget.label}" ${t('version?')}`}
+          handleCancel={() => setDeleteTarget(null)}
+          handleOk={confirmDeleteVariant}
+          colorOk="warning"
+          buttonOkLoading={deleteLoading}
+        >
+          {t('This action cannot be undone.')}
+        </DialogBox>
+      )}
       <FormLayout
         {...queries}
         updateItemQuery={updateItemQuery}
         states={states}
-        isView={isEditing}
+        isView={fieldsLocked}
         setStates={setStates}
         setPayload={setPayload}
-        validationSchema={isEditing ? Yup.object() : FormSchema}
+        validationSchema={fieldsLocked ? Yup.object() : FormSchema}
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
         formFields={fields}
@@ -462,16 +699,17 @@ export const HSMV2 = () => {
         listItem="sessionTemplate"
         icon={templateIcon}
         helpData={templateInfo}
+        noHeading={isLanguageMode}
         getLanguageId={getLanguageId}
         languageSupport={false}
-        errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+        errorButtonState={{ text: fieldsLocked ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
-        button={!isEditing ? t('Submit for Approval') : t('Save')}
+        button={!fieldsLocked ? t('Submit for Approval') : t('Save')}
         buttonState={{
           text: t('Validating URL'),
           status: validatingURL,
-          show: !isEditing,
+          show: !fieldsLocked,
           styles: styles.Buttons,
         }}
         saveOnPageChange={false}
@@ -480,7 +718,10 @@ export const HSMV2 = () => {
         backLinkButton={`/${backButton}`}
         cancelLink={backButton}
         getMediaId={getMediaId}
-        entityId={params.id}
+        entityId={entityId}
+        redirect={!(isAddingLanguage || isEditingVariant)}
+        afterSave={isAddingLanguage || isEditingVariant ? handleVariantCreated : undefined}
+        beforeSubmit={isEditingVariant ? deleteRejectedVariantBeforeSubmit : undefined}
         partialPage
         customStyles={styles.CustomFormShell}
       />

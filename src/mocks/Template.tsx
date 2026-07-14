@@ -1,6 +1,7 @@
 import {
   BULK_APPLY_TEMPLATES,
   CREATE_TEMPLATE,
+  DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
   SYNC_HSM_TEMPLATES,
   UPDATE_TEMPLATE,
@@ -96,6 +97,11 @@ export const getCategoriesMock = {
     },
   },
 };
+
+export const deleteTemplateMock = (id: string) => ({
+  request: { query: DELETE_TEMPLATE, variables: { id } },
+  result: { data: { deleteSessionTemplate: { errors: null } } },
+});
 
 export const templateEditMock = (templateId: string, buttons: any) => ({
   request: {
@@ -939,7 +945,7 @@ export const hsmV2TemplatesData = [
 
 // HSMListV2 drives the shared `List` component, so mocks must mirror the exact
 // variables List sends: filter + opts {limit:50, offset:0, order:'ASC', orderWith:'label'}.
-const sessionTemplatesV2Mock = (filter: any, data: any) => ({
+export const sessionTemplatesV2Mock = (filter: any, data: any) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
