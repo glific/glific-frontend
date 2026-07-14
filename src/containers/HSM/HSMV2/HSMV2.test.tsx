@@ -10,15 +10,16 @@ import {
   CREATE_SESSION_TEMPLATE_MOCK,
   templateEditMock,
   deleteTemplateMock,
+  deleteTemplateErrorMock,
   sessionTemplatesV2Mock,
+  sessionTemplatesV2ErrorMock,
 } from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
-import { uploadMediaSuccessMock, uploadMediaFailureMock } from 'mocks/Attachment';
+import { uploadMediaSuccessMock, uploadMediaFailureMock, createMediaMessageMock } from 'mocks/Attachment';
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import * as utilsModule from 'common/utils';
-
-const uploadPhotoMock = uploadMediaSuccessMock('photo.png', 'image/png', 'https://gcs.test.com/photo.png');
+import { filterAvailableLanguages, buildLanguageDraft } from './HSMV2.helper';
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -366,7 +367,12 @@ describe('HSMV2 add mode', () => {
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
     const { container } = render(
       <MockedProvider
-        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadPhotoMock]}
+        mocks={[
+          ...mocks,
+          ...WHATSAPP_FORM_MOCKS,
+          ...CREATE_SESSION_TEMPLATE_MOCK,
+          uploadMediaSuccessMock('photo.png', 'image/png', 'https://gcs.test.com/photo.png'),
+        ]}
         addTypename={false}
       >
         <MemoryRouter>
@@ -446,10 +452,14 @@ describe('HSMV2 add mode', () => {
 
   test('uploading a PDF for the Document type shows the upload success state', async () => {
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
-    const uploadPdfMock = uploadMediaSuccessMock('sample.pdf', 'application/pdf', 'https://gcs.test.com/sample.pdf');
     const { container } = render(
       <MockedProvider
-        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadPdfMock]}
+        mocks={[
+          ...mocks,
+          ...WHATSAPP_FORM_MOCKS,
+          ...CREATE_SESSION_TEMPLATE_MOCK,
+          uploadMediaSuccessMock('sample.pdf', 'application/pdf', 'https://gcs.test.com/sample.pdf'),
+        ]}
         addTypename={false}
       >
         <MemoryRouter>
@@ -477,10 +487,14 @@ describe('HSMV2 add mode', () => {
 
   test('upload failure shows an error notification and resets the upload state', async () => {
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":true}');
-    const uploadFailureMock = uploadMediaFailureMock('broken.png', 'image/png', 'upload failed');
     const { container } = render(
       <MockedProvider
-        mocks={[...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, uploadFailureMock]}
+        mocks={[
+          ...mocks,
+          ...WHATSAPP_FORM_MOCKS,
+          ...CREATE_SESSION_TEMPLATE_MOCK,
+          uploadMediaFailureMock('broken.png', 'image/png', 'upload failed'),
+        ]}
         addTypename={false}
       >
         <MemoryRouter>
@@ -599,6 +613,54 @@ describe('HSMV2 add mode', () => {
 
     fireEvent.click(screen.getByTestId('back-button'));
     expect(screen.getByText('HSM list page')).toBeInTheDocument();
+  });
+
+  test('submitting a template with an attachment URL creates the media message first', async () => {
+    validateMediaSpy.mockResolvedValueOnce({ data: { is_valid: true } } as any);
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      ...CREATE_SESSION_TEMPLATE_MOCK,
+      createMediaMessageMock({
+        caption: 'Hi, How are you',
+        sourceUrl: 'https://example.com/img.png',
+        url: 'https://example.com/img.png',
+      }),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    const lexicalEditor = inputs[1];
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    fireEvent.click(screen.getByText('Account_update'));
+
+    fireEvent.click(screen.getByText('Image'));
+    const urlInput = screen.getByPlaceholderText('https://example.com/image.jpg');
+    fireEvent.change(urlInput, { target: { value: 'https://example.com/img.png' } });
+    fireEvent.blur(urlInput);
+
+    await waitFor(() => {
+      expect(validateMediaSpy).toHaveBeenCalledWith('https://example.com/img.png', 'IMAGE', false);
+    });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
   });
 });
 
@@ -929,5 +991,222 @@ describe('HSMV2 language versions', () => {
     const listbox = await screen.findByRole('listbox');
     expect(within(listbox).getByText('Marathi')).toBeInTheDocument();
     expect(within(listbox).queryByText('English')).not.toBeInTheDocument();
+  });
+
+  test('canceling the delete confirmation dialog leaves the variant untouched', async () => {
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    fireEvent.click(screen.getByTestId('delete-language-2'));
+    expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
+
+    // no DELETE_TEMPLATE mock is registered — if Cancel actually deleted
+    // anything, this would fail with an unmatched-mock Apollo error.
+    fireEvent.click(screen.getByTestId('cancel-button'));
+
+    expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
+    expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
+  });
+
+  test('a failed delete shows an error and leaves the variant in the list', async () => {
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      deleteTemplateErrorMock('2', 'network error'),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    fireEvent.click(screen.getByTestId('delete-language-2'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('ok-button')).not.toBeInTheDocument();
+    });
+    expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
+  });
+
+  test('deleting the sibling currently being previewed falls back to showing the anchor', async () => {
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      getHSMTemplateTypeText,
+      getHSMTemplateTypeText,
+      templateEditMock('2', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+      templateEditMock('2', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+      deleteTemplateMock('2'),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    fireEvent.click(screen.getByTestId('view-language-2'));
+
+    // previewing the sibling — the Language field shows it, locked.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
+    });
+
+    // delete that same previewed row.
+    fireEvent.click(screen.getByTestId('delete-language-2'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+    // addPagePreviewId resets, so entityId falls back to the anchor —
+    // the Language field switches back to English instead of pointing at
+    // the now-deleted record.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('English')).toBeInTheDocument();
+    });
+  });
+
+  test('clicking "View" on a sibling from the dedicated /view route navigates to that sibling\'s own /view URL', async () => {
+    const MOCKS = [
+      ...mocks,
+      getHSMTemplateTypeText,
+      getHSMTemplateTypeText,
+      templateEditMock('2', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+      templateEditMock('2', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/template-v2/1/view', state: { variants: familyVariants } }]}>
+          <Routes>
+            <Route path="/template-v2/:id/view" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-In Progress'));
+    fireEvent.click(screen.getByTestId('view-language-2'));
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
+    });
+  });
+
+  test('a failed family refetch after creating a variant shows an error, without crashing', async () => {
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      ...CREATE_SESSION_TEMPLATE_MOCK,
+      sessionTemplatesV2ErrorMock({ isHsm: true, status: '' }, 'network error'),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Language versions')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('account_balance')).toBeInTheDocument();
+    });
+
+    const languageInput = screen.getAllByRole('combobox')[0];
+    languageInput.focus();
+    fireEvent.keyDown(languageInput, { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+    expect(screen.getByText('Language versions')).toBeInTheDocument();
+  });
+});
+
+describe('filterAvailableLanguages', () => {
+  test('with no arguments, returns an empty list instead of throwing', () => {
+    expect(filterAvailableLanguages()).toEqual([]);
+  });
+});
+
+describe('buildLanguageDraft', () => {
+  test('a template with no example falls back to an empty variables list', () => {
+    const draft = buildLanguageDraft({ shortcode: 'no_example', body: 'Hi', category: 'UTILITY' });
+    expect(draft.variables).toEqual([]);
   });
 });

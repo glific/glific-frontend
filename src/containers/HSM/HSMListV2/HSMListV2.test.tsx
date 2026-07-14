@@ -25,6 +25,7 @@ import {
   templateCountV2RejectedMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
+import { languageCode } from './HSMListV2.helper';
 
 vi.mock('i18next', () => ({ t: (str: string) => str }));
 
@@ -580,4 +581,8 @@ test('filters templates by search term', async () => {
     expect(screen.queryByText('welcome_msg')).not.toBeInTheDocument();
   });
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('languageCode with no locale returns an empty string instead of throwing', () => {
+  expect(languageCode()).toBe('');
 });

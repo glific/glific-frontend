@@ -103,6 +103,11 @@ export const deleteTemplateMock = (id: string) => ({
   result: { data: { deleteSessionTemplate: { errors: null } } },
 });
 
+export const deleteTemplateErrorMock = (id: string, message: string) => ({
+  request: { query: DELETE_TEMPLATE, variables: { id } },
+  error: new Error(message),
+});
+
 export const templateEditMock = (templateId: string, buttons: any) => ({
   request: {
     query: GET_TEMPLATE,
@@ -954,6 +959,17 @@ export const sessionTemplatesV2Mock = (filter: any, data: any) => ({
     },
   },
   result: { data: { sessionTemplates: data } },
+});
+
+export const sessionTemplatesV2ErrorMock = (filter: any, message: string) => ({
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter,
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
+  },
+  error: new Error(message),
 });
 
 // HSMListV2 defaults the status filter to APPROVED, so every list query carries
