@@ -52,28 +52,25 @@ export const TemplateOptionsV2 = ({
   disabled = false,
   onDynamicParamsChange,
 }: TemplateOptionsV2Props) => {
-  const [forms, setForms] = useState<any>([]);
   const [screens, setScreens] = useState<any>([]);
   const [advancedOpenRows, setAdvancedOpenRows] = useState<Record<number, boolean>>({});
 
-  useQuery(GET_WHATSAPP_FORM_DEFINITIONS, {
+  const { data: whatsappFormsData } = useQuery(GET_WHATSAPP_FORM_DEFINITIONS, {
     variables: {
       filter: { status: 'PUBLISHED' },
     },
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      setForms(
-        data.listWhatsappForms.map((form: any) => ({
-          label: form?.name,
-          id: form?.metaFlowId,
-          definition: form?.revision?.definition,
-        }))
-      );
-    },
   });
 
+  const forms =
+    whatsappFormsData?.listWhatsappForms.map((form: any) => ({
+      label: form?.name,
+      id: form?.metaFlowId,
+      definition: form?.revision?.definition,
+    })) ?? [];
+
   const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '', url_type: '', sampleSuffix: '' } : { value: '' };
+    const obj = type ? { type: '', value: '', title: '', urlType: '', sampleSuffix: '' } : { value: '' };
     helper.push(obj);
     onAddClick();
   };
@@ -156,9 +153,7 @@ export const TemplateOptionsV2 = ({
               />
             )}
           </div>
-          {errors.templateButtons && touched.templateButtons && touched.templateButtons[index]?.type ? (
-            <FormHelperText error>{errors.templateButtons[index]?.type}</FormHelperText>
-          ) : null}
+          {isError('type') ? <FormHelperText error>{errors.templateButtons[index]?.type}</FormHelperText> : null}
 
           <div className={styles.FieldsRow}>
             <div className={styles.Field} data-testid="buttonTitle">
@@ -173,9 +168,7 @@ export const TemplateOptionsV2 = ({
                   className={styles.TextField}
                   error={isError('title')}
                 />
-                {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
-                ) : null}
+                {isError('title') ? <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText> : null}
               </FormControl>
             </div>
             <div className={styles.Field} data-testid="buttonValue">
@@ -190,9 +183,7 @@ export const TemplateOptionsV2 = ({
                   className={styles.TextField}
                   error={isError('value')}
                 />
-                {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
-                ) : null}
+                {isError('value') ? <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText> : null}
               </FormControl>
             </div>
           </div>
@@ -275,9 +266,7 @@ export const TemplateOptionsV2 = ({
             <div className={styles.CharCount}>
               {(value || '').length} / {QUICK_REPLY_MAX_LENGTH}
             </div>
-            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-              <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
-            ) : null}
+            {isError('value') ? <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText> : null}
           </FormControl>
           {inputFields.length > 1 && (
             <DeleteIcon
@@ -314,9 +303,7 @@ export const TemplateOptionsV2 = ({
               }}
               disabled={disabled}
             />
-            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-              <p className={styles.Errors}>{errors.templateButtons[index]?.form_id}</p>
-            ) : null}
+            {isError('form_id') ? <p className={styles.Errors}>{errors.templateButtons[index]?.form_id}</p> : null}
           </div>
 
           <div className={styles.Field}>
@@ -330,7 +317,7 @@ export const TemplateOptionsV2 = ({
               }}
               disabled={disabled || !form_id}
             />
-            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+            {isError('navigate_screen') ? (
               <p className={styles.Errors}>{errors.templateButtons[index]?.navigate_screen}</p>
             ) : null}
           </div>
@@ -343,12 +330,10 @@ export const TemplateOptionsV2 = ({
               variant="outlined"
               onChange={(e: any) => onInputChange(e.target.value, row, index, 'text')}
               className={styles.TextField}
-              error={isError('value')}
+              error={isError('text')}
               disabled={disabled}
             />
-            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-              <p className={styles.Errors}>{errors.templateButtons[index]?.text}</p>
-            ) : null}
+            {isError('text') ? <p className={styles.Errors}>{errors.templateButtons[index]?.text}</p> : null}
           </div>
         </div>
       );
