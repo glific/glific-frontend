@@ -119,16 +119,11 @@ const HSMListV2 = () => {
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
-  const handleView = (id: any, item: any) =>
-    navigate(`/template-v2/${id}/view`, { state: { variants: item.variants } });
+  const handleView = (id: any) => navigate(`/template-v2/${id}/view`);
 
-  const handleAddLanguage = (id: any, item: any) =>
+  const handleAddLanguage = (id: any) =>
     navigate('/template-v2/add', {
-      state: {
-        languageAnchorId: id,
-        excludeLanguageIds: (item.variants ?? []).map((variant: any) => variant.language?.id),
-        variants: item.variants,
-      },
+      state: { languageAnchorId: id },
     });
 
   const setCopyDialog = (id: any) => navigate(`/template-v2/${id}/edit`, { state: 'copy' });

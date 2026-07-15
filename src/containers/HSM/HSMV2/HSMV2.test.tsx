@@ -19,7 +19,7 @@ import { uploadMediaSuccessMock, uploadMediaFailureMock, createMediaMessageMock 
 import { setNotification } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import * as utilsModule from 'common/utils';
-import { filterAvailableLanguages, buildLanguageDraft } from './HSMV2.helper';
+import { filterAvailableLanguages } from './HSMV2.helper';
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -669,12 +669,17 @@ describe('HSMV2 language versions', () => {
     { id: '1', language: { id: '1', label: 'English', locale: 'en' }, category: 'ACCOUNT_UPDATE', status: 'APPROVED' },
     { id: '2', language: { id: '2', label: 'Hindi', locale: 'hi' }, category: 'ACCOUNT_UPDATE', status: 'PENDING' },
   ];
+  // HSMV2 fetches its own family by the anchor's shortcode instead of
+  // relying on navigation state (see HSMListV2.tsx) — getHSMTemplateTypeText
+  // (the default anchor mock, id '1') has shortcode 'account_balance'.
+  const familyFetchMock = (variants: any[] = familyVariants) =>
+    sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, variants);
 
   test('the dedicated /view route shows the language versions summary read-only, with no "Add new language" option', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeText];
+    const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={[{ pathname: '/templates/1/view', state: { variants: familyVariants } }]}>
+        <MemoryRouter initialEntries={['/templates/1/view']}>
           <Routes>
             <Route path="/templates/:id/view" element={<HSMV2 />} />
           </Routes>
@@ -683,10 +688,8 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     });
-
-    expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
     expect(within(screen.getByTestId('status-tab-Rejected')).getByText('0')).toBeInTheDocument();
 
@@ -699,11 +702,15 @@ describe('HSMV2 language versions', () => {
     expect(screen.queryByTestId('add-language-link')).not.toBeInTheDocument();
   });
 
-  test('the dedicated /view route never offers Delete — only the add-language flow does', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeText];
+  test('a reload (or direct link) on the dedicated /view route with no navigation state still fetches and shows the family tabs', async () => {
+    const familyFetchMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, [
+      { id: '1', shortcode: 'account_balance', status: 'APPROVED', language: { id: '1', label: 'English' } },
+      { id: '2', shortcode: 'account_balance', status: 'PENDING', language: { id: '2', label: 'Marathi' } },
+    ]);
+    const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={[{ pathname: '/templates/1/view', state: { variants: familyVariants } }]}>
+        <MemoryRouter initialEntries={['/templates/1/view']}>
           <Routes>
             <Route path="/templates/:id/view" element={<HSMV2 />} />
           </Routes>
@@ -715,18 +722,44 @@ describe('HSMV2 language versions', () => {
       expect(screen.getByText('Language versions')).toBeInTheDocument();
     });
 
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
+    });
+    expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
+  });
+
+  test('the dedicated /view route never offers Delete — only the add-language flow does', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/view']}>
+          <Routes>
+            <Route path="/templates/:id/view" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
+    });
+
     expect(screen.queryByTestId('delete-language-1')).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
     expect(screen.queryByTestId('delete-language-2')).not.toBeInTheDocument();
   });
 
   test('deleting a non-anchor sibling from the add-language flow asks for confirmation, then removes it from the list', async () => {
-    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, deleteTemplateMock('2')];
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(),
+      deleteTemplateMock('2'),
+    ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -735,7 +768,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
@@ -756,12 +789,16 @@ describe('HSMV2 language versions', () => {
   });
 
   test('deleting the anchor variant itself navigates back to the template list', async () => {
-    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, deleteTemplateMock('1')];
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(),
+      deleteTemplateMock('1'),
+    ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
             <Route path="/template-v2" element={<div>HSM list page</div>} />
@@ -771,7 +808,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(screen.getByTestId('delete-language-1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('delete-language-1'));
@@ -783,16 +820,14 @@ describe('HSMV2 language versions', () => {
   });
 
   test('Rejected variants offer "Edit & Re-apply" instead of "View" on the add-language flow', async () => {
-    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText];
     const variantsWithRejected = [
       ...familyVariants,
       { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
     ];
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(variantsWithRejected)];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: variantsWithRejected } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -801,7 +836,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-Rejected'));
@@ -810,14 +845,14 @@ describe('HSMV2 language versions', () => {
   });
 
   test('the dedicated /view route shows "View" (not "Edit & Re-apply") for Rejected variants', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeText];
     const variantsWithRejected = [
       ...familyVariants,
       { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
     ];
+    const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock(variantsWithRejected)];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={[{ pathname: '/templates/1/view', state: { variants: variantsWithRejected } }]}>
+        <MemoryRouter initialEntries={['/templates/1/view']}>
           <Routes>
             <Route path="/templates/:id/view" element={<HSMV2 />} />
           </Routes>
@@ -826,7 +861,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-Rejected'));
@@ -835,7 +870,7 @@ describe('HSMV2 language versions', () => {
   });
 
   test('clicking "Edit & Re-apply" opens the draft immediately (no dialog, no delete yet); Save deletes the rejected variant, waits for it, then creates and shows the replacement in its real status without leaving the page', async () => {
-    const familyRefetchMock = sessionTemplatesV2Mock({ isHsm: true, status: '' }, [
+    const familyRefetchMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'element_name' }, [
       {
         id: '1',
         bspId: 'bsp-001',
@@ -881,11 +916,16 @@ describe('HSMV2 language versions', () => {
         MessageMedia: null,
       },
     ]);
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
     const MOCKS = [
       ...mocks,
       ...WHATSAPP_FORM_MOCKS,
       getHSMTemplateTypeText,
       getHSMTemplateTypeText,
+      familyFetchMock(variantsWithRejected),
 
       templateEditMock('3', { hasButtons: false, buttons: null, buttonType: null }),
       templateEditMock('3', { hasButtons: false, buttons: null, buttonType: null }),
@@ -895,15 +935,9 @@ describe('HSMV2 language versions', () => {
       ...CREATE_SESSION_TEMPLATE_MOCK,
       familyRefetchMock,
     ];
-    const variantsWithRejected = [
-      ...familyVariants,
-      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
-    ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: variantsWithRejected } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -912,7 +946,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-Rejected'));
@@ -951,17 +985,15 @@ describe('HSMV2 language versions', () => {
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
-    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText];
+    // only the anchor itself here (not familyVariants' PENDING Hindi/Marathi
+    // row) — excludeLanguageIds is now derived from the family list, so
+    // Marathi needs to still be free for this test to exercise "the anchor's
+    // own language is excluded, everything else isn't".
+    const anchorOnly = [familyVariants[0]];
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[
-            {
-              pathname: '/add',
-              state: { languageAnchorId: '1', excludeLanguageIds: ['1'], variants: familyVariants },
-            },
-          ]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -994,12 +1026,10 @@ describe('HSMV2 language versions', () => {
   });
 
   test('canceling the delete confirmation dialog leaves the variant untouched', async () => {
-    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText];
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock()];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -1008,7 +1038,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
@@ -1028,13 +1058,12 @@ describe('HSMV2 language versions', () => {
       ...mocks,
       ...WHATSAPP_FORM_MOCKS,
       getHSMTemplateTypeText,
+      familyFetchMock(),
       deleteTemplateErrorMock('2', 'network error'),
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -1043,7 +1072,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
@@ -1063,6 +1092,7 @@ describe('HSMV2 language versions', () => {
       getHSMTemplateTypeText,
       getHSMTemplateTypeText,
       getHSMTemplateTypeText,
+      familyFetchMock(),
       templateEditMock('2', {
         hasButtons: false,
         buttons: null,
@@ -1079,9 +1109,7 @@ describe('HSMV2 language versions', () => {
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -1090,7 +1118,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
@@ -1121,6 +1149,7 @@ describe('HSMV2 language versions', () => {
       ...mocks,
       getHSMTemplateTypeText,
       getHSMTemplateTypeText,
+      familyFetchMock(),
       templateEditMock('2', {
         hasButtons: false,
         buttons: null,
@@ -1136,7 +1165,7 @@ describe('HSMV2 language versions', () => {
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={[{ pathname: '/template-v2/1/view', state: { variants: familyVariants } }]}>
+        <MemoryRouter initialEntries={['/template-v2/1/view']}>
           <Routes>
             <Route path="/template-v2/:id/view" element={<HSMV2 />} />
           </Routes>
@@ -1145,7 +1174,7 @@ describe('HSMV2 language versions', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
@@ -1160,14 +1189,13 @@ describe('HSMV2 language versions', () => {
       ...mocks,
       ...WHATSAPP_FORM_MOCKS,
       getHSMTemplateTypeText,
+      familyFetchMock([familyVariants[0]]),
       ...CREATE_SESSION_TEMPLATE_MOCK,
-      sessionTemplatesV2ErrorMock({ isHsm: true, status: '' }, 'network error'),
+      sessionTemplatesV2ErrorMock({ isHsm: true, shortcode: 'element_name' }, 'network error'),
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', variants: familyVariants } }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
           </Routes>
@@ -1201,12 +1229,5 @@ describe('HSMV2 language versions', () => {
 describe('filterAvailableLanguages', () => {
   test('with no arguments, returns an empty list instead of throwing', () => {
     expect(filterAvailableLanguages()).toEqual([]);
-  });
-});
-
-describe('buildLanguageDraft', () => {
-  test('a template with no example falls back to an empty variables list', () => {
-    const draft = buildLanguageDraft({ shortcode: 'no_example', body: 'Hi', category: 'UTILITY' });
-    expect(draft.variables).toEqual([]);
   });
 });

@@ -239,8 +239,4 @@ export const getColumns =
     category: getCategories(variants),
     ...(showReason ? { reason: getReason(reason) } : { updatedAt: getUpdatedAt(updatedAt) }),
     collapseContent: renderCollapsedRows(variants, showReason),
-    // carried through (not rendered — see Pager's removeDisplayColumns) so row
-    // actions like "View"/"Add new language" can hand the full variant list to
-    // HSMV2 via navigation state, without an extra fetch on landing.
-    variants,
   });

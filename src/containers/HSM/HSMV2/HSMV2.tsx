@@ -24,7 +24,7 @@ import { TemplateOptionsV2 } from 'containers/TemplateOptionsV2/TemplateOptionsV
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { FILTER_TEMPLATES, GET_HSM_CATEGORIES, GET_TEMPLATE } from 'graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
@@ -52,7 +52,6 @@ import {
   categoryDescriptions,
   buildSimulatorMessage,
   filterAvailableLanguages,
-  buildLanguageDraft,
   groupVariantsByTab,
   statusTabFor,
 } from './HSMV2.helper';
@@ -68,6 +67,22 @@ const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataP
     </Typography>
   </div>
 );
+
+// Everything the page renders/locks/submits reads off this one value instead
+// of recombining a pile of overlapping booleans:
+//   - create      — blank form, creates a new template.
+//   - copy        — prefilled from an existing template, creates a new one.
+//   - view        — read-only. HSMs can't actually be edited once they exist,
+//                   so /:id/edit, the dedicated /:id/view route, and
+//                   previewing a sibling in place on the add route are all
+//                   this same mode.
+//   - addLanguage — prefilled from the anchor template, creates a new
+//                   language variant.
+//   - reapply     — "Edit & Re-apply" a rejected/failed variant: prefilled
+//                   from that variant's own content, creates its replacement
+//                   (see deleteRejectedVariantBeforeSubmit for why the old
+//                   row has to go first).
+type Mode = 'create' | 'view' | 'copy' | 'addLanguage' | 'reapply';
 
 export const HSMV2 = () => {
   const location: any = useLocation();
@@ -89,8 +104,6 @@ export const HSMV2 = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
-  const [languageDraftReady, setLanguageDraftReady] = useState(false);
-  const [addPagePanel, setAddPagePanel] = useState<'view' | 'add' | 'edit'>('view');
   const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [sampleMessages, setSampleMessages] = useState({
@@ -120,74 +133,59 @@ export const HSMV2 = () => {
   const [deleteTemplate, { loading: deleteLoading }] = useMutation(DELETE_TEMPLATE);
   const [fetchFamilyVariants] = useLazyQuery(FILTER_TEMPLATES, { fetchPolicy: 'network-only' });
 
-  let mode;
   const copyMessage = t('Copy of the template has been created!');
 
-  const isCopyState = location.state === 'copy';
-  const updateItemQuery = isCopyState ? CREATE_TEMPLATE : UPDATE_TEMPLATE;
-  if (isCopyState) {
-    mode = 'copy';
-  }
-
   const isViewRoute = location.pathname.endsWith('/view');
-  const isEditing = Boolean(params.id && !isCopyState && !isViewRoute);
+  const isCopyState = location.state === 'copy';
+
   const languageAnchorId = isViewRoute ? params.id : location.state?.languageAnchorId;
 
-  const excludeLanguageIds = useMemo(() => location.state?.excludeLanguageIds || [], [location.state]);
-  // local state (not a plain derived const) so deleting a variant from the
-  // Language versions card can drop it from the list immediately, without a
-  // refetch/renavigation.
-  const [familyVariants, setFamilyVariants] = useState<any[]>(location.state?.variants || []);
-  const isLanguageMode = Boolean(languageAnchorId) && !isEditing && !isCopyState;
-  const isAddRoute = isLanguageMode && !isViewRoute;
-  const isAddingLanguage = isAddRoute && addPagePanel === 'add';
-  const isViewingVariant = (isLanguageMode && isViewRoute) || (isAddRoute && addPagePanel === 'view');
-  const isEditingVariant = isAddRoute && addPagePanel === 'edit';
-  const fieldsLocked = isEditing || isViewingVariant;
-
-  const [activeTab, setActiveTab] = useState<StatusTab>(() => {
-    const initialVariant = familyVariants.find((variant: any) => variant.id === languageAnchorId);
-    return initialVariant ? statusTabFor(initialVariant.status) : 'Approved';
+  const [mode, setMode] = useState<Mode>(() => {
+    if (isCopyState) return 'copy';
+    if (languageAnchorId) return 'view';
+    if (params.id) return 'view';
+    return 'create';
   });
+  const updateItemQuery = mode === 'copy' ? CREATE_TEMPLATE : UPDATE_TEMPLATE;
 
-  const { data: languageAnchorData, loading: languageAnchorLoading } = useQuery(GET_TEMPLATE, {
-    variables: { id: languageAnchorId },
-    skip: !isLanguageMode,
+  const isReadOnly = mode === 'view';
+
+  const [familyVariants, setFamilyVariants] = useState<any[]>([]);
+
+  const [activeTab, setActiveTab] = useState<StatusTab>('Approved');
+  const needsFamilyFetch = Boolean(languageAnchorId);
+  const { data: familyFetchData } = useQuery(FILTER_TEMPLATES, {
+    variables: {
+      filter: { isHsm: true, shortcode: newShortcode },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
+    skip: !needsFamilyFetch || !newShortcode,
   });
-  const languageAnchor = languageAnchorData?.sessionTemplate?.sessionTemplate;
+  useEffect(() => {
+    if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
+      const freshVariants = familyFetchData.sessionTemplates;
+      setFamilyVariants(freshVariants);
+      const anchorVariant = freshVariants.find((variant: any) => variant.id === languageAnchorId);
+      if (anchorVariant) {
+        setActiveTab(statusTabFor(anchorVariant.status));
+      }
+    }
+  }, [familyFetchData]);
 
   const variantsByTab = groupVariantsByTab(familyVariants);
 
-  const { data: previewData } = useQuery(GET_TEMPLATE, {
-    variables: { id: addPagePreviewId },
-    skip: !(isAddRoute && (addPagePanel === 'view' || addPagePanel === 'edit') && addPagePreviewId),
-  });
-  const viewingLanguage =
-    isAddRoute && (addPagePanel === 'view' || addPagePanel === 'edit') && addPagePreviewId
-      ? previewData?.sessionTemplate?.sessionTemplate?.language
-      : languageAnchor?.language;
-  useEffect(() => {
-    if (isViewingVariant || isEditingVariant) {
-      if (viewingLanguage && languageOptions.length > 0) {
-        const matched = languageOptions.find((option: any) => option.id === viewingLanguage.id);
-        setLanguageId(matched || null);
-      } else {
-        setLanguageId(null);
-      }
-    }
-  }, [isViewingVariant, isEditingVariant, viewingLanguage, languageOptions]);
+  const excludeLanguageIds = useMemo(
+    () => familyVariants.map((variant: any) => variant.language?.id).filter(Boolean),
+    [familyVariants]
+  );
 
-  // "Edit & Re-apply" deliberately leaves entityId unset, same as "Add new
-  // language" — FormLayout treats a missing entityId as create-not-update, so
-  // Save submits a new template (the rejected one is a separate row you
-  // delete yourself) instead of overwriting the rejected record in place.
-  const entityId = isEditing
-    ? params.id
-    : isLanguageMode && isViewRoute
-      ? languageAnchorId
-      : isAddRoute && addPagePanel === 'view'
-        ? addPagePreviewId || languageAnchorId
-        : undefined;
+  const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
+  // addLanguage prefills from the anchor; reapply prefills from the rejected
+  // variant itself. Fetched and pushed into state by FormLayout's own
+  // getItemQuery→setStates, same mechanism copy already relies on — just
+  // without entityId's update-not-create/no-fresh-media side effects, since
+  // both of these always create a new row.
+  const prefillId = mode === 'addLanguage' ? languageAnchorId : mode === 'reapply' ? addPagePreviewId : undefined;
 
   const categoryOpn: any = [];
   if (categoryList) {
@@ -243,16 +241,18 @@ export const HSMV2 = () => {
   }: any) => {
     let vars: any = [];
 
-    if (languageOptions.length > 0 && languageIdValue && !isViewingVariant && !isEditingVariant) {
-      if (!language?.id) {
-        const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
-        setLanguageId(selectedLanguage);
-      } else {
-        setLanguageId(language);
-      }
+    // addLanguage is the one mode that must NOT inherit the source's
+    // language — you're picking a language that isn't taken yet, so it
+    // starts blank (openAddLanguage clears it explicitly). Every other mode
+    // — including switching between family members while viewing, which
+    // re-runs this with a different fetched item each time — shows its own
+    // real language, matched fresh against languageOptions every time.
+    if (languageOptions.length > 0 && languageIdValue && mode !== 'addLanguage') {
+      const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
+      setLanguageId(selectedLanguage || null);
     }
 
-    if (!isCopyState) {
+    if (mode !== 'copy') {
       setNewShortcode(shortcodeValue);
     }
 
@@ -290,7 +290,7 @@ export const HSMV2 = () => {
 
   const setPayload = (payload: any) =>
     buildTemplatePayload(payload, {
-      isEditing,
+      isEditing: isReadOnly,
       category,
       variables,
       isAddButtonChecked,
@@ -388,12 +388,12 @@ export const HSMV2 = () => {
   };
 
   const openEditReapply = (variantId: string) => {
-    setAddPagePanel('edit');
+    setMode('reapply');
     setAddPagePreviewId(variantId);
   };
 
   const openAddLanguage = () => {
-    setAddPagePanel('add');
+    setMode('addLanguage');
     setAddPagePreviewId(null);
     // otherwise the anchor's own language (shown while previewing it above)
     // stays selected — picking a language you're translating into should
@@ -405,8 +405,8 @@ export const HSMV2 = () => {
     // on the add route, "View" previews a variant in place (same URL) — the
     // list page's own View icon is the only thing that goes to the
     // dedicated /:id/view route.
-    if (isAddRoute) {
-      setAddPagePanel('view');
+    if (!isViewRoute) {
+      setMode('view');
       setAddPagePreviewId(variantId);
     } else {
       navigate(`/template-v2/${variantId}/view`, { state: { variants: familyVariants } });
@@ -419,25 +419,22 @@ export const HSMV2 = () => {
       return;
     }
     try {
+      const shortcodeToMatch = created.shortcode || newShortcode;
       const { data: familyData } = await fetchFamilyVariants({
         variables: {
-          filter: { isHsm: true, status: '' },
+          filter: { isHsm: true, shortcode: shortcodeToMatch },
           opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
         },
       });
-      const shortcodeToMatch = created.shortcode || newShortcode;
-      const freshVariants = (familyData?.sessionTemplates || []).filter(
-        (item: any) => item.shortcode === shortcodeToMatch
-      );
+      const freshVariants = familyData?.sessionTemplates || [];
       setFamilyVariants(freshVariants);
       const createdFresh = freshVariants.find((variant: any) => variant.id === created.id);
       setActiveTab(statusTabFor(createdFresh?.status || 'PENDING'));
     } catch (error) {
       setErrorMessage(error);
     }
-    setAddPagePanel('view');
+    setMode('view');
     setAddPagePreviewId(created.id);
-    setLanguageDraftReady(false);
   };
 
   const fields = [
@@ -453,7 +450,7 @@ export const HSMV2 = () => {
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       onChange: getLanguageId,
     },
     {
@@ -461,7 +458,9 @@ export const HSMV2 = () => {
       name: 'newShortcode',
       label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}`,
-      disabled: isEditing || isLanguageMode,
+      // every variant of a template shares one shortcode — locked whenever
+      // there's a family in play (view/addLanguage/reapply), not just view.
+      disabled: isReadOnly || Boolean(languageAnchorId),
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
@@ -471,7 +470,7 @@ export const HSMV2 = () => {
       options: categoryOpn,
       variant: 'radio',
       onChange: setCategory,
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       label: t('Category'),
     },
     {
@@ -484,9 +483,9 @@ export const HSMV2 = () => {
       name: 'body',
       label: `${t('Message')}*`,
       rows: 5,
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       handleChange: (value: any) => setBody(value),
-      defaultValue: (fieldsLocked || isCopyState || isAddingLanguage || isEditingVariant) && editorState,
+      defaultValue: mode !== 'create' && editorState,
     },
     {
       component: TemplateVariables,
@@ -494,13 +493,13 @@ export const HSMV2 = () => {
       message: body,
       variables,
       setVariables,
-      isEditing: fieldsLocked,
+      isEditing: isReadOnly,
     },
     {
       component: Input,
       name: 'footer',
       label: `${t('Footer')} (${t('optional')})`,
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
@@ -519,7 +518,7 @@ export const HSMV2 = () => {
       onChange: handleTemplateTypeChange,
       onClear: clearButtonSelection,
       clearLabel: t('Clear button selection'),
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       label: t('Button Type'),
     },
     {
@@ -528,7 +527,7 @@ export const HSMV2 = () => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handleInputChange,
@@ -543,7 +542,7 @@ export const HSMV2 = () => {
       component: AttachmentField,
       name: 'type',
       onChange: handleAttachmentChange,
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       label: t('Attachment Type'),
     },
     {
@@ -557,7 +556,7 @@ export const HSMV2 = () => {
       label: `${t('Tag')} (${t('optional')})`,
       options: tag ? tag.tags : [],
       optionLabel: 'label',
-      disabled: fieldsLocked,
+      disabled: isReadOnly,
       hasCreateOption: true,
       multiple: false,
       onChange: (value: any) => setTagId(value),
@@ -572,38 +571,19 @@ export const HSMV2 = () => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
-      setLanguageOptions(isAddingLanguage ? filterAvailableLanguages(lang, excludeLanguageIds) : lang);
+      setLanguageOptions(mode === 'addLanguage' ? filterAvailableLanguages(lang, excludeLanguageIds) : lang);
       // Adding a language means picking one that isn't taken yet — don't
       // auto-select a default (it may well be one of the excluded ones).
-      if (!isEditing && !isAddingLanguage && !isViewingVariant && !isEditingVariant) {
+      // Every other non-blank mode shows its own real language instead.
+      if (mode === 'create' || mode === 'copy') {
         const englishLang = lang.find((l: any) => l.label.toLowerCase() === 'english');
         setLanguageId(englishLang || lang[0]);
       }
     }
-  }, [languages, isAddingLanguage, excludeLanguageIds, isEditing, isViewingVariant, isEditingVariant]);
-
-  const languageDraftSource = isEditingVariant ? previewData?.sessionTemplate?.sessionTemplate : languageAnchor;
-  useEffect(() => {
-    if ((isAddingLanguage || isEditingVariant) && languageDraftSource && !languageDraftReady) {
-      const draft = buildLanguageDraft(languageDraftSource);
-      setNewShortcode(draft.newShortcode);
-      setBody(draft.body);
-      setEditorState(draft.body);
-      setFooter(draft.footer);
-      setCategory(draft.category);
-      setVariables(draft.variables);
-      setType(draft.type);
-      setAttachmentURL(draft.attachmentURL);
-      setTemplateType(draft.templateType);
-      setTemplateButtons(draft.templateButtons);
-      setIsAddButtonChecked(draft.isAddButtonChecked);
-      setTagId(draft.tagId);
-      setLanguageDraftReady(true);
-    }
-  }, [isAddingLanguage, isEditingVariant, languageDraftSource, languageDraftReady]);
+  }, [languages, mode, excludeLanguageIds]);
 
   const deleteRejectedVariantBeforeSubmit = async () => {
-    if (isEditingVariant && addPagePreviewId) {
+    if (mode === 'reapply' && addPagePreviewId) {
       await deleteTemplate({ variables: { id: addPagePreviewId } });
     }
   };
@@ -625,7 +605,7 @@ export const HSMV2 = () => {
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
 
   useEffect(() => {
-    if (templateType?.id && !isEditing && !isAddingLanguage && !isViewingVariant && !isEditingVariant) {
+    if (templateType?.id && (mode === 'create' || mode === 'copy')) {
       addTemplateButtons(false);
     }
   }, [templateType]);
@@ -634,25 +614,20 @@ export const HSMV2 = () => {
     setVariables(getVariables(body, variables));
   }, [body]);
 
-  if (
-    languageLoading ||
-    categoryLoading ||
-    tagLoading ||
-    (isLanguageMode && languageAnchorLoading && !languageAnchor)
-  ) {
+  if (languageLoading || categoryLoading || tagLoading) {
     return <Loading />;
   }
 
-  const languageModeTitle = isAddingLanguage
-    ? `${t('Add Language')} — ${languageAnchor?.shortcode}`
-    : languageAnchor?.shortcode || t('HSM Template');
-  const languageModeHelp = isAddingLanguage
-    ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
-    : t('View the content and language versions for this template.');
+  const languageModeTitle =
+    mode === 'addLanguage' ? `${t('Add Language')} — ${newShortcode}` : newShortcode || t('HSM Template');
+  const languageModeHelp =
+    mode === 'addLanguage'
+      ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
+      : t('View the content and language versions for this template.');
 
   return (
     <div className={styles.Page}>
-      {isLanguageMode && (
+      {Boolean(languageAnchorId) && (
         <Heading
           backLink={`/${backButton}`}
           formTitle={languageModeTitle}
@@ -660,13 +635,13 @@ export const HSMV2 = () => {
           helpData={templateInfo}
         />
       )}
-      {isLanguageMode && (
+      {Boolean(languageAnchorId) && (
         <LanguageVersionsCard
           variantsByTab={variantsByTab}
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          showAddLanguage={isAddRoute}
-          showDelete={isAddRoute}
+          showAddLanguage={!isViewRoute}
+          showDelete={!isViewRoute}
           onView={viewVariant}
           onEditReapply={openEditReapply}
           onAddLanguage={openAddLanguage}
@@ -688,10 +663,10 @@ export const HSMV2 = () => {
         {...queries}
         updateItemQuery={updateItemQuery}
         states={states}
-        isView={fieldsLocked}
+        isView={isReadOnly}
         setStates={setStates}
         setPayload={setPayload}
-        validationSchema={fieldsLocked ? Yup.object() : FormSchema}
+        validationSchema={isReadOnly ? Yup.object() : FormSchema}
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
         formFields={fields}
@@ -699,29 +674,30 @@ export const HSMV2 = () => {
         listItem="sessionTemplate"
         icon={templateIcon}
         helpData={templateInfo}
-        noHeading={isLanguageMode}
+        noHeading={Boolean(languageAnchorId)}
         getLanguageId={getLanguageId}
         languageSupport={false}
-        errorButtonState={{ text: fieldsLocked ? t('Go Back') : t('Cancel'), show: true }}
+        errorButtonState={{ text: isReadOnly ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
-        button={!fieldsLocked ? t('Submit for Approval') : t('Save')}
+        button={!isReadOnly ? t('Submit for Approval') : t('Save')}
         buttonState={{
           text: t('Validating URL'),
           status: validatingURL,
-          show: !fieldsLocked,
+          show: !isReadOnly,
           styles: styles.Buttons,
         }}
         saveOnPageChange={false}
-        type={mode}
+        type={mode === 'copy' ? 'copy' : undefined}
         copyNotification={copyMessage}
         backLinkButton={`/${backButton}`}
         cancelLink={backButton}
         getMediaId={getMediaId}
         entityId={entityId}
-        redirect={!(isAddingLanguage || isEditingVariant)}
-        afterSave={isAddingLanguage || isEditingVariant ? handleVariantCreated : undefined}
-        beforeSubmit={isEditingVariant ? deleteRejectedVariantBeforeSubmit : undefined}
+        prefillId={prefillId}
+        redirect={!(mode === 'addLanguage' || mode === 'reapply')}
+        afterSave={mode === 'addLanguage' || mode === 'reapply' ? handleVariantCreated : undefined}
+        beforeSubmit={mode === 'reapply' ? deleteRejectedVariantBeforeSubmit : undefined}
         partialPage
         customStyles={styles.CustomFormShell}
       />

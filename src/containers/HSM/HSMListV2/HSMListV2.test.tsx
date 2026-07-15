@@ -185,14 +185,11 @@ test('navigates to the read-only view page via the row View action', async () =>
   fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith(
-      '/template-v2/1/view',
-      expect.objectContaining({ state: expect.objectContaining({ variants: expect.any(Array) }) })
-    );
+    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/view');
   });
 });
 
-test('navigates to the create page with the anchor template pre-filled via the row Add new language action', async () => {
+test('navigates to the create page with the anchor template id via the row Add new language action', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -203,16 +200,7 @@ test('navigates to the create page with the anchor template pre-filled via the r
   fireEvent.click(within(row).getByTestId('add-language-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith(
-      '/template-v2/add',
-      expect.objectContaining({
-        state: expect.objectContaining({
-          languageAnchorId: '1',
-          excludeLanguageIds: expect.any(Array),
-          variants: expect.any(Array),
-        }),
-      })
-    );
+    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { languageAnchorId: '1' } });
   });
 });
 
