@@ -27,8 +27,6 @@ export const LanguageVersionsCard = ({
   onDelete,
 }: LanguageVersionsCardProps) => (
   <div className={styles.TemplateDetailsCard}>
-    {/* the form below already has its own "Element name" field (locked
-        to the same shortcode) — showing it here too was a duplicate. */}
     <p className={styles.LanguageVersionsTitle}>{t('Language versions')}</p>
     <div className={styles.LanguageVersionsContainer}>
       <div className={styles.StatusTabsRow} data-testid="status-tabs">
