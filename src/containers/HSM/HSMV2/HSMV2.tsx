@@ -122,13 +122,15 @@ export const HSMV2 = () => {
     : 'template-v2';
   const isReadOnly = mode === 'view';
   const needsFamilyFetch = Boolean(languageAnchorId);
+  const anchorShortcode = mode === 'addLanguage' ? location.state?.anchorShortcode : newShortcode;
   const variantsByTab = groupVariantsByTab(familyVariants);
   const excludeLanguageIds = useMemo(
     () => familyVariants.map((variant: any) => variant.language?.id).filter(Boolean),
     [familyVariants]
   );
   const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
-  const prefillId = mode === 'addLanguage' ? languageAnchorId : mode === 'copy' ? copySourceId : undefined;
+
+  const prefillId = mode === 'copy' ? copySourceId : undefined;
   const states = {
     language,
     body,
@@ -164,10 +166,10 @@ export const HSMV2 = () => {
 
   const { data: familyFetchData } = useQuery(FILTER_TEMPLATES, {
     variables: {
-      filter: { isHsm: true, shortcode: newShortcode },
+      filter: { isHsm: true, shortcode: anchorShortcode },
       opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
-    skip: !needsFamilyFetch || !newShortcode,
+    skip: !needsFamilyFetch || !anchorShortcode,
   });
 
   // ---- Mutations ----
@@ -214,29 +216,23 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
-    if (mode !== 'copy') {
-      setNewShortcode(shortcodeValue);
-    }
-    setCategory(
-      categoryValue
-        ? { id: categoryValue, label: categoryValue, description: categoryDescriptions[categoryValue] }
-        : null
-    );
-
-    // addLanguage only inherits the shortcode/category above — everything
-    // else starts blank for the user to fill in fresh.
-    if (mode === 'addLanguage') {
-      return;
-    }
-
     if (languageOptions.length > 0 && languageIdValue) {
       const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
       setLanguageId(selectedLanguage || null);
     }
 
+    if (mode !== 'copy') {
+      setNewShortcode(shortcodeValue);
+    }
+
     setBody(bodyValue);
     setFooter(footerValue || '');
     setEditorState(bodyValue);
+    setCategory(
+      categoryValue
+        ? { id: categoryValue, label: categoryValue, description: categoryDescriptions[categoryValue] }
+        : null
+    );
     setTagId(tagIdValue);
     const vars = getExampleValue(exampleValue);
     setVariables(vars);
@@ -370,6 +366,7 @@ export const HSMV2 = () => {
     setTemplateButtons([]);
     setIsAddButtonChecked(false);
     setTagId(null);
+    setNewShortcode('');
   };
 
   const viewVariant = (variantId: string) => {
@@ -556,6 +553,26 @@ export const HSMV2 = () => {
       }
     }
   }, [familyFetchData]);
+
+  useEffect(() => {
+    if (mode !== 'addLanguage' || newShortcode) {
+      return;
+    }
+    const anchorVariant = familyVariants.find((variant: any) => variant.id === languageAnchorId);
+    if (!anchorVariant) {
+      return;
+    }
+    setNewShortcode(anchorVariant.shortcode);
+    setCategory(
+      anchorVariant.category
+        ? {
+            id: anchorVariant.category,
+            label: anchorVariant.category,
+            description: categoryDescriptions[anchorVariant.category],
+          }
+        : null
+    );
+  }, [mode, familyVariants, languageAnchorId, newShortcode]);
 
   useEffect(() => {
     if (languages) {

@@ -121,9 +121,9 @@ const HSMListV2 = () => {
 
   const handleView = (id: any) => navigate(`/template-v2/${id}/edit`);
 
-  const handleAddLanguage = (id: any) =>
+  const handleAddLanguage = (id: any, item: any) =>
     navigate('/template-v2/add', {
-      state: { languageAnchorId: id },
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
     });
 
   const setCopyDialog = (id: any) => navigate('/template-v2/add', { state: { mode: 'copy', sourceId: id } });

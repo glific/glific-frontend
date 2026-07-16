@@ -200,7 +200,9 @@ test('navigates to the create page with the anchor template id via the row Add n
   fireEvent.click(within(row).getByTestId('add-language-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { languageAnchorId: '1' } });
+    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', {
+      state: { languageAnchorId: '1', anchorShortcode: 'welcome_msg' },
+    });
   });
 });
 
