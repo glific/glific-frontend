@@ -71,18 +71,15 @@ const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataP
 type Mode = 'create' | 'view' | 'copy' | 'addLanguage';
 
 export const HSMV2 = () => {
-  // ---- Hooks (routing / i18n) ----
   const location: any = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const params = useParams();
 
-  // ---- Route context needed to seed state below ----
   const isCopyState = location.state?.mode === 'copy';
   const copySourceId = isCopyState ? location.state?.sourceId : undefined;
   const languageAnchorId = params.id || location.state?.languageAnchorId;
 
-  // ---- State ----
   const [language, setLanguageId] = useState<any>(null);
   const [body, setBody] = useState<any>('');
   const [type, setType] = useState<any>(null);
@@ -152,7 +149,6 @@ export const HSMV2 = () => {
       ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
       : t('View the content and language versions for this template.');
 
-  // ---- Queries ----
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
 
   const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
@@ -172,12 +168,10 @@ export const HSMV2 = () => {
     skip: !needsFamilyFetch || !anchorShortcode,
   });
 
-  // ---- Mutations ----
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
   const [deleteTemplate, { loading: deleteLoading }] = useMutation(DELETE_TEMPLATE);
   const [fetchFamilyVariants] = useLazyQuery(FILTER_TEMPLATES, { fetchPolicy: 'network-only' });
 
-  // ---- Calculated values that depend on query data ----
   const categoryOpn: any = [];
   if (categoryList) {
     categoryList.whatsappHsmCategories.forEach((categories: any) => {

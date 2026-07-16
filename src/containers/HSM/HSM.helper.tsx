@@ -89,9 +89,7 @@ export const getTemplateAndButtons = (templateType: string, message: string, but
     });
   }
 
-  // Getting in template format of gupshup
   const templateFormat = convertButtonsToTemplate(result, templateType);
-  // Pre-pending message with buttons
   const template = `${message} | ${templateFormat.join(' | ')}`;
   return { buttons: result, template };
 };

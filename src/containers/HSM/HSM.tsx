@@ -630,11 +630,9 @@ export const HSM = () => {
   useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
-      // sort languages by their name
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
       setLanguageOptions(lang);
       if (!isEditing) {
-        // Try to find English
         const englishLang = lang.find((l: any) => l.label.toLowerCase() === 'english');
         setLanguageId(englishLang || lang[0]);
       }
