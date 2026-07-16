@@ -26,7 +26,7 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
@@ -78,9 +78,9 @@ export const HSMV2 = () => {
   const params = useParams();
 
   // ---- Route context needed to seed state below ----
-  const isViewRoute = location.pathname.endsWith('/view');
-  const isCopyState = location.state === 'copy';
-  const languageAnchorId = isViewRoute ? params.id : location.state?.languageAnchorId;
+  const isCopyState = location.state?.mode === 'copy';
+  const copySourceId = isCopyState ? location.state?.sourceId : undefined;
+  const languageAnchorId = params.id || location.state?.languageAnchorId;
 
   // ---- State ----
   const [language, setLanguageId] = useState<any>(null);
@@ -114,15 +114,12 @@ export const HSMV2 = () => {
   const [mode, setMode] = useState<Mode>(() => {
     if (isCopyState) return 'copy';
     if (languageAnchorId) return 'view';
-    if (params.id) return 'view';
     return 'create';
   });
 
   const backButton = location.state?.tag?.label
     ? `template-v2?tag=${encodeURIComponent(location.state.tag.label)}`
     : 'template-v2';
-  const copyMessage = t('Copy of the template has been created!');
-  const updateItemQuery = mode === 'copy' ? CREATE_TEMPLATE : UPDATE_TEMPLATE;
   const isReadOnly = mode === 'view';
   const needsFamilyFetch = Boolean(languageAnchorId);
   const variantsByTab = groupVariantsByTab(familyVariants);
@@ -131,7 +128,7 @@ export const HSMV2 = () => {
     [familyVariants]
   );
   const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
-  const prefillId = mode === 'addLanguage' ? languageAnchorId : undefined;
+  const prefillId = mode === 'addLanguage' ? languageAnchorId : mode === 'copy' ? copySourceId : undefined;
   const states = {
     language,
     body,
@@ -217,27 +214,31 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
-    let vars: any = [];
-
-    if (languageOptions.length > 0 && languageIdValue && mode !== 'addLanguage') {
-      const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
-      setLanguageId(selectedLanguage || null);
-    }
-
     if (mode !== 'copy') {
       setNewShortcode(shortcodeValue);
     }
-
-    setBody(bodyValue);
-    setFooter(footerValue || '');
-    setEditorState(bodyValue);
     setCategory(
       categoryValue
         ? { id: categoryValue, label: categoryValue, description: categoryDescriptions[categoryValue] }
         : null
     );
+
+    // addLanguage only inherits the shortcode/category above — everything
+    // else starts blank for the user to fill in fresh.
+    if (mode === 'addLanguage') {
+      return;
+    }
+
+    if (languageOptions.length > 0 && languageIdValue) {
+      const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
+      setLanguageId(selectedLanguage || null);
+    }
+
+    setBody(bodyValue);
+    setFooter(footerValue || '');
+    setEditorState(bodyValue);
     setTagId(tagIdValue);
-    vars = getExampleValue(exampleValue);
+    const vars = getExampleValue(exampleValue);
     setVariables(vars);
 
     if (hasButtons) {
@@ -359,14 +360,24 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
+    setBody('');
+    setEditorState('');
+    setFooter('');
+    setVariables([]);
+    setType(null);
+    setAttachmentURL('');
+    setTemplateType(BUTTON_OPTIONS[0]);
+    setTemplateButtons([]);
+    setIsAddButtonChecked(false);
+    setTagId(null);
   };
 
   const viewVariant = (variantId: string) => {
-    if (!isViewRoute) {
+    if (!params.id) {
       setMode('view');
       setAddPagePreviewId(variantId);
     } else {
-      navigate(`/template-v2/${variantId}/view`, { state: { variants: familyVariants } });
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants } });
     }
   };
 
@@ -591,8 +602,8 @@ export const HSMV2 = () => {
           variantsByTab={variantsByTab}
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          showAddLanguage={!isViewRoute}
-          showDelete={!isViewRoute}
+          showAddLanguage={!params.id}
+          showDelete={!params.id}
           onView={viewVariant}
           onAddLanguage={openAddLanguage}
           onDelete={requestDeleteVariant}
@@ -611,7 +622,6 @@ export const HSMV2 = () => {
       )}
       <FormLayout
         {...queries}
-        updateItemQuery={updateItemQuery}
         states={states}
         isView={isReadOnly}
         setStates={setStates}
@@ -639,7 +649,6 @@ export const HSMV2 = () => {
         }}
         saveOnPageChange={false}
         type={mode === 'copy' ? 'copy' : undefined}
-        copyNotification={copyMessage}
         backLinkButton={`/${backButton}`}
         cancelLink={backButton}
         getMediaId={getMediaId}

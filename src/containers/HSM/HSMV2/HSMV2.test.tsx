@@ -91,12 +91,15 @@ describe('HSMV2 edit mode', () => {
   });
 
   test('copy mode prefixes the label with "Copy of" and leaves the element name blank', async () => {
+    // copy is a create-from-source flow, so it lives on /add with the source
+    // id in navigation state — not on a /:id route (there's no "edit" for an
+    // HSM, only view; a real /:id route always renders read-only).
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, ...CREATE_SESSION_TEMPLATE_MOCK];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={[{ pathname: '/templates/1/edit', state: 'copy' }]}>
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { mode: 'copy', sourceId: '1' } }]}>
           <Routes>
-            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+            <Route path="/add" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -675,13 +678,13 @@ describe('HSMV2 language versions', () => {
   const familyFetchMock = (variants: any[] = familyVariants) =>
     sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, variants);
 
-  test('the dedicated /view route shows the language versions summary read-only, with no "Add new language" option', async () => {
+  test('the dedicated /:id/edit route shows the language versions summary read-only, with no "Add new language" option', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/templates/1/view']}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
-            <Route path="/templates/:id/view" element={<HSMV2 />} />
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -702,7 +705,7 @@ describe('HSMV2 language versions', () => {
     expect(screen.queryByTestId('add-language-link')).not.toBeInTheDocument();
   });
 
-  test('a reload (or direct link) on the dedicated /view route with no navigation state still fetches and shows the family tabs', async () => {
+  test('a reload (or direct link) on the dedicated /:id/edit route with no navigation state still fetches and shows the family tabs', async () => {
     const familyFetchMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, [
       { id: '1', shortcode: 'account_balance', status: 'APPROVED', language: { id: '1', label: 'English' } },
       { id: '2', shortcode: 'account_balance', status: 'PENDING', language: { id: '2', label: 'Marathi' } },
@@ -710,9 +713,9 @@ describe('HSMV2 language versions', () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/templates/1/view']}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
-            <Route path="/templates/:id/view" element={<HSMV2 />} />
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -728,13 +731,13 @@ describe('HSMV2 language versions', () => {
     expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
   });
 
-  test('the dedicated /view route never offers Delete — only the add-language flow does', async () => {
+  test('the dedicated /:id/edit route never offers Delete — only the add-language flow does', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/templates/1/view']}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
-            <Route path="/templates/:id/view" element={<HSMV2 />} />
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -1003,7 +1006,7 @@ describe('HSMV2 language versions', () => {
     });
   });
 
-  test('clicking "View" on a sibling from the dedicated /view route navigates to that sibling\'s own /view URL', async () => {
+  test('clicking "View" on a sibling from a dedicated /:id/edit route navigates to that sibling\'s own URL', async () => {
     const MOCKS = [
       ...mocks,
       getHSMTemplateTypeText,
@@ -1024,9 +1027,9 @@ describe('HSMV2 language versions', () => {
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/template-v2/1/view']}>
+        <MemoryRouter initialEntries={['/template-v2/1/edit']}>
           <Routes>
-            <Route path="/template-v2/:id/view" element={<HSMV2 />} />
+            <Route path="/template-v2/:id/edit" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>

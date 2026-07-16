@@ -185,7 +185,7 @@ test('navigates to the read-only view page via the row View action', async () =>
   fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/view');
+    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/edit');
   });
 });
 
