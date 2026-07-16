@@ -30,7 +30,7 @@ export const statusFilter = {
   FAILED: false,
 };
 
-const languageCode = (locale = '') => locale.slice(0, 2).toUpperCase();
+export const languageCode = (locale = '') => locale.slice(0, 2).toUpperCase();
 
 const statusChipClass = (status: string) => {
   switch (status) {

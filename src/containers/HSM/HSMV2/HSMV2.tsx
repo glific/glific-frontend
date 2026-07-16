@@ -1,17 +1,20 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { Typography } from '@mui/material';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS } from 'common/constants';
 import { templateInfo, interactiveButtonsInfo, HelpDataProps } from 'common/HelpData';
+import { setNotification, setErrorMessage } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Heading } from 'components/UI/Heading/Heading';
 import Simulator from 'components/simulator/Simulator';
 import { TileSelector } from 'components/UI/Form/TileSelector/TileSelector';
 import { AttachmentField, AttachmentFieldChange } from 'containers/HSM/AttachmentField/AttachmentField';
@@ -21,10 +24,11 @@ import { TemplateOptionsV2 } from 'containers/TemplateOptionsV2/TemplateOptionsV
 
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
+import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 import {
   convertButtonsToTemplate,
@@ -41,7 +45,18 @@ import {
   QuickReplyTemplate,
   WhatsappFormTemplate,
 } from '../HSM.helper';
-import { queries, templateIcon, dialogMessage, categoryDescriptions, buildSimulatorMessage } from './HSMV2.helper';
+import {
+  queries,
+  templateIcon,
+  dialogMessage,
+  categoryDescriptions,
+  buildSimulatorMessage,
+  filterAvailableLanguages,
+  groupVariantsByTab,
+  statusTabFor,
+} from './HSMV2.helper';
+import type { StatusTab } from './HSMV2.helper';
+import { LanguageVersionsCard } from './LanguageVersionsCard/LanguageVersionsCard';
 import styles from './HSMV2.module.css';
 
 const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataProps }) => (
@@ -53,8 +68,18 @@ const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataP
   </div>
 );
 
+type Mode = 'create' | 'view' | 'copy' | 'addLanguage';
+
 export const HSMV2 = () => {
   const location: any = useLocation();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const params = useParams();
+
+  const isCopyState = location.state?.mode === 'copy';
+  const copySourceId = isCopyState ? location.state?.sourceId : undefined;
+  const languageAnchorId = params.id || location.state?.languageAnchorId;
+
   const [language, setLanguageId] = useState<any>(null);
   const [body, setBody] = useState<any>('');
   const [type, setType] = useState<any>(null);
@@ -72,6 +97,8 @@ export const HSMV2 = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
+  const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -79,44 +106,28 @@ export const HSMV2 = () => {
     body: '',
     footer: '',
   });
-  const { t } = useTranslation();
-  const params = useParams();
+  const [familyVariants, setFamilyVariants] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<StatusTab>('Approved');
+  const [mode, setMode] = useState<Mode>(() => {
+    if (isCopyState) return 'copy';
+    if (languageAnchorId) return 'view';
+    return 'create';
+  });
+
   const backButton = location.state?.tag?.label
     ? `template-v2?tag=${encodeURIComponent(location.state.tag.label)}`
     : 'template-v2';
+  const isReadOnly = mode === 'view';
+  const needsFamilyFetch = Boolean(languageAnchorId);
+  const anchorShortcode = mode === 'addLanguage' ? location.state?.anchorShortcode : newShortcode;
+  const variantsByTab = groupVariantsByTab(familyVariants);
+  const excludeLanguageIds = useMemo(
+    () => familyVariants.map((variant: any) => variant.language?.id).filter(Boolean),
+    [familyVariants]
+  );
+  const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
 
-  const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
-
-  const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
-    variables: {},
-    fetchPolicy: 'network-only',
-  });
-
-  const { data: languages, loading: languageLoading } = useQuery(USER_LANGUAGES, {
-    variables: { opts: { order: 'ASC' } },
-  });
-  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
-
-  let isEditing = false;
-  let mode;
-  const copyMessage = t('Copy of the template has been created!');
-
-  const isCopyState = location.state === 'copy';
-  const updateItemQuery = isCopyState ? CREATE_TEMPLATE : UPDATE_TEMPLATE;
-  if (isCopyState) {
-    mode = 'copy';
-  }
-  if (params.id && !isCopyState) {
-    isEditing = true;
-  }
-
-  const categoryOpn: any = [];
-  if (categoryList) {
-    categoryList.whatsappHsmCategories.forEach((categories: any) => {
-      categoryOpn.push({ label: categories, id: categories, description: categoryDescriptions[categories] });
-    });
-  }
-
+  const prefillId = mode === 'copy' ? copySourceId : undefined;
   const states = {
     language,
     body,
@@ -131,7 +142,44 @@ export const HSMV2 = () => {
     variables,
     newShortcode,
   };
+  const languageModeTitle =
+    mode === 'addLanguage' ? `${t('Add Language')} — ${newShortcode}` : newShortcode || t('HSM Template');
+  const languageModeHelp =
+    mode === 'addLanguage'
+      ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
+      : t('View the content and language versions for this template.');
 
+  const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
+
+  const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
+  const { data: languages, loading: languageLoading } = useQuery(USER_LANGUAGES, {
+    variables: { opts: { order: 'ASC' } },
+  });
+
+  const { data: familyFetchData } = useQuery(FILTER_TEMPLATES, {
+    variables: {
+      filter: { isHsm: true, shortcode: anchorShortcode },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
+    skip: !needsFamilyFetch || !anchorShortcode,
+  });
+
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
+  const [deleteTemplate, { loading: deleteLoading }] = useMutation(DELETE_TEMPLATE);
+  const [fetchFamilyVariants] = useLazyQuery(FILTER_TEMPLATES, { fetchPolicy: 'network-only' });
+
+  const categoryOpn: any = [];
+  if (categoryList) {
+    categoryList.whatsappHsmCategories.forEach((categories: any) => {
+      categoryOpn.push({ label: categories, id: categories, description: categoryDescriptions[categories] });
+    });
+  }
+
+  // ---- Functions ----
   const getLanguageId = (value: any) => {
     if (!value.label) {
       return;
@@ -162,18 +210,12 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
-    let vars: any = [];
-
     if (languageOptions.length > 0 && languageIdValue) {
-      if (!language?.id) {
-        const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
-        setLanguageId(selectedLanguage);
-      } else {
-        setLanguageId(language);
-      }
+      const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
+      setLanguageId(selectedLanguage || null);
     }
 
-    if (!isCopyState) {
+    if (mode !== 'copy') {
       setNewShortcode(shortcodeValue);
     }
 
@@ -186,7 +228,7 @@ export const HSMV2 = () => {
         : null
     );
     setTagId(tagIdValue);
-    vars = getExampleValue(exampleValue);
+    const vars = getExampleValue(exampleValue);
     setVariables(vars);
 
     if (hasButtons) {
@@ -211,7 +253,7 @@ export const HSMV2 = () => {
 
   const setPayload = (payload: any) =>
     buildTemplatePayload(payload, {
-      isEditing,
+      isEditing: isReadOnly,
       category,
       variables,
       isAddButtonChecked,
@@ -275,6 +317,97 @@ export const HSMV2 = () => {
     );
   };
 
+  const requestDeleteVariant = (variantId: string) => {
+    const variant = familyVariants.find((familyVariant: any) => familyVariant.id === variantId);
+    const label = variant ? `${variant.language?.label} (${languageCode(variant.language?.locale)})` : variantId;
+    setDeleteTarget({ id: variantId, label });
+  };
+
+  const confirmDeleteVariant = async () => {
+    if (!deleteTarget) {
+      return;
+    }
+    const { id } = deleteTarget;
+    try {
+      await deleteTemplate({ variables: { id } });
+      setNotification(t('Template deleted successfully'));
+      if (id === languageAnchorId) {
+        navigate(`/${backButton}`);
+        return;
+      }
+      setFamilyVariants((prev) => prev.filter((variant) => variant.id !== id));
+      if (addPagePreviewId === id) {
+        setAddPagePreviewId(null);
+      }
+    } catch (error) {
+      setErrorMessage(error);
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
+
+  const openAddLanguage = () => {
+    setMode('addLanguage');
+    setAddPagePreviewId(null);
+    setLanguageId(null);
+    setBody('');
+    setEditorState('');
+    setFooter('');
+    setVariables([]);
+    setType(null);
+    setAttachmentURL('');
+    setTemplateType(BUTTON_OPTIONS[0]);
+    setTemplateButtons([]);
+    setIsAddButtonChecked(false);
+    setTagId(null);
+    setNewShortcode('');
+  };
+
+  const viewVariant = (variantId: string) => {
+    if (!params.id) {
+      setMode('view');
+      setAddPagePreviewId(variantId);
+    } else {
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants } });
+    }
+  };
+
+  const handleVariantCreated = async (data: any) => {
+    const created = data?.createSessionTemplate?.sessionTemplate;
+    if (!created) {
+      return;
+    }
+    try {
+      const shortcodeToMatch = created.shortcode || newShortcode;
+      const { data: familyData } = await fetchFamilyVariants({
+        variables: {
+          filter: { isHsm: true, shortcode: shortcodeToMatch },
+          opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+        },
+      });
+      const freshVariants = familyData?.sessionTemplates || [];
+      setFamilyVariants(freshVariants);
+      const createdFresh = freshVariants.find((variant: any) => variant.id === created.id);
+      setActiveTab(statusTabFor(createdFresh?.status || 'PENDING'));
+    } catch (error) {
+      setErrorMessage(error);
+    }
+    setMode('view');
+    setAddPagePreviewId(created.id);
+  };
+
+  const computeSampleText = () => {
+    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+
+    if (!isAddButtonChecked || templateButtons.length === 0) {
+      return message || '';
+    }
+
+    const parse = convertButtonsToTemplate(templateButtons, templateType?.id);
+    const parsedText = parse.length ? `| ${parse.join(' | ')}` : '';
+    return parsedText ? (message || ' ') + parsedText : message || '';
+  };
+
   const fields = [
     {
       component: SectionTitle,
@@ -288,7 +421,7 @@ export const HSMV2 = () => {
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
-      disabled: isEditing,
+      disabled: isReadOnly,
       onChange: getLanguageId,
     },
     {
@@ -296,7 +429,7 @@ export const HSMV2 = () => {
       name: 'newShortcode',
       label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}`,
-      disabled: isEditing,
+      disabled: isReadOnly || Boolean(languageAnchorId),
       onChange: (value: any) => setNewShortcode(value),
       helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
     },
@@ -306,7 +439,7 @@ export const HSMV2 = () => {
       options: categoryOpn,
       variant: 'radio',
       onChange: setCategory,
-      disabled: isEditing,
+      disabled: isReadOnly,
       label: t('Category'),
     },
     {
@@ -319,9 +452,9 @@ export const HSMV2 = () => {
       name: 'body',
       label: `${t('Message')}*`,
       rows: 5,
-      disabled: isEditing,
+      disabled: isReadOnly,
       handleChange: (value: any) => setBody(value),
-      defaultValue: (isEditing || isCopyState) && editorState,
+      defaultValue: mode !== 'create' && editorState,
     },
     {
       component: TemplateVariables,
@@ -329,13 +462,13 @@ export const HSMV2 = () => {
       message: body,
       variables,
       setVariables,
-      isEditing,
+      isEditing: isReadOnly,
     },
     {
       component: Input,
       name: 'footer',
       label: `${t('Footer')} (${t('optional')})`,
-      disabled: isEditing,
+      disabled: isReadOnly,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
@@ -354,7 +487,7 @@ export const HSMV2 = () => {
       onChange: handleTemplateTypeChange,
       onClear: clearButtonSelection,
       clearLabel: t('Clear button selection'),
-      disabled: isEditing,
+      disabled: isReadOnly,
       label: t('Button Type'),
     },
     {
@@ -363,7 +496,7 @@ export const HSMV2 = () => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: isEditing,
+      disabled: isReadOnly,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handleInputChange,
@@ -378,7 +511,7 @@ export const HSMV2 = () => {
       component: AttachmentField,
       name: 'type',
       onChange: handleAttachmentChange,
-      disabled: isEditing,
+      disabled: isReadOnly,
       label: t('Attachment Type'),
     },
     {
@@ -392,7 +525,7 @@ export const HSMV2 = () => {
       label: `${t('Tag')} (${t('optional')})`,
       options: tag ? tag.tags : [],
       optionLabel: 'label',
-      disabled: isEditing,
+      disabled: isReadOnly,
       hasCreateOption: true,
       multiple: false,
       onChange: (value: any) => setTagId(value),
@@ -403,36 +536,56 @@ export const HSMV2 = () => {
 
   const FormSchema = buildValidationSchema({ t, isAddButtonChecked, templateType });
 
+  // ---- Effects ----
+  useEffect(() => {
+    if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
+      const freshVariants = familyFetchData.sessionTemplates;
+      setFamilyVariants(freshVariants);
+      const anchorVariant = freshVariants.find((variant: any) => variant.id === languageAnchorId);
+      if (anchorVariant) {
+        setActiveTab(statusTabFor(anchorVariant.status));
+      }
+    }
+  }, [familyFetchData]);
+
+  useEffect(() => {
+    if (mode !== 'addLanguage' || newShortcode) {
+      return;
+    }
+    const anchorVariant = familyVariants.find((variant: any) => variant.id === languageAnchorId);
+    if (!anchorVariant) {
+      return;
+    }
+    setNewShortcode(anchorVariant.shortcode);
+    setCategory(
+      anchorVariant.category
+        ? {
+            id: anchorVariant.category,
+            label: anchorVariant.category,
+            description: categoryDescriptions[anchorVariant.category],
+          }
+        : null
+    );
+  }, [mode, familyVariants, languageAnchorId, newShortcode]);
+
   useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
-      setLanguageOptions(lang);
-      if (!isEditing) {
+      setLanguageOptions(mode === 'addLanguage' ? filterAvailableLanguages(lang, excludeLanguageIds) : lang);
+      if (mode === 'create' || mode === 'copy') {
         const englishLang = lang.find((l: any) => l.label.toLowerCase() === 'english');
         setLanguageId(englishLang || lang[0]);
       }
     }
-  }, [languages]);
-
-  const computeSampleText = () => {
-    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-
-    if (!isAddButtonChecked || templateButtons.length === 0) {
-      return message || '';
-    }
-
-    const parse = convertButtonsToTemplate(templateButtons, templateType?.id);
-    const parsedText = parse.length ? `| ${parse.join(' | ')}` : '';
-    return parsedText ? (message || ' ') + parsedText : message || '';
-  };
+  }, [languages, mode, excludeLanguageIds]);
 
   useEffect(() => {
     setSimulatorMessage(computeSampleText(), footer);
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
 
   useEffect(() => {
-    if (templateType?.id && !isEditing) {
+    if (templateType?.id && (mode === 'create' || mode === 'copy')) {
       addTemplateButtons(false);
     }
   }, [templateType]);
@@ -447,14 +600,44 @@ export const HSMV2 = () => {
 
   return (
     <div className={styles.Page}>
+      {Boolean(languageAnchorId) && (
+        <Heading
+          backLink={`/${backButton}`}
+          formTitle={languageModeTitle}
+          headerHelp={languageModeHelp}
+          helpData={templateInfo}
+        />
+      )}
+      {Boolean(languageAnchorId) && (
+        <LanguageVersionsCard
+          variantsByTab={variantsByTab}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          showAddLanguage={!params.id}
+          showDelete={!params.id}
+          onView={viewVariant}
+          onAddLanguage={openAddLanguage}
+          onDelete={requestDeleteVariant}
+        />
+      )}
+      {deleteTarget && (
+        <DialogBox
+          title={`${t('Are you sure you want to delete the')} "${deleteTarget.label}" ${t('version?')}`}
+          handleCancel={() => setDeleteTarget(null)}
+          handleOk={confirmDeleteVariant}
+          colorOk="warning"
+          buttonOkLoading={deleteLoading}
+        >
+          {t('This action cannot be undone.')}
+        </DialogBox>
+      )}
       <FormLayout
         {...queries}
-        updateItemQuery={updateItemQuery}
         states={states}
-        isView={isEditing}
+        isView={isReadOnly}
         setStates={setStates}
         setPayload={setPayload}
-        validationSchema={isEditing ? Yup.object() : FormSchema}
+        validationSchema={isReadOnly ? Yup.object() : FormSchema}
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
         formFields={fields}
@@ -462,25 +645,28 @@ export const HSMV2 = () => {
         listItem="sessionTemplate"
         icon={templateIcon}
         helpData={templateInfo}
+        noHeading={Boolean(languageAnchorId)}
         getLanguageId={getLanguageId}
         languageSupport={false}
-        errorButtonState={{ text: isEditing ? t('Go Back') : t('Cancel'), show: true }}
+        errorButtonState={{ text: isReadOnly ? t('Go Back') : t('Cancel'), show: true }}
         isAttachment
         getQueryFetchPolicy="cache-and-network"
-        button={!isEditing ? t('Submit for Approval') : t('Save')}
+        button={!isReadOnly ? t('Submit for Approval') : t('Save')}
         buttonState={{
           text: t('Validating URL'),
           status: validatingURL,
-          show: !isEditing,
+          show: !isReadOnly,
           styles: styles.Buttons,
         }}
         saveOnPageChange={false}
-        type={mode}
-        copyNotification={copyMessage}
+        type={mode === 'copy' ? 'copy' : undefined}
         backLinkButton={`/${backButton}`}
         cancelLink={backButton}
         getMediaId={getMediaId}
-        entityId={params.id}
+        entityId={entityId}
+        prefillId={prefillId}
+        redirect={mode !== 'addLanguage'}
+        afterSave={mode === 'addLanguage' ? handleVariantCreated : undefined}
         partialPage
         customStyles={styles.CustomFormShell}
       />

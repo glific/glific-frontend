@@ -25,6 +25,7 @@ import {
   templateCountV2RejectedMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
+import { languageCode } from './HSMListV2.helper';
 
 vi.mock('i18next', () => ({ t: (str: string) => str }));
 
@@ -171,7 +172,7 @@ test('navigates to create template page with the selected tag', async () => {
   expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
-test('navigates to edit template page via the row View action', async () => {
+test('navigates to the read-only view page via the row View action', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -185,6 +186,23 @@ test('navigates to edit template page via the row View action', async () => {
 
   await waitFor(() => {
     expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/1/edit');
+  });
+});
+
+test('navigates to the create page with the anchor template id via the row Add new language action', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  const row = screen.getByText('welcome_msg').closest('tr') as HTMLElement;
+  fireEvent.click(within(row).getByTestId('add-language-icon'));
+
+  await waitFor(() => {
+    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', {
+      state: { languageAnchorId: '1', anchorShortcode: 'welcome_msg' },
+    });
   });
 });
 
@@ -553,4 +571,8 @@ test('filters templates by search term', async () => {
     expect(screen.queryByText('welcome_msg')).not.toBeInTheDocument();
   });
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('languageCode with no locale returns an empty string instead of throwing', () => {
+  expect(languageCode()).toBe('');
 });

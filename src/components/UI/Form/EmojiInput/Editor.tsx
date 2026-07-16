@@ -88,10 +88,8 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   }, [editor]);
 
   useEffect(() => {
-    if (disabled) {
-      editor.setEditable(false);
-    }
-  }, [disabled]);
+    editor.setEditable(!disabled);
+  }, [disabled, editor]);
 
   useEffect(() => {
     const checkFormatting = () => {
