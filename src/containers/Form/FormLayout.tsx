@@ -56,10 +56,6 @@ export interface FormLayoutProps {
     show?: boolean;
   };
   type?: string;
-  // awaited right before create/update fires, so a consumer can run an async
-  // step (e.g. deleting a row that would otherwise collide) as part of the
-  // same submit instead of on some earlier, separate interaction.
-  beforeSubmit?: (payload: any) => Promise<any>;
   afterSave?: Function;
   afterDelete?: { link: string };
   refetchQueries?: Array<any>;
@@ -140,7 +136,6 @@ export const FormLayout = ({
   button = 'Save',
   buttonState = { text: '', status: false, styles: '', show: true },
   type,
-  beforeSubmit,
   afterSave,
   afterDelete,
   refetchQueries,
@@ -235,15 +230,7 @@ export const FormLayout = ({
       }
     };
 
-    if (beforeSubmit) {
-      beforeSubmit(payload)
-        .then(() => proceedToSave(payload))
-        .catch((e: any) => {
-          setErrorMessage(e);
-        });
-    } else {
-      proceedToSave(payload);
-    }
+    proceedToSave(payload);
   };
 
   const handleUpdateCompleted = (data: any, isSaveClick: boolean) => {

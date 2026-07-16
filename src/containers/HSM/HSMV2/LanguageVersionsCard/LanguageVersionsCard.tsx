@@ -12,7 +12,6 @@ export interface LanguageVersionsCardProps {
   showAddLanguage: boolean;
   showDelete: boolean;
   onView: (variantId: string) => void;
-  onEditReapply: (variantId: string) => void;
   onAddLanguage: () => void;
   onDelete: (variantId: string) => void;
 }
@@ -24,7 +23,6 @@ export const LanguageVersionsCard = ({
   showAddLanguage,
   showDelete,
   onView,
-  onEditReapply,
   onAddLanguage,
   onDelete,
 }: LanguageVersionsCardProps) => (
@@ -60,25 +58,14 @@ export const LanguageVersionsCard = ({
               </span>
               <span className={styles.CategoryChip}>{categoryLabel(variant.category)}</span>
               <span className={styles.RowSpacer} />
-              {activeTab === 'Rejected' && showAddLanguage ? (
-                <Button
-                  variant="text"
-                  className={styles.ViewLink}
-                  onClick={() => onEditReapply(variant.id)}
-                  data-testid={`edit-reapply-language-${variant.id}`}
-                >
-                  {t('Edit & Re-apply')}
-                </Button>
-              ) : (
-                <Button
-                  variant="text"
-                  className={styles.ViewLink}
-                  onClick={() => onView(variant.id)}
-                  data-testid={`view-language-${variant.id}`}
-                >
-                  {t('View')}
-                </Button>
-              )}
+              <Button
+                variant="text"
+                className={styles.ViewLink}
+                onClick={() => onView(variant.id)}
+                data-testid={`view-language-${variant.id}`}
+              >
+                {t('View')}
+              </Button>
               {showDelete && (
                 <Button
                   variant="text"

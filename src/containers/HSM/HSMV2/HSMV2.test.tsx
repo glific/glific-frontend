@@ -819,7 +819,7 @@ describe('HSMV2 language versions', () => {
     });
   });
 
-  test('Rejected variants offer "Edit & Re-apply" instead of "View" on the add-language flow', async () => {
+  test('Rejected variants show "View" like any other status on the add-language flow', async () => {
     const variantsWithRejected = [
       ...familyVariants,
       { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
@@ -840,148 +840,7 @@ describe('HSMV2 language versions', () => {
     });
 
     fireEvent.click(screen.getByTestId('status-tab-Rejected'));
-    expect(screen.getByTestId('edit-reapply-language-3')).toBeInTheDocument();
-    expect(screen.queryByTestId('view-language-3')).not.toBeInTheDocument();
-  });
-
-  test('the dedicated /view route shows "View" (not "Edit & Re-apply") for Rejected variants', async () => {
-    const variantsWithRejected = [
-      ...familyVariants,
-      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
-    ];
-    const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock(variantsWithRejected)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/templates/1/view']}>
-          <Routes>
-            <Route path="/templates/:id/view" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await waitFor(() => {
-      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
     expect(screen.getByTestId('view-language-3')).toBeInTheDocument();
-    expect(screen.queryByTestId('edit-reapply-language-3')).not.toBeInTheDocument();
-  });
-
-  test('clicking "Edit & Re-apply" opens the draft immediately (no dialog, no delete yet); Save deletes the rejected variant, waits for it, then creates and shows the replacement in its real status without leaving the page', async () => {
-    const familyRefetchMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'element_name' }, [
-      {
-        id: '1',
-        bspId: 'bsp-001',
-        label: 'Account Balance',
-        body: 'body',
-        footer: null,
-        shortcode: 'element_name',
-        status: 'APPROVED',
-        category: 'ACCOUNT_UPDATE',
-        reason: null,
-        isHsm: true,
-        isReserved: false,
-        isActive: true,
-        updatedAt: '2024-01-15T10:00:00Z',
-        numberParameters: 0,
-        translations: null,
-        type: 'TEXT',
-        quality: 'HIGH',
-        language: { id: '1', label: 'English', locale: 'en' },
-        tag: null,
-        MessageMedia: null,
-      },
-      {
-        id: '101',
-        bspId: null,
-        label: 'Account Balance',
-        body: 'body',
-        footer: null,
-        shortcode: 'element_name',
-        status: 'PENDING',
-        category: 'ACCOUNT_UPDATE',
-        reason: null,
-        isHsm: true,
-        isReserved: false,
-        isActive: true,
-        updatedAt: '2024-01-15T10:00:00Z',
-        numberParameters: 0,
-        translations: null,
-        type: 'TEXT',
-        quality: null,
-        language: { id: '3', label: 'Spanish', locale: 'es' },
-        tag: null,
-        MessageMedia: null,
-      },
-    ]);
-    const variantsWithRejected = [
-      ...familyVariants,
-      { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
-    ];
-    const MOCKS = [
-      ...mocks,
-      ...WHATSAPP_FORM_MOCKS,
-      getHSMTemplateTypeText,
-      getHSMTemplateTypeText,
-      familyFetchMock(variantsWithRejected),
-
-      templateEditMock('3', { hasButtons: false, buttons: null, buttonType: null }),
-      templateEditMock('3', { hasButtons: false, buttons: null, buttonType: null }),
-      templateEditMock('101', { hasButtons: false, buttons: null, buttonType: null }),
-      templateEditMock('101', { hasButtons: false, buttons: null, buttonType: null }),
-      deleteTemplateMock('3'),
-      ...CREATE_SESSION_TEMPLATE_MOCK,
-      familyRefetchMock,
-    ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1' } }]}>
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await waitFor(() => {
-      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
-    fireEvent.click(screen.getByTestId('edit-reapply-language-3'));
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('account_balance')).toBeInTheDocument();
-    });
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('English')).toBeInTheDocument();
-    });
-    const languageInput = screen.getAllByRole('combobox')[0];
-    expect(languageInput).not.toBeDisabled();
-
-    expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(screen.queryByText(/is required/i)).not.toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Language versions')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('0')).toBeInTheDocument();
-    });
-    await waitFor(() => {
-      expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
-    });
-    await waitFor(() => {
-      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
-    });
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
