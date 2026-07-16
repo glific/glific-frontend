@@ -38,6 +38,11 @@ export const templateInfo: HelpDataProps = {
   link: 'https://glific.github.io/docs/docs/Product%20Features/Templates',
 };
 
+export const interactiveButtonsInfo: HelpDataProps = {
+  heading:
+    'Add Call to Action (URL or phone number), Quick Reply, or WhatsApp Form buttons to make your template interactive.',
+};
+
 export const interactiveMessageInfo: HelpDataProps = {
   heading:
     'Interactive Messages are used by NGOs to create engaging and dynamic conversations with their beneficiaries. This feature helps NGOs to go beyond simple text-based notifications and include interactive elements like buttons, quick replies, list menus etc. It enhances the user experience through guided interactions and helps the NGOs collect cleaner data.',

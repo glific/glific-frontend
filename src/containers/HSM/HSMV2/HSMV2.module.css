@@ -1,0 +1,70 @@
+/* The app shell (Layout.module.css .MainContent) clips overflow at a fixed
+   height and expects each page to scroll within that height. FormLayout only
+   provides a scroll container (.ItemAdd) when NOT partialPage; here we pass
+   partialPage, so it renders .ItemAddDialog which has no scroll. Keep this at
+   the shell's real height and own the vertical scroll here, otherwise the
+   lower fields (buttons, media, submit) get clipped with no scrollbar. */
+.Page {
+  padding: 0 32px 48px 0;
+  background-color: #ffffff;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Overrides FormLayout's default fixed-width .Form shell (width: 530px;
+   padding: 16px 53px) so fields lay out full-width inside the grid column.
+   !important is needed since class order between the two CSS modules in the
+   compiled bundle isn't guaranteed. */
+.CustomFormShell {
+  width: 100% !important;
+  max-width: 720px !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* aligns fields with the Heading title text: Heading's own 10px left padding
+     plus its .HeadingWrapper's 46px margin-left. */
+  margin: 0 0 0 56px;
+}
+
+/* Bottom action buttons */
+
+.Buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.CancelButton {
+  color: #202125 !important;
+  font-weight: 500 !important;
+}
+
+.DeleteButton {
+  margin-left: auto !important;
+}
+
+.DeleteIcon {
+  margin-right: 9px !important;
+}
+
+.Page [data-testid='simulator-container'] {
+  top: 160px !important;
+}
+
+.SectionTitleWrapper {
+  width: 100%;
+  margin-top: 32px;
+}
+
+.SectionTitle {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  color: #202125 !important;
+  padding-bottom: 14px;
+}
