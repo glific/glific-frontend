@@ -259,6 +259,7 @@ export const getOrganizationServicesQuery = {
         whatsappGroupEnabled: true,
         copyNodeEnabled: false,
         promptGeneratorEnabled: false,
+        templateV2Enabled: true,
       },
     },
   },
