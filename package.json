@@ -84,7 +84,9 @@
     "extract-translations": "i18next",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "engines": {
     "node": ">=22.12.0 <23"
@@ -135,6 +137,13 @@
     "typescript": "^5.9.3",
     "vite-plugin-mkcert": "2.1.0",
     "vitest": "^4.0.15",
-    "yarn-upgrade-all": "^0.7.5"
+    "yarn-upgrade-all": "^0.7.5",
+    "storybook": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-mcp": "^0.6.0",
+    "eslint-plugin-storybook": "^10.4.6"
   }
 }

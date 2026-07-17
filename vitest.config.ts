@@ -12,7 +12,15 @@ export default defineConfig({
       // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
       provider: 'istanbul', // or 'c8',
       include: ['src/**/**'],
-      exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**', './src/mocks/**', '**/*.md'],
+      exclude: [
+        'node_modules/',
+        '**/*.test.tsx',
+        './src/assets/**',
+        './src/mocks/**',
+        '**/*.md',
+        '**/*.stories.tsx',
+        '**/*.stories.ts',
+      ],
     },
     css: true,
     testTimeout: 10000,

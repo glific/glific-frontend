@@ -1,0 +1,116 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Typography" />
+
+# Typography
+
+Glific uses **Heebo** as its primary typeface, applied globally via the MUI theme at `src/config/theme.tsx`.
+
+```ts
+// src/config/theme.tsx
+typography: {
+  fontFamily: ['heebo', 'sans-serif'].join(','),
+}
+```
+
+---
+
+## Type Scale
+
+These are the MUI typography variants used across the application. All values inherit the Heebo font.
+
+<div style={{ fontFamily: 'heebo, sans-serif', display: 'flex', flexDirection: 'column', gap: 24, padding: '24px 0' }}>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>h1</div>
+    <div style={{ fontSize: '6rem', fontWeight: 300, letterSpacing: '-1.5px', lineHeight: 1.167 }}>Glific Platform</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>6rem · weight 300 · tracking -1.5px</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>h2</div>
+    <div style={{ fontSize: '3.75rem', fontWeight: 300, letterSpacing: '-0.5px' }}>Glific Platform</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>3.75rem · weight 300 · tracking -0.5px</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>h3</div>
+    <div style={{ fontSize: '3rem', fontWeight: 400 }}>Glific Platform</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>3rem · weight 400</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>h4</div>
+    <div style={{ fontSize: '2.125rem', fontWeight: 400 }}>Glific Platform</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>2.125rem · weight 400</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>h5 <span style={{ color: '#bbb', fontSize: 11 }}>— page headings, responsive at ≤768px → 1rem</span></div>
+    <div style={{ fontSize: '1.5rem', fontWeight: 400 }}>Glific Platform</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>1.5rem · weight 400 (→ 1rem on mobile)</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>h6 <span style={{ color: '#bbb', fontSize: 11 }}>— section headings, responsive at ≤768px → 1rem</span></div>
+    <div style={{ fontSize: '1.25rem', fontWeight: 500 }}>Glific Platform</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>1.25rem · weight 500 (→ 1rem on mobile)</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>subtitle1</div>
+    <div style={{ fontSize: '1rem', fontWeight: 400 }}>Used for dropdown labels and section subtitles</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>1rem · weight 400</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>subtitle2</div>
+    <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>Used for dropdown labels and section subtitles</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>0.875rem · weight 500</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>body1 <span style={{ color: '#bbb', fontSize: 11 }}>— default body text</span></div>
+    <div style={{ fontSize: '1rem', fontWeight: 400 }}>The quick brown fox jumps over the lazy dog.</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>1rem · weight 400</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>body2</div>
+    <div style={{ fontSize: '0.875rem', fontWeight: 400 }}>The quick brown fox jumps over the lazy dog.</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>0.875rem · weight 400</div>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>caption <span style={{ color: '#bbb', fontSize: 11 }}>— used in Input labels</span></div>
+    <div style={{ fontSize: '0.75rem', fontWeight: 400 }}>Helper text and field labels</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>0.75rem · weight 400</div>
+  </div>
+
+  <div style={{ paddingBottom: 16 }}>
+    <div style={{ fontSize: 12, color: '#999', marginBottom: 4 }}>button</div>
+    <div style={{ fontSize: '0.875rem', fontWeight: 500, letterSpacing: '0.02857em', textTransform: 'uppercase' }}>Click Me</div>
+    <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>0.875rem · weight 500 · uppercase · tracking 0.02857em</div>
+  </div>
+
+</div>
+
+---
+
+## Tabs & Compact UI
+
+Tabs have a fixed height of `32px` (overridden in theme) to keep the top navigation compact:
+
+```ts
+MuiTabs: { styleOverrides: { root: { height: '32px', minHeight: '32px' } } }
+MuiTab:  { styleOverrides: { root: { height: '32px', minHeight: '32px' } } }
+```
+
+---
+
+## Usage Guidelines
+
+- Import the `Typography` component from MUI to use semantic variants.
+- Never hardcode `font-family: heebo` in component CSS — the body-level override in `index.css` and MUI theme handle it globally.
+- Use `variant="caption"` for `Input` field labels (`inputLabel` prop).
+- Use `variant="h5"` for `Dropdown` field labels.
