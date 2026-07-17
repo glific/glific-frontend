@@ -54,7 +54,7 @@ export const DISCORD_URL = 'https://discord.gg/kyqsZAJEPK';
 export const UPLOAD_CONTACTS_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_contacts_import.csv';
 export const UPLOAD_CONTACTS_ADMIN_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_import_admin.csv';
 export const WA_GROUP_MEMBERS_SAMPLE =
-  'https://docs.google.com/spreadsheets/d/1sjGaZyVzK1FGAN4j_YHSRvl1JBX_Pg3n8yhMSJAT6bk/edit?usp=sharing';
+  'https://docs.google.com/spreadsheets/d/1-oupACzXqNWURa9nUv0rvpLrBNRTMRMN5EG-mY3zCvg/copy';
 
 export const REGISTRATION_HELP_LINK =
   'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
