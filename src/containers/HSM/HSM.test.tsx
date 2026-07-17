@@ -79,10 +79,10 @@ describe('Edit mode', () => {
       expect(getAllByRole('textbox')[0]).toHaveValue('account_update');
     });
     const combobox = getAllByRole('combobox');
-    combobox[2].focus();
-    fireEvent.keyDown(combobox[2], { key: 'ArrowDown' });
+    combobox[3].focus();
+    fireEvent.keyDown(combobox[3], { key: 'ArrowDown' });
     await waitFor(() => {
-      expect(getAllByRole('combobox')[2]).toHaveValue('IMAGE');
+      expect(getAllByRole('combobox')[3]).toHaveValue('IMAGE');
     });
   });
 });
