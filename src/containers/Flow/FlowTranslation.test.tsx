@@ -7,6 +7,7 @@ import {
   exportFlowTranslationsMock,
   exportFlowTranslationsWithErrors,
   getFlowTranslations,
+  getFlowTranslationsNetworkError,
   getFlowTranslationsWithErrors,
   importFlowTranslationsMock,
 } from 'mocks/Flow';
@@ -62,6 +63,25 @@ describe('Testing Translation flows', () => {
     fireEvent.click(screen.getByText('Continue'));
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Sorry! Unable to translate flow', 'warning');
+    });
+  });
+
+  it('shows an error dialog when auto translation fails with a network error', async () => {
+    const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+    const { getByText } = render(flowTranslation([getFlowTranslationsNetworkError]));
+
+    const button = getByText('Submit');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Note')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(mockSetDialog).toHaveBeenCalledWith(false);
+      expect(errorMessageSpy).toHaveBeenCalled();
     });
   });
 
