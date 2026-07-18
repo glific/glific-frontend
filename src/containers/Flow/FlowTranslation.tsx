@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './FlowTranslation.module.css';
 import { AUTO_TRANSLATE_FLOW, IMPORT_FLOW_LOCALIZATIONS } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW_LOCALIZATIONS } from 'graphql/queries/Flow';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { exportCsvFile } from 'common/utils';
 
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
@@ -49,9 +49,9 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         setNotification(inlineFlowLocalization.errors[0].message, 'warning');
       }
     },
-    onError: () => {
+    onError: (error: any) => {
       setDialog(false);
-      setNotification(t('An error occured while translating flows.'));
+      setErrorMessage(error);
     },
   });
 
