@@ -8,6 +8,7 @@ import {
   getHSMTemplateTypeText,
   getHSMTemplateTypeMedia,
   CREATE_SESSION_TEMPLATE_MOCK,
+  REAPPLY_SESSION_TEMPLATE_MOCK,
   templateEditMock,
   deleteTemplateMock,
   deleteTemplateErrorMock,
@@ -838,7 +839,7 @@ describe('HSMV2 language versions', () => {
     });
   });
 
-  test('Rejected variants show "View" like any other status on the add-language flow', async () => {
+  test('Rejected variants show both "View" and "Edit & Re-apply" on the add-language flow', async () => {
     const variantsWithRejected = [
       ...familyVariants,
       { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
@@ -861,7 +862,162 @@ describe('HSMV2 language versions', () => {
     });
 
     fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    expect(screen.getByTestId('reapply-language-3')).toBeInTheDocument();
     expect(screen.getByTestId('view-language-3')).toBeInTheDocument();
+  });
+
+  test('"Edit & Re-apply" opens the rejected variant prefilled and editable, with the Language field locked', async () => {
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '2', label: 'Marathi', locale: 'mr' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(variantsWithRejected),
+      templateEditMock('3', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        category: 'UTILITY',
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    fireEvent.click(screen.getByTestId('reapply-language-3'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit & Re-apply — account_balance')).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
+    });
+
+    const languageInput = screen.getAllByRole('combobox')[0];
+    expect(languageInput).toBeDisabled();
+  });
+
+  test('resubmitting a rejected variant via "Edit & Re-apply" calls reapplySessionTemplate and refreshes the list', async () => {
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '2', label: 'Marathi', locale: 'mr' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
+    const variantsAfterReapply = [
+      ...familyVariants,
+      { id: '3', language: { id: '2', label: 'Marathi', locale: 'mr' }, category: 'UTILITY', status: 'PENDING' },
+    ];
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(variantsWithRejected),
+      templateEditMock('3', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        category: 'UTILITY',
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+      ...REAPPLY_SESSION_TEMPLATE_MOCK,
+      familyFetchMock(variantsAfterReapply),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    fireEvent.click(screen.getByTestId('reapply-language-3'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+    // afterSave switches back to the read-only preview of the (now resubmitted) variant.
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-In Progress')).getByText('1')).toBeInTheDocument();
+    });
+  });
+
+  test('clicking "Edit & Re-apply" on a rejected sibling from a dedicated /:id/edit route navigates to that sibling\'s own URL in reapply mode', async () => {
+    const variantsWithRejected = [
+      ...familyVariants,
+      { id: '3', language: { id: '2', label: 'Marathi', locale: 'mr' }, category: 'UTILITY', status: 'REJECTED' },
+    ];
+    const MOCKS = [
+      ...mocks,
+      getHSMTemplateTypeText,
+      familyFetchMock(variantsWithRejected),
+      templateEditMock('3', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        category: 'UTILITY',
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+      templateEditMock('3', {
+        hasButtons: false,
+        buttons: null,
+        buttonType: null,
+        category: 'UTILITY',
+        language: { __typename: 'Language', id: '2', label: 'Marathi' },
+      }),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/template-v2/1/edit']}>
+          <Routes>
+            <Route path="/template-v2/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('status-tab-Rejected'));
+    fireEvent.click(screen.getByTestId('reapply-language-3'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
+    });
+    const languageInput = screen.getAllByRole('combobox')[0];
+    expect(languageInput).toBeDisabled();
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {

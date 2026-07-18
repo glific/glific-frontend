@@ -77,6 +77,41 @@ export const UPDATE_TEMPLATE = gql`
   }
 `;
 
+export const REAPPLY_SESSION_TEMPLATE = gql`
+  mutation reapplySessionTemplate($id: ID!, $input: SessionTemplateInput!) {
+    reapplySessionTemplate(id: $id, input: $input) {
+      sessionTemplate {
+        id
+        label
+        body
+        footer
+        isActive
+        language {
+          label
+          id
+        }
+        translations
+        type
+        MessageMedia {
+          id
+          caption
+          sourceUrl
+        }
+        category
+        shortcode
+        example
+        hasButtons
+        buttons
+        buttonType
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
 export const IMPORT_TEMPLATES = gql`
   mutation ImportTemplates($data: String) {
     importTemplates(data: $data) {

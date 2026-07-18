@@ -26,7 +26,7 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE, REAPPLY_SESSION_TEMPLATE } from 'graphql/mutations/Template';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
@@ -68,7 +68,7 @@ const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataP
   </div>
 );
 
-type Mode = 'create' | 'view' | 'copy' | 'addLanguage';
+type Mode = 'create' | 'view' | 'copy' | 'addLanguage' | 'reapply';
 
 export const HSMV2 = () => {
   const location: any = useLocation();
@@ -78,6 +78,7 @@ export const HSMV2 = () => {
 
   const isCopyState = location.state?.mode === 'copy';
   const copySourceId = isCopyState ? location.state?.sourceId : undefined;
+  const isReapplyState = location.state?.mode === 'reapply';
   const languageAnchorId = params.id || location.state?.languageAnchorId;
 
   const [language, setLanguageId] = useState<any>(null);
@@ -110,6 +111,7 @@ export const HSMV2 = () => {
   const [activeTab, setActiveTab] = useState<StatusTab>('Approved');
   const [mode, setMode] = useState<Mode>(() => {
     if (isCopyState) return 'copy';
+    if (isReapplyState) return 'reapply';
     if (languageAnchorId) return 'view';
     return 'create';
   });
@@ -125,7 +127,7 @@ export const HSMV2 = () => {
     () => familyVariants.map((variant: any) => variant.language?.id).filter(Boolean),
     [familyVariants]
   );
-  const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
+  const entityId = isReadOnly || mode === 'reapply' ? params.id || addPagePreviewId || languageAnchorId : undefined;
 
   const prefillId = mode === 'copy' ? copySourceId : undefined;
   const states = {
@@ -143,11 +145,18 @@ export const HSMV2 = () => {
     newShortcode,
   };
   const languageModeTitle =
-    mode === 'addLanguage' ? `${t('Add Language')} — ${newShortcode}` : newShortcode || t('HSM Template');
+    mode === 'addLanguage'
+      ? `${t('Add Language')} — ${newShortcode}`
+      : mode === 'reapply'
+        ? `${t('Edit & Re-apply')} — ${newShortcode}`
+        : newShortcode || t('HSM Template');
   const languageModeHelp =
     mode === 'addLanguage'
       ? t('Select a new language and fill in the translated content, buttons, and media for this version.')
-      : t('View the content and language versions for this template.');
+      : mode === 'reapply'
+        ? t('Fix the content that caused rejection and resubmit this language version for approval.')
+        : t('View the content and language versions for this template.');
+  const formQueries = mode === 'reapply' ? { ...queries, updateItemQuery: REAPPLY_SESSION_TEMPLATE } : queries;
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
 
@@ -372,13 +381,21 @@ export const HSMV2 = () => {
     }
   };
 
-  const handleVariantCreated = async (data: any) => {
-    const created = data?.createSessionTemplate?.sessionTemplate;
-    if (!created) {
+  const editReapplyVariant = (variantId: string) => {
+    if (!params.id) {
+      setMode('reapply');
+      setAddPagePreviewId(variantId);
+    } else {
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, mode: 'reapply' } });
+    }
+  };
+
+  const refreshFamilyAfterMutation = async (resultRecord: any) => {
+    if (!resultRecord) {
       return;
     }
     try {
-      const shortcodeToMatch = created.shortcode || newShortcode;
+      const shortcodeToMatch = resultRecord.shortcode || newShortcode;
       const { data: familyData } = await fetchFamilyVariants({
         variables: {
           filter: { isHsm: true, shortcode: shortcodeToMatch },
@@ -387,14 +404,19 @@ export const HSMV2 = () => {
       });
       const freshVariants = familyData?.sessionTemplates || [];
       setFamilyVariants(freshVariants);
-      const createdFresh = freshVariants.find((variant: any) => variant.id === created.id);
-      setActiveTab(statusTabFor(createdFresh?.status || 'PENDING'));
+      const updatedFresh = freshVariants.find((variant: any) => variant.id === resultRecord.id);
+      setActiveTab(statusTabFor(updatedFresh?.status || 'PENDING'));
     } catch (error) {
       setErrorMessage(error);
     }
     setMode('view');
-    setAddPagePreviewId(created.id);
+    setAddPagePreviewId(resultRecord.id);
   };
+
+  const handleVariantCreated = (data: any) => refreshFamilyAfterMutation(data?.createSessionTemplate?.sessionTemplate);
+
+  const handleVariantReapplied = (data: any) =>
+    refreshFamilyAfterMutation(data?.reapplySessionTemplate?.sessionTemplate);
 
   const computeSampleText = () => {
     const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
@@ -421,7 +443,7 @@ export const HSMV2 = () => {
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
-      disabled: isReadOnly,
+      disabled: isReadOnly || mode === 'reapply',
       onChange: getLanguageId,
     },
     {
@@ -618,6 +640,7 @@ export const HSMV2 = () => {
           onView={viewVariant}
           onAddLanguage={openAddLanguage}
           onDelete={requestDeleteVariant}
+          onReapply={editReapplyVariant}
         />
       )}
       {deleteTarget && (
@@ -632,7 +655,7 @@ export const HSMV2 = () => {
         </DialogBox>
       )}
       <FormLayout
-        {...queries}
+        {...formQueries}
         states={states}
         isView={isReadOnly}
         setStates={setStates}
@@ -665,8 +688,10 @@ export const HSMV2 = () => {
         getMediaId={getMediaId}
         entityId={entityId}
         prefillId={prefillId}
-        redirect={mode !== 'addLanguage'}
-        afterSave={mode === 'addLanguage' ? handleVariantCreated : undefined}
+        redirect={mode !== 'addLanguage' && mode !== 'reapply'}
+        afterSave={
+          mode === 'addLanguage' ? handleVariantCreated : mode === 'reapply' ? handleVariantReapplied : undefined
+        }
         partialPage
         customStyles={styles.CustomFormShell}
       />
