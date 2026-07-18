@@ -1020,6 +1020,44 @@ describe('HSMV2 language versions', () => {
     expect(languageInput).toBeDisabled();
   });
 
+  test('clicking "Edit & Re-apply" on the currently-loaded anchor (a rejected, single-variant template) switches to reapply mode in place', async () => {
+    // the anchor itself is the rejected variant — navigating to its own id
+    // would be a same-URL no-op navigation that React Router won't remount,
+    // so this must flip local state instead of calling navigate().
+    const anchorRejected = [
+      {
+        id: '1',
+        shortcode: 'account_balance',
+        language: { id: '1', label: 'English', locale: 'en' },
+        category: 'ACCOUNT_UPDATE',
+        status: 'REJECTED',
+      },
+    ];
+    const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock(anchorRejected)];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/template-v2/1/edit']}>
+          <Routes>
+            <Route path="/template-v2/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
+    });
+    expect(screen.getByText('View the content and language versions for this template.')).toBeInTheDocument();
+    expect(screen.queryByTestId('submitActionButton')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('reapply-language-1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit & Re-apply — account_balance')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('submitActionButton')).toBeInTheDocument();
+  });
+
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
     // only the anchor itself here (not familyVariants' PENDING Hindi/Marathi
     // row) — excludeLanguageIds is now derived from the family list, so

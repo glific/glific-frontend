@@ -382,11 +382,11 @@ export const HSMV2 = () => {
   };
 
   const editReapplyVariant = (variantId: string) => {
-    if (!params.id) {
+    if (params.id && params.id !== variantId) {
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, mode: 'reapply' } });
+    } else {
       setMode('reapply');
       setAddPagePreviewId(variantId);
-    } else {
-      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, mode: 'reapply' } });
     }
   };
 
