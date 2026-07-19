@@ -23,6 +23,8 @@ import {
   templateCountV2SearchMock,
   filterTemplatesV2RejectedMock,
   templateCountV2RejectedMock,
+  filterTemplatesV2MediaTypesMock,
+  templateCountV2MediaTypesMock,
   filterTemplatesV2AllStatusesMock,
   templateCountV2AllStatusesMock,
   filterTemplatesV2NoShortcodeMock,
@@ -559,6 +561,40 @@ test('hovering a template with an attachment shows it in the message preview', a
     expect(screen.getByTestId('preview-media-fallback')).toBeInTheDocument();
   });
   expect(screen.queryByAltText('Order summary')).not.toBeInTheDocument();
+});
+
+test('the message preview shows a type-appropriate media for VIDEO, DOCUMENT, and AUDIO attachments', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2MediaTypesMock, templateCountV2MediaTypesMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
+
+  await waitFor(() => {
+    expect(screen.getByText('product_demo')).toBeInTheDocument();
+  });
+  fireEvent.mouseOver(screen.getByText('product_demo'));
+  await waitFor(() => {
+    expect(screen.getByTestId('preview-media-video')).toBeInTheDocument();
+  });
+  expect(screen.queryByTestId('preview-media-fallback')).not.toBeInTheDocument();
+
+  // DOCUMENT has no visual thumbnail to load — it goes straight to an icon +
+  // caption, without ever attempting (and failing) an <img> load first.
+  fireEvent.mouseOver(screen.getByText('invoice_pdf'));
+  await waitFor(() => {
+    expect(screen.getByText('Invoice.pdf')).toBeInTheDocument();
+  });
+  expect(screen.getByTestId('preview-media-fallback')).toBeInTheDocument();
+
+  // AUDIO likewise, and falls back to a generic "Audio" label when there's no caption.
+  fireEvent.mouseOver(screen.getByText('voice_note'));
+  await waitFor(() => {
+    expect(screen.getByText('Audio')).toBeInTheDocument();
+  });
 });
 
 test('clears the tag filter and restores the full list', async () => {

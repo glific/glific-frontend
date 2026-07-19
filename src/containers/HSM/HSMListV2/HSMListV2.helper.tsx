@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
 import CallIcon from '@mui/icons-material/Call';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import { TableCell, TableRow, Tooltip as MuiTooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -80,17 +83,56 @@ const parsePreviewButtons = (buttons?: string | null) => {
   }
 };
 
-const PreviewMedia = ({ media }: { media: any }) => {
+// DOCUMENT/AUDIO have no visual thumbnail to load, so they always render an
+// icon + caption instead of attempting (and failing) to load the source URL
+// as an image.
+const staticMediaFallback: Record<string, { icon: any; label: string }> = {
+  DOCUMENT: { icon: <InsertDriveFileOutlinedIcon className={styles.PreviewMediaIcon} />, label: t('Document') },
+  AUDIO: { icon: <AudiotrackOutlinedIcon className={styles.PreviewMediaIcon} />, label: t('Audio') },
+};
+
+const PreviewMedia = ({ media, type }: { media: any; type?: string }) => {
   const [errored, setErrored] = useState(false);
 
   if (!media || !media.sourceUrl) return null;
 
+  const staticFallback = type ? staticMediaFallback[type] : undefined;
+  if (staticFallback) {
+    return (
+      <div className={styles.PreviewMedia}>
+        <div
+          className={`${styles.PreviewMediaFallback} ${styles.PreviewMediaFallbackColumn}`}
+          data-testid="preview-media-fallback"
+        >
+          {staticFallback.icon}
+          <span className={styles.PreviewMediaFallbackLabel}>{media.caption || staticFallback.label}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (errored) {
+    const FallbackIcon = type === 'VIDEO' ? VideocamOutlinedIcon : ImageOutlinedIcon;
+    return (
+      <div className={styles.PreviewMedia}>
+        <div className={styles.PreviewMediaFallback} data-testid="preview-media-fallback">
+          <FallbackIcon className={styles.PreviewMediaIcon} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.PreviewMedia}>
-      {errored ? (
-        <div className={styles.PreviewMediaFallback} data-testid="preview-media-fallback">
-          <ImageOutlinedIcon className={styles.PreviewMediaIcon} />
-        </div>
+      {type === 'VIDEO' ? (
+        <video
+          data-testid="preview-media-video"
+          className={styles.PreviewMediaImage}
+          src={media.sourceUrl}
+          muted
+          preload="metadata"
+          onError={() => setErrored(true)}
+        />
       ) : (
         <img
           className={styles.PreviewMediaImage}
@@ -112,7 +154,7 @@ const messagePreview = (variant: any, title: string) => {
         {(title || '').toUpperCase()} · {languageCode(variant.language?.locale)}
       </div>
       <div className={styles.PreviewBubble}>
-        <PreviewMedia media={variant.MessageMedia} />
+        <PreviewMedia media={variant.MessageMedia} type={variant.type} />
         <div className={styles.PreviewBody}>{highlightVariables(variant.body)}</div>
         {variant.footer && <div className={styles.PreviewFooter}>{variant.footer}</div>}
       </div>
@@ -288,12 +330,26 @@ const renderCollapsedRows = (variants: any[] = [], showReason: boolean) => {
 
 export const getColumns =
   (showReason: boolean, collapse?: { collapseRow: string; collapseOpen: boolean; onToggle: (id: string) => void }) =>
-  ({ id, label, shortcode, updatedAt, reason, variants, body, footer, language, buttons, MessageMedia, tag }: any) => ({
+  ({
+    id,
+    label,
+    shortcode,
+    updatedAt,
+    reason,
+    variants,
+    body,
+    footer,
+    language,
+    buttons,
+    MessageMedia,
+    tag,
+    type,
+  }: any) => ({
     id,
     label: getTitle(
       shortcode || label,
       tag?.label,
-      { body, footer, language, buttons, MessageMedia },
+      { body, footer, language, buttons, MessageMedia, type },
       collapse
         ? { isOpen: collapse.collapseOpen && collapse.collapseRow === id, onToggle: collapse.onToggle, id }
         : undefined

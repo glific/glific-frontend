@@ -1022,6 +1022,96 @@ export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
 export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
   hsmV2TemplatesData[1],
 ]);
+
+// covers the hover preview's per-type media rendering for attachment types
+// other than IMAGE — VIDEO gets a muted thumbnail, DOCUMENT/AUDIO get an
+// icon + caption since neither has a visual thumbnail to load.
+export const mediaTypesTemplatesData = [
+  {
+    id: '20',
+    bspId: null,
+    label: 'Product Demo',
+    body: 'Watch our new product demo.',
+    footer: null,
+    shortcode: 'product_demo',
+    category: 'MARKETING',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-02-10T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'VIDEO',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    MessageMedia: { id: 21, caption: 'Demo video', sourceUrl: 'https://example.com/demo.mp4' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+  {
+    id: '22',
+    bspId: null,
+    label: 'Invoice',
+    body: 'Please find your invoice attached.',
+    footer: null,
+    shortcode: 'invoice_pdf',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-02-11T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'DOCUMENT',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    MessageMedia: { id: 23, caption: 'Invoice.pdf', sourceUrl: 'https://example.com/invoice.pdf' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+  {
+    id: '24',
+    bspId: null,
+    label: 'Voice Note',
+    body: 'Here is a voice note for you.',
+    footer: null,
+    shortcode: 'voice_note',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-02-12T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'AUDIO',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    // no caption — the fallback should show the generic "Audio" label instead.
+    MessageMedia: { id: 25, caption: null, sourceUrl: 'https://example.com/note.mp3' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+];
+export const filterTemplatesV2MediaTypesMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'REJECTED' },
+  mediaTypesTemplatesData
+);
+export const templateCountV2MediaTypesMock = templateCountQuery(
+  { isHsm: true, status: 'REJECTED' },
+  mediaTypesTemplatesData.length
+);
 // covers the title falling back to the label when a template has no shortcode yet.
 export const noShortcodeTemplateData = {
   id: '7',

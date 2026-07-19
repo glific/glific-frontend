@@ -234,6 +234,16 @@
   height: 32px !important;
 }
 
+.PreviewMediaFallbackColumn {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.PreviewMediaFallbackLabel {
+  font-size: 12px;
+  color: #5c554e;
+}
+
 .PreviewVar {
   background: #c6efaf;
   color: #0c6b2e;
