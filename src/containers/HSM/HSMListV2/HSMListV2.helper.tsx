@@ -88,7 +88,7 @@ const PreviewMedia = ({ media }: { media: any }) => {
   return (
     <div className={styles.PreviewMedia}>
       {errored ? (
-        <div className={styles.PreviewMediaFallback}>
+        <div className={styles.PreviewMediaFallback} data-testid="preview-media-fallback">
           <ImageOutlinedIcon className={styles.PreviewMediaIcon} />
         </div>
       ) : (

@@ -25,6 +25,8 @@ import {
   templateCountV2RejectedMock,
   filterTemplatesV2AllStatusesMock,
   templateCountV2AllStatusesMock,
+  filterTemplatesV2NoShortcodeMock,
+  templateCountV2NoShortcodeMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
 import { languageCode } from './HSMListV2.helper';
@@ -161,6 +163,7 @@ test('hovering the template title shows the full message preview with its button
 
   expect(screen.getByText('Get started')).toBeInTheDocument();
   expect(screen.getByText('Learn more')).toBeInTheDocument();
+  expect(screen.getByText('Call us')).toBeInTheDocument();
 });
 
 test('navigates to create template page on Create click', async () => {
@@ -547,9 +550,15 @@ test('hovering a template with an attachment shows it in the message preview', a
 
   fireEvent.mouseOver(screen.getByText('feedback_form'));
 
+  const image = await screen.findByAltText('Order summary');
+
+  expect(screen.queryByTestId('preview-media-fallback')).not.toBeInTheDocument();
+
+  fireEvent.error(image);
   await waitFor(() => {
-    expect(screen.getByAltText('Order summary')).toBeInTheDocument();
+    expect(screen.getByTestId('preview-media-fallback')).toBeInTheDocument();
   });
+  expect(screen.queryByAltText('Order summary')).not.toBeInTheDocument();
 });
 
 test('clears the tag filter and restores the full list', async () => {
@@ -630,6 +639,27 @@ test('filters templates by search term', async () => {
     expect(screen.queryByText('welcome_msg')).not.toBeInTheDocument();
   });
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('falls back to the label as the title when a template has no shortcode yet', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2NoShortcodeMock, templateCountV2NoShortcodeMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'draft' } });
+  fireEvent.submit(screen.getByTestId('searchForm'));
+
+  await waitFor(() => {
+    expect(screen.getByText('No Shortcode Yet')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseOver(screen.getByText('No Shortcode Yet'));
+  await waitFor(() => {
+    expect(screen.getByText('Draft body.')).toBeInTheDocument();
+  });
+  expect(screen.queryByText('oops')).not.toBeInTheDocument();
 });
 
 test('languageCode with no locale returns an empty string instead of throwing', () => {

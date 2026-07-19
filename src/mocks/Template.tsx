@@ -870,6 +870,7 @@ export const hsmV2TemplatesData = [
     buttons: JSON.stringify([
       { type: 'URL', text: 'Get started', url: 'https://example.com' },
       { type: 'QUICK_REPLY', text: 'Learn more' },
+      { type: 'PHONE_NUMBER', text: 'Call us', phone_number: '9876543210' },
     ]),
   },
   {
@@ -895,7 +896,9 @@ export const hsmV2TemplatesData = [
     MessageMedia: { id: 1, caption: 'Order summary', sourceUrl: 'https://example.com/order-summary.jpg' },
     hasButtons: false,
     buttonType: null,
-    buttons: null,
+    // deliberately malformed — exercises the JSON.parse catch branch in the
+    // hover preview, which should render with no buttons rather than crash.
+    buttons: '[{"type":"QUICK_REPLY","text":"Oops"',
   },
   {
     // Hindi variant of the Welcome Message — shares the `welcome_msg` shortcode,
@@ -1019,6 +1022,37 @@ export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
 export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
   hsmV2TemplatesData[1],
 ]);
+// covers the title falling back to the label when a template has no shortcode yet.
+export const noShortcodeTemplateData = {
+  id: '7',
+  bspId: null,
+  label: 'No Shortcode Yet',
+  body: 'Draft body.',
+  footer: null,
+  shortcode: '',
+  category: 'UTILITY',
+  isReserved: false,
+  status: 'APPROVED',
+  reason: null,
+  isHsm: true,
+  isActive: true,
+  updatedAt: '2024-04-01T00:00:00Z',
+  numberParameters: 0,
+  translations: null,
+  type: 'TEXT',
+  quality: null,
+  language: { id: '1', label: 'English', locale: 'en' },
+  tag: null,
+  MessageMedia: null,
+  hasButtons: false,
+  buttonType: null,
+  // valid JSON, but not an array — parsePreviewButtons should treat it as no buttons.
+  buttons: '{"type":"URL","text":"oops"}',
+};
+export const filterTemplatesV2NoShortcodeMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'APPROVED', label: 'draft' },
+  [noShortcodeTemplateData]
+);
 
 export const allStatusesTemplatesData = [
   {
@@ -1058,6 +1092,10 @@ export const templateCountV2CategoryMock = templateCountQuery(
 );
 export const templateCountV2TagMock = templateCountQuery({ isHsm: true, status: 'APPROVED', tagIds: [1] }, 1);
 export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, status: 'APPROVED', label: 'feedback' }, 1);
+export const templateCountV2NoShortcodeMock = templateCountQuery(
+  { isHsm: true, status: 'APPROVED', label: 'draft' },
+  1
+);
 
 export const getCategoriesV2Mock = {
   request: { query: GET_HSM_CATEGORIES, variables: {} },
