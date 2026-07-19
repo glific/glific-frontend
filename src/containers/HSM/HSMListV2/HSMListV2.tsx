@@ -196,8 +196,9 @@ const HSMListV2 = () => {
   if (filterStatusName.length === 1) {
     [filterValue] = filterStatusName;
   }
-  const selectedStatusOptions =
-    filterStatusName.length > 0 ? statusList.filter((status) => filters[status.toUpperCase()]) : ['All'];
+  const selectedStatusOption = filterValue
+    ? (statusList.find((status) => status.toUpperCase() === filterValue) ?? 'All')
+    : 'All';
 
   const appliedFilters: any = { isHsm: true };
   // the backend filters with `status == ""` when the key is present, which
@@ -239,14 +240,14 @@ const HSMListV2 = () => {
         <Select
           aria-label={t('Filter by status')}
           name="template-type"
-          value={selectedStatusOptions}
+          value={selectedStatusOption}
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
         >
           {statusList.map((status: any) => (
             <MenuItem data-testid="template-item" key={status} value={status}>
-              {status}
+              {t(status)}
             </MenuItem>
           ))}
         </Select>
