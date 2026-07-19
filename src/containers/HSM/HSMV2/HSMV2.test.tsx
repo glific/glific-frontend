@@ -49,7 +49,16 @@ const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
 
 describe('HSMV2 edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
+    const familyMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, [
+      {
+        id: '1',
+        shortcode: 'account_balance',
+        language: { id: '1', label: 'English', locale: 'en' },
+        category: 'ACCOUNT_UPDATE',
+        status: 'APPROVED',
+      },
+    ]);
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
@@ -60,9 +69,11 @@ describe('HSMV2 edit mode', () => {
       </MockedProvider>
     );
 
+    // the detail form is collapsed until a language row's "View" is clicked.
     await waitFor(() => {
-      expect(screen.getByText('HSM Template')).toBeInTheDocument();
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByTestId('view-language-1'));
 
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('account_balance');
@@ -70,7 +81,20 @@ describe('HSMV2 edit mode', () => {
   });
 
   test('edit mode with a media attachment and Call to Action buttons loads the media/type/button state', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia];
+    // getHSMTemplateTypeMedia's request is keyed by the route id ('1'), even
+    // though the returned entity's own id/shortcode are 'account_update' — the
+    // family row below is keyed the same way LanguageVersionsCard keys it,
+    // by the anchor id ('1'), not the entity's internal id.
+    const familyMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_update' }, [
+      {
+        id: '1',
+        shortcode: 'account_update',
+        language: { id: '1', label: 'English', locale: 'en' },
+        category: 'MARKETING',
+        status: 'APPROVED',
+      },
+    ]);
+    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia, familyMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
@@ -82,8 +106,9 @@ describe('HSMV2 edit mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('HSM Template')).toBeInTheDocument();
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByTestId('view-language-1'));
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
@@ -715,6 +740,33 @@ describe('HSMV2 language versions', () => {
     expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
 
     expect(screen.queryByTestId('add-language-link')).not.toBeInTheDocument();
+  });
+
+  test('the detail form is collapsed on arrival and only appears after clicking View', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyFetchMock()];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
+    });
+    // the detail form/simulator stay mounted (so their data keeps loading in
+    // the background) but are hidden via CSS until "View" is clicked.
+    expect(screen.getByText('Template Details')).not.toBeVisible();
+
+    fireEvent.click(screen.getByTestId('view-language-1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Template Details')).toBeVisible();
+    });
+    expect(screen.getByTestId('simulator-container')).toBeVisible();
   });
 
   test('a reload (or direct link) on the dedicated /:id/edit route with no navigation state still fetches and shows the family tabs', async () => {

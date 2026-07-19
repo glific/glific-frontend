@@ -98,6 +98,7 @@ export const HSMV2 = () => {
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
   const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
+  const [hasOpenedDetail, setHasOpenedDetail] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
@@ -125,7 +126,9 @@ export const HSMV2 = () => {
     () => familyVariants.map((variant: any) => variant.language?.id).filter(Boolean),
     [familyVariants]
   );
-  const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
+
+  const entityId = isReadOnly ? addPagePreviewId || languageAnchorId : undefined;
+  const isDetailVisible = mode !== 'view' || hasOpenedDetail;
 
   const prefillId = mode === 'copy' ? copySourceId : undefined;
   const states = {
@@ -350,26 +353,16 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
-    setBody('');
-    setEditorState('');
-    setFooter('');
-    setVariables([]);
-    setType(null);
-    setAttachmentURL('');
-    setTemplateType(BUTTON_OPTIONS[0]);
-    setTemplateButtons([]);
-    setIsAddButtonChecked(false);
-    setTagId(null);
-    setNewShortcode('');
   };
 
   const viewVariant = (variantId: string) => {
-    if (!params.id) {
-      setMode('view');
-      setAddPagePreviewId(variantId);
-    } else {
-      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants } });
+    if (params.id && params.id !== variantId) {
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
+      return;
     }
+    setMode('view');
+    setAddPagePreviewId(variantId);
+    setHasOpenedDetail(true);
   };
 
   const handleVariantCreated = async (data: any) => {
@@ -394,6 +387,7 @@ export const HSMV2 = () => {
     }
     setMode('view');
     setAddPagePreviewId(created.id);
+    setHasOpenedDetail(true);
   };
 
   const computeSampleText = () => {
@@ -536,7 +530,13 @@ export const HSMV2 = () => {
 
   const FormSchema = buildValidationSchema({ t, isAddButtonChecked, templateType });
 
-  // ---- Effects ----
+  useEffect(() => {
+    if (location.state?.autoExpandId && location.state.autoExpandId === params.id) {
+      setAddPagePreviewId(location.state.autoExpandId);
+      setHasOpenedDetail(true);
+    }
+  }, [location.state?.autoExpandId, params.id]);
+
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
       const freshVariants = familyFetchData.sessionTemplates;
@@ -631,47 +631,49 @@ export const HSMV2 = () => {
           {t('This action cannot be undone.')}
         </DialogBox>
       )}
-      <FormLayout
-        {...queries}
-        states={states}
-        isView={isReadOnly}
-        setStates={setStates}
-        setPayload={setPayload}
-        validationSchema={isReadOnly ? Yup.object() : FormSchema}
-        listItemName="HSM Template"
-        dialogMessage={dialogMessage}
-        formFields={fields}
-        redirectionLink={backButton}
-        listItem="sessionTemplate"
-        icon={templateIcon}
-        helpData={templateInfo}
-        noHeading={Boolean(languageAnchorId)}
-        getLanguageId={getLanguageId}
-        languageSupport={false}
-        errorButtonState={{ text: isReadOnly ? t('Go Back') : t('Cancel'), show: true }}
-        isAttachment
-        getQueryFetchPolicy="cache-and-network"
-        button={!isReadOnly ? t('Submit for Approval') : t('Save')}
-        buttonState={{
-          text: t('Validating URL'),
-          status: validatingURL,
-          show: !isReadOnly,
-          styles: styles.Buttons,
-        }}
-        saveOnPageChange={false}
-        type={mode === 'copy' ? 'copy' : undefined}
-        backLinkButton={`/${backButton}`}
-        cancelLink={backButton}
-        getMediaId={getMediaId}
-        entityId={entityId}
-        prefillId={prefillId}
-        redirect={mode !== 'addLanguage'}
-        afterSave={mode === 'addLanguage' ? handleVariantCreated : undefined}
-        partialPage
-        customStyles={styles.CustomFormShell}
-      />
+      <div className={isDetailVisible ? undefined : styles.DetailHidden}>
+        <FormLayout
+          {...queries}
+          states={states}
+          isView={isReadOnly}
+          setStates={setStates}
+          setPayload={setPayload}
+          validationSchema={isReadOnly ? Yup.object() : FormSchema}
+          listItemName="HSM Template"
+          dialogMessage={dialogMessage}
+          formFields={fields}
+          redirectionLink={backButton}
+          listItem="sessionTemplate"
+          icon={templateIcon}
+          helpData={templateInfo}
+          noHeading={Boolean(languageAnchorId)}
+          getLanguageId={getLanguageId}
+          languageSupport={false}
+          errorButtonState={{ text: isReadOnly ? t('Go Back') : t('Cancel'), show: true }}
+          isAttachment
+          getQueryFetchPolicy="cache-and-network"
+          button={!isReadOnly ? t('Submit for Approval') : t('Save')}
+          buttonState={{
+            text: t('Validating URL'),
+            status: validatingURL,
+            show: !isReadOnly,
+            styles: styles.Buttons,
+          }}
+          saveOnPageChange={false}
+          type={mode === 'copy' ? 'copy' : undefined}
+          backLinkButton={`/${backButton}`}
+          cancelLink={backButton}
+          getMediaId={getMediaId}
+          entityId={entityId}
+          prefillId={prefillId}
+          redirect={mode !== 'addLanguage'}
+          afterSave={mode === 'addLanguage' ? handleVariantCreated : undefined}
+          partialPage
+          customStyles={styles.CustomFormShell}
+        />
 
-      <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
+        <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
+      </div>
     </div>
   );
 };

@@ -59,6 +59,12 @@
   margin-top: 32px;
 }
 
+/* the detail form/simulator stay mounted while collapsed (see HSMV2.tsx) so
+   their data keeps loading in the background — only visibility is hidden. */
+.DetailHidden {
+  display: none;
+}
+
 .SectionTitle {
   display: flex !important;
   align-items: center;
