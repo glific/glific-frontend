@@ -15,6 +15,7 @@ import {
   sessionTemplatesV2ErrorMock,
   translateSessionTemplateMock,
   translateSessionTemplateErrorMock,
+  translateSessionTemplateResultErrorMock,
 } from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { uploadMediaSuccessMock, uploadMediaFailureMock, createMediaMessageMock } from 'mocks/Attachment';
@@ -1154,6 +1155,217 @@ describe('HSMV2 language versions', () => {
     expect(screen.queryByDisplayValue('मराठी पादलेख')).not.toBeInTheDocument();
     const footerReference = screen.getByTestId('footer-source-reference');
     expect(within(footerReference).getByText('footer')).toBeInTheDocument();
+  });
+
+  test('opening "Add new language" with a Call to Action anchor blanks each button\'s title but keeps its type and value', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const ctaAnchorMock = templateEditMock('1', {
+      hasButtons: true,
+      buttons: JSON.stringify([{ type: 'PHONE_NUMBER', text: 'Call Us', phone_number: '1234567890' }]),
+      buttonType: 'CALL_TO_ACTION',
+    });
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ctaAnchorMock, familyFetchMock(anchorOnly)];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('');
+    });
+
+    expect(screen.getByDisplayValue('1234567890')).toBeInTheDocument();
+  });
+
+  test('Auto-translate with a Call-to-Action anchor translates each button title independently, falling back to the previous title when a translation entry is missing', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const ctaAnchorMock = templateEditMock('1', {
+      hasButtons: true,
+      buttons: JSON.stringify([
+        { type: 'PHONE_NUMBER', text: 'Call Us', phone_number: '123' },
+        { type: 'URL', text: 'Visit Us', url: 'https://x.com' },
+      ]),
+      buttonType: 'CALL_TO_ACTION',
+    });
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      ctaAnchorMock,
+      familyFetchMock(anchorOnly),
+      translateSessionTemplateMock(
+        {
+          languageId: '2',
+          body: anchorBody,
+          footer: 'Sample footer',
+          buttons: ['Call Us', 'Visit Us'],
+        },
+        {
+          body: 'translated body',
+          footer: 'translated footer',
+          // the second entry is blank, exercising the "|| button.title" fallback.
+          buttons: ['बुलाओ', ''],
+        }
+      ),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('बुलाओ');
+    });
+    expect(screen.getByPlaceholderText('e.g., Track Order')).toHaveValue('');
+  });
+
+  test("switching the draft's button type away from the anchor before Auto-translate sends no button text and ignores any returned buttons", async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(anchorOnly),
+      translateSessionTemplateMock(
+        { languageId: '2', body: anchorBody, footer: 'footer', buttons: undefined },
+        { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['XYZ'] }
+      ),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Call to Action'));
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('e.g., Call Us')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('मराठी पादलेख')).toBeInTheDocument();
+    });
+    expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('');
+  });
+
+  test('shows the server-provided error and skips applying content when Auto-translate returns a GraphQL-level error', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(anchorOnly),
+      translateSessionTemplateResultErrorMock(
+        {
+          languageId: '2',
+          body: anchorBody,
+          footer: 'footer',
+          buttons: ['View Account Balance', 'View Mini Statement'],
+        },
+        { key: 'translation_error', message: 'Unable to translate content right now.' }
+      ),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalledWith({
+        key: 'translation_error',
+        message: 'Unable to translate content right now.',
+      });
+    });
+    expect(screen.queryByDisplayValue('मराठी पादलेख')).not.toBeInTheDocument();
   });
 
   test('canceling the delete confirmation dialog leaves the variant untouched', async () => {

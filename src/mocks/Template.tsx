@@ -134,6 +134,23 @@ export const translateSessionTemplateErrorMock = (
   error: new Error(message),
 });
 
+export const translateSessionTemplateResultErrorMock = (
+  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  error: { key: string; message: string }
+) => ({
+  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  result: {
+    data: {
+      translateSessionTemplate: {
+        body: null,
+        footer: null,
+        buttons: null,
+        errors: [error],
+      },
+    },
+  },
+});
+
 export const templateEditMock = (templateId: string, buttons: any) => ({
   request: {
     query: GET_TEMPLATE,
