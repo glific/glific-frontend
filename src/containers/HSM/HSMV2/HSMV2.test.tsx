@@ -81,10 +81,6 @@ describe('HSMV2 edit mode', () => {
   });
 
   test('edit mode with a media attachment and Call to Action buttons loads the media/type/button state', async () => {
-    // getHSMTemplateTypeMedia's request is keyed by the route id ('1'), even
-    // though the returned entity's own id/shortcode are 'account_update' — the
-    // family row below is keyed the same way LanguageVersionsCard keys it,
-    // by the anchor id ('1'), not the entity's internal id.
     const familyMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_update' }, [
       {
         id: '1',
@@ -422,9 +418,6 @@ describe('HSMV2 add mode', () => {
     await waitFor(() => {
       expect(screen.getByText('photo.png', { exact: false })).toBeInTheDocument();
     });
-
-    // switching to a different attachment type should clear the previous upload,
-    // not leave a stale "File uploaded" message for a file that no longer applies.
     fireEvent.click(screen.getByText('Document'));
     expect(screen.queryByText('photo.png', { exact: false })).not.toBeInTheDocument();
 
@@ -757,8 +750,6 @@ describe('HSMV2 language versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
-    // the detail form/simulator stay mounted (so their data keeps loading in
-    // the background) but are hidden via CSS until "View" is clicked.
     expect(screen.getByText('Template Details')).not.toBeVisible();
 
     fireEvent.click(screen.getByTestId('view-language-1'));
@@ -843,7 +834,6 @@ describe('HSMV2 language versions', () => {
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
     fireEvent.click(screen.getByTestId('delete-language-2'));
 
-    // clicking Delete doesn't delete immediately — a confirmation dialog gates it.
     expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ok-button'));
@@ -1064,21 +1054,17 @@ describe('HSMV2 language versions', () => {
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
     fireEvent.click(screen.getByTestId('view-language-2'));
 
-    // previewing the sibling — the Language field shows it, locked.
     await waitFor(() => {
       expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
     });
 
-    // delete that same previewed row.
     fireEvent.click(screen.getByTestId('delete-language-2'));
     fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
-    // addPagePreviewId resets, so entityId falls back to the anchor —
-    // the Language field switches back to English instead of pointing at
-    // the now-deleted record.
+
     await waitFor(() => {
       expect(screen.getByDisplayValue('English')).toBeInTheDocument();
     });
