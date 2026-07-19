@@ -23,7 +23,6 @@ type ServiceType =
   | 'certificateEnabled'
   | 'askGlificEnabled'
   | 'whatsappFormsEnabled'
-  | 'assistantConfigVersionsEnabled'
   | 'aiEvaluationsEnabled'
   | 'copyNodeEnabled'
   | 'promptGeneratorEnabled'
@@ -87,7 +86,6 @@ export const checkAuthStatusService = () => {
     if (tokenExpiryTime.getTime() - now.getTime() > bufferMs) {
       // token is still valid (with buffer) return true
       authStatus = true;
-      setLogs(`Token valid. Expires in ${Math.floor((tokenExpiryTime.getTime() - now.getTime()) / 1000)}s`, 'info');
     } else {
       // this means token has expired or is about to expire
       authStatus = false;
@@ -118,7 +116,7 @@ export const clearAuthSession = () => {
 };
 
 // service to sent the OTP based on the phone number
-export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
+export const sendOTP = (phoneNumber: string, registrationToken?: string, timeout?: number) => {
   const user: RegisterRequest = {
     phone: phoneNumber,
     registration: 'false',
@@ -130,9 +128,7 @@ export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
   }
 
   return axios
-    .post(VITE_GLIFIC_AUTHENTICATION_API, {
-      user,
-    })
+    .post(VITE_GLIFIC_AUTHENTICATION_API, { user }, timeout ? { timeout } : undefined)
     .then((response) => response)
     .catch((error) => {
       throw error;
@@ -254,7 +250,7 @@ export const setAuthHeaders = () => {
         // @ts-ignore
         if (!this.renewGlificCall && this.status === 401) {
           setLogs('XMLHttpRequest: Received 401, logging out', 'error');
-          window.location.href = '/logout/user';
+          window.location.replace('/logout/user');
         }
       });
 

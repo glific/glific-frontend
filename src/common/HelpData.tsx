@@ -38,6 +38,11 @@ export const templateInfo: HelpDataProps = {
   link: 'https://glific.github.io/docs/docs/Product%20Features/Templates',
 };
 
+export const interactiveButtonsInfo: HelpDataProps = {
+  heading:
+    'Add Call to Action (URL or phone number), Quick Reply, or WhatsApp Form buttons to make your template interactive.',
+};
+
 export const interactiveMessageInfo: HelpDataProps = {
   heading:
     'Interactive Messages are used by NGOs to create engaging and dynamic conversations with their beneficiaries. This feature helps NGOs to go beyond simple text-based notifications and include interactive elements like buttons, quick replies, list menus etc. It enhances the user experience through guided interactions and helps the NGOs collect cleaner data.',
@@ -101,13 +106,6 @@ export const blockedContactsInfo: HelpDataProps = {
   heading:
     'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.',
   link: 'https://glific.github.io/docs/docs/Product%20Features/Others/All%20product%20features/#block-contacts', // Replace with the actual Glific documentation link
-};
-
-export const assistantsInfo: HelpDataProps = {
-  heading: t(
-    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.'
-  ),
-  link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/',
 };
 
 export const assistantListInfo: HelpDataProps = {

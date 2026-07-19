@@ -257,7 +257,6 @@ export const getOrganizationServicesQuery = {
         ticketingEnabled: true,
         autoTranslationEnabled: true,
         whatsappGroupEnabled: true,
-        assistantConfigVersionsEnabled: false,
         copyNodeEnabled: false,
         promptGeneratorEnabled: false,
       },

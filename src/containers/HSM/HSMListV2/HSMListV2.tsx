@@ -1,103 +1,60 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { FormControl, MenuItem, Select } from '@mui/material';
-import SyncIcon from '@mui/icons-material/Sync';
-import AppsIcon from '@mui/icons-material/Apps';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { FormControl, LinearProgress, MenuItem, Select } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { t } from 'i18next';
 
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
+import AddLanguageIcon from 'assets/images/icons/AddLanguage.svg?react';
+
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
+import { List } from 'containers/List/List';
+import { templateInfo, templateStatusInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
-import { exportCsvFile, getFileExtension } from 'common/utils';
-import { templateInfo } from 'common/HelpData';
+import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
+import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { SearchBar } from 'components/UI/SearchBar/SearchBar';
-import HSMExpandableTable from 'components/UI/HSMExpandableTable/HSMExpandableTable';
-
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
-import type { GroupedTemplate, LanguageVariant } from './HSMList.types';
 import styles from './HSMListV2.module.css';
-
-const groupTemplates = (flatList: any[]): GroupedTemplate[] => {
-  const map = new Map<string, GroupedTemplate>();
-  for (const item of flatList) {
-    if (!map.has(item.shortcode)) {
-      map.set(item.shortcode, {
-        shortcode: item.shortcode,
-        label: item.label,
-        category: item.category,
-        tag: item.tag ?? null,
-        languageVariants: [],
-      });
-    }
-    const variant: LanguageVariant = {
-      id: item.id,
-      bspId: item.bspId ?? null,
-      body: item.body,
-      category: item.category,
-      language: item.language,
-      status: item.status,
-      quality: item.quality ?? null,
-      reason: item.reason ?? null,
-      updatedAt: item.updatedAt,
-      isActive: item.isActive,
-    };
-    map.get(item.shortcode)!.languageVariants.push(variant);
-  }
-  return Array.from(map.values());
-};
+import {
+  categoryLabel,
+  getColumnNames,
+  getColumnStyles,
+  getColumns,
+  groupByShortcode,
+  queries,
+  showReasonColumn,
+  statusFilter,
+  templateIcon,
+} from './HSMListV2.helper';
 
 const HSMListV2 = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedTagId, setSelectedTagId] = useState<string>('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchMode, setSearchMode] = useState(false);
+  const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+  const [selectedTag, setSelectedTag] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [syncLoading, setSyncLoading] = useState(false);
   const [importing, setImporting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [collapseOpen, setCollapseOpen] = useState(false);
+  const [collapseRow, setCollapseRow] = useState('');
+  const importCancelledRef = useRef(false);
 
-  const { data: tagsData } = useQuery(GET_TAGS, { fetchPolicy: 'network-only' });
+  const { data: tagsData } = useQuery(GET_TAGS, { variables: {}, fetchPolicy: 'network-only' });
   const { data: categoriesData } = useQuery(GET_HSM_CATEGORIES);
-
-  const { data, loading } = useQuery(FILTER_TEMPLATES, {
-    variables: {
-      filter: { isHsm: true },
-      opts: { limit: 500, offset: 0, orderWith: 'label', order: 'ASC' },
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, { fetchPolicy: 'network-only' });
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES);
-
-  useEffect(() => {
-    const tagId = searchParams.get('tag');
-    setSelectedTagId(tagId ?? '');
-  }, [searchParams]);
-
-  const templates = useMemo(() => {
-    const flat: any[] = data?.sessionTemplates ?? [];
-    const grouped = groupTemplates(flat);
-
-    return grouped.filter((g) => {
-      if (selectedCategory && !g.languageVariants.some((v) => v.category === selectedCategory)) return false;
-      if (selectedTagId && g.tag?.id !== selectedTagId) return false;
-      if (searchTerm) {
-        const q = searchTerm.toLowerCase();
-        if (!g.label.toLowerCase().includes(q) && !g.shortcode.toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
-  }, [data, selectedCategory, selectedTagId, searchTerm]);
 
   const handleSync = async () => {
     setSyncLoading(true);
@@ -116,166 +73,259 @@ const HSMListV2 = () => {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const media = event.target.files?.[0];
-    if (!media) return;
+  const handleStartImport = () => {
+    importCancelledRef.current = false;
+    setImporting(true);
+  };
+
+  const handleCancelImport = () => {
+    importCancelledRef.current = true;
+    setImporting(false);
+    setNotification(t('Bulk apply cancelled. The upload may still finish in the background.'), 'warning');
+  };
+
+  const handleBulkApply = async (result: string, media: any) => {
     const extension = getFileExtension(media.name);
     if (extension !== 'csv') {
       setNotification(t('Please upload a valid CSV file'), 'warning');
-      return;
-    }
-    setImporting(true);
-    const fileReader = new FileReader();
-    fileReader.onload = () => handleBulkApply(fileReader.result as string);
-    fileReader.readAsText(media);
-    event.target.value = '';
-  };
-
-  const handleBulkApply = async (result: string) => {
-    try {
-      const { data: bulkData } = await bulkApplyTemplates({ variables: { data: result } });
-      const response = bulkData?.bulkApplyTemplates;
-      if (response?.csv_rows) exportCsvFile(response.csv_rows, 'result');
-      if (response?.errors?.length) {
-        setNotification(t('Templates were processed with errors. Please check the csv file for details.'), 'warning');
-      } else if (response) {
-        setNotification(t('Templates applied successfully. Please check the csv file for the results'));
-      }
-    } catch {
-      setNotification(t('An error occured! Please check the format of the file'), 'warning');
-    } finally {
       setImporting(false);
+    } else {
+      try {
+        const { data: bulkData } = await bulkApplyTemplates({ variables: { data: result } });
+        if (importCancelledRef.current) return;
+        const response = bulkData?.bulkApplyTemplates;
+        if (response?.csv_rows) exportCsvFile(response.csv_rows, 'result');
+        if (response?.errors?.length) {
+          setNotification(t('Templates were processed with errors. Please check the csv file for details.'), 'warning');
+        } else if (response) {
+          setNotification(t('Templates applied successfully. Please check the csv file for the results'));
+        }
+      } catch {
+        if (!importCancelledRef.current) {
+          setNotification(t('An error occured! Please check the format of the file'), 'warning');
+        }
+      } finally {
+        if (!importCancelledRef.current) setImporting(false);
+      }
     }
   };
 
-  if (importing) {
-    return <Loading message={t('Please wait while we process all the templates')} />;
-  }
+  const navigateToCreate = () => {
+    if (selectedTag?.label) {
+      navigate('/template-v2/add', { state: { tag: selectedTag } });
+    } else {
+      navigate('/template-v2/add');
+    }
+  };
+  const button = { show: true, label: t('Create'), action: navigateToCreate };
+
+  const handleView = (id: any) => navigate(`/template-v2/${id}/edit`);
+
+  const handleAddLanguage = (id: any, item: any) =>
+    navigate('/template-v2/add', {
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
+    });
+
+  const setCopyDialog = (id: any) => navigate('/template-v2/add', { state: { mode: 'copy', sourceId: id } });
+
+  const copyUuid = (_id: string, item: any) => {
+    if (item.bspId) {
+      copyToClipboardMethod(item.bspId);
+    } else {
+      setNotification(t('Sorry! UUID not found'), 'warning');
+    }
+  };
+
+  const toggleLanguages = (id: string) => {
+    if (collapseRow !== id) {
+      setCollapseRow(id);
+      setCollapseOpen(true);
+    } else {
+      setCollapseOpen(!collapseOpen);
+    }
+  };
+
+  const handleCheckedBox = (event: any) => {
+    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
+  };
+
+  useEffect(() => {
+    const tagValue = searchParams.get('tag');
+
+    if (tagValue && tagsData) {
+      const tag = tagsData?.tags.find((tag: any) => tagValue === tag.label);
+      setSelectedTag(tag);
+    } else {
+      setSelectedTag(null);
+    }
+  }, [searchParams, tagsData]);
+
+  const additionalAction = () => [
+    {
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-icon" />,
+      parameter: 'id',
+      dialog: handleView,
+    },
+    {
+      label: t('Add new language'),
+      icon: <AddLanguageIcon data-testid="add-language-icon" />,
+      parameter: 'id',
+      dialog: handleAddLanguage,
+    },
+    {
+      label: t('Copy UUID'),
+      icon: <CopyAllOutlined data-testid="copy-button" />,
+      parameter: 'id',
+      dialog: copyUuid,
+    },
+    {
+      label: t('Copy'),
+      icon: <DuplicateIcon data-testid="copyTemplate" />,
+      parameter: 'id',
+      dialog: setCopyDialog,
+    },
+  ];
 
   const categories: string[] = categoriesData?.whatsappHsmCategories ?? [];
 
-  return (
-    <div className={styles.Container}>
-      <div className={styles.Header}>
-        <div className={styles.TitleSection}>
-          <div className={styles.TitleRow}>
-            <h1 className={styles.Title}>{t('Templates')}</h1>
-            <HelpIcon helpData={templateInfo} />
-          </div>
-          <p className={styles.Subtitle}>{t('Please go through all the templates below')}</p>
-        </div>
+  let filterValue: any = '';
+  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
+  const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
+  if (filterStatusName.length === 1) {
+    [filterValue] = filterStatusName;
+  }
 
-        <div className={styles.HeaderActions}>
-          <input ref={fileInputRef} type="file" accept=".csv" hidden onChange={handleFileChange} data-testid="import" />
-          <Button
-            variant="outlined"
-            className={styles.OutlinedButton}
-            startIcon={<SyncIcon fontSize="small" />}
-            onClick={() => fileInputRef.current?.click()}
-            data-testid="bulkApply"
-          >
-            {t('Bulk apply')}
-          </Button>
+  const appliedFilters: any = { isHsm: true, status: filterValue };
+  if (selectedCategory) appliedFilters.category = selectedCategory;
 
-          <div className={styles.SyncWrapper}>
-            <Button
-              variant="outlined"
-              className={styles.OutlinedButton}
-              startIcon={<SyncIcon fontSize="small" />}
-              loading={syncLoading}
-              onClick={handleSync}
-              data-testid="syncHsm"
-            >
-              {t('Sync HSM')}
-            </Button>
-            <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.ViewSample}>
-              {t('View sample')}
-            </a>
-          </div>
+  const showReason = showReasonColumn(filterValue);
 
-          <Button
-            variant="outlined"
-            className={styles.OutlinedButton}
-            startIcon={<AppsIcon fontSize="small" />}
-            onClick={() => {}}
-            data-testid="templateLibrary"
-          >
-            {t('Template library')}
-          </Button>
+  const syncHSMButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      loading={syncLoading}
+      className={styles.HsmUpdates}
+      data-testid="syncHsm"
+      onClick={handleSync}
+    >
+      {t('SYNC HSM')}
+    </Button>
+  );
 
-          <Button
-            variant="contained"
-            className={styles.CreateButton}
-            onClick={() => navigate('/template/add')}
-            data-testid="createTemplate"
-          >
-            + {t('Create')}
-          </Button>
-        </div>
-      </div>
-
-      <div className={styles.FilterBar}>
-        <div className={styles.FilterLeft}>
-          <FormControl>
-            <Select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className={styles.DropDown}
-              displayEmpty
-              data-testid="categoryFilter"
-            >
-              <MenuItem value="">{t('All Categories')}</MenuItem>
-              {categories.map((cat: string) => (
-                <MenuItem key={cat} value={cat}>
-                  {cat.charAt(0) + cat.slice(1).toLowerCase().replace(/_/g, ' ')}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl>
-            <Select
-              value={selectedTagId}
-              onChange={(e) => setSearchParams({ tag: e.target.value })}
-              className={styles.DropDown}
-              displayEmpty
-              data-testid="tagFilter"
-            >
-              <MenuItem value="">{t('All Tags')}</MenuItem>
-              {(tagsData?.tags ?? []).map((tag: any) => (
-                <MenuItem key={tag.id} value={tag.id}>
-                  {tag.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-
-        <div className={styles.FilterRight}>
-          <SearchBar
-            searchMode={searchMode}
-            searchVal={searchTerm}
-            iconFront
-            onReset={() => {
-              setSearchTerm('');
-              setSearchMode(false);
-            }}
-            handleChange={(e: any) => {
-              setSearchTerm(e.target.value);
-              setSearchMode(true);
-            }}
-            className={styles.SearchBar}
-          />
-          <button className={styles.FilterIconButton} type="button" aria-label={t('Filter')}>
-            &#9776;
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.TableWrapper}>
-        {loading && !data ? <Loading /> : <HSMExpandableTable templates={templates} />}
+  const secondaryButton = (
+    <div className={styles.SecondaryButton}>
+      {syncHSMButton}
+      <div className={styles.ImportButton}>
+        <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
+          {t('View Sample')}
+        </a>
+        <ImportButton title={t('Bulk apply')} onImport={handleStartImport} afterImport={handleBulkApply} />
       </div>
     </div>
+  );
+
+  const filterList = (
+    <div className={styles.FilterContainer}>
+      <FormControl className={styles.FormStyle}>
+        <Select
+          aria-label={t('Filter by status')}
+          name="template-type"
+          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          onChange={handleCheckedBox}
+          className={styles.DropDown}
+          data-testid="dropdown-template"
+        >
+          {statusList.map((status: any) => (
+            <MenuItem data-testid="template-item" key={status} value={status}>
+              {status}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <HelpIcon darkIcon={false} helpData={templateStatusInfo} />
+      <FormControl className={styles.FormStyle}>
+        <Select
+          aria-label={t('Filter by category')}
+          value={selectedCategory}
+          onChange={(event) => setSelectedCategory(event.target.value)}
+          className={styles.DropDown}
+          displayEmpty
+          data-testid="categoryFilter"
+        >
+          <MenuItem value="">{t('All Categories')}</MenuItem>
+          {categories.map((category: string) => (
+            <MenuItem key={category} value={category}>
+              {categoryLabel(category)}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder={t('Select tag')}
+        options={tagsData ? tagsData.tags : []}
+        optionLabel="label"
+        multiple={false}
+        onChange={(value: any) => {
+          setSearchParams((params) => {
+            const next = new URLSearchParams(params);
+            if (value) {
+              next.set('tag', value.label);
+            } else {
+              next.delete('tag');
+            }
+            return next;
+          });
+        }}
+        form={{ setFieldValue: () => {} }}
+        field={{
+          value: selectedTag,
+        }}
+      />
+    </div>
+  );
+
+  return (
+    <>
+      {importing && (
+        <DialogBox
+          title={t('Processing your file')}
+          handleCancel={handleCancelImport}
+          skipOk
+          buttonCancel={t('Cancel')}
+          contentAlign="center"
+        >
+          <div className={styles.BulkApplyProgress}>
+            <LinearProgress data-testid="bulkApplyProgressBar" />
+            <p>{t('Please wait while we process all the templates')}</p>
+          </div>
+        </DialogBox>
+      )}
+      <List
+        title={t('HSM Templates')}
+        listItem={'sessionTemplates'}
+        listItemName={t('HSM Template')}
+        pageLink={'template'}
+        listIcon={templateIcon}
+        helpData={templateInfo}
+        button={button}
+        secondaryButton={secondaryButton}
+        filterList={filterList}
+        filters={selectedTag?.id ? { ...appliedFilters, tagIds: [parseInt(selectedTag.id)] } : appliedFilters}
+        columnNames={getColumnNames(showReason)}
+        columnStyles={getColumnStyles(showReason)}
+        columns={getColumns(showReason, { collapseRow, collapseOpen, onToggle: toggleLanguages })}
+        additionalAction={additionalAction}
+        restrictedAction={() => ({ edit: false })}
+        dialogMessage={t('It will stop showing when you draft a customized message')}
+        collapseOpen={collapseOpen}
+        collapseRow={collapseRow}
+        groupRows={groupByShortcode}
+        {...queries}
+      />
+    </>
   );
 };
 

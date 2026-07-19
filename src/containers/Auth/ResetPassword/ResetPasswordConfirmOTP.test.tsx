@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import axios from 'axios';
@@ -32,7 +32,19 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resetPassword = await findByTestId('AuthContainer');
     await waitFor(() => {
       expect(resetPassword).toHaveTextContent('Reset your password');
-      expect(resetPassword).toHaveTextContent('New Password');
+      // The new-password field is identified by its placeholder (no redundant heading label,
+      // consistent with the OTP field).
+      expect(screen.getByPlaceholderText('New Password')).toBeInTheDocument();
+    });
+  });
+
+  test('it should display the neutral, non-disclosing OTP note', async () => {
+    const { findByTestId } = render(wrapper);
+    const resetPassword = await findByTestId('AuthContainer');
+    await waitFor(() => {
+      expect(resetPassword).toHaveTextContent(
+        "If this number is registered, you'll receive an OTP on WhatsApp. Enter it below to reset your password."
+      );
     });
   });
 
@@ -57,7 +69,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
   });
 
   it('test successful resend functionality', async () => {
-    const sendOptMock = vi.fn();
+    const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
     vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
     // set the mock
     const responseData = {
@@ -73,7 +85,107 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resendButton = screen.getByTestId('resendOtp');
     user.click(resendButton);
     await waitFor(() => {
+      // Resends against the prepopulated phone number carried from the previous screen.
       expect(sendOptMock).toHaveBeenCalledWith('919967665667');
     });
+    // Brief confirmation so the user knows the OTP was sent.
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent('OTP sent successfully.');
+    });
+  });
+
+  it('surfaces the backend message when resend is rejected', async () => {
+    const backendMessage = 'An OTP was just sent. Please try again in 30 seconds.';
+    const sendOptMock = vi.fn(() =>
+      Promise.reject({ response: { data: { error: { message: backendMessage } } } } as any)
+    );
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    render(wrapper);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(backendMessage);
+    });
+  });
+
+  it('falls back gracefully when no phone number is provided in state', async () => {
+    const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    const wrapperWithoutPhone = (
+      <MemoryRouter initialEntries={[{ state: { from: '/resetpassword-phone' } }]}>
+        <Routes>
+          <Route path="/" element={<ResetPasswordConfirmOTP />} />
+          <Route path="/login" element={<div>Login page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+    render(wrapperWithoutPhone);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      // No phone in state and none in the (empty) form field, so resend falls back to ''.
+      expect(sendOptMock).toHaveBeenCalledWith('');
+    });
+  });
+
+  it('falls back to the default warning when the reject has no backend message', async () => {
+    const sendOptMock = vi.fn(() => Promise.reject(new Error('network')));
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+    render(wrapper);
+
+    const resendButton = await screen.findByTestId('resendOtp');
+    await user.click(resendButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
+        'An OTP was just sent. Please try again in 30 seconds.'
+      );
+    });
+  });
+
+  it('auto-hides the neutral note after the timeout and cleans up on unmount', async () => {
+    vi.useFakeTimers();
+    try {
+      const { unmount } = render(wrapper);
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent('If this number is registered');
+
+      act(() => {
+        vi.advanceTimersByTime(15000);
+      });
+
+      expect(screen.getByTestId('AuthContainer')).not.toHaveTextContent('If this number is registered');
+
+      // Unmount runs the effect cleanup (clearTimeout).
+      unmount();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('clears the success confirmation after its timeout', async () => {
+    vi.useFakeTimers();
+    try {
+      const sendOptMock = vi.fn(() => Promise.resolve({ data: { data: {} } } as any));
+      vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
+      render(wrapper);
+
+      fireEvent.click(screen.getByTestId('resendOtp'));
+      // Flush the resolved sendOTP promise so the success note is set.
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent('OTP sent successfully.');
+
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      expect(screen.getByTestId('AuthContainer')).not.toHaveTextContent('OTP sent successfully.');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

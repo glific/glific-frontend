@@ -1,35 +1,98 @@
-import { BrowserRouter as Router } from 'react-router';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
+import { resetRolePermissions, setUserRolePermissions } from 'context/role';
 import { getNotificationCountQuery, markAllNotificationAsRead } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import SideMenus from './SideMenus';
 
 const mocks = [getNotificationCountQuery, markAllNotificationAsRead];
-setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
-const sidemenus = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <SideMenus opened={true} />
-    </Router>
-  </MockedProvider>
-);
+const getMenuItem = (title: string) => screen.getAllByTestId('list-item').find((item) => item.textContent === title);
+
+const expectMenuSelected = async (title: string) => {
+  await waitFor(() => {
+    const item = screen
+      .getAllByTestId('list-item')
+      .find((el) => el.textContent === title && el.className.match(/SelectedText/));
+    expect(item).toBeDefined();
+  });
+};
+
+const renderSideMenus = (pathname = '/') =>
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[pathname]}>
+        <SideMenus opened={true} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+beforeEach(() => {
+  resetRolePermissions();
+  setUserSession(JSON.stringify({ roles: [{ label: 'Admin' }] }));
+  setUserRolePermissions();
+});
 
 test('it should be initialized properly', async () => {
-  const { getByTestId } = render(sidemenus);
+  const { getByTestId } = renderSideMenus();
   await waitFor(() => {
     expect(getByTestId('list')).toBeInTheDocument();
   });
 });
 
 test('it should mark notification as read on notification click', async () => {
-  const { getAllByTestId, getByTestId } = render(sidemenus);
+  const { getAllByTestId, getByTestId } = renderSideMenus();
   await waitFor(() => {
     expect(getByTestId('list')).toBeInTheDocument();
   });
   const listItem = getAllByTestId('list-item');
   expect(listItem[3]).toBeInTheDocument();
   fireEvent.click(listItem[3]);
+});
+
+describe('url-based menu selection', () => {
+  test('selects a leaf menu item when the url matches', async () => {
+    renderSideMenus('/notifications');
+
+    await expectMenuSelected('Notifications');
+  });
+
+  test('selects a leaf menu item for nested paths under the same section', async () => {
+    renderSideMenus('/chat/conversations/123');
+
+    await expectMenuSelected('Chats');
+  });
+
+  test('expands the parent accordion and selects the matching child submenu', async () => {
+    renderSideMenus('/sheet-integration');
+
+    await waitFor(() => {
+      expect(document.querySelector('.MuiAccordion-root.Mui-expanded')).toBeInTheDocument();
+    });
+    await expectMenuSelected('Google sheets');
+  });
+
+  test('expands the parent accordion and selects the flow child for nested flow paths', async () => {
+    renderSideMenus('/flow/42/edit');
+
+    await waitFor(() => {
+      expect(document.querySelector('.MuiAccordion-root.Mui-expanded')).toBeInTheDocument();
+    });
+    await expectMenuSelected('Flows');
+  });
+
+  test('updates menu selection when the url changes', async () => {
+    renderSideMenus('/chat');
+
+    await expectMenuSelected('Chats');
+
+    fireEvent.click(getMenuItem('Google sheets')!);
+
+    await waitFor(() => {
+      expect(document.querySelector('.MuiAccordion-root.Mui-expanded')).toBeInTheDocument();
+    });
+    await expectMenuSelected('Google sheets');
+  });
 });

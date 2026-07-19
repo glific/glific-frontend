@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
@@ -14,6 +17,17 @@ import { ORGANIZATION_NAME } from 'config';
 import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
 import { TERMS_OF_USE_LINK } from 'common/constants';
+import { Promotion } from './Promotion/Promotion';
+
+// Per-variant styling + icon for the info note (neutral default, success, warning).
+const INFO_NOTE_VARIANT_CLASS: Record<string, string> = {
+  success: styles.InfoNoteSuccess,
+  warning: styles.InfoNoteWarning,
+};
+const INFO_NOTE_VARIANT_ICON: Record<string, typeof InfoOutlinedIcon> = {
+  success: CheckCircleOutlineIcon,
+  warning: AccessTimeOutlinedIcon,
+};
 
 export interface AuthProps {
   pageTitle: string;
@@ -36,6 +50,9 @@ export interface AuthProps {
   successMessage?: string;
   loading?: boolean;
   inlineSuccessMessage?: string;
+  infoMessage?: string;
+  // Visual tone of the info note: neutral (default), a success confirmation, or a warning.
+  infoVariant?: 'success' | 'warning';
 }
 
 export const Auth = ({
@@ -55,6 +72,8 @@ export const Auth = ({
   successMessage,
   loading: externalLoading,
   inlineSuccessMessage,
+  infoMessage,
+  infoVariant,
 }: AuthProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -139,6 +158,9 @@ export const Auth = ({
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
   }
 
+  const infoNoteClass = `${styles.InfoNote} ${(infoVariant && INFO_NOTE_VARIANT_CLASS[infoVariant]) || ''}`;
+  const InfoNoteIcon = (infoVariant && INFO_NOTE_VARIANT_ICON[infoVariant]) || InfoOutlinedIcon;
+
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -151,7 +173,9 @@ export const Auth = ({
   const handlePhone =
     () =>
     (value: string): void => {
-      initialFormValues.phone = value;
+      if (initialFormValues) {
+        initialFormValues.phone = value;
+      }
     };
 
   let formElements;
@@ -164,6 +188,21 @@ export const Auth = ({
           </Typography>
         </div>
         <div className={styles.SubText}>{titleSubText}</div>
+
+        {infoMessage && (
+          <div className={infoNoteClass} data-testid="infoMessage" role="status" aria-live="polite">
+            <InfoNoteIcon className={styles.InfoNoteIcon} />
+            <span>{infoMessage}</span>
+          </div>
+        )}
+
+        {(mode === 'login' || mode === 'registration') && (
+          <div className={`${styles.InformationText} ${styles.InformationTextTight}`} data-testid="whatsAppNumberHint">
+            {t(
+              "Use your personal WhatsApp number to log in or create your account. Do not use your chatbot's WhatsApp number."
+            )}
+          </div>
+        )}
 
         <Formik
           initialValues={initialFormValues}
@@ -300,6 +339,8 @@ export const Auth = ({
           </>
         ) : null}
       </div>
+
+      {mode === 'login' && <Promotion />}
     </div>
   );
 };

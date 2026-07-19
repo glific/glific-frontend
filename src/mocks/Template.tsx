@@ -1,11 +1,11 @@
 import {
   BULK_APPLY_TEMPLATES,
   CREATE_TEMPLATE,
+  DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
   SYNC_HSM_TEMPLATES,
   UPDATE_TEMPLATE,
 } from 'graphql/mutations/Template';
-import type { GroupedTemplate } from 'containers/HSM/HSMListV2/HSMList.types';
 import {
   FILTER_SESSION_TEMPLATES,
   FILTER_TEMPLATES,
@@ -97,6 +97,16 @@ export const getCategoriesMock = {
     },
   },
 };
+
+export const deleteTemplateMock = (id: string) => ({
+  request: { query: DELETE_TEMPLATE, variables: { id } },
+  result: { data: { deleteSessionTemplate: { errors: null } } },
+});
+
+export const deleteTemplateErrorMock = (id: string, message: string) => ({
+  request: { query: DELETE_TEMPLATE, variables: { id } },
+  error: new Error(message),
+});
 
 export const templateEditMock = (templateId: string, buttons: any) => ({
   request: {
@@ -825,7 +835,7 @@ export const hsmV2TemplatesData = [
     bspId: 'bsp-001',
     label: 'Welcome Message',
     body: 'Hi {{1}}, welcome!',
-    footer: null,
+    footer: 'Reply STOP to opt out',
     shortcode: 'welcome_msg',
     category: 'UTILITY',
     isReserved: false,
@@ -835,32 +845,12 @@ export const hsmV2TemplatesData = [
     isActive: true,
     updatedAt: '2024-01-15T10:00:00Z',
     numberParameters: 1,
+    // HSM templates come back flat per-language; the list groups them by
+    // shortcode, so the Hindi sibling below shares this `welcome_msg` shortcode.
     translations: null,
     type: 'TEXT',
     quality: 'HIGH',
-    language: { id: '1', label: 'English' },
-    tag: { id: '1', label: 'Messages' },
-    MessageMedia: null,
-  },
-  {
-    id: '2',
-    bspId: null,
-    label: 'Welcome Message',
-    body: 'नमस्ते {{1}}, स्वागत है!',
-    footer: null,
-    shortcode: 'welcome_msg',
-    category: 'UTILITY',
-    isReserved: false,
-    status: 'PENDING',
-    reason: null,
-    isHsm: true,
-    isActive: false,
-    updatedAt: '2024-01-15T10:00:00Z',
-    numberParameters: 1,
-    translations: null,
-    type: 'TEXT',
-    quality: null,
-    language: { id: '2', label: 'Hindi' },
+    language: { id: '1', label: 'English', locale: 'en' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
   },
@@ -882,26 +872,192 @@ export const hsmV2TemplatesData = [
     translations: null,
     type: 'TEXT',
     quality: null,
-    language: { id: '1', label: 'English' },
+    language: { id: '1', label: 'English', locale: 'en' },
     tag: null,
+    MessageMedia: null,
+  },
+  {
+    // Hindi variant of the Welcome Message — shares the `welcome_msg` shortcode,
+    // so it collapses under the English row's expand chevron.
+    id: '2',
+    bspId: 'bsp-002',
+    label: 'Welcome Message',
+    body: 'Namaste {{1}}, swagat hai!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'APPROVED',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: 'HIGH',
+    language: { id: '2', label: 'Hindi', locale: 'hi' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
+  {
+    // Marathi variant (PENDING) — exercises the pending chip styling/tooltip.
+    id: '4',
+    bspId: 'bsp-004',
+    label: 'Welcome Message',
+    body: 'Namaskar {{1}}, swagat aahe!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'PENDING',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '3', label: 'Marathi', locale: 'mr' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
+  {
+    // Tamil variant (FAILED) — exercises the failed chip styling/tooltip.
+    id: '5',
+    bspId: 'bsp-005',
+    label: 'Welcome Message',
+    body: 'Vanakkam {{1}}!',
+    footer: null,
+    shortcode: 'welcome_msg',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'FAILED',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-01-15T10:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '4', label: 'Tamil', locale: 'ta' },
+    tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
   },
 ];
 
-export const filterTemplatesV2Mock = {
+// HSMListV2 drives the shared `List` component, so mocks must mirror the exact
+// variables List sends: filter + opts {limit:50, offset:0, order:'ASC', orderWith:'label'}.
+export const sessionTemplatesV2Mock = (filter: any, data: any) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
-      filter: { isHsm: true },
-      opts: { limit: 500, offset: 0, orderWith: 'label', order: 'ASC' },
+      filter,
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
   },
-  result: {
-    data: { sessionTemplates: hsmV2TemplatesData },
+  result: { data: { sessionTemplates: data } },
+});
+
+export const sessionTemplatesV2ErrorMock = (filter: any, message: string) => ({
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter,
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
   },
+  error: new Error(message),
+});
+
+// HSMListV2 defaults the status filter to APPROVED, so every list query carries
+// `status: 'APPROVED'` alongside the other filters.
+export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData);
+export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
+  [hsmV2TemplatesData[0]]
+);
+export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED', tagIds: [1] }, [
+  hsmV2TemplatesData[0],
+]);
+export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'APPROVED', label: 'feedback' },
+  [hsmV2TemplatesData[1]]
+);
+export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
+  hsmV2TemplatesData[1],
+]);
+
+export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
+export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
+export const templateCountV2CategoryMock = templateCountQuery(
+  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
+  1
+);
+export const templateCountV2TagMock = templateCountQuery({ isHsm: true, status: 'APPROVED', tagIds: [1] }, 1);
+export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, status: 'APPROVED', label: 'feedback' }, 1);
+
+export const getCategoriesV2Mock = {
+  request: { query: GET_HSM_CATEGORIES, variables: {} },
+  result: { data: { whatsappHsmCategories: ['UTILITY', 'MARKETING'] } },
 };
 
-export const HSM_LIST_V2 = [filterTemplatesV2Mock, filterTemplatesV2Mock, getCategoriesMock, getCategoriesMock];
+export const HSM_LIST_V2 = [
+  filterTemplatesV2Mock,
+  filterTemplatesV2Mock,
+  filterTemplatesV2Mock,
+  templateCountV2Mock,
+  templateCountV2Mock,
+  templateCountV2Mock,
+  getCategoriesV2Mock,
+  getCategoriesV2Mock,
+  getCategoriesV2Mock,
+];
+
+// Template library modal: browses only APPROVED HSM templates via FILTER_TEMPLATES.
+export const libraryTemplatesData = [
+  {
+    ...hsmV2TemplatesData[0],
+    footer: 'Team Glific',
+  },
+  {
+    id: '5',
+    bspId: 'bsp-005',
+    label: 'Appointment Reminder',
+    body: 'Your appointment is on {{1}}.',
+    footer: null,
+    shortcode: 'appointment_reminder',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'APPROVED',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-02-01T09:00:00Z',
+    numberParameters: 1,
+    translations: null,
+    type: 'TEXT',
+    quality: 'HIGH',
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: { id: '1', label: 'Messages' },
+    MessageMedia: null,
+  },
+];
+
+export const libraryTemplatesMock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, libraryTemplatesData);
+export const libraryTemplatesSearchMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'APPROVED', term: 'appointment' },
+  [libraryTemplatesData[1]]
+);
+
+export const TEMPLATE_LIBRARY_MOCKS = [
+  libraryTemplatesMock,
+  libraryTemplatesMock,
+  getCategoriesV2Mock,
+  getCategoriesV2Mock,
+];
 
 export const syncHsmSuccessMock = {
   request: { query: SYNC_HSM_TEMPLATES },
@@ -951,11 +1107,6 @@ export const bulkApplyV2NetworkErrorMock = {
   error: new Error('Network error'),
 };
 
-export const getCategoriesV2Mock = {
-  request: { query: GET_HSM_CATEGORIES, variables: {} },
-  result: { data: { whatsappHsmCategories: ['UTILITY', 'MARKETING'] } },
-};
-
 export const bulkApplyV2EmptyMock = {
   request: {
     query: BULK_APPLY_TEMPLATES,
@@ -964,80 +1115,6 @@ export const bulkApplyV2EmptyMock = {
   result: {
     data: { bulkApplyTemplates: null },
   },
-};
-
-export const hsmGroupedTemplates: GroupedTemplate[] = [
-  {
-    shortcode: 'welcome_msg',
-    label: 'Welcome Message',
-    category: 'UTILITY',
-    tag: { id: '1', label: 'Messages' },
-    languageVariants: [
-      {
-        id: '1',
-        bspId: 'bsp-001',
-        body: 'Hi {{1}}, welcome!',
-        category: 'UTILITY',
-        language: { id: '1', label: 'English' },
-        status: 'APPROVED',
-        quality: 'HIGH',
-        reason: null,
-        updatedAt: '2024-01-15T10:00:00Z',
-        isActive: true,
-      },
-      {
-        id: '2',
-        bspId: null,
-        body: 'नमस्ते {{1}}, स्वागत है!',
-        category: 'UTILITY',
-        language: { id: '2', label: 'Hindi' },
-        status: 'PENDING',
-        quality: null,
-        reason: null,
-        updatedAt: '2024-01-15T10:00:00Z',
-        isActive: false,
-      },
-    ],
-  },
-  {
-    shortcode: 'feedback_form',
-    label: 'Feedback Form',
-    category: 'MARKETING',
-    tag: null,
-    languageVariants: [
-      {
-        id: '3',
-        bspId: null,
-        body: 'Please share your feedback.',
-        category: 'MARKETING',
-        language: { id: '1', label: 'English' },
-        status: 'REJECTED',
-        quality: null,
-        reason: 'Content policy violation',
-        updatedAt: '2024-01-10T08:00:00Z',
-        isActive: false,
-      },
-    ],
-  },
-];
-
-export const hsmMultiLanguageTemplate: GroupedTemplate = {
-  shortcode: 'multi_lang',
-  label: 'Multi Language',
-  category: 'UTILITY',
-  tag: null,
-  languageVariants: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada'].map((lang, i) => ({
-    id: String(i + 10),
-    bspId: null,
-    body: `Body in ${lang}`,
-    category: 'UTILITY',
-    language: { id: String(i + 1), label: lang },
-    status: 'APPROVED' as const,
-    quality: null,
-    reason: null,
-    updatedAt: '2024-01-15T10:00:00Z',
-    isActive: true,
-  })),
 };
 
 export const HSM_LIST = [

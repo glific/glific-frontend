@@ -503,11 +503,13 @@ export const importFlow = {
         status: [
           {
             assistantNodeUuids: [],
+            invalidSheetNodeUuids: [],
             flowName: 'Registration flow',
             status: 'Successfully imported',
           },
           {
             assistantNodeUuids: [],
+            invalidSheetNodeUuids: [],
             flowName: 'Optin',
             status: 'Successfully imported',
           },
@@ -515,6 +517,80 @@ export const importFlow = {
       },
     },
   },
+};
+
+export const importFlowWithAssistantError = {
+  request: { query: IMPORT_FLOW },
+  result: {
+    data: {
+      importFlow: {
+        status: [
+          {
+            assistantNodeUuids: ['3fb647a3-c935-4906-8dd0-c0e63105ee3d', 'b1d2e9ff-1234-4abc-9876-deadbeefcafe'],
+            invalidSheetNodeUuids: [],
+            flowName: 'Test Flow',
+            status: 'Successfully imported',
+          },
+        ],
+      },
+    },
+  },
+  variableMatcher: () => true,
+};
+
+export const importFlowWithSheetError = {
+  request: { query: IMPORT_FLOW },
+  result: {
+    data: {
+      importFlow: {
+        status: [
+          {
+            assistantNodeUuids: [],
+            invalidSheetNodeUuids: ['ee3d', 'cafe'],
+            flowName: 'Test Flow',
+            status: 'Successfully imported',
+          },
+        ],
+      },
+    },
+  },
+  variableMatcher: () => true,
+};
+
+export const importFlowWithAssistantAndSheetError = {
+  request: { query: IMPORT_FLOW },
+  result: {
+    data: {
+      importFlow: {
+        status: [
+          {
+            assistantNodeUuids: ['assistant-uuid-1'],
+            invalidSheetNodeUuids: ['sheet-uuid-1'],
+            flowName: 'Test Flow',
+            status: 'Successfully imported',
+          },
+        ],
+      },
+    },
+  },
+  variableMatcher: () => true,
+};
+
+export const importFlowWithoutNodeFields = {
+  request: { query: IMPORT_FLOW },
+  result: {
+    data: {
+      importFlow: {
+        status: [
+          {
+            flowName: 'Test Flow',
+            status: 'Successfully imported',
+          },
+        ],
+      },
+    },
+  },
+  variableMatcher: () => true,
 };
 
 export const exportFlow = {
@@ -560,6 +636,24 @@ export const getFreeFlow = {
             message: 'The flow is being edited by NGO Main Account',
           },
         ],
+      },
+    },
+  },
+};
+
+export const getFreeFlowForced = {
+  request: {
+    query: GET_FREE_FLOW,
+    variables: { id: '1', isForced: true },
+  },
+  result: {
+    data: {
+      flowGet: {
+        flow: {
+          id: '1',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+        errors: [],
       },
     },
   },

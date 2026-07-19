@@ -22,6 +22,8 @@ yarn serve               # Preview production build locally
 npx vitest run src/path/to/Component.test.tsx
 ```
 
+**End-to-end (Cypress) tests** live in a **separate repo** (`glific/cypress-testing`, cloned locally as a sibling) and require the **Elixir backend** (`glific/glific`) running — they are not part of `yarn test`. Don't run them by hand; use the **`e2e-test-engineer`** agent, which brings up backend + frontend and runs the specs. See "End-to-End (E2E) Testing" below.
+
 ## Dev Environment Prerequisites
 
 - Add `127.0.0.1 glific.test` to `/etc/hosts`
@@ -30,7 +32,19 @@ npx vitest run src/path/to/Component.test.tsx
 - Node >= 20 <23; use yarn (not npm or bun)
 - Copy `.env.example` to `.env` before first run
 - All env vars exposed to the client must be prefixed with `VITE_`
-- TypeScript type-checking runs live during `yarn dev` via `vite-plugin-checker` (no separate lint script)
+- TypeScript type-checking runs live during `yarn dev` via `vite-plugin-checker`
+- There is **no `yarn lint` script**, but an ESLint config **does** exist (`.eslintrc.json`: airbnb + prettier + `@typescript-eslint`). It's enforced via your editor and CodeRabbit, not a CI script — the only script-level gates are **Prettier** (`yarn format` / `prettier-check.yml`) and **tsc**. Don't assume "no lint script" means no lint rules.
+
+## CI Gates
+
+Every PR must pass these (see `.github/workflows/`). The `make-branch-ready-for-review` skill automates getting green.
+
+| Check | Workflow | Rule |
+|-------|----------|------|
+| Unit tests + coverage | `unit-testing.yml` → Codecov | project **≥ 81.5%** (0.5% threshold); **patch: every changed line must be covered** |
+| Formatting | `prettier-check.yml` | `prettier --check` must be clean (`yarn format` to fix) |
+| PR title | `pr-title-check.yml` | Conventional-commit format (e.g. `fix:`, `feat:`, `chore:`) |
+| E2E | `e2e-tests.yml` | Cypress against a live backend, sharded; `e2e-tests-slow.yml` runs the filesearch suite only on PRs labeled `e2e-slow` |
 
 ## Architecture Overview
 
@@ -42,7 +56,8 @@ npx vitest run src/path/to/Component.test.tsx
 - **React Router v7** for routing
 - **Formik** + **Yup** for forms and validation
 - **i18next** for internationalization
-- **Vitest** + **Testing Library** for tests
+- **Vitest** + **Testing Library** for unit/component tests; **Cypress** for e2e (separate repo — see "End-to-End (E2E) Testing")
+- **Observability & integrations**: **Sentry** for error monitoring (`src/sentry.config`, imported in `src/index.tsx`; CSP violation reports can be routed to it via `VITE_CSP_REPORT_URI`), **PostHog** for product analytics, **Stripe** for billing, **Superset** (`@superset-ui/embedded-sdk`) for embedded dashboards
 
 ### Directory Structure
 
@@ -205,3 +220,18 @@ When a test file repeatedly renders the same provider-wrapped component (for exa
 Global test setup (`src/setupTests.ts`) mocks: `react-i18next`, `react-media-recorder`, `TrackService`, and `config/logs`.
 
 The `src/common/test-utils.ts` file contains helpers like `backspace()` for simulating keyboard events.
+
+### End-to-End (E2E) Testing
+
+E2E is **Cypress**, and the specs are **not in this repo** — they live in `glific/cypress-testing`
+(cloned locally as a sibling `../cypress-testing`). Running them requires the full stack up:
+
+- **Backend** `glific/glific` (Elixir/Phoenix + Postgres) at `https://glific.test:4001`
+- **Frontend** (this repo, `yarn dev`) at `https://glific.test:3000`
+- Cypress `cypress.config.ts` is pre-pointed at the local stack with test credentials.
+
+Prefer the **`e2e-test-engineer`** agent (`.claude/agents/`) over doing this by hand — it does the
+preflight/bring-up, runs the narrowest relevant spec, and returns a compact pass/fail verdict
+instead of flooding the session with server and runner logs. CI mirrors this in
+`.github/workflows/e2e-tests.yml` (sharded via `cypress-split`); the slow `filesearch` suite is
+excluded by default and only runs on PRs labeled `e2e-slow`.

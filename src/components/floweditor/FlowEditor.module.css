@@ -19,7 +19,7 @@
 
 .FlowContainer {
   position: relative;
-  height: 100vh;
+  height: 100%;
   overflow: auto;
 }
 
@@ -129,6 +129,8 @@
   align-items: center;
   background-color: #f8faf5;
   padding: 1rem;
+  position: sticky;
+  top: 0;
 }
 
 .Actions {
