@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { Button } from 'components/UI/Form/Button/Button';
+import { SourceReferenceChip } from 'components/UI/SourceReferenceChip/SourceReferenceChip';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { CALL_TO_ACTION, QUICK_REPLY, WHATSAPP_FORM } from 'common/constants';
 import { GET_WHATSAPP_FORM_DEFINITIONS } from 'graphql/queries/WhatsAppForm';
@@ -32,6 +33,10 @@ export interface TemplateOptionsV2Props {
   onInputChange: any;
   disabled: any;
   onDynamicParamsChange: any;
+  // the anchor (English) template's own buttons, shown as a reference while
+  // translating a new language — matched to inputFields by index, same as
+  // the source-reference card does for body/footer on the HSM v2 page.
+  anchorButtons?: Array<any>;
 }
 
 const callToActionTypeOptions: Array<{ id: string; label: string; icon: any }> = [
@@ -51,6 +56,7 @@ export const TemplateOptionsV2 = ({
   onInputChange,
   disabled = false,
   onDynamicParamsChange,
+  anchorButtons,
 }: TemplateOptionsV2Props) => {
   const [screens, setScreens] = useState<any>([]);
   const [advancedOpenRows, setAdvancedOpenRows] = useState<Record<number, boolean>>({});
@@ -115,6 +121,8 @@ export const TemplateOptionsV2 = ({
         errors.templateButtons[index][key]
       );
 
+    const anchorButton = anchorButtons?.[index];
+
     if (templateType?.id === CALL_TO_ACTION) {
       const isPhoneNumberType = type === 'phone_number';
       const titlePlaceholder = isPhoneNumberType ? 'e.g., Call Us' : 'e.g., Track Order';
@@ -124,6 +132,7 @@ export const TemplateOptionsV2 = ({
 
       return (
         <div className={styles.ButtonCard}>
+          <SourceReferenceChip language="English" value={anchorButton?.title} data-testid="button-source-reference" />
           <div className={styles.ButtonCardHeader}>
             <div className={styles.ChipRow}>
               {callToActionTypeOptions.map((option) => {
@@ -249,32 +258,35 @@ export const TemplateOptionsV2 = ({
 
     if (templateType?.id === QUICK_REPLY) {
       return (
-        <div className={styles.QuickReplyRow} data-testid="quickReplyWrapper">
-          <FormControl fullWidth error={isError('value')}>
-            <TextField
-              disabled={disabled}
-              value={value}
-              placeholder="e.g., Yes, No, More Info"
-              variant="outlined"
-              onChange={(e: any) => onInputChange(e.target.value, row, index, 'value')}
-              className={styles.TextField}
-              error={isError('value')}
-              slotProps={{
-                htmlInput: { maxLength: QUICK_REPLY_MAX_LENGTH },
-              }}
-            />
-            <div className={styles.CharCount}>
-              {(value || '').length} / {QUICK_REPLY_MAX_LENGTH}
-            </div>
-            {isError('value') ? <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText> : null}
-          </FormControl>
-          {inputFields.length > 1 && (
-            <DeleteIcon
-              className={styles.DeleteIcon}
-              onClick={() => handleRemoveClick(arrayHelpers, index)}
-              data-testid="delete-icon"
-            />
-          )}
+        <div className={styles.QuickReplyGroup}>
+          <SourceReferenceChip language="English" value={anchorButton?.value} data-testid="button-source-reference" />
+          <div className={styles.QuickReplyRow} data-testid="quickReplyWrapper">
+            <FormControl fullWidth error={isError('value')}>
+              <TextField
+                disabled={disabled}
+                value={value}
+                placeholder="e.g., Yes, No, More Info"
+                variant="outlined"
+                onChange={(e: any) => onInputChange(e.target.value, row, index, 'value')}
+                className={styles.TextField}
+                error={isError('value')}
+                slotProps={{
+                  htmlInput: { maxLength: QUICK_REPLY_MAX_LENGTH },
+                }}
+              />
+              <div className={styles.CharCount}>
+                {(value || '').length} / {QUICK_REPLY_MAX_LENGTH}
+              </div>
+              {isError('value') ? <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText> : null}
+            </FormControl>
+            {inputFields.length > 1 && (
+              <DeleteIcon
+                className={styles.DeleteIcon}
+                onClick={() => handleRemoveClick(arrayHelpers, index)}
+                data-testid="delete-icon"
+              />
+            )}
+          </div>
         </div>
       );
     }

@@ -4,6 +4,7 @@ import {
   DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
   SYNC_HSM_TEMPLATES,
+  TRANSLATE_SESSION_TEMPLATE,
   UPDATE_TEMPLATE,
 } from 'graphql/mutations/Template';
 import {
@@ -105,6 +106,31 @@ export const deleteTemplateMock = (id: string) => ({
 
 export const deleteTemplateErrorMock = (id: string, message: string) => ({
   request: { query: DELETE_TEMPLATE, variables: { id } },
+  error: new Error(message),
+});
+
+export const translateSessionTemplateMock = (
+  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  result: { body: string; footer?: string | null; buttons?: string[] }
+) => ({
+  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  result: {
+    data: {
+      translateSessionTemplate: {
+        body: result.body,
+        footer: result.footer ?? null,
+        buttons: result.buttons ?? null,
+        errors: null,
+      },
+    },
+  },
+});
+
+export const translateSessionTemplateErrorMock = (
+  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  message: string
+) => ({
+  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
   error: new Error(message),
 });
 
