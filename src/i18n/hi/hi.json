@@ -726,5 +726,9 @@
   "Button title is required.": "बटन शीर्षक आवश्यक है।",
   "Screen is required.": "स्क्रीन आवश्यक है।",
   "Account updates, order confirmations, shipping notifications, alerts, and transactional messages": "खाता अपडेट, ऑर्डर पुष्टिकरण, शिपिंग सूचनाएं, अलर्ट और लेन-देन संबंधी संदेश",
-  "Promotional content, offers, announcements, product launches, and sales campaigns": "प्रचार सामग्री, ऑफ़र, घोषणाएं, उत्पाद लॉन्च और बिक्री अभियान"
+  "Promotional content, offers, announcements, product launches, and sales campaigns": "प्रचार सामग्री, ऑफ़र, घोषणाएं, उत्पाद लॉन्च और बिक्री अभियान",
+  "Auto-translate": "स्वतः अनुवाद करें",
+  "English — source reference": "अंग्रेज़ी — संदर्भ पाठ",
+  "English": "अंग्रेज़ी",
+  "Content translated — review and adjust before submitting.": "सामग्री का अनुवाद हो गया — सबमिट करने से पहले समीक्षा करें और आवश्यकतानुसार बदलें।"
 }

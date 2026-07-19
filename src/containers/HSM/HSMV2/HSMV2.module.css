@@ -74,3 +74,63 @@
   color: #202125 !important;
   padding-bottom: 14px;
 }
+
+.SectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.AutoTranslateButton {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #119656 !important;
+  border: 1px solid #b7e0c8 !important;
+  border-radius: 100px !important;
+  padding: 6px 14px !important;
+  text-transform: none !important;
+  background: #ffffff !important;
+}
+
+.AutoTranslateIcon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.SourceReferenceCard {
+  width: 100%;
+  border: 1px solid #b7e0c8;
+  border-radius: 8px;
+  background: #f0faf5;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.SourceReferenceBody {
+  margin: 0 14px 12px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #202125;
+  line-height: 1.5;
+}
+
+/* Matches FormLayout.module.css's .FieldLabel exactly — FooterField renders
+   its own label instead of relying on FormLayout's field.label mechanism, so
+   it needs to look identical to every other field label on the page. */
+.FieldLabel {
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
+}

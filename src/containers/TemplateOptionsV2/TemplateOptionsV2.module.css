@@ -159,14 +159,19 @@
   padding-right: 0.5rem;
 }
 
+.QuickReplyGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.QuickReplyGroup + .QuickReplyGroup {
+  margin-top: 16px;
+}
+
 .QuickReplyRow {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-}
-
-.QuickReplyRow + .QuickReplyRow {
-  margin-top: 16px;
 }
 
 .CharCount {
