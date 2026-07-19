@@ -23,6 +23,8 @@ import {
   templateCountV2SearchMock,
   filterTemplatesV2RejectedMock,
   templateCountV2RejectedMock,
+  filterTemplatesV2AllStatusesMock,
+  templateCountV2AllStatusesMock,
 } from 'mocks/Template';
 import HSMListV2 from './HSMListV2';
 import { languageCode } from './HSMListV2.helper';
@@ -128,18 +130,37 @@ test('defaults the status filter to Approved', async () => {
   expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
 });
 
-test('shows the template name with its shortcode below it (not the quality)', async () => {
+test('shows the element name (shortcode) as the title, with its tag below it', async () => {
   renderComponent();
 
   await waitFor(() => {
-    // the name (label) is the main title
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+    // the element name (shortcode) is the main title, not the label
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
 
-  // the shortcode is shown below the name
-  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  // the tag is shown below the element name
+  expect(screen.getByText('Messages')).toBeInTheDocument();
+  // the label/title is no longer rendered here
+  expect(screen.queryByText('Welcome Message')).not.toBeInTheDocument();
   // quality is no longer rendered in the title
   expect(screen.queryByText('Not Rated')).not.toBeInTheDocument();
+});
+
+test('hovering the template title shows the full message preview with its buttons', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseOver(screen.getByText('welcome_msg'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Reply STOP to opt out')).toBeInTheDocument();
+  });
+
+  expect(screen.getByText('Get started')).toBeInTheDocument();
+  expect(screen.getByText('Learn more')).toBeInTheDocument();
 });
 
 test('navigates to create template page on Create click', async () => {
@@ -475,6 +496,23 @@ test('filters templates by selected status', async () => {
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
+test('selecting "All" clears the status filter and refetches with an empty status', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2AllStatusesMock, templateCountV2AllStatusesMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+  expect(screen.queryByText('pending_broadcast')).not.toBeInTheDocument();
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'All' }));
+
+  await waitFor(() => {
+    expect(screen.getByText('pending_broadcast')).toBeInTheDocument();
+  });
+  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('All');
+});
+
 test('shows the Reason column with the rejection reason when filtering by Rejected', async () => {
   renderComponent([...baseMocks, filterTemplatesV2RejectedMock, templateCountV2RejectedMock]);
 
@@ -491,6 +529,27 @@ test('shows the Reason column with the rejection reason when filtering by Reject
   });
   expect(screen.getByRole('columnheader', { name: 'Reason' })).toBeInTheDocument();
   expect(screen.queryByRole('columnheader', { name: 'Last updated' })).not.toBeInTheDocument();
+});
+
+test('hovering a template with an attachment shows it in the message preview', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2RejectedMock, templateCountV2RejectedMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
+
+  await waitFor(() => {
+    expect(screen.getByText('feedback_form')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseOver(screen.getByText('feedback_form'));
+
+  await waitFor(() => {
+    expect(screen.getByAltText('Order summary')).toBeInTheDocument();
+  });
 });
 
 test('clears the tag filter and restores the full list', async () => {

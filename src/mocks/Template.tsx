@@ -612,6 +612,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     id: '87',
@@ -640,6 +643,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     id: '94',
@@ -667,6 +673,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     id: '95',
@@ -694,6 +703,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
 ];
 export const filterTemplatesQuery = (term: any, data: any, filter?: any) => {
@@ -853,6 +865,12 @@ export const hsmV2TemplatesData = [
     language: { id: '1', label: 'English', locale: 'en' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: true,
+    buttonType: 'CALL_TO_ACTION',
+    buttons: JSON.stringify([
+      { type: 'URL', text: 'Get started', url: 'https://example.com' },
+      { type: 'QUICK_REPLY', text: 'Learn more' },
+    ]),
   },
   {
     id: '3',
@@ -874,7 +892,10 @@ export const hsmV2TemplatesData = [
     quality: null,
     language: { id: '1', label: 'English', locale: 'en' },
     tag: null,
-    MessageMedia: null,
+    MessageMedia: { id: 1, caption: 'Order summary', sourceUrl: 'https://example.com/order-summary.jpg' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     // Hindi variant of the Welcome Message — shares the `welcome_msg` shortcode,
@@ -899,6 +920,9 @@ export const hsmV2TemplatesData = [
     language: { id: '2', label: 'Hindi', locale: 'hi' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     // Marathi variant (PENDING) — exercises the pending chip styling/tooltip.
@@ -922,6 +946,9 @@ export const hsmV2TemplatesData = [
     language: { id: '3', label: 'Marathi', locale: 'mr' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     // Tamil variant (FAILED) — exercises the failed chip styling/tooltip.
@@ -945,6 +972,9 @@ export const hsmV2TemplatesData = [
     language: { id: '4', label: 'Tamil', locale: 'ta' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
 ];
 
@@ -990,8 +1020,38 @@ export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: tru
   hsmV2TemplatesData[1],
 ]);
 
+export const allStatusesTemplatesData = [
+  {
+    id: '6',
+    bspId: 'bsp-006',
+    label: 'Pending Broadcast',
+    body: 'This one is still pending approval.',
+    footer: null,
+    shortcode: 'pending_broadcast',
+    category: 'MARKETING',
+    isReserved: false,
+    status: 'PENDING',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-03-01T00:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+];
+export const filterTemplatesV2AllStatusesMock = sessionTemplatesV2Mock({ isHsm: true }, allStatusesTemplatesData);
+
 export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
 export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
+export const templateCountV2AllStatusesMock = templateCountQuery({ isHsm: true }, allStatusesTemplatesData.length);
 export const templateCountV2CategoryMock = templateCountQuery(
   { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
   1
@@ -1043,6 +1103,9 @@ export const libraryTemplatesData = [
     language: { id: '1', label: 'English', locale: 'en' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
 ];
 

@@ -146,7 +146,8 @@ const HSMListV2 = () => {
   };
 
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
+    const value = event.target.value.toUpperCase();
+    setFilters(value === 'ALL' ? { ...statusFilter } : { ...statusFilter, [value]: true });
   };
 
   useEffect(() => {
@@ -190,13 +191,19 @@ const HSMListV2 = () => {
   const categories: string[] = categoriesData?.whatsappHsmCategories ?? [];
 
   let filterValue: any = '';
-  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
+  const statusList = ['All', 'Approved', 'Pending', 'Rejected', 'Failed'];
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
   if (filterStatusName.length === 1) {
     [filterValue] = filterStatusName;
   }
+  const selectedStatusOptions =
+    filterStatusName.length > 0 ? statusList.filter((status) => filters[status.toUpperCase()]) : ['All'];
 
-  const appliedFilters: any = { isHsm: true, status: filterValue };
+  const appliedFilters: any = { isHsm: true };
+  // the backend filters with `status == ""` when the key is present, which
+  // matches nothing — so "All" (filterValue === '') must omit the key
+  // entirely instead of sending an empty string, same as category below.
+  if (filterValue) appliedFilters.status = filterValue;
   if (selectedCategory) appliedFilters.category = selectedCategory;
 
   const showReason = showReasonColumn(filterValue);
@@ -232,7 +239,7 @@ const HSMListV2 = () => {
         <Select
           aria-label={t('Filter by status')}
           name="template-type"
-          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          value={selectedStatusOptions}
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
