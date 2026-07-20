@@ -234,7 +234,9 @@ describe('HSMV2 add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('e.g., Yes, No, More Info'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi, How are you');
+      expect(editorText).toContain('{{1}}');
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });

@@ -3,6 +3,7 @@ import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import styles from './TemplateVariable.module.css';
 import { FormHelperText, OutlinedInput } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $getRoot, $getSelection, $isRangeSelection } from 'lexical';
 import { setDefaultValue } from 'common/RichEditor';
 import DeleteIcon from 'assets/images/icons/CrossIcon.svg?react';
 
@@ -25,8 +26,18 @@ export const TemplateVariables = ({
   const [editor] = useLexicalComposerContext();
 
   const handleAddVariable = () => {
-    setVariables([...variables, { text: '', id: variables.length + 1 }]);
-    setDefaultValue(editor, `${message?.trim(' ')} {{${variables.length + 1}}}`);
+    const nextId = variables.length + 1;
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        selection.insertText(` {{${nextId}}}`);
+      } else {
+        const root = $getRoot();
+        root.selectEnd();
+        $getSelection()?.insertText(` {{${nextId}}}`);
+      }
+    });
+    setVariables([...variables, { text: '', id: nextId }]);
     editor.focus();
   };
 
@@ -46,6 +57,7 @@ export const TemplateVariables = ({
         disabled={isEditing}
         className={styles.AddVariable}
         onClick={handleAddVariable}
+        onMouseDown={(event: any) => event.preventDefault()}
         variant="outlined"
         color="primary"
       >

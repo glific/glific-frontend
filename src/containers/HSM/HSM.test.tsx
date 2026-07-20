@@ -171,7 +171,9 @@ describe('Add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi, How are you');
+      expect(editorText).toContain('{{1}}');
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
@@ -246,7 +248,9 @@ describe('Add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Continue' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi, How are you');
+      expect(editorText).toContain('{{1}}');
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
