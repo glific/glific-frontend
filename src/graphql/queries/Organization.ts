@@ -141,6 +141,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       copyNodeEnabled
       promptGeneratorEnabled
       supersetEnabled
+      templateV2Enabled
     }
   }
 `;

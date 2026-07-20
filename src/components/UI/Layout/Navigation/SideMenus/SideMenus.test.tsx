@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { resetRolePermissions, setUserRolePermissions } from 'context/role';
 import { getNotificationCountQuery, markAllNotificationAsRead } from 'mocks/Notifications';
-import { setUserSession } from 'services/AuthService';
+import { setUserSession, setOrganizationServices } from 'services/AuthService';
 import SideMenus from './SideMenus';
 
 const mocks = [getNotificationCountQuery, markAllNotificationAsRead];
@@ -33,6 +33,7 @@ beforeEach(() => {
   resetRolePermissions();
   setUserSession(JSON.stringify({ roles: [{ label: 'Admin' }] }));
   setUserRolePermissions();
+  localStorage.removeItem('organizationServices');
 });
 
 test('it should be initialized properly', async () => {
@@ -94,5 +95,26 @@ describe('url-based menu selection', () => {
       expect(document.querySelector('.MuiAccordion-root.Mui-expanded')).toBeInTheDocument();
     });
     await expectMenuSelected('Google sheets');
+  });
+});
+
+describe('HSM Templates menu routing', () => {
+  test('points to the old template page when templateV2Enabled is off', async () => {
+    renderSideMenus('/interactive-message');
+
+    await waitFor(() => {
+      expect(getMenuItem('HSM Templates')).toBeInTheDocument();
+    });
+    expect(getMenuItem('HSM Templates')!.closest('a')).toHaveAttribute('href', '/template');
+  });
+
+  test('points to the v2 template page when templateV2Enabled is on', async () => {
+    setOrganizationServices(JSON.stringify({ templateV2Enabled: true }));
+    renderSideMenus('/interactive-message');
+
+    await waitFor(() => {
+      expect(getMenuItem('HSM Templates')).toBeInTheDocument();
+    });
+    expect(getMenuItem('HSM Templates')!.closest('a')).toHaveAttribute('href', '/template-v2');
   });
 });
