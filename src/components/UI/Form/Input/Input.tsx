@@ -148,7 +148,16 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
           {form && form.errors[field.name] && form.touched[field.name] ? (
             <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
           ) : null}
-          {customFieldError ? customFieldError(field, form) : null}
+          {customFieldError
+            ? (() => {
+                const customError = customFieldError(field, form);
+                return typeof customError === 'string' ? (
+                  <FormHelperText className={styles.DangerText}>{customError}</FormHelperText>
+                ) : (
+                  customError
+                );
+              })()
+            : null}
           {helperText && (
             <div id="helper-text" className={styles.HelperText}>
               {helperText}

@@ -14,6 +14,9 @@ export interface TemplateOptionsProps {
   setVariables: any;
   getVariables: any;
   isEditing: boolean;
+  // renders this as a direct continuation of the message box above it (see
+  // EmojiInput/Editor's squareBottom prop) instead of a separately floating pill.
+  attached?: boolean;
 }
 
 export const TemplateVariables = ({
@@ -22,11 +25,12 @@ export const TemplateVariables = ({
   variables,
   setVariables,
   isEditing,
+  attached,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
 
   const handleAddVariable = () => {
-    const nextId = variables.length + 1;
+    const nextId = variables.length ? Math.max(...variables.map((variable) => variable.id)) + 1 : 1;
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
@@ -52,7 +56,7 @@ export const TemplateVariables = ({
   };
 
   return (
-    <div className={styles.AddVariablesContainer}>
+    <div className={attached ? styles.AddVariablesContainerAttached : styles.AddVariablesContainer}>
       <Button
         disabled={isEditing}
         className={styles.AddVariable}

@@ -1,6 +1,13 @@
 .AddVariablesContainer {
   margin: 1rem 0;
 }
+.AddVariablesContainerAttached {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-top: 1px solid #ccc;
+  border-radius: 0 0 12px 12px;
+}
 
 .AddVariable {
   display: flex;
@@ -8,9 +15,18 @@
   border-radius: 8px;
 }
 
-.AddVariablesContainer h2 {
+.AddVariablesContainer h2,
+.AddVariablesContainerAttached h2 {
   font-size: 1rem;
   color: #555555;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.AddVariablesContainerAttached h2 {
+  border-top: 1px solid #e0e0e0;
+  margin: 0.75rem -1rem 0.75rem;
+  padding: 0.75rem 1rem 0;
 }
 
 .Variables {

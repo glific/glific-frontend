@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { FormHelperText, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
 import * as Yup from 'yup';
 
@@ -572,11 +572,9 @@ export const HSMV2 = () => {
         if (form?.touched?.newShortcode && form?.errors?.newShortcode) {
           return null;
         }
-        return field.value && !SHORTCODE_PATTERN.test(field.value) ? (
-          <FormHelperText error>
-            {t('Only lowercase alphanumeric characters and underscores are allowed.')}
-          </FormHelperText>
-        ) : null;
+        return field.value && !SHORTCODE_PATTERN.test(field.value)
+          ? t('Only lowercase alphanumeric characters and underscores are allowed.')
+          : null;
       },
     },
     {
@@ -614,6 +612,7 @@ export const HSMV2 = () => {
       disabled: isReadOnly,
       handleChange: (value: any) => setBody(value),
       defaultValue: mode !== 'create' && editorState,
+      squareBottom: true,
     },
     {
       component: TemplateVariables,
@@ -622,6 +621,7 @@ export const HSMV2 = () => {
       variables,
       setVariables,
       isEditing: isReadOnly,
+      attached: true,
     },
     {
       component: FooterField,

@@ -37,10 +37,14 @@ export interface EditorProps {
   inputProp?: any;
   onChange?: any;
   defaultValue?: any;
+  // squares off this box's bottom corners/border so an attached section
+  // rendered directly below it (see TemplateVariables' `attached` prop) reads
+  // as a continuation of the same element instead of a separate floating box.
+  squareBottom?: boolean;
 }
 
 export const Editor = ({ disabled = false, ...props }: EditorProps) => {
-  const { field, form, picker, placeholder, onChange, defaultValue } = props;
+  const { field, form, picker, placeholder, onChange, defaultValue, squareBottom } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
@@ -163,7 +167,9 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
 
   return (
     <>
-      <div className={styles.EditorWrapper}>
+      <div
+        className={squareBottom ? `${styles.EditorWrapper} ${styles.EditorWrapperSquareBottom}` : styles.EditorWrapper}
+      >
         <div className={styles.FormatingOptions}>
           <span
             data-testid="bold-icon"
