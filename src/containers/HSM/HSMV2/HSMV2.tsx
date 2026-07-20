@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { Typography } from '@mui/material';
+import { FormHelperText, Typography } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
 import * as Yup from 'yup';
 
@@ -131,6 +131,8 @@ const FooterField = ({ referenceValue, ...inputProps }: any) => (
 
 type Mode = 'create' | 'view' | 'copy' | 'addLanguage';
 
+const SHORTCODE_PATTERN = /^[a-z0-9_]+$/;
+
 export const HSMV2 = () => {
   const location: any = useLocation();
   const navigate = useNavigate();
@@ -199,6 +201,8 @@ export const HSMV2 = () => {
 
   const entityId = isReadOnly ? addPagePreviewId || languageAnchorId : undefined;
   const isDetailVisible = mode !== 'view' || hasOpenedDetail;
+
+  const isCreateFieldsFilled = Boolean(language?.id && newShortcode.trim() && category?.id && body.trim());
 
   const prefillId = mode === 'copy' ? copySourceId : undefined;
   const states = {
@@ -564,7 +568,16 @@ export const HSMV2 = () => {
       placeholder: `${t('Element name')}`,
       disabled: isReadOnly || Boolean(languageAnchorId),
       onChange: (value: any) => setNewShortcode(value),
-      helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
+      customFieldError: (field: { value: string }, form?: { touched?: any; errors?: any }) => {
+        if (form?.touched?.newShortcode && form?.errors?.newShortcode) {
+          return null;
+        }
+        return field.value && !SHORTCODE_PATTERN.test(field.value) ? (
+          <FormHelperText error>
+            {t('Only lowercase alphanumeric characters and underscores are allowed.')}
+          </FormHelperText>
+        ) : null;
+      },
     },
     {
       component: TileSelector,
@@ -816,8 +829,8 @@ export const HSMV2 = () => {
           getQueryFetchPolicy="cache-and-network"
           button={!isReadOnly ? t('Submit for Approval') : t('Save')}
           buttonState={{
-            text: t('Validating URL'),
-            status: validatingURL,
+            text: validatingURL ? t('Validating URL') : t('Submit for Approval'),
+            status: validatingURL || (mode === 'create' && !isCreateFieldsFilled),
             show: !isReadOnly,
             styles: styles.Buttons,
           }}

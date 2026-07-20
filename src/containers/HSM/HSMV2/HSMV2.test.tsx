@@ -200,19 +200,74 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByTestId('help-icon')).toBeInTheDocument();
   });
 
-  test('submitting without a category shows a friendly required message, not a raw Yup type error', async () => {
+  test('submit button stays disabled until all required fields (element name, message, category) are filled', async () => {
     render(template);
 
     await waitFor(() => {
       expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('submitActionButton'));
+    const submitButton = screen.getByTestId('submitActionButton');
+    expect(submitButton).toBeDisabled();
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    const lexicalEditor = inputs[1];
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    expect(submitButton).toBeDisabled();
+
+    fireEvent.click(screen.getByText('Account_update'));
 
     await waitFor(() => {
-      expect(screen.getByText('Category is required.')).toBeInTheDocument();
+      expect(submitButton).not.toBeDisabled();
     });
-    expect(screen.queryByText(/category must be a `object` type/)).not.toBeInTheDocument();
+  });
+
+  test('element name shows its validation error live while typing, without a duplicate helper message', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    expect(screen.queryByText('Only lowercase alphanumeric characters and underscores are allowed.')).toBeNull();
+
+    fireEvent.change(inputs[0], { target: { value: 'Invalid Name' } });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Only lowercase alphanumeric characters and underscores are allowed.')).toHaveLength(
+        1
+      );
+    });
+
+    fireEvent.change(inputs[0], { target: { value: 'valid_name' } });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Only lowercase alphanumeric characters and underscores are allowed.')).toBeNull();
+    });
+  });
+
+  test('element name error still shows only once after the field is blurred', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: 'Invalid Name' } });
+    fireEvent.blur(inputs[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Only lowercase alphanumeric characters and underscores are allowed.')).toHaveLength(
+        1
+      );
+    });
   });
 
   test('it should create a template message using the tile pickers', async () => {

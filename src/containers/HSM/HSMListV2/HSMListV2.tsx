@@ -166,28 +166,28 @@ const HSMListV2 = () => {
 
   const additionalAction = () => [
     {
-      label: t('View'),
-      icon: <ViewIcon data-testid="view-icon" />,
-      parameter: 'id',
-      dialog: handleView,
-    },
-    {
       label: t('Add new language'),
       icon: <AddLanguageIcon data-testid="add-language-icon" />,
       parameter: 'id',
       dialog: handleAddLanguage,
     },
     {
-      label: t('Copy UUID'),
-      icon: <CopyAllOutlined data-testid="copy-button" />,
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
-      dialog: copyUuid,
+      dialog: handleView,
     },
     {
       label: t('Copy'),
       icon: <DuplicateIcon data-testid="copyTemplate" />,
       parameter: 'id',
       dialog: setCopyDialog,
+    },
+    {
+      label: t('Copy UUID'),
+      icon: <CopyAllOutlined data-testid="copy-button" />,
+      parameter: 'id',
+      dialog: copyUuid,
     },
   ];
 
