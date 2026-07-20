@@ -448,57 +448,59 @@ export const HSMV2 = () => {
     } else {
       navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants } });
     }
-    const handleAutoTranslate = async () => {
-      if (!language?.id || !anchorReference) {
+  };
+
+  const handleAutoTranslate = async () => {
+    if (!language?.id || !anchorReference) {
+      return;
+    }
+    // only send button text for translation if the draft's button type still matches the anchor's.
+    const buttonTypeMatchesAnchor = templateType?.id === anchorReference.buttonType;
+    const isCallToAction = buttonTypeMatchesAnchor && templateType?.id === CALL_TO_ACTION;
+    const isQuickReply = buttonTypeMatchesAnchor && templateType?.id === QUICK_REPLY;
+    const buttonTexts = isCallToAction
+      ? (anchorReference.buttons as CallToActionTemplate[]).map((button) => button.title)
+      : isQuickReply
+        ? (anchorReference.buttons as QuickReplyTemplate[]).map((button) => button.value)
+        : [];
+
+    try {
+      const { data } = await translateSessionTemplate({
+        variables: {
+          languageId: language.id,
+          body: anchorReference.body,
+          footer: anchorReference.footer || undefined,
+          buttons: buttonTexts.length ? buttonTexts : undefined,
+        },
+      });
+      const result = data?.translateSessionTemplate;
+      if (result?.errors?.length) {
+        setErrorMessage(result.errors[0]);
         return;
       }
-      // only send button text for translation if the draft's button type still matches the anchor's.
-      const buttonTypeMatchesAnchor = templateType?.id === anchorReference.buttonType;
-      const isCallToAction = buttonTypeMatchesAnchor && templateType?.id === CALL_TO_ACTION;
-      const isQuickReply = buttonTypeMatchesAnchor && templateType?.id === QUICK_REPLY;
-      const buttonTexts = isCallToAction
-        ? (anchorReference.buttons as CallToActionTemplate[]).map((button) => button.title)
-        : isQuickReply
-          ? (anchorReference.buttons as QuickReplyTemplate[]).map((button) => button.value)
-          : [];
-  
-      try {
-        const { data } = await translateSessionTemplate({
-          variables: {
-            languageId: language.id,
-            body: anchorReference.body,
-            footer: anchorReference.footer || undefined,
-            buttons: buttonTexts.length ? buttonTexts : undefined,
-          },
-        });
-        const result = data?.translateSessionTemplate;
-        if (result?.errors?.length) {
-          setErrorMessage(result.errors[0]);
-          return;
-        }
-        if (result?.body) {
-          setBody(result.body);
-          setEditorState(result.body);
-        }
-        if (anchorReference.footer) {
-          setFooter(result?.footer || '');
-        }
-        if (result?.buttons?.length) {
-          if (isCallToAction) {
-            setTemplateButtons((prev) =>
-              (prev as CallToActionTemplate[]).map((button, index) => ({
-                ...button,
-                title: result.buttons[index] || button.title,
-              }))
-            );
-          } else if (isQuickReply) {
-            setTemplateButtons(result.buttons.map((value: string) => ({ value })));
-          }
-        }
-        setNotification(t('Content translated — review and adjust before submitting.'));
-      } catch (error) {
-        setErrorMessage(error);
+      if (result?.body) {
+        setBody(result.body);
+        setEditorState(result.body);
       }
+      if (anchorReference.footer) {
+        setFooter(result?.footer || '');
+      }
+      if (result?.buttons?.length) {
+        if (isCallToAction) {
+          setTemplateButtons((prev) =>
+            (prev as CallToActionTemplate[]).map((button, index) => ({
+              ...button,
+              title: result.buttons[index] || button.title,
+            }))
+          );
+        } else if (isQuickReply) {
+          setTemplateButtons(result.buttons.map((value: string) => ({ value })));
+        }
+      }
+      setNotification(t('Content translated — review and adjust before submitting.'));
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   const handleVariantCreated = async (data: any) => {
