@@ -442,12 +442,13 @@ export const HSMV2 = () => {
   };
 
   const viewVariant = (variantId: string) => {
-    if (!params.id) {
-      setMode('view');
-      setAddPagePreviewId(variantId);
-    } else {
-      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants } });
+    if (params.id && params.id !== variantId) {
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
+      return;
     }
+    setMode('view');
+    setAddPagePreviewId(variantId);
+    setHasOpenedDetail(true);
   };
 
   const handleAutoTranslate = async () => {
