@@ -914,5 +914,9 @@
   "Group": "Group",
   "Primary phone": "Primary phone",
   "Could not refresh WhatsApp phone statuses. Please try again.": "Could not refresh WhatsApp phone statuses. Please try again.",
-  "Could not start reconnect. Please try again.": "Could not start reconnect. Please try again."
+  "Could not start reconnect. Please try again.": "Could not start reconnect. Please try again.",
+  "Auto-translate": "Auto-translate",
+  "English — source reference": "English — source reference",
+  "English": "English",
+  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting."
 }

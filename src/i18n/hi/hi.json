@@ -773,5 +773,9 @@
   "Primary phone": "प्राइमरी फ़ोन",
   "Actions": "क्रियाएँ",
   "Could not refresh WhatsApp phone statuses. Please try again.": "व्हाट्सएप फ़ोन की स्थिति रीफ़्रेश नहीं हो सकी। कृपया पुनः प्रयास करें।",
-  "Could not start reconnect. Please try again.": "पुनः कनेक्ट शुरू नहीं हो सका। कृपया पुनः प्रयास करें।"
+  "Could not start reconnect. Please try again.": "पुनः कनेक्ट शुरू नहीं हो सका। कृपया पुनः प्रयास करें।",
+  "Auto-translate": "स्वतः अनुवाद करें",
+  "English — source reference": "अंग्रेज़ी — संदर्भ पाठ",
+  "English": "अंग्रेज़ी",
+  "Content translated — review and adjust before submitting.": "सामग्री का अनुवाद हो गया — सबमिट करने से पहले समीक्षा करें और आवश्यकतानुसार बदलें।"
 }
