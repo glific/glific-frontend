@@ -1,14 +1,19 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useEffect, useMemo, useState } from 'react';
+import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Typography } from '@mui/material';
+import LanguageIcon from '@mui/icons-material/Language';
 import * as Yup from 'yup';
 
-import { BUTTON_OPTIONS } from 'common/constants';
+import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { templateInfo, interactiveButtonsInfo, HelpDataProps } from 'common/HelpData';
 import { setNotification, setErrorMessage } from 'common/notification';
+import { WhatsAppToJsx } from 'common/RichEditor';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Button } from 'components/UI/Form/Button/Button';
+import { SourceReferenceChip } from 'components/UI/SourceReferenceChip/SourceReferenceChip';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
@@ -26,7 +31,7 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
@@ -59,12 +64,68 @@ import type { StatusTab } from './HSMV2.helper';
 import { LanguageVersionsCard } from './LanguageVersionsCard/LanguageVersionsCard';
 import styles from './HSMV2.module.css';
 
-const SectionTitle = ({ title, helpData }: { title: string; helpData?: HelpDataProps }) => (
+const SectionTitle = ({
+  title,
+  helpData,
+  action,
+}: {
+  title: string;
+  helpData?: HelpDataProps;
+  action?: React.ReactNode;
+}) => (
   <div className={styles.SectionTitleWrapper}>
-    <Typography variant="h4" className={styles.SectionTitle}>
-      {title}
-      {helpData && <HelpIcon helpData={helpData} />}
+    <div className={styles.SectionTitleRow}>
+      <Typography variant="h4" className={styles.SectionTitle}>
+        {title}
+        {helpData && <HelpIcon helpData={helpData} />}
+      </Typography>
+      {action}
+    </div>
+  </div>
+);
+
+const AutoTranslateButton = ({
+  disabled,
+  loading,
+  onTranslate,
+}: {
+  disabled: boolean;
+  loading: boolean;
+  onTranslate: () => void;
+}) => (
+  <Button
+    variant="outlined"
+    className={styles.AutoTranslateButton}
+    onClick={onTranslate}
+    disabled={disabled}
+    loading={loading}
+    data-testid="auto-translate-button"
+  >
+    <LanguageIcon className={styles.AutoTranslateIcon} />
+    {t('Auto-translate')}
+  </Button>
+);
+
+const SourceReferenceCard = ({ body }: { body: string }) => {
+  if (!body) return null;
+
+  return (
+    <div className={styles.SourceReferenceCard} data-testid="source-reference-card">
+      <SourceReferenceChip language={t('English — source reference')} titleOnly />
+      <div className={styles.SourceReferenceBody}>{WhatsAppToJsx(body)}</div>
+    </div>
+  );
+};
+
+const FooterField = ({ referenceValue, ...inputProps }: any) => (
+  <div>
+    <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+      {`${t('Footer')} (${t('optional')})`}
     </Typography>
+    {referenceValue && (
+      <SourceReferenceChip language={t('English')} value={referenceValue} data-testid="footer-source-reference" />
+    )}
+    <Input {...inputProps} />
   </div>
 );
 
@@ -98,6 +159,16 @@ export const HSMV2 = () => {
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
   const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
+  const [hasOpenedDetail, setHasOpenedDetail] = useState(false);
+  // snapshot of the anchor's English content, captured once when entering the
+  // add-language flow — stays fixed as a reference while the draft below (and
+  // its own body/footer/buttons state) gets translated/edited.
+  const [anchorReference, setAnchorReference] = useState<{
+    body: string;
+    footer: string;
+    buttons: Array<CallToActionTemplate | QuickReplyTemplate | WhatsappFormTemplate>;
+    buttonType?: string;
+  } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
@@ -170,6 +241,7 @@ export const HSMV2 = () => {
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
   const [deleteTemplate, { loading: deleteLoading }] = useMutation(DELETE_TEMPLATE);
+  const [translateSessionTemplate, { loading: translating }] = useMutation(TRANSLATE_SESSION_TEMPLATE);
   const [fetchFamilyVariants] = useLazyQuery(FILTER_TEMPLATES, { fetchPolicy: 'network-only' });
 
   const categoryOpn: any = [];
@@ -293,6 +365,11 @@ export const HSMV2 = () => {
       setTemplateButtons(buildTemplateButtonsList([], value, false));
       setTemplateType(value);
       setIsAddButtonChecked(true);
+      // the reset row(s) no longer correspond to the anchor's buttons by
+      // position, even if the user lands back on the same type.
+      if (anchorReference) {
+        setAnchorReference({ ...anchorReference, buttonType: undefined });
+      }
     }
   };
 
@@ -350,25 +427,77 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
+    setAnchorReference({ body, footer, buttons: templateButtons, buttonType: templateType?.id });
     setBody('');
     setEditorState('');
     setFooter('');
-    setVariables([]);
-    setType(null);
-    setAttachmentURL('');
-    setTemplateType(BUTTON_OPTIONS[0]);
-    setTemplateButtons([]);
-    setIsAddButtonChecked(false);
-    setTagId(null);
-    setNewShortcode('');
+    if (templateType?.id === CALL_TO_ACTION) {
+      setTemplateButtons((templateButtons as CallToActionTemplate[]).map((button) => ({ ...button, title: '' })));
+    } else if (templateType?.id === QUICK_REPLY) {
+      setTemplateButtons((templateButtons as QuickReplyTemplate[]).map(() => ({ value: '' })));
+    }
   };
 
   const viewVariant = (variantId: string) => {
-    if (!params.id) {
-      setMode('view');
-      setAddPagePreviewId(variantId);
-    } else {
-      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants } });
+    if (params.id && params.id !== variantId) {
+      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
+      return;
+    }
+    setMode('view');
+    setAddPagePreviewId(variantId);
+    setHasOpenedDetail(true);
+  };
+
+  const handleAutoTranslate = async () => {
+    if (!language?.id || !anchorReference) {
+      return;
+    }
+    // only send button text for translation if the draft's button type still matches the anchor's.
+    const buttonTypeMatchesAnchor = templateType?.id === anchorReference.buttonType;
+    const isCallToAction = buttonTypeMatchesAnchor && templateType?.id === CALL_TO_ACTION;
+    const isQuickReply = buttonTypeMatchesAnchor && templateType?.id === QUICK_REPLY;
+    const buttonTexts = isCallToAction
+      ? (anchorReference.buttons as CallToActionTemplate[]).map((button) => button.title)
+      : isQuickReply
+        ? (anchorReference.buttons as QuickReplyTemplate[]).map((button) => button.value)
+        : [];
+
+    try {
+      const { data } = await translateSessionTemplate({
+        variables: {
+          languageId: language.id,
+          body: anchorReference.body,
+          footer: anchorReference.footer || undefined,
+          buttons: buttonTexts.length ? buttonTexts : undefined,
+        },
+      });
+      const result = data?.translateSessionTemplate;
+      if (result?.errors?.length) {
+        setErrorMessage(result.errors[0]);
+        return;
+      }
+      if (result?.body) {
+        setBody(result.body);
+        setEditorState(result.body);
+      }
+      if (anchorReference.footer) {
+        setFooter(result?.footer || '');
+      }
+      if (result?.buttons?.length) {
+        if (isCallToAction) {
+          setTemplateButtons((prev) =>
+            (prev as CallToActionTemplate[]).map((button, index) => ({
+              ...button,
+              title: result.buttons[index] || button.title,
+            }))
+          );
+        } else if (isQuickReply) {
+          setTemplateButtons(result.buttons.map((value: string) => ({ value })));
+        }
+      }
+      setNotification(t('Content translated — review and adjust before submitting.'));
+    } catch (error) {
+      setErrorMessage(error);
     }
   };
 
@@ -446,7 +575,20 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionMessageContent',
       title: t('Message Content'),
+      action:
+        mode === 'addLanguage' && anchorReference ? (
+          <AutoTranslateButton disabled={!language?.id} loading={translating} onTranslate={handleAutoTranslate} />
+        ) : undefined,
     },
+    ...(mode === 'addLanguage' && anchorReference
+      ? [
+          {
+            component: SourceReferenceCard,
+            name: '__sourceReference',
+            body: anchorReference.body,
+          },
+        ]
+      : []),
     {
       component: EmojiInput,
       name: 'body',
@@ -465,10 +607,10 @@ export const HSMV2 = () => {
       isEditing: isReadOnly,
     },
     {
-      component: Input,
+      component: FooterField,
       name: 'footer',
-      label: `${t('Footer')} (${t('optional')})`,
       disabled: isReadOnly,
+      referenceValue: mode === 'addLanguage' ? anchorReference?.footer : undefined,
       inputProp: {
         onChange: (event: any) => setFooter(event.target.value),
       },
@@ -496,6 +638,10 @@ export const HSMV2 = () => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
+      anchorButtons:
+        mode === 'addLanguage' && anchorReference?.buttonType === templateType?.id
+          ? anchorReference?.buttons
+          : undefined,
       disabled: isReadOnly,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,

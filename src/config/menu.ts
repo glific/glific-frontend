@@ -57,6 +57,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'WhatsApp Phones',
+        path: '/group/phones',
+        icon: 'waGroup',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
     ],
   },
   {
@@ -129,7 +136,7 @@ const menus = (): Menu[] => [
       },
       {
         title: 'HSM Templates',
-        path: '/template',
+        path: getOrganizationServices('templateV2Enabled') ? '/template-v2' : '/template',
         icon: 'template',
         type: 'sideDrawer',
         roles: managerLevel,

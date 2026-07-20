@@ -66,6 +66,11 @@ export const GROUP_GET_COLLECTION = gql`
       id
       lastCommunicationAt
       label
+      primaryPhone {
+        id
+        phone
+        label
+      }
     }
   }
 `;
