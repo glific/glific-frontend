@@ -8,7 +8,16 @@ import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { useState } from 'react';
+import { CreateGroupDialog } from 'containers/WaGroups/CreateGroupDialog/CreateGroupDialog';
+
+const NO_ACTIVE_PHONES = 'No active phones available';
+
+const isNoActivePhonesError = (error: any): boolean => {
+  const messages = [error?.message, ...(error?.graphQLErrors?.map((e: any) => e?.message) || [])];
+  return messages.some((message) => typeof message === 'string' && message.includes(NO_ACTIVE_PHONES));
+};
 
 interface WaManagedPhonesProps {
   phonenumber: any;
@@ -17,6 +26,8 @@ interface WaManagedPhonesProps {
 const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [showReconnect, setShowReconnect] = useState(false);
 
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
     variables: {
@@ -25,25 +36,22 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
     fetchPolicy: 'cache-and-network',
   });
 
-  const [syncGroups] = useMutation(SYNC_GROUPS, {
-    fetchPolicy: 'network-only',
-    onCompleted: (responseData) => {
-      if (responseData.errors) {
-        setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
-      } else {
-        setNotification(t('Whatsapp groups synced successfully.'), 'success');
-      }
-      setLoading(false);
-    },
-    onError: () => {
-      setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
-      setLoading(false);
-    },
-  });
+  const [syncGroups] = useMutation(SYNC_GROUPS, { fetchPolicy: 'network-only' });
 
-  const handleSyncGroups = () => {
+  const handleSyncGroups = async () => {
     setLoading(true);
-    syncGroups();
+    try {
+      await syncGroups();
+      setNotification(t('Whatsapp groups synced successfully.'), 'success');
+    } catch (error: any) {
+      if (isNoActivePhonesError(error)) {
+        setShowReconnect(true);
+      } else {
+        setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,7 +61,13 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
           <AutoComplete
             classes={{ inputRoot: styles.DropDown }}
             isFilterType
-            placeholder="Phone Number"
+            showTags={false}
+            listBoxProps={{ style: { fontSize: '0.8rem' } }}
+            placeholder={
+              phonenumber?.length
+                ? `${phonenumber.length} phone${phonenumber.length > 1 ? 's' : ''} selected`
+                : 'Phone Number'
+            }
             options={
               data?.waManagedPhones
                 ? data?.waManagedPhones?.map((phone: any) => ({
@@ -62,34 +76,66 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
                   }))
                 : []
             }
-            multiple={false}
+            multiple
             optionLabel="label"
             onChange={(value: any) => {
-              if (value) {
-                setPhonenumber([value]);
-              } else {
-                setPhonenumber(null);
-              }
+              setPhonenumber(value && value.length ? value : null);
             }}
             form={{ setFieldValue: () => {} }}
             field={{
               name: 'phonenumber',
-              value: phonenumber?.label,
+              value: phonenumber || [],
             }}
           />
         </div>
       </FormControl>
 
-      <Button
-        variant="outlined"
-        color="primary"
-        className={styles.syncButton}
-        data-testid="syncGroups"
-        aria-hidden="true"
-        onClick={() => handleSyncGroups()}
-      >
-        {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
-      </Button>
+      <div className={styles.Buttons}>
+        <Button
+          variant="outlined"
+          color="primary"
+          className={styles.syncButton}
+          data-testid="syncGroups"
+          aria-hidden="true"
+          onClick={() => handleSyncGroups()}
+        >
+          {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          className={styles.createButton}
+          data-testid="createGroup"
+          onClick={() => setCreateOpen(true)}
+        >
+          {t('New group')}
+        </Button>
+      </div>
+
+      <CreateGroupDialog
+        open={createOpen}
+        phones={data?.waManagedPhones || []}
+        defaultPhone={phonenumber?.[0] ? data?.waManagedPhones?.find((p: any) => p.id === phonenumber[0].id) : null}
+        onClose={() => setCreateOpen(false)}
+      />
+
+      {showReconnect && (
+        <DialogBox
+          title={t('No active WhatsApp phones')}
+          handleOk={() => setShowReconnect(false)}
+          handleCancel={() => setShowReconnect(false)}
+          buttonOk={t('Okay')}
+          skipCancel
+          alignButtons="center"
+        >
+          <div data-testid="reconnectDialog">
+            {t(
+              'None of your WhatsApp phones are connected. Please reconnect your phone on the Maytapi console and try syncing again.'
+            )}
+          </div>
+        </DialogBox>
+      )}
     </div>
   );
 };

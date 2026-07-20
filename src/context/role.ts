@@ -23,6 +23,13 @@ export const getUserRole = (): Array<any> => {
   return role;
 };
 
+export const isAdminRole = (): boolean => {
+  const roles = getUserRole();
+  return roles.includes('Admin') || roles.includes('Glific_admin');
+};
+
+export const isManagerRole = (): boolean => isAdminRole() || getUserRole().includes('Manager');
+
 export const checkDynamicRole = () => {
   if (!role || role.length === 0) {
     role = getUserRole();

@@ -76,3 +76,87 @@ export const SET_PRIMARY_PHONE = gql`
     }
   }
 `;
+
+export const CREATE_WA_GROUP = gql`
+  mutation CreateWaGroup($input: CreateWaGroupInput!) {
+    createWaGroup(input: $input) {
+      waGroup {
+        id
+        label
+        bspId
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const REMOVE_WA_GROUP_CONTACT = gql`
+  mutation RemoveWaGroupContact($waGroupId: ID!, $contactId: ID!) {
+    removeWaGroupContact(waGroupId: $waGroupId, contactId: $contactId) {
+      waGroup {
+        id
+        label
+        bspId
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const IMPORT_WA_GROUP_CONTACTS = gql`
+  mutation ImportWaGroupContacts($waGroupId: ID!, $data: String!, $type: ImportContactsTypeEnum!) {
+    importWaGroupContacts(waGroupId: $waGroupId, data: $data, type: $type) {
+      status
+      errors {
+        message
+      }
+    }
+  }
+`;
+
+export const SET_PRIMARY_PHONE_FOR_COLLECTION = gql`
+  mutation SetPrimaryPhoneForCollection($collectionId: ID!, $waManagedPhoneId: ID!) {
+    setPrimaryPhoneForCollection(collectionId: $collectionId, waManagedPhoneId: $waManagedPhoneId) {
+      status
+      userJobId
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const SYNC_WA_MANAGED_PHONE_STATUSES = gql`
+  mutation SyncWaManagedPhoneStatuses {
+    syncWaManagedPhoneStatuses {
+      message
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const RECONNECT_WA_MANAGED_PHONE = gql`
+  mutation ReconnectWaManagedPhone($waManagedPhoneId: ID!) {
+    reconnectWaManagedPhone(waManagedPhoneId: $waManagedPhoneId) {
+      waManagedPhone {
+        id
+        phone
+        status
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
