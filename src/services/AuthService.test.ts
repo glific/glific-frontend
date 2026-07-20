@@ -1,14 +1,6 @@
 import axios from 'axios';
 
-import {
-  renewAuthToken,
-  checkAuthStatusService,
-  sendOTP,
-  setAuthSession,
-  clearAuthSession,
-  getAuthSession,
-} from './AuthService';
-import setLogs from 'config/logs';
+import { sendOTP, setAuthSession, clearAuthSession, getAuthSession } from './AuthService';
 
 vi.mock('axios');
 
@@ -18,10 +10,6 @@ vi.mock('pino-logflare', () => ({
 }));
 
 const mockedAxios = axios as any;
-
-vi.mock('config/logs', () => ({
-  default: vi.fn(),
-}));
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -37,52 +25,8 @@ describe('AuthService', () => {
     token_expiry_time: tokenExpiryDate,
   };
 
-  test('testing renewAuthToken', async () => {
-    // set the session
-    setAuthSession(session);
-
-    // let's mock the axios call
-    const responseData = { data: { data: { data: {} } } };
-    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    await expect(renewAuthToken()).resolves.toEqual(responseData);
-  });
-
-  test('testing renewAuthToken with error while renewing', async () => {
-    // set the session
-    setAuthSession(session);
-
-    // let's mock the axios call
-    const invalidErrorMessage = 'Invalid token';
-    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
-    await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
-  });
-
-  test('testing checkAuthStatusService with empty session', () => {
-    // clear the session
-    clearAuthSession();
-    const response = checkAuthStatusService();
-    expect(response).toBeFalsy();
-  });
-
-  test('testing checkAuthStatusService with valid token', () => {
-    // set the session
-    setAuthSession(session);
-    const response = checkAuthStatusService();
-    expect(response).toBeTruthy();
-  });
-
-  test('testing checkAuthStatusService with expired token', () => {
-    // set the session
-    const expiredTokenDate = new Date();
-    expiredTokenDate.setDate(new Date().getDate() - 1);
-    setAuthSession({
-      access_token: 'access',
-      renewal_token: 'renew',
-      token_expiry_time: expiredTokenDate,
-    });
-    const response = checkAuthStatusService();
-    expect(response).toBeFalsy();
-  });
+  // NOTE: token renewal + the 30s-buffer validity check moved to services/TokenManager;
+  // their coverage now lives in TokenManager.test.ts.
 
   test('testing setAuthSession & getAuthSession', () => {
     // set the session
@@ -112,13 +56,5 @@ describe('AuthService', () => {
     const errorMessage = 'Cannot send the otp to 919967665667';
     mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
     await expect(sendOTP('919967665667')).rejects.toThrow(errorMessage);
-  });
-
-  test('testing renewAuthToken with error when there is no auth token', async () => {
-    clearAuthSession();
-
-    await expect(renewAuthToken()).rejects.toThrow('No renewal token available');
-    // Verify setLogs was called with the correct arguments
-    expect(setLogs).toHaveBeenCalledWith('Token renewal failed: renewal_token not found', 'error');
   });
 });

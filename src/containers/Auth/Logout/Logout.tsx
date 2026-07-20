@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 import { useApolloClient } from '@apollo/client';
-import axios from 'axios';
 import { CSSProperties, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -12,6 +11,7 @@ import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
 import { resetRolePermissions } from 'context/role';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
 import { clearListSession } from 'services/ListService';
+import { apiClient } from 'services/apiClient';
 
 const divStyle: CSSProperties = {
   fontFamily: 'Heebo',
@@ -30,17 +30,24 @@ export const Logout = () => {
   const params = useParams();
 
   // let's notify the backend when user logs out
-  const userLogout = async () => {
-    // get the auth token from session
-    axios.defaults.headers.common.authorization = getAuthSession('access_token');
-    await axios.delete(USER_SESSION);
-  };
+  const userLogout = () =>
+    // best-effort: ask the backend to delete the session using the *current* token.
+    // skipAuth so the interceptor doesn't renew a token just to immediately discard it
+    // (and doesn't attempt a renew-and-retry if this call 401s during logout).
+    apiClient.delete(USER_SESSION, {
+      meta: { skipAuth: true },
+      headers: { authorization: getAuthSession('access_token') },
+    });
 
   const handleLogout = async () => {
     posthog?.capture('user_logged_out');
     posthog?.reset();
 
-    await userLogout();
+    try {
+      await userLogout();
+    } catch {
+      // continue local logout cleanup even when backend logout is unavailable
+    }
 
     // clear local storage auth session
     clearAuthSession();
@@ -68,7 +75,7 @@ export const Logout = () => {
   useEffect(() => {
     // if user click on logout menu
     if (params.mode === 'user') {
-      handleLogout();
+      void handleLogout();
     }
   }, []);
 

@@ -1,21 +1,15 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache, fromPromise } from '@apollo/client';
 import { createLink } from 'apollo-absinthe-upload-link';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/link-context';
 
 import { createClient } from 'graphql-ws';
 
-import {
-  checkAuthStatusService,
-  renewAuthToken,
-  getAuthSession,
-  setAuthSession,
-  getUserSession,
-} from 'services/AuthService';
+import { getAuthSession, getUserSession } from 'services/AuthService';
+import { getValidAccessToken, renewAccessToken, ForcedLogoutError, TransientRenewalError } from 'services/TokenManager';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import setLogs from './logs';
 import { GLIFIC_API_URL, SOCKET } from '.';
@@ -43,51 +37,30 @@ export const cache = new InMemoryCache({
   },
 });
 
-const gqlClient = (navigate: any) => {
-  let isLoggingOut = false;
+// Detect an authentication failure on a GraphQL response, from either the network layer
+// (Absinthe returns HTTP 401) or an auth-flavoured GraphQL error.
+const isAuthError = (networkError: any, graphQLErrors: any): boolean => {
+  if (networkError && (networkError.statusCode === 401 || `${networkError.message}`.includes('401'))) {
+    return true;
+  }
+  return Boolean(
+    graphQLErrors?.some(
+      (err: any) =>
+        err?.extensions?.code === 'UNAUTHENTICATED' || /unauthenticated|unauthorized/i.test(err?.message ?? '')
+    )
+  );
+};
 
-  const refreshTokenLink: any = new TokenRefreshLink({
-    accessTokenField: 'access_token',
-    isTokenValidOrUndefined: async () => checkAuthStatusService(),
-    fetchAccessToken: async () => renewAuthToken(),
-    handleFetch: () => {},
-    handleResponse: (_operation, accessTokenField) => (response: any) => {
-      // here we can both success and failures
-      const tokenResponse: any = [];
-
-      // in case of successful token renewal
-      if (response.data) {
-        // lets set the session
-        setAuthSession(response.data.data);
-
-        // we need to return below as handleFetch expects it
-        tokenResponse[accessTokenField] = response.data.data.access_token;
-      }
-
-      return tokenResponse;
-    },
-    handleError: (err: Error) => {
-      // Prevent multiple logout attempts
-      if (isLoggingOut) return;
-      isLoggingOut = true;
-
-      // full control over handling token fetch Error
-      /* eslint-disable */
-      console.warn('Your refresh token is invalid. Try to relogin');
-      console.error(err);
-
-      setLogs('Token fetch error', 'error');
-      setLogs(err.message, 'error');
-      /* eslint-enable */
-      navigate('/logout/session');
-    },
-  });
-
-  // build authentication link
-  const authLink = setContext((_, { headers }) => {
-    // get auth token
-    const accessToken = getAuthSession('access_token');
-
+const gqlClient = () => {
+  // Proactive auth: ask TokenManager for a valid token (renewing single-flight if needed) and
+  // inject it. If renewal fails, TokenManager has already emitted the forced-logout (400/401) or
+  // will surface a transient error; we let it propagate so the operation fails rather than silently
+  // sending an expired token.
+  const authLink = setContext(async (_, { headers }) => {
+    // No session at all (pre-login / logged out): pass through without attempting a renewal, so an
+    // unauthenticated operation never triggers a spurious forced logout.
+    const hasSession = Boolean(getAuthSession('access_token') || getAuthSession('renewal_token'));
+    const accessToken = hasSession ? await getValidAccessToken() : '';
     return {
       headers: {
         ...headers,
@@ -96,35 +69,48 @@ const gqlClient = (navigate: any) => {
     };
   });
 
-  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
-    if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) => {
+  // Reactive safety net: if a request still comes back 401 (e.g. token accepted by the frontend
+  // buffer but rejected by the backend), renew once and replay the operation. All logout decisions
+  // live in TokenManager — this link never navigates.
+  const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message, locations, path }) => {
         Sentry.captureException(new Error(`[GraphQL error]: ${message}`), {
           fingerprint: ['graphql-error', String(message)],
           extra: { locations, path },
         });
         // logged error in logflare
-        return setLogs(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, 'error');
+        setLogs(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, 'error');
       });
+    }
 
     if (networkError) {
       setLogs(`Network error: ${networkError} ${operation.variables}`, 'error');
-      if (networkError.message.includes('Received status code 401') || networkError.message.includes('401')) {
-        if (!isLoggingOut) {
-          isLoggingOut = true;
-          navigate('/logout/session');
-        }
-      }
     }
+
+    if (isAuthError(networkError, graphQLErrors) && !operation.getContext().__authRetried) {
+      operation.setContext({ __authRetried: true });
+
+      return fromPromise(
+        renewAccessToken().catch((err: unknown) => {
+          // ForcedLogoutError -> TokenManager already emitted the forced logout.
+          // TransientRenewalError -> renewal exhausted; give up without retrying.
+          if (!(err instanceof ForcedLogoutError) && !(err instanceof TransientRenewalError)) {
+            setLogs(`Token renewal error during 401 retry: ${err}`, 'error');
+          }
+          return null;
+        })
+      )
+        .filter((token): token is string => token !== null)
+        .flatMap(() => forward(operation));
+    }
+
+    return undefined;
   });
 
   const httpLink: any = createLink({ uri: GLIFIC_API_URL });
 
   const retryIf = (error: any) => {
-    if (isLoggingOut) {
-      console.log('Skipping retry - logging out');
-      return false;
-    }
     const doNotRetryCodes = [500, 400, 401];
     return !!error && !doNotRetryCodes.includes(error.statusCode);
   };
@@ -144,9 +130,23 @@ const gqlClient = (navigate: any) => {
   const wsLink = new GraphQLWsLink(
     createClient({
       url: SOCKET,
-      connectionParams: {
-        authToken: getAuthSession('access_token'),
-        userId: getUserSession('id'),
+      // Evaluated on every (re)connect so the socket authenticates with a fresh token instead of
+      // the one captured at client-creation time. Falls back to the stored token if renewal throws
+      // so we still attempt the connection.
+      connectionParams: async () => {
+        const hasSession = Boolean(getAuthSession('access_token') || getAuthSession('renewal_token'));
+        let authToken: string | null = getAuthSession('access_token');
+        if (hasSession) {
+          try {
+            authToken = await getValidAccessToken();
+          } catch {
+            authToken = getAuthSession('access_token');
+          }
+        }
+        return {
+          authToken,
+          userId: getUserSession('id'),
+        };
       },
       keepAlive: 30000,
       on: {
@@ -166,7 +166,7 @@ const gqlClient = (navigate: any) => {
       return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
     },
     wsLink,
-    refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
+    errorLink.concat(authLink.concat(httpLink))
   );
 
   return new ApolloClient({

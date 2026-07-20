@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
-import axios from 'axios';
 
+import { apiClient } from 'services/apiClient';
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 import { ORG_EVAL_ACCESS_CACHE_KEY } from 'containers/AIEvals/orgEvalAccessCache';
@@ -12,7 +12,10 @@ const { mockPosthogCapture, mockPosthogReset } = vi.hoisted(() => ({
   mockPosthogReset: vi.fn(),
 }));
 
-vi.mock('axios');
+// logout now goes through the shared apiClient (with `skipAuth`), not bare axios
+vi.mock('services/apiClient', () => ({
+  apiClient: { delete: vi.fn() },
+}));
 vi.mock('@posthog/react', () => ({
   usePostHog: () => ({
     capture: mockPosthogCapture,
@@ -20,7 +23,7 @@ vi.mock('@posthog/react', () => ({
   }),
 }));
 
-const mockedAxios = axios as any;
+const mockedApiClient = apiClient as any;
 
 describe('<Logout />', () => {
   const originalLocation = window.location;
@@ -28,7 +31,7 @@ describe('<Logout />', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    mockedAxios.delete.mockResolvedValue({});
+    mockedApiClient.delete.mockResolvedValue({});
     locationReplaceMock = vi.fn();
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -91,7 +94,7 @@ describe('<Logout />', () => {
 
   test('completes delete session action before navigating to login page', async () => {
     let resolveDeleteRequest: (value: unknown) => void = () => {};
-    mockedAxios.delete.mockImplementation(
+    mockedApiClient.delete.mockImplementation(
       () =>
         new Promise((resolve) => {
           resolveDeleteRequest = resolve;
@@ -108,7 +111,7 @@ describe('<Logout />', () => {
 
     fireEvent.click(screen.getByTestId('ok-button'));
 
-    expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+    expect(mockedApiClient.delete).toHaveBeenCalledTimes(1);
     expect(locationReplaceMock).not.toHaveBeenCalled();
 
     resolveDeleteRequest({});

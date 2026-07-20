@@ -1,10 +1,9 @@
 import { embedDashboard } from '@superset-ui/embedded-sdk';
-import axios from 'axios';
 import { ANALYTICS_ENDPOINT, SUPERSET_DASHBOARD_ID } from 'config';
 import setLogs from 'config/logs';
 import { t } from 'i18next';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getAuthSession } from 'services/AuthService';
+import { apiClient } from 'services/apiClient';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { ErrorPage } from 'components/UI/ErrorPage/ErrorPage';
 import styles from './Analytics.module.css';
@@ -17,12 +16,11 @@ export const Analytics: React.FC = () => {
 
   const fetchEmbedToken = async () => {
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         ANALYTICS_ENDPOINT,
         {},
         {
           headers: {
-            Authorization: getAuthSession('access_token'),
             'Content-Type': 'application/json',
           },
         }
