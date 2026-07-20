@@ -573,7 +573,7 @@ export const HSMV2 = () => {
       variant: 'radio',
       onChange: setCategory,
       disabled: isReadOnly,
-      label: t('Category'),
+      label: `${t('Category')}*`,
     },
     {
       component: SectionTitle,
@@ -694,6 +694,12 @@ export const HSMV2 = () => {
   }, [location.state?.autoExpandId, params.id]);
 
   useEffect(() => {
+    if (location.state?.openAddLanguage && mode === 'view' && newShortcode) {
+      openAddLanguage();
+    }
+  }, [location.state?.openAddLanguage, mode, newShortcode]);
+
+  useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
       const freshVariants = familyFetchData.sessionTemplates;
       setFamilyVariants(freshVariants);
@@ -769,7 +775,7 @@ export const HSMV2 = () => {
           variantsByTab={variantsByTab}
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          showAddLanguage={!params.id}
+          showAddLanguage
           showDelete={!params.id}
           onView={viewVariant}
           onAddLanguage={openAddLanguage}

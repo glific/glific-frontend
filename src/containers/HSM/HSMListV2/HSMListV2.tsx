@@ -119,11 +119,14 @@ const HSMListV2 = () => {
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
-  const handleView = (id: any) => navigate(`/template-v2/${id}/edit`);
+  const handleView = (id: any, item: any) =>
+    navigate('/template-v2/add', {
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
+    });
 
   const handleAddLanguage = (id: any, item: any) =>
     navigate('/template-v2/add', {
-      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode, openAddLanguage: true },
     });
 
   const setCopyDialog = (id: any) => navigate('/template-v2/add', { state: { mode: 'copy', sourceId: id } });
@@ -331,6 +334,7 @@ const HSMListV2 = () => {
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
         groupRows={groupByShortcode}
+        sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
         {...queries}
       />
     </>

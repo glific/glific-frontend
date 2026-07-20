@@ -1024,32 +1024,34 @@ export const hsmV2TemplatesData = [
   },
 ];
 
-// HSMListV2 drives the shared `List` component, so mocks must mirror the exact
-// variables List sends: filter + opts {limit:50, offset:0, order:'ASC', orderWith:'label'}.
-export const sessionTemplatesV2Mock = (filter: any, data: any) => ({
+const defaultSessionTemplatesV2Opts = { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' };
+
+export const sessionTemplatesV2Mock = (filter: any, data: any, opts: any = defaultSessionTemplatesV2Opts) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
       filter,
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+      opts,
     },
   },
   result: { data: { sessionTemplates: data } },
 });
 
-export const sessionTemplatesV2ErrorMock = (filter: any, message: string) => ({
+export const sessionTemplatesV2ErrorMock = (
+  filter: any,
+  message: string,
+  opts: any = defaultSessionTemplatesV2Opts
+) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
       filter,
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+      opts,
     },
   },
   error: new Error(message),
 });
 
-// HSMListV2 defaults the status filter to APPROVED, so every list query carries
-// `status: 'APPROVED'` alongside the other filters.
 export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData);
 export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock(
   { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
