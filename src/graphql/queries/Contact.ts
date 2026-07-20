@@ -27,6 +27,7 @@ export const GET_CONTACTS_LIST = gql`
       id
       name
       fields
+      phone
       groups {
         id
         label
