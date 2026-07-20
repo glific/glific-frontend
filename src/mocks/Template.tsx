@@ -3,6 +3,7 @@ import {
   CREATE_TEMPLATE,
   DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
+  REAPPLY_SESSION_TEMPLATE,
   SYNC_HSM_TEMPLATES,
   UPDATE_TEMPLATE,
 } from 'graphql/mutations/Template';
@@ -285,6 +286,43 @@ export const CREATE_SESSION_TEMPLATE_MOCK = [
               },
             ]),
             buttonType: 'WHATSAPP_FORM',
+          },
+          errors: null,
+        },
+      },
+    }),
+    maxUsageCount: Number.POSITIVE_INFINITY,
+    variableMatcher: () => true,
+  },
+];
+
+export const REAPPLY_SESSION_TEMPLATE_MOCK = [
+  {
+    request: {
+      query: REAPPLY_SESSION_TEMPLATE,
+    },
+    result: () => ({
+      data: {
+        reapplySessionTemplate: {
+          sessionTemplate: {
+            id: '3',
+            label: 'Account Balance',
+            body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
+            footer: 'footer',
+            isActive: true,
+            language: {
+              id: '2',
+              label: 'Marathi',
+            },
+            translations: [],
+            type: 'TEXT',
+            MessageMedia: null,
+            category: 'UTILITY',
+            shortcode: 'account_balance',
+            example: 'You can now view your Account Balance or Mini statement for Account ending with [003]',
+            hasButtons: false,
+            buttons: null,
+            buttonType: null,
           },
           errors: null,
         },

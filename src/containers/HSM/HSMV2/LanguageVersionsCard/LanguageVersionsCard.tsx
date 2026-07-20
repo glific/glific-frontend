@@ -14,6 +14,7 @@ export interface LanguageVersionsCardProps {
   onView: (variantId: string) => void;
   onAddLanguage: () => void;
   onDelete: (variantId: string) => void;
+  onReapply: (variantId: string) => void;
 }
 
 export const LanguageVersionsCard = ({
@@ -25,6 +26,7 @@ export const LanguageVersionsCard = ({
   onView,
   onAddLanguage,
   onDelete,
+  onReapply,
 }: LanguageVersionsCardProps) => (
   <div className={styles.TemplateDetailsCard}>
     <p className={styles.LanguageVersionsTitle}>{t('Language versions')}</p>
@@ -64,6 +66,16 @@ export const LanguageVersionsCard = ({
               >
                 {t('View')}
               </Button>
+              {activeTab === 'Rejected' && (
+                <Button
+                  variant="text"
+                  className={styles.ViewLink}
+                  onClick={() => onReapply(variant.id)}
+                  data-testid={`reapply-language-${variant.id}`}
+                >
+                  {t('Edit & Re-apply')}
+                </Button>
+              )}
               {showDelete && (
                 <Button
                   variant="text"
