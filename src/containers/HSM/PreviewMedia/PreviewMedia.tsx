@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
@@ -7,9 +7,14 @@ import { t } from 'i18next';
 
 import styles from '../HSMListV2/HSMListV2.module.css';
 
-const staticMediaFallback: Record<string, { icon: any; label: string }> = {
-  DOCUMENT: { icon: <InsertDriveFileOutlinedIcon className={styles.PreviewMediaIcon} />, label: t('Document') },
-  AUDIO: { icon: <AudiotrackOutlinedIcon className={styles.PreviewMediaIcon} />, label: t('Audio') },
+const staticMediaIcon: Record<string, ReactNode> = {
+  DOCUMENT: <InsertDriveFileOutlinedIcon className={styles.PreviewMediaIcon} />,
+  AUDIO: <AudiotrackOutlinedIcon className={styles.PreviewMediaIcon} />,
+};
+
+const staticMediaLabel: Record<string, () => string> = {
+  DOCUMENT: () => t('Document'),
+  AUDIO: () => t('Audio'),
 };
 
 export const PreviewMedia = ({ media, type }: { media: any; type?: string }) => {
@@ -17,16 +22,17 @@ export const PreviewMedia = ({ media, type }: { media: any; type?: string }) => 
 
   if (!media || !media.sourceUrl) return null;
 
-  const staticFallback = type ? staticMediaFallback[type] : undefined;
-  if (staticFallback) {
+  const staticIcon = type ? staticMediaIcon[type] : undefined;
+  if (staticIcon) {
+    const label = type ? staticMediaLabel[type]?.() : undefined;
     return (
       <div className={styles.PreviewMedia}>
         <div
           className={`${styles.PreviewMediaFallback} ${styles.PreviewMediaFallbackColumn}`}
           data-testid="preview-media-fallback"
         >
-          {staticFallback.icon}
-          <span className={styles.PreviewMediaFallbackLabel}>{media.caption || staticFallback.label}</span>
+          {staticIcon}
+          <span className={styles.PreviewMediaFallbackLabel}>{media.caption || label}</span>
         </div>
       </div>
     );

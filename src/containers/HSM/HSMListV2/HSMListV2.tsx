@@ -204,9 +204,6 @@ const HSMListV2 = () => {
     : 'All';
 
   const appliedFilters: any = { isHsm: true };
-  // the backend filters with `status == ""` when the key is present, which
-  // matches nothing — so "All" (filterValue === '') must omit the key
-  // entirely instead of sending an empty string, same as category below.
   if (filterValue) appliedFilters.status = filterValue;
   if (selectedCategory) appliedFilters.category = selectedCategory;
 
