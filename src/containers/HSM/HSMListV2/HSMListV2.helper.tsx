@@ -1,11 +1,6 @@
-import { useState } from 'react';
-import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
 import CallIcon from '@mui/icons-material/Call';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import { TableCell, TableRow, Tooltip as MuiTooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -18,6 +13,7 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
+import { PreviewMedia } from '../PreviewMedia/PreviewMedia';
 import styles from './HSMListV2.module.css';
 
 dayjs.extend(relativeTime);
@@ -81,68 +77,6 @@ const parsePreviewButtons = (buttons?: string | null) => {
   } catch {
     return [];
   }
-};
-
-// DOCUMENT/AUDIO have no visual thumbnail to load, so they always render an
-// icon + caption instead of attempting (and failing) to load the source URL
-// as an image.
-const staticMediaFallback: Record<string, { icon: any; label: string }> = {
-  DOCUMENT: { icon: <InsertDriveFileOutlinedIcon className={styles.PreviewMediaIcon} />, label: t('Document') },
-  AUDIO: { icon: <AudiotrackOutlinedIcon className={styles.PreviewMediaIcon} />, label: t('Audio') },
-};
-
-const PreviewMedia = ({ media, type }: { media: any; type?: string }) => {
-  const [errored, setErrored] = useState(false);
-
-  if (!media || !media.sourceUrl) return null;
-
-  const staticFallback = type ? staticMediaFallback[type] : undefined;
-  if (staticFallback) {
-    return (
-      <div className={styles.PreviewMedia}>
-        <div
-          className={`${styles.PreviewMediaFallback} ${styles.PreviewMediaFallbackColumn}`}
-          data-testid="preview-media-fallback"
-        >
-          {staticFallback.icon}
-          <span className={styles.PreviewMediaFallbackLabel}>{media.caption || staticFallback.label}</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (errored) {
-    const FallbackIcon = type === 'VIDEO' ? VideocamOutlinedIcon : ImageOutlinedIcon;
-    return (
-      <div className={styles.PreviewMedia}>
-        <div className={styles.PreviewMediaFallback} data-testid="preview-media-fallback">
-          <FallbackIcon className={styles.PreviewMediaIcon} />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.PreviewMedia}>
-      {type === 'VIDEO' ? (
-        <video
-          data-testid="preview-media-video"
-          className={styles.PreviewMediaImage}
-          src={media.sourceUrl}
-          muted
-          preload="metadata"
-          onError={() => setErrored(true)}
-        />
-      ) : (
-        <img
-          className={styles.PreviewMediaImage}
-          src={media.sourceUrl}
-          alt={media.caption || ''}
-          onError={() => setErrored(true)}
-        />
-      )}
-    </div>
-  );
 };
 
 const messagePreview = (variant: any, title: string) => {
