@@ -156,4 +156,62 @@ describe('<Logout />', () => {
       expect(locationReplaceMock).toHaveBeenCalledWith('/login');
     });
   });
+
+  test('deletes the session with skipAuth and the current token (no renewal during logout)', async () => {
+    localStorage.setItem('glific_session', JSON.stringify({ access_token: 'current-token' }));
+
+    render(
+      <MockedProvider>
+        <MemoryRouter initialEntries={['/logout/user']}>
+          <Routes>
+            <Route path="/logout/:mode" element={<Logout />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => expect(mockedApiClient.delete).toHaveBeenCalled());
+    expect(mockedApiClient.delete).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ meta: { skipAuth: true }, headers: { authorization: 'current-token' } })
+    );
+  });
+
+  test('still clears local session and redirects when the backend delete fails', async () => {
+    localStorage.setItem('glific_session', JSON.stringify({ access_token: 'x' }));
+    mockedApiClient.delete.mockRejectedValue(new Error('backend unavailable'));
+
+    render(
+      <MockedProvider>
+        <MemoryRouter initialEntries={['/logout/user']}>
+          <Routes>
+            <Route path="/logout/:mode" element={<Logout />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => expect(locationReplaceMock).toHaveBeenCalledWith('/login'));
+    expect(localStorage.getItem('glific_session')).toBeNull();
+  });
+
+  test('forced logout (/logout/session) clears the stored session on mount, without a backend call or redirect', async () => {
+    localStorage.setItem('glific_session', JSON.stringify({ access_token: 'x', renewal_token: 'y' }));
+
+    render(
+      <MockedProvider>
+        <MemoryRouter initialEntries={['/logout/session']}>
+          <Routes>
+            <Route path="/logout/:mode" element={<Logout />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    // session is wiped immediately so no further /renew fires while the dialog sits open
+    await waitFor(() => expect(localStorage.getItem('glific_session')).toBeNull());
+    // forced logout does not call the backend (token is already dead) and waits for the user's click
+    expect(mockedApiClient.delete).not.toHaveBeenCalled();
+    expect(locationReplaceMock).not.toHaveBeenCalled();
+  });
 });

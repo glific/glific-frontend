@@ -39,6 +39,15 @@ export const Logout = () => {
       headers: { authorization: getAuthSession('access_token') },
     });
 
+  // Wipe every trace of the session from local storage / caches. Safe to call more than once.
+  const clearLocalSession = () => {
+    clearAuthSession();
+    clearUserSession();
+    resetRolePermissions();
+    clearListSession();
+    clearOrgEvalAccessCache();
+  };
+
   const handleLogout = async () => {
     posthog?.capture('user_logged_out');
     posthog?.reset();
@@ -49,20 +58,7 @@ export const Logout = () => {
       // continue local logout cleanup even when backend logout is unavailable
     }
 
-    // clear local storage auth session
-    clearAuthSession();
-
-    // clear local storage user session
-    clearUserSession();
-
-    // clear role & access permissions
-    resetRolePermissions();
-
-    // clear local storage list sort session
-    clearListSession();
-
-    // clear org eval request access cache
-    clearOrgEvalAccessCache();
+    clearLocalSession();
 
     // clear apollo cache
     await client.clearStore();
@@ -73,9 +69,14 @@ export const Logout = () => {
   };
 
   useEffect(() => {
-    // if user click on logout menu
     if (params.mode === 'user') {
+      // user clicked "Logout" — run the full flow (backend delete + cleanup + redirect)
       void handleLogout();
+    } else {
+      // forced logout (`/logout/session`): the token is already dead, so clear the stored session
+      // NOW rather than waiting for the user to click "Login". Otherwise the app stays mounted
+      // behind the dialog with a present-but-dead session and keeps firing /renew on every poll.
+      clearLocalSession();
     }
   }, []);
 

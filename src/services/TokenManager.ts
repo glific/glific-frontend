@@ -13,10 +13,10 @@ import { getAuthSession, setAuthSession } from './AuthService';
  * guard and one error policy.
  *
  * Error policy (locked):
- *   - 200                                    -> store tokens, resolve access token
- *   - 400 / 401 (and other terminal 4xx)     -> emit forced logout, throw ForcedLogoutError
- *   - 429 / 5xx / network / timeout          -> retry with backoff; if still failing throw
- *                                               TransientRenewalError (NO logout)
+ *   - 200 with a full token triplet          -> store tokens, resolve access token
+ *   - 400 / 401 ONLY                          -> emit forced logout, throw ForcedLogoutError
+ *   - everything else (network/timeout, 429,  -> retry with backoff; if still failing throw
+ *     5xx, and any other status e.g. 403/404)    TransientRenewalError (NO logout)
  *
  * This module intentionally knows nothing about react-router / navigation. Forced logout is
  * surfaced through `onForcedLogout` subscribers so the routing layer stays decoupled.
@@ -56,8 +56,19 @@ const TOKEN_EXPIRY_BUFFER_MS = 30 * 1000;
 const MAX_RENEWAL_ATTEMPTS = 3;
 const RENEWAL_BACKOFF_BASE_MS = 300;
 
-// HTTP statuses on the renew call that should be retried rather than logging the user out.
-const TRANSIENT_STATUSES = new Set([429, 500, 502, 503, 504]);
+// Per-attempt network timeout on the /renew call. Without this the request (and, because renewal
+// runs inside the cross-tab Web Lock, every tab awaiting a token) could hang forever on a dead-but-
+// open socket (captive portal, suspend/resume onto a new network).
+const RENEW_REQUEST_TIMEOUT_MS = 10 * 1000;
+
+// Upper bound on how long a tab waits to *acquire* the cross-tab lock before giving up and renewing
+// unlocked. Backstops the (already timeout-bounded) case where the lock holder wedges.
+const LOCK_ACQUIRE_TIMEOUT_MS = 45 * 1000;
+
+// Only these renew statuses are terminal (session unrecoverable -> forced logout). EVERYTHING else
+// — network/timeout, 429, 5xx, and also 403/404/etc. from a proxy/WAF/misroute — is transient and
+// retried, so a transient edge (e.g. a Cloudflare 403 on /renew) never logs out every active user.
+const TERMINAL_STATUSES = new Set([400, 401]);
 
 // ---------------------------------------------------------------------------
 // Forced-logout emitter (decoupled from routing)
@@ -113,6 +124,13 @@ export const isAccessTokenValid = (): boolean => {
   return expiresAt - now > TOKEN_EXPIRY_BUFFER_MS;
 };
 
+/**
+ * True if there is any stored session to authenticate/renew with. Callers gate token injection on
+ * this so an operation issued while logged out (pre-login, or after logout) never triggers a
+ * renewal — and therefore never a spurious forced logout.
+ */
+export const hasSession = (): boolean => Boolean(getAuthSession('access_token') || getAuthSession('renewal_token'));
+
 // ---------------------------------------------------------------------------
 // Renewal (single-flight + retry + error policy)
 // ---------------------------------------------------------------------------
@@ -138,19 +156,21 @@ const backoffDelay = (attempt: number): number => {
 const classifyRenewalFailure = (error: any): ForcedLogoutError | TransientRenewalError => {
   const status: number | undefined = error?.response?.status;
 
-  // No HTTP response => network error / timeout => transient.
-  if (status === undefined) {
-    return new TransientRenewalError(`Renewal network error: ${error?.message ?? 'unknown'}`);
+  // Terminal ONLY on 400/401 — the backend positively rejected the refresh token, so the session
+  // is unrecoverable and we log out.
+  if (status !== undefined && TERMINAL_STATUSES.has(status)) {
+    const reason = status === 401 ? 'refresh_unauthorized' : 'refresh_bad_request';
+    emitForcedLogout(reason);
+    return new ForcedLogoutError(reason);
   }
 
-  if (TRANSIENT_STATUSES.has(status)) {
-    return new TransientRenewalError(`Renewal transient failure (HTTP ${status})`);
-  }
-
-  // 400/401 and any other terminal client rejection => the refresh token is unusable.
-  const reason = status === 401 ? 'refresh_unauthorized' : status === 400 ? 'refresh_bad_request' : `refresh_${status}`;
-  emitForcedLogout(reason);
-  return new ForcedLogoutError(reason);
+  // Everything else is transient: no HTTP response (network/timeout), 429, 5xx, and any other
+  // status (403/404/...) that could come from a proxy/WAF/misroute rather than the auth backend.
+  const message =
+    status === undefined
+      ? `Renewal network error: ${error?.message ?? 'unknown'}`
+      : `Renewal transient failure (HTTP ${status})`;
+  return new TransientRenewalError(message);
 };
 
 /**
@@ -171,18 +191,32 @@ const performRenewal = async (): Promise<string> => {
     try {
       const response = await axios.post(RENEW_TOKEN, null, {
         headers: { authorization: renewalToken },
+        timeout: RENEW_REQUEST_TIMEOUT_MS,
         // marker so this request is identifiable; it never routes through apiClient anyway.
         meta: { isRenew: true },
       } as any);
 
       const tokens = response?.data?.data;
-      if (!tokens || !tokens.access_token) {
-        // A 2xx without tokens is a malformed contract — treat as terminal.
+      // `setAuthSession` MERGES into the stored session, so a response missing any field would
+      // silently keep the OLD value. In particular a missing renewal_token would leave the spent
+      // token in place -> the next renewal 401s -> a live session is logged out. Require the full
+      // triplet before storing so a malformed 2xx is caught here instead.
+      if (!tokens || !tokens.access_token || !tokens.renewal_token || !tokens.token_expiry_time) {
         emitForcedLogout('refresh_malformed_response');
         throw new ForcedLogoutError('refresh_malformed_response');
       }
 
       setAuthSession(tokens);
+
+      // The renew succeeded but the stored token still reads as expired: the client clock is skewed
+      // far enough that `isAccessTokenValid()` will never be satisfied, so every subsequent request
+      // would renew again — a storm that burns the single-use renewal token and rate-limits the
+      // backend while the session is actually fine. Fail terminally instead of looping.
+      if (!isAccessTokenValid()) {
+        emitForcedLogout('refresh_token_still_invalid');
+        throw new ForcedLogoutError('refresh_token_still_invalid');
+      }
+
       setLogs('TokenManager: renewal succeeded, session updated', 'info');
       return tokens.access_token as string;
     } catch (error: any) {
@@ -213,10 +247,29 @@ const RENEWAL_LOCK_NAME = 'glific-token-renewal';
  * Web Locks API is unavailable (non-secure contexts, jsdom in tests) — behaviour then degrades
  * to the per-tab single-flight guard, which is what we had before.
  */
-const withRenewalLock = <T>(fn: () => Promise<T>): Promise<T> => {
+const withRenewalLock = async <T>(fn: () => Promise<T>): Promise<T> => {
   const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined;
   if (!locks?.request) return fn();
-  return locks.request(RENEWAL_LOCK_NAME, fn) as Promise<T>;
+
+  // Bound the wait to ACQUIRE the lock. The holder's work is already timeout-bounded (the /renew
+  // call has RENEW_REQUEST_TIMEOUT_MS), but if a holder tab wedges anyway, a waiter must not hang
+  // forever — every request in every tab awaits a token. On timeout we renew unlocked (degraded to
+  // per-tab single-flight, same as the no-locks fallback) rather than stalling.
+  const signal =
+    typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+      ? AbortSignal.timeout(LOCK_ACQUIRE_TIMEOUT_MS)
+      : undefined;
+  const options = signal ? { signal } : {};
+
+  try {
+    return (await locks.request(RENEWAL_LOCK_NAME, options, fn)) as T;
+  } catch (err: any) {
+    if (err?.name === 'AbortError' || err?.name === 'TimeoutError') {
+      setLogs('TokenManager: timed out acquiring renewal lock, renewing unlocked', 'error');
+      return fn();
+    }
+    throw err;
+  }
 };
 
 /**

@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, fromPromise } from '@apollo/client';
+import { ApolloClient, InMemoryCache, fromPromise, Observable } from '@apollo/client';
 import { createLink } from 'apollo-absinthe-upload-link';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
@@ -9,7 +9,7 @@ import { setContext } from '@apollo/link-context';
 import { createClient } from 'graphql-ws';
 
 import { getAuthSession, getUserSession } from 'services/AuthService';
-import { getValidAccessToken, renewAccessToken, ForcedLogoutError, TransientRenewalError } from 'services/TokenManager';
+import { getValidAccessToken, hasSession } from 'services/TokenManager';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import setLogs from './logs';
 import { GLIFIC_API_URL, SOCKET } from '.';
@@ -37,18 +37,16 @@ export const cache = new InMemoryCache({
   },
 });
 
-// Detect an authentication failure on a GraphQL response, from either the network layer
-// (Absinthe returns HTTP 401) or an auth-flavoured GraphQL error.
-const isAuthError = (networkError: any, graphQLErrors: any): boolean => {
-  if (networkError && (networkError.statusCode === 401 || `${networkError.message}`.includes('401'))) {
+// Detect an authentication failure on a GraphQL response. Deliberately STRICT: only a real 401 on
+// the network layer (Absinthe returns HTTP 401) or an explicit UNAUTHENTICATED extension code. We do
+// NOT match on message text ("unauthorized"/"401") — that also matches ordinary permission denials
+// and unrelated payloads, and every false positive spends a single-use renewal token on a replay
+// that will fail identically. Exported for direct unit testing.
+export const isAuthError = (networkError: any, graphQLErrors: any): boolean => {
+  if (networkError && networkError.statusCode === 401) {
     return true;
   }
-  return Boolean(
-    graphQLErrors?.some(
-      (err: any) =>
-        err?.extensions?.code === 'UNAUTHENTICATED' || /unauthenticated|unauthorized/i.test(err?.message ?? '')
-    )
-  );
+  return Boolean(graphQLErrors?.some((err: any) => err?.extensions?.code === 'UNAUTHENTICATED'));
 };
 
 const gqlClient = () => {
@@ -59,8 +57,7 @@ const gqlClient = () => {
   const authLink = setContext(async (_, { headers }) => {
     // No session at all (pre-login / logged out): pass through without attempting a renewal, so an
     // unauthenticated operation never triggers a spurious forced logout.
-    const hasSession = Boolean(getAuthSession('access_token') || getAuthSession('renewal_token'));
-    const accessToken = hasSession ? await getValidAccessToken() : '';
+    const accessToken = hasSession() ? await getValidAccessToken() : '';
     return {
       headers: {
         ...headers,
@@ -91,18 +88,20 @@ const gqlClient = () => {
     if (isAuthError(networkError, graphQLErrors) && !operation.getContext().__authRetried) {
       operation.setContext({ __authRetried: true });
 
-      return fromPromise(
-        renewAccessToken().catch((err: unknown) => {
-          // ForcedLogoutError -> TokenManager already emitted the forced logout.
-          // TransientRenewalError -> renewal exhausted; give up without retrying.
-          if (!(err instanceof ForcedLogoutError) && !(err instanceof TransientRenewalError)) {
-            setLogs(`Token renewal error during 401 retry: ${err}`, 'error');
-          }
-          return null;
-        })
-      )
-        .filter((token): token is string => token !== null)
-        .flatMap(() => forward(operation));
+      // getValidAccessToken (not renewAccessToken): if a concurrent caller already replaced the
+      // token, adopt it instead of spending the single-use renewal token again. `null` signals the
+      // renewal failed (forced-logout already emitted, or transient exhausted).
+      return fromPromise(getValidAccessToken().catch(() => null)).flatMap((token) => {
+        if (token === null) {
+          // Renewal failed. Re-surface the ORIGINAL error rather than completing the observable
+          // empty — otherwise a useQuery hangs in loading forever and an awaited mutation resolves
+          // `undefined` instead of throwing into its try/catch.
+          return new Observable((observer) => {
+            observer.error(networkError ?? new Error(graphQLErrors?.[0]?.message ?? 'Authentication failed'));
+          });
+        }
+        return forward(operation);
+      });
     }
 
     return undefined;
@@ -134,9 +133,8 @@ const gqlClient = () => {
       // the one captured at client-creation time. Falls back to the stored token if renewal throws
       // so we still attempt the connection.
       connectionParams: async () => {
-        const hasSession = Boolean(getAuthSession('access_token') || getAuthSession('renewal_token'));
         let authToken: string | null = getAuthSession('access_token');
-        if (hasSession) {
+        if (hasSession()) {
           try {
             authToken = await getValidAccessToken();
           } catch {

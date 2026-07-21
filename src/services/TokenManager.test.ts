@@ -11,17 +11,37 @@ vi.mock('./AuthService', () => ({
 
 type Session = Record<string, any>;
 
+// Wire a mocked AuthService to a backing `session` object. `setAuthSession` MERGES (like the real
+// implementation), so after a successful renew `isAccessTokenValid()` reflects the new expiry —
+// which the post-store validity check in `performRenewal` depends on.
+function wire(auth: any, session: Session) {
+  auth.getAuthSession.mockImplementation((el: string) => session[el]);
+  auth.setAuthSession.mockImplementation((s: Session) => Object.assign(session, s));
+}
+
 // Load a fresh copy of TokenManager (and its mocked deps) so module-level state
 // (renewalPromise, isLoggingOut, listeners) is reset for every test.
 async function load(session: Session) {
   const tm = await import('./TokenManager');
   const axios = ((await import('axios')) as any).default;
   const auth = (await import('./AuthService')) as any;
-  auth.getAuthSession.mockImplementation((el: string) => session[el]);
+  wire(auth, session);
   return { tm, axios, auth };
 }
 
+// Load an INDEPENDENT module instance (a second "tab") sharing one backing `session` store and the
+// global navigator.locks. Used to exercise real cross-tab serialization.
+async function loadTab(session: Session) {
+  vi.resetModules();
+  const tm = await import('./TokenManager');
+  const axios = ((await import('axios')) as any).default;
+  const auth = (await import('./AuthService')) as any;
+  wire(auth, session);
+  return { tm, axios };
+}
+
 const future = (ms: number) => new Date(Date.now() + ms).toISOString();
+const past = (ms: number) => new Date(Date.now() - ms).toISOString();
 
 const renewResponse = (overrides: Partial<Session> = {}) => ({
   data: {
@@ -63,6 +83,23 @@ describe('isAccessTokenValid', () => {
   });
 });
 
+describe('hasSession', () => {
+  it('is true when an access token is present', async () => {
+    const { tm } = await load({ access_token: 'a' });
+    expect(tm.hasSession()).toBe(true);
+  });
+
+  it('is true when only a renewal token is present', async () => {
+    const { tm } = await load({ renewal_token: 'r' });
+    expect(tm.hasSession()).toBe(true);
+  });
+
+  it('is false when neither token is present', async () => {
+    const { tm } = await load({});
+    expect(tm.hasSession()).toBe(false);
+  });
+});
+
 describe('getValidAccessToken', () => {
   it('returns the stored token without any network call when still valid', async () => {
     const { tm, axios } = await load({
@@ -86,7 +123,7 @@ describe('getValidAccessToken', () => {
     expect(axios.post).toHaveBeenCalledWith(
       'https://test.glific/api/v1/session/renew',
       null,
-      expect.objectContaining({ headers: { authorization: 'renew-1' } })
+      expect.objectContaining({ headers: { authorization: 'renew-1' }, timeout: expect.any(Number) })
     );
     expect(auth.setAuthSession).toHaveBeenCalledWith(expect.objectContaining({ access_token: 'new-access' }));
   });
@@ -144,6 +181,34 @@ describe('renewal error policy — terminal (forced logout)', () => {
     expect(listener).toHaveBeenCalledWith('refresh_malformed_response');
   });
 
+  it('2xx missing renewal_token → malformed (never stores, so the spent token is not kept)', async () => {
+    const { tm, axios, auth } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    // access_token + expiry present but renewal_token omitted — the exact shape that, if stored via
+    // the merging setAuthSession, would keep the old (now spent) renewal token.
+    axios.post.mockResolvedValueOnce({
+      data: { data: { access_token: 'a', token_expiry_time: future(15 * 60 * 1000) } },
+    });
+    const listener = vi.fn();
+    tm.onForcedLogout(listener);
+
+    await expect(tm.getValidAccessToken()).rejects.toBeInstanceOf(tm.ForcedLogoutError);
+    expect(listener).toHaveBeenCalledWith('refresh_malformed_response');
+    expect(auth.setAuthSession).not.toHaveBeenCalled();
+  });
+
+  it('2xx but the stored token still reads expired (clock skew) → forced logout, not a renew storm', async () => {
+    const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    // Server issues a token whose expiry is already in the past relative to the (skewed) client clock.
+    axios.post.mockResolvedValueOnce(renewResponse({ token_expiry_time: past(1000) }));
+    const listener = vi.fn();
+    tm.onForcedLogout(listener);
+
+    await expect(tm.getValidAccessToken()).rejects.toBeInstanceOf(tm.ForcedLogoutError);
+    expect(listener).toHaveBeenCalledWith('refresh_token_still_invalid');
+    // exactly one attempt — it does NOT loop/retry into a storm
+    expect(axios.post).toHaveBeenCalledTimes(1);
+  });
+
   it('isLoggingOut guard: repeated 401s emit forced logout only once', async () => {
     const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
     axios.post.mockRejectedValue(httpError(401));
@@ -154,6 +219,21 @@ describe('renewal error policy — terminal (forced logout)', () => {
     await expect(tm.renewAccessToken()).rejects.toBeInstanceOf(tm.ForcedLogoutError);
 
     expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it('a throwing listener does not prevent other listeners from firing', async () => {
+    const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    axios.post.mockRejectedValueOnce(httpError(401));
+    const bad = vi.fn(() => {
+      throw new Error('listener boom');
+    });
+    const good = vi.fn();
+    tm.onForcedLogout(bad);
+    tm.onForcedLogout(good);
+
+    await expect(tm.renewAccessToken()).rejects.toBeInstanceOf(tm.ForcedLogoutError);
+    expect(bad).toHaveBeenCalled();
+    expect(good).toHaveBeenCalledWith('refresh_unauthorized');
   });
 });
 
@@ -175,6 +255,38 @@ describe('renewal error policy — transient (retry, no logout)', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
+  it('403 on renew is transient (retried, no logout) — a proxy/WAF status must not log everyone out', async () => {
+    vi.useFakeTimers();
+    const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    axios.post.mockRejectedValue(httpError(403));
+    const listener = vi.fn();
+    tm.onForcedLogout(listener);
+
+    const p = tm.getValidAccessToken();
+    const assertion = expect(p).rejects.toBeInstanceOf(tm.TransientRenewalError);
+    await vi.advanceTimersByTimeAsync(10_000);
+    await assertion;
+
+    expect(axios.post).toHaveBeenCalledTimes(3);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it('404 on renew is transient (retried, no logout)', async () => {
+    vi.useFakeTimers();
+    const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    axios.post.mockRejectedValue(httpError(404));
+    const listener = vi.fn();
+    tm.onForcedLogout(listener);
+
+    const p = tm.getValidAccessToken();
+    const assertion = expect(p).rejects.toBeInstanceOf(tm.TransientRenewalError);
+    await vi.advanceTimersByTimeAsync(10_000);
+    await assertion;
+
+    expect(axios.post).toHaveBeenCalledTimes(3);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
   it('network error is transient (retried), not a logout', async () => {
     vi.useFakeTimers();
     const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
@@ -191,6 +303,29 @@ describe('renewal error policy — transient (retry, no logout)', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
+  it('backs off between attempts (does not retry instantly)', async () => {
+    vi.useFakeTimers();
+    const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    axios.post.mockRejectedValue(httpError(500));
+    const p = tm.getValidAccessToken();
+    p.catch(() => {}); // avoid unhandled rejection while we step timers
+
+    // first attempt fires synchronously
+    await Promise.resolve();
+    expect(axios.post).toHaveBeenCalledTimes(1);
+
+    // still only 1 before the (>=300ms base) backoff elapses
+    await vi.advanceTimersByTimeAsync(50);
+    expect(axios.post).toHaveBeenCalledTimes(1);
+
+    // after enough time for the first backoff, the second attempt fires
+    await vi.advanceTimersByTimeAsync(700);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+
+    await vi.advanceTimersByTimeAsync(5_000);
+    await expect(p).rejects.toBeInstanceOf(tm.TransientRenewalError);
+  });
+
   it('recovers if a retry eventually succeeds (429 then 200)', async () => {
     vi.useFakeTimers();
     const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
@@ -205,17 +340,21 @@ describe('renewal error policy — transient (retry, no logout)', () => {
 });
 
 describe('cross-tab renewal lock', () => {
-  // Minimal Web Locks stand-in: serialises callbacks per lock name, like the real API.
+  // Web Locks stand-in that faithfully SERIALIZES callbacks per lock name: callback N+1 does not
+  // start until callback N's returned promise settles, exactly like the real API. Accepts both the
+  // 2-arg request(name, cb) and 3-arg request(name, options, cb) signatures.
   const installLocks = () => {
     const queues = new Map<string, Promise<any>>();
-    const request = vi.fn(async (name: string, cb: () => Promise<any>) => {
+    const request = vi.fn(async (name: string, optsOrCb: any, maybeCb?: any) => {
+      const cb = typeof optsOrCb === 'function' ? optsOrCb : maybeCb;
       const previous = queues.get(name) ?? Promise.resolve();
-      const next = previous.then(cb, cb);
+      const run = previous.then(cb, cb);
+      // keep the chain alive even if a callback rejects, so the next waiter still runs
       queues.set(
         name,
-        next.catch(() => {})
+        run.catch(() => {})
       );
-      return next;
+      return run;
     });
     (navigator as any).locks = { request };
     return request;
@@ -225,45 +364,61 @@ describe('cross-tab renewal lock', () => {
     delete (navigator as any).locks;
   });
 
-  it('acquires the cross-tab lock before renewing', async () => {
+  it('acquires the cross-tab lock (by name) before renewing', async () => {
     const request = installLocks();
     const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
     axios.post.mockResolvedValueOnce(renewResponse());
 
     await expect(tm.renewAccessToken()).resolves.toBe('new-access');
-    expect(request).toHaveBeenCalledWith('glific-token-renewal', expect.any(Function));
+    expect(request).toHaveBeenCalledWith('glific-token-renewal', expect.anything(), expect.any(Function));
   });
 
-  it("adopts the winning tab's session instead of spending an already-rotated renewal token", async () => {
-    const request = installLocks();
-    const session: Session = {
-      token_expiry_time: future(1000),
+  it('TWO concurrent tabs → exactly ONE /renew; the loser adopts the winner’s token (real serialization)', async () => {
+    installLocks(); // one shared lock for both tabs
+
+    // one shared session store, starting expired so both tabs attempt renewal
+    const store: Session = {
+      token_expiry_time: past(1000),
       renewal_token: 'renew-1',
-      access_token: 'stale-access',
+      access_token: 'old-access',
     };
-    const { tm, axios } = await load(session);
 
-    // Simulate the other tab winning the lock: while we are queued it writes a fresh session to
-    // localStorage and burns `renew-1` server-side. Any /renew we send would come back 401.
-    request.mockImplementationOnce(async (_name: string, cb: () => Promise<any>) => {
-      session.access_token = 'other-tab-access';
-      session.renewal_token = 'renew-2';
-      session.token_expiry_time = future(15 * 60 * 1000);
-      return cb();
-    });
-    axios.post.mockRejectedValue(httpError(401));
-    const listener = vi.fn();
-    tm.onForcedLogout(listener);
+    const tabA = await loadTab(store);
+    const tabB = await loadTab(store); // independent module instance; tabA ref remains valid
 
-    await expect(tm.renewAccessToken()).resolves.toBe('other-tab-access');
-    expect(axios.post).not.toHaveBeenCalled();
-    expect(listener).not.toHaveBeenCalled();
+    // The two tabs have separate TokenManager module state (separate single-flight guards) but the
+    // auto-mocked axios is one shared singleton — which is exactly what we want to count: the number
+    // of /renew calls made by BOTH tabs combined.
+    const post = tabA.axios.post;
+    post.mockReset();
+    // Any 2nd network call (a loser presenting the already-spent 'renew-1') would come back 401. If
+    // the lock failed to serialize, this is what the loser would hit — and the test would fail.
+    post.mockRejectedValue(httpError(401));
+    // The winner (first to acquire the lock) renews successfully and writes a fresh, valid session.
+    post.mockResolvedValueOnce(
+      renewResponse({
+        access_token: 'winner-access',
+        renewal_token: 'renew-2',
+        token_expiry_time: future(15 * 60 * 1000),
+      })
+    );
+    const loserLogout = vi.fn();
+    tabB.tm.onForcedLogout(loserLogout);
+
+    const [resA, resB] = await Promise.all([tabA.tm.renewAccessToken(), tabB.tm.renewAccessToken()]);
+
+    // Exactly ONE /renew for two concurrent tabs — the loser adopted the winner's token instead of
+    // spending the single-use renewal token a second time.
+    expect(post).toHaveBeenCalledTimes(1);
+    expect(resA).toBe('winner-access');
+    expect(resB).toBe('winner-access');
+    expect(loserLogout).not.toHaveBeenCalled();
   });
 
   it('still renews when the session is unchanged after acquiring the lock', async () => {
     installLocks();
     const { tm, axios } = await load({
-      token_expiry_time: future(1000),
+      token_expiry_time: past(1000),
       renewal_token: 'renew-1',
       access_token: 'stale-access',
     });
@@ -273,9 +428,24 @@ describe('cross-tab renewal lock', () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
   });
 
+  it('renews unlocked (degraded) when acquiring the lock times out', async () => {
+    const request = vi.fn(async () => {
+      const err: any = new Error('The lock request was aborted');
+      err.name = 'AbortError';
+      throw err;
+    });
+    (navigator as any).locks = { request };
+
+    const { tm, axios } = await load({ token_expiry_time: past(1000), renewal_token: 'renew-1' });
+    axios.post.mockResolvedValueOnce(renewResponse());
+
+    await expect(tm.renewAccessToken()).resolves.toBe('new-access');
+    expect(axios.post).toHaveBeenCalledTimes(1);
+  });
+
   it('falls back to unlocked renewal when the Web Locks API is unavailable', async () => {
     delete (navigator as any).locks;
-    const { tm, axios } = await load({ token_expiry_time: future(1000), renewal_token: 'renew-1' });
+    const { tm, axios } = await load({ token_expiry_time: past(1000), renewal_token: 'renew-1' });
     axios.post.mockResolvedValueOnce(renewResponse());
 
     await expect(tm.renewAccessToken()).resolves.toBe('new-access');

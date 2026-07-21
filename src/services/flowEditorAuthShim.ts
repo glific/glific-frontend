@@ -82,9 +82,17 @@ export const installFlowEditorAuthShim = (): (() => void) => {
       return nativeSend.call(this, body);
     }
 
-    const token = await acquireTokenSafely();
-    if (token) {
-      this.setRequestHeader('authorization', token);
+    // In scope: attach a fresh token, but ALWAYS dispatch. If anything in the header step throws —
+    // e.g. `setRequestHeader` raising InvalidStateError because the XHR was aborted/reopened during
+    // the await — we must still call native `send`, never leave the request undispatched (the editor
+    // would hang forever) or let the rejection escape as an unhandled promise rejection.
+    try {
+      const token = await acquireTokenSafely();
+      if (token) {
+        this.setRequestHeader('authorization', token);
+      }
+    } catch (err) {
+      setLogs(`flowEditorAuthShim: failed to attach auth header, sending as-is - ${err}`, 'error');
     }
     return nativeSend.call(this, body);
   } as typeof XMLHttpRequest.prototype.send;

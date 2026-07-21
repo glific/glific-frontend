@@ -77,6 +77,19 @@ describe('flowEditorAuthShim', () => {
       uninstall();
     });
 
+    it('preserves caller-supplied headers and method while adding auth', async () => {
+      const uninstall = installFlowEditorAuthShim();
+
+      await window.fetch(IN_SCOPE_URL, { method: 'POST', headers: { 'x-custom': 'keep-me' } });
+
+      const [, init] = nativeFetchMock.mock.calls[0];
+      const headers = init.headers as Headers;
+      expect(headers.get('authorization')).toBe('tok-123');
+      expect(headers.get('x-custom')).toBe('keep-me');
+      expect(init.method).toBe('POST');
+      uninstall();
+    });
+
     it('leaves out-of-scope URLs completely untouched (no token fetch, no auth header)', async () => {
       const uninstall = installFlowEditorAuthShim();
 
@@ -124,6 +137,25 @@ describe('flowEditorAuthShim', () => {
 
       expect(mockedGetToken).not.toHaveBeenCalled();
       expect(setHeaderSpy).not.toHaveBeenCalledWith('authorization', expect.anything());
+      expect(nativeSendMock).toHaveBeenCalledTimes(1);
+      uninstall();
+    });
+
+    it('still dispatches the request if setRequestHeader throws (aborted mid-await)', async () => {
+      // Simulate the XHR being aborted/reopened during the token await: setRequestHeader raises
+      // InvalidStateError. The request must STILL be sent (native send called) and no rejection may
+      // escape patchedSend.
+      setHeaderSpy.mockImplementation(() => {
+        const err: any = new Error('InvalidStateError');
+        err.name = 'InvalidStateError';
+        throw err;
+      });
+      const uninstall = installFlowEditorAuthShim();
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', IN_SCOPE_URL);
+      await expect(sendVia(xhr, 'body')).resolves.toBeUndefined();
+
       expect(nativeSendMock).toHaveBeenCalledTimes(1);
       uninstall();
     });

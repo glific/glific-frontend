@@ -1,6 +1,10 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-import { getValidAccessToken, renewAccessToken, ForcedLogoutError, TransientRenewalError } from 'services/TokenManager';
+import { getValidAccessToken, hasSession } from 'services/TokenManager';
+
+// Bound every REST call so a dead-but-open socket can't leave a request (and its caller) pending
+// forever. Renewal has its own tighter timeout inside TokenManager.
+const REQUEST_TIMEOUT_MS = 30 * 1000;
 
 /**
  * apiClient
@@ -29,12 +33,14 @@ declare module 'axios' {
   }
 }
 
-export const apiClient = axios.create();
+export const apiClient = axios.create({ timeout: REQUEST_TIMEOUT_MS });
 
 const registerInterceptors = (client: typeof apiClient) => {
   // Request: inject a guaranteed-valid access token (proactive renewal happens inside TokenManager).
   client.interceptors.request.use(async (config) => {
-    if (config.meta?.skipAuth) {
+    // Skip when opted out, or when there is no session at all — mirrors the Apollo authLink guard so
+    // a call made while logged out can't drive a renewal (and thus a spurious forced logout).
+    if (config.meta?.skipAuth || !hasSession()) {
       return config;
     }
 
@@ -60,17 +66,13 @@ const registerInterceptors = (client: typeof apiClient) => {
       // Guard against loops: this request gets exactly one renew-and-retry.
       config!._retry = true;
 
-      try {
-        const token = await renewAccessToken();
-        config!.headers.Authorization = token;
-        return await client(config!);
-      } catch (renewError) {
-        // ForcedLogoutError (logout already emitted) or TransientRenewalError — surface to caller.
-        if (renewError instanceof ForcedLogoutError || renewError instanceof TransientRenewalError) {
-          return Promise.reject(renewError);
-        }
-        return Promise.reject(renewError);
-      }
+      // getValidAccessToken (not renewAccessToken): if another caller already replaced the token
+      // while this 401 was in flight, adopt it without spending the single-use renewal token again.
+      // Any ForcedLogoutError / TransientRenewalError simply rejects the caller (logout, if needed,
+      // was already emitted by TokenManager).
+      const token = await getValidAccessToken();
+      config!.headers.Authorization = token;
+      return client(config!);
     }
   );
 };
