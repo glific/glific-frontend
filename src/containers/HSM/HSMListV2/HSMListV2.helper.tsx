@@ -151,8 +151,8 @@ const getTitle = (elementName: string, tagLabel: string | undefined, expand?: an
   </div>
 );
 
-const withRowPreview = (primary: any, elementName: string, content: React.ReactNode) => (
-  <MuiTooltip title={messagePreview(primary, elementName)} placement="bottom-start" arrow slotProps={previewSlotProps}>
+const withRowPreview = (previewNode: React.ReactNode, content: React.ReactNode) => (
+  <MuiTooltip title={previewNode} placement="bottom-start" arrow slotProps={previewSlotProps}>
     <div className={styles.PreviewAnchor}>{content}</div>
   </MuiTooltip>
 );
@@ -203,7 +203,8 @@ export const groupByShortcode = (items: any[] = []) => {
 
 export const getCollapsedColumns = (showReason: boolean) => (variant: any) => {
   const elementName = variant.shortcode || variant.label;
-  const preview = (content: React.ReactNode) => withRowPreview(variant, elementName, content);
+  const previewNode = messagePreview(variant, elementName);
+  const preview = (content: React.ReactNode) => withRowPreview(previewNode, content);
 
   return [
     preview(
@@ -285,12 +286,12 @@ export const getColumns =
   }: any) => {
     const elementName = shortcode || label;
     const primary = { body, footer, language, buttons, MessageMedia, type };
+    const previewNode = messagePreview(primary, elementName);
 
     return {
       id,
       label: withRowPreview(
-        primary,
-        elementName,
+        previewNode,
         getTitle(
           elementName,
           tag?.label,
@@ -299,11 +300,11 @@ export const getColumns =
             : undefined
         )
       ),
-      languages: withRowPreview(primary, elementName, getLanguages(variants)),
-      category: withRowPreview(primary, elementName, getCategories(variants)),
+      languages: withRowPreview(previewNode, getLanguages(variants)),
+      category: withRowPreview(previewNode, getCategories(variants)),
       ...(showReason
-        ? { reason: withRowPreview(primary, elementName, getReason(reason)) }
-        : { updatedAt: withRowPreview(primary, elementName, getUpdatedAt(updatedAt)) }),
+        ? { reason: withRowPreview(previewNode, getReason(reason)) }
+        : { updatedAt: withRowPreview(previewNode, getUpdatedAt(updatedAt)) }),
       collapseContent: renderCollapsedRows(variants, showReason),
     };
   };
