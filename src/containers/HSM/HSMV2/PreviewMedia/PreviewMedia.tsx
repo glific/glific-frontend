@@ -5,7 +5,7 @@ import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutl
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import { t } from 'i18next';
 
-import styles from '../HSMListV2/HSMListV2.module.css';
+import styles from '../../HSMListV2/HSMListV2.module.css';
 
 const staticMediaIcon: Record<string, ReactNode> = {
   DOCUMENT: <InsertDriveFileOutlinedIcon className={styles.PreviewMediaIcon} />,

@@ -135,7 +135,7 @@ export const getExampleValue = (example: string) => {
   return variables;
 };
 
-export const regexForShortcode = /^[a-z0-9_]+$/g;
+export const regexForShortcode = /^[a-z0-9_]+$/;
 
 export const buttonTypes: any = {
   QUICK_REPLY: { value: '' },

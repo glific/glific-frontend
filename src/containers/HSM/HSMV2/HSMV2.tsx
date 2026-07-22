@@ -49,6 +49,7 @@ import {
   CallToActionTemplate,
   QuickReplyTemplate,
   WhatsappFormTemplate,
+  regexForShortcode,
 } from '../HSM.helper';
 import {
   queries,
@@ -130,8 +131,6 @@ const FooterField = ({ referenceValue, ...inputProps }: any) => (
 );
 
 type Mode = 'create' | 'view' | 'copy' | 'addLanguage';
-
-const SHORTCODE_PATTERN = /^[a-z0-9_]+$/;
 
 export const HSMV2 = () => {
   const location: any = useLocation();
@@ -572,7 +571,7 @@ export const HSMV2 = () => {
         if (form?.touched?.newShortcode && form?.errors?.newShortcode) {
           return null;
         }
-        return field.value && !SHORTCODE_PATTERN.test(field.value)
+        return field.value && !regexForShortcode.test(field.value)
           ? t('Only lowercase alphanumeric characters and underscores are allowed.')
           : null;
       },

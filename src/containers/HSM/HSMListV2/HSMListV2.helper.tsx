@@ -13,7 +13,7 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
-import { PreviewMedia } from '../PreviewMedia/PreviewMedia';
+import { PreviewMedia } from '../HSMV2/PreviewMedia/PreviewMedia';
 import styles from './HSMListV2.module.css';
 
 dayjs.extend(relativeTime);
