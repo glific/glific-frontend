@@ -112,6 +112,9 @@ const previewSlotProps = {
 };
 
 const statusLabel = (status = '') => {
+  const normalized = status.toUpperCase();
+  if (normalized === 'REJECTED' || normalized === 'FAILED') return t('Rejected/Failed');
+  if (normalized === 'PENDING') return t('Pending | Click Sync HSM to update the status');
   const label = capitalizeFirstLetter(status.toLowerCase());
   return t(label, label);
 };
