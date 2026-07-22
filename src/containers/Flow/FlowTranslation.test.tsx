@@ -81,7 +81,13 @@ describe('Testing Translation flows', () => {
 
     await waitFor(() => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
-      expect(errorMessageSpy).toHaveBeenCalled();
+      expect(errorMessageSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Network error: Failed to translate flow',
+          graphQLErrors: [],
+          networkError: expect.objectContaining({ message: 'Network error: Failed to translate flow' }),
+        })
+      );
     });
   });
 
