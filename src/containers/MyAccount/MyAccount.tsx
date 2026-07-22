@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { Typography, InputAdornment, IconButton } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
-import { Navigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
@@ -18,7 +17,6 @@ import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
 import styles from './MyAccount.module.css';
 import { Heading } from 'components/UI/Heading/Heading';
-import EditIcon from 'assets/images/icons/Edit.svg?react';
 
 export const MyAccount = () => {
   // set the validation / errors / success message
@@ -27,19 +25,11 @@ export const MyAccount = () => {
   // set the trigger to show next step
   const [showOTPButton, setShowOTPButton] = useState(true);
 
-  // set redirection to chat
-  const [redirectToChat, setRedirectToChat] = useState(false);
-
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
 
   // user language selection
   const [userLanguage, setUserLanguage] = useState('');
-
-  // whether the email field is currently editable
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-
-  const [message, setMessage] = useState<string>('');
 
   const client = useApolloClient();
 
@@ -51,27 +41,8 @@ export const MyAccount = () => {
 
   const { t, i18n } = useTranslation();
 
-  // set the mutation to update the logged in user password
-  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
-    onCompleted: (data) => {
-      if (data.updateCurrentUser.errors) {
-        if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
-          setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
-        } else {
-          setToastMessageInfo({
-            severity: 'error',
-            message: t('Too many attempts, please retry after sometime.'),
-          });
-        }
-      } else {
-        setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message });
-      }
-    },
-  });
-
-  // separate mutation for the email save flow, kept independent of the OTP/password onCompleted logic above
-  const [updateEmail] = useMutation(UPDATE_CURRENT_USER);
+  // single mutation hook reused for language change and the security (email/password) save
+  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER);
 
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
@@ -104,43 +75,6 @@ export const MyAccount = () => {
       });
   };
 
-  // cancel handler if cancel is clicked
-  const cancelHandler = () => {
-    setRedirectToChat(true);
-  };
-
-  // save the form if data is valid
-  const saveHandler = (item: any) => {
-    setMessage(t('Password updated successfully!'));
-    updateCurrentUser({
-      variables: { input: item },
-    });
-  };
-
-  // update the user's email
-  const updateEmailHandler = async (values: { email: string }) => {
-    try {
-      const response = await updateEmail({ variables: { input: { email: values.email } } });
-      if (response.data?.updateCurrentUser?.errors) {
-        setToastMessageInfo({
-          severity: 'error',
-          message: response.data.updateCurrentUser.errors[0].message,
-        });
-      } else {
-        setToastMessageInfo({ severity: 'success', message: t('Email updated successfully!') });
-        setIsEditingEmail(false);
-        const userDataCopy = JSON.parse(JSON.stringify(userData));
-        userDataCopy.currentUser.user.email = values.email;
-        client.writeQuery({
-          query: GET_CURRENT_USER,
-          data: userDataCopy,
-        });
-      }
-    } catch (error) {
-      setToastMessageInfo({ severity: 'error', message: t('Failed to update email.') });
-    }
-  };
-
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -152,7 +86,7 @@ export const MyAccount = () => {
   };
 
   // set up toast message display, we use this for showing backend validation errors like
-  // invalid OTP and also display success message on password update
+  // invalid OTP and also display success message on account update
   let displayToastMessage: any;
   if (toastMessageInfo.message.length > 0) {
     displayToastMessage = (
@@ -164,17 +98,67 @@ export const MyAccount = () => {
     );
   }
 
-  // setup form schema base on Yup
-  const FormSchema = Yup.object().shape({
-    otp: Yup.string().required(t('Input required')),
-    password: yupPasswordValidation(t),
-  });
+  const passwordSchema = yupPasswordValidation(t);
 
-  const EmailFormSchema = Yup.object().shape({
+  // email + otp are required once the otp field is reachable; password is optional so saving
+  // just the email never forces a password change
+  const SecurityFormSchema = Yup.object().shape({
     email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
+    password: Yup.string().test('password-optional', '', function passwordOptional(value) {
+      if (!value) return true;
+      try {
+        passwordSchema.validateSync(value);
+        return true;
+      } catch (error: any) {
+        return this.createError({ message: error.message });
+      }
+    }),
+    otp: Yup.string().required(t('Input required')),
   });
 
-  const userformFields = [
+  // save whichever of email/password actually changed, verified by the shared otp
+  const securitySubmitHandler = async (values: any, { resetForm }: any) => {
+    const input: { otp: string; email: string; password?: string } = {
+      otp: values.otp,
+      email: values.email,
+    };
+    if (values.password) {
+      input.password = values.password;
+    }
+
+    try {
+      const response = await updateCurrentUser({ variables: { input } });
+      if (response.data?.updateCurrentUser?.errors) {
+        const errorMessage = response.data.updateCurrentUser.errors[0].message;
+        setToastMessageInfo({
+          severity: 'error',
+          message: errorMessage === 'incorrect_code' ? t('Please enter a valid OTP') : errorMessage,
+        });
+      } else {
+        setToastMessageInfo({ severity: 'success', message: t('Account updated successfully!') });
+
+        // writing cache to restore value
+        const userDataCopy = JSON.parse(JSON.stringify(userData));
+        userDataCopy.currentUser.user.email = values.email;
+        client.writeQuery({
+          query: GET_CURRENT_USER,
+          data: userDataCopy,
+        });
+
+        resetForm();
+        setShowOTPButton(true);
+      }
+    } catch (error) {
+      setToastMessageInfo({ severity: 'error', message: t('Failed to update account.') });
+    }
+  };
+
+  const cancelSecurityForm = (resetForm: () => void) => {
+    resetForm();
+    setShowOTPButton(true);
+  };
+
+  const profileFields = [
     {
       component: Input,
       name: 'name',
@@ -189,155 +173,20 @@ export const MyAccount = () => {
     },
   ];
 
-  const userForm = (
-    <Formik
-      enableReinitialize
-      initialValues={{ name: userName, phone: userPhone, email: userEmail }}
-      validationSchema={EmailFormSchema}
-      onSubmit={updateEmailHandler}
-    >
-      {({ submitForm, isSubmitting, resetForm }) => (
-        <Form>
-          {userformFields.map((field) => (
-            <div className={styles.UserField} key={field.name}>
-              {field.label && (
-                <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                  {field.label}
-                </Typography>
-              )}
-              <Field key={field.name} {...field}></Field>
-            </div>
-          ))}
-          <div className={styles.UserField}>
-            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-              {t('Email')}
-            </Typography>
-            <Field
-              component={Input}
-              name="email"
-              disabled={!isEditingEmail}
-              endAdornment={
-                !isEditingEmail && (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="edit email"
-                      data-testid="editEmailButton"
-                      onClick={() => setIsEditingEmail(true)}
-                      edge="end"
-                      size="small"
-                    >
-                      <EditIcon data-testid="editEmailIcon" />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }
-            />
-            {isEditingEmail && (
-              <div className={styles.Buttons}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={submitForm}
-                  loading={isSubmitting}
-                  data-testid="saveEmailButton"
-                >
-                  {t('Save')}
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    resetForm();
-                    setIsEditingEmail(false);
-                  }}
-                  data-testid="cancelEmailButton"
-                >
-                  {t('Cancel')}
-                </Button>
-              </div>
+  const profileForm = (
+    <Formik initialValues={{ name: userName, phone: userPhone }} onSubmit={() => {}}>
+      <Form>
+        {profileFields.map((field) => (
+          <div className={styles.UserField} key={field.name}>
+            {field.label && (
+              <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                {field.label}
+              </Typography>
             )}
+            <Field key={field.name} {...field}></Field>
           </div>
-        </Form>
-      )}
-    </Formik>
-  );
-
-  // for configuration that needs to be rendered
-  const formFields = [
-    {
-      component: Input,
-      type: 'otp',
-      name: 'otp',
-      placeholder: 'OTP',
-      helperText: t('Please confirm the OTP received at your WhatsApp number.'),
-      endAdornmentCallback: sendOTPHandler,
-    },
-    {
-      component: Input,
-      name: 'password',
-      type: 'password',
-      placeholder: t('Change Password'),
-      endAdornmentCallback: handlePasswordVisibility,
-      togglePassword: showPassword,
-    },
-  ];
-
-  // redirect to chat
-  if (redirectToChat) {
-    return <Navigate to="/chat" />;
-  }
-
-  // build form fields
-  let formFieldLayout: any;
-  if (!showOTPButton) {
-    formFieldLayout = formFields.map((field: any, index) => (
-      <div className={styles.ChangePasswordField} key={index}>
-        <Field {...field} />
-      </div>
-    ));
-  }
-
-  // form component
-  const form = (
-    <Formik
-      enableReinitialize
-      initialValues={{ otp: '', password: '' }}
-      validationSchema={FormSchema}
-      onSubmit={(values, { resetForm }) => {
-        saveHandler(values);
-        resetForm();
-      }}
-    >
-      {({ submitForm }) => (
-        <Form className={styles.Form}>
-          {displayToastMessage}
-          {formFieldLayout}
-          <div className={styles.Buttons}>
-            {showOTPButton ? (
-              <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={sendOTPHandler}
-                  className={styles.Button}
-                  data-testid="generateOTP"
-                >
-                  {t('Generate OTP')}
-                </Button>
-                <div className={styles.HelperText}>{t('To change first please generate OTP')}</div>
-              </>
-            ) : (
-              <>
-                <Button variant="contained" color="primary" onClick={submitForm} className={styles.Button}>
-                  {t('Save')}
-                </Button>
-                <Button variant="contained" onClick={cancelHandler}>
-                  {t('Cancel')}
-                </Button>
-              </>
-            )}
-          </div>
-        </Form>
-      )}
+        ))}
+      </Form>
     </Formik>
   );
 
@@ -346,7 +195,7 @@ export const MyAccount = () => {
     setUserLanguage(userData.currentUser.user.language.locale);
   }
 
-  const changeLanguage = (event: any) => {
+  const changeLanguage = async (event: any) => {
     setUserLanguage(event.target.value);
 
     // change the user interface
@@ -357,21 +206,22 @@ export const MyAccount = () => {
       (lang: any) => lang.locale === event.target.value
     );
 
-    setMessage(t('Language changed successfully!'));
-    // update user's language
-    updateCurrentUser({
-      variables: { input: { languageId: languageID[0].id } },
-    });
+    try {
+      await updateCurrentUser({ variables: { input: { languageId: languageID[0].id } } });
+      setToastMessageInfo({ severity: 'success', message: t('Language changed successfully!') });
 
-    // writing cache to restore value
-    const userDataCopy = JSON.parse(JSON.stringify(userData));
-    const language = languageID[0];
-    userDataCopy.currentUser.user.language = language;
+      // writing cache to restore value
+      const userDataCopy = JSON.parse(JSON.stringify(userData));
+      const language = languageID[0];
+      userDataCopy.currentUser.user.language = language;
 
-    client.writeQuery({
-      query: GET_CURRENT_USER,
-      data: userDataCopy,
-    });
+      client.writeQuery({
+        query: GET_CURRENT_USER,
+        data: userDataCopy,
+      });
+    } catch (error) {
+      setToastMessageInfo({ severity: 'error', message: t('Failed to update language.') });
+    }
   };
 
   const languageField = {
@@ -385,21 +235,101 @@ export const MyAccount = () => {
     </div>
   );
 
+  const securityForm = (
+    <Formik
+      enableReinitialize
+      initialValues={{ email: userEmail, password: '', otp: '' }}
+      validationSchema={SecurityFormSchema}
+      onSubmit={securitySubmitHandler}
+    >
+      {({ submitForm, isSubmitting, resetForm }) => (
+        <Form className={styles.Form}>
+          {displayToastMessage}
+          <Typography variant="h6" className={`${styles.FormTitle} ${styles.FirstFormTitle}`}>
+            {t('Update Email')}
+          </Typography>
+          <div className={styles.ChangePasswordField}>
+            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+              {t('Email')}
+            </Typography>
+            <Field component={Input} name="email" />
+          </div>
+          <Typography variant="h6" className={styles.FormTitle}>
+            {t('Change Password')}
+          </Typography>
+          <div className={styles.ChangePasswordField}>
+            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+              {t('Password')}
+            </Typography>
+            <Field
+              component={Input}
+              name="password"
+              type="password"
+              placeholder={t('Change Password')}
+              endAdornmentCallback={handlePasswordVisibility}
+              togglePassword={showPassword}
+            />
+          </div>
+          {showOTPButton ? (
+            <div className={styles.Buttons}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={sendOTPHandler}
+                className={styles.Button}
+                data-testid="generateOTP"
+              >
+                {t('Generate OTP')}
+              </Button>
+              <div className={styles.HelperText}>{t('To change first please generate OTP')}</div>
+            </div>
+          ) : (
+            <>
+              <div className={styles.ChangePasswordField}>
+                <Field
+                  component={Input}
+                  type="otp"
+                  name="otp"
+                  placeholder="OTP"
+                  helperText={t('Please confirm the OTP received at your WhatsApp number.')}
+                  endAdornmentCallback={sendOTPHandler}
+                />
+              </div>
+              <div className={styles.Buttons}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={submitForm}
+                  loading={isSubmitting}
+                  data-testid="saveButton"
+                >
+                  {t('Save')}
+                </Button>
+                <Button variant="contained" onClick={() => cancelSecurityForm(resetForm)} data-testid="cancelButton">
+                  {t('Cancel')}
+                </Button>
+              </div>
+            </>
+          )}
+        </Form>
+      )}
+    </Formik>
+  );
+
   return (
-    <div>
+    <>
       <Heading formTitle={t('My Account')} />
-      <div className={styles.MyAccount} data-testid="MyAccount">
-        {userForm}
-        <Typography variant="h6" className={styles.Title}>
-          {t('Change Interface Language')}
-        </Typography>
-        {languageSwitcher}
-        <Typography variant="h6" className={styles.Title}>
-          {t('Change Password')}
-        </Typography>
-        {form}
+      <div className={styles.MyAccountBody}>
+        <div className={styles.MyAccount} data-testid="MyAccount">
+          {profileForm}
+          <Typography variant="h6" className={styles.Title}>
+            {t('Change Interface Language')}
+          </Typography>
+          {languageSwitcher}
+          {securityForm}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -22,8 +22,8 @@ export const Button = ({ type = 'button', loading = false, disabled = false, ...
       disabled={loading || disabled}
       type={type}
     >
-      {children}
-      {loading && <CircularProgress data-testid="loadingBtn" size={28} className={styles.buttonProgress} />}
+      <span style={{ visibility: loading ? 'hidden' : 'visible' }}>{children}</span>
+      {loading && <CircularProgress data-testid="loadingBtn" size={20} className={styles.buttonProgress} />}
     </ButtonElement>
   );
 };
