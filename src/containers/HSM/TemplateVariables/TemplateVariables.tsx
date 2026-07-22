@@ -3,6 +3,7 @@ import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import styles from './TemplateVariable.module.css';
 import { FormHelperText, OutlinedInput } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $getRoot, $getSelection, $isRangeSelection } from 'lexical';
 import { setDefaultValue } from 'common/RichEditor';
 import DeleteIcon from 'assets/images/icons/CrossIcon.svg?react';
 
@@ -13,6 +14,9 @@ export interface TemplateOptionsProps {
   setVariables: any;
   getVariables: any;
   isEditing: boolean;
+  // renders this as a direct continuation of the message box above it (see
+  // EmojiInput/Editor's squareBottom prop) instead of a separately floating pill.
+  attached?: boolean;
 }
 
 export const TemplateVariables = ({
@@ -21,12 +25,23 @@ export const TemplateVariables = ({
   variables,
   setVariables,
   isEditing,
+  attached,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
 
   const handleAddVariable = () => {
-    setVariables([...variables, { text: '', id: variables.length + 1 }]);
-    setDefaultValue(editor, `${message?.trim(' ')} {{${variables.length + 1}}}`);
+    const nextId = variables.length ? Math.max(...variables.map((variable) => variable.id)) + 1 : 1;
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        selection.insertText(` {{${nextId}}}`);
+      } else {
+        const root = $getRoot();
+        root.selectEnd();
+        $getSelection()?.insertText(` {{${nextId}}}`);
+      }
+    });
+    setVariables([...variables, { text: '', id: nextId }]);
     editor.focus();
   };
 
@@ -41,11 +56,12 @@ export const TemplateVariables = ({
   };
 
   return (
-    <div className={styles.AddVariablesContainer}>
+    <div className={attached ? styles.AddVariablesContainerAttached : styles.AddVariablesContainer}>
       <Button
         disabled={isEditing}
         className={styles.AddVariable}
         onClick={handleAddVariable}
+        onMouseDown={(event: any) => event.preventDefault()}
         variant="outlined"
         color="primary"
       >

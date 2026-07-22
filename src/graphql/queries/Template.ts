@@ -35,6 +35,9 @@ export const FILTER_TEMPLATES = gql`
       isReserved
       isActive
       numberParameters
+      hasButtons
+      buttons
+      buttonType
       tag {
         id
         label

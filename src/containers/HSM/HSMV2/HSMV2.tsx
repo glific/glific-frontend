@@ -49,6 +49,7 @@ import {
   CallToActionTemplate,
   QuickReplyTemplate,
   WhatsappFormTemplate,
+  regexForShortcode,
 } from '../HSM.helper';
 import {
   queries,
@@ -196,7 +197,11 @@ export const HSMV2 = () => {
     () => familyVariants.map((variant: any) => variant.language?.id).filter(Boolean),
     [familyVariants]
   );
-  const entityId = isReadOnly ? params.id || addPagePreviewId || languageAnchorId : undefined;
+
+  const entityId = isReadOnly ? addPagePreviewId || languageAnchorId : undefined;
+  const isDetailVisible = mode !== 'view' || hasOpenedDetail;
+
+  const isCreateFieldsFilled = Boolean(language?.id && newShortcode.trim() && category?.id && body.trim());
 
   const prefillId = mode === 'copy' ? copySourceId : undefined;
   const states = {
@@ -428,6 +433,7 @@ export const HSMV2 = () => {
     setAddPagePreviewId(null);
     setLanguageId(null);
     setAnchorReference({ body, footer, buttons: templateButtons, buttonType: templateType?.id });
+
     setBody('');
     setEditorState('');
     setFooter('');
@@ -523,6 +529,7 @@ export const HSMV2 = () => {
     }
     setMode('view');
     setAddPagePreviewId(created.id);
+    setHasOpenedDetail(true);
   };
 
   const computeSampleText = () => {
@@ -560,7 +567,14 @@ export const HSMV2 = () => {
       placeholder: `${t('Element name')}`,
       disabled: isReadOnly || Boolean(languageAnchorId),
       onChange: (value: any) => setNewShortcode(value),
-      helperText: t('Only lowercase alphanumeric characters and underscores are allowed.'),
+      customFieldError: (field: { value: string }, form?: { touched?: any; errors?: any }) => {
+        if (form?.touched?.newShortcode && form?.errors?.newShortcode) {
+          return null;
+        }
+        return field.value && !regexForShortcode.test(field.value)
+          ? t('Only lowercase alphanumeric characters and underscores are allowed.')
+          : null;
+      },
     },
     {
       component: TileSelector,
@@ -569,7 +583,7 @@ export const HSMV2 = () => {
       variant: 'radio',
       onChange: setCategory,
       disabled: isReadOnly,
-      label: t('Category'),
+      label: `${t('Category')}*`,
     },
     {
       component: SectionTitle,
@@ -597,6 +611,7 @@ export const HSMV2 = () => {
       disabled: isReadOnly,
       handleChange: (value: any) => setBody(value),
       defaultValue: mode !== 'create' && editorState,
+      squareBottom: true,
     },
     {
       component: TemplateVariables,
@@ -605,6 +620,7 @@ export const HSMV2 = () => {
       variables,
       setVariables,
       isEditing: isReadOnly,
+      attached: true,
     },
     {
       component: FooterField,
@@ -682,7 +698,19 @@ export const HSMV2 = () => {
 
   const FormSchema = buildValidationSchema({ t, isAddButtonChecked, templateType });
 
-  // ---- Effects ----
+  useEffect(() => {
+    if (location.state?.autoExpandId && location.state.autoExpandId === params.id) {
+      setAddPagePreviewId(location.state.autoExpandId);
+      setHasOpenedDetail(true);
+    }
+  }, [location.state?.autoExpandId, params.id]);
+
+  useEffect(() => {
+    if (location.state?.openAddLanguage && mode === 'view' && newShortcode) {
+      openAddLanguage();
+    }
+  }, [location.state?.openAddLanguage, mode, newShortcode]);
+
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
       const freshVariants = familyFetchData.sessionTemplates;
@@ -759,7 +787,7 @@ export const HSMV2 = () => {
           variantsByTab={variantsByTab}
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          showAddLanguage={!params.id}
+          showAddLanguage
           showDelete={!params.id}
           onView={viewVariant}
           onAddLanguage={openAddLanguage}
@@ -777,47 +805,49 @@ export const HSMV2 = () => {
           {t('This action cannot be undone.')}
         </DialogBox>
       )}
-      <FormLayout
-        {...queries}
-        states={states}
-        isView={isReadOnly}
-        setStates={setStates}
-        setPayload={setPayload}
-        validationSchema={isReadOnly ? Yup.object() : FormSchema}
-        listItemName="HSM Template"
-        dialogMessage={dialogMessage}
-        formFields={fields}
-        redirectionLink={backButton}
-        listItem="sessionTemplate"
-        icon={templateIcon}
-        helpData={templateInfo}
-        noHeading={Boolean(languageAnchorId)}
-        getLanguageId={getLanguageId}
-        languageSupport={false}
-        errorButtonState={{ text: isReadOnly ? t('Go Back') : t('Cancel'), show: true }}
-        isAttachment
-        getQueryFetchPolicy="cache-and-network"
-        button={!isReadOnly ? t('Submit for Approval') : t('Save')}
-        buttonState={{
-          text: t('Validating URL'),
-          status: validatingURL,
-          show: !isReadOnly,
-          styles: styles.Buttons,
-        }}
-        saveOnPageChange={false}
-        type={mode === 'copy' ? 'copy' : undefined}
-        backLinkButton={`/${backButton}`}
-        cancelLink={backButton}
-        getMediaId={getMediaId}
-        entityId={entityId}
-        prefillId={prefillId}
-        redirect={mode !== 'addLanguage'}
-        afterSave={mode === 'addLanguage' ? handleVariantCreated : undefined}
-        partialPage
-        customStyles={styles.CustomFormShell}
-      />
+      <div className={isDetailVisible ? undefined : styles.DetailHidden}>
+        <FormLayout
+          {...queries}
+          states={states}
+          isView={isReadOnly}
+          setStates={setStates}
+          setPayload={setPayload}
+          validationSchema={isReadOnly ? Yup.object() : FormSchema}
+          listItemName="HSM Template"
+          dialogMessage={dialogMessage}
+          formFields={fields}
+          redirectionLink={backButton}
+          listItem="sessionTemplate"
+          icon={templateIcon}
+          helpData={templateInfo}
+          noHeading={Boolean(languageAnchorId)}
+          getLanguageId={getLanguageId}
+          languageSupport={false}
+          errorButtonState={{ text: isReadOnly ? t('Go Back') : t('Cancel'), show: true }}
+          isAttachment
+          getQueryFetchPolicy="cache-and-network"
+          button={!isReadOnly ? t('Submit for Approval') : t('Save')}
+          buttonState={{
+            text: validatingURL ? t('Validating URL') : t('Submit for Approval'),
+            status: validatingURL || (mode === 'create' && !isCreateFieldsFilled),
+            show: !isReadOnly,
+            styles: styles.Buttons,
+          }}
+          saveOnPageChange={false}
+          type={mode === 'copy' ? 'copy' : undefined}
+          backLinkButton={`/${backButton}`}
+          cancelLink={backButton}
+          getMediaId={getMediaId}
+          entityId={entityId}
+          prefillId={prefillId}
+          redirect={mode !== 'addLanguage'}
+          afterSave={mode === 'addLanguage' ? handleVariantCreated : undefined}
+          partialPage
+          customStyles={styles.CustomFormShell}
+        />
 
-      <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
+        <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
+      </div>
     </div>
   );
 };
