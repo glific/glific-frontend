@@ -119,11 +119,14 @@ const HSMListV2 = () => {
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
-  const handleView = (id: any) => navigate(`/template-v2/${id}/edit`);
+  const handleView = (id: any, item: any) =>
+    navigate('/template-v2/add', {
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
+    });
 
   const handleAddLanguage = (id: any, item: any) =>
     navigate('/template-v2/add', {
-      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode, openAddLanguage: true },
     });
 
   const setCopyDialog = (id: any) => navigate('/template-v2/add', { state: { mode: 'copy', sourceId: id } });
@@ -146,7 +149,8 @@ const HSMListV2 = () => {
   };
 
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
+    const value = event.target.value.toUpperCase();
+    setFilters(value === 'ALL' ? { ...statusFilter } : { ...statusFilter, [value]: true });
   };
 
   useEffect(() => {
@@ -162,22 +166,16 @@ const HSMListV2 = () => {
 
   const additionalAction = () => [
     {
-      label: t('View'),
-      icon: <ViewIcon data-testid="view-icon" />,
-      parameter: 'id',
-      dialog: handleView,
-    },
-    {
       label: t('Add new language'),
       icon: <AddLanguageIcon data-testid="add-language-icon" />,
       parameter: 'id',
       dialog: handleAddLanguage,
     },
     {
-      label: t('Copy UUID'),
-      icon: <CopyAllOutlined data-testid="copy-button" />,
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
-      dialog: copyUuid,
+      dialog: handleView,
     },
     {
       label: t('Copy'),
@@ -185,18 +183,28 @@ const HSMListV2 = () => {
       parameter: 'id',
       dialog: setCopyDialog,
     },
+    {
+      label: t('Copy UUID'),
+      icon: <CopyAllOutlined data-testid="copy-button" />,
+      parameter: 'id',
+      dialog: copyUuid,
+    },
   ];
 
   const categories: string[] = categoriesData?.whatsappHsmCategories ?? [];
 
   let filterValue: any = '';
-  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
+  const statusList = ['All', 'Approved', 'Pending', 'Rejected', 'Failed'];
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
   if (filterStatusName.length === 1) {
     [filterValue] = filterStatusName;
   }
+  const selectedStatusOption = filterValue
+    ? (statusList.find((status) => status.toUpperCase() === filterValue) ?? 'All')
+    : 'All';
 
-  const appliedFilters: any = { isHsm: true, status: filterValue };
+  const appliedFilters: any = { isHsm: true };
+  if (filterValue) appliedFilters.status = filterValue;
   if (selectedCategory) appliedFilters.category = selectedCategory;
 
   const showReason = showReasonColumn(filterValue);
@@ -232,14 +240,14 @@ const HSMListV2 = () => {
         <Select
           aria-label={t('Filter by status')}
           name="template-type"
-          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          value={selectedStatusOption}
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
         >
           {statusList.map((status: any) => (
             <MenuItem data-testid="template-item" key={status} value={status}>
-              {status}
+              {t(status)}
             </MenuItem>
           ))}
         </Select>
@@ -323,6 +331,7 @@ const HSMListV2 = () => {
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
         groupRows={groupByShortcode}
+        sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
         {...queries}
       />
     </>
