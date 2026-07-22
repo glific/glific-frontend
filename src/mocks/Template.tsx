@@ -1,8 +1,10 @@
 import {
   BULK_APPLY_TEMPLATES,
   CREATE_TEMPLATE,
+  DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
   SYNC_HSM_TEMPLATES,
+  TRANSLATE_SESSION_TEMPLATE,
   UPDATE_TEMPLATE,
 } from 'graphql/mutations/Template';
 import {
@@ -96,6 +98,58 @@ export const getCategoriesMock = {
     },
   },
 };
+
+export const deleteTemplateMock = (id: string) => ({
+  request: { query: DELETE_TEMPLATE, variables: { id } },
+  result: { data: { deleteSessionTemplate: { errors: null } } },
+});
+
+export const deleteTemplateErrorMock = (id: string, message: string) => ({
+  request: { query: DELETE_TEMPLATE, variables: { id } },
+  error: new Error(message),
+});
+
+export const translateSessionTemplateMock = (
+  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  result: { body: string; footer?: string | null; buttons?: string[] }
+) => ({
+  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  result: {
+    data: {
+      translateSessionTemplate: {
+        body: result.body,
+        footer: result.footer ?? null,
+        buttons: result.buttons ?? null,
+        errors: null,
+      },
+    },
+  },
+});
+
+export const translateSessionTemplateErrorMock = (
+  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  message: string
+) => ({
+  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  error: new Error(message),
+});
+
+export const translateSessionTemplateResultErrorMock = (
+  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  error: { key: string; message: string }
+) => ({
+  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  result: {
+    data: {
+      translateSessionTemplate: {
+        body: null,
+        footer: null,
+        buttons: null,
+        errors: [error],
+      },
+    },
+  },
+});
 
 export const templateEditMock = (templateId: string, buttons: any) => ({
   request: {
@@ -939,7 +993,7 @@ export const hsmV2TemplatesData = [
 
 // HSMListV2 drives the shared `List` component, so mocks must mirror the exact
 // variables List sends: filter + opts {limit:50, offset:0, order:'ASC', orderWith:'label'}.
-const sessionTemplatesV2Mock = (filter: any, data: any) => ({
+export const sessionTemplatesV2Mock = (filter: any, data: any) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
@@ -948,6 +1002,17 @@ const sessionTemplatesV2Mock = (filter: any, data: any) => ({
     },
   },
   result: { data: { sessionTemplates: data } },
+});
+
+export const sessionTemplatesV2ErrorMock = (filter: any, message: string) => ({
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter,
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
+  },
+  error: new Error(message),
 });
 
 // HSMListV2 defaults the status filter to APPROVED, so every list query carries
