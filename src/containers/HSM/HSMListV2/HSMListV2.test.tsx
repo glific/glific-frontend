@@ -124,14 +124,14 @@ test('renders the status, category and tag filters', async () => {
   expect(screen.getByTestId('AutocompleteInput')).toBeInTheDocument();
 });
 
-test('defaults the status filter to Approved', async () => {
+test('defaults the status filter to All', async () => {
   renderComponent();
 
   await waitFor(() => {
     expect(screen.getByTestId('dropdown-template')).toBeInTheDocument();
   });
 
-  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
+  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('All');
 });
 
 test('shows the element name (shortcode) as the title, with its tag below it', async () => {
@@ -503,16 +503,16 @@ test('filters templates by selected status', async () => {
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
-test('selecting "All" clears the status filter and refetches with an empty status', async () => {
-  renderComponent([...baseMocks, filterTemplatesV2AllStatusesMock, templateCountV2AllStatusesMock]);
-
-  await waitFor(() => {
-    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
-  });
-  expect(screen.queryByText('pending_broadcast')).not.toBeInTheDocument();
-
-  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
-  fireEvent.click(await screen.findByRole('option', { name: 'All' }));
+test('defaults to the "All" status view and loads templates of every status', async () => {
+  renderComponent([
+    filterTemplatesV2AllStatusesMock,
+    filterTemplatesV2AllStatusesMock,
+    filterTemplatesV2AllStatusesMock,
+    templateCountV2AllStatusesMock,
+    templateCountV2AllStatusesMock,
+    templateCountV2AllStatusesMock,
+    ...baseMocks,
+  ]);
 
   await waitFor(() => {
     expect(screen.getByText('pending_broadcast')).toBeInTheDocument();

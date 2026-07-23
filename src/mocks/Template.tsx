@@ -1052,18 +1052,14 @@ export const sessionTemplatesV2ErrorMock = (
   error: new Error(message),
 });
 
-export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData);
-export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock(
-  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
-  [hsmV2TemplatesData[0]]
-);
-export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED', tagIds: [1] }, [
+export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true }, hsmV2TemplatesData);
+export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock({ isHsm: true, category: 'UTILITY' }, [
   hsmV2TemplatesData[0],
 ]);
-export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
-  { isHsm: true, status: 'APPROVED', label: 'feedback' },
-  [hsmV2TemplatesData[1]]
-);
+export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, tagIds: [1] }, [hsmV2TemplatesData[0]]);
+export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock({ isHsm: true, label: 'feedback' }, [
+  hsmV2TemplatesData[1],
+]);
 export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
   hsmV2TemplatesData[1],
 ]);
@@ -1184,10 +1180,9 @@ export const noShortcodeTemplateData = {
   // valid JSON, but not an array — parsePreviewButtons should treat it as no buttons.
   buttons: '{"type":"URL","text":"oops"}',
 };
-export const filterTemplatesV2NoShortcodeMock = sessionTemplatesV2Mock(
-  { isHsm: true, status: 'APPROVED', label: 'draft' },
-  [noShortcodeTemplateData]
-);
+export const filterTemplatesV2NoShortcodeMock = sessionTemplatesV2Mock({ isHsm: true, label: 'draft' }, [
+  noShortcodeTemplateData,
+]);
 
 export const allStatusesTemplatesData = [
   {
@@ -1218,19 +1213,13 @@ export const allStatusesTemplatesData = [
 ];
 export const filterTemplatesV2AllStatusesMock = sessionTemplatesV2Mock({ isHsm: true }, allStatusesTemplatesData);
 
-export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
+export const templateCountV2Mock = templateCountQuery({ isHsm: true }, hsmV2TemplatesData.length);
 export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
 export const templateCountV2AllStatusesMock = templateCountQuery({ isHsm: true }, allStatusesTemplatesData.length);
-export const templateCountV2CategoryMock = templateCountQuery(
-  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
-  1
-);
-export const templateCountV2TagMock = templateCountQuery({ isHsm: true, status: 'APPROVED', tagIds: [1] }, 1);
-export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, status: 'APPROVED', label: 'feedback' }, 1);
-export const templateCountV2NoShortcodeMock = templateCountQuery(
-  { isHsm: true, status: 'APPROVED', label: 'draft' },
-  1
-);
+export const templateCountV2CategoryMock = templateCountQuery({ isHsm: true, category: 'UTILITY' }, 1);
+export const templateCountV2TagMock = templateCountQuery({ isHsm: true, tagIds: [1] }, 1);
+export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, label: 'feedback' }, 1);
+export const templateCountV2NoShortcodeMock = templateCountQuery({ isHsm: true, label: 'draft' }, 1);
 
 export const getCategoriesV2Mock = {
   request: { query: GET_HSM_CATEGORIES, variables: {} },

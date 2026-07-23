@@ -1024,7 +1024,7 @@ describe('HSMV2 language versions', () => {
     expect(within(listbox).queryByText('English')).not.toBeInTheDocument();
   });
 
-  test('shows the English source reference and keeps Auto-translate disabled until a language is picked', async () => {
+  test('shows the English source reference and prompts to pick a language when Auto-translate is clicked without one', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
@@ -1047,12 +1047,13 @@ describe('HSMV2 language versions', () => {
     await waitFor(() => {
       expect(screen.getByText('English — source reference')).toBeInTheDocument();
     });
-    // the anchor's own body/footer are visible as reference only — the draft
-    // fields below start blank instead of duplicating this same text (see
-    // openAddLanguage), so this must be scoped to the reference card.
+
     const referenceCard = screen.getByTestId('source-reference-card');
     expect(within(referenceCard).getByText(/You can now view your Account Balance/)).toBeInTheDocument();
-    expect(screen.getByTestId('auto-translate-button')).toBeDisabled();
+    const autoTranslateButton = screen.getByTestId('auto-translate-button');
+    expect(autoTranslateButton).not.toBeDisabled();
+    fireEvent.click(autoTranslateButton);
+    expect(setNotification).toHaveBeenCalledWith('Please select a language before translating.', 'warning');
     // the anchor's body text appears only inside the reference card — the
     // draft body editor below it starts blank, not duplicating this text.
     expect(screen.getAllByText(/You can now view your Account Balance/)).toHaveLength(1);

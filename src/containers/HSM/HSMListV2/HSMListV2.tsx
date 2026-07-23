@@ -41,7 +41,7 @@ const HSMListV2 = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+  const [filters, setFilters] = useState<any>({ ...statusFilter });
   const [selectedTag, setSelectedTag] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [syncLoading, setSyncLoading] = useState(false);

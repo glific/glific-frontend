@@ -455,7 +455,11 @@ export const HSMV2 = () => {
   };
 
   const handleAutoTranslate = async () => {
-    if (!language?.id || !anchorReference) {
+    if (!language?.id) {
+      setNotification(t('Please select a language before translating.'), 'warning');
+      return;
+    }
+    if (!anchorReference) {
       return;
     }
     // only send button text for translation if the draft's button type still matches the anchor's.
@@ -554,6 +558,7 @@ export const HSMV2 = () => {
       component: AutoComplete,
       name: 'language',
       label: `${t('Language')}*`,
+      placeholder: t('Choose a language...'),
       options: languageOptions,
       optionLabel: 'label',
       multiple: false,
@@ -591,7 +596,7 @@ export const HSMV2 = () => {
       title: t('Message Content'),
       action:
         mode === 'addLanguage' && anchorReference ? (
-          <AutoTranslateButton disabled={!language?.id} loading={translating} onTranslate={handleAutoTranslate} />
+          <AutoTranslateButton disabled={false} loading={translating} onTranslate={handleAutoTranslate} />
         ) : undefined,
     },
     ...(mode === 'addLanguage' && anchorReference
