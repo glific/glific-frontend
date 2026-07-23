@@ -1,7 +1,6 @@
-import axios from 'axios';
 import { LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
 import { FLOW_EDITOR_API } from 'config';
-import { getAuthSession } from 'services/AuthService';
+import { apiClient } from 'services/apiClient';
 import * as Yup from 'yup';
 
 Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
@@ -210,18 +209,13 @@ export const getVariableOptions = async (setContactVariables: any) => {
 
   const contactFieldsprefix = '@contact.fields.';
   const contactVariablesprefix = '@contact.';
-  const headers = { authorization: getAuthSession('access_token') };
   // get fields keys
-  const fieldsData = await axios.get(`${glificBase}fields`, {
-    headers,
-  });
+  const fieldsData = await apiClient.get(`${glificBase}fields`);
 
   const fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
 
   // get contact keys
-  const contactData = await axios.get(`${glificBase}completion`, {
-    headers,
-  });
+  const contactData = await apiClient.get(`${glificBase}completion`);
 
   const properties = contactData.data.context.types.find(({ name }: { name: string }) => name === 'contact');
 

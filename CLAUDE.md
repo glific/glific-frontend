@@ -119,9 +119,9 @@ The `UnauthenticatedRoute` handles login, OTP, registration, and password reset 
 The Apollo client uses a split link:
 
 - **Subscriptions** → `GraphQLWsLink` (WebSocket)
-- **Queries/Mutations** → `RetryLink` → `TokenRefreshLink` → `errorLink` → `authLink` → HTTP
+- **Queries/Mutations** → `RetryLink` → `errorLink` → `authLink` → HTTP
 
-Authentication tokens are stored in `localStorage` under key `glific_session`. Token refresh is handled automatically; on failure, users are redirected to `/logout/session`.
+Authentication tokens are stored in `localStorage` under key `glific_session`. Token handling is centralized in `services/TokenManager` (see **Authentication** below): `authLink` (an async `setContext`) asks `TokenManager.getValidAccessToken()` for a fresh token before every request (proactive renewal), and `errorLink` renews-and-retries once on a 401. On a terminal renewal failure, `TokenManager` emits a forced-logout that `App.tsx` turns into a redirect to `/logout/session`. The WS link reads a fresh token per (re)connect via an async `connectionParams` function.
 
 Local Apollo cache is used for in-app notifications — do **not** use component state for toast messages.
 
@@ -164,7 +164,14 @@ These functions write to `@client` Apollo fields (`NOTIFICATION`, `ERROR_MESSAGE
 - `getAuthSession(key)` / `setAuthSession(data)` — read/write `localStorage.glific_session`
 - `getUserSession(key)` — read `localStorage.glific_user`
 - `getOrganizationServices(service)` — feature flags stored in `localStorage.organizationServices`
-- `setAuthHeaders()` — monkey-patches `fetch` and `XMLHttpRequest` to inject auth token on all requests (called once at app start)
+
+Token **renewal** does NOT live in this file — it lives in `services/TokenManager`, the single renewal authority (`getValidAccessToken` / `renewAccessToken` / `isAccessTokenValid` / `onForcedLogout`). All authenticated API calls inject headers and renew through it:
+
+- **REST** → `services/apiClient` (a shared axios instance with request/response [interceptors](https://axios.rest/pages/advanced/interceptors)): injects the token, renews proactively, and renews-and-retries once on a 401. Use `apiClient` for authenticated REST calls (opt out with `meta: { skipAuth: true }`); use bare `axios` only for pre-auth flows (login/OTP/register).
+- **GraphQL** → the Apollo `authLink`/`errorLink` (see Apollo Client above).
+- **Flow editor** → `services/flowEditorAuthShim` — a narrowly-scoped `fetch`/`XHR` patch, installed **only** while the editor is mounted, that injects auth **only** into the third-party editor's requests to `FLOW_EDITOR_API` (the library has no auth hook). This is the only remaining `fetch`/`XHR` patch; the old global `setAuthHeaders()` monkey-patch has been removed.
+- **Renewal error policy**: `/renew` returning **400/401 → forced logout**; **429/5xx/network → retry with backoff, no logout**. Forced logout flows through `TokenManager.onForcedLogout` → `App.tsx` navigates to `/logout/session`.
+- **Multi-tab safety**: the backend renewal token is **single-use** — `/renew` deletes the presented token before issuing a new pair. Renewal is therefore serialised across tabs with the **Web Locks API** (`glific-token-renewal`); after acquiring the lock a tab re-reads the session and, if another tab already renewed, adopts that token instead of spending the rotated one and getting a spurious 401 → logout. Where the Web Locks API is unavailable it degrades to the per-tab single-flight guard.
 
 ### PostHog Usage
 
