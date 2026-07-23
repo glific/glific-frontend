@@ -62,18 +62,22 @@ const HSMListV2 = () => {
     variables: { filter: { isHsm: true, status: 'PENDING' } },
     fetchPolicy: 'network-only',
   });
-  const pendingCount = pendingCountData?.countSessionTemplates ?? 0;
+
+  const pendingCount = pendingCountData?.countSessionTemplates;
+  const shouldPoll = pendingCount === undefined || pendingCount > 0;
 
   useEffect(() => {
-    if (pendingCount <= 0) {
+    if (!shouldPoll) {
       return undefined;
     }
     const intervalId = setInterval(() => {
-      refetchPendingCount();
+      refetchPendingCount().catch(() => {
+        // ignore background refetch failures; the next tick will retry.
+      });
       setRefreshList((prev) => !prev);
     }, PENDING_POLL_INTERVAL);
     return () => clearInterval(intervalId);
-  }, [pendingCount, refetchPendingCount]);
+  }, [shouldPoll, refetchPendingCount]);
 
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, { fetchPolicy: 'network-only' });
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES);

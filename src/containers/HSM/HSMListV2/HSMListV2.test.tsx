@@ -735,6 +735,40 @@ test('re-fetches every minute while templates are pending and stops once none re
   }
 });
 
+test('keeps polling when the pending count is unavailable and stops once it resolves to zero', async () => {
+  let pendingCalls = 0;
+  const pendingCountMock = {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: { filter: { isHsm: true, status: 'PENDING' } },
+    },
+    result: () => {
+      pendingCalls += 1;
+      if (pendingCalls === 1) {
+        return { errors: [{ message: 'temporary failure' }] };
+      }
+      return { data: { countSessionTemplates: 0 } };
+    },
+    maxUsageCount: Number.MAX_SAFE_INTEGER,
+  };
+
+  vi.useFakeTimers();
+  try {
+    renderComponent([pendingCountMock, ...baseMocks]);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(pendingCalls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(60000);
+    expect(pendingCalls).toBe(2);
+
+    await vi.advanceTimersByTimeAsync(180000);
+    expect(pendingCalls).toBe(2);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
 test('languageCode with no locale returns an empty string instead of throwing', () => {
   expect(languageCode()).toBe('');
 });
