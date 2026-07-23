@@ -30,6 +30,7 @@ import {
   filterTemplatesV2NoShortcodeMock,
   templateCountV2NoShortcodeMock,
 } from 'mocks/Template';
+import { GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import HSMListV2 from './HSMListV2';
 import { languageCode } from './HSMListV2.helper';
 
@@ -698,6 +699,40 @@ test('falls back to the label as the title when a template has no shortcode yet'
     expect(screen.getByText('Draft body.')).toBeInTheDocument();
   });
   expect(screen.queryByText('oops')).not.toBeInTheDocument();
+});
+
+test('re-fetches every minute while templates are pending and stops once none remain', async () => {
+  let pendingCalls = 0;
+  const pendingCountMock = (count: number, reusable = false) => ({
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: { filter: { isHsm: true, status: 'PENDING' } },
+    },
+    result: () => {
+      pendingCalls += 1;
+      return { data: { countSessionTemplates: count } };
+    },
+    ...(reusable ? { maxUsageCount: Number.MAX_SAFE_INTEGER } : {}),
+  });
+
+  vi.useFakeTimers();
+  try {
+    renderComponent([pendingCountMock(1), pendingCountMock(0, true), ...baseMocks]);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(pendingCalls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(59000);
+    expect(pendingCalls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(pendingCalls).toBe(2);
+
+    await vi.advanceTimersByTimeAsync(180000);
+    expect(pendingCalls).toBe(2);
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 test('languageCode with no locale returns an empty string instead of throwing', () => {

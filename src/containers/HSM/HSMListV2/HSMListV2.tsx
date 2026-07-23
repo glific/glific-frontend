@@ -21,7 +21,7 @@ import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { GET_HSM_CATEGORIES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
 import styles from './HSMListV2.module.css';
@@ -37,6 +37,10 @@ import {
   templateIcon,
 } from './HSMListV2.helper';
 
+// While a template is awaiting approval its status stays PENDING; re-fetch the
+// templates at this cadence so approvals/rejections appear without a manual refresh.
+const PENDING_POLL_INTERVAL = 60000;
+
 const HSMListV2 = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,10 +52,28 @@ const HSMListV2 = () => {
   const [importing, setImporting] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
   const [collapseRow, setCollapseRow] = useState('');
+  const [refreshList, setRefreshList] = useState(false);
   const importCancelledRef = useRef(false);
 
   const { data: tagsData } = useQuery(GET_TAGS, { variables: {}, fetchPolicy: 'network-only' });
   const { data: categoriesData } = useQuery(GET_HSM_CATEGORIES);
+
+  const { data: pendingCountData, refetch: refetchPendingCount } = useQuery(GET_TEMPLATES_COUNT, {
+    variables: { filter: { isHsm: true, status: 'PENDING' } },
+    fetchPolicy: 'network-only',
+  });
+  const pendingCount = pendingCountData?.countSessionTemplates ?? 0;
+
+  useEffect(() => {
+    if (pendingCount <= 0) {
+      return undefined;
+    }
+    const intervalId = setInterval(() => {
+      refetchPendingCount();
+      setRefreshList((prev) => !prev);
+    }, PENDING_POLL_INTERVAL);
+    return () => clearInterval(intervalId);
+  }, [pendingCount, refetchPendingCount]);
 
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, { fetchPolicy: 'network-only' });
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES);
@@ -332,6 +354,7 @@ const HSMListV2 = () => {
         collapseRow={collapseRow}
         groupRows={groupByShortcode}
         sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
+        refreshList={refreshList}
         {...queries}
       />
     </>
