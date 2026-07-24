@@ -15,12 +15,21 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
   const textTypes = formComponenets.find((component) => component.name === 'Text')?.children || [];
   const hasError = !data.text || data.text.trim() === '';
 
+  // Per Meta's component reference: TextBody→4096, TextCaption→409, Heading/Subheading→80
+  const getTextLimit = () => {
+    if (name === 'Body') return 4096;
+    if (name === 'Caption') return 409;
+    return 80;
+  };
+
+  const textLimit = getTextLimit();
+
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
     onUpdate({ name: event.target.value });
   };
 
   const handleTextChange = (e: any) => {
-    if (e.target.value.length <= 80) {
+    if (e.target.value.length <= textLimit) {
       onUpdate({ data: { ...data, text: e.target.value } });
     }
   };
@@ -49,12 +58,12 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
         error={!isViewOnly && hasError}
         slotProps={{
           htmlInput: {
-            maxLength: 80,
+            maxLength: textLimit,
             readOnly: isViewOnly,
             'data-testid': 'text-content-input',
           },
           input: {
-            endAdornment: <span className={styles.CharCount}>{`${(data.text || '').length}/80`}</span>,
+            endAdornment: <span className={styles.CharCount}>{`${(data.text || '').length}/${textLimit}`}</span>,
           },
         }}
         helperText={!isViewOnly ? hasError && 'Text is required' : undefined}

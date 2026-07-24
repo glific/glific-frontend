@@ -24,10 +24,13 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
   const isShortAnswer = name === 'Short Answer';
   const shortAnswerTypes = ['Text', 'Password', 'Email', 'Number', 'Passcode', 'Phone'];
 
+  // DatePicker label max is 40 per Meta; TextInput/TextArea label max is 20
+  const labelLimit = name === 'Date Picker' ? 40 : 20;
+
   const hasError = !data.label || data.label.trim() === '';
 
   const handleLabelChange = (e: any) => {
-    if (e.target.value.length <= 20) {
+    if (e.target.value.length <= labelLimit) {
       onUpdate({ data: { ...data, label: e.target.value } });
     }
   };
@@ -65,9 +68,9 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
         onChange={handleLabelChange}
         error={!isViewOnly && hasError}
         slotProps={{
-          htmlInput: { maxLength: 20, readOnly: isViewOnly, 'data-testid': 'label-input' },
+          htmlInput: { maxLength: labelLimit, readOnly: isViewOnly, 'data-testid': 'label-input' },
           input: {
-            endAdornment: <span className={styles.CharCount}>{`${(data.label || '').length}/20`}</span>,
+            endAdornment: <span className={styles.CharCount}>{`${(data.label || '').length}/${labelLimit}`}</span>,
           },
         }}
         helperText={!isViewOnly ? hasError && 'Label is required' : undefined}
