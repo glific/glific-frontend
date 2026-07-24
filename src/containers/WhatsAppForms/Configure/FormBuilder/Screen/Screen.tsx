@@ -83,7 +83,7 @@ export const ScreenComponent = ({
   };
 
   const handleButtonLabelChange = (e: any) => {
-    if (e.target.value.length <= 30) {
+    if (e.target.value.length <= 35) {
       onUpdateButtonLabel(e.target.value);
     }
   };
@@ -198,11 +198,11 @@ export const ScreenComponent = ({
                 placeholder="Enter button label"
                 value={screen.buttonLabel}
                 onChange={handleButtonLabelChange}
-                maxLength={30}
+                maxLength={35}
                 readOnly={isViewOnly}
                 data-testid="button-label-input"
               />
-              {!isViewOnly && <span className={styles.CharCount}>{screen.buttonLabel.length}/30</span>}
+              {!isViewOnly && <span className={styles.CharCount}>{screen.buttonLabel.length}/35</span>}
             </div>
             {hasButtonLabelError && !isViewOnly && <div className={styles.ErrorMessage}>Button label is required</div>}
           </div>

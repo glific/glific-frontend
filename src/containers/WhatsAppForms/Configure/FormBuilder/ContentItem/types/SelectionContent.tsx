@@ -16,15 +16,12 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
   const options = data.options || [];
 
   const getLabelLimit = () => {
-    if (name === 'Opt In') return 300;
+    if (name === 'Opt In') return 120;
     if (name === 'Dropdown') return 20;
     return 30;
   };
 
-  const getOptionLimit = () => {
-    if (name === 'Dropdown') return 30;
-    return 10;
-  };
+  const getOptionLimit = () => 30;
 
   const labelLimit = getLabelLimit();
   const optionLimit = getOptionLimit();
