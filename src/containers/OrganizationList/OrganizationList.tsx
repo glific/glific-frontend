@@ -6,11 +6,11 @@ import { OutlinedInput } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
-import { DELETE_INACTIVE_ORGANIZATIONS, UPDATE_ORGANIZATION_STATUS } from 'graphql/mutations/Organization';
+import { DELETE_ORGANIZATION, UPDATE_ORGANIZATION_STATUS } from 'graphql/mutations/Organization';
 import OrganizationIcon from 'assets/images/icons/Organization.svg?react';
 import ExtensionIcon from 'assets/images/icons/extension.svg?react';
 import CustomerDetailsIcon from 'assets/images/icons/customer_details.svg?react';
-import { setNotification } from 'common/notification';
+import { setNotification, setErrorMessage } from 'common/notification';
 import { List } from 'containers/List/List';
 import { Extensions } from 'containers/Extensions/Extensions';
 import { OrganizationCustomer } from 'containers/Organization/OrganizationCustomer/OrganizationCustomer';
@@ -26,7 +26,7 @@ export interface OrganizationListProps {
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
   filterItemsQuery: FILTER_ORGANIZATIONS,
-  deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
+  deleteItemQuery: DELETE_ORGANIZATION,
 };
 
 export const OrganizationList = ({ openExtensionModal, openCustomerModal }: OrganizationListProps) => {
@@ -104,13 +104,29 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
 
   const customerDetailsIcon = <CustomerDetailsIcon />;
 
-  const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
+  const [deleteOrganization] = useMutation(DELETE_ORGANIZATION);
+  // Separate instance without the success toast used by the status dropdown above.
+  const [setReadyToDelete] = useMutation(UPDATE_ORGANIZATION_STATUS);
 
-  const handleDeleteInActiveOrg = ({ payload, refetch, setDeleteItemID }: any) => {
-    deleteInActiveOrg({ variables: payload, refetchQueries: refetch });
+  const handleDeleteOrganization = async ({ id, refetch, setDeleteItemID }: any) => {
     // Setting delete item id to null to prevent showing dialogue again
     setDeleteItemID(null);
-    setNotification('Organization deleted successfully');
+    try {
+      // The async deletion worker only accepts orgs in `ready_to_delete` status,
+      // so make sure the org is in that status before firing the mutation.
+      await setReadyToDelete({
+        variables: { updateOrganizationId: id, status: 'READY_TO_DELETE' },
+      });
+      // Fire-and-forget: a background job performs the deletion and reports
+      // success/failure through in-app (Organization) notifications.
+      await deleteOrganization({ variables: { id } });
+      setNotification('Organization deletion has been initiated. You will be notified once it is complete.');
+      if (refetch) {
+        refetch();
+      }
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   const deleteDialogue = ({ deleteItemID, deleteItemName, refetch, setDeleteItemID }: any) => {
@@ -128,15 +144,11 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
       </div>
     );
     const isConfirmed = orgName === deleteItemName;
-    const payload = {
-      isConfirmed,
-      deleteOrganizationID: deleteItemID,
-    };
     return {
       component,
       props: {
         disableOk: !isConfirmed,
-        handleOk: () => handleDeleteInActiveOrg({ payload, refetch, setDeleteItemID }),
+        handleOk: () => handleDeleteOrganization({ id: deleteItemID, refetch, setDeleteItemID }),
       },
     };
   };
