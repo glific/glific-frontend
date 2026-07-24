@@ -280,11 +280,13 @@ export const TemplateOptionsV2 = ({
               {isError('value') ? <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText> : null}
             </FormControl>
             {inputFields.length > 1 && (
-              <DeleteIcon
-                className={styles.DeleteIcon}
-                onClick={() => handleRemoveClick(arrayHelpers, index)}
-                data-testid="delete-icon"
-              />
+              <div className={styles.DeleteIconWrapper}>
+                <DeleteIcon
+                  className={styles.DeleteIcon}
+                  onClick={() => handleRemoveClick(arrayHelpers, index)}
+                  data-testid="delete-icon"
+                />
+              </div>
             )}
           </div>
         </div>
