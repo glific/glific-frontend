@@ -227,7 +227,11 @@ export const AutoComplete = ({
                   color="primary"
                 />
               )}
-              {option.inputValue ? <>Create "{option.inputValue}"</> : getLabel(option)}
+              {option.inputValue ? (
+                <span className={styles.CreateOption}>Create "{option.inputValue}"</span>
+              ) : (
+                getLabel(option)
+              )}
             </li>
           )}
           renderInput={(params: any) => {
