@@ -15,16 +15,16 @@ export const SelectionContent = ({ item, onUpdate, isViewOnly = false }: Selecti
   const { data, name } = item;
   const options = data.options || [];
 
+  // Limits match Meta's WhatsApp Flow JSON component reference:
+  // https://developers.facebook.com/docs/whatsapp/flows/reference/components
   const getLabelLimit = () => {
-    if (name === 'Opt In') return 300;
-    if (name === 'Dropdown') return 20;
-    return 30;
+    if (name === 'Opt In') return 120; // OptIn content/label
+    if (name === 'Dropdown') return 20; // Dropdown label
+    return 30; // RadioButtonsGroup / CheckboxGroup label
   };
 
-  const getOptionLimit = () => {
-    if (name === 'Dropdown') return 30;
-    return 10;
-  };
+  // Option title limit is 30 characters for RadioButtonsGroup, CheckboxGroup, and Dropdown.
+  const getOptionLimit = () => 30;
 
   const labelLimit = getLabelLimit();
   const optionLimit = getOptionLimit();
