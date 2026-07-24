@@ -24,7 +24,6 @@ export const TextAnswerContent = ({ item, onUpdate, isViewOnly = false }: TextAn
   const isShortAnswer = name === 'Short Answer';
   const shortAnswerTypes = ['Text', 'Password', 'Email', 'Number', 'Passcode', 'Phone'];
 
-  // DatePicker label max is 40 per Meta; TextInput/TextArea label max is 20
   const labelLimit = name === 'Date Picker' ? 40 : 20;
 
   const hasError = !data.label || data.label.trim() === '';

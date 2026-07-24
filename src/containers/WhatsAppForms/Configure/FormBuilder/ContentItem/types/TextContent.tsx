@@ -15,7 +15,6 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
   const textTypes = formComponenets.find((component) => component.name === 'Text')?.children || [];
   const hasError = !data.text || data.text.trim() === '';
 
-  // Per Meta's component reference: TextBody→4096, TextCaption→409, Heading/Subheading→80
   const getTextLimit = () => {
     if (name === 'Body') return 4096;
     if (name === 'Caption') return 409;
