@@ -846,6 +846,14 @@ export const deleteOrganization = {
   },
 };
 
+export const deleteOrganizationError = {
+  request: {
+    query: DELETE_ORGANIZATION,
+    variables: { id: '2' },
+  },
+  error: new Error('Unable to delete organization'),
+};
+
 export const getOrganizationBSP = {
   request: {
     query: GET_ORGANIZATION_PROVIDER,
