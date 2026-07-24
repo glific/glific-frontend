@@ -297,6 +297,7 @@ export const StaffManagement = () => {
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink="staff-management"
+        backLinkButton="/staff-management"
         listItem="user"
         icon={staffManagementIcon}
         languageSupport={false}

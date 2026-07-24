@@ -15,10 +15,12 @@ import { CollectionContactList } from './CollectionContactList';
 import { addContactToCollection, deleteContactFromCollection } from 'mocks/Collection';
 import { setNotification } from 'common/notification';
 
+const mockedNavigate = vi.fn();
 vi.mock('react-router', async () => {
   return {
     ...(await vi.importActual<any>('react-router')),
     useParams: () => ({ id: '1' }),
+    useNavigate: () => mockedNavigate,
   };
 });
 
@@ -105,6 +107,18 @@ describe('<CollectionContactList />', () => {
     await waitFor(() => {
       expect(getByText('Glific User')).toBeInTheDocument();
     });
+  });
+
+  test('back button navigates to the collection list', async () => {
+    const { getByTestId, getByText } = render(wrapper);
+
+    await waitFor(() => {
+      expect(getByText('Glific User')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('back-button'));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/collection');
   });
 
   test('delete contact from collection', async () => {
