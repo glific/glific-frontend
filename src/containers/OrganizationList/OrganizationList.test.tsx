@@ -3,12 +3,20 @@ import { MockedProvider } from '@apollo/client/testing';
 import UserEvent from '@testing-library/user-event';
 import { BrowserRouter as Router } from 'react-router';
 
-import { deleteOrganization, getAllOrganizations } from 'mocks/Organization';
+import { deleteOrganization, getAllOrganizations, setOrganizationReadyToDelete } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
+import * as Notification from 'common/notification';
 import OrganizationList from './OrganizationList';
 
 afterEach(cleanup);
-const mocks = [...getAllOrganizations, deleteOrganization];
+const notificationSpy = vi.spyOn(Notification, 'setNotification');
+const mocks = [
+  ...getAllOrganizations,
+  setOrganizationReadyToDelete,
+  deleteOrganization,
+  // Refetch fired after the delete flow completes.
+  ...getAllOrganizations,
+];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const props = { openExtensionModal: false, openCustomerModal: false };
@@ -64,16 +72,24 @@ test('Update status', async () => {
 
   fireEvent.click(deleteButton);
 
+  // Only the org in `READY_TO_DELETE` status (Foogle) exposes the delete action,
+  // and the name must match for the confirm button to be enabled.
   const confirmationInput = screen.getByRole('textbox');
-  await UserEvent.type(confirmationInput, 'Test');
+  await UserEvent.type(confirmationInput, 'Foogle');
 
   expect(confirmationInput).toBeInTheDocument();
-  expect(confirmationInput).toHaveValue('Test');
+  expect(confirmationInput).toHaveValue('Foogle');
 
   const confirmDeleteButton = screen.getByText('Confirm');
   expect(confirmDeleteButton).toBeInTheDocument();
 
   fireEvent.click(confirmDeleteButton);
 
-  await waitFor(() => {});
+  // The async delete flow sets the org to `ready_to_delete`, fires the delete
+  // mutation, and reports that deletion has been initiated.
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Organization deletion has been initiated. You will be notified once it is complete.'
+    );
+  });
 });

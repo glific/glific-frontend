@@ -130,21 +130,3 @@ export const UPDATE_ORGANIZATION_STATUS = gql`
     }
   }
 `;
-
-export const DELETE_INACTIVE_ORGANIZATIONS = gql`
-  mutation deleteInactiveOrganization($deleteOrganizationID: ID!, $isConfirmed: Boolean!) {
-    deleteInactiveOrganization(deleteOrganizationID: $deleteOrganizationID, isConfirmed: $isConfirmed) {
-      organization {
-        email
-        isActive
-        isApproved
-        name
-        shortcode
-      }
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
