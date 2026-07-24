@@ -72,7 +72,13 @@
   word-break: break-all;
 }
 
-/* leading chevron that toggles a template's language variants open/closed. */
+.PreviewAnchor {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 24px;
+}
+
 .ChevronBtn {
   display: flex;
   align-items: center;
@@ -97,7 +103,7 @@
   transform: rotate(180deg);
 }
 
-.ShortCode {
+.TagChip {
   font-size: 10px;
   width: fit-content;
   padding: 3px 12px;
@@ -164,9 +170,11 @@
 .PreviewTooltip {
   background: #ece5dd !important;
   color: #0c1f14 !important;
-  padding: 10px !important;
+  padding: 8px !important;
   border-radius: 10px !important;
-  max-width: 280px !important;
+  width: 220px !important;
+  max-width: 220px !important;
+  box-sizing: border-box !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
 }
 
@@ -185,6 +193,9 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #667781;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .PreviewBubble {
@@ -199,6 +210,54 @@
   line-height: 1.45;
   color: #0c1f14;
   white-space: pre-line;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.PreviewMedia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  max-height: 140px;
+  background: #b6ada6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.PreviewMediaImage {
+  display: block;
+  width: 100%;
+  max-height: 140px;
+  object-fit: contain;
+}
+
+.PreviewMediaFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  width: 100%;
+}
+
+.PreviewMediaIcon {
+  color: #8a8078 !important;
+  font-size: 32px !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.PreviewMediaFallbackColumn {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.PreviewMediaFallbackLabel {
+  font-size: 12px;
+  color: #5c554e;
 }
 
 .PreviewVar {
@@ -215,6 +274,50 @@
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   font-size: 12px;
   color: #667781;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.PreviewButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+}
+
+.PreviewButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #00a5f4;
+  background: #ffffff;
+  border-top: 1px solid #f0f0f0;
+  min-width: 0;
+}
+
+.PreviewButton:first-child {
+  border-top: none;
+}
+
+.PreviewButtonText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.PreviewButtonIcon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
 }
 
 /* expanded child rows */
@@ -319,10 +422,13 @@
 
 .CollapseRowCustom {
   background-color: #fff;
-  box-shadow: inset 3px 0 0 0 #28a745;
   border-bottom: 1px solid #eeede9;
 }
 
 .CollapseRowCustom:hover {
   background-color: #f5f4f0;
+}
+
+tr:has(.ChevronOpen) {
+  box-shadow: inset 3px 0 0 0 #28a745;
 }

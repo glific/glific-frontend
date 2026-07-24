@@ -655,6 +655,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     id: '87',
@@ -683,6 +686,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     id: '94',
@@ -710,6 +716,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     id: '95',
@@ -737,6 +746,9 @@ export const templatesData = [
       caption: 'Test',
       sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
     },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
 ];
 export const filterTemplatesQuery = (term: any, data: any, filter?: any) => {
@@ -896,6 +908,13 @@ export const hsmV2TemplatesData = [
     language: { id: '1', label: 'English', locale: 'en' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: true,
+    buttonType: 'CALL_TO_ACTION',
+    buttons: JSON.stringify([
+      { type: 'URL', text: 'Get started', url: 'https://example.com' },
+      { type: 'QUICK_REPLY', text: 'Learn more' },
+      { type: 'PHONE_NUMBER', text: 'Call us', phone_number: '9876543210' },
+    ]),
   },
   {
     id: '3',
@@ -917,7 +936,12 @@ export const hsmV2TemplatesData = [
     quality: null,
     language: { id: '1', label: 'English', locale: 'en' },
     tag: null,
-    MessageMedia: null,
+    MessageMedia: { id: 1, caption: 'Order summary', sourceUrl: 'https://example.com/order-summary.jpg' },
+    hasButtons: false,
+    buttonType: null,
+    // deliberately malformed — exercises the JSON.parse catch branch in the
+    // hover preview, which should render with no buttons rather than crash.
+    buttons: '[{"type":"QUICK_REPLY","text":"Oops"',
   },
   {
     // Hindi variant of the Welcome Message — shares the `welcome_msg` shortcode,
@@ -942,6 +966,9 @@ export const hsmV2TemplatesData = [
     language: { id: '2', label: 'Hindi', locale: 'hi' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     // Marathi variant (PENDING) — exercises the pending chip styling/tooltip.
@@ -965,6 +992,9 @@ export const hsmV2TemplatesData = [
     language: { id: '3', label: 'Marathi', locale: 'mr' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
   {
     // Tamil variant (FAILED) — exercises the failed chip styling/tooltip.
@@ -988,59 +1018,208 @@ export const hsmV2TemplatesData = [
     language: { id: '4', label: 'Tamil', locale: 'ta' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
 ];
 
-// HSMListV2 drives the shared `List` component, so mocks must mirror the exact
-// variables List sends: filter + opts {limit:50, offset:0, order:'ASC', orderWith:'label'}.
-export const sessionTemplatesV2Mock = (filter: any, data: any) => ({
+const defaultSessionTemplatesV2Opts = { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' };
+
+export const sessionTemplatesV2Mock = (filter: any, data: any, opts: any = defaultSessionTemplatesV2Opts) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
       filter,
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+      opts,
     },
   },
   result: { data: { sessionTemplates: data } },
 });
 
-export const sessionTemplatesV2ErrorMock = (filter: any, message: string) => ({
+export const sessionTemplatesV2ErrorMock = (
+  filter: any,
+  message: string,
+  opts: any = defaultSessionTemplatesV2Opts
+) => ({
   request: {
     query: FILTER_TEMPLATES,
     variables: {
       filter,
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+      opts,
     },
   },
   error: new Error(message),
 });
 
-// HSMListV2 defaults the status filter to APPROVED, so every list query carries
-// `status: 'APPROVED'` alongside the other filters.
-export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData);
-export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock(
-  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
-  [hsmV2TemplatesData[0]]
-);
-export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED', tagIds: [1] }, [
+export const filterTemplatesV2Mock = sessionTemplatesV2Mock({ isHsm: true }, hsmV2TemplatesData);
+export const filterTemplatesV2CategoryMock = sessionTemplatesV2Mock({ isHsm: true, category: 'UTILITY' }, [
   hsmV2TemplatesData[0],
 ]);
-export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock(
-  { isHsm: true, status: 'APPROVED', label: 'feedback' },
-  [hsmV2TemplatesData[1]]
-);
+export const filterTemplatesV2TagMock = sessionTemplatesV2Mock({ isHsm: true, tagIds: [1] }, [hsmV2TemplatesData[0]]);
+export const filterTemplatesV2SearchMock = sessionTemplatesV2Mock({ isHsm: true, label: 'feedback' }, [
+  hsmV2TemplatesData[1],
+]);
 export const filterTemplatesV2RejectedMock = sessionTemplatesV2Mock({ isHsm: true, status: 'REJECTED' }, [
   hsmV2TemplatesData[1],
 ]);
 
-export const templateCountV2Mock = templateCountQuery({ isHsm: true, status: 'APPROVED' }, hsmV2TemplatesData.length);
-export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
-export const templateCountV2CategoryMock = templateCountQuery(
-  { isHsm: true, status: 'APPROVED', category: 'UTILITY' },
-  1
+// covers the hover preview's per-type media rendering for attachment types
+// other than IMAGE — VIDEO gets a muted thumbnail, DOCUMENT/AUDIO get an
+// icon + caption since neither has a visual thumbnail to load.
+export const mediaTypesTemplatesData = [
+  {
+    id: '20',
+    bspId: null,
+    label: 'Product Demo',
+    body: 'Watch our new product demo.',
+    footer: null,
+    shortcode: 'product_demo',
+    category: 'MARKETING',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-02-10T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'VIDEO',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    MessageMedia: { id: 21, caption: 'Demo video', sourceUrl: 'https://example.com/demo.mp4' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+  {
+    id: '22',
+    bspId: null,
+    label: 'Invoice',
+    body: 'Please find your invoice attached.',
+    footer: null,
+    shortcode: 'invoice_pdf',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-02-11T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'DOCUMENT',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    MessageMedia: { id: 23, caption: 'Invoice.pdf', sourceUrl: 'https://example.com/invoice.pdf' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+  {
+    id: '24',
+    bspId: null,
+    label: 'Voice Note',
+    body: 'Here is a voice note for you.',
+    footer: null,
+    shortcode: 'voice_note',
+    category: 'UTILITY',
+    isReserved: false,
+    status: 'REJECTED',
+    reason: 'Content policy violation',
+    isHsm: true,
+    isActive: false,
+    updatedAt: '2024-02-12T08:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'AUDIO',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    // no caption — the fallback should show the generic "Audio" label instead.
+    MessageMedia: { id: 25, caption: null, sourceUrl: 'https://example.com/note.mp3' },
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+];
+export const filterTemplatesV2MediaTypesMock = sessionTemplatesV2Mock(
+  { isHsm: true, status: 'REJECTED' },
+  mediaTypesTemplatesData
 );
-export const templateCountV2TagMock = templateCountQuery({ isHsm: true, status: 'APPROVED', tagIds: [1] }, 1);
-export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, status: 'APPROVED', label: 'feedback' }, 1);
+export const templateCountV2MediaTypesMock = templateCountQuery(
+  { isHsm: true, status: 'REJECTED' },
+  mediaTypesTemplatesData.length
+);
+// covers the title falling back to the label when a template has no shortcode yet.
+export const noShortcodeTemplateData = {
+  id: '7',
+  bspId: null,
+  label: 'No Shortcode Yet',
+  body: 'Draft body.',
+  footer: null,
+  shortcode: '',
+  category: 'UTILITY',
+  isReserved: false,
+  status: 'APPROVED',
+  reason: null,
+  isHsm: true,
+  isActive: true,
+  updatedAt: '2024-04-01T00:00:00Z',
+  numberParameters: 0,
+  translations: null,
+  type: 'TEXT',
+  quality: null,
+  language: { id: '1', label: 'English', locale: 'en' },
+  tag: null,
+  MessageMedia: null,
+  hasButtons: false,
+  buttonType: null,
+  // valid JSON, but not an array — parsePreviewButtons should treat it as no buttons.
+  buttons: '{"type":"URL","text":"oops"}',
+};
+export const filterTemplatesV2NoShortcodeMock = sessionTemplatesV2Mock({ isHsm: true, label: 'draft' }, [
+  noShortcodeTemplateData,
+]);
+
+export const allStatusesTemplatesData = [
+  {
+    id: '6',
+    bspId: 'bsp-006',
+    label: 'Pending Broadcast',
+    body: 'This one is still pending approval.',
+    footer: null,
+    shortcode: 'pending_broadcast',
+    category: 'MARKETING',
+    isReserved: false,
+    status: 'PENDING',
+    reason: null,
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2024-03-01T00:00:00Z',
+    numberParameters: 0,
+    translations: null,
+    type: 'TEXT',
+    quality: null,
+    language: { id: '1', label: 'English', locale: 'en' },
+    tag: null,
+    MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
+  },
+];
+export const filterTemplatesV2AllStatusesMock = sessionTemplatesV2Mock({ isHsm: true }, allStatusesTemplatesData);
+
+export const templateCountV2Mock = templateCountQuery({ isHsm: true }, hsmV2TemplatesData.length);
+export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
+export const templateCountV2AllStatusesMock = templateCountQuery({ isHsm: true }, allStatusesTemplatesData.length);
+export const templateCountV2CategoryMock = templateCountQuery({ isHsm: true, category: 'UTILITY' }, 1);
+export const templateCountV2TagMock = templateCountQuery({ isHsm: true, tagIds: [1] }, 1);
+export const templateCountV2SearchMock = templateCountQuery({ isHsm: true, label: 'feedback' }, 1);
+export const templateCountV2NoShortcodeMock = templateCountQuery({ isHsm: true, label: 'draft' }, 1);
 
 export const getCategoriesV2Mock = {
   request: { query: GET_HSM_CATEGORIES, variables: {} },
@@ -1086,6 +1265,9 @@ export const libraryTemplatesData = [
     language: { id: '1', label: 'English', locale: 'en' },
     tag: { id: '1', label: 'Messages' },
     MessageMedia: null,
+    hasButtons: false,
+    buttonType: null,
+    buttons: null,
   },
 ];
 

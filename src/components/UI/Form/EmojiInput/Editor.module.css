@@ -49,6 +49,11 @@
   border-radius: 12px;
 }
 
+.EditorWrapperSquareBottom {
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+}
+
 .editorScroller {
   border: 0;
   display: flex;
