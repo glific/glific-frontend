@@ -49,6 +49,11 @@
   color: #073f24;
 }
 
+.CreateOption {
+  color: #119656;
+  font-weight: 500;
+}
+
 .QuestionText {
   color: #073f24;
   font-size: 12px;
