@@ -1,16 +1,19 @@
+import CallIcon from '@mui/icons-material/Call';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { TableCell, TableRow, Tooltip as MuiTooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { t } from 'i18next';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
-import ChevronIcon from 'assets/images/icons/DownArrow.svg?react';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { capitalizeFirstLetter } from 'common/utils';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 
+import { PreviewMedia } from '../HSMV2/PreviewMedia/PreviewMedia';
 import styles from './HSMListV2.module.css';
 
 dayjs.extend(relativeTime);
@@ -55,17 +58,53 @@ const highlightVariables = (text = '') =>
     )
   );
 
-const messagePreview = (variant: any, title: string) => (
-  <div className={styles.PreviewCard}>
-    <div className={styles.PreviewHeader}>
-      {(title || '').toUpperCase()} · {languageCode(variant.language?.locale)}
+const previewButtonIcon = (type: string) => {
+  switch (type) {
+    case 'URL':
+      return <OpenInNewIcon className={styles.PreviewButtonIcon} />;
+    case 'PHONE_NUMBER':
+      return <CallIcon className={styles.PreviewButtonIcon} />;
+    default:
+      return null;
+  }
+};
+
+const parsePreviewButtons = (buttons?: string | null) => {
+  if (!buttons) return [];
+  try {
+    const parsed = JSON.parse(buttons);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const messagePreview = (variant: any, title: string) => {
+  const buttons = parsePreviewButtons(variant.buttons);
+
+  return (
+    <div className={styles.PreviewCard}>
+      <div className={styles.PreviewHeader}>
+        {(title || '').toUpperCase()} · {languageCode(variant.language?.locale)}
+      </div>
+      <div className={styles.PreviewBubble}>
+        <PreviewMedia media={variant.MessageMedia} type={variant.type} />
+        <div className={styles.PreviewBody}>{highlightVariables(variant.body)}</div>
+        {variant.footer && <div className={styles.PreviewFooter}>{variant.footer}</div>}
+      </div>
+      {buttons.length > 0 && (
+        <div className={styles.PreviewButtons}>
+          {buttons.map((button: any, index: number) => (
+            <div key={`${button.text}-${index}`} className={styles.PreviewButton}>
+              {previewButtonIcon(button.type)}
+              <span className={styles.PreviewButtonText}>{button.text}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-    <div className={styles.PreviewBubble}>
-      <div className={styles.PreviewBody}>{highlightVariables(variant.body)}</div>
-      {variant.footer && <div className={styles.PreviewFooter}>{variant.footer}</div>}
-    </div>
-  </div>
-);
+  );
+};
 
 const previewSlotProps = {
   tooltip: { className: styles.PreviewTooltip },
@@ -73,6 +112,9 @@ const previewSlotProps = {
 };
 
 const statusLabel = (status = '') => {
+  const normalized = status.toUpperCase();
+  if (normalized === 'REJECTED' || normalized === 'FAILED') return t('Rejected/Failed');
+  if (normalized === 'PENDING') return t('Pending | Click Sync HSM to update the status');
   const label = capitalizeFirstLetter(status.toLowerCase());
   return t(label, label);
 };
@@ -91,7 +133,7 @@ const languageChip = (variant: any, key: string | number) => {
 
 export const categoryLabel = (category = '') => capitalizeFirstLetter(category.split('_').join(' ').toLowerCase());
 
-const getTitle = (name: string, shortcode: string, primary: any, expand?: any) => (
+const getTitle = (elementName: string, tagLabel: string | undefined, expand?: any) => (
   <div className={styles.TitleRow}>
     {expand && (
       <button
@@ -102,21 +144,20 @@ const getTitle = (name: string, shortcode: string, primary: any, expand?: any) =
         className={`${styles.ChevronBtn} ${expand.isOpen ? styles.ChevronOpen : ''}`}
         onClick={() => expand.onToggle(expand.id)}
       >
-        <ChevronIcon />
+        <ExpandMoreIcon />
       </button>
     )}
     <div className={styles.LabelContainer}>
-      <MuiTooltip
-        title={messagePreview(primary, shortcode || name)}
-        placement="bottom-start"
-        arrow
-        slotProps={previewSlotProps}
-      >
-        <div className={styles.LabelText}>{name}</div>
-      </MuiTooltip>
-      {shortcode && <div className={styles.ShortCode}>{shortcode}</div>}
+      <div className={styles.LabelText}>{elementName}</div>
+      {tagLabel && <div className={styles.TagChip}>{tagLabel}</div>}
     </div>
   </div>
+);
+
+const withRowPreview = (previewNode: React.ReactNode, content: React.ReactNode) => (
+  <MuiTooltip title={previewNode} placement="bottom-start" arrow slotProps={previewSlotProps}>
+    <div className={styles.PreviewAnchor}>{content}</div>
+  </MuiTooltip>
 );
 
 const getLanguages = (variants: any[] = []) => (
@@ -163,34 +204,40 @@ export const groupByShortcode = (items: any[] = []) => {
   });
 };
 
-export const getCollapsedColumns = (showReason: boolean) => (variant: any) => [
-  <MuiTooltip
-    key="body"
-    title={messagePreview(variant, variant.shortcode || variant.label)}
-    placement="bottom-start"
-    arrow
-    slotProps={previewSlotProps}
-  >
-    <p className={styles.CollapseBody}>{WhatsAppToJsx(variant.body)}</p>
-  </MuiTooltip>,
-  languageChip(variant, 'lang'),
-  <p key="category" className={styles.TableText}>
-    {categoryLabel(variant.category)}
-  </p>,
-  showReason ? (
-    <p key="reason" className={styles.TableText}>
-      {variant.reason}
-    </p>
-  ) : (
-    <div key="updated" className={styles.LastModifiedText}>
-      {dayjs(variant.updatedAt).fromNow()}
-    </div>
-  ),
-  <div key="actions" className={styles.Actions} />,
-];
+export const getCollapsedColumns = (showReason: boolean) => (variant: any) => {
+  const elementName = variant.shortcode || variant.label;
+  const previewNode = messagePreview(variant, elementName);
+  const preview = (content: React.ReactNode) => withRowPreview(previewNode, content);
+
+  return [
+    preview(
+      <p key="body" className={styles.CollapseBody}>
+        {WhatsAppToJsx(variant.body)}
+      </p>
+    ),
+    preview(languageChip(variant, 'lang')),
+    preview(
+      <p key="category" className={styles.TableText}>
+        {categoryLabel(variant.category)}
+      </p>
+    ),
+    showReason
+      ? preview(
+          <p key="reason" className={styles.TableText}>
+            {variant.reason}
+          </p>
+        )
+      : preview(
+          <div key="updated" className={styles.LastModifiedText}>
+            {dayjs(variant.updatedAt).fromNow()}
+          </div>
+        ),
+    <div key="actions" className={styles.Actions} />,
+  ];
+};
 
 export const getColumnNames = (showReason: boolean): any => [
-  { name: 'label', label: t('Title') },
+  { name: 'label', label: t('Element name') },
   { label: t('Languages') },
   { label: t('Category') },
   showReason ? { label: t('Reason') } : { name: 'updated_at', label: t('Last updated') },
@@ -225,18 +272,42 @@ const renderCollapsedRows = (variants: any[] = [], showReason: boolean) => {
 
 export const getColumns =
   (showReason: boolean, collapse?: { collapseRow: string; collapseOpen: boolean; onToggle: (id: string) => void }) =>
-  ({ id, label, shortcode, updatedAt, reason, variants, body, footer, language }: any) => ({
+  ({
     id,
-    label: getTitle(
-      label || shortcode,
-      shortcode,
-      { body, footer, language },
-      collapse
-        ? { isOpen: collapse.collapseOpen && collapse.collapseRow === id, onToggle: collapse.onToggle, id }
-        : undefined
-    ),
-    languages: getLanguages(variants),
-    category: getCategories(variants),
-    ...(showReason ? { reason: getReason(reason) } : { updatedAt: getUpdatedAt(updatedAt) }),
-    collapseContent: renderCollapsedRows(variants, showReason),
-  });
+    label,
+    shortcode,
+    updatedAt,
+    reason,
+    variants,
+    body,
+    footer,
+    language,
+    buttons,
+    MessageMedia,
+    tag,
+    type,
+  }: any) => {
+    const elementName = shortcode || label;
+    const primary = { body, footer, language, buttons, MessageMedia, type };
+    const previewNode = messagePreview(primary, elementName);
+
+    return {
+      id,
+      label: withRowPreview(
+        previewNode,
+        getTitle(
+          elementName,
+          tag?.label,
+          collapse
+            ? { isOpen: collapse.collapseOpen && collapse.collapseRow === id, onToggle: collapse.onToggle, id }
+            : undefined
+        )
+      ),
+      languages: withRowPreview(previewNode, getLanguages(variants)),
+      category: withRowPreview(previewNode, getCategories(variants)),
+      ...(showReason
+        ? { reason: withRowPreview(previewNode, getReason(reason)) }
+        : { updatedAt: withRowPreview(previewNode, getUpdatedAt(updatedAt)) }),
+      collapseContent: renderCollapsedRows(variants, showReason),
+    };
+  };

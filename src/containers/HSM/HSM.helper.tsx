@@ -96,21 +96,29 @@ export const getTemplateAndButtons = (templateType: string, message: string, but
 
 export const getExampleFromBody = (body: string, variables: Array<any>) => {
   return body.replace(/{{(\d+)}}/g, (match, number) => {
-    let index = parseInt(number) - 1;
+    const variable = variables.find((item: any) => item.id === parseInt(number, 10));
 
-    return variables[index]?.text ? (variables[index] ? `[${variables[index]?.text}]` : match) : `{{${number}}}`;
+    return variable?.text ? `[${variable.text}]` : `{{${number}}}`;
   });
 };
 
 export const getVariables = (message: string, variables: any) => {
-  const regex = /{{\d+}}/g;
-  const matches = message.match(regex);
+  const regex = /{{(\d+)}}/g;
+  const seen = new Set<number>();
+  const result: any[] = [];
+  let match = regex.exec(message);
 
-  if (!matches) {
-    return [];
+  while (match !== null) {
+    const id = parseInt(match[1], 10);
+    if (!seen.has(id)) {
+      seen.add(id);
+      const existing = variables.find((variable: any) => variable.id === id);
+      result.push(existing?.text ? existing : { text: '', id });
+    }
+    match = regex.exec(message);
   }
 
-  return matches.map((match, index) => (variables[index]?.text ? variables[index] : { text: '', id: index + 1 }));
+  return result;
 };
 
 export const getExampleValue = (example: string) => {
@@ -127,7 +135,7 @@ export const getExampleValue = (example: string) => {
   return variables;
 };
 
-export const regexForShortcode = /^[a-z0-9_]+$/g;
+export const regexForShortcode = /^[a-z0-9_]+$/;
 
 export const buttonTypes: any = {
   QUICK_REPLY: { value: '' },
