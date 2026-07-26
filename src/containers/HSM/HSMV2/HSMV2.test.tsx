@@ -6,6 +6,7 @@ import { HSMV2 } from './HSMV2';
 import {
   HSM_TEMPLATE_MOCKS,
   getHSMTemplateTypeText,
+  getHSMTemplateNullLanguage,
   getHSMTemplateTypeMedia,
   CREATE_SESSION_TEMPLATE_MOCK,
   templateEditMock,
@@ -1022,6 +1023,33 @@ describe('HSMV2 language versions', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('English')).toBeInTheDocument();
     });
+  });
+
+  test('viewing a template whose fetched data has no language still loads its other details and leaves the Language field unset', async () => {
+    const MOCKS = [
+      ...mocks,
+      getHSMTemplateNullLanguage,
+      getHSMTemplateNullLanguage,
+      familyFetchMock([familyVariants[0]]),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('view-language-1'));
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('account_balance')).toBeInTheDocument();
+    });
+    expect(screen.queryByDisplayValue('English')).not.toBeInTheDocument();
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {

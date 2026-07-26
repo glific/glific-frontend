@@ -282,6 +282,21 @@ export const getHSMTemplateTypeText = {
   },
 };
 
+export const getHSMTemplateNullLanguage = {
+  ...getHSMTemplateTypeText,
+  result: {
+    data: {
+      sessionTemplate: {
+        ...getTemplateDataTypeText.sessionTemplate,
+        sessionTemplate: {
+          ...getTemplateDataTypeText.sessionTemplate.sessionTemplate,
+          language: null,
+        },
+      },
+    },
+  },
+};
+
 export const getHSMTemplateTypeMedia = {
   request: {
     query: GET_TEMPLATE,
