@@ -287,9 +287,9 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
-    if (languageOptions.length > 0 && languageIdValue) {
+    if (languageIdValue) {
       const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
-      setLanguageId(selectedLanguage || null);
+      setLanguageId(selectedLanguage || languageIdValue);
     }
 
     if (mode !== 'copy') {
@@ -432,7 +432,7 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
-    setAnchorReference({ body, footer, buttons: templateButtons, buttonType: templateType?.id });
+    setAnchorReference((prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id });
 
     setBody('');
     setEditorState('');
@@ -711,10 +711,10 @@ export const HSMV2 = () => {
   }, [location.state?.autoExpandId, params.id]);
 
   useEffect(() => {
-    if (location.state?.openAddLanguage && mode === 'view' && newShortcode) {
+    if (location.state?.openAddLanguage && mode === 'view' && newShortcode && !anchorReference) {
       openAddLanguage();
     }
-  }, [location.state?.openAddLanguage, mode, newShortcode]);
+  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
 
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
