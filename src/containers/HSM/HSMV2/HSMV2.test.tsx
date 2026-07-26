@@ -1014,7 +1014,7 @@ describe('HSMV2 language versions', () => {
       expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('view-language-1'));
+    fireEvent.click(await screen.findByTestId('view-language-1'));
 
     await waitFor(() => {
       expect(screen.queryByTestId('auto-translate-button')).not.toBeInTheDocument();
