@@ -125,6 +125,7 @@ jobs:
           cd project
           git clone https://github.com/glific/glific.git
           cd glific
+          git checkout fix/5314-deprecate-delete-inactive-organization
           cd priv
           mkdir cert
           cd cert
