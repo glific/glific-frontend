@@ -1214,6 +1214,7 @@ export const allStatusesTemplatesData = [
 export const filterTemplatesV2AllStatusesMock = sessionTemplatesV2Mock({ isHsm: true }, allStatusesTemplatesData);
 
 export const templateCountV2Mock = templateCountQuery({ isHsm: true }, hsmV2TemplatesData.length);
+export const templateCountV2PendingMock = (count = 0) => templateCountQuery({ isHsm: true, status: 'PENDING' }, count);
 export const templateCountV2RejectedMock = templateCountQuery({ isHsm: true, status: 'REJECTED' }, 1);
 export const templateCountV2AllStatusesMock = templateCountQuery({ isHsm: true }, allStatusesTemplatesData.length);
 export const templateCountV2CategoryMock = templateCountQuery({ isHsm: true, category: 'UTILITY' }, 1);
@@ -1236,6 +1237,8 @@ export const HSM_LIST_V2 = [
   getCategoriesV2Mock,
   getCategoriesV2Mock,
   getCategoriesV2Mock,
+  templateCountV2PendingMock(),
+  templateCountV2PendingMock(),
 ];
 
 // Template library modal: browses only APPROVED HSM templates via FILTER_TEMPLATES.
