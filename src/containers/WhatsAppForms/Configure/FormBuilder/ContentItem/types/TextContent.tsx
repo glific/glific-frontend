@@ -15,12 +15,27 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
   const textTypes = formComponenets.find((component) => component.name === 'Text')?.children || [];
   const hasError = !data.text || data.text.trim() === '';
 
+  const getTextLimitForType = (typeName: string) => {
+    if (typeName === 'Body') return 4096;
+    if (typeName === 'Caption') return 409;
+    return 80;
+  };
+
+  const textLimit = getTextLimitForType(name);
+
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
-    onUpdate({ name: event.target.value });
+    const newType = event.target.value;
+    const newLimit = getTextLimitForType(newType);
+    const currentText = data.text || '';
+    const updates: Partial<ContentItem> = { name: newType };
+    if (currentText.length > newLimit) {
+      updates.data = { ...data, text: currentText.slice(0, newLimit) };
+    }
+    onUpdate(updates);
   };
 
   const handleTextChange = (e: any) => {
-    if (e.target.value.length <= 80) {
+    if (e.target.value.length <= textLimit) {
       onUpdate({ data: { ...data, text: e.target.value } });
     }
   };
@@ -29,7 +44,7 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
     <div data-testid="text-content" className={styles.ContentTypeContainer}>
       <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
         <InputLabel>Type</InputLabel>
-        <Select value={name || ''} label="Type" onChange={handleTypeChange}>
+        <Select data-testid="text-type-select" value={name || ''} label="Type" onChange={handleTypeChange}>
           {textTypes.map((child) => (
             <MenuItem key={child.name} value={child.name}>
               {child.name}
@@ -49,12 +64,12 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
         error={!isViewOnly && hasError}
         slotProps={{
           htmlInput: {
-            maxLength: 80,
+            maxLength: textLimit,
             readOnly: isViewOnly,
             'data-testid': 'text-content-input',
           },
           input: {
-            endAdornment: <span className={styles.CharCount}>{`${(data.text || '').length}/80`}</span>,
+            endAdornment: <span className={styles.CharCount}>{`${(data.text || '').length}/${textLimit}`}</span>,
           },
         }}
         helperText={!isViewOnly ? hasError && 'Text is required' : undefined}
