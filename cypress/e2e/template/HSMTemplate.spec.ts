@@ -3,7 +3,8 @@ describe('HSM Template', () => {
   const sampleMessage = 'This is a sample message';
   const imageURL = 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg';
   const documentURL = 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf';
-  const videoURL = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4';
+  const videoURL =
+    'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4';
   const audioURL =
     'https://actions.google.com/sounds/v1/alarms/bugle_tune.https://www.buildquickbots.com/whatsapp/media/sample/audio/sample01.mp3';
   const stickerURL = 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg';
@@ -38,7 +39,10 @@ describe('HSM Template', () => {
     cy.get('[data-testid=AutocompleteInput] input').eq(1).click().type('UTILITY');
     cy.contains('UTILITY').click({ force: true });
 
-    cy.get('[data-testid=outlinedInput] input').eq(1).click({ force: true }).type('sample_templates', { force: true });
+    cy.get('[data-testid=outlinedInput] input')
+      .eq(1)
+      .click({ force: true })
+      .type('sample_templates', { force: true });
 
     cy.get('[data-testid="submitActionButton"]').click({ force: true });
 
@@ -132,7 +136,10 @@ describe('HSM Template', () => {
     cy.get('html').click();
     cy.wait(1000);
     cy.get('[data-testid=videoMessage]');
-    cy.get('[data-testid="simulatedMessages"] > div > div > :nth-child(1)').should('contain', sampleMessage);
+    cy.get('[data-testid="simulatedMessages"] > div > div > :nth-child(1)').should(
+      'contain',
+      sampleMessage
+    );
   });
 
   it('should not show audio option', () => {

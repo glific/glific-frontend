@@ -16,11 +16,15 @@ describe('Role - Staff - Collection', () => {
       .first()
       .then(($checkbox) => {
         if ($checkbox.is(':checked')) {
-          cy.get('[data-testid="AutocompleteInput"] [data-testid="ArrowDropDownIcon"]').click().wait(500);
+          cy.get('[data-testid="AutocompleteInput"] [data-testid="ArrowDropDownIcon"]')
+            .click()
+            .wait(500);
           cy.get('[data-testid="ok-button"]').click();
         } else {
           cy.wrap($checkbox).click();
-          cy.get('[data-testid="AutocompleteInput"] [data-testid="ArrowDropDownIcon"]').click().wait(500);
+          cy.get('[data-testid="AutocompleteInput"] [data-testid="ArrowDropDownIcon"]')
+            .click()
+            .wait(500);
           cy.get('[data-testid="ok-button"]').click();
           cy.get('div').should('contain', '1 contact added');
         }

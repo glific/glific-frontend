@@ -25,16 +25,23 @@ describe('Chats', () => {
 
   it('should send the speed send', () => {
     cy.get('[data-testid="shortcut-open-button"]').click().wait(500);
-    cy.get('[data-testid="shortcutButton"]').contains('Speed sends').click({ multiple: true, force: true });
+    cy.get('[data-testid="shortcutButton"]')
+      .contains('Speed sends')
+      .click({ multiple: true, force: true });
     cy.get('[data-testid="templateItem"] :first').click();
     cy.get('[data-testid="sendButton"]').click();
   });
 
   it('should send the templates', () => {
     cy.get('[data-testid="shortcut-open-button"]').click().wait(500);
-    cy.get('[data-testid="shortcutButton"]').contains('Templates').click({ multiple: true, force: true });
+    cy.get('[data-testid="shortcutButton"]')
+      .contains('Templates')
+      .click({ multiple: true, force: true });
 
-    cy.get("form[data-testid='searchForm'] input").first().click({ force: true }).type('attached bill');
+    cy.get("form[data-testid='searchForm'] input")
+      .first()
+      .click({ force: true })
+      .type('attached bill');
 
     cy.get('div:nth-child(1) > [data-testid="templateItem"]').click();
     cy.get('[data-testid=AutocompleteInput]').click().type('ABC');

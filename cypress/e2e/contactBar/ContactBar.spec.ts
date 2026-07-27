@@ -73,7 +73,9 @@ describe('Contact bar', function () {
               cy.wrap(chip).find('svg').click({ force: true });
               cy.get('[data-testid=ok-button]').click({ force: true });
               cy.wait(500);
-              cy.get('[data-testid="app"]').find('div').should('contain', 'Removed from 1 collection');
+              cy.get('[data-testid="app"]')
+                .find('div')
+                .should('contain', 'Removed from 1 collection');
             }
           });
         } else {
@@ -93,14 +95,19 @@ describe('Contact bar', function () {
             cy.get('[data-testid="blockButton"]').click();
             cy.get('[data-testid="ok-button"]').click({ force: true });
             cy.wait(500);
-            cy.get('[data-testid="app"]').find('div').should('contain', 'Contact blocked successfully').wait(500);
+            cy.get('[data-testid="app"]')
+              .find('div')
+              .should('contain', 'Contact blocked successfully')
+              .wait(500);
             // undo Block contact after test
             cy.get('[data-testid="list-item"]').contains('Manage').click();
             cy.get('[data-testid="list-item"]').contains('Blocked contacts').click();
             cy.get('[data-testid=additionalButton]').first().click();
             cy.get('[data-testid="ok-button"]').click();
             cy.wait(500);
-            cy.get('[data-testid="app"]').find('div').should('contain', 'Contact unblocked successfully');
+            cy.get('[data-testid="app"]')
+              .find('div')
+              .should('contain', 'Contact unblocked successfully');
           }
         });
       }
@@ -112,7 +119,9 @@ describe('Contact bar', function () {
     cy.contains('Clear conversation').click();
     cy.get('[data-testid="ok-button"]').click();
     cy.wait(500);
-    cy.get('[data-testid="app"]').find('div').should('contain', 'Conversation cleared for this contact');
+    cy.get('[data-testid="app"]')
+      .find('div')
+      .should('contain', 'Conversation cleared for this contact');
     // after checking a clear conversation, don't want to lose contact, so send a message.
     cy.get('.LexicalEditor').click({ force: true });
     cy.get('.LexicalEditor').type(messageText);

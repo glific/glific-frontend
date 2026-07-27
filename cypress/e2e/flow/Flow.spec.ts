@@ -48,7 +48,9 @@ describe('Flow', () => {
         sortedItems = unsortedItems.slice().sort(function (a, b) {
           return b.toLowerCase().localeCompare(a.toLowerCase());
         });
-        expect(unsortedItems[unsortedItems.length - 1]).to.equal(sortedItems[sortedItems.length - 1]);
+        expect(unsortedItems[unsortedItems.length - 1]).to.equal(
+          sortedItems[sortedItems.length - 1]
+        );
       });
   });
 

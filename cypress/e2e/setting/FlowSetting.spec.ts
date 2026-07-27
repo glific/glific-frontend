@@ -25,7 +25,10 @@ describe('Organization Settings', () => {
           cy.contains('Saturday').click();
           cy.get('html').click();
 
-          cy.get('[data-testid="time-picker"]').eq(0).find('button').click({ multiple: true, force: true });
+          cy.get('[data-testid="time-picker"]')
+            .eq(0)
+            .find('button')
+            .click({ multiple: true, force: true });
           cy.wait(500);
           cy.get('h2').eq(0).click();
           cy.get('h2').eq(2).click();
@@ -33,7 +36,10 @@ describe('Organization Settings', () => {
 
           cy.get('html').click();
 
-          cy.get('[data-testid="time-picker"]').eq(1).find('button').click({ multiple: true, force: true });
+          cy.get('[data-testid="time-picker"]')
+            .eq(1)
+            .find('button')
+            .click({ multiple: true, force: true });
           cy.wait(500);
           cy.get('h2').eq(0).click();
           cy.get('h2').eq(2).click();

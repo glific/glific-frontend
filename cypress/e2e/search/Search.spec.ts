@@ -23,9 +23,17 @@ describe('Searches', () => {
     cy.get('[data-testid=outlinedInput]').eq(1).click().type(search).wait(500);
     cy.get('[data-testid="AutocompleteInput"]').first().click({ force: true }).click();
     cy.get('.MuiAutocomplete-option').first().click();
-    cy.get('[data-testid="AutocompleteInput"]').eq(1).click({ force: true }).wait(500).type('Group');
+    cy.get('[data-testid="AutocompleteInput"]')
+      .eq(1)
+      .click({ force: true })
+      .wait(500)
+      .type('Group');
     cy.get('.MuiAutocomplete-option').first().click();
-    cy.get('[data-testid="AutocompleteInput"]').eq(2).click({ force: true }).wait(500).type('NGO Main Account');
+    cy.get('[data-testid="AutocompleteInput"]')
+      .eq(2)
+      .click({ force: true })
+      .wait(500)
+      .type('NGO Main Account');
     cy.get('.MuiAutocomplete-option').first().click();
 
     cy.get('[data-testid="date-picker-inline"]').eq(0).click();

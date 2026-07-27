@@ -250,7 +250,10 @@ describe('Whatsapp Forms', () => {
     cy.wait('@getWhatsappForm');
 
     cy.get('input[name=name]').first().clear().type('Updated Title for Whatsapp Form');
-    cy.get('textarea[name=description]').first().clear().type('This is an updated description for Whatsapp Form.\n');
+    cy.get('textarea[name=description]')
+      .first()
+      .clear()
+      .type('This is an updated description for Whatsapp Form.\n');
 
     cy.get('[data-testid="submitActionButton"]').click({ force: true });
 

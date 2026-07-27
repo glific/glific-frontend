@@ -36,7 +36,11 @@ export const plugins = (on, config) => {
           return target[segment];
         }
 
-        if (typeof target[segment] !== 'object' || target[segment] === null || Array.isArray(target[segment])) {
+        if (
+          typeof target[segment] !== 'object' ||
+          target[segment] === null ||
+          Array.isArray(target[segment])
+        ) {
           target[segment] = {};
         }
 

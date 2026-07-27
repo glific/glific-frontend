@@ -33,7 +33,10 @@ describe('Search', () => {
       .wait(1000);
 
     cy.get('[data-testid="list"]').last().click({ force: true });
-    cy.get('[data-testid="name"]').first().should('contain', 'Glific Simulator One').click({ force: true });
+    cy.get('[data-testid="name"]')
+      .first()
+      .should('contain', 'Glific Simulator One')
+      .click({ force: true });
     cy.get('h6').should('contain', 'Glific Simulator One');
   });
 

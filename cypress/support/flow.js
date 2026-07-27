@@ -29,8 +29,7 @@ Cypress.Commands.add('selectFirstValFromList', (text) => {
 });
 
 Cypress.Commands.add('enterInput', () => {
-  const element = cy
-    .get('temba-completion')
+  cy.get('temba-completion')
     .shadow()
     .find('temba-field')
     .find('temba-textinput')

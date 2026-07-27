@@ -23,8 +23,12 @@ describe('File search', () => {
     cy.get('[data-testid="headingButton"]').click();
     cy.contains('Give a recognizable name for your assistant').should('exist');
     cy.contains('Choose the best model for your needs.').should('exist');
-    cy.contains('Set the instructions according to your requirements.').scrollIntoView().should('be.visible');
-    cy.contains('Add notes on changes made to this assistant').scrollIntoView().should('be.visible');
+    cy.contains('Set the instructions according to your requirements.')
+      .scrollIntoView()
+      .should('be.visible');
+    cy.contains('Add notes on changes made to this assistant')
+      .scrollIntoView()
+      .should('be.visible');
   });
 
   it('should create a new assistant with file upload', () => {
@@ -35,7 +39,9 @@ describe('File search', () => {
     cy.get('[data-testid="AutocompleteInput"]').first().find('input').click();
     cy.get('.MuiAutocomplete-option').first().click();
 
-    cy.get('textarea[name="instructions"]').first().type('You are a helpful test assistant for automated e2e testing.');
+    cy.get('textarea[name="instructions"]')
+      .first()
+      .type('You are a helpful test assistant for automated e2e testing.');
 
     cy.get('[data-testid="addFiles"]').click();
     cy.get('[data-testid="dialogTitle"]').should('contain', 'Manage Files');
@@ -46,7 +52,9 @@ describe('File search', () => {
     cy.get('[data-testid="attachedIcon"]', { timeout: 5000 }).should('exist');
 
     cy.get('[data-testid="ok-button"]').click();
-    cy.contains("Knowledge base creation in progress, will notify once it's done").should('be.visible');
+    cy.contains("Knowledge base creation in progress, will notify once it's done").should(
+      'be.visible'
+    );
     cy.get('[data-testid="submitAction"]').click();
     cy.contains('Assistant created successfully', { timeout: 10000 }).should('be.visible');
     cy.get('[data-testid="versionInProgress"]').should('be.visible');
@@ -154,9 +162,14 @@ describe('File search', () => {
   it('should edit instructions in the expanded dialog and save', () => {
     cy.get('[data-testid="listItem"]').first().click();
     cy.get('[data-testid="expandIcon"]').click();
-    cy.get('textarea[name="expand-instructions"]').clear().type('Updated instructions from e2e test');
+    cy.get('textarea[name="expand-instructions"]')
+      .clear()
+      .type('Updated instructions from e2e test');
     cy.get('[data-testid="save-button"]').click();
-    cy.get('textarea[name="instructions"]').should('have.value', 'Updated instructions from e2e test');
+    cy.get('textarea[name="instructions"]').should(
+      'have.value',
+      'Updated instructions from e2e test'
+    );
   });
 
   it('should show existing files when opening file dialog for the assistant', () => {
@@ -200,9 +213,9 @@ describe('File search', () => {
     cy.get('[data-testid="listItem"]').first().click();
     cy.get('[data-testid="removeAssistant"]').click();
     cy.contains('Are you sure you want to delete').should('be.visible');
-    cy.contains('Please confirm that this assistant is not being used in any of the active flows.').should(
-      'be.visible'
-    );
+    cy.contains(
+      'Please confirm that this assistant is not being used in any of the active flows.'
+    ).should('be.visible');
     cy.get('[data-testid="cancel-button"]').click();
   });
 

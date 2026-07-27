@@ -4,7 +4,11 @@ describe('Role - Staff - Chats', () => {
       cy.appLogin(staff.phone, staff.password);
       cy.visit('/chat');
       cy.wait(1000);
-      cy.get('[data-testid="searchInput"]').click({ force: true }).wait(500).type('Glific Simulator').wait(1000);
+      cy.get('[data-testid="searchInput"]')
+        .click({ force: true })
+        .wait(500)
+        .type('Glific Simulator')
+        .wait(1000);
       cy.get("div[data-testid='listingContainer'] > ul").find('a').first().click();
     });
   });
