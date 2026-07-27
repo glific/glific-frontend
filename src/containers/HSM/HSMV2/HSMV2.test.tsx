@@ -26,6 +26,8 @@ import { filterAvailableLanguages } from './HSMV2.helper';
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
+const familyFetchOpts = { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' };
+
 vi.mock('i18next', () => ({ t: (str: string) => str }));
 
 vi.mock('common/notification', async (importOriginal) => {
@@ -53,7 +55,20 @@ const validateMediaSpy = vi.spyOn(utilsModule, 'validateMedia');
 
 describe('HSMV2 edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
+    const familyMock = sessionTemplatesV2Mock(
+      { isHsm: true, shortcode: 'account_balance' },
+      [
+        {
+          id: '1',
+          shortcode: 'account_balance',
+          language: { id: '1', label: 'English', locale: 'en' },
+          category: 'ACCOUNT_UPDATE',
+          status: 'APPROVED',
+        },
+      ],
+      familyFetchOpts
+    );
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
@@ -64,9 +79,11 @@ describe('HSMV2 edit mode', () => {
       </MockedProvider>
     );
 
+    // the detail form is collapsed until a language row's "View" is clicked.
     await waitFor(() => {
-      expect(screen.getByText('HSM Template')).toBeInTheDocument();
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByTestId('view-language-1'));
 
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('account_balance');
@@ -74,7 +91,20 @@ describe('HSMV2 edit mode', () => {
   });
 
   test('edit mode with a media attachment and Call to Action buttons loads the media/type/button state', async () => {
-    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia];
+    const familyMock = sessionTemplatesV2Mock(
+      { isHsm: true, shortcode: 'account_update' },
+      [
+        {
+          id: '1',
+          shortcode: 'account_update',
+          language: { id: '1', label: 'English', locale: 'en' },
+          category: 'MARKETING',
+          status: 'APPROVED',
+        },
+      ],
+      familyFetchOpts
+    );
+    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia, familyMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
@@ -86,8 +116,9 @@ describe('HSMV2 edit mode', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('HSM Template')).toBeInTheDocument();
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByTestId('view-language-1'));
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
@@ -169,19 +200,74 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByTestId('help-icon')).toBeInTheDocument();
   });
 
-  test('submitting without a category shows a friendly required message, not a raw Yup type error', async () => {
+  test('submit button stays disabled until all required fields (element name, message, category) are filled', async () => {
     render(template);
 
     await waitFor(() => {
       expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('submitActionButton'));
+    const submitButton = screen.getByTestId('submitActionButton');
+    expect(submitButton).toBeDisabled();
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    const lexicalEditor = inputs[1];
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    expect(submitButton).toBeDisabled();
+
+    fireEvent.click(screen.getByText('Account_update'));
 
     await waitFor(() => {
-      expect(screen.getByText('Category is required.')).toBeInTheDocument();
+      expect(submitButton).not.toBeDisabled();
     });
-    expect(screen.queryByText(/category must be a `object` type/)).not.toBeInTheDocument();
+  });
+
+  test('element name shows its validation error live while typing, without a duplicate helper message', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    expect(screen.queryByText('Only lowercase alphanumeric characters and underscores are allowed.')).toBeNull();
+
+    fireEvent.change(inputs[0], { target: { value: 'Invalid Name' } });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Only lowercase alphanumeric characters and underscores are allowed.')).toHaveLength(
+        1
+      );
+    });
+
+    fireEvent.change(inputs[0], { target: { value: 'valid_name' } });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Only lowercase alphanumeric characters and underscores are allowed.')).toBeNull();
+    });
+  });
+
+  test('element name error still shows only once after the field is blurred', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: 'Invalid Name' } });
+    fireEvent.blur(inputs[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Only lowercase alphanumeric characters and underscores are allowed.')).toHaveLength(
+        1
+      );
+    });
   });
 
   test('it should create a template message using the tile pickers', async () => {
@@ -217,7 +303,9 @@ describe('HSMV2 add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('e.g., Yes, No, More Info'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi, How are you');
+      expect(editorText).toContain('{{1}}');
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
@@ -401,9 +489,6 @@ describe('HSMV2 add mode', () => {
     await waitFor(() => {
       expect(screen.getByText('photo.png', { exact: false })).toBeInTheDocument();
     });
-
-    // switching to a different attachment type should clear the previous upload,
-    // not leave a stale "File uploaded" message for a file that no longer applies.
     fireEvent.click(screen.getByText('Document'));
     expect(screen.queryByText('photo.png', { exact: false })).not.toBeInTheDocument();
 
@@ -692,9 +777,9 @@ describe('HSMV2 language versions', () => {
   // relying on navigation state (see HSMListV2.tsx) — getHSMTemplateTypeText
   // (the default anchor mock, id '1') has shortcode 'account_balance'.
   const familyFetchMock = (variants: any[] = familyVariants) =>
-    sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, variants);
+    sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, variants, familyFetchOpts);
 
-  test('the dedicated /:id/edit route shows the language versions summary read-only, with no "Add new language" option', async () => {
+  test('the dedicated /:id/edit route shows the language versions summary read-only, with the Add new language option available', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
@@ -718,14 +803,43 @@ describe('HSMV2 language versions', () => {
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
     expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
 
-    expect(screen.queryByTestId('add-language-link')).not.toBeInTheDocument();
+    expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+  });
+
+  test('the detail form is collapsed on arrival and only appears after clicking View', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyFetchMock()];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Template Details')).not.toBeVisible();
+
+    fireEvent.click(screen.getByTestId('view-language-1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Template Details')).toBeVisible();
+    });
+    expect(screen.getByTestId('simulator-container')).toBeVisible();
   });
 
   test('a reload (or direct link) on the dedicated /:id/edit route with no navigation state still fetches and shows the family tabs', async () => {
-    const familyFetchMock = sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, [
-      { id: '1', shortcode: 'account_balance', status: 'APPROVED', language: { id: '1', label: 'English' } },
-      { id: '2', shortcode: 'account_balance', status: 'PENDING', language: { id: '2', label: 'Marathi' } },
-    ]);
+    const familyFetchMock = sessionTemplatesV2Mock(
+      { isHsm: true, shortcode: 'account_balance' },
+      [
+        { id: '1', shortcode: 'account_balance', status: 'APPROVED', language: { id: '1', label: 'English' } },
+        { id: '2', shortcode: 'account_balance', status: 'PENDING', language: { id: '2', label: 'Marathi' } },
+      ],
+      familyFetchOpts
+    );
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
@@ -795,7 +909,6 @@ describe('HSMV2 language versions', () => {
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
     fireEvent.click(screen.getByTestId('delete-language-2'));
 
-    // clicking Delete doesn't delete immediately — a confirmation dialog gates it.
     expect(screen.getByTestId('view-language-2')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ok-button'));
@@ -911,7 +1024,7 @@ describe('HSMV2 language versions', () => {
     expect(within(listbox).queryByText('English')).not.toBeInTheDocument();
   });
 
-  test('shows the English source reference and keeps Auto-translate disabled until a language is picked', async () => {
+  test('shows the English source reference and prompts to pick a language when Auto-translate is clicked without one', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
@@ -934,12 +1047,13 @@ describe('HSMV2 language versions', () => {
     await waitFor(() => {
       expect(screen.getByText('English — source reference')).toBeInTheDocument();
     });
-    // the anchor's own body/footer are visible as reference only — the draft
-    // fields below start blank instead of duplicating this same text (see
-    // openAddLanguage), so this must be scoped to the reference card.
+
     const referenceCard = screen.getByTestId('source-reference-card');
     expect(within(referenceCard).getByText(/You can now view your Account Balance/)).toBeInTheDocument();
-    expect(screen.getByTestId('auto-translate-button')).toBeDisabled();
+    const autoTranslateButton = screen.getByTestId('auto-translate-button');
+    expect(autoTranslateButton).not.toBeDisabled();
+    fireEvent.click(autoTranslateButton);
+    expect(setNotification).toHaveBeenCalledWith('Please select a language before translating.', 'warning');
     // the anchor's body text appears only inside the reference card — the
     // draft body editor below it starts blank, not duplicating this text.
     expect(screen.getAllByText(/You can now view your Account Balance/)).toHaveLength(1);
@@ -1473,21 +1587,17 @@ describe('HSMV2 language versions', () => {
     fireEvent.click(screen.getByTestId('status-tab-In Progress'));
     fireEvent.click(screen.getByTestId('view-language-2'));
 
-    // previewing the sibling — the Language field shows it, locked.
     await waitFor(() => {
       expect(screen.getByDisplayValue('Marathi')).toBeInTheDocument();
     });
 
-    // delete that same previewed row.
     fireEvent.click(screen.getByTestId('delete-language-2'));
     fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
-    // addPagePreviewId resets, so entityId falls back to the anchor —
-    // the Language field switches back to English instead of pointing at
-    // the now-deleted record.
+
     await waitFor(() => {
       expect(screen.getByDisplayValue('English')).toBeInTheDocument();
     });
@@ -1540,7 +1650,7 @@ describe('HSMV2 language versions', () => {
       getHSMTemplateTypeText,
       familyFetchMock([familyVariants[0]]),
       ...CREATE_SESSION_TEMPLATE_MOCK,
-      sessionTemplatesV2ErrorMock({ isHsm: true, shortcode: 'element_name' }, 'network error'),
+      sessionTemplatesV2ErrorMock({ isHsm: true, shortcode: 'element_name' }, 'network error', familyFetchOpts),
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>

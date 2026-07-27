@@ -166,6 +166,7 @@ export const CollectionContactList = ({ title, descriptionBox = <></> }: Collect
         descriptionBox={descriptionBox}
         columnNames={columnNames}
         title={title}
+        backLink="/collection"
         additionalAction={additionalAction}
         secondaryButton={addContactsButton}
         listItem="contacts"
