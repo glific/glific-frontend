@@ -44,7 +44,7 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
     <div data-testid="text-content" className={styles.ContentTypeContainer}>
       <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={isViewOnly}>
         <InputLabel>Type</InputLabel>
-        <Select value={name || ''} label="Type" onChange={handleTypeChange}>
+        <Select data-testid="text-type-select" value={name || ''} label="Type" onChange={handleTypeChange}>
           {textTypes.map((child) => (
             <MenuItem key={child.name} value={child.name}>
               {child.name}
