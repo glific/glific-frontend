@@ -15,16 +15,23 @@ export const TextContent = ({ item, onUpdate, isViewOnly = false }: TextContentP
   const textTypes = formComponenets.find((component) => component.name === 'Text')?.children || [];
   const hasError = !data.text || data.text.trim() === '';
 
-  const getTextLimit = () => {
-    if (name === 'Body') return 4096;
-    if (name === 'Caption') return 409;
+  const getTextLimitForType = (typeName: string) => {
+    if (typeName === 'Body') return 4096;
+    if (typeName === 'Caption') return 409;
     return 80;
   };
 
-  const textLimit = getTextLimit();
+  const textLimit = getTextLimitForType(name);
 
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
-    onUpdate({ name: event.target.value });
+    const newType = event.target.value;
+    const newLimit = getTextLimitForType(newType);
+    const currentText = data.text || '';
+    const updates: Partial<ContentItem> = { name: newType };
+    if (currentText.length > newLimit) {
+      updates.data = { ...data, text: currentText.slice(0, newLimit) };
+    }
+    onUpdate(updates);
   };
 
   const handleTextChange = (e: any) => {
