@@ -3,8 +3,20 @@ name: Cypress Lint
 on:
   push:
     branches: [master]
+    paths:
+      - 'cypress/**'
+      - 'cypress.config.ts.example'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.github/workflows/cypress-lint.yml'
   pull_request:
     branches: ['**']
+    paths:
+      - 'cypress/**'
+      - 'cypress.config.ts.example'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.github/workflows/cypress-lint.yml'
 
 permissions:
   contents: read
