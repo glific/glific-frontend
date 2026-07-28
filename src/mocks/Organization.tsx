@@ -854,6 +854,37 @@ export const deleteOrganizationError = {
   error: new Error('Unable to delete organization'),
 };
 
+// Status transition resolves but returns a payload-level error.
+export const setOrganizationReadyToDeletePayloadError = {
+  request: {
+    query: UPDATE_ORGANIZATION_STATUS,
+    variables: { updateOrganizationId: '2', status: 'READY_TO_DELETE' },
+  },
+  result: {
+    data: {
+      updateOrganizationStatus: {
+        organization: null,
+        errors: [{ key: 'status', message: 'Unable to update organization status' }],
+      },
+    },
+  },
+};
+
+// Deletion resolves but returns a payload-level error.
+export const deleteOrganizationPayloadError = {
+  request: {
+    query: DELETE_ORGANIZATION,
+    variables: { id: '2' },
+  },
+  result: {
+    data: {
+      deleteOrganization: {
+        errors: [{ key: 'id', message: 'Organization is not in deletable status' }],
+      },
+    },
+  },
+};
+
 export const getOrganizationBSP = {
   request: {
     query: GET_ORGANIZATION_PROVIDER,

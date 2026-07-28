@@ -114,13 +114,23 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
     try {
       // The async deletion worker only accepts orgs in `ready_to_delete` status,
       // so make sure the org is in that status before firing the mutation.
-      await setReadyToDelete({
+      const { data: statusData } = await setReadyToDelete({
         variables: { updateOrganizationId: id, status: 'READY_TO_DELETE' },
       });
+      const statusErrors = statusData?.updateOrganizationStatus?.errors;
+      if (statusErrors) {
+        setNotification(statusErrors[0].message, 'warning');
+        return;
+      }
       // Fire-and-forget: a background job performs the deletion and reports
       // success/failure through in-app (Organization) notifications.
-      await deleteOrganization({ variables: { id } });
-      setNotification('Organization deletion has been initiated. You will be notified once it is complete.');
+      const { data: deleteData } = await deleteOrganization({ variables: { id } });
+      const deleteErrors = deleteData?.deleteOrganization?.errors;
+      if (deleteErrors) {
+        setNotification(deleteErrors[0].message, 'warning');
+        return;
+      }
+      setNotification(t('Organization deletion has been initiated. You will be notified once it is complete.'));
       if (refetch) {
         refetch();
       }

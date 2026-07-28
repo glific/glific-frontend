@@ -6,8 +6,10 @@ import { BrowserRouter as Router } from 'react-router';
 import {
   deleteOrganization,
   deleteOrganizationError,
+  deleteOrganizationPayloadError,
   getAllOrganizations,
   setOrganizationReadyToDelete,
+  setOrganizationReadyToDeletePayloadError,
 } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
 import * as Notification from 'common/notification';
@@ -110,5 +112,33 @@ test('Shows an error when the delete mutation fails', async () => {
 
   await waitFor(() => {
     expect(errorSpy).toHaveBeenCalled();
+  });
+});
+
+test('Warns and stops when the status transition returns a payload error', async () => {
+  render(renderList([...getAllOrganizations, setOrganizationReadyToDeletePayloadError]));
+
+  await waitFor(() => {
+    expect(screen.getByText('Organizations')).toBeInTheDocument();
+  });
+
+  await confirmDelete();
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Unable to update organization status', 'warning');
+  });
+});
+
+test('Warns when the delete mutation returns a payload error', async () => {
+  render(renderList([...getAllOrganizations, setOrganizationReadyToDelete, deleteOrganizationPayloadError]));
+
+  await waitFor(() => {
+    expect(screen.getByText('Organizations')).toBeInTheDocument();
+  });
+
+  await confirmDelete();
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Organization is not in deletable status', 'warning');
   });
 });
