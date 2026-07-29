@@ -40,7 +40,7 @@ const setFooter = (value: string) => {
 };
 
 const createTag = (label: string) => {
-  cy.get('[data-testid="AutocompleteInput"] input').eq(1).click().type(label);
+  cy.get('[data-testid="AutocompleteInput"] input').eq(1).click({ force: true }).type(label);
   cy.contains(`Create "${label}"`).click({ force: true });
 };
 
@@ -108,10 +108,19 @@ describe('HSM Template V2 — Create page validation', () => {
     openCreatePage();
   });
 
-  it('requires element name and message on empty submit', () => {
-    cy.get('[data-testid="submitActionButton"]').click();
-    cy.contains('Element name is required.');
-    cy.contains('Message is required.');
+  it('keeps submit disabled until element name, category, and message are all filled in', () => {
+    const shortcode = 'cy_validation_' + Date.now();
+
+    cy.get('[data-testid="submitActionButton"]').should('be.disabled');
+
+    setShortcode(shortcode);
+    cy.get('[data-testid="submitActionButton"]').should('be.disabled');
+
+    selectCategory('Utility');
+    cy.get('[data-testid="submitActionButton"]').should('be.disabled');
+
+    cy.get('[data-testid="editor-body"]').click().type('Hello there').blur({ force: true });
+    cy.get('[data-testid="submitActionButton"]').should('not.be.disabled');
   });
 });
 
@@ -119,9 +128,9 @@ describe('HSM Template V2 — Full template creation journey', () => {
   it('creates a complete template (language, category, body+variable, footer, a button, media, tag) and lands back on the list', () => {
     const shortcode = 'cy_full_journey_' + Date.now();
     const tagLabel = 'cy_tag_' + Date.now();
-    const message = 'Your order is ready for pickup';
+    const message = 'Your order is ready for pickup ' + shortcode;
 
-    spyOn('createMessageMedia', 'createSessionTemplate');
+    spyOn('createMediaMessage', 'createSessionTemplate');
 
     cy.visit('/template-v2');
     openCreatePage();
@@ -131,8 +140,16 @@ describe('HSM Template V2 — Full template creation journey', () => {
 
     selectCategory('Utility');
     selectCategory('Marketing');
-    cy.contains('button', 'Marketing').should('be.visible');
+    cy.contains('button', 'Marketing')
+      .invoke('attr', 'class')
+      .should('match', /TileSelected/);
     selectCategory('Utility');
+    cy.contains('button', 'Utility')
+      .invoke('attr', 'class')
+      .should('match', /TileSelected/);
+    cy.contains('button', 'Marketing')
+      .invoke('attr', 'class')
+      .should('not.match', /TileSelected/);
 
     cy.get('[data-testid="editor-body"]').click().type(message);
     cy.get('[data-testid="bold-icon"]').click();
@@ -161,7 +178,7 @@ describe('HSM Template V2 — Full template creation journey', () => {
 
     submit();
 
-    cy.wait('@createMessageMedia');
+    cy.wait('@createMediaMessage');
     cy.wait('@createSessionTemplate').then((interception) => {
       const input = interception.request.body.variables.input;
       expect(input.shortcode).to.eq(shortcode);
@@ -200,7 +217,7 @@ describe('HSM Template V2 — Button types end-to-end', () => {
     selectLanguage('English');
     setShortcode(shortcode);
     selectCategory('Utility');
-    setBodyAndSettle('Reach out or track your order below.');
+    setBodyAndSettle('Reach out or track your order below. ' + shortcode);
 
     cy.contains('button', 'Call to Action').click();
 
@@ -245,7 +262,7 @@ describe('HSM Template V2 — Button types end-to-end', () => {
     selectLanguage('English');
     setShortcode(shortcode);
     selectCategory('Utility');
-    setBodyAndSettle('Please choose an option below.');
+    setBodyAndSettle('Please choose an option below. ' + shortcode);
 
     cy.contains('button', 'Quick Reply').click();
     cy.contains('Maximum 10 quick reply buttons allowed per template');
@@ -285,10 +302,12 @@ describe('HSM Template V2 — Button types end-to-end', () => {
               listWhatsappForms: [
                 {
                   __typename: 'WhatsappForm',
+                  id: formId,
                   name: formName,
                   metaFlowId: formId,
                   revision: {
                     __typename: 'WhatsappFormRevision',
+                    id: formId,
                     definition: JSON.stringify({ screens: [{ id: 'WELCOME_SCREEN' }] }),
                   },
                 },
@@ -308,7 +327,7 @@ describe('HSM Template V2 — Button types end-to-end', () => {
     selectLanguage('English');
     setShortcode(shortcode);
     selectCategory('Utility');
-    setBodyAndSettle('Please fill out this quick form.');
+    setBodyAndSettle('Please fill out this quick form. ' + shortcode);
 
     cy.contains('button', 'WhatsApp Form').click();
     cy.contains('Select Form*');
@@ -341,10 +360,10 @@ describe('HSM Template V2 — Button types end-to-end', () => {
 });
 
 describe('HSM Template V2 — Media attachment end-to-end', () => {
-  it('warns when Upload File is picked without GCS, then submits via Provide URL with the messageMediaId conversion verified', () => {
+  it('handles the Upload File / Provide URL toggle per the org GCS setting, then submits via Provide URL with the messageMediaId conversion verified', () => {
     const shortcode = 'cy_media_' + Date.now();
-    const sampleMessage = 'Please find your invoice attached.';
-    spyOn('createMessageMedia', 'createSessionTemplate');
+    const sampleMessage = 'Please find your invoice attached. ' + shortcode;
+    spyOn('createMediaMessage', 'createSessionTemplate');
 
     cy.visit('/template-v2');
     openCreatePage();
@@ -355,13 +374,22 @@ describe('HSM Template V2 — Media attachment end-to-end', () => {
     cy.contains('button', 'Document').click();
     cy.contains('How would you like to provide the attachment?');
 
-    cy.contains('button', 'Upload File').click();
-    cy.contains(
-      'File upload is not available for your organization. Please use "Provide URL" instead, or ask your admin to enable Google Cloud Storage.'
-    );
-    cy.contains('Click to upload or drag and drop').should('not.exist');
+    cy.window().then((win) => {
+      const services = JSON.parse(win.localStorage.getItem('organizationServices') || '{}');
+      const gcsEnabled = Boolean(services.googleCloudStorage);
 
-    cy.contains('button', 'Provide URL').click();
+      cy.contains('button', 'Upload File').click();
+      if (gcsEnabled) {
+        cy.contains('Click to upload or drag and drop').should('be.visible');
+        cy.contains('button', 'Provide URL').click();
+      } else {
+        cy.contains(
+          'File upload is not available for your organization. Please use "Provide URL" instead, or ask your admin to enable Google Cloud Storage.'
+        );
+        cy.contains('Click to upload or drag and drop').should('not.exist');
+      }
+    });
+
     cy.get('input[name="attachmentURL"]').click().type(documentURL);
 
     setBodyAndSettle(sampleMessage);
@@ -371,7 +399,7 @@ describe('HSM Template V2 — Media attachment end-to-end', () => {
 
     submit();
 
-    cy.wait('@createMessageMedia');
+    cy.wait('@createMediaMessage');
     cy.wait('@createSessionTemplate').then((interception) => {
       const input = interception.request.body.variables.input;
       expect(input.type).to.eq('DOCUMENT');
@@ -386,9 +414,9 @@ describe('HSM Template V2 — Copy journey', () => {
   it('copies a template with buttons and media into a new template, leaving the source untouched', () => {
     const sourceShortcode = 'cy_copy_source_' + Date.now();
     const copyShortcode = 'cy_copy_target_' + Date.now();
-    const sourceMessage = 'Your appointment is confirmed for tomorrow.';
+    const sourceMessage = 'Your appointment is confirmed for tomorrow. ' + sourceShortcode;
 
-    spyOn('createMessageMedia', 'createSessionTemplate');
+    spyOn('createMediaMessage', 'createSessionTemplate');
     cy.visit('/template-v2');
     openCreatePage();
     selectLanguage('English');
@@ -402,14 +430,17 @@ describe('HSM Template V2 — Copy journey', () => {
     submit();
 
     let sourceId: string;
-    cy.wait('@createMessageMedia');
+    cy.wait('@createMediaMessage');
     cy.wait('@createSessionTemplate').then((interception) => {
       sourceId = interception.response.body.data.createSessionTemplate.sessionTemplate.id;
     });
     cy.contains('HSM Template created successfully!');
     cy.location('pathname').should('eq', '/template-v2');
 
-    cy.get('[data-testid="copyTemplate"]').eq(0).click();
+    cy.get('[data-testid="tableBody"]')
+      .contains('tr', sourceShortcode)
+      .find('[data-testid="copyTemplate"]')
+      .click();
     cy.location('pathname').should('eq', '/template-v2/add');
 
     cy.get('input[name="newShortcode"]').should('have.value', '').and('not.be.disabled');
@@ -419,9 +450,10 @@ describe('HSM Template V2 — Copy journey', () => {
     cy.get('input[name="attachmentURL"]').should('have.value', imageURL);
 
     setShortcode(copyShortcode);
+    cy.get('[data-testid="editor-body"]').click().type(' (copy)').blur({ force: true });
     submit();
 
-    cy.wait('@createMessageMedia');
+    cy.wait('@createMediaMessage');
     cy.wait('@createSessionTemplate').then((interception) => {
       const input = interception.request.body.variables.input;
       expect(input.shortcode).to.eq(copyShortcode);
@@ -429,6 +461,9 @@ describe('HSM Template V2 — Copy journey', () => {
       expect(JSON.parse(input.buttons)).to.deep.eq([{ type: 'QUICK_REPLY', text: 'Confirm' }]);
       expect(input.messageMediaId).to.be.a('number');
 
+      expect(interception.response.body.errors, JSON.stringify(interception.response.body)).to.eq(
+        undefined
+      );
       const copied = interception.response.body.data.createSessionTemplate.sessionTemplate;
       expect(copied.id).to.not.eq(sourceId);
     });
@@ -445,8 +480,8 @@ describe('HSM Template V2 — Copy journey', () => {
 describe('HSM Template V2 — Add-language & delete journey', () => {
   it('adds a language to an existing template, submits the variant, then deletes it', () => {
     const shortcode = 'cy_addlang_' + Date.now();
-    const englishBody = 'Hi, your booking is confirmed.';
-    const hindiBody = 'Namaste, aapki booking confirm ho gayi hai.';
+    const englishBody = 'Hi, your booking is confirmed. ' + shortcode;
+    const hindiBody = 'Namaste, aapki booking confirm ho gayi hai. ' + shortcode;
 
     spyOn('createSessionTemplate');
     cy.visit('/template-v2');
@@ -472,7 +507,12 @@ describe('HSM Template V2 — Add-language & delete journey', () => {
     cy.get('[data-testid="submitActionButton"]').should('not.exist');
     cy.get('[data-testid="add-language-link"]').should('be.visible');
 
-    cy.get('[data-testid="add-language-link"]').click();
+    cy.visit('/template-v2');
+    cy.get('[data-testid="tableBody"]')
+      .contains('tr', shortcode)
+      .find('[data-testid="add-language-icon"]')
+      .click();
+    cy.location('pathname').should('eq', '/template-v2/add');
     cy.get('[data-testid="headerTitle"]').should('contain', 'Add Language');
     cy.get('input[name="newShortcode"]').should('have.value', shortcode).and('be.disabled');
     cy.get('[data-testid="editor-body"]').should('not.contain', englishBody);
@@ -499,7 +539,7 @@ describe('HSM Template V2 — Add-language & delete journey', () => {
       cy.get(`[data-testid="delete-language-${variantId}"]`).click();
     });
     cy.get('[data-testid="dialogTitle"]').should('contain', 'Hindi');
-    cy.get('[data-testid="ok-button"]').click();
+    cy.get('[data-testid="ok-button"]').should('be.visible').click({ force: true });
     cy.contains('Template deleted successfully');
     cy.get(`[data-testid="delete-language-${variantId}"]`).should('not.exist');
   });
