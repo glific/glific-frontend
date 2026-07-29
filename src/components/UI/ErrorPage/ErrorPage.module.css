@@ -20,13 +20,13 @@
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #073f24;
+  color: var(--app-color-text-primary);
   max-width: 420px;
 }
 
 .subtitle {
   margin: 0;
   font-size: 14px;
-  color: #777777;
+  color: var(--app-color-text-tertiary);
   max-width: 420px;
 }

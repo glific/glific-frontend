@@ -146,6 +146,50 @@ html {
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
+/*
+ * App-wide design tokens. Deliberately `--app-color-*`-prefixed and separate from the
+ * `--color-*` vars in the `html {}` block above — those are the vendored flow-editor
+ * widget's own theming API (temba-button, .flatpickr-calendar, etc.), not general app
+ * tokens, and reusing their names would risk restyling that widget by accident.
+ *
+ * A primitive's shade is named by rank within its hue (primary = the main/most-used
+ * shade, secondary = next, etc.) rather than a numeric scale (50/100/.../900) — easier
+ * to read at this small a set. `theme.tsx`'s palette.main colors must match
+ * src/config/tokens.ts exactly — that file is the source of truth for those specific
+ * values (MUI needs real hex strings there, not var() references), so keep both in
+ * sync by hand if one changes.
+ *
+ * Only tokens with a real call site today are defined here — this grows incrementally
+ * as each feature's CSS gets migrated onto tokens, not speculatively upfront.
+ */
+:root {
+  /* Primitives — green */
+  --app-color-green-primary: #119656; /* the brand green */
+  --app-color-green-secondary: #073f24; /* dark green, used for primary text */
+  --app-color-green-tertiary: #edf6f2; /* pale green, used for hover backgrounds */
+  --app-color-green-quaternary: #ccd4d0; /* muted green-gray, used for table header text */
+
+  /* Primitives — gray */
+  --app-color-gray-primary: #777777;
+  --app-color-gray-secondary: #efefef;
+
+  /* Primitives — red */
+  --app-color-red-primary: #fb5c5c; /* matches theme.tsx palette.error.main */
+  --app-color-red-secondary: #dd1f1f; /* matches theme.tsx palette.warning.main */
+
+  /* Semantics — use these in *.module.css, not the primitives above */
+  --app-color-text-primary: var(--app-color-green-secondary);
+  --app-color-text-tertiary: var(--app-color-gray-primary);
+
+  --app-color-brand-primary: var(--app-color-green-primary);
+  --app-color-brand-secondary: var(--app-color-gray-primary);
+
+  --app-color-surface-hover: var(--app-color-green-tertiary);
+
+  --app-color-error: var(--app-color-red-primary);
+  --app-color-warning: var(--app-color-red-secondary);
+}
+
 #flow {
   font-size: var(--font-size);
   font-weight: 300;

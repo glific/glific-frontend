@@ -1,21 +1,22 @@
 import { createTheme } from '@mui/material/styles';
+import { COLOR_BRAND_PRIMARY, COLOR_BRAND_SECONDARY, COLOR_ERROR, COLOR_WARNING } from 'config/tokens';
 
 const theme = createTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#119656',
+      main: COLOR_BRAND_PRIMARY,
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
     error: {
-      main: '#fb5c5c',
+      main: COLOR_ERROR,
     },
     warning: {
-      main: '#DD1F1F',
+      main: COLOR_WARNING,
     },
     secondary: {
-      main: '#777777',
+      main: COLOR_BRAND_SECONDARY,
     },
   },
   typography: {
@@ -48,7 +49,7 @@ const theme = createTheme({
     MuiDivider: {
       styleOverrides: {
         root: {
-          borderColor: '#EFEFEF',
+          borderColor: 'var(--app-color-gray-secondary)',
           boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.06)',
         },
       },
@@ -63,7 +64,7 @@ const theme = createTheme({
       styleOverrides: {
         selectLabel: {
           fontSize: '1rem',
-          color: '#073F24',
+          color: 'var(--app-color-text-primary)',
         },
       },
     },
@@ -99,22 +100,22 @@ const theme = createTheme({
     },
     MuiFormControlLabel: {
       styleOverrides: {
-        label: { color: '#073f24' },
+        label: { color: 'var(--app-color-text-primary)' },
       },
     },
     MuiListItem: {
       styleOverrides: {
         root: {
-          color: '#073F24',
+          color: 'var(--app-color-text-primary)',
         },
       },
     },
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          color: '#073f24',
+          color: 'var(--app-color-text-primary)',
           '&.Mui-checked': {
-            color: '#119656',
+            color: 'var(--app-color-brand-primary)',
           },
         },
       },
@@ -125,7 +126,7 @@ const theme = createTheme({
           color: 'unset',
         },
         head: {
-          color: '#ccd4d0',
+          color: 'var(--app-color-green-quaternary)',
         },
       },
     },
@@ -133,7 +134,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            backgroundColor: '#EDF6F2',
+            backgroundColor: 'var(--app-color-surface-hover)',
           },
         },
       },
