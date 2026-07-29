@@ -1,0 +1,8 @@
+{
+  "description": "Design-system violation baseline for glific/glific-frontend#4081. Counts must only go down over time — see scripts/design-system-ratchet.js.",
+  "counts": {
+    "rawMuiContainerFiles": 97,
+    "hardcodedHexOccurrences": 1450,
+    "hardcodedSpacingOccurrences": 2040
+  }
+}
