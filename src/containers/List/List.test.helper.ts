@@ -1,5 +1,5 @@
 import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from 'graphql/queries/Organization';
-import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
+import { DELETE_ORGANIZATION } from 'graphql/mutations/Organization';
 import { getOrganizationLanguagesQuery, getOrganizationQuery, getAllOrganizations } from 'mocks/Organization';
 import { getCurrentUserQuery } from 'mocks/User';
 import { FILTER_FLOW, GET_FLOW_COUNT } from 'graphql/queries/Flow';
@@ -62,7 +62,7 @@ export const orgProps = {
   countQuery: GET_ORGANIZATION_COUNT,
   listItem: 'organizations',
   filterItemsQuery: FILTER_ORGANIZATIONS,
-  deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
+  deleteItemQuery: DELETE_ORGANIZATION,
   listItemName: 'organization',
   pageLink: 'organization',
   columns: (listItem: any) => ({}),

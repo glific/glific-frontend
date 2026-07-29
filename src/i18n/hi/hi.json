@@ -371,6 +371,7 @@
   "Approve": "मंजूर",
   "Activate": "सक्रिय",
   "Organizations": "संगठनों",
+  "Organization deletion has been initiated. You will be notified once it is complete.": "संगठन को हटाने की प्रक्रिया शुरू हो गई है। पूरा होने पर आपको सूचित किया जाएगा।",
   "name is required.": "नाम आवश्यक है।",
   "Shortcode is required.": "शोर्टकोड आवश्यक है।",
   "Shortcode": "शॉर्टकोड",
