@@ -160,14 +160,7 @@ jobs:
           ENABLE_DB_SSL=false KAAPI_API_KEY=${KAAPI_API_KEY} mix setup
 
       - name: Setup cypress
-        run: |
-          mkdir -p project
-          cd project
-          git clone https://github.com/glific/cypress-testing.git
-          cp -r cypress-testing/cypress ../cypress
-          cp cypress-testing/cypress.config.ts.example ../cypress.config.ts
-          cd ..
-          yarn add cypress@15.15.0
+        run: cp cypress.config.ts.example cypress.config.ts
 
       - name: Run glific frontend
         run: |
