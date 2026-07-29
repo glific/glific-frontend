@@ -88,13 +88,21 @@
     "design-system:ratchet": "node scripts/design-system-ratchet.js",
     "design-system:ratchet:update": "node scripts/design-system-ratchet.js --update",
     "design-system:eslint": "eslint --no-eslintrc -c .eslintrc.design-system.json --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.test.tsx' 'src/containers/**/*.{ts,tsx}'",
-    "design-system:stylelint": "stylelint --config .stylelintrc.design-system.json 'src/**/*.module.css'"
+    "design-system:stylelint": "stylelint --config .stylelintrc.design-system.json 'src/**/*.module.css'",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=22.12.0 <23"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,css,graphql}": ["prettier --write"],
+    "src/containers/**/!(*.test).{ts,tsx}": [
+      "eslint --no-eslintrc -c .eslintrc.design-system.json"
+    ],
+    "src/**/*.module.css": ["stylelint --config .stylelintrc.design-system.json"]
   },
   "browserslist": {
     "production": [
@@ -135,8 +143,10 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "husky": "9.1.7",
     "i18next-parser": "^9.3.0",
     "jsdom": "^27.3.0",
+    "lint-staged": "17.2.0",
     "prettier": "^3.7.4",
     "react-test-renderer": "^19.2.3",
     "stylelint": "17.14.1",
