@@ -1,0 +1,7 @@
+# Design-system-affecting paths (glific/glific-frontend#4052, #4081).
+# PRs touching these auto-request review from the design-system owner, so shared
+# components/tokens don't quietly accumulate feature-specific changes.
+
+/src/components/UI/     @akanshaaa19
+/src/config/theme.tsx   @akanshaaa19
+/src/index.css          @akanshaaa19

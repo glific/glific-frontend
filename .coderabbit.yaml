@@ -24,3 +24,34 @@ reviews:
         "Assess the unit test code employing the Vitest testing framework. Confirm that:
         - The tests adhere to Vitest's established best practices.
         - Test descriptions are sufficiently detailed to clarify the purpose of each test."
+    - path: 'src/containers/**/*.{ts,tsx}'
+      instructions: |
+        This is feature/container code in a design-system standardization effort
+        (glific/glific-frontend#4052). Flag, as a review comment:
+        - Any new import from '@mui/material' or '@mui/material/*' — these files should use
+          a shared component from src/components/UI instead (see
+          src/components/UI/README.md). This is also enforced by ESLint/CI, but call it out
+          if you see it.
+        - New UI code that looks like it duplicates something already in
+          src/components/UI/README.md's catalog (e.g. a hand-rolled modal, loading spinner,
+          or form field) instead of reusing/extending the existing component.
+        - New cross-feature logic (e.g. a GraphQL mutation call, file upload handling) that's
+          copy-pasted rather than extracted into a shared hook, especially if similar logic
+          already exists elsewhere in containers/.
+    - path: 'src/components/UI/**'
+      instructions: |
+        This is the shared component library referenced by src/components/UI/README.md
+        (glific/glific-frontend#4052, #4082). Flag, as a review comment:
+        - A new component added here without a corresponding entry added to
+          src/components/UI/README.md.
+        - A new or renamed component whose name collides with an existing one elsewhere in
+          the codebase (check before approving).
+    - path: '**/*.module.css'
+      instructions: |
+        Part of a design-token standardization effort (glific/glific-frontend#4052, #4076,
+        #4077). Flag, as a review comment, any new hardcoded hex color or raw px value for
+        spacing/font-size/border-radius that isn't using a var(--...) custom property from
+        src/index.css — these should use the design tokens instead. This is directional
+        guidance, not a hard rule yet: the repo has a large pre-existing backlog of these
+        (tracked by a ratchet script), so don't block on pre-existing lines the diff doesn't
+        touch — only flag genuinely new hardcoded values.

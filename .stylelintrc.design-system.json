@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "declaration-property-value-disallowed-list": [
+      {
+        "/^(background|background-color|color|border(-top|-bottom|-left|-right)?(-color)?|fill|stroke|box-shadow|outline(-color)?)$/": [
+          "/#[0-9a-fA-F]{3,8}\\b/"
+        ],
+        "/^(padding|margin|gap|border-radius|font-size)(-(top|bottom|left|right|inline|block))?$/": [
+          "/^-?\\d+(\\.\\d+)?px$/"
+        ]
+      },
+      {
+        "message": "Don't hardcode colors or px spacing/font-size/radius values here. Use a var(--...) design token from src/index.css instead (see glific/glific-frontend#4076, #4077). If the token doesn't exist yet, that's a real gap — flag it rather than hardcoding."
+      }
+    ]
+  }
+}

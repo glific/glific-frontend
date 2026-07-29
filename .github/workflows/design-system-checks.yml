@@ -66,3 +66,38 @@ jobs:
         if: steps.changed.outputs.files != ''
         run: |
           echo "${{ steps.changed.outputs.files }}" | xargs npx eslint --no-eslintrc -c .eslintrc.design-system.json
+
+  stylelint-tokens:
+    name: Stylelint - no new hardcoded colors/spacing
+    runs-on: ubuntu-latest
+    # Same diff-scoped approach as eslint-mui-layering: only checks *.module.css files
+    # actually changed in this PR, leaving the existing backlog to the ratchet job.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Find changed module.css files
+        id: changed
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          FILES=$(git diff --name-only --diff-filter=ACMR "$BASE_SHA" HEAD \
+            | grep -E '^src/.*\.module\.css$' || true)
+          echo "files<<DIFF_EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "DIFF_EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Lint changed files for hardcoded colors/spacing
+        if: steps.changed.outputs.files != ''
+        run: |
+          echo "${{ steps.changed.outputs.files }}" | xargs npx stylelint --config .stylelintrc.design-system.json

@@ -16,6 +16,10 @@
 
 <!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
 
+## Checklist
+
+- [ ] If this PR adds UI, I checked [`src/components/UI/README.md`](../blob/master/src/components/UI/README.md) for an existing component/token first. If I built something new instead, here's why: <!-- fill in, or delete this line if not applicable -->
+
 ## Test Plan
 
 <!-- Demonstrate the code is solid. Example: The exact commands you ran and their output, screenshots / videos if the pull request changes the user interface. -->

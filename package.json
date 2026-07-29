@@ -87,7 +87,8 @@
     "test:coverage": "vitest run --coverage",
     "design-system:ratchet": "node scripts/design-system-ratchet.js",
     "design-system:ratchet:update": "node scripts/design-system-ratchet.js --update",
-    "design-system:eslint": "eslint --no-eslintrc -c .eslintrc.design-system.json --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.test.tsx' 'src/containers/**/*.{ts,tsx}'"
+    "design-system:eslint": "eslint --no-eslintrc -c .eslintrc.design-system.json --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.test.tsx' 'src/containers/**/*.{ts,tsx}'",
+    "design-system:stylelint": "stylelint --config .stylelintrc.design-system.json 'src/**/*.module.css'"
   },
   "engines": {
     "node": ">=22.12.0 <23"
@@ -138,6 +139,7 @@
     "jsdom": "^27.3.0",
     "prettier": "^3.7.4",
     "react-test-renderer": "^19.2.3",
+    "stylelint": "17.14.1",
     "typescript": "^5.9.3",
     "vite-plugin-mkcert": "2.1.0",
     "vitest": "^4.0.15",
