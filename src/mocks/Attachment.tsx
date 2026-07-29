@@ -64,3 +64,19 @@ export const uploadMediaErrorMock = {
   },
   error: new Error('An error occurred'),
 };
+
+export const uploadMediaSuccessMock = (fileName: string, mimeType: string, resultUrl: string) => ({
+  request: {
+    query: UPLOAD_MEDIA,
+    variables: { media: { name: fileName, type: mimeType }, extension: fileName.split('.').pop() },
+  },
+  result: { data: { uploadMedia: resultUrl } },
+});
+
+export const uploadMediaFailureMock = (fileName: string, mimeType: string, message: string) => ({
+  request: {
+    query: UPLOAD_MEDIA,
+    variables: { media: { name: fileName, type: mimeType }, extension: fileName.split('.').pop() },
+  },
+  error: new Error(message),
+});

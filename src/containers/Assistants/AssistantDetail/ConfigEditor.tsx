@@ -11,6 +11,7 @@ import { getOrganizationServices } from 'services/AuthService';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
+import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 
 import { CREATE_ASSISTANT, SET_LIVE_VERSION, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
@@ -232,7 +233,7 @@ export const ConfigEditor = ({
       className={styles.GenerateWithAiButton}
     >
       {t('Generate with AI')}
-      <span className={styles.BetaBadge}>{t('BETA')}</span>
+      <BetaTag size="small" />
     </Button>
   );
 

@@ -1,7 +1,10 @@
 .HistoryContainer {
-  height: fit-content;
-  padding: 16px 0px;
+  height: 100%;
   background-color: #f8faf5;
+}
+
+.ListBody {
+  height: calc(100% - 44px);
 }
 
 .DetailBlock {

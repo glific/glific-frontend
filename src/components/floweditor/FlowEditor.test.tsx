@@ -13,6 +13,7 @@ import {
   publishFlow,
   publishFlowWithDuplicateErrors,
   getFreeFlow,
+  getFreeFlowForced,
   resetFlowCount,
   getFlowTranslations,
   getTemplateFlow,
@@ -450,22 +451,41 @@ test('should display read-only banner when flow is being edited by another user'
     },
   };
 
+  const takenOverData = {
+    flowGet: {
+      flow: { id: '1' },
+      errors: [],
+    },
+  };
+
+  // FlowEditor calls useLazyQuery(GET_FREE_FLOW, ...) from two distinct call sites
+  // (`getFreeFlow` then `getFreeFlowForced`), always in that order per render since hook
+  // order is stable. Track calls by position (odd = getFreeFlow, even = getFreeFlowForced)
+  // so each hook instance's own `onCompleted` can be triggered independently.
+  let hookInstanceCount = 0;
   let getFreeFlowCalled = false;
+  let getFreeFlowForcedCalled = false;
   const realUseLazyQuery = Apollo.useLazyQuery;
 
   const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: unknown, options?: unknown) => {
     if (query === GET_FREE_FLOW) {
+      hookInstanceCount += 1;
+      const isForcedHookInstance = hookInstanceCount % 2 === 0;
+      const onCompleted = (options as { onCompleted?: (data: unknown) => void } | undefined)?.onCompleted;
+
       const mockGetFreeFlow = vi.fn(() => {
-        if (!getFreeFlowCalled) {
-          getFreeFlowCalled = true;
-          if (options && typeof options === 'object' && 'onCompleted' in options) {
-            const { onCompleted } = options as { onCompleted?: (data: unknown) => void };
-            if (onCompleted) {
-              setTimeout(() => onCompleted(errorData), 0);
-            }
+        const alreadyCalled = isForcedHookInstance ? getFreeFlowForcedCalled : getFreeFlowCalled;
+        if (!alreadyCalled) {
+          if (isForcedHookInstance) {
+            getFreeFlowForcedCalled = true;
+          } else {
+            getFreeFlowCalled = true;
+          }
+          if (onCompleted) {
+            setTimeout(() => onCompleted(isForcedHookInstance ? takenOverData : errorData), 0);
           }
         }
-        return Promise.resolve({ data: errorData });
+        return Promise.resolve({ data: isForcedHookInstance ? takenOverData : errorData });
       });
 
       return [
@@ -505,11 +525,53 @@ test('should display read-only banner when flow is being edited by another user'
     fireEvent.click(screen.getByText('Take Over'));
 
     await waitFor(() => {
-      expect(screen.queryByAltText('ReadOnlyBanner')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
     });
   } finally {
     useLazyQuerySpy.mockRestore();
   }
+});
+
+test('flow editor becomes editable immediately after Take Over succeeds, without requiring a page refresh', async () => {
+  mockedAxios.post.mockResolvedValue({ data: {} });
+
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
+    setTimeout(callback, 0);
+    return [];
+  });
+
+  const setConfigSpy = vi.spyOn(FlowEditorHelper, 'setConfig');
+
+  const takeOverMocks = [...mocks, getFreeFlowForced, getActiveFlow];
+
+  const { container } = render(wrapperFunction(takeOverMocks));
+
+  await screen.findByTestId('flowName');
+
+  await waitFor(() => {
+    expect(screen.getByTestId('ReadOnlyBanner')).toBeInTheDocument();
+  });
+  expect(screen.getByTestId('button')).toBeDisabled();
+
+  setConfigSpy.mockClear();
+
+  fireEvent.click(screen.getByText('Take Over'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
+  });
+  expect(screen.getByTestId('button')).not.toBeDisabled();
+  expect(screen.getByTestId('translateButton')).not.toBeDisabled();
+
+  // Regression guard: right after Take Over succeeds, the editor must be rebuilt with
+  // isReadOnly=false immediately via an explicit override, instead of relying on the
+  // not-yet-flushed `isReadOnly` React state (which is what previously required a manual
+  // page refresh to pick up).
+  await waitFor(() => {
+    expect(setConfigSpy).toHaveBeenCalled();
+  });
+  const lastCallArgs = setConfigSpy.mock.calls[setConfigSpy.mock.calls.length - 1];
+  expect(lastCallArgs[2]).toBe(false);
 });
 
 test('should not display read-only banner when flow is available for editing', async () => {

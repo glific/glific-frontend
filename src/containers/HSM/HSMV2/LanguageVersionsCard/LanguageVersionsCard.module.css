@@ -1,0 +1,169 @@
+.TemplateDetailsCard {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 0 20px 56px;
+  box-sizing: border-box;
+}
+
+.LanguageVersionsTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555555;
+  margin: 24px 0 10px;
+}
+
+/* matches the MuiOutlinedInput border used by the other fields on this page
+   (theme.tsx MuiOutlinedInput.notchedOutline: 2px width, 12px radius) */
+.LanguageVersionsContainer {
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.StatusTabsRow {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid #eeeeee;
+  background-color: #fafafa;
+  padding: 12px 16px 0;
+}
+
+.StatusTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #83847d;
+  padding: 0 0 12px;
+}
+
+.StatusTabActive {
+  color: #202125;
+  border-bottom: 2px solid #202125;
+}
+
+.StatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.StatusDotApproved {
+  background-color: #119656;
+}
+
+.StatusDotInProgress {
+  background-color: #f0ad4e;
+}
+
+.StatusDotRejected {
+  background-color: #de3707;
+}
+
+.StatusTabCount {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background-color: #eeeeee;
+  color: #555555;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LanguageVersionsList {
+  background-color: #ffffff;
+}
+
+.LanguageVersionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.LanguageVersionRow:last-child {
+  border-bottom: none;
+}
+
+.EmptyTabText {
+  padding: 14px 16px;
+  color: #83847d;
+  font-size: 13px;
+  margin: 0;
+}
+
+.CategoryChip {
+  background-color: #f2f9f5;
+  color: #119656;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.RowSpacer {
+  flex: 1;
+}
+
+.LangName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #202125;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.LangCode {
+  font-size: 12px;
+  font-weight: 400;
+  color: #83847d;
+}
+
+.ViewLink,
+.DeleteLink,
+.AddLanguageLink {
+  min-width: auto;
+  margin-right: 0;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-family: inherit;
+}
+
+.ViewLink,
+.DeleteLink {
+  text-decoration: underline;
+}
+
+.ViewLink,
+.AddLanguageLink {
+  color: #119656;
+}
+
+.DeleteLink {
+  color: #de3707;
+}
+
+.ViewLink,
+.DeleteLink {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.AddLanguageLink {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 16px;
+}

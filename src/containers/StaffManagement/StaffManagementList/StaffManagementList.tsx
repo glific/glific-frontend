@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
 import { useQuery } from '@apollo/client';
-import { GET_ORGANIZATION_PHONE } from 'graphql/queries/Organization';
-import { USER_COUNT, FILTER_USERS } from 'graphql/queries/User';
-import { DELETE_USER } from 'graphql/mutations/User';
-import StaffIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
+import StaffIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import { staffManagementInfo } from 'common/HelpData';
 import { List } from 'containers/List/List';
 import { getUserRole } from 'context/role';
+import { DELETE_USER } from 'graphql/mutations/User';
+import { GET_ORGANIZATION_PHONE } from 'graphql/queries/Organization';
+import { FILTER_USERS, USER_COUNT } from 'graphql/queries/User';
+import { useTranslation } from 'react-i18next';
 import styles from './StaffManagementList.module.css';
-import { staffManagementInfo } from 'common/HelpData';
 
 export const StaffManagementList = () => {
   const { t } = useTranslation();
@@ -94,23 +94,21 @@ export const StaffManagementList = () => {
   };
 
   return (
-    <div>
-      <List
-        helpData={staffManagementInfo}
-        title={t('Staff Management')}
-        listItem="users"
-        listItemName="user"
-        pageLink="staff-management"
-        listIcon={staffIcon}
-        dialogMessage={dialogMessage}
-        {...queries}
-        {...columnAttributes}
-        button={{ show: false }}
-        searchParameter={['name']}
-        additionalAction={additionalAction}
-        restrictedAction={getRestrictedAction}
-      />
-    </div>
+    <List
+      helpData={staffManagementInfo}
+      title={t('Staff Management')}
+      listItem="users"
+      listItemName="user"
+      pageLink="staff-management"
+      listIcon={staffIcon}
+      dialogMessage={dialogMessage}
+      {...queries}
+      {...columnAttributes}
+      button={{ show: false }}
+      searchParameter={['name']}
+      additionalAction={additionalAction}
+      restrictedAction={getRestrictedAction}
+    />
   );
 };
 

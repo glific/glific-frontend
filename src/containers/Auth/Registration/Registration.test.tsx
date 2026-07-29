@@ -42,6 +42,14 @@ describe('<Registration />', () => {
     });
   });
 
+  it('shows the WhatsApp number instruction hint', async () => {
+    render(wrapper);
+    const hint = await screen.findByTestId('whatsAppNumberHint');
+    expect(hint).toHaveTextContent(
+      "Use your personal WhatsApp number to log in or create your account. Do not use your chatbot's WhatsApp number."
+    );
+  });
+
   it('should check if all the fields are in correct state', async () => {
     const user = userEvent.setup();
     const { container } = render(wrapper);

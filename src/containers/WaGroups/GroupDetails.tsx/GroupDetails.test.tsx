@@ -2,7 +2,17 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import GroupDetails from './GroupDetails';
-import { countWaGroupContacts, removeContactQuery, getWaGroupQuery, waGroupContacts } from 'mocks/Groups';
+import {
+  countWaGroupContacts,
+  removeContactQuery,
+  getWaGroupQuery,
+  waGroupContacts,
+  importMembersQuery,
+  importMembersErrorResponse,
+  importMembersNetworkError,
+  removeContactErrorResponse,
+  removeContactNetworkError,
+} from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 const mocks = [
@@ -131,5 +141,139 @@ test('should close dialog box', async () => {
 
   await waitFor(() => {
     expect(dialogBox).not.toBeInTheDocument();
+  });
+});
+
+const renderWith = (extraMocks: any[] = []) => (
+  <MockedProvider mocks={[waGroupContacts, countWaGroupContacts, getWaGroupQuery, ...extraMocks]} addTypename={false}>
+    <MemoryRouter>
+      <GroupDetails />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+test('switches to the Phones and Details tabs', async () => {
+  render(renderWith());
+
+  await waitFor(() => {
+    expect(screen.getByText('Phones')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Phones'));
+  await waitFor(() => {
+    expect(screen.getByTestId('phone-row-1')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Details'));
+  await waitFor(() => {
+    expect(screen.getByText('Collections')).toBeInTheDocument();
+  });
+  expect(screen.queryByTestId('phone-row-1')).not.toBeInTheDocument();
+});
+
+const uploadCsv = () => {
+  const input = screen.getByTestId('uploadWaMembers');
+  const file = new File(['phone\n919900112233\n'], 'members.csv', { type: 'text/csv' });
+  fireEvent.change(input, { target: { files: [file] } });
+};
+
+const openAddAndUpload = async () => {
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+
+  await screen.findByTestId('uploadWaMembers');
+  uploadCsv();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('ok-button')).not.toBeDisabled();
+  });
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('adds members to the group via CSV upload', async () => {
+  render(renderWith([importMembersQuery, getWaGroupQuery, waGroupContacts, countWaGroupContacts]));
+  await openAddAndUpload();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith(
+      "Member upload started in the background — you'll be notified when it's done.",
+      'success'
+    );
+  });
+});
+
+const openRemoveAndConfirm = async () => {
+  await waitFor(() => {
+    expect(screen.getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
+  });
+  fireEvent.click(screen.getAllByTestId('removeContact')[0]);
+  await screen.findByTestId('dialogBox');
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('warns when removing a contact returns errors', async () => {
+  render(renderWith([removeContactErrorResponse, getWaGroupQuery, waGroupContacts, countWaGroupContacts]));
+  await openRemoveAndConfirm();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Remove failed', 'warning');
+  });
+});
+
+test('warns when removing a contact errors out', async () => {
+  render(renderWith([removeContactNetworkError]));
+  await openRemoveAndConfirm();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not remove contact from the group', 'warning');
+  });
+});
+
+test('warns when the member import returns errors', async () => {
+  render(renderWith([importMembersErrorResponse]));
+  await openAddAndUpload();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not add member', 'warning');
+  });
+});
+
+test('warns when the member import errors out', async () => {
+  render(renderWith([importMembersNetworkError]));
+  await openAddAndUpload();
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Could not upload members', 'warning');
+  });
+});
+
+test('disables Upload until a CSV is added', async () => {
+  render(renderWith());
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+  await screen.findByTestId('uploadWaMembers');
+
+  // nothing uploaded yet -> the Upload button is disabled
+  expect(screen.getByTestId('ok-button')).toBeDisabled();
+});
+
+test('cancels the add-members dialog', async () => {
+  render(renderWith());
+
+  await waitFor(() => {
+    expect(screen.getByTestId('addMembers')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('addMembers'));
+  await screen.findByTestId('uploadWaMembers');
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('Add members to this group')).not.toBeInTheDocument();
   });
 });

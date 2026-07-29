@@ -8,7 +8,7 @@
   position: fixed;
   right: 40px;
   bottom: 0;
-  width: clamp(320px, 26vw, 420px);
+  width: clamp(340px, 26vw, 400px);
   max-height: 90vh;
   padding: 12px 0;
   background: linear-gradient(135deg, #e8f5f0 0%, #d4ede3 50%, #c9e8da 100%);
@@ -21,7 +21,7 @@
 .ContainerMax {
   composes: Container;
   overflow-y: auto;
-  padding: 12px 20px;
+  padding: 10px 16px 16px;
 }
 
 .ContainerMin {
@@ -53,8 +53,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
+  padding: 10px 12px 6px;
   cursor: pointer;
+  width: 100%;
 }
 
 .Header {
@@ -72,87 +73,177 @@
 
 .HeaderText {
   color: #0c976d;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
 }
 
-.Image {
-  margin: 16px 20px 0;
-  text-align: center;
+.Hero {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(12, 151, 109, 0.25);
+}
+
+.HeroIcon {
+  color: #073f24;
+}
+
+.HeroIcon svg {
+  width: 32px;
+  height: 32px;
+  display: block;
 }
 
 .Title {
-  font-size: clamp(20px, 1.6vw, 24px);
+  font-size: clamp(17px, 1.4vw, 20px);
   font-weight: 800;
   line-height: 1.2;
   color: #073f24;
-  display: block;
-  white-space: nowrap;
   text-align: center;
 }
 
-.Subtitle {
-  font-size: clamp(18px, 1.4vw, 22px);
+.Intro {
+  margin: 12px 0;
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(12, 151, 109, 0.25);
+}
+
+.IntroLead {
+  color: #073f24;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.Divider {
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: #0c976d;
+  margin: 14px auto;
+}
+
+.IntroPrompt {
+  color: #073f24;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.Emphasis {
+  display: block;
+  margin-top: 2px;
+  color: #0c976d;
   font-weight: 700;
-  line-height: 1.2;
+}
+
+.Benefits {
+  margin: 12px 4px 0;
+}
+
+.BenefitsHeading {
   color: #073f24;
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+
+.BenefitRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.BenefitIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(12, 151, 109, 0.12);
+  color: #0c976d;
+}
+
+.BenefitIcon svg {
+  width: 17px;
+  height: 17px;
   display: block;
-  margin-top: 4px;
 }
 
-.Caption {
-  font-size: 1rem;
+.BenefitText {
+  display: flex;
+  flex-direction: column;
+}
+
+.BenefitTitle {
   color: #073f24;
-  margin: 0.5rem 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.Points {
-  margin: 20px 20px 0;
-  text-align: center;
+.BenefitDesc {
+  color: #3a5a4b;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
-.BodyListText {
+.Reward {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 4px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(12, 151, 109, 0.14);
+}
+
+.RewardIcon {
+  flex-shrink: 0;
+  color: #0c976d;
+}
+
+.RewardIcon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.RewardText {
+  margin: 0;
   color: #073f24;
-  font-size: clamp(13px, 1vw, 15px);
-  line-height: 1.6;
-  text-align: justify;
-  text-justify: inter-word;
-  align-self: stretch;
-}
-
-.BodyListText p {
-  margin-bottom: 12px;
-}
-
-.ApplyBy {
-  font-size: 15px;
-  font-weight: 600;
-  color: #073f24;
-  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .ButtonContainer {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
-  gap: 1rem;
-  padding: 20px;
+  padding: 14px 4px 0;
 }
 
 .PrimaryButton,
 .SecondaryButton {
-  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
   text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
   text-decoration: none;
-  white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 100%;
 }
 
 .PrimaryButton {
@@ -174,4 +265,16 @@
 
 .SecondaryButton:hover {
   background: #f5fdf9;
+}
+
+.ButtonIcon {
+  font-size: 16px;
+}
+
+.Deadline {
+  margin: 10px 0 0;
+  text-align: center;
+  color: #073f24;
+  font-size: 12px;
+  font-weight: 600;
 }

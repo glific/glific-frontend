@@ -1,13 +1,13 @@
-import { Instructions } from './Instructions/Instructions';
-import styles from './ContactManagement.module.css';
-import { Heading } from 'components/UI/Heading/Heading';
-import { useState } from 'react';
-import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
-import { Button } from 'components/UI/Form/Button/Button';
-import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
 import { contactVariablesInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Button } from 'components/UI/Form/Button/Button';
+import { Heading } from 'components/UI/Heading/Heading';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
+import styles from './ContactManagement.module.css';
+import { Instructions } from './Instructions/Instructions';
+import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 
 export const ContactManagement = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -48,10 +48,10 @@ export const ContactManagement = () => {
       <Heading formTitle="Contact Management" helpData={contactVariablesInfo} />
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
-          <div>
+          <>
             <h2>Import contacts</h2>
             <Instructions />
-          </div>
+          </>
 
           <div className={styles.Buttons}>
             <Button data-testid="uploadContactsBtn" variant="contained" onClick={() => setShowUploadDialog(true)}>

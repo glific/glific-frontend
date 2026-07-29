@@ -20,7 +20,7 @@
   flex-flow: column;
   background-color: #f8faf5;
   position: relative;
-  height: 100vh;
+  height: 100%;
 }
 
 .DialogBox {

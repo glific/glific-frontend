@@ -1,0 +1,24 @@
+.BetaTag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 1rem;
+  background-color: #119656;
+  color: #fff !important;
+  font-family: Heebo;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0.5rem;
+}
+
+.Small {
+  padding: 0.1rem 0.4rem;
+  font-size: 0.5rem;
+  line-height: 12px;
+}
+
+.Big {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.6rem;
+  line-height: 14px;
+}

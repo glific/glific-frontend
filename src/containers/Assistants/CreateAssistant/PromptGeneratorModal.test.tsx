@@ -79,7 +79,7 @@ test('renders the header, beta notice and all 9 questions as a single form', () 
   renderModal();
 
   expect(screen.getByText(/Generate Prompt with AI/)).toBeInTheDocument();
-  expect(screen.getByText('BETA')).toBeInTheDocument();
+  expect(screen.getByText('Beta')).toBeInTheDocument();
   expect(screen.getByText('Answer 9 questions to get a tailored assistant prompt')).toBeInTheDocument();
 
   expect(screen.getByTestId('betaBanner')).toBeInTheDocument();

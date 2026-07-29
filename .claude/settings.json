@@ -1,5 +1,12 @@
 {
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true
+  },
+  "worktree": {
+    "symlinkDirectories": [
+      "node_modules",
+      "build",
+      ".env"
+    ]
   }
 }

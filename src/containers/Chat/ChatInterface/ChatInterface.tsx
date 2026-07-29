@@ -181,7 +181,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
             </Tabs>
           </div>
 
-          <div>{listingContent}</div>
+          <div className={styles.ListingWrapper}>{listingContent}</div>
         </div>
       </>
     );
@@ -193,7 +193,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   };
 
   return (
-    <Paper>
+    <Paper className={styles.ChatPaper}>
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>

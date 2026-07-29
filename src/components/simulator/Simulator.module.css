@@ -111,7 +111,7 @@
 .SimContainer {
   position: fixed;
   right: 20px;
-  top: 100px;
+  top: calc(100px + var(--notification-bar-height, 0px));
   z-index: 10000;
 }
 

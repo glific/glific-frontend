@@ -1,6 +1,9 @@
 import { useQuery } from '@apollo/client';
+import { Fab, Tooltip } from '@mui/material';
+import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import Analytics from 'containers/Analytics/Analytics';
 import AskGlific from 'containers/AskGlific/AskGlific';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import Billing from 'containers/SettingList/Billing/Billing';
@@ -20,8 +23,6 @@ import { Navigate, Route, Routes } from 'react-router';
 import { getOrganizationServices } from 'services/AuthService';
 import { useToast } from 'services/ToastService';
 import styles from './AuthenticatedRoute.module.css';
-import { Fab, Tooltip } from '@mui/material';
-import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -47,6 +48,7 @@ const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/HSM/HSMList/HSMList'));
 const HSM = lazy(() => import('containers/HSM/HSM'));
 const HSMListV2 = lazy(() => import('containers/HSM/HSMListV2/HSMListV2'));
+const HSMV2 = lazy(() => import('containers/HSM/HSMV2/HSMV2'));
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
 const BlockContactList = lazy(() => import('containers/BlockContact/BlockContactList/BlockContactList'));
@@ -64,11 +66,11 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
-const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
 const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
+const PhoneManagement = lazy(() => import('containers/WaGroups/PhoneManagement/PhoneManagement'));
 
 const Certificates = lazy(() => import('containers/Certificates/Certificate'));
 const CertificatesList = lazy(() => import('containers/Certificates/CertificatesList/CertificateList'));
@@ -128,6 +130,8 @@ const adminRoutes = (
     <Route path="template/add" element={<HSM />} />
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="template-v2" element={<HSMListV2 />} />
+    <Route path="template-v2/add" element={<HSMV2 />} />
+    <Route path="template-v2/:id/edit" element={<HSMV2 />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="settings" element={<SettingList />}>
       <Route path="" element={<Navigate to="organization" />} />
@@ -153,9 +157,11 @@ const adminRoutes = (
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
+    <Route path="analytics" element={<Analytics />} />
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
+    <Route path="group/phones" element={<PhoneManagement />} />
     <Route path="certificates" element={<CertificatesList />} />
     <Route path="certificate/add" element={<Certificates />} />
     <Route path="certificate/:id/edit" element={<Certificates />} />
@@ -201,7 +207,6 @@ export const AuthenticatedRoute = () => {
   const [provider, setProvider] = useState<string>('');
   const [showAskGlific, setShowAskGlific] = useState(false);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
-  const isAssistantConfigVersionsEnabled = getOrganizationServices('assistantConfigVersionsEnabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -239,19 +244,9 @@ export const AuthenticatedRoute = () => {
     route = (
       <Routes>
         {adminRoutes}
-        {isAssistantConfigVersionsEnabled ? (
-          <>
-            <Route path="assistants" element={<AssistantList />} />
-            <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-            <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
-          </>
-        ) : (
-          <>
-            <Route path="assistants" element={<Assistant />} />
-            <Route path="assistants/add" element={<Assistant />} />
-            <Route path="assistants/:assistantId" element={<Assistant />} />
-          </>
-        )}
+        <Route path="assistants" element={<AssistantList />} />
+        <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+        <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
       </Routes>
     );
   }

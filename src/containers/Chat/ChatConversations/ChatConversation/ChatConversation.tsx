@@ -139,7 +139,7 @@ const ChatConversation = ({
     // replace new line characters with space to come in same line
     originalText = originalText.replace(/\n/g, ' ');
 
-    displayMSG = WhatsAppToJsx(originalText);
+    displayMSG = WhatsAppToJsx(originalText, true);
   }
 
   // set offset to use that in chatting window to fetch that msg

@@ -1,19 +1,19 @@
-import { useState } from 'react';
 import { Popover } from '@mui/material';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import WebhookLogIcon from 'assets/images/icons/Webhook/WebhookDark.svg?react';
-import ViewIcon from 'assets/images/icons/View.svg?react';
 import CopyIcon from 'assets/images/icons/Copy.png';
-import { List } from 'containers/List/List';
-import Menu from 'components/UI/Menu/Menu';
-import { Button } from 'components/UI/Form/Button/Button';
-import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
-import { copyToClipboard, slicedString } from 'common/utils';
+import ViewIcon from 'assets/images/icons/View.svg?react';
+import WebhookLogIcon from 'assets/images/icons/Webhook/WebhookDark.svg?react';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
-import styles from './WebhookLogsList.module.css';
 import { webhookLogsInfo } from 'common/HelpData';
+import { copyToClipboard, slicedString } from 'common/utils';
+import { Button } from 'components/UI/Form/Button/Button';
+import Menu from 'components/UI/Menu/Menu';
+import { List } from 'containers/List/List';
+import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
+import styles from './WebhookLogsList.module.css';
 
 const getTime = (time: string) => (
   <div className={styles.TableText}>{dayjs(time).format(STANDARD_DATE_TIME_FORMAT)}</div>
@@ -173,7 +173,7 @@ export const WebhookLogsList = () => {
     </Popover>
   );
   return (
-    <div className={styles.Container}>
+    <>
       <List
         helpData={webhookLogsInfo}
         title={t('Webhook Logs')}
@@ -190,7 +190,7 @@ export const WebhookLogsList = () => {
         {...columnAttributes}
       />
       {popover}
-    </div>
+    </>
   );
 };
 

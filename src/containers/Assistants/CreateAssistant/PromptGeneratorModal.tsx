@@ -9,6 +9,7 @@ import { setErrorMessage } from 'common/notification';
 
 import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
+import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 
 import { GENERATE_PROMPT } from 'graphql/mutations/PromptGenerator';
 import { PROMPT_GENERATION } from 'graphql/queries/PromptGenerator';
@@ -423,7 +424,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
             <div className={styles.HeaderText}>
               <h5 className={styles.Title}>
                 {t('Generate Prompt with AI')}
-                <span className={styles.BetaBadge}>{t('BETA')}</span>
+                <BetaTag />
               </h5>
               <span className={styles.Subtitle}>{t('Answer 9 questions to get a tailored assistant prompt')}</span>
             </div>

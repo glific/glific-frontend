@@ -99,8 +99,10 @@ const gqlClient = (navigate: any) => {
   const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) => {
-        // eslint-disable-next-line
-        Sentry.captureException(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+        Sentry.captureException(new Error(`[GraphQL error]: ${message}`), {
+          fingerprint: ['graphql-error', String(message)],
+          extra: { locations, path },
+        });
         // logged error in logflare
         return setLogs(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, 'error');
       });

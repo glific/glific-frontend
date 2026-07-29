@@ -1,23 +1,24 @@
-import { useEffect, useState, useRef } from 'react';
-import { Popover, FormControlLabel, RadioGroup, Radio } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { FormControlLabel, Popover, Radio, RadioGroup } from '@mui/material';
 import dayjs from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import CopyIcon from 'assets/images/icons/Copy.png';
 import NotificationIcon from 'assets/images/icons/Notification/Notification-dark-icon.svg?react';
 import ViewIcon from 'assets/images/icons/View.svg?react';
-import CopyIcon from 'assets/images/icons/Copy.png';
-import { List } from 'containers/List/List';
-import Menu from 'components/UI/Menu/Menu';
-import { Button } from 'components/UI/Form/Button/Button';
-import { copyToClipboard, exportCsvFile } from 'common/utils';
-import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
-import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
-import styles from './NotificationList.module.css';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
-import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { copyToClipboard, exportCsvFile } from 'common/utils';
+import { Button } from 'components/UI/Form/Button/Button';
+import Menu from 'components/UI/Menu/Menu';
+import { List } from 'containers/List/List';
+import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
+import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
+import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import styles from './NotificationList.module.css';
+import { WA_GROUP_COLLECTION_PRIMARY_REPORT } from 'graphql/queries/WaGroups';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
@@ -82,6 +83,32 @@ export const NotificationList = () => {
     }, 1000);
   }, []);
 
+  // The collection primary-phone report is a query (not a mutation like the
+  // upload reports), so fetch it imperatively and download the skipped-groups CSV.
+  const downloadCollectionPrimaryReport = async (userJobId: number) => {
+    try {
+      const { data } = await client.query({
+        query: WA_GROUP_COLLECTION_PRIMARY_REPORT,
+        variables: { userJobId },
+        fetchPolicy: 'network-only',
+      });
+
+      const { csvRows, error } = data?.waGroupCollectionPrimaryReport || {};
+      if (error) {
+        setNotification(error, 'warning');
+        return;
+      }
+      if (!csvRows) {
+        setNotification(t('The collection primary-phone report is not ready yet.'), 'warning');
+        return;
+      }
+      exportCsvFile(csvRows, 'Collection_Primary_Phone_Status');
+      setNotification(t('Downloaded the collection primary-phone report'), 'success');
+    } catch (error) {
+      setErrorMessage(error as Error);
+    }
+  };
+
   const setDialog = (id: any, item: any) => {
     const category = item.category;
     const entity = JSON.parse(item.entity);
@@ -108,11 +135,15 @@ export const NotificationList = () => {
         destination = `/group/chat/${entity.id}`;
         break;
       case 'Contact Upload':
+      case 'WA Group Member Upload':
         getStatus({
           variables: {
             userJobId: entity?.user_job_id,
           },
         });
+        break;
+      case 'Collection Primary Phone':
+        downloadCollectionPrimaryReport(entity?.user_job_id);
         break;
       case 'Custom Certificates':
         destination = `/certificate/${entity?.template_id}/edit`;
@@ -252,7 +283,7 @@ export const NotificationList = () => {
     </div>
   );
   return (
-    <div>
+    <>
       <List
         title="Notifications"
         listItem="notifications"
@@ -270,7 +301,7 @@ export const NotificationList = () => {
         filterList={filterOnSeverity}
       />
       {popover}
-    </div>
+    </>
   );
 };
 

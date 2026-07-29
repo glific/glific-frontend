@@ -1,6 +1,6 @@
 .LanguageWrapper {
   position: fixed;
-  top: 32px;
+  top: calc(32px + var(--notification-bar-height, 0px));
   right: 24px;
   z-index: 1000;
   max-width: 500px;

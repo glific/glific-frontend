@@ -18,7 +18,7 @@
 
 .ChatConversations {
   width: 100%;
-  height: calc(100vh - 129px);
+  height: 100%;
   overflow-y: hidden;
   position: relative;
 }

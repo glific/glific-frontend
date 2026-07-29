@@ -33,21 +33,6 @@ vi.mock('containers/Assistants/AssistantDetail/AssistantDetail', () => ({
   default: () => <div data-testid="assistant-detail-new" />,
 }));
 
-vi.mock('containers/Assistants/Assistants', () => ({
-  default: () => <div data-testid="assistant-legacy" />,
-}));
-
-vi.mock('services/AuthService', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('services/AuthService')>();
-  return {
-    ...actual,
-    getOrganizationServices: vi.fn((service: string) => {
-      if (service === 'assistantConfigVersionsEnabled') return true;
-      return null;
-    }),
-  };
-});
-
 const mocks = [
   ...walletBalanceQuery,
   ...walletBalanceSubscription,
@@ -81,12 +66,7 @@ describe('<AuthenticatedRoute />', () => {
     });
   });
 
-  test('renders new AssistantList when assistantConfigVersionsEnabled is true', async () => {
-    const { getOrganizationServices } = await import('services/AuthService');
-    (getOrganizationServices as ReturnType<typeof vi.fn>).mockImplementation((service: string) =>
-      service === 'assistantConfigVersionsEnabled' ? true : null
-    );
-
+  test('renders AssistantList at /assistants', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     render(
       <MockedProvider mocks={mocks}>
@@ -100,28 +80,6 @@ describe('<AuthenticatedRoute />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
-    });
-  });
-
-  test('renders legacy Assistant when assistantConfigVersionsEnabled is false', async () => {
-    const { getOrganizationServices } = await import('services/AuthService');
-    (getOrganizationServices as ReturnType<typeof vi.fn>).mockImplementation((service: string) =>
-      service === 'assistantConfigVersionsEnabled' ? false : null
-    );
-
-    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-    render(
-      <MockedProvider mocks={mocks}>
-        <MemoryRouter initialEntries={['/assistants']}>
-          <Suspense fallback={<Loading />}>
-            <AuthenticatedRoute />
-          </Suspense>
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('assistant-legacy')).toBeInTheDocument();
     });
   });
 });

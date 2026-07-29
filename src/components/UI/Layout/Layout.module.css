@@ -3,10 +3,20 @@
 }
 
 .MainFullWidth {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow: auto;
   position: relative;
+}
+
+/*
+ * Gives page content a real container height so it can size itself against its
+ * parent (via % / flex) instead of the viewport (vh). The mobile header is
+ * `display: none` on desktop, so this equals the full main area height.
+ */
+.MainContent {
+  height: 100%;
+  overflow: hidden;
 }
 
 .MobileHeader {

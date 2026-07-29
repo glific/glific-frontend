@@ -54,17 +54,6 @@
   color: #6b7280;
 }
 
-.BetaBadge {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #92722a;
-  background-color: #fdf2cf;
-  border: 1px solid #f5dd9a;
-  border-radius: 4px;
-  padding: 1px 6px;
-}
-
 .CloseButton {
   margin: -0.5rem -0.5rem 0 0;
 }

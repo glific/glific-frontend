@@ -45,7 +45,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
 
       // let's return early incase we don't have cached conversations
       // TODO: Need to investigate why this happens
-      if (!cachedConversations) {
+      if (!cachedConversations || !cachedConversations.search) {
         return null;
       }
 

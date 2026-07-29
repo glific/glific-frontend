@@ -37,7 +37,7 @@ export const Layout = ({ children }: LayoutProps) => {
             <MenuIcon />
           </span>
         </div>
-        <div>{children}</div>
+        <div className={styles.MainContent}>{children}</div>
       </main>
       <TrialVideoModal sessionData={trialSessionData} />
     </>

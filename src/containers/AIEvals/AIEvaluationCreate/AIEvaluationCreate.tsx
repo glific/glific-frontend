@@ -255,7 +255,7 @@ export default function AIEvaluationCreate() {
   };
 
   return (
-    <div>
+    <>
       <FormLayout
         states={states}
         setStates={setStates}
@@ -307,6 +307,6 @@ export default function AIEvaluationCreate() {
           onProceed={handleUploadGoldenQaProceed}
         />
       )}
-    </div>
+    </>
   );
 }

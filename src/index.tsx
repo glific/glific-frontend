@@ -28,6 +28,7 @@ function initPostHog(): boolean {
       capture_performance: {
         web_vitals: true,
       },
+      opt_in_site_apps: true,
     });
     return true;
   } catch {

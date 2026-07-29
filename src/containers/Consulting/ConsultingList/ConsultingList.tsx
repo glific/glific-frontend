@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import dayjs from 'dayjs';
-import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import ConsultingIcon from 'assets/images/icons/icon-consulting.svg?react';
-import { List } from 'containers/List/List';
-import { Consulting } from '../Consulting';
-import { ExportConsulting } from './ExportConsulting/ExportConsulting';
-import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
-import styles from './ConsultingList.module.css';
 import { DATE_FORMAT_WITH_MONTH } from 'common/constants';
+import { List } from 'containers/List/List';
+import dayjs from 'dayjs';
+import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Consulting } from '../Consulting';
+import styles from './ConsultingList.module.css';
+import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 
 const ConsultingList = () => {
   const { t } = useTranslation();
@@ -115,7 +115,7 @@ const ConsultingList = () => {
   ];
 
   return (
-    <>
+    <div className={styles.Container}>
       {dialog}
       <List
         descriptionBox={<ExportConsulting setFilters={setFilters} />}
@@ -143,7 +143,7 @@ const ConsultingList = () => {
         {...queries}
         {...columnAttributes}
       />
-    </>
+    </div>
   );
 };
 

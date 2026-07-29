@@ -37,12 +37,14 @@
   font-size: 13px;
   font-weight: 700;
   color: #073f24;
+  font-family: 'Heebo', sans-serif !important;
 }
 
 .UnselectedText {
   font-size: 13px;
   font-weight: 500;
   color: #717971;
+  font-family: 'Heebo', sans-serif !important;
 }
 
 .Divider {
@@ -113,6 +115,7 @@
   padding: 2px 6px;
   color: #fff;
   animation: animation 1s ease-in-out;
+  font-family: 'Heebo', sans-serif !important;
 }
 
 .ListItemContent {

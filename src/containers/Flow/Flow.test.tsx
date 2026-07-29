@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { MemoryRouter, Route, Routes, useParams } from 'react-router';
 import { vi } from 'vitest';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -24,6 +24,11 @@ import { setErrorMessage, setNotification } from 'common/notification';
 import FlowList from './FlowList/FlowList';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
+
+const ConfigurePageStub = () => {
+  const { uuid } = useParams();
+  return <div>Configure: {uuid}</div>;
+};
 
 const mocks = [
   ...getOrganizationQuery,
@@ -259,6 +264,7 @@ it('should configure the flow', async () => {
         <Routes>
           <Route path="flow" element={<FlowList />} />
           <Route path="flow/:id/edit" element={<Flow />} />
+          <Route path="flow/configure/:uuid" element={<ConfigurePageStub />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -276,6 +282,12 @@ it('should configure the flow', async () => {
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
+  });
+
+  // After editing an existing flow, Configure must navigate to the flow's UUID,
+  // not /flow/configure/undefined
+  await waitFor(() => {
+    expect(getByText('Configure: 3fa22108-f464-41e5-81d9-d8a298854429')).toBeInTheDocument();
   });
 });
 

@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+  min-height: 320px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.icon {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #073f24;
+  max-width: 420px;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #777777;
+  max-width: 420px;
+}

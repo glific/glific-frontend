@@ -18,6 +18,8 @@ export interface EmojiInputProps {
   handleBlur?: any;
   inputProp?: any;
   translation?: string;
+  defaultValue?: any;
+  squareBottom?: boolean;
 }
 
 interface EmojiPickerProps {

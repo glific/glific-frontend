@@ -1,3 +1,7 @@
+.Container {
+  height: 100%;
+}
+
 .ConsultingHoursIcon {
   width: 29px;
   height: 29px;
@@ -56,4 +60,5 @@
 
 .Body {
   margin-top: 0;
+  height: calc(100% - 300px);
 }

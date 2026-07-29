@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { BUTTON_OPTIONS } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -36,7 +36,13 @@ import {
   getVariables,
   getExampleValue,
   getTemplateAndButtons,
+  getTemplateAndButton,
+  buildTemplatePayload,
+  buildTemplateButtonsList,
+  buildUpdatedButtons,
+  buildValidationSchema,
   removeFirstLineBreak,
+  buttonTypes,
   CallToActionTemplate,
   QuickReplyTemplate,
   mediaOptions,
@@ -51,14 +57,8 @@ const queries = {
 };
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
-const regexForShortcode = /^[a-z0-9_]+$/g;
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
-const buttonTypes: any = {
-  QUICK_REPLY: { value: '' },
-  CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
-  WHATSAPP_FORM: { type: 'whatsapp_form', form_id: '', text: '', navigate_screen: '' },
-};
 
 export const HSM = () => {
   const location: any = useLocation();
@@ -222,65 +222,6 @@ export const HSM = () => {
     setLanguageId(selected);
   };
 
-  // Creating payload for button template
-  const getButtonTemplatePayload = () => {
-    const buttons = templateButtons.reduce((result: any, button: any) => {
-      const {
-        type: buttonType,
-        value,
-        title,
-        text,
-        form_id,
-        navigate_screen,
-        urlType: buttonUrlType,
-        sampleSuffix: buttonSampleSuffix,
-      }: any = button;
-
-      const urlType = buttonUrlType || 'Static';
-      const sampleSuffix = buttonSampleSuffix || '';
-
-      if (templateType?.id === CALL_TO_ACTION) {
-        const typeObj: any = {
-          phone_number: 'PHONE_NUMBER',
-          url: 'URL',
-        };
-        let obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
-
-        if (buttonType === 'url' && urlType === 'Dynamic') {
-          obj = {
-            type: typeObj[buttonType],
-            text: title,
-            [buttonType]: `${value}{{1}}`,
-            example: [`${value}${sampleSuffix}`],
-          };
-        }
-        result.push(obj);
-      }
-
-      if (templateType?.id === QUICK_REPLY) {
-        const obj: any = { type: QUICK_REPLY, text: value };
-        result.push(obj);
-      }
-
-      if (templateType?.id === 'WHATSAPP_FORM') {
-        const obj = { type: 'FLOW', navigate_screen, text, flow_id: form_id, flow_action: 'NAVIGATE' };
-        result.push(obj);
-      }
-      return result;
-    }, []);
-
-    // get template body
-    const templateBody = getTemplateAndButton(body);
-    const templateExample = getTemplateAndButton(getExampleFromBody(body, variables));
-
-    return {
-      hasButtons: true,
-      buttons: JSON.stringify(buttons),
-      buttonType: templateType?.id,
-      body: templateBody.message,
-      example: templateExample.message,
-    };
-  };
   const handleDynamicParamsChange = (value: any, index: number) => {
     setTemplateButtons((prev) => {
       const updated = [...prev];
@@ -360,51 +301,18 @@ export const HSM = () => {
     }
   };
 
-  const setPayload = (payload: any) => {
-    let payloadCopy = { ...payload, isHsm: true };
-    if (isEditing) {
-      payloadCopy.shortcode = payloadCopy.newShortcode;
-    } else {
-      payloadCopy.category = category.label;
-      payloadCopy.shortcode = languageVariant ? payloadCopy.existingShortcode.label : payloadCopy.newShortcode;
-    }
-    payloadCopy.languageId = payload.language.id;
-    payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
-    if (isAddButtonChecked && templateType?.id) {
-      const templateButtonData = getButtonTemplatePayload();
-      Object.assign(payloadCopy, { ...templateButtonData });
-    }
-
-    if (payloadCopy.type) {
-      payloadCopy.type = payloadCopy.type.id;
-      // STICKER is a type of IMAGE
-      if (payloadCopy.type.id === 'STICKER') {
-        payloadCopy.type = 'IMAGE';
-      }
-    } else {
-      payloadCopy.type = 'TEXT';
-    }
-
-    if (payloadCopy.type === 'TEXT' || isEditing) {
-      delete payloadCopy.attachmentURL;
-    }
-    if (footer?.trim()) {
-      payloadCopy.footer = footer.trim();
-    }
-
-    if (tagId) {
-      payloadCopy.tagId = payload.tagId.id;
-    }
-
-    delete payloadCopy.isAddButtonChecked;
-    delete payloadCopy.templateButtons;
-    delete payloadCopy.language;
-    delete payloadCopy.languageVariant;
-    delete payloadCopy.variables;
-    delete payloadCopy.existingShortcode;
-    delete payloadCopy.newShortcode;
-    return payloadCopy;
-  };
+  const setPayload = (payload: any) =>
+    buildTemplatePayload(payload, {
+      isEditing,
+      category,
+      variables,
+      isAddButtonChecked,
+      templateType,
+      templateButtons,
+      body,
+      footer,
+      tagId,
+    });
 
   const validateURL = (value: string) => {
     if (value && type) {
@@ -421,42 +329,12 @@ export const HSM = () => {
   };
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
-    let buttons: any = [];
-    const hasPhoneNumber = templateButtons.some((btn: any) => btn.type === 'phone_number');
-    const urlCount = templateButtons.filter((btn: any) => btn?.type === 'url').length;
-    let newButton = { ...buttonTypes[templateType?.id] };
-    if (templateType?.id === CALL_TO_ACTION) {
-      if (hasPhoneNumber && urlCount < 2) {
-        newButton.type = 'url';
-        newButton.value = '';
-        newButton.title = '';
-      }
-    }
-    if (templateType?.id) {
-      buttons = addFromTemplate ? [...templateButtons, newButton] : [newButton];
-    }
-
-    setTemplateButtons(buttons);
+    setTemplateButtons(buildTemplateButtonsList(templateButtons, templateType, addFromTemplate));
   };
 
   const removeTemplateButtons = (index: number) => {
     const result = templateButtons.filter((val, idx) => idx !== index);
     setTemplateButtons(result);
-  };
-
-  const getTemplateAndButton = (text: string) => {
-    const exp = /(\|\s\[)|(\|\[)/;
-    const areButtonsPresent = text.search(exp);
-
-    let message: any = text;
-    let buttons: any = null;
-
-    if (areButtonsPresent !== -1) {
-      buttons = text.substr(areButtonsPresent);
-      message = text.substr(0, areButtonsPresent);
-    }
-
-    return { message, buttons };
   };
 
   const addButtonsToSampleMessage = (buttonTemplate: string) => {
@@ -466,19 +344,7 @@ export const HSM = () => {
   };
 
   const handeInputChange = (value: any, row: any, index: any, eventType: any) => {
-    let obj = { ...row };
-
-    if (eventType === 'type') {
-      obj = { type: value, title: '', value: '' };
-    } else {
-      obj[eventType] = value;
-    }
-
-    const result = templateButtons.map((val: any, idx: number) => {
-      if (idx === index) return obj;
-      return val;
-    });
-    setTemplateButtons(result);
+    setTemplateButtons(buildUpdatedButtons(templateButtons, value, row, index, eventType));
   };
 
   const handleTemplateTypeChange = (value: any) => {
@@ -753,80 +619,20 @@ export const HSM = () => {
     },
   ];
 
-  const validation: any = {
-    language: Yup.object().nullable().required('Language is required.'),
-    label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
-    type: Yup.object()
-      .nullable()
-      .when('attachmentURL', {
-        is: (val: string) => val && val !== '',
-        then: (schema) => schema.nullable().required(t('Type is required.')),
-      }),
-    attachmentURL: Yup.string()
-      .nullable()
-      .when('type', {
-        is: (val: any) => val && val.id,
-        then: (schema) => schema.required(t('Attachment URL is required.')),
-      }),
-    footer: Yup.string().max(60, t('Footer value can be at most 60 characters')),
-    body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
-    category: Yup.object().nullable().required(t('Category is required.')),
-    variables: Yup.array().of(
-      Yup.object().shape({
-        text: Yup.string().required('Variable is required').min(1, 'Text cannot be empty'),
-      })
-    ),
-    newShortcode: Yup.string().when('languageVariant', {
-      is: (val: any) => val === true,
-      then: (schema) => schema.nullable(),
-      otherwise: (schema) =>
-        schema
-          .required(t('Element name is required.'))
-          .matches(regexForShortcode, 'Only lowercase alphanumeric characters and underscores are allowed.'),
-    }),
-    existingShortcode: Yup.object().when('languageVariant', {
-      is: (val: any) => val === true,
-      then: (schema) => schema.nullable().required(t('Element name is required.')),
-      otherwise: (schema) => schema.nullable(),
-    }),
-    templateButtons: Yup.array().of(
-      Yup.lazy(() => {
-        if (isAddButtonChecked) {
-          if (templateType?.id === 'CALL_TO_ACTION') {
-            return Yup.object().shape({
-              type: Yup.string().required('Type is required.'),
-              title: Yup.string().required('Title is required.'),
-              value: Yup.string().required('Value is required.'),
-            });
-          } else if (templateType?.id === 'QUICK_REPLY') {
-            return Yup.object().shape({
-              value: Yup.string().required('Value is required.'),
-            });
-          } else if (templateType?.id === 'WHATSAPP_FORM') {
-            return Yup.object().shape({
-              form_id: Yup.string().required('Form is required.'),
-              text: Yup.string().required('Button title is required.'),
-              navigate_screen: Yup.string().required('Screen is required.'),
-            });
-          }
-          return Yup.object().shape({});
-        } else {
-          return Yup.object().shape({});
-        }
-      })
-    ),
-  };
-
-  const FormSchema = Yup.object().shape(validation, [['type', 'attachmentURL']]);
+  const FormSchema = buildValidationSchema({
+    t,
+    isAddButtonChecked,
+    templateType,
+    hasTitleField: true,
+    hasLanguageVariant: true,
+  });
 
   useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
-      // sort languages by their name
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
       setLanguageOptions(lang);
       if (!isEditing) {
-        // Try to find English
         const englishLang = lang.find((l: any) => l.label.toLowerCase() === 'english');
         setLanguageId(englishLang || lang[0]);
       }

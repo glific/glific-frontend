@@ -1,6 +1,6 @@
 .Container {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: #e9f4ee;
   display: flex;
   padding: 48px 56px;

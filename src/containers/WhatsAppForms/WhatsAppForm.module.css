@@ -83,9 +83,9 @@
 }
 
 .FormSection {
-  flex: 1;
+  height: calc(100% - 110px);
   min-width: 0;
-  overflow: visible;
+  overflow-y: auto;
 }
 
 .VariablesSection {

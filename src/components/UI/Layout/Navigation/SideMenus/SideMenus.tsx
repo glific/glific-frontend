@@ -45,16 +45,17 @@ const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 
 const getCurrentMenu = (menus: Menu[], path: string) => {
   for (const item of menus) {
-    if (item.path === path) {
-      return undefined; // current path is already a parent
-    }
-
     if (item.children) {
       for (const child of item.children) {
-        if (child.path === path) {
-          return item.path; // current path is a child, return parent path
+        if (path.startsWith(child.path)) {
+          return item.path; // current path is under a child, return parent path to expand accordion
         }
       }
+      if (path.startsWith(item.path)) {
+        return item.path; // current path is under the parent itself
+      }
+    } else if (path.startsWith(item.path)) {
+      return item.path; // leaf item: return its own path so it gets selected
     }
   }
 };
@@ -65,6 +66,10 @@ const SideMenus = ({ opened }: SideMenusProps) => {
   const [parentMenu, setParentMenu] = useState(getCurrentMenu(menuObj, location.pathname));
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setParentMenu(getCurrentMenu(menuObj, location.pathname));
+  }, [location.pathname]);
 
   // handle count for notifictions
   const [getNotificationCount, { data: notificationData }] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {

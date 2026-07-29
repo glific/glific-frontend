@@ -101,13 +101,13 @@ const showLivePreview = (format: any) => {
   return formatObject;
 };
 
-export const WhatsAppToJsx = (text: any) => {
+export const WhatsAppToJsx = (text: any, disableLinks = false) => {
   let modifiedText = text;
 
   if (typeof text === 'string') {
     modifiedText = showLivePreview(modifiedText);
     // search for all the links in the message
-    return <Interweave content={modifiedText} matchers={[new UrlMatcher('url')]} />;
+    return <Interweave content={modifiedText} matchers={disableLinks ? [] : [new UrlMatcher('url')]} />;
   }
 
   return text;
