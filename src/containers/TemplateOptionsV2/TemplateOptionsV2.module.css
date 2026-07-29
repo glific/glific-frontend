@@ -100,6 +100,14 @@
   flex-shrink: 0;
 }
 
+.DeleteIconWrapper {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  height: 56px;
+  flex-shrink: 0;
+}
+
 .FieldsRow {
   display: flex;
   gap: 20px;
