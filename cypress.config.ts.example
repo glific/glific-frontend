@@ -1,0 +1,53 @@
+import { defineConfig } from 'cypress'
+import cypressSplit from 'cypress-split'
+import { reportToInstatus } from './cypress/plugins/instatus'
+import { plugins } from './cypress/plugins/index'
+
+export default defineConfig({
+  allowCypressEnv: false,
+  viewportWidth: 1366,
+  viewportHeight: 768,
+  expose: {
+    backendUrl: 'https://api.glific.test:4001/api',
+  },
+  env: {
+    phone: '7834811114',
+    password: 'Secret1234!',
+    staff: {
+      phone: '9820112345',
+      password: 'Secret12345678!',
+    },
+    smoke: {
+      baseUrl: 'https://prod.glific.com',
+      phone: '',
+      password: '',
+    },
+  },
+  defaultCommandTimeout: 8000,
+  projectId: 'ocex65',
+  retries: {
+    runMode: 2,
+  },
+  video: false,
+  e2e: {
+    setupNodeEvents(on, config) {
+      config = plugins(on, config)
+      cypressSplit(on, config)
+
+      on('task', {
+        reportInstatus(passed: boolean) {
+          return reportToInstatus(
+            process.env.INSTATUS_API_KEY ?? '',
+            process.env.INSTATUS_PAGE_ID ?? '',
+            process.env.INSTATUS_COMPONENT_ID ?? '',
+            passed
+          )
+        },
+      })
+
+      return config
+    },
+    baseUrl: 'https://glific.test:3000/',
+    specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
+  },
+})

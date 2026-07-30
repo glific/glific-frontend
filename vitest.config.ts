@@ -1,12 +1,13 @@
 import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
+    exclude: [...configDefaults.exclude, 'cypress/**'],
     coverage: {
       reporter: ['lcov', 'text', 'html'],
       // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
