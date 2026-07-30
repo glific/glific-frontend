@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.17.3",
+  "version": "6.17.2",
   "private": true,
   "type": "module",
   "license": {
@@ -90,7 +90,10 @@
     "extract-translations": "i18next",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "design-system:ratchet": "node scripts/design-system-ratchet.js",
+    "design-system:ratchet:update": "node scripts/design-system-ratchet.js --update",
+    "design-system:eslint": "eslint --no-eslintrc -c .eslintrc.design-system.json --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.test.tsx' 'src/containers/**/*.{ts,tsx}'"
   },
   "engines": {
     "node": ">=22.12.0 <23"
@@ -125,6 +128,8 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^19.1.0",
     "@types/uuid": "^11.0.0",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
     "@vitest/coverage-istanbul": "^4.0.15",
     "@vitest/ui": "^4.0.15",
     "cypress": "^15.15.0",
