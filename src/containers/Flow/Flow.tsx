@@ -7,6 +7,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION } from 'graphql/queries/Organization';
@@ -46,8 +47,19 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const [copyFlowTitle, setCopyFlowTitle] = useState('');
   const [skipValidation, setSkipValidation] = useState(false);
+  // Channel discriminator (flow_type_enum): 'MESSAGE' = WhatsApp (default), 'WEB_MESSAGE' = Web.
+  const [flowType, setFlowType] = useState('MESSAGE');
 
   const { t } = useTranslation();
+
+  // Editing an existing flow locks the channel — switching a flow's channel after it has nodes
+  // could strand channel-specific actions (e.g. an HSM node on a web flow).
+  const isEditing = Boolean(params.id);
+
+  const channelOptions = [
+    { id: 'MESSAGE', label: t('WhatsApp') },
+    { id: 'WEB_MESSAGE', label: t('Web') },
+  ];
 
   let isTemplate = false;
   if (locationState === 'template') {
@@ -88,6 +100,7 @@ export const Flow = () => {
     ignoreKeywords,
     roles,
     skipValidation,
+    flowType,
   };
 
   const setStates = ({
@@ -101,6 +114,7 @@ export const Flow = () => {
     ignoreKeywords: ignoreKeywordsValue,
     roles: rolesValue,
     skipValidation: skipValidation,
+    flowType: flowTypeValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -136,6 +150,8 @@ export const Flow = () => {
     setRoles(rolesValue);
     setDescription(description);
     setSkipValidation(skipValidation);
+    // copyTemplate/copy reuse the source flow's channel; default to WhatsApp when unset.
+    setFlowType(flowTypeValue || 'MESSAGE');
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -195,6 +211,15 @@ export const Flow = () => {
       label: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow.'),
       disabled: isTemplate,
+    },
+    {
+      component: Dropdown,
+      name: 'flowType',
+      placeholder: t('Channel'),
+      options: channelOptions,
+      // Web flows restrict which nodes can be built (no WhatsApp-group / HSM template).
+      helperText: t('Web flows cannot use HSM templates or WhatsApp group actions.'),
+      disabled: isTemplate || isEditing,
     },
     {
       component: Input,

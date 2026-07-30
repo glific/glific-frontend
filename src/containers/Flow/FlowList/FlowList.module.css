@@ -29,6 +29,11 @@
   width: 14%;
 }
 
+.Channel {
+  width: 10%;
+  min-width: 110px;
+}
+
 .Actions {
   width: 15%;
   max-width: 200px;
@@ -155,6 +160,30 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px;
+}
+
+/* Channel pill — mirrors .LabelButton's shape; color encodes the flow's channel:
+   glific green for WhatsApp, blue for Web. */
+.ChannelPill {
+  width: fit-content;
+  min-width: 72px;
+  padding: 4px 12px;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+}
+
+.ChannelWhatsapp {
+  background: #e8f5ec;
+  color: #073f24;
+}
+
+.ChannelWeb {
+  background: #e6effc;
+  color: #1565c0;
 }
 
 .Roles {

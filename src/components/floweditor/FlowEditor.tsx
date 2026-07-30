@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePostHog } from '@posthog/react';
 
 import InfoIcon from '@mui/icons-material/Info';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, Navigate, useParams } from 'react-router';
 import { Menu, MenuItem, Typography } from '@mui/material';
@@ -58,6 +59,9 @@ export const FlowEditor = () => {
   const [isTemplate, setIsTemplate] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [readOnlyMessage, setReadOnlyMessage] = useState('');
+  // Channel discriminator (flow_type_enum): 'MESSAGE' = WhatsApp, 'WEB_MESSAGE' = Web. Drives
+  // both the editor node restrictions (via setConfig filters) and the header channel tag.
+  const [flowType, setFlowType] = useState('MESSAGE');
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -75,7 +79,7 @@ export const FlowEditor = () => {
 
   const loadFlowEditor = (forceReadOnly?: boolean) => {
     const readOnlyMode = forceReadOnly ?? isReadOnly;
-    const config = setConfig(uuid, skipValidation, readOnlyMode, posthog);
+    const config = setConfig(uuid, skipValidation, readOnlyMode, posthog, flowType);
 
     showFlowEditor(document.getElementById('flow'), config);
     setLoading(false);
@@ -187,6 +191,7 @@ export const FlowEditor = () => {
       setFlowId(flowName.flows[0].id);
       setIsTemplate(flowName.flows[0].isTemplate);
       setSkipValidation(flowName.flows[0].skipValidation);
+      setFlowType(flowName.flows[0].flowType || 'MESSAGE');
 
       if (flowName.flows[0].isTemplate) {
         setIsReadOnly(true);
@@ -403,7 +408,22 @@ export const FlowEditor = () => {
             <Typography variant="h6" data-testid="flowName">
               {flowName ? flowTitle : 'Flow'}
             </Typography>
-            <div>{flowKeywords}</div>
+            <div className={styles.KeywordRow}>
+              {flowKeywords}
+              {(() => {
+                const isWeb = flowType === 'WEB_MESSAGE';
+                return (
+                  <span
+                    className={`${styles.ChannelTag} ${isWeb ? styles.ChannelTagWeb : styles.ChannelTagWhatsapp}`}
+                    data-testid="channelTag"
+                    title={isWeb ? 'Web channel flow' : 'WhatsApp channel flow'}
+                  >
+                    <LocalOfferIcon className={styles.ChannelTagIcon} />
+                    {isWeb ? 'Web' : 'WhatsApp'}
+                  </span>
+                );
+              })()}
+            </div>
           </div>
         </div>
         <div className={styles.Actions}>

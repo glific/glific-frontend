@@ -310,3 +310,18 @@
 .NoIcon {
   margin: 0 1rem;
 }
+
+.ChannelBadge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-end;
+  margin: 2px 32px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #cce6d0;
+  color: #073f24;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-transform: capitalize;
+}

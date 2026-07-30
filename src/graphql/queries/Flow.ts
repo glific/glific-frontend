@@ -32,6 +32,7 @@ export const GET_FLOW = gql`
         keywords
         ignoreKeywords
         skipValidation
+        flowType
       }
     }
   }
@@ -58,6 +59,7 @@ export const FILTER_FLOW = gql`
       updatedAt
       isActive
       isPinned
+      flowType
       roles {
         id
         label
@@ -79,6 +81,7 @@ export const GET_FLOW_DETAILS = gql`
       keywords
       isTemplate
       skipValidation
+      flowType
     }
   }
 `;

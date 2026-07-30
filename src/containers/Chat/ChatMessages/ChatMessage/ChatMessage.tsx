@@ -63,6 +63,8 @@ export interface ChatMessageProps {
   showIcon?: boolean;
   whatsappFormResponse?: any;
   waManagedPhone?: { phone?: string; label?: string; contact?: { name?: string } | null } | null;
+  // Source channel of the message (e.g. "whatsapp", "web"). Used to badge non-WhatsApp messages.
+  channel?: string;
 }
 
 export const ChatMessage = ({
@@ -93,6 +95,7 @@ export const ChatMessage = ({
   showIcon = true,
   whatsappFormResponse,
   waManagedPhone,
+  channel,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -450,6 +453,11 @@ export const ChatMessage = ({
           </div>
           {iconLeft ? null : showIcon && icon}
         </div>
+        {channel && channel !== 'whatsapp' && (
+          <div className={styles.ChannelBadge} data-testid="channelBadge">
+            {channel === 'web' ? 'Web' : channel}
+          </div>
+        )}
         <div className={styles.SendBy}>{sendBy}</div>
 
         {saveTemplateMessage}

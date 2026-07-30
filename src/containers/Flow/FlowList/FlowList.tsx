@@ -56,7 +56,26 @@ const getLastPublished = (date: string, fallback: string = '') =>
   );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-const columnStyles = [styles.Pinned, styles.Name, styles.DateColumn, styles.Label, styles.DateColumn, styles.Actions];
+// Channel pill: Web flows (flow_type WEB_MESSAGE) render blue, WhatsApp flows (default) render
+// glific green. Keeps the flow-type discriminator visible at a glance in the list.
+const getChannel = (flowType: string) => {
+  const isWeb = flowType === 'WEB_MESSAGE';
+  return (
+    <div className={`${styles.ChannelPill} ${isWeb ? styles.ChannelWeb : styles.ChannelWhatsapp}`}>
+      {isWeb ? 'Web' : 'WhatsApp'}
+    </div>
+  );
+};
+
+const columnStyles = [
+  styles.Pinned,
+  styles.Name,
+  styles.Channel,
+  styles.DateColumn,
+  styles.Label,
+  styles.DateColumn,
+  styles.Actions,
+];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -311,9 +330,10 @@ export const FlowList = () => {
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id }: any) => ({
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id, flowType }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
+    channel: getChannel(flowType),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
@@ -322,6 +342,7 @@ export const FlowList = () => {
   const columnNames = [
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
+    { label: t('Channel') },
     { label: t('Last published') },
     { label: t('Tag') },
     { label: t('Last saved in Draft') },

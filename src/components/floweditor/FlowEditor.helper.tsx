@@ -8,8 +8,23 @@ import styles from './FlowEditor.module.css';
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolean, posthog?: PostHog) => {
+export const setConfig = (
+  uuid: any,
+  skipValidation: boolean,
+  isReadOnly: boolean,
+  posthog?: PostHog,
+  flowType: string = 'MESSAGE'
+) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
+
+  // Web-channel flows (flow_type WEB_MESSAGE) cannot send HSM templates or act on WhatsApp
+  // groups. The flow editor gates both features off the `filters` array: without 'whatsapp' the
+  // "HSM Templates" tab is hidden in Send Message, and without 'groups' the "Update WhatsApp
+  // Group" node is dropped from the palette. So we simply omit those filters for web flows.
+  const isWebFlow = flowType === 'WEB_MESSAGE';
+  const baseFilters = isWebFlow
+    ? ['classifier', 'start_session']
+    : ['whatsapp', 'classifier', 'start_session'];
 
   const config = {
     flow: uuid,
@@ -18,7 +33,7 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
     mutable: !isReadOnly,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier', 'start_session'],
+    filters: baseFilters,
     skipValidation: skipValidation,
 
     excludeTypes: ['add_contact_urn', 'send_email', 'call_resthook', 'transfer_airtime', 'split_by_scheme'],
@@ -108,7 +123,7 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
     config.filters.push('ticketer');
   }
 
-  if (services.whatsappGroupEnabled) {
+  if (services.whatsappGroupEnabled && !isWebFlow) {
     config.filters.push('groups');
   }
   return config;

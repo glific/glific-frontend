@@ -166,6 +166,42 @@
   max-width: 400px !important;
 }
 
+/* Keyword line + channel tag sit on one row under the flow title. */
+.KeywordRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Channel indicator tag: glific green for WhatsApp, blue for Web. */
+.ChannelTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ChannelTagIcon {
+  font-size: 0.85rem !important;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.ChannelTagWhatsapp {
+  background: #e8f5ec;
+  color: #073f24;
+}
+
+.ChannelTagWeb {
+  background: #e6effc;
+  color: #1565c0;
+}
+
 .ViewMore {
   color: #119656;
   cursor: pointer;

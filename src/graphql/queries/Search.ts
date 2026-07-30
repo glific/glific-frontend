@@ -24,6 +24,7 @@ export const SEARCH_QUERY = gql`
         body
         insertedAt
         messageNumber
+        channel
         receiver {
           id
         }
