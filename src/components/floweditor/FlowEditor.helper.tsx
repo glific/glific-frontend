@@ -22,9 +22,7 @@ export const setConfig = (
   // "HSM Templates" tab is hidden in Send Message, and without 'groups' the "Update WhatsApp
   // Group" node is dropped from the palette. So we simply omit those filters for web flows.
   const isWebFlow = flowType === 'WEB_MESSAGE';
-  const baseFilters = isWebFlow
-    ? ['classifier', 'start_session']
-    : ['whatsapp', 'classifier', 'start_session'];
+  const baseFilters = isWebFlow ? ['classifier', 'start_session'] : ['whatsapp', 'classifier', 'start_session'];
 
   const config = {
     flow: uuid,
