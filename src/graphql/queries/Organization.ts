@@ -138,6 +138,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       askGlificEnabled
       whatsappFormsEnabled
       aiEvaluationsEnabled
+      aiEvaluationV2Enabled
       copyNodeEnabled
       promptGeneratorEnabled
       supersetEnabled

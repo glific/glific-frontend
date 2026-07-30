@@ -118,3 +118,26 @@ describe('HSM Templates menu routing', () => {
     expect(getMenuItem('HSM Templates')!.closest('a')).toHaveAttribute('href', '/template-v2');
   });
 });
+
+describe('AI Evals sibling menu selection', () => {
+  const expectMenuNotSelected = (title: string) =>
+    expect(
+      screen.getAllByTestId('list-item').find((el) => el.textContent === title && el.className.match(/SelectedText/))
+    ).toBeUndefined();
+
+  test('selects only AI Evals v2.0 on /ai-evaluations-v2', async () => {
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
+    renderSideMenus('/ai-evaluations-v2');
+
+    await expectMenuSelected('AI Evals v2.0');
+    expectMenuNotSelected('AI Evals');
+  });
+
+  test('selects only AI Evals on /ai-evaluations/create', async () => {
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
+    renderSideMenus('/ai-evaluations/create');
+
+    await expectMenuSelected('AI Evals');
+    expectMenuNotSelected('AI Evals v2.0');
+  });
+});

@@ -24,6 +24,7 @@ type ServiceType =
   | 'askGlificEnabled'
   | 'whatsappFormsEnabled'
   | 'aiEvaluationsEnabled'
+  | 'aiEvaluationV2Enabled'
   | 'copyNodeEnabled'
   | 'promptGeneratorEnabled'
   | 'supersetEnabled'

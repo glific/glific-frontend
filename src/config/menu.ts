@@ -203,6 +203,18 @@ const menus = (): Menu[] => [
               type: 'sideDrawer',
               roles: managerLevel,
             },
+            // ponytail: nested inside the aiEvaluationsEnabled block, so it needs v1 on too
+            ...(getOrganizationServices('aiEvaluationV2Enabled')
+              ? [
+                  {
+                    title: 'AI Evals v2.0',
+                    path: '/ai-evaluations-v2',
+                    icon: 'aiEvals',
+                    type: 'sideDrawer',
+                    roles: managerLevel,
+                  },
+                ]
+              : []),
           ],
         },
       ]

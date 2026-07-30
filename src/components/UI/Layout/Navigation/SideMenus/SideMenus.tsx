@@ -43,18 +43,21 @@ const AddAccordian = ({ summary, details, opened, expanded = false }: any) => (
 
 const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 
+// match on a path boundary so sibling menus like /ai-evaluations and /ai-evaluations-v2 don't both match
+export const isPathUnderMenu = (path: string, menuPath: string) => path === menuPath || path.startsWith(`${menuPath}/`);
+
 const getCurrentMenu = (menus: Menu[], path: string) => {
   for (const item of menus) {
     if (item.children) {
       for (const child of item.children) {
-        if (path.startsWith(child.path)) {
+        if (isPathUnderMenu(path, child.path)) {
           return item.path; // current path is under a child, return parent path to expand accordion
         }
       }
-      if (path.startsWith(item.path)) {
+      if (isPathUnderMenu(path, item.path)) {
         return item.path; // current path is under the parent itself
       }
-    } else if (path.startsWith(item.path)) {
+    } else if (isPathUnderMenu(path, item.path)) {
       return item.path; // leaf item: return its own path so it gets selected
     }
   }
@@ -139,7 +142,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
         menu.children
           .filter((menu) => !menu.show)
           .map((menu) => {
-            const isSelected = location.pathname.startsWith(menu.path);
+            const isSelected = isPathUnderMenu(location.pathname, menu.path);
             let redirectPath = menu.path;
 
             const listItemButton = (
