@@ -1,0 +1,45 @@
+name: Cypress - Flow Smoke Test
+
+permissions:
+  contents: read
+
+on:
+  schedule:
+    - cron: '*/27 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: cypress-smoke
+  cancel-in-progress: false
+
+jobs:
+  cypress-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Cypress smoke test
+        env:
+          CYPRESS_smoke__baseUrl: ${{ secrets.CYPRESS_SMOKE_TEST_BASE_URL }}
+          CYPRESS_baseUrl: ${{ secrets.CYPRESS_SMOKE_TEST_BASE_URL }}
+          CYPRESS_smoke__phone: ${{ secrets.CYPRESS_SMOKE_TEST_LOGIN_PHONE_NUMBER }}
+          CYPRESS_smoke__password: ${{ secrets.CYPRESS_SMOKE_TEST_LOGIN_PASSWORD }}
+          CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          INSTATUS_API_KEY: ${{ secrets.INSTATUS_API_KEY }}
+          INSTATUS_PAGE_ID: ${{ secrets.INSTATUS_PAGE_ID }}
+          INSTATUS_COMPONENT_ID: ${{ secrets.INSTATUS_COMPONENT_ID }}
+        run: |
+          cp cypress.config.ts.example cypress.config.ts
+          yarn cypress run --spec cypress/e2e/smoke.spec.ts --record \
+            --key "$CYPRESS_DASHBOARD_KEY"
