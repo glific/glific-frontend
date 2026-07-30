@@ -146,6 +146,45 @@ html {
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
+/*
+ * App-wide spacing/typography scale. Deliberately `--app-*`-prefixed and separate from
+ * the `--*` vars in the `html {}` block above — those are the vendored flow-editor
+ * widget's own theming API, not general app tokens.
+ *
+ * Only steps with a real call site today are declared here — this grows incrementally
+ * as each feature's CSS gets migrated, not speculatively upfront (same discipline as the
+ * `--app-color-*` tokens). Each step is named by its RANK in an eventual full scale
+ * (xs < sm < md < lg < xl < 2xl < 3xl < ...), not by how many steps happen to be declared
+ * right now — e.g. `--app-space-3xl` is always 1.5rem regardless of whether `xl`/`2xl`
+ * are declared yet, so adding a step later never requires renaming an existing one. When
+ * migrating a batch that needs a value not yet defined, add the next step in rank order.
+ *
+ * Values are in `rem`, not `px` — this is deliberate, not just a unit preference: `rem`
+ * respects the user's browser font-size setting (accessibility/zoom), `px` silently
+ * ignores it. Assumes the default 16px root (no `html`/`:root` font-size override exists
+ * in this codebase — verify that's still true before changing this comment).
+ *
+ * `--app-radius-*` is a separate scale from `--app-space-*` even though some values
+ * coincide numerically — corner radius and layout spacing are independent design
+ * decisions and may need to diverge later. A "pill"/circular radius (50%, 9999px) isn't
+ * part of this scale — it's a distinct convention ("make it round"), not a scale step.
+ */
+:root {
+  /* Spacing (rem, 16px root: 0.75rem=12px, 1rem=16px, 1.5rem=24px, 3rem=48px) */
+  --app-space-lg: 0.75rem;
+  --app-space-xl: 1rem;
+  --app-space-3xl: 1.5rem;
+  --app-space-6xl: 3rem;
+
+  /* Border radius */
+  --app-radius-lg: 0.75rem;
+
+  /* Typography (0.875rem=14px, 1rem=16px, 1.125rem=18px) */
+  --app-font-size-sm: 0.875rem;
+  --app-font-size-md: 1rem;
+  --app-font-size-lg: 1.125rem;
+}
+
 #flow {
   font-size: var(--font-size);
   font-weight: 300;

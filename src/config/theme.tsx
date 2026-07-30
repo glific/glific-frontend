@@ -55,14 +55,14 @@ const theme = createTheme({
     },
     MuiIconButton: {
       styleOverrides: {
-        root: { padding: '12px' },
+        root: { padding: 'var(--app-space-lg)' },
       },
     },
 
     MuiTablePagination: {
       styleOverrides: {
         selectLabel: {
-          fontSize: '1rem',
+          fontSize: 'var(--app-font-size-md)',
           color: '#073F24',
         },
       },
@@ -70,7 +70,7 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         notchedOutline: {
-          borderRadius: '12px',
+          borderRadius: 'var(--app-radius-lg)',
           borderWidth: '2px',
         },
       },
@@ -142,12 +142,12 @@ const theme = createTheme({
       styleOverrides: {
         h5: {
           '@media (max-width:768px)': {
-            fontSize: '1rem',
+            fontSize: 'var(--app-font-size-md)',
           },
         },
         h6: {
           '@media (max-width:768px)': {
-            fontSize: '1rem',
+            fontSize: 'var(--app-font-size-md)',
           },
         },
       },
