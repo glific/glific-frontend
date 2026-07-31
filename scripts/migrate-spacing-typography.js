@@ -36,8 +36,13 @@
  * same as the color migration.
  *
  * Usage:
- *   node scripts/migrate-spacing-typography.js <dir-or-glob>            # dry run (report only)
- *   node scripts/migrate-spacing-typography.js <dir-or-glob> --write    # apply in place
+ *   node scripts/migrate-spacing-typography.js <dir-or-file>            # dry run (report only)
+ *   node scripts/migrate-spacing-typography.js <dir-or-file> --write    # apply in place
+ *
+ * The argument is a directory (searched recursively for module CSS files) or a single
+ * file path — not a shell glob pattern. Rely on your shell to expand a glob before it
+ * reaches this script (e.g. loop over the expanded file list yourself), since Node
+ * doesn't expand globs on its own the way a shell does.
  */
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
@@ -54,7 +59,7 @@ function toPxEquivalent(num, unit) {
 }
 
 function parseScale(css, prefix) {
-  const re = new RegExp(`--app-${prefix}-([a-z0-9]+):\\s*(\\d+(?:\\.\\d+)?)(px|rem)\\s*;`, 'g');
+  const re = new RegExp(`--app-${prefix}-([a-z0-9]+):\\s*(\\d*\\.?\\d+)(px|rem)\\s*;`, 'g');
   const steps = [];
   let m;
   // eslint-disable-next-line no-cond-assign
@@ -129,7 +134,7 @@ function scaleFor(property, scales) {
 
 const DECLARATION_RE =
   /(padding|margin|gap|border-radius|font-size)((?:-(?:top|bottom|left|right|inline|block))?)\s*:\s*([^;]+);/g;
-const LENGTH_TOKEN_RE = /(-?\d+(?:\.\d+)?)(px|rem)(\s*!important)?/g;
+const LENGTH_TOKEN_RE = /(-?(?:\d+(?:\.\d+)?|\.\d+))(px|rem)(\s*!important)?/g;
 
 function migrateDeclaration(fullProperty, value, scales, unmatched) {
   const baseProperty = fullProperty.replace(/-(top|bottom|left|right|inline|block)$/, '');
@@ -147,9 +152,11 @@ function migrateDeclaration(fullProperty, value, scales, unmatched) {
       return whole;
     }
     changed = true;
-    const sign = num < 0 ? '-' : '';
     const tokenName = preferredNames.get(step.name) || step.name;
-    return `${sign}var(--app-${prefix}-${tokenName})${important || ''}`;
+    const token = `var(--app-${prefix}-${tokenName})`;
+    // `-var(...)` is invalid CSS (parsed as an unknown function) — a negative value has
+    // to negate the token inside calc() instead.
+    return `${num < 0 ? `calc(-1 * ${token})` : token}${important || ''}`;
   });
 
   return { newValue, changed };
@@ -170,7 +177,7 @@ function main() {
   const shouldWrite = process.argv.includes('--write');
   const target = args[0];
   if (!target) {
-    console.error('Usage: node scripts/migrate-spacing-typography.js <dir-or-glob> [--write]');
+    console.error('Usage: node scripts/migrate-spacing-typography.js <dir-or-file> [--write]');
     process.exit(1);
   }
 
