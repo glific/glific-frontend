@@ -207,7 +207,7 @@ const menus = (): Menu[] => [
             ...(getOrganizationServices('aiEvaluationV2Enabled')
               ? [
                   {
-                    title: 'AI Evals v2.0',
+                    title: 'AI Evaluation v2',
                     path: '/ai-evaluation-v2',
                     icon: 'aiEvals',
                     type: 'sideDrawer',

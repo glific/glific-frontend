@@ -120,16 +120,19 @@ describe('HSM Templates menu routing', () => {
 });
 
 describe('AI Evals sibling menu selection', () => {
-  const expectMenuNotSelected = (title: string) =>
-    expect(
-      screen.getAllByTestId('list-item').find((el) => el.textContent === title && el.className.match(/SelectedText/))
-    ).toBeUndefined();
+  // the menu must be rendered but unselected — a plain "not found" check would pass vacuously
+  // when the title string drifts out of sync with menu.ts
+  const expectMenuNotSelected = (title: string) => {
+    const items = screen.getAllByTestId('list-item').filter((el) => el.textContent === title);
+    expect(items).not.toHaveLength(0);
+    items.forEach((el) => expect(el.className).not.toMatch(/SelectedText/));
+  };
 
-  test('selects only AI Evaluation v2.0 on /ai-evaluation-v2', async () => {
+  test('selects only AI Evaluation v2 on /ai-evaluation-v2', async () => {
     setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
     renderSideMenus('/ai-evaluation-v2');
 
-    await expectMenuSelected('AI Evals v2.0');
+    await expectMenuSelected('AI Evaluation v2');
     expectMenuNotSelected('AI Evals');
   });
 
@@ -138,6 +141,6 @@ describe('AI Evals sibling menu selection', () => {
     renderSideMenus('/ai-evaluations/create');
 
     await expectMenuSelected('AI Evals');
-    expectMenuNotSelected('AI Evals v2.0');
+    expectMenuNotSelected('AI Evaluation v2');
   });
 });
