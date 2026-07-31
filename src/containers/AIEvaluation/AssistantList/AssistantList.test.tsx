@@ -18,6 +18,7 @@ import {
   filterAssistantsAfterCloneMock,
   removeAssistant,
 } from 'mocks/Assistants';
+import { FILTER_ASSISTANTS, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
 
 import AssistantList from './AssistantList';
 
@@ -68,6 +69,93 @@ test('renders the Evaluation health column with a placeholder value', async () =
 
   const firstRowCells = screen.getAllByRole('row')[1].querySelectorAll('td');
   expect(firstRowCells[1]).toHaveTextContent('-');
+});
+
+describe('debounced search', () => {
+  const searchTerm = 'Assistant-2';
+
+  // the testid sits on MUI's InputBase wrapper, the value setter is on the inner input
+  const searchInput = () => screen.getByTestId('searchInput').querySelector('input') as HTMLInputElement;
+
+  const filteredAssistantsMock = {
+    request: {
+      query: FILTER_ASSISTANTS,
+      variables: {
+        filter: { name_or_assistant_id: searchTerm },
+        opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
+      },
+    },
+    result: {
+      data: {
+        assistants: [
+          {
+            id: '2',
+            name: 'Assistant-2',
+            assistantDisplayId: 'asst_def456',
+            liveVersionNumber: null,
+            activeConfigVersionId: null,
+            updatedAt: '2024-10-17T10:00:00Z',
+            insertedAt: '2024-10-17T10:00:00Z',
+            status: 'active',
+            cloneStatus: 'none',
+          },
+        ],
+      },
+    },
+  };
+
+  const countFilteredAssistantsMock = {
+    request: { query: GET_ASSISTANTS_COUNT, variables: { filter: { name_or_assistant_id: searchTerm } } },
+    result: { data: { countAssistants: 1 } },
+  };
+
+  test('typing filters the list without pressing Enter', async () => {
+    renderAssistantList([
+      filterAssistantsMock,
+      countAssistantsMock,
+      filteredAssistantsMock,
+      countFilteredAssistantsMock,
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+    });
+
+    fireEvent.change(searchInput(), { target: { value: searchTerm } });
+
+    // no Enter / submit — the debounce alone drives the refetch
+    await waitFor(() => {
+      expect(screen.queryByText('Assistant-1')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('Assistant-2')).toBeInTheDocument();
+  });
+
+  test('resetting the search restores the unfiltered list', async () => {
+    renderAssistantList([
+      filterAssistantsMock,
+      countAssistantsMock,
+      filteredAssistantsMock,
+      countFilteredAssistantsMock,
+      filterAssistantsMock,
+      countAssistantsMock,
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+    });
+
+    fireEvent.change(searchInput(), { target: { value: searchTerm } });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Assistant-1')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('resetButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+    });
+  });
 });
 
 test('hovering the Evaluation health header shows the scoring tooltip', async () => {

@@ -11,6 +11,19 @@
   cursor: help;
 }
 
+.SearchBar {
+  display: flex;
+  align-items: center;
+}
+
+.ListWrapper {
+  display: contents;
+}
+
+.ListWrapper div:has(> .SearchBar) {
+  margin-left: auto;
+}
+
 .VersionColumn {
   width: 20%;
 }

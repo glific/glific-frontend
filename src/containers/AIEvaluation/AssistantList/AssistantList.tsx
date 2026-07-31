@@ -1,7 +1,7 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -15,6 +15,7 @@ import { assistantListInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { List } from 'containers/List/List';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
@@ -22,6 +23,8 @@ import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/
 import styles from './AssistantList.module.css';
 
 dayjs.extend(relativeTime);
+
+const SEARCH_DEBOUNCE_MS = 400;
 
 const getAssistantName = (name: string, assistantDisplayId: string) => (
   <div className={styles.NameCell}>
@@ -83,6 +86,16 @@ export const AssistantList = () => {
   const [cloneAssistant, { loading: cloning }] = useMutation(CLONE_ASSISTANT);
 
   const [cloningAssistantId, setCloningAssistantId] = useState<string | null>(null);
+
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchQuery(searchInput.trim()), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const filters = useMemo(() => (searchQuery ? { name_or_assistant_id: searchQuery } : null), [searchQuery]);
 
   const { data: pollingData, stopPolling } = useQuery(GET_ASSISTANT, {
     variables: { assistantId: cloningAssistantId },
@@ -180,6 +193,21 @@ export const AssistantList = () => {
     columnStyles,
   };
 
+  const debouncedSearchBar = (
+    <div className={styles.SearchBar}>
+      <SearchBar
+        searchVal={searchInput}
+        handleChange={(e: any) => setSearchInput(e.target.value)}
+        handleSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}
+        onReset={() => {
+          setSearchInput('');
+          setSearchQuery('');
+        }}
+        searchMode
+      />
+    </div>
+  );
+
   const additionalAction = () => [
     {
       label: t('Edit'),
@@ -196,7 +224,7 @@ export const AssistantList = () => {
   ];
 
   return (
-    <>
+    <div className={styles.ListWrapper}>
       <List
         helpData={assistantListInfo}
         title={t('AI Assistants')}
@@ -207,6 +235,10 @@ export const AssistantList = () => {
         {...queries}
         {...columnAttributes}
         searchParameter={['name_or_assistant_id']}
+        showSearch={false}
+        filterList={debouncedSearchBar}
+        filters={filters}
+        searchActive={Boolean(searchQuery)}
         additionalAction={additionalAction}
         button={{
           show: true,
@@ -238,7 +270,7 @@ export const AssistantList = () => {
           </div>
         </DialogBox>
       )}
-    </>
+    </div>
   );
 };
 
