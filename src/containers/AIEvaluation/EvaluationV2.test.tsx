@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import EvaluationV2 from './EvaluationV2';
+import EvaluationV2 from '../EvaluationV2';
 
 vi.mock('i18next', () => ({ t: (key: string) => key }));
 

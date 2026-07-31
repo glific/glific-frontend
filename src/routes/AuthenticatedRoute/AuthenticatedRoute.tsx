@@ -80,7 +80,7 @@ const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Confi
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
 const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
-const AIEvaluationV2 = lazy(() => import('containers/AIEvaluation/EvaluationV2/EvaluationV2'));
+const AIEvaluationV2 = lazy(() => import('containers/AIEvaluation/EvaluationV2'));
 
 const staffRoutes = (
   <Routes>
