@@ -23,7 +23,12 @@ const BASELINE_PATH = path.join(__dirname, 'design-system-baseline.json');
 
 const HEX_COLOR_RE = /#[0-9a-fA-F]{3,8}\b/g;
 // Spacing/typography properties where a raw px value should be a design token instead.
-const SPACING_PROPERTY_RE = /(?:^|[{;])\s*(padding|margin|gap|border-radius|font-size)(?:-\w+)?\s*:\s*[^;]*?(\d+)px/gm;
+// Captures the full declaration value so every px in a shorthand (e.g. `padding: 4px 8px`)
+// gets counted, not just the first one.
+const SPACING_DECLARATION_RE = /(?:^|[{;])\s*(?:padding|margin|gap|border-radius|font-size)(?:-\w+)?\s*:\s*([^;}]*)/gm;
+const PX_VALUE_RE = /\b\d*\.?\d+px\b/g;
+// Matches both `import ... from '@mui/material'` and side-effect `import '@mui/material'`.
+const MUI_IMPORT_RE = /(?:from\s+|import\s*)['"]@mui\/material(?:\/|['"])/;
 
 function walk(dir, predicate, results = []) {
   for (const entry of readdirSync(dir)) {
@@ -42,7 +47,7 @@ function countRawMuiContainerFiles() {
   const files = walk(CONTAINERS_DIR, (p) => p.endsWith('.tsx') && !p.endsWith('.test.tsx'));
   return files.filter((file) => {
     const content = readFileSync(file, 'utf8');
-    return /from ['"]@mui\/material/.test(content);
+    return MUI_IMPORT_RE.test(content);
   }).length;
 }
 
@@ -53,7 +58,9 @@ function countModuleCssViolations() {
   for (const file of files) {
     const content = readFileSync(file, 'utf8');
     hexOccurrences += (content.match(HEX_COLOR_RE) || []).length;
-    rawSpacingOccurrences += (content.match(SPACING_PROPERTY_RE) || []).length;
+    for (const declaration of content.matchAll(SPACING_DECLARATION_RE)) {
+      rawSpacingOccurrences += (declaration[1].match(PX_VALUE_RE) || []).length;
+    }
   }
   return { hexOccurrences, rawSpacingOccurrences };
 }
@@ -74,8 +81,19 @@ function loadBaseline() {
 function main() {
   const shouldUpdate = process.argv.includes('--update');
   const current = computeCounts();
+  const baseline = loadBaseline().counts;
 
   if (shouldUpdate) {
+    const increased = Object.keys(current).filter((key) => current[key] > baseline[key]);
+    if (increased.length > 0) {
+      console.error('Refusing to update — these counts would INCREASE the committed baseline:\n');
+      for (const key of increased) console.error(`  - ${key}: ${baseline[key]} -> ${current[key]}`);
+      console.error(
+        '\n--update only lowers the baseline (fixing violations), it never raises it. ' +
+          'If you genuinely added new, unavoidable violations, that needs a human decision, not a silent bump.'
+      );
+      process.exit(1);
+    }
     writeFileSync(
       BASELINE_PATH,
       `${JSON.stringify({ description: loadBaselineDescription(), counts: current }, null, 2)}\n`
@@ -85,7 +103,6 @@ function main() {
     return;
   }
 
-  const baseline = loadBaseline().counts;
   const regressions = [];
 
   for (const key of Object.keys(current)) {
