@@ -591,6 +591,8 @@
   "AI Assistant": "AI Assistant",
   "Assistant Name": "Assistant Name",
   "Live Version": "Live Version",
+  "Evaluation health": "Evaluation Health",
+  "Scored 0–5 by our automated judge. 0–1 = wrong or unusable. 2–3 = partly right, could improve. 4–5 = correct and well formed.": "Scored 0–5 by our automated judge. 0–1 = wrong or unusable. 2–3 = partly right, could improve. 4–5 = correct and well formed.",
   "Copy ID": "Copy ID",
   "Create New Assistant": "Create New Assistant",
   "You won't be able to use this assistant.": "You won't be able to use this assistant.",

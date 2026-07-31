@@ -1,16 +1,20 @@
-import { render, screen } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+
+import { countAssistantsMock, filterAssistantsMock } from 'mocks/Assistants';
 import AIEvaluation from './AIEvaluation';
 
-vi.mock('i18next', () => ({ t: (key: string) => key }));
-
-test('renders the coming soon placeholder', () => {
+test('renders the evaluation list', async () => {
   render(
-    <MemoryRouter>
-      <AIEvaluation />
-    </MemoryRouter>
+    <MockedProvider mocks={[filterAssistantsMock, countAssistantsMock]}>
+      <MemoryRouter initialEntries={['/ai-evaluation-v2']}>
+        <AIEvaluation />
+      </MemoryRouter>
+    </MockedProvider>
   );
 
-  expect(screen.getByTestId('headerTitle')).toHaveTextContent('AI Evaluation v2');
-  expect(screen.getByTestId('comingSoon')).toHaveTextContent('Coming soon');
+  await waitFor(() => {
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
 });
