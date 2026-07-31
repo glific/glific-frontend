@@ -21,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -29,6 +30,15 @@ jobs:
 
       - name: Run ratchet
         run: yarn design-system:ratchet
+
+      # Closes a gap the ratchet script itself can't: a PR could hand-edit
+      # scripts/design-system-baseline.json to inflate the numbers in the same commit
+      # that adds new violations, and the check above would pass since both moved
+      # together. This compares the PR's baseline file against the base branch's
+      # committed version directly, so the baseline may only ever go down.
+      - name: Verify the baseline file itself wasn't raised
+        if: github.event_name == 'pull_request'
+        run: node scripts/verify-baseline-not-raised.js "${{ github.event.pull_request.base.sha }}"
 
   eslint-mui-layering:
     name: ESLint - no new raw MUI imports in containers
@@ -51,18 +61,27 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      # Writes the changed-file list to disk (NUL-delimited) rather than passing it
+      # through a GitHub Actions `${{ }}` expression into a later step's shell script —
+      # PR-controlled filenames interpolated into `run:` via `${{ }}` are expanded as
+      # literal shell source before the shell ever runs, which is a real injection vector
+      # for a filename containing shell metacharacters. Reading from a file sidesteps
+      # that entirely, and NUL-delimiting handles filenames with spaces correctly too.
       - name: Find changed container files
         id: changed
         run: |
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          FILES=$(git diff --name-only --diff-filter=ACMR "$BASE_SHA" HEAD \
+          git diff --name-only -z --diff-filter=ACMR "$BASE_SHA" HEAD \
+            | tr '\0' '\n' \
             | grep -E '^src/containers/.*\.tsx?$' \
-            | grep -Ev '\.test\.tsx?$' || true)
-          echo "files<<DIFF_EOF" >> "$GITHUB_OUTPUT"
-          echo "$FILES" >> "$GITHUB_OUTPUT"
-          echo "DIFF_EOF" >> "$GITHUB_OUTPUT"
+            | grep -Ev '\.test\.tsx?$' \
+            | tr '\n' '\0' > /tmp/changed-container-files.txt || true
+          if [ -s /tmp/changed-container-files.txt ]; then
+            echo "has_files=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Lint changed files for raw MUI imports
-        if: steps.changed.outputs.files != ''
-        run: |
-          echo "${{ steps.changed.outputs.files }}" | xargs npx eslint --no-eslintrc -c .eslintrc.design-system.json
+        if: steps.changed.outputs.has_files == 'true'
+        run: xargs -0 npx eslint --no-eslintrc -c .eslintrc.design-system.json < /tmp/changed-container-files.txt
