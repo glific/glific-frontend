@@ -69,14 +69,14 @@ describe('side drawer testing', () => {
       expect(getAIToolkitChild('AI Evals')).toBeUndefined();
     });
 
-    it('shows AI Evaluation v2.0 at /ai-evaluation-v2 when aiEvaluationV2Enabled is true', () => {
+    it('shows AI Evals v2.0 at /ai-evaluation-v2 when aiEvaluationV2Enabled is true', () => {
       setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
-      expect(getAIToolkitChild('AI Evaluation v2.0')?.path).toBe('/ai-evaluation-v2');
+      expect(getAIToolkitChild('AI Evals v2.0')?.path).toBe('/ai-evaluation-v2');
     });
 
-    it('hides AI Evaluation v2.0 when aiEvaluationV2Enabled is false', () => {
+    it('hides AI Evals v2.0 when aiEvaluationV2Enabled is false', () => {
       setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: false }));
-      expect(getAIToolkitChild('AI Evaluation v2.0')).toBeUndefined();
+      expect(getAIToolkitChild('AI Evals v2.0')).toBeUndefined();
     });
   });
 
