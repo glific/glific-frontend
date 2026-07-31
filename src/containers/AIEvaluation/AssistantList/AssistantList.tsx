@@ -4,13 +4,10 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-
 import { IconButton, Tooltip } from '@mui/material';
-
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
-
 import { assistantListInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
