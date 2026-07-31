@@ -586,7 +586,7 @@
   "AI Evals": "AI Evals",
   "AI Evaluation v2": "AI Evaluation V2",
   "Evaluation health": "मूल्यांकन स्वास्थ्य",
-  "Scored 0–5 by our automated judge. 0–1 = wrong or unusable. 2–3 = partly right, could improve. 4–5 = correct and well formed.": "हमारे स्वचालित जज द्वारा 0–5 अंक दिए जाते हैं। 0–1 = गलत या अनुपयोगी। 2–3 = आंशिक रूप से सही, सुधार की गुंजाइश। 4–5 = सही और सुव्यवस्थित।",
+  "Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.": "हमारे स्वचालित जज द्वारा 0–1 अंक दिए जाते हैं। 0–0.3 = सुधार की आवश्यकता। 0.3–0.6 = सुधार की आवश्यकता। 0.6–1 = अच्छा।",
   "Apply for access and tell us what functionality would help you take the most.": "एक्सेस के लिए आवेदन करें और बताएं कि कौन सी कार्यक्षमता आपकी सबसे अधिक मदद करेगी।",
   "Request Access": "एक्सेस का अनुरोध करें",
   "New": "नया",

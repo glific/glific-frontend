@@ -170,7 +170,7 @@ export const AssistantList = () => {
       label: (
         <Tooltip
           title={t(
-            'Scored 0–5 by our automated judge. 0–1 = wrong or unusable. 2–3 = partly right, could improve. 4–5 = correct and well formed.'
+            'Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.'
           )}
           placement="top"
           arrow
