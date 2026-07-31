@@ -208,7 +208,7 @@ const menus = (): Menu[] => [
               ? [
                   {
                     title: 'AI Evals v2.0',
-                    path: '/ai-evaluations-v2',
+                    path: '/ai-evaluation-v2',
                     icon: 'aiEvals',
                     type: 'sideDrawer',
                     roles: managerLevel,

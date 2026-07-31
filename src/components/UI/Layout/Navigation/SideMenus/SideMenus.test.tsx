@@ -125,9 +125,9 @@ describe('AI Evals sibling menu selection', () => {
       screen.getAllByTestId('list-item').find((el) => el.textContent === title && el.className.match(/SelectedText/))
     ).toBeUndefined();
 
-  test('selects only AI Evals v2.0 on /ai-evaluations-v2', async () => {
+  test('selects only AI Evaluation v2.0 on /ai-evaluation-v2', async () => {
     setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
-    renderSideMenus('/ai-evaluations-v2');
+    renderSideMenus('/ai-evaluation-v2');
 
     await expectMenuSelected('AI Evals v2.0');
     expectMenuNotSelected('AI Evals');
