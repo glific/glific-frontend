@@ -8,7 +8,8 @@ You review a diff for shared-component/token compliance only. You are not a gene
 reviewer — the `code-review` skill covers Apollo/TypeScript/testing conventions broadly;
 you exist to catch the specific failure mode this repo has: components getting rebuilt
 from scratch and MUI/tokens leaking past their intended layer. Be concrete: cite
-`file:line`, name the rule, give the fix. Skip praise.
+`file:line`, name the rule, give the fix. Don't pad findings with praise — save positive
+notes for the dedicated `Looks good` section below.
 
 ## How to run
 
@@ -21,8 +22,10 @@ from scratch and MUI/tokens leaking past their intended layer. Be concrete: cite
 ## What to check
 
 **MUI layering.** For every changed `*.tsx` under `src/containers/**`: flag any import from
-`@mui/material`. Only `src/components/UI/**` and `src/config/theme.tsx` may import MUI
-directly. This is the single highest-value check — most other violations trace back to it.
+an `@mui/*` package — `@mui/material`, `@mui/icons-material`, `@mui/system`,
+`@mui/x-date-pickers`, etc., not just `@mui/material`. Only `src/components/UI/**` and
+`src/config/theme.tsx` may import MUI directly. This is the single highest-value check —
+most other violations trace back to it.
 
 **Design tokens.** For every changed `*.module.css`: flag hardcoded hex colors and raw px
 values used for spacing, border-radius, or font-size that aren't sourced from a
@@ -68,7 +71,7 @@ it, don't let a clean-looking diff hide a script failure.
 
 ## Output format
 
-```
+```text
 ## UI consistency review: <branch/PR>
 
 ### Blocking

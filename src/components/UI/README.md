@@ -4,39 +4,39 @@ Every reusable component that lives under `src/components/UI/**`, what it's for,
 _not_ to reach for it. This exists because the #1 reason UI gets rebuilt from scratch is
 that nobody could find the thing that already does it — check here first.
 
-Two project agents (`.claude/agents/ui-implementer.md` and `ui-consistency-reviewer.md`)
-read this file before writing or reviewing UI code. Keep it current when you add,
-remove, or repurpose a component.
+Two project agents (`.claude/agents/ui-implementer.md` and
+`.claude/agents/ui-consistency-reviewer.md`) read this file before writing or reviewing UI
+code. Keep it current when you add, remove, or repurpose a component.
 
 **Not catalogued here:** `src/containers/List/List.tsx` and
 `src/containers/Form/FormLayout.tsx` — these are page-level CRUD patterns documented in the
 root `CLAUDE.md`, not `components/UI` primitives. If you're building a list page or a
 create/edit form, start there, not here. Note also that there is **no** `Form.tsx` wrapper
-directly under `components/UI` — `components/UI/Form/` is a directory of individual field
-components (below); it isn't itself a component.
+directly under `components/UI` — `src/components/UI/Form/` is a directory of individual
+field components (below); it isn't itself a component.
 
 ## Quick lookup: "I have a design/HTML shape, what do I use?"
 
-| You see...                                        | Use                                                                                                        |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Modal, confirmation popup, form-in-a-dialog       | [`DialogBox`](#dialogbox)                                                                                  |
-| "Pick from a searchable list" modal               | [`SearchDialogBox`](#searchdialogbox)                                                                      |
-| Full-page or full-section loading state           | [`Layout/Loading`](#layoutloading)                                                                         |
-| Full-page error state                             | [`ErrorPage`](#errorpage)                                                                                  |
-| Any button                                        | [`Form/Button`](#button)                                                                                   |
-| Any text/password/OTP/textarea field              | [`Form/Input`](#input)                                                                                     |
-| Single/multi-select with search                   | [`Form/AutoComplete`](#autocomplete)                                                                       |
-| Simple single-select dropdown                     | [`Form/Dropdown`](#dropdown)                                                                               |
-| Boolean checkbox field                            | [`Form/Checkbox`](#checkbox)                                                                               |
-| Phone number field                                | [`Form/PhoneInput`](#phoneinput)                                                                           |
-| Date / time / date+time field                     | [`Form/Calendar`](#calendar) / [`Form/TimePicker`](#timepicker) / [`Form/DateTimePicker`](#datetimepicker) |
-| Tooltip                                           | [`Tooltip`](#tooltip)                                                                                      |
-| Search bar (with optional advanced-filter toggle) | [`SearchBar`](#searchbar)                                                                                  |
-| CSV bulk-upload                                   | [`CsvUpload`](#csvupload)                                                                                  |
-| Generic (non-CSV) file import                     | [`ImportButton`](#importbutton)                                                                            |
-| Person avatar (initials)                          | [`AvatarDisplay`](#avatardisplay)                                                                          |
-| "Beta" label                                      | [`BetaTag`](#betatag)                                                                                      |
-| Click/hover dropdown action menu                  | [`Menu`](#menu)                                                                                            |
+| You see...                                        | Use                                                         |
+| ------------------------------------------------- | ----------------------------------------------------------- |
+| Modal, confirmation popup, form-in-a-dialog       | `DialogBox`                                                 |
+| "Pick from a searchable list" modal               | `SearchDialogBox`                                           |
+| Full-page or full-section loading state           | `Layout/Loading`                                            |
+| Full-page error state                             | `ErrorPage`                                                 |
+| Any button                                        | `Form/Button`                                               |
+| Any text/password/OTP/textarea field              | `Form/Input`                                                |
+| Single/multi-select with search                   | `Form/AutoComplete`                                         |
+| Simple single-select dropdown                     | `Form/Dropdown`                                             |
+| Boolean checkbox field                            | `Form/Checkbox`                                             |
+| Phone number field                                | `Form/PhoneInput`                                           |
+| Date / time / date+time field                     | `Form/Calendar` / `Form/TimePicker` / `Form/DateTimePicker` |
+| Tooltip                                           | `Tooltip`                                                   |
+| Search bar (with optional advanced-filter toggle) | `SearchBar`                                                 |
+| CSV bulk-upload                                   | `CsvUpload`                                                 |
+| Generic (non-CSV) file import                     | `ImportButton`                                              |
+| Person avatar (initials)                          | `AvatarDisplay`                                             |
+| "Beta" label                                      | `BetaTag`                                                   |
+| Click/hover dropdown action menu                  | `Menu`                                                      |
 
 If nothing here fits, that's a real gap — raise it instead of building it inline in a
 feature file.
