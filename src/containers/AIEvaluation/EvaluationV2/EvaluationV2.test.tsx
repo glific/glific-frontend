@@ -11,6 +11,6 @@ test('renders the coming soon placeholder', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByTestId('headerTitle')).toHaveTextContent('AI Evals v2.0');
+  expect(screen.getByTestId('headerTitle')).toHaveTextContent('AI Evaluation v2.0');
   expect(screen.getByTestId('comingSoon')).toHaveTextContent('Coming soon');
 });
