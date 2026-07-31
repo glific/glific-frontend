@@ -14,7 +14,7 @@ describe('Flow smoke test', () => {
       cy.get('[data-testid="tableBody"]').find('a').first().click();
       cy.get('[data-testid="previewButton"]').click();
       cy.get('[data-testid="simulatedMessages"]').should('be.visible');
-      cy.wait(120000);
+      cy.wait(60000);
       cy.get('[data-testid="simulatedMessages"]')
         .find('[data-testid="simulatorMessage"]')
         .then(($messages) => {
@@ -27,7 +27,7 @@ describe('Flow smoke test', () => {
           const lastThree = $messages.toArray().slice(-3);
           cy.wrap(lastThree[0]).within(() => {
             cy.get('audio').should('not.exist');
-            cy.root().invoke('text').should('not.be.empty');
+            cy.root().invoke('text').should('match', /\S/);
           });
 
           cy.wrap(lastThree[1]).within(() => {
