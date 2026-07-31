@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
-import { getVariables, getExampleFromBody } from './HSM.helper';
+import { getVariables, getExampleFromBody, getTemplateAndButtons } from './HSM.helper';
 import {
   HSM_TEMPLATE_MOCKS,
   getHSMTemplateTypeMedia,
@@ -614,6 +614,17 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
+  });
+
+  test('does not crash and returns no buttons for an AUTHENTICATION/OTP template, whose buttonType the UI does not support', () => {
+    const body = '*{{1}}* is your verification code. For your security, do not share this code. ';
+    const buttons = JSON.stringify([
+      { url: 'https://www.whatsapp.com/otp/code/?otp_type=COPY_CODE&code=otp{{1}}', type: 'URL', text: 'Copy OTP' },
+    ]);
+
+    const result = getTemplateAndButtons('OTP', body, buttons);
+
+    expect(result).toEqual({ buttons: [], template: `${body} | ` });
   });
 });
 
