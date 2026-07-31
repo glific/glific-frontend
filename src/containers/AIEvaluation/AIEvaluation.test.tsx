@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import EvaluationV2 from './EvaluationV2';
+import AIEvaluation from './AIEvaluation';
 
 vi.mock('i18next', () => ({ t: (key: string) => key }));
 
 test('renders the coming soon placeholder', () => {
   render(
     <MemoryRouter>
-      <EvaluationV2 />
+      <AIEvaluation />
     </MemoryRouter>
   );
 
