@@ -5,24 +5,18 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
-
 import { DropdownMenu } from 'components/UI/DropdownMenu/DropdownMenu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-
 import { setErrorMessage } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
-
 import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
-
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
-
 import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
 import type { resources } from 'i18n/config';
-
 import styles from './AssistantDetail.module.css';
 
 dayjs.extend(relativeTime);
@@ -39,7 +33,6 @@ const TABS: { key: TabKey; label: TranslationKey; badge?: TranslationKey }[] = [
   { key: 'tryItOut', label: 'Try It Out', badge: 'SANDBOX' },
 ];
 
-// the health chip stays presentational — there is no evaluation-score backend yet
 const PLACEHOLDER_SCORE = '4.3';
 
 export const AssistantDetail = () => {
@@ -126,7 +119,6 @@ export const AssistantDetail = () => {
     );
   }
 
-  // fall back to the first tab so the label stays a known translation key
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
 
   const statusPill = (version: AssistantVersion) =>
