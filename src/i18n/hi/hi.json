@@ -715,7 +715,6 @@
   "Last updated": "अंतिम अद्यतन",
   "Sorry! UUID not found": "क्षमा करें! UUID नहीं मिला",
   "Toggle language variants": "भाषा विकल्प टॉगल करें",
-
   "All Categories": "सभी श्रेणियाँ",
   "View sample": "नमूना देखें",
   "All Tags": "सभी टैग",
@@ -787,5 +786,11 @@
   "Auto-translate": "स्वतः अनुवाद करें",
   "English — source reference": "अंग्रेज़ी — संदर्भ पाठ",
   "English": "अंग्रेज़ी",
-  "Content translated — review and adjust before submitting.": "सामग्री का अनुवाद हो गया — सबमिट करने से पहले समीक्षा करें और आवश्यकतानुसार बदलें।"
+  "Content translated — review and adjust before submitting.": "सामग्री का अनुवाद हो गया — सबमिट करने से पहले समीक्षा करें और आवश्यकतानुसार बदलें।",
+  "good": "अच्छा",
+  "could improve": "सुधार संभव",
+  "need improvement": "सुधार आवश्यक",
+  "not evaluated": "मूल्यांकन नहीं हुआ",
+  "Are you sure you want to delete the assistant": "क्या आप वाकई इस असिस्टेंट को हटाना चाहते हैं",
+  "Assistant deleted successfully": "असिस्टेंट सफलतापूर्वक हटाया गया"
 }

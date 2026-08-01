@@ -928,5 +928,11 @@
   "Auto-translate": "Auto-translate",
   "English — source reference": "English — source reference",
   "English": "English",
-  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting."
+  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting.",
+  "good": "good",
+  "could improve": "could improve",
+  "need improvement": "need improvement",
+  "not evaluated": "not evaluated",
+  "Are you sure you want to delete the assistant": "Are you sure you want to delete the assistant",
+  "Assistant deleted successfully": "Assistant deleted successfully"
 }

@@ -11,7 +11,9 @@ import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { assistantListInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { List } from 'containers/List/List';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
@@ -22,6 +24,13 @@ import styles from './AssistantList.module.css';
 dayjs.extend(relativeTime);
 
 const SEARCH_DEBOUNCE_MS = 400;
+
+const HEALTH_SUMMARY = [
+  { count: 0, label: 'good' },
+  { count: 0, label: 'could improve' },
+  { count: 0, label: 'need improvement' },
+  { count: 0, label: 'not evaluated' },
+] as const;
 
 const getAssistantName = (name: string, assistantDisplayId: string) => (
   <div className={styles.NameCell}>
@@ -83,6 +92,8 @@ export const AssistantList = () => {
   const [cloneAssistant, { loading: cloning }] = useMutation(CLONE_ASSISTANT);
 
   const [cloningAssistantId, setCloningAssistantId] = useState<string | null>(null);
+  const [assistantToDelete, setAssistantToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [deleteAssistant] = useMutation(DELETE_ASSISTANT);
 
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -121,6 +132,24 @@ export const AssistantList = () => {
       navigate(`/assistants/${item.id}/version/${item.liveVersionNumber}`);
     } else {
       navigate(`/assistants/${item.id}`);
+    }
+  };
+
+  const handleDeleteClick = (_id: string, item: any) => {
+    setAssistantToDelete({ id: item.id, name: item.name });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!assistantToDelete) return;
+    const { id } = assistantToDelete;
+    setAssistantToDelete(null);
+
+    try {
+      await deleteAssistant({ variables: { deleteAssistantId: id } });
+      setNotification(t('Assistant deleted successfully'));
+      client.refetchQueries({ include: [FILTER_ASSISTANTS] });
+    } catch (error: unknown) {
+      setErrorMessage(error);
     }
   };
 
@@ -205,6 +234,8 @@ export const AssistantList = () => {
     </div>
   );
 
+  const healthSummary = HEALTH_SUMMARY.map(({ count, label }) => `${count} ${t(label)}`).join(' • ');
+
   const additionalAction = () => [
     {
       label: t('Edit'),
@@ -218,32 +249,44 @@ export const AssistantList = () => {
       parameter: 'id',
       dialog: handleCloneClick,
     },
+    {
+      label: t('Delete'),
+      icon: <DeleteIcon data-testid="DeleteIcon" />,
+      parameter: 'id',
+      dialog: handleDeleteClick,
+    },
   ];
 
   return (
     <div className={styles.ListWrapper}>
-      <List
+      <Heading
+        formTitle={t('AI Assistants')}
         helpData={assistantListInfo}
-        title={t('AI Assistants')}
-        listItem="assistants"
-        listItemName="assistant"
-        pageLink="assistants"
-        dialogMessage={t("You won't be able to use this assistant.")}
-        {...queries}
-        {...columnAttributes}
-        searchParameter={['name_or_assistant_id']}
-        showSearch={false}
-        filterList={debouncedSearchBar}
-        filters={filters}
-        searchActive={Boolean(searchQuery)}
-        additionalAction={additionalAction}
+        headerHelp={healthSummary}
         button={{
           show: true,
           label: t('Create New Assistant'),
           action: () => navigate('/assistants/add'),
         }}
+      />
+
+      <div className={styles.SearchRow}>{debouncedSearchBar}</div>
+
+      <List
+        title={t('AI Assistants')}
+        listItem="assistants"
+        listItemName="assistant"
+        pageLink="assistants"
+        {...queries}
+        {...columnAttributes}
+        searchParameter={['name_or_assistant_id']}
+        showHeader={false}
+        showSearch={false}
+        filters={filters}
+        searchActive={Boolean(searchQuery)}
+        additionalAction={additionalAction}
+        restrictedAction={() => ({ edit: false, delete: false })}
         editSupport={false}
-        deleteModifier={{ variables: (id: string) => ({ deleteAssistantId: id }) }}
         sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
       />
 
@@ -265,6 +308,18 @@ export const AssistantList = () => {
             {t('This will create a copy of the current live version of')} <strong>{selectedAssistant.name}</strong>.{' '}
             {t('Do you want to continue?')}
           </div>
+        </DialogBox>
+      )}
+
+      {assistantToDelete && (
+        <DialogBox
+          title={`${t('Are you sure you want to delete the assistant')} "${assistantToDelete.name}"?`}
+          handleCancel={() => setAssistantToDelete(null)}
+          handleOk={handleDeleteConfirm}
+          alignButtons="center"
+          colorOk="warning"
+        >
+          <div>{t("You won't be able to use this assistant.")}</div>
         </DialogBox>
       )}
     </div>
