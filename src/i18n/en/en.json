@@ -944,5 +944,11 @@
   "no version saved yet": "no version saved yet",
   "saved": "saved",
   "published": "published",
-  "Saving creates a minor version. Publishing promotes it to the next major and makes it live.": "Saving creates a minor version. Publishing promotes it to the next major and makes it live."
+  "Saving creates a minor version. Publishing promotes it to the next major and makes it live.": "Saving creates a minor version. Publishing promotes it to the next major and makes it live.",
+  "good": "good",
+  "could improve": "could improve",
+  "need improvement": "need improvement",
+  "not evaluated": "not evaluated",
+  "Are you sure you want to delete the assistant": "Are you sure you want to delete the assistant",
+  "Assistant deleted successfully": "Assistant deleted successfully"
 }

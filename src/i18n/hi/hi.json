@@ -803,5 +803,11 @@
   "no version saved yet": "अभी तक कोई वर्शन सहेजा नहीं गया",
   "saved": "सहेजा गया",
   "published": "प्रकाशित",
-  "Saving creates a minor version. Publishing promotes it to the next major and makes it live.": "सहेजने पर एक माइनर वर्शन बनता है। प्रकाशित करने पर यह अगले मेजर वर्शन में बदलकर लाइव हो जाता है।"
+  "Saving creates a minor version. Publishing promotes it to the next major and makes it live.": "सहेजने पर एक माइनर वर्शन बनता है। प्रकाशित करने पर यह अगले मेजर वर्शन में बदलकर लाइव हो जाता है।",
+  "good": "अच्छा",
+  "could improve": "सुधार संभव",
+  "need improvement": "सुधार आवश्यक",
+  "not evaluated": "मूल्यांकन नहीं हुआ",
+  "Are you sure you want to delete the assistant": "क्या आप वाकई इस असिस्टेंट को हटाना चाहते हैं",
+  "Assistant deleted successfully": "असिस्टेंट सफलतापूर्वक हटाया गया"
 }

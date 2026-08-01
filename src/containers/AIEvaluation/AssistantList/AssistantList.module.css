@@ -20,8 +20,11 @@
   display: contents;
 }
 
-.ListWrapper div:has(> .SearchBar) {
-  margin-left: auto;
+.SearchRow {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 48px 0 56px;
+  background-color: #f8faf5;
 }
 
 .VersionColumn {
