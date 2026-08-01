@@ -1,0 +1,344 @@
+.Page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  background-color: #f8faf5;
+}
+
+.PageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 16px 20px;
+  flex-shrink: 0;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.BackButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.HeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.NameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.NameText {
+  font-size: 24px;
+  font-weight: 700;
+  color: #191c1a;
+  max-width: 560px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.EditNameButton {
+  color: #119656;
+  flex-shrink: 0;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.NameEditRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* matches the inline rename on the Assistants screen: no box, just a green underline */
+.NameInput {
+  font-size: 24px;
+  font-weight: 700;
+  color: #191c1a;
+  font-family: inherit;
+  border: none;
+  border-bottom: 2px solid #119656;
+  background: transparent;
+  outline: none;
+  min-width: 200px;
+  max-width: 480px;
+  width: auto;
+}
+
+.AssistantId {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #119656;
+  font-size: 0.8rem;
+  font-weight: 500;
+  width: fit-content;
+  cursor: pointer;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.AssistantId:hover {
+  text-decoration: underline;
+}
+
+.PublishButton {
+  flex-shrink: 0;
+  border-radius: 24px !important;
+  text-transform: none !important;
+}
+
+.VersionBar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 24px;
+  padding: 14px 18px;
+  background-color: #fff;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow:
+    0 4px 16px rgb(7 63 36 / 8%),
+    0 1px 4px rgb(7 63 36 / 4%);
+}
+
+button.VersionPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px 5px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #f8faf5;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button.VersionPill:hover {
+  border-color: #119656;
+}
+
+button.VersionPillLive {
+  background-color: #f1faf4;
+  border-color: #a5d8bd;
+}
+
+.VersionLabelLive {
+  color: #0a5e34 !important;
+}
+
+.VersionMenuPaper {
+  min-width: 380px;
+  max-width: 440px;
+  border-radius: 12px !important;
+  margin-top: 6px;
+}
+
+.VersionDot {
+  width: 7px;
+  height: 7px;
+  margin-top: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: #cbd5cf;
+}
+
+.VersionDotLive {
+  background-color: #119656;
+}
+
+.LivePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #119656;
+  background-color: #fff;
+  border: 1px solid #119656;
+  border-radius: 12px;
+  padding: 2px 9px;
+}
+
+.LiveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #119656;
+  flex-shrink: 0;
+}
+
+.VersionLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #191c1a;
+}
+
+.DraftPill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #657a70;
+  background-color: #fff;
+  border: 1px solid #d5ddd8;
+  border-radius: 12px;
+  padding: 2px 9px;
+}
+
+.CaretBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+  border: 1px solid #d5ddd8;
+  border-radius: 6px;
+  background-color: #fff;
+  flex-shrink: 0;
+}
+
+.Caret {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #5c6d64;
+}
+
+.HealthChip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 1px solid #119656;
+  border-radius: 20px;
+  color: #119656;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.HealthTick {
+  font-size: 0.9rem;
+}
+
+.HealthScore {
+  font-weight: 700;
+}
+
+.HealthTotal {
+  font-weight: 600;
+  color: #93a49b;
+}
+
+.NewAssistantPill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #657a70;
+  border: 1px solid #cbd5cf;
+  border-radius: 12px;
+  padding: 4px 12px;
+}
+
+.LiveNote {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #5c6d64;
+
+  b {
+    color: #0a5e34;
+  }
+}
+
+.Tabs {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 0 24px;
+  padding: 18px 4px 0;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.Tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #5c6d64;
+  font-family: inherit;
+}
+
+.Tab:hover {
+  color: #191c1a;
+}
+
+.ActiveTab {
+  color: #191c1a;
+  font-weight: 700;
+  border-bottom-color: #119656;
+}
+
+.SandboxBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #657a70;
+  background-color: #eef2ef;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.TabPanel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5c6d64;
+  font-size: 0.95rem;
+}
+
+.NotFound {
+  text-align: center;
+  margin: 2rem 0;
+  color: #555;
+}

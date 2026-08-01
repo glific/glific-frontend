@@ -1,0 +1,116 @@
+import { Menu, MenuItem } from '@mui/material';
+import { ReactNode, useState } from 'react';
+
+import styles from './DropdownMenu.module.css';
+
+export interface DropdownMenuOption {
+  /** stable identity — also used to mark the option as selected */
+  id: string;
+  /** primary line; a plain string or any markup the parent wants */
+  label: ReactNode;
+  /** optional second line, rendered muted below the label */
+  description?: ReactNode;
+  /** rendered before the label row, e.g. a status dot */
+  startAdornment?: ReactNode;
+  /** rendered after the label, on the same line, e.g. a status pill */
+  endAdornment?: ReactNode;
+  disabled?: boolean;
+  testId?: string;
+}
+
+export interface DropdownMenuProps {
+  /** content of the button that opens the menu — fully parent-controlled */
+  trigger: ReactNode;
+  options: DropdownMenuOption[];
+  onSelect: (option: DropdownMenuOption) => void;
+  selectedId?: string | null;
+  /** optional heading above the options, e.g. "Versions" */
+  header?: ReactNode;
+  /** optional note below the options */
+  footer?: ReactNode;
+  /** styling hooks so each caller can shape the UI without forking the component */
+  triggerClassName?: string;
+  paperClassName?: string;
+  optionClassName?: string;
+  disabled?: boolean;
+  /** which corner of the trigger the menu opens from */
+  align?: 'left' | 'right';
+  testId?: string;
+}
+
+export const DropdownMenu = ({
+  trigger,
+  options,
+  onSelect,
+  selectedId = null,
+  header,
+  footer,
+  triggerClassName,
+  paperClassName,
+  optionClassName,
+  disabled = false,
+  align = 'left',
+  testId = 'dropdownMenu',
+}: DropdownMenuProps) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleSelect = (option: DropdownMenuOption) => {
+    // MUI only blocks disabled items via pointer-events, so guard here too
+    if (option.disabled) return;
+    onSelect(option);
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`${styles.Trigger} ${triggerClassName ?? ''}`}
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+        disabled={disabled}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        data-testid={testId}
+      >
+        {trigger}
+      </button>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: align === 'left' ? 'left' : 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: align === 'left' ? 'left' : 'right' }}
+        slotProps={{ paper: { className: `${styles.Paper} ${paperClassName ?? ''}` } }}
+        data-testid={`${testId}-menu`}
+      >
+        {header && <div className={styles.Header}>{header}</div>}
+
+        {options.map((option) => (
+          <MenuItem
+            key={option.id}
+            selected={option.id === selectedId}
+            disabled={option.disabled}
+            onClick={() => handleSelect(option)}
+            className={`${styles.Option} ${optionClassName ?? ''}`}
+            data-testid={option.testId}
+          >
+            {option.startAdornment}
+            <span className={styles.OptionText}>
+              <span className={styles.OptionLabelRow}>
+                {option.label}
+                {option.endAdornment}
+              </span>
+              {option.description && <span className={styles.OptionDescription}>{option.description}</span>}
+            </span>
+          </MenuItem>
+        ))}
+
+        {footer && <div className={styles.Footer}>{footer}</div>}
+      </Menu>
+    </>
+  );
+};
+
+export default DropdownMenu;

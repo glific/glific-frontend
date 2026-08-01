@@ -928,5 +928,21 @@
   "Auto-translate": "Auto-translate",
   "English — source reference": "English — source reference",
   "English": "English",
-  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting."
+  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting.",
+  "Persona & Prompt": "Persona & Prompt",
+  "Guardrails": "Guardrails",
+  "Golden Q&A Evaluation": "Golden Q&A Evaluation",
+  "Try It Out": "Try It Out",
+  "SANDBOX": "SANDBOX",
+  "coming soon": "coming soon",
+  "Publish & go live": "Publish & go live",
+  "not published": "not published",
+  "is live in your flows": "is live in your flows",
+  "Good": "Good",
+  "new assistant": "new assistant",
+  "Nothing published yet": "Nothing published yet",
+  "no version saved yet": "no version saved yet",
+  "saved": "saved",
+  "published": "published",
+  "Saving creates a minor version. Publishing promotes it to the next major and makes it live.": "Saving creates a minor version. Publishing promotes it to the next major and makes it live."
 }

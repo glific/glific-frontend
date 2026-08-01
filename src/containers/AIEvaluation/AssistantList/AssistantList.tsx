@@ -117,11 +117,7 @@ export const AssistantList = () => {
 
   const handleEdit = (_id: string, item: any) => {
     if (!item) return;
-    if (item.liveVersionNumber != null) {
-      navigate(`/assistants/${item.id}/version/${item.liveVersionNumber}`);
-    } else {
-      navigate(`/assistants/${item.id}`);
-    }
+    navigate(`/ai-evaluation-v2/${item.id}`);
   };
 
   const handleCloneClick = (_id: string, item: any) => {
@@ -240,7 +236,7 @@ export const AssistantList = () => {
         button={{
           show: true,
           label: t('Create New Assistant'),
-          action: () => navigate('/assistants/add'),
+          action: () => navigate('/ai-evaluation-v2/add'),
         }}
         editSupport={false}
         deleteModifier={{ variables: (id: string) => ({ deleteAssistantId: id }) }}

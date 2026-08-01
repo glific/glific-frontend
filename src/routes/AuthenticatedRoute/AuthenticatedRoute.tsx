@@ -81,6 +81,7 @@ const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCre
 const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
 const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
 const AIEvaluation = lazy(() => import('containers/AIEvaluation/AIEvaluation'));
+const AIEvaluationAssistantDetail = lazy(() => import('containers/AIEvaluation/AssistantDetail/AssistantDetail'));
 
 const staffRoutes = (
   <Routes>
@@ -176,6 +177,7 @@ const adminRoutes = (
     <Route path="ai-evaluations/intro" element={<AIEvalsRequestAcess />} />
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
     <Route path="ai-evaluation-v2" element={<AIEvaluation />} />
+    <Route path="ai-evaluation-v2/:assistantId" element={<AIEvaluationAssistantDetail />} />
     <Route path="/*" element={<Chat />} />
   </>
 );
