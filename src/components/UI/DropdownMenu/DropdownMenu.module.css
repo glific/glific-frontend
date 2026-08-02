@@ -1,4 +1,3 @@
-/* deliberately unstyled — callers pass triggerClassName to shape the button */
 .Trigger {
   display: flex;
   align-items: center;
