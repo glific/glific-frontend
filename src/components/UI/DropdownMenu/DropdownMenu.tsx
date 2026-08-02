@@ -4,36 +4,26 @@ import { ReactNode, useState } from 'react';
 import styles from './DropdownMenu.module.css';
 
 export interface DropdownMenuOption {
-  /** stable identity — also used to mark the option as selected */
   id: string;
-  /** primary line; a plain string or any markup the parent wants */
   label: ReactNode;
-  /** optional second line, rendered muted below the label */
   description?: ReactNode;
-  /** rendered before the label row, e.g. a status dot */
   startAdornment?: ReactNode;
-  /** rendered after the label, on the same line, e.g. a status pill */
   endAdornment?: ReactNode;
   disabled?: boolean;
   testId?: string;
 }
 
 export interface DropdownMenuProps {
-  /** content of the button that opens the menu — fully parent-controlled */
   trigger: ReactNode;
   options: DropdownMenuOption[];
   onSelect: (option: DropdownMenuOption) => void;
   selectedId?: string | null;
-  /** optional heading above the options, e.g. "Versions" */
   header?: ReactNode;
-  /** optional note below the options */
   footer?: ReactNode;
-  /** styling hooks so each caller can shape the UI without forking the component */
   triggerClassName?: string;
   paperClassName?: string;
   optionClassName?: string;
   disabled?: boolean;
-  /** which corner of the trigger the menu opens from */
   align?: 'left' | 'right';
   testId?: string;
 }
