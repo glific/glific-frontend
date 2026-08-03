@@ -1,0 +1,28 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": { "jsx": true }
+  },
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@mui/material",
+            "message": "Don't import @mui/material directly in src/containers/**. Use a shared component from src/components/UI (see src/components/UI/README.md) or, if it genuinely doesn't exist yet, add it there instead of inlining MUI here."
+          }
+        ],
+        "patterns": [
+          {
+            "group": ["@mui/material/*"],
+            "message": "Don't import @mui/material/* directly in src/containers/**. Use a shared component from src/components/UI (see src/components/UI/README.md) or, if it genuinely doesn't exist yet, add it there instead of inlining MUI here."
+          }
+        ]
+      }
+    ]
+  }
+}
