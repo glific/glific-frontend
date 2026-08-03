@@ -78,10 +78,26 @@ function loadBaseline() {
   return JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
 }
 
+// A hand-edited or corrupted baseline.json missing a key (or holding a non-numeric value)
+// would make `current[key] > baseline[key]` silently false (anything > undefined is
+// false in JS) — a real regression would pass unnoticed. Validate against `current`'s own
+// keys, since computeCounts() always returns the full, authoritative set.
+function assertValidBaseline(baseline, current) {
+  const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+  const invalid = Object.keys(current).filter((key) => !isFiniteNumber(baseline[key]));
+  if (invalid.length > 0) {
+    console.error('scripts/design-system-baseline.json is missing or has an invalid value for:\n');
+    for (const key of invalid) console.error(`  - ${key}`);
+    console.error('\nEvery tracked metric must be present as a finite number.');
+    process.exit(1);
+  }
+}
+
 function main() {
   const shouldUpdate = process.argv.includes('--update');
   const current = computeCounts();
   const baseline = loadBaseline().counts;
+  assertValidBaseline(baseline, current);
 
   if (shouldUpdate) {
     const increased = Object.keys(current).filter((key) => current[key] > baseline[key]);

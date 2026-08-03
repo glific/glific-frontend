@@ -72,10 +72,9 @@ jobs:
         run: |
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           git diff --name-only -z --diff-filter=ACMR "$BASE_SHA" HEAD \
-            | tr '\0' '\n' \
-            | grep -E '^src/containers/.*\.tsx?$' \
-            | grep -Ev '\.test\.tsx?$' \
-            | tr '\n' '\0' > /tmp/changed-container-files.txt || true
+            | grep -zE '^src/containers/.*\.tsx?$' \
+            | grep -zEv '\.test\.tsx?$' \
+            > /tmp/changed-container-files.txt || true
           if [ -s /tmp/changed-container-files.txt ]; then
             echo "has_files=true" >> "$GITHUB_OUTPUT"
           else

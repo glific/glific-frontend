@@ -44,8 +44,20 @@ function main() {
   }
 
   const prCounts = JSON.parse(readFileSync(BASELINE_PATH, 'utf8')).counts;
-  const increased = Object.keys(prCounts).filter((key) => prCounts[key] > (baseCounts[key] ?? Infinity));
 
+  // Check every metric the BASE tracks, not just whatever keys the PR happens to still
+  // have — otherwise a PR could delete a metric entirely (rather than raising it) to
+  // dodge this check, since a value that's just missing was never flagged as "increased".
+  const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+  const missingOrInvalid = Object.keys(baseCounts).filter((key) => !isFiniteNumber(prCounts[key]));
+  if (missingOrInvalid.length > 0) {
+    console.error('scripts/design-system-baseline.json is missing or has an invalid value for:\n');
+    for (const key of missingOrInvalid) console.error(`  - ${key}`);
+    console.error('\nEvery metric the base branch tracks must still be present here as a finite number.');
+    process.exit(1);
+  }
+
+  const increased = Object.keys(baseCounts).filter((key) => prCounts[key] > baseCounts[key]);
   if (increased.length > 0) {
     console.error('scripts/design-system-baseline.json was raised for:\n');
     for (const key of increased) {
