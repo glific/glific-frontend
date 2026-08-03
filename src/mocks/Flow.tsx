@@ -767,6 +767,14 @@ export const getFlowTranslationsWithErrors = {
   },
 };
 
+export const getFlowTranslationsNetworkError = {
+  request: {
+    query: AUTO_TRANSLATE_FLOW,
+    variables: { id: '1' },
+  },
+  error: new Error('Network error: Failed to translate flow'),
+};
+
 export const importFlowTranslationsMock = {
   request: {
     query: IMPORT_FLOW_LOCALIZATIONS,

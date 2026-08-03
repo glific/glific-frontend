@@ -1160,6 +1160,78 @@ describe('<Configure />', () => {
       ).toBeInTheDocument();
     });
   });
+
+  test('it truncates text to the new type limit when switching from a higher-limit type', async () => {
+    render(wrapper());
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Text'));
+    fireEvent.click(screen.getByText('Body'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content-input')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('text-content-input'), { target: { value: 'A'.repeat(90) } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content-input')).toHaveValue('A'.repeat(90));
+    });
+
+    const select = screen.getByTestId('text-type-select').querySelector('[role="combobox"]')!;
+    fireEvent.mouseDown(select);
+
+    const option = await screen.findByRole('option', { name: 'Large Heading' });
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('text-content-input')).toHaveValue('A'.repeat(80));
+    });
+  });
+
+  test('it enforces character limits for selection option values and OptIn labels', async () => {
+    render(wrapper());
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+    fireEvent.click(screen.getAllByText('Single Choice')[1]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('option-input')).toHaveLength(2);
+    });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'A'.repeat(30) } });
+    await waitFor(() => {
+      expect(screen.getAllByTestId('option-input')[0]).toHaveValue('A'.repeat(30));
+    });
+
+    fireEvent.change(screen.getAllByTestId('option-input')[0], { target: { value: 'A'.repeat(31) } });
+    await waitFor(() => {
+      expect(screen.getAllByTestId('option-input')[0]).toHaveValue('A'.repeat(30));
+    });
+
+    fireEvent.click(screen.getByTestId('add-content-button'));
+    fireEvent.mouseEnter(screen.getByTestId('Selection'));
+    fireEvent.click(screen.getByText('Opt In'));
+
+    const labelInput = screen.getByTestId('label-input');
+
+    fireEvent.change(labelInput, { target: { value: 'A'.repeat(120) } });
+    await waitFor(() => {
+      expect(screen.getByTestId('label-input')).toHaveValue('A'.repeat(120));
+    });
+
+    fireEvent.change(labelInput, { target: { value: 'A'.repeat(121) } });
+    await waitFor(() => {
+      expect(screen.getByTestId('label-input')).toHaveValue('A'.repeat(120));
+    });
+  });
 });
 
 // ── Helpers for validateFlowJson tests ───────────────────────────────────────

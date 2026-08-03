@@ -10,11 +10,13 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { Button } from 'components/UI/Form/Button/Button';
 import { List } from 'containers/List/List';
 import { ContactDescription } from 'containers/Profile/Contact/ContactDescription/ContactDescription';
-import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import { REMOVE_WA_GROUP_CONTACT } from 'graphql/mutations/Group';
 import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
-// import { PhonesPanel } from './PhonesPanel/PhonesPanel';
+import { PhonesPanel } from './PhonesPanel/PhonesPanel';
+import { AddMembersDialog } from './AddMembersDialog/AddMembersDialog';
 import styles from './GroupDetails.module.css';
 
 export const GroupDetails = () => {
@@ -24,6 +26,7 @@ export const GroupDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
   const [contentToShow, setContentToShow] = useState('members');
+  const [showAddMembersDialog, setShowAddMembersDialog] = useState(false);
 
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
@@ -35,20 +38,38 @@ export const GroupDetails = () => {
       name: t('Members'),
       section: 'members',
     },
-    // {
-    //   name: t('Phones'),
-    //   section: 'phones',
-    // },
+    {
+      name: t('Phones'),
+      section: 'phones',
+    },
     {
       name: t('Details'),
       section: 'details',
     },
   ];
 
-  const [removeContact, { loading }] = useMutation(UPDATE_GROUP_CONTACT, {
-    onCompleted: () => {
-      setNotification('Removed Contact from Group', 'success');
+  const [removeContact, { loading }] = useMutation(REMOVE_WA_GROUP_CONTACT, {
+    refetchQueries: [
+      { query: GET_WA_GROUP, variables: { waGroupId: params.id } },
+      { query: LIST_CONTACTS_WA_GROUPS, variables: { filter: { waGroupId: params.id } } },
+    ],
+    onCompleted: (responseData) => {
+      const errors = responseData?.removeWaGroupContact?.errors;
+      if (errors?.length) {
+        setNotification(
+          errors
+            .map((e: { message?: string }) => e?.message)
+            .filter(Boolean)
+            .join('; '),
+          'warning'
+        );
+        return;
+      }
+      setNotification(t('Removed Contact from Group'), 'success');
       setShowDeleteDialog(false);
+    },
+    onError: () => {
+      setNotification(t('Could not remove contact from the group'), 'warning');
     },
   });
 
@@ -63,7 +84,7 @@ export const GroupDetails = () => {
   const queries = {
     countQuery: COUNT_COUNTACTS_WA_GROUPS,
     filterItemsQuery: LIST_CONTACTS_WA_GROUPS,
-    deleteItemQuery: UPDATE_GROUP_CONTACT,
+    deleteItemQuery: null,
   };
 
   const getName = (contact: any, maytapiNumber: any, isAdmin: boolean) => (
@@ -132,16 +153,15 @@ export const GroupDetails = () => {
 
   const handleDialogOpen = (contact: any) => {
     setShowDeleteDialog(true);
-    setDeleteVariables({
-      addWaContactIds: [],
-      deleteWaContactIds: [contact.id],
-      waGroupId: params.id,
-    });
+    setDeleteVariables({ contactId: contact.id });
   };
 
   const handleRemoveContact = () => {
     removeContact({
-      variables: { input: deleteVariables },
+      variables: {
+        waGroupId: params.id,
+        contactId: deleteVariables?.contactId,
+      },
     });
   };
 
@@ -159,6 +179,10 @@ export const GroupDetails = () => {
         <div className={styles.dialogText}>The contact will no longer receive messages sent to this group</div>
       </DialogBox>
     );
+  }
+
+  if (showAddMembersDialog) {
+    dialog = <AddMembersDialog waGroupId={params.id!} onClose={() => setShowAddMembersDialog(false)} />;
   }
 
   let contentBody;
@@ -188,8 +212,8 @@ export const GroupDetails = () => {
         customStyles={styles.Table}
       />
     );
-    // } else if (contentToShow === 'phones') {
-    //   contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
+  } else if (contentToShow === 'phones') {
+    contentBody = <PhonesPanel phones={groupData?.phones || []} waGroupId={params.id!} />;
   } else {
     contentBody = (
       <ContactDescription
@@ -204,9 +228,22 @@ export const GroupDetails = () => {
   const drawer = (
     <div className={styles.Drawer}>
       <div data-testid="profileHeader" className={styles.GroupHeader}>
-        <AvatarDisplay name={groupData?.label} />
+        <div className={styles.GroupHeaderTop}>
+          <AvatarDisplay name={groupData?.label} />
+          <div className={styles.GroupHeaderTitle}>{groupData?.label}</div>
+        </div>
 
-        <div className={styles.GroupHeaderTitle}>{groupData?.label}</div>
+        <div className={styles.HeaderActions}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={styles.HeaderActionButton}
+            data-testid="addMembers"
+            onClick={() => setShowAddMembersDialog(true)}
+          >
+            {t('Add members')}
+          </Button>
+        </div>
       </div>
       <div className={styles.GroupHeaderElements}>
         {list.map((data: any, index: number) => {

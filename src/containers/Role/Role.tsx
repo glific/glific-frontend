@@ -67,6 +67,7 @@ export const Role = () => {
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="role"
+      backLinkButton="/role"
       cancelLink="role"
       listItem="accessRole"
       icon={roleIcon}

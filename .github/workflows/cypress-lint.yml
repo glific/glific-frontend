@@ -1,0 +1,52 @@
+name: Cypress Lint
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'cypress/**'
+      - 'cypress.config.ts.example'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.github/workflows/cypress-lint.yml'
+  pull_request:
+    branches: ['**']
+    paths:
+      - 'cypress/**'
+      - 'cypress.config.ts.example'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.github/workflows/cypress-lint.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cypress-lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Typecheck, lint & format cypress/
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Typecheck cypress
+        run: yarn cy:typecheck
+
+      - name: ESLint cypress
+        run: yarn cy:lint
+
+      - name: Prettier check cypress
+        run: yarn cy:format:check

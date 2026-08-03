@@ -103,6 +103,19 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
 
   const inputStyles = darkMode ? styles.DarkOutlinedInput : styles.OutlinedInput;
 
+  const renderCustomFieldError = () => {
+    if (!customFieldError) {
+      return null;
+    }
+
+    const customError = customFieldError(field, form);
+    if (typeof customError === 'string') {
+      return <FormHelperText className={styles.DangerText}>{customError}</FormHelperText>;
+    }
+
+    return customError;
+  };
+
   return (
     <>
       {translation && (
@@ -148,7 +161,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
           {form && form.errors[field.name] && form.touched[field.name] ? (
             <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
           ) : null}
-          {customFieldError ? customFieldError(field) : null}
+          {renderCustomFieldError()}
           {helperText && (
             <div id="helper-text" className={styles.HelperText}>
               {helperText}

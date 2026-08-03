@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.16.3",
+  "version": "6.17.3",
   "private": true,
   "type": "module",
   "license": {
@@ -19,7 +19,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@glific/flow-editor": "1.43.0-13",
+    "@glific/flow-editor": "1.43.0-14",
     "@lexical/react": "^0.39.0",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
@@ -79,12 +79,21 @@
     "build": "yarn setup && yarn vite build",
     "serve": "vite preview",
     "cy:run": "cypress run",
+    "cy:open": "cypress open",
+    "cy:typecheck": "tsc --noEmit -p cypress/tsconfig.json",
+    "cy:lint": "eslint --config cypress/eslint.config.mjs cypress",
+    "cy:lint:fix": "eslint --config cypress/eslint.config.mjs cypress --fix",
+    "cy:format": "prettier --write \"cypress/**/*.{ts,js}\"",
+    "cy:format:check": "prettier --check \"cypress/**/*.{ts,js}\"",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public",
     "extract-translations": "i18next",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "design-system:ratchet": "node scripts/design-system-ratchet.js",
+    "design-system:ratchet:update": "node scripts/design-system-ratchet.js --update",
+    "design-system:eslint": "eslint --no-config-lookup --config eslint.design-system.config.mjs 'src/containers/**/*.{ts,tsx}'"
   },
   "engines": {
     "node": ">=22.12.0 <23"
@@ -105,6 +114,7 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -118,11 +128,16 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^19.1.0",
     "@types/uuid": "^11.0.0",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
     "@vitest/coverage-istanbul": "^4.0.15",
     "@vitest/ui": "^4.0.15",
+    "cypress": "^15.15.0",
     "cypress-split": "^1.24.28",
+    "eslint": "^10.4.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-cypress": "^6.4.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.5.4",
@@ -133,6 +148,7 @@
     "prettier": "^3.7.4",
     "react-test-renderer": "^19.2.3",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.60.0",
     "vite-plugin-mkcert": "2.1.0",
     "vitest": "^4.0.15",
     "yarn-upgrade-all": "^0.7.5"

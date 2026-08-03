@@ -123,7 +123,32 @@ export const GET_WA_MANAGED_PHONES = gql`
     waManagedPhones(filter: $filter, opts: $opts) {
       id
       phone
+      phoneId
       label
+      status
+      lastStatusCheckedAt
+    }
+  }
+`;
+
+export const GET_WA_MANAGED_PHONES_COUNT = gql`
+  query CountWaManagedPhones($filter: WaManagedPhoneFilter) {
+    countWaManagedPhones(filter: $filter)
+  }
+`;
+
+export const WHATSAPP_PHONE_SCREEN = gql`
+  query WhatsappPhoneScreen($waManagedPhoneId: ID!) {
+    whatsappPhoneScreen(waManagedPhoneId: $waManagedPhoneId) {
+      waPhoneScreen {
+        code
+        status
+        expiresAt
+      }
+      errors {
+        key
+        message
+      }
     }
   }
 `;
@@ -216,6 +241,15 @@ export const GET_WA_MANAGED_PHONES_STATUS = gql`
     waManagedPhones {
       status
       phone
+    }
+  }
+`;
+
+export const WA_GROUP_COLLECTION_PRIMARY_REPORT = gql`
+  query WaGroupCollectionPrimaryReport($userJobId: ID!) {
+    waGroupCollectionPrimaryReport(userJobId: $userJobId) {
+      csvRows
+      error
     }
   }
 `;
