@@ -12,6 +12,12 @@ describe('HSM Template', () => {
   beforeEach(function () {
     // login before each test
     cy.login();
+    cy.window().then((win) => {
+      win.localStorage.setItem(
+        'organizationServices',
+        JSON.stringify({ templateV2Enabled: false })
+      );
+    });
     cy.visit('/template');
   });
 

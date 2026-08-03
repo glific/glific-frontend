@@ -187,8 +187,8 @@ export const HSMV2 = () => {
   });
 
   const backButton = location.state?.tag?.label
-    ? `template-v2?tag=${encodeURIComponent(location.state.tag.label)}`
-    : 'template-v2';
+    ? `template?tag=${encodeURIComponent(location.state.tag.label)}`
+    : 'template';
   const isReadOnly = mode === 'view';
   const needsFamilyFetch = Boolean(languageAnchorId);
   const anchorShortcode = mode === 'addLanguage' ? location.state?.anchorShortcode : newShortcode;
@@ -446,7 +446,7 @@ export const HSMV2 = () => {
 
   const viewVariant = (variantId: string) => {
     if (params.id && params.id !== variantId) {
-      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
+      navigate(`/template/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
       return;
     }
     setMode('view');
