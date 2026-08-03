@@ -117,10 +117,11 @@ export const AssistantDetail = () => {
   };
 
   const handleSaveVersion = async () => {
+    const temperature = Number(modelConfig.temperature);
     const input: Record<string, any> = {
       instructions: prompt,
       model: modelConfig.model,
-      temperature: modelConfig.temperature,
+      ...(modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
     };
 
     try {

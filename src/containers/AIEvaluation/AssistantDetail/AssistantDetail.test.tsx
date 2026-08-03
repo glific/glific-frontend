@@ -266,7 +266,7 @@ describe('unsaved changes', () => {
           input: {
             instructions: 'Be concise.',
             model: 'gpt-4o',
-            temperature: '1',
+            temperature: 1,
             name: 'Assistant-405db438',
           },
         },
