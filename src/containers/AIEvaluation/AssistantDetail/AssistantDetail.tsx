@@ -2,21 +2,24 @@ import { useMutation, useQuery } from '@apollo/client';
 import { IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { DropdownMenu } from 'components/UI/DropdownMenu/DropdownMenu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { setErrorMessage } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
-import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CREATE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
 import type { resources } from 'i18n/config';
+import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
+import { PersonaPrompt } from './Tabs';
 import styles from './AssistantDetail.module.css';
 
 dayjs.extend(relativeTime);
@@ -39,15 +42,24 @@ export const AssistantDetail = () => {
   const { assistantId } = useParams<{ assistantId: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-
   const [activeTab, setActiveTab] = useState<TabKey>('persona');
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameValue, setNameValue] = useState('');
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState('');
+  const [modelConfig, setModelConfig] = useState<ModelConfig>(DEFAULT_MODEL_CONFIG);
+  const [baseline, setBaseline] = useState<{ prompt: string; config: ModelConfig }>({
+    prompt: '',
+    config: DEFAULT_MODEL_CONFIG,
+  });
+  const [draftName, setDraftName] = useState('');
+  const [discardOpen, setDiscardOpen] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   // a brand new assistant has nothing to prefill, so we skip both fetches entirely
   const isCreateMode = !assistantId || assistantId === 'add';
+
+  const defaultAssistantName = t('Untitled assistant');
 
   const { loading, data, error } = useQuery(GET_ASSISTANT, {
     variables: { assistantId },
@@ -62,6 +74,7 @@ export const AssistantDetail = () => {
   });
 
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
+  const [createAssistant, { loading: creating }] = useMutation(CREATE_ASSISTANT);
 
   const assistant = data?.assistant?.assistant;
   const versions: AssistantVersion[] = versionData?.assistantVersions ?? [];
@@ -79,13 +92,86 @@ export const AssistantDetail = () => {
     }
   }, [isEditingName]);
 
+  useEffect(() => {
+    const fetched = data?.assistant?.assistant;
+    if (!fetched) return;
+    const loaded = {
+      prompt: fetched.instructions ?? '',
+      config: {
+        ...DEFAULT_MODEL_CONFIG,
+        model: fetched.model ?? DEFAULT_MODEL_CONFIG.model,
+        temperature: fetched.temperature != null ? String(fetched.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+      },
+    };
+    setPrompt(loaded.prompt);
+    setModelConfig(loaded.config);
+    setBaseline(loaded);
+  }, [data]);
+
+  const isDirty = prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config);
+
+  const handleDiscard = () => {
+    setPrompt(baseline.prompt);
+    setModelConfig(baseline.config);
+    setDiscardOpen(false);
+  };
+
+  const handleSaveVersion = async () => {
+    const input: Record<string, any> = {
+      instructions: prompt,
+      model: modelConfig.model,
+      temperature: modelConfig.temperature,
+    };
+
+    try {
+      if (isCreateMode) {
+        input.name = draftName.trim() || defaultAssistantName;
+        const response = await createAssistant({ variables: { input } });
+        const errors = response.data?.createAssistant?.errors;
+        if (errors?.length > 0) {
+          setErrorMessage(errors[0]);
+          return;
+        }
+        setNotification(t('Assistant created successfully'));
+        navigate(`/ai-evaluation-v2/${response.data.createAssistant.assistant.id}`);
+        return;
+      }
+
+      input.name = assistant.name;
+      const response = await updateAssistant({
+        variables: { updateAssistantId: assistantId, input },
+        refetchQueries: [
+          { query: GET_ASSISTANT, variables: { assistantId } },
+          { query: GET_ASSISTANT_VERSIONS, variables: { assistantId } },
+        ],
+      });
+      const errors = response.data?.updateAssistant?.errors;
+      if (errors?.length > 0) {
+        setErrorMessage(errors[0]);
+        return;
+      }
+      setBaseline({ prompt, config: modelConfig });
+      setNotification(t('Changes saved successfully'));
+    } catch (err: unknown) {
+      setErrorMessage(err);
+    }
+  };
+
   const handleEditName = () => {
-    setNameValue(assistant?.name ?? '');
+    setNameValue(isCreateMode ? draftName || defaultAssistantName : (assistant?.name ?? ''));
     setIsEditingName(true);
   };
 
   const handleSaveName = async () => {
     const trimmed = nameValue.trim();
+
+    // nothing exists to rename yet on a new assistant — the name is sent with the first save
+    if (isCreateMode) {
+      setDraftName(trimmed);
+      setIsEditingName(false);
+      return;
+    }
+
     if (!trimmed || trimmed === assistant?.name) {
       setIsEditingName(false);
       return;
@@ -120,6 +206,14 @@ export const AssistantDetail = () => {
   }
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
+
+  const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
+    persona: (
+      <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
+    ),
+  };
+
+  const activePanel = TAB_PANELS[activeTab];
 
   const statusPill = (version: AssistantVersion) =>
     version.isLive ? (
@@ -172,18 +266,16 @@ export const AssistantDetail = () => {
             ) : (
               <div className={styles.NameRow}>
                 <span className={styles.NameText} data-testid="headerTitle">
-                  {isCreateMode ? t('New Assistant') : assistant.name}
+                  {isCreateMode ? draftName || defaultAssistantName : assistant.name}
                 </span>
-                {!isCreateMode && (
-                  <IconButton
-                    size="small"
-                    className={styles.EditNameButton}
-                    onClick={handleEditName}
-                    data-testid="editNameButton"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                )}
+                <IconButton
+                  size="small"
+                  className={styles.EditNameButton}
+                  onClick={handleEditName}
+                  data-testid="editNameButton"
+                >
+                  <EditIcon />
+                </IconButton>
               </div>
             )}
             {!isCreateMode && assistant.assistantId && (
@@ -202,18 +294,56 @@ export const AssistantDetail = () => {
           </div>
         </div>
 
-        {!isCreateMode && (
-          <Button variant="contained" color="primary" className={styles.PublishButton} data-testid="publishButton">
-            {t('Publish & go live')}
-          </Button>
+        {isDirty ? (
+          <div className={styles.DirtyActions}>
+            <span className={styles.UnsavedPill} data-testid="unsavedChanges">
+              <span className={styles.UnsavedDot} />
+              {t('unsaved changes')}
+            </span>
+            <button
+              type="button"
+              className={styles.DiscardLink}
+              onClick={() => setDiscardOpen(true)}
+              data-testid="discardButton"
+            >
+              {t('Discard')}
+            </button>
+            <Button
+              variant="contained"
+              color="primary"
+              className={styles.PublishButton}
+              onClick={handleSaveVersion}
+              loading={savingName || creating}
+              data-testid="saveVersionButton"
+            >
+              {t('Save Version')}
+            </Button>
+          </div>
+        ) : (
+          !isCreateMode && (
+            <Button variant="contained" color="primary" className={styles.PublishButton} data-testid="publishButton">
+              {t('Publish & go live')}
+            </Button>
+          )
         )}
       </div>
 
       <div className={styles.VersionBar} data-testid="versionBar">
         {isCreateMode || !selectedVersion ? (
-          <span className={styles.NewAssistantPill} data-testid="newAssistantPill">
-            {isCreateMode ? t('new assistant') : t('no version saved yet')}
-          </span>
+          <>
+            {isCreateMode && (
+              <span className={styles.NewAssistantPill} data-testid="newAssistantPill">
+                <span className={styles.NewAssistantDot} />
+                {t('new assistant')}
+              </span>
+            )}
+            <span className={styles.NoVersionPill} data-testid="noVersionPill">
+              {t('no version saved yet')}
+            </span>
+            <div className={styles.LiveNote} data-testid="liveNote">
+              {t('Nothing published yet')}
+            </div>
+          </>
         ) : (
           <>
             <DropdownMenu
@@ -291,9 +421,28 @@ export const AssistantDetail = () => {
         ))}
       </div>
 
-      <div className={styles.TabPanel} role="tabpanel" data-testid="tabPanel">
-        {t(activeTabLabel)} {t('coming soon')}
+      <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
+        {activePanel ?? `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
+
+      {discardOpen && (
+        <DialogBox
+          title={t('Discard unsaved changes?')}
+          handleCancel={() => setDiscardOpen(false)}
+          handleOk={handleDiscard}
+          buttonOk={t('Discard changes')}
+          buttonCancel={t('Keep editing')}
+          alignButtons="center"
+          colorOk="warning"
+        >
+          <div className={styles.DiscardSubtitle}>
+            {t(
+              "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone."
+            )}
+          </div>
+          <div className={styles.DiscardWarning}>{t('Any edits made since your last save will be lost.')}</div>
+        </DialogBox>
+      )}
     </div>
   );
 };

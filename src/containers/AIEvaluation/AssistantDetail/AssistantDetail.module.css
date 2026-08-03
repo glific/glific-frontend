@@ -110,6 +110,64 @@
   text-decoration: underline;
 }
 
+.DiscardSubtitle {
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #5c6d64;
+}
+
+.DiscardWarning {
+  padding: 12px 14px;
+  border: 1px solid rgb(234 179 8 / 40%);
+  border-radius: 10px;
+  background-color: rgb(234 179 8 / 8%);
+  font-size: 0.85rem;
+  color: #3a4a42;
+}
+
+.DirtyActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.UnsavedPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border: 1px solid rgb(234 179 8 / 40%);
+  border-radius: 99px;
+  background-color: rgb(234 179 8 / 10%);
+  color: #eab308;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.UnsavedDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #eab308;
+}
+
+.DiscardLink {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #5c6d64;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.DiscardLink:hover {
+  text-decoration: underline;
+}
+
 .PublishButton {
   flex-shrink: 0;
   border-radius: 24px !important;
@@ -261,13 +319,25 @@ button.VersionPillLive {
   color: #93a49b;
 }
 
-.NewAssistantPill {
+.NewAssistantPill,
+.NoVersionPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.75rem;
   font-weight: 600;
   color: #657a70;
   border: 1px solid #cbd5cf;
   border-radius: 12px;
   padding: 4px 12px;
+}
+
+.NewAssistantDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #657a70;
+  flex-shrink: 0;
 }
 
 .LiveNote {
@@ -325,6 +395,12 @@ button.VersionPillLive {
   background-color: #eef2ef;
   border-radius: 4px;
   padding: 2px 6px;
+}
+
+.TabContent {
+  flex: 1;
+  min-height: 0;
+  padding: 20px 24px 32px;
 }
 
 .TabPanel {

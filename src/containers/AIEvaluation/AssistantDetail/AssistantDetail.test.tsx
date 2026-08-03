@@ -194,6 +194,140 @@ describe('renaming the assistant', () => {
   });
 });
 
+describe('unsaved changes', () => {
+  const edit = async (value = 'Be concise.') => {
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value } });
+  };
+
+  test('shows Publish until something is edited', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('publishButton')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('swaps Publish for the unsaved pill, Discard and Save Version', async () => {
+    renderDetail();
+    await edit();
+
+    expect(screen.getByTestId('unsavedChanges')).toHaveTextContent('unsaved changes');
+    expect(screen.getByTestId('discardButton')).toBeInTheDocument();
+    expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
+    expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
+  });
+
+  test('discard asks first, then restores the loaded values', async () => {
+    renderDetail();
+    await edit();
+
+    fireEvent.click(screen.getByTestId('discardButton'));
+    await waitFor(() => {
+      expect(screen.getByText('Discard unsaved changes?')).toBeInTheDocument();
+    });
+    expect(screen.getByText(/Reverts the prompt, model, settings and knowledge base/)).toBeInTheDocument();
+    expect(screen.getByText('Any edits made since your last save will be lost.')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Discard changes'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('');
+    expect(screen.getByTestId('publishButton')).toBeInTheDocument();
+  });
+
+  test('keep editing leaves the changes in place', async () => {
+    renderDetail();
+    await edit();
+
+    fireEvent.click(screen.getByTestId('discardButton'));
+    await waitFor(() => {
+      expect(screen.getByText('Discard unsaved changes?')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Keep editing'));
+
+    await waitFor(() => {
+      expect(screen.queryByText('Discard unsaved changes?')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+  });
+
+  test('saving clears the unsaved state', async () => {
+    const saveMock = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          input: {
+            instructions: 'Be concise.',
+            model: 'gpt-4o',
+            temperature: '1',
+            name: 'Assistant-405db438',
+          },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      saveMock,
+      getAssistant('1'),
+      versionsMock(),
+    ]);
+    await edit();
+
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+    });
+  });
+
+  test('renaming a new assistant opens prefilled with the placeholder name', async () => {
+    renderDetail('/ai-evaluation-v2/add', []);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('editNameButton'));
+
+    const input = screen.getByTestId('nameInput') as HTMLInputElement;
+    expect(input).toHaveValue('Untitled assistant');
+    // preselected, so typing replaces it
+    expect(input.selectionStart).toBe(0);
+    expect(input.selectionEnd).toBe('Untitled assistant'.length);
+
+    fireEvent.change(input, { target: { value: 'Support bot' } });
+    fireEvent.click(screen.getByTestId('saveNameButton'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('headerTitle')).toHaveTextContent('Support bot');
+    });
+  });
+
+  test('create mode starts clean and shows no publish button', async () => {
+    renderDetail('/ai-evaluation-v2/add', []);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Hello' } });
+
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+    expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
+  });
+});
+
 describe('version dropdown', () => {
   test('defaults to the live version and marks it LIVE', async () => {
     renderDetail();
@@ -249,9 +383,12 @@ describe('version dropdown', () => {
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([])]);
 
     await waitFor(() => {
-      expect(screen.getByTestId('newAssistantPill')).toHaveTextContent('no version saved yet');
+      expect(screen.getByTestId('noVersionPill')).toHaveTextContent('no version saved yet');
     });
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
+    // an existing assistant is not "new", however few versions it has
+    expect(screen.queryByTestId('newAssistantPill')).not.toBeInTheDocument();
   });
 });
 
@@ -263,9 +400,11 @@ describe('create mode', () => {
       expect(screen.getByTestId('assistantDetailContainer')).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId('headerTitle')).toHaveTextContent('New Assistant');
+    expect(screen.getByTestId('headerTitle')).toHaveTextContent('Untitled assistant');
     expect(screen.queryByTestId('assistantId')).not.toBeInTheDocument();
-    expect(screen.getByTestId('newAssistantPill')).toBeInTheDocument();
+    expect(screen.getByTestId('newAssistantPill')).toHaveTextContent('new assistant');
+    expect(screen.getByTestId('noVersionPill')).toHaveTextContent('no version saved yet');
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
     expect(screen.queryByTestId('healthChip')).not.toBeInTheDocument();
     expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
@@ -277,7 +416,7 @@ describe('tabs', () => {
     renderDetail();
 
     await waitFor(() => {
-      expect(screen.getByTestId('tabPanel')).toHaveTextContent('Persona & Prompt coming soon');
+      expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
     });
     expect(screen.getByTestId('tab-persona')).toHaveAttribute('aria-selected', 'true');
 
@@ -305,7 +444,7 @@ describe('tabs', () => {
     renderDetail('/ai-evaluation-v2/add', []);
 
     await waitFor(() => {
-      expect(screen.getByTestId('tabPanel')).toHaveTextContent('Persona & Prompt coming soon');
+      expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('tab-guardrails'));
