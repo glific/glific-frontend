@@ -93,7 +93,7 @@
     "test:coverage": "vitest run --coverage",
     "design-system:ratchet": "node scripts/design-system-ratchet.js",
     "design-system:ratchet:update": "node scripts/design-system-ratchet.js --update",
-    "design-system:eslint": "eslint --no-eslintrc -c .eslintrc.design-system.json --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.test.tsx' 'src/containers/**/*.{ts,tsx}'"
+    "design-system:eslint": "eslint --no-config-lookup --config eslint.design-system.config.mjs 'src/containers/**/*.{ts,tsx}'"
   },
   "engines": {
     "node": ">=22.12.0 <23"
