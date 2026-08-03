@@ -1,0 +1,53 @@
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.Label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #3a4a42;
+}
+
+.Track {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px;
+  border-radius: 99px;
+  background-color: rgb(122 144 135 / 14%);
+}
+
+.Option {
+  padding: 5px 13px;
+  border: none;
+  border-radius: 99px;
+  background: none;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #5c6d64;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.Option:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ActiveOption {
+  background-color: #fff;
+  color: #111714;
+  box-shadow: 0 1px 3px rgb(7 63 36 / 12%);
+}
+
+.HelperText {
+  margin-top: 5px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #5c6d64;
+}

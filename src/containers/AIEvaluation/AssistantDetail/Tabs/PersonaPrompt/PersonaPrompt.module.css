@@ -133,28 +133,6 @@ span.GenerateBeta {
   min-width: 190px;
 }
 
-.Segment {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 99px;
+.SegmentTrack {
   background-color: rgb(255 255 255 / 70%);
-}
-
-.SegmentOption {
-  padding: 5px 13px;
-  border: none;
-  border-radius: 99px;
-  background: none;
-  font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #5c6d64;
-  cursor: pointer;
-  text-transform: capitalize;
-}
-
-.SegmentOptionActive {
-  background-color: #fff;
-  color: #111714;
-  box-shadow: 0 1px 3px rgb(7 63 36 / 12%);
 }

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
+import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
 import {
@@ -81,25 +82,14 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
   };
 
   // effort and verbosity levels double as translation keys, so they render directly
-  const segment = <T extends ReasoningEffort | Verbosity>(
-    options: T[],
-    value: T,
-    onSelect: (option: T) => void,
-    testId: string
-  ) => (
-    <div className={styles.Segment} data-testid={testId}>
-      {options.map((option) => (
-        <button
-          type="button"
-          key={option}
-          className={`${styles.SegmentOption} ${value === option ? styles.SegmentOptionActive : ''}`}
-          onClick={() => onSelect(option)}
-          data-testid={`${testId}-${option}`}
-        >
-          {t(option)}
-        </button>
-      ))}
-    </div>
+  const segmentOptions = <T extends ReasoningEffort | Verbosity>(values: T[]) =>
+    values.map((value) => ({ value, label: t(value) }));
+
+  const fieldLabel = (text: ReactNode, apiName: string) => (
+    <>
+      {text}
+      <span className={styles.ApiName}>{apiName}</span>
+    </>
   );
 
   return (
@@ -159,32 +149,31 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
         {(params.effort || params.verbosity) && (
           <div className={styles.ParamColumns}>
             {params.effort && (
-              <div className={styles.ParamColumn}>
-                <div className={styles.FieldLabel}>
-                  {t('Reasoning effort')}
-                  <span className={styles.ApiName}>reasoning_effort</span>
-                </div>
-                {segment(selectedModel.efforts ?? [], config.effort, handleEffortChange, 'effortSegment')}
-                <div className={styles.Note}>{t(EFFORT_HINTS[config.effort])}</div>
-              </div>
+              <SegmentedControl
+                className={styles.ParamColumn}
+                trackClassName={styles.SegmentTrack}
+                testId="effortSegment"
+                label={fieldLabel(t('Reasoning effort'), 'reasoning_effort')}
+                labelClassName={styles.FieldLabel}
+                options={segmentOptions(selectedModel.efforts ?? [])}
+                value={config.effort}
+                onChange={handleEffortChange}
+                helperText={t(EFFORT_HINTS[config.effort])}
+              />
             )}
 
             {params.verbosity && (
-              <div className={styles.ParamColumn}>
-                <div className={styles.FieldLabel}>
-                  {t('Verbosity')}
-                  <span className={styles.ApiName}>verbosity</span>
-                </div>
-                {segment(
-                  VERBOSITY_OPTIONS,
-                  config.verbosity,
-                  (verbosity: Verbosity) => onConfigChange({ ...config, verbosity }),
-                  'verbositySegment'
-                )}
-                <div className={styles.Note}>
-                  {t('How long the replies run. Low suits WhatsApp, where long messages get truncated.')}
-                </div>
-              </div>
+              <SegmentedControl
+                className={styles.ParamColumn}
+                trackClassName={styles.SegmentTrack}
+                testId="verbositySegment"
+                label={fieldLabel(t('Verbosity'), 'verbosity')}
+                labelClassName={styles.FieldLabel}
+                options={segmentOptions(VERBOSITY_OPTIONS)}
+                value={config.verbosity}
+                onChange={(verbosity: Verbosity) => onConfigChange({ ...config, verbosity })}
+                helperText={t('How long the replies run. Low suits WhatsApp, where long messages get truncated.')}
+              />
             )}
           </div>
         )}
