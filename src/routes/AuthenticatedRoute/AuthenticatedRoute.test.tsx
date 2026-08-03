@@ -52,18 +52,37 @@ const mocks = [
   getAttachmentPermissionMock,
 ];
 window.HTMLElement.prototype.scrollIntoView = function () {};
+
+interface RenderAuthenticatedRouteOptions {
+  mocks?: React.ComponentProps<typeof MockedProvider>['mocks'];
+  initialEntries?: React.ComponentProps<typeof MemoryRouter>['initialEntries'];
+}
+
+const renderAuthenticatedRoute = ({
+  mocks: mocksOverride = mocks,
+  initialEntries,
+}: RenderAuthenticatedRouteOptions = {}) => {
+  const routeTree = (
+    <Suspense fallback={<Loading />}>
+      <AuthenticatedRoute />
+    </Suspense>
+  );
+
+  return render(
+    <MockedProvider mocks={mocksOverride}>
+      {initialEntries ? (
+        <MemoryRouter initialEntries={initialEntries}>{routeTree}</MemoryRouter>
+      ) : (
+        <BrowserRouter>{routeTree}</BrowserRouter>
+      )}
+    </MockedProvider>
+  );
+};
+
 describe('<AuthenticatedRoute />', () => {
   test('it should render', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks}>
-        <BrowserRouter>
-          <Suspense fallback={<Loading />}>
-            <AuthenticatedRoute />
-          </Suspense>
-        </BrowserRouter>
-      </MockedProvider>
-    );
+    const { getByTestId } = renderAuthenticatedRoute();
 
     await waitFor(() => {
       expect(getByTestId('app')).toBeInTheDocument();
@@ -72,15 +91,7 @@ describe('<AuthenticatedRoute />', () => {
 
   test('renders AssistantList at /assistants', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-    render(
-      <MockedProvider mocks={mocks}>
-        <MemoryRouter initialEntries={['/assistants']}>
-          <Suspense fallback={<Loading />}>
-            <AuthenticatedRoute />
-          </Suspense>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderAuthenticatedRoute({ initialEntries: ['/assistants'] });
 
     await waitFor(() => {
       expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
@@ -91,15 +102,7 @@ describe('<AuthenticatedRoute />', () => {
     'renders Analytics at /analytics for %s role',
     async (role) => {
       setUserSession(JSON.stringify({ organization: { id: '1' }, roles: [role] }));
-      render(
-        <MockedProvider mocks={mocks}>
-          <MemoryRouter initialEntries={['/analytics']}>
-            <Suspense fallback={<Loading />}>
-              <AuthenticatedRoute />
-            </Suspense>
-          </MemoryRouter>
-        </MockedProvider>
-      );
+      renderAuthenticatedRoute({ initialEntries: ['/analytics'] });
 
       await waitFor(() => {
         expect(screen.getByTestId('analytics-page')).toBeInTheDocument();
