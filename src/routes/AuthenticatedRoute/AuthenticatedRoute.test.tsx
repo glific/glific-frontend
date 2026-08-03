@@ -117,18 +117,11 @@ describe('<AuthenticatedRoute />', () => {
       });
     }
   );
+
   test('renders the legacy HSMList at /template when templateV2Enabled is off', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     setOrganizationServices(JSON.stringify({ templateV2Enabled: false }));
-    render(
-      <MockedProvider mocks={mocks}>
-        <MemoryRouter initialEntries={['/template']}>
-          <Suspense fallback={<Loading />}>
-            <AuthenticatedRoute />
-          </Suspense>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderAuthenticatedRoute({ initialEntries: ['/template'] });
 
     await waitFor(() => {
       expect(screen.getByTestId('hsm-list-old')).toBeInTheDocument();
@@ -138,15 +131,7 @@ describe('<AuthenticatedRoute />', () => {
   test('renders HSMListV2 at /template when templateV2Enabled is on', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     setOrganizationServices(JSON.stringify({ templateV2Enabled: true }));
-    render(
-      <MockedProvider mocks={mocks}>
-        <MemoryRouter initialEntries={['/template']}>
-          <Suspense fallback={<Loading />}>
-            <AuthenticatedRoute />
-          </Suspense>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderAuthenticatedRoute({ initialEntries: ['/template'] });
 
     await waitFor(() => {
       expect(screen.getByTestId('hsm-list-new')).toBeInTheDocument();
