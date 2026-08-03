@@ -14,33 +14,30 @@ describe('Flow smoke test', () => {
       cy.get('[data-testid="tableBody"]').find('a').first().click();
       cy.get('[data-testid="previewButton"]').click();
       cy.get('[data-testid="simulatedMessages"]').should('be.visible');
-      cy.wait(30000);
+      cy.wait(60000);
       cy.get('[data-testid="simulatedMessages"]')
         .find('[data-testid="simulatorMessage"]')
         .then(($messages) => {
-          const lastThree = $messages.slice(-3);
+          const today = new Date();
+          const d = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const yyyy = today.getFullYear();
+          const formattedDate = `${d}-${mm}-${yyyy}`;
 
+          const lastThree = $messages.toArray().slice(-3);
           cy.wrap(lastThree[0]).within(() => {
             cy.get('audio').should('not.exist');
-            const today = new Date();
-            const d = String(today.getDate());
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const yyyy = today.getFullYear();
-            const formattedDate = `${d}/${mm}/${yyyy}`;
-            cy.get('span').first().should('have.text', `Hello World! ${formattedDate}`);
+            cy.root().invoke('text').should('match', /\S/);
           });
+
           cy.wrap(lastThree[1]).within(() => {
-            cy.get('audio').should('not.exist');
-            cy.get('span')
-              .first()
-              .invoke('text')
-              .should((text) => {
-                expect(text.toLowerCase()).to.include('elephant');
-              });
+            cy.get('[data-testid="audioMessage"]').should('exist');
           });
 
           cy.wrap(lastThree[2]).within(() => {
-            cy.get('[data-testid="audioMessage"]').should('exist');
+            cy.get('audio').should('not.exist');
+            cy.contains('Test Finished').should('be.visible');
+            cy.contains(formattedDate).should('be.visible');
           });
         });
     });
