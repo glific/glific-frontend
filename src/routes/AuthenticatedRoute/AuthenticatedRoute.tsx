@@ -89,6 +89,7 @@ const staffRoutes = (
     <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="myaccount" element={<MyAccount />} />
+    <Route path="analytics" element={<Analytics />} />
     <Route path="/*" element={<Chat />} />
   </Routes>
 );

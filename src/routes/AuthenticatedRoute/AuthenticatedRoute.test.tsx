@@ -33,6 +33,10 @@ vi.mock('containers/Assistants/AssistantDetail/AssistantDetail', () => ({
   default: () => <div data-testid="assistant-detail-new" />,
 }));
 
+vi.mock('containers/Analytics/Analytics', () => ({
+  default: () => <div data-testid="analytics-page" />,
+}));
+
 const mocks = [
   ...walletBalanceQuery,
   ...walletBalanceSubscription,
@@ -82,4 +86,24 @@ describe('<AuthenticatedRoute />', () => {
       expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
     });
   });
+
+  test.each(['Staff', 'Manager', 'Admin', 'Glific_admin'])(
+    'renders Analytics at /analytics for %s role',
+    async (role) => {
+      setUserSession(JSON.stringify({ organization: { id: '1' }, roles: [role] }));
+      render(
+        <MockedProvider mocks={mocks}>
+          <MemoryRouter initialEntries={['/analytics']}>
+            <Suspense fallback={<Loading />}>
+              <AuthenticatedRoute />
+            </Suspense>
+          </MemoryRouter>
+        </MockedProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('analytics-page')).toBeInTheDocument();
+      });
+    }
+  );
 });

@@ -26,7 +26,6 @@ type ServiceType =
   | 'aiEvaluationsEnabled'
   | 'copyNodeEnabled'
   | 'promptGeneratorEnabled'
-  | 'supersetEnabled'
   | 'templateV2Enabled';
 
 // get the current authentication session
