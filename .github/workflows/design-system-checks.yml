@@ -83,4 +83,4 @@ jobs:
 
       - name: Lint changed files for raw MUI imports
         if: steps.changed.outputs.has_files == 'true'
-        run: xargs -0 npx eslint --no-eslintrc -c .eslintrc.design-system.json < /tmp/changed-container-files.txt
+        run: xargs -0 npx eslint --no-config-lookup --config eslint.design-system.config.mjs < /tmp/changed-container-files.txt
