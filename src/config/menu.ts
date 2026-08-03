@@ -136,7 +136,7 @@ const menus = (): Menu[] => [
       },
       {
         title: 'HSM Templates',
-        path: getOrganizationServices('templateV2Enabled') ? '/template-v2' : '/template',
+        path: '/template',
         icon: 'template',
         type: 'sideDrawer',
         roles: managerLevel,

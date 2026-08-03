@@ -1,23 +1,23 @@
-import React, { Suspense } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
+import { render, screen, waitFor } from '@testing-library/react';
+import React, { Suspense } from 'react';
+import { BrowserRouter, MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { getAttachmentPermissionMock } from 'mocks/Attachment';
+import { collectionCountQuery, CONVERSATION_MOCKS, markAsReadMock, savedSearchStatusQuery } from 'mocks/Chat';
+import { getNotificationCountQuery } from 'mocks/Notifications';
 import {
   getOrganizationBSP,
   OrganizationStateMock,
   walletBalanceQuery,
   walletBalanceSubscription,
 } from 'mocks/Organization';
-import { setUserSession } from 'services/AuthService';
-import { collectionCountQuery, CONVERSATION_MOCKS, markAsReadMock, savedSearchStatusQuery } from 'mocks/Chat';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
-import AuthenticatedRoute from './AuthenticatedRoute';
-import { getNotificationCountQuery } from 'mocks/Notifications';
 import { collectionCountSubscription } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
-import { getAttachmentPermissionMock } from 'mocks/Attachment';
+import { setOrganizationServices, setUserSession } from 'services/AuthService';
+import AuthenticatedRoute from './AuthenticatedRoute';
 
 vi.mock('axios');
 
@@ -35,6 +35,14 @@ vi.mock('containers/Assistants/AssistantDetail/AssistantDetail', () => ({
 
 vi.mock('containers/Analytics/Analytics', () => ({
   default: () => <div data-testid="analytics-page" />,
+}));
+
+vi.mock('containers/HSM/HSMList/HSMList', () => ({
+  default: () => <div data-testid="hsm-list-old" />,
+}));
+
+vi.mock('containers/HSM/HSMListV2/HSMListV2', () => ({
+  default: () => <div data-testid="hsm-list-new" />,
 }));
 
 const mocks = [
@@ -109,4 +117,39 @@ describe('<AuthenticatedRoute />', () => {
       });
     }
   );
+  test('renders the legacy HSMList at /template when templateV2Enabled is off', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ templateV2Enabled: false }));
+    render(
+      <MockedProvider mocks={mocks}>
+        <MemoryRouter initialEntries={['/template']}>
+          <Suspense fallback={<Loading />}>
+            <AuthenticatedRoute />
+          </Suspense>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('hsm-list-old')).toBeInTheDocument();
+    });
+  });
+
+  test('renders HSMListV2 at /template when templateV2Enabled is on', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ templateV2Enabled: true }));
+    render(
+      <MockedProvider mocks={mocks}>
+        <MemoryRouter initialEntries={['/template']}>
+          <Suspense fallback={<Loading />}>
+            <AuthenticatedRoute />
+          </Suspense>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('hsm-list-new')).toBeInTheDocument();
+    });
+  });
 });
