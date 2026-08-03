@@ -126,12 +126,6 @@ const adminRoutes = (
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
     <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="myaccount" element={<MyAccount />} />
-    <Route path="template" element={<HSMList />} />
-    <Route path="template/add" element={<HSM />} />
-    <Route path="template/:id/edit" element={<HSM />} />
-    <Route path="template-v2" element={<HSMListV2 />} />
-    <Route path="template-v2/add" element={<HSMV2 />} />
-    <Route path="template-v2/:id/edit" element={<HSMV2 />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="settings" element={<SettingList />}>
       <Route path="" element={<Navigate to="organization" />} />
@@ -207,6 +201,7 @@ export const AuthenticatedRoute = () => {
   const [provider, setProvider] = useState<string>('');
   const [showAskGlific, setShowAskGlific] = useState(false);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
+  const isTemplateV2Enabled = getOrganizationServices('templateV2Enabled');
 
   useEffect(() => {
     if (organizationProvider) {
@@ -247,6 +242,19 @@ export const AuthenticatedRoute = () => {
         <Route path="assistants" element={<AssistantList />} />
         <Route path="assistants/:assistantId" element={<AssistantDetail />} />
         <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
+        {isTemplateV2Enabled ? (
+          <>
+            <Route path="template" element={<HSMListV2 />} />
+            <Route path="template/add" element={<HSMV2 />} />
+            <Route path="template/:id/edit" element={<HSMV2 />} />
+          </>
+        ) : (
+          <>
+            <Route path="template" element={<HSMList />} />
+            <Route path="template/add" element={<HSM />} />
+            <Route path="template/:id/edit" element={<HSM />} />
+          </>
+        )}
       </Routes>
     );
   }
