@@ -210,11 +210,14 @@ before(() => {
 
 beforeEach(() => {
   cy.login();
+  cy.window().then((win) => {
+    win.localStorage.setItem('organizationServices', JSON.stringify({ templateV2Enabled: true }));
+  });
 });
 
 describe('HSM Template V2 — List page', () => {
   it('shows the list header and controls, and supports filtering before opening the create page', () => {
-    cy.visit('/template-v2');
+    cy.visit('/template');
 
     cy.get('[data-testid="listHeader"]').should('contain', 'HSM Templates');
     cy.get('[data-testid="newItemButton"]').should('be.visible');
@@ -230,13 +233,13 @@ describe('HSM Template V2 — List page', () => {
     cy.get('[data-testid="categoryFilter"]').should('contain', 'Utility');
 
     cy.get('[data-testid="newItemButton"]').click();
-    cy.location('pathname').should('eq', '/template-v2/add');
+    cy.location('pathname').should('eq', '/template/add');
   });
 });
 
 describe('HSM Template V2 — Create page validation', () => {
   beforeEach(() => {
-    cy.visit('/template-v2');
+    cy.visit('/template');
     openCreatePage();
   });
 
@@ -264,7 +267,7 @@ describe('HSM Template V2 — Full template creation journey', () => {
 
     mockCreateSessionTemplate('createMediaMessage');
 
-    cy.visit('/template-v2');
+    cy.visit('/template');
     openCreatePage();
 
     selectLanguage('English');
@@ -332,13 +335,13 @@ describe('HSM Template V2 — Full template creation journey', () => {
     });
 
     cy.contains('HSM Template created successfully!');
-    cy.location('pathname').should('eq', '/template-v2');
+    cy.location('pathname').should('eq', '/template');
   });
 });
 
 describe('HSM Template V2 — Button types end-to-end', () => {
   beforeEach(() => {
-    cy.visit('/template-v2');
+    cy.visit('/template');
   });
 
   it('submits a Call to Action template with a static phone number and a dynamic URL button', () => {
@@ -511,7 +514,7 @@ describe('HSM Template V2 — Media attachment end-to-end', () => {
     const sampleMessage = 'Please find your invoice attached.';
     mockCreateSessionTemplate('createMediaMessage');
 
-    cy.visit('/template-v2');
+    cy.visit('/template');
     openCreatePage();
     selectLanguage('English');
     setShortcode(shortcode);
@@ -563,7 +566,7 @@ describe('HSM Template V2 — Copy journey', () => {
     const sourceMessage = 'Your appointment is confirmed for tomorrow.';
 
     mockTemplateBackend();
-    cy.visit('/template-v2');
+    cy.visit('/template');
     openCreatePage();
     selectLanguage('English');
     setShortcode(sourceShortcode);
@@ -586,14 +589,14 @@ describe('HSM Template V2 — Copy journey', () => {
       sourceId = interception.response.body.data.createSessionTemplate.sessionTemplate.id;
     });
     cy.contains('HSM Template created successfully!');
-    cy.location('pathname').should('eq', '/template-v2');
+    cy.location('pathname').should('eq', '/template');
     cy.wait('@sessionTemplates');
 
     cy.get('[data-testid="tableBody"]')
       .contains('tr', sourceShortcode)
       .find('[data-testid="copyTemplate"]')
       .click();
-    cy.location('pathname').should('eq', '/template-v2/add');
+    cy.location('pathname').should('eq', '/template/add');
 
     cy.get('input[name="newShortcode"]').should('have.value', '').and('not.be.disabled');
     cy.get('[data-testid="AutocompleteInput"] input').eq(0).should('have.value', 'English');
@@ -618,7 +621,7 @@ describe('HSM Template V2 — Copy journey', () => {
     cy.contains('HSM Template created successfully!');
 
     cy.then(() => {
-      cy.visit(`/template-v2/${sourceId}/edit`);
+      cy.visit(`/template/${sourceId}/edit`);
     });
     cy.get('input[name="newShortcode"]').should('have.value', sourceShortcode);
     cy.get('[data-testid="editor-body"]').should('contain', sourceMessage);
@@ -632,7 +635,7 @@ describe('HSM Template V2 — Add-language & delete journey', () => {
     const hindiBody = 'Namaste, aapki booking confirm ho gayi hai.';
 
     mockTemplateBackend();
-    cy.visit('/template-v2');
+    cy.visit('/template');
     openCreatePage();
     selectLanguage('English');
     setShortcode(shortcode);
@@ -648,7 +651,7 @@ describe('HSM Template V2 — Add-language & delete journey', () => {
     cy.wait('@sessionTemplates');
 
     cy.then(() => {
-      cy.visit(`/template-v2/${anchorId}/edit`);
+      cy.visit(`/template/${anchorId}/edit`);
     });
 
     cy.get('[data-testid="headerTitle"]').should('contain', shortcode);
@@ -656,13 +659,13 @@ describe('HSM Template V2 — Add-language & delete journey', () => {
     cy.get('[data-testid="submitActionButton"]').should('not.exist');
     cy.get('[data-testid="add-language-link"]').should('be.visible');
 
-    cy.visit('/template-v2');
+    cy.visit('/template');
     cy.wait('@sessionTemplates');
     cy.get('[data-testid="tableBody"]')
       .contains('tr', shortcode)
       .find('[data-testid="add-language-icon"]')
       .click();
-    cy.location('pathname').should('eq', '/template-v2/add');
+    cy.location('pathname').should('eq', '/template/add');
     cy.get('[data-testid="headerTitle"]').should('contain', 'Add Language');
     cy.get('input[name="newShortcode"]').should('have.value', shortcode).and('be.disabled');
     cy.get('[data-testid="editor-body"]').should('not.contain', englishBody);
