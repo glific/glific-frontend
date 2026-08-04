@@ -2,8 +2,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 
+import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
-import { UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CREATE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import { getAssistant } from 'mocks/Assistants';
 
@@ -17,9 +18,9 @@ const version = (versionNumber: number, isLive: boolean) => ({
   settings: { temperature: 1 },
   status: 'ready',
   isLive,
-  description: null,
-  insertedAt: '2024-10-16T15:00:00Z',
-  updatedAt: '2024-10-16T15:00:00Z',
+  description: null as string | null,
+  insertedAt: '2024-10-16T15:00:00Z' as string | null,
+  updatedAt: '2024-10-16T15:00:00Z' as string | null,
   vectorStore: null,
 });
 
@@ -96,6 +97,67 @@ describe('edit mode', () => {
 
     expect(copySpy).toHaveBeenCalledWith('asst_JhYmNWzpCVBZY2vTuohvmqjs');
     copySpy.mockRestore();
+  });
+
+  test('copies the assistant id from the keyboard too', async () => {
+    const copySpy = vi.spyOn(Utils, 'copyToClipboard').mockImplementation(() => {});
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('assistantId')).toBeInTheDocument();
+    });
+
+    fireEvent.keyDown(screen.getByTestId('assistantId'), { key: 'Enter' });
+
+    expect(copySpy).toHaveBeenCalledWith('asst_JhYmNWzpCVBZY2vTuohvmqjs');
+    copySpy.mockRestore();
+  });
+
+  test('falls back to defaults when the assistant has no model, temperature or name', async () => {
+    const base = getAssistant('1');
+    const sparse = {
+      ...base,
+      result: {
+        data: {
+          assistant: {
+            ...base.result.data.assistant,
+            assistant: {
+              ...base.result.data.assistant.assistant,
+              name: null,
+              model: null,
+              temperature: null,
+              instructions: null,
+            },
+          },
+        },
+      },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock()]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
+    });
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(0.01);
+
+    fireEvent.click(screen.getByTestId('editNameButton'));
+    expect(screen.getByTestId('nameInput')).toHaveValue('');
+  });
+
+  test('version rows fall back to insertedAt, and drop the timestamp when both are missing', async () => {
+    const noUpdatedAt = { ...version(1, true), updatedAt: null };
+    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null, description: 'Draft config' };
+
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([noUpdatedAt, noDates])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+
+    expect(await screen.findByTestId('versionOption-1')).toHaveTextContent(/published .*ago/);
+    expect(screen.getByTestId('versionOption-2')).toHaveTextContent('Draft config');
+    expect(screen.getByTestId('versionOption-2')).not.toHaveTextContent('ago');
   });
 
   test('shows a not-found message when the query errors', async () => {
@@ -179,6 +241,51 @@ describe('renaming the assistant', () => {
     fireEvent.click(screen.getByTestId('cancelNameButton'));
 
     expect(screen.getByTestId('headerTitle')).toHaveTextContent('Assistant-405db438');
+  });
+
+  test('a rename that comes back with errors keeps the editor open', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failingRename = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: { updateAssistantId: '1', input: { name: 'Renamed assistant' } },
+      },
+      result: { data: { updateAssistant: { errors: [{ message: 'Name taken', key: 'name' }] } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingRename]);
+    await startEditing();
+
+    fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Renamed assistant' } });
+    fireEvent.click(screen.getByTestId('saveNameButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalledWith({ message: 'Name taken', key: 'name' });
+    });
+    expect(screen.getByTestId('nameInput')).toBeInTheDocument();
+    errorSpy.mockRestore();
+  });
+
+  test('a rename that throws is reported', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const networkError = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: { updateAssistantId: '1', input: { name: 'Renamed assistant' } },
+      },
+      error: new Error('Network error'),
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), networkError]);
+    await startEditing();
+
+    fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Renamed assistant' } });
+    fireEvent.click(screen.getByTestId('saveNameButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+    errorSpy.mockRestore();
   });
 
   test('an unchanged or empty name closes the editor without calling the API', async () => {
@@ -310,6 +417,127 @@ describe('unsaved changes', () => {
     await waitFor(() => {
       expect(screen.getByTestId('headerTitle')).toHaveTextContent('Support bot');
     });
+  });
+
+  const saveInput = {
+    instructions: 'Be concise.',
+    model: 'gpt-4o',
+    temperature: 1,
+    name: 'Assistant-405db438',
+  };
+
+  test('a save that comes back with errors keeps the unsaved state', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failingSave = {
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      result: { data: { updateAssistant: { errors: [{ message: 'Something went wrong', key: 'name' }] } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingSave]);
+    await edit();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalledWith({ message: 'Something went wrong', key: 'name' });
+    });
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+    errorSpy.mockRestore();
+  });
+
+  test('a save that throws is reported', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const networkError = {
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      error: new Error('Network error'),
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), networkError]);
+    await edit();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+    errorSpy.mockRestore();
+  });
+
+  test('a cleared temperature is left out of the save payload', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const saveWithoutTemperature = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          // no `temperature` key at all — the schema would reject an empty string
+          input: { instructions: '', model: 'gpt-4o', name: 'Assistant-405db438' },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      saveWithoutTemperature,
+      getAssistant('1'),
+      versionsMock(),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    notificationSpy.mockRestore();
+  });
+
+  test('saving a new assistant creates it and opens its page', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const createMock = {
+      request: {
+        query: CREATE_ASSISTANT,
+        variables: {
+          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 0.01, name: 'Untitled assistant' },
+        },
+      },
+      result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/add', [createMock]);
+    await edit('Hello');
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully');
+    });
+    notificationSpy.mockRestore();
+  });
+
+  test('a failed create is reported and stays on the page', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failingCreate = {
+      request: {
+        query: CREATE_ASSISTANT,
+        variables: {
+          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 0.01, name: 'Untitled assistant' },
+        },
+      },
+      result: { data: { createAssistant: { assistant: null, errors: [{ message: 'Name taken', key: 'name' }] } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/add', [failingCreate]);
+    await edit('Hello');
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalledWith({ message: 'Name taken', key: 'name' });
+    });
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+    errorSpy.mockRestore();
   });
 
   test('create mode starts clean and shows no publish button', async () => {

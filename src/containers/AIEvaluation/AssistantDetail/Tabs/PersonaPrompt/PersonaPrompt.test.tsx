@@ -1,10 +1,23 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen } from '@testing-library/react';
-
+import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
-
 import { DEFAULT_MODEL_CONFIG, ModelConfig, getModelParams } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
+
+vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
+  initialPromptAnswers: {},
+  PromptGeneratorModal: ({ onApply, onClose }: { onApply: (text: string) => void; onClose: () => void }) => (
+    <div data-testid="promptGeneratorStub">
+      <button type="button" onClick={() => onApply('generated prompt')} data-testid="stubApply">
+        apply
+      </button>
+      <button type="button" onClick={onClose} data-testid="stubClose">
+        close
+      </button>
+    </div>
+  ),
+}));
 
 const renderTab = (config: Partial<ModelConfig> = {}, props: any = {}) => {
   const onConfigChange = vi.fn();
@@ -161,6 +174,37 @@ describe('editing', () => {
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0' }));
   });
 
+  test('clearing temperature reports an empty value rather than 0', () => {
+    const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
+
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '' } });
+
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '' }));
+  });
+
+  test('choosing "none" on a model that supports it announces temperature is back', () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { onConfigChange } = renderTab({ model: 'gpt-5.1', effort: 'high' });
+
+    fireEvent.click(screen.getByTestId('effortSegment-none'));
+
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ effort: 'none' }));
+    expect(notificationSpy).toHaveBeenCalledWith('Reasoning off — temperature is available again.');
+    notificationSpy.mockRestore();
+  });
+
+  test('switching to a reasoning model warns that temperature is dropped', () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    renderTab({ model: 'gpt-4.1' });
+
+    fireEvent.change(screen.getByTestId('modelSelect'), { target: { value: 'gpt-5' } });
+
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Temperature is not supported on reasoning models — use reasoning effort and verbosity.'
+    );
+    notificationSpy.mockRestore();
+  });
+
   test('a partly typed value is left alone so it can be finished', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
@@ -181,13 +225,37 @@ describe('prompt generator', () => {
   test('is hidden when the org service is off', () => {
     renderTab();
 
-    expect(screen.queryByTestId('generatePromptButton')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('generateWithAiButton')).not.toBeInTheDocument();
   });
 
   test('is shown when the org service is on', () => {
     setOrganizationServices(JSON.stringify({ promptGeneratorEnabled: true }));
     renderTab();
 
-    expect(screen.getByTestId('generatePromptButton')).toBeInTheDocument();
+    expect(screen.getByTestId('generateWithAiButton')).toBeInTheDocument();
+  });
+
+  test('opens the generator, and closing it leaves the prompt alone', () => {
+    setOrganizationServices(JSON.stringify({ promptGeneratorEnabled: true }));
+    const { onPromptChange } = renderTab();
+
+    fireEvent.click(screen.getByTestId('generateWithAiButton'));
+    expect(screen.getByTestId('promptGeneratorStub')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('stubClose'));
+
+    expect(screen.queryByTestId('promptGeneratorStub')).not.toBeInTheDocument();
+    expect(onPromptChange).not.toHaveBeenCalled();
+  });
+
+  test('applying a generated prompt writes it back and closes', () => {
+    setOrganizationServices(JSON.stringify({ promptGeneratorEnabled: true }));
+    const { onPromptChange } = renderTab();
+
+    fireEvent.click(screen.getByTestId('generateWithAiButton'));
+    fireEvent.click(screen.getByTestId('stubApply'));
+
+    expect(onPromptChange).toHaveBeenCalledWith('generated prompt');
+    expect(screen.queryByTestId('promptGeneratorStub')).not.toBeInTheDocument();
   });
 });

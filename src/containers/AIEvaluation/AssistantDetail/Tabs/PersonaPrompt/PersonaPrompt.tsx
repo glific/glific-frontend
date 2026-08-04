@@ -65,11 +65,9 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
     }
 
     const parsed = Number(value);
-    if (Number.isNaN(parsed)) return;
-
     let temperature = value;
     if (parsed > TEMPERATURE_MAX) temperature = String(TEMPERATURE_MAX);
-    if (parsed < TEMPERATURE_MIN) temperature = String(TEMPERATURE_MIN);
+    else if (parsed < TEMPERATURE_MIN) temperature = String(TEMPERATURE_MIN);
 
     onConfigChange({ ...config, temperature });
   };
@@ -101,7 +99,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
             type="button"
             className={styles.GenerateButton}
             onClick={() => setGeneratorOpen(true)}
-            data-testid="generatePromptButton"
+            data-testid="generateWithAiButton"
           >
             <span className={styles.Sparkle}>✦</span>
             {t('Generate with AI')}
