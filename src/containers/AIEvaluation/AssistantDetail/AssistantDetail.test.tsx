@@ -3,7 +3,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
-import { CREATE_ASSISTANT, SET_LIVE_VERSION, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import {
+  CREATE_ASSISTANT,
+  CREATE_KNOWLEDGE_BASE,
+  SET_LIVE_VERSION,
+  UPDATE_ASSISTANT,
+  UPLOAD_FILE_TO_KAAPI,
+} from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import { getAssistant } from 'mocks/Assistants';
 import AssistantDetail from './AssistantDetail';
@@ -621,6 +627,117 @@ describe('unsaved changes', () => {
   });
 });
 
+describe('knowledge base', () => {
+  const uploadedFile = { fileId: 'file-9', filename: 'guide.pdf', uploadedAt: '2026-08-04T10:00:00Z', fileSize: 2048 };
+
+  const uploadMock = {
+    request: { query: UPLOAD_FILE_TO_KAAPI },
+    variableMatcher: () => true,
+    result: { data: { uploadFilesearchFile: uploadedFile } },
+  };
+
+  const openTabAndUpload = async () => {
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+
+    const input = screen.getByTestId('fileInput');
+    Object.defineProperty(input, 'files', {
+      value: [new File(['x'], 'guide.pdf', { type: 'application/pdf' })],
+      configurable: true,
+    });
+    fireEvent.change(input);
+  };
+
+  test('uploading marks the page dirty but does not attach anything yet', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
+    await openTabAndUpload();
+
+    // the assistant already ships with one file, so the upload makes two
+    await waitFor(() => {
+      expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
+    });
+    expect(screen.getByTestId('fileCount')).toHaveTextContent('2 files attached');
+    // no CREATE_KNOWLEDGE_BASE mock is provided — the attach must not have run
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+  });
+
+  test('discarding throws the uploaded file away', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
+    await openTabAndUpload();
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
+    });
+
+    fireEvent.click(screen.getByTestId('discardButton'));
+    fireEvent.click(await screen.findByText('Discard changes'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+    });
+    // back to the file the assistant was loaded with
+    expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(1);
+  });
+
+  test('saving attaches the staged files, then updates the assistant', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const createKnowledgeBaseMock = {
+      request: {
+        query: CREATE_KNOWLEDGE_BASE,
+        variables: {
+          createKnowledgeBaseId: 'vs-1',
+          mediaInfo: [
+            { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf', fileSize: 32880 },
+            uploadedFile,
+          ],
+        },
+      },
+      result: {
+        data: { createKnowledgeBase: { knowledgeBase: { id: 'kb-1', knowledgeBaseVersionId: 'kbv-9', name: 'kb' } } },
+      },
+    };
+    const saveMock = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          input: {
+            instructions: '',
+            model: 'gpt-4o',
+            temperature: 1,
+            knowledgeBaseVersionId: 'kbv-9',
+            name: 'Assistant-405db438',
+          },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      uploadMock,
+      createKnowledgeBaseMock,
+      saveMock,
+      getAssistant('1'),
+      versionsMock(),
+    ]);
+    await openTabAndUpload();
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
+    });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    notificationSpy.mockRestore();
+  });
+});
+
 describe('version dropdown', () => {
   test('defaults to the live version and marks it LIVE', async () => {
     renderDetail();
@@ -743,5 +860,111 @@ describe('tabs', () => {
     fireEvent.click(screen.getByTestId('tab-guardrails'));
 
     expect(screen.getByTestId('tabPanel')).toHaveTextContent('Guardrails coming soon');
+  });
+});
+
+describe('unsaved changes across tabs', () => {
+  const uploadMock = {
+    request: { query: UPLOAD_FILE_TO_KAAPI },
+    variableMatcher: () => true,
+    result: {
+      data: {
+        uploadFilesearchFile: {
+          fileId: 'file-9',
+          filename: 'guide.pdf',
+          uploadedAt: '2026-08-04T10:00:00Z',
+          fileSize: 2048,
+        },
+      },
+    },
+  };
+
+  const editPrompt = async (value = 'Updated instructions') => {
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value } });
+  };
+
+  test('dots only the tab that actually changed', async () => {
+    renderDetail();
+    await editPrompt();
+
+    expect(screen.getByTestId('tabDirtyDot-persona')).toBeInTheDocument();
+    expect(screen.queryByTestId('tabDirtyDot-knowledgeBase')).not.toBeInTheDocument();
+  });
+
+  test('dots the knowledge base tab when its files change', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+
+    const input = screen.getByTestId('fileInput');
+    Object.defineProperty(input, 'files', {
+      value: [new File(['x'], 'guide.pdf', { type: 'application/pdf' })],
+      configurable: true,
+    });
+    fireEvent.change(input);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tabDirtyDot-knowledgeBase')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('tabDirtyDot-persona')).not.toBeInTheDocument();
+  });
+
+  test('switching tabs keeps the edit — navigation is never destructive', async () => {
+    renderDetail();
+    await editPrompt();
+
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+    fireEvent.click(screen.getByTestId('tab-persona'));
+
+    expect(screen.getByTestId('promptInput')).toHaveValue('Updated instructions');
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+  });
+
+  test('leaving the page with unsaved changes asks first', async () => {
+    renderDetail();
+    await editPrompt();
+
+    fireEvent.click(screen.getByTestId('back-button'));
+
+    expect(await screen.findByText('Leave without saving?')).toBeInTheDocument();
+    expect(screen.queryByTestId('list-page')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Keep editing'));
+    await waitFor(() => {
+      expect(screen.queryByText('Leave without saving?')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('Updated instructions');
+  });
+
+  test('confirming the prompt leaves the page', async () => {
+    renderDetail();
+    await editPrompt();
+
+    fireEvent.click(screen.getByTestId('back-button'));
+    fireEvent.click(await screen.findByText('Leave'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('list-page')).toBeInTheDocument();
+    });
+  });
+
+  test('leaves straight away when nothing is unsaved', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('back-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('list-page')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Leave without saving?')).not.toBeInTheDocument();
   });
 });

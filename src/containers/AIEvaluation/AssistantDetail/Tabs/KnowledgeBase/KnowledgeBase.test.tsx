@@ -2,7 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
-import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import KnowledgeBase from './KnowledgeBase';
 
 const existingFile = { fileId: 'file-1', filename: 'nutrition_faq.pdf', fileSize: 1_200_000 };
@@ -18,34 +18,14 @@ const uploadMock = (filename: string, fileId: string) => ({
   },
 });
 
-const rebuildMock = (mediaInfo: any[], knowledgeBaseId: string | null = 'kb-1') => ({
-  request: {
-    query: CREATE_KNOWLEDGE_BASE,
-    variables: { createKnowledgeBaseId: knowledgeBaseId, mediaInfo },
-  },
-  result: {
-    data: {
-      createKnowledgeBase: {
-        knowledgeBase: { id: 'kb-1', knowledgeBaseVersionId: 'kbv-2', name: 'store' },
-      },
-    },
-  },
-});
-
 const renderTab = (props: Partial<Parameters<typeof KnowledgeBase>[0]> = {}, mocks: any[] = []) => {
-  const onKnowledgeBaseChange = vi.fn();
+  const onFilesChange = vi.fn();
   render(
     <MockedProvider mocks={mocks}>
-      <KnowledgeBase
-        files={[existingFile]}
-        knowledgeBaseId="kb-1"
-        vectorStoreId="vs_abc123"
-        onKnowledgeBaseChange={onKnowledgeBaseChange}
-        {...props}
-      />
+      <KnowledgeBase files={[existingFile]} onFilesChange={onFilesChange} vectorStoreId="vs_abc123" {...props} />
     </MockedProvider>
   );
-  return { onKnowledgeBaseChange };
+  return { onFilesChange };
 };
 
 const pickFile = (file: File) => {
@@ -71,41 +51,67 @@ test('shows an empty state when nothing is attached', () => {
 
 test('rejects a file over 20MB before uploading', () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
-  renderTab();
+  const { onFilesChange } = renderTab();
 
   const big = new File(['x'], 'huge.pdf', { type: 'application/pdf' });
   Object.defineProperty(big, 'size', { value: 21 * 1024 * 1024 });
   pickFile(big);
 
   expect(notificationSpy).toHaveBeenCalledWith(expect.stringContaining('huge.pdf'), 'warning');
-  expect(screen.queryByTestId('uploadingFile')).not.toBeInTheDocument();
+  expect(onFilesChange).not.toHaveBeenCalled();
   notificationSpy.mockRestore();
 });
 
-test('uploads a file, rebuilds the knowledge base, and reports the new version', async () => {
+test('uploads on pick and stages the file — no knowledge base call yet', async () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
-  const newFile = { fileId: 'file-2', filename: 'guide.pdf', uploadedAt: '2026-08-04T10:00:00Z', fileSize: 2048 };
-
-  const { onKnowledgeBaseChange } = renderTab({}, [
-    uploadMock('guide.pdf', 'file-2'),
-    rebuildMock([existingFile, newFile]),
-  ]);
+  const { onFilesChange } = renderTab({}, [uploadMock('guide.pdf', 'file-2')]);
 
   pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));
 
   expect(screen.getByTestId('uploadingFile')).toHaveTextContent('guide.pdf');
 
   await waitFor(() => {
-    expect(onKnowledgeBaseChange).toHaveBeenCalledWith('kbv-2', [existingFile, newFile]);
+    expect(onFilesChange).toHaveBeenCalledWith([
+      existingFile,
+      { fileId: 'file-2', filename: 'guide.pdf', uploadedAt: '2026-08-04T10:00:00Z', fileSize: 2048 },
+    ]);
   });
-  expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
-  expect(screen.queryByTestId('uploadingFile')).not.toBeInTheDocument();
+  expect(notificationSpy).toHaveBeenCalledWith('Files uploaded — save a version to apply them');
   notificationSpy.mockRestore();
 });
 
-test('a failed upload is reported and no file is added', async () => {
+test('strips __typename from the upload result — FileInfoInput rejects it', async () => {
+  const { onFilesChange } = renderTab({}, [
+    {
+      request: { query: UPLOAD_FILE_TO_KAAPI },
+      variableMatcher: () => true,
+      result: {
+        data: {
+          uploadFilesearchFile: {
+            __typename: 'FileResult',
+            fileId: 'file-2',
+            filename: 'guide.pdf',
+            uploadedAt: '2026-08-04T10:00:00Z',
+            fileSize: 2048,
+          },
+        },
+      },
+    },
+  ]);
+
+  pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));
+
+  await waitFor(() => {
+    expect(onFilesChange).toHaveBeenCalled();
+  });
+  const staged = onFilesChange.mock.calls[0][0];
+  expect(staged[1]).not.toHaveProperty('__typename');
+  expect(Object.keys(staged[1]).sort()).toEqual(['fileId', 'fileSize', 'filename', 'uploadedAt']);
+});
+
+test('a failed upload is reported and nothing is staged', async () => {
   const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
-  renderTab({}, [
+  const { onFilesChange } = renderTab({}, [
     { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher: () => true, error: new Error('Upload failed') },
   ]);
 
@@ -114,27 +120,27 @@ test('a failed upload is reported and no file is added', async () => {
   await waitFor(() => {
     expect(errorSpy).toHaveBeenCalled();
   });
-  expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(1);
+  expect(onFilesChange).not.toHaveBeenCalled();
   expect(screen.queryByTestId('uploadingFile')).not.toBeInTheDocument();
   errorSpy.mockRestore();
 });
 
-test('removing a file asks first, then rebuilds without it', async () => {
-  const { onKnowledgeBaseChange } = renderTab({}, [rebuildMock([])]);
+test('removing a file asks first, then stages the shorter list', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+  const { onFilesChange } = renderTab();
 
   fireEvent.click(screen.getByTestId('removeFileButton'));
   expect(screen.getByText('Remove nutrition_faq.pdf?')).toBeInTheDocument();
 
   fireEvent.click(screen.getByText('Remove file'));
 
-  await waitFor(() => {
-    expect(onKnowledgeBaseChange).toHaveBeenCalledWith('kbv-2', []);
-  });
-  expect(screen.getByTestId('knowledgeBaseEmpty')).toBeInTheDocument();
+  expect(onFilesChange).toHaveBeenCalledWith([]);
+  expect(notificationSpy).toHaveBeenCalledWith('File removed — save a version to apply it');
+  notificationSpy.mockRestore();
 });
 
-test('cancelling the remove dialog keeps the file', async () => {
-  const { onKnowledgeBaseChange } = renderTab();
+test('cancelling the remove dialog changes nothing', async () => {
+  const { onFilesChange } = renderTab();
 
   fireEvent.click(screen.getByTestId('removeFileButton'));
   fireEvent.click(screen.getByText('Cancel'));
@@ -142,8 +148,7 @@ test('cancelling the remove dialog keeps the file', async () => {
   await waitFor(() => {
     expect(screen.queryByText('Remove nutrition_faq.pdf?')).not.toBeInTheDocument();
   });
-  expect(screen.getByTestId('knowledgeBaseFile')).toBeInTheDocument();
-  expect(onKnowledgeBaseChange).not.toHaveBeenCalled();
+  expect(onFilesChange).not.toHaveBeenCalled();
 });
 
 test('a legacy assistant is read-only', () => {
@@ -170,7 +175,7 @@ describe('technical details', () => {
   });
 
   test('explains when no vector store exists yet', () => {
-    renderTab({ files: [], vectorStoreId: null, knowledgeBaseId: null });
+    renderTab({ files: [], vectorStoreId: null });
 
     fireEvent.click(screen.getByTestId('technicalDetailsToggle'));
 

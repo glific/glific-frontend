@@ -91,13 +91,29 @@
   word-break: break-all;
 }
 
-.FileAction {
+.FileActions {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-md);
   flex-shrink: 0;
+}
+
+.FileAction {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 !important;
+  border: 1px solid var(--app-color-border) !important;
+  border-radius: var(--app-radius-md) !important;
+  background-color: var(--app-color-surface-raised) !important;
 
   svg {
     width: var(--app-size-icon-sm);
     height: var(--app-size-icon-sm);
   }
+}
+
+.FileAction:disabled {
+  opacity: 0.45;
 }
 
 .Pulse {

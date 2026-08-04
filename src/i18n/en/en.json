@@ -1003,5 +1003,15 @@
   "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.",
   "No vector store yet — one is created when you add your first file.": "No vector store yet — one is created when you add your first file.",
   "The file is detached and the knowledge base is rebuilt without it.": "The file is detached and the knowledge base is rebuilt without it.",
-  "Version published — it is now live in your flows": "Version published — it is now live in your flows"
+  "Version published — it is now live in your flows": "Version published — it is now live in your flows",
+  "Files uploaded — save a version to apply them": "Files uploaded — save a version to apply them",
+  "File removed — save a version to apply it": "File removed — save a version to apply it",
+  "These are the documents the assistant can search when answering. Changes apply when you save a version.": "These are the documents the assistant can search when answering. Changes apply when you save a version.",
+  "The file is detached when you save the next version.": "The file is detached when you save the next version.",
+  "Uploading…": "Uploading…",
+  "Download": "Download",
+  "Downloads are not available yet": "Downloads are not available yet",
+  "This tab has unsaved changes": "This tab has unsaved changes",
+  "Leave without saving?": "Leave without saving?",
+  "Your changes have not been saved as a version yet.": "Your changes have not been saved as a version yet."
 }

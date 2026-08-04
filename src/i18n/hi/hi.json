@@ -865,5 +865,15 @@
   "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "यह वह वेक्टर स्टोर है जिसमें असिस्टेंट रनटाइम पर खोजता है — इंजीनियरिंग के साथ डिबग करने के अलावा इसकी ज़रूरत नहीं पड़ेगी।",
   "No vector store yet — one is created when you add your first file.": "अभी कोई वेक्टर स्टोर नहीं — पहली फ़ाइल जोड़ने पर बन जाएगा।",
   "The file is detached and the knowledge base is rebuilt without it.": "फ़ाइल हटा दी जाती है और नॉलेज बेस उसके बिना फिर से बनता है।",
-  "Version published — it is now live in your flows": "वर्शन प्रकाशित — यह अब आपके फ़्लो में लाइव है"
+  "Version published — it is now live in your flows": "वर्शन प्रकाशित — यह अब आपके फ़्लो में लाइव है",
+  "Files uploaded — save a version to apply them": "फ़ाइलें अपलोड हुईं — लागू करने के लिए वर्शन सहेजें",
+  "File removed — save a version to apply it": "फ़ाइल हटाई गई — लागू करने के लिए वर्शन सहेजें",
+  "These are the documents the assistant can search when answering. Changes apply when you save a version.": "ये वे दस्तावेज़ हैं जिनमें असिस्टेंट उत्तर देते समय खोज सकता है। बदलाव वर्शन सहेजने पर लागू होते हैं।",
+  "The file is detached when you save the next version.": "अगला वर्शन सहेजने पर फ़ाइल हटा दी जाएगी।",
+  "Uploading…": "अपलोड हो रहा है…",
+  "Download": "डाउनलोड",
+  "Downloads are not available yet": "डाउनलोड अभी उपलब्ध नहीं है",
+  "This tab has unsaved changes": "इस टैब में सहेजे नहीं गए बदलाव हैं",
+  "Leave without saving?": "बिना सहेजे छोड़ें?",
+  "Your changes have not been saved as a version yet.": "आपके बदलाव अभी तक किसी संस्करण के रूप में सहेजे नहीं गए हैं।"
 }

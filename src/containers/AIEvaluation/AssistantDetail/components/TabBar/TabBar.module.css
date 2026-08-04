@@ -1,0 +1,53 @@
+.Tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-4xl);
+  margin: 0 var(--app-space-3xl);
+  padding: var(--app-space-xl) var(--app-space-2xs) 0;
+  border-bottom: 1px solid var(--app-color-border);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.Tab {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-md);
+  padding: 0 0 var(--app-space-lg);
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: var(--app-font-size-sm);
+  font-weight: 500;
+  color: var(--app-color-text-tertiary);
+  font-family: inherit;
+}
+
+.Tab:hover {
+  color: var(--app-color-text-heading);
+}
+
+.ActiveTab {
+  color: var(--app-color-text-heading);
+  font-weight: 700;
+  border-bottom-color: var(--app-color-brand-primary);
+}
+
+.TabDirtyDot {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  border-radius: 50%;
+  background-color: var(--app-color-attention);
+}
+
+.SandboxBadge {
+  font-size: var(--app-font-size-3xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--app-color-text-tertiary);
+  background-color: var(--app-color-gray-secondary);
+  border-radius: var(--app-radius-sm);
+  padding: var(--app-space-xs) var(--app-space-sm);
+}

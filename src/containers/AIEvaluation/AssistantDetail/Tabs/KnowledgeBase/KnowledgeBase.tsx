@@ -1,14 +1,15 @@
 import { useMutation } from '@apollo/client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
-import { CREATE_KNOWLEDGE_BASE, UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import DownloadIcon from 'assets/images/icons/Download.svg?react';
 import styles from './KnowledgeBase.module.css';
 
 export interface KnowledgeBaseFile {
@@ -20,10 +21,9 @@ export interface KnowledgeBaseFile {
 
 export interface KnowledgeBaseProps {
   files: KnowledgeBaseFile[];
-  knowledgeBaseId?: string | null;
+  onFilesChange: (files: KnowledgeBaseFile[]) => void;
   vectorStoreId?: string | null;
   legacy?: boolean;
-  onKnowledgeBaseChange?: (knowledgeBaseVersionId: string, files: KnowledgeBaseFile[]) => void;
 }
 
 const MAX_FILE_SIZE_MB = 20;
@@ -36,41 +36,18 @@ const formatSize = (bytes?: number | null) => {
   return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 };
 
-export const KnowledgeBase = ({
-  files,
-  knowledgeBaseId = null,
-  vectorStoreId = null,
-  legacy = false,
-  onKnowledgeBaseChange,
-}: KnowledgeBaseProps) => {
+export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, legacy = false }: KnowledgeBaseProps) => {
   const { t } = useTranslation();
 
-  const [attachedFiles, setAttachedFiles] = useState<KnowledgeBaseFile[]>(files);
   const [uploadingNames, setUploadingNames] = useState<string[]>([]);
   const [fileToRemove, setFileToRemove] = useState<KnowledgeBaseFile | null>(null);
   const [showTechnical, setShowTechnical] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [uploadFile] = useMutation(UPLOAD_FILE_TO_KAAPI);
-  const [createKnowledgeBase, { loading: rebuilding }] = useMutation(CREATE_KNOWLEDGE_BASE);
 
-  // the assistant query can resolve after the first render, so keep the list in step
-  useEffect(() => {
-    setAttachedFiles(files);
-  }, [JSON.stringify(files)]);
-
-  const isBusy = uploadingNames.length > 0 || rebuilding;
+  const isUploading = uploadingNames.length > 0;
   const isReadOnly = legacy;
-
-  const rebuild = async (mediaInfo: KnowledgeBaseFile[], successMessage: string) => {
-    const response = await createKnowledgeBase({
-      variables: { createKnowledgeBaseId: knowledgeBaseId, mediaInfo },
-    });
-    const knowledgeBase = response.data?.createKnowledgeBase?.knowledgeBase;
-    setAttachedFiles(mediaInfo);
-    onKnowledgeBaseChange?.(knowledgeBase?.knowledgeBaseVersionId, mediaInfo);
-    setNotification(successMessage);
-  };
 
   const handleAddFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(event.target.files ?? []);
@@ -93,14 +70,19 @@ export const KnowledgeBase = ({
       const uploaded = await Promise.all(
         selected.map(async (file) => {
           const response = await uploadFile({ variables: { media: file } });
-          return response.data?.uploadFilesearchFile as KnowledgeBaseFile;
+          const result = response.data?.uploadFilesearchFile;
+          if (!result) return null;
+          return {
+            fileId: result.fileId,
+            filename: result.filename,
+            fileSize: result.fileSize,
+            uploadedAt: result.uploadedAt,
+          } as KnowledgeBaseFile;
         })
       );
 
-      await rebuild(
-        [...attachedFiles, ...uploaded.filter(Boolean)],
-        t('Files added — the knowledge base is rebuilding')
-      );
+      onFilesChange([...files, ...uploaded.filter((file): file is KnowledgeBaseFile => file !== null)]);
+      setNotification(t('Files uploaded — save a version to apply them'));
     } catch (error: unknown) {
       setErrorMessage(error);
     } finally {
@@ -108,19 +90,14 @@ export const KnowledgeBase = ({
     }
   };
 
-  const handleRemoveConfirm = async () => {
+  const handleRemoveConfirm = () => {
     if (!fileToRemove) return;
-    const remaining = attachedFiles.filter((file) => file.fileId !== fileToRemove.fileId);
+    onFilesChange(files.filter((file) => file.fileId !== fileToRemove.fileId));
     setFileToRemove(null);
-
-    try {
-      await rebuild(remaining, t('File removed — the knowledge base is rebuilding'));
-    } catch (error: unknown) {
-      setErrorMessage(error);
-    }
+    setNotification(t('File removed — save a version to apply it'));
   };
 
-  const fileCount = `${attachedFiles.length} ${attachedFiles.length === 1 ? t('file attached') : t('files attached')}`;
+  const fileCount = `${files.length} ${files.length === 1 ? t('file attached') : t('files attached')}`;
 
   return (
     <div className={styles.Zone} data-testid="knowledgeBase">
@@ -128,14 +105,14 @@ export const KnowledgeBase = ({
         <div className={styles.ZoneTitle}>{t('Knowledge base')}</div>
         <div className={styles.ZoneSub} data-testid="fileCount">
           {fileCount}
-          {uploadingNames.length > 0 && ` · ${uploadingNames.length} ${t('processing')}`}
+          {isUploading && ` · ${uploadingNames.length} ${t('processing')}`}
         </div>
         <div className={styles.ZoneAction}>
           <Button
             variant="contained"
             color="primary"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isBusy || isReadOnly}
+            disabled={isUploading || isReadOnly}
             data-testid="addFilesButton"
           >
             + {t('Add files')}
@@ -160,31 +137,44 @@ export const KnowledgeBase = ({
         ) : (
           <div className={styles.Note}>
             {t(
-              'These are the documents the assistant can search when answering. Adding or removing a file takes a minute or two to process.'
+              'These are the documents the assistant can search when answering. Changes apply when you save a version.'
             )}
           </div>
         )}
 
         <div className={styles.FileList}>
-          {attachedFiles.map((file) => (
+          {files.map((file) => (
             <div className={styles.File} key={file.fileId} data-testid="knowledgeBaseFile">
               <div className={styles.FileIcon}>📄</div>
               <div className={styles.FileText}>
                 <div className={styles.FileName}>{file.filename}</div>
                 {formatSize(file.fileSize) && <div className={styles.Note}>{formatSize(file.fileSize)}</div>}
               </div>
-              {!isReadOnly && (
+              <div className={styles.FileActions}>
                 <IconButton
                   size="small"
                   className={styles.FileAction}
-                  onClick={() => setFileToRemove(file)}
-                  disabled={isBusy}
-                  aria-label={t('Remove')}
-                  data-testid="removeFileButton"
+                  // TODO: needs a signed-url endpoint for assistant files; Golden QA has one
+                  disabled
+                  title={t('Downloads are not available yet')}
+                  aria-label={t('Download')}
+                  data-testid="downloadFileButton"
                 >
-                  <DeleteIcon />
+                  <DownloadIcon />
                 </IconButton>
-              )}
+                {!isReadOnly && (
+                  <IconButton
+                    size="small"
+                    className={styles.FileAction}
+                    onClick={() => setFileToRemove(file)}
+                    disabled={isUploading}
+                    aria-label={t('Remove')}
+                    data-testid="removeFileButton"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </div>
             </div>
           ))}
 
@@ -193,14 +183,12 @@ export const KnowledgeBase = ({
               <span className={styles.Pulse} />
               <div className={styles.FileText}>
                 <div className={styles.FileName}>{name}</div>
-                <div className={styles.Note}>
-                  {t('Processing — this runs in the background; you can keep working.')}
-                </div>
+                <div className={styles.Note}>{t('Uploading…')}</div>
               </div>
             </div>
           ))}
 
-          {attachedFiles.length === 0 && uploadingNames.length === 0 && (
+          {files.length === 0 && !isUploading && (
             <div className={styles.EmptyState} data-testid="knowledgeBaseEmpty">
               {t('No files yet. Add documents the assistant should answer from.')}
             </div>
@@ -255,7 +243,7 @@ export const KnowledgeBase = ({
           alignButtons="center"
           colorOk="warning"
         >
-          <div>{t('The file is detached and the knowledge base is rebuilt without it.')}</div>
+          <div>{t('The file is detached when you save the next version.')}</div>
         </DialogBox>
       )}
     </div>

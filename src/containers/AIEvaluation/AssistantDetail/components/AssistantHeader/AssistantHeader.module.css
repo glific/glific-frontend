@@ -1,0 +1,107 @@
+.PageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-xl);
+  padding: var(--app-space-2xl) var(--app-space-3xl) var(--app-space-xl) var(--app-space-2xl);
+  flex-shrink: 0;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  min-width: 0;
+}
+
+.BackButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.HeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-xs);
+  min-width: 0;
+}
+
+.NameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.NameText {
+  font-size: var(--app-font-size-2xl);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+  max-width: 35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.EditNameButton {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--app-space-2xs);
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--app-color-brand-primary);
+  flex-shrink: 0;
+
+  svg {
+    width: var(--app-size-icon-md);
+    height: var(--app-size-icon-md);
+  }
+}
+
+.NameEditRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-md);
+}
+
+.NameInput {
+  font-size: var(--app-font-size-2xl);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+  font-family: inherit;
+  border: none;
+  border-bottom: 2px solid var(--app-color-brand-primary);
+  background: transparent;
+  outline: none;
+  min-width: var(--app-size-table-column-min);
+  max-width: 30rem;
+  width: auto;
+}
+
+.AssistantId {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  color: var(--app-color-brand-primary);
+  font-size: var(--app-font-size-xs);
+  font-weight: 500;
+  width: fit-content;
+  cursor: pointer;
+
+  svg {
+    width: var(--app-size-icon-sm);
+    height: var(--app-size-icon-sm);
+  }
+}
+
+.AssistantId:hover {
+  text-decoration: underline;
+}

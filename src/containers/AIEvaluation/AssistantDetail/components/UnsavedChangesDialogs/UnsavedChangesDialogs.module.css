@@ -1,0 +1,15 @@
+.DiscardSubtitle {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.DiscardWarning {
+  padding: var(--app-space-lg);
+  border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 40%);
+  border-radius: var(--app-radius-md);
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 8%);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-primary);
+}

@@ -1,42 +1,33 @@
 import { useMutation, useQuery } from '@apollo/client';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { DropdownMenu } from 'components/UI/DropdownMenu/DropdownMenu';
-import { Button } from 'components/UI/Form/Button/Button';
-import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { copyToClipboard } from 'common/utils';
-import { CREATE_ASSISTANT, SET_LIVE_VERSION, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import {
+  CREATE_ASSISTANT,
+  CREATE_KNOWLEDGE_BASE,
+  SET_LIVE_VERSION,
+  UPDATE_ASSISTANT,
+} from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
-import CopyIcon from 'assets/images/CopyGreen.svg?react';
-import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
-import EditIcon from 'assets/images/icons/Edit.svg?react';
 import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
-import type { resources } from 'i18n/config';
 import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
+import {
+  AssistantHeader,
+  DiscardDialog,
+  HeaderActions,
+  LeaveDialog,
+  TABS,
+  TabBar,
+  TabKey,
+  VersionBar,
+} from './components';
 import { KnowledgeBase, PersonaPrompt } from './Tabs';
+import type { KnowledgeBaseFile } from './Tabs/KnowledgeBase/KnowledgeBase';
 import styles from './AssistantDetail.module.css';
 
-dayjs.extend(relativeTime);
-
-type TranslationKey = keyof (typeof resources)['en']['translation'];
-
-type TabKey = 'persona' | 'knowledgeBase' | 'guardrails' | 'evaluation' | 'tryItOut';
-
-const TABS: { key: TabKey; label: TranslationKey; badge?: TranslationKey }[] = [
-  { key: 'persona', label: 'Persona & Prompt' },
-  { key: 'knowledgeBase', label: 'Knowledge Base' },
-  { key: 'guardrails', label: 'Guardrails' },
-  { key: 'evaluation', label: 'Golden Q&A Evaluation' },
-  { key: 'tryItOut', label: 'Try It Out', badge: 'SANDBOX' },
-];
-
-const PLACEHOLDER_SCORE = '4.3';
+const LIST_PATH = '/ai-evaluation-v2';
 
 export const AssistantDetail = () => {
   const { assistantId } = useParams<{ assistantId: string }>();
@@ -48,15 +39,16 @@ export const AssistantDetail = () => {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [modelConfig, setModelConfig] = useState<ModelConfig>(DEFAULT_MODEL_CONFIG);
-  const [baseline, setBaseline] = useState<{ prompt: string; config: ModelConfig }>({
+  const [knowledgeBaseFiles, setKnowledgeBaseFiles] = useState<KnowledgeBaseFile[]>([]);
+  const [baseline, setBaseline] = useState<{ prompt: string; config: ModelConfig; files: KnowledgeBaseFile[] }>({
     prompt: '',
     config: DEFAULT_MODEL_CONFIG,
+    files: [],
   });
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
-  // set when the Knowledge Base tab rebuilds; sent with the next save so the assistant points at it
-  const [knowledgeBaseVersionId, setKnowledgeBaseVersionId] = useState<string | null>(null);
-  const nameInputRef = useRef<HTMLInputElement>(null);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // a brand new assistant has nothing to prefill, so we skip both fetches entirely
   const isCreateMode = !assistantId || assistantId === 'add';
@@ -76,8 +68,9 @@ export const AssistantDetail = () => {
   });
 
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
-  const [createAssistant, { loading: creating }] = useMutation(CREATE_ASSISTANT);
+  const [createAssistant] = useMutation(CREATE_ASSISTANT);
   const [setLiveVersion, { loading: publishing }] = useMutation(SET_LIVE_VERSION);
+  const [createKnowledgeBase] = useMutation(CREATE_KNOWLEDGE_BASE);
 
   const assistant = data?.assistant?.assistant;
   const versions: AssistantVersion[] = versionData?.assistantVersions ?? [];
@@ -89,13 +82,6 @@ export const AssistantDetail = () => {
     sortedVersions.find((version) => version.id === selectedVersionId) ?? liveVersion ?? sortedVersions[0];
 
   useEffect(() => {
-    if (isEditingName) {
-      nameInputRef.current?.focus();
-      nameInputRef.current?.select();
-    }
-  }, [isEditingName]);
-
-  useEffect(() => {
     const fetched = data?.assistant?.assistant;
     if (!fetched) return;
     const loaded = {
@@ -105,30 +91,72 @@ export const AssistantDetail = () => {
         model: fetched.model ?? DEFAULT_MODEL_CONFIG.model,
         temperature: fetched.temperature != null ? String(fetched.temperature) : DEFAULT_MODEL_CONFIG.temperature,
       },
+      files: (fetched.vectorStore?.files ?? []).map((file: any) => ({
+        fileId: file.id,
+        filename: file.name,
+        fileSize: file.fileSize,
+      })),
     };
     setPrompt(loaded.prompt);
     setModelConfig(loaded.config);
+    setKnowledgeBaseFiles(loaded.files);
     setBaseline(loaded);
   }, [data]);
 
-  const isDirty = prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config);
+  const filesChanged = JSON.stringify(knowledgeBaseFiles) !== JSON.stringify(baseline.files);
+
+  const dirtyTabs: Partial<Record<TabKey, boolean>> = {
+    persona: prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config),
+    knowledgeBase: filesChanged,
+  };
+  const isDirty = Object.values(dirtyTabs).some(Boolean);
+
+  useEffect(() => {
+    if (!isDirty) return undefined;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [isDirty]);
+
+  const leavePage = () => navigate(LIST_PATH);
+
+  const handleBack = () => {
+    if (isDirty) {
+      setLeaveOpen(true);
+      return;
+    }
+    leavePage();
+  };
 
   const handleDiscard = () => {
     setPrompt(baseline.prompt);
     setModelConfig(baseline.config);
+    setKnowledgeBaseFiles(baseline.files);
     setDiscardOpen(false);
   };
 
   const handleSaveVersion = async () => {
+    setSaving(true);
     const temperature = Number(modelConfig.temperature);
     const input: Record<string, any> = {
       instructions: prompt,
       model: modelConfig.model,
       ...(modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
-      ...(knowledgeBaseVersionId ? { knowledgeBaseVersionId } : {}),
     };
 
     try {
+      // the files were uploaded when picked; this is what actually attaches them
+      if (filesChanged) {
+        const knowledgeBaseResponse = await createKnowledgeBase({
+          variables: {
+            createKnowledgeBaseId: assistant?.vectorStore?.id ?? null,
+            mediaInfo: knowledgeBaseFiles,
+          },
+        });
+        const versionId = knowledgeBaseResponse.data?.createKnowledgeBase?.knowledgeBase?.knowledgeBaseVersionId;
+        if (versionId) input.knowledgeBaseVersionId = versionId;
+      }
+
       if (isCreateMode) {
         input.name = draftName.trim() || defaultAssistantName;
         const response = await createAssistant({ variables: { input } });
@@ -138,7 +166,7 @@ export const AssistantDetail = () => {
           return;
         }
         setNotification(t('Assistant created successfully'));
-        navigate(`/ai-evaluation-v2/${response.data.createAssistant.assistant.id}`);
+        navigate(`${LIST_PATH}/${response.data.createAssistant.assistant.id}`);
         return;
       }
 
@@ -155,10 +183,12 @@ export const AssistantDetail = () => {
         setErrorMessage(errors[0]);
         return;
       }
-      setBaseline({ prompt, config: modelConfig });
+      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles });
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
       setErrorMessage(err);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -196,8 +226,6 @@ export const AssistantDetail = () => {
     }
   };
 
-  const handleSelectVersion = (versionId: string) => setSelectedVersionId(versionId);
-
   const handlePublish = async () => {
     if (!selectedVersion) return;
 
@@ -230,266 +258,69 @@ export const AssistantDetail = () => {
   }
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
-
   const vectorStore = assistant?.vectorStore;
 
+  // a tab appears here once it is built; anything missing falls through to "coming soon"
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
     persona: (
       <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
     ),
     knowledgeBase: (
       <KnowledgeBase
-        files={(vectorStore?.files ?? []).map((file: any) => ({
-          fileId: file.id,
-          filename: file.name,
-          fileSize: file.fileSize,
-        }))}
-        knowledgeBaseId={vectorStore?.id ?? null}
+        files={knowledgeBaseFiles}
+        onFilesChange={setKnowledgeBaseFiles}
         vectorStoreId={vectorStore?.vectorStoreId ?? null}
         legacy={vectorStore?.legacy ?? false}
-        onKnowledgeBaseChange={setKnowledgeBaseVersionId}
       />
     ),
   };
 
   const activePanel = TAB_PANELS[activeTab];
 
-  const statusPill = (version: AssistantVersion) =>
-    version.isLive ? (
-      <span className={styles.LivePill}>
-        <span className={styles.LiveDot} />
-        {t('LIVE')}
-      </span>
-    ) : (
-      <span className={styles.DraftPill}>{t('not published')}</span>
-    );
-
-  const versionMeta = (version: AssistantVersion) => {
-    const when = version.isLive ? t('published') : t('saved');
-    const timestamp = version.updatedAt ?? version.insertedAt;
-    return [version.description, timestamp ? `${when} ${dayjs(timestamp).fromNow()}` : null]
-      .filter(Boolean)
-      .join(' · ');
-  };
-
   return (
     <div className={styles.Page} data-testid="assistantDetailContainer">
-      <div className={styles.PageHeader}>
-        <div className={styles.HeaderLeft}>
-          <button
-            type="button"
-            className={styles.BackButton}
-            onClick={() => navigate('/ai-evaluation-v2')}
-            aria-label={t('Back')}
-            data-testid="back-button"
-          >
-            <BackIcon />
-          </button>
-          <div className={styles.HeaderText}>
-            {isEditingName ? (
-              <div className={styles.NameEditRow}>
-                <input
-                  ref={nameInputRef}
-                  className={styles.NameInput}
-                  value={nameValue}
-                  onChange={(e) => setNameValue(e.target.value)}
-                  data-testid="nameInput"
-                />
-                <Button variant="contained" onClick={handleSaveName} loading={savingName} data-testid="saveNameButton">
-                  {t('Save')}
-                </Button>
-                <Button variant="outlined" onClick={() => setIsEditingName(false)} data-testid="cancelNameButton">
-                  {t('Cancel')}
-                </Button>
-              </div>
-            ) : (
-              <div className={styles.NameRow}>
-                <span className={styles.NameText} data-testid="headerTitle">
-                  {isCreateMode ? draftName || defaultAssistantName : assistant.name}
-                </span>
-                <IconButton
-                  size="small"
-                  className={styles.EditNameButton}
-                  onClick={handleEditName}
-                  data-testid="editNameButton"
-                >
-                  <EditIcon />
-                </IconButton>
-              </div>
-            )}
-            {!isCreateMode && assistant.assistantId && (
-              <span
-                role="button"
-                tabIndex={0}
-                className={styles.AssistantId}
-                onClick={() => copyToClipboard(assistant.assistantId)}
-                onKeyDown={() => copyToClipboard(assistant.assistantId)}
-                data-testid="assistantId"
-              >
-                <CopyIcon />
-                {assistant.assistantId}
-              </span>
-            )}
-          </div>
-        </div>
+      <AssistantHeader
+        name={isCreateMode ? draftName || defaultAssistantName : assistant.name}
+        assistantId={isCreateMode ? null : assistant.assistantId}
+        isEditingName={isEditingName}
+        nameValue={nameValue}
+        savingName={savingName}
+        onNameChange={setNameValue}
+        onEditName={handleEditName}
+        onSaveName={handleSaveName}
+        onCancelName={() => setIsEditingName(false)}
+        onBack={handleBack}
+        actions={
+          <HeaderActions
+            isDirty={isDirty}
+            saving={saving}
+            onDiscard={() => setDiscardOpen(true)}
+            onSave={handleSaveVersion}
+            showPublish={!isCreateMode}
+            publishing={publishing}
+            publishDisabled={!selectedVersion || selectedVersion.isLive}
+            onPublish={handlePublish}
+          />
+        }
+      />
 
-        {isDirty ? (
-          <div className={styles.DirtyActions}>
-            <span className={styles.UnsavedPill} data-testid="unsavedChanges">
-              <span className={styles.UnsavedDot} />
-              {t('unsaved changes')}
-            </span>
-            <button
-              type="button"
-              className={styles.DiscardLink}
-              onClick={() => setDiscardOpen(true)}
-              data-testid="discardButton"
-            >
-              {t('Discard')}
-            </button>
-            <Button
-              variant="contained"
-              color="primary"
-              className={styles.PublishButton}
-              onClick={handleSaveVersion}
-              loading={savingName || creating}
-              data-testid="saveVersionButton"
-            >
-              {t('Save Version')}
-            </Button>
-          </div>
-        ) : (
-          !isCreateMode && (
-            <Button
-              variant="contained"
-              color="primary"
-              className={styles.PublishButton}
-              onClick={handlePublish}
-              loading={publishing}
-              disabled={!selectedVersion || selectedVersion.isLive}
-              data-testid="publishButton"
-            >
-              {t('Publish & go live')}
-            </Button>
-          )
-        )}
-      </div>
+      <VersionBar
+        versions={sortedVersions}
+        selectedVersion={selectedVersion}
+        liveVersion={liveVersion}
+        onSelectVersion={setSelectedVersionId}
+        isCreateMode={isCreateMode}
+      />
 
-      <div className={styles.VersionBar} data-testid="versionBar">
-        {isCreateMode || !selectedVersion ? (
-          <>
-            {isCreateMode && (
-              <span className={styles.NewAssistantPill} data-testid="newAssistantPill">
-                <span className={styles.NewAssistantDot} />
-                {t('new assistant')}
-              </span>
-            )}
-            <span className={styles.NoVersionPill} data-testid="noVersionPill">
-              {t('no version saved yet')}
-            </span>
-            <div className={styles.LiveNote} data-testid="liveNote">
-              {t('Nothing published yet')}
-            </div>
-          </>
-        ) : (
-          <>
-            <DropdownMenu
-              testId="versionPill"
-              triggerClassName={`${styles.VersionPill} ${selectedVersion.isLive ? styles.VersionPillLive : ''}`}
-              paperClassName={styles.VersionMenuPaper}
-              header={t('Versions')}
-              footer={t('Saving creates a minor version. Publishing promotes it to the next major and makes it live.')}
-              selectedId={selectedVersion.id}
-              onSelect={(option) => handleSelectVersion(option.id)}
-              trigger={
-                <>
-                  <span className={`${styles.VersionLabel} ${selectedVersion.isLive ? styles.VersionLabelLive : ''}`}>
-                    {t('Version')} {selectedVersion.versionNumber}
-                  </span>
-                  {statusPill(selectedVersion)}
-                  <span className={styles.CaretBox}>
-                    <span className={styles.Caret} />
-                  </span>
-                </>
-              }
-              options={sortedVersions.map((version) => ({
-                id: version.id,
-                testId: `versionOption-${version.versionNumber}`,
-                startAdornment: (
-                  <span className={`${styles.VersionDot} ${version.isLive ? styles.VersionDotLive : ''}`} />
-                ),
-                label: (
-                  <span className={`${styles.VersionLabel} ${version.isLive ? styles.VersionLabelLive : ''}`}>
-                    {t('Version')} {version.versionNumber}
-                  </span>
-                ),
-                endAdornment: statusPill(version),
-                description: versionMeta(version),
-              }))}
-            />
-
-            <div className={styles.HealthChip} data-testid="healthChip">
-              <span className={styles.HealthTick}>✓</span>
-              {t('Good')}
-              <b className={styles.HealthScore}>{PLACEHOLDER_SCORE}</b>
-              <small className={styles.HealthTotal}>/5</small>
-            </div>
-
-            <div className={styles.LiveNote} data-testid="liveNote">
-              {liveVersion ? (
-                <>
-                  <b>
-                    {t('Version')} {liveVersion.versionNumber}
-                  </b>{' '}
-                  {t('is live in your flows')}
-                </>
-              ) : (
-                t('Nothing published yet')
-              )}
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className={styles.Tabs} role="tablist">
-        {TABS.map((tab) => (
-          <button
-            type="button"
-            role="tab"
-            key={tab.key}
-            aria-selected={activeTab === tab.key}
-            className={`${styles.Tab} ${activeTab === tab.key ? styles.ActiveTab : ''}`}
-            onClick={() => setActiveTab(tab.key)}
-            data-testid={`tab-${tab.key}`}
-          >
-            {t(tab.label)}
-            {tab.badge && <span className={styles.SandboxBadge}>{t(tab.badge)}</span>}
-          </button>
-        ))}
-      </div>
+      <TabBar activeTab={activeTab} onChange={setActiveTab} dirtyTabs={dirtyTabs} />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
         {activePanel ?? `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
 
-      {discardOpen && (
-        <DialogBox
-          title={t('Discard unsaved changes?')}
-          handleCancel={() => setDiscardOpen(false)}
-          handleOk={handleDiscard}
-          buttonOk={t('Discard changes')}
-          buttonCancel={t('Keep editing')}
-          alignButtons="center"
-          colorOk="warning"
-        >
-          <div className={styles.DiscardSubtitle}>
-            {t(
-              "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone."
-            )}
-          </div>
-          <div className={styles.DiscardWarning}>{t('Any edits made since your last save will be lost.')}</div>
-        </DialogBox>
-      )}
+      {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
+
+      {discardOpen && <DiscardDialog onConfirm={handleDiscard} onCancel={() => setDiscardOpen(false)} />}
     </div>
   );
 };
