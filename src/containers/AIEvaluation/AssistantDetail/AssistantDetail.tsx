@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { DropdownMenu } from 'components/UI/DropdownMenu/DropdownMenu';
 import { Button } from 'components/UI/Form/Button/Button';
+import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
@@ -269,14 +270,14 @@ export const AssistantDetail = () => {
                   {isCreateMode ? draftName || defaultAssistantName : assistant.name}
                 </span>
                 {!isCreateMode && (
-                  <button
-                    type="button"
+                  <IconButton
+                    size="small"
                     className={styles.EditNameButton}
                     onClick={handleEditName}
                     data-testid="editNameButton"
                   >
                     <EditIcon />
-                  </button>
+                  </IconButton>
                 )}
               </div>
             )}
