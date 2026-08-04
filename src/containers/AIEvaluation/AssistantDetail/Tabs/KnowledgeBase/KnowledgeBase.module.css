@@ -1,0 +1,177 @@
+.Zone {
+  margin-bottom: var(--app-space-xl);
+}
+
+.ZoneHeader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-md);
+  margin-bottom: var(--app-space-lg);
+}
+
+.ZoneTitle {
+  font-size: var(--app-font-size-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+}
+
+.ZoneSub {
+  font-size: var(--app-font-size-2xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.ZoneAction {
+  margin-left: auto;
+}
+
+.Card {
+  background-color: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-2xl);
+  box-shadow: var(--app-shadow-card);
+}
+
+.Note {
+  margin-top: var(--app-space-xs);
+  font-size: var(--app-font-size-2xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.FileList {
+  max-height: 21.25rem;
+  overflow-y: auto;
+  margin-top: var(--app-space-lg);
+  padding-right: var(--app-space-xs);
+}
+
+.File {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg);
+  margin-bottom: var(--app-space-md);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  background-color: var(--app-color-surface-raised);
+}
+
+/* dashed + tinted while the upload and rebuild are in flight */
+.FileUploading {
+  border-style: dashed;
+  border-color: var(--app-color-border-brand);
+  background-color: var(--app-color-surface-hover);
+}
+
+.FileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  flex-shrink: 0;
+  border-radius: var(--app-radius-sm);
+  background-color: var(--app-color-surface-hover);
+  font-size: var(--app-font-size-sm);
+}
+
+.FileText {
+  flex: 1;
+  min-width: 0;
+}
+
+.FileName {
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+  word-break: break-all;
+}
+
+.FileAction {
+  flex-shrink: 0;
+
+  svg {
+    width: var(--app-size-icon-sm);
+    height: var(--app-size-icon-sm);
+  }
+}
+
+.Pulse {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--app-color-brand-primary);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.EmptyState {
+  padding: var(--app-space-lg) 0;
+  text-align: center;
+  font-size: var(--app-font-size-2xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.TechnicalDetails {
+  margin-top: var(--app-space-lg);
+  padding-top: var(--app-space-lg);
+  border-top: 1px solid var(--app-color-border);
+}
+
+.TechnicalToggle {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: var(--app-font-size-2xs);
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+  cursor: pointer;
+}
+
+.TechnicalToggle:hover {
+  color: var(--app-color-text-heading);
+}
+
+.VectorStoreId {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-md);
+  margin-top: var(--app-space-md);
+  padding: var(--app-space-md) var(--app-space-lg);
+  border: 1px solid rgb(var(--app-color-green-primary-rgb) / 20%);
+  border-radius: var(--app-radius-sm);
+  background-color: var(--app-color-surface-hover);
+  font-family: ui-monospace, monospace;
+  font-size: var(--app-font-size-2xs);
+  color: var(--app-color-text-primary);
+}
+
+.VectorStoreValue {
+  flex: 1;
+  word-break: break-all;
+}
+
+.NoVectorStore {
+  margin-top: var(--app-space-md);
+  padding: var(--app-space-md) var(--app-space-lg);
+  border: 1px dashed var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+  font-size: var(--app-font-size-2xs);
+  color: var(--app-color-text-tertiary);
+}

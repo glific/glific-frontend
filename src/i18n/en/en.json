@@ -986,5 +986,21 @@
   "Keep editing": "Keep editing",
   "Any edits made since your last save will be lost.": "Any edits made since your last save will be lost.",
   "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone.": "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone.",
-  "Untitled assistant": "Untitled assistant"
+  "Untitled assistant": "Untitled assistant",
+  "Knowledge base": "Knowledge base",
+  "Add files": "Add files",
+  "file attached": "file attached",
+  "files attached": "files attached",
+  "processing": "processing",
+  "is larger than": "is larger than",
+  "These are the documents the assistant can search when answering. Adding or removing a file takes a minute or two to process.": "These are the documents the assistant can search when answering. Adding or removing a file takes a minute or two to process.",
+  "This assistant was created before the knowledge base rewrite, so its files are read-only.": "This assistant was created before the knowledge base rewrite, so its files are read-only.",
+  "Processing — this runs in the background; you can keep working.": "Processing — this runs in the background; you can keep working.",
+  "No files yet. Add documents the assistant should answer from.": "No files yet. Add documents the assistant should answer from.",
+  "Files added — the knowledge base is rebuilding": "Files added — the knowledge base is rebuilding",
+  "File removed — the knowledge base is rebuilding": "File removed — the knowledge base is rebuilding",
+  "Technical details": "Technical details",
+  "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.",
+  "No vector store yet — one is created when you add your first file.": "No vector store yet — one is created when you add your first file.",
+  "The file is detached and the knowledge base is rebuilt without it.": "The file is detached and the knowledge base is rebuilt without it."
 }

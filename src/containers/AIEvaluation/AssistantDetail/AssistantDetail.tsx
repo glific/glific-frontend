@@ -19,7 +19,7 @@ import EditIcon from 'assets/images/icons/Edit.svg?react';
 import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
 import type { resources } from 'i18n/config';
 import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
-import { PersonaPrompt } from './Tabs';
+import { KnowledgeBase, PersonaPrompt } from './Tabs';
 import styles from './AssistantDetail.module.css';
 
 dayjs.extend(relativeTime);
@@ -54,6 +54,8 @@ export const AssistantDetail = () => {
   });
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
+  // set when the Knowledge Base tab rebuilds; sent with the next save so the assistant points at it
+  const [knowledgeBaseVersionId, setKnowledgeBaseVersionId] = useState<string | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   // a brand new assistant has nothing to prefill, so we skip both fetches entirely
@@ -122,6 +124,7 @@ export const AssistantDetail = () => {
       instructions: prompt,
       model: modelConfig.model,
       ...(modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
+      ...(knowledgeBaseVersionId ? { knowledgeBaseVersionId } : {}),
     };
 
     try {
@@ -208,9 +211,24 @@ export const AssistantDetail = () => {
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
 
+  const vectorStore = assistant?.vectorStore;
+
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
     persona: (
       <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
+    ),
+    knowledgeBase: (
+      <KnowledgeBase
+        files={(vectorStore?.files ?? []).map((file: any) => ({
+          fileId: file.id,
+          filename: file.name,
+          fileSize: file.fileSize,
+        }))}
+        knowledgeBaseId={vectorStore?.id ?? null}
+        vectorStoreId={vectorStore?.vectorStoreId ?? null}
+        legacy={vectorStore?.legacy ?? false}
+        onKnowledgeBaseChange={setKnowledgeBaseVersionId}
+      />
     ),
   };
 
