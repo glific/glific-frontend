@@ -6,30 +6,30 @@
 .Label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-  font-size: 11.5px;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-sm);
+  font-size: var(--app-font-size-2xs);
   font-weight: 700;
-  color: #3a4a42;
+  color: var(--app-color-text-primary);
 }
 
 .Track {
   display: inline-flex;
   align-self: flex-start;
-  padding: 3px;
-  border-radius: 99px;
-  background-color: rgb(122 144 135 / 14%);
+  padding: var(--app-space-xs);
+  border-radius: var(--app-radius-pill);
+  background-color: rgb(var(--app-color-slate-rgb) / 14%);
 }
 
 .Option {
-  padding: 5px 13px;
+  padding: var(--app-space-sm) var(--app-space-lg);
   border: none;
-  border-radius: 99px;
+  border-radius: var(--app-radius-pill);
   background: none;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: var(--app-font-size-2xs);
   font-weight: 600;
-  color: #5c6d64;
+  color: var(--app-color-text-tertiary);
   cursor: pointer;
   text-transform: capitalize;
 }
@@ -40,14 +40,14 @@
 }
 
 .ActiveOption {
-  background-color: #fff;
-  color: #111714;
-  box-shadow: 0 1px 3px rgb(7 63 36 / 12%);
+  background-color: var(--app-color-surface-raised);
+  color: var(--app-color-text-heading);
+  box-shadow: var(--app-shadow-raised);
 }
 
 .HelperText {
-  margin-top: 5px;
-  font-size: 11px;
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-2xs);
   line-height: 1.5;
-  color: #5c6d64;
+  color: var(--app-color-text-tertiary);
 }

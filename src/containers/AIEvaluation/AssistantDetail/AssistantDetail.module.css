@@ -70,8 +70,8 @@
   flex-shrink: 0;
 
   svg {
-    width: 0.875rem;
-    height: 0.875rem;
+    width: var(--app-size-icon-md);
+    height: var(--app-size-icon-md);
   }
 }
 
@@ -106,8 +106,8 @@
   cursor: pointer;
 
   svg {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: var(--app-size-icon-sm);
+    height: var(--app-size-icon-sm);
   }
 }
 
@@ -116,55 +116,56 @@
 }
 
 .DiscardSubtitle {
-  margin-bottom: 14px;
-  font-size: 0.85rem;
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
   line-height: 1.5;
-  color: #5c6d64;
+  color: var(--app-color-text-tertiary);
 }
 
+/* amber callout, matching the unsaved-changes pill */
 .DiscardWarning {
-  padding: 12px 14px;
-  border: 1px solid rgb(234 179 8 / 40%);
-  border-radius: 10px;
-  background-color: rgb(234 179 8 / 8%);
-  font-size: 0.85rem;
-  color: #3a4a42;
+  padding: var(--app-space-lg);
+  border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 40%);
+  border-radius: var(--app-radius-md);
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 8%);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-primary);
 }
 
 .DirtyActions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--app-space-lg);
   flex-shrink: 0;
 }
 
 .UnsavedPill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 9px;
-  border: 1px solid rgb(234 179 8 / 40%);
-  border-radius: 99px;
-  background-color: rgb(234 179 8 / 10%);
-  color: #eab308;
-  font-size: 9.5px;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-xs) var(--app-space-md);
+  border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 40%);
+  border-radius: var(--app-radius-pill);
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 10%);
+  color: var(--app-color-attention);
+  font-size: var(--app-font-size-3xs);
   font-weight: 800;
 }
 
 .UnsavedDot {
-  width: 5px;
-  height: 5px;
+  width: 0.3125rem;
+  height: 0.3125rem;
   border-radius: 50%;
-  background-color: #eab308;
+  background-color: var(--app-color-attention);
 }
 
 .DiscardLink {
   padding: 0;
   border: none;
   background: none;
-  color: #5c6d64;
+  color: var(--app-color-text-tertiary);
   font-family: inherit;
-  font-size: 12px;
+  font-size: var(--app-font-size-xs);
   font-weight: 600;
   cursor: pointer;
 }
@@ -188,9 +189,7 @@
   background-color: var(--app-color-surface-raised);
   border-radius: var(--app-radius-lg);
   flex-shrink: 0;
-  box-shadow:
-    0 4px 16px rgb(7 63 36 / 8%),
-    0 1px 4px rgb(7 63 36 / 4%);
+  box-shadow: var(--app-shadow-card);
 }
 
 button.VersionPill {
@@ -253,8 +252,8 @@ button.VersionPillLive {
 }
 
 .LiveDot {
-  width: 0.375rem;
-  height: 0.375rem;
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
   border-radius: 50%;
   background-color: var(--app-color-brand-primary);
   flex-shrink: 0;
@@ -338,18 +337,18 @@ button.VersionPillLive {
 }
 
 .NewAssistantDot {
-  width: 0.375rem;
-  height: 0.375rem;
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
   border-radius: 50%;
   background-color: var(--app-color-text-tertiary);
   flex-shrink: 0;
 }
 
 .NewAssistantDot {
-  width: 6px;
-  height: 6px;
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
   border-radius: 50%;
-  background-color: #657a70;
+  background-color: var(--app-color-text-tertiary);
   flex-shrink: 0;
 }
 
@@ -413,7 +412,7 @@ button.VersionPillLive {
 .TabContent {
   flex: 1;
   min-height: 0;
-  padding: 20px 24px 32px;
+  padding: var(--app-space-2xl) var(--app-space-3xl) var(--app-space-5xl);
 }
 
 .TabPanel {

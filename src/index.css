@@ -171,9 +171,19 @@ html {
   /* Colors — neutral */
   --app-color-white: #ffffff;
 
+  /* Colors — amber */
+  --app-color-amber-primary: #eab308;
+
   /* Colors — red */
   --app-color-red-primary: #fb5c5c;
   --app-color-red-secondary: #dd1f1f;
+
+  /* RGB channels of the above, for rgb(... / alpha) tints. Keep in sync with the hex. */
+  --app-color-green-primary-rgb: 17 150 86; /* #119656 */
+  --app-color-green-secondary-rgb: 7 63 36; /* #073f24 */
+  --app-color-amber-primary-rgb: 234 179 8; /* #eab308 */
+  --app-color-slate-rgb: 122 144 135; /* #7a9087 — hairlines and sunken fills */
+  --app-color-white-rgb: 255 255 255;
 
   /* Color semantics — use these in *.module.css, not the primitives above */
   --app-color-text-primary: var(--app-color-green-secondary);
@@ -187,6 +197,7 @@ html {
   --app-color-border: var(--app-color-gray-quaternary);
   --app-color-border-muted: var(--app-color-green-quaternary);
   --app-color-border-brand: var(--app-color-green-quinary);
+  --app-color-attention: var(--app-color-amber-primary);
   --app-color-error: var(--app-color-red-primary);
   --app-color-warning: var(--app-color-red-secondary);
 
@@ -200,10 +211,20 @@ html {
   --app-space-2xl: 1.25rem; /* 1.25rem=20px */
   --app-space-3xl: 1.5rem;
   --app-space-4xl: 1.75rem; /* 1.75rem=28px */
+  --app-space-5xl: 2rem; /* 2rem=32px */
   --app-space-6xl: 3rem;
   --app-space-7xl: 3.5rem;
 
+  /* Sizing */
+  --app-size-dot: 0.375rem; /* 0.375rem=6px — status dots */
+  --app-size-icon-sm: 0.75rem; /* 0.75rem=12px */
+  --app-size-icon-md: 0.875rem; /* 0.875rem=14px */
   --app-size-table-column-min: 12.5rem; /* 12.5rem=200px */
+
+  /* Elevation */
+  --app-shadow-card:
+    0 4px 16px rgb(var(--app-color-green-secondary-rgb) / 8%), 0 1px 4px rgb(var(--app-color-green-secondary-rgb) / 4%);
+  --app-shadow-raised: 0 1px 3px rgb(var(--app-color-green-secondary-rgb) / 12%);
 
   /* Border radius */
   --app-radius-sm: 0.375rem; /* 0.375rem=6px */
