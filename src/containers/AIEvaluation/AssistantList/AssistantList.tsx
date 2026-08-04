@@ -4,6 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
@@ -37,8 +38,8 @@ const getAssistantName = (name: string, assistantDisplayId: string) => (
     <span className={styles.Name}>{name}</span>
     <span className={styles.DisplayIdRow}>
       <Tooltip title="Copy assistant ID" placement="top">
-        <button
-          type="button"
+        <IconButton
+          size="small"
           className={styles.CopyButton}
           onClick={(event) => {
             event.stopPropagation();
@@ -47,7 +48,7 @@ const getAssistantName = (name: string, assistantDisplayId: string) => (
           data-testid="copyAssistantId"
         >
           <CopyIcon />
-        </button>
+        </IconButton>
       </Tooltip>
       <span className={styles.DisplayId}>{assistantDisplayId}</span>
     </span>

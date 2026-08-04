@@ -66,13 +66,9 @@
   color: var(--app-color-text-tertiary);
 }
 
+/* !important because MUI's emotion styles on IconButton outrank a plain class */
 .CopyButton {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--app-space-xs);
-  border: none;
-  background: none;
-  cursor: pointer;
+  padding: var(--app-space-xs) !important;
   color: var(--app-color-text-tertiary);
 
   svg {
