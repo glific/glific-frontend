@@ -1,14 +1,8 @@
 name: Design system checks
 
 # Frontend hygiene guardrails. Each job below is a separate check; add new ones as jobs
-# here rather than as new workflow files, so all design-system gates show up together in
-# PR checks.
-#
-# Both jobs below are deliberately built with ZERO dependencies beyond Node builtins and
-# `git` — no ESLint, no external config format, nothing an unrelated PR's dependency bump
-# can silently break out from under this workflow again. That's exactly what happened
-# once already (a separate PR bumped eslint to a major version that dropped support for
-# the flag this workflow relied on) and is why neither job below runs `yarn install`.
+# here rather than as new workflow files, so all gates show up together in PR checks.
+# Neither job runs `yarn install` — both underlying scripts depend on Node and git only.
 
 on:
   push:
@@ -36,11 +30,8 @@ jobs:
       - name: Run ratchet
         run: node scripts/design-system-ratchet.js
 
-      # Closes a gap the ratchet script itself can't: a PR could hand-edit
-      # scripts/design-system-baseline.json to inflate the numbers in the same commit
-      # that adds new violations, and the check above would pass since both moved
-      # together. This compares the PR's baseline file against the base branch's
-      # committed version directly, so the baseline may only ever go down.
+      # Compares the PR's baseline file against the base branch's committed version, so
+      # the baseline may only ever go down, even if a PR edits the file directly.
       - name: Verify the baseline file itself wasn't raised
         if: github.event_name == 'pull_request'
         run: node scripts/verify-baseline-not-raised.js "${{ github.event.pull_request.base.sha }}"
@@ -48,10 +39,8 @@ jobs:
   mui-imports:
     name: No new raw MUI imports in containers
     runs-on: ubuntu-latest
-    # Diffs against the PR base, so this only fails on lines the PR itself ADDS — a raw
-    # MUI import that already existed in a file before this PR touched it (for an
-    # unrelated reason) is the existing backlog's problem, tracked by the ratchet job
-    # above, not something that should block this PR.
+    # Only fails on lines the PR's own diff adds — a pre-existing import in a touched
+    # file is tracked by the ratchet job above, not this one.
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1

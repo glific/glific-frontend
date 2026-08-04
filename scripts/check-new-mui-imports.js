@@ -1,17 +1,10 @@
 #!/usr/bin/env node
 /**
- * Fails if a PR's diff ADDS a new raw @mui/material import in src/containers/**.
+ * Fails if the diff between two git refs adds a new raw @mui/material import under
+ * src/containers/**. Only lines the diff itself adds count, so a file's pre-existing
+ * import isn't flagged just because the file was touched for an unrelated reason.
  *
- * Deliberately does NOT run a linter against the full content of touched files — that
- * flags a file's pre-existing import just because the PR happened to touch an unrelated
- * line elsewhere in it (this is exactly what broke: a PR fixing an unrelated line in
- * HSMV2.tsx got blocked by that file's existing MUI import from before, which the PR
- * never touched). Only lines the diff actually adds (`+`) count.
- *
- * Also deliberately has ZERO dependencies beyond Node builtins and `git` — no ESLint, no
- * ESLint config format, nothing that some unrelated PR's dependency bump can silently
- * break out from under this check again. Matches design-system-ratchet.js's own
- * MUI_IMPORT_RE exactly, so the two mechanisms can't disagree with each other.
+ * No dependencies beyond Node builtins and git.
  *
  * Usage: node scripts/check-new-mui-imports.js <base-ref> [<head-ref>]
  */
