@@ -63,7 +63,18 @@ test('shows Reconnect only for a non-active phone (admin)', async () => {
   expect(screen.getAllByTestId('reconnectIcon')).toHaveLength(1);
 });
 
-test('hides Reconnect for non-admins', async () => {
+test('shows Reconnect for managers (not admin-only)', async () => {
+  mockRole.value = ['Manager'];
+  renderPage();
+
+  await waitFor(() => {
+    expect(screen.getByText('918416933261')).toBeInTheDocument();
+  });
+
+  expect(screen.getAllByTestId('reconnectIcon')).toHaveLength(1);
+});
+
+test('hides Reconnect for staff', async () => {
   mockRole.value = ['Staff'];
   renderPage();
 

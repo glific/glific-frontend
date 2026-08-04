@@ -6,7 +6,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import SyncIcon from '@mui/icons-material/Sync';
 
 import { List } from 'containers/List/List';
-import { isAdminRole, isManagerRole } from 'context/role';
+import { isManagerRole } from 'context/role';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { GET_WA_MANAGED_PHONES, GET_WA_MANAGED_PHONES_COUNT } from 'graphql/queries/WaGroups';
 import { SYNC_WA_MANAGED_PHONE_STATUSES } from 'graphql/mutations/Group';
@@ -46,8 +46,8 @@ interface ManagedPhone {
 
 export const PhoneManagement = () => {
   const { t } = useTranslation();
-  const isAdmin = isAdminRole();
-  const canSync = isManagerRole();
+
+  const canManage = isManagerRole();
 
   const [reconnectPhone, setReconnectPhone] = useState<ManagedPhone | null>(null);
   const [refreshList, setRefreshList] = useState(false);
@@ -108,15 +108,15 @@ export const PhoneManagement = () => {
     columnStyles,
   };
 
-  // Reconnect is admin-only and only offered when the phone is not active
-  // (an active phone has nothing to reconnect).
+  // Reconnect is manager-and-above only and only offered when the phone is not
+  // active (an active phone has nothing to reconnect).
   const additionalAction = (phone: ManagedPhone) => [
     {
       icon: <QrCode2Icon data-testid="reconnectIcon" />,
       parameter: 'id',
       label: t('Reconnect'),
       dialog: (_id: string, item: ManagedPhone) => setReconnectPhone(item),
-      hidden: !isAdmin || phone.status === 'active',
+      hidden: !canManage || phone.status === 'active',
     },
   ];
 
@@ -129,7 +129,7 @@ export const PhoneManagement = () => {
         pageLink="group/phones"
         searchParameter={['phone']}
         button={
-          canSync
+          canManage
             ? { show: true, label: t('Sync statuses'), action: handleSync, symbol: <SyncIcon /> }
             : { show: false }
         }
