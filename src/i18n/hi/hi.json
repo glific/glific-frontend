@@ -848,5 +848,22 @@
   "Any edits made since your last save will be lost.": "पिछली बार सहेजने के बाद किए गए सभी बदलाव समाप्त हो जाएंगे।",
   "Assistant created successfully": "असिस्टेंट सफलतापूर्वक बनाया गया",
   "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone.": "प्रॉम्प्ट, मॉडल, सेटिंग्स और नॉलेज बेस को वापस उसी स्थिति में ले जाता है जो संपादन शुरू करने से पहले थी। इसे पूर्ववत नहीं किया जा सकता।",
-  "Untitled assistant": "अनामांकित असिस्टेंट"
+  "Untitled assistant": "अनामांकित असिस्टेंट",
+  "Knowledge base": "नॉलेज बेस",
+  "Add files": "फ़ाइलें जोड़ें",
+  "file attached": "फ़ाइल संलग्न",
+  "files attached": "फ़ाइलें संलग्न",
+  "processing": "प्रोसेस हो रही है",
+  "is larger than": "से बड़ी है",
+  "These are the documents the assistant can search when answering. Adding or removing a file takes a minute or two to process.": "ये वे दस्तावेज़ हैं जिनमें असिस्टेंट उत्तर देते समय खोज सकता है। फ़ाइल जोड़ने या हटाने में एक-दो मिनट लगते हैं।",
+  "This assistant was created before the knowledge base rewrite, so its files are read-only.": "यह असिस्टेंट नॉलेज बेस अपडेट से पहले बनाया गया था, इसलिए इसकी फ़ाइलें केवल पढ़ने के लिए हैं।",
+  "Processing — this runs in the background; you can keep working.": "प्रोसेस हो रहा है — यह पृष्ठभूमि में चलता है; आप काम जारी रख सकते हैं।",
+  "No files yet. Add documents the assistant should answer from.": "अभी कोई फ़ाइल नहीं। वे दस्तावेज़ जोड़ें जिनसे असिस्टेंट उत्तर देगा।",
+  "Files added — the knowledge base is rebuilding": "फ़ाइलें जोड़ी गईं — नॉलेज बेस फिर से बन रहा है",
+  "File removed — the knowledge base is rebuilding": "फ़ाइल हटाई गई — नॉलेज बेस फिर से बन रहा है",
+  "Technical details": "तकनीकी विवरण",
+  "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "यह वह वेक्टर स्टोर है जिसमें असिस्टेंट रनटाइम पर खोजता है — इंजीनियरिंग के साथ डिबग करने के अलावा इसकी ज़रूरत नहीं पड़ेगी।",
+  "No vector store yet — one is created when you add your first file.": "अभी कोई वेक्टर स्टोर नहीं — पहली फ़ाइल जोड़ने पर बन जाएगा।",
+  "The file is detached and the knowledge base is rebuilt without it.": "फ़ाइल हटा दी जाती है और नॉलेज बेस उसके बिना फिर से बनता है।",
+  "Version published — it is now live in your flows": "वर्शन प्रकाशित — यह अब आपके फ़्लो में लाइव है"
 }
