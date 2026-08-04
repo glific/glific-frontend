@@ -16,7 +16,7 @@ import axios from 'axios';
 import { ORGANIZATION_NAME } from 'config';
 import setLogs from 'config/logs';
 import { TERMS_OF_USE_LINK } from 'common/constants';
-import { Promotion } from './Promotion/Promotion';
+// import { Promotion } from './Promotion/Promotion';
 
 // Per-variant styling + icon for the info note (neutral default, success, warning).
 const INFO_NOTE_VARIANT_CLASS: Record<string, string> = {
@@ -337,7 +337,7 @@ export const Auth = ({
         ) : null}
       </div>
 
-      {mode === 'login' && <Promotion />}
+      {/* {mode === 'login' && <Promotion />} */}
     </div>
   );
 };

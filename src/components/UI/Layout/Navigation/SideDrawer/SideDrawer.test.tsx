@@ -70,6 +70,19 @@ describe('side drawer testing', () => {
     });
   });
 
+  describe('Data Analytics menu visibility', () => {
+    const getAnalyticsMenu = (role: string) => getMenus('sideDrawer', role).find((m) => m.title === 'Data Analytics');
+
+    afterEach(() => {
+      localStorage.removeItem('organizationServices');
+    });
+
+    it.each(['Staff', 'Manager', 'Admin', 'Glific_admin', 'Dynamic'])('shows the menu item for %s role', (role) => {
+      setOrganizationServices(JSON.stringify({}));
+      expect(getAnalyticsMenu(role)?.path).toBe('/analytics');
+    });
+  });
+
   it('it should render component in normal mode', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>

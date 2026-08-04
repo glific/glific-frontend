@@ -99,7 +99,7 @@ describe('url-based menu selection', () => {
 });
 
 describe('HSM Templates menu routing', () => {
-  test('points to the old template page when templateV2Enabled is off', async () => {
+  test('points to the template page regardless of templateV2Enabled', async () => {
     renderSideMenus('/interactive-message');
 
     await waitFor(() => {
@@ -108,13 +108,13 @@ describe('HSM Templates menu routing', () => {
     expect(getMenuItem('HSM Templates')!.closest('a')).toHaveAttribute('href', '/template');
   });
 
-  test('points to the v2 template page when templateV2Enabled is on', async () => {
+  test('still points to the template page when templateV2Enabled is on', async () => {
     setOrganizationServices(JSON.stringify({ templateV2Enabled: true }));
     renderSideMenus('/interactive-message');
 
     await waitFor(() => {
       expect(getMenuItem('HSM Templates')).toBeInTheDocument();
     });
-    expect(getMenuItem('HSM Templates')!.closest('a')).toHaveAttribute('href', '/template-v2');
+    expect(getMenuItem('HSM Templates')!.closest('a')).toHaveAttribute('href', '/template');
   });
 });
