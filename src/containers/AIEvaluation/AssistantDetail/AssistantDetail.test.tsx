@@ -1,13 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
-import { CREATE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CREATE_ASSISTANT, SET_LIVE_VERSION, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import { getAssistant } from 'mocks/Assistants';
-
 import AssistantDetail from './AssistantDetail';
 
 const version = (versionNumber: number, isLive: boolean) => ({
@@ -24,7 +22,6 @@ const version = (versionNumber: number, isLive: boolean) => ({
   vectorStore: null,
 });
 
-// version 2 is the draft, version 1 is what's live in the flows
 const versionsMock = (assistantVersions = [version(1, true), version(2, false)]) => ({
   request: { query: GET_ASSISTANT_VERSIONS, variables: { assistantId: '1' } },
   result: { data: { assistantVersions } },
@@ -63,6 +60,74 @@ describe('edit mode', () => {
     expect(screen.getByTestId('healthChip')).toHaveTextContent('Good');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1 is live in your flows');
     expect(screen.getByTestId('publishButton')).toBeInTheDocument();
+    // version 1 is live and selected by default, so there is nothing to publish
+    expect(screen.getByTestId('publishButton')).toBeDisabled();
+  });
+
+  test('publishing a draft version calls setLiveVersion and refetches the versions', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const publishMock = {
+      request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
+      result: {
+        data: {
+          setLiveVersion: {
+            assistant: { id: '1', activeConfigVersionId: 'v2', liveVersionNumber: 2 },
+            errors: null,
+          },
+        },
+      },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      publishMock,
+      // the refetch that follows a successful publish
+      versionsMock([version(1, false), version(2, true)]),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('publishButton')).toBeEnabled();
+    });
+    fireEvent.click(screen.getByTestId('publishButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Version published — it is now live in your flows');
+    });
+    notificationSpy.mockRestore();
+  });
+
+  test('a publish that comes back with errors is reported', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failingPublish = {
+      request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
+      result: {
+        data: {
+          setLiveVersion: { assistant: null, errors: [{ key: 'version', message: 'Version not ready' }] },
+        },
+      },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingPublish, versionsMock()]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('publishButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalledWith({ key: 'version', message: 'Version not ready' });
+    });
+    errorSpy.mockRestore();
   });
 
   test('shows a loader while the assistant is being fetched', () => {

@@ -11,7 +11,7 @@ import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
-import { CREATE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CREATE_ASSISTANT, SET_LIVE_VERSION, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
@@ -77,6 +77,7 @@ export const AssistantDetail = () => {
 
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
   const [createAssistant, { loading: creating }] = useMutation(CREATE_ASSISTANT);
+  const [setLiveVersion, { loading: publishing }] = useMutation(SET_LIVE_VERSION);
 
   const assistant = data?.assistant?.assistant;
   const versions: AssistantVersion[] = versionData?.assistantVersions ?? [];
@@ -196,6 +197,25 @@ export const AssistantDetail = () => {
   };
 
   const handleSelectVersion = (versionId: string) => setSelectedVersionId(versionId);
+
+  const handlePublish = async () => {
+    if (!selectedVersion) return;
+
+    try {
+      const response = await setLiveVersion({
+        variables: { assistantId, versionId: selectedVersion.id },
+        refetchQueries: [{ query: GET_ASSISTANT_VERSIONS, variables: { assistantId } }],
+      });
+      const errors = response.data?.setLiveVersion?.errors;
+      if (errors?.length > 0) {
+        setErrorMessage(errors[0]);
+        return;
+      }
+      setNotification(t('Version published — it is now live in your flows'));
+    } catch (err: unknown) {
+      setErrorMessage(err);
+    }
+  };
 
   if (!isCreateMode && loading && !assistant) {
     return <Loading />;
@@ -340,7 +360,15 @@ export const AssistantDetail = () => {
           </div>
         ) : (
           !isCreateMode && (
-            <Button variant="contained" color="primary" className={styles.PublishButton} data-testid="publishButton">
+            <Button
+              variant="contained"
+              color="primary"
+              className={styles.PublishButton}
+              onClick={handlePublish}
+              loading={publishing}
+              disabled={!selectedVersion || selectedVersion.isLive}
+              data-testid="publishButton"
+            >
               {t('Publish & go live')}
             </Button>
           )
