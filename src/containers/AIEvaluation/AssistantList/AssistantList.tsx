@@ -4,7 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { IconButton, Tooltip } from '@mui/material';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
@@ -37,17 +37,17 @@ const getAssistantName = (name: string, assistantDisplayId: string) => (
     <span className={styles.Name}>{name}</span>
     <span className={styles.DisplayIdRow}>
       <Tooltip title="Copy assistant ID" placement="top">
-        <IconButton
-          size="small"
+        <button
+          type="button"
           className={styles.CopyButton}
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={(event) => {
+            event.stopPropagation();
             copyToClipboard(assistantDisplayId);
           }}
           data-testid="copyAssistantId"
         >
           <CopyIcon />
-        </IconButton>
+        </button>
       </Tooltip>
       <span className={styles.DisplayId}>{assistantDisplayId}</span>
     </span>
@@ -202,7 +202,6 @@ export const AssistantList = () => {
             'Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.'
           )}
           placement="top"
-          arrow
         >
           <span className={styles.HealthHeader}>{t('Evaluation health')}</span>
         </Tooltip>
