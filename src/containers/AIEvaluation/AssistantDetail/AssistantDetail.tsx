@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { DropdownMenu } from 'components/UI/DropdownMenu/DropdownMenu';
 import { Button } from 'components/UI/Form/Button/Button';
+import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from 'common/notification';
 import { copyToClipboard } from 'common/utils';
@@ -174,14 +175,14 @@ export const AssistantDetail = () => {
                   {isCreateMode ? t('New Assistant') : assistant.name}
                 </span>
                 {!isCreateMode && (
-                  <button
-                    type="button"
+                  <IconButton
+                    size="small"
                     className={styles.EditNameButton}
                     onClick={handleEditName}
                     data-testid="editNameButton"
                   >
                     <EditIcon />
-                  </button>
+                  </IconButton>
                 )}
               </div>
             )}
