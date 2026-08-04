@@ -691,10 +691,10 @@ describe('HSMV2 add mode', () => {
   test('clicking the back icon navigates back to the HSM list', async () => {
     render(
       <MockedProvider mocks={[...mocks, ...WHATSAPP_FORM_MOCKS]} addTypename={false}>
-        <MemoryRouter initialEntries={['/template-v2/add']}>
+        <MemoryRouter initialEntries={['/template/add']}>
           <Routes>
-            <Route path="/template-v2/add" element={<HSMV2 />} />
-            <Route path="/template-v2" element={<div>HSM list page</div>} />
+            <Route path="/template/add" element={<HSMV2 />} />
+            <Route path="/template" element={<div>HSM list page</div>} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -938,7 +938,7 @@ describe('HSMV2 language versions', () => {
         >
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
-            <Route path="/template-v2" element={<div>HSM list page</div>} />
+            <Route path="/template" element={<div>HSM list page</div>} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -1732,9 +1732,9 @@ describe('HSMV2 language versions', () => {
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/template-v2/1/edit']}>
+        <MemoryRouter initialEntries={['/template/1/edit']}>
           <Routes>
-            <Route path="/template-v2/:id/edit" element={<HSMV2 />} />
+            <Route path="/template/:id/edit" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>

@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { ReactNode, useEffect, useRef, useState } from 'react';
@@ -269,14 +268,16 @@ export const AssistantDetail = () => {
                 <span className={styles.NameText} data-testid="headerTitle">
                   {isCreateMode ? draftName || defaultAssistantName : assistant.name}
                 </span>
-                <IconButton
-                  size="small"
-                  className={styles.EditNameButton}
-                  onClick={handleEditName}
-                  data-testid="editNameButton"
-                >
-                  <EditIcon />
-                </IconButton>
+                {!isCreateMode && (
+                  <button
+                    type="button"
+                    className={styles.EditNameButton}
+                    onClick={handleEditName}
+                    data-testid="editNameButton"
+                  >
+                    <EditIcon />
+                  </button>
+                )}
               </div>
             )}
             {!isCreateMode && assistant.assistantId && (

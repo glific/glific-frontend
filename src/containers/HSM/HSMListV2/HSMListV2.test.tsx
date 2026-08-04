@@ -177,7 +177,7 @@ test('navigates to create template page on Create click', async () => {
   });
 
   fireEvent.click(screen.getByTestId('newItemButton'));
-  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add');
+  expect(mockedNavigate).toHaveBeenCalledWith('/template/add');
 });
 
 test('navigates to create template page with the selected tag', async () => {
@@ -196,7 +196,7 @@ test('navigates to create template page with the selected tag', async () => {
 
   fireEvent.click(screen.getByTestId('newItemButton'));
 
-  expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', { state: { tag: { label: 'Messages', id: '1' } } });
+  expect(mockedNavigate).toHaveBeenCalledWith('/template/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
 test('navigates to the same add/view page (without auto-opening the draft) via the row View action', async () => {
@@ -212,7 +212,7 @@ test('navigates to the same add/view page (without auto-opening the draft) via t
   fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', {
+    expect(mockedNavigate).toHaveBeenCalledWith('/template/add', {
       state: { languageAnchorId: '1', anchorShortcode: 'welcome_msg' },
     });
   });
@@ -229,7 +229,7 @@ test('navigates to the same page and opens the add-language draft directly via t
   fireEvent.click(within(row).getByTestId('add-language-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template-v2/add', {
+    expect(mockedNavigate).toHaveBeenCalledWith('/template/add', {
       state: { languageAnchorId: '1', anchorShortcode: 'welcome_msg', openAddLanguage: true },
     });
   });

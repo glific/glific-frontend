@@ -1,6 +1,6 @@
 .NameColumn {
   width: 30%;
-  min-width: 200px;
+  min-width: var(--app-size-table-column-min);
 }
 
 .HealthColumn {
@@ -23,8 +23,8 @@
 .SearchRow {
   display: flex;
   justify-content: flex-end;
-  padding: 20px 48px 0 56px;
-  background-color: #f8faf5;
+  padding: var(--app-space-2xl) var(--app-space-6xl) 0 var(--app-space-7xl);
+  background-color: var(--app-color-surface-page);
 }
 
 .VersionColumn {
@@ -41,45 +41,50 @@
 
 .Actions > div {
   justify-content: flex-start;
-  margin-left: -16px;
+  margin-left: calc(-1 * var(--app-space-xl));
 }
 
 .NameCell {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--app-space-xs);
 }
 
 .Name {
   font-weight: 500;
-  color: #1f2937;
+  color: var(--app-color-text-primary);
 }
 
 .DisplayIdRow {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--app-space-xs);
 }
 
 .DisplayId {
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
 }
 
 .CopyButton {
-  padding: 2px !important;
-  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--app-space-xs);
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--app-color-text-tertiary);
 
   svg {
-    width: 12px;
-    height: 12px;
+    width: 0.75rem;
+    height: 0.75rem;
   }
 }
 
 .VersionBadge {
-  color: #374151;
+  color: var(--app-color-text-primary);
 }
 
 .NoVersion {
-  color: #9ca3af;
+  color: var(--app-color-text-tertiary);
 }
