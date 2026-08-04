@@ -20,7 +20,12 @@ vi.mock('common/notification', async (importOriginal) => {
 });
 
 const mockRole = vi.hoisted(() => ({ value: ['Admin'] }));
-vi.mock('context/role', () => ({ getUserRole: () => mockRole.value }));
+const isManager = () =>
+  mockRole.value.includes('Admin') || mockRole.value.includes('Glific_admin') || mockRole.value.includes('Manager');
+vi.mock('context/role', () => ({
+  getUserRole: () => mockRole.value,
+  isManagerRole: () => isManager(),
+}));
 
 const renderComponent = (mocks: any[] = [phonesMock]) =>
   render(
@@ -50,10 +55,16 @@ const selectPhoneAndApply = async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 };
 
-test('hides the action for non-admin users', () => {
+test('hides the action for staff users', () => {
   mockRole.value = ['Staff'];
   renderComponent();
   expect(screen.queryByTestId('setCollectionPrimaryBtn')).not.toBeInTheDocument();
+});
+
+test('shows the action for manager users', () => {
+  mockRole.value = ['Manager'];
+  renderComponent();
+  expect(screen.getByTestId('setCollectionPrimaryBtn')).toBeInTheDocument();
 });
 
 test('shows the action for Glific_admin users', () => {

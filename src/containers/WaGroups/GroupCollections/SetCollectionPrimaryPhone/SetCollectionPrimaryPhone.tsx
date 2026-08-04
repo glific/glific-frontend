@@ -6,7 +6,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { getUserRole } from 'context/role';
+import { isManagerRole } from 'context/role';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
 import { SET_PRIMARY_PHONE_FOR_COLLECTION } from 'graphql/mutations/Group';
 import { toActivePhoneOptions } from 'containers/WaGroups/managedPhones';
@@ -16,22 +16,21 @@ export interface SetCollectionPrimaryPhoneProps {
 }
 
 /**
- * Admin action on a WhatsApp-group collection: pick one managed phone and make it
- * the primary across every group in the collection in one bulk call. The backend
- * runs it in the background and reports skipped groups via a notification.
+ * Manager-and-above action on a WhatsApp-group collection: pick one managed phone
+ * and make it the primary across every group in the collection in one bulk call.
+ * The backend runs it in the background and reports skipped groups via a notification.
  */
 export const SetCollectionPrimaryPhone = ({ collectionId }: SetCollectionPrimaryPhoneProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedPhone, setSelectedPhone] = useState<{ id: string; label: string } | null>(null);
 
-  // Only Admin / Glific_admin can drive the collection-wide primary phone.
-  const roles = getUserRole();
-  const isAdmin = roles.includes('Admin') || roles.includes('Glific_admin');
+  // Managers and above can drive the collection-wide primary phone.
+  const canManage = isManagerRole();
 
   const { data } = useQuery(GET_WA_MANAGED_PHONES, {
     variables: { filter: {} },
-    skip: !isAdmin || !open,
+    skip: !canManage || !open,
   });
 
   const phoneOptions = toActivePhoneOptions(data?.waManagedPhones);
@@ -73,7 +72,7 @@ export const SetCollectionPrimaryPhone = ({ collectionId }: SetCollectionPrimary
     }
   };
 
-  if (!isAdmin) return null;
+  if (!canManage) return null;
 
   return (
     <>
