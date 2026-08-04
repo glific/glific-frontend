@@ -1,6 +1,6 @@
-export { AssistantHeader } from './AssistantHeader';
-export { HeaderActions } from './HeaderActions';
-export { VersionBar } from './VersionBar';
-export { TabBar, TABS } from './TabBar';
-export type { TabKey } from './TabBar';
-export { DiscardDialog, LeaveDialog } from './UnsavedChangesDialogs';
+export { AssistantHeader } from './AssistantHeader/AssistantHeader';
+export { HeaderActions } from './HeaderActions/HeaderActions';
+export { VersionBar } from './VersionBar/VersionBar';
+export { TabBar, TABS } from './TabBar/TabBar';
+export type { TabKey } from './TabBar/TabBar';
+export { DiscardDialog, LeaveDialog } from './UnsavedChangesDialogs/UnsavedChangesDialogs';
