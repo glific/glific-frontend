@@ -4,22 +4,22 @@
   height: 100%;
   width: 100%;
   overflow-y: auto;
-  background-color: #f8faf5;
+  background-color: var(--app-color-surface-page);
 }
 
 .PageHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px 16px 20px;
+  gap: var(--app-space-xl);
+  padding: var(--app-space-2xl) var(--app-space-3xl) var(--app-space-xl) var(--app-space-2xl);
   flex-shrink: 0;
 }
 
 .HeaderLeft {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--app-space-lg);
   min-width: 0;
 }
 
@@ -27,8 +27,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 2.125rem;
+  height: 2.125rem;
   flex-shrink: 0;
   padding: 0;
   border: none;
@@ -39,70 +39,76 @@
 .HeaderText {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--app-space-xs);
   min-width: 0;
 }
 
 .NameRow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--app-space-sm);
 }
 
 .NameText {
-  font-size: 24px;
+  font-size: var(--app-font-size-2xl);
   font-weight: 700;
-  color: #191c1a;
-  max-width: 560px;
+  color: var(--app-color-text-heading);
+  max-width: 35rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .EditNameButton {
-  color: #119656;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--app-space-2xs);
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--app-color-brand-primary);
   flex-shrink: 0;
 
   svg {
-    width: 14px;
-    height: 14px;
+    width: 0.875rem;
+    height: 0.875rem;
   }
 }
 
 .NameEditRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--app-space-md);
 }
 
 /* matches the inline rename on the Assistants screen: no box, just a green underline */
 .NameInput {
-  font-size: 24px;
+  font-size: var(--app-font-size-2xl);
   font-weight: 700;
-  color: #191c1a;
+  color: var(--app-color-text-heading);
   font-family: inherit;
   border: none;
-  border-bottom: 2px solid #119656;
+  border-bottom: 2px solid var(--app-color-brand-primary);
   background: transparent;
   outline: none;
-  min-width: 200px;
-  max-width: 480px;
+  min-width: var(--app-size-table-column-min);
+  max-width: 30rem;
   width: auto;
 }
 
 .AssistantId {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  color: #119656;
-  font-size: 0.8rem;
+  gap: var(--app-space-sm);
+  color: var(--app-color-brand-primary);
+  font-size: var(--app-font-size-xs);
   font-weight: 500;
   width: fit-content;
   cursor: pointer;
 
   svg {
-    width: 12px;
-    height: 12px;
+    width: 0.75rem;
+    height: 0.75rem;
   }
 }
 
@@ -112,19 +118,21 @@
 
 .PublishButton {
   flex-shrink: 0;
-  border-radius: 24px !important;
+  border-radius: var(--app-radius-2xl) !important;
   text-transform: none !important;
 }
 
 .VersionBar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin: 0 24px;
-  padding: 14px 18px;
-  background-color: #fff;
-  border-radius: 12px;
+  gap: var(--app-space-lg);
+  margin: 0 var(--app-space-3xl);
+  padding: var(--app-space-lg) var(--app-space-xl);
+  background-color: var(--app-color-surface-raised);
+  border-radius: var(--app-radius-lg);
   flex-shrink: 0;
+
+  /* green-tinted shadow, derived from --app-color-green-secondary */
   box-shadow:
     0 4px 16px rgb(7 63 36 / 8%),
     0 1px 4px rgb(7 63 36 / 4%);
@@ -133,98 +141,98 @@
 button.VersionPill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 6px 5px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  background-color: #f8faf5;
+  gap: var(--app-space-md);
+  padding: var(--app-space-sm) var(--app-space-sm) var(--app-space-sm) var(--app-space-lg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  background-color: var(--app-color-surface-page);
   cursor: pointer;
   font-family: inherit;
 }
 
 button.VersionPill:hover {
-  border-color: #119656;
+  border-color: var(--app-color-brand-primary);
 }
 
 button.VersionPillLive {
-  background-color: #f1faf4;
-  border-color: #a5d8bd;
+  background-color: var(--app-color-surface-hover);
+  border-color: var(--app-color-border-brand);
 }
 
 .VersionLabelLive {
-  color: #0a5e34 !important;
+  color: var(--app-color-text-primary) !important;
 }
 
 .VersionMenuPaper {
-  min-width: 380px;
-  max-width: 440px;
-  border-radius: 12px !important;
-  margin-top: 6px;
+  min-width: 23.75rem;
+  max-width: 27.5rem;
+  border-radius: var(--app-radius-lg) !important;
+  margin-top: var(--app-space-sm);
 }
 
 .VersionDot {
-  width: 7px;
-  height: 7px;
-  margin-top: 7px;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  margin-top: var(--app-space-md);
   border-radius: 50%;
   flex-shrink: 0;
-  background-color: #cbd5cf;
+  background-color: var(--app-color-border-muted);
 }
 
 .VersionDotLive {
-  background-color: #119656;
+  background-color: var(--app-color-brand-primary);
 }
 
 .LivePill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.7rem;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-2xs);
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: #119656;
-  background-color: #fff;
-  border: 1px solid #119656;
-  border-radius: 12px;
-  padding: 2px 9px;
+  color: var(--app-color-brand-primary);
+  background-color: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-brand-primary);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-xs) var(--app-space-md);
 }
 
 .LiveDot {
-  width: 6px;
-  height: 6px;
+  width: 0.375rem;
+  height: 0.375rem;
   border-radius: 50%;
-  background-color: #119656;
+  background-color: var(--app-color-brand-primary);
   flex-shrink: 0;
 }
 
 .VersionLabel {
-  font-size: 0.85rem;
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
-  color: #191c1a;
+  color: var(--app-color-text-heading);
 }
 
 .DraftPill {
   display: inline-flex;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: var(--app-font-size-2xs);
   font-weight: 600;
-  color: #657a70;
-  background-color: #fff;
-  border: 1px solid #d5ddd8;
-  border-radius: 12px;
-  padding: 2px 9px;
+  color: var(--app-color-text-tertiary);
+  background-color: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-border-muted);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-xs) var(--app-space-md);
 }
 
 .CaretBox {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  margin-left: 2px;
-  border: 1px solid #d5ddd8;
-  border-radius: 6px;
-  background-color: #fff;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: var(--app-space-xs);
+  border: 1px solid var(--app-color-border-muted);
+  border-radius: var(--app-radius-sm);
+  background-color: var(--app-color-surface-raised);
   flex-shrink: 0;
 }
 
@@ -233,23 +241,23 @@ button.VersionPillLive {
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 5px solid #5c6d64;
+  border-top: 5px solid var(--app-color-text-tertiary);
 }
 
 .HealthChip {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  border: 1px solid #119656;
-  border-radius: 20px;
-  color: #119656;
-  font-size: 0.85rem;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-sm) var(--app-space-lg);
+  border: 1px solid var(--app-color-brand-primary);
+  border-radius: var(--app-radius-xl);
+  color: var(--app-color-brand-primary);
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
 }
 
 .HealthTick {
-  font-size: 0.9rem;
+  font-size: var(--app-font-size-sm);
 }
 
 .HealthScore {
@@ -258,35 +266,47 @@ button.VersionPillLive {
 
 .HealthTotal {
   font-weight: 600;
-  color: #93a49b;
+  color: var(--app-color-text-tertiary);
 }
 
-.NewAssistantPill {
-  font-size: 0.75rem;
+.NewAssistantPill,
+.NoVersionPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
   font-weight: 600;
-  color: #657a70;
-  border: 1px solid #cbd5cf;
-  border-radius: 12px;
-  padding: 4px 12px;
+  color: var(--app-color-text-tertiary);
+  border: 1px solid var(--app-color-border-muted);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-2xs) var(--app-space-lg);
+}
+
+.NewAssistantDot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: var(--app-color-text-tertiary);
+  flex-shrink: 0;
 }
 
 .LiveNote {
   margin-left: auto;
-  font-size: 0.8rem;
-  color: #5c6d64;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
 
   b {
-    color: #0a5e34;
+    color: var(--app-color-text-primary);
   }
 }
 
 .Tabs {
   display: flex;
   align-items: center;
-  gap: 28px;
-  margin: 0 24px;
-  padding: 18px 4px 0;
-  border-bottom: 1px solid #e0e0e0;
+  gap: var(--app-space-4xl);
+  margin: 0 var(--app-space-3xl);
+  padding: var(--app-space-xl) var(--app-space-2xs) 0;
+  border-bottom: 1px solid var(--app-color-border);
   flex-shrink: 0;
   overflow-x: auto;
 }
@@ -294,37 +314,37 @@ button.VersionPillLive {
 .Tab {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 0 10px;
+  gap: var(--app-space-md);
+  padding: 0 0 var(--app-space-lg);
   border: none;
   border-bottom: 2px solid transparent;
   background: none;
   cursor: pointer;
   white-space: nowrap;
-  font-size: 0.9rem;
+  font-size: var(--app-font-size-sm);
   font-weight: 500;
-  color: #5c6d64;
+  color: var(--app-color-text-tertiary);
   font-family: inherit;
 }
 
 .Tab:hover {
-  color: #191c1a;
+  color: var(--app-color-text-heading);
 }
 
 .ActiveTab {
-  color: #191c1a;
+  color: var(--app-color-text-heading);
   font-weight: 700;
-  border-bottom-color: #119656;
+  border-bottom-color: var(--app-color-brand-primary);
 }
 
 .SandboxBadge {
-  font-size: 0.6rem;
+  font-size: var(--app-font-size-3xs);
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #657a70;
-  background-color: #eef2ef;
-  border-radius: 4px;
-  padding: 2px 6px;
+  color: var(--app-color-text-tertiary);
+  background-color: var(--app-color-gray-secondary);
+  border-radius: var(--app-radius-sm);
+  padding: var(--app-space-xs) var(--app-space-sm);
 }
 
 .TabPanel {
@@ -333,12 +353,12 @@ button.VersionPillLive {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #5c6d64;
-  font-size: 0.95rem;
+  color: var(--app-color-text-tertiary);
+  font-size: var(--app-font-size-md);
 }
 
 .NotFound {
   text-align: center;
-  margin: 2rem 0;
-  color: #555;
+  margin: var(--app-space-3xl) 0;
+  color: var(--app-color-text-tertiary);
 }

@@ -14,48 +14,48 @@
 }
 
 .Paper {
-  border-radius: 12px !important;
-  margin-top: 6px;
+  border-radius: var(--app-radius-lg) !important;
+  margin-top: var(--app-space-sm);
 }
 
 .Header {
-  padding: 12px 16px 6px;
-  font-size: 0.7rem;
+  padding: var(--app-space-lg) var(--app-space-xl) var(--app-space-sm);
+  font-size: var(--app-font-size-2xs);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #7a9087;
+  color: var(--app-color-text-tertiary);
 }
 
 .Option {
   display: flex !important;
   align-items: flex-start !important;
-  gap: 10px;
-  padding: 10px 16px !important;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg) var(--app-space-xl) !important;
   white-space: normal !important;
 }
 
 .OptionText {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--app-space-xs);
   min-width: 0;
 }
 
 .OptionLabelRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--app-space-md);
 }
 
 .OptionDescription {
-  font-size: 0.75rem;
-  color: #7a9087;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
 }
 
 .Footer {
-  padding: 10px 16px;
-  border-top: 1px solid #e0e0e0;
-  font-size: 0.75rem;
-  color: #7a9087;
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border-top: 1px solid var(--app-color-border);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
 }
