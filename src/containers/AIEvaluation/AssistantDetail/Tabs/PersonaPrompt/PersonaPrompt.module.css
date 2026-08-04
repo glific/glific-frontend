@@ -55,8 +55,6 @@
   line-height: 1;
 }
 
-/* BetaTag ships with side margins meant for inline text; the button's gap handles spacing
-   here. Element-qualified so it wins over the component's own class either way. */
 span.GenerateBeta {
   margin: 0;
 }

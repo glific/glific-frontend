@@ -16,14 +16,23 @@ export interface AssistantModel {
   temperatureWhenEffortNone?: boolean;
 }
 
+export interface ModelConfig {
+  model: string;
+  temperature: string;
+  effort: ReasoningEffort;
+  verbosity: Verbosity;
+}
+
+export const DEFAULT_MODEL_CONFIG: ModelConfig = {
+  model: 'gpt-4.1',
+  temperature: '0.01',
+  effort: 'medium',
+  verbosity: 'medium',
+};
+
 /**
  * The single place models are declared. To add one, append an entry here — the Persona &
- * Prompt tab reads its settings straight off this list, so no UI change is needed:
- *   - `standard` models show Temperature only
- *   - `reasoning` models show Reasoning effort + Verbosity, and hide Temperature, since the
- *     API rejects it
- *   - a reasoning model with `temperatureWhenEffortNone` shows Temperature again while its
- *     effort is set to "none"
+ * Prompt tab reads its settings straight off this list.
  */
 export const ASSISTANT_MODELS: AssistantModel[] = [
   {
@@ -79,23 +88,8 @@ export const ASSISTANT_MODELS: AssistantModel[] = [
   },
 ];
 
-export interface ModelConfig {
-  model: string;
-  temperature: string;
-  effort: ReasoningEffort;
-  verbosity: Verbosity;
-}
-
-export const DEFAULT_MODEL_CONFIG: ModelConfig = {
-  model: 'gpt-4.1',
-  temperature: '0.01',
-  effort: 'medium',
-  verbosity: 'medium',
-};
-
 export const VERBOSITY_OPTIONS: Verbosity[] = ['low', 'medium', 'high'];
 
-/** the API accepts 0–2, so anything outside that range is clamped as it is typed */
 export const TEMPERATURE_MIN = 0;
 export const TEMPERATURE_MAX = 2;
 
