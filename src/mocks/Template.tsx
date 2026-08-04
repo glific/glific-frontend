@@ -15,6 +15,7 @@ import {
   GET_SPEED_SEND,
   GET_TEMPLATE,
   GET_TEMPLATES_COUNT,
+  TEMPLATE_LIBRARY,
 } from 'graphql/queries/Template';
 import { setVariables } from 'common/constants';
 import { getOrganizationLanguagesQueryByOrder } from './Organization';
@@ -1256,51 +1257,68 @@ export const HSM_LIST_V2 = [
   templateCountV2PendingMock(),
 ];
 
-// Template library modal: browses only APPROVED HSM templates via FILTER_TEMPLATES.
-export const libraryTemplatesData = [
+// Template library modal: Meta's pre-approved catalog via the templateLibrary
+// query — a live, org-scoped, read-only passthrough to Gupshup's Partner API
+// (never a SessionTemplate). The frontend always fetches the whole catalog in
+// one shot (no filter args) and does every bit of grouping/filtering client-side.
+export const templateLibraryData = [
   {
-    ...hsmV2TemplatesData[0],
-    footer: 'Team Glific',
-  },
-  {
-    id: '5',
-    bspId: 'bsp-005',
-    label: 'Appointment Reminder',
-    body: 'Your appointment is on {{1}}.',
-    footer: null,
-    shortcode: 'appointment_reminder',
+    elementName: 'account_creation_confirmation_3',
     category: 'UTILITY',
-    isReserved: false,
-    status: 'APPROVED',
-    reason: null,
-    isHsm: true,
-    isActive: true,
-    updatedAt: '2024-02-01T09:00:00Z',
-    numberParameters: 1,
-    translations: null,
-    type: 'TEXT',
-    quality: 'HIGH',
-    language: { id: '1', label: 'English', locale: 'en' },
-    tag: { id: '1', label: 'Messages' },
-    MessageMedia: null,
-    hasButtons: false,
-    buttonType: null,
-    buttons: null,
+    body: 'Hei, {{1}}\n\nDen nye kontoen din er opprettet.',
+    languageCode: 'nb',
+    industry: 'E_COMMERCE,FINANCIAL_SERVICES',
+    topic: 'ACCOUNT_UPDATES',
+    usecase: 'ACCOUNT_CREATION_CONFIRMATION',
+    containerMeta: JSON.stringify({
+      data: 'Hei, {{1}}\n\nDen nye kontoen din er opprettet.',
+      buttons: [{ type: 'URL', text: 'Bekreft konto', url: 'https://www.example.com' }],
+      header: 'Fullfør konfigurering av konto',
+    }),
+  },
+  {
+    elementName: 'order_confirmation_1',
+    category: 'UTILITY',
+    body: 'Your order {{1}} has been confirmed.',
+    languageCode: 'en',
+    industry: 'E_COMMERCE',
+    topic: 'ACCOUNT_UPDATES',
+    usecase: 'ACCOUNT_CREATION_CONFIRMATION',
+    containerMeta: JSON.stringify({ data: 'Your order {{1}} has been confirmed.', buttons: [] }),
+  },
+  {
+    elementName: 'appointment_reminder_1',
+    category: 'UTILITY',
+    body: 'Your appointment is on {{1}}.',
+    languageCode: 'en',
+    industry: 'HEALTHCARE',
+    topic: 'ALERT_UPDATE',
+    usecase: 'APPOINTMENT_REMINDER',
+    containerMeta: JSON.stringify({
+      data: 'Your appointment is on {{1}}.',
+      buttons: [{ type: 'QUICK_REPLY', text: 'Reschedule' }],
+    }),
+  },
+  {
+    elementName: 'otp_verification_1',
+    category: 'AUTHENTICATION',
+    body: 'Your OTP is {{1}}.',
+    languageCode: 'en',
+    industry: 'FINANCIAL_SERVICES',
+    topic: 'ACCOUNT_UPDATES',
+    usecase: 'OTP_VERIFICATION',
+    containerMeta: JSON.stringify({ data: 'Your OTP is {{1}}.', buttons: [] }),
   },
 ];
 
-export const libraryTemplatesMock = sessionTemplatesV2Mock({ isHsm: true, status: 'APPROVED' }, libraryTemplatesData);
-export const libraryTemplatesSearchMock = sessionTemplatesV2Mock(
-  { isHsm: true, status: 'APPROVED', term: 'appointment' },
-  [libraryTemplatesData[1]]
-);
+export const templateLibraryMock = (data: any = templateLibraryData) => ({
+  request: { query: TEMPLATE_LIBRARY, variables: {} },
+  result: { data: { templateLibrary: data } },
+});
 
-export const TEMPLATE_LIBRARY_MOCKS = [
-  libraryTemplatesMock,
-  libraryTemplatesMock,
-  getCategoriesV2Mock,
-  getCategoriesV2Mock,
-];
+export const templateLibraryEmptyMock = templateLibraryMock([]);
+
+export const TEMPLATE_LIBRARY_MOCKS = [templateLibraryMock(), templateLibraryMock()];
 
 export const syncHsmSuccessMock = {
   request: { query: SYNC_HSM_TEMPLATES },

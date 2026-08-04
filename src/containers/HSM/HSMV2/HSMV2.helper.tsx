@@ -5,6 +5,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 
+import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
@@ -116,4 +117,64 @@ export const buildSimulatorMessage = (
     sampleMessage.footer = footerValue;
   }
   return sampleMessage;
+};
+
+// Meta's pre-approved template catalog (templateLibrary query) — a live,
+// read-only, org-scoped passthrough to Gupshup's Partner API. Never persisted
+// as a SessionTemplate; entries only ever prefill the Create Template draft.
+export interface TemplateLibraryEntry {
+  elementName?: string | null;
+  category?: string | null;
+  body?: string | null;
+  languageCode?: string | null;
+  industry?: string | null;
+  topic?: string | null;
+  usecase?: string | null;
+  containerMeta?: Record<string, any> | string | null;
+}
+
+// The backend decodes Gupshup's raw containerMeta string into a real object
+// before it reaches the `:json` scalar, so this normally already arrives as
+// an object. Still accepts a JSON string too (older callers, mocks) - best
+// effort either way, since its shape isn't guaranteed across Meta's catalog.
+export const parseContainerMeta = (containerMeta?: Record<string, any> | string | null): any => {
+  if (!containerMeta) return {};
+  if (typeof containerMeta === 'object') return containerMeta;
+  try {
+    return JSON.parse(containerMeta) || {};
+  } catch {
+    return {};
+  }
+};
+
+// Gupshup wire-format button types (URL/PHONE_NUMBER/QUICK_REPLY) map onto our
+// two supported button groups — anything else (e.g. WhatsApp Forms) falls
+// back to no buttons rather than guessing.
+export const buttonTypeFromContainerButtons = (buttons: Array<any> = []): string | undefined => {
+  if (!buttons.length) return undefined;
+  if (buttons.some((button) => button.type === 'QUICK_REPLY')) return QUICK_REPLY;
+  if (buttons.some((button) => button.type === 'URL' || button.type === 'PHONE_NUMBER')) return CALL_TO_ACTION;
+  return undefined;
+};
+
+// Maps a library entry into the shape HSMV2's existing setStates already
+// consumes for language-variant/copy drafts — reuses that setter pipeline
+// instead of duplicating it. elementName is left out on purpose: the user
+// names their own template.
+export const buildLibraryDraft = (entry: TemplateLibraryEntry) => {
+  const containerMeta = parseContainerMeta(entry.containerMeta);
+  const containerButtons = Array.isArray(containerMeta.buttons) ? containerMeta.buttons : [];
+  const buttonType = buttonTypeFromContainerButtons(containerButtons);
+  const hasButtons = Boolean(buttonType);
+
+  return {
+    shortcode: '',
+    body: entry.body || '',
+    footer: containerMeta.footer || '',
+    example: containerMeta.sampleText || '',
+    category: entry.category || undefined,
+    hasButtons,
+    buttonType,
+    buttons: hasButtons ? JSON.stringify(containerButtons) : undefined,
+  };
 };

@@ -24,6 +24,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { GET_HSM_CATEGORIES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
+import { TemplateLibraryModal } from './TemplateLibraryModal/TemplateLibraryModal';
 import styles from './HSMListV2.module.css';
 import {
   categoryLabel,
@@ -53,6 +54,7 @@ const HSMListV2 = () => {
   const [collapseOpen, setCollapseOpen] = useState(false);
   const [collapseRow, setCollapseRow] = useState('');
   const [refreshList, setRefreshList] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
   const importCancelledRef = useRef(false);
 
   const { data: tagsData } = useQuery(GET_TAGS, { variables: {}, fetchPolicy: 'network-only' });
@@ -248,8 +250,21 @@ const HSMListV2 = () => {
     </Button>
   );
 
+  const templateLibraryButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      className={styles.HsmUpdates}
+      data-testid="templateLibrary"
+      onClick={() => setShowLibrary(true)}
+    >
+      {t('Template library')}
+    </Button>
+  );
+
   const secondaryButton = (
     <div className={styles.SecondaryButton}>
+      {templateLibraryButton}
       {syncHSMButton}
       <div className={styles.ImportButton}>
         <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
@@ -323,6 +338,7 @@ const HSMListV2 = () => {
 
   return (
     <>
+      <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />
       {importing && (
         <DialogBox
           title={t('Processing your file')}

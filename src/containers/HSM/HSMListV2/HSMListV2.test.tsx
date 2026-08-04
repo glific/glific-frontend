@@ -29,6 +29,7 @@ import {
   templateCountV2AllStatusesMock,
   filterTemplatesV2NoShortcodeMock,
   templateCountV2NoShortcodeMock,
+  templateLibraryMock,
 } from 'mocks/Template';
 import { GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import HSMListV2 from './HSMListV2';
@@ -81,14 +82,20 @@ test('renders page title and action buttons', async () => {
   expect(screen.getByText('Bulk apply')).toBeInTheDocument();
 });
 
-test('does not render the removed Template library button', async () => {
-  renderComponent();
+test('opens the template library modal via the header button', async () => {
+  renderComponent([...baseMocks, templateLibraryMock()]);
 
   await waitFor(() => {
-    expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    expect(screen.getByTestId('templateLibrary')).toBeInTheDocument();
   });
 
-  expect(screen.queryByTestId('templateLibrary')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('templateLibrary'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+  });
 });
 
 test('renders template rows after data loads', async () => {

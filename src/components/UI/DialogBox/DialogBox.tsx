@@ -122,7 +122,7 @@ export const DialogBox = ({
       open={open}
       classes={{
         container: styles.Dialogbox,
-        paper: `${styles.DialogboxPaper} ${fullWidth && styles.FullWidth}`,
+        paper: `${styles.DialogboxPaper} ${fullWidth && styles.FullWidth} ${customStyles?.paper || ''}`,
         scrollPaper: styles.ScrollPaper,
         root: alwaysOntop ? styles.DialogboxRoot : '',
       }}

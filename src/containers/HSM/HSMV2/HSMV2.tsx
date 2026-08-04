@@ -60,6 +60,7 @@ import {
   filterAvailableLanguages,
   groupVariantsByTab,
   statusTabFor,
+  buildLibraryDraft,
 } from './HSMV2.helper';
 import type { StatusTab } from './HSMV2.helper';
 import { LanguageVersionsCard } from './LanguageVersionsCard/LanguageVersionsCard';
@@ -615,7 +616,7 @@ export const HSMV2 = () => {
       rows: 5,
       disabled: isReadOnly,
       handleChange: (value: any) => setBody(value),
-      defaultValue: mode !== 'create' && editorState,
+      defaultValue: editorState,
       squareBottom: true,
     },
     {
@@ -716,6 +717,40 @@ export const HSMV2 = () => {
     }
   }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
 
+  // Declared before the libraryTemplate effect below: both fire in the same
+  // initial commit, and effects run in declaration order — if this ran after,
+  // its stale (pre-setStates) `variables` closure would win the race and wipe
+  // out any variable values setStates just populated (e.g. from a library
+  // draft's sample text), since both call setVariables in the same batch.
+  useEffect(() => {
+    setVariables(getVariables(body, variables));
+  }, [body]);
+
+  useEffect(() => {
+    if (location.state?.libraryTemplate && mode === 'create') {
+      setStates(buildLibraryDraft(location.state.libraryTemplate));
+    }
+  }, [location.state?.libraryTemplate, mode]);
+
+  // Simulator's own mount-time effects race: its `[message]` effect renders the
+  // preview, but its `[interactiveMessage]` effect (declared after, and always
+  // undefined here) unconditionally wipes it in that same commit. Simulator
+  // only actually mounts once the loading gate below clears (until then this
+  // component renders just `<Loading />`), so the nudge must wait for that —
+  // a fixed-delay timer fired too early against a real (non-instant) backend.
+  // Once loading clears, Simulator mounts and its own mount-race effects fire
+  // synchronously as part of that same commit; scheduling the nudge on a
+  // `setTimeout` here guarantees it runs on the next tick, strictly after
+  // that commit's effects have already settled.
+  useEffect(() => {
+    if (location.state?.libraryTemplate && mode === 'create' && !languageLoading && !categoryLoading && !tagLoading) {
+      const timer = setTimeout(() => {
+        setSampleMessages((prev) => ({ ...prev }));
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state?.libraryTemplate, mode, languageLoading, categoryLoading, tagLoading]);
+
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
       const freshVariants = familyFetchData.sessionTemplates;
@@ -762,16 +797,6 @@ export const HSMV2 = () => {
   useEffect(() => {
     setSimulatorMessage(computeSampleText(), footer);
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
-
-  useEffect(() => {
-    if (templateType?.id && (mode === 'create' || mode === 'copy')) {
-      addTemplateButtons(false);
-    }
-  }, [templateType]);
-
-  useEffect(() => {
-    setVariables(getVariables(body, variables));
-  }, [body]);
 
   if (languageLoading || categoryLoading || tagLoading) {
     return <Loading />;

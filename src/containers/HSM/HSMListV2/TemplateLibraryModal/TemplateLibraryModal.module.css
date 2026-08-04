@@ -1,0 +1,223 @@
+.WidePaper.WidePaper {
+  width: min(950px, 90vw) !important;
+  max-width: 950px !important;
+}
+
+.ModalContent {
+  padding: 0 32px 24px !important;
+}
+
+.Subtitle {
+  margin: 0 0 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.Layout {
+  display: flex;
+  gap: 20px;
+  min-height: 380px;
+  max-height: 440px;
+}
+
+.LeftPanel {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.SectionLabel {
+  margin: 0 0 12px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.RightPanel {
+  flex: 0 0 340px;
+  width: 340px;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px;
+}
+
+.FiltersRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.SearchBarField {
+  flex: 1 1 auto;
+}
+
+.LanguageFormControl {
+  width: 170px !important;
+}
+
+.LanguageDropDown {
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  width: 170px;
+  height: 36px !important;
+  background: #ffffff;
+  min-height: 36px !important;
+}
+
+.LanguageDropDown > fieldset {
+  border: none !important;
+}
+
+.GroupList {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.Group {
+  border-bottom: 1px solid #eeede9;
+}
+
+.GroupEmpty {
+  opacity: 0.5;
+}
+
+.GroupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  background: #f9f8f5;
+  padding: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ChevronOpen {
+  transform: rotate(180deg);
+}
+
+.GroupTitle {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.GroupCount {
+  color: #93a29b;
+  font-size: 13px;
+  margin-right: auto;
+}
+
+.GroupEmptyHint {
+  margin: 0 0 8px 16px;
+  font-size: 13px;
+  color: #93a29b;
+}
+
+.EntryRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid #f5f4f0;
+}
+
+.EntryRow:hover {
+  background: #f5f4f0;
+}
+
+.EntryRowSelected {
+  background: #f0faf5;
+}
+
+.EntryName {
+  flex: 1 1 auto;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.Radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+}
+
+.RadioSelected {
+  border-color: #119656;
+  background: radial-gradient(circle, #119656 42%, transparent 44%);
+}
+
+.EmptyText {
+  color: #93a29b;
+  font-size: 14px;
+  padding: 20px 4px;
+}
+
+.FooterCount {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #93a29b;
+}
+
+.PreviewHelperText {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* same phone-screen green already used for the Simulator's chat background
+   (see components/simulator/Simulator.module.css) — reused here as a plain
+   color value, not the Simulator component itself. */
+.PreviewBox {
+  flex: 1 1 auto;
+  min-height: 0;
+  background-image: url('../../../../assets/images/whatsappBackground.jpg');
+  background-size: contain;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.PreviewPlaceholder {
+  margin: auto;
+  color: #667781;
+  font-size: 14px;
+  font-style: italic;
+  text-align: center;
+  padding: 0 24px;
+}
+
+/* the app's actual brand-primary green (same token used for buttons/nav
+   elsewhere), not the Simulator's own muted WhatsApp-mimicking header color —
+   pulled out to the box's edges with negative margins so it reads as a
+   colored strip, while the rest of `.PreviewBox`'s padding still applies to
+   the bubble below. */
+.PreviewBox :global([class*='PreviewHeader']) {
+  color: #eee !important;
+  background: var(--app-color-brand-primary);
+  margin: -20px -20px 12px !important;
+  padding: 14px 20px !important;
+  border-radius: 16px 16px 0 0;
+  white-space: normal !important;
+  overflow: visible !important;
+}
+
+.PreviewBox :global([class*='PreviewBody']) {
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+}

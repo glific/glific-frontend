@@ -201,6 +201,58 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByTestId('help-icon')).toBeInTheDocument();
   });
 
+  test('arriving from the Template Library prefills the body, sample variable value, and both Call-to-Action buttons, without the button-type effect clobbering them', async () => {
+    const libraryTemplate = {
+      elementName: 'order_shipped_1',
+      category: 'ACCOUNT_UPDATE',
+      body: 'Hi {{1}}, your order has shipped.',
+      languageCode: 'en',
+      containerMeta: JSON.stringify({
+        footer: 'Team support',
+        sampleText: 'Hi [John], your order has shipped.',
+        buttons: [
+          { type: 'PHONE_NUMBER', text: 'Call Us', phone_number: '+1234567890' },
+          { type: 'URL', text: 'Track Order', url: 'https://example.com/track' },
+        ],
+      }),
+    };
+
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { libraryTemplate } }]}>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    // the message body is a Lexical contentEditable, not a form input — libraryTemplate.body
+    // must reach it via the editor's defaultValue prop, not just internal React state.
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi {{1}}, your order has shipped.');
+    });
+
+    // both Call-to-Action buttons from the library entry must survive — the templateType-watching
+    // effect (which auto-adds one *blank* button row on a user tile click) must not fire here and
+    // wipe the drafted buttons down to a single empty one.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('+1234567890')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Track Order')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('https://example.com/track')).toBeInTheDocument();
+    });
+
+    // containerMeta.sampleText ("Hi [John], ...") must prefill the {{1}} variable's
+    // value with "John", instead of leaving the user to type their own sample.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('John')).toBeInTheDocument();
+    });
+  });
+
   test('submit button stays disabled until all required fields (element name, message, category) are filled', async () => {
     render(template);
 
@@ -674,7 +726,9 @@ describe('HSMV2 add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Call to Action'));
-    fireEvent.click(screen.getByText('Phone number'));
+    // the type-selector chip, not the "Phone number" value-field label that
+    // also appears once this row defaults to that type
+    fireEvent.click(screen.getByRole('button', { name: 'Phone number' }));
     fireEvent.change(screen.getByPlaceholderText('e.g., Call Us'), { target: { value: 'Call me' } });
     fireEvent.change(screen.getByPlaceholderText('+91 98765 43210'), { target: { value: '9876543210' } });
 
