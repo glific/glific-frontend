@@ -81,7 +81,6 @@
   gap: var(--app-space-md);
 }
 
-/* matches the inline rename on the Assistants screen: no box, just a green underline */
 .NameInput {
   font-size: var(--app-font-size-2xl);
   font-weight: 700;
@@ -131,8 +130,6 @@
   background-color: var(--app-color-surface-raised);
   border-radius: var(--app-radius-lg);
   flex-shrink: 0;
-
-  /* green-tinted shadow, derived from --app-color-green-secondary */
   box-shadow:
     0 4px 16px rgb(7 63 36 / 8%),
     0 1px 4px rgb(7 63 36 / 4%);
