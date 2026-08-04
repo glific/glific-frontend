@@ -269,16 +269,14 @@ export const AssistantDetail = () => {
                 <span className={styles.NameText} data-testid="headerTitle">
                   {isCreateMode ? draftName || defaultAssistantName : assistant.name}
                 </span>
-                {!isCreateMode && (
-                  <IconButton
-                    size="small"
-                    className={styles.EditNameButton}
-                    onClick={handleEditName}
-                    data-testid="editNameButton"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                )}
+                <IconButton
+                  size="small"
+                  className={styles.EditNameButton}
+                  onClick={handleEditName}
+                  data-testid="editNameButton"
+                >
+                  <EditIcon />
+                </IconButton>
               </div>
             )}
             {!isCreateMode && assistant.assistantId && (
