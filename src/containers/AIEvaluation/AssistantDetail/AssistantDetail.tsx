@@ -55,9 +55,7 @@ const filesFromVectorStore = (vectorStore: { files?: { id: string; name: string;
     fileSize: file.fileSize,
   }));
 
-// a version carries its own vector store, but older ones can come back without one — fall
-// back to the assistant's so the knowledge base does not look empty
-const editorStateFromVersion = (version: AssistantVersion, assistant: any): EditorState => {
+const editorStateFromVersion = (version: AssistantVersion): EditorState => {
   const settings = parseSettings(version.settings);
   return {
     prompt: version.prompt ?? '',
@@ -68,7 +66,7 @@ const editorStateFromVersion = (version: AssistantVersion, assistant: any): Edit
       ...(settings.effort ? { effort: settings.effort as ModelConfig['effort'] } : {}),
       ...(settings.verbosity ? { verbosity: settings.verbosity as ModelConfig['verbosity'] } : {}),
     },
-    files: filesFromVectorStore(version.vectorStore ?? assistant?.vectorStore ?? null),
+    files: filesFromVectorStore(version.vectorStore ?? null),
   };
 };
 
@@ -153,9 +151,7 @@ export const AssistantDetail = () => {
     if (key === loadedKey.current) return;
     loadedKey.current = key;
 
-    const loaded = selectedVersion
-      ? editorStateFromVersion(selectedVersion, fetched)
-      : editorStateFromAssistant(fetched);
+    const loaded = selectedVersion ? editorStateFromVersion(selectedVersion) : editorStateFromAssistant(fetched);
     setPrompt(loaded.prompt);
     setModelConfig(loaded.config);
     setKnowledgeBaseFiles(loaded.files);
@@ -208,6 +204,8 @@ export const AssistantDetail = () => {
 
   const handleSaveVersion = async () => {
     setSaving(true);
+    const knowledgeBaseStoreId =
+      (selectedVersion ? selectedVersion.vectorStore?.id : assistant?.vectorStore?.id) ?? null;
     const temperature = Number(modelConfig.temperature);
     const input: Record<string, any> = {
       instructions: prompt,
@@ -220,7 +218,7 @@ export const AssistantDetail = () => {
       if (filesChanged) {
         const knowledgeBaseResponse = await createKnowledgeBase({
           variables: {
-            createKnowledgeBaseId: assistant?.vectorStore?.id ?? null,
+            createKnowledgeBaseId: knowledgeBaseStoreId,
             mediaInfo: knowledgeBaseFiles,
           },
         });
@@ -345,7 +343,7 @@ export const AssistantDetail = () => {
   }
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
-  const vectorStore = selectedVersion?.vectorStore ?? assistant?.vectorStore;
+  const vectorStore = selectedVersion ? selectedVersion.vectorStore : assistant?.vectorStore;
 
   // a tab appears here once it is built; anything missing falls through to "coming soon"
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {

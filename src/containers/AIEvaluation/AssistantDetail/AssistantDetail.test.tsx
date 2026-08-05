@@ -26,7 +26,17 @@ const version = (versionNumber: number, isLive: boolean) => ({
   description: null as string | null,
   insertedAt: '2024-10-16T15:00:00Z' as string | null,
   updatedAt: '2024-10-16T15:00:00Z' as string | null,
-  vectorStore: null as AssistantVersion['vectorStore'],
+  vectorStore: (isLive
+    ? {
+        id: 'vs-1',
+        vectorStoreId: 'vs_abc123',
+        knowledgeBaseVersionId: 'llm-vs-1',
+        name: 'VectorStore-77ae3597',
+        legacy: false,
+        size: 32880,
+        files: [{ name: 'Accelerator Guide (1).pdf', id: 'file-rls90OGDUgFeLewh6e01Eamf', fileSize: 32880 }],
+      }
+    : null) as AssistantVersion['vectorStore'],
 });
 
 const versionsMock = (assistantVersions = [version(1, true), version(2, false)]) => ({
@@ -1061,7 +1071,7 @@ describe('switching versions', () => {
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
   });
 
-  test('the knowledge base follows the selected version, and falls back when it has none', async () => {
+  test('the knowledge base follows the selected version', async () => {
     const versionWithStore = {
       ...draftV2,
       vectorStore: {
@@ -1081,7 +1091,6 @@ describe('switching versions', () => {
     });
     fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
 
-    // the live version has no store of its own, so the assistant's files still show
     expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('Accelerator Guide (1).pdf');
 
     await openVersionMenu();
@@ -1091,6 +1100,127 @@ describe('switching versions', () => {
       expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('older_policy.pdf');
     });
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  const storeFor = (overrides: Record<string, unknown> = {}) => ({
+    id: 'vs-2',
+    vectorStoreId: 'vs_two',
+    knowledgeBaseVersionId: 'kbv-2',
+    name: 'kb-2',
+    legacy: false,
+    size: 2048,
+    files: [{ id: 'file-2', name: 'older_policy.pdf', fileSize: 2048 }],
+    ...overrides,
+  });
+
+  const openKnowledgeBaseFor = async (versionTwo: Record<string, unknown>) => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, versionTwo as any])]);
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+  };
+
+  test('a version with an empty store shows nothing attached, not the previous files', async () => {
+    await openKnowledgeBaseFor({ ...draftV2, vectorStore: storeFor({ files: [] }) });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBaseEmpty')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('fileCount')).toHaveTextContent('0 files attached');
+    expect(screen.queryByText('Accelerator Guide (1).pdf')).not.toBeInTheDocument();
+  });
+
+  test('a version with no store at all reports that in technical details', async () => {
+    await openKnowledgeBaseFor({ ...draftV2, vectorStore: null });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBaseEmpty')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('technicalDetailsToggle'));
+    expect(screen.getByTestId('noVectorStore')).toBeInTheDocument();
+  });
+
+  test('technical details show the selected version store, not the assistant one', async () => {
+    await openKnowledgeBaseFor({ ...draftV2, vectorStore: storeFor() });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('older_policy.pdf');
+    });
+    fireEvent.click(screen.getByTestId('technicalDetailsToggle'));
+    expect(screen.getByTestId('vectorStoreId')).toHaveTextContent('vs_two');
+    expect(screen.getByTestId('vectorStoreId')).not.toHaveTextContent('vs_abc123');
+  });
+
+  test('a legacy store makes that version read-only', async () => {
+    await openKnowledgeBaseFor({ ...draftV2, vectorStore: storeFor({ legacy: true }) });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('legacyNotice')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('addFilesButton')).toBeDisabled();
+    expect(screen.queryByTestId('removeFileButton')).not.toBeInTheDocument();
+  });
+
+  test('saving rebuilds on the selected version store, not the live one', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const versionTwo = { ...draftV2, vectorStore: storeFor() };
+    const createKnowledgeBaseMock = {
+      request: {
+        query: CREATE_KNOWLEDGE_BASE,
+        // vs-2 is the store attached to version 2 — vs-1 belongs to the live version
+        variables: { createKnowledgeBaseId: 'vs-2', mediaInfo: [] },
+      },
+      result: {
+        data: { createKnowledgeBase: { knowledgeBase: { id: 'kb-2', knowledgeBaseVersionId: 'kbv-9', name: 'kb' } } },
+      },
+    };
+    const saveMock = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          input: {
+            instructions: 'Answer in one line.',
+            model: 'gpt-4.1',
+            temperature: 0.5,
+            knowledgeBaseVersionId: 'kbv-9',
+            name: 'Assistant-405db438',
+          },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock([liveV1, versionTwo as any]),
+      createKnowledgeBaseMock,
+      saveMock,
+      getAssistant('1'),
+      versionsMock([liveV1, versionTwo as any]),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('older_policy.pdf');
+    });
+    fireEvent.click(screen.getByTestId('removeFileButton'));
+    fireEvent.click(await screen.findByText('Remove file'));
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    notificationSpy.mockRestore();
   });
 
   test('a save moves the selection onto the version it just created', async () => {
