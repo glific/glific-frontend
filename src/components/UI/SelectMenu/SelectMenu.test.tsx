@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-import { DropdownMenu } from './DropdownMenu';
+import { DropdownMenu } from './SelectMenu';
 
 const options = [
   { id: 'a', label: 'Option A', description: 'first option', testId: 'option-a' },
