@@ -1,9 +1,8 @@
 import { Menu, MenuItem } from '@mui/material';
 import { ReactNode, useState } from 'react';
+import styles from './SelectMenu.module.css';
 
-import styles from './DropdownMenu.module.css';
-
-export interface DropdownMenuOption {
+export interface SelectMenuOption {
   id: string;
   label: ReactNode;
   description?: ReactNode;
@@ -13,10 +12,10 @@ export interface DropdownMenuOption {
   testId?: string;
 }
 
-export interface DropdownMenuProps {
+export interface SelectMenuProps {
   trigger: ReactNode;
-  options: DropdownMenuOption[];
-  onSelect: (option: DropdownMenuOption) => void;
+  options: SelectMenuOption[];
+  onSelect: (option: SelectMenuOption) => void;
   selectedId?: string | null;
   header?: ReactNode;
   footer?: ReactNode;
@@ -28,7 +27,7 @@ export interface DropdownMenuProps {
   testId?: string;
 }
 
-export const DropdownMenu = ({
+export const SelectMenu = ({
   trigger,
   options,
   onSelect,
@@ -40,12 +39,12 @@ export const DropdownMenu = ({
   optionClassName,
   disabled = false,
   align = 'left',
-  testId = 'dropdownMenu',
-}: DropdownMenuProps) => {
+  testId = 'selectMenu',
+}: SelectMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleSelect = (option: DropdownMenuOption) => {
+  const handleSelect = (option: SelectMenuOption) => {
     // MUI only blocks disabled items via pointer-events, so guard here too
     if (option.disabled) return;
     onSelect(option);
@@ -103,4 +102,4 @@ export const DropdownMenu = ({
   );
 };
 
-export default DropdownMenu;
+export default SelectMenu;

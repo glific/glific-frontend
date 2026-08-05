@@ -58,28 +58,6 @@ span.GenerateBeta {
   margin: 0;
 }
 
-.Field,
-.TextArea {
-  width: 100%;
-  padding: var(--app-space-lg);
-  border: 1px solid rgb(var(--app-color-slate-rgb) / 26%);
-  border-radius: var(--app-radius-sm);
-  background-color: var(--app-color-surface-raised);
-  font-family: inherit;
-  font-size: var(--app-font-size-sm);
-  color: var(--app-color-text-heading);
-}
-
-.TextArea {
-  resize: vertical;
-}
-
-.Field:focus,
-.TextArea:focus {
-  outline: none;
-  border-color: var(--app-color-brand-primary);
-}
-
 .Divider {
   height: 1px;
   margin: var(--app-space-xl) 0;

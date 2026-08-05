@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useTranslation } from 'react-i18next';
-import { DropdownMenu } from 'components/UI/DropdownMenu/DropdownMenu';
+import type { SelectMenuOption } from 'components/UI/SelectMenu/SelectMenu';
+import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import styles from './VersionBar.module.css';
 
@@ -112,14 +113,14 @@ export const VersionBar = ({
         </>
       ) : (
         <>
-          <DropdownMenu
+          <SelectMenu
             testId="versionPill"
             triggerClassName={`${styles.VersionPill} ${selectedVersion.isLive ? styles.VersionPillLive : ''}`}
             paperClassName={styles.VersionMenuPaper}
             header={t('Versions')}
             footer={t('Saving creates a minor version. Publishing promotes it to the next major and makes it live.')}
             selectedId={selectedVersion.id}
-            onSelect={(option) => onSelectVersion(option.id)}
+            onSelect={(option: SelectMenuOption) => onSelectVersion(option.id)}
             trigger={
               <>
                 <span className={`${styles.VersionLabel} ${selectedVersion.isLive ? styles.VersionLabelLive : ''}`}>
