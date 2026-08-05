@@ -54,7 +54,6 @@ export interface ModelParams {
   verbosity: boolean;
 }
 
-/** what the detail page has in the editor, and what it compares against to detect edits */
 export interface EditorState {
   prompt: string;
   config: ModelConfig;
