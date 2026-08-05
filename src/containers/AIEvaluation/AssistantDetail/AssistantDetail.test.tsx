@@ -675,6 +675,40 @@ describe('knowledge base', () => {
     expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
   });
 
+  test('an upload in progress survives switching tabs', async () => {
+    // a slow upload so the tab switch happens while it is still in flight
+    const slowUpload = {
+      request: { query: UPLOAD_FILE_TO_KAAPI },
+      variableMatcher: () => true,
+      delay: 60,
+      result: { data: { uploadFilesearchFile: uploadedFile } },
+    };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), slowUpload]);
+
+    // edit first so the Save button exists to assert against
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+
+    await openTabAndUpload();
+    expect(screen.getByTestId('uploadingFile')).toHaveTextContent('guide.pdf');
+    // saving now would leave the in-flight file out of the version
+    expect(screen.getByTestId('saveVersionButton')).toBeDisabled();
+
+    fireEvent.click(screen.getByTestId('tab-persona'));
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+
+    // the progress row is still there instead of the list looking untouched
+    expect(screen.getByTestId('uploadingFile')).toHaveTextContent('guide.pdf');
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
+    });
+    expect(screen.queryByTestId('uploadingFile')).not.toBeInTheDocument();
+    expect(screen.getByTestId('saveVersionButton')).not.toBeDisabled();
+  });
+
   test('discarding throws the uploaded file away', async () => {
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
     await openTabAndUpload();
@@ -982,6 +1016,74 @@ describe('unsaved changes across tabs', () => {
   });
 });
 
+describe('version status', () => {
+  test('a version still building shows In Progress and cannot be published', async () => {
+    const building = { ...version(2, false), status: 'in_progress' };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true), building])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    expect(screen.getByTestId('inProgressPill-2')).toHaveTextContent('In Progress');
+    expect(screen.getByTestId('versionOption-2')).toHaveTextContent('not published');
+
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('In Progress');
+    });
+    expect(screen.getByTestId('versionPill')).toHaveTextContent('not published');
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
+    expect(screen.getByTestId('publishButton')).toBeDisabled();
+  });
+
+  test('a failed version says so and cannot be published either', async () => {
+    const failed = { ...version(2, false), status: 'failed' };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true), failed])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Failed');
+    });
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Cannot set a failed version as live');
+    expect(screen.getByTestId('publishButton')).toBeDisabled();
+  });
+
+  test('a live version being rebuilt keeps its LIVE badge', async () => {
+    const rebuildingLive = { ...version(1, true), status: 'in_progress' };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([rebuildingLive, version(2, false)])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('LIVE');
+    });
+    expect(screen.getByTestId('versionPill')).toHaveTextContent('In Progress');
+    // still tells you which version your flows are on
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('is live in your flows');
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
+  });
+
+  test('a ready draft still shows not published and stays publishable', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock()]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('not published');
+    });
+    expect(screen.getByTestId('publishButton')).not.toBeDisabled();
+  });
+});
+
 describe('switching versions', () => {
   const liveV1 = { ...version(1, true), prompt: 'You are a helpful assistant.', model: 'gpt-4o' };
   const draftV2 = {
@@ -1221,6 +1323,50 @@ describe('switching versions', () => {
       expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
     });
     notificationSpy.mockRestore();
+  });
+
+  test('an upload landing after a version switch appends to the new list', async () => {
+    const slowUpload = {
+      request: { query: UPLOAD_FILE_TO_KAAPI },
+      variableMatcher: () => true,
+      delay: 60,
+      result: {
+        data: {
+          uploadFilesearchFile: {
+            fileId: 'file-9',
+            filename: 'guide.pdf',
+            uploadedAt: '2026-08-04T10:00:00Z',
+            fileSize: 2048,
+          },
+        },
+      },
+    };
+    const versionTwo = { ...draftV2, vectorStore: storeFor() };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, versionTwo as any]), slowUpload]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+
+    const input = screen.getByTestId('fileInput');
+    Object.defineProperty(input, 'files', {
+      value: [new File(['x'], 'guide.pdf', { type: 'application/pdf' })],
+      configurable: true,
+    });
+    fireEvent.change(input);
+
+    // switch versions while the upload is still going
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
+    });
+    // appended to version 2's files, not to the list captured when the upload started
+    expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('older_policy.pdf');
+    expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('guide.pdf');
+    expect(screen.queryByText('Accelerator Guide (1).pdf')).not.toBeInTheDocument();
   });
 
   test('a save moves the selection onto the version it just created', async () => {

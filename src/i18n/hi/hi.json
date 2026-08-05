@@ -878,5 +878,6 @@
   "Your changes have not been saved as a version yet.": "आपके बदलाव अभी तक किसी संस्करण के रूप में सहेजे नहीं गए हैं।",
   "Switch version?": "संस्करण बदलें?",
   "Switch version": "संस्करण बदलें",
-  "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।"
+  "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।",
+  "This version is still being prepared": "यह संस्करण अभी तैयार किया जा रहा है"
 }

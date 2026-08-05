@@ -95,6 +95,57 @@ button.VersionPillLive {
   padding: var(--app-space-xs) var(--app-space-md);
 }
 
+.PillGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.InProgressPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-2xs);
+  font-weight: 700;
+  color: var(--app-color-attention);
+  background-color: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-attention);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-xs) var(--app-space-md);
+}
+
+.InProgressDot {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--app-color-attention);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.FailedPill {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--app-font-size-2xs);
+  font-weight: 700;
+  color: var(--app-color-error);
+  background-color: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-error);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-xs) var(--app-space-md);
+}
+
 .CaretBox {
   display: flex;
   align-items: center;

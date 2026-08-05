@@ -22,6 +22,9 @@ export interface KnowledgeBaseFile {
 export interface KnowledgeBaseProps {
   files: KnowledgeBaseFile[];
   onFilesChange: (files: KnowledgeBaseFile[]) => void;
+  onFilesUploaded: (uploaded: KnowledgeBaseFile[]) => void;
+  uploading: string[];
+  onUploadingChange: (names: string[]) => void;
   vectorStoreId?: string | null;
   legacy?: boolean;
 }
@@ -36,17 +39,24 @@ const formatSize = (bytes?: number | null) => {
   return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 };
 
-export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, legacy = false }: KnowledgeBaseProps) => {
+export const KnowledgeBase = ({
+  files,
+  onFilesChange,
+  onFilesUploaded,
+  uploading,
+  onUploadingChange,
+  vectorStoreId = null,
+  legacy = false,
+}: KnowledgeBaseProps) => {
   const { t } = useTranslation();
 
-  const [uploadingNames, setUploadingNames] = useState<string[]>([]);
   const [fileToRemove, setFileToRemove] = useState<KnowledgeBaseFile | null>(null);
   const [showTechnical, setShowTechnical] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [uploadFile] = useMutation(UPLOAD_FILE_TO_KAAPI);
 
-  const isUploading = uploadingNames.length > 0;
+  const isUploading = uploading.length > 0;
   const isReadOnly = legacy;
 
   const handleAddFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +74,7 @@ export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, lega
       return;
     }
 
-    setUploadingNames(selected.map((file) => file.name));
+    onUploadingChange(selected.map((file) => file.name));
 
     try {
       const uploaded = await Promise.all(
@@ -81,12 +91,12 @@ export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, lega
         })
       );
 
-      onFilesChange([...files, ...uploaded.filter((file): file is KnowledgeBaseFile => file !== null)]);
+      onFilesUploaded(uploaded.filter((file): file is KnowledgeBaseFile => file !== null));
       setNotification(t('Files uploaded — save a version to apply them'));
     } catch (error: unknown) {
       setErrorMessage(error);
     } finally {
-      setUploadingNames([]);
+      onUploadingChange([]);
     }
   };
 
@@ -105,7 +115,7 @@ export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, lega
         <div className={styles.ZoneTitle}>{t('Knowledge base')}</div>
         <div className={styles.ZoneSub} data-testid="fileCount">
           {fileCount}
-          {isUploading && ` · ${uploadingNames.length} ${t('processing')}`}
+          {isUploading && ` · ${uploading.length} ${t('processing')}`}
         </div>
         <div className={styles.ZoneAction}>
           <Button
@@ -178,7 +188,7 @@ export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, lega
             </div>
           ))}
 
-          {uploadingNames.map((name) => (
+          {uploading.map((name) => (
             <div className={`${styles.File} ${styles.FileUploading}`} key={name} data-testid="uploadingFile">
               <span className={styles.Pulse} />
               <div className={styles.FileText}>

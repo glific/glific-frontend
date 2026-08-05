@@ -9,6 +9,9 @@ dayjs.extend(relativeTime);
 
 const PLACEHOLDER_SCORE = '4.3';
 
+export const canPublishVersion = (version?: AssistantVersion) =>
+  Boolean(version) && !version?.isLive && version?.status !== 'in_progress' && version?.status !== 'failed';
+
 export interface VersionBarProps {
   versions: AssistantVersion[];
   selectedVersion?: AssistantVersion;
@@ -26,7 +29,7 @@ export const VersionBar = ({
 }: VersionBarProps) => {
   const { t } = useTranslation();
 
-  const statusPill = (version: AssistantVersion) =>
+  const publishPill = (version: AssistantVersion) =>
     version.isLive ? (
       <span className={styles.LivePill}>
         <span className={styles.LiveDot} />
@@ -35,6 +38,52 @@ export const VersionBar = ({
     ) : (
       <span className={styles.DraftPill}>{t('not published')}</span>
     );
+
+  const buildPill = (version: AssistantVersion) => {
+    if (version.status === 'in_progress') {
+      return (
+        <span className={styles.InProgressPill} data-testid={`inProgressPill-${version.versionNumber}`}>
+          <span className={styles.InProgressDot} />
+          {t('In Progress')}
+        </span>
+      );
+    }
+
+    if (version.status === 'failed') {
+      return (
+        <span className={styles.FailedPill} data-testid={`failedPill-${version.versionNumber}`}>
+          {t('Failed')}
+        </span>
+      );
+    }
+
+    return null;
+  };
+
+  const statusPill = (version: AssistantVersion) => (
+    <span className={styles.PillGroup}>
+      {publishPill(version)}
+      {buildPill(version)}
+    </span>
+  );
+
+  const statusNote = () => {
+    if (selectedVersion?.status === 'in_progress') return t('This version is still being prepared');
+    if (selectedVersion?.status === 'failed') return t('Cannot set a failed version as live');
+    return null;
+  };
+
+  const liveNote = () => {
+    if (!liveVersion) return t('Nothing published yet');
+    return (
+      <>
+        <b>
+          {t('Version')} {liveVersion.versionNumber}
+        </b>{' '}
+        {t('is live in your flows')}
+      </>
+    );
+  };
 
   const versionMeta = (version: AssistantVersion) => {
     const when = version.isLive ? t('published') : t('saved');
@@ -106,16 +155,8 @@ export const VersionBar = ({
           </div>
 
           <div className={styles.LiveNote} data-testid="liveNote">
-            {liveVersion ? (
-              <>
-                <b>
-                  {t('Version')} {liveVersion.versionNumber}
-                </b>{' '}
-                {t('is live in your flows')}
-              </>
-            ) : (
-              t('Nothing published yet')
-            )}
+            {statusNote() && <>{statusNote()} · </>}
+            {liveNote()}
           </div>
         </>
       )}

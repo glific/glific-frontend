@@ -1,4 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
+import { useState } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
@@ -19,12 +20,29 @@ const uploadMock = (filename: string, fileId: string) => ({
 
 const renderTab = (props: Partial<Parameters<typeof KnowledgeBase>[0]> = {}, mocks: any[] = []) => {
   const onFilesChange = vi.fn();
+  const onFilesUploaded = vi.fn();
+
+  const Harness = () => {
+    const [uploading, setUploading] = useState<string[]>([]);
+    return (
+      <KnowledgeBase
+        files={[existingFile]}
+        onFilesChange={onFilesChange}
+        onFilesUploaded={onFilesUploaded}
+        uploading={uploading}
+        onUploadingChange={setUploading}
+        vectorStoreId="vs_abc123"
+        {...props}
+      />
+    );
+  };
+
   render(
     <MockedProvider mocks={mocks}>
-      <KnowledgeBase files={[existingFile]} onFilesChange={onFilesChange} vectorStoreId="vs_abc123" {...props} />
+      <Harness />
     </MockedProvider>
   );
-  return { onFilesChange };
+  return { onFilesChange, onFilesUploaded };
 };
 
 const pickFile = (file: File) => {
@@ -63,15 +81,15 @@ test('rejects a file over 20MB before uploading', () => {
 
 test('uploads on pick and stages the file — no knowledge base call yet', async () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
-  const { onFilesChange } = renderTab({}, [uploadMock('guide.pdf', 'file-2')]);
+  const { onFilesUploaded } = renderTab({}, [uploadMock('guide.pdf', 'file-2')]);
 
   pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));
 
   expect(screen.getByTestId('uploadingFile')).toHaveTextContent('guide.pdf');
 
   await waitFor(() => {
-    expect(onFilesChange).toHaveBeenCalledWith([
-      existingFile,
+    // only the new file — the page appends it, so a late upload cannot clobber the list
+    expect(onFilesUploaded).toHaveBeenCalledWith([
       { fileId: 'file-2', filename: 'guide.pdf', uploadedAt: '2026-08-04T10:00:00Z', fileSize: 2048 },
     ]);
   });
@@ -80,7 +98,7 @@ test('uploads on pick and stages the file — no knowledge base call yet', async
 });
 
 test('strips __typename from the upload result — FileInfoInput rejects it', async () => {
-  const { onFilesChange } = renderTab({}, [
+  const { onFilesUploaded } = renderTab({}, [
     {
       request: { query: UPLOAD_FILE_TO_KAAPI },
       variableMatcher: () => true,
@@ -101,16 +119,16 @@ test('strips __typename from the upload result — FileInfoInput rejects it', as
   pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));
 
   await waitFor(() => {
-    expect(onFilesChange).toHaveBeenCalled();
+    expect(onFilesUploaded).toHaveBeenCalled();
   });
-  const staged = onFilesChange.mock.calls[0][0];
-  expect(staged[1]).not.toHaveProperty('__typename');
-  expect(Object.keys(staged[1]).sort()).toEqual(['fileId', 'fileSize', 'filename', 'uploadedAt']);
+  const staged = onFilesUploaded.mock.calls[0][0];
+  expect(staged[0]).not.toHaveProperty('__typename');
+  expect(Object.keys(staged[0]).sort()).toEqual(['fileId', 'fileSize', 'filename', 'uploadedAt']);
 });
 
 test('a failed upload is reported and nothing is staged', async () => {
   const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
-  const { onFilesChange } = renderTab({}, [
+  const { onFilesUploaded } = renderTab({}, [
     { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher: () => true, error: new Error('Upload failed') },
   ]);
 
@@ -119,7 +137,7 @@ test('a failed upload is reported and nothing is staged', async () => {
   await waitFor(() => {
     expect(errorSpy).toHaveBeenCalled();
   });
-  expect(onFilesChange).not.toHaveBeenCalled();
+  expect(onFilesUploaded).not.toHaveBeenCalled();
   expect(screen.queryByTestId('uploadingFile')).not.toBeInTheDocument();
   errorSpy.mockRestore();
 });

@@ -5,6 +5,7 @@ import styles from './HeaderActions.module.css';
 export interface HeaderActionsProps {
   isDirty: boolean;
   saving?: boolean;
+  saveDisabled?: boolean;
   onDiscard: () => void;
   onSave: () => void;
   showPublish?: boolean;
@@ -16,6 +17,7 @@ export interface HeaderActionsProps {
 export const HeaderActions = ({
   isDirty,
   saving = false,
+  saveDisabled = false,
   onDiscard,
   onSave,
   showPublish = false,
@@ -41,7 +43,7 @@ export const HeaderActions = ({
           className={styles.PublishButton}
           onClick={onSave}
           loading={saving}
-          disabled={saving}
+          disabled={saving || saveDisabled}
           data-testid="saveVersionButton"
         >
           {t('Save Version')}

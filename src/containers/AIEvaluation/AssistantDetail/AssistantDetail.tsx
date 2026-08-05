@@ -15,6 +15,7 @@ import type { AssistantVersion } from 'containers/Assistants/VersionPanel/Versio
 import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
 import {
   AssistantHeader,
+  canPublishVersion,
   DiscardDialog,
   HeaderActions,
   LeaveDialog,
@@ -97,6 +98,7 @@ export const AssistantDetail = () => {
     config: DEFAULT_MODEL_CONFIG,
     files: [],
   });
+  const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -260,7 +262,6 @@ export const AssistantDetail = () => {
   const handleSaveName = async () => {
     const trimmed = nameValue.trim();
 
-    // nothing exists to rename yet on a new assistant — the name is sent with the first save
     if (isCreateMode) {
       setDraftName(trimmed);
       setIsEditingName(false);
@@ -344,6 +345,9 @@ export const AssistantDetail = () => {
       <KnowledgeBase
         files={knowledgeBaseFiles}
         onFilesChange={setKnowledgeBaseFiles}
+        onFilesUploaded={(uploaded) => setKnowledgeBaseFiles((current) => [...current, ...uploaded])}
+        uploading={uploadingFiles}
+        onUploadingChange={setUploadingFiles}
         vectorStoreId={vectorStore?.vectorStoreId ?? null}
         legacy={vectorStore?.legacy ?? false}
       />
@@ -369,11 +373,12 @@ export const AssistantDetail = () => {
           <HeaderActions
             isDirty={isDirty}
             saving={saving}
+            saveDisabled={uploadingFiles.length > 0}
             onDiscard={() => setDiscardOpen(true)}
             onSave={handleSaveVersion}
             showPublish={!isCreateMode}
             publishing={publishing}
-            publishDisabled={!selectedVersion || selectedVersion.isLive}
+            publishDisabled={!canPublishVersion(selectedVersion)}
             onPublish={handlePublish}
           />
         }
