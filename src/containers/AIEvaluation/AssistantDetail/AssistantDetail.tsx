@@ -10,6 +10,7 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
+import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
 import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
@@ -25,7 +26,7 @@ import {
   TabKey,
   VersionBar,
 } from './components';
-import { KnowledgeBase, PersonaPrompt } from './Tabs';
+import { KnowledgeBase, PersonaPrompt, TryItOut } from './Tabs';
 import type { KnowledgeBaseFile } from './Tabs/KnowledgeBase/KnowledgeBase';
 import styles from './AssistantDetail.module.css';
 
@@ -120,6 +121,11 @@ export const AssistantDetail = () => {
     variables: { assistantId },
     skip: isCreateMode,
     fetchPolicy: 'network-only',
+  });
+
+  const { data: goldenQaData } = useQuery(LIST_GOLDEN_QA, {
+    variables: { filter: {}, opts: {} },
+    skip: activeTab !== 'tryItOut',
   });
 
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
@@ -340,6 +346,20 @@ export const AssistantDetail = () => {
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
     persona: (
       <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
+    ),
+    tryItOut: (
+      <TryItOut
+        hasVersions={versions.length > 0}
+        isDirty={isDirty}
+        versionId={selectedVersion?.id}
+        versionNumber={selectedVersion?.versionNumber}
+        versionStatus={selectedVersion?.status}
+        liveVersionNumber={liveVersion?.versionNumber ?? null}
+        hasGoldenQaSets={(goldenQaData?.goldenQas ?? []).length > 0}
+        onGoToPersona={() => setActiveTab('persona')}
+        onSave={handleSaveVersion}
+        onRunEvaluation={() => setActiveTab('evaluation')}
+      />
     ),
     knowledgeBase: (
       <KnowledgeBase

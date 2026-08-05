@@ -1016,6 +1016,47 @@ describe('unsaved changes across tabs', () => {
   });
 });
 
+describe('try it out tab', () => {
+  test('opens the sandbox for a saved version', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-tryItOut')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+    expect(screen.getByTestId('tryItOut')).toBeInTheDocument();
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 1');
+  });
+
+  test('blocks on unsaved changes, and its Save button saves the page', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+    fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+    expect(screen.getByTestId('tryItOutBlocker')).toHaveTextContent('Save a version to try it out');
+    expect(screen.getByTestId('saveFromTryItOutButton')).toBeInTheDocument();
+  });
+
+  test('a brand new assistant is sent to Persona & Prompt first', async () => {
+    renderDetail('/ai-evaluation-v2/add', []);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-tryItOut')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+    expect(screen.getByTestId('tryItOutBlocker')).toHaveTextContent('Save your first version to try it out');
+
+    fireEvent.click(screen.getByTestId('goToPersonaButton'));
+    expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
+  });
+});
+
 describe('version status', () => {
   test('a version still building shows In Progress and cannot be published', async () => {
     const building = { ...version(2, false), status: 'in_progress' };

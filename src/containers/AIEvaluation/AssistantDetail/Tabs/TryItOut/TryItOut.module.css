@@ -1,0 +1,224 @@
+.Card {
+  padding: var(--app-space-2xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.TestingNote {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+
+  b {
+    color: var(--app-color-text-primary);
+  }
+}
+
+.Chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+  min-height: 15rem;
+  max-height: 26rem;
+  overflow-y: auto;
+  padding: var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+}
+
+.Message {
+  max-width: 74%;
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border-radius: var(--app-radius-lg);
+  font-size: var(--app-font-size-xs);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.UserMessage {
+  align-self: flex-end;
+  background-color: var(--app-color-brand-primary);
+  color: var(--app-color-white);
+  border-bottom-right-radius: var(--app-radius-sm);
+}
+
+.AssistantMessage {
+  align-self: flex-start;
+  background-color: var(--app-color-surface-hover);
+  border: 1px solid var(--app-color-border);
+  color: var(--app-color-text-primary);
+  border-bottom-left-radius: var(--app-radius-sm);
+}
+
+.FailedMessage {
+  border-color: var(--app-color-error);
+  color: var(--app-color-error);
+}
+
+.EmptyState {
+  margin: auto;
+  text-align: center;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.SampleLink {
+  display: block;
+  margin: var(--app-space-md) auto 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--app-color-brand-primary);
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.SampleLink:hover {
+  text-decoration: underline;
+}
+
+.Typing {
+  display: inline-block;
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  margin-right: var(--app-space-md);
+  border-radius: 50%;
+  background-color: var(--app-color-brand-primary);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.Composer {
+  display: flex;
+  gap: var(--app-space-md);
+  margin-top: var(--app-space-lg);
+}
+
+.ComposerInput {
+  flex: 1;
+  min-width: 0;
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-xl);
+  background-color: var(--app-color-surface-raised);
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-primary);
+}
+
+.ComposerInput:focus {
+  outline: none;
+  border-color: var(--app-color-brand-primary);
+}
+
+.ComposerInput:disabled {
+  background-color: var(--app-color-surface-page);
+  cursor: not-allowed;
+}
+
+.SendButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-xl) !important;
+  text-transform: none !important;
+}
+
+.Note {
+  margin-top: var(--app-space-md);
+  font-size: var(--app-font-size-2xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.Nudge {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  margin-top: var(--app-space-xl);
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border: 1px solid var(--app-color-border-brand);
+  border-radius: var(--app-radius-lg);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 6%);
+}
+
+.NudgeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: var(--app-radius-md);
+  background-color: var(--app-color-brand-primary);
+  color: var(--app-color-white);
+  font-size: var(--app-font-size-sm);
+}
+
+.NudgeText {
+  flex: 1;
+  min-width: 0;
+}
+
+.NudgeTitle {
+  font-size: var(--app-font-size-xs);
+  font-weight: 800;
+  color: var(--app-color-brand-primary);
+}
+
+.NudgeButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-2xl) !important;
+  text-transform: none !important;
+}
+
+.Blocker {
+  text-align: center;
+  padding: var(--app-space-6xl) var(--app-space-3xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.BlockerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto var(--app-space-lg);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-hover);
+  font-size: var(--app-font-size-2xl);
+}
+
+.BlockerTitle {
+  font-size: var(--app-font-size-sm);
+  font-weight: 800;
+  color: var(--app-color-text-heading);
+}
+
+.BlockerNote {
+  max-width: 27rem;
+  margin: var(--app-space-md) auto 0;
+  font-size: var(--app-font-size-xs);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+}
+
+.BlockerAction {
+  margin-top: var(--app-space-lg);
+}
