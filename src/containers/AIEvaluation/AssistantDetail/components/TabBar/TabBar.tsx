@@ -17,7 +17,6 @@ export const TABS: { key: TabKey; label: TranslationKey; badge?: TranslationKey 
 export interface TabBarProps {
   activeTab: TabKey;
   onChange: (tab: TabKey) => void;
-  /** tabs listed here get an unsaved-changes dot; omit a tab that owns no editable state */
   dirtyTabs?: Partial<Record<TabKey, boolean>>;
 }
 

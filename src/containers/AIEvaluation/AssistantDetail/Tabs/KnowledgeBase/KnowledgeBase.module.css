@@ -60,7 +60,6 @@
   background-color: var(--app-color-surface-raised);
 }
 
-/* dashed + tinted while the upload and rebuild are in flight */
 .FileUploading {
   border-style: dashed;
   border-color: var(--app-color-border-brand);

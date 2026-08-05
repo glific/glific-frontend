@@ -3,12 +3,10 @@ import { Button } from 'components/UI/Form/Button/Button';
 import styles from './HeaderActions.module.css';
 
 export interface HeaderActionsProps {
-  /** anything unsaved anywhere on the page swaps Publish for Discard + Save Version */
   isDirty: boolean;
   saving?: boolean;
   onDiscard: () => void;
   onSave: () => void;
-  /** a new assistant has nothing to publish until it has been saved once */
   showPublish?: boolean;
   publishing?: boolean;
   publishDisabled?: boolean;

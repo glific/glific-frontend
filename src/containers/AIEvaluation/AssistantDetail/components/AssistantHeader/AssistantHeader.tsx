@@ -10,7 +10,6 @@ import styles from './AssistantHeader.module.css';
 
 export interface AssistantHeaderProps {
   name: string;
-  /** the OpenAI-side id, shown next to the name and copyable; absent on a new assistant */
   assistantId?: string | null;
   isEditingName: boolean;
   nameValue: string;
@@ -20,7 +19,6 @@ export interface AssistantHeaderProps {
   onSaveName: () => void;
   onCancelName: () => void;
   onBack: () => void;
-  /** right-hand side of the header — Save Version / Publish live here */
   actions?: ReactNode;
 }
 

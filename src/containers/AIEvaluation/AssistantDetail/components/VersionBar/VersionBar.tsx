@@ -7,16 +7,13 @@ import styles from './VersionBar.module.css';
 
 dayjs.extend(relativeTime);
 
-// the evaluation score is not wired up yet — the chip keeps its place in the layout
 const PLACEHOLDER_SCORE = '4.3';
 
 export interface VersionBarProps {
-  /** newest first — the dropdown lists them in this order */
   versions: AssistantVersion[];
   selectedVersion?: AssistantVersion;
   liveVersion?: AssistantVersion;
   onSelectVersion: (versionId: string) => void;
-  /** a new assistant has no versions at all, so the bar explains that instead */
   isCreateMode?: boolean;
 }
 

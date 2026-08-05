@@ -35,7 +35,6 @@ export interface DiscardDialogProps {
   onCancel: () => void;
 }
 
-/** shown by the Discard link — reverts the page to the last saved version */
 export const DiscardDialog = ({ onConfirm, onCancel }: DiscardDialogProps) => {
   const { t } = useTranslation();
 
@@ -57,7 +56,6 @@ export interface LeaveDialogProps {
   onCancel: () => void;
 }
 
-/** shown when navigating away with unsaved changes */
 export const LeaveDialog = ({ onConfirm, onCancel }: LeaveDialogProps) => {
   const { t } = useTranslation();
 

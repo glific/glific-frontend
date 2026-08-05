@@ -7,7 +7,6 @@ import KnowledgeBase from './KnowledgeBase';
 
 const existingFile = { fileId: 'file-1', filename: 'nutrition_faq.pdf', fileSize: 1_200_000 };
 
-// the variable is a File instance, so match on the query alone rather than deep-equal
 const uploadMock = (filename: string, fileId: string) => ({
   request: { query: UPLOAD_FILE_TO_KAAPI },
   variableMatcher: () => true,
