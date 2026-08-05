@@ -4,7 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
-import { DropdownMenu } from 'components/UI/SelectMenu/SelectMenu';
+import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -216,7 +216,7 @@ export const AssistantDetail = () => {
           </span>
         ) : (
           <>
-            <DropdownMenu
+            <SelectMenu
               testId="versionPill"
               triggerClassName={`${styles.VersionPill} ${selectedVersion.isLive ? styles.VersionPillLive : ''}`}
               paperClassName={styles.VersionMenuPaper}

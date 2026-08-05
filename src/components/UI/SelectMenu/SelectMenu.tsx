@@ -1,6 +1,5 @@
 import { Menu, MenuItem } from '@mui/material';
 import { ReactNode, useState } from 'react';
-
 import styles from './SelectMenu.module.css';
 
 export interface SelectMenuOption {
@@ -28,7 +27,7 @@ export interface SelectMenuProps {
   testId?: string;
 }
 
-export const DropdownMenu = ({
+export const SelectMenu = ({
   trigger,
   options,
   onSelect,
@@ -40,7 +39,7 @@ export const DropdownMenu = ({
   optionClassName,
   disabled = false,
   align = 'left',
-  testId = 'dropdownMenu',
+  testId = 'selectMenu',
 }: SelectMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -103,4 +102,4 @@ export const DropdownMenu = ({
   );
 };
 
-export default DropdownMenu;
+export default SelectMenu;
