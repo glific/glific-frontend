@@ -55,7 +55,6 @@ test('the footer count reflects only Utility entries', async () => {
   renderModal();
 
   await waitFor(() => {
-    // 4 fixtures total, 1 is AUTHENTICATION-category and excluded
     expect(screen.getByText('Showing 3 of 3 templates')).toBeInTheDocument();
   });
 });
@@ -76,8 +75,6 @@ test('collapsing a group hides its entries, and selecting one shows the reused p
   const entry = await screen.findByTestId('library-entry-appointment_reminder_1');
   fireEvent.click(entry);
 
-  // the preview body highlights {{1}} in its own <span>, so the text is split
-  // across elements rather than one contiguous text node.
   await waitFor(() => {
     expect(screen.getByText(/Your appointment is on/)).toBeInTheDocument();
   });
@@ -90,11 +87,6 @@ test('collapsing a group hides its entries, and selecting one shows the reused p
 });
 
 test('shows buttons from an object-shaped containerMeta - the real backend contract, not a JSON string', async () => {
-  // The backend decodes Gupshup's raw containerMeta string into a real object
-  // before it reaches the GraphQL :json scalar - double-encoding it (passing
-  // a JSON string straight into a scalar that JSON-encodes again) silently
-  // dropped buttons/footer for every entry, since parseContainerMeta's single
-  // JSON.parse landed on a string, not an object.
   const entryWithButtons = {
     elementName: 'system_outage_2',
     category: 'UTILITY',
@@ -129,12 +121,9 @@ test('a use case group with no matches for the chosen language stays visible but
   fireEvent.mouseDown(within(screen.getByTestId('library-language-filter')).getByRole('combobox'));
   fireEvent.click(await screen.findByRole('option', { name: 'Norwegian Bokmål' }));
 
-  // ACCOUNT_CREATION_CONFIRMATION has an 'nb' entry, so it stays populated...
   await waitFor(() => {
     expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
   });
-  // ...while APPOINTMENT_REMINDER (english-only) has none for 'nb' and renders dimmed with a hint,
-  // rather than disappearing entirely.
   const emptyGroup = screen.getByTestId('library-group-header-APPOINTMENT_REMINDER').closest('div');
   expect(emptyGroup?.className).toMatch(/GroupEmpty/);
   expect(screen.getByText('No Appointment reminder templates in Norwegian Bokmål')).toBeInTheDocument();
@@ -153,8 +142,6 @@ test('search filters entries by element name across the fetched dataset', async 
     expect(screen.getByTestId('library-entry-order_confirmation_1')).toBeInTheDocument();
   });
   expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
-  // groups with no matching entry are dropped entirely while searching — no
-  // dimmed "No … match" placeholder is left behind
   expect(screen.queryByTestId('library-group-header-APPOINTMENT_REMINDER')).not.toBeInTheDocument();
   expect(screen.queryByText('No Appointment reminder templates match "order_confirmation"')).not.toBeInTheDocument();
 });

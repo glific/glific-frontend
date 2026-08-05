@@ -4,18 +4,18 @@
 }
 
 .ModalContent {
-  padding: 0 32px 24px !important;
+  padding: 0 var(--app-space-3xl) var(--app-space-3xl) !important;
 }
 
 .Subtitle {
-  margin: 0 0 20px;
-  color: #6b7280;
-  font-size: 14px;
+  margin: 0 0 var(--app-space-xl);
+  color: var(--app-color-gray-primary);
+  font-size: var(--app-font-size-sm);
 }
 
 .Layout {
   display: flex;
-  gap: 20px;
+  gap: var(--app-space-xl);
   min-height: 380px;
   max-height: 440px;
 }
@@ -29,10 +29,10 @@
 }
 
 .SectionLabel {
-  margin: 0 0 12px;
+  margin: 0 0 var(--app-space-lg);
   font-weight: 700;
-  font-size: 16px;
-  color: #1f2937;
+  font-size: var(--app-font-size-md);
+  color: var(--app-color-gray-primary);
 }
 
 .RightPanel {
@@ -41,15 +41,14 @@
   min-width: 340px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 4px;
+  gap: var(--app-space-xl);
 }
 
 .FiltersRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: var(--app-space-lg);
+  margin-bottom: var(--app-space-lg);
 }
 
 .SearchBarField {
@@ -61,11 +60,10 @@
 }
 
 .LanguageDropDown {
-  border-radius: 24px;
-  border: 1px solid #cccccc;
+  border-radius: 9999em;
   width: 170px;
   height: 36px !important;
-  background: #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
   min-height: 36px !important;
 }
 
@@ -79,7 +77,7 @@
 }
 
 .Group {
-  border-bottom: 1px solid #eeede9;
+  border-bottom: 1px solid var(--app-color-gray-secondary);
 }
 
 .GroupEmpty {
@@ -89,11 +87,11 @@
 .GroupHeader {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--app-space-lg);
   width: 100%;
   border: none;
-  background: #f9f8f5;
-  padding: 12px;
+  background: var(--app-color-gray-secondary);
+  padding: var(--app-space-lg);
   cursor: pointer;
   text-align: left;
 }
@@ -104,47 +102,47 @@
 
 .GroupTitle {
   font-weight: 700;
-  font-size: 14px;
-  color: #1f2937;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-gray-primary);
 }
 
 .GroupCount {
-  color: #93a29b;
-  font-size: 13px;
+  color: var(--app-color-gray-primary);
+  font-size: var(--app-font-size-sm);
   margin-right: auto;
 }
 
 .GroupEmptyHint {
-  margin: 0 0 8px 16px;
-  font-size: 13px;
-  color: #93a29b;
+  margin: 0 0 var(--app-space-lg) var(--app-space-xl);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-gray-primary);
 }
 
 .EntryRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--app-space-lg);
   width: 100%;
   border: none;
   background: none;
-  padding: 12px 16px;
+  padding: var(--app-space-lg) var(--app-space-xl);
   cursor: pointer;
   text-align: left;
-  border-bottom: 1px solid #f5f4f0;
+  border-bottom: 1px solid var(--app-color-gray-secondary);
 }
 
 .EntryRow:hover {
-  background: #f5f4f0;
+  background: var(--app-color-gray-secondary);
 }
 
 .EntryRowSelected {
-  background: #f0faf5;
+  background: var(--app-color-gray-secondary);
 }
 
 .EntryName {
   flex: 1 1 auto;
-  font-size: 14px;
-  color: #1f2937;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-gray-primary);
 }
 
 .Radio {
@@ -152,42 +150,39 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid #cccccc;
+  border: 2px solid var(--app-color-gray-primary);
 }
 
 .RadioSelected {
-  border-color: #119656;
-  background: radial-gradient(circle, #119656 42%, transparent 44%);
+  border-color: var(--app-color-brand-primary);
+  background: radial-gradient(circle, var(--app-color-brand-primary) 42%, transparent 44%);
 }
 
 .EmptyText {
-  color: #93a29b;
-  font-size: 14px;
-  padding: 20px 4px;
+  color: var(--app-color-gray-primary);
+  font-size: var(--app-font-size-sm);
+  padding: var(--app-space-xl) 0;
 }
 
 .FooterCount {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #93a29b;
+  margin: var(--app-space-lg) 0 0;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-gray-primary);
 }
 
 .PreviewHelperText {
-  font-size: 13px;
-  color: #6b7280;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-gray-primary);
   line-height: 1.5;
 }
 
-/* same phone-screen green already used for the Simulator's chat background
-   (see components/simulator/Simulator.module.css) — reused here as a plain
-   color value, not the Simulator component itself. */
 .PreviewBox {
   flex: 1 1 auto;
   min-height: 0;
   background-image: url('../../../../assets/images/whatsappBackground.jpg');
   background-size: contain;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-xl);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -195,24 +190,26 @@
 
 .PreviewPlaceholder {
   margin: auto;
-  color: #667781;
-  font-size: 14px;
+  color: var(--app-color-gray-primary);
+  font-size: var(--app-font-size-sm);
   font-style: italic;
   text-align: center;
-  padding: 0 24px;
+  padding: 0 var(--app-space-3xl);
 }
 
 /* the app's actual brand-primary green (same token used for buttons/nav
    elsewhere), not the Simulator's own muted WhatsApp-mimicking header color —
    pulled out to the box's edges with negative margins so it reads as a
    colored strip, while the rest of `.PreviewBox`'s padding still applies to
-   the bubble below. */
+   the bubble below. The negative top/left/right offsets must match
+   `.PreviewBox`'s own padding exactly for that "pulled to the edge" trick to
+   work, so they're expressed as the same token, negated. */
 .PreviewBox :global([class*='PreviewHeader']) {
-  color: #eee !important;
+  color: var(--app-color-gray-secondary) !important;
   background: var(--app-color-brand-primary);
-  margin: -20px -20px 12px !important;
-  padding: 14px 20px !important;
-  border-radius: 16px 16px 0 0;
+  margin: calc(-1 * var(--app-space-xl)) calc(-1 * var(--app-space-xl)) var(--app-space-lg) !important;
+  padding: var(--app-space-lg) var(--app-space-xl) !important;
+  border-radius: var(--app-radius-lg) var(--app-radius-lg) 0 0;
   white-space: normal !important;
   overflow: visible !important;
 }
