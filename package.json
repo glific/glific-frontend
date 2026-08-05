@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.17.3",
+  "version": "6.17.4",
   "private": true,
   "type": "module",
   "license": {
@@ -93,7 +93,7 @@
     "test:coverage": "vitest run --coverage",
     "design-system:ratchet": "node scripts/design-system-ratchet.js",
     "design-system:ratchet:update": "node scripts/design-system-ratchet.js --update",
-    "design-system:eslint": "eslint --no-config-lookup --config eslint.design-system.config.mjs 'src/containers/**/*.{ts,tsx}'"
+    "design-system:check-mui-imports": "node scripts/check-new-mui-imports.js"
   },
   "engines": {
     "node": ">=22.12.0 <23"
