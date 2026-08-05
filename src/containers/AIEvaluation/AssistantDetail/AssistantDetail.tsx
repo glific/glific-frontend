@@ -37,7 +37,6 @@ interface EditorState {
   files: KnowledgeBaseFile[];
 }
 
-// settings comes back as a JSON scalar — sometimes already parsed, sometimes a string
 const parseSettings = (settings: unknown): Record<string, unknown> => {
   if (typeof settings === 'string') {
     try {
@@ -71,7 +70,6 @@ const editorStateFromVersion = (version: AssistantVersion): EditorState => {
   };
 };
 
-// fallback for an assistant that has no versions yet
 const editorStateFromAssistant = (assistant: any): EditorState => ({
   prompt: assistant.instructions ?? '',
   config: {
@@ -105,7 +103,6 @@ export const AssistantDetail = () => {
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
   const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
-  // guards against a refetch of the same version wiping what the user is typing
   const loadedKey = useRef<string | null>(null);
   const isCreateMode = !assistantId || assistantId === 'add';
   const defaultAssistantName = t('Untitled assistant');
