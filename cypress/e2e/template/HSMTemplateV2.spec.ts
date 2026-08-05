@@ -356,7 +356,8 @@ describe('HSM Template V2 — Button types end-to-end', () => {
 
     cy.contains('button', 'Call to Action').click();
 
-    cy.contains('button', 'Phone number').click();
+    // the first Call to Action row already defaults to type "phone_number",
+    // so its "Phone number" chip is pre-selected (and disabled) — no click needed.
     cy.get('[data-testid="buttonTitle"] input').eq(0).type('Call Us');
     cy.get('[data-testid="buttonValue"] input').eq(0).type('9876543210');
     cy.contains('button', 'Call to Action');
