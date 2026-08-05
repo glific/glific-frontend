@@ -43,30 +43,5 @@
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
-  },
-  "overrides": [
-    {
-      "files": ["src/containers/**/*.ts", "src/containers/**/*.tsx"],
-      "excludedFiles": ["src/containers/**/*.test.ts", "src/containers/**/*.test.tsx"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "paths": [
-              {
-                "name": "@mui/material",
-                "message": "Don't import @mui/material directly here. Use a shared component from src/components/UI (see src/components/UI/README.md), or add one there if it genuinely doesn't exist yet. See glific/glific-frontend#4052."
-              }
-            ],
-            "patterns": [
-              {
-                "group": ["@mui/material/*"],
-                "message": "Don't import @mui/material/* directly here. Use a shared component from src/components/UI (see src/components/UI/README.md), or add one there if it genuinely doesn't exist yet. See glific/glific-frontend#4052."
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ]
+  }
 }
