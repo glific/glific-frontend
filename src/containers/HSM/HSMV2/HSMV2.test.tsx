@@ -232,6 +232,32 @@ describe('HSMV2 add mode', () => {
     });
   });
 
+  test('arriving from the Template Library with a non-English entry selects that language instead of defaulting to English', async () => {
+    const libraryTemplate = {
+      elementName: 'account_balance_hi',
+      category: 'ACCOUNT_UPDATE',
+      body: 'Namaste {{1}}.',
+      languageCode: 'mr',
+      containerMeta: JSON.stringify({}),
+    };
+
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { libraryTemplate } }]}>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Marathi');
+    });
+  });
+
   test('submit button stays disabled until all required fields (element name, message, category) are filled', async () => {
     render(template);
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { setErrorMessage } from 'common/notification';
 import { TEMPLATE_LIBRARY } from 'graphql/queries/Template';
 import { messagePreview } from '../HSMListV2.helper';
 
@@ -40,7 +41,15 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   // can change between opens (e.g. an admin adding a language), so a stale Apollo cache
   // entry must not be served as the final answer — but we still paint instantly from
   // cache first and let the network response refresh it, since the catalog is large.
-  const { data, loading } = useQuery(TEMPLATE_LIBRARY, { skip: !open, fetchPolicy: 'cache-and-network' });
+  const { data, loading, error } = useQuery(TEMPLATE_LIBRARY, { skip: !open, fetchPolicy: 'cache-and-network' });
+  const showLoading = loading && !data;
+
+  useEffect(() => {
+    if (error) {
+      setErrorMessage(error);
+    }
+  }, [error]);
+
   const entries: TemplateLibraryEntry[] = data?.templateLibrary || [];
   const utilityEntries = filterUtilityEntries(entries);
   const languageOptions = getLanguageOptions(utilityEntries);
@@ -67,6 +76,8 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   const handleClose = () => {
     setSearch('');
     setSelectedEntry(null);
+    setLanguage('');
+    setCollapsed(new Set());
     onClose();
   };
 
@@ -119,7 +130,7 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
             </div>
           </div>
 
-          {loading ? (
+          {showLoading ? (
             <Loading />
           ) : (
             <div className={styles.GroupList} data-testid="library-group-list">

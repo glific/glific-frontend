@@ -2,13 +2,27 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { templateLibraryData, templateLibraryEmptyMock, templateLibraryMock } from 'mocks/Template';
+import { setErrorMessage } from 'common/notification';
+import {
+  templateLibraryData,
+  templateLibraryEmptyMock,
+  templateLibraryErrorMock,
+  templateLibraryMock,
+} from 'mocks/Template';
 import { TemplateLibraryModal } from './TemplateLibraryModal';
 
 vi.mock('i18next', () => ({
   t: (str: string, options?: Record<string, string>) =>
     options ? str.replace(/{{(.*?)}}/g, (_match, key) => options[key] ?? '') : str,
 }));
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setErrorMessage: vi.fn(),
+  };
+});
 
 const mockedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
@@ -38,6 +52,41 @@ test('fetches the catalog and groups Utility entries by usecase, expanded by def
 
   expect(screen.getByText('Account creation confirmation')).toBeInTheDocument();
   expect(screen.getByTestId('library-entry-appointment_reminder_1')).toBeInTheDocument();
+});
+
+test('reopening keeps showing the already-cached list instead of a spinner during the background refetch', async () => {
+  const mocks = [templateLibraryMock(), templateLibraryMock()];
+  const onClose = vi.fn();
+  const tree = (open: boolean) => (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter>
+        <TemplateLibraryModal open={open} onClose={onClose} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  const { rerender } = render(tree(true));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('library-group-list')).toBeInTheDocument();
+  });
+
+  rerender(tree(false));
+  rerender(tree(true));
+
+  expect(screen.getByTestId('library-group-list')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByTestId('library-group-list')).toBeInTheDocument();
+  });
+});
+
+test('a failed fetch shows an error notification instead of silently rendering an empty catalog', async () => {
+  renderModal([templateLibraryErrorMock]);
+
+  await waitFor(() => {
+    expect(setErrorMessage).toHaveBeenCalled();
+  });
 });
 
 test('never shows Authentication-category entries — there is no tab to reach them from', async () => {
@@ -127,6 +176,40 @@ test('a use case group with no matches for the chosen language stays visible but
   const emptyGroup = screen.getByTestId('library-group-header-APPOINTMENT_REMINDER').closest('div');
   expect(emptyGroup?.className).toMatch(/GroupEmpty/);
   expect(screen.getByText('No Appointment reminder templates in Norwegian Bokmål')).toBeInTheDocument();
+});
+
+test('closing the modal resets the language filter and collapsed groups for the next open', async () => {
+  const mocks = [templateLibraryMock(), templateLibraryMock()];
+  const onClose = vi.fn();
+  const tree = (open: boolean) => (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter>
+        <TemplateLibraryModal open={open} onClose={onClose} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  const { rerender } = render(tree(true));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('library-group-header-ACCOUNT_CREATION_CONFIRMATION')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('library-language-filter')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Norwegian Bokmål' }));
+  fireEvent.click(screen.getByTestId('library-group-header-ACCOUNT_CREATION_CONFIRMATION'));
+
+  expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+  expect(onClose).toHaveBeenCalled();
+
+  rerender(tree(true));
+
+  await waitFor(() => {
+    expect(within(screen.getByTestId('library-language-filter')).getByText('All languages')).toBeInTheDocument();
+  });
+  expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
 });
 
 test('search filters entries by element name across the fetched dataset', async () => {

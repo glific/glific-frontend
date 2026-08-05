@@ -1314,6 +1314,11 @@ export const templateLibraryMock = (data: any = templateLibraryData) => ({
 
 export const templateLibraryEmptyMock = templateLibraryMock([]);
 
+export const templateLibraryErrorMock = {
+  request: { query: TEMPLATE_LIBRARY, variables: {} },
+  error: new Error('Network error'),
+};
+
 export const TEMPLATE_LIBRARY_MOCKS = [templateLibraryMock(), templateLibraryMock()];
 
 export const syncHsmSuccessMock = {

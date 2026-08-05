@@ -173,6 +173,7 @@ export const buildLibraryDraft = (entry: TemplateLibraryEntry) => {
     footer: containerMeta.footer || '',
     example: containerMeta.sampleText || '',
     category: entry.category || undefined,
+    languageCode: entry.languageCode || undefined,
     hasButtons,
     buttonType,
     buttons: hasButtons ? JSON.stringify(containerButtons) : undefined,

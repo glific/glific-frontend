@@ -728,9 +728,11 @@ export const HSMV2 = () => {
 
   useEffect(() => {
     if (location.state?.libraryTemplate && mode === 'create') {
-      setStates(buildLibraryDraft(location.state.libraryTemplate));
+      const { languageCode, ...draft } = buildLibraryDraft(location.state.libraryTemplate);
+      const matchedLanguage = languageOptions.find((option: any) => option.locale === languageCode);
+      setStates({ ...draft, language: matchedLanguage });
     }
-  }, [location.state?.libraryTemplate, mode]);
+  }, [location.state?.libraryTemplate, mode, languageOptions]);
 
   // Simulator's own mount-time effects race: its `[message]` effect renders the
   // preview, but its `[interactiveMessage]` effect (declared after, and always
