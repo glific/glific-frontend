@@ -73,6 +73,12 @@ export interface FormLayoutProps {
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
+  // separate from entityId: fetches from getItemQuery and runs setStates the
+  // same way entityId does, but doesn't make performTask treat this as an
+  // update, and doesn't suppress the isAttachment fresh-media-upload step —
+  // for flows that prefill from a source record while still creating a new
+  // one (e.g. HSMV2 add-language/reapply).
+  prefillId?: any;
   restrictDelete?: boolean;
   languageAttributes?: any;
   helpData?: HelpDataProps;
@@ -144,6 +150,7 @@ export const FormLayout = ({
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
   entityId = null,
+  prefillId = null,
   restrictDelete = false,
   languageAttributes = {},
   noHeading = false,
@@ -168,8 +175,11 @@ export const FormLayout = ({
   if (!itemId) {
     itemId = params.id;
   }
+  // drives the fetch/prefill only; itemId (unaffected by prefillId) still
+  // decides update-vs-create and whether isAttachment mints fresh media.
+  const fetchId = itemId || prefillId;
 
-  let variables: any = itemId ? { [idType]: itemId } : false;
+  let variables: any = fetchId ? { [idType]: fetchId } : false;
   if (listItem === 'credential') {
     variables = params.type ? { shortcode: params.type } : false;
   }
@@ -200,23 +210,27 @@ export const FormLayout = ({
         delete payload[field.name];
       }
     });
-    // for template create media for attachment
-    if (isAttachment && payload.type !== 'TEXT' && payload.type && !entityId) {
-      getMediaId(payload)
-        .then((data: any) => {
-          if (data) {
-            const payloadCopy = payload;
-            delete payloadCopy.attachmentURL;
-            payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
-            performTask(payloadCopy, isSaveClick);
-          }
-        })
-        .catch((e: any) => {
-          setErrorMessage(e);
-        });
-    } else {
-      performTask(payload, isSaveClick);
-    }
+    const proceedToSave = (finalPayload: any) => {
+      // for template create media for attachment
+      if (isAttachment && finalPayload.type !== 'TEXT' && finalPayload.type && !entityId) {
+        getMediaId(finalPayload)
+          .then((data: any) => {
+            if (data) {
+              const payloadCopy = finalPayload;
+              delete payloadCopy.attachmentURL;
+              payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
+              performTask(payloadCopy, isSaveClick);
+            }
+          })
+          .catch((e: any) => {
+            setErrorMessage(e);
+          });
+      } else {
+        performTask(finalPayload, isSaveClick);
+      }
+    };
+
+    proceedToSave(payload);
   };
 
   const handleUpdateCompleted = (data: any, isSaveClick: boolean) => {
@@ -358,7 +372,7 @@ export const FormLayout = ({
     refetch,
   } = useQuery(getItemQuery, {
     variables,
-    skip: !itemId,
+    skip: !fetchId,
     fetchPolicy: getQueryFetchPolicy,
   });
 

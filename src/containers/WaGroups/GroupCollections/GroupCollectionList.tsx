@@ -16,6 +16,7 @@ import { setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
+import { SetCollectionPrimaryPhone } from './SetCollectionPrimaryPhone/SetCollectionPrimaryPhone';
 
 const getName = (label: string) => (
   <div>
@@ -23,14 +24,20 @@ const getName = (label: string) => (
   </div>
 );
 
+const getPrimaryPhone = (primaryPhone: any) => {
+  const phone = primaryPhone ? primaryPhone.label || primaryPhone.phone : '—';
+  return <div className={styles.PrimaryPhoneText}>{phone}</div>;
+};
+
 const getColumns = (fields: any) => {
-  const { label } = fields;
+  const { label, primaryPhone } = fields;
   return {
     label: getName(label),
+    primaryPhone: getPrimaryPhone(primaryPhone),
   };
 };
 
-const columnStyles = [styles.Name, styles.Actions];
+const columnStyles = [styles.Name, styles.PrimaryPhone, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -100,17 +107,20 @@ export const GroupCollectionList = () => {
     );
   }
 
-  const addGroupsButton = (
-    <Button
-      variant="contained"
-      color="primary"
-      data-testid="addBtn"
-      onClick={() => {
-        setAddGroupsDialogShow(true);
-      }}
-    >
-      Add groups
-    </Button>
+  const secondaryButtons = (
+    <>
+      <SetCollectionPrimaryPhone collectionId={collectionId} />
+      <Button
+        variant="contained"
+        color="primary"
+        data-testid="addBtn"
+        onClick={() => {
+          setAddGroupsDialogShow(true);
+        }}
+      >
+        Add groups
+      </Button>
+    </>
   );
 
   const removeDialogBox = (
@@ -129,7 +139,7 @@ export const GroupCollectionList = () => {
 
   const title = collection.data ? collection.data.group.group.label : t('Collection');
 
-  const columnNames = [{ name: 'label', label: 'Group' }, { label: t('Actions') }];
+  const columnNames = [{ name: 'label', label: t('Group') }, { label: t('Primary phone') }, { label: t('Actions') }];
 
   const additionalAction = () => [
     {
@@ -157,7 +167,7 @@ export const GroupCollectionList = () => {
         listItem="waGroups"
         listItemName="waGroups"
         searchParameter={['term']}
-        secondaryButton={addGroupsButton}
+        secondaryButton={secondaryButtons}
         filters={{ includeGroups: collectionId }}
         button={{ show: false, label: '' }}
         pageLink="group"

@@ -3,6 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
+import { getVariables, getExampleFromBody, getTemplateAndButtons } from './HSM.helper';
 import {
   HSM_TEMPLATE_MOCKS,
   getHSMTemplateTypeMedia,
@@ -79,10 +80,10 @@ describe('Edit mode', () => {
       expect(getAllByRole('textbox')[0]).toHaveValue('account_update');
     });
     const combobox = getAllByRole('combobox');
-    combobox[2].focus();
-    fireEvent.keyDown(combobox[2], { key: 'ArrowDown' });
+    combobox[3].focus();
+    fireEvent.keyDown(combobox[3], { key: 'ArrowDown' });
     await waitFor(() => {
-      expect(getAllByRole('combobox')[2]).toHaveValue('IMAGE');
+      expect(getAllByRole('combobox')[3]).toHaveValue('IMAGE');
     });
   });
 });
@@ -171,7 +172,9 @@ describe('Add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi, How are you');
+      expect(editorText).toContain('{{1}}');
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
@@ -246,7 +249,9 @@ describe('Add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Continue' } });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi, How are you');
+      expect(editorText).toContain('{{1}}');
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
@@ -609,5 +614,62 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
+  });
+
+  test('does not crash and returns no buttons for an AUTHENTICATION/OTP template, whose buttonType the UI does not support', () => {
+    const body = '*{{1}}* is your verification code. For your security, do not share this code. ';
+    const buttons = JSON.stringify([
+      { url: 'https://www.whatsapp.com/otp/code/?otp_type=COPY_CODE&code=otp{{1}}', type: 'URL', text: 'Copy OTP' },
+    ]);
+
+    const result = getTemplateAndButtons('OTP', body, buttons);
+
+    expect(result).toEqual({ buttons: [], template: `${body} | ` });
+  });
+});
+
+describe('getVariables', () => {
+  test('keys each variable by the number captured from the message, not by its position', () => {
+    const message = 'ASFA\nASD {{4}} {{5}}';
+    const variables = [{ id: 4, text: 'foo' }];
+
+    const result = getVariables(message, variables);
+
+    expect(result).toEqual([
+      { id: 4, text: 'foo' },
+      { id: 5, text: '' },
+    ]);
+  });
+
+  test('deduplicates a variable number that appears more than once in the message', () => {
+    const message = 'ASFA\nASD {{4}} {{5}} {{4}}';
+
+    const result = getVariables(message, []);
+
+    expect(result).toEqual([
+      { id: 4, text: '' },
+      { id: 5, text: '' },
+    ]);
+  });
+
+  test('returns an empty array when the message has no variable placeholders', () => {
+    expect(getVariables('no variables here', [])).toEqual([]);
+  });
+});
+
+describe('getExampleFromBody', () => {
+  test('substitutes the example text by matching the variable id, not the position in the array', () => {
+    const body = 'Hi {{4}}, your order {{5}} shipped';
+    const variables = [
+      { id: 4, text: 'Alex' },
+      { id: 5, text: '12345' },
+    ];
+
+    expect(getExampleFromBody(body, variables)).toBe('Hi [Alex], your order [12345] shipped');
+  });
+
+  test('leaves the placeholder untouched when no example value has been entered for it', () => {
+    const body = 'Hi {{4}}';
+    expect(getExampleFromBody(body, [{ id: 4, text: '' }])).toBe('Hi {{4}}');
   });
 });

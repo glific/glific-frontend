@@ -57,6 +57,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'WhatsApp Phones',
+        path: '/group/phones',
+        icon: 'waGroup',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
     ],
   },
   {
@@ -208,18 +215,14 @@ const menus = (): Menu[] => [
           roles: allRoles,
         },
       ]),
-  ...(getOrganizationServices('supersetEnabled')
-    ? [
-        {
-          title: 'Data Analytics',
-          path: '/analytics',
-          icon: 'analytics',
-          type: 'sideDrawer',
-          new: true,
-          roles: managerLevel,
-        },
-      ]
-    : []),
+  {
+    title: 'Data Analytics',
+    path: '/analytics',
+    icon: 'analytics',
+    type: 'sideDrawer',
+    new: true,
+    roles: allRoles,
+  },
   {
     title: 'Manage',
     path: '/collection',

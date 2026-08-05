@@ -77,6 +77,7 @@ export const Tag = () => {
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="tag"
+      backLinkButton="/tag"
       cancelLink="tag"
       listItem="tag"
       icon={tagIcon}

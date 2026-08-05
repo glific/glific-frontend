@@ -1,0 +1,28 @@
+.SourceReferenceChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #119656;
+  background: #f0faf5;
+  border: 1px solid #b7e0c8;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.SourceReferenceChipIcon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.SourceReferenceChipValue {
+  font-weight: 500;
+  color: #202125;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 3px 10px;
+}

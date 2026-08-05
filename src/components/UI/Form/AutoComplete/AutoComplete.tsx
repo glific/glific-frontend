@@ -122,7 +122,7 @@ export const AutoComplete = ({
 
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
     if (!showTags) return null;
-    let tagsToRender = value;
+    let tagsToRender = Array.isArray(value) ? value : [];
 
     /**
      * when renderTags is true,
@@ -227,7 +227,11 @@ export const AutoComplete = ({
                   color="primary"
                 />
               )}
-              {option.inputValue ? <>Create "{option.inputValue}"</> : getLabel(option)}
+              {option.inputValue ? (
+                <span className={styles.CreateOption}>Create "{option.inputValue}"</span>
+              ) : (
+                getLabel(option)
+              )}
             </li>
           )}
           renderInput={(params: any) => {

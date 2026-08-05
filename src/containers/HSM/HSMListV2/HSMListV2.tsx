@@ -7,6 +7,7 @@ import { t } from 'i18next';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
+import AddLanguageIcon from 'assets/images/icons/AddLanguage.svg?react';
 
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
@@ -20,7 +21,7 @@ import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { GET_HSM_CATEGORIES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
 import styles from './HSMListV2.module.css';
@@ -36,21 +37,47 @@ import {
   templateIcon,
 } from './HSMListV2.helper';
 
+// While a template is awaiting approval its status stays PENDING; re-fetch the
+// templates at this cadence so approvals/rejections appear without a manual refresh.
+const PENDING_POLL_INTERVAL = 60000;
+
 const HSMListV2 = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+  const [filters, setFilters] = useState<any>({ ...statusFilter });
   const [selectedTag, setSelectedTag] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [syncLoading, setSyncLoading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
   const [collapseRow, setCollapseRow] = useState('');
+  const [refreshList, setRefreshList] = useState(false);
   const importCancelledRef = useRef(false);
 
   const { data: tagsData } = useQuery(GET_TAGS, { variables: {}, fetchPolicy: 'network-only' });
   const { data: categoriesData } = useQuery(GET_HSM_CATEGORIES);
+
+  const { data: pendingCountData, refetch: refetchPendingCount } = useQuery(GET_TEMPLATES_COUNT, {
+    variables: { filter: { isHsm: true, status: 'PENDING' } },
+    fetchPolicy: 'network-only',
+  });
+
+  const pendingCount = pendingCountData?.countSessionTemplates;
+  const shouldPoll = pendingCount === undefined || pendingCount > 0;
+
+  useEffect(() => {
+    if (!shouldPoll) {
+      return undefined;
+    }
+    const intervalId = setInterval(() => {
+      refetchPendingCount().catch(() => {
+        // ignore background refetch failures; the next tick will retry.
+      });
+      setRefreshList((prev) => !prev);
+    }, PENDING_POLL_INTERVAL);
+    return () => clearInterval(intervalId);
+  }, [shouldPoll, refetchPendingCount]);
 
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, { fetchPolicy: 'network-only' });
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES);
@@ -118,9 +145,17 @@ const HSMListV2 = () => {
   };
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
-  const handleView = (id: any) => navigate(`/template/${id}/edit`);
+  const handleView = (id: any, item: any) =>
+    navigate('/template/add', {
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode },
+    });
 
-  const setCopyDialog = (id: any) => navigate(`/template/${id}/edit`, { state: 'copy' });
+  const handleAddLanguage = (id: any, item: any) =>
+    navigate('/template/add', {
+      state: { languageAnchorId: id, anchorShortcode: item.shortcode, openAddLanguage: true },
+    });
+
+  const setCopyDialog = (id: any) => navigate('/template/add', { state: { mode: 'copy', sourceId: id } });
 
   const copyUuid = (_id: string, item: any) => {
     if (item.bspId) {
@@ -140,7 +175,8 @@ const HSMListV2 = () => {
   };
 
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
+    const value = event.target.value.toUpperCase();
+    setFilters(value === 'ALL' ? { ...statusFilter } : { ...statusFilter, [value]: true });
   };
 
   useEffect(() => {
@@ -156,16 +192,16 @@ const HSMListV2 = () => {
 
   const additionalAction = () => [
     {
+      label: t('Add new language'),
+      icon: <AddLanguageIcon data-testid="add-language-icon" />,
+      parameter: 'id',
+      dialog: handleAddLanguage,
+    },
+    {
       label: t('View'),
       icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
       dialog: handleView,
-    },
-    {
-      label: t('Copy UUID'),
-      icon: <CopyAllOutlined data-testid="copy-button" />,
-      parameter: 'id',
-      dialog: copyUuid,
     },
     {
       label: t('Copy'),
@@ -173,18 +209,28 @@ const HSMListV2 = () => {
       parameter: 'id',
       dialog: setCopyDialog,
     },
+    {
+      label: t('Copy UUID'),
+      icon: <CopyAllOutlined data-testid="copy-button" />,
+      parameter: 'id',
+      dialog: copyUuid,
+    },
   ];
 
   const categories: string[] = categoriesData?.whatsappHsmCategories ?? [];
 
   let filterValue: any = '';
-  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
+  const statusList = ['All', 'Approved', 'Pending', 'Rejected', 'Failed'];
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
   if (filterStatusName.length === 1) {
     [filterValue] = filterStatusName;
   }
+  const selectedStatusOption = filterValue
+    ? (statusList.find((status) => status.toUpperCase() === filterValue) ?? 'All')
+    : 'All';
 
-  const appliedFilters: any = { isHsm: true, status: filterValue };
+  const appliedFilters: any = { isHsm: true };
+  if (filterValue) appliedFilters.status = filterValue;
   if (selectedCategory) appliedFilters.category = selectedCategory;
 
   const showReason = showReasonColumn(filterValue);
@@ -220,14 +266,14 @@ const HSMListV2 = () => {
         <Select
           aria-label={t('Filter by status')}
           name="template-type"
-          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          value={selectedStatusOption}
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
         >
           {statusList.map((status: any) => (
             <MenuItem data-testid="template-item" key={status} value={status}>
-              {status}
+              {t(status)}
             </MenuItem>
           ))}
         </Select>
@@ -311,6 +357,8 @@ const HSMListV2 = () => {
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
         groupRows={groupByShortcode}
+        sortConfig={{ sortBy: 'updated_at', sortOrder: 'desc' }}
+        refreshList={refreshList}
         {...queries}
       />
     </>

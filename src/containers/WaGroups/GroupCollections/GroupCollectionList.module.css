@@ -60,6 +60,14 @@
   text-align: end;
 }
 
+.PrimaryPhone {
+  width: 30%;
+}
+
+.PrimaryPhoneText {
+  color: #333;
+}
+
 .ViewButton {
   color: #777;
   text-align: center;

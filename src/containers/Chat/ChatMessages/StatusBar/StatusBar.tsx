@@ -20,28 +20,28 @@ const StatusBar = () => {
 
   const { data } = useQuery(GET_WA_MANAGED_PHONES_STATUS);
   const hasInactivePhone = data?.waManagedPhones?.some((phone: any) => phone.status !== 'active');
+  const isOnGroupPage = location.pathname.includes('group');
 
   if (!balanceData && !orgStatus) {
     return null;
   }
 
+  const balance = balanceData ? JSON.parse(balanceData.bspbalance).balance : null;
+
   let statusMessage;
 
-  if (orgStatus && orgStatus.organization.organization.isSuspended) {
+  if (orgStatus?.organization?.organization?.isSuspended) {
     statusMessage =
       'You have reached today’s rate limit for sending HSM templates to your users. Your rate limit will be refreshed tomorrow. Please check again later.';
-  } else if (balanceData) {
-    const { balance } = JSON.parse(balanceData.bspbalance);
-    if (balance < 1 && balance > 0) {
-      statusMessage =
-        'Please recharge your Gupshup wallet immediately to continue sending messages. Users will not receive the messages that get stuck during this time.';
-    } else if (balance <= 0) {
-      statusMessage =
-        'All the outgoing messages have been suspended. Please note: on recharging, the messages that were stuck will not be sent.';
-    } else if (hasInactivePhone && location.pathname.includes('group')) {
-      statusMessage =
-        'One or more of your phones are not active. Please check the Maytapi console to ensure smooth message delivery.';
-    }
+  } else if (balance !== null && balance > 0 && balance < 1) {
+    statusMessage =
+      'Please recharge your Gupshup wallet immediately to continue sending messages. Users will not receive the messages that get stuck during this time.';
+  } else if (balance !== null && balance <= 0) {
+    statusMessage =
+      'All the outgoing messages have been suspended. Please note: on recharging, the messages that were stuck will not be sent.';
+  } else if (hasInactivePhone && isOnGroupPage) {
+    statusMessage =
+      'One or more of your phones are not active. Please check the Maytapi console to ensure smooth message delivery.';
   }
 
   if (statusMessage) {

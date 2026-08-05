@@ -35,7 +35,12 @@ export const templateInfo: HelpDataProps = {
   heading:
     "HSM (Highly Structured Message) templates are pre-approved messages by Whatsapp which are used to send to the users when their session window is closed (i.e after 24hours of inactive conversation). These templates ensure compliance with WhatsApp's guidelines and allow NGO's to send notifications, customer support messages and alerts with placeholders for personalized information.",
 
-  link: 'https://glific.github.io/docs/docs/Product%20Features/Templates',
+  link: 'https://glific.github.io/docs/docs/Product%20Features/HSM%20Templates',
+};
+
+export const interactiveButtonsInfo: HelpDataProps = {
+  heading:
+    'Add Call to Action (URL or phone number), Quick Reply, or WhatsApp Form buttons to make your template interactive.',
 };
 
 export const interactiveMessageInfo: HelpDataProps = {

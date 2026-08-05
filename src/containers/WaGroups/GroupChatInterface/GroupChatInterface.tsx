@@ -24,6 +24,9 @@ const tabs = [
     link: '/group/chat/collection',
   },
 ];
+
+let cachedPhoneFilter: any = null;
+
 export interface GroupChatInterfaceProps {
   collections?: boolean;
 }
@@ -34,7 +37,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
   const location = useLocation();
-  const [phonenumber, setPhonenumber] = useState<any>(null);
+  const [phonenumber, setPhonenumber] = useState<any>(cachedPhoneFilter);
 
   useEffect(() => {
     const currentTab = tabs.filter((tab) => location.pathname === tab.link);
@@ -42,6 +45,10 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       setValue(currentTab[0].link);
     }
   }, [location]);
+
+  useEffect(() => {
+    cachedPhoneFilter = phonenumber;
+  }, [phonenumber]);
 
   let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;

@@ -88,6 +88,20 @@ describe('<GroupCollectionList />', () => {
     });
   });
 
+  test('shows the primary phone for each group', async () => {
+    const { getByText, getAllByText } = render(wrapper);
+
+    await waitFor(() => {
+      expect(getByText('Group 12')).toBeInTheDocument();
+    });
+
+    // header + the group whose primary phone is set
+    expect(getByText('Primary phone')).toBeInTheDocument();
+    expect(getByText('Main')).toBeInTheDocument();
+    // a group with no primary phone shows a placeholder
+    expect(getAllByText('—').length).toBeGreaterThan(0);
+  });
+
   test('should open and close dialog box', async () => {
     const { getByTestId, getByText } = render(wrapper);
 

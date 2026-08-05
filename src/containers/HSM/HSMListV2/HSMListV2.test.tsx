@@ -23,8 +23,16 @@ import {
   templateCountV2SearchMock,
   filterTemplatesV2RejectedMock,
   templateCountV2RejectedMock,
+  filterTemplatesV2MediaTypesMock,
+  templateCountV2MediaTypesMock,
+  filterTemplatesV2AllStatusesMock,
+  templateCountV2AllStatusesMock,
+  filterTemplatesV2NoShortcodeMock,
+  templateCountV2NoShortcodeMock,
 } from 'mocks/Template';
+import { GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import HSMListV2 from './HSMListV2';
+import { languageCode } from './HSMListV2.helper';
 
 vi.mock('i18next', () => ({ t: (str: string) => str }));
 
@@ -117,28 +125,48 @@ test('renders the status, category and tag filters', async () => {
   expect(screen.getByTestId('AutocompleteInput')).toBeInTheDocument();
 });
 
-test('defaults the status filter to Approved', async () => {
+test('defaults the status filter to All', async () => {
   renderComponent();
 
   await waitFor(() => {
     expect(screen.getByTestId('dropdown-template')).toBeInTheDocument();
   });
 
-  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
+  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('All');
 });
 
-test('shows the template name with its shortcode below it (not the quality)', async () => {
+test('shows the element name (shortcode) as the title, with its tag below it', async () => {
   renderComponent();
 
   await waitFor(() => {
-    // the name (label) is the main title
-    expect(screen.getByText('Welcome Message')).toBeInTheDocument();
+    // the element name (shortcode) is the main title, not the label
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
   });
 
-  // the shortcode is shown below the name
-  expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  // the tag is shown below the element name
+  expect(screen.getByText('Messages')).toBeInTheDocument();
+  // the label/title is no longer rendered here
+  expect(screen.queryByText('Welcome Message')).not.toBeInTheDocument();
   // quality is no longer rendered in the title
   expect(screen.queryByText('Not Rated')).not.toBeInTheDocument();
+});
+
+test('hovering the template title shows the full message preview with its buttons', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseOver(screen.getByText('welcome_msg'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Reply STOP to opt out')).toBeInTheDocument();
+  });
+
+  expect(screen.getByText('Get started')).toBeInTheDocument();
+  expect(screen.getByText('Learn more')).toBeInTheDocument();
+  expect(screen.getByText('Call us')).toBeInTheDocument();
 });
 
 test('navigates to create template page on Create click', async () => {
@@ -171,7 +199,7 @@ test('navigates to create template page with the selected tag', async () => {
   expect(mockedNavigate).toHaveBeenCalledWith('/template/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
 
-test('navigates to edit template page via the row View action', async () => {
+test('navigates to the same add/view page (without auto-opening the draft) via the row View action', async () => {
   renderComponent();
 
   await waitFor(() => {
@@ -184,7 +212,26 @@ test('navigates to edit template page via the row View action', async () => {
   fireEvent.click(within(row).getByTestId('view-icon'));
 
   await waitFor(() => {
-    expect(mockedNavigate).toHaveBeenCalledWith('/template/1/edit');
+    expect(mockedNavigate).toHaveBeenCalledWith('/template/add', {
+      state: { languageAnchorId: '1', anchorShortcode: 'welcome_msg' },
+    });
+  });
+});
+
+test('navigates to the same page and opens the add-language draft directly via the row Add new language action', async () => {
+  renderComponent();
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  const row = screen.getByText('welcome_msg').closest('tr') as HTMLElement;
+  fireEvent.click(within(row).getByTestId('add-language-icon'));
+
+  await waitFor(() => {
+    expect(mockedNavigate).toHaveBeenCalledWith('/template/add', {
+      state: { languageAnchorId: '1', anchorShortcode: 'welcome_msg', openAddLanguage: true },
+    });
   });
 });
 
@@ -457,6 +504,23 @@ test('filters templates by selected status', async () => {
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
 });
 
+test('defaults to the "All" status view and loads templates of every status', async () => {
+  renderComponent([
+    filterTemplatesV2AllStatusesMock,
+    filterTemplatesV2AllStatusesMock,
+    filterTemplatesV2AllStatusesMock,
+    templateCountV2AllStatusesMock,
+    templateCountV2AllStatusesMock,
+    templateCountV2AllStatusesMock,
+    ...baseMocks,
+  ]);
+
+  await waitFor(() => {
+    expect(screen.getByText('pending_broadcast')).toBeInTheDocument();
+  });
+  expect(screen.getByTestId('dropdown-template')).toHaveTextContent('All');
+});
+
 test('shows the Reason column with the rejection reason when filtering by Rejected', async () => {
   renderComponent([...baseMocks, filterTemplatesV2RejectedMock, templateCountV2RejectedMock]);
 
@@ -473,6 +537,67 @@ test('shows the Reason column with the rejection reason when filtering by Reject
   });
   expect(screen.getByRole('columnheader', { name: 'Reason' })).toBeInTheDocument();
   expect(screen.queryByRole('columnheader', { name: 'Last updated' })).not.toBeInTheDocument();
+});
+
+test('hovering a template with an attachment shows it in the message preview', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2RejectedMock, templateCountV2RejectedMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
+
+  await waitFor(() => {
+    expect(screen.getByText('feedback_form')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseOver(screen.getByText('feedback_form'));
+
+  const image = await screen.findByAltText('Order summary');
+
+  expect(screen.queryByTestId('preview-media-fallback')).not.toBeInTheDocument();
+
+  fireEvent.error(image);
+  await waitFor(() => {
+    expect(screen.getByTestId('preview-media-fallback')).toBeInTheDocument();
+  });
+  expect(screen.queryByAltText('Order summary')).not.toBeInTheDocument();
+});
+
+test('the message preview shows a type-appropriate media for VIDEO, DOCUMENT, and AUDIO attachments', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2MediaTypesMock, templateCountV2MediaTypesMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+  fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
+
+  await waitFor(() => {
+    expect(screen.getByText('product_demo')).toBeInTheDocument();
+  });
+  fireEvent.mouseOver(screen.getByText('product_demo'));
+  await waitFor(() => {
+    expect(screen.getByTestId('preview-media-video')).toBeInTheDocument();
+  });
+  expect(screen.queryByTestId('preview-media-fallback')).not.toBeInTheDocument();
+
+  // DOCUMENT has no visual thumbnail to load — it goes straight to an icon +
+  // caption, without ever attempting (and failing) an <img> load first.
+  fireEvent.mouseOver(screen.getByText('invoice_pdf'));
+  await waitFor(() => {
+    expect(screen.getByText('Invoice.pdf')).toBeInTheDocument();
+  });
+  expect(screen.getByTestId('preview-media-fallback')).toBeInTheDocument();
+
+  // AUDIO likewise, and falls back to a generic "Audio" label when there's no caption.
+  fireEvent.mouseOver(screen.getByText('voice_note'));
+  await waitFor(() => {
+    expect(screen.getByText('Audio')).toBeInTheDocument();
+  });
 });
 
 test('clears the tag filter and restores the full list', async () => {
@@ -553,4 +678,97 @@ test('filters templates by search term', async () => {
     expect(screen.queryByText('welcome_msg')).not.toBeInTheDocument();
   });
   expect(screen.getByText('feedback_form')).toBeInTheDocument();
+});
+
+test('falls back to the label as the title when a template has no shortcode yet', async () => {
+  renderComponent([...baseMocks, filterTemplatesV2NoShortcodeMock, templateCountV2NoShortcodeMock]);
+
+  await waitFor(() => {
+    expect(screen.getByText('welcome_msg')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'draft' } });
+  fireEvent.submit(screen.getByTestId('searchForm'));
+
+  await waitFor(() => {
+    expect(screen.getByText('No Shortcode Yet')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseOver(screen.getByText('No Shortcode Yet'));
+  await waitFor(() => {
+    expect(screen.getByText('Draft body.')).toBeInTheDocument();
+  });
+  expect(screen.queryByText('oops')).not.toBeInTheDocument();
+});
+
+test('re-fetches every minute while templates are pending and stops once none remain', async () => {
+  let pendingCalls = 0;
+  const pendingCountMock = (count: number, reusable = false) => ({
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: { filter: { isHsm: true, status: 'PENDING' } },
+    },
+    result: () => {
+      pendingCalls += 1;
+      return { data: { countSessionTemplates: count } };
+    },
+    ...(reusable ? { maxUsageCount: Number.MAX_SAFE_INTEGER } : {}),
+  });
+
+  vi.useFakeTimers();
+  try {
+    renderComponent([pendingCountMock(1), pendingCountMock(0, true), ...baseMocks]);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(pendingCalls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(59000);
+    expect(pendingCalls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(pendingCalls).toBe(2);
+
+    await vi.advanceTimersByTimeAsync(180000);
+    expect(pendingCalls).toBe(2);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test('keeps polling when the pending count is unavailable and stops once it resolves to zero', async () => {
+  let pendingCalls = 0;
+  const pendingCountMock = {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: { filter: { isHsm: true, status: 'PENDING' } },
+    },
+    result: () => {
+      pendingCalls += 1;
+      if (pendingCalls === 1) {
+        return { errors: [{ message: 'temporary failure' }] };
+      }
+      return { data: { countSessionTemplates: 0 } };
+    },
+    maxUsageCount: Number.MAX_SAFE_INTEGER,
+  };
+
+  vi.useFakeTimers();
+  try {
+    renderComponent([pendingCountMock, ...baseMocks]);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(pendingCalls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(60000);
+    expect(pendingCalls).toBe(2);
+
+    await vi.advanceTimersByTimeAsync(180000);
+    expect(pendingCalls).toBe(2);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test('languageCode with no locale returns an empty string instead of throwing', () => {
+  expect(languageCode()).toBe('');
 });

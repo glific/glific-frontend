@@ -12,13 +12,23 @@ import {
   getInfoNotificationsQuery,
   getStatus,
   getStatusWithError,
+  collectionPrimaryRow,
+  collectionReport,
+  collectionReportNotReady,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
 import * as Notification from 'common/notification';
+import { exportCsvFile } from 'common/utils';
+
+vi.mock('common/utils', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/utils')>();
+  return { ...mod, exportCsvFile: vi.fn() };
+});
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
+beforeEach(() => vi.clearAllMocks());
 afterEach(cleanup);
 const mocks: any = [
   getUnFitleredNotificationCountQuery,
@@ -147,6 +157,75 @@ test('it should have Info, Warning and critical checkbox', async () => {
     expect(checkboxInput[2]).toHaveTextContent('Warning');
     expect(checkboxInput[3]).toHaveTextContent('Info');
   });
+});
+
+const renderCollection = (reportMock: any) =>
+  render(
+    <MockedProvider
+      mocks={[
+        getUnFitleredNotificationCountQuery,
+        collectionPrimaryRow,
+        getUnFitleredNotificationCountQuery,
+        getUnFitleredNotificationCountQuery,
+        getCountWithFilter,
+        getCountWithEmptyFilter,
+        markAllNotificationAsRead,
+        reportMock,
+      ]}
+      addTypename={false}
+    >
+      <Router>
+        <NotificationList />
+      </Router>
+    </MockedProvider>
+  );
+
+test('downloads the collection primary-phone report from its notification action', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  renderCollection(collectionReport());
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('ArrowForwardIcon')[0]);
+
+  await waitFor(() => {
+    expect(exportCsvFile).toHaveBeenCalledWith('Group,Reason', 'Collection_Primary_Phone_Status');
+  });
+  expect(notificationSpy).toHaveBeenCalledWith('Downloaded the collection primary-phone report', 'success');
+});
+
+test('warns when the collection primary-phone report returns an error', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  renderCollection(collectionReport('Report not ready'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('ArrowForwardIcon')[0]);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Report not ready', 'warning');
+  });
+  expect(exportCsvFile).not.toHaveBeenCalled();
+});
+
+test('warns when the collection primary-phone report has no rows yet', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  renderCollection(collectionReportNotReady);
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('ArrowForwardIcon')[0]);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('The collection primary-phone report is not ready yet.', 'warning');
+  });
+  expect(exportCsvFile).not.toHaveBeenCalled();
 });
 
 test('it should show "Contact import is in progress" message', async () => {
