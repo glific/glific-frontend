@@ -2,7 +2,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
-import { DEFAULT_MODEL_CONFIG, ModelConfig, getModelParams } from '../../assistantModels';
+import type { ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { DEFAULT_MODEL_CONFIG, getModelParams } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
 
 vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({

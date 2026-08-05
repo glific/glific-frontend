@@ -6,18 +6,12 @@ import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
+import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DownloadIcon from 'assets/images/icons/Download.svg?react';
 import styles from './KnowledgeBase.module.css';
-
-export interface KnowledgeBaseFile {
-  fileId: string;
-  filename: string;
-  fileSize?: number | null;
-  uploadedAt?: string | null;
-}
 
 export interface KnowledgeBaseProps {
   files: KnowledgeBaseFile[];

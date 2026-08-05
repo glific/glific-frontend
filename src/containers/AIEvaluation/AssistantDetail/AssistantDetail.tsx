@@ -11,8 +11,8 @@ import {
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
-import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
-import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
+import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { DEFAULT_MODEL_CONFIG } from './assistantModels';
 import {
   AssistantHeader,
   canPublishVersion,
@@ -26,16 +26,10 @@ import {
   VersionBar,
 } from './components';
 import { KnowledgeBase, PersonaPrompt } from './Tabs';
-import type { KnowledgeBaseFile } from './Tabs/KnowledgeBase/KnowledgeBase';
+import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
 const LIST_PATH = '/ai-evaluation-v2';
-
-interface EditorState {
-  prompt: string;
-  config: ModelConfig;
-  files: KnowledgeBaseFile[];
-}
 
 const parseSettings = (settings: unknown): Record<string, unknown> => {
   if (typeof settings === 'string') {

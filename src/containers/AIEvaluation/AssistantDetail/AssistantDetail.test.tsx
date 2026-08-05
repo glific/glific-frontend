@@ -11,7 +11,7 @@ import {
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
-import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
+import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
 import AssistantDetail from './AssistantDetail';
 
