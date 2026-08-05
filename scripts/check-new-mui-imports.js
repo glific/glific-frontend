@@ -49,7 +49,7 @@ function main() {
       continue;
     }
 
-    if (!inScope || !line.startsWith('+') || line.startsWith('+++')) continue;
+    if (!inScope || !line.startsWith('+')) continue;
 
     if (MUI_IMPORT_RE.test(line) && !COMMENT_LINE_RE.test(line)) {
       violations.push(`${currentFile}:${newLineNumber} — ${line.slice(1).trim()}`);
