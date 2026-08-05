@@ -82,7 +82,7 @@ test('renders page title and action buttons', async () => {
   expect(screen.getByText('Bulk apply')).toBeInTheDocument();
 });
 
-test('opens the template library modal via the header button', async () => {
+test('opens the template library modal via the header button, and closing it hides the dialog again', async () => {
   renderComponent([...baseMocks, templateLibraryMock()]);
 
   await waitFor(() => {
@@ -95,6 +95,12 @@ test('opens the template library modal via the header button', async () => {
 
   await waitFor(() => {
     expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
   });
 });
 

@@ -9,6 +9,7 @@ import {
   templateLibraryErrorMock,
   templateLibraryMock,
 } from 'mocks/Template';
+import { languageDisplayName } from './TemplateLibraryModal.helper';
 import { TemplateLibraryModal } from './TemplateLibraryModal';
 
 vi.mock('i18next', () => ({
@@ -227,6 +228,15 @@ test('search filters entries by element name across the fetched dataset', async 
   expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
   expect(screen.queryByTestId('library-group-header-APPOINTMENT_REMINDER')).not.toBeInTheDocument();
   expect(screen.queryByText('No Appointment reminder templates match "order_confirmation"')).not.toBeInTheDocument();
+
+  fireEvent.submit(screen.getByTestId('searchForm'));
+  expect(screen.getByTestId('library-entry-order_confirmation_1')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('resetButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
+  });
 });
 
 test('Create from template stays disabled until a template is selected, then closes and navigates', async () => {
@@ -275,4 +285,8 @@ test('shows an empty state when the catalog has no entries', async () => {
   await waitFor(() => {
     expect(screen.getByText('No templates found.')).toBeInTheDocument();
   });
+});
+
+test('languageDisplayName falls back to the raw code in upper case when Intl.DisplayNames rejects it', () => {
+  expect(languageDisplayName('not-a-valid-locale!!!')).toBe('NOT-A-VALID-LOCALE!!!');
 });

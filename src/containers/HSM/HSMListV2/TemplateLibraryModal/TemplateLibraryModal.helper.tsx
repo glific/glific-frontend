@@ -2,17 +2,10 @@ import { TemplateLibraryEntry, parseContainerMeta } from '../../HSMV2/HSMV2.help
 
 export type { TemplateLibraryEntry };
 
-// The library API returns no unique id per entry, and real catalogs contain
-// entries that share the same elementName (same name offered per language,
-// or plain duplicates from the BSP) — `libraryIndex` (position in the
-// Utility-filtered list) is what selection/keys are tracked by instead, since
-// elementName alone can't tell two such rows apart.
 export interface IndexedLibraryEntry extends TemplateLibraryEntry {
   libraryIndex: number;
 }
 
-// Meta's library is Utility-only for now — there's no Authentication tab to
-// switch to, so entries outside it are simply never shown.
 const UTILITY_CATEGORY = 'UTILITY';
 
 export const filterUtilityEntries = (entries: TemplateLibraryEntry[] = []): IndexedLibraryEntry[] =>
@@ -37,7 +30,7 @@ export const languageDisplayName = (code?: string | null): string => {
 
 // unique language codes present across the (already Utility-only) catalog,
 // used to populate the language filter dropdown.
-export const getLanguageOptions = (entries: IndexedLibraryEntry[] = []): string[] => {
+export const getLanguageOptions = (entries: IndexedLibraryEntry[]): string[] => {
   const codes = new Set<string>();
   entries.forEach((entry) => {
     if (entry.languageCode) codes.add(entry.languageCode);
@@ -58,10 +51,6 @@ export const groupByUsecase = (entries: IndexedLibraryEntry[] = []): Record<stri
 export interface LibraryGroup {
   usecase: string;
   entries: IndexedLibraryEntry[];
-  // true when the language filter leaves nothing in this use case — the group
-  // still renders (dimmed, with a hint) instead of disappearing, so the
-  // catalog doesn't look broken/incomplete as the user narrows by language.
-  // (Search-empty groups are dropped by the caller, not flagged here.)
   isEmpty: boolean;
 }
 
@@ -95,9 +84,6 @@ export const buildLibraryGroups = (
 export const countVisibleEntries = (groups: LibraryGroup[]) =>
   groups.reduce((sum, group) => sum + group.entries.length, 0);
 
-// Adapts a library entry into the same "variant" shape HSMListV2's row hover
-// preview already renders via `messagePreview` — reusing that component
-// instead of building a second preview renderer.
 export const buildPreviewVariant = (entry: TemplateLibraryEntry) => {
   const containerMeta = parseContainerMeta(entry.containerMeta);
   const containerButtons = Array.isArray(containerMeta.buttons) ? containerMeta.buttons : [];
