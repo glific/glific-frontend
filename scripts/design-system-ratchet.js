@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 /**
- * Design-system ratchet (glific/glific-frontend#4081).
+ * Design-system ratchet.
  *
  * Counts known design-system violations and compares them against a committed
- * baseline. CI fails only if a count goes UP — this lets the standardization
- * migration (#4052) land incrementally instead of requiring every existing
- * violation to be fixed before any guardrail can be turned on.
+ * baseline. CI fails only if a count goes UP — this lets a large existing backlog
+ * be tracked without requiring it all fixed before any guardrail can be turned on.
  *
  * Usage:
  *   node scripts/design-system-ratchet.js          # check against baseline (CI)
@@ -153,10 +152,7 @@ function main() {
 }
 
 function loadBaselineDescription() {
-  return (
-    'Design-system violation baseline for glific/glific-frontend#4081. ' +
-    'Counts must only go down over time — see scripts/design-system-ratchet.js.'
-  );
+  return 'Design-system violation baseline. Counts must only go down over time — see scripts/design-system-ratchet.js.';
 }
 
 main();
