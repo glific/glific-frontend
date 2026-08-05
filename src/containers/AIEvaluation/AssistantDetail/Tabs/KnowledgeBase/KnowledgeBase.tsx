@@ -165,7 +165,7 @@ export const KnowledgeBase = ({ files, onFilesChange, vectorStoreId = null, lega
                 {!isReadOnly && (
                   <IconButton
                     size="small"
-                    className={styles.FileAction}
+                    className={`${styles.FileAction} ${styles.FileActionDanger}`}
                     onClick={() => setFileToRemove(file)}
                     disabled={isUploading}
                     aria-label={t('Remove')}

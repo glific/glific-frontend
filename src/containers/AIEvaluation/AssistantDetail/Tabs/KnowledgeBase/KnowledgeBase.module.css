@@ -115,6 +115,14 @@
   opacity: 0.45;
 }
 
+.FileActionDanger:hover {
+  border-color: var(--app-color-error) !important;
+
+  svg path {
+    stroke: var(--app-color-error);
+  }
+}
+
 .Pulse {
   width: var(--app-size-dot);
   height: var(--app-size-dot);
