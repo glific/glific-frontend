@@ -1003,5 +1003,8 @@
   "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.",
   "No vector store yet — one is created when you add your first file.": "No vector store yet — one is created when you add your first file.",
   "The file is detached and the knowledge base is rebuilt without it.": "The file is detached and the knowledge base is rebuilt without it.",
-  "Version published — it is now live in your flows": "Version published — it is now live in your flows"
+  "Version published — it is now live in your flows": "Version published — it is now live in your flows",
+  "Switch version?": "Switch version?",
+  "Switch version": "Switch version",
+  "Loads the prompt and settings saved in that version into the editor.": "Loads the prompt and settings saved in that version into the editor."
 }

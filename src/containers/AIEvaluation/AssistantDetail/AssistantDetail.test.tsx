@@ -13,7 +13,7 @@ const version = (versionNumber: number, isLive: boolean) => ({
   versionNumber,
   model: 'gpt-4o',
   prompt: 'You are a helpful assistant.',
-  settings: { temperature: 1 },
+  settings: { temperature: 1 } as { temperature: number } | string,
   status: 'ready',
   isLive,
   description: null as string | null,
@@ -198,7 +198,7 @@ describe('edit mode', () => {
       },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock()]);
+    renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock([])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
@@ -409,7 +409,7 @@ describe('unsaved changes', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
     });
-    expect(screen.getByTestId('promptInput')).toHaveValue('');
+    expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
     expect(screen.getByTestId('publishButton')).toBeInTheDocument();
   });
 
@@ -534,7 +534,7 @@ describe('unsaved changes', () => {
         variables: {
           updateAssistantId: '1',
           // no `temperature` key at all — the schema would reject an empty string
-          input: { instructions: '', model: 'gpt-4o', name: 'Assistant-405db438' },
+          input: { instructions: 'You are a helpful assistant.', model: 'gpt-4o', name: 'Assistant-405db438' },
         },
       },
       result: { data: { updateAssistant: { errors: null } } },
@@ -743,5 +743,134 @@ describe('tabs', () => {
     fireEvent.click(screen.getByTestId('tab-guardrails'));
 
     expect(screen.getByTestId('tabPanel')).toHaveTextContent('Guardrails coming soon');
+  });
+});
+
+describe('switching versions', () => {
+  const liveV1 = { ...version(1, true), prompt: 'You are a helpful assistant.', model: 'gpt-4o' };
+  const draftV2 = {
+    ...version(2, false),
+    prompt: 'Answer in one line.',
+    model: 'gpt-4.1',
+    settings: { temperature: 0.5 },
+  };
+
+  const openVersionMenu = async () => {
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+  };
+
+  test('loads the selected version prompt, model and temperature', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
+    });
+    expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4o');
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
+    });
+    expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(0.5);
+    // loading a version is not an edit
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('parses settings that arrive as a JSON string', async () => {
+    const stringSettings = { ...draftV2, settings: JSON.stringify({ temperature: 0.7 }) };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, stringSettings])]);
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('temperatureInput')).toHaveValue(0.7);
+    });
+  });
+
+  test('asks before throwing away unsaved edits, and keeps them on cancel', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'My own words' } });
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    expect(await screen.findByText('Switch version?')).toBeInTheDocument();
+    expect(screen.getByTestId('promptInput')).toHaveValue('My own words');
+
+    fireEvent.click(screen.getByText('Keep editing'));
+    await waitFor(() => {
+      expect(screen.queryByText('Switch version?')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('My own words');
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+  });
+
+  test('confirming the switch loads the other version', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'My own words' } });
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(await screen.findByText('Switch version'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
+    });
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('a save moves the selection onto the version it just created', async () => {
+    const saveMock = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          input: {
+            instructions: 'Be concise.',
+            model: 'gpt-4o',
+            temperature: 1,
+            name: 'Assistant-405db438',
+          },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+    const savedV3 = { ...version(3, false), prompt: 'Be concise.', model: 'gpt-4o' };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock([liveV1, draftV2]),
+      saveMock,
+      getAssistant('1'),
+      versionsMock([liveV1, draftV2, savedV3]),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    // the pill follows the new version instead of staying on the live one
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 3');
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('Be concise.');
   });
 });

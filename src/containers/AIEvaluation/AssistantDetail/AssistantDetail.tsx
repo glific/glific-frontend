@@ -38,6 +38,45 @@ const TABS: { key: TabKey; label: TranslationKey; badge?: TranslationKey }[] = [
 
 const PLACEHOLDER_SCORE = '4.3';
 
+interface EditorState {
+  prompt: string;
+  config: ModelConfig;
+}
+
+const parseSettings = (settings: unknown): Record<string, unknown> => {
+  if (typeof settings === 'string') {
+    try {
+      return JSON.parse(settings);
+    } catch {
+      return {};
+    }
+  }
+  return (settings as Record<string, unknown>) ?? {};
+};
+
+const editorStateFromVersion = (version: AssistantVersion): EditorState => {
+  const settings = parseSettings(version.settings);
+  return {
+    prompt: version.prompt ?? '',
+    config: {
+      ...DEFAULT_MODEL_CONFIG,
+      model: version.model || DEFAULT_MODEL_CONFIG.model,
+      temperature: settings.temperature != null ? String(settings.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+      ...(settings.effort ? { effort: settings.effort as ModelConfig['effort'] } : {}),
+      ...(settings.verbosity ? { verbosity: settings.verbosity as ModelConfig['verbosity'] } : {}),
+    },
+  };
+};
+
+const editorStateFromAssistant = (assistant: any): EditorState => ({
+  prompt: assistant.instructions ?? '',
+  config: {
+    ...DEFAULT_MODEL_CONFIG,
+    model: assistant.model || DEFAULT_MODEL_CONFIG.model,
+    temperature: assistant.temperature != null ? String(assistant.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+  },
+});
+
 export const AssistantDetail = () => {
   const { assistantId } = useParams<{ assistantId: string }>();
   const navigate = useNavigate();
@@ -54,11 +93,12 @@ export const AssistantDetail = () => {
   });
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
+  const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
+  const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<number | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const loadedKey = useRef<string | null>(null);
 
-  // a brand new assistant has nothing to prefill, so we skip both fetches entirely
   const isCreateMode = !assistantId || assistantId === 'add';
-
   const defaultAssistantName = t('Untitled assistant');
 
   const { loading, data, error } = useQuery(GET_ASSISTANT, {
@@ -96,18 +136,26 @@ export const AssistantDetail = () => {
   useEffect(() => {
     const fetched = data?.assistant?.assistant;
     if (!fetched) return;
-    const loaded = {
-      prompt: fetched.instructions ?? '',
-      config: {
-        ...DEFAULT_MODEL_CONFIG,
-        model: fetched.model ?? DEFAULT_MODEL_CONFIG.model,
-        temperature: fetched.temperature != null ? String(fetched.temperature) : DEFAULT_MODEL_CONFIG.temperature,
-      },
-    };
+
+    const key = selectedVersion?.id ?? `assistant-${fetched.id}`;
+    if (key === loadedKey.current) return;
+    loadedKey.current = key;
+
+    const loaded = selectedVersion ? editorStateFromVersion(selectedVersion) : editorStateFromAssistant(fetched);
     setPrompt(loaded.prompt);
     setModelConfig(loaded.config);
     setBaseline(loaded);
-  }, [data]);
+  }, [data, selectedVersion]);
+
+  useEffect(() => {
+    if (awaitingVersionAbove === null) return;
+    const latest = [...(versionData?.assistantVersions ?? [])].sort(
+      (a: AssistantVersion, b: AssistantVersion) => b.versionNumber - a.versionNumber
+    )[0];
+    if (!latest || latest.versionNumber <= awaitingVersionAbove) return;
+    setSelectedVersionId(latest.id);
+    setAwaitingVersionAbove(null);
+  }, [awaitingVersionAbove, versionData]);
 
   const isDirty = prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config);
 
@@ -153,6 +201,7 @@ export const AssistantDetail = () => {
         return;
       }
       setBaseline({ prompt, config: modelConfig });
+      setAwaitingVersionAbove(sortedVersions[0]?.versionNumber ?? 0);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
       setErrorMessage(err);
@@ -193,7 +242,20 @@ export const AssistantDetail = () => {
     }
   };
 
-  const handleSelectVersion = (versionId: string) => setSelectedVersionId(versionId);
+  const handleSelectVersion = (versionId: string) => {
+    if (versionId === selectedVersion?.id) return;
+    // switching reloads the editor, which would silently throw away unsaved edits
+    if (isDirty) {
+      setPendingVersionId(versionId);
+      return;
+    }
+    setSelectedVersionId(versionId);
+  };
+
+  const confirmSwitchVersion = () => {
+    setSelectedVersionId(pendingVersionId);
+    setPendingVersionId(null);
+  };
 
   const handlePublish = async () => {
     if (!selectedVersion) return;
@@ -453,6 +515,23 @@ export const AssistantDetail = () => {
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
         {activePanel ?? `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
+
+      {pendingVersionId && (
+        <DialogBox
+          title={t('Switch version?')}
+          handleCancel={() => setPendingVersionId(null)}
+          handleOk={confirmSwitchVersion}
+          buttonOk={t('Switch version')}
+          buttonCancel={t('Keep editing')}
+          alignButtons="center"
+          colorOk="warning"
+        >
+          <div className={styles.DiscardSubtitle}>
+            {t('Loads the prompt and settings saved in that version into the editor.')}
+          </div>
+          <div className={styles.DiscardWarning}>{t('Any edits made since your last save will be lost.')}</div>
+        </DialogBox>
+      )}
 
       {discardOpen && (
         <DialogBox
