@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -18,6 +18,7 @@ import {
   DiscardDialog,
   HeaderActions,
   LeaveDialog,
+  SwitchVersionDialog,
   TABS,
   TabBar,
   TabKey,
@@ -28,6 +29,59 @@ import type { KnowledgeBaseFile } from './Tabs/KnowledgeBase/KnowledgeBase';
 import styles from './AssistantDetail.module.css';
 
 const LIST_PATH = '/ai-evaluation-v2';
+
+interface EditorState {
+  prompt: string;
+  config: ModelConfig;
+  files: KnowledgeBaseFile[];
+}
+
+// settings comes back as a JSON scalar — sometimes already parsed, sometimes a string
+const parseSettings = (settings: unknown): Record<string, unknown> => {
+  if (typeof settings === 'string') {
+    try {
+      return JSON.parse(settings);
+    } catch {
+      return {};
+    }
+  }
+  return (settings as Record<string, unknown>) ?? {};
+};
+
+const filesFromVectorStore = (vectorStore: { files?: { id: string; name: string; fileSize?: number }[] } | null) =>
+  (vectorStore?.files ?? []).map((file) => ({
+    fileId: file.id,
+    filename: file.name,
+    fileSize: file.fileSize,
+  }));
+
+// a version carries its own vector store, but older ones can come back without one — fall
+// back to the assistant's so the knowledge base does not look empty
+const editorStateFromVersion = (version: AssistantVersion, assistant: any): EditorState => {
+  const settings = parseSettings(version.settings);
+  return {
+    prompt: version.prompt ?? '',
+    config: {
+      ...DEFAULT_MODEL_CONFIG,
+      model: version.model || DEFAULT_MODEL_CONFIG.model,
+      temperature: settings.temperature != null ? String(settings.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+      ...(settings.effort ? { effort: settings.effort as ModelConfig['effort'] } : {}),
+      ...(settings.verbosity ? { verbosity: settings.verbosity as ModelConfig['verbosity'] } : {}),
+    },
+    files: filesFromVectorStore(version.vectorStore ?? assistant?.vectorStore ?? null),
+  };
+};
+
+// fallback for an assistant that has no versions yet
+const editorStateFromAssistant = (assistant: any): EditorState => ({
+  prompt: assistant.instructions ?? '',
+  config: {
+    ...DEFAULT_MODEL_CONFIG,
+    model: assistant.model || DEFAULT_MODEL_CONFIG.model,
+    temperature: assistant.temperature != null ? String(assistant.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+  },
+  files: filesFromVectorStore(assistant.vectorStore ?? null),
+});
 
 export const AssistantDetail = () => {
   const { assistantId } = useParams<{ assistantId: string }>();
@@ -48,7 +102,15 @@ export const AssistantDetail = () => {
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
+  // set while the user confirms losing unsaved edits to switch version
+  const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
+  // highest version number seen when a save started — the refetch is done once one beats it
+  const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<number | null>(null);
+  // one flag for the whole save sequence — the knowledge-base rebuild has no loading state
+  // of its own, and it is the slowest step
   const [saving, setSaving] = useState(false);
+  // guards against a refetch of the same version wiping what the user is typing
+  const loadedKey = useRef<string | null>(null);
 
   // a brand new assistant has nothing to prefill, so we skip both fetches entirely
   const isCreateMode = !assistantId || assistantId === 'add';
@@ -81,27 +143,36 @@ export const AssistantDetail = () => {
   const selectedVersion =
     sortedVersions.find((version) => version.id === selectedVersionId) ?? liveVersion ?? sortedVersions[0];
 
+  // the selected version drives the editor: picking another one loads its prompt, settings
+  // and knowledge-base files
   useEffect(() => {
     const fetched = data?.assistant?.assistant;
     if (!fetched) return;
-    const loaded = {
-      prompt: fetched.instructions ?? '',
-      config: {
-        ...DEFAULT_MODEL_CONFIG,
-        model: fetched.model ?? DEFAULT_MODEL_CONFIG.model,
-        temperature: fetched.temperature != null ? String(fetched.temperature) : DEFAULT_MODEL_CONFIG.temperature,
-      },
-      files: (fetched.vectorStore?.files ?? []).map((file: any) => ({
-        fileId: file.id,
-        filename: file.name,
-        fileSize: file.fileSize,
-      })),
-    };
+
+    const key = selectedVersion?.id ?? `assistant-${fetched.id}`;
+    if (key === loadedKey.current) return;
+    loadedKey.current = key;
+
+    const loaded = selectedVersion
+      ? editorStateFromVersion(selectedVersion, fetched)
+      : editorStateFromAssistant(fetched);
     setPrompt(loaded.prompt);
     setModelConfig(loaded.config);
     setKnowledgeBaseFiles(loaded.files);
     setBaseline(loaded);
-  }, [data]);
+  }, [data, selectedVersion]);
+
+  // a fresh save lands as the newest version, so move the selection onto it. The refetch can
+  // still be in flight when the mutation resolves, so wait for a higher number to show up.
+  useEffect(() => {
+    if (awaitingVersionAbove === null) return;
+    const latest = [...(versionData?.assistantVersions ?? [])].sort(
+      (a: AssistantVersion, b: AssistantVersion) => b.versionNumber - a.versionNumber
+    )[0];
+    if (!latest || latest.versionNumber <= awaitingVersionAbove) return;
+    setSelectedVersionId(latest.id);
+    setAwaitingVersionAbove(null);
+  }, [awaitingVersionAbove, versionData]);
 
   const filesChanged = JSON.stringify(knowledgeBaseFiles) !== JSON.stringify(baseline.files);
 
@@ -184,6 +255,7 @@ export const AssistantDetail = () => {
         return;
       }
       setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles });
+      setAwaitingVersionAbove(sortedVersions[0]?.versionNumber ?? 0);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
       setErrorMessage(err);
@@ -226,6 +298,21 @@ export const AssistantDetail = () => {
     }
   };
 
+  const handleSelectVersion = (versionId: string) => {
+    if (versionId === selectedVersion?.id) return;
+    // switching reloads the editor, which would silently throw away unsaved edits
+    if (isDirty) {
+      setPendingVersionId(versionId);
+      return;
+    }
+    setSelectedVersionId(versionId);
+  };
+
+  const confirmSwitchVersion = () => {
+    setSelectedVersionId(pendingVersionId);
+    setPendingVersionId(null);
+  };
+
   const handlePublish = async () => {
     if (!selectedVersion) return;
 
@@ -258,7 +345,7 @@ export const AssistantDetail = () => {
   }
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
-  const vectorStore = assistant?.vectorStore;
+  const vectorStore = selectedVersion?.vectorStore ?? assistant?.vectorStore;
 
   // a tab appears here once it is built; anything missing falls through to "coming soon"
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
@@ -308,7 +395,7 @@ export const AssistantDetail = () => {
         versions={sortedVersions}
         selectedVersion={selectedVersion}
         liveVersion={liveVersion}
-        onSelectVersion={setSelectedVersionId}
+        onSelectVersion={handleSelectVersion}
         isCreateMode={isCreateMode}
       />
 
@@ -321,6 +408,10 @@ export const AssistantDetail = () => {
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
 
       {discardOpen && <DiscardDialog onConfirm={handleDiscard} onCancel={() => setDiscardOpen(false)} />}
+
+      {pendingVersionId && (
+        <SwitchVersionDialog onConfirm={confirmSwitchVersion} onCancel={() => setPendingVersionId(null)} />
+      )}
     </div>
   );
 };

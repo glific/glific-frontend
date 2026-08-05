@@ -11,6 +11,7 @@ import {
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
+import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
 import { getAssistant } from 'mocks/Assistants';
 import AssistantDetail from './AssistantDetail';
 
@@ -19,13 +20,13 @@ const version = (versionNumber: number, isLive: boolean) => ({
   versionNumber,
   model: 'gpt-4o',
   prompt: 'You are a helpful assistant.',
-  settings: { temperature: 1 },
+  settings: { temperature: 1 } as { temperature: number } | string,
   status: 'ready',
   isLive,
   description: null as string | null,
   insertedAt: '2024-10-16T15:00:00Z' as string | null,
   updatedAt: '2024-10-16T15:00:00Z' as string | null,
-  vectorStore: null,
+  vectorStore: null as AssistantVersion['vectorStore'],
 });
 
 const versionsMock = (assistantVersions = [version(1, true), version(2, false)]) => ({
@@ -204,7 +205,8 @@ describe('edit mode', () => {
       },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock()]);
+    // with no versions the editor falls back to the assistant record
+    renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock([])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
@@ -415,7 +417,7 @@ describe('unsaved changes', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
     });
-    expect(screen.getByTestId('promptInput')).toHaveValue('');
+    expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
     expect(screen.getByTestId('publishButton')).toBeInTheDocument();
   });
 
@@ -540,7 +542,7 @@ describe('unsaved changes', () => {
         variables: {
           updateAssistantId: '1',
           // no `temperature` key at all — the schema would reject an empty string
-          input: { instructions: '', model: 'gpt-4o', name: 'Assistant-405db438' },
+          input: { instructions: 'You are a helpful assistant.', model: 'gpt-4o', name: 'Assistant-405db438' },
         },
       },
       result: { data: { updateAssistant: { errors: null } } },
@@ -704,7 +706,8 @@ describe('knowledge base', () => {
         variables: {
           updateAssistantId: '1',
           input: {
-            instructions: '',
+            // the editor is loaded from the live version, not the assistant record
+            instructions: 'You are a helpful assistant.',
             model: 'gpt-4o',
             temperature: 1,
             knowledgeBaseVersionId: 'kbv-9',
@@ -966,5 +969,166 @@ describe('unsaved changes across tabs', () => {
       expect(screen.getByTestId('list-page')).toBeInTheDocument();
     });
     expect(screen.queryByText('Leave without saving?')).not.toBeInTheDocument();
+  });
+});
+
+describe('switching versions', () => {
+  const liveV1 = { ...version(1, true), prompt: 'You are a helpful assistant.', model: 'gpt-4o' };
+  const draftV2 = {
+    ...version(2, false),
+    prompt: 'Answer in one line.',
+    model: 'gpt-4.1',
+    settings: { temperature: 0.5 },
+  };
+
+  const openVersionMenu = async () => {
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+  };
+
+  test('loads the selected version prompt, model and temperature', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
+    });
+    expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4o');
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
+    });
+    expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(0.5);
+    // loading a version is not an edit
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('parses settings that arrive as a JSON string', async () => {
+    const stringSettings = { ...draftV2, settings: JSON.stringify({ temperature: 0.7 }) };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, stringSettings])]);
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('temperatureInput')).toHaveValue(0.7);
+    });
+  });
+
+  test('asks before throwing away unsaved edits, and keeps them on cancel', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'My own words' } });
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    expect(await screen.findByText('Switch version?')).toBeInTheDocument();
+    expect(screen.getByTestId('promptInput')).toHaveValue('My own words');
+
+    fireEvent.click(screen.getByText('Keep editing'));
+    await waitFor(() => {
+      expect(screen.queryByText('Switch version?')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('My own words');
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+  });
+
+  test('confirming the switch loads the other version', async () => {
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'My own words' } });
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(await screen.findByText('Switch version'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
+    });
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('the knowledge base follows the selected version, and falls back when it has none', async () => {
+    const versionWithStore = {
+      ...draftV2,
+      vectorStore: {
+        id: 'vs-2',
+        vectorStoreId: 'vs_two',
+        knowledgeBaseVersionId: 'kbv-2',
+        name: 'kb-2',
+        legacy: false,
+        size: 1,
+        files: [{ id: 'file-2', name: 'older_policy.pdf', fileSize: 2048 }],
+      },
+    };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, versionWithStore])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+
+    // the live version has no store of its own, so the assistant's files still show
+    expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('Accelerator Guide (1).pdf');
+
+    await openVersionMenu();
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('older_policy.pdf');
+    });
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('a save moves the selection onto the version it just created', async () => {
+    const saveMock = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          input: {
+            instructions: 'Be concise.',
+            model: 'gpt-4o',
+            temperature: 1,
+            name: 'Assistant-405db438',
+          },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+    const savedV3 = { ...version(3, false), prompt: 'Be concise.', model: 'gpt-4o' };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock([liveV1, draftV2]),
+      saveMock,
+      getAssistant('1'),
+      versionsMock([liveV1, draftV2, savedV3]),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    // the pill follows the new version instead of staying on the live one
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 3');
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('Be concise.');
   });
 });

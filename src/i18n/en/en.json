@@ -1013,5 +1013,8 @@
   "Downloads are not available yet": "Downloads are not available yet",
   "This tab has unsaved changes": "This tab has unsaved changes",
   "Leave without saving?": "Leave without saving?",
-  "Your changes have not been saved as a version yet.": "Your changes have not been saved as a version yet."
+  "Your changes have not been saved as a version yet.": "Your changes have not been saved as a version yet.",
+  "Switch version?": "Switch version?",
+  "Switch version": "Switch version",
+  "Loads the prompt and settings saved in that version into the editor.": "Loads the prompt and settings saved in that version into the editor."
 }

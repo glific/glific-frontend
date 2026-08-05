@@ -69,3 +69,22 @@ export const LeaveDialog = ({ onConfirm, onCancel }: LeaveDialogProps) => {
     />
   );
 };
+
+export interface SwitchVersionDialogProps {
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export const SwitchVersionDialog = ({ onConfirm, onCancel }: SwitchVersionDialogProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <WarningDialog
+      title={t('Switch version?')}
+      subtitle={t('Loads the prompt and settings saved in that version into the editor.')}
+      buttonOk={t('Switch version')}
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+    />
+  );
+};

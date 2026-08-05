@@ -875,5 +875,8 @@
   "Downloads are not available yet": "डाउनलोड अभी उपलब्ध नहीं है",
   "This tab has unsaved changes": "इस टैब में सहेजे नहीं गए बदलाव हैं",
   "Leave without saving?": "बिना सहेजे छोड़ें?",
-  "Your changes have not been saved as a version yet.": "आपके बदलाव अभी तक किसी संस्करण के रूप में सहेजे नहीं गए हैं।"
+  "Your changes have not been saved as a version yet.": "आपके बदलाव अभी तक किसी संस्करण के रूप में सहेजे नहीं गए हैं।",
+  "Switch version?": "संस्करण बदलें?",
+  "Switch version": "संस्करण बदलें",
+  "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।"
 }
