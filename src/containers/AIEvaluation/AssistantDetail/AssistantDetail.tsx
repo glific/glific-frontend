@@ -341,17 +341,19 @@ export const AssistantDetail = () => {
             </Button>
           </div>
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            className={styles.PublishButton}
-            onClick={handlePublish}
-            loading={publishing}
-            disabled={!selectedVersion || selectedVersion.isLive}
-            data-testid="publishButton"
-          >
-            {t('Publish & Go Live')}
-          </Button>
+          !isCreateMode && (
+            <Button
+              variant="contained"
+              color="primary"
+              className={styles.PublishButton}
+              onClick={handlePublish}
+              loading={publishing}
+              disabled={!selectedVersion || selectedVersion.isLive}
+              data-testid="publishButton"
+            >
+              {t('Publish & Go Live')}
+            </Button>
+          )
         )}
       </div>
 
