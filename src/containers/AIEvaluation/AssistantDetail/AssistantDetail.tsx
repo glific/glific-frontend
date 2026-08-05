@@ -336,7 +336,6 @@ export const AssistantDetail = () => {
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
   const vectorStore = selectedVersion ? selectedVersion.vectorStore : assistant?.vectorStore;
 
-  // a tab appears here once it is built; anything missing falls through to "coming soon"
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
     persona: (
       <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
