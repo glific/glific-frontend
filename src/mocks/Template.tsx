@@ -1257,10 +1257,6 @@ export const HSM_LIST_V2 = [
   templateCountV2PendingMock(),
 ];
 
-// Template library modal: Meta's pre-approved catalog via the templateLibrary
-// query — a live, org-scoped, read-only passthrough to Gupshup's Partner API
-// (never a SessionTemplate). The frontend always fetches the whole catalog in
-// one shot (no filter args) and does every bit of grouping/filtering client-side.
 export const templateLibraryData = [
   {
     elementName: 'account_creation_confirmation_3',

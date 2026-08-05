@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { FormControl, MenuItem, Select } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router';
 import { t } from 'i18next';
@@ -8,6 +7,7 @@ import { t } from 'i18next';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { TEMPLATE_LIBRARY } from 'graphql/queries/Template';
 import { messagePreview } from '../HSMListV2.helper';
 
@@ -46,10 +46,10 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   const languageOptions = getLanguageOptions(utilityEntries);
   const groups = buildLibraryGroups(utilityEntries, language, search);
   const shownCount = countVisibleEntries(groups);
-  // When a search term is active, only surface groups that actually contain a
-  // match — hide the "No … match" placeholder groups entirely. The dimmed
-  // empty-group hint is intentionally kept for the language filter (no search),
-  // so narrowing by language doesn't make the catalog look broken.
+  const languageDropdownOptions = [
+    { id: '', label: t('All languages') },
+    ...languageOptions.map((code) => ({ id: code, label: languageDisplayName(code) })),
+  ];
   const visibleGroups = search.trim() ? groups.filter((group) => group.entries.length > 0) : groups;
 
   const toggleGroup = (usecase: string) => {
@@ -102,23 +102,21 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
               onReset={() => setSearch('')}
               className={styles.SearchBarField}
             />
-            <FormControl className={styles.LanguageFormControl}>
-              <Select
-                aria-label={t('Filter by language')}
-                value={language}
-                onChange={(event) => setLanguage(event.target.value)}
-                className={styles.LanguageDropDown}
-                displayEmpty
-                data-testid="library-language-filter"
-              >
-                <MenuItem value="">{t('All languages')}</MenuItem>
-                {languageOptions.map((code) => (
-                  <MenuItem key={code} value={code}>
-                    {languageDisplayName(code)}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <div className={styles.LanguageFormControl}>
+              <Dropdown
+                placeholder=""
+                options={languageDropdownOptions}
+                field={{
+                  name: 'language',
+                  value: language,
+                  onChange: (event: any) => setLanguage(event.target.value),
+                  'aria-label': t('Filter by language'),
+                  'data-testid': 'library-language-filter',
+                  className: styles.LanguageDropDown,
+                  displayEmpty: true,
+                }}
+              />
+            </div>
           </div>
 
           {loading ? (

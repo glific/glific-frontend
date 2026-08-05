@@ -80,7 +80,6 @@ describe('HSMV2 edit mode', () => {
       </MockedProvider>
     );
 
-    // the detail form is collapsed until a language row's "View" is clicked.
     await waitFor(() => {
       expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
@@ -127,9 +126,6 @@ describe('HSMV2 edit mode', () => {
   });
 
   test('copy mode prefixes the label with "Copy of" and leaves the element name blank', async () => {
-    // copy is a create-from-source flow, so it lives on /add with the source
-    // id in navigation state — not on a /:id route (there's no "edit" for an
-    // HSM, only view; a real /:id route always renders read-only).
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, ...CREATE_SESSION_TEMPLATE_MOCK];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
@@ -145,8 +141,6 @@ describe('HSMV2 edit mode', () => {
       expect(screen.getByText('Copy HSM Template')).toBeInTheDocument();
     });
 
-    // shortcode/isActive aren't carried over in copy mode — only the label is prefilled
-    // (with a "Copy of" prefix), so the user has to type a fresh element name.
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
     });
@@ -174,19 +168,12 @@ describe('HSMV2 add mode', () => {
 
     expect(screen.getByTestId('back-button')).toBeInTheDocument();
     expect(screen.getByTestId('simulator-container')).toBeInTheDocument();
-
-    // there's no separate Title field — the backend derives it from shortcode + language.
     expect(screen.queryByPlaceholderText('Title')).not.toBeInTheDocument();
 
-    // creating an HSM here always creates a brand new template — the "translate
-    // existing HSM" flow (and its element-name dropdown) lives elsewhere.
     expect(screen.queryByText('Translate existing HSM?')).not.toBeInTheDocument();
     expect(screen.getByPlaceholderText('Element name').tagName).toBe('INPUT');
-
-    // category tiles are rendered from the dynamic category list
     expect(screen.getByText('Account_update')).toBeInTheDocument();
 
-    // interactive button type tiles
     expect(screen.getByText('Quick Reply')).toBeInTheDocument();
     expect(screen.getByText('Call to Action')).toBeInTheDocument();
 
@@ -229,16 +216,10 @@ describe('HSMV2 add mode', () => {
       expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
     });
 
-    // the message body is a Lexical contentEditable, not a form input — libraryTemplate.body
-    // must reach it via the editor's defaultValue prop, not just internal React state.
     await waitFor(() => {
       const editorText = screen.getByTestId('editor-body').textContent || '';
       expect(editorText).toContain('Hi {{1}}, your order has shipped.');
     });
-
-    // both Call-to-Action buttons from the library entry must survive — the templateType-watching
-    // effect (which auto-adds one *blank* button row on a user tile click) must not fire here and
-    // wipe the drafted buttons down to a single empty one.
     await waitFor(() => {
       expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
       expect(screen.getByDisplayValue('+1234567890')).toBeInTheDocument();
@@ -246,8 +227,6 @@ describe('HSMV2 add mode', () => {
       expect(screen.getByDisplayValue('https://example.com/track')).toBeInTheDocument();
     });
 
-    // containerMeta.sampleText ("Hi [John], ...") must prefill the {{1}} variable's
-    // value with "John", instead of leaving the user to type their own sample.
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
     });
@@ -487,7 +466,6 @@ describe('HSMV2 add mode', () => {
     fireEvent.click(screen.getByText('Upload File'));
     expect(screen.getByText('Click to upload or drag and drop')).toBeInTheDocument();
     expect(screen.getByText('PDF (max 16MB)')).toBeInTheDocument();
-    // the Document tile should remain selected while the upload method is active
     expect(screen.getByText('Document').closest('button')?.className).toMatch(/TileSelected/);
 
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
@@ -1107,10 +1085,6 @@ describe('HSMV2 language versions', () => {
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
-    // only the anchor itself here (not familyVariants' PENDING Hindi/Marathi
-    // row) — excludeLanguageIds is now derived from the family list, so
-    // Marathi needs to still be free for this test to exercise "the anchor's
-    // own language is excluded, everything else isn't".
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
