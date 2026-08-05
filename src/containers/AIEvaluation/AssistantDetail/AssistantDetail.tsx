@@ -204,7 +204,7 @@ export const AssistantDetail = () => {
 
         {!isCreateMode && (
           <Button variant="contained" color="primary" className={styles.PublishButton} data-testid="publishButton">
-            {t('Publish & go live')}
+            {t('Publish & Go Live')}
           </Button>
         )}
       </div>
