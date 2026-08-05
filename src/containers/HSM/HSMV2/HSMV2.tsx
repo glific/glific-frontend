@@ -173,9 +173,6 @@ export const HSMV2 = () => {
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
   const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
   const [hasOpenedDetail, setHasOpenedDetail] = useState(false);
-  // snapshot of the anchor's English content, captured once when entering the
-  // add-language flow — stays fixed as a reference while the draft below (and
-  // its own body/footer/buttons state) gets translated/edited.
   const [anchorReference, setAnchorReference] = useState<{
     body: string;
     footer: string;

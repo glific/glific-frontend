@@ -90,22 +90,22 @@ test('a failed fetch shows an error notification instead of silently rendering a
   });
 });
 
-test('never shows Authentication-category entries — there is no tab to reach them from', async () => {
+test('shows entries as returned by the catalog, category filtering happens server-side', async () => {
   renderModal();
 
   await waitFor(() => {
     expect(screen.getByTestId('library-group-list')).toBeInTheDocument();
   });
 
-  expect(screen.queryByText('Otp verification')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('library-entry-otp_verification_1')).not.toBeInTheDocument();
+  expect(screen.getByText('Otp verification')).toBeInTheDocument();
+  expect(screen.getByTestId('library-entry-otp_verification_1')).toBeInTheDocument();
 });
 
-test('the footer count reflects only Utility entries', async () => {
+test('the footer count reflects the full catalog', async () => {
   renderModal();
 
   await waitFor(() => {
-    expect(screen.getByText('Showing 3 of 3 templates')).toBeInTheDocument();
+    expect(screen.getByText('Showing 4 of 4 templates')).toBeInTheDocument();
   });
 });
 

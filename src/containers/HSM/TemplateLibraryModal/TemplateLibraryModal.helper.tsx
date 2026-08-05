@@ -6,12 +6,9 @@ export interface IndexedLibraryEntry extends TemplateLibraryEntry {
   libraryIndex: number;
 }
 
-const UTILITY_CATEGORY = 'UTILITY';
-
-export const filterUtilityEntries = (entries: TemplateLibraryEntry[] = []): IndexedLibraryEntry[] =>
-  entries
-    .filter((entry) => entry.category === UTILITY_CATEGORY)
-    .map((entry, index) => ({ ...entry, libraryIndex: index }));
+// category is already restricted to Utility server-side.
+export const indexLibraryEntries = (entries: TemplateLibraryEntry[] = []): IndexedLibraryEntry[] =>
+  entries.map((entry, index) => ({ ...entry, libraryIndex: index }));
 
 export const usecaseLabel = (usecase: string) => {
   const label = usecase.split('_').join(' ').toLowerCase();
@@ -55,11 +52,11 @@ export interface LibraryGroup {
 }
 
 export const buildLibraryGroups = (
-  utilityEntries: IndexedLibraryEntry[],
+  entries: IndexedLibraryEntry[],
   language: string,
   search: string
 ): LibraryGroup[] => {
-  const grouped = groupByUsecase(utilityEntries);
+  const grouped = groupByUsecase(entries);
   const searchTerm = search.trim().toLowerCase();
 
   return Object.keys(grouped)

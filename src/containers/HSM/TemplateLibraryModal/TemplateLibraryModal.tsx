@@ -18,8 +18,8 @@ import {
   buildLibraryGroups,
   buildPreviewVariant,
   countVisibleEntries,
-  filterUtilityEntries,
   getLanguageOptions,
+  indexLibraryEntries,
   languageDisplayName,
   usecaseLabel,
 } from './TemplateLibraryModal.helper';
@@ -37,10 +37,6 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const [selectedEntry, setSelectedEntry] = useState<IndexedLibraryEntry | null>(null);
 
-  // cache-and-network: org active-language/category filtering happens server-side and
-  // can change between opens (e.g. an admin adding a language), so a stale Apollo cache
-  // entry must not be served as the final answer — but we still paint instantly from
-  // cache first and let the network response refresh it, since the catalog is large.
   const { data, loading, error } = useQuery(TEMPLATE_LIBRARY, { skip: !open, fetchPolicy: 'cache-and-network' });
   const showLoading = loading && !data;
 
@@ -51,9 +47,9 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   }, [error]);
 
   const entries: TemplateLibraryEntry[] = data?.templateLibrary || [];
-  const utilityEntries = filterUtilityEntries(entries);
-  const languageOptions = getLanguageOptions(utilityEntries);
-  const groups = buildLibraryGroups(utilityEntries, language, search);
+  const indexedEntries = indexLibraryEntries(entries);
+  const languageOptions = getLanguageOptions(indexedEntries);
+  const groups = buildLibraryGroups(indexedEntries, language, search);
   const shownCount = countVisibleEntries(groups);
   const languageDropdownOptions = [
     { id: '', label: t('All languages') },
@@ -185,7 +181,7 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
           <p className={styles.FooterCount}>
             {t('Showing {{shown}} of {{total}} templates', {
               shown: String(shownCount),
-              total: String(utilityEntries.length),
+              total: String(indexedEntries.length),
             })}
           </p>
         </div>
