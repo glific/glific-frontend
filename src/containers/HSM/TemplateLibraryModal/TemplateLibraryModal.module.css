@@ -179,7 +179,7 @@
 .PreviewBox {
   flex: 1 1 auto;
   min-height: 0;
-  background-image: url('../../../../assets/images/whatsappBackground.jpg');
+  background-image: url('../../../assets/images/whatsappBackground.jpg');
   background-size: contain;
   border-radius: var(--app-radius-lg);
   padding: var(--app-space-xl);
