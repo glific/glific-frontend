@@ -35,7 +35,7 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
-import { TemplateLibraryModal } from '../HSMListV2/TemplateLibraryModal/TemplateLibraryModal';
+import { TemplateLibraryModal } from '../TemplateLibraryModal/TemplateLibraryModal';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 import {
   convertButtonsToTemplate,
@@ -738,15 +738,6 @@ export const HSMV2 = () => {
       setStates({ ...draft, language: matchedLanguage });
     }
   }, [location.state?.libraryTemplate, mode, languageOptions]);
-
-  useEffect(() => {
-    if (location.state?.libraryTemplate && mode === 'create' && !languageLoading && !categoryLoading && !tagLoading) {
-      const timer = setTimeout(() => {
-        setSampleMessages((prev) => ({ ...prev }));
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [location.state?.libraryTemplate, mode, languageLoading, categoryLoading, tagLoading]);
 
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {

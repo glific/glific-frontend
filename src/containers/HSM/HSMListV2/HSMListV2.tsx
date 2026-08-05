@@ -24,7 +24,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { GET_HSM_CATEGORIES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
-import { TemplateLibraryModal } from './TemplateLibraryModal/TemplateLibraryModal';
+import { TemplateLibraryModal } from '../TemplateLibraryModal/TemplateLibraryModal';
 import styles from './HSMListV2.module.css';
 import {
   categoryLabel,

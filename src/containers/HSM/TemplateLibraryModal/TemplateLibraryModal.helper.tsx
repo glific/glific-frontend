@@ -1,4 +1,4 @@
-import { TemplateLibraryEntry, parseContainerMeta } from '../../HSMV2/HSMV2.helper';
+import { TemplateLibraryEntry, parseContainerMeta } from '../HSMV2/HSMV2.helper';
 
 export type { TemplateLibraryEntry };
 

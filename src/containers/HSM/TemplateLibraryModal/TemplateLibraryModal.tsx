@@ -10,7 +10,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { setErrorMessage } from 'common/notification';
 import { TEMPLATE_LIBRARY } from 'graphql/queries/Template';
-import { messagePreview } from '../HSMListV2.helper';
+import { messagePreview } from '../HSMListV2/HSMListV2.helper';
 
 import {
   IndexedLibraryEntry,
