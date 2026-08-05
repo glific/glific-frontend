@@ -62,7 +62,7 @@ export const HeaderActions = ({
       disabled={publishDisabled}
       data-testid="publishButton"
     >
-      {t('Publish & go live')}
+      {t('Publish & Go Live')}
     </Button>
   );
 };
