@@ -2,10 +2,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
-import { Button } from 'components/UI/Form/Button/Button';
-import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage, setNotification } from 'common/notification';
 import {
