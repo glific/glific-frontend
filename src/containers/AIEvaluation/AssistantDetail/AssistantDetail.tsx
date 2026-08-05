@@ -100,19 +100,12 @@ export const AssistantDetail = () => {
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
-  // set while the user confirms losing unsaved edits to switch version
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
-  // highest version number seen when a save started — the refetch is done once one beats it
   const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<number | null>(null);
-  // one flag for the whole save sequence — the knowledge-base rebuild has no loading state
-  // of its own, and it is the slowest step
   const [saving, setSaving] = useState(false);
   // guards against a refetch of the same version wiping what the user is typing
   const loadedKey = useRef<string | null>(null);
-
-  // a brand new assistant has nothing to prefill, so we skip both fetches entirely
   const isCreateMode = !assistantId || assistantId === 'add';
-
   const defaultAssistantName = t('Untitled assistant');
 
   const { loading, data, error } = useQuery(GET_ASSISTANT, {
@@ -141,8 +134,6 @@ export const AssistantDetail = () => {
   const selectedVersion =
     sortedVersions.find((version) => version.id === selectedVersionId) ?? liveVersion ?? sortedVersions[0];
 
-  // the selected version drives the editor: picking another one loads its prompt, settings
-  // and knowledge-base files
   useEffect(() => {
     const fetched = data?.assistant?.assistant;
     if (!fetched) return;
@@ -214,7 +205,6 @@ export const AssistantDetail = () => {
     };
 
     try {
-      // the files were uploaded when picked; this is what actually attaches them
       if (filesChanged) {
         const knowledgeBaseResponse = await createKnowledgeBase({
           variables: {
