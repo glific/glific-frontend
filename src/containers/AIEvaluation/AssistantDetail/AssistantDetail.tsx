@@ -16,9 +16,9 @@ import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
-import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
 import type { resources } from 'i18n/config';
-import { DEFAULT_MODEL_CONFIG, ModelConfig } from './assistantModels';
+import type { AssistantVersion, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { DEFAULT_MODEL_CONFIG } from './assistantModels';
 import { PersonaPrompt } from './Tabs';
 import styles from './AssistantDetail.module.css';
 

@@ -4,15 +4,13 @@ import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
+import type { ModelConfig, ReasoningEffort, Verbosity } from 'containers/AIEvaluation/types/assistantType';
 import {
   ASSISTANT_MODELS,
   EFFORT_HINTS,
-  ModelConfig,
-  ReasoningEffort,
   TEMPERATURE_MAX,
   TEMPERATURE_MIN,
   VERBOSITY_OPTIONS,
-  Verbosity,
   getModel,
   getModelParams,
 } from '../../assistantModels';
