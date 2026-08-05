@@ -17,6 +17,8 @@ import {
   translateSessionTemplateMock,
   translateSessionTemplateErrorMock,
   translateSessionTemplateResultErrorMock,
+  templateLibraryData,
+  templateLibraryMock,
 } from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { uploadMediaSuccessMock, uploadMediaFailureMock, createMediaMessageMock } from 'mocks/Attachment';
@@ -148,7 +150,7 @@ describe('HSMV2 edit mode', () => {
 });
 
 describe('HSMV2 add mode', () => {
-  const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK];
+  const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, templateLibraryMock()];
   const template = (
     <MockedProvider mocks={MOCKS} addTypename={false}>
       <MemoryRouter>
@@ -186,6 +188,35 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByText('Media Attachment')).toBeInTheDocument();
     expect(screen.getByText('Organization & Tags')).toBeInTheDocument();
     expect(screen.getByTestId('help-icon')).toBeInTheDocument();
+  });
+
+  test('the "Template library" button opens the library modal and applies the picked template on the same page', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('templateLibrary'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+    });
+
+    const libraryEntry = templateLibraryData[1];
+    fireEvent.click(await screen.findByTestId(`library-entry-${libraryEntry.elementName}`));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain(libraryEntry.body);
+    });
   });
 
   test('arriving from the Template Library prefills the body, sample variable value, and both Call-to-Action buttons, without the button-type effect clobbering them', async () => {

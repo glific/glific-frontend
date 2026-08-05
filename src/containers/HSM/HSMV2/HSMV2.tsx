@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Typography } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
+import GridViewIcon from '@mui/icons-material/GridView';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
@@ -34,6 +35,7 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
+import { TemplateLibraryModal } from '../HSMListV2/TemplateLibraryModal/TemplateLibraryModal';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 import {
   convertButtonsToTemplate,
@@ -108,6 +110,15 @@ const AutoTranslateButton = ({
   </Button>
 );
 
+// Same shortcut the HSM list page offers, surfaced here too so a user already
+// on the create page doesn't have to leave it to browse the catalog.
+const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
+  <Button variant="outlined" className={styles.AutoTranslateButton} onClick={onClick} data-testid="templateLibrary">
+    <GridViewIcon className={styles.AutoTranslateIcon} />
+    {t('Template library')}
+  </Button>
+);
+
 const SourceReferenceCard = ({ body }: { body: string }) => {
   if (!body) return null;
 
@@ -172,6 +183,7 @@ export const HSMV2 = () => {
     buttonType?: string;
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
+  const [showLibrary, setShowLibrary] = useState(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -554,6 +566,7 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionTemplateDetails',
       title: t('Template Details'),
+      action: mode === 'create' ? <TemplateLibraryButton onClick={() => setShowLibrary(true)} /> : undefined,
     },
     {
       component: AutoComplete,
@@ -717,11 +730,6 @@ export const HSMV2 = () => {
     }
   }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
 
-  // Declared before the libraryTemplate effect below: both fire in the same
-  // initial commit, and effects run in declaration order — if this ran after,
-  // its stale (pre-setStates) `variables` closure would win the race and wipe
-  // out any variable values setStates just populated (e.g. from a library
-  // draft's sample text), since both call setVariables in the same batch.
   useEffect(() => {
     setVariables(getVariables(body, variables));
   }, [body]);
@@ -734,16 +742,6 @@ export const HSMV2 = () => {
     }
   }, [location.state?.libraryTemplate, mode, languageOptions]);
 
-  // Simulator's own mount-time effects race: its `[message]` effect renders the
-  // preview, but its `[interactiveMessage]` effect (declared after, and always
-  // undefined here) unconditionally wipes it in that same commit. Simulator
-  // only actually mounts once the loading gate below clears (until then this
-  // component renders just `<Loading />`), so the nudge must wait for that —
-  // a fixed-delay timer fired too early against a real (non-instant) backend.
-  // Once loading clears, Simulator mounts and its own mount-race effects fire
-  // synchronously as part of that same commit; scheduling the nudge on a
-  // `setTimeout` here guarantees it runs on the next tick, strictly after
-  // that commit's effects have already settled.
   useEffect(() => {
     if (location.state?.libraryTemplate && mode === 'create' && !languageLoading && !categoryLoading && !tagLoading) {
       const timer = setTimeout(() => {
@@ -806,6 +804,7 @@ export const HSMV2 = () => {
 
   return (
     <div className={styles.Page}>
+      {mode === 'create' && <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />}
       {Boolean(languageAnchorId) && (
         <Heading
           backLink={`/${backButton}`}
