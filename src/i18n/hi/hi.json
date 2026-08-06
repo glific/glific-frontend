@@ -901,5 +901,6 @@
   "Happy with these responses?": "क्या इन उत्तरों से आप संतुष्ट हैं?",
   "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.": "कुछ प्रश्न खुद आज़माना अच्छी शुरुआत है — मूल्यांकन आपके गोल्डन प्रश्नोत्तर सेट के हर प्रश्न को जाँचता है और हर बार बदलने वाले उत्तर पकड़ता है।",
   "Run an evaluation": "मूल्यांकन चलाएँ",
-  "Send": "भेजें"
+  "Send": "भेजें",
+  "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।"
 }

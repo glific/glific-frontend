@@ -11,7 +11,7 @@ import {
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
-import type { AssistantVersion } from 'containers/Assistants/VersionPanel/VersionPanel';
+import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
 import AssistantDetail from './AssistantDetail';
 
@@ -219,7 +219,7 @@ describe('edit mode', () => {
     renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock([])]);
 
     await waitFor(() => {
-      expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
+      expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4.1');
     });
     expect(screen.getByTestId('temperatureInput')).toHaveValue(0.01);
 
@@ -1147,7 +1147,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
     });
-    expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4o');
+    expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4o');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     await openVersionMenu();
@@ -1156,7 +1156,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
     });
-    expect(screen.getByTestId('modelSelect')).toHaveValue('gpt-4.1');
+    expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4.1');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(0.5);
     // loading a version is not an edit
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();

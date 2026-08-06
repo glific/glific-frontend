@@ -1,27 +1,13 @@
+import type {
+  AssistantModel,
+  ModelConfig,
+  ModelParams,
+  ReasoningEffort,
+  Verbosity,
+} from 'containers/AIEvaluation/types/assistantType';
 import type { resources } from 'i18n/config';
 
 type TranslationKey = keyof (typeof resources)['en']['translation'];
-
-export type ModelKind = 'standard' | 'reasoning';
-export type ReasoningEffort = 'none' | 'minimal' | 'low' | 'medium' | 'high';
-export type Verbosity = 'low' | 'medium' | 'high';
-
-export interface AssistantModel {
-  id: string;
-  label: string;
-  kind: ModelKind;
-  blurb: TranslationKey;
-  efforts?: ReasoningEffort[];
-  defaultEffort?: ReasoningEffort;
-  temperatureWhenEffortNone?: boolean;
-}
-
-export interface ModelConfig {
-  model: string;
-  temperature: string;
-  effort: ReasoningEffort;
-  verbosity: Verbosity;
-}
 
 export const DEFAULT_MODEL_CONFIG: ModelConfig = {
   model: 'gpt-4.1',
@@ -103,12 +89,6 @@ export const EFFORT_HINTS: Record<ReasoningEffort, TranslationKey> = {
 
 export const getModel = (id: string): AssistantModel =>
   ASSISTANT_MODELS.find((entry) => entry.id === id) ?? ASSISTANT_MODELS[0];
-
-export interface ModelParams {
-  temperature: boolean;
-  effort: boolean;
-  verbosity: boolean;
-}
 
 export const getModelParams = (config: ModelConfig): ModelParams => {
   const selected = getModel(config.model);

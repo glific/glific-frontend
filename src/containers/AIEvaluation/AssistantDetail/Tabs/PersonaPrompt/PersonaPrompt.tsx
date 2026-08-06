@@ -1,18 +1,18 @@
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
+import type { ModelConfig, ReasoningEffort, Verbosity } from 'containers/AIEvaluation/types/assistantType';
 import {
   ASSISTANT_MODELS,
   EFFORT_HINTS,
-  ModelConfig,
-  ReasoningEffort,
   TEMPERATURE_MAX,
   TEMPERATURE_MIN,
   VERBOSITY_OPTIONS,
-  Verbosity,
   getModel,
   getModelParams,
 } from '../../assistantModels';
@@ -40,6 +40,11 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
 
   const selectedModel = getModel(config.model);
   const params = getModelParams(config);
+
+  const modelOptions = ASSISTANT_MODELS.map((entry) => ({
+    id: entry.id,
+    label: entry.kind === 'reasoning' ? `${entry.label} · ${t('reasoning')}` : entry.label,
+  }));
 
   const handleModelChange = (id: string) => {
     const previous = getModel(config.model);
@@ -108,33 +113,29 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
         )}
       </div>
 
-      <textarea
-        className={styles.TextArea}
+      <Input
+        textArea
         rows={6}
-        value={prompt}
-        onChange={(event) => onPromptChange(event.target.value)}
         placeholder={t(
           'Describe who this assistant is, what it helps with, what it must never do, and what language it should reply in…'
         )}
-        data-testid="promptInput"
+        field={{ name: 'prompt', value: prompt, onBlur: () => {} }}
+        onChange={onPromptChange}
+        inputProp={{ 'data-testid': 'promptInput' }}
       />
 
       <div className={styles.Divider} />
 
       <div className={styles.FieldLabel}>{t('Model')}</div>
-      <select
-        className={styles.Field}
-        value={config.model}
-        onChange={(event) => handleModelChange(event.target.value)}
-        data-testid="modelSelect"
-      >
-        {ASSISTANT_MODELS.map((entry) => (
-          <option key={entry.id} value={entry.id}>
-            {entry.label}
-            {entry.kind === 'reasoning' ? ` · ${t('reasoning')}` : ''}
-          </option>
-        ))}
-      </select>
+      <Dropdown
+        placeholder=""
+        options={modelOptions}
+        field={{
+          name: 'model',
+          value: config.model,
+          onChange: (event: { target: { value: string } }) => handleModelChange(event.target.value),
+        }}
+      />
       <div className={styles.Note} data-testid="modelBlurb">
         {t(selectedModel.blurb)}
       </div>
@@ -182,15 +183,17 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
               {t('Temperature')}
               <span className={styles.ApiName}>temperature</span>
             </div>
-            <input
-              className={styles.Field}
+            <Input
               type="number"
-              min={TEMPERATURE_MIN}
-              max={TEMPERATURE_MAX}
-              step={0.01}
-              value={config.temperature}
-              onChange={(event) => handleTemperatureChange(event.target.value)}
-              data-testid="temperatureInput"
+              placeholder=""
+              field={{ name: 'temperature', value: config.temperature, onBlur: () => {} }}
+              onChange={handleTemperatureChange}
+              inputProp={{
+                min: TEMPERATURE_MIN,
+                max: TEMPERATURE_MAX,
+                step: 0.01,
+                'data-testid': 'temperatureInput',
+              }}
             />
             <div className={styles.Note}>{t('Lower = more predictable. Keep near 0 for factual assistants.')}</div>
           </div>

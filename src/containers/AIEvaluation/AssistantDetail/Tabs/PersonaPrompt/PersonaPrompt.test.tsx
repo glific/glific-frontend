@@ -2,8 +2,15 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
-import { DEFAULT_MODEL_CONFIG, ModelConfig, getModelParams } from '../../assistantModels';
+import type { ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { DEFAULT_MODEL_CONFIG, getModelParams } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
+
+// the model field is a MUI Select — open it, then click the option
+const pickModel = (label: string) => {
+  fireEvent.mouseDown(screen.getByRole('combobox'));
+  fireEvent.click(screen.getByRole('option', { name: label }));
+};
 
 vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
   initialPromptAnswers: {},
@@ -116,7 +123,7 @@ describe('editing', () => {
   test('switching to a reasoning model applies its default effort', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
-    fireEvent.change(screen.getByTestId('modelSelect'), { target: { value: 'gpt-5' } });
+    pickModel('GPT-5 · reasoning');
 
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ model: 'gpt-5', effort: 'medium' }));
   });
@@ -124,7 +131,7 @@ describe('editing', () => {
   test('gpt-5.1 defaults to no reasoning', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
-    fireEvent.change(screen.getByTestId('modelSelect'), { target: { value: 'gpt-5.1' } });
+    pickModel('GPT-5.1 · reasoning');
 
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ model: 'gpt-5.1', effort: 'none' }));
   });
@@ -197,7 +204,7 @@ describe('editing', () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     renderTab({ model: 'gpt-4.1' });
 
-    fireEvent.change(screen.getByTestId('modelSelect'), { target: { value: 'gpt-5' } });
+    pickModel('GPT-5 · reasoning');
 
     expect(notificationSpy).toHaveBeenCalledWith(
       'Temperature is not supported on reasoning models — use reasoning effort and verbosity.'

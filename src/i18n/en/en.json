@@ -1039,5 +1039,6 @@
   "Happy with these responses?": "Happy with these responses?",
   "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.": "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.",
   "Run an evaluation": "Run an evaluation",
-  "Send": "Send"
+  "Send": "Send",
+  "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation."
 }
