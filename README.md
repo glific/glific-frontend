@@ -178,15 +178,6 @@ yarn cy:format         # Prettier write scoped to cypress/
 yarn cy:format:check   # Prettier check scoped to cypress/
 ```
 
-### CI
-
-- `e2e-tests.yml` runs the full suite (sharded via `cypress-split`) against a live backend
-  on every PR. The slow `filesearch` suite is excluded by default and only runs on PRs
-  labeled `e2e-slow` (`e2e-tests-slow.yml`).
-- `cypress-lint.yml` runs `tsc`/ESLint/Prettier scoped to `cypress/` on every push and PR.
-- `cypress-smoke.yml` is a cron job that runs `cypress/e2e/smoke.spec.ts` against
-  production and reports pass/fail to Instatus.
-
 ### Adding or updating specs
 
 Whenever you add a new page, form, dialog, or flow to the app, add or extend a spec under
