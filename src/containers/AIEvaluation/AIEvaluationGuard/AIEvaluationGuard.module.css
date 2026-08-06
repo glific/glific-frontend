@@ -1,0 +1,16 @@
+/* fills the app main column (Layout main is position: relative + height: 100%), not the
+   viewport over the side nav */
+.Panel {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-space-xl);
+  padding: var(--app-space-3xl);
+  background-color: var(--app-color-surface-raised);
+  text-align: center;
+  box-sizing: border-box;
+}
