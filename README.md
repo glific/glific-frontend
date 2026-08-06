@@ -11,6 +11,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 ---
 
 ## 📋 Table of Contents
+
 - [Pre-requisite](#pre-requisite)
   - [Software Dependencies](#software-dependencies)
     - [npm (via asdf)](#npm-via-asdf)
@@ -109,16 +110,15 @@ Visit `https://glific.test:3000` to open the app.
 
 ### Login credentials
 
-* Phone: 917834811114
+- Phone: 917834811114
 
-* Password: Secret1234!
+- Password: Secret1234!
 
 ---
 
 ### Configure Gupshup settings (Optional)
 
 After logging in:
-
 
 This step is required only if you're using Gupshup integration and have ISV credentials stored in the database.
 
@@ -151,9 +151,8 @@ this repo.
 ### Pre-requisites
 
 - The **Glific backend** ([`glific/glific`](https://github.com/glific/glific)) must be
-  running and reachable at `https://glific.test:4001`.
-- The **frontend dev server** (this repo, `yarn dev`) must be running at
-  `https://glific.test:3000`.
+  running and reachable
+- The **frontend dev server** (this repo, `yarn dev`) must be running and reachable
 - Copy `cypress.config.ts.example` to `cypress.config.ts` (gitignored) and fill in your
   local/test credentials before running Cypress locally:
 
@@ -240,5 +239,7 @@ Replace `API-PORT` with your backend API port number.
 - 📁 [Google Drive](https://glific.github.io/docs/docs/intro)
 - 📝 [Product Features](https://glific.github.io/docs/docs/category/product-features)
 - 📰 [Blogs](https://glific.org/blogs/)
-### Chat With Us  
+
+### Chat With Us
+
 - 💬 [Discord](https://discord.gg/scsrGUw)

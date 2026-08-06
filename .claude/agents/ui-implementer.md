@@ -103,12 +103,12 @@ conventions in that directory (selectors, fixtures, folder layout). If you're fi
 updating behavior that an existing spec already covers, update that spec in `cypress/`
 directly rather than skipping it because "e2e is handled elsewhere."
 
-Cypress specs need the Elixir backend running and aren't part of `yarn test`, so you
-won't be able to execute them yourself — write/update the spec file and note in your
-final report that it still needs a run via the `e2e-test-engineer` agent (or `yarn cy:open`
-/ `yarn cy:run` locally) rather than silently skipping it. Run `yarn cy:typecheck` and
-`yarn cy:lint` against your spec changes if the backend isn't available, so at least the
-static checks pass.
+Cypress specs need the Elixir backend running and aren't part of `yarn test`. If the
+backend is reachable, run your spec with `yarn cy:run` (or `yarn cy:open`) before calling
+it done. If the backend isn't available to you, don't skip the spec — write/update it
+anyway, run `yarn cy:typecheck` and `yarn cy:lint` against it so the static checks pass,
+and note in your final report that it still needs a real run (e.g. via the
+`e2e-test-engineer` agent).
 
 ## When you're done
 
