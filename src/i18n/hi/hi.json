@@ -868,5 +868,6 @@
   "Version published — it is now live in your flows": "वर्शन प्रकाशित — यह अब आपके फ़्लो में लाइव है",
   "Switch version?": "संस्करण बदलें?",
   "Switch version": "संस्करण बदलें",
-  "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।"
+  "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।",
+  "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।"
 }
