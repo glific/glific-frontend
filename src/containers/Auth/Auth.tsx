@@ -152,7 +152,11 @@ export const Auth = ({
 
   let displayErrorMessage: any = null;
   if (errorMessage) {
-    displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
+    displayErrorMessage = (
+      <div className={styles.ErrorMessage} data-testid="authErrorMessage">
+        {errorMessage}
+      </div>
+    );
   }
 
   const infoNoteClass = `${styles.InfoNote} ${(infoVariant && INFO_NOTE_VARIANT_CLASS[infoVariant]) || ''}`;

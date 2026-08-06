@@ -1,0 +1,2 @@
+export const STAGING_PHONE = process.env.PLAYWRIGHT_STAGING_PHONE || '917834811114';
+export const STAGING_PASSWORD = process.env.PLAYWRIGHT_STAGING_PASSWORD || 'Secret1234!';

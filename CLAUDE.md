@@ -248,3 +248,21 @@ yarn cy:typecheck      # tsc against cypress/tsconfig.json
 yarn cy:lint           # ESLint scoped to cypress/
 yarn cy:format:check   # Prettier check scoped to cypress/
 ```
+
+### Playwright (staging exploratory tests)
+
+A separate **Playwright** suite lives under `playwright/` (distinct from `cypress/`). It runs
+against the **staging** deployment (`PLAYWRIGHT_BASE_URL`, defaults to `https://staging.glific.com`)
+rather than a local backend, and targets adversarial/edge-case coverage (invalid input,
+injection-shaped strings, error-message quality) rather than duplicating Cypress's PR-gated
+regression suite. `playwright/global.setup.ts` logs in once and reuses the saved storage state
+across specs; `playwright/tests/auth.spec.ts` intentionally runs unauthenticated to exercise
+login failure paths. Triggered manually via `.github/workflows/playwright-staging.yml`
+(`workflow_dispatch`), reading `PLAYWRIGHT_STAGING_BASE_URL` / `PLAYWRIGHT_STAGING_PHONE` /
+`PLAYWRIGHT_STAGING_PASSWORD` repo secrets.
+
+```bash
+yarn pw:test         # headless run against staging
+yarn pw:test:ui      # interactive Playwright UI runner
+yarn pw:report       # open the last HTML report
+```

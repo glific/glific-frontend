@@ -33,6 +33,11 @@ cypress/screenshots
 cypress/videos
 cypress/downloads
 
+playwright-report/
+test-results/
+blob-report/
+playwright/.auth/
+
 /priv
 /.vscode
 

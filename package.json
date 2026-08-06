@@ -85,6 +85,10 @@
     "cy:lint:fix": "eslint --config cypress/eslint.config.mjs cypress --fix",
     "cy:format": "prettier --write \"cypress/**/*.{ts,js}\"",
     "cy:format:check": "prettier --check \"cypress/**/*.{ts,js}\"",
+    "pw:test": "playwright test",
+    "pw:test:ui": "playwright test --ui",
+    "pw:report": "playwright show-report",
+    "pw:typecheck": "tsc --noEmit -p playwright/tsconfig.json",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public",
     "extract-translations": "i18next",
@@ -115,6 +119,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
