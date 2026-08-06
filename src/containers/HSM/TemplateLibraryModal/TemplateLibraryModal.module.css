@@ -3,6 +3,14 @@
   max-width: 950px !important;
 }
 
+.AboveSimulator {
+  z-index: 10001 !important;
+}
+
+.LanguageMenu {
+  z-index: 10002 !important;
+}
+
 .ModalContent {
   padding: 0 var(--app-space-3xl) var(--app-space-3xl) !important;
 }

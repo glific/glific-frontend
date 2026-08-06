@@ -264,14 +264,14 @@ const HSMListV2 = () => {
 
   const secondaryButton = (
     <div className={styles.SecondaryButton}>
-      {templateLibraryButton}
-      {syncHSMButton}
       <div className={styles.ImportButton}>
         <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
           {t('View Sample')}
         </a>
         <ImportButton title={t('Bulk apply')} onImport={handleStartImport} afterImport={handleBulkApply} />
       </div>
+      {syncHSMButton}
+      {templateLibraryButton}
     </div>
   );
 

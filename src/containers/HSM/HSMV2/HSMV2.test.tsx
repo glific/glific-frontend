@@ -206,6 +206,7 @@ describe('HSMV2 add mode', () => {
     });
 
     const libraryEntry = templateLibraryData[1];
+    fireEvent.click(await screen.findByTestId(`library-group-header-${libraryEntry.usecase}`));
     fireEvent.click(await screen.findByTestId(`library-entry-${libraryEntry.elementName}`));
     fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -256,6 +257,7 @@ describe('HSMV2 add mode', () => {
     await waitFor(() => {
       expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
     });
+    fireEvent.click(await screen.findByTestId('library-group-header-OTHER'));
     fireEvent.click(await screen.findByTestId(`library-entry-${firstEntry.elementName}`));
     fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -274,6 +276,7 @@ describe('HSMV2 add mode', () => {
       expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
     });
     const secondEntry = templateLibraryData[1];
+    fireEvent.click(await screen.findByTestId(`library-group-header-${secondEntry.usecase}`));
     fireEvent.click(await screen.findByTestId(`library-entry-${secondEntry.elementName}`));
     fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -1433,12 +1436,14 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'footer',
-          buttons: ['View Account Balance', 'View Mini Statement'],
+          // the anchor's own {{1}} sample value ("003", from its example field)
+          // rides along after the button texts and gets split back out by position.
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
         },
         {
           body: 'मराठी अनुवादित संदेश',
           footer: 'मराठी पादलेख',
-          buttons: ['खाता शेष देखें', 'मिनी स्टेटमेंट देखें'],
+          buttons: ['खाता शेष देखें', 'मिनी स्टेटमेंट देखें', '००३'],
         }
       ),
     ];
@@ -1480,7 +1485,81 @@ describe('HSMV2 language versions', () => {
     // the quick-reply button drafts also get filled with the translated text.
     expect(screen.getByDisplayValue('खाता शेष देखें')).toBeInTheDocument();
     expect(screen.getByDisplayValue('मिनी स्टेटमेंट देखें')).toBeInTheDocument();
+    // ...and so does the {{1}} variable's value, alongside its English reference.
+    expect(screen.getByDisplayValue('००३')).toBeInTheDocument();
     expect(setNotification).toHaveBeenCalledWith('Content translated — review and adjust before submitting.');
+  });
+
+  test('re-running Auto-translate re-fills the message body even when the translation is identical to before', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const translateRequest = {
+      languageId: '2',
+      body: anchorBody,
+      footer: 'footer',
+      buttons: ['View Account Balance', 'View Mini Statement', '003'],
+    };
+    const translateResult = {
+      body: 'मराठी अनुवादित संदेश',
+      footer: 'मराठी पादलेख',
+      buttons: ['खाता शेष देखें', 'मिनी स्टेटमेंट देखें', '००३'],
+    };
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(anchorOnly),
+
+      translateSessionTemplateMock(translateRequest, translateResult),
+      translateSessionTemplateMock(translateRequest, translateResult),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('मराठी अनुवादित संदेश');
+    });
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('मराठी अनुवादित संदेश');
+      expect(editorText).toContain('{{2}}');
+    });
+
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).not.toContain('{{2}}');
+      expect(editorText).toContain('मराठी अनुवादित संदेश');
+    });
   });
 
   test('shows an error and leaves the draft untouched when Auto-translate fails', async () => {
@@ -1497,7 +1576,7 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'footer',
-          buttons: ['View Account Balance', 'View Mini Statement'],
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
         },
         'network error'
       ),
@@ -1594,13 +1673,13 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'Sample footer',
-          buttons: ['Call Us', 'Visit Us'],
+          buttons: ['Call Us', 'Visit Us', '003'],
         },
         {
           body: 'translated body',
           footer: 'translated footer',
           // the second entry is blank, exercising the "|| button.title" fallback.
-          buttons: ['बुलाओ', ''],
+          buttons: ['बुलाओ', '', '००३'],
         }
       ),
     ];
@@ -1639,9 +1718,10 @@ describe('HSMV2 language versions', () => {
       expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('बुलाओ');
     });
     expect(screen.getByPlaceholderText('e.g., Track Order')).toHaveValue('');
+    expect(screen.getByDisplayValue('००३')).toBeInTheDocument();
   });
 
-  test("switching the draft's button type away from the anchor before Auto-translate sends no button text and ignores any returned buttons", async () => {
+  test("switching the draft's button type away from the anchor before Auto-translate sends no button text, but still translates the variable value", async () => {
     const anchorOnly = [familyVariants[0]];
     const anchorBody =
       'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
@@ -1651,8 +1731,10 @@ describe('HSMV2 language versions', () => {
       getHSMTemplateTypeText,
       familyFetchMock(anchorOnly),
       translateSessionTemplateMock(
-        { languageId: '2', body: anchorBody, footer: 'footer', buttons: undefined },
-        { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['XYZ'] }
+        // no button text sent — the type mismatch means neither branch applies —
+        // but the {{1}} variable value still rides along on its own.
+        { languageId: '2', body: anchorBody, footer: 'footer', buttons: ['003'] },
+        { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['००३'] }
       ),
     ];
     render(
@@ -1694,6 +1776,7 @@ describe('HSMV2 language versions', () => {
       expect(screen.getByDisplayValue('मराठी पादलेख')).toBeInTheDocument();
     });
     expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('');
+    expect(screen.getByDisplayValue('००३')).toBeInTheDocument();
   });
 
   test('shows the server-provided error and skips applying content when Auto-translate returns a GraphQL-level error', async () => {
@@ -1710,7 +1793,7 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'footer',
-          buttons: ['View Account Balance', 'View Mini Statement'],
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
         },
         { key: 'translation_error', message: 'Unable to translate content right now.' }
       ),
