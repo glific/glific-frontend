@@ -96,14 +96,12 @@ catalog entry (README or story) for it so the next person doesn't rebuild it aga
 
 ## Cypress E2E coverage
 
-E2E specs live in **this repo**, under `cypress/` — there is no separate Cypress repo
-anymore. Whenever you add a new user-facing feature (a new page, form, dialog, or a new
-flow through existing UI), add or extend a Cypress spec for it under `cypress/e2e/`
-alongside the unit tests, following the existing spec conventions in that directory
-(selectors, fixtures, folder layout). If you're fixing or updating behavior that an
-existing spec already covers, update that spec in `cypress/` directly — do not look for
-or reference a separate Cypress repo, and do not skip the update because "e2e is handled
-elsewhere."
+E2E specs live under `cypress/` in this repo. Whenever you add a new user-facing feature
+(a new page, form, dialog, or a new flow through existing UI), add or extend a Cypress
+spec for it under `cypress/e2e/` alongside the unit tests, following the existing spec
+conventions in that directory (selectors, fixtures, folder layout). If you're fixing or
+updating behavior that an existing spec already covers, update that spec in `cypress/`
+directly rather than skipping it because "e2e is handled elsewhere."
 
 Cypress specs need the Elixir backend running and aren't part of `yarn test`, so you
 won't be able to execute them yourself — write/update the spec file and note in your

@@ -145,10 +145,8 @@ yarn extract-translations # Extract English strings for Lokalise
 
 ## End-to-End (Cypress) Testing
 
-> 💡 The Cypress E2E suite used to live in a separate `glific-cypress` repo. It has since
-> been **merged into this frontend repo** — all specs, fixtures, and support files now
-> live under [`cypress/`](./cypress). If you're looking for the old repo, stop — make any
-> new or updated E2E test changes here instead.
+All Cypress specs, fixtures, and support files live under [`cypress/`](./cypress) in
+this repo.
 
 ### Pre-requisites
 
@@ -193,9 +191,8 @@ yarn cy:format:check   # Prettier check scoped to cypress/
 ### Adding or updating specs
 
 Whenever you add a new page, form, dialog, or flow to the app, add or extend a spec under
-`cypress/e2e/` in **this** repo, following the existing folder/fixture conventions. If
-you're fixing behavior an existing spec covers, update that spec here too — there is no
-longer a separate Cypress repo to keep in sync.
+`cypress/e2e/`, following the existing folder/fixture conventions. If you're fixing
+behavior an existing spec covers, update that spec too.
 
 ---
 

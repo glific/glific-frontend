@@ -45,9 +45,9 @@ duplication and name the existing component it overlaps with.
 entry (README line or story) was added. Flag if missing — an undocumented shared component
 is exactly how duplication creeps back in.
 
-**Cypress coverage.** E2E specs live in this repo under `cypress/e2e/` — there is no
-separate Cypress repo anymore. For every new page/form/dialog/flow in the diff, confirm a
-corresponding spec was added or an existing one extended under `cypress/`; for every diff
+**Cypress coverage.** E2E specs live in this repo under `cypress/e2e/`. For every new
+page/form/dialog/flow in the diff, confirm a corresponding spec was added or an existing
+one extended under `cypress/`; for every diff
 that changes behavior an existing spec already covers, confirm that spec was updated in
 `cypress/` rather than left stale. Flag missing or stale coverage here.
 
