@@ -879,5 +879,6 @@
   "Switch version?": "संस्करण बदलें?",
   "Switch version": "संस्करण बदलें",
   "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।",
-  "This version is still being prepared": "यह संस्करण अभी तैयार किया जा रहा है"
+  "This version is still being prepared": "यह संस्करण अभी तैयार किया जा रहा है",
+  "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।"
 }

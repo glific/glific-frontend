@@ -1017,5 +1017,6 @@
   "Switch version?": "Switch version?",
   "Switch version": "Switch version",
   "Loads the prompt and settings saved in that version into the editor.": "Loads the prompt and settings saved in that version into the editor.",
-  "This version is still being prepared": "This version is still being prepared"
+  "This version is still being prepared": "This version is still being prepared",
+  "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation."
 }
