@@ -217,6 +217,77 @@ describe('HSMV2 add mode', () => {
       const editorText = screen.getByTestId('editor-body').textContent || '';
       expect(editorText).toContain(libraryEntry.body);
     });
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorMessage')).toHaveTextContent(libraryEntry.body);
+    });
+  });
+
+  test("picking a different template fully replaces the previous one — stale language, body, and buttons don't linger", async () => {
+    const firstEntry = {
+      elementName: 'order_shipped_marathi',
+      category: 'UTILITY',
+      body: 'तुमची ऑर्डर पाठवली आहे.',
+      languageCode: 'mr',
+      containerMeta: JSON.stringify({
+        buttons: [{ type: 'URL', text: 'Track Order', url: 'https://example.com/track' }],
+      }),
+    };
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      ...CREATE_SESSION_TEMPLATE_MOCK,
+      templateLibraryMock([firstEntry]),
+      templateLibraryMock(),
+    ];
+
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('templateLibrary'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+    });
+    fireEvent.click(await screen.findByTestId(`library-entry-${firstEntry.elementName}`));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain(firstEntry.body);
+    });
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Marathi');
+    });
+    expect(screen.getByDisplayValue('Track Order')).toBeInTheDocument();
+
+    // pick a second, buttonless English template without reloading the page
+    fireEvent.click(screen.getByTestId('templateLibrary'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+    });
+    const secondEntry = templateLibraryData[1];
+    fireEvent.click(await screen.findByTestId(`library-entry-${secondEntry.elementName}`));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain(secondEntry.body);
+    });
+
+    const editorText = screen.getByTestId('editor-body').textContent || '';
+    expect(editorText).not.toContain(firstEntry.body);
+    expect(screen.queryByDisplayValue('Track Order')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('English');
+    });
   });
 
   test('arriving from the Template Library prefills the body, sample variable value, and both Call-to-Action buttons, without the button-type effect clobbering them', async () => {
@@ -251,6 +322,11 @@ describe('HSMV2 add mode', () => {
       const editorText = screen.getByTestId('editor-body').textContent || '';
       expect(editorText).toContain('Hi {{1}}, your order has shipped.');
     });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorMessage')).toHaveTextContent('Hi [John], your order has shipped.');
+    });
+
     await waitFor(() => {
       expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
       expect(screen.getByDisplayValue('+1234567890')).toBeInTheDocument();

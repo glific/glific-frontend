@@ -300,6 +300,8 @@ export const HSMV2 = () => {
     if (languageIdValue) {
       const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
       setLanguageId(selectedLanguage || languageIdValue);
+    } else {
+      setLanguageId(null);
     }
 
     if (mode !== 'copy') {
@@ -322,7 +324,11 @@ export const HSMV2 = () => {
       const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
       setTemplateButtons(buttonsVal);
       setTemplateType(BUTTON_OPTIONS.find((btn: any) => btn.id === templateButtonType));
-      setIsAddButtonChecked(hasButtons);
+      setIsAddButtonChecked(true);
+    } else {
+      setTemplateButtons([]);
+      setTemplateType(BUTTON_OPTIONS[0]);
+      setIsAddButtonChecked(false);
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -785,6 +791,15 @@ export const HSMV2 = () => {
   useEffect(() => {
     setSimulatorMessage(computeSampleText(), footer);
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
+
+  useEffect(() => {
+    if (location.state?.libraryTemplate && mode === 'create' && !languageLoading && !categoryLoading && !tagLoading) {
+      const timer = setTimeout(() => {
+        setSampleMessages((prev) => ({ ...prev }));
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state?.libraryTemplate, mode, languageLoading, categoryLoading, tagLoading]);
 
   if (languageLoading || categoryLoading || tagLoading) {
     return <Loading />;
