@@ -934,5 +934,6 @@
   "need improvement": "need improvement",
   "not evaluated": "not evaluated",
   "Are you sure you want to delete the assistant": "Are you sure you want to delete the assistant",
-  "Assistant deleted successfully": "Assistant deleted successfully"
+  "Assistant deleted successfully": "Assistant deleted successfully",
+  "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation."
 }

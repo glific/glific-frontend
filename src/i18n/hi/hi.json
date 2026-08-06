@@ -792,5 +792,6 @@
   "need improvement": "सुधार आवश्यक",
   "not evaluated": "मूल्यांकन नहीं हुआ",
   "Are you sure you want to delete the assistant": "क्या आप वाकई इस असिस्टेंट को हटाना चाहते हैं",
-  "Assistant deleted successfully": "असिस्टेंट सफलतापूर्वक हटाया गया"
+  "Assistant deleted successfully": "असिस्टेंट सफलतापूर्वक हटाया गया",
+  "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।"
 }
