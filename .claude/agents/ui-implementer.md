@@ -94,6 +94,24 @@ Only then create a new shared component — and put it in the right layer
 (`components/UI/**`), not duplicated inline in the feature. If you create one, add a short
 catalog entry (README or story) for it so the next person doesn't rebuild it again.
 
+## Cypress E2E coverage
+
+E2E specs live in **this repo**, under `cypress/` — there is no separate Cypress repo
+anymore. Whenever you add a new user-facing feature (a new page, form, dialog, or a new
+flow through existing UI), add or extend a Cypress spec for it under `cypress/e2e/`
+alongside the unit tests, following the existing spec conventions in that directory
+(selectors, fixtures, folder layout). If you're fixing or updating behavior that an
+existing spec already covers, update that spec in `cypress/` directly — do not look for
+or reference a separate Cypress repo, and do not skip the update because "e2e is handled
+elsewhere."
+
+Cypress specs need the Elixir backend running and aren't part of `yarn test`, so you
+won't be able to execute them yourself — write/update the spec file and note in your
+final report that it still needs a run via the `e2e-test-engineer` agent (or `yarn cy:open`
+/ `yarn cy:run` locally) rather than silently skipping it. Run `yarn cy:typecheck` and
+`yarn cy:lint` against your spec changes if the backend isn't available, so at least the
+static checks pass.
+
 ## When you're done
 
 Report back explicitly:
@@ -102,3 +120,5 @@ Report back explicitly:
 - what you extended (and how)
 - what (if anything) you had to build new, and why nothing existing covered it
 - any design-fundamentals checks above you couldn't satisfy, and why
+- what Cypress spec(s) you added or updated under `cypress/e2e/`, and whether they still
+  need a real run against the backend

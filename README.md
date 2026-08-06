@@ -24,6 +24,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
   - [Login credentials](#login-credentials)
   - [Configure Gupshup settings](#configure-gupshup-settings-optional)
 - [Available Scripts](#available-scripts)
+- [End-to-End (Cypress) Testing](#end-to-end-cypress-testing)
 - [Docker Image for Production](#docker-image-for-production)
 - [Localization](#localization)
 - [Deploying Release on ECS with CD](#deploying-release-on-ecs-with-cd)
@@ -139,6 +140,62 @@ yarn test:coverage       # Run tests with coverage
 yarn build               # Create optimized production build
 yarn extract-translations # Extract English strings for Lokalise
 ```
+
+---
+
+## End-to-End (Cypress) Testing
+
+> 💡 The Cypress E2E suite used to live in a separate `glific-cypress` repo. It has since
+> been **merged into this frontend repo** — all specs, fixtures, and support files now
+> live under [`cypress/`](./cypress). If you're looking for the old repo, stop — make any
+> new or updated E2E test changes here instead.
+
+### Pre-requisites
+
+- The **Glific backend** ([`glific/glific`](https://github.com/glific/glific)) must be
+  running and reachable at `https://glific.test:4001`.
+- The **frontend dev server** (this repo, `yarn dev`) must be running at
+  `https://glific.test:3000`.
+- Copy `cypress.config.ts.example` to `cypress.config.ts` (gitignored) and fill in your
+  local/test credentials before running Cypress locally:
+
+  ```bash
+  cp cypress.config.ts.example cypress.config.ts
+  ```
+
+### Running the tests
+
+```bash
+yarn cy:open           # interactive Cypress runner
+yarn cy:run            # headless run
+```
+
+### Linting & formatting
+
+Cypress specs are linted/formatted independently of the main app, scoped to `cypress/`:
+
+```bash
+yarn cy:typecheck      # tsc against cypress/tsconfig.json
+yarn cy:lint           # ESLint scoped to cypress/
+yarn cy:format         # Prettier write scoped to cypress/
+yarn cy:format:check   # Prettier check scoped to cypress/
+```
+
+### CI
+
+- `e2e-tests.yml` runs the full suite (sharded via `cypress-split`) against a live backend
+  on every PR. The slow `filesearch` suite is excluded by default and only runs on PRs
+  labeled `e2e-slow` (`e2e-tests-slow.yml`).
+- `cypress-lint.yml` runs `tsc`/ESLint/Prettier scoped to `cypress/` on every push and PR.
+- `cypress-smoke.yml` is a cron job that runs `cypress/e2e/smoke.spec.ts` against
+  production and reports pass/fail to Instatus.
+
+### Adding or updating specs
+
+Whenever you add a new page, form, dialog, or flow to the app, add or extend a spec under
+`cypress/e2e/` in **this** repo, following the existing folder/fixture conventions. If
+you're fixing behavior an existing spec covers, update that spec here too — there is no
+longer a separate Cypress repo to keep in sync.
 
 ---
 
