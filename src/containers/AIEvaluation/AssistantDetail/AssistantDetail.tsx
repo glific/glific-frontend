@@ -143,11 +143,15 @@ export const AssistantDetail = () => {
     <div className={styles.Page} data-testid="assistantDetailContainer">
       <div className={styles.PageHeader} data-testid="heading">
         <div className={styles.HeaderLeft}>
-          <BackIcon
-            className={styles.BackIcon}
+          <button
+            type="button"
+            className={styles.BackButton}
             onClick={() => navigate('/ai-evaluation-v2')}
+            aria-label={t('Back')}
             data-testid="back-button"
-          />
+          >
+            <BackIcon className={styles.BackIcon} />
+          </button>
           {isEditingName ? (
             <div className={styles.NameEditRow}>
               <input
