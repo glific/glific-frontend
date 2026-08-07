@@ -102,11 +102,6 @@
   font-weight: 500;
   width: fit-content;
   cursor: pointer;
-
-  svg {
-    width: var(--app-size-icon-lg);
-    height: var(--app-size-icon-lg);
-  }
 }
 
 .AssistantIdEditing {
