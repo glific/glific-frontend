@@ -1,7 +1,5 @@
 .Tabs {
   display: flex;
-  /* stretch, not center: the taller SANDBOX tab would otherwise leave the other tabs
-     floating above the row's baseline, and their underlines with them */
   align-items: stretch;
   gap: var(--app-space-3xl);
   margin: 0 var(--app-space-3xl);
@@ -11,8 +9,6 @@
   position: relative;
 }
 
-/* the row's line is drawn under the tabs rather than on the container, so the active
-   tab's bar lands on that line instead of a pixel above it */
 .Tabs::after {
   content: '';
   position: absolute;

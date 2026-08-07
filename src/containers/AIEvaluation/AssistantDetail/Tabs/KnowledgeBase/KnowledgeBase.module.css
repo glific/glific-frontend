@@ -88,7 +88,7 @@
 }
 
 .FileName {
-  font-size: var(--app-font-size-sm);
+  font-size: var(--app-font-size-md);
   font-weight: 700;
   color: var(--app-color-text-heading);
   word-break: break-all;
