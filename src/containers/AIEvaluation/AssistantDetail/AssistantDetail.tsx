@@ -317,63 +317,44 @@ export const AssistantDetail = () => {
 
   return (
     <div className={styles.Page} data-testid="assistantDetailContainer">
-      <div className={styles.PageHeader}>
+      <div className={styles.PageHeader} data-testid="heading">
         <div className={styles.HeaderLeft}>
-          <button
-            type="button"
-            className={styles.BackButton}
+          <BackIcon
+            className={styles.BackIcon}
             onClick={() => navigate('/ai-evaluation-v2')}
-            aria-label={t('Back')}
             data-testid="back-button"
-          >
-            <BackIcon />
-          </button>
-          <div className={styles.HeaderText}>
-            {isEditingName ? (
-              <div className={styles.NameEditRow}>
-                <input
-                  ref={nameInputRef}
-                  className={styles.NameInput}
-                  value={nameValue}
-                  onChange={(e) => setNameValue(e.target.value)}
-                  data-testid="nameInput"
-                />
-                <Button variant="contained" onClick={handleSaveName} loading={savingName} data-testid="saveNameButton">
-                  {t('Save')}
-                </Button>
-                <Button variant="outlined" onClick={() => setIsEditingName(false)} data-testid="cancelNameButton">
-                  {t('Cancel')}
-                </Button>
-              </div>
-            ) : (
-              <div className={styles.NameRow}>
-                <span className={styles.NameText} data-testid="headerTitle">
-                  {isCreateMode ? draftName || defaultAssistantName : assistant.name}
-                </span>
-                <IconButton
-                  size="small"
-                  className={styles.EditNameButton}
-                  onClick={handleEditName}
-                  data-testid="editNameButton"
-                >
-                  <EditIcon />
-                </IconButton>
-              </div>
-            )}
-            {!isCreateMode && assistant.assistantId && (
-              <span
-                role="button"
-                tabIndex={0}
-                className={styles.AssistantId}
-                onClick={() => copyToClipboard(assistant.assistantId)}
-                onKeyDown={() => copyToClipboard(assistant.assistantId)}
-                data-testid="assistantId"
-              >
-                <CopyIcon />
-                {assistant.assistantId}
+          />
+          {isEditingName ? (
+            <div className={styles.NameEditRow}>
+              <input
+                ref={nameInputRef}
+                className={styles.NameInput}
+                value={nameValue}
+                onChange={(e) => setNameValue(e.target.value)}
+                data-testid="nameInput"
+              />
+              <Button variant="contained" onClick={handleSaveName} loading={savingName} data-testid="saveNameButton">
+                {t('Save')}
+              </Button>
+              <Button variant="outlined" onClick={() => setIsEditingName(false)} data-testid="cancelNameButton">
+                {t('Cancel')}
+              </Button>
+            </div>
+          ) : (
+            <div className={styles.NameViewRow} data-testid="headerTitle">
+              <span className={styles.NameText}>
+                {isCreateMode ? draftName || defaultAssistantName : assistant.name}
               </span>
-            )}
-          </div>
+              <IconButton
+                size="small"
+                onClick={handleEditName}
+                data-testid="editNameButton"
+                className={styles.EditNameButton}
+              >
+                <EditIcon />
+              </IconButton>
+            </div>
+          )}
         </div>
 
         {isDirty ? (
@@ -417,6 +398,20 @@ export const AssistantDetail = () => {
           )
         )}
       </div>
+
+      {!isCreateMode && assistant.assistantId && (
+        <span
+          role="button"
+          className={`${styles.AssistantId} ${isEditingName ? styles.AssistantIdEditing : ''}`}
+          onClick={() => copyToClipboard(assistant.assistantId)}
+          onKeyDown={() => copyToClipboard(assistant.assistantId)}
+          tabIndex={0}
+          data-testid="assistantId"
+        >
+          <CopyIcon />
+          {assistant.assistantId}
+        </span>
+      )}
 
       <div className={styles.VersionBar} data-testid="versionBar">
         {isCreateMode || !selectedVersion ? (
