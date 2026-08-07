@@ -74,7 +74,6 @@ describe('edit mode', () => {
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('healthChip')).toHaveTextContent('Good');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1 is live in your flows');
     expect(screen.getByTestId('publishButton')).toBeInTheDocument();
     // version 1 is live and selected by default, so there is nothing to publish
@@ -863,7 +862,6 @@ describe('create mode', () => {
     expect(screen.getByTestId('noVersionPill')).toHaveTextContent('No version saved yet');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('healthChip')).not.toBeInTheDocument();
     expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
   });
 });

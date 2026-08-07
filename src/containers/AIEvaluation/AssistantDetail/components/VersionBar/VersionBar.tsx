@@ -8,8 +8,6 @@ import styles from './VersionBar.module.css';
 
 dayjs.extend(relativeTime);
 
-const PLACEHOLDER_SCORE = '4.3';
-
 export const canPublishVersion = (version?: AssistantVersion) =>
   Boolean(version) && !version?.isLive && version?.status !== 'in_progress' && version?.status !== 'failed';
 
@@ -147,13 +145,6 @@ export const VersionBar = ({
               description: versionMeta(version),
             }))}
           />
-
-          <div className={styles.HealthChip} data-testid="healthChip">
-            <span className={styles.HealthTick}>✓</span>
-            {t('Good')}
-            <b className={styles.HealthScore}>{PLACEHOLDER_SCORE}</b>
-            <small className={styles.HealthTotal}>/5</small>
-          </div>
 
           <div className={styles.LiveNote} data-testid="liveNote">
             {statusNote() && <>{statusNote()} · </>}

@@ -167,31 +167,6 @@ button.VersionPillLive {
   border-top: 5px solid var(--app-color-text-tertiary);
 }
 
-.HealthChip {
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-sm);
-  padding: var(--app-space-sm) var(--app-space-lg);
-  border: 1px solid var(--app-color-brand-primary);
-  border-radius: var(--app-radius-pill);
-  color: var(--app-color-brand-primary);
-  font-size: var(--app-font-size-sm);
-  font-weight: 600;
-}
-
-.HealthTick {
-  font-size: var(--app-font-size-sm);
-}
-
-.HealthScore {
-  font-weight: 700;
-}
-
-.HealthTotal {
-  font-weight: 600;
-  color: var(--app-color-text-tertiary);
-}
-
 .NewAssistantPill,
 .NoVersionPill {
   display: inline-flex;
