@@ -20,7 +20,7 @@
 
 .Header {
   padding: var(--app-space-lg) var(--app-space-xl) var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -38,14 +38,14 @@
 .OptionText {
   display: flex;
   flex-direction: column;
-  gap: var(--app-space-xs);
+  gap: var(--app-space-2xs);
   min-width: 0;
 }
 
 .OptionLabelRow {
   display: flex;
   align-items: center;
-  gap: var(--app-space-md);
+  gap: var(--app-space-sm);
 }
 
 .OptionDescription {

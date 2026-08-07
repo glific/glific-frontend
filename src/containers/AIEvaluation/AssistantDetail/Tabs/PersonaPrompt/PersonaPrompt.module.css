@@ -2,7 +2,7 @@
   background-color: var(--app-color-surface-raised);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
-  padding: var(--app-space-2xl);
+  padding: var(--app-space-xl);
 
   box-shadow: var(--app-shadow-card);
 }
@@ -20,7 +20,7 @@
   align-items: center;
   gap: var(--app-space-sm);
   margin-bottom: var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 700;
   color: var(--app-color-text-primary);
 }
@@ -33,7 +33,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--app-space-sm);
-  padding: var(--app-space-sm) var(--app-space-md) var(--app-space-sm) var(--app-space-xl);
+  padding: var(--app-space-sm) var(--app-space-sm) var(--app-space-sm) var(--app-space-xl);
   border: 1.5px solid var(--app-color-brand-primary);
   border-radius: var(--app-radius-pill);
   background-color: var(--app-color-surface-raised);
@@ -50,7 +50,7 @@
 }
 
 .Sparkle {
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   line-height: 1;
 }
 
@@ -66,17 +66,17 @@ span.GenerateBeta {
 
 .Note {
   margin-top: var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   line-height: 1.5;
   color: var(--app-color-text-tertiary);
 }
 
 .ApiName {
-  padding: var(--app-space-xs) var(--app-space-sm);
-  border-radius: var(--app-radius-sm);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-lg);
   background-color: rgb(var(--app-color-slate-rgb) / 12%);
   font-family: ui-monospace, monospace;
-  font-size: var(--app-font-size-3xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 500;
   color: var(--app-color-text-tertiary);
 }
@@ -91,7 +91,7 @@ span.GenerateBeta {
 
 .ParamTitle {
   margin-bottom: var(--app-space-lg);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 800;
   color: var(--app-color-text-primary);
 }

@@ -6,12 +6,12 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--app-space-md);
+  gap: var(--app-space-sm);
   margin-bottom: var(--app-space-lg);
 }
 
 .ZoneTitle {
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-md);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -19,7 +19,7 @@
 }
 
 .ZoneSub {
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);
 }
 
@@ -27,17 +27,21 @@
   margin-left: auto;
 }
 
+.AddFilesButton {
+  font-weight: 700 !important;
+}
+
 .Card {
   background-color: var(--app-color-surface-raised);
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
-  padding: var(--app-space-2xl);
+  padding: var(--app-space-xl);
   box-shadow: var(--app-shadow-card);
 }
 
 .Note {
-  margin-top: var(--app-space-xs);
-  font-size: var(--app-font-size-2xs);
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
   line-height: 1.5;
   color: var(--app-color-text-tertiary);
 }
@@ -46,7 +50,7 @@
   max-height: 21.25rem;
   overflow-y: auto;
   margin-top: var(--app-space-lg);
-  padding-right: var(--app-space-xs);
+  padding-right: var(--app-space-2xs);
 }
 
 .File {
@@ -54,9 +58,9 @@
   align-items: center;
   gap: var(--app-space-lg);
   padding: var(--app-space-lg);
-  margin-bottom: var(--app-space-md);
+  margin-bottom: var(--app-space-sm);
   border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-md);
+  border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
 }
 
@@ -73,7 +77,7 @@
   width: 2.125rem;
   height: 2.125rem;
   flex-shrink: 0;
-  border-radius: var(--app-radius-sm);
+  border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-hover);
   font-size: var(--app-font-size-sm);
 }
@@ -84,7 +88,7 @@
 }
 
 .FileName {
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 700;
   color: var(--app-color-text-heading);
   word-break: break-all;
@@ -93,7 +97,7 @@
 .FileActions {
   display: flex;
   align-items: center;
-  gap: var(--app-space-md);
+  gap: var(--app-space-sm);
   flex-shrink: 0;
 }
 
@@ -102,7 +106,7 @@
   height: 1.75rem;
   padding: 0 !important;
   border: 1px solid var(--app-color-border) !important;
-  border-radius: var(--app-radius-md) !important;
+  border-radius: var(--app-radius-lg) !important;
   background-color: var(--app-color-surface-raised) !important;
 
   svg {
@@ -146,7 +150,7 @@
 .EmptyState {
   padding: var(--app-space-lg) 0;
   text-align: center;
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);
 }
 
@@ -161,7 +165,7 @@
   border: none;
   background: none;
   font-family: inherit;
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
   color: var(--app-color-text-tertiary);
   cursor: pointer;
@@ -174,14 +178,14 @@
 .VectorStoreId {
   display: flex;
   align-items: center;
-  gap: var(--app-space-md);
-  margin-top: var(--app-space-md);
-  padding: var(--app-space-md) var(--app-space-lg);
+  gap: var(--app-space-sm);
+  margin-top: var(--app-space-sm);
+  padding: var(--app-space-sm) var(--app-space-lg);
   border: 1px solid rgb(var(--app-color-green-primary-rgb) / 20%);
-  border-radius: var(--app-radius-sm);
+  border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-hover);
   font-family: ui-monospace, monospace;
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   color: var(--app-color-text-primary);
 }
 
@@ -191,10 +195,10 @@
 }
 
 .NoVectorStore {
-  margin-top: var(--app-space-md);
-  padding: var(--app-space-md) var(--app-space-lg);
+  margin-top: var(--app-space-sm);
+  padding: var(--app-space-sm) var(--app-space-lg);
   border: 1px dashed var(--app-color-border);
-  border-radius: var(--app-radius-sm);
-  font-size: var(--app-font-size-2xs);
+  border-radius: var(--app-radius-lg);
+  font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);
 }

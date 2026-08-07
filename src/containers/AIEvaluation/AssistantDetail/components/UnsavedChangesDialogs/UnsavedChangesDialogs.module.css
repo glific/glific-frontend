@@ -8,7 +8,7 @@
 .DiscardWarning {
   padding: var(--app-space-lg);
   border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 40%);
-  border-radius: var(--app-radius-md);
+  border-radius: var(--app-radius-lg);
   background-color: rgb(var(--app-color-amber-primary-rgb) / 8%);
   font-size: var(--app-font-size-sm);
   color: var(--app-color-text-primary);

@@ -37,7 +37,7 @@ export const VersionBar = ({
         {t('LIVE')}
       </span>
     ) : (
-      <span className={styles.DraftPill}>{t('not published')}</span>
+      <span className={styles.DraftPill}>{t('Not published')}</span>
     );
 
   const buildPill = (version: AssistantVersion) => {
@@ -101,11 +101,11 @@ export const VersionBar = ({
           {isCreateMode && (
             <span className={styles.NewAssistantPill} data-testid="newAssistantPill">
               <span className={styles.NewAssistantDot} />
-              {t('new assistant')}
+              {t('New assistant')}
             </span>
           )}
           <span className={styles.NoVersionPill} data-testid="noVersionPill">
-            {t('no version saved yet')}
+            {t('No version saved yet')}
           </span>
           <div className={styles.LiveNote} data-testid="liveNote">
             {t('Nothing published yet')}

@@ -1,21 +1,35 @@
 .Tabs {
   display: flex;
-  align-items: center;
-  gap: var(--app-space-4xl);
+  /* stretch, not center: the taller SANDBOX tab would otherwise leave the other tabs
+     floating above the row's baseline, and their underlines with them */
+  align-items: stretch;
+  gap: var(--app-space-3xl);
   margin: 0 var(--app-space-3xl);
   padding: var(--app-space-xl) var(--app-space-2xs) 0;
-  border-bottom: 1px solid var(--app-color-border);
   flex-shrink: 0;
   overflow-x: auto;
+  position: relative;
+}
+
+/* the row's line is drawn under the tabs rather than on the container, so the active
+   tab's bar lands on that line instead of a pixel above it */
+.Tabs::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--app-color-border);
 }
 
 .Tab {
   display: flex;
   align-items: center;
-  gap: var(--app-space-md);
+  gap: var(--app-space-sm);
   padding: 0 0 var(--app-space-lg);
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   background: none;
   cursor: pointer;
   white-space: nowrap;
@@ -43,11 +57,11 @@
 }
 
 .SandboxBadge {
-  font-size: var(--app-font-size-3xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--app-color-text-tertiary);
   background-color: var(--app-color-gray-secondary);
-  border-radius: var(--app-radius-sm);
-  padding: var(--app-space-xs) var(--app-space-sm);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-2xs) var(--app-space-sm);
 }

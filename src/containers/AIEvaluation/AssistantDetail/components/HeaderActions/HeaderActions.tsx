@@ -32,7 +32,7 @@ export const HeaderActions = ({
       <div className={styles.DirtyActions}>
         <span className={styles.UnsavedPill} data-testid="unsavedChanges">
           <span className={styles.UnsavedDot} />
-          {t('unsaved changes')}
+          {t('Unsaved changes')}
         </span>
         <button type="button" className={styles.DiscardLink} onClick={onDiscard} data-testid="discardButton">
           {t('Discard')}
