@@ -299,7 +299,7 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
-    if (anchorReference) {
+    if (mode === 'addLanguage') {
       return;
     }
     if (languageIdValue) {
