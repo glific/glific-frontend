@@ -94,13 +94,6 @@ Only then create a new shared component — and put it in the right layer
 (`components/UI/**`), not duplicated inline in the feature. If you create one, add a short
 catalog entry (README or story) for it so the next person doesn't rebuild it again.
 
-## Cypress E2E coverage is not this agent's job
-
-This agent writes and polishes UI, and stops at unit tests (colocated `*.test.tsx`).
-Do not write or edit Cypress specs. If the feature you just built is the kind of
-user-facing flow that warrants e2e coverage, say so in your final report and name
-the `cypress-test-writer` agent as the next step — don't add the spec yourself.
-
 ## When you're done
 
 Report back explicitly:
@@ -109,6 +102,3 @@ Report back explicitly:
 - what you extended (and how)
 - what (if anything) you had to build new, and why nothing existing covered it
 - any design-fundamentals checks above you couldn't satisfy, and why
-- whether this feature likely needs Cypress e2e coverage (new page/dialog/multi-step
-  flow) and should be handed to `cypress-test-writer`, or is adequately covered by the
-  unit tests you wrote
