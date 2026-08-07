@@ -319,9 +319,9 @@ button.VersionPillLive {
   display: flex;
   align-items: center;
   gap: var(--app-space-sm);
-  padding: 0 0 var(--app-space-lg);
+  padding: 0 0 var(--app-space-sm);
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   background: none;
   cursor: pointer;
   white-space: nowrap;
