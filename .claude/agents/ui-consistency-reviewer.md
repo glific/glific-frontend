@@ -45,12 +45,6 @@ duplication and name the existing component it overlaps with.
 entry (README line or story) was added. Flag if missing — an undocumented shared component
 is exactly how duplication creeps back in.
 
-**Cypress coverage.** E2E specs live in this repo under `cypress/e2e/`. For every new
-page/form/dialog/flow in the diff, confirm a corresponding spec was added or an existing
-one extended under `cypress/`; for every diff
-that changes behavior an existing spec already covers, confirm that spec was updated in
-`cypress/` rather than left stale. Flag missing or stale coverage here.
-
 **Hooks over inline logic.** If the diff inlines GraphQL calls or stateful logic that
 already has (or clearly should have) a shared hook (e.g. media upload), flag it.
 

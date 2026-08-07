@@ -94,21 +94,12 @@ Only then create a new shared component — and put it in the right layer
 (`components/UI/**`), not duplicated inline in the feature. If you create one, add a short
 catalog entry (README or story) for it so the next person doesn't rebuild it again.
 
-## Cypress E2E coverage
+## Cypress E2E coverage is not this agent's job
 
-E2E specs live under `cypress/` in this repo. Whenever you add a new user-facing feature
-(a new page, form, dialog, or a new flow through existing UI), add or extend a Cypress
-spec for it under `cypress/e2e/` alongside the unit tests, following the existing spec
-conventions in that directory (selectors, fixtures, folder layout). If you're fixing or
-updating behavior that an existing spec already covers, update that spec in `cypress/`
-directly rather than skipping it because "e2e is handled elsewhere."
-
-Cypress specs need the Elixir backend running and aren't part of `yarn test`. If the
-backend is reachable, run your spec with `yarn cy:run` (or `yarn cy:open`) before calling
-it done. If the backend isn't available to you, don't skip the spec — write/update it
-anyway, run `yarn cy:typecheck` and `yarn cy:lint` against it so the static checks pass,
-and note in your final report that it still needs a real run (e.g. via the
-`e2e-test-engineer` agent).
+This agent writes and polishes UI, and stops at unit tests (colocated `*.test.tsx`).
+Do not write or edit Cypress specs. If the feature you just built is the kind of
+user-facing flow that warrants e2e coverage, say so in your final report and name
+the `cypress-test-writer` agent as the next step — don't add the spec yourself.
 
 ## When you're done
 
@@ -118,5 +109,6 @@ Report back explicitly:
 - what you extended (and how)
 - what (if anything) you had to build new, and why nothing existing covered it
 - any design-fundamentals checks above you couldn't satisfy, and why
-- what Cypress spec(s) you added or updated under `cypress/e2e/`, and whether they still
-  need a real run against the backend
+- whether this feature likely needs Cypress e2e coverage (new page/dialog/multi-step
+  flow) and should be handed to `cypress-test-writer`, or is adequately covered by the
+  unit tests you wrote
