@@ -1,3 +1,47 @@
+.PageHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--app-space-md-plus) var(--app-space-3xl) var(--app-space-2xl) var(--app-space-md-plus);
+  height: 6.875rem;
+  background: var(--app-color-surface-page);
+  flex-shrink: 0;
+}
+
+.HeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-md-plus);
+  margin-left: var(--app-space-md-plus);
+  min-width: 0;
+}
+
+.BackIcon {
+  cursor: pointer;
+  margin-top: var(--app-space-2xs);
+  flex-shrink: 0;
+}
+
+.NameViewRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  min-width: 0;
+}
+
+.NameText {
+  font-size: var(--app-font-size-3xl);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+  max-width: 35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .Page {
   display: flex;
   flex-direction: column;
@@ -7,56 +51,10 @@
   background-color: var(--app-color-surface-page);
 }
 
-.PageHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--app-space-xl);
-  padding: var(--app-space-2xl) var(--app-space-3xl) var(--app-space-xl) var(--app-space-2xl);
-  flex-shrink: 0;
-}
-
-.HeaderLeft {
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-lg);
-  min-width: 0;
-}
-
-.BackButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.125rem;
-  height: 2.125rem;
-  flex-shrink: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.HeaderText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--app-space-xs);
-  min-width: 0;
-}
-
 .NameRow {
   display: flex;
   align-items: center;
   gap: var(--app-space-sm);
-}
-
-.NameText {
-  font-size: var(--app-font-size-2xl);
-  font-weight: 700;
-  color: var(--app-color-text-heading);
-  max-width: 35rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .EditNameButton {
@@ -68,11 +66,6 @@
   cursor: pointer;
   color: var(--app-color-brand-primary);
   flex-shrink: 0;
-
-  svg {
-    width: 0.875rem;
-    height: 0.875rem;
-  }
 }
 
 .NameEditRow {
@@ -82,7 +75,7 @@
 }
 
 .NameInput {
-  font-size: var(--app-font-size-2xl);
+  font-size: var(--app-font-size-3xl);
   font-weight: 700;
   color: var(--app-color-text-heading);
   font-family: inherit;
@@ -96,19 +89,28 @@
 }
 
 .AssistantId {
+  margin-top: -2.25rem;
+  padding: 0 var(--app-space-3xl) var(--app-space-xl) 4.375rem;
+  position: relative;
+  z-index: 1001;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: var(--app-space-sm);
   color: var(--app-color-brand-primary);
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 500;
   width: fit-content;
   cursor: pointer;
 
   svg {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: var(--app-size-icon-lg);
+    height: var(--app-size-icon-lg);
   }
+}
+
+.AssistantIdEditing {
+  margin-top: -1.5rem;
 }
 
 .AssistantId:hover {
