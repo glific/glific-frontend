@@ -247,7 +247,7 @@ button.VersionPillLive {
 .LivePill {
   display: inline-flex;
   align-items: center;
-  gap: var(--app-space-sm);
+  gap: var(--app-space-2xs);
   font-size: var(--app-font-size-xs);
   font-weight: 700;
   letter-spacing: 0.02em;
