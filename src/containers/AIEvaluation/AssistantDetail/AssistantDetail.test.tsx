@@ -366,7 +366,7 @@ describe('renaming the assistant', () => {
   });
 });
 
-describe('unsaved changes', () => {
+describe('Unsaved changes', () => {
   const edit = async (value = 'Be concise.') => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toBeInTheDocument();
@@ -387,7 +387,7 @@ describe('unsaved changes', () => {
     renderDetail();
     await edit();
 
-    expect(screen.getByTestId('unsavedChanges')).toHaveTextContent('unsaved changes');
+    expect(screen.getByTestId('unsavedChanges')).toHaveTextContent('Unsaved changes');
     expect(screen.getByTestId('discardButton')).toBeInTheDocument();
     expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
     expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
@@ -650,7 +650,7 @@ describe('version dropdown', () => {
     ).toBeInTheDocument();
 
     // the draft reads "saved <ago>", the published one "published <ago>"
-    expect(options[0]).toHaveTextContent(/not published.*saved .*ago/);
+    expect(options[0]).toHaveTextContent(/Not published.*saved .*ago/);
     expect(options[1]).toHaveTextContent(/LIVE.*published .*ago/);
 
     fireEvent.click(screen.getByTestId('versionOption-2'));
@@ -658,7 +658,7 @@ describe('version dropdown', () => {
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2');
     });
-    expect(screen.getByTestId('versionPill')).toHaveTextContent('not published');
+    expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
     // the live note keeps pointing at the published version, not the selected one
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1 is live in your flows');
   });
@@ -676,7 +676,7 @@ describe('version dropdown', () => {
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([])]);
 
     await waitFor(() => {
-      expect(screen.getByTestId('noVersionPill')).toHaveTextContent('no version saved yet');
+      expect(screen.getByTestId('noVersionPill')).toHaveTextContent('No version saved yet');
     });
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
@@ -695,8 +695,8 @@ describe('create mode', () => {
 
     expect(screen.getByTestId('headerTitle')).toHaveTextContent('Untitled assistant');
     expect(screen.queryByTestId('assistantId')).not.toBeInTheDocument();
-    expect(screen.getByTestId('newAssistantPill')).toHaveTextContent('new assistant');
-    expect(screen.getByTestId('noVersionPill')).toHaveTextContent('no version saved yet');
+    expect(screen.getByTestId('newAssistantPill')).toHaveTextContent('New assistant');
+    expect(screen.getByTestId('noVersionPill')).toHaveTextContent('No version saved yet');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
     expect(screen.queryByTestId('healthChip')).not.toBeInTheDocument();

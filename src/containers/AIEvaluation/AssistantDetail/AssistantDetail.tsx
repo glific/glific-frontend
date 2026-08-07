@@ -304,7 +304,7 @@ export const AssistantDetail = () => {
         {t('LIVE')}
       </span>
     ) : (
-      <span className={styles.DraftPill}>{t('not published')}</span>
+      <span className={styles.DraftPill}>{t('Not published')}</span>
     );
 
   const versionMeta = (version: AssistantVersion) => {
@@ -361,7 +361,7 @@ export const AssistantDetail = () => {
           <div className={styles.DirtyActions}>
             <span className={styles.UnsavedPill} data-testid="unsavedChanges">
               <span className={styles.UnsavedDot} />
-              {t('unsaved changes')}
+              {t('Unsaved changes')}
             </span>
             <button
               type="button"
@@ -419,11 +419,11 @@ export const AssistantDetail = () => {
             {isCreateMode && (
               <span className={styles.NewAssistantPill} data-testid="newAssistantPill">
                 <span className={styles.NewAssistantDot} />
-                {t('new assistant')}
+                {t('New assistant')}
               </span>
             )}
             <span className={styles.NoVersionPill} data-testid="noVersionPill">
-              {t('no version saved yet')}
+              {t('No version saved yet')}
             </span>
             <div className={styles.LiveNote} data-testid="liveNote">
               {t('Nothing published yet')}

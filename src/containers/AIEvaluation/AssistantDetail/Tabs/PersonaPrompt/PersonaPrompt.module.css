@@ -20,7 +20,7 @@
   align-items: center;
   gap: var(--app-space-sm);
   margin-bottom: var(--app-space-sm);
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 700;
   color: var(--app-color-text-primary);
 }
@@ -91,7 +91,7 @@ span.GenerateBeta {
 
 .ParamTitle {
   margin-bottom: var(--app-space-lg);
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 800;
   color: var(--app-color-text-primary);
 }
