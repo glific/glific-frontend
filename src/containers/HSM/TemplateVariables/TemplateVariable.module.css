@@ -9,6 +9,12 @@
   border-radius: 0 0 12px 12px;
 }
 
+.TopButtonsRow {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
 .AddVariable {
   display: flex;
   column-gap: 0.8rem;

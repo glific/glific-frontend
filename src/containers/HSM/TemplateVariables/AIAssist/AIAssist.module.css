@@ -1,0 +1,26 @@
+.AIAssist {
+  display: inline-flex;
+}
+
+.AIAssistButton {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  border-radius: 8px;
+  text-transform: none;
+}
+
+.AIAssistLabel {
+  white-space: nowrap;
+}
+
+.CustomPromptContainer {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.75rem;
+  min-width: 260px;
+}
+
+.CustomPromptSubmit {
+  align-self: flex-end;
+}

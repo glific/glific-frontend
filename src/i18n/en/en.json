@@ -925,5 +925,15 @@
   "Auto-translate": "Auto-translate",
   "English — source reference": "English — source reference",
   "English": "English",
-  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting."
+  "Content translated — review and adjust before submitting.": "Content translated — review and adjust before submitting.",
+  "AI Assist": "AI Assist",
+  "Make it sound professional": "Make it sound professional",
+  "Make it utility": "Make it utility",
+  "Custom prompt": "Custom prompt",
+  "e.g. Make it sound more casual": "e.g. Make it sound more casual",
+  "Rephrase": "Rephrase",
+  "AI Assist could not rephrase this message. Please try again.": "AI Assist could not rephrase this message. Please try again.",
+  "The message was edited while AI Assist was working, so the result was discarded.": "The message was edited while AI Assist was working, so the result was discarded.",
+  "AI Assist failed. Please try again.": "AI Assist failed. Please try again.",
+  "AI Assist timed out. Please try again.": "AI Assist timed out. Please try again."
 }

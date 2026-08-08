@@ -6,6 +6,8 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $getRoot, $getSelection, $isRangeSelection } from 'lexical';
 import { setDefaultValue } from 'common/RichEditor';
 import DeleteIcon from 'assets/images/icons/CrossIcon.svg?react';
+import { getOrganizationServices } from 'services/AuthService';
+import { AIAssist } from './AIAssist/AIAssist';
 
 export interface TemplateOptionsProps {
   form: { touched: any; errors: any; values: any; setFieldValue: any };
@@ -55,19 +57,24 @@ export const TemplateVariables = ({
     setVariables(newVariables);
   };
 
+  const isAiAssistEnabled = getOrganizationServices('templateAiAssistEnabled');
+
   return (
     <div className={attached ? styles.AddVariablesContainerAttached : styles.AddVariablesContainer}>
-      <Button
-        disabled={isEditing}
-        className={styles.AddVariable}
-        onClick={handleAddVariable}
-        onMouseDown={(event: any) => event.preventDefault()}
-        variant="outlined"
-        color="primary"
-      >
-        <AddIcon className={styles.AddIcon} />
-        <span> Add Variable</span>
-      </Button>
+      <div className={styles.TopButtonsRow}>
+        <Button
+          disabled={isEditing}
+          className={styles.AddVariable}
+          onClick={handleAddVariable}
+          onMouseDown={(event: any) => event.preventDefault()}
+          variant="outlined"
+          color="primary"
+        >
+          <AddIcon className={styles.AddIcon} />
+          <span> Add Variable</span>
+        </Button>
+        {isAiAssistEnabled && <AIAssist body={message} disabled={isEditing} />}
+      </div>
       <div>
         <div className={styles.Variables}>
           {variables.length !== 0 && <h2>Set custom variable values for the message</h2>}
