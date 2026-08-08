@@ -1,11 +1,26 @@
-import type { resources } from 'i18n/config';
 import type { KnowledgeBaseFile } from './knowledgeBaseType';
 
-type TranslationKey = keyof (typeof resources)['en']['translation'];
+export interface ModelParamSpec {
+  description?: string;
+  type?: string;
+  min?: number;
+  max?: number;
+  default?: number | string;
+  options?: string[];
+}
 
-export type ModelKind = 'standard' | 'reasoning';
-export type ReasoningEffort = 'none' | 'minimal' | 'low' | 'medium' | 'high';
-export type Verbosity = 'low' | 'medium' | 'high';
+export interface RawKaapiModel {
+  modelName: string;
+  provider?: string;
+  completionType?: string[] | null;
+  config?: string | null;
+}
+
+export interface KaapiModel {
+  modelName: string;
+  provider: string;
+  config: Record<string, ModelParamSpec>;
+}
 
 export interface AssistantVectorStore {
   id: string;
@@ -31,27 +46,11 @@ export interface AssistantVersion {
   vectorStore?: AssistantVectorStore | null;
 }
 
-export interface AssistantModel {
-  id: string;
-  label: string;
-  kind: ModelKind;
-  blurb: TranslationKey;
-  efforts?: ReasoningEffort[];
-  defaultEffort?: ReasoningEffort;
-  temperatureWhenEffortNone?: boolean;
-}
-
 export interface ModelConfig {
   model: string;
   temperature: string;
-  effort: ReasoningEffort;
-  verbosity: Verbosity;
-}
-
-export interface ModelParams {
-  temperature: boolean;
-  effort: boolean;
-  verbosity: boolean;
+  effort: string;
+  verbosity: string;
 }
 
 export interface EditorState {

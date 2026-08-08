@@ -881,5 +881,7 @@
   "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।",
   "This version is still being prepared": "यह संस्करण अभी तैयार किया जा रहा है",
   "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।",
-  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।"
+  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।",
+  "This model does not take a temperature — use the settings it offers instead.": "यह मॉडल तापमान नहीं लेता — इसके द्वारा दी गई सेटिंग्स का उपयोग करें।",
+  "This model has no settings to tune.": "इस मॉडल में समायोजित करने के लिए कोई सेटिंग नहीं है।"
 }

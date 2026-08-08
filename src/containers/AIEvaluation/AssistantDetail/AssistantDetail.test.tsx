@@ -10,9 +10,10 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_KAAPI_MODELS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
+import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
 import AssistantDetail from './AssistantDetail';
 
 const version = (versionNumber: number, isLive: boolean) => ({
@@ -46,9 +47,16 @@ const versionsMock = (assistantVersions = [version(1, true), version(2, false)])
 
 const defaultMocks = () => [getAssistant('1'), versionsMock()];
 
+// every render loads the model list, so the mock rides along with whatever else a test needs
+const kaapiModelsMock = {
+  request: { query: GET_KAAPI_MODELS },
+  result: { data: { kaapiModels: rawModels } },
+  maxUsageCount: Number.POSITIVE_INFINITY,
+};
+
 const renderDetail = (path = '/ai-evaluation-v2/1', mocks: any[] = defaultMocks()) =>
   render(
-    <MockedProvider mocks={mocks}>
+    <MockedProvider mocks={[...mocks, kaapiModelsMock]}>
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/ai-evaluation-v2" element={<div data-testid="list-page" />} />
@@ -218,9 +226,9 @@ describe('edit mode', () => {
     renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock([])]);
 
     await waitFor(() => {
-      expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4.1');
+      expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4.1');
     });
-    expect(screen.getByTestId('temperatureInput')).toHaveValue(0.01);
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     fireEvent.click(screen.getByTestId('editNameButton'));
     expect(screen.getByTestId('nameInput')).toHaveValue('');
@@ -583,7 +591,7 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 0.01, name: 'Untitled assistant' },
+          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 1, name: 'Untitled assistant' },
         },
       },
       result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
@@ -605,7 +613,7 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 0.01, name: 'Untitled assistant' },
+          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 1, name: 'Untitled assistant' },
         },
       },
       result: { data: { createAssistant: { assistant: null, errors: [{ message: 'Name taken', key: 'name' }] } } },
@@ -1104,7 +1112,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
     });
-    expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4o');
+    expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4o');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     await openVersionMenu();
@@ -1113,7 +1121,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
     });
-    expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4.1');
+    expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4.1');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(0.5);
     // loading a version is not an edit
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();

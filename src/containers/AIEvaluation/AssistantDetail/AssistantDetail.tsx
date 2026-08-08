@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -10,9 +10,9 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_KAAPI_MODELS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { DEFAULT_MODEL_CONFIG } from './assistantModels';
+import { DEFAULT_MODEL_CONFIG, configForModel, parseKaapiModels } from './assistantModels';
 import {
   AssistantHeader,
   canPublishVersion,
@@ -113,6 +113,9 @@ export const AssistantDetail = () => {
     fetchPolicy: 'network-only',
   });
 
+  const { data: modelData } = useQuery(GET_KAAPI_MODELS);
+  const models = useMemo(() => parseKaapiModels(modelData?.kaapiModels), [modelData]);
+
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
   const [createAssistant] = useMutation(CREATE_ASSISTANT);
   const [setLiveVersion, { loading: publishing }] = useMutation(SET_LIVE_VERSION);
@@ -153,6 +156,13 @@ export const AssistantDetail = () => {
     setSelectedVersionId(latest.id);
     setAwaitingVersionAbove(null);
   }, [awaitingVersionAbove, versionData]);
+
+  useEffect(() => {
+    if (models.length === 0 || modelConfig.model) return;
+    const loaded = configForModel(models[0], modelConfig);
+    setModelConfig(loaded);
+    setBaseline((current) => ({ ...current, config: loaded }));
+  }, [models, modelConfig]);
 
   const filesChanged = JSON.stringify(knowledgeBaseFiles) !== JSON.stringify(baseline.files);
 
@@ -329,7 +339,13 @@ export const AssistantDetail = () => {
 
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
     persona: (
-      <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
+      <PersonaPrompt
+        prompt={prompt}
+        config={modelConfig}
+        models={models}
+        onPromptChange={setPrompt}
+        onConfigChange={setModelConfig}
+      />
     ),
     knowledgeBase: (
       <KnowledgeBase

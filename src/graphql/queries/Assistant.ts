@@ -111,3 +111,14 @@ export const GET_ASSISTANT_VERSIONS = gql`
     }
   }
 `;
+
+export const GET_KAAPI_MODELS = gql`
+  query KaapiModels {
+    kaapiModels {
+      modelName
+      provider
+      completionType
+      config
+    }
+  }
+`;

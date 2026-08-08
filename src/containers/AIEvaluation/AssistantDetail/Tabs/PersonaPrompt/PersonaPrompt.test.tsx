@@ -2,8 +2,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
-import type { ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { DEFAULT_MODEL_CONFIG, getModelParams } from '../../assistantModels';
+import type { KaapiModel, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { parseKaapiModels } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
 
 // the model field is a MUI Select — open it, then click the option
@@ -26,29 +26,94 @@ vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
   ),
 }));
 
-const renderTab = (config: Partial<ModelConfig> = {}, props: any = {}) => {
+// shaped exactly like kaapiModels: config arrives as a JSON string
+export const rawModels = [
+  {
+    modelName: 'gpt-4.1',
+    provider: 'openai',
+    completionType: ['text'],
+    config: JSON.stringify({
+      max_output_tokens: { description: 'Max tokens in the response.', type: 'int', min: 1, max: 32768, default: 2048 },
+      top_p: { description: 'Nucleus sampling.', type: 'float', min: 0, max: 1, default: 1 },
+      temperature: { description: 'Controls randomness.', type: 'float', min: 0, max: 2, default: 1 },
+    }),
+  },
+  {
+    modelName: 'gpt-4o',
+    provider: 'openai',
+    completionType: ['text'],
+    config: JSON.stringify({
+      temperature: { description: 'Controls randomness.', type: 'float', min: 0, max: 2, default: 1 },
+    }),
+  },
+  {
+    modelName: 'gpt-5',
+    provider: 'openai',
+    completionType: ['text'],
+    config: JSON.stringify({
+      effort: {
+        description: 'How long the model spends reasoning.',
+        options: ['minimal', 'low', 'medium', 'high'],
+        type: 'enum',
+        default: 'medium',
+      },
+      summary: { description: 'Summarize the reasoning result.', options: ['auto'], type: 'enum', default: 'auto' },
+    }),
+  },
+  {
+    modelName: 'gpt-5.2-pro',
+    provider: 'openai',
+    completionType: ['text'],
+    config: JSON.stringify({
+      summary: { description: 'Summarize the reasoning result.', options: ['auto'], type: 'enum', default: 'auto' },
+    }),
+  },
+  {
+    // embeddings are not chat models and must never reach the dropdown
+    modelName: 'text-embedding-3-large',
+    provider: 'openai',
+    completionType: [],
+    config: '{}',
+  },
+];
+
+const models: KaapiModel[] = parseKaapiModels(rawModels);
+
+const renderTab = (config: Partial<ModelConfig> = {}, props: Record<string, unknown> = {}) => {
   const onConfigChange = vi.fn();
   const onPromptChange = vi.fn();
-  const { rerender } = render(
+  render(
     <MockedProvider mocks={[]}>
       <PersonaPrompt
         prompt="You are a helpful assistant."
-        config={{ ...DEFAULT_MODEL_CONFIG, ...config }}
+        config={{ model: 'gpt-4.1', temperature: '1', effort: '', verbosity: '', ...config }}
+        models={models}
         onPromptChange={onPromptChange}
         onConfigChange={onConfigChange}
         {...props}
       />
     </MockedProvider>
   );
-  return { onConfigChange, onPromptChange, rerender };
+  return { onConfigChange, onPromptChange };
 };
 
-beforeEach(() => {
-  localStorage.removeItem('organizationServices');
+describe('reading the model list', () => {
+  test('only chat models are offered — embeddings are filtered out', () => {
+    expect(models.map((model) => model.modelName)).toEqual(['gpt-4.1', 'gpt-4o', 'gpt-5', 'gpt-5.2-pro']);
+  });
+
+  test('a config that will not parse leaves the model listed with no settings', () => {
+    const parsed = parseKaapiModels([
+      { modelName: 'broken', provider: 'openai', completionType: ['text'], config: 'not json' },
+    ]);
+
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0].config).toEqual({});
+  });
 });
 
-describe('model settings mapping', () => {
-  test('a standard model shows temperature only', () => {
+describe('settings follow the model', () => {
+  test('a model with a temperature spec shows temperature only', () => {
     renderTab({ model: 'gpt-4.1' });
 
     expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
@@ -56,58 +121,38 @@ describe('model settings mapping', () => {
     expect(screen.queryByTestId('verbositySegment')).not.toBeInTheDocument();
   });
 
-  test('a reasoning model shows effort and verbosity, and hides temperature', () => {
+  test('a model with an effort spec shows effort and hides temperature', () => {
     renderTab({ model: 'gpt-5', effort: 'medium' });
 
     expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
-    expect(screen.getByTestId('verbositySegment')).toBeInTheDocument();
     expect(screen.queryByTestId('temperatureInput')).not.toBeInTheDocument();
   });
 
-  test('only the effort levels the model accepts are offered', () => {
-    renderTab({ model: 'o4-mini', effort: 'medium' });
+  test('the effort levels offered come from the model, not a fixed list', () => {
+    renderTab({ model: 'gpt-5', effort: 'medium' });
 
-    expect(screen.getByTestId('effortSegment-low')).toBeInTheDocument();
-    expect(screen.getByTestId('effortSegment-high')).toBeInTheDocument();
-    expect(screen.queryByTestId('effortSegment-minimal')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('effortSegment-none')).not.toBeInTheDocument();
+    const options = screen.getByTestId('effortSegment').querySelectorAll('[role="radio"]');
+    expect(Array.from(options).map((option) => option.textContent)).toEqual(['minimal', 'low', 'medium', 'high']);
   });
 
-  test('a model whose reasoning can be turned off gets temperature back at effort "none"', () => {
-    renderTab({ model: 'gpt-5.1', effort: 'none' });
+  test('the helper text is the description the API supplied', () => {
+    renderTab({ model: 'gpt-5', effort: 'medium' });
 
-    expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
-    expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
+    expect(screen.getByText('How long the model spends reasoning.')).toBeInTheDocument();
   });
 
-  test('the same model hides temperature again once reasoning is turned up', () => {
-    renderTab({ model: 'gpt-5.1', effort: 'high' });
+  test('settings the tab does not render are ignored', () => {
+    // gpt-5 also declares `summary`, and gpt-4.1 declares top_p and max_output_tokens
+    renderTab({ model: 'gpt-4.1' });
 
-    expect(screen.queryByTestId('temperatureInput')).not.toBeInTheDocument();
+    expect(screen.getByTestId('modelParams')).not.toHaveTextContent('top_p');
+    expect(screen.getByTestId('modelParams')).not.toHaveTextContent('max_output_tokens');
   });
 
-  test('getModelParams matches what the tab renders', () => {
-    expect(getModelParams({ ...DEFAULT_MODEL_CONFIG, model: 'gpt-4o' })).toEqual({
-      temperature: true,
-      effort: false,
-      verbosity: false,
-    });
-    expect(getModelParams({ ...DEFAULT_MODEL_CONFIG, model: 'gpt-5-mini' })).toEqual({
-      temperature: false,
-      effort: true,
-      verbosity: true,
-    });
-    expect(getModelParams({ ...DEFAULT_MODEL_CONFIG, model: 'gpt-5.1', effort: 'none' })).toEqual({
-      temperature: true,
-      effort: true,
-      verbosity: true,
-    });
-    // an id that is not in the table falls back to the first model rather than blowing up
-    expect(getModelParams({ ...DEFAULT_MODEL_CONFIG, model: 'not-a-model' })).toEqual({
-      temperature: true,
-      effort: false,
-      verbosity: false,
-    });
+  test('a model with nothing tunable says so', () => {
+    renderTab({ model: 'gpt-5.2-pro' });
+
+    expect(screen.getByTestId('noModelParams')).toBeInTheDocument();
   });
 });
 
@@ -120,63 +165,60 @@ describe('editing', () => {
     expect(onPromptChange).toHaveBeenCalledWith('Be concise.');
   });
 
-  test('switching to a reasoning model applies its default effort', () => {
-    const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
+  test('switching model applies that model defaults', () => {
+    const { onConfigChange } = renderTab({ model: 'gpt-4.1', temperature: '1' });
 
-    pickModel('GPT-5 · reasoning');
+    pickModel('gpt-5');
 
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ model: 'gpt-5', effort: 'medium' }));
+    // gpt-5 takes no temperature, and its effort default is medium
+    expect(onConfigChange).toHaveBeenCalledWith({
+      model: 'gpt-5',
+      temperature: '',
+      effort: 'medium',
+      verbosity: '',
+    });
   });
 
-  test('gpt-5.1 defaults to no reasoning', () => {
-    const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
+  test('switching away from a temperature model says why it disappeared', () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderTab({ model: 'gpt-4.1' });
 
-    pickModel('GPT-5.1 · reasoning');
+    pickModel('gpt-5');
 
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ model: 'gpt-5.1', effort: 'none' }));
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'This model does not take a temperature — use the settings it offers instead.'
+    );
+    notificationSpy.mockRestore();
   });
 
   test('picking an effort reports upward', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-5', effort: 'medium' });
 
-    fireEvent.click(screen.getByTestId('effortSegment-high'));
+    fireEvent.click(screen.getByText('high'));
 
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ effort: 'high' }));
-  });
-
-  test('picking a verbosity reports upward', () => {
-    const { onConfigChange } = renderTab({ model: 'gpt-5', effort: 'medium' });
-
-    fireEvent.click(screen.getByTestId('verbositySegment-low'));
-
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ verbosity: 'low' }));
   });
 
   test('editing temperature reports upward', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
-    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.5' } });
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.4' } });
 
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0.5' }));
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0.4' }));
   });
 
-  test('temperature is capped at 2', () => {
+  test('temperature is capped at the max the model declares', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
-    const input = screen.getByTestId('temperatureInput');
 
-    expect(input).toHaveAttribute('max', '2');
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '5' } });
 
-    fireEvent.change(input, { target: { value: '3.5' } });
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '2' }));
-
-    fireEvent.change(input, { target: { value: '2' } });
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '2' }));
   });
 
-  test('temperature cannot go below 0', () => {
+  test('temperature cannot go below the min the model declares', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
-    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '-1' } });
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '-3' } });
 
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0' }));
   });
@@ -189,29 +231,6 @@ describe('editing', () => {
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '' }));
   });
 
-  test('choosing "none" on a model that supports it announces temperature is back', () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
-    const { onConfigChange } = renderTab({ model: 'gpt-5.1', effort: 'high' });
-
-    fireEvent.click(screen.getByTestId('effortSegment-none'));
-
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ effort: 'none' }));
-    expect(notificationSpy).toHaveBeenCalledWith('Reasoning off — temperature is available again.');
-    notificationSpy.mockRestore();
-  });
-
-  test('switching to a reasoning model warns that temperature is dropped', () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
-    renderTab({ model: 'gpt-4.1' });
-
-    pickModel('GPT-5 · reasoning');
-
-    expect(notificationSpy).toHaveBeenCalledWith(
-      'Temperature is not supported on reasoning models — use reasoning effort and verbosity.'
-    );
-    notificationSpy.mockRestore();
-  });
-
   test('a partly typed value is left alone so it can be finished', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
@@ -219,17 +238,11 @@ describe('editing', () => {
 
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0.0' }));
   });
-
-  test('the blurb follows the selected model', () => {
-    renderTab({ model: 'o4-mini' });
-
-    expect(screen.getByTestId('modelBlurb')).toHaveTextContent('Compact reasoning model');
-    expect(screen.getByTestId('modelParams')).toHaveTextContent('o4-mini');
-  });
 });
 
 describe('prompt generator', () => {
   test('is hidden when the org service is off', () => {
+    setOrganizationServices(JSON.stringify({ promptGeneratorEnabled: false }));
     renderTab();
 
     expect(screen.queryByTestId('generateWithAiButton')).not.toBeInTheDocument();
@@ -250,7 +263,6 @@ describe('prompt generator', () => {
     expect(screen.getByTestId('promptGeneratorStub')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('stubClose'));
-
     expect(screen.queryByTestId('promptGeneratorStub')).not.toBeInTheDocument();
     expect(onPromptChange).not.toHaveBeenCalled();
   });
