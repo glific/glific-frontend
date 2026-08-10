@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
@@ -99,7 +100,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
             onClick={() => setGeneratorOpen(true)}
             data-testid="generateWithAiButton"
           >
-            <span className={styles.Sparkle}>✦</span>
+            <AutoAwesomeIcon className={styles.Sparkle} />
             {t('Generate with AI')}
             <BetaTag size="small" className={styles.GenerateBeta} />
           </button>

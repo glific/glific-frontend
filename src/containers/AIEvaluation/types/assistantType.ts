@@ -1,4 +1,5 @@
 import type { resources } from 'i18n/config';
+import type { KnowledgeBaseFile } from './knowledgeBaseType';
 
 type TranslationKey = keyof (typeof resources)['en']['translation'];
 
@@ -51,4 +52,10 @@ export interface ModelParams {
   temperature: boolean;
   effort: boolean;
   verbosity: boolean;
+}
+
+export interface EditorState {
+  prompt: string;
+  config: ModelConfig;
+  files: KnowledgeBaseFile[];
 }
