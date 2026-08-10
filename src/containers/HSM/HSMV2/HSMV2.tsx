@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -163,7 +163,6 @@ export const HSMV2 = () => {
   const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
-  const isAddLanguageModeRef = useRef(false);
   const [templateButtons, setTemplateButtons] = useState<
     Array<CallToActionTemplate | QuickReplyTemplate | WhatsappFormTemplate>
   >([]);
@@ -450,7 +449,6 @@ export const HSMV2 = () => {
   };
 
   const openAddLanguage = () => {
-    isAddLanguageModeRef.current = true;
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
@@ -760,11 +758,6 @@ export const HSMV2 = () => {
   useEffect(() => {
     if (location.state?.openAddLanguage && mode === 'view' && newShortcode && !anchorReference) {
       openAddLanguage();
-    }
-  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
-
-  useEffect(() => {
-    if (isAddLanguageModeRef.current && !anchorReference) {
       return;
     }
     const bodyVariables = getVariables(body, variables);
@@ -779,7 +772,7 @@ export const HSMV2 = () => {
       return;
     }
     setVariables(bodyVariables);
-  }, [body, mode, anchorReference]);
+  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference, body]);
 
   useEffect(() => {
     if (location.state?.libraryTemplate && mode === 'create') {
