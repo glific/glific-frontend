@@ -1,0 +1,104 @@
+.Card {
+  background-color: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-xl);
+
+  box-shadow: var(--app-shadow-card);
+}
+
+.PromptHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-lg);
+  margin-bottom: var(--app-space-sm);
+}
+
+.FieldLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-primary);
+}
+
+.PromptHeader .FieldLabel {
+  margin-bottom: 0;
+}
+
+.GenerateButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-sm) var(--app-space-sm) var(--app-space-sm) var(--app-space-xl);
+  border: 1.5px solid var(--app-color-brand-primary);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-surface-raised);
+  color: var(--app-color-text-primary);
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.GenerateButton:hover {
+  background-color: var(--app-color-surface-hover);
+}
+
+.Sparkle {
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+  flex-shrink: 0;
+}
+
+span.GenerateBeta {
+  margin: 0;
+}
+
+.Divider {
+  height: 1px;
+  margin: var(--app-space-xl) 0;
+  background-color: rgb(var(--app-color-slate-rgb) / 26%);
+}
+
+.Note {
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.ParamCard {
+  margin-top: var(--app-space-lg);
+  padding: var(--app-space-xl);
+  border: 1px solid rgb(var(--app-color-green-primary-rgb) / 22%);
+  border-radius: var(--app-radius-lg);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%);
+}
+
+.ParamTitle {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  font-weight: 800;
+  color: var(--app-color-text-primary);
+}
+
+.ParamColumns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-xl);
+  margin-bottom: var(--app-space-xl);
+}
+
+.ParamColumn {
+  flex: 1;
+  min-width: 11.875rem;
+}
+
+.SegmentTrack {
+  background-color: rgb(var(--app-color-white-rgb) / 70%);
+}
