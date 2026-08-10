@@ -89,12 +89,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
   const segmentOptions = <T extends ReasoningEffort | Verbosity>(values: T[]) =>
     values.map((value) => ({ value, label: t(value) }));
 
-  const fieldLabel = (text: ReactNode, apiName: string) => (
-    <>
-      {text}
-      <span className={styles.ApiName}>{apiName}</span>
-    </>
-  );
+  const fieldLabel = (text: ReactNode) => <>{text}</>;
 
   return (
     <div className={styles.Card} data-testid="personaPrompt">
@@ -153,7 +148,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
                 className={styles.ParamColumn}
                 trackClassName={styles.SegmentTrack}
                 testId="effortSegment"
-                label={fieldLabel(t('Reasoning effort'), 'reasoning_effort')}
+                label={fieldLabel(t('Reasoning effort'))}
                 labelClassName={styles.FieldLabel}
                 options={segmentOptions(selectedModel.efforts ?? [])}
                 value={config.effort}
@@ -167,7 +162,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
                 className={styles.ParamColumn}
                 trackClassName={styles.SegmentTrack}
                 testId="verbositySegment"
-                label={fieldLabel(t('Verbosity'), 'verbosity')}
+                label={fieldLabel(t('Verbosity'))}
                 labelClassName={styles.FieldLabel}
                 options={segmentOptions(VERBOSITY_OPTIONS)}
                 value={config.verbosity}
@@ -180,10 +175,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
 
         {params.temperature && (
           <div>
-            <div className={styles.FieldLabel}>
-              {t('Temperature')}
-              <span className={styles.ApiName}>temperature</span>
-            </div>
+            <div className={styles.FieldLabel}>{t('Temperature')}</div>
             <Input
               type="number"
               placeholder=""
