@@ -27,6 +27,7 @@ http {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Frame-Options "deny" always;
+    add_header X-Robots-Tag "noindex, nofollow" always;
     add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload" always;
 <%
       # --- Content Security Policy ----------------------------------------------------------
