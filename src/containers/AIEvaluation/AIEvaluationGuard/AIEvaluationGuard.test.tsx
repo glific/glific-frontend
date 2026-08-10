@@ -3,13 +3,15 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { setOrganizationServices } from 'services/AuthService';
 import AIEvaluationGuard from './AIEvaluationGuard';
 
-const renderGuard = () =>
+const renderGuard = (path = '/ai-evaluation-v2') =>
   render(
-    <MemoryRouter initialEntries={['/ai-evaluation-v2']}>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/ai-evaluation-v2" element={<AIEvaluationGuard />}>
           <Route index element={<div data-testid="module">AI Evaluation v2</div>} />
+          <Route path=":assistantId" element={<div data-testid="assistantDetail">Assistant</div>} />
         </Route>
+        <Route path="/*" element={<div data-testid="chatFallback">Chat</div>} />
       </Routes>
     </MemoryRouter>
   );
@@ -49,4 +51,23 @@ test('blocks the URL when no services are configured at all', () => {
   renderGuard();
 
   expect(screen.getByTestId('aiEvaluationV2Disabled')).toBeInTheDocument();
+});
+
+test('child routes sit under the guard, not the catch-all', () => {
+  // a child path is relative to the parent — spelling it out again sends the URL to chat
+  setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
+
+  renderGuard('/ai-evaluation-v2/42');
+
+  expect(screen.getByTestId('assistantDetail')).toBeInTheDocument();
+  expect(screen.queryByTestId('chatFallback')).not.toBeInTheDocument();
+});
+
+test('a child route is blocked too when the flag is off', () => {
+  setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: false }));
+
+  renderGuard('/ai-evaluation-v2/42');
+
+  expect(screen.getByTestId('aiEvaluationV2Disabled')).toBeInTheDocument();
+  expect(screen.queryByTestId('assistantDetail')).not.toBeInTheDocument();
 });

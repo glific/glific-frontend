@@ -1,0 +1,86 @@
+.NameColumn {
+  width: 30%;
+  min-width: var(--app-size-table-column-min);
+}
+
+.HealthColumn {
+  width: 15%;
+}
+
+.HealthHeader {
+  cursor: help;
+}
+
+.SearchBar {
+  display: flex;
+  align-items: center;
+}
+
+.ListWrapper {
+  display: contents;
+}
+
+.SearchRow {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--app-space-xl) var(--app-space-6xl) 0 var(--app-space-6xl);
+  background-color: var(--app-color-surface-page);
+}
+
+.VersionColumn {
+  width: 20%;
+}
+
+.DateColumn {
+  width: 20%;
+}
+
+.Actions {
+  width: 15%;
+}
+
+.Actions > div {
+  justify-content: flex-start;
+  margin-left: calc(-1 * var(--app-space-xl));
+}
+
+.NameCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2xs);
+}
+
+.Name {
+  font-weight: 500;
+  color: var(--app-color-text-primary);
+}
+
+.DisplayIdRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+}
+
+.DisplayId {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+/* !important because MUI's emotion styles on IconButton outrank a plain class */
+.CopyButton {
+  padding: var(--app-space-2xs) !important;
+  color: var(--app-color-text-tertiary);
+
+  svg {
+    width: var(--app-size-icon-sm);
+    height: var(--app-size-icon-sm);
+  }
+}
+
+.VersionBadge {
+  color: var(--app-color-text-primary);
+}
+
+.NoVersion {
+  color: var(--app-color-text-tertiary);
+}
