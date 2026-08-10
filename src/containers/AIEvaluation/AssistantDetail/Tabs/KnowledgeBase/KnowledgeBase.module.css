@@ -171,6 +171,14 @@
   flex-shrink: 0;
 }
 
+.GearIcon path {
+  stroke: var(--app-color-text-tertiary);
+}
+
+.CaretIcon path {
+  stroke: var(--app-color-text-tertiary);
+}
+
 .CaretClosed {
   transform: rotate(-90deg);
 }

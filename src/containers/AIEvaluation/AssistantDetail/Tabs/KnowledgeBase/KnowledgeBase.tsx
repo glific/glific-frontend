@@ -6,7 +6,7 @@ import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
-import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
+import type { KnowledgeBaseFile, UploadError } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -33,12 +33,6 @@ const INITIAL_BACKOFF_MS = 2000;
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const ACCEPTED_TYPES = '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt';
-
-interface UploadError {
-  message?: string;
-  networkError?: { statusCode?: number; status?: number; message?: string };
-  graphQLErrors?: { extensions?: { code?: string } }[];
-}
 
 const isRateLimitError = (error: unknown) => {
   const failure = error as UploadError | null;
@@ -287,7 +281,7 @@ export const KnowledgeBase = ({
             onClick={() => setShowTechnical((open) => !open)}
             data-testid="technicalDetailsToggle"
           >
-            <SettingsIcon className={styles.ToggleIcon} />
+            <SettingsIcon className={`${styles.ToggleIcon} ${styles.GearIcon}`} />
             {t('Technical details')}
             {showTechnical ? (
               <ExpandMoreIcon className={styles.ToggleIcon} />
