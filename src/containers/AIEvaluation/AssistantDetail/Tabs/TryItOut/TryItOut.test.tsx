@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import { setUserSession } from 'services/AuthService';
+import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
 import TryItOut from './TryItOut';
 
 const defaultProps = {
@@ -41,6 +42,8 @@ const renderTab = (props: Partial<Parameters<typeof TryItOut>[0]> = {}, mocks: a
 
 beforeEach(() => {
   setUserSession(JSON.stringify({ organization: { id: '1' } }));
+  // transcripts are cached now, so one test's chat would otherwise reappear in the next
+  clearAllSandboxChats();
 });
 
 const type = (text: string) => fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: text } });
@@ -380,5 +383,89 @@ describe('starting over', () => {
       expect(variableMatcher).toHaveBeenCalledTimes(2);
     });
     expect(variableMatcher.mock.calls[1][0]).toEqual({ input: { assistantId: '1', message: 'Fresh start' } });
+  });
+});
+
+describe('the chat survives leaving the tab', () => {
+  const sendOne = async (text: string) => {
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: text } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+    await screen.findByTestId('assistantMessage');
+  };
+
+  test('a remount restores the transcript and the conversation it belongs to', async () => {
+    const variableMatcher = vi.fn().mockReturnValue(true);
+    const mock = {
+      request: { query: SEND_ASSISTANT_MESSAGE },
+      variableMatcher,
+      maxUsageCount: Number.POSITIVE_INFINITY,
+      result: {
+        data: {
+          sendAssistantMessage: {
+            answer: 'Hi',
+            conversationId: 'c1',
+            jobId: 'j1',
+            requestId: 'r1',
+            errors: null,
+          },
+        },
+      },
+    };
+    const { unmount } = renderTab({}, [mock]);
+    await sendOne('Hello');
+    unmount();
+
+    // switching tabs or refreshing mounts the component again
+    renderTab({}, [mock]);
+
+    expect(await screen.findByTestId('userMessage')).toHaveTextContent('Hello');
+    expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Hi');
+
+    // and the next message continues the same conversation
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'More' } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    await waitFor(() => {
+      expect(variableMatcher).toHaveBeenCalledTimes(2);
+    });
+    expect(variableMatcher.mock.calls[1][0]).toEqual({
+      input: { assistantId: '1', message: 'More', conversationId: 'c1' },
+    });
+  });
+
+  test('the question is cached even while the reply is still coming', async () => {
+    const { unmount } = renderTab({}, [sendMock({ answer: null, requestId: 'r1' })]);
+
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Waiting' } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+    await screen.findByTestId('pendingMessage');
+    unmount();
+
+    renderTab({}, []);
+
+    // the question survives, but the typing indicator does not — the subscription that
+    // would have answered it fired while the component was gone
+    expect(await screen.findByTestId('userMessage')).toHaveTextContent('Waiting');
+    expect(screen.queryByTestId('pendingMessage')).not.toBeInTheDocument();
+  });
+
+  test('New chat clears the cached copy, not just the screen', async () => {
+    renderTab({}, [sendMock({ answer: 'Hi', requestId: 'r1' })]);
+    await sendOne('Hello');
+
+    fireEvent.click(screen.getByTestId('newChatButton'));
+    expect(screen.getByTestId('sandboxEmpty')).toBeInTheDocument();
+
+    renderTab({}, []);
+    expect(screen.getAllByTestId('sandboxEmpty').length).toBeGreaterThan(0);
+  });
+
+  test('each version keeps its own transcript', async () => {
+    renderTab({}, [sendMock({ answer: 'Hi', requestId: 'r1' })]);
+    await sendOne('On version 2');
+
+    // a different version is a different config, so a different conversation
+    renderTab({ versionId: 'v9', versionNumber: 9 }, []);
+    expect(screen.getAllByTestId('sandboxEmpty').length).toBeGreaterThan(0);
   });
 });

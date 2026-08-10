@@ -9,6 +9,7 @@ import { usePostHog } from '@posthog/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { USER_SESSION } from 'config';
 import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
+import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
 import { resetRolePermissions } from 'context/role';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
 import { clearListSession } from 'services/ListService';
@@ -56,6 +57,9 @@ export const Logout = () => {
 
     // clear org eval request access cache
     clearOrgEvalAccessCache();
+
+    // clear cached Try It Out transcripts
+    clearAllSandboxChats();
 
     // clear apollo cache
     await client.clearStore();

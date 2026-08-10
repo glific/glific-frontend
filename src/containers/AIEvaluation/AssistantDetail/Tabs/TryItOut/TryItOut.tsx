@@ -7,20 +7,9 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant';
 import { getUserSession } from 'services/AuthService';
+import type { LlmCallResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
+import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
 import styles from './TryItOut.module.css';
-
-interface LlmCallResponse {
-  answer?: string | null;
-  conversationId?: string | null;
-  requestId?: string | null;
-  errors?: { key?: string; message: string }[] | null;
-}
-
-export interface SandboxMessage {
-  role: 'user' | 'assistant';
-  text: string;
-  failed?: boolean;
-}
 
 export interface TryItOutProps {
   hasVersions: boolean;
@@ -65,14 +54,17 @@ export const TryItOut = ({
 
   const [sendAssistantMessage] = useMutation(SEND_ASSISTANT_MESSAGE);
 
-  // a transcript belongs to the version that produced it
+  // a transcript belongs to the version that produced it, and survives a refresh or a
+  // trip to another tab. An in-flight reply does not: the subscription will not redeliver.
   useEffect(() => {
-    setMessages([]);
+    const cached = readSandboxChat(assistantId, versionId);
+    setMessages(cached?.messages ?? []);
+    conversationIdRef.current = cached?.conversationId ?? '';
     setDraft('');
     setPending(false);
     pendingRequestIdRef.current = null;
-    conversationIdRef.current = '';
-  }, [versionId]);
+    earlyResponsesRef.current = [];
+  }, [assistantId, versionId]);
 
   useEffect(() => {
     const chat = chatRef.current;
@@ -80,6 +72,7 @@ export const TryItOut = ({
   }, [messages, pending]);
 
   const startNewChat = () => {
+    clearSandboxChat(assistantId, versionId);
     setMessages([]);
     setDraft('');
     setPending(false);
@@ -91,7 +84,11 @@ export const TryItOut = ({
   const finish = (message: SandboxMessage) => {
     pendingRequestIdRef.current = null;
     earlyResponsesRef.current = [];
-    setMessages((current) => [...current, message]);
+    setMessages((current) => {
+      const next = [...current, message];
+      writeSandboxChat(assistantId, versionId, { messages: next, conversationId: conversationIdRef.current });
+      return next;
+    });
     setPending(false);
   };
 
@@ -135,7 +132,11 @@ export const TryItOut = ({
     pendingRequestIdRef.current = null;
     earlyResponsesRef.current = [];
 
-    setMessages((current) => [...current, { role: 'user', text: trimmed }]);
+    setMessages((current) => {
+      const next: SandboxMessage[] = [...current, { role: 'user', text: trimmed }];
+      writeSandboxChat(assistantId, versionId, { messages: next, conversationId: conversationIdRef.current });
+      return next;
+    });
     setDraft('');
     setPending(true);
 
