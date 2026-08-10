@@ -8,7 +8,11 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
+import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
+import SettingsIcon from 'assets/images/icons/Settings/Settings.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DownloadIcon from 'assets/images/icons/Download.svg?react';
 import styles from './KnowledgeBase.module.css';
@@ -224,7 +228,9 @@ export const KnowledgeBase = ({
         <div className={styles.FileList}>
           {files.map((file) => (
             <div className={styles.File} key={file.fileId} data-testid="knowledgeBaseFile">
-              <div className={styles.FileIcon}>📄</div>
+              <div className={styles.FileIcon}>
+                <DocumentIcon />
+              </div>
               <div className={styles.FileText}>
                 <div className={styles.FileName}>{file.filename}</div>
                 {formatSize(file.fileSize) && <div className={styles.Note}>{formatSize(file.fileSize)}</div>}
@@ -281,7 +287,13 @@ export const KnowledgeBase = ({
             onClick={() => setShowTechnical((open) => !open)}
             data-testid="technicalDetailsToggle"
           >
-            ⚙ {t('Technical details')} {showTechnical ? '▾' : '▸'}
+            <SettingsIcon className={styles.ToggleIcon} />
+            {t('Technical details')}
+            {showTechnical ? (
+              <ExpandMoreIcon className={styles.ToggleIcon} />
+            ) : (
+              <ChevronRightIcon className={styles.ToggleIcon} />
+            )}
           </button>
 
           {showTechnical &&

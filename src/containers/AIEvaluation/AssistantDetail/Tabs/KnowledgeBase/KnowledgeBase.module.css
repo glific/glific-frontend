@@ -79,6 +79,11 @@
   flex-shrink: 0;
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-hover);
+
+  svg {
+    width: var(--app-size-icon-lg);
+    height: var(--app-size-icon-lg);
+  }
   font-size: var(--app-font-size-sm);
 }
 
@@ -160,7 +165,24 @@
   border-top: 1px solid var(--app-color-border);
 }
 
+.ToggleIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  flex-shrink: 0;
+}
+
+.CaretClosed {
+  transform: rotate(-90deg);
+}
+
+.CaretOpen {
+  transform: rotate(0deg);
+}
+
 .TechnicalToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
   padding: 0;
   border: none;
   background: none;
