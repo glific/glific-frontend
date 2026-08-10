@@ -1,0 +1,56 @@
+name: Design system checks
+
+# Frontend hygiene guardrails. Each job below is a separate check; add new ones as jobs
+# here rather than as new workflow files, so all gates show up together in PR checks.
+# Neither job runs `yarn install` — both underlying scripts depend on Node and git only.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+jobs:
+  ratchet:
+    name: Ratchet (violation counts can't increase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.tool-versions'
+
+      - name: Run ratchet
+        run: node scripts/design-system-ratchet.js
+
+      # Compares the PR's baseline file against the base branch's committed version, so
+      # the baseline may only ever go down, even if a PR edits the file directly.
+      - name: Verify the baseline file itself wasn't raised
+        if: github.event_name == 'pull_request'
+        run: node scripts/verify-baseline-not-raised.js "${{ github.event.pull_request.base.sha }}"
+
+  mui-imports:
+    name: No new raw MUI imports in containers
+    runs-on: ubuntu-latest
+    # Only fails on lines the PR's own diff adds — a pre-existing import in a touched
+    # file is tracked by the ratchet job above, not this one.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.tool-versions'
+
+      - name: Check for new MUI imports
+        run: node scripts/check-new-mui-imports.js "${{ github.event.pull_request.base.sha }}"

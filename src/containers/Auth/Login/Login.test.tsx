@@ -277,4 +277,21 @@ describe('<Login />', () => {
       expect(mockedSetLogs).toHaveBeenCalledWith(forbiddenError, 'error', true);
     });
   });
+
+  it('does not reveal suspension status to unauthenticated visitors on page load', async () => {
+    const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+    mockedAxios.post.mockImplementation((url: string) => {
+      if (url === ORGANIZATION_NAME) {
+        return Promise.resolve({ data: { data: { name: 'Glific', status: 'forced_suspension' } } });
+      }
+      return Promise.resolve({ data: { data: {} } });
+    });
+
+    render(wrapper(mocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Login to your account')).toBeInTheDocument();
+    });
+    expect(errorMessageSpy).not.toHaveBeenCalled();
+  });
 });
