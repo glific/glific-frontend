@@ -8,7 +8,7 @@
   align-items: center;
   gap: var(--app-space-sm);
   margin-bottom: var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 700;
   color: var(--app-color-text-primary);
 }
@@ -16,7 +16,7 @@
 .Track {
   display: inline-flex;
   align-self: flex-start;
-  padding: var(--app-space-xs);
+  padding: var(--app-space-2xs);
   border-radius: var(--app-radius-pill);
   background-color: rgb(var(--app-color-slate-rgb) / 14%);
 }
@@ -27,7 +27,7 @@
   border-radius: var(--app-radius-pill);
   background: none;
   font-family: inherit;
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 600;
   color: var(--app-color-text-tertiary);
   cursor: pointer;
@@ -47,7 +47,7 @@
 
 .HelperText {
   margin-top: var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   line-height: 1.5;
   color: var(--app-color-text-tertiary);
 }

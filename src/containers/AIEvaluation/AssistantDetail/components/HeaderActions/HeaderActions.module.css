@@ -9,12 +9,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--app-space-sm);
-  padding: var(--app-space-xs) var(--app-space-md);
+  padding: var(--app-space-2xs) var(--app-space-sm);
   border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 40%);
   border-radius: var(--app-radius-pill);
   background-color: rgb(var(--app-color-amber-primary-rgb) / 10%);
   color: var(--app-color-attention);
-  font-size: var(--app-font-size-3xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 800;
 }
 
@@ -42,6 +42,6 @@
 
 .PublishButton {
   flex-shrink: 0;
-  border-radius: var(--app-radius-2xl) !important;
+  border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }

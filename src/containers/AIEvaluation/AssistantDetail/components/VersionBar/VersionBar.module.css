@@ -13,10 +13,10 @@
 button.VersionPill {
   display: flex;
   align-items: center;
-  gap: var(--app-space-md);
+  gap: var(--app-space-sm);
   padding: var(--app-space-sm) var(--app-space-sm) var(--app-space-sm) var(--app-space-lg);
   border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-md);
+  border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-page);
   cursor: pointer;
   font-family: inherit;
@@ -45,7 +45,7 @@ button.VersionPillLive {
 .VersionDot {
   width: 0.4375rem;
   height: 0.4375rem;
-  margin-top: var(--app-space-md);
+  margin-top: var(--app-space-sm);
   border-radius: 50%;
   flex-shrink: 0;
   background-color: var(--app-color-border-muted);
@@ -58,15 +58,15 @@ button.VersionPillLive {
 .LivePill {
   display: inline-flex;
   align-items: center;
-  gap: var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  gap: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--app-color-brand-primary);
   background-color: var(--app-color-surface-raised);
   border: 1px solid var(--app-color-brand-primary);
-  border-radius: var(--app-radius-lg);
-  padding: var(--app-space-xs) var(--app-space-md);
+  border-radius: var(--app-radius-pill);
+  padding: var(--app-space-2xs) var(--app-space-sm);
 }
 
 .LiveDot {
@@ -86,13 +86,13 @@ button.VersionPillLive {
 .DraftPill {
   display: inline-flex;
   align-items: center;
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 600;
   color: var(--app-color-text-tertiary);
   background-color: var(--app-color-surface-raised);
   border: 1px solid var(--app-color-border-muted);
-  border-radius: var(--app-radius-lg);
-  padding: var(--app-space-xs) var(--app-space-md);
+  border-radius: var(--app-radius-pill);
+  padding: var(--app-space-2xs) var(--app-space-sm);
 }
 
 .PillGroup {
@@ -105,13 +105,13 @@ button.VersionPillLive {
   display: inline-flex;
   align-items: center;
   gap: var(--app-space-sm);
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 700;
   color: var(--app-color-attention);
   background-color: var(--app-color-surface-raised);
   border: 1px solid var(--app-color-attention);
-  border-radius: var(--app-radius-lg);
-  padding: var(--app-space-xs) var(--app-space-md);
+  border-radius: var(--app-radius-pill);
+  padding: var(--app-space-2xs) var(--app-space-sm);
 }
 
 .InProgressDot {
@@ -137,13 +137,13 @@ button.VersionPillLive {
 .FailedPill {
   display: inline-flex;
   align-items: center;
-  font-size: var(--app-font-size-2xs);
+  font-size: var(--app-font-size-xs);
   font-weight: 700;
   color: var(--app-color-error);
   background-color: var(--app-color-surface-raised);
   border: 1px solid var(--app-color-error);
-  border-radius: var(--app-radius-lg);
-  padding: var(--app-space-xs) var(--app-space-md);
+  border-radius: var(--app-radius-pill);
+  padding: var(--app-space-2xs) var(--app-space-sm);
 }
 
 .CaretBox {
@@ -152,9 +152,9 @@ button.VersionPillLive {
   justify-content: center;
   width: 1.25rem;
   height: 1.25rem;
-  margin-left: var(--app-space-xs);
+  margin-left: var(--app-space-2xs);
   border: 1px solid var(--app-color-border-muted);
-  border-radius: var(--app-radius-sm);
+  border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
   flex-shrink: 0;
 }
@@ -167,31 +167,6 @@ button.VersionPillLive {
   border-top: 5px solid var(--app-color-text-tertiary);
 }
 
-.HealthChip {
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-sm);
-  padding: var(--app-space-sm) var(--app-space-lg);
-  border: 1px solid var(--app-color-brand-primary);
-  border-radius: var(--app-radius-xl);
-  color: var(--app-color-brand-primary);
-  font-size: var(--app-font-size-sm);
-  font-weight: 600;
-}
-
-.HealthTick {
-  font-size: var(--app-font-size-sm);
-}
-
-.HealthScore {
-  font-weight: 700;
-}
-
-.HealthTotal {
-  font-weight: 600;
-  color: var(--app-color-text-tertiary);
-}
-
 .NewAssistantPill,
 .NoVersionPill {
   display: inline-flex;
@@ -201,7 +176,7 @@ button.VersionPillLive {
   font-weight: 600;
   color: var(--app-color-text-tertiary);
   border: 1px solid var(--app-color-border-muted);
-  border-radius: var(--app-radius-lg);
+  border-radius: var(--app-radius-pill);
   padding: var(--app-space-2xs) var(--app-space-lg);
 }
 

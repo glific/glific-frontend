@@ -8,8 +8,6 @@ import styles from './VersionBar.module.css';
 
 dayjs.extend(relativeTime);
 
-const PLACEHOLDER_SCORE = '4.3';
-
 export const canPublishVersion = (version?: AssistantVersion) =>
   Boolean(version) && !version?.isLive && version?.status !== 'in_progress' && version?.status !== 'failed';
 
@@ -37,7 +35,7 @@ export const VersionBar = ({
         {t('LIVE')}
       </span>
     ) : (
-      <span className={styles.DraftPill}>{t('not published')}</span>
+      <span className={styles.DraftPill}>{t('Not published')}</span>
     );
 
   const buildPill = (version: AssistantVersion) => {
@@ -101,11 +99,11 @@ export const VersionBar = ({
           {isCreateMode && (
             <span className={styles.NewAssistantPill} data-testid="newAssistantPill">
               <span className={styles.NewAssistantDot} />
-              {t('new assistant')}
+              {t('New assistant')}
             </span>
           )}
           <span className={styles.NoVersionPill} data-testid="noVersionPill">
-            {t('no version saved yet')}
+            {t('No version saved yet')}
           </span>
           <div className={styles.LiveNote} data-testid="liveNote">
             {t('Nothing published yet')}
@@ -147,13 +145,6 @@ export const VersionBar = ({
               description: versionMeta(version),
             }))}
           />
-
-          <div className={styles.HealthChip} data-testid="healthChip">
-            <span className={styles.HealthTick}>✓</span>
-            {t('Good')}
-            <b className={styles.HealthScore}>{PLACEHOLDER_SCORE}</b>
-            <small className={styles.HealthTotal}>/5</small>
-          </div>
 
           <div className={styles.LiveNote} data-testid="liveNote">
             {statusNote() && <>{statusNote()} · </>}

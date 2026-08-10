@@ -45,6 +45,12 @@ const renderTab = (props: Partial<Parameters<typeof KnowledgeBase>[0]> = {}, moc
   return { onFilesChange, onFilesUploaded };
 };
 
+const pickFiles = (files: File[]) => {
+  const input = screen.getByTestId('fileInput');
+  Object.defineProperty(input, 'files', { value: files, configurable: true });
+  fireEvent.change(input);
+};
+
 const pickFile = (file: File) => {
   const input = screen.getByTestId('fileInput');
   Object.defineProperty(input, 'files', { value: [file], configurable: true });
@@ -198,4 +204,54 @@ describe('technical details', () => {
 
     expect(screen.getByTestId('noVectorStore')).toBeInTheDocument();
   });
+});
+
+test('a mixed batch keeps the files that uploaded and names the ones that did not', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+  // first file succeeds, second fails — the batch must not lose the first
+  const { onFilesUploaded } = renderTab({}, [
+    uploadMock('good.pdf', 'file-good'),
+    { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher: () => true, error: new Error('Upload failed') },
+  ]);
+
+  pickFiles([
+    new File(['x'], 'good.pdf', { type: 'application/pdf' }),
+    new File(['x'], 'bad.pdf', { type: 'application/pdf' }),
+  ]);
+
+  await waitFor(() => {
+    expect(onFilesUploaded).toHaveBeenCalled();
+  });
+
+  const staged = onFilesUploaded.mock.calls[0][0];
+  expect(staged).toHaveLength(1);
+  expect(staged[0].fileId).toBe('file-good');
+
+  expect(notificationSpy).toHaveBeenCalledWith('Files uploaded — save a version to apply them');
+  expect(notificationSpy).toHaveBeenCalledWith(expect.stringContaining('bad.pdf'), 'warning');
+  expect(errorSpy).toHaveBeenCalled();
+
+  notificationSpy.mockRestore();
+  errorSpy.mockRestore();
+});
+
+test('a failure that is not rate limiting is not retried', async () => {
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+  const variableMatcher = vi.fn().mockReturnValue(true);
+
+  const { onFilesUploaded } = renderTab({}, [
+    { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher, error: new Error('Upload failed') },
+  ]);
+
+  pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));
+
+  await waitFor(() => {
+    expect(errorSpy).toHaveBeenCalled();
+  });
+  // one attempt only — retrying a non-rate-limit error just delays the failure
+  expect(variableMatcher).toHaveBeenCalledTimes(1);
+  expect(onFilesUploaded).not.toHaveBeenCalled();
+  errorSpy.mockRestore();
 });

@@ -10,7 +10,7 @@
 .TabContent {
   flex: 1;
   min-height: 0;
-  padding: var(--app-space-2xl) var(--app-space-3xl) var(--app-space-5xl);
+  padding: var(--app-space-xl) var(--app-space-3xl) var(--app-space-6xl);
 }
 
 .TabPanel {

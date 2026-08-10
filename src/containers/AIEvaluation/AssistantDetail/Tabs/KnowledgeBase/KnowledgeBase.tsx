@@ -23,9 +23,37 @@ export interface KnowledgeBaseProps {
   legacy?: boolean;
 }
 
+const MAX_CONCURRENT_UPLOADS = 10;
+const MAX_RETRY_ATTEMPTS = 5;
+const INITIAL_BACKOFF_MS = 2000;
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const ACCEPTED_TYPES = '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt';
+
+interface UploadError {
+  message?: string;
+  networkError?: { statusCode?: number; status?: number; message?: string };
+  graphQLErrors?: { extensions?: { code?: string } }[];
+}
+
+const isRateLimitError = (error: unknown) => {
+  const failure = error as UploadError | null;
+  const status = failure?.networkError?.statusCode ?? failure?.networkError?.status;
+  const code = failure?.graphQLErrors?.[0]?.extensions?.code;
+  const message = failure?.message ?? failure?.networkError?.message ?? '';
+
+  return (
+    status === 429 ||
+    code === 'TOO_MANY_REQUESTS' ||
+    message.includes('429') ||
+    message.toLowerCase().includes('too many requests')
+  );
+};
+
+const sleep = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 
 const formatSize = (bytes?: number | null) => {
   if (!bytes) return '';
@@ -53,6 +81,55 @@ export const KnowledgeBase = ({
   const isUploading = uploading.length > 0;
   const isReadOnly = legacy;
 
+  const uploadOne = async (file: File): Promise<KnowledgeBaseFile | null> => {
+    for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt += 1) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const response = await uploadFile({ variables: { media: file } });
+        const result = response.data?.uploadFilesearchFile;
+        if (!result) return null;
+        // pick the fields explicitly: the response carries __typename, which
+        // CreateKnowledgeBase rejects because FileInfoInput has no such field
+        return {
+          fileId: result.fileId,
+          filename: result.filename,
+          fileSize: result.fileSize,
+          uploadedAt: result.uploadedAt,
+        };
+      } catch (error: unknown) {
+        if (!isRateLimitError(error) || attempt >= MAX_RETRY_ATTEMPTS) throw error;
+        // eslint-disable-next-line no-await-in-loop
+        await sleep(INITIAL_BACKOFF_MS * 2 ** (attempt - 1));
+      }
+    }
+
+    return null;
+  };
+
+  /** runs at most MAX_CONCURRENT_UPLOADS at a time and reports every outcome */
+  const uploadAll = async (files: File[]) => {
+    const results: { name: string; file: KnowledgeBaseFile | null }[] = [];
+    let cursor = 0;
+
+    const worker = async () => {
+      while (cursor < files.length) {
+        const file = files[cursor];
+        cursor += 1;
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const uploaded = await uploadOne(file);
+          results.push({ name: file.name, file: uploaded });
+        } catch (error: unknown) {
+          setErrorMessage(error);
+          results.push({ name: file.name, file: null });
+        }
+      }
+    };
+
+    await Promise.all(Array.from({ length: Math.min(MAX_CONCURRENT_UPLOADS, files.length) }, worker));
+    return results;
+  };
+
   const handleAddFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(event.target.files ?? []);
     // let the same file be picked again after a failure
@@ -70,27 +147,24 @@ export const KnowledgeBase = ({
 
     onUploadingChange(selected.map((file) => file.name));
 
-    try {
-      const uploaded = await Promise.all(
-        selected.map(async (file) => {
-          const response = await uploadFile({ variables: { media: file } });
-          const result = response.data?.uploadFilesearchFile;
-          if (!result) return null;
-          return {
-            fileId: result.fileId,
-            filename: result.filename,
-            fileSize: result.fileSize,
-            uploadedAt: result.uploadedAt,
-          } as KnowledgeBaseFile;
-        })
-      );
+    // one file failing must not discard the ones that already uploaded, so each is settled
+    // on its own and the successes are staged regardless
+    const results = await uploadAll(selected);
+    const uploaded = results.flatMap((result) => (result.file ? [result.file] : []));
+    const failed = results.filter((result) => !result.file);
 
-      onFilesUploaded(uploaded.filter((file): file is KnowledgeBaseFile => file !== null));
+    onUploadingChange([]);
+
+    if (uploaded.length > 0) {
+      onFilesUploaded(uploaded);
       setNotification(t('Files uploaded — save a version to apply them'));
-    } catch (error: unknown) {
-      setErrorMessage(error);
-    } finally {
-      onUploadingChange([]);
+    }
+
+    if (failed.length > 0) {
+      setNotification(
+        `${failed.map((result) => result.name).join(', ')} ${t('could not be uploaded. Try again.')}`,
+        'warning'
+      );
     }
   };
 
@@ -115,6 +189,7 @@ export const KnowledgeBase = ({
           <Button
             variant="contained"
             color="primary"
+            className={styles.AddFilesButton}
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isReadOnly}
             data-testid="addFilesButton"
@@ -194,7 +269,7 @@ export const KnowledgeBase = ({
 
           {files.length === 0 && !isUploading && (
             <div className={styles.EmptyState} data-testid="knowledgeBaseEmpty">
-              {t('No files yet. Add documents the assistant should answer from.')}
+              {t('No files yet. + Add files the assistant should answer from.')}
             </div>
           )}
         </div>
