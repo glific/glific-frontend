@@ -187,7 +187,6 @@ export const KnowledgeBase = ({
           <Button
             variant="contained"
             color="primary"
-            className={styles.AddFilesButton}
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isReadOnly}
             data-testid="addFilesButton"
