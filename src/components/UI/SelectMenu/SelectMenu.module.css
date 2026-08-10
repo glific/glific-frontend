@@ -1,0 +1,61 @@
+.Trigger {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.Trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.Paper {
+  border-radius: var(--app-radius-lg) !important;
+  margin-top: var(--app-space-sm);
+}
+
+.Header {
+  padding: var(--app-space-lg) var(--app-space-xl) var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+}
+
+.Option {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg) var(--app-space-xl) !important;
+  white-space: normal !important;
+}
+
+.OptionText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2xs);
+  min-width: 0;
+}
+
+.OptionLabelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.OptionDescription {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.Footer {
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border-top: 1px solid var(--app-color-border);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}

@@ -23,7 +23,7 @@
 .SearchRow {
   display: flex;
   justify-content: flex-end;
-  padding: var(--app-space-2xl) var(--app-space-6xl) 0 var(--app-space-7xl);
+  padding: var(--app-space-xl) var(--app-space-6xl) 0 var(--app-space-6xl);
   background-color: var(--app-color-surface-page);
 }
 
@@ -47,7 +47,7 @@
 .NameCell {
   display: flex;
   flex-direction: column;
-  gap: var(--app-space-xs);
+  gap: var(--app-space-2xs);
 }
 
 .Name {
@@ -58,7 +58,7 @@
 .DisplayIdRow {
   display: flex;
   align-items: center;
-  gap: var(--app-space-xs);
+  gap: var(--app-space-2xs);
 }
 
 .DisplayId {
@@ -68,12 +68,12 @@
 
 /* !important because MUI's emotion styles on IconButton outrank a plain class */
 .CopyButton {
-  padding: var(--app-space-xs) !important;
+  padding: var(--app-space-2xs) !important;
   color: var(--app-color-text-tertiary);
 
   svg {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: var(--app-size-icon-sm);
+    height: var(--app-size-icon-sm);
   }
 }
 
