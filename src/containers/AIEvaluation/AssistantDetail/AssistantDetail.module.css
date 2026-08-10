@@ -60,12 +60,6 @@
   background-color: var(--app-color-surface-page);
 }
 
-.NameRow {
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-sm);
-}
-
 .EditNameButton {
   display: inline-flex;
   align-items: center;

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
@@ -88,8 +88,6 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
   const segmentOptions = <T extends ReasoningEffort | Verbosity>(values: T[]) =>
     values.map((value) => ({ value, label: t(value) }));
 
-  const fieldLabel = (text: ReactNode) => <>{text}</>;
-
   return (
     <div className={styles.Card} data-testid="personaPrompt">
       <div className={styles.PromptHeader}>
@@ -147,7 +145,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
                 className={styles.ParamColumn}
                 trackClassName={styles.SegmentTrack}
                 testId="effortSegment"
-                label={fieldLabel(t('Reasoning effort'))}
+                label={t('Reasoning effort')}
                 labelClassName={styles.FieldLabel}
                 options={segmentOptions(selectedModel.efforts ?? [])}
                 value={config.effort}
@@ -161,7 +159,7 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
                 className={styles.ParamColumn}
                 trackClassName={styles.SegmentTrack}
                 testId="verbositySegment"
-                label={fieldLabel(t('Verbosity'))}
+                label={t('Verbosity')}
                 labelClassName={styles.FieldLabel}
                 options={segmentOptions(VERBOSITY_OPTIONS)}
                 value={config.verbosity}
