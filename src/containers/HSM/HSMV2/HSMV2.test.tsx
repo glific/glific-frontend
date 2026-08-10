@@ -6,6 +6,7 @@ import { HSMV2 } from './HSMV2';
 import {
   HSM_TEMPLATE_MOCKS,
   getHSMTemplateTypeText,
+  getHSMTemplateNullLanguage,
   getHSMTemplateTypeMedia,
   CREATE_SESSION_TEMPLATE_MOCK,
   templateEditMock,
@@ -690,10 +691,10 @@ describe('HSMV2 add mode', () => {
   test('clicking the back icon navigates back to the HSM list', async () => {
     render(
       <MockedProvider mocks={[...mocks, ...WHATSAPP_FORM_MOCKS]} addTypename={false}>
-        <MemoryRouter initialEntries={['/template-v2/add']}>
+        <MemoryRouter initialEntries={['/template/add']}>
           <Routes>
-            <Route path="/template-v2/add" element={<HSMV2 />} />
-            <Route path="/template-v2" element={<div>HSM list page</div>} />
+            <Route path="/template/add" element={<HSMV2 />} />
+            <Route path="/template" element={<div>HSM list page</div>} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -937,7 +938,7 @@ describe('HSMV2 language versions', () => {
         >
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
-            <Route path="/template-v2" element={<div>HSM list page</div>} />
+            <Route path="/template" element={<div>HSM list page</div>} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
@@ -979,6 +980,76 @@ describe('HSMV2 language versions', () => {
 
     fireEvent.click(screen.getByTestId('status-tab-Rejected'));
     expect(screen.getByTestId('view-language-3')).toBeInTheDocument();
+  });
+
+  test('viewing a language version from the auto-opened add-language flow shows it read-only, not as an editable draft', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const MOCKS = [
+      ...mocks,
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      getHSMTemplateTypeText,
+      familyFetchMock(anchorOnly),
+      familyFetchMock(anchorOnly),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              pathname: '/add',
+              state: { languageAnchorId: '1', anchorShortcode: 'account_balance', openAddLanguage: true },
+            },
+          ]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
+    });
+
+    fireEvent.click(await screen.findByTestId('view-language-1'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('auto-translate-button')).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('English')).toBeInTheDocument();
+    });
+  });
+
+  test('viewing a template whose fetched data has no language still loads its other details and leaves the Language field unset', async () => {
+    const MOCKS = [
+      ...mocks,
+      getHSMTemplateNullLanguage,
+      getHSMTemplateNullLanguage,
+      familyFetchMock([familyVariants[0]]),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('view-language-1'));
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('account_balance')).toBeInTheDocument();
+    });
+    expect(screen.queryByDisplayValue('English')).not.toBeInTheDocument();
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
@@ -1065,6 +1136,43 @@ describe('HSMV2 language versions', () => {
     // the draft footer input itself starts empty — only the chip shows the
     // anchor's English value.
     expect(screen.queryByDisplayValue('footer')).not.toBeInTheDocument();
+  });
+
+  test('keeps the English source reference after clicking "Add new language" a second time', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+    await waitFor(() => {
+      expect(screen.getByTestId('source-reference-card')).toBeInTheDocument();
+    });
+    expect(
+      within(screen.getByTestId('source-reference-card')).getByText(/You can now view your Account Balance/)
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('source-reference-card')).toBeInTheDocument();
+    });
+    expect(
+      within(screen.getByTestId('source-reference-card')).getByText(/You can now view your Account Balance/)
+    ).toBeInTheDocument();
   });
 
   test("shows the anchor's English button text as a reference in the Interactive Buttons section", async () => {
@@ -1624,9 +1732,9 @@ describe('HSMV2 language versions', () => {
     ];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter initialEntries={['/template-v2/1/edit']}>
+        <MemoryRouter initialEntries={['/template/1/edit']}>
           <Routes>
-            <Route path="/template-v2/:id/edit" element={<HSMV2 />} />
+            <Route path="/template/:id/edit" element={<HSMV2 />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>

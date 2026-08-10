@@ -10,7 +10,7 @@ import {
   walletBalanceQuery,
   walletBalanceSubscription,
 } from 'mocks/Organization';
-import { setUserSession } from 'services/AuthService';
+import { setOrganizationServices, setUserSession } from 'services/AuthService';
 import { collectionCountQuery, CONVERSATION_MOCKS, markAsReadMock, savedSearchStatusQuery } from 'mocks/Chat';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import AuthenticatedRoute from './AuthenticatedRoute';
@@ -31,6 +31,14 @@ vi.mock('containers/Assistants/AssistantList/AssistantList', () => ({
 
 vi.mock('containers/Assistants/AssistantDetail/AssistantDetail', () => ({
   default: () => <div data-testid="assistant-detail-new" />,
+}));
+
+vi.mock('containers/HSM/HSMList/HSMList', () => ({
+  default: () => <div data-testid="hsm-list-old" />,
+}));
+
+vi.mock('containers/HSM/HSMListV2/HSMListV2', () => ({
+  default: () => <div data-testid="hsm-list-new" />,
 }));
 
 const mocks = [
@@ -80,6 +88,42 @@ describe('<AuthenticatedRoute />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
+    });
+  });
+
+  test('renders the legacy HSMList at /template when templateV2Enabled is off', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ templateV2Enabled: false }));
+    render(
+      <MockedProvider mocks={mocks}>
+        <MemoryRouter initialEntries={['/template']}>
+          <Suspense fallback={<Loading />}>
+            <AuthenticatedRoute />
+          </Suspense>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('hsm-list-old')).toBeInTheDocument();
+    });
+  });
+
+  test('renders HSMListV2 at /template when templateV2Enabled is on', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ templateV2Enabled: true }));
+    render(
+      <MockedProvider mocks={mocks}>
+        <MemoryRouter initialEntries={['/template']}>
+          <Suspense fallback={<Loading />}>
+            <AuthenticatedRoute />
+          </Suspense>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('hsm-list-new')).toBeInTheDocument();
     });
   });
 });

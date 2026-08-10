@@ -22,7 +22,7 @@ yarn serve               # Preview production build locally
 npx vitest run src/path/to/Component.test.tsx
 ```
 
-**End-to-end (Cypress) tests** live in a **separate repo** (`glific/cypress-testing`, cloned locally as a sibling) and require the **Elixir backend** (`glific/glific`) running — they are not part of `yarn test`. Don't run them by hand; use the **`e2e-test-engineer`** agent, which brings up backend + frontend and runs the specs. See "End-to-End (E2E) Testing" below.
+**End-to-end (Cypress) tests** live in this repo under `cypress/` and require the **Elixir backend** (`glific/glific`) running — they are not part of `yarn test`. Don't run them by hand; use the **`e2e-test-engineer`** agent, which brings up backend + frontend and runs the specs. See "End-to-End (E2E) Testing" below.
 
 ## Dev Environment Prerequisites
 
@@ -45,6 +45,7 @@ Every PR must pass these (see `.github/workflows/`). The `make-branch-ready-for-
 | Formatting | `prettier-check.yml` | `prettier --check` must be clean (`yarn format` to fix) |
 | PR title | `pr-title-check.yml` | Conventional-commit format (e.g. `fix:`, `feat:`, `chore:`) |
 | E2E | `e2e-tests.yml` | Cypress against a live backend, sharded; `e2e-tests-slow.yml` runs the filesearch suite only on PRs labeled `e2e-slow` |
+| Cypress lint | `cypress-lint.yml` | `tsc`, ESLint, and Prettier scoped to `cypress/` (`yarn cy:typecheck` / `cy:lint` / `cy:format:check`) |
 
 ## Architecture Overview
 
@@ -56,7 +57,7 @@ Every PR must pass these (see `.github/workflows/`). The `make-branch-ready-for-
 - **React Router v7** for routing
 - **Formik** + **Yup** for forms and validation
 - **i18next** for internationalization
-- **Vitest** + **Testing Library** for unit/component tests; **Cypress** for e2e (separate repo — see "End-to-End (E2E) Testing")
+- **Vitest** + **Testing Library** for unit/component tests; **Cypress** for e2e (`cypress/` — see "End-to-End (E2E) Testing")
 - **Observability & integrations**: **Sentry** for error monitoring (`src/sentry.config`, imported in `src/index.tsx`; CSP violation reports can be routed to it via `VITE_CSP_REPORT_URI`), **PostHog** for product analytics, **Stripe** for billing, **Superset** (`@superset-ui/embedded-sdk`) for embedded dashboards
 
 ### Directory Structure
@@ -230,15 +231,27 @@ The `src/common/test-utils.ts` file contains helpers like `backspace()` for simu
 
 ### End-to-End (E2E) Testing
 
-E2E is **Cypress**, and the specs are **not in this repo** — they live in `glific/cypress-testing`
-(cloned locally as a sibling `../cypress-testing`). Running them requires the full stack up:
+E2E is **Cypress**, and the specs live in this repo under `cypress/`. Running them requires the full stack up:
 
 - **Backend** `glific/glific` (Elixir/Phoenix + Postgres) at `https://glific.test:4001`
 - **Frontend** (this repo, `yarn dev`) at `https://glific.test:3000`
-- Cypress `cypress.config.ts` is pre-pointed at the local stack with test credentials.
+- Copy `cypress.config.ts.example` to `cypress.config.ts` (gitignored) and fill in local/test credentials before running Cypress locally.
 
 Prefer the **`e2e-test-engineer`** agent (`.claude/agents/`) over doing this by hand — it does the
 preflight/bring-up, runs the narrowest relevant spec, and returns a compact pass/fail verdict
 instead of flooding the session with server and runner logs. CI mirrors this in
 `.github/workflows/e2e-tests.yml` (sharded via `cypress-split`); the slow `filesearch` suite is
-excluded by default and only runs on PRs labeled `e2e-slow`.
+excluded by default and only runs on PRs labeled `e2e-slow`. `cypress-lint.yml` runs `tsc`/ESLint/Prettier
+scoped to `cypress/` on every push and PR. `cypress-smoke.yml` is a cron (every 27 min) that runs
+`cypress/e2e/smoke.spec.ts` against production and reports pass/fail to Instatus — it needs
+`CYPRESS_SMOKE_TEST_*`, `CYPRESS_DASHBOARD_KEY`, and `INSTATUS_*` repo secrets configured.
+
+**Local dev commands:**
+
+```bash
+yarn cy:open           # interactive Cypress runner
+yarn cy:run            # headless run
+yarn cy:typecheck      # tsc against cypress/tsconfig.json
+yarn cy:lint           # ESLint scoped to cypress/
+yarn cy:format:check   # Prettier check scoped to cypress/
+```

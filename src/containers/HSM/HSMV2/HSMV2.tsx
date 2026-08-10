@@ -187,8 +187,8 @@ export const HSMV2 = () => {
   });
 
   const backButton = location.state?.tag?.label
-    ? `template-v2?tag=${encodeURIComponent(location.state.tag.label)}`
-    : 'template-v2';
+    ? `template?tag=${encodeURIComponent(location.state.tag.label)}`
+    : 'template';
   const isReadOnly = mode === 'view';
   const needsFamilyFetch = Boolean(languageAnchorId);
   const anchorShortcode = mode === 'addLanguage' ? location.state?.anchorShortcode : newShortcode;
@@ -287,9 +287,9 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
-    if (languageOptions.length > 0 && languageIdValue) {
+    if (languageIdValue) {
       const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
-      setLanguageId(selectedLanguage || null);
+      setLanguageId(selectedLanguage || languageIdValue);
     }
 
     if (mode !== 'copy') {
@@ -432,7 +432,7 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
-    setAnchorReference({ body, footer, buttons: templateButtons, buttonType: templateType?.id });
+    setAnchorReference((prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id });
 
     setBody('');
     setEditorState('');
@@ -446,7 +446,7 @@ export const HSMV2 = () => {
 
   const viewVariant = (variantId: string) => {
     if (params.id && params.id !== variantId) {
-      navigate(`/template-v2/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
+      navigate(`/template/${variantId}/edit`, { state: { variants: familyVariants, autoExpandId: variantId } });
       return;
     }
     setMode('view');
@@ -711,10 +711,10 @@ export const HSMV2 = () => {
   }, [location.state?.autoExpandId, params.id]);
 
   useEffect(() => {
-    if (location.state?.openAddLanguage && mode === 'view' && newShortcode) {
+    if (location.state?.openAddLanguage && mode === 'view' && newShortcode && !anchorReference) {
       openAddLanguage();
     }
-  }, [location.state?.openAddLanguage, mode, newShortcode]);
+  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
 
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
