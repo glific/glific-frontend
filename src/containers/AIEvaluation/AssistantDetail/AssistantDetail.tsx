@@ -346,6 +346,7 @@ export const AssistantDetail = () => {
         versionStatus={selectedVersion?.status}
         liveVersionNumber={liveVersion?.versionNumber ?? null}
         hasGoldenQaSets={(goldenQaData?.goldenQas ?? []).length > 0}
+        assistantId={assistantId}
         onGoToPersona={() => setActiveTab('persona')}
         onSave={handleSaveVersion}
         onRunEvaluation={() => setActiveTab('evaluation')}

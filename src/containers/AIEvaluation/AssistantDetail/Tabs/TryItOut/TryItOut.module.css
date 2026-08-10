@@ -1,12 +1,25 @@
 .Card {
-  padding: var(--app-space-2xl);
+  padding: var(--app-space-xl);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
   box-shadow: var(--app-shadow-card);
 }
 
+.SandboxHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-lg);
+  margin-bottom: var(--app-space-xl);
+}
+
+.NewChatButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
 .TestingNote {
-  margin-bottom: var(--app-space-lg);
   font-size: var(--app-font-size-xs);
   color: var(--app-color-text-tertiary);
 
@@ -22,8 +35,7 @@
   min-height: 15rem;
   max-height: 26rem;
   overflow-y: auto;
-  padding: var(--app-space-xl);
-  border: 1px solid var(--app-color-border);
+  padding: var(--app-space-xl) var(--app-space-3xl);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
 }
@@ -32,25 +44,111 @@
   max-width: 74%;
   padding: var(--app-space-lg) var(--app-space-xl);
   border-radius: var(--app-radius-lg);
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   line-height: 1.55;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  box-shadow: var(--app-shadow-raised);
 }
 
 .UserMessage {
   align-self: flex-end;
-  background-color: var(--app-color-brand-primary);
-  color: var(--app-color-white);
-  border-bottom-right-radius: var(--app-radius-sm);
+  background-color: var(--app-color-green-quinary);
+  color: var(--app-color-text-heading);
+  position: relative;
+  border-bottom-right-radius: 0;
+}
+
+.UserMessage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -5px;
+  width: 0;
+  height: 0;
+  border-bottom: 6px solid var(--app-color-green-quinary);
+  border-right: 5px solid transparent;
 }
 
 .AssistantMessage {
   align-self: flex-start;
   background-color: var(--app-color-surface-hover);
-  border: 1px solid var(--app-color-border);
-  color: var(--app-color-text-primary);
-  border-bottom-left-radius: var(--app-radius-sm);
+  color: var(--app-color-text-heading);
+  position: relative;
+  border-bottom-left-radius: 0;
+}
+
+.AssistantMessage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5px;
+  width: 0;
+  height: 0;
+  border-bottom: 6px solid var(--app-color-surface-hover);
+  border-left: 5px solid transparent;
+}
+
+/* the model's markdown, trimmed so it sits inside a chat bubble rather than a document */
+.Markdown {
+  white-space: normal;
+
+  p {
+    margin: 0;
+  }
+
+  p + p,
+  ul,
+  ol,
+  pre,
+  blockquote {
+    margin: var(--app-space-sm) 0 0;
+  }
+
+  ul,
+  ol {
+    padding-left: var(--app-space-xl);
+  }
+
+  li + li {
+    margin-top: var(--app-space-2xs);
+  }
+
+  code {
+    padding: 0 var(--app-space-2xs);
+    border-radius: var(--app-radius-lg);
+    background-color: rgb(var(--app-color-slate-rgb) / 12%);
+    font-size: var(--app-font-size-xs);
+  }
+
+  pre {
+    overflow-x: auto;
+    padding: var(--app-space-sm);
+    border-radius: var(--app-radius-lg);
+    background-color: rgb(var(--app-color-slate-rgb) / 12%);
+
+    code {
+      padding: 0;
+      background: none;
+    }
+  }
+
+  a {
+    color: var(--app-color-brand-primary);
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: var(--app-space-2xs) var(--app-space-sm);
+    border: 1px solid var(--app-color-border);
+    text-align: left;
+  }
 }
 
 .FailedMessage {
@@ -67,7 +165,7 @@
 
 .SampleLink {
   display: block;
-  margin: var(--app-space-md) auto 0;
+  margin: var(--app-space-sm) auto 0;
   padding: 0;
   border: none;
   background: none;
@@ -82,42 +180,58 @@
   text-decoration: underline;
 }
 
-.Typing {
-  display: inline-block;
+.TypingBubble {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.TypingDot {
   width: var(--app-size-dot);
   height: var(--app-size-dot);
-  margin-right: var(--app-space-md);
   border-radius: 50%;
-  background-color: var(--app-color-brand-primary);
-  animation: breathe 1.6s ease-in-out infinite;
+  background-color: var(--app-color-text-tertiary);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+.TypingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.TypingDot:nth-child(3) {
+  animation-delay: 0.4s;
 }
 
 @keyframes breathe {
   0%,
+  80%,
   100% {
-    opacity: 1;
+    opacity: 0.5;
   }
 
-  50% {
-    opacity: 0.3;
+  40% {
+    opacity: 1;
   }
 }
 
 .Composer {
   display: flex;
-  gap: var(--app-space-md);
+  align-items: center;
+  gap: var(--app-space-sm);
   margin-top: var(--app-space-lg);
 }
 
+/* a chat composer, not a form field: no label, validation or helper text, so it owns its
+   styling outright rather than reaching into MUI's internals to undo theirs */
 .ComposerInput {
   flex: 1;
   min-width: 0;
   padding: var(--app-space-lg) var(--app-space-xl);
   border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-xl);
+  border-radius: var(--app-radius-pill);
   background-color: var(--app-color-surface-raised);
   font-family: inherit;
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   color: var(--app-color-text-primary);
 }
 
@@ -133,13 +247,13 @@
 
 .SendButton {
   flex-shrink: 0;
-  border-radius: var(--app-radius-xl) !important;
+  border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }
 
 .Note {
-  margin-top: var(--app-space-md);
-  font-size: var(--app-font-size-2xs);
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
   line-height: 1.5;
   color: var(--app-color-text-tertiary);
 }
@@ -162,7 +276,7 @@
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
-  border-radius: var(--app-radius-md);
+  border-radius: var(--app-radius-lg);
   background-color: var(--app-color-brand-primary);
   color: var(--app-color-white);
   font-size: var(--app-font-size-sm);
@@ -181,7 +295,7 @@
 
 .NudgeButton {
   flex-shrink: 0;
-  border-radius: var(--app-radius-2xl) !important;
+  border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }
 
@@ -202,7 +316,7 @@
   margin: 0 auto var(--app-space-lg);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-hover);
-  font-size: var(--app-font-size-2xl);
+  font-size: var(--app-font-size-3xl);
 }
 
 .BlockerTitle {
@@ -213,7 +327,7 @@
 
 .BlockerNote {
   max-width: 27rem;
-  margin: var(--app-space-md) auto 0;
+  margin: var(--app-space-sm) auto 0;
   font-size: var(--app-font-size-xs);
   line-height: 1.55;
   color: var(--app-color-text-tertiary);

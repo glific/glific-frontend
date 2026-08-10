@@ -1,5 +1,8 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
+import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
+import { setUserSession } from 'services/AuthService';
 import TryItOut from './TryItOut';
 
 const defaultProps = {
@@ -9,20 +12,36 @@ const defaultProps = {
   versionNumber: 2,
   versionStatus: 'ready',
   liveVersionNumber: 1,
+  assistantId: '1',
   onGoToPersona: vi.fn(),
   onSave: vi.fn(),
   onRunEvaluation: vi.fn(),
 };
 
-const renderTab = (props: Partial<Parameters<typeof TryItOut>[0]> = {}) => {
+// the reply is correlated by requestId, which the component generates
+const sendMock = (result: Record<string, unknown>) => ({
+  request: { query: SEND_ASSISTANT_MESSAGE },
+  variableMatcher: () => true,
+  result: { data: { sendAssistantMessage: { conversationId: 'c1', jobId: 'j1', errors: null, ...result } } },
+});
+
+const renderTab = (props: Partial<Parameters<typeof TryItOut>[0]> = {}, mocks: any[] = []) => {
   const handlers = {
     onGoToPersona: vi.fn(),
     onSave: vi.fn(),
     onRunEvaluation: vi.fn(),
   };
-  const view = render(<TryItOut {...defaultProps} {...handlers} {...props} />);
+  const view = render(
+    <MockedProvider mocks={mocks}>
+      <TryItOut {...defaultProps} {...handlers} {...props} />
+    </MockedProvider>
+  );
   return { ...handlers, ...view };
 };
+
+beforeEach(() => {
+  setUserSession(JSON.stringify({ organization: { id: '1' } }));
+});
 
 const type = (text: string) => fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: text } });
 
@@ -81,28 +100,16 @@ describe('the sandbox', () => {
     expect(screen.getByTestId('testingNote')).toHaveTextContent('nothing is live yet');
   });
 
-  test('without a send endpoint you can still type, but nothing is sent', () => {
-    renderTab();
+  test('without an assistant to test, nothing can be sent', () => {
+    renderTab({ assistantId: undefined });
 
     expect(screen.getByTestId('sandboxUnavailable')).toBeInTheDocument();
-
-    // the box accepts input so the composer does not look broken
-    type('Is it safe?');
-    expect(screen.getByTestId('sandboxInput')).toHaveValue('Is it safe?');
-
     expect(screen.getByTestId('sendMessageButton')).toBeDisabled();
-    fireEvent.keyDown(screen.getByTestId('sandboxInput'), { key: 'Enter' });
-    expect(screen.queryByTestId('userMessage')).not.toBeInTheDocument();
-
-    // the sample link would send, so it is not offered either
     expect(screen.queryByTestId('sampleQuestionButton')).not.toBeInTheDocument();
   });
 
-  test('sends a message and shows the reply', async () => {
-    const onSendMessage = vi.fn().mockResolvedValue('Yes, in most cases.');
-    renderTab({ onSendMessage });
-
-    expect(screen.getByTestId('sandboxEmpty')).toBeInTheDocument();
+  test('an answer returned by the mutation is shown straight away', async () => {
+    renderTab({}, [sendMock({ answer: 'Yes, in most cases.', requestId: 'r1' })]);
 
     type('Is it safe?');
     fireEvent.click(screen.getByTestId('sendMessageButton'));
@@ -113,68 +120,69 @@ describe('the sandbox', () => {
     await waitFor(() => {
       expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Yes, in most cases.');
     });
-    expect(onSendMessage).toHaveBeenCalledWith('Is it safe?');
-    // the composer is cleared and usable again
     expect(screen.getByTestId('sandboxInput')).toHaveValue('');
     expect(screen.queryByTestId('pendingMessage')).not.toBeInTheDocument();
   });
 
+  test('with no answer yet the typing indicator stays up, waiting on the subscription', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' })]);
+
+    type('Is it safe?');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('userMessage')).toBeInTheDocument();
+    });
+    // the mutation only acknowledges the job; the answer arrives on llmCallResponse
+    expect(screen.getByTestId('pendingMessage')).toBeInTheDocument();
+    expect(screen.queryByTestId('assistantMessage')).not.toBeInTheDocument();
+  });
+
   test('Enter sends too', async () => {
-    const onSendMessage = vi.fn().mockResolvedValue('Sure.');
-    renderTab({ onSendMessage });
+    renderTab({}, [sendMock({ answer: 'Sure.', requestId: 'r1' })]);
 
     type('Hello');
     fireEvent.keyDown(screen.getByTestId('sandboxInput'), { key: 'Enter' });
 
     await waitFor(() => {
-      expect(onSendMessage).toHaveBeenCalledWith('Hello');
+      expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Sure.');
     });
   });
 
   test('blank and whitespace-only messages are not sent', () => {
-    const onSendMessage = vi.fn();
-    renderTab({ onSendMessage });
+    renderTab({}, [sendMock({ answer: 'unused', requestId: 'r1' })]);
 
     expect(screen.getByTestId('sendMessageButton')).toBeDisabled();
 
     type('   ');
     expect(screen.getByTestId('sendMessageButton')).toBeDisabled();
     fireEvent.keyDown(screen.getByTestId('sandboxInput'), { key: 'Enter' });
-    expect(onSendMessage).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('userMessage')).not.toBeInTheDocument();
   });
 
-  test('a second send is blocked while the first is still pending', async () => {
-    let release: (value: string) => void = () => {};
-    const onSendMessage = vi.fn().mockImplementation(
-      () =>
-        new Promise<string>((resolve) => {
-          release = resolve;
-        })
-    );
-    renderTab({ onSendMessage });
+  test('errors returned by the mutation land in the transcript', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1', errors: [{ key: 'assistant', message: 'Assistant is busy' }] }),
+    ]);
 
-    type('First');
+    type('Anything there?');
     fireEvent.click(screen.getByTestId('sendMessageButton'));
 
-    // the box stays usable so the next question can be typed while waiting
-    expect(screen.getByTestId('sandboxInput')).not.toBeDisabled();
-    expect(screen.getByTestId('sendMessageButton')).toBeDisabled();
-
-    type('Second');
-    fireEvent.keyDown(screen.getByTestId('sandboxInput'), { key: 'Enter' });
-    expect(onSendMessage).toHaveBeenCalledTimes(1);
-
-    release('Done');
     await waitFor(() => {
-      expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Done');
+      expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Assistant is busy');
     });
-    expect(onSendMessage).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('userMessage')).toHaveTextContent('Anything there?');
+    expect(errorSpy).toHaveBeenCalled();
+    expect(screen.getByTestId('sandboxInput')).not.toBeDisabled();
+    errorSpy.mockRestore();
   });
 
   test('a failed send is reported and keeps the question in the transcript', async () => {
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
-    const onSendMessage = vi.fn().mockRejectedValue(new Error('Sandbox unavailable'));
-    renderTab({ onSendMessage });
+    renderTab({}, [
+      { request: { query: SEND_ASSISTANT_MESSAGE }, variableMatcher: () => true, error: new Error('Network down') },
+    ]);
 
     type('Anything there?');
     fireEvent.click(screen.getByTestId('sendMessageButton'));
@@ -184,25 +192,21 @@ describe('the sandbox', () => {
     });
     expect(screen.getByTestId('userMessage')).toHaveTextContent('Anything there?');
     expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Could not get a reply');
-    // still usable afterwards
-    expect(screen.getByTestId('sandboxInput')).not.toBeDisabled();
     errorSpy.mockRestore();
   });
 
   test('the sample question sends a starter message', async () => {
-    const onSendMessage = vi.fn().mockResolvedValue('Plenty!');
-    renderTab({ onSendMessage });
+    renderTab({}, [sendMock({ answer: 'Plenty!', requestId: 'r1' })]);
 
     fireEvent.click(screen.getByTestId('sampleQuestionButton'));
 
     await waitFor(() => {
-      expect(onSendMessage).toHaveBeenCalledWith('What can you help me with?');
+      expect(screen.getByTestId('userMessage')).toHaveTextContent('What can you help me with?');
     });
   });
 
   test('switching version clears the transcript — it belonged to the old one', async () => {
-    const onSendMessage = vi.fn().mockResolvedValue('Reply');
-    const { rerender } = renderTab({ onSendMessage });
+    const { rerender } = renderTab({}, [sendMock({ answer: 'Reply', requestId: 'r1' })]);
 
     type('Question');
     fireEvent.click(screen.getByTestId('sendMessageButton'));
@@ -210,7 +214,11 @@ describe('the sandbox', () => {
       expect(screen.getByTestId('assistantMessage')).toBeInTheDocument();
     });
 
-    rerender(<TryItOut {...defaultProps} versionId="v3" versionNumber={3} onSendMessage={onSendMessage} />);
+    rerender(
+      <MockedProvider mocks={[]}>
+        <TryItOut {...defaultProps} versionId="v3" versionNumber={3} />
+      </MockedProvider>
+    );
 
     expect(screen.getByTestId('sandboxEmpty')).toBeInTheDocument();
     expect(screen.queryByTestId('userMessage')).not.toBeInTheDocument();
@@ -219,7 +227,7 @@ describe('the sandbox', () => {
 });
 
 describe('the evaluation nudge', () => {
-  const chat = async (onSendMessage: ReturnType<typeof vi.fn>, count: number) => {
+  const chat = async (count: number) => {
     for (let index = 0; index < count; index += 1) {
       type(`Question ${index}`);
       fireEvent.click(screen.getByTestId('sendMessageButton'));
@@ -231,13 +239,15 @@ describe('the evaluation nudge', () => {
   };
 
   test('appears after two exchanges when Golden Q&A sets exist', async () => {
-    const onSendMessage = vi.fn().mockResolvedValue('Reply');
-    const { onRunEvaluation } = renderTab({ onSendMessage, hasGoldenQaSets: true });
+    const { onRunEvaluation } = renderTab({ hasGoldenQaSets: true }, [
+      sendMock({ answer: 'Reply', requestId: 'r1' }),
+      sendMock({ answer: 'Reply', requestId: 'r2' }),
+    ]);
 
-    await chat(onSendMessage, 1);
+    await chat(1);
     expect(screen.queryByTestId('evaluationNudge')).not.toBeInTheDocument();
 
-    await chat(onSendMessage, 2);
+    await chat(2);
     expect(screen.getByTestId('evaluationNudge')).toHaveTextContent('Happy with these responses?');
 
     fireEvent.click(screen.getByTestId('runEvaluationButton'));
@@ -245,11 +255,130 @@ describe('the evaluation nudge', () => {
   });
 
   test('stays hidden when there is no Golden Q&A set to run', async () => {
-    const onSendMessage = vi.fn().mockResolvedValue('Reply');
-    renderTab({ onSendMessage, hasGoldenQaSets: false });
+    renderTab({ hasGoldenQaSets: false }, [
+      sendMock({ answer: 'Reply', requestId: 'r1' }),
+      sendMock({ answer: 'Reply', requestId: 'r2' }),
+    ]);
 
-    await chat(onSendMessage, 2);
+    await chat(2);
 
     expect(screen.queryByTestId('evaluationNudge')).not.toBeInTheDocument();
+  });
+});
+
+test('sends only the fields LlmCallInput accepts', async () => {
+  const variableMatcher = vi.fn().mockReturnValue(true);
+  renderTab({}, [
+    {
+      request: { query: SEND_ASSISTANT_MESSAGE },
+      variableMatcher,
+      result: {
+        data: {
+          sendAssistantMessage: {
+            answer: 'Hi',
+            conversationId: 'c1',
+            jobId: 'j1',
+            requestId: 'r1',
+            errors: null,
+          },
+        },
+      },
+    },
+  ]);
+
+  fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Hello' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+  await waitFor(() => {
+    expect(variableMatcher).toHaveBeenCalled();
+  });
+
+  // the schema rejects question/requestId/versionId, and message is required
+  expect(variableMatcher.mock.calls[0][0]).toEqual({ input: { assistantId: '1', message: 'Hello' } });
+});
+
+test('renders the model markdown rather than printing the syntax', async () => {
+  renderTab({}, [
+    sendMock({
+      answer: '**Haan**, safe hai — see [the guide](https://example.com)\n\n- one\n- two',
+      requestId: 'r1',
+    }),
+  ]);
+
+  fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Is it safe?' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+  const bubble = await screen.findByTestId('assistantMessage');
+
+  expect(bubble.querySelector('strong')).toHaveTextContent('Haan');
+  expect(bubble.querySelectorAll('li')).toHaveLength(2);
+  // links open away from the app rather than replacing it
+  const link = bubble.querySelector('a');
+  expect(link).toHaveAttribute('href', 'https://example.com');
+  expect(link).toHaveAttribute('target', '_blank');
+  expect(bubble).not.toHaveTextContent('**Haan**');
+});
+
+test('what the user typed is never treated as markdown', async () => {
+  renderTab({}, [sendMock({ answer: 'ok', requestId: 'r1' })]);
+
+  fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: '**not bold**' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+  const sent = await screen.findByTestId('userMessage');
+  expect(sent).toHaveTextContent('**not bold**');
+  expect(sent.querySelector('strong')).toBeNull();
+});
+
+describe('starting over', () => {
+  test('the button only appears once there is a chat to clear', async () => {
+    renderTab({}, [sendMock({ answer: 'Hi', requestId: 'r1' })]);
+
+    expect(screen.queryByTestId('newChatButton')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Hello' } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    expect(await screen.findByTestId('newChatButton')).toBeInTheDocument();
+  });
+
+  test('clears the transcript and starts a fresh conversation on the server', async () => {
+    const variableMatcher = vi.fn().mockReturnValue(true);
+    const mock = {
+      request: { query: SEND_ASSISTANT_MESSAGE },
+      variableMatcher,
+      maxUsageCount: Number.POSITIVE_INFINITY,
+      result: {
+        data: {
+          sendAssistantMessage: {
+            answer: 'Hi',
+            conversationId: 'c1',
+            jobId: 'j1',
+            requestId: 'r1',
+            errors: null,
+          },
+        },
+      },
+    };
+    renderTab({}, [mock]);
+
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Hello' } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+    await screen.findByTestId('assistantMessage');
+
+    fireEvent.click(screen.getByTestId('newChatButton'));
+
+    expect(screen.getByTestId('sandboxEmpty')).toBeInTheDocument();
+    expect(screen.queryByTestId('userMessage')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('newChatButton')).not.toBeInTheDocument();
+
+    // the next message must not continue the old conversation
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Fresh start' } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    await waitFor(() => {
+      expect(variableMatcher).toHaveBeenCalledTimes(2);
+    });
+    expect(variableMatcher.mock.calls[1][0]).toEqual({ input: { assistantId: '1', message: 'Fresh start' } });
   });
 });

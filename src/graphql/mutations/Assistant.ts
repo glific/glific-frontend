@@ -90,3 +90,18 @@ export const SET_LIVE_VERSION = gql`
     }
   }
 `;
+
+export const SEND_ASSISTANT_MESSAGE = gql`
+  mutation SendAssistantMessage($input: LlmCallInput!) {
+    sendAssistantMessage(input: $input) {
+      answer
+      conversationId
+      jobId
+      requestId
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

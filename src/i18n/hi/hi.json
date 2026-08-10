@@ -892,7 +892,7 @@
   "sandbox only — real users stay on Version": "केवल सैंडबॉक्स — असली उपयोगकर्ता इसी संस्करण पर रहेंगे",
   "nothing is live yet": "अभी कुछ भी लाइव नहीं है",
   "Send a message to test this version.": "इस संस्करण को जाँचने के लिए संदेश भेजें।",
-  "try a sample question": "एक नमूना प्रश्न आज़माएँ",
+  "Try a sample question": "एक नमूना प्रश्न आज़माएँ",
   "What can you help me with?": "आप मेरी किस चीज़ में मदद कर सकते हैं?",
   "Type a message as a user would…": "जैसे कोई उपयोगकर्ता लिखता है वैसे संदेश लिखें…",
   "Thinking…": "सोच रहे हैं…",
@@ -903,5 +903,6 @@
   "Run an evaluation": "मूल्यांकन चलाएँ",
   "Send": "भेजें",
   "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।",
-  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।"
+  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।",
+  "New chat": "नई चैट"
 }

@@ -1029,7 +1029,7 @@
   "sandbox only — real users stay on Version": "sandbox only — real users stay on Version",
   "nothing is live yet": "nothing is live yet",
   "Send a message to test this version.": "Send a message to test this version.",
-  "try a sample question": "try a sample question",
+  "Try a sample question": "Try a sample question",
   "What can you help me with?": "What can you help me with?",
   "Type a message as a user would…": "Type a message as a user would…",
   "Thinking…": "Thinking…",
@@ -1040,5 +1040,6 @@
   "Run an evaluation": "Run an evaluation",
   "Send": "Send",
   "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation.",
-  "could not be uploaded. Try again.": "could not be uploaded. Try again."
+  "could not be uploaded. Try again.": "could not be uploaded. Try again.",
+  "New chat": "New chat"
 }
