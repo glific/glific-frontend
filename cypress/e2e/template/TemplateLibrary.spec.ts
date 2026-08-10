@@ -62,9 +62,31 @@ const libraryActiveLanguages = [
   },
 ];
 
-const mockUserLanguages = (defaultLanguageId: string = englishId) => {
+interface MockTemplateLibraryBackendOptions {
+  entries?: any[] | 'error';
+  defaultLanguageId?: string;
+  withCreate?: boolean;
+}
+
+const mockTemplateLibraryBackend = ({
+  entries = templateLibraryData,
+  defaultLanguageId = englishId,
+  withCreate = false,
+}: MockTemplateLibraryBackendOptions = {}) => {
   cy.intercept('POST', '**/api', (req) => {
-    if (req.body.operationName === 'currentUserOrganisationLanguages') {
+    const op = req.body.operationName;
+
+    if (op === 'templateLibrary') {
+      req.alias = 'templateLibrary';
+      if (entries === 'error') {
+        req.reply({ statusCode: 200, body: { errors: [{ message: 'Something went wrong' }] } });
+      } else {
+        req.reply({ statusCode: 200, body: { data: { templateLibrary: entries } } });
+      }
+      return;
+    }
+
+    if (op === 'currentUserOrganisationLanguages') {
       req.alias = 'currentUserOrganisationLanguages';
       req.reply({
         statusCode: 200,
@@ -73,7 +95,7 @@ const mockUserLanguages = (defaultLanguageId: string = englishId) => {
             currentUser: {
               user: {
                 organization: {
-                  libraryActiveLanguages,
+                  activeLanguages: libraryActiveLanguages,
                   defaultLanguage: { id: defaultLanguageId, label: 'English' },
                 },
               },
@@ -83,35 +105,8 @@ const mockUserLanguages = (defaultLanguageId: string = englishId) => {
       });
       return;
     }
-    req.continue();
-  });
-};
 
-const mockTemplateLibrary = (entries: any[] = templateLibraryData) => {
-  cy.intercept('POST', '**/api', (req) => {
-    if (req.body.operationName === 'templateLibrary') {
-      req.alias = 'templateLibrary';
-      req.reply({ statusCode: 200, body: { data: { templateLibrary: entries } } });
-    } else {
-      req.continue();
-    }
-  });
-};
-
-const mockTemplateLibraryError = () => {
-  cy.intercept('POST', '**/api', (req) => {
-    if (req.body.operationName === 'templateLibrary') {
-      req.alias = 'templateLibrary';
-      req.reply({ statusCode: 200, body: { errors: [{ message: 'Something went wrong' }] } });
-    } else {
-      req.continue();
-    }
-  });
-};
-
-const mockLibraryCreateSessionTemplate = () => {
-  cy.intercept('POST', '**/api', (req) => {
-    if (req.body.operationName === 'createSessionTemplate') {
+    if (withCreate && op === 'createSessionTemplate') {
       req.alias = 'createSessionTemplate';
       const input = req.body.variables.input;
       req.reply({
@@ -156,6 +151,7 @@ const mockLibraryCreateSessionTemplate = () => {
       });
       return;
     }
+
     req.continue();
   });
 };
@@ -179,8 +175,7 @@ beforeEach(() => {
 
 describe('Template Library — browsing the catalog', () => {
   beforeEach(() => {
-    mockUserLanguages();
-    mockTemplateLibrary();
+    mockTemplateLibraryBackend();
     openLibraryFromCreatePage();
     cy.wait('@templateLibrary');
   });
@@ -238,8 +233,8 @@ describe('Template Library — browsing the catalog', () => {
     cy.contains('No Appointment reminder templates in Norwegian Bokmål');
   });
 
-  it('shows the full catalog count in the footer', () => {
-    cy.contains('Showing 4 of 4 templates');
+  it('shows the visible-of-total catalog count in the footer, honoring the default language filter', () => {
+    cy.contains('Showing 3 of 4 templates');
   });
 
   it('keeps "Create from template" disabled until an entry is selected, then previews it', () => {
@@ -276,9 +271,7 @@ describe('Template Library — creating a template from a library entry', () => 
   it('pre-fills body, category, language, and button from the chosen entry, then creates the template', () => {
     const shortcode = 'cy_library_' + Date.now();
 
-    mockUserLanguages();
-    mockTemplateLibrary();
-    mockLibraryCreateSessionTemplate();
+    mockTemplateLibraryBackend({ withCreate: true });
 
     openLibraryFromCreatePage();
     cy.wait('@templateLibrary');
@@ -300,6 +293,9 @@ describe('Template Library — creating a template from a library entry', () => 
     cy.get('input[placeholder="e.g., Yes, No, More Info"]').should('have.value', 'Reschedule');
     cy.get('[data-testid="AutocompleteInput"] input').eq(0).should('have.value', 'English');
 
+    cy.get('[data-testid="variable"]').should('have.length', 1);
+    cy.get('input[placeholder="Define value"]').type('tomorrow');
+
     cy.get('input[name="newShortcode"]').clear().type(shortcode);
     cy.get('[data-testid="submitActionButton"]').should('not.contain', 'Validating URL').click();
 
@@ -309,6 +305,7 @@ describe('Template Library — creating a template from a library entry', () => 
       expect(input.category).to.eq('UTILITY');
       expect(input.languageId).to.eq(englishId);
       expect(input.body).to.contain('Your appointment is on');
+      expect(input.example).to.contain('[tomorrow]');
       expect(input.hasButtons).to.eq(true);
       expect(input.buttonType).to.eq('QUICK_REPLY');
       expect(JSON.parse(input.buttons)).to.deep.eq([{ type: 'QUICK_REPLY', text: 'Reschedule' }]);
@@ -318,8 +315,7 @@ describe('Template Library — creating a template from a library entry', () => 
   });
 
   it('lets a user close the library without choosing a template and create one manually instead', () => {
-    mockUserLanguages();
-    mockTemplateLibrary();
+    mockTemplateLibraryBackend();
 
     openLibraryFromCreatePage();
     cy.wait('@templateLibrary');
@@ -333,8 +329,7 @@ describe('Template Library — creating a template from a library entry', () => 
 
 describe('Template Library — empty catalog', () => {
   it('shows an empty state when the catalog has no entries', () => {
-    mockUserLanguages();
-    mockTemplateLibrary([]);
+    mockTemplateLibraryBackend({ entries: [] });
 
     openLibraryFromCreatePage();
     cy.wait('@templateLibrary');
@@ -347,12 +342,11 @@ describe('Template Library — empty catalog', () => {
 
 describe('Template Library — fetch failure', () => {
   it('shows an error notification instead of silently rendering an empty catalog', () => {
-    mockUserLanguages();
-    mockTemplateLibraryError();
+    mockTemplateLibraryBackend({ entries: 'error' });
 
     openLibraryFromCreatePage();
     cy.wait('@templateLibrary');
 
-    cy.get('[data-testid="errorMessage"]').should('be.visible');
+    cy.contains('[data-testid="dialogTitle"]', 'An error has occurred!').should('exist');
   });
 });
