@@ -72,8 +72,8 @@
   color: var(--app-color-text-tertiary);
 
   svg {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: var(--app-size-icon-sm);
+    height: var(--app-size-icon-sm);
   }
 }
 
