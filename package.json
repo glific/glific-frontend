@@ -34,7 +34,6 @@
     "@superset-ui/embedded-sdk": "^0.3.0",
     "@vitejs/plugin-react": "^5.1.2",
     "apollo-absinthe-upload-link": "^1.7.0",
-    "apollo-link-token-refresh": "^0.7.0",
     "axios": "^1.15.2",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.19",
