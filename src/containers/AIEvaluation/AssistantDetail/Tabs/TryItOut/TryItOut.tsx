@@ -2,12 +2,17 @@ import { useMutation } from '@apollo/client';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Markdown from 'react-markdown';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckIcon from '@mui/icons-material/Check';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import { setErrorMessage } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import type { AssistantChatResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
-import { normalizeLineBreaks } from 'containers/AIEvaluation/sandboxUtils';
+import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox';
 import { useAssistantChatResponse } from 'containers/AIEvaluation/hooks/useAssistantChatResponse';
 import styles from './TryItOut.module.css';
 
@@ -244,7 +249,7 @@ export const TryItOut = ({
     }
   };
 
-  const blocker = (title: string, note: string, action: ReactNode, icon?: string) => (
+  const blocker = (title: string, note: string, action: ReactNode, icon?: ReactNode) => (
     <div className={styles.Blocker} data-testid="tryItOutBlocker">
       {icon && <div className={styles.BlockerIcon}>{icon}</div>}
       <div className={styles.BlockerTitle}>{title}</div>
@@ -272,7 +277,7 @@ export const TryItOut = ({
       <Button variant="contained" color="primary" onClick={onSave} data-testid="saveFromTryItOutButton">
         {t('Save Version')}
       </Button>,
-      '🔒'
+      <LockOutlinedIcon fontSize="inherit" />
     );
   }
 
@@ -281,7 +286,7 @@ export const TryItOut = ({
       t('This version is still being prepared'),
       t('It can be tested once the server has finished building it.'),
       null,
-      '⏳'
+      <HourglassEmptyIcon fontSize="inherit" />
     );
   }
 
@@ -292,7 +297,7 @@ export const TryItOut = ({
       <Button variant="outlined" onClick={onGoToPersona} data-testid="goToPersonaButton">
         {t('Go to Persona & Prompt')}
       </Button>,
-      '⚠️'
+      <WarningIcon />
     );
   }
 
@@ -335,7 +340,8 @@ export const TryItOut = ({
                   onClick={() => send(t('What can you help me with?'))}
                   data-testid="sampleQuestionButton"
                 >
-                  {t('Try a sample question')} →
+                  {t('Try a sample question')}
+                  <ArrowForwardIcon className={styles.SampleArrow} fontSize="inherit" />
                 </button>
               )}
             </div>
@@ -395,7 +401,9 @@ export const TryItOut = ({
 
         {showNudge && (
           <div className={styles.Nudge} data-testid="evaluationNudge">
-            <div className={styles.NudgeIcon}>✓</div>
+            <div className={styles.NudgeIcon}>
+              <CheckIcon fontSize="inherit" />
+            </div>
             <div className={styles.NudgeText}>
               <div className={styles.NudgeTitle}>{t('Happy with these responses?')}</div>
               <div className={styles.Note}>

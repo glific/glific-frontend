@@ -1,5 +1,5 @@
 import { setUserSession } from 'services/AuthService';
-import { SANDBOX_CHAT_KEY_PREFIX } from '../sandboxUtils';
+import { SANDBOX_CHAT_KEY_PREFIX } from '../utils/sandbox';
 import {
   clearAllSandboxChats,
   clearSandboxChat,

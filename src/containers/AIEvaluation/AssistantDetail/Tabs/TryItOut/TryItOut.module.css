@@ -176,6 +176,11 @@
   cursor: pointer;
 }
 
+.SampleArrow {
+  margin-left: var(--app-space-2xs);
+  vertical-align: text-bottom;
+}
+
 .SampleLink:hover {
   text-decoration: underline;
 }
@@ -284,6 +289,11 @@
   background-color: var(--app-color-brand-primary);
   color: var(--app-color-white);
   font-size: var(--app-font-size-sm);
+
+  svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
 }
 
 .NudgeText {
@@ -320,7 +330,13 @@
   margin: 0 auto var(--app-space-lg);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-hover);
+  color: var(--app-color-text-tertiary);
   font-size: var(--app-font-size-3xl);
+
+  svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
 }
 
 .BlockerTitle {
