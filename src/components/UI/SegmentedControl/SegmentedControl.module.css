@@ -1,0 +1,53 @@
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.Label {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  color: var(--app-color-text-primary);
+}
+
+.Track {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: var(--app-space-2xs);
+  border-radius: var(--app-radius-pill);
+  background-color: rgb(var(--app-color-slate-rgb) / 14%);
+}
+
+.Option {
+  padding: var(--app-space-sm) var(--app-space-lg);
+  border: none;
+  border-radius: var(--app-radius-pill);
+  background: none;
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.Option:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ActiveOption {
+  background-color: var(--app-color-surface-raised);
+  color: var(--app-color-text-heading);
+  box-shadow: var(--app-shadow-raised);
+}
+
+.HelperText {
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}

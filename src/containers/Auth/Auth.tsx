@@ -15,7 +15,6 @@ import styles from './Auth.module.css';
 import axios from 'axios';
 import { ORGANIZATION_NAME } from 'config';
 import setLogs from 'config/logs';
-import { checkOrgStatus } from 'services/AuthService';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 // import { Promotion } from './Promotion/Promotion';
 
@@ -79,7 +78,6 @@ export const Auth = ({
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState('Glific');
-  const [status, setStatus] = useState('');
 
   const isLoading = externalLoading !== undefined ? externalLoading : loading;
 
@@ -88,11 +86,14 @@ export const Auth = ({
       return;
     }
 
+    // Fetch only the organization name for display. The org's suspension status is
+    // intentionally not surfaced to unauthenticated visitors — doing so would leak
+    // private account state. Suspension is communicated after a login attempt, handled
+    // by the backend response in Login `onSubmitLogin`.
     axios
       .post(ORGANIZATION_NAME)
       .then(({ data }) => {
         setOrgName(data?.data?.name);
-        setStatus(data?.data?.status);
       })
       .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
   }, [mode]);
@@ -102,10 +103,6 @@ export const Auth = ({
       setLoading(false);
     }
   }, [loading, errorMessage]);
-
-  useEffect(() => {
-    checkOrgStatus(status);
-  }, [status]);
 
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
