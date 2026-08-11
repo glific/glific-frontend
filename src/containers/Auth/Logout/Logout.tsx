@@ -47,6 +47,7 @@ export const Logout = () => {
     resetRolePermissions();
     clearListSession();
     clearOrgEvalAccessCache();
+    clearAllSandboxChats();
   };
 
   const handleLogout = async () => {
@@ -60,9 +61,6 @@ export const Logout = () => {
     }
 
     clearLocalSession();
-
-    // clear cached Try It Out transcripts
-    clearAllSandboxChats();
 
     // clear apollo cache
     await client.clearStore();

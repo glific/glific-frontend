@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
@@ -1367,10 +1367,13 @@ describe('switching versions', () => {
   });
 
   test('an upload landing after a version switch appends to the new list', async () => {
+    // the upload must not settle until the switch has happened, and a wall-clock delay loses
+    // that race whenever the suite runs slowly — so the clock is held still instead
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     const slowUpload = {
       request: { query: UPLOAD_FILE_TO_KAAPI },
       variableMatcher: () => true,
-      delay: 60,
+      delay: 5_000,
       result: {
         data: {
           uploadFilesearchFile: {
@@ -1401,6 +1404,13 @@ describe('switching versions', () => {
     await openVersionMenu();
     fireEvent.click(screen.getByTestId('versionOption-2'));
 
+    // the switch lands first: nothing has changed yet, so there is nothing to confirm
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('older_policy.pdf');
+    });
+
+    await act(async () => void (await vi.advanceTimersByTimeAsync(5_000)));
+
     await waitFor(() => {
       expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
     });
@@ -1408,6 +1418,8 @@ describe('switching versions', () => {
     expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('older_policy.pdf');
     expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('guide.pdf');
     expect(screen.queryByText('Accelerator Guide (1).pdf')).not.toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 
   test('a save moves the selection onto the version it just created', async () => {
