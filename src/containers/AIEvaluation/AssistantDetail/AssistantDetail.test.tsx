@@ -1447,3 +1447,67 @@ describe('switching versions', () => {
     expect(screen.getByTestId('promptInput')).toHaveValue('Be concise.');
   });
 });
+
+describe('resilience', () => {
+  test('a version whose settings will not parse still loads', async () => {
+    const broken = { ...version(1, true), settings: 'not json' };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([broken])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    // the prompt still comes through; only the unreadable settings fall back to defaults
+    expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
+  });
+
+  test('reselecting the version already on screen does nothing', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(screen.getByTestId('versionOption-1'));
+
+    // version 1 is already selected, so there is nothing to confirm or reload
+    expect(screen.queryByText('Switch version?')).not.toBeInTheDocument();
+    expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1');
+  });
+
+  test('a publish that throws is reported', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failingPublish = {
+      request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
+      error: new Error('Network down'),
+    };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingPublish]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    fireEvent.click(await screen.findByTestId('publishButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+    errorSpy.mockRestore();
+  });
+
+  test('leaving with unsaved changes warns the browser too', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+
+    // a cancelled beforeunload is what makes the browser show its confirm dialog
+    expect(event.defaultPrevented).toBe(true);
+  });
+});

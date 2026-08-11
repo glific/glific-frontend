@@ -2,6 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
+import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant';
 import { setUserSession } from 'services/AuthService';
 import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
 import TryItOut from './TryItOut';
@@ -468,4 +469,112 @@ describe('the chat survives leaving the tab', () => {
     renderTab({ versionId: 'v9', versionNumber: 9 }, []);
     expect(screen.getAllByTestId('sandboxEmpty').length).toBeGreaterThan(0);
   });
+});
+
+describe('the answer arriving on the subscription', () => {
+  const subscriptionMock = (payload: Record<string, unknown>) => ({
+    request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+    result: {
+      data: {
+        llmCallResponse: { answer: null, conversationId: 'c1', jobId: 'j1', errors: null, ...payload },
+      },
+    },
+  });
+
+  // the mutation only acknowledges; the answer comes later on llmCallResponse
+  const ackMock = sendMock({ answer: null, requestId: 'r1' });
+
+  const ask = () => {
+    fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Is it safe?' } });
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+  };
+
+  test('an event matching our requestId becomes the reply', async () => {
+    renderTab({}, [ackMock, subscriptionMock({ answer: 'Yes, in most cases.', requestId: 'r1' })]);
+    ask();
+
+    expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Yes, in most cases.');
+    expect(screen.queryByTestId('pendingMessage')).not.toBeInTheDocument();
+  });
+
+  test('another tab answer is ignored — the subscription is organisation-wide', async () => {
+    renderTab({}, [ackMock, subscriptionMock({ answer: 'Someone else reply', requestId: 'not-ours' })]);
+    ask();
+
+    await screen.findByTestId('userMessage');
+    // still waiting: that event belonged to a different request
+    expect(screen.getByTestId('pendingMessage')).toBeInTheDocument();
+    expect(screen.queryByTestId('assistantMessage')).not.toBeInTheDocument();
+  });
+
+  test('errors delivered on the subscription land in the transcript', async () => {
+    renderTab({}, [
+      ackMock,
+      subscriptionMock({ requestId: 'r1', errors: [{ key: 'llm', message: 'Model timed out' }] }),
+    ]);
+    ask();
+
+    expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Model timed out');
+  });
+
+  test('an event with no answer at all still ends the wait', async () => {
+    renderTab({}, [ackMock, subscriptionMock({ answer: null, requestId: 'r1' })]);
+    ask();
+
+    expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Could not get a reply');
+  });
+});
+
+test('an answer that arrives before the mutation returns is still applied', async () => {
+  // the server issues the requestId, so an event can land before we know ours. The slow
+  // mutation forces exactly that ordering.
+  const slowAck = {
+    request: { query: SEND_ASSISTANT_MESSAGE },
+    variableMatcher: () => true,
+    delay: 60,
+    result: {
+      data: {
+        sendAssistantMessage: { answer: null, conversationId: 'c1', jobId: 'j1', requestId: 'r1', errors: null },
+      },
+    },
+  };
+  const earlyEvent = {
+    request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+    result: {
+      data: {
+        llmCallResponse: {
+          answer: 'Answered early',
+          conversationId: 'c1',
+          jobId: 'j1',
+          requestId: 'r1',
+          errors: null,
+        },
+      },
+    },
+  };
+
+  renderTab({}, [slowAck, earlyEvent]);
+
+  fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Quick one' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+  // held while the requestId is unknown, then replayed once the mutation names it
+  expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Answered early');
+});
+
+test('an empty subscription payload is ignored rather than ending the wait', async () => {
+  renderTab({}, [
+    sendMock({ answer: null, requestId: 'r1' }),
+    {
+      request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+      result: { data: { llmCallResponse: null } },
+    },
+  ]);
+
+  fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: 'Hello' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+  await screen.findByTestId('userMessage');
+  expect(screen.getByTestId('pendingMessage')).toBeInTheDocument();
+  expect(screen.queryByTestId('assistantMessage')).not.toBeInTheDocument();
 });

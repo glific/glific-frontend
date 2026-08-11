@@ -3,7 +3,6 @@ import type { SandboxChat, SandboxMessage } from 'containers/AIEvaluation/types/
 
 export const SANDBOX_CHAT_KEY_PREFIX = 'glific_sandbox_chat';
 
-/** a long transcript is not worth keeping whole — localStorage is small and shared */
 const MAX_CACHED_MESSAGES = 50;
 
 const keyFor = (organizationId: string, assistantId: string, versionId: string) =>
@@ -14,9 +13,27 @@ const keyFor = (organizationId: string, assistantId: string, versionId: string) 
  * config, so its conversation is a different conversation.
  */
 const resolveKey = (assistantId?: string, versionId?: string) => {
-  const organizationId = getUserSession('organizationId');
-  if (organizationId == null || !assistantId || !versionId) return null;
-  return keyFor(String(organizationId), assistantId, versionId);
+  const organizationId = currentOrganizationId();
+  if (!organizationId || !assistantId || !versionId) return null;
+  return keyFor(organizationId, assistantId, versionId);
+};
+
+/** the session itself lives in localStorage, so reading it can throw when storage is off */
+const currentOrganizationId = () => {
+  try {
+    const organizationId = getUserSession('organizationId');
+    return organizationId == null ? null : String(organizationId);
+  } catch {
+    return null;
+  }
+};
+
+const removeKey = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // the entry is unreachable either way
+  }
 };
 
 const sandboxKeys = () => {
@@ -76,26 +93,21 @@ export const writeSandboxChat = (assistantId: string | undefined, versionId: str
 
 export const clearSandboxChat = (assistantId?: string, versionId?: string) => {
   const key = resolveKey(assistantId, versionId);
-  if (!key) return;
-  try {
-    localStorage.removeItem(key);
-  } catch {
-    // nothing to do — the entry is unreachable either way
-  }
+  if (key) removeKey(key);
 };
 
 /** every version of one assistant, for when the assistant itself is deleted */
 export const clearSandboxChatsForAssistant = (assistantId: string) => {
-  const organizationId = getUserSession('organizationId');
-  if (organizationId == null) return;
+  const organizationId = currentOrganizationId();
+  if (!organizationId) return;
 
   const prefix = `${SANDBOX_CHAT_KEY_PREFIX}:${organizationId}:${assistantId}:`;
   sandboxKeys()
     .filter((key) => key.startsWith(prefix))
-    .forEach((key) => localStorage.removeItem(key));
+    .forEach(removeKey);
 };
 
 /** everything, for logout — transcripts belong to the user who typed them */
 export const clearAllSandboxChats = () => {
-  sandboxKeys().forEach((key) => localStorage.removeItem(key));
+  sandboxKeys().forEach(removeKey);
 };
