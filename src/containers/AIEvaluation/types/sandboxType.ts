@@ -4,13 +4,11 @@ export interface SandboxMessage {
   failed?: boolean;
 }
 
-/** what survives a refresh: the transcript and the thread it belongs to */
 export interface SandboxChat {
   messages: SandboxMessage[];
   conversationId: string;
 }
 
-/** the llmCallResponse payload, shared by the mutation result and the subscription */
 export interface LlmCallResponse {
   answer?: string | null;
   conversationId?: string | null;

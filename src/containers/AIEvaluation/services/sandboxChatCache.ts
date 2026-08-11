@@ -31,16 +31,13 @@ const currentOrganizationId = () => {
 const removeKey = (key: string) => {
   try {
     localStorage.removeItem(key);
-  } catch {
-    // the entry is unreachable either way
-  }
+  } catch {}
 };
 
 const sandboxKeys = () => {
   try {
     return Object.keys(localStorage).filter((key) => key.startsWith(`${SANDBOX_CHAT_KEY_PREFIX}:`));
   } catch {
-    // storage can be unavailable entirely (Safari private mode, blocked cookies)
     return [];
   }
 };
@@ -66,7 +63,6 @@ export const readSandboxChat = (assistantId?: string, versionId?: string): Sandb
 
     return { messages, conversationId: typeof parsed.conversationId === 'string' ? parsed.conversationId : '' };
   } catch {
-    // corrupt or unreadable entries behave like an empty chat rather than breaking the tab
     return null;
   }
 };
@@ -86,9 +82,7 @@ export const writeSandboxChat = (assistantId: string | undefined, versionId: str
       key,
       JSON.stringify({ messages: chat.messages.slice(-MAX_CACHED_MESSAGES), conversationId: chat.conversationId })
     );
-  } catch {
-    // a full or unavailable store just means the chat is not restored later
-  }
+  } catch {}
 };
 
 export const clearSandboxChat = (assistantId?: string, versionId?: string) => {
@@ -107,7 +101,6 @@ export const clearSandboxChatsForAssistant = (assistantId: string) => {
     .forEach(removeKey);
 };
 
-/** everything, for logout — transcripts belong to the user who typed them */
 export const clearAllSandboxChats = () => {
   sandboxKeys().forEach(removeKey);
 };

@@ -46,8 +46,6 @@ export const TryItOut = ({
   const [draft, setDraft] = useState('');
   const [pending, setPending] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
-  // the server issues the requestId, so we only learn it when the mutation answers. Until
-  // then any subscription event could be ours, so they are held rather than dropped.
   const pendingRequestIdRef = useRef<string | null>(null);
   const earlyResponsesRef = useRef<LlmCallResponse[]>([]);
   const conversationIdRef = useRef<string>('');
@@ -161,7 +159,6 @@ export const TryItOut = ({
 
       if (result?.conversationId) conversationIdRef.current = result.conversationId;
 
-      // an answer here means there is nothing to wait for
       if (result?.answer) {
         finish({ role: 'assistant', text: result.answer });
         return;
@@ -280,7 +277,6 @@ export const TryItOut = ({
           ) : (
             messages.map((message, index) => (
               <div
-                // append-only transcript, so the index is stable for a given message
                 key={`${message.role}-${index}`}
                 className={`${styles.Message} ${message.role === 'user' ? styles.UserMessage : styles.AssistantMessage} ${
                   message.failed ? styles.FailedMessage : ''
@@ -288,7 +284,6 @@ export const TryItOut = ({
                 data-testid={message.role === 'user' ? 'userMessage' : 'assistantMessage'}
               >
                 {message.role === 'assistant' && !message.failed ? (
-                  // the model answers in markdown; what the user typed is shown verbatim
                   <div className={styles.Markdown}>
                     <Markdown
                       components={{
