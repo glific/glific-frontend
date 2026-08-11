@@ -203,6 +203,17 @@ const menus = (): Menu[] => [
               type: 'sideDrawer',
               roles: managerLevel,
             },
+            ...(getOrganizationServices('aiEvaluationV2Enabled')
+              ? [
+                  {
+                    title: 'AI Evaluation v2',
+                    path: '/ai-evaluation-v2',
+                    icon: 'aiEvals',
+                    type: 'sideDrawer',
+                    roles: managerLevel,
+                  },
+                ]
+              : []),
           ],
         },
       ]

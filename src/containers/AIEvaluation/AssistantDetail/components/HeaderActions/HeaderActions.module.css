@@ -1,0 +1,47 @@
+.DirtyActions {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  flex-shrink: 0;
+}
+
+.UnsavedPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 40%);
+  border-radius: var(--app-radius-pill);
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 10%);
+  color: var(--app-color-attention);
+  font-size: var(--app-font-size-xs);
+  font-weight: 800;
+}
+
+.UnsavedDot {
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 50%;
+  background-color: var(--app-color-attention);
+}
+
+.DiscardLink {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--app-color-text-tertiary);
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.DiscardLink:hover {
+  text-decoration: underline;
+}
+
+.PublishButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}

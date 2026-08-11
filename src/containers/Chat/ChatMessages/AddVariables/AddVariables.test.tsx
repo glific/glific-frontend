@@ -1,14 +1,16 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
-import axios from 'axios';
 import { vi } from 'vitest';
 
+import { apiClient } from 'services/apiClient';
 import { responseData, responseData1 } from 'mocks/AddVariables';
 import { AddVariables } from './AddVariables';
 
-vi.mock('axios');
-const mockedAxios = axios as any;
+vi.mock('services/apiClient', () => ({
+  apiClient: { get: vi.fn() },
+}));
+const mockedApiClient = apiClient as any;
 
 const setVariableMock = vi.fn();
 
@@ -30,8 +32,8 @@ const wrapper = (
 );
 
 const axiosApiCall = async () => {
-  mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData1));
-  mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+  mockedApiClient.get.mockImplementationOnce(() => Promise.resolve(responseData1));
+  mockedApiClient.get.mockImplementationOnce(() => Promise.resolve(responseData));
 };
 
 test('it should render variable options and save the form', async () => {

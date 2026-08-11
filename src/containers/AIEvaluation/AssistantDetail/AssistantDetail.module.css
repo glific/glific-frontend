@@ -1,0 +1,30 @@
+.Page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  background-color: var(--app-color-surface-page);
+}
+
+.TabContent {
+  flex: 1;
+  min-height: 0;
+  padding: var(--app-space-xl) var(--app-space-3xl) var(--app-space-6xl);
+}
+
+.TabPanel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--app-color-text-tertiary);
+  font-size: var(--app-font-size-md);
+}
+
+.NotFound {
+  text-align: center;
+  margin: var(--app-space-3xl) 0;
+  color: var(--app-color-text-tertiary);
+}
