@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant';
@@ -20,7 +20,6 @@ const defaultProps = {
   onRunEvaluation: vi.fn(),
 };
 
-// the reply is correlated by requestId, which the component generates
 const sendMock = (result: Record<string, unknown>) => ({
   request: { query: SEND_ASSISTANT_MESSAGE },
   variableMatcher: () => true,
@@ -577,4 +576,158 @@ test('an empty subscription payload is ignored rather than ending the wait', asy
   await screen.findByTestId('userMessage');
   expect(screen.getByTestId('pendingMessage')).toBeInTheDocument();
   expect(screen.queryByTestId('assistantMessage')).not.toBeInTheDocument();
+});
+
+describe('when the reply takes too long', () => {
+  // the mutation resolves with no answer, so the tab is left waiting on the subscription
+  const awaitingSubscription = () => sendMock({ answer: null, requestId: 'r1' });
+
+  const sendAndWait = async () => {
+    type('Hello');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+    await screen.findByTestId('pendingMessage');
+  };
+
+  // the timers drive React state, so the clock has to move inside act
+  const advance = (ms: number) => act(async () => void (await vi.advanceTimersByTimeAsync(ms)));
+
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  test('says it is still waiting rather than leaving the dots unexplained', async () => {
+    renderTab({}, [awaitingSubscription()]);
+    await sendAndWait();
+
+    expect(screen.queryByTestId('slowReplyNote')).not.toBeInTheDocument();
+
+    await advance(30_000);
+
+    expect(await screen.findByTestId('slowReplyNote')).toBeInTheDocument();
+    // it is a hint, not an outcome — the reply may still land
+    expect(screen.getByTestId('pendingMessage')).toBeInTheDocument();
+  });
+
+  test('gives up eventually and leaves the chat usable', async () => {
+    renderTab({}, [awaitingSubscription()]);
+    await sendAndWait();
+
+    await advance(90_000);
+
+    const reply = await screen.findByTestId('assistantMessage');
+    expect(reply).toHaveTextContent('No reply came back in time');
+    expect(screen.queryByTestId('pendingMessage')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('slowReplyNote')).not.toBeInTheDocument();
+
+    // the question is still there to retry, and the composer is live again
+    expect(screen.getByTestId('userMessage')).toHaveTextContent('Hello');
+    type('Again');
+    expect(screen.getByTestId('sendMessageButton')).not.toBeDisabled();
+  });
+
+  test('a reply that arrives in time cancels the countdown', async () => {
+    renderTab({}, [
+      awaitingSubscription(),
+      {
+        request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+        result: { data: { llmCallResponse: { answer: 'Here you go', requestId: 'r1', conversationId: 'c1' } } },
+      },
+    ]);
+    await sendAndWait();
+
+    expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Here you go');
+
+    await advance(90_000);
+
+    expect(screen.queryByTestId('slowReplyNote')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('assistantMessage')).toHaveLength(1);
+  });
+
+  test('starting a new chat calls off the wait', async () => {
+    renderTab({}, [awaitingSubscription()]);
+    await sendAndWait();
+    await advance(30_000);
+    expect(await screen.findByTestId('slowReplyNote')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('newChatButton'));
+
+    await advance(90_000);
+
+    expect(screen.getByTestId('sandboxEmpty')).toBeInTheDocument();
+    expect(screen.queryByTestId('assistantMessage')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('slowReplyNote')).not.toBeInTheDocument();
+  });
+});
+
+describe('when the reply turns up after the timeout', () => {
+  const advance = (ms: number) => act(async () => void (await vi.advanceTimersByTimeAsync(ms)));
+
+  // the subscription event lands well after the 90s give-up
+  const lateReply = (delay: number, answer = 'Sorry for the wait') => ({
+    request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+    result: { data: { llmCallResponse: { answer, requestId: 'r1', conversationId: 'c1' } } },
+    delay,
+  });
+
+  const sendAndTimeOut = async () => {
+    type('Hello');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+    await screen.findByTestId('pendingMessage');
+    await advance(90_000);
+    expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('No reply came back in time');
+  };
+
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  test('takes the place of the bubble that said it never came', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), lateReply(95_000)]);
+    await sendAndTimeOut();
+
+    await advance(10_000);
+
+    const replies = screen.getAllByTestId('assistantMessage');
+    expect(replies).toHaveLength(1);
+    expect(replies[0]).toHaveTextContent('Sorry for the wait');
+    expect(screen.queryByText(/No reply came back/)).not.toBeInTheDocument();
+  });
+
+  test('is dropped once the user has asked something else', async () => {
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      lateReply(200_000),
+      sendMock({ answer: 'Second answer', requestId: 'r2' }),
+    ]);
+    await sendAndTimeOut();
+
+    type('Again');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    // the new answer is appended — the abandoned bubble is no longer a slot waiting to be filled
+    await waitFor(() => expect(screen.getAllByTestId('assistantMessage')).toHaveLength(2));
+    expect(screen.getAllByTestId('assistantMessage')[0]).toHaveTextContent('No reply came back in time');
+    expect(screen.getAllByTestId('assistantMessage')[1]).toHaveTextContent('Second answer');
+  });
+
+  test('stops listening once the grace window is over', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), lateReply(215_000)]);
+    await sendAndTimeOut();
+
+    // 120s of grace, then the event finally fires with nobody waiting for it
+    await advance(130_000);
+    await advance(10_000);
+
+    const replies = screen.getAllByTestId('assistantMessage');
+    expect(replies).toHaveLength(1);
+    expect(replies[0]).toHaveTextContent('No reply came back in time');
+  });
 });

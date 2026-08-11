@@ -1046,6 +1046,8 @@
   "Type a message as a user would…": "Type a message as a user would…",
   "Thinking…": "Thinking…",
   "Could not get a reply. Try sending it again.": "Could not get a reply. Try sending it again.",
+  "No reply came back in time. The assistant may be busy — try sending it again.": "No reply came back in time. The assistant may be busy — try sending it again.",
+  "Still waiting — a long prompt or a reasoning model can take a while.": "Still waiting — a long prompt or a reasoning model can take a while.",
   "Testing a version needs a sandbox endpoint, which is not available yet.": "Testing a version needs a sandbox endpoint, which is not available yet.",
   "Happy with these responses?": "Happy with these responses?",
   "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.": "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.",

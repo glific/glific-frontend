@@ -27,6 +27,37 @@ export interface TryItOutProps {
 
 const NUDGE_AFTER_MESSAGES = 4;
 
+const SLOW_REPLY_MS = 30_000;
+const REPLY_TIMEOUT_MS = 90_000;
+const LATE_REPLY_GRACE_MS = 120_000;
+
+const ChatMessage = ({ message }: { message: SandboxMessage }) => {
+  const isUser = message.role === 'user';
+
+  return (
+    <div
+      className={`${styles.Message} ${isUser ? styles.UserMessage : styles.AssistantMessage} ${
+        message.failed ? styles.FailedMessage : ''
+      }`}
+      data-testid={isUser ? 'userMessage' : 'assistantMessage'}
+    >
+      {!isUser && !message.failed ? (
+        <div className={styles.Markdown}>
+          <Markdown
+            components={{
+              a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+            }}
+          >
+            {message.text}
+          </Markdown>
+        </div>
+      ) : (
+        message.text
+      )}
+    </div>
+  );
+};
+
 export const TryItOut = ({
   hasVersions,
   isDirty,
@@ -45,12 +76,31 @@ export const TryItOut = ({
   const [messages, setMessages] = useState<SandboxMessage[]>([]);
   const [draft, setDraft] = useState('');
   const [pending, setPending] = useState(false);
+  const [slow, setSlow] = useState(false);
+  const [awaitingLate, setAwaitingLate] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const pendingRequestIdRef = useRef<string | null>(null);
   const earlyResponsesRef = useRef<LlmCallResponse[]>([]);
   const conversationIdRef = useRef<string>('');
+  const slowTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [sendAssistantMessage] = useMutation(SEND_ASSISTANT_MESSAGE);
+
+  const stopWaiting = () => {
+    if (slowTimerRef.current) clearTimeout(slowTimerRef.current);
+    if (timeoutTimerRef.current) clearTimeout(timeoutTimerRef.current);
+    if (lateTimerRef.current) clearTimeout(lateTimerRef.current);
+    slowTimerRef.current = null;
+    timeoutTimerRef.current = null;
+    lateTimerRef.current = null;
+    setSlow(false);
+    setAwaitingLate(false);
+  };
+
+  // timers outlive the component otherwise, and fire against an unmounted tab
+  useEffect(() => stopWaiting, []);
 
   // a transcript belongs to the version that produced it, and survives a refresh or a
   // trip to another tab. An in-flight reply does not: the subscription will not redeliver.
@@ -60,6 +110,7 @@ export const TryItOut = ({
     conversationIdRef.current = cached?.conversationId ?? '';
     setDraft('');
     setPending(false);
+    stopWaiting();
     pendingRequestIdRef.current = null;
     earlyResponsesRef.current = [];
   }, [assistantId, versionId]);
@@ -74,20 +125,55 @@ export const TryItOut = ({
     setMessages([]);
     setDraft('');
     setPending(false);
+    stopWaiting();
     pendingRequestIdRef.current = null;
     earlyResponsesRef.current = [];
     conversationIdRef.current = '';
   };
 
   const finish = (message: SandboxMessage) => {
+    stopWaiting();
     pendingRequestIdRef.current = null;
     earlyResponsesRef.current = [];
     setMessages((current) => {
-      const next = [...current, message];
+      const placeholder = current.findLastIndex((entry) => entry.timedOut);
+      const next =
+        placeholder === -1
+          ? [...current, message]
+          : current.map((entry, index) => (index === placeholder ? message : entry));
+
       writeSandboxChat(assistantId, versionId, { messages: next, conversationId: conversationIdRef.current });
       return next;
     });
     setPending(false);
+  };
+
+  const giveUp = () => {
+    if (slowTimerRef.current) clearTimeout(slowTimerRef.current);
+    slowTimerRef.current = null;
+    setSlow(false);
+    setPending(false);
+
+    setMessages((current) => {
+      const next: SandboxMessage[] = [
+        ...current,
+        {
+          role: 'assistant',
+          text: t('No reply came back in time. The assistant may be busy — try sending it again.'),
+          failed: true,
+          timedOut: true,
+        },
+      ];
+      writeSandboxChat(assistantId, versionId, { messages: next, conversationId: conversationIdRef.current });
+      return next;
+    });
+
+    // pendingRequestIdRef is deliberately left alone — it is what matches the late answer
+    setAwaitingLate(true);
+    lateTimerRef.current = setTimeout(() => {
+      pendingRequestIdRef.current = null;
+      stopWaiting();
+    }, LATE_REPLY_GRACE_MS);
   };
 
   const handleResponse = (result: LlmCallResponse) => {
@@ -103,7 +189,7 @@ export const TryItOut = ({
 
   useSubscription(LLM_CALL_RESPONSE_SUBSCRIPTION, {
     variables: { organizationId: getUserSession('organizationId') },
-    skip: !pending,
+    skip: !pending && !awaitingLate,
     onData: ({ data }) => {
       const result: LlmCallResponse | undefined = data?.data?.llmCallResponse;
       if (!result) return;
@@ -131,12 +217,19 @@ export const TryItOut = ({
     earlyResponsesRef.current = [];
 
     setMessages((current) => {
-      const next: SandboxMessage[] = [...current, { role: 'user', text: trimmed }];
+      // asking something new gives up on the older answer for good, so its placeholder stops
+      // being a slot waiting to be filled
+      const settled = current.map(({ timedOut, ...entry }) => entry);
+      const next: SandboxMessage[] = [...settled, { role: 'user', text: trimmed }];
       writeSandboxChat(assistantId, versionId, { messages: next, conversationId: conversationIdRef.current });
       return next;
     });
     setDraft('');
     setPending(true);
+
+    stopWaiting();
+    slowTimerRef.current = setTimeout(() => setSlow(true), SLOW_REPLY_MS);
+    timeoutTimerRef.current = setTimeout(giveUp, REPLY_TIMEOUT_MS);
 
     try {
       const response = await sendAssistantMessage({
@@ -275,41 +368,27 @@ export const TryItOut = ({
               )}
             </div>
           ) : (
-            messages.map((message, index) => (
-              <div
-                key={`${message.role}-${index}`}
-                className={`${styles.Message} ${message.role === 'user' ? styles.UserMessage : styles.AssistantMessage} ${
-                  message.failed ? styles.FailedMessage : ''
-                }`}
-                data-testid={message.role === 'user' ? 'userMessage' : 'assistantMessage'}
-              >
-                {message.role === 'assistant' && !message.failed ? (
-                  <div className={styles.Markdown}>
-                    <Markdown
-                      components={{
-                        a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
-                      }}
-                    >
-                      {message.text}
-                    </Markdown>
-                  </div>
-                ) : (
-                  message.text
-                )}
-              </div>
-            ))
+            messages.map((message, index) => <ChatMessage key={`${message.role}-${index}`} message={message} />)
           )}
 
           {pending && (
-            <div
-              className={`${styles.Message} ${styles.AssistantMessage} ${styles.TypingBubble}`}
-              aria-label={t('Thinking…')}
-              data-testid="pendingMessage"
-            >
-              <span className={styles.TypingDot} />
-              <span className={styles.TypingDot} />
-              <span className={styles.TypingDot} />
-            </div>
+            <>
+              <div
+                className={`${styles.Message} ${styles.AssistantMessage} ${styles.TypingBubble}`}
+                aria-label={t('Thinking…')}
+                data-testid="pendingMessage"
+              >
+                <span className={styles.TypingDot} />
+                <span className={styles.TypingDot} />
+                <span className={styles.TypingDot} />
+              </div>
+
+              {slow && (
+                <div className={styles.SlowNote} role="status" data-testid="slowReplyNote">
+                  {t('Still waiting — a long prompt or a reasoning model can take a while.')}
+                </div>
+              )}
+            </>
           )}
         </div>
 

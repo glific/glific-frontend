@@ -2,6 +2,7 @@ export interface SandboxMessage {
   role: 'user' | 'assistant';
   text: string;
   failed?: boolean;
+  timedOut?: boolean;
 }
 
 export interface SandboxChat {

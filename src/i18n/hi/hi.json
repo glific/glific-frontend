@@ -909,6 +909,8 @@
   "Type a message as a user would…": "जैसे कोई उपयोगकर्ता लिखता है वैसे संदेश लिखें…",
   "Thinking…": "सोच रहे हैं…",
   "Could not get a reply. Try sending it again.": "उत्तर नहीं मिल सका। दोबारा भेजकर देखें।",
+  "No reply came back in time. The assistant may be busy — try sending it again.": "समय पर उत्तर नहीं मिला। असिस्टेंट व्यस्त हो सकता है — दोबारा भेजकर देखें।",
+  "Still waiting — a long prompt or a reasoning model can take a while.": "अभी भी प्रतीक्षा हो रही है — लंबा प्रॉम्प्ट या रीज़निंग मॉडल कुछ समय ले सकता है।",
   "Testing a version needs a sandbox endpoint, which is not available yet.": "किसी संस्करण की जाँच के लिए सैंडबॉक्स एंडपॉइंट चाहिए, जो अभी उपलब्ध नहीं है।",
   "Happy with these responses?": "क्या इन उत्तरों से आप संतुष्ट हैं?",
   "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.": "कुछ प्रश्न खुद आज़माना अच्छी शुरुआत है — मूल्यांकन आपके गोल्डन प्रश्नोत्तर सेट के हर प्रश्न को जाँचता है और हर बार बदलने वाले उत्तर पकड़ता है।",
