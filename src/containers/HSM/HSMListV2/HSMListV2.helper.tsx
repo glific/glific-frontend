@@ -79,7 +79,7 @@ const parsePreviewButtons = (buttons?: string | null) => {
   }
 };
 
-const messagePreview = (variant: any, title: string) => {
+export const messagePreview = (variant: any, title: string) => {
   const buttons = parsePreviewButtons(variant.buttons);
 
   return (

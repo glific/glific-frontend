@@ -5,6 +5,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 
+import { CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 
@@ -116,4 +117,51 @@ export const buildSimulatorMessage = (
     sampleMessage.footer = footerValue;
   }
   return sampleMessage;
+};
+
+export interface TemplateLibraryEntry {
+  elementName?: string | null;
+  category?: string | null;
+  body?: string | null;
+  languageCode?: string | null;
+  industry?: string | null;
+  topic?: string | null;
+  usecase?: string | null;
+  containerMeta?: Record<string, any> | string | null;
+}
+
+export const parseContainerMeta = (containerMeta?: Record<string, any> | string | null): any => {
+  if (!containerMeta) return {};
+  if (typeof containerMeta === 'object') return containerMeta;
+  try {
+    return JSON.parse(containerMeta) || {};
+  } catch {
+    return {};
+  }
+};
+
+export const buttonTypeFromContainerButtons = (buttons: Array<any> = []): string | undefined => {
+  if (!buttons.length) return undefined;
+  if (buttons.some((button) => button.type === 'QUICK_REPLY')) return QUICK_REPLY;
+  if (buttons.some((button) => button.type === 'URL' || button.type === 'PHONE_NUMBER')) return CALL_TO_ACTION;
+  return undefined;
+};
+
+export const buildLibraryDraft = (entry: TemplateLibraryEntry) => {
+  const containerMeta = parseContainerMeta(entry.containerMeta);
+  const containerButtons = Array.isArray(containerMeta.buttons) ? containerMeta.buttons : [];
+  const buttonType = buttonTypeFromContainerButtons(containerButtons);
+  const hasButtons = Boolean(buttonType);
+
+  return {
+    shortcode: '',
+    body: entry.body || '',
+    footer: containerMeta.footer || '',
+    example: containerMeta.sampleText || '',
+    category: entry.category || undefined,
+    languageCode: entry.languageCode || undefined,
+    hasButtons,
+    buttonType,
+    buttons: hasButtons ? JSON.stringify(containerButtons) : undefined,
+  };
 };

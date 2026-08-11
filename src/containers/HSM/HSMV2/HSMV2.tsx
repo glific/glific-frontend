@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Typography } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
+import GridViewIcon from '@mui/icons-material/GridView';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
@@ -34,6 +35,7 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
+import { TemplateLibraryModal } from '../TemplateLibraryModal/TemplateLibraryModal';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 import {
   convertButtonsToTemplate,
@@ -60,6 +62,7 @@ import {
   filterAvailableLanguages,
   groupVariantsByTab,
   statusTabFor,
+  buildLibraryDraft,
 } from './HSMV2.helper';
 import type { StatusTab } from './HSMV2.helper';
 import { LanguageVersionsCard } from './LanguageVersionsCard/LanguageVersionsCard';
@@ -104,6 +107,15 @@ const AutoTranslateButton = ({
   >
     <LanguageIcon className={styles.AutoTranslateIcon} />
     {t('Auto-translate')}
+  </Button>
+);
+
+// Same shortcut the HSM list page offers, surfaced here too so a user already
+// on the create page doesn't have to leave it to browse the catalog.
+const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
+  <Button variant="outlined" className={styles.AutoTranslateButton} onClick={onClick} data-testid="templateLibrary">
+    <GridViewIcon className={styles.AutoTranslateIcon} />
+    {t('Template library')}
   </Button>
 );
 
@@ -161,16 +173,15 @@ export const HSMV2 = () => {
   const [templateType, setTemplateType] = useState<any>(BUTTON_OPTIONS[0]);
   const [addPagePreviewId, setAddPagePreviewId] = useState<string | null>(null);
   const [hasOpenedDetail, setHasOpenedDetail] = useState(false);
-  // snapshot of the anchor's English content, captured once when entering the
-  // add-language flow — stays fixed as a reference while the draft below (and
-  // its own body/footer/buttons state) gets translated/edited.
   const [anchorReference, setAnchorReference] = useState<{
     body: string;
     footer: string;
     buttons: Array<CallToActionTemplate | QuickReplyTemplate | WhatsappFormTemplate>;
     buttonType?: string;
+    variables: Array<{ id: number; text: string }>;
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
+  const [showLibrary, setShowLibrary] = useState(false);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -287,9 +298,14 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
+    if (mode === 'addLanguage') {
+      return;
+    }
     if (languageIdValue) {
       const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
       setLanguageId(selectedLanguage || languageIdValue);
+    } else {
+      setLanguageId(null);
     }
 
     if (mode !== 'copy') {
@@ -312,7 +328,11 @@ export const HSMV2 = () => {
       const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
       setTemplateButtons(buttonsVal);
       setTemplateType(BUTTON_OPTIONS.find((btn: any) => btn.id === templateButtonType));
-      setIsAddButtonChecked(hasButtons);
+      setIsAddButtonChecked(true);
+    } else {
+      setTemplateButtons([]);
+      setTemplateType(BUTTON_OPTIONS[0]);
+      setIsAddButtonChecked(false);
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -432,11 +452,16 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
-    setAnchorReference((prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id });
+    setAnchorReference(
+      (prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id, variables }
+    );
 
     setBody('');
     setEditorState('');
     setFooter('');
+    if (!anchorReference) {
+      setVariables(variables.map((variable: any) => ({ ...variable, text: '' })));
+    }
     if (templateType?.id === CALL_TO_ACTION) {
       setTemplateButtons((templateButtons as CallToActionTemplate[]).map((button) => ({ ...button, title: '' })));
     } else if (templateType?.id === QUICK_REPLY) {
@@ -472,13 +497,17 @@ export const HSMV2 = () => {
         ? (anchorReference.buttons as QuickReplyTemplate[]).map((button) => button.value)
         : [];
 
+    const anchorVariablesToTranslate = anchorReference.variables.filter((variable) => variable.text);
+    const variableTexts = anchorVariablesToTranslate.map((variable) => variable.text);
+    const combinedTexts = [...buttonTexts, ...variableTexts];
+
     try {
       const { data } = await translateSessionTemplate({
         variables: {
           languageId: language.id,
           body: anchorReference.body,
           footer: anchorReference.footer || undefined,
-          buttons: buttonTexts.length ? buttonTexts : undefined,
+          buttons: combinedTexts.length ? combinedTexts : undefined,
         },
       });
       const result = data?.translateSessionTemplate;
@@ -488,22 +517,36 @@ export const HSMV2 = () => {
       }
       if (result?.body) {
         setBody(result.body);
-        setEditorState(result.body);
+        setEditorState('');
+        setTimeout(() => setEditorState(result.body), 0);
       }
       if (anchorReference.footer) {
         setFooter(result?.footer || '');
       }
-      if (result?.buttons?.length) {
+      const resultTexts: string[] = result?.buttons || [];
+      const translatedButtonTexts = resultTexts.slice(0, buttonTexts.length);
+      const translatedVariableTexts = resultTexts.slice(buttonTexts.length);
+      if (translatedButtonTexts.length) {
         if (isCallToAction) {
           setTemplateButtons((prev) =>
             (prev as CallToActionTemplate[]).map((button, index) => ({
               ...button,
-              title: result.buttons[index] || button.title,
+              title: translatedButtonTexts[index] || button.title,
             }))
           );
         } else if (isQuickReply) {
-          setTemplateButtons(result.buttons.map((value: string) => ({ value })));
+          setTemplateButtons(translatedButtonTexts.map((value: string) => ({ value })));
         }
+      }
+      if (translatedVariableTexts.length) {
+        setVariables((prev: Array<{ id: number; text: string }>) =>
+          prev.map((variable) => {
+            const anchorIndex = anchorVariablesToTranslate.findIndex((anchorVar) => anchorVar.id === variable.id);
+            return anchorIndex === -1
+              ? variable
+              : { ...variable, text: translatedVariableTexts[anchorIndex] || variable.text };
+          })
+        );
       }
       setNotification(t('Content translated — review and adjust before submitting.'));
     } catch (error) {
@@ -553,6 +596,7 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionTemplateDetails',
       title: t('Template Details'),
+      action: mode === 'create' ? <TemplateLibraryButton onClick={() => setShowLibrary(true)} /> : undefined,
     },
     {
       component: AutoComplete,
@@ -615,7 +659,7 @@ export const HSMV2 = () => {
       rows: 5,
       disabled: isReadOnly,
       handleChange: (value: any) => setBody(value),
-      defaultValue: mode !== 'create' && editorState,
+      defaultValue: editorState,
       squareBottom: true,
     },
     {
@@ -626,6 +670,7 @@ export const HSMV2 = () => {
       setVariables,
       isEditing: isReadOnly,
       attached: true,
+      variableReferences: mode === 'addLanguage' ? anchorReference?.variables : undefined,
     },
     {
       component: FooterField,
@@ -713,8 +758,29 @@ export const HSMV2 = () => {
   useEffect(() => {
     if (location.state?.openAddLanguage && mode === 'view' && newShortcode && !anchorReference) {
       openAddLanguage();
+      return;
     }
-  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
+    const bodyVariables = getVariables(body, variables);
+    if (mode === 'addLanguage' && anchorReference) {
+      const missingAnchorVariables = anchorReference.variables
+        .filter((anchorVariable) => !bodyVariables.some((variable) => variable.id === anchorVariable.id))
+        .map((anchorVariable) => {
+          const draftVariable = variables.find((variable: any) => variable.id === anchorVariable.id);
+          return { id: anchorVariable.id, text: draftVariable?.text || '' };
+        });
+      setVariables([...bodyVariables, ...missingAnchorVariables].sort((a, b) => a.id - b.id));
+      return;
+    }
+    setVariables(bodyVariables);
+  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference, body]);
+
+  useEffect(() => {
+    if (location.state?.libraryTemplate && mode === 'create') {
+      const { languageCode, ...draft } = buildLibraryDraft(location.state.libraryTemplate);
+      const matchedLanguage = languageOptions.find((option: any) => option.locale === languageCode);
+      setStates({ ...draft, language: matchedLanguage });
+    }
+  }, [location.state?.libraryTemplate, mode, languageOptions]);
 
   useEffect(() => {
     if (needsFamilyFetch && familyFetchData?.sessionTemplates) {
@@ -764,14 +830,13 @@ export const HSMV2 = () => {
   }, [body, variables, footer, templateButtons, templateType, isAddButtonChecked, type, attachmentURL]);
 
   useEffect(() => {
-    if (templateType?.id && (mode === 'create' || mode === 'copy')) {
-      addTemplateButtons(false);
+    if (location.state?.libraryTemplate && mode === 'create' && !languageLoading && !categoryLoading && !tagLoading) {
+      const timer = setTimeout(() => {
+        setSampleMessages((prev) => ({ ...prev }));
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [templateType]);
-
-  useEffect(() => {
-    setVariables(getVariables(body, variables));
-  }, [body]);
+  }, [location.state?.libraryTemplate, mode, languageLoading, categoryLoading, tagLoading]);
 
   if (languageLoading || categoryLoading || tagLoading) {
     return <Loading />;
@@ -779,6 +844,7 @@ export const HSMV2 = () => {
 
   return (
     <div className={styles.Page}>
+      {mode === 'create' && <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />}
       {Boolean(languageAnchorId) && (
         <Heading
           backLink={`/${backButton}`}
