@@ -227,8 +227,6 @@
   margin-top: var(--app-space-lg);
 }
 
-/* a chat composer, not a form field: no label, validation or helper text, so it owns its
-   styling outright rather than reaching into MUI's internals to undo theirs */
 .ComposerInput {
   flex: 1;
   min-width: 0;

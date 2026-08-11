@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant';
@@ -729,5 +729,38 @@ describe('when the reply turns up after the timeout', () => {
     const replies = screen.getAllByTestId('assistantMessage');
     expect(replies).toHaveLength(1);
     expect(replies[0]).toHaveTextContent('No reply came back in time');
+  });
+});
+
+describe('replies that arrive double-encoded', () => {
+  const reply = async (answer: string) => {
+    renderTab({}, [sendMock({ answer })]);
+    type('Hello');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+    return screen.findByTestId('assistantMessage');
+  };
+
+  test('literal escape sequences become real line breaks', async () => {
+    const message = await reply(
+      'Want to try a quick test? Here are some options:\\n\\n- Quick Q&A\\n- Summarize\\n- Brainstorm\\n\\nWhat would you like to try first?'
+    );
+
+    // the escapes are gone, and the list is a list rather than one run-on paragraph
+    expect(message).not.toHaveTextContent('\\n');
+    expect(within(message).getAllByRole('listitem')).toHaveLength(3);
+    expect(within(message).getAllByRole('listitem')[0]).toHaveTextContent('Quick Q&A');
+  });
+
+  test('a reply that already has real line breaks is left alone', async () => {
+    const message = await reply('First paragraph\n\n- One\n- Two');
+
+    expect(within(message).getAllByRole('listitem')).toHaveLength(2);
+  });
+
+  test('a snippet that prints an escape keeps it', async () => {
+    const message = await reply('Splitting on newlines:\n\n```\nline.split("\\n")\n```');
+
+    // real line breaks mean this reply was encoded correctly, so the printed escape is content
+    expect(within(message).getByText(/line\.split/)).toHaveTextContent('line.split("\\n")');
   });
 });

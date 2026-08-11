@@ -9,6 +9,7 @@ import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant'
 import { getUserSession } from 'services/AuthService';
 import type { LlmCallResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
+import { normalizeLineBreaks } from 'containers/AIEvaluation/sandboxUtils';
 import styles from './TryItOut.module.css';
 
 export interface TryItOutProps {
@@ -33,6 +34,7 @@ const LATE_REPLY_GRACE_MS = 120_000;
 
 const ChatMessage = ({ message }: { message: SandboxMessage }) => {
   const isUser = message.role === 'user';
+  const text = normalizeLineBreaks(message.text);
 
   return (
     <div
@@ -48,11 +50,11 @@ const ChatMessage = ({ message }: { message: SandboxMessage }) => {
               a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
             }}
           >
-            {message.text}
+            {text}
           </Markdown>
         </div>
       ) : (
-        message.text
+        text
       )}
     </div>
   );

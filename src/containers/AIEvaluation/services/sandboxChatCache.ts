@@ -1,46 +1,7 @@
-import { getUserSession } from 'services/AuthService';
 import type { SandboxChat, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
-
-export const SANDBOX_CHAT_KEY_PREFIX = 'glific_sandbox_chat';
+import { SANDBOX_CHAT_KEY_PREFIX, currentOrganizationId, removeKey, resolveKey, sandboxKeys } from '../sandboxUtils';
 
 const MAX_CACHED_MESSAGES = 50;
-
-const keyFor = (organizationId: string, assistantId: string, versionId: string) =>
-  `${SANDBOX_CHAT_KEY_PREFIX}:${organizationId}:${assistantId}:${versionId}`;
-
-/**
- * Transcripts are scoped to org + assistant + version: a different version is a different
- * config, so its conversation is a different conversation.
- */
-const resolveKey = (assistantId?: string, versionId?: string) => {
-  const organizationId = currentOrganizationId();
-  if (!organizationId || !assistantId || !versionId) return null;
-  return keyFor(organizationId, assistantId, versionId);
-};
-
-/** the session itself lives in localStorage, so reading it can throw when storage is off */
-const currentOrganizationId = () => {
-  try {
-    const organizationId = getUserSession('organizationId');
-    return organizationId == null ? null : String(organizationId);
-  } catch {
-    return null;
-  }
-};
-
-const removeKey = (key: string) => {
-  try {
-    localStorage.removeItem(key);
-  } catch {}
-};
-
-const sandboxKeys = () => {
-  try {
-    return Object.keys(localStorage).filter((key) => key.startsWith(`${SANDBOX_CHAT_KEY_PREFIX}:`));
-  } catch {
-    return [];
-  }
-};
 
 export const readSandboxChat = (assistantId?: string, versionId?: string): SandboxChat | null => {
   const key = resolveKey(assistantId, versionId);
