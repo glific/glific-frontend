@@ -33,6 +33,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateLibraryModal } from '../TemplateLibraryModal/TemplateLibraryModal';
@@ -182,6 +183,7 @@ export const HSMV2 = () => {
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [showLibrary, setShowLibrary] = useState(false);
+  const isTemplateLibraryEnabled = getOrganizationServices('templateLibraryEnabled');
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -596,7 +598,10 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionTemplateDetails',
       title: t('Template Details'),
-      action: mode === 'create' ? <TemplateLibraryButton onClick={() => setShowLibrary(true)} /> : undefined,
+      action:
+        mode === 'create' && isTemplateLibraryEnabled ? (
+          <TemplateLibraryButton onClick={() => setShowLibrary(true)} />
+        ) : undefined,
     },
     {
       component: AutoComplete,
@@ -844,7 +849,9 @@ export const HSMV2 = () => {
 
   return (
     <div className={styles.Page}>
-      {mode === 'create' && <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />}
+      {mode === 'create' && isTemplateLibraryEnabled && (
+        <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />
+      )}
       {Boolean(languageAnchorId) && (
         <Heading
           backLink={`/${backButton}`}

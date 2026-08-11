@@ -25,7 +25,8 @@ type ServiceType =
   | 'aiEvaluationV2Enabled'
   | 'copyNodeEnabled'
   | 'promptGeneratorEnabled'
-  | 'templateV2Enabled';
+  | 'templateV2Enabled'
+  | 'templateLibraryEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
