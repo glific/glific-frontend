@@ -178,6 +178,7 @@ export const HSMV2 = () => {
     footer: string;
     buttons: Array<CallToActionTemplate | QuickReplyTemplate | WhatsappFormTemplate>;
     buttonType?: string;
+    variables: Array<{ id: number; text: string }>;
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [showLibrary, setShowLibrary] = useState(false);
@@ -297,6 +298,9 @@ export const HSMV2 = () => {
     buttons,
     hasButtons,
   }: any) => {
+    if (mode === 'addLanguage') {
+      return;
+    }
     if (languageIdValue) {
       const selectedLanguage = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
       setLanguageId(selectedLanguage || languageIdValue);
@@ -448,11 +452,16 @@ export const HSMV2 = () => {
     setMode('addLanguage');
     setAddPagePreviewId(null);
     setLanguageId(null);
-    setAnchorReference((prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id });
+    setAnchorReference(
+      (prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id, variables }
+    );
 
     setBody('');
     setEditorState('');
     setFooter('');
+    if (!anchorReference) {
+      setVariables(variables.map((variable: any) => ({ ...variable, text: '' })));
+    }
     if (templateType?.id === CALL_TO_ACTION) {
       setTemplateButtons((templateButtons as CallToActionTemplate[]).map((button) => ({ ...button, title: '' })));
     } else if (templateType?.id === QUICK_REPLY) {
@@ -488,13 +497,17 @@ export const HSMV2 = () => {
         ? (anchorReference.buttons as QuickReplyTemplate[]).map((button) => button.value)
         : [];
 
+    const anchorVariablesToTranslate = anchorReference.variables.filter((variable) => variable.text);
+    const variableTexts = anchorVariablesToTranslate.map((variable) => variable.text);
+    const combinedTexts = [...buttonTexts, ...variableTexts];
+
     try {
       const { data } = await translateSessionTemplate({
         variables: {
           languageId: language.id,
           body: anchorReference.body,
           footer: anchorReference.footer || undefined,
-          buttons: buttonTexts.length ? buttonTexts : undefined,
+          buttons: combinedTexts.length ? combinedTexts : undefined,
         },
       });
       const result = data?.translateSessionTemplate;
@@ -504,22 +517,36 @@ export const HSMV2 = () => {
       }
       if (result?.body) {
         setBody(result.body);
-        setEditorState(result.body);
+        setEditorState('');
+        setTimeout(() => setEditorState(result.body), 0);
       }
       if (anchorReference.footer) {
         setFooter(result?.footer || '');
       }
-      if (result?.buttons?.length) {
+      const resultTexts: string[] = result?.buttons || [];
+      const translatedButtonTexts = resultTexts.slice(0, buttonTexts.length);
+      const translatedVariableTexts = resultTexts.slice(buttonTexts.length);
+      if (translatedButtonTexts.length) {
         if (isCallToAction) {
           setTemplateButtons((prev) =>
             (prev as CallToActionTemplate[]).map((button, index) => ({
               ...button,
-              title: result.buttons[index] || button.title,
+              title: translatedButtonTexts[index] || button.title,
             }))
           );
         } else if (isQuickReply) {
-          setTemplateButtons(result.buttons.map((value: string) => ({ value })));
+          setTemplateButtons(translatedButtonTexts.map((value: string) => ({ value })));
         }
+      }
+      if (translatedVariableTexts.length) {
+        setVariables((prev: Array<{ id: number; text: string }>) =>
+          prev.map((variable) => {
+            const anchorIndex = anchorVariablesToTranslate.findIndex((anchorVar) => anchorVar.id === variable.id);
+            return anchorIndex === -1
+              ? variable
+              : { ...variable, text: translatedVariableTexts[anchorIndex] || variable.text };
+          })
+        );
       }
       setNotification(t('Content translated — review and adjust before submitting.'));
     } catch (error) {
@@ -643,6 +670,7 @@ export const HSMV2 = () => {
       setVariables,
       isEditing: isReadOnly,
       attached: true,
+      variableReferences: mode === 'addLanguage' ? anchorReference?.variables : undefined,
     },
     {
       component: FooterField,
@@ -730,12 +758,21 @@ export const HSMV2 = () => {
   useEffect(() => {
     if (location.state?.openAddLanguage && mode === 'view' && newShortcode && !anchorReference) {
       openAddLanguage();
+      return;
     }
-  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference]);
-
-  useEffect(() => {
-    setVariables(getVariables(body, variables));
-  }, [body]);
+    const bodyVariables = getVariables(body, variables);
+    if (mode === 'addLanguage' && anchorReference) {
+      const missingAnchorVariables = anchorReference.variables
+        .filter((anchorVariable) => !bodyVariables.some((variable) => variable.id === anchorVariable.id))
+        .map((anchorVariable) => {
+          const draftVariable = variables.find((variable: any) => variable.id === anchorVariable.id);
+          return { id: anchorVariable.id, text: draftVariable?.text || '' };
+        });
+      setVariables([...bodyVariables, ...missingAnchorVariables].sort((a, b) => a.id - b.id));
+      return;
+    }
+    setVariables(bodyVariables);
+  }, [location.state?.openAddLanguage, mode, newShortcode, anchorReference, body]);
 
   useEffect(() => {
     if (location.state?.libraryTemplate && mode === 'create') {

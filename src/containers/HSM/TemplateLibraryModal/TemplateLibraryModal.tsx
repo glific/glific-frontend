@@ -10,6 +10,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { setErrorMessage } from 'common/notification';
 import { TEMPLATE_LIBRARY } from 'graphql/queries/Template';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { messagePreview } from '../HSMListV2/HSMListV2.helper';
 
 import {
@@ -34,10 +35,12 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   const navigate = useNavigate();
   const [language, setLanguage] = useState('');
   const [search, setSearch] = useState('');
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [selectedEntry, setSelectedEntry] = useState<IndexedLibraryEntry | null>(null);
+  const [defaultLanguageApplied, setDefaultLanguageApplied] = useState(false);
 
   const { data, loading, error } = useQuery(TEMPLATE_LIBRARY, { skip: !open, fetchPolicy: 'cache-and-network' });
+  const { data: orgLanguagesData } = useQuery(USER_LANGUAGES, { skip: !open });
   const showLoading = loading && !data;
 
   useEffect(() => {
@@ -49,16 +52,29 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
   const entries: TemplateLibraryEntry[] = data?.templateLibrary || [];
   const indexedEntries = indexLibraryEntries(entries);
   const languageOptions = getLanguageOptions(indexedEntries);
+
+  const organization = orgLanguagesData?.currentUser?.user?.organization;
+  const orgDefaultLanguageCode = organization?.activeLanguages?.find(
+    (activeLanguage: any) => activeLanguage.id === organization?.defaultLanguage?.id
+  )?.locale;
+
+  useEffect(() => {
+    if (!defaultLanguageApplied && orgDefaultLanguageCode && languageOptions.includes(orgDefaultLanguageCode)) {
+      setLanguage(orgDefaultLanguageCode);
+      setDefaultLanguageApplied(true);
+    }
+  }, [defaultLanguageApplied, orgDefaultLanguageCode, languageOptions]);
   const groups = buildLibraryGroups(indexedEntries, language, search);
   const shownCount = countVisibleEntries(groups);
   const languageDropdownOptions = [
     { id: '', label: t('All languages') },
     ...languageOptions.map((code) => ({ id: code, label: languageDisplayName(code) })),
   ];
-  const visibleGroups = search.trim() ? groups.filter((group) => group.entries.length > 0) : groups;
+  const isSearching = Boolean(search.trim());
+  const visibleGroups = isSearching ? groups.filter((group) => group.entries.length > 0) : groups;
 
   const toggleGroup = (usecase: string) => {
-    setCollapsed((prev) => {
+    setExpandedGroups((prev) => {
       const next = new Set(prev);
       if (next.has(usecase)) {
         next.delete(usecase);
@@ -73,7 +89,8 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
     setSearch('');
     setSelectedEntry(null);
     setLanguage('');
-    setCollapsed(new Set());
+    setExpandedGroups(new Set());
+    setDefaultLanguageApplied(false);
     onClose();
   };
 
@@ -94,7 +111,7 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
       buttonCancel={t('Close')}
       buttonOk={t('Create from template')}
       fullWidth
-      customStyles={{ content: styles.ModalContent, paper: styles.WidePaper }}
+      customStyles={{ content: styles.ModalContent, paper: styles.WidePaper, root: styles.AboveSimulator }}
     >
       <p className={styles.Subtitle}>{t('Browse all pre-approved WhatsApp message templates')}</p>
       <div className={styles.Layout}>
@@ -122,6 +139,7 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
                   className: styles.LanguageDropDown,
                   displayEmpty: true,
                 }}
+                menuProps={{ className: styles.LanguageMenu }}
               />
             </div>
           </div>
@@ -132,7 +150,7 @@ export const TemplateLibraryModal = ({ open, onClose }: TemplateLibraryModalProp
             <div className={styles.GroupList} data-testid="library-group-list">
               {visibleGroups.length === 0 && <p className={styles.EmptyText}>{t('No templates found.')}</p>}
               {visibleGroups.map((group) => {
-                const isOpen = !collapsed.has(group.usecase);
+                const isOpen = isSearching || expandedGroups.has(group.usecase);
                 return (
                   <div
                     key={group.usecase}

@@ -9,6 +9,7 @@ import {
   templateLibraryErrorMock,
   templateLibraryMock,
 } from 'mocks/Template';
+import { getOrganizationLanguagesQuery, getOrganizationLanguagesQueryWithoutMatch } from 'mocks/Organization';
 import { languageDisplayName } from './TemplateLibraryModal.helper';
 import { TemplateLibraryModal } from './TemplateLibraryModal';
 
@@ -44,7 +45,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('fetches the catalog and groups Utility entries by usecase, expanded by default', async () => {
+test('fetches the catalog and groups Utility entries by usecase, collapsed by default so topics can be scanned first', async () => {
   renderModal();
 
   await waitFor(() => {
@@ -52,7 +53,10 @@ test('fetches the catalog and groups Utility entries by usecase, expanded by def
   });
 
   expect(screen.getByText('Account creation confirmation')).toBeInTheDocument();
-  expect(screen.getByTestId('library-entry-appointment_reminder_1')).toBeInTheDocument();
+  expect(screen.queryByTestId('library-entry-appointment_reminder_1')).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER'));
+  expect(await screen.findByTestId('library-entry-appointment_reminder_1')).toBeInTheDocument();
 });
 
 test('reopening keeps showing the already-cached list instead of a spinner during the background refetch', async () => {
@@ -98,7 +102,9 @@ test('shows entries as returned by the catalog, category filtering happens serve
   });
 
   expect(screen.getByText('Otp verification')).toBeInTheDocument();
-  expect(screen.getByTestId('library-entry-otp_verification_1')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('library-group-header-OTP_VERIFICATION'));
+  expect(await screen.findByTestId('library-entry-otp_verification_1')).toBeInTheDocument();
 });
 
 test('the footer count reflects the full catalog', async () => {
@@ -109,16 +115,14 @@ test('the footer count reflects the full catalog', async () => {
   });
 });
 
-test('collapsing a group hides its entries, and selecting one shows the reused preview card', async () => {
+test('a collapsed topic reveals its entries once expanded, and selecting one shows the reused preview card', async () => {
   renderModal();
 
   await waitFor(() => {
-    expect(screen.getByTestId('library-entry-appointment_reminder_1')).toBeInTheDocument();
+    expect(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER')).toBeInTheDocument();
   });
 
   expect(screen.getByText('Select a template to preview it here.')).toBeInTheDocument();
-
-  fireEvent.click(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER'));
   expect(screen.queryByTestId('library-entry-appointment_reminder_1')).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER'));
@@ -134,6 +138,9 @@ test('collapsing a group hides its entries, and selecting one shows the reused p
       'Using this template pre-fills the message body, footer, and button fields. All fields stay fully editable.'
     )
   ).toBeInTheDocument();
+
+  fireEvent.click(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER'));
+  expect(screen.queryByTestId('library-entry-appointment_reminder_1')).not.toBeInTheDocument();
 });
 
 test('shows buttons from an object-shaped containerMeta - the real backend contract, not a JSON string', async () => {
@@ -153,6 +160,7 @@ test('shows buttons from an object-shaped containerMeta - the real backend contr
 
   renderModal([templateLibraryMock([entryWithButtons])]);
 
+  fireEvent.click(await screen.findByTestId('library-group-header-SYSTEM_OUTAGES'));
   const entry = await screen.findByTestId('library-entry-system_outage_2');
   fireEvent.click(entry);
 
@@ -171,15 +179,19 @@ test('a use case group with no matches for the chosen language stays visible but
   fireEvent.mouseDown(within(screen.getByTestId('library-language-filter')).getByRole('combobox'));
   fireEvent.click(await screen.findByRole('option', { name: 'Norwegian Bokmål' }));
 
+  fireEvent.click(screen.getByTestId('library-group-header-ACCOUNT_CREATION_CONFIRMATION'));
   await waitFor(() => {
     expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
   });
+
   const emptyGroup = screen.getByTestId('library-group-header-APPOINTMENT_REMINDER').closest('div');
   expect(emptyGroup?.className).toMatch(/GroupEmpty/);
+
+  fireEvent.click(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER'));
   expect(screen.getByText('No Appointment reminder templates in Norwegian Bokmål')).toBeInTheDocument();
 });
 
-test('closing the modal resets the language filter and collapsed groups for the next open', async () => {
+test('closing the modal resets the language filter and topic expansion for the next open', async () => {
   const mocks = [templateLibraryMock(), templateLibraryMock()];
   const onClose = vi.fn();
   const tree = (open: boolean) => (
@@ -200,7 +212,7 @@ test('closing the modal resets the language filter and collapsed groups for the 
   fireEvent.click(await screen.findByRole('option', { name: 'Norwegian Bokmål' }));
   fireEvent.click(screen.getByTestId('library-group-header-ACCOUNT_CREATION_CONFIRMATION'));
 
-  expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
+  expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId('cancel-button'));
   expect(onClose).toHaveBeenCalled();
@@ -210,14 +222,14 @@ test('closing the modal resets the language filter and collapsed groups for the 
   await waitFor(() => {
     expect(within(screen.getByTestId('library-language-filter')).getByText('All languages')).toBeInTheDocument();
   });
-  expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
+  expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
 });
 
-test('search filters entries by element name across the fetched dataset', async () => {
+test('search filters entries by element name across the fetched dataset, auto-expanding matching topics', async () => {
   renderModal();
 
   await waitFor(() => {
-    expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
+    expect(screen.getByTestId('library-group-list')).toBeInTheDocument();
   });
 
   fireEvent.change(screen.getByRole('textbox'), { target: { value: 'order_confirmation' } });
@@ -235,7 +247,7 @@ test('search filters entries by element name across the fetched dataset', async 
   fireEvent.click(screen.getByTestId('resetButton'));
 
   await waitFor(() => {
-    expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
+    expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
   });
 });
 
@@ -247,6 +259,7 @@ test('Create from template stays disabled until a template is selected, then clo
     expect(screen.getByTestId('ok-button')).toBeDisabled();
   });
 
+  fireEvent.click(await screen.findByTestId('library-group-header-APPOINTMENT_REMINDER'));
   fireEvent.click(await screen.findByTestId('library-entry-appointment_reminder_1'));
   expect(screen.getByTestId('ok-button')).not.toBeDisabled();
 
@@ -266,6 +279,7 @@ test('selecting one entry does not select other entries that share the same elem
   ];
   renderModal([templateLibraryMock(duplicateNameData)]);
 
+  fireEvent.click(await screen.findByTestId('library-group-header-ACCOUNT_CREATION_CONFIRMATION'));
   const rows = await screen.findAllByTestId('library-entry-account_creation_confirmation_3');
   expect(rows).toHaveLength(3);
   rows.forEach((row) => expect(row.className).not.toMatch(/EntryRowSelected/));
@@ -289,4 +303,28 @@ test('shows an empty state when the catalog has no entries', async () => {
 
 test('languageDisplayName falls back to the raw code in upper case when Intl.DisplayNames rejects it', () => {
   expect(languageDisplayName('not-a-valid-locale!!!')).toBe('NOT-A-VALID-LOCALE!!!');
+});
+
+test('defaults the language filter to the organization default language when it matches an available option', async () => {
+  renderModal([templateLibraryMock(), getOrganizationLanguagesQuery]);
+
+  await waitFor(() => {
+    expect(within(screen.getByTestId('library-language-filter')).getByText('English')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('library-group-header-APPOINTMENT_REMINDER'));
+  expect(screen.getByTestId('library-entry-appointment_reminder_1')).toBeInTheDocument();
+  expect(screen.queryByTestId('library-entry-account_creation_confirmation_3')).not.toBeInTheDocument();
+});
+
+test('falls back to All languages when the organization default language has no matching templates', async () => {
+  renderModal([templateLibraryMock(), getOrganizationLanguagesQueryWithoutMatch]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('library-group-list')).toBeInTheDocument();
+  });
+
+  expect(within(screen.getByTestId('library-language-filter')).getByText('All languages')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('library-group-header-ACCOUNT_CREATION_CONFIRMATION'));
+  expect(screen.getByTestId('library-entry-account_creation_confirmation_3')).toBeInTheDocument();
 });

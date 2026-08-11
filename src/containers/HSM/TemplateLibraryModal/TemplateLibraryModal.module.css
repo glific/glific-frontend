@@ -3,6 +3,14 @@
   max-width: 950px !important;
 }
 
+.AboveSimulator {
+  z-index: 10001 !important;
+}
+
+.LanguageMenu {
+  z-index: 10002 !important;
+}
+
 .ModalContent {
   padding: 0 var(--app-space-3xl) var(--app-space-3xl) !important;
 }
@@ -74,10 +82,16 @@
 .GroupList {
   flex: 1 1 auto;
   overflow-y: auto;
+  border: 1px solid var(--app-color-gray-secondary);
+  border-radius: var(--app-radius-lg);
 }
 
 .Group {
   border-bottom: 1px solid var(--app-color-gray-secondary);
+}
+
+.Group:last-child {
+  border-bottom: none;
 }
 
 .GroupEmpty {
@@ -90,7 +104,7 @@
   gap: var(--app-space-lg);
   width: 100%;
   border: none;
-  background: var(--app-color-gray-secondary);
+  background: none;
   padding: var(--app-space-lg);
   cursor: pointer;
   text-align: left;
@@ -103,7 +117,7 @@
 .GroupTitle {
   font-weight: 700;
   font-size: var(--app-font-size-sm);
-  color: var(--app-color-gray-primary);
+  color: var(--app-color-text-primary);
 }
 
 .GroupCount {
@@ -142,7 +156,7 @@
 .EntryName {
   flex: 1 1 auto;
   font-size: var(--app-font-size-sm);
-  color: var(--app-color-gray-primary);
+  color: var(--app-color-text-primary);
 }
 
 .Radio {

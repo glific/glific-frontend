@@ -124,7 +124,7 @@ export const DialogBox = ({
         container: styles.Dialogbox,
         paper: `${styles.DialogboxPaper} ${fullWidth && styles.FullWidth} ${customStyles?.paper || ''}`,
         scrollPaper: styles.ScrollPaper,
-        root: alwaysOntop ? styles.DialogboxRoot : '',
+        root: [alwaysOntop && styles.DialogboxRoot, customStyles?.root].filter(Boolean).join(' '),
       }}
       onClose={() => handleCancel()}
       aria-labelledby="alert-dialog-title"

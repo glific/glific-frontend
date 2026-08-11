@@ -354,13 +354,10 @@
 }
 
 .HsmUpdates {
-  margin-left: 8px;
   cursor: pointer;
-  height: 36px;
   border: 1px solid #cccccc;
   background: #ffffff;
   box-shadow: none;
-  font-size: 14px;
   color: #2ea36a;
 }
 
