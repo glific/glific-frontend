@@ -244,7 +244,6 @@ export const TryItOut = ({
       if (early) handleResponse(early);
     } catch (error: unknown) {
       setErrorMessage(error);
-      // the question stays in the transcript so it can be retried by hand
       finish({ role: 'assistant', text: t('Could not get a reply. Try sending it again.'), failed: true });
     }
   };

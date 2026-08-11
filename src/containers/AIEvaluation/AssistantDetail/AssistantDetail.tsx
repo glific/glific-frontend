@@ -406,7 +406,13 @@ export const AssistantDetail = () => {
       <TabBar activeTab={activeTab} onChange={setActiveTab} dirtyTabs={dirtyTabs} />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
-        {activePanel ?? `${t(activeTabLabel)} ${t('coming soon')}`}
+        {Object.entries(TAB_PANELS).map(([key, panel]) => (
+          <div key={key} hidden={key !== activeTab} data-testid={`tabPanel-${key}`}>
+            {panel}
+          </div>
+        ))}
+
+        {!activePanel && `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
 
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}

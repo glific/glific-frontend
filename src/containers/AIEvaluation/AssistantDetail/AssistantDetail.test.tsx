@@ -7,9 +7,11 @@ import {
   CREATE_ASSISTANT,
   CREATE_KNOWLEDGE_BASE,
   SET_LIVE_VERSION,
+  SEND_ASSISTANT_MESSAGE,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
+import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
@@ -1510,4 +1512,49 @@ describe('resilience', () => {
     // a cancelled beforeunload is what makes the browser show its confirm dialog
     expect(event.defaultPrevented).toBe(true);
   });
+});
+
+test('a reply that lands while another tab is open is not lost', async () => {
+  const sendMock = {
+    request: { query: SEND_ASSISTANT_MESSAGE },
+    variableMatcher: () => true,
+    result: {
+      data: {
+        sendAssistantMessage: { answer: null, conversationId: 'c1', jobId: 'j1', requestId: 'r1', errors: null },
+      },
+    },
+  };
+  const replyMock = {
+    request: { query: ASSISTANT_CHAT_RESPONSE },
+    result: {
+      data: {
+        assistantChatResponse: {
+          answer: 'Here you go',
+          conversationId: 'c1',
+          jobId: 'j1',
+          requestId: 'r1',
+          errors: null,
+        },
+      },
+    },
+    delay: 150,
+  };
+  renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), sendMock, replyMock]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('tab-tryItOut'));
+  fireEvent.change(await screen.findByTestId('sandboxInput'), { target: { value: 'Hello' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+  await screen.findByTestId('pendingMessage');
+
+  // walk away while the answer is still in flight
+  fireEvent.click(screen.getByTestId('tab-persona'));
+  expect(screen.getByTestId('tabPanel-tryItOut')).toHaveAttribute('hidden');
+
+  fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+  expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Here you go');
 });
