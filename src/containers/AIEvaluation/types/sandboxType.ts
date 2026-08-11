@@ -10,9 +10,14 @@ export interface SandboxChat {
   conversationId: string;
 }
 
-export interface LlmCallResponse {
+export interface AssistantChatResponse {
   answer?: string | null;
   conversationId?: string | null;
   requestId?: string | null;
   errors?: { key?: string; message: string }[] | null;
+}
+
+export interface UseAssistantChatResponseOptions {
+  enabled: boolean;
+  onResponse: (result: AssistantChatResponse) => void;
 }

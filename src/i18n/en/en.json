@@ -1046,6 +1046,7 @@
   "Type a message as a user would…": "Type a message as a user would…",
   "Thinking…": "Thinking…",
   "Could not get a reply. Try sending it again.": "Could not get a reply. Try sending it again.",
+  "Could not listen for the reply": "Could not listen for the reply",
   "No reply came back in time. The assistant may be busy — try sending it again.": "No reply came back in time. The assistant may be busy — try sending it again.",
   "Still waiting — a long prompt or a reasoning model can take a while.": "Still waiting — a long prompt or a reasoning model can take a while.",
   "Testing a version needs a sandbox endpoint, which is not available yet.": "Testing a version needs a sandbox endpoint, which is not available yet.",

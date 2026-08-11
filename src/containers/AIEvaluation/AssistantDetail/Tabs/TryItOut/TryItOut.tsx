@@ -1,15 +1,14 @@
-import { useMutation, useSubscription } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Markdown from 'react-markdown';
 import { setErrorMessage } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
-import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant';
-import { getUserSession } from 'services/AuthService';
-import type { LlmCallResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
+import type { AssistantChatResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
 import { normalizeLineBreaks } from 'containers/AIEvaluation/sandboxUtils';
+import { useAssistantChatResponse } from 'containers/AIEvaluation/hooks/useAssistantChatResponse';
 import styles from './TryItOut.module.css';
 
 export interface TryItOutProps {
@@ -81,8 +80,6 @@ export const TryItOut = ({
   const [slow, setSlow] = useState(false);
   const [awaitingLate, setAwaitingLate] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
-  const pendingRequestIdRef = useRef<string | null>(null);
-  const earlyResponsesRef = useRef<LlmCallResponse[]>([]);
   const conversationIdRef = useRef<string>('');
   const slowTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timeoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -104,8 +101,6 @@ export const TryItOut = ({
   // timers outlive the component otherwise, and fire against an unmounted tab
   useEffect(() => stopWaiting, []);
 
-  // a transcript belongs to the version that produced it, and survives a refresh or a
-  // trip to another tab. An in-flight reply does not: the subscription will not redeliver.
   useEffect(() => {
     const cached = readSandboxChat(assistantId, versionId);
     setMessages(cached?.messages ?? []);
@@ -113,8 +108,7 @@ export const TryItOut = ({
     setDraft('');
     setPending(false);
     stopWaiting();
-    pendingRequestIdRef.current = null;
-    earlyResponsesRef.current = [];
+    assistantChatResponse.reset();
   }, [assistantId, versionId]);
 
   useEffect(() => {
@@ -128,15 +122,13 @@ export const TryItOut = ({
     setDraft('');
     setPending(false);
     stopWaiting();
-    pendingRequestIdRef.current = null;
-    earlyResponsesRef.current = [];
+    assistantChatResponse.reset();
     conversationIdRef.current = '';
   };
 
   const finish = (message: SandboxMessage) => {
     stopWaiting();
-    pendingRequestIdRef.current = null;
-    earlyResponsesRef.current = [];
+    assistantChatResponse.reset();
     setMessages((current) => {
       const placeholder = current.findLastIndex((entry) => entry.timedOut);
       const next =
@@ -170,15 +162,15 @@ export const TryItOut = ({
       return next;
     });
 
-    // pendingRequestIdRef is deliberately left alone — it is what matches the late answer
+    // the request id is deliberately left in place — it is what matches the late answer
     setAwaitingLate(true);
     lateTimerRef.current = setTimeout(() => {
-      pendingRequestIdRef.current = null;
+      assistantChatResponse.reset();
       stopWaiting();
     }, LATE_REPLY_GRACE_MS);
   };
 
-  const handleResponse = (result: LlmCallResponse) => {
+  const handleResponse = (result: AssistantChatResponse) => {
     if (result.conversationId) conversationIdRef.current = result.conversationId;
 
     if (result.errors?.length) {
@@ -189,24 +181,9 @@ export const TryItOut = ({
     finish({ role: 'assistant', text: result.answer ?? t('Could not get a reply. Try sending it again.') });
   };
 
-  useSubscription(LLM_CALL_RESPONSE_SUBSCRIPTION, {
-    variables: { organizationId: getUserSession('organizationId') },
-    skip: !pending && !awaitingLate,
-    onData: ({ data }) => {
-      const result: LlmCallResponse | undefined = data?.data?.llmCallResponse;
-      if (!result) return;
-
-      // the mutation has not told us our requestId yet — hold this in case it is ours
-      if (!pendingRequestIdRef.current) {
-        earlyResponsesRef.current.push(result);
-        return;
-      }
-
-      // the subscription is organisation-wide, so other tabs' answers reach us too
-      if (result.requestId !== pendingRequestIdRef.current) return;
-
-      handleResponse(result);
-    },
+  const assistantChatResponse = useAssistantChatResponse({
+    enabled: pending || awaitingLate,
+    onResponse: handleResponse,
   });
 
   const canSend = Boolean(assistantId);
@@ -215,8 +192,7 @@ export const TryItOut = ({
     const trimmed = text.trim();
     if (!trimmed || pending || !assistantId) return;
 
-    pendingRequestIdRef.current = null;
-    earlyResponsesRef.current = [];
+    assistantChatResponse.reset();
 
     setMessages((current) => {
       // asking something new gives up on the older answer for good, so its placeholder stops
@@ -244,7 +220,7 @@ export const TryItOut = ({
         },
       });
 
-      const result: LlmCallResponse | undefined = response.data?.sendAssistantMessage;
+      const result: AssistantChatResponse | undefined = response.data?.sendAssistantMessage;
 
       if (result?.errors?.length) {
         setErrorMessage(result.errors[0]);
@@ -259,13 +235,7 @@ export const TryItOut = ({
         return;
       }
 
-      pendingRequestIdRef.current = result?.requestId ?? null;
-
-      // the answer may already have arrived while the mutation was still in flight
-      const early = earlyResponsesRef.current.find(
-        (event) => event.requestId && event.requestId === pendingRequestIdRef.current
-      );
-      earlyResponsesRef.current = [];
+      const early = assistantChatResponse.expect(result?.requestId ?? null);
       if (early) handleResponse(early);
     } catch (error: unknown) {
       setErrorMessage(error);

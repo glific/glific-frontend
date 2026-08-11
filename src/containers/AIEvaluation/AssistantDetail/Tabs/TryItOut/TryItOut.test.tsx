@@ -2,7 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
-import { LLM_CALL_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/Assistant';
+import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
 import { setUserSession } from 'services/AuthService';
 import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
 import TryItOut from './TryItOut';
@@ -136,7 +136,7 @@ describe('the sandbox', () => {
     await waitFor(() => {
       expect(screen.getByTestId('userMessage')).toBeInTheDocument();
     });
-    // the mutation only acknowledges the job; the answer arrives on llmCallResponse
+    // the mutation only acknowledges the job; the answer arrives on assistantChatResponse
     expect(screen.getByTestId('pendingMessage')).toBeInTheDocument();
     expect(screen.queryByTestId('assistantMessage')).not.toBeInTheDocument();
   });
@@ -269,7 +269,7 @@ describe('the evaluation nudge', () => {
   });
 });
 
-test('sends only the fields LlmCallInput accepts', async () => {
+test('sends only the fields AssistantChatInput accepts', async () => {
   const variableMatcher = vi.fn().mockReturnValue(true);
   renderTab({}, [
     {
@@ -472,15 +472,15 @@ describe('the chat survives leaving the tab', () => {
 
 describe('the answer arriving on the subscription', () => {
   const subscriptionMock = (payload: Record<string, unknown>) => ({
-    request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+    request: { query: ASSISTANT_CHAT_RESPONSE },
     result: {
       data: {
-        llmCallResponse: { answer: null, conversationId: 'c1', jobId: 'j1', errors: null, ...payload },
+        assistantChatResponse: { answer: null, conversationId: 'c1', jobId: 'j1', errors: null, ...payload },
       },
     },
   });
 
-  // the mutation only acknowledges; the answer comes later on llmCallResponse
+  // the mutation only acknowledges; the answer comes later on assistantChatResponse
   const ackMock = sendMock({ answer: null, requestId: 'r1' });
 
   const ask = () => {
@@ -538,10 +538,10 @@ test('an answer that arrives before the mutation returns is still applied', asyn
     },
   };
   const earlyEvent = {
-    request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
+    request: { query: ASSISTANT_CHAT_RESPONSE },
     result: {
       data: {
-        llmCallResponse: {
+        assistantChatResponse: {
           answer: 'Answered early',
           conversationId: 'c1',
           jobId: 'j1',
@@ -565,8 +565,8 @@ test('an empty subscription payload is ignored rather than ending the wait', asy
   renderTab({}, [
     sendMock({ answer: null, requestId: 'r1' }),
     {
-      request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
-      result: { data: { llmCallResponse: null } },
+      request: { query: ASSISTANT_CHAT_RESPONSE },
+      result: { data: { assistantChatResponse: null } },
     },
   ]);
 
@@ -633,8 +633,8 @@ describe('when the reply takes too long', () => {
     renderTab({}, [
       awaitingSubscription(),
       {
-        request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
-        result: { data: { llmCallResponse: { answer: 'Here you go', requestId: 'r1', conversationId: 'c1' } } },
+        request: { query: ASSISTANT_CHAT_RESPONSE },
+        result: { data: { assistantChatResponse: { answer: 'Here you go', requestId: 'r1', conversationId: 'c1' } } },
       },
     ]);
     await sendAndWait();
@@ -668,8 +668,8 @@ describe('when the reply turns up after the timeout', () => {
 
   // the subscription event lands well after the 90s give-up
   const lateReply = (delay: number, answer = 'Sorry for the wait') => ({
-    request: { query: LLM_CALL_RESPONSE_SUBSCRIPTION, variables: { organizationId: '1' } },
-    result: { data: { llmCallResponse: { answer, requestId: 'r1', conversationId: 'c1' } } },
+    request: { query: ASSISTANT_CHAT_RESPONSE },
+    result: { data: { assistantChatResponse: { answer, requestId: 'r1', conversationId: 'c1' } } },
     delay,
   });
 

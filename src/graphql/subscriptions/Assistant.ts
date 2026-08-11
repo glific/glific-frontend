@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const LLM_CALL_RESPONSE_SUBSCRIPTION = gql`
-  subscription LlmCallResponse($organizationId: ID!) {
-    llmCallResponse(organizationId: $organizationId) {
+export const ASSISTANT_CHAT_RESPONSE = gql`
+  subscription AssistantChatResponse {
+    assistantChatResponse {
       answer
       conversationId
       jobId
