@@ -337,6 +337,17 @@ export const AssistantDetail = () => {
     persona: (
       <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
     ),
+    knowledgeBase: (
+      <KnowledgeBase
+        files={knowledgeBaseFiles}
+        onFilesChange={setKnowledgeBaseFiles}
+        onFilesUploaded={(uploaded) => setKnowledgeBaseFiles((current) => [...current, ...uploaded])}
+        uploading={uploadingFiles}
+        onUploadingChange={setUploadingFiles}
+        vectorStoreId={vectorStore?.vectorStoreId ?? null}
+        legacy={vectorStore?.legacy ?? false}
+      />
+    ),
     tryItOut: (
       <TryItOut
         hasVersions={versions.length > 0}
@@ -350,17 +361,6 @@ export const AssistantDetail = () => {
         onGoToPersona={() => setActiveTab('persona')}
         onSave={handleSaveVersion}
         onRunEvaluation={() => setActiveTab('evaluation')}
-      />
-    ),
-    knowledgeBase: (
-      <KnowledgeBase
-        files={knowledgeBaseFiles}
-        onFilesChange={setKnowledgeBaseFiles}
-        onFilesUploaded={(uploaded) => setKnowledgeBaseFiles((current) => [...current, ...uploaded])}
-        uploading={uploadingFiles}
-        onUploadingChange={setUploadingFiles}
-        vectorStoreId={vectorStore?.vectorStoreId ?? null}
-        legacy={vectorStore?.legacy ?? false}
       />
     ),
   };

@@ -91,6 +91,21 @@ export const GET_HSM_CATEGORIES = gql`
     whatsappHsmCategories
   }
 `;
+
+export const TEMPLATE_LIBRARY = gql`
+  query templateLibrary {
+    templateLibrary {
+      elementName
+      category
+      body
+      languageCode
+      industry
+      topic
+      usecase
+      containerMeta
+    }
+  }
+`;
 export const GET_SHORTCODES = gql`
   query sessionTemplates($filter: SessionTemplateFilter!) {
     sessionTemplates(filter: $filter) {

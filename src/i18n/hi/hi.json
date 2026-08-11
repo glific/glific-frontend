@@ -694,6 +694,18 @@
   "SYNC HSM": "HSM सिंक करें",
   "HSM Templates": "HSM टेम्पलेट",
   "HSM Template": "HSM टेम्पलेट",
+  "Template library": "टेम्पलेट लाइब्रेरी",
+  "Template Library": "टेम्पलेट लाइब्रेरी",
+  "Browse all pre-approved WhatsApp message templates": "सभी पूर्व-अनुमोदित व्हाट्सएप मैसेज टेम्पलेट देखें",
+  "Select a Template": "एक टेम्पलेट चुनें",
+  "All languages": "सभी भाषाएं",
+  "Filter by language": "भाषा के अनुसार फ़िल्टर करें",
+  "No templates found.": "कोई टेम्पलेट नहीं मिला।",
+  "No {{group}} templates in {{language}}": "{{language}} में कोई {{group}} टेम्पलेट नहीं है",
+  "Showing {{shown}} of {{total}} templates": "{{total}} में से {{shown}} टेम्पलेट दिखाए जा रहे हैं",
+  "Select a template to preview it here.": "पूर्वावलोकन के लिए यहां एक टेम्पलेट चुनें।",
+  "Using this template pre-fills the message body, footer, and button fields. All fields stay fully editable.": "इस टेम्पलेट का उपयोग करने से संदेश, फ़ुटर, और बटन फ़ील्ड पहले से भर जाते हैं। सभी फ़ील्ड पूरी तरह से संपादन योग्य रहते हैं।",
+  "Create from template": "टेम्पलेट से बनाएं",
   "Add Language": "भाषा जोड़ें",
   "Select a new language and fill in the translated content, buttons, and media for this version.": "एक नई भाषा चुनें और इस संस्करण के लिए अनुवादित सामग्री, बटन और मीडिया भरें।",
   "View the content and language versions for this template.": "इस टेम्पलेट की सामग्री और भाषा संस्करण देखें।",
@@ -902,7 +914,7 @@
   "Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.": "कुछ प्रश्न खुद आज़माना अच्छी शुरुआत है — मूल्यांकन आपके गोल्डन प्रश्नोत्तर सेट के हर प्रश्न को जाँचता है और हर बार बदलने वाले उत्तर पकड़ता है।",
   "Run an evaluation": "मूल्यांकन चलाएँ",
   "Send": "भेजें",
+  "New chat": "नई चैट",
   "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।",
-  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।",
-  "New chat": "नई चैट"
+  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।"
 }
