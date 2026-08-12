@@ -1,11 +1,15 @@
 import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
-import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router';
 import { vi } from 'vitest';
 
+import { apiClient } from 'services/apiClient';
 import { setUserSession } from 'services/AuthService';
+
+vi.mock('services/apiClient', () => ({
+  apiClient: { get: vi.fn() },
+}));
 import {
   getTemplateMocks1,
   getTemplateMocks2,
@@ -177,7 +181,7 @@ const completionMock = {
 const user = userEvent.setup();
 
 // Getting contact variables
-vi.spyOn(axios, 'get').mockImplementation((url: string) => {
+(apiClient.get as any).mockImplementation((url: string) => {
   if (url === `${FLOW_EDITOR_API}fields`) {
     return Promise.resolve({ data: fieldsMock });
   } else if (url === `${FLOW_EDITOR_API}completion`) {

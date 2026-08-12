@@ -529,6 +529,24 @@ export const getOrganizationLanguagesQuery = {
   },
 };
 
+export const getOrganizationLanguagesQueryWithoutMatch = {
+  request: {
+    query: USER_LANGUAGES,
+  },
+  result: {
+    data: {
+      currentUser: {
+        user: {
+          organization: {
+            activeLanguages: [{ id: '9', label: 'French', localized: true, locale: 'fr' }],
+            defaultLanguage: { id: '9', label: 'French' },
+          },
+        },
+      },
+    },
+  },
+};
+
 export const getOrganizationLanguagesQueryByOrder = {
   request: {
     query: USER_LANGUAGES,

@@ -6,9 +6,13 @@ import { copyToClipboard } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
-import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
+import type { KnowledgeBaseFile, UploadError } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
+import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
+import SettingsIcon from 'assets/images/icons/Settings/Settings.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DownloadIcon from 'assets/images/icons/Download.svg?react';
 import styles from './KnowledgeBase.module.css';
@@ -29,12 +33,6 @@ const INITIAL_BACKOFF_MS = 2000;
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const ACCEPTED_TYPES = '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt';
-
-interface UploadError {
-  message?: string;
-  networkError?: { statusCode?: number; status?: number; message?: string };
-  graphQLErrors?: { extensions?: { code?: string } }[];
-}
 
 const isRateLimitError = (error: unknown) => {
   const failure = error as UploadError | null;
@@ -189,7 +187,6 @@ export const KnowledgeBase = ({
           <Button
             variant="contained"
             color="primary"
-            className={styles.AddFilesButton}
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isReadOnly}
             data-testid="addFilesButton"
@@ -224,7 +221,9 @@ export const KnowledgeBase = ({
         <div className={styles.FileList}>
           {files.map((file) => (
             <div className={styles.File} key={file.fileId} data-testid="knowledgeBaseFile">
-              <div className={styles.FileIcon}>📄</div>
+              <div className={styles.FileIcon}>
+                <DocumentIcon />
+              </div>
               <div className={styles.FileText}>
                 <div className={styles.FileName}>{file.filename}</div>
                 {formatSize(file.fileSize) && <div className={styles.Note}>{formatSize(file.fileSize)}</div>}
@@ -281,7 +280,13 @@ export const KnowledgeBase = ({
             onClick={() => setShowTechnical((open) => !open)}
             data-testid="technicalDetailsToggle"
           >
-            ⚙ {t('Technical details')} {showTechnical ? '▾' : '▸'}
+            <SettingsIcon className={`${styles.ToggleIcon} ${styles.GearIcon}`} />
+            {t('Technical details')}
+            {showTechnical ? (
+              <ExpandMoreIcon className={styles.ToggleIcon} />
+            ) : (
+              <ChevronRightIcon className={styles.ToggleIcon} />
+            )}
           </button>
 
           {showTechnical &&

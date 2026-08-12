@@ -4,3 +4,9 @@ export interface KnowledgeBaseFile {
   fileSize?: number | null;
   uploadedAt?: string | null;
 }
+
+export interface UploadError {
+  message?: string;
+  networkError?: { statusCode?: number; status?: number; message?: string };
+  graphQLErrors?: { extensions?: { code?: string } }[];
+}

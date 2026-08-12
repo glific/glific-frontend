@@ -50,8 +50,9 @@
 }
 
 .Sparkle {
-  font-size: var(--app-font-size-xs);
-  line-height: 1;
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+  flex-shrink: 0;
 }
 
 span.GenerateBeta {

@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import axios from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { apiClient } from 'services/apiClient';
 import { Analytics } from './Analytics';
 
 vi.mock('@superset-ui/embedded-sdk', () => ({
@@ -22,10 +22,8 @@ vi.mock('components/UI/ErrorPage/ErrorPage', () => ({
   ),
 }));
 
-vi.mock('axios');
-
-vi.mock('services/AuthService', () => ({
-  getAuthSession: vi.fn(() => 'mock-access-token'),
+vi.mock('services/apiClient', () => ({
+  apiClient: { post: vi.fn() },
 }));
 
 // Override the global setupTests mock so we can track calls
@@ -53,7 +51,7 @@ describe('<Analytics />', () => {
 
   it('shows loading spinner while fetching token', async () => {
     let resolvePost: (val: any) => void;
-    vi.mocked(axios.post).mockReturnValue(new Promise((res) => (resolvePost = res)) as any);
+    vi.mocked(apiClient.post).mockReturnValue(new Promise((res) => (resolvePost = res)) as any);
 
     render(<Analytics />);
 
@@ -68,7 +66,7 @@ describe('<Analytics />', () => {
 
   it('embeds dashboard on successful token fetch', async () => {
     const { embedDashboard } = await import('@superset-ui/embedded-sdk');
-    vi.mocked(axios.post).mockResolvedValue({ data: { token: 'test-embed-token' } });
+    vi.mocked(apiClient.post).mockResolvedValue({ data: { token: 'test-embed-token' } });
 
     render(<Analytics />);
 
@@ -87,7 +85,7 @@ describe('<Analytics />', () => {
 
   it('fetchGuestToken returns a promise resolving to the token', async () => {
     const { embedDashboard } = await import('@superset-ui/embedded-sdk');
-    vi.mocked(axios.post).mockResolvedValue({ data: { token: 'abc123' } });
+    vi.mocked(apiClient.post).mockResolvedValue({ data: { token: 'abc123' } });
 
     render(<Analytics />);
 
@@ -101,7 +99,7 @@ describe('<Analytics />', () => {
   });
 
   it('shows error UI when token fetch fails', async () => {
-    vi.mocked(axios.post).mockRejectedValue(new Error('Network error'));
+    vi.mocked(apiClient.post).mockRejectedValue(new Error('Network error'));
 
     render(<Analytics />);
 
@@ -111,7 +109,7 @@ describe('<Analytics />', () => {
 
   it('calls setLogs with error severity when fetch fails', async () => {
     const setLogs = (await import('config/logs')).default;
-    vi.mocked(axios.post).mockRejectedValue(new Error('Fetch failed'));
+    vi.mocked(apiClient.post).mockRejectedValue(new Error('Fetch failed'));
 
     render(<Analytics />);
 
@@ -128,7 +126,7 @@ describe('<Analytics />', () => {
       value: { reload: reloadMock },
     });
 
-    vi.mocked(axios.post).mockRejectedValue(new Error('Network error'));
+    vi.mocked(apiClient.post).mockRejectedValue(new Error('Network error'));
 
     render(<Analytics />);
 
@@ -145,22 +143,22 @@ describe('<Analytics />', () => {
       return 1 as any;
     });
 
-    vi.mocked(axios.post).mockResolvedValue({ data: { token: 'tok' } });
+    vi.mocked(apiClient.post).mockResolvedValue({ data: { token: 'tok' } });
 
     render(<Analytics />);
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(apiClient.post).toHaveBeenCalledTimes(1);
     });
 
     expect(capturedCallback).toBeDefined();
     await capturedCallback!();
 
-    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(apiClient.post).toHaveBeenCalledTimes(2);
   });
 
   it('clears interval on unmount', async () => {
-    vi.mocked(axios.post).mockResolvedValue({ data: { token: 'tok' } });
+    vi.mocked(apiClient.post).mockResolvedValue({ data: { token: 'tok' } });
 
     const setIntervalSpy = vi.spyOn(globalThis, 'setInterval');
     const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');

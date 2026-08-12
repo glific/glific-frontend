@@ -14,6 +14,7 @@ export interface DropdownProps {
   validate?: any;
   fieldChange?: any;
   fieldValue?: any;
+  menuProps?: any;
 }
 
 export const Dropdown = ({
@@ -25,6 +26,7 @@ export const Dropdown = ({
   form,
   fieldValue,
   fieldChange,
+  menuProps,
 }: DropdownProps) => {
   const { onChange, value, ...rest } = field;
 
@@ -53,6 +55,7 @@ export const Dropdown = ({
             classes: {
               paper: styles.Paper,
             },
+            ...menuProps,
           }}
           classes={{ outlined: styles.Outlined }}
           value={fieldValue !== undefined ? fieldValue : value}

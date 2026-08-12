@@ -1,4 +1,6 @@
+import { t } from 'i18next';
 import { Button } from 'components/UI/Form/Button/Button';
+import { SourceReferenceChip } from 'components/UI/SourceReferenceChip/SourceReferenceChip';
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import styles from './TemplateVariable.module.css';
 import { FormHelperText, OutlinedInput } from '@mui/material';
@@ -14,9 +16,9 @@ export interface TemplateOptionsProps {
   setVariables: any;
   getVariables: any;
   isEditing: boolean;
-  // renders this as a direct continuation of the message box above it (see
-  // EmojiInput/Editor's squareBottom prop) instead of a separately floating pill.
   attached?: boolean;
+
+  variableReferences?: Array<{ id: number; text: string }>;
 }
 
 export const TemplateVariables = ({
@@ -26,6 +28,7 @@ export const TemplateVariables = ({
   setVariables,
   isEditing,
   attached,
+  variableReferences,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
 
@@ -71,40 +74,50 @@ export const TemplateVariables = ({
       <div>
         <div className={styles.Variables}>
           {variables.length !== 0 && <h2>Set custom variable values for the message</h2>}
-          {variables.map((variable: any, index: number) => (
-            <div data-testid="variable" key={variable.id} className={styles.VariableContainer}>
-              <div className={styles.Variable} key={index}>
-                <OutlinedInput
-                  sx={{
-                    '& input': {
-                      paddingLeft: '14px',
-                    },
-                  }}
-                  startAdornment={<div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>}
-                  fullWidth
-                  label="Name"
-                  placeholder={'Define value'}
-                  notched={false}
-                  disabled={isEditing}
-                  defaultValue={variable.text || ''}
-                  onChange={(event) => {
-                    let currentVariable = variables.find((v) => v.id === variable.id);
-                    currentVariable.text = event.target.value;
-                    setVariables(variables.map((v) => (v.id === variable.id ? currentVariable : v)));
-                  }}
-                />
+          {variables.map((variable: any, index: number) => {
+            const reference = variableReferences?.find((item) => item.id === variable.id);
+            return (
+              <div data-testid="variable" key={variable.id} className={styles.VariableContainer}>
+                <div className={styles.Variable} key={index}>
+                  {reference?.text && (
+                    <SourceReferenceChip
+                      language={t('English')}
+                      value={reference.text}
+                      data-testid={`variable-source-reference-${variable.id}`}
+                    />
+                  )}
+                  <OutlinedInput
+                    sx={{
+                      '& input': {
+                        paddingLeft: '14px',
+                      },
+                    }}
+                    startAdornment={<div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>}
+                    fullWidth
+                    label="Name"
+                    placeholder={'Define value'}
+                    notched={false}
+                    disabled={isEditing}
+                    value={variable.text || ''}
+                    onChange={(event) => {
+                      let currentVariable = variables.find((v) => v.id === variable.id);
+                      currentVariable.text = event.target.value;
+                      setVariables(variables.map((v) => (v.id === variable.id ? currentVariable : v)));
+                    }}
+                  />
 
-                {errors.variables && touched.variables && touched.variables[index] ? (
-                  <FormHelperText className={styles.DangerText}>{errors.variables[index]?.text}</FormHelperText>
-                ) : null}
+                  {errors.variables && touched.variables && touched.variables[index] ? (
+                    <FormHelperText className={styles.DangerText}>{errors.variables[index]?.text}</FormHelperText>
+                  ) : null}
+                </div>
+                <DeleteIcon
+                  className={styles.DeleteIcon}
+                  onClick={() => handleRemoveVariable(variable.id)}
+                  data-testid="delete-variable"
+                />
               </div>
-              <DeleteIcon
-                className={styles.DeleteIcon}
-                onClick={() => handleRemoveVariable(variable.id)}
-                data-testid="delete-variable"
-              />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

@@ -17,6 +17,8 @@ import {
   translateSessionTemplateMock,
   translateSessionTemplateErrorMock,
   translateSessionTemplateResultErrorMock,
+  templateLibraryData,
+  templateLibraryMock,
 } from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { uploadMediaSuccessMock, uploadMediaFailureMock, createMediaMessageMock } from 'mocks/Attachment';
@@ -80,7 +82,6 @@ describe('HSMV2 edit mode', () => {
       </MockedProvider>
     );
 
-    // the detail form is collapsed until a language row's "View" is clicked.
     await waitFor(() => {
       expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
     });
@@ -127,9 +128,6 @@ describe('HSMV2 edit mode', () => {
   });
 
   test('copy mode prefixes the label with "Copy of" and leaves the element name blank', async () => {
-    // copy is a create-from-source flow, so it lives on /add with the source
-    // id in navigation state — not on a /:id route (there's no "edit" for an
-    // HSM, only view; a real /:id route always renders read-only).
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, ...CREATE_SESSION_TEMPLATE_MOCK];
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
@@ -145,8 +143,6 @@ describe('HSMV2 edit mode', () => {
       expect(screen.getByText('Copy HSM Template')).toBeInTheDocument();
     });
 
-    // shortcode/isActive aren't carried over in copy mode — only the label is prefilled
-    // (with a "Copy of" prefix), so the user has to type a fresh element name.
     await waitFor(() => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
     });
@@ -154,7 +150,7 @@ describe('HSMV2 edit mode', () => {
 });
 
 describe('HSMV2 add mode', () => {
-  const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK];
+  const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, templateLibraryMock()];
   const template = (
     <MockedProvider mocks={MOCKS} addTypename={false}>
       <MemoryRouter>
@@ -174,19 +170,12 @@ describe('HSMV2 add mode', () => {
 
     expect(screen.getByTestId('back-button')).toBeInTheDocument();
     expect(screen.getByTestId('simulator-container')).toBeInTheDocument();
-
-    // there's no separate Title field — the backend derives it from shortcode + language.
     expect(screen.queryByPlaceholderText('Title')).not.toBeInTheDocument();
 
-    // creating an HSM here always creates a brand new template — the "translate
-    // existing HSM" flow (and its element-name dropdown) lives elsewhere.
     expect(screen.queryByText('Translate existing HSM?')).not.toBeInTheDocument();
     expect(screen.getByPlaceholderText('Element name').tagName).toBe('INPUT');
-
-    // category tiles are rendered from the dynamic category list
     expect(screen.getByText('Account_update')).toBeInTheDocument();
 
-    // interactive button type tiles
     expect(screen.getByText('Quick Reply')).toBeInTheDocument();
     expect(screen.getByText('Call to Action')).toBeInTheDocument();
 
@@ -199,6 +188,184 @@ describe('HSMV2 add mode', () => {
     expect(screen.getByText('Media Attachment')).toBeInTheDocument();
     expect(screen.getByText('Organization & Tags')).toBeInTheDocument();
     expect(screen.getByTestId('help-icon')).toBeInTheDocument();
+  });
+
+  test('the "Template library" button opens the library modal and applies the picked template on the same page', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('templateLibrary'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+    });
+
+    const libraryEntry = templateLibraryData[1];
+    fireEvent.click(await screen.findByTestId(`library-group-header-${libraryEntry.usecase}`));
+    fireEvent.click(await screen.findByTestId(`library-entry-${libraryEntry.elementName}`));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('dialogTitle')).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain(libraryEntry.body);
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorMessage')).toHaveTextContent(libraryEntry.body);
+    });
+  });
+
+  test("picking a different template fully replaces the previous one — stale language, body, and buttons don't linger", async () => {
+    const firstEntry = {
+      elementName: 'order_shipped_marathi',
+      category: 'UTILITY',
+      body: 'तुमची ऑर्डर पाठवली आहे.',
+      languageCode: 'mr',
+      containerMeta: JSON.stringify({
+        buttons: [{ type: 'URL', text: 'Track Order', url: 'https://example.com/track' }],
+      }),
+    };
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      ...CREATE_SESSION_TEMPLATE_MOCK,
+      templateLibraryMock([firstEntry]),
+      templateLibraryMock(),
+    ];
+
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('templateLibrary'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+    });
+    fireEvent.click(await screen.findByTestId('library-group-header-OTHER'));
+    fireEvent.click(await screen.findByTestId(`library-entry-${firstEntry.elementName}`));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain(firstEntry.body);
+    });
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Marathi');
+    });
+    expect(screen.getByDisplayValue('Track Order')).toBeInTheDocument();
+
+    // pick a second, buttonless English template without reloading the page
+    fireEvent.click(screen.getByTestId('templateLibrary'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Template Library');
+    });
+    const secondEntry = templateLibraryData[1];
+    fireEvent.click(await screen.findByTestId(`library-group-header-${secondEntry.usecase}`));
+    fireEvent.click(await screen.findByTestId(`library-entry-${secondEntry.elementName}`));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain(secondEntry.body);
+    });
+
+    const editorText = screen.getByTestId('editor-body').textContent || '';
+    expect(editorText).not.toContain(firstEntry.body);
+    expect(screen.queryByDisplayValue('Track Order')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('English');
+    });
+  });
+
+  test('arriving from the Template Library prefills the body, sample variable value, and both Call-to-Action buttons, without the button-type effect clobbering them', async () => {
+    const libraryTemplate = {
+      elementName: 'order_shipped_1',
+      category: 'ACCOUNT_UPDATE',
+      body: 'Hi {{1}}, your order has shipped.',
+      languageCode: 'en',
+      containerMeta: JSON.stringify({
+        footer: 'Team support',
+        sampleText: 'Hi [John], your order has shipped.',
+        buttons: [
+          { type: 'PHONE_NUMBER', text: 'Call Us', phone_number: '+1234567890' },
+          { type: 'URL', text: 'Track Order', url: 'https://example.com/track' },
+        ],
+      }),
+    };
+
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { libraryTemplate } }]}>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi {{1}}, your order has shipped.');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorMessage')).toHaveTextContent('Hi [John], your order has shipped.');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('+1234567890')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Track Order')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('https://example.com/track')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('John')).toBeInTheDocument();
+    });
+  });
+
+  test('arriving from the Template Library with a non-English entry selects that language instead of defaulting to English', async () => {
+    const libraryTemplate = {
+      elementName: 'account_balance_hi',
+      category: 'ACCOUNT_UPDATE',
+      body: 'Namaste {{1}}.',
+      languageCode: 'mr',
+      containerMeta: JSON.stringify({}),
+    };
+
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/add', state: { libraryTemplate } }]}>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Marathi');
+    });
   });
 
   test('submit button stays disabled until all required fields (element name, message, category) are filled', async () => {
@@ -435,7 +602,6 @@ describe('HSMV2 add mode', () => {
     fireEvent.click(screen.getByText('Upload File'));
     expect(screen.getByText('Click to upload or drag and drop')).toBeInTheDocument();
     expect(screen.getByText('PDF (max 16MB)')).toBeInTheDocument();
-    // the Document tile should remain selected while the upload method is active
     expect(screen.getByText('Document').closest('button')?.className).toMatch(/TileSelected/);
 
     setOrganizationServices('{"__typename":"OrganizationServicesResult","googleCloudStorage":false}');
@@ -674,7 +840,9 @@ describe('HSMV2 add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Call to Action'));
-    fireEvent.click(screen.getByText('Phone number'));
+    // the type-selector chip, not the "Phone number" value-field label that
+    // also appears once this row defaults to that type
+    fireEvent.click(screen.getByRole('button', { name: 'Phone number' }));
     fireEvent.change(screen.getByPlaceholderText('e.g., Call Us'), { target: { value: 'Call me' } });
     fireEvent.change(screen.getByPlaceholderText('+91 98765 43210'), { target: { value: '9876543210' } });
 
@@ -1053,10 +1221,6 @@ describe('HSMV2 language versions', () => {
   });
 
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
-    // only the anchor itself here (not familyVariants' PENDING Hindi/Marathi
-    // row) — excludeLanguageIds is now derived from the family list, so
-    // Marathi needs to still be free for this test to exercise "the anchor's
-    // own language is excluded, everything else isn't".
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
@@ -1272,12 +1436,14 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'footer',
-          buttons: ['View Account Balance', 'View Mini Statement'],
+          // the anchor's own {{1}} sample value ("003", from its example field)
+          // rides along after the button texts and gets split back out by position.
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
         },
         {
           body: 'मराठी अनुवादित संदेश',
           footer: 'मराठी पादलेख',
-          buttons: ['खाता शेष देखें', 'मिनी स्टेटमेंट देखें'],
+          buttons: ['खाता शेष देखें', 'मिनी स्टेटमेंट देखें', '००३'],
         }
       ),
     ];
@@ -1319,7 +1485,81 @@ describe('HSMV2 language versions', () => {
     // the quick-reply button drafts also get filled with the translated text.
     expect(screen.getByDisplayValue('खाता शेष देखें')).toBeInTheDocument();
     expect(screen.getByDisplayValue('मिनी स्टेटमेंट देखें')).toBeInTheDocument();
+    // ...and so does the {{1}} variable's value, alongside its English reference.
+    expect(screen.getByDisplayValue('००३')).toBeInTheDocument();
     expect(setNotification).toHaveBeenCalledWith('Content translated — review and adjust before submitting.');
+  });
+
+  test('re-running Auto-translate re-fills the message body even when the translation is identical to before', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const translateRequest = {
+      languageId: '2',
+      body: anchorBody,
+      footer: 'footer',
+      buttons: ['View Account Balance', 'View Mini Statement', '003'],
+    };
+    const translateResult = {
+      body: 'मराठी अनुवादित संदेश',
+      footer: 'मराठी पादलेख',
+      buttons: ['खाता शेष देखें', 'मिनी स्टेटमेंट देखें', '००३'],
+    };
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(anchorOnly),
+
+      translateSessionTemplateMock(translateRequest, translateResult),
+      translateSessionTemplateMock(translateRequest, translateResult),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('मराठी अनुवादित संदेश');
+    });
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('मराठी अनुवादित संदेश');
+      expect(editorText).toContain('{{2}}');
+    });
+
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).not.toContain('{{2}}');
+      expect(editorText).toContain('मराठी अनुवादित संदेश');
+    });
   });
 
   test('shows an error and leaves the draft untouched when Auto-translate fails', async () => {
@@ -1336,7 +1576,7 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'footer',
-          buttons: ['View Account Balance', 'View Mini Statement'],
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
         },
         'network error'
       ),
@@ -1433,13 +1673,13 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'Sample footer',
-          buttons: ['Call Us', 'Visit Us'],
+          buttons: ['Call Us', 'Visit Us', '003'],
         },
         {
           body: 'translated body',
           footer: 'translated footer',
           // the second entry is blank, exercising the "|| button.title" fallback.
-          buttons: ['बुलाओ', ''],
+          buttons: ['बुलाओ', '', '००३'],
         }
       ),
     ];
@@ -1478,9 +1718,10 @@ describe('HSMV2 language versions', () => {
       expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('बुलाओ');
     });
     expect(screen.getByPlaceholderText('e.g., Track Order')).toHaveValue('');
+    expect(screen.getByDisplayValue('००३')).toBeInTheDocument();
   });
 
-  test("switching the draft's button type away from the anchor before Auto-translate sends no button text and ignores any returned buttons", async () => {
+  test("switching the draft's button type away from the anchor before Auto-translate sends no button text, but still translates the variable value", async () => {
     const anchorOnly = [familyVariants[0]];
     const anchorBody =
       'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
@@ -1490,8 +1731,10 @@ describe('HSMV2 language versions', () => {
       getHSMTemplateTypeText,
       familyFetchMock(anchorOnly),
       translateSessionTemplateMock(
-        { languageId: '2', body: anchorBody, footer: 'footer', buttons: undefined },
-        { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['XYZ'] }
+        // no button text sent — the type mismatch means neither branch applies —
+        // but the {{1}} variable value still rides along on its own.
+        { languageId: '2', body: anchorBody, footer: 'footer', buttons: ['003'] },
+        { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['००३'] }
       ),
     ];
     render(
@@ -1533,6 +1776,7 @@ describe('HSMV2 language versions', () => {
       expect(screen.getByDisplayValue('मराठी पादलेख')).toBeInTheDocument();
     });
     expect(screen.getByPlaceholderText('e.g., Call Us')).toHaveValue('');
+    expect(screen.getByDisplayValue('००३')).toBeInTheDocument();
   });
 
   test('shows the server-provided error and skips applying content when Auto-translate returns a GraphQL-level error', async () => {
@@ -1549,7 +1793,7 @@ describe('HSMV2 language versions', () => {
           languageId: '2',
           body: anchorBody,
           footer: 'footer',
-          buttons: ['View Account Balance', 'View Mini Statement'],
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
         },
         { key: 'translation_error', message: 'Unable to translate content right now.' }
       ),
