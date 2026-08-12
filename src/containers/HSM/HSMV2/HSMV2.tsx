@@ -154,6 +154,7 @@ export const HSMV2 = () => {
   const isCopyState = location.state?.mode === 'copy';
   const copySourceId = isCopyState ? location.state?.sourceId : undefined;
   const languageAnchorId = params.id || location.state?.languageAnchorId;
+  const isTemplateLibraryEnabled = getOrganizationServices('templateLibraryEnabled');
 
   const [language, setLanguageId] = useState<any>(null);
   const [body, setBody] = useState<any>('');
@@ -183,7 +184,6 @@ export const HSMV2 = () => {
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [showLibrary, setShowLibrary] = useState(false);
-  const isTemplateLibraryEnabled = getOrganizationServices('templateLibraryEnabled');
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
