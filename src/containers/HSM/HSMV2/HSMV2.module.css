@@ -131,15 +131,9 @@
   line-height: 1.5;
 }
 
-/* Matches FormLayout.module.css's .FieldLabel exactly — FooterField renders
-   its own label instead of relying on FormLayout's field.label mechanism, so
-   it needs to look identical to every other field label on the page. */
+/* FooterField renders its own label instead of relying on FormLayout's
+   field.label mechanism, so it needs to look identical to every other field
+   label on the page — composed from the source instead of duplicated. */
 .FieldLabel {
-  margin-top: 24px;
-  vertical-align: middle;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 18px;
-  color: #555555;
-  padding-bottom: 14px;
+  composes: FieldLabel from '../../Form/FormLayout.module.css';
 }

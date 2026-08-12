@@ -689,9 +689,7 @@ export const HSMV2 = () => {
       name: 'footer',
       disabled: isReadOnly,
       referenceValue: mode === 'addLanguage' ? anchorReference?.footer : undefined,
-      inputProp: {
-        onChange: (event: any) => setFooter(event.target.value),
-      },
+      onChange: (value: any) => setFooter(value),
     },
     {
       component: SectionTitle,
