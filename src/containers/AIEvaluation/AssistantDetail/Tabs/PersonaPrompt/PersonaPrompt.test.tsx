@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import type { KaapiModel, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { parseKaapiModels } from '../../assistantModels';
+import { configForModel, parseKaapiModels } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
 
 // the model field is a MUI Select — open it, then click the option
@@ -275,5 +275,118 @@ describe('prompt generator', () => {
 
     expect(onPromptChange).toHaveBeenCalledWith('generated prompt');
     expect(screen.queryByTestId('promptGeneratorStub')).not.toBeInTheDocument();
+  });
+});
+
+describe('settings the API describes loosely', () => {
+  // a spec may name a setting without pinning its range or its choices
+  const looseModels = parseKaapiModels([
+    {
+      modelName: 'loose-temp',
+      provider: 'openai',
+      completionType: ['text'],
+      config: JSON.stringify({ temperature: { description: 'Controls randomness.', type: 'float' } }),
+    },
+    {
+      modelName: 'loose-effort',
+      provider: 'openai',
+      completionType: ['text'],
+      config: JSON.stringify({ effort: { description: 'How hard it thinks.', type: 'enum' } }),
+    },
+    {
+      modelName: 'chatty',
+      provider: 'openai',
+      completionType: ['text'],
+      config: JSON.stringify({
+        verbosity: { description: 'How long the replies run.', options: ['low', 'medium', 'high'], default: 'medium' },
+      }),
+    },
+  ]);
+
+  test('a temperature with no declared range falls back to 0 and 2', () => {
+    const { onConfigChange } = renderTab({ model: 'loose-temp', temperature: '1' }, { models: looseModels });
+
+    const input = screen.getByTestId('temperatureInput');
+    // the spec pins no range, so the field carries none either
+    expect(input).not.toHaveAttribute('min');
+    expect(input).not.toHaveAttribute('max');
+
+    // typed values still land in the 0–2 range every model shares
+    fireEvent.change(input, { target: { value: '5' } });
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '2' }));
+
+    fireEvent.change(input, { target: { value: '-1' } });
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0' }));
+  });
+
+  test('an effort with no declared options renders no choices', () => {
+    renderTab({ model: 'loose-effort' }, { models: looseModels });
+
+    expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
+    expect(screen.queryByTestId('effortSegment-low')).not.toBeInTheDocument();
+  });
+
+  test('a model that declares verbosity shows it, and picking one reports upward', () => {
+    const { onConfigChange } = renderTab({ model: 'chatty', verbosity: 'medium' }, { models: looseModels });
+
+    expect(screen.getByTestId('verbositySegment')).toBeInTheDocument();
+    expect(screen.getByTestId('verbositySegment').textContent).toContain('low');
+
+    fireEvent.click(screen.getByTestId('verbositySegment-low'));
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ verbosity: 'low' }));
+  });
+
+  test('moving between two models that both take a temperature says nothing', () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    renderTab({ model: 'gpt-4.1' });
+
+    pickModel('gpt-4o');
+
+    expect(notificationSpy).not.toHaveBeenCalled();
+    notificationSpy.mockRestore();
+  });
+});
+
+describe('reading what the API returned', () => {
+  test('no models at all is not an error', () => {
+    expect(parseKaapiModels()).toEqual([]);
+    expect(parseKaapiModels(null)).toEqual([]);
+  });
+
+  test('a model with no completion type is not a chat model', () => {
+    expect(parseKaapiModels([{ modelName: 'mystery', completionType: null, config: '{}' }])).toEqual([]);
+  });
+
+  test('a model with no config is offered with nothing to tune', () => {
+    const [model] = parseKaapiModels([{ modelName: 'bare', completionType: ['text'], config: null }]);
+
+    expect(model).toEqual({ modelName: 'bare', provider: '', config: {} });
+  });
+
+  test('configForModel leaves the config alone when there is no model', () => {
+    const current = { model: 'gpt-4.1', temperature: '1', effort: '', verbosity: '' };
+
+    expect(configForModel(undefined, current)).toBe(current);
+  });
+
+  test('configForModel takes each default the model declares', () => {
+    const [model] = parseKaapiModels([
+      {
+        modelName: 'defaults',
+        completionType: ['text'],
+        config: JSON.stringify({
+          temperature: { default: 0.7 },
+          effort: { default: 'high' },
+          verbosity: { default: 'low' },
+        }),
+      },
+    ]);
+
+    expect(configForModel(model, { model: '', temperature: '', effort: '', verbosity: '' })).toEqual({
+      model: 'defaults',
+      temperature: '0.7',
+      effort: 'high',
+      verbosity: 'low',
+    });
   });
 });

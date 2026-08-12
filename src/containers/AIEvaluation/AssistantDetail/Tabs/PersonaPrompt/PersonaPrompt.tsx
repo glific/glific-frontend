@@ -41,11 +41,9 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
 
   const handleModelChange = (modelName: string) => {
     const next = getModel(models, modelName);
-    if (!next) return;
-
     onConfigChange(configForModel(next, config));
 
-    if (temperatureSpec && !next.config.temperature) {
+    if (temperatureSpec && !getParamSpec(next, 'temperature')) {
       setNotification(t('This model does not take a temperature — use the settings it offers instead.'));
     }
   };
