@@ -26,6 +26,7 @@
   /* aligns fields with the Heading title text: Heading's own 10px left padding
      plus its .HeadingWrapper's 46px margin-left. */
   margin: 0 0 0 56px;
+  position: relative;
 }
 
 /* Bottom action buttons */
@@ -101,6 +102,13 @@
   font-size: 18px !important;
   width: 18px !important;
   height: 18px !important;
+}
+
+.TemplateLibraryButtonRow {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  width: fit-content;
 }
 
 .SourceReferenceCard {

@@ -114,7 +114,12 @@ const AutoTranslateButton = ({
 // Same shortcut the HSM list page offers, surfaced here too so a user already
 // on the create page doesn't have to leave it to browse the catalog.
 const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
-  <Button variant="outlined" className={styles.AutoTranslateButton} onClick={onClick} data-testid="templateLibrary">
+  <Button
+    variant="outlined"
+    className={`${styles.AutoTranslateButton} ${styles.TemplateLibraryButtonRow}`}
+    onClick={onClick}
+    data-testid="templateLibrary"
+  >
     <GridViewIcon className={styles.AutoTranslateIcon} />
     {t('Template library')}
   </Button>
@@ -598,10 +603,12 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionTemplateDetails',
       title: t('Template Details'),
-      action:
-        mode === 'create' && isTemplateLibraryEnabled ? (
-          <TemplateLibraryButton onClick={() => setShowLibrary(true)} />
-        ) : undefined,
+    },
+    {
+      component: TemplateLibraryButton,
+      name: '__templateLibraryButton',
+      onClick: () => setShowLibrary(true),
+      skip: !(mode === 'create' && isTemplateLibraryEnabled),
     },
     {
       component: AutoComplete,
