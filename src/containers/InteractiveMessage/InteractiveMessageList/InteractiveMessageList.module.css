@@ -104,3 +104,29 @@
   width: 20%;
   min-width: 100px;
 }
+
+.TypeLabel {
+  margin: 0;
+  padding: 0;
+}
+
+.ChannelBadge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.AllChannelsBadge {
+  background: #e8f5ee;
+  color: #119656;
+}
+
+.WebOnlyBadge {
+  background: #eef1fb;
+  color: #3f51b5;
+}

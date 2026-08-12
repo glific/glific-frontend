@@ -1,0 +1,41 @@
+.Container {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.Editor {
+  font-family: 'Roboto Mono', 'Courier New', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.MetaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.Helper {
+  flex: 1;
+}
+
+.Size {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.SizeOver {
+  composes: Size;
+  font-weight: 600;
+}
+
+.ErrorList {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  color: #d32f2f;
+  font-size: 12px;
+  line-height: 1.5;
+}

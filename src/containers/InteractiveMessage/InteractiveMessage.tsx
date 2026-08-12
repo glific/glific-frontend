@@ -23,7 +23,17 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import Simulator from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY, VALID_URL_REGEX } from 'common/constants';
+import {
+  CHANNEL_COMPATIBILITY_ALL,
+  CHANNEL_COMPATIBILITY_WEB_ONLY,
+  CUSTOM_UI,
+  getChannelCompatibility,
+  LIST,
+  LOCATION_REQUEST,
+  MEDIA_MESSAGE_TYPES,
+  QUICK_REPLY,
+  VALID_URL_REGEX,
+} from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
@@ -41,6 +51,8 @@ import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/Create
 import { interactiveMessageInfo } from 'common/HelpData';
 import { TranslateButton } from './TranslateButton/TranslateButton';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { CustomUiEditor } from './CustomUiEditor/CustomUiEditor';
+import { buildCustomUiEnvelope, CUSTOM_UI_PRESETS, getCustomUiPreset, getPresetPayload } from './CustomUi.helper';
 
 const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />;
 
@@ -52,11 +64,16 @@ const queries = {
 };
 const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 
+// `group` is derived channel compatibility, not an authoring choice — see getChannelCompatibility.
 const templateTypeOptions = [
-  { id: QUICK_REPLY, label: 'Reply buttons' },
-  { id: LIST, label: 'List message' },
-  { id: LOCATION_REQUEST, label: 'Location request' },
+  { id: QUICK_REPLY, label: 'Reply buttons', group: CHANNEL_COMPATIBILITY_ALL },
+  { id: LIST, label: 'List message', group: CHANNEL_COMPATIBILITY_ALL },
+  { id: LOCATION_REQUEST, label: 'Location request', group: CHANNEL_COMPATIBILITY_ALL },
+  { id: CUSTOM_UI, label: 'Custom UI', group: CHANNEL_COMPATIBILITY_WEB_ONLY },
 ];
+
+const CUSTOM_UI_FLOW_HINT =
+  'Custom UI messages are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts will receive the fallback text as a plain message instead.';
 
 export const InteractiveMessage = () => {
   const location: any = useLocation();
@@ -80,6 +97,10 @@ export const InteractiveMessage = () => {
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
+
+  // Custom UI authoring state: the JSON payload and the "start from" preset that seeded it.
+  const [customUiPayload, setCustomUiPayload] = useState<string>(getPresetPayload(CUSTOM_UI_PRESETS[0].id));
+  const [customUiPreset, setCustomUiPreset] = useState<any>(CUSTOM_UI_PRESETS[0]);
 
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
   const [saveClicked, setSaveClicked] = useState<boolean>(false);
@@ -107,6 +128,7 @@ export const InteractiveMessage = () => {
   const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const isLocationRequestType = templateType === LOCATION_REQUEST;
+  const isCustomUiType = templateType === CUSTOM_UI;
 
   const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
@@ -250,6 +272,8 @@ export const InteractiveMessage = () => {
     type,
     attachmentURL,
     dynamicMedia,
+    customUiPayload,
+    customUiPreset,
   };
 
   const updateStates = ({
@@ -281,6 +305,10 @@ export const InteractiveMessage = () => {
     if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
       setType({ id: data.type, label: data.type });
       setAttachmentURL(data.attachmentURL);
+    }
+
+    if (typeValue === CUSTOM_UI && data.customUiPayload && JSON.parse(data.customUiPayload)?.component) {
+      setCustomUiPayload(data.customUiPayload);
     }
   };
 
@@ -358,6 +386,14 @@ export const InteractiveMessage = () => {
       setAttachmentURL(data.attachmentURL);
     }
 
+    if (typeValue === CUSTOM_UI && data.customUiPayload) {
+      const component = JSON.parse(data.customUiPayload)?.component;
+      if (component) {
+        setCustomUiPayload(data.customUiPayload);
+        setCustomUiPreset(getCustomUiPreset(component) || null);
+      }
+    }
+
     if (isEditing && data.attachmentURL) {
       const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
       if (!testForValidUrl.test(data.attachmentURL)) {
@@ -406,6 +442,8 @@ export const InteractiveMessage = () => {
       QUICK_REPLY: { value: '' },
       LIST: { title: '', options: [{ title: '', description: '' }] },
       LOCATION_REQUEST_MESSAGE: {},
+      // Custom UI has no per-button authoring — the payload lives in the JSON editor.
+      CUSTOM_UI: {},
     };
 
     const templateResult = stateToRestore || [buttonType[templateTypeVal]];
@@ -618,6 +656,15 @@ export const InteractiveMessage = () => {
         setTemplateTypeField(change);
         setPreviousState({ [templateType]: templateButtons });
         handleAddInteractiveTemplate(false, value, stateToRestore);
+
+        // Seed the default preset so switching to Custom UI already yields a saveable template.
+        if (value === CUSTOM_UI && !body) {
+          const preset = CUSTOM_UI_PRESETS[0];
+          setCustomUiPreset(preset);
+          setCustomUiPayload(getPresetPayload(preset.id));
+          setBody(preset.fallback);
+          setEditorState(preset.fallback);
+        }
       },
       name: 'templateTypeField',
       options: templateTypeOptions,
@@ -625,6 +672,30 @@ export const InteractiveMessage = () => {
       disabled: params?.id !== undefined,
       label: `${t('Type')}*`,
       optionLabel: 'label',
+      groupBy: (option: any) => option.group || getChannelCompatibility(option.id),
+      helperText: isCustomUiType ? t(CUSTOM_UI_FLOW_HINT) : '',
+    },
+    {
+      skip: !isCustomUiType,
+      component: AutoComplete,
+      name: 'customUiPreset',
+      options: CUSTOM_UI_PRESETS,
+      optionLabel: 'label',
+      additionalOptionLabel: 'description',
+      multiple: false,
+      disableClearable: true,
+      disabled: params?.id !== undefined,
+      label: t('Start from'),
+      helperText: t('Pick a built-in block to pre-fill a working payload, or start blank.'),
+      onChange: (value: any) => {
+        if (!value) return;
+        setCustomUiPreset(value);
+        setCustomUiPayload(getPresetPayload(value.id));
+        if (value.fallback) {
+          setBody(value.fallback);
+          setEditorState(value.fallback);
+        }
+      },
     },
     {
       translation: hasTranslations && getTranslation(templateType, 'title', translations, defaultLanguage),
@@ -639,7 +710,7 @@ export const InteractiveMessage = () => {
     },
     // checkbox is not needed in media types
     {
-      skip: (type && type.label) || isLocationRequestType,
+      skip: (type && type.label) || isLocationRequestType || isCustomUiType,
       component: Checkbox,
       name: 'sendWithTitle',
       title: t('Show title in message'),
@@ -650,18 +721,21 @@ export const InteractiveMessage = () => {
       translation: hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      label: `${t('Message')}*`,
+      // For Custom UI this field is the envelope's translatable fallback text (contract §2/§7).
+      label: isCustomUiType ? `${t('Fallback text')}*` : `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      helperText: t('You can also use variables in message enter @ to see the available list'),
+      helperText: isCustomUiType
+        ? t('Shown wherever the block cannot render, and required on every language.')
+        : t('You can also use variables in message enter @ to see the available list'),
       handleChange: (value: any) => {
         setBody(value);
       },
       inputProp: {
         suggestions: contactVariables,
       },
-      defaultValue: isEditing && editorState,
+      defaultValue: (isEditing || isCustomUiType) && editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,
@@ -675,6 +749,20 @@ export const InteractiveMessage = () => {
       },
     },
     {
+      skip: !isCustomUiType,
+      component: CustomUiEditor,
+      name: 'customUiPayload',
+      label: t('Payload'),
+      helperText: t(
+        'The component and its props. glific/* blocks are schema-checked; other namespaces are passed through untouched.'
+      ),
+      disabled: hasTranslations,
+      onChange: (value: string) => {
+        setCustomUiPayload(value);
+      },
+    },
+    {
+      skip: isCustomUiType,
       translation: hasTranslations && getTranslation(templateType, 'options', translations, defaultLanguage),
       component: InteractiveOptions,
       isAddButtonChecked: true,
@@ -771,6 +859,17 @@ export const InteractiveMessage = () => {
       Object.assign(updatedPayload, {
         type: LOCATION_REQUEST,
         interactiveContent: JSON.stringify(locationJson),
+      });
+    }
+
+    if (templateTypeVal === CUSTOM_UI) {
+      // `type` and `version` are injected, never taken from the editor — the backend derives the
+      // message type from interactive_content["type"] (contract §2).
+      const customUiJSON = buildCustomUiEnvelope(payload.customUiPayload ?? customUiPayload, payload.body);
+
+      Object.assign(updatedPayload, {
+        type: CUSTOM_UI,
+        interactiveContent: JSON.stringify(customUiJSON),
       });
     }
     return updatedPayload;
@@ -967,6 +1066,7 @@ export const InteractiveMessage = () => {
       footer,
       attachmentURL,
       language,
+      customUiPayload,
     };
 
     const { interactiveContent } = convertStateDataToJSON(payload, title, templateType, templateButtons, globalButton);
@@ -984,6 +1084,7 @@ export const InteractiveMessage = () => {
     globalButton,
     type,
     attachmentURL,
+    customUiPayload,
   ]);
 
   let messageDialog;

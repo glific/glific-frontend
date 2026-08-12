@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
+import { CUSTOM_UI, LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import * as Yup from 'yup';
+import { envelopeToEditorPayload, validateCustomUiPayload } from './CustomUi.helper';
 
 Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
   return this.test('unique', message, function test(list: any) {
@@ -101,6 +102,17 @@ export const validator = (templateType: any, t: any) => {
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       });
+  } else if (templateType === CUSTOM_UI) {
+    // The Message field doubles as the translatable fallback text (contract §2/§7).
+    validation.body = Yup.string().required(t('Fallback text is required.'));
+
+    validation.customUiPayload = Yup.string()
+      .required(t('Payload is required.'))
+      .test('valid-custom-ui-payload', t('Payload is not valid'), function testPayload(value: any) {
+        const { errors } = validateCustomUiPayload(value || '');
+        if (errors.length === 0) return true;
+        return this.createError({ path: 'customUiPayload', message: errors[0].message });
+      });
   }
 
   return validation;
@@ -155,6 +167,15 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
       result = { body: body.text, title: label };
       break;
     }
+    case CUSTOM_UI: {
+      // `body` on the form is the translatable fallback text; the editor holds the rest.
+      result = {
+        title: label,
+        body: data.fallback || '',
+        customUiPayload: envelopeToEditorPayload(data),
+      };
+      break;
+    }
   }
   return result;
 };
@@ -201,6 +222,10 @@ export const getDefaultValuesByTemplate = (templateData: any) => {
   } else if (templateType === LOCATION_REQUEST) {
     result.body = { text: '' };
     result.title = '';
+  } else if (templateType === CUSTOM_UI) {
+    // A translation is the same envelope with a translated fallback (contract §2), so keep
+    // component/props/context verbatim and only blank the fallback.
+    result = { ...data, fallback: '' };
   }
   return result;
 };
@@ -305,6 +330,13 @@ export const getTranslation = (interactiveType: string, attribute: any, translat
           return defaultTemplate.title;
         case 'body':
           return defaultTemplate.body.text;
+        default:
+          return null;
+      }
+    } else if (interactiveType === CUSTOM_UI) {
+      switch (attribute) {
+        case 'body':
+          return defaultTemplate.fallback;
         default:
           return null;
       }

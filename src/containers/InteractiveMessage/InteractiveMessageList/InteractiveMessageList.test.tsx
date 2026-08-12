@@ -3,7 +3,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 
 import {
+  customUiInteractiveCountQuery,
   filterByTagInteractiveQuery,
+  filterCustomUiInteractiveQuery,
   filterInteractiveQuery,
   getFilterInteractiveCountQuery,
   getInteractiveCountQuery,
@@ -101,6 +103,54 @@ test('It navigates to edit on clicking copy ', async () => {
 
   await waitFor(() => {
     expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
+});
+
+describe('channel compatibility badge', () => {
+  const customUiList = (
+    <MockedProvider
+      mocks={[filterCustomUiInteractiveQuery, customUiInteractiveCountQuery, getFilterTagQuery]}
+      addTypename={false}
+    >
+      <Router>
+        <InteractiveMessageList />
+      </Router>
+    </MockedProvider>
+  );
+
+  test('labels Custom UI as web only and the WhatsApp-capable types as Web + WhatsApp', async () => {
+    render(customUiList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Course picker')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Custom UI')).toBeInTheDocument();
+    expect(screen.getByText('Web only')).toBeInTheDocument();
+    expect(screen.getByText('Web + WhatsApp')).toBeInTheDocument();
+    expect(screen.getAllByTestId('channelCompatibilityBadge')).toHaveLength(2);
+  });
+
+  test('shows the fallback text as the message body for Custom UI rows', async () => {
+    render(customUiList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Pick a course: Spoken English or Digital skills')).toBeInTheDocument();
+    });
+  });
+
+  test('shows the translated fallback in the all-languages row', async () => {
+    render(customUiList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Course picker')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('down-arrow')[1]);
+
+    await waitFor(() => {
+      expect(screen.getByText('कोर्स चुनें')).toBeInTheDocument();
+    });
   });
 });
 

@@ -1,0 +1,91 @@
+.Card {
+  font-family: 'Heebo', sans-serif, emoji;
+  max-width: 404px;
+  min-width: 200px;
+  padding: 10px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-align: left;
+  clear: both;
+}
+
+.Inbox {
+  background: white;
+}
+
+.Simulator {
+  background: white;
+}
+
+.Answered {
+  opacity: 0.6;
+}
+
+.Header {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #93a29b;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.Fallback {
+  font-size: 14px;
+  color: #073f24;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.PayloadToggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: #119656;
+}
+
+.Payload {
+  margin: 6px 0 0;
+  padding: 8px;
+  max-height: 220px;
+  overflow: auto;
+  background: #f8faf9;
+  border: 1px solid #e2e7e4;
+  border-radius: 6px;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre;
+  color: #34524a;
+}
+
+.AnswerSummary {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  font-weight: 500;
+  color: #073f24;
+}
+
+.Respond {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.RespondButton {
+  text-transform: none !important;
+  align-self: flex-end !important;
+  font-size: 12px !important;
+}

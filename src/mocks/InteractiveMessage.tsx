@@ -540,3 +540,104 @@ export const translateWitTrimmingMocks = [
   translateInteractiveTemplateWithTrimMock,
   importInteractiveTemplateWithTrimmingMock,
 ];
+
+/**
+ * Custom UI (web channel) — a stored `glific/image_panel` envelope, contract §2/§6.
+ */
+export const customUiEnvelope = {
+  type: 'custom_ui',
+  version: '1',
+  component: 'glific/image_panel',
+  props: {
+    id: 'course',
+    body: 'Pick a course',
+    options: [
+      { id: 'c1', image: 'https://picsum.photos/seed/english/300/200', label: 'Spoken English' },
+      { id: 'c2', image: 'https://picsum.photos/seed/digital/300/200', label: 'Digital skills' },
+    ],
+  },
+  fallback: 'Pick a course: Spoken English or Digital skills',
+};
+
+export const customUiTemplateMock = {
+  id: '7',
+  type: 'CUSTOM_UI',
+  label: 'Course picker',
+  sendWithTitle: false,
+  interactiveContent: JSON.stringify(customUiEnvelope),
+  translations: JSON.stringify({ 1: customUiEnvelope }),
+  language: { id: '1', label: 'English' },
+};
+
+/**
+ * Captures the variables the authoring page sends so a test can assert the exact envelope.
+ */
+export const createCustomUiMock = (capture: (variables: any) => void) => ({
+  request: { query: CREATE_INTERACTIVE },
+  variableMatcher: (variables: any) => {
+    capture(variables);
+    return true;
+  },
+  result: {
+    data: {
+      createInteractiveTemplate: {
+        interactiveTemplate: {
+          id: '7',
+          label: 'Course picker',
+          type: 'CUSTOM_UI',
+          interactiveContent: JSON.stringify(customUiEnvelope),
+          translations: JSON.stringify({ 1: customUiEnvelope }),
+          language: { id: '1', label: 'English' },
+        },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const getCustomUiTemplateMocks = [
+  ...mocks,
+  getTemplateByType('7', customUiTemplateMock),
+  getTemplateByType('7', customUiTemplateMock),
+];
+
+/** List page: a Custom UI row alongside the WhatsApp-compatible ones. */
+export const filterCustomUiInteractiveQuery = {
+  request: {
+    query: FILTER_INTERACTIVE_MESSAGES,
+    variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' } },
+  },
+  result: {
+    data: {
+      interactiveTemplates: [
+        {
+          id: '1',
+          label: 'Are you excited for Glific?',
+          type: 'QUICK_REPLY',
+          sendWithTitle: true,
+          language: { id: '1', label: 'English' },
+          translations: '{}',
+          interactiveContent:
+            '{"type":"quick_reply","options":[{"type":"text","title":"yes"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited?"}}',
+        },
+        {
+          id: '7',
+          label: 'Course picker',
+          type: 'CUSTOM_UI',
+          sendWithTitle: false,
+          language: { id: '1', label: 'English' },
+          translations: JSON.stringify({ 2: { ...customUiEnvelope, fallback: 'कोर्स चुनें' } }),
+          interactiveContent: JSON.stringify(customUiEnvelope),
+        },
+      ],
+    },
+  },
+};
+
+export const customUiInteractiveCountQuery = {
+  request: {
+    query: GET_INTERACTIVE_MESSAGES_COUNT,
+    variables: { filter: {} },
+  },
+  result: { data: { countInteractiveTemplates: 2 } },
+};

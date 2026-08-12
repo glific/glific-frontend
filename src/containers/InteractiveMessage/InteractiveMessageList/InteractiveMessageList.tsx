@@ -7,7 +7,7 @@ import { List } from 'containers/List/List';
 import { FILTER_INTERACTIVE_MESSAGES, GET_INTERACTIVE_MESSAGES_COUNT } from 'graphql/queries/InteractiveMessage';
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
-import { QUICK_REPLY } from 'common/constants';
+import { CHANNEL_COMPATIBILITY_WEB_ONLY, CUSTOM_UI, getChannelCompatibility, QUICK_REPLY } from 'common/constants';
 import { useNavigate, useSearchParams } from 'react-router';
 import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
@@ -26,9 +26,24 @@ const getType = (text: string) => {
     LOCATION_REQUEST_MESSAGE: 'Location request',
     QUICK_REPLY: 'Quick Reply',
     LIST: 'List',
+    CUSTOM_UI: 'Custom UI',
   };
 
-  return <p className={styles.TableText}>{typeMappings[text]}</p>;
+  // Channel compatibility is derived from the type, never author-chosen.
+  const compatibility = getChannelCompatibility(text);
+  const isWebOnly = compatibility === CHANNEL_COMPATIBILITY_WEB_ONLY;
+
+  return (
+    <div className={styles.TableText}>
+      <p className={styles.TypeLabel}>{typeMappings[text]}</p>
+      <span
+        className={`${styles.ChannelBadge} ${isWebOnly ? styles.WebOnlyBadge : styles.AllChannelsBadge}`}
+        data-testid="channelCompatibilityBadge"
+      >
+        {compatibility}
+      </span>
+    </div>
+  );
 };
 
 const getBody = (text: string) => {
@@ -43,9 +58,12 @@ const getTranslations = (type: string, language: any, data: string) => {
   }
 
   const result = Object.keys(dataObj).reduce((acc: any, langId: string) => {
-    const { content, body } = dataObj[langId];
+    const { content, body, fallback } = dataObj[langId];
     if (type === QUICK_REPLY) {
       acc[langId] = { body: content?.text || '' };
+    } else if (type === CUSTOM_UI) {
+      // A Custom UI envelope has no body — the translatable text is the fallback.
+      acc[langId] = { body: fallback || '' };
     } else {
       acc[langId] = { body };
     }

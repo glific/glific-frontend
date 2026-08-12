@@ -12,6 +12,7 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
   LOCATION_REQUEST,
+  CUSTOM_UI,
 } from 'common/constants';
 import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
@@ -27,6 +28,7 @@ import { setNotification } from 'common/notification';
 import { LocationRequestTemplate } from './LocationRequestTemplate/LocationRequestTemplate';
 import { PollMessage } from './PollMessage/PollMessage';
 import { WhatsAppFormResponse } from './WhatsappFormResponse/WhatsAppFormResponse';
+import { CustomUiCard } from './CustomUiCard/CustomUiCard';
 
 export interface ChatMessageProps {
   id: number;
@@ -300,6 +302,10 @@ export const ChatMessage = ({
 
   if (type === LOCATION_REQUEST) {
     template = <LocationRequestTemplate content={content} disabled />;
+  }
+
+  if (type === CUSTOM_UI) {
+    template = <CustomUiCard content={content} disabled />;
   }
 
   let displayLabel;

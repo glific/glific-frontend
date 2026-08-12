@@ -156,6 +156,9 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
     }
   } else if (interactiveJSON.type === 'location_request_message') {
     messageBody = interactiveJSON.body.text;
+  } else if (interactiveJSON.type === 'custom_ui') {
+    // A Custom UI envelope has no body — the fallback text is what a human reads.
+    messageBody = interactiveJSON.fallback;
   }
 
   return messageBody;

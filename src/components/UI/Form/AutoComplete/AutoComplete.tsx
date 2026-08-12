@@ -42,6 +42,8 @@ export interface AutocompleteProps {
   isFilterType?: boolean;
   showTags?: boolean;
   openOnFocus?: boolean;
+  /** Groups options under headings, e.g. by derived channel compatibility. */
+  groupBy?: (option: any) => string;
 }
 
 export const AutoComplete = ({
@@ -79,6 +81,7 @@ export const AutoComplete = ({
   isFilterType = false,
   showTags = true,
   openOnFocus = false,
+  groupBy,
 }: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -176,6 +179,7 @@ export const AutoComplete = ({
           classes={classStyles}
           multiple={multiple}
           openOnFocus={openOnFocus}
+          groupBy={groupBy}
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...renderedOption, createOption] : renderedOption}
           freeSolo={freeSolo}
