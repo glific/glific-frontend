@@ -12,7 +12,7 @@ import {
 } from 'graphql/mutations/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_KAAPI_MODELS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { DEFAULT_MODEL_CONFIG, configForModel, parseKaapiModels } from './assistantModels';
+import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseKaapiModels } from './assistantModels';
 import {
   AssistantHeader,
   canPublishVersion,
@@ -70,6 +70,7 @@ const editorStateFromAssistant = (assistant: any): EditorState => ({
     ...DEFAULT_MODEL_CONFIG,
     model: assistant.model || DEFAULT_MODEL_CONFIG.model,
     temperature: assistant.temperature != null ? String(assistant.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+    ...(assistant.effort ? { effort: assistant.effort as ModelConfig['effort'] } : {}),
   },
   files: filesFromVectorStore(assistant.vectorStore ?? null),
 });
@@ -201,10 +202,17 @@ export const AssistantDetail = () => {
     const knowledgeBaseStoreId =
       (selectedVersion ? selectedVersion.vectorStore?.id : assistant?.vectorStore?.id) ?? null;
     const temperature = Number(modelConfig.temperature);
+    // only the settings this model declares are sent — the others are not just unused, the
+    // backend rejects a temperature on a model that does not take one
+    const selectedModel = getModel(models, modelConfig.model);
+    const takesTemperature = Boolean(getParamSpec(selectedModel, 'temperature'));
+    const takesEffort = Boolean(getParamSpec(selectedModel, 'effort'));
+
     const input: Record<string, any> = {
       instructions: prompt,
       model: modelConfig.model,
-      ...(modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
+      ...(takesTemperature && modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
+      ...(takesEffort && modelConfig.effort ? { effort: modelConfig.effort } : {}),
     };
 
     try {

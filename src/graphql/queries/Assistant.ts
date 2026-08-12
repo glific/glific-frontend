@@ -65,6 +65,7 @@ export const GET_ASSISTANT = gql`
         instructions
         status
         temperature
+        effort
         vectorStore {
           id
           vectorStoreId

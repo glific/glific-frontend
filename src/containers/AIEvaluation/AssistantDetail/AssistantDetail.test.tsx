@@ -1414,3 +1414,79 @@ describe('switching versions', () => {
     expect(screen.getByTestId('promptInput')).toHaveValue('Be concise.');
   });
 });
+
+describe('what a save sends', () => {
+  const captureSave = () => {
+    const sent: { variables?: any } = {};
+    return {
+      sent,
+      mock: {
+        request: { query: UPDATE_ASSISTANT },
+        variableMatcher: (variables: any) => {
+          if (variables.input?.name && Object.keys(variables.input).length === 1) return false;
+          sent.variables = variables;
+          return true;
+        },
+        result: { data: { updateAssistant: { errors: null } } },
+      },
+    };
+  };
+
+  test('a reasoning model sends its effort and no temperature', async () => {
+    const { sent, mock } = captureSave();
+    const reasoning = { ...version(1, true), model: 'gpt-5', settings: { effort: 'medium' } as any };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([reasoning]), mock]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('effortSegment-high'));
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(sent.variables).toBeDefined();
+    });
+    expect(sent.variables.input.effort).toBe('high');
+    // gpt-5 declares no temperature, so sending one would be rejected
+    expect(sent.variables.input).not.toHaveProperty('temperature');
+  });
+
+  test('a standard model sends its temperature and no effort', async () => {
+    const { sent, mock } = captureSave();
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true)]), mock]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.5' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(sent.variables).toBeDefined();
+    });
+    expect(sent.variables.input.temperature).toBe(0.5);
+    expect(sent.variables.input).not.toHaveProperty('effort');
+  });
+});
+
+test('an assistant with no versions shows the effort it was saved with', async () => {
+  const reasoningAssistant = {
+    ...getAssistant('1', { model: 'gpt-5' }),
+    result: {
+      data: {
+        assistant: {
+          ...getAssistant('1').result.data.assistant,
+          assistant: {
+            ...getAssistant('1', { model: 'gpt-5' }).result.data.assistant.assistant,
+            effort: 'high',
+          },
+        },
+      },
+    },
+  };
+  renderDetail('/ai-evaluation-v2/1', [reasoningAssistant, versionsMock([])]);
+
+  const high = await screen.findByTestId('effortSegment-high');
+  expect(high).toHaveAttribute('aria-checked', 'true');
+  expect(screen.getByTestId('effortSegment-low')).toHaveAttribute('aria-checked', 'false');
+});
