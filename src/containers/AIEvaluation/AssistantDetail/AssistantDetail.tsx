@@ -202,8 +202,7 @@ export const AssistantDetail = () => {
     const knowledgeBaseStoreId =
       (selectedVersion ? selectedVersion.vectorStore?.id : assistant?.vectorStore?.id) ?? null;
     const temperature = Number(modelConfig.temperature);
-    // only the settings this model declares are sent — the others are not just unused, the
-    // backend rejects a temperature on a model that does not take one
+    // the backend rejects a temperature on a model that does not take one
     const selectedModel = getModel(models, modelConfig.model);
     const takesTemperature = Boolean(getParamSpec(selectedModel, 'temperature'));
     const takesEffort = Boolean(getParamSpec(selectedModel, 'effort'));
