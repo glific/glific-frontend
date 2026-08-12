@@ -1,16 +1,14 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { cleanup, fireEvent, render, waitFor, screen, act } from '@testing-library/react';
+import axios from 'axios';
 import { vi } from 'vitest';
 
 import { uploadMediaMock, uploadMediaErrorMock } from 'mocks/Attachment';
-import { apiClient } from 'services/apiClient';
 import { AddAttachment } from './AddAttachment';
 import { setNotification } from 'common/notification';
 
-vi.mock('services/apiClient', () => ({
-  apiClient: { get: vi.fn() },
-}));
-const mockedApiClient = apiClient as any;
+vi.mock('axios');
+const mockedAxios = axios as any;
 
 const setAttachment = vi.fn();
 const setAttachmentURL = vi.fn();
@@ -48,7 +46,7 @@ vi.mock('common/notification', async (importOriginal) => {
 });
 
 beforeEach(() => {
-  mockedApiClient.get.mockImplementation(() =>
+  mockedAxios.get.mockImplementation(() =>
     Promise.resolve({ data: { is_valid: false, message: 'This media URL is invalid' } })
   );
 });
@@ -72,7 +70,7 @@ test('uploading a file', async () => {
 test('add a valid attachment', async () => {
   const responseData = { data: { is_valid: true } };
   act(() => {
-    mockedApiClient.get.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
   });
   render(addAttachment('IMAGE', 'https://glific.com'));
 
@@ -84,7 +82,7 @@ test('add a valid attachment', async () => {
 test('attachment is invalid', async () => {
   const responseData = { data: { is_valid: false, message: 'Content type not valid' } };
   act(() => {
-    mockedApiClient.get.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
   });
 
   render(addAttachment('IMAGE', 'https://glific.com'));
@@ -154,7 +152,7 @@ test('should get error notification if uploading media fails', async () => {
 test('successful media submission', async () => {
   const responseData = { data: { is_valid: true } };
   act(() => {
-    mockedApiClient.get.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
   });
   render(addAttachment('IMAGE', 'https://glific.com'));
 
