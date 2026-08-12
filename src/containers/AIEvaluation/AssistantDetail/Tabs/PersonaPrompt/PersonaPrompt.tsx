@@ -71,13 +71,6 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
 
   const segmentOptions = (spec: ModelParamSpec) => (spec.options ?? []).map((value) => ({ value, label: value }));
 
-  const fieldLabel = (text: ReactNode, apiName: string) => (
-    <>
-      {text}
-      <span className={styles.ApiName}>{apiName}</span>
-    </>
-  );
-
   return (
     <div className={styles.Card} data-testid="personaPrompt">
       <div className={styles.PromptHeader}>
@@ -133,7 +126,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
                   className={styles.ParamColumn}
                   trackClassName={styles.SegmentTrack}
                   testId="effortSegment"
-                  label={fieldLabel(t('Reasoning effort'), 'effort')}
+                  label={t('Reasoning effort')}
                   labelClassName={styles.FieldLabel}
                   options={segmentOptions(effortSpec)}
                   value={config.effort}
@@ -147,7 +140,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
                   className={styles.ParamColumn}
                   trackClassName={styles.SegmentTrack}
                   testId="verbositySegment"
-                  label={fieldLabel(t('Verbosity'), 'verbosity')}
+                  label={t('Verbosity')}
                   labelClassName={styles.FieldLabel}
                   options={segmentOptions(verbositySpec)}
                   value={config.verbosity}
@@ -160,10 +153,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
 
           {temperatureSpec && (
             <div>
-              <div className={styles.FieldLabel}>
-                {t('Temperature')}
-                <span className={styles.ApiName}>temperature</span>
-              </div>
+              <div className={styles.FieldLabel}>{t('Temperature')}</div>
               <Input
                 type="number"
                 placeholder=""

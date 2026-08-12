@@ -72,16 +72,6 @@ span.GenerateBeta {
   color: var(--app-color-text-tertiary);
 }
 
-.ApiName {
-  padding: var(--app-space-2xs) var(--app-space-sm);
-  border-radius: var(--app-radius-lg);
-  background-color: rgb(var(--app-color-slate-rgb) / 12%);
-  font-family: ui-monospace, monospace;
-  font-size: var(--app-font-size-xs);
-  font-weight: 500;
-  color: var(--app-color-text-tertiary);
-}
-
 .ParamCard {
   margin-top: var(--app-space-lg);
   padding: var(--app-space-xl);
