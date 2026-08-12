@@ -100,13 +100,13 @@ const AutoTranslateButton = ({
 }) => (
   <Button
     variant="outlined"
-    className={`${styles.AutoTranslateButton} ${styles.SectionTitleAction}`}
+    className={`${styles.OutlinePillButton} ${styles.SectionTitleAction}`}
     onClick={onTranslate}
     disabled={disabled}
     loading={loading}
     data-testid="auto-translate-button"
   >
-    <LanguageIcon className={styles.AutoTranslateIcon} />
+    <LanguageIcon className={styles.OutlinePillButtonIcon} />
     {t('Auto-translate')}
   </Button>
 );
@@ -116,11 +116,11 @@ const AutoTranslateButton = ({
 const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
   <Button
     variant="outlined"
-    className={`${styles.AutoTranslateButton} ${styles.SectionTitleAction}`}
+    className={`${styles.OutlinePillButton} ${styles.SectionTitleAction}`}
     onClick={onClick}
     data-testid="templateLibrary"
   >
-    <GridViewIcon className={styles.AutoTranslateIcon} />
+    <GridViewIcon className={styles.OutlinePillButtonIcon} />
     {t('Template library')}
   </Button>
 );
