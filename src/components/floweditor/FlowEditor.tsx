@@ -17,7 +17,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { installFlowEditorAuthShim } from 'services/flowEditorAuthShim';
+import { setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
@@ -255,7 +255,7 @@ export const FlowEditor = () => {
 
   useEffect(() => {
     if (flowId) {
-      const uninstallAuthShim = installFlowEditorAuthShim();
+      const { fetch, xmlSend, xmlOpen } = setAuthHeaders();
       const files = loadfiles(() => {
         getFreeFlow({ variables: { id: flowId } });
       });
@@ -281,7 +281,9 @@ export const FlowEditor = () => {
           clearTimeout(timeoutId);
         }
         window.removeEventListener('focus', onfocus);
-        uninstallAuthShim();
+        XMLHttpRequest.prototype.send = xmlSend;
+        XMLHttpRequest.prototype.open = xmlOpen;
+        window.fetch = fetch;
       };
     }
     return () => {};

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import styles from './AddVariables.module.css';
 import { FLOW_EDITOR_API } from 'config';
-import { apiClient } from 'services/apiClient';
+import { getAuthSession } from 'services/AuthService';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -40,16 +41,21 @@ export const AddVariables = ({
   const glificBase = FLOW_EDITOR_API;
   const contactFieldsprefix = '@contact.fields.';
   const contactVariablesprefix = '@contact.';
+  const headers = { authorization: getAuthSession('access_token') };
 
   useEffect(() => {
     const getVariableOptions = async () => {
       // get fields keys
-      const fieldsData = await apiClient.get(`${glificBase}fields`);
+      const fieldsData = await axios.get(`${glificBase}fields`, {
+        headers,
+      });
 
       fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
 
       // get contact keys
-      const contactData = await apiClient.get(`${glificBase}completion`);
+      const contactData = await axios.get(`${glificBase}completion`, {
+        headers,
+      });
 
       const properties = contactData.data.context.types[5];
       contacts = properties.properties
