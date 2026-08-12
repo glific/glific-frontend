@@ -1,10 +1,16 @@
+import axios from 'axios';
 import dayjs from 'dayjs';
 
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
-import { getOrganizationServices, getUserSession } from 'services/AuthService';
-import { apiClient } from 'services/apiClient';
+import {
+  getAuthSession,
+  getOrganizationServices,
+  getUserSession,
+  setAuthSession,
+  renewAuthToken,
+} from 'services/AuthService';
 import { CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SIMULATOR_NUMBER_START, STANDARD_DATE_TIME_FORMAT } from './constants';
 import { setNotification } from './notification';
@@ -46,8 +52,10 @@ const validateMediaMethod = (URL: string, attachmentType: string, allowStickers:
     }
 
     const encodedUrl = encodeURIComponent(URL);
-    apiClient
-      .get(`${FLOW_EDITOR_API}validate-media?url=${encodedUrl}&type=${attachmentType.toLowerCase()}`)
+    axios
+      .get(`${FLOW_EDITOR_API}validate-media?url=${encodedUrl}&type=${attachmentType.toLowerCase()}`, {
+        headers: { authorization: getAuthSession('access_token') },
+      })
       .then((response: any) => {
         resolve(response);
       })
@@ -55,12 +63,30 @@ const validateMediaMethod = (URL: string, attachmentType: string, allowStickers:
         // add log's
         setLogs(`attachmentType:${attachmentType} URL:${URL} error:${error}`, 'info');
         setLogs(error, 'error');
-        // resolve (never leave the promise pending) so callers don't hang on a failed validation
-        resolve({ data: { is_valid: false, message: 'Unable to validate media' } });
       });
   });
 
 export { validateMediaMethod as validateMedia };
+
+const checkSessionValidityMethod = async () => {
+  try {
+    // renew access token
+    const response = await renewAuthToken();
+    if (response.data) {
+      // set the session
+      setAuthSession(response.data.data);
+      return true;
+    }
+    setLogs(`Token renewal failed: No response data`, 'error', true);
+    return false;
+  } catch (_err) {
+    setLogs(`Token renewal failed: ${_err} `, 'error', true);
+    // error indicates session has expired or invalid tokens
+    return false;
+  }
+};
+
+export { checkSessionValidityMethod as checkSessionValidity };
 
 // function to get the random number with min and max
 export const randomIntFromInterval = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
