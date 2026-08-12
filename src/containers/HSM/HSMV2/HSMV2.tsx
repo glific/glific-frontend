@@ -100,7 +100,7 @@ const AutoTranslateButton = ({
 }) => (
   <Button
     variant="outlined"
-    className={styles.AutoTranslateButton}
+    className={`${styles.AutoTranslateButton} ${styles.SectionTitleAction}`}
     onClick={onTranslate}
     disabled={disabled}
     loading={loading}
@@ -116,7 +116,7 @@ const AutoTranslateButton = ({
 const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
   <Button
     variant="outlined"
-    className={`${styles.AutoTranslateButton} ${styles.TemplateLibraryButtonRow}`}
+    className={`${styles.AutoTranslateButton} ${styles.SectionTitleAction}`}
     onClick={onClick}
     data-testid="templateLibrary"
   >
@@ -650,10 +650,14 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionMessageContent',
       title: t('Message Content'),
-      action:
-        mode === 'addLanguage' && anchorReference ? (
-          <AutoTranslateButton disabled={false} loading={translating} onTranslate={handleAutoTranslate} />
-        ) : undefined,
+    },
+    {
+      component: AutoTranslateButton,
+      name: '__autoTranslateButton',
+      disabled: false,
+      loading: translating,
+      onTranslate: handleAutoTranslate,
+      skip: !(mode === 'addLanguage' && anchorReference),
     },
     ...(mode === 'addLanguage' && anchorReference
       ? [

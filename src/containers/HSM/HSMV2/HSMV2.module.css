@@ -20,13 +20,17 @@
   width: 100% !important;
   max-width: 720px !important;
   padding: 0 !important;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
   gap: 0;
   /* aligns fields with the Heading title text: Heading's own 10px left padding
      plus its .HeadingWrapper's 46px margin-left. */
   margin: 0 0 0 56px;
-  position: relative;
+}
+
+.CustomFormShell > * {
+  grid-column: 1 / -1;
 }
 
 /* Bottom action buttons */
@@ -58,6 +62,7 @@
 .SectionTitleWrapper {
   width: 100%;
   margin-top: 32px;
+  grid-column: 1;
 }
 
 /* the detail form/simulator stay mounted while collapsed (see HSMV2.tsx) so
@@ -104,11 +109,10 @@
   height: 18px !important;
 }
 
-.TemplateLibraryButtonRow {
-  position: absolute;
-  top: 28px;
-  right: 0;
+.SectionTitleAction {
+  grid-column: 2;
   width: fit-content;
+  margin-top: 32px;
 }
 
 .SourceReferenceCard {
