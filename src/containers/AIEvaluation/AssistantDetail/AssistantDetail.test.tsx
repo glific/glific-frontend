@@ -10,7 +10,7 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_KAAPI_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_ASSISTANT_MODELS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
 import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
@@ -48,15 +48,15 @@ const versionsMock = (assistantVersions = [version(1, true), version(2, false)])
 const defaultMocks = () => [getAssistant('1'), versionsMock()];
 
 // every render loads the model list, so the mock rides along with whatever else a test needs
-const kaapiModelsMock = {
-  request: { query: GET_KAAPI_MODELS },
+const assistantModelsMock = {
+  request: { query: GET_ASSISTANT_MODELS },
   result: { data: { kaapiModels: rawModels } },
   maxUsageCount: Number.POSITIVE_INFINITY,
 };
 
 const renderDetail = (path = '/ai-evaluation-v2/1', mocks: any[] = defaultMocks()) =>
   render(
-    <MockedProvider mocks={[...mocks, kaapiModelsMock]}>
+    <MockedProvider mocks={[...mocks, assistantModelsMock]}>
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/ai-evaluation-v2" element={<div data-testid="list-page" />} />

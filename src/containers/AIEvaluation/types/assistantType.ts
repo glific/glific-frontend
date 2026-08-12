@@ -9,14 +9,14 @@ export interface ModelParamSpec {
   options?: string[];
 }
 
-export interface RawKaapiModel {
+export interface RawAssistantModel {
   modelName: string;
   provider?: string;
   completionType?: string[] | null;
   config?: string | null;
 }
 
-export interface KaapiModel {
+export interface AssistantModel {
   modelName: string;
   provider: string;
   config: Record<string, ModelParamSpec>;

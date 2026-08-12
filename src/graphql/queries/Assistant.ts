@@ -113,8 +113,8 @@ export const GET_ASSISTANT_VERSIONS = gql`
   }
 `;
 
-export const GET_KAAPI_MODELS = gql`
-  query KaapiModels {
+export const GET_ASSISTANT_MODELS = gql`
+  query AssistantModels {
     kaapiModels {
       modelName
       provider

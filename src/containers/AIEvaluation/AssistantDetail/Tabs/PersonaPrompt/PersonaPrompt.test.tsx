@@ -2,8 +2,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
-import type { KaapiModel, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { configForModel, parseKaapiModels } from '../../assistantModels';
+import type { AssistantModel, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { configForModel, parseAssistantModels } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
 
 // the model field is a MUI Select — open it, then click the option
@@ -76,7 +76,7 @@ export const rawModels = [
   },
 ];
 
-const models: KaapiModel[] = parseKaapiModels(rawModels);
+const models: AssistantModel[] = parseAssistantModels(rawModels);
 
 const renderTab = (config: Partial<ModelConfig> = {}, props: Record<string, unknown> = {}) => {
   const onConfigChange = vi.fn();
@@ -102,7 +102,7 @@ describe('reading the model list', () => {
   });
 
   test('a config that will not parse leaves the model listed with no settings', () => {
-    const parsed = parseKaapiModels([
+    const parsed = parseAssistantModels([
       { modelName: 'broken', provider: 'openai', completionType: ['text'], config: 'not json' },
     ]);
 
@@ -280,7 +280,7 @@ describe('prompt generator', () => {
 
 describe('settings the API describes loosely', () => {
   // a spec may name a setting without pinning its range or its choices
-  const looseModels = parseKaapiModels([
+  const looseModels = parseAssistantModels([
     {
       modelName: 'loose-temp',
       provider: 'openai',
@@ -349,16 +349,16 @@ describe('settings the API describes loosely', () => {
 
 describe('reading what the API returned', () => {
   test('no models at all is not an error', () => {
-    expect(parseKaapiModels()).toEqual([]);
-    expect(parseKaapiModels(null)).toEqual([]);
+    expect(parseAssistantModels()).toEqual([]);
+    expect(parseAssistantModels(null)).toEqual([]);
   });
 
   test('a model with no completion type is not a chat model', () => {
-    expect(parseKaapiModels([{ modelName: 'mystery', completionType: null, config: '{}' }])).toEqual([]);
+    expect(parseAssistantModels([{ modelName: 'mystery', completionType: null, config: '{}' }])).toEqual([]);
   });
 
   test('a model with no config is offered with nothing to tune', () => {
-    const [model] = parseKaapiModels([{ modelName: 'bare', completionType: ['text'], config: null }]);
+    const [model] = parseAssistantModels([{ modelName: 'bare', completionType: ['text'], config: null }]);
 
     expect(model).toEqual({ modelName: 'bare', provider: '', config: {} });
   });
@@ -370,7 +370,7 @@ describe('reading what the API returned', () => {
   });
 
   test('configForModel takes each default the model declares', () => {
-    const [model] = parseKaapiModels([
+    const [model] = parseAssistantModels([
       {
         modelName: 'defaults',
         completionType: ['text'],

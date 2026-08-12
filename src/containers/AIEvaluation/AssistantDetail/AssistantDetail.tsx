@@ -10,9 +10,9 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_KAAPI_MODELS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseKaapiModels } from './assistantModels';
+import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
 import {
   AssistantHeader,
   canPublishVersion,
@@ -114,8 +114,8 @@ export const AssistantDetail = () => {
     fetchPolicy: 'network-only',
   });
 
-  const { data: modelData } = useQuery(GET_KAAPI_MODELS);
-  const models = useMemo(() => parseKaapiModels(modelData?.kaapiModels), [modelData]);
+  const { data: modelData } = useQuery(GET_ASSISTANT_MODELS);
+  const models = useMemo(() => parseAssistantModels(modelData?.kaapiModels), [modelData]);
 
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
   const [createAssistant] = useMutation(CREATE_ASSISTANT);

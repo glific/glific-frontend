@@ -1,8 +1,8 @@
 import type {
-  KaapiModel,
+  AssistantModel,
   ModelConfig,
   ModelParamSpec,
-  RawKaapiModel,
+  RawAssistantModel,
 } from 'containers/AIEvaluation/types/assistantType';
 
 export const DEFAULT_MODEL_CONFIG: ModelConfig = {
@@ -23,7 +23,7 @@ const parseConfig = (config?: string | null): Record<string, ModelParamSpec> => 
   }
 };
 
-export const parseKaapiModels = (models?: RawKaapiModel[] | null): KaapiModel[] =>
+export const parseAssistantModels = (models?: RawAssistantModel[] | null): AssistantModel[] =>
   (models ?? [])
     .filter((model) => (model.completionType ?? []).includes('text'))
     .map((model) => ({
@@ -32,15 +32,15 @@ export const parseKaapiModels = (models?: RawKaapiModel[] | null): KaapiModel[] 
       config: parseConfig(model.config),
     }));
 
-export const getModel = (models: KaapiModel[], modelName: string): KaapiModel | undefined =>
+export const getModel = (models: AssistantModel[], modelName: string): AssistantModel | undefined =>
   models.find((model) => model.modelName === modelName) ?? models[0];
 
-export const getParamSpec = (model: KaapiModel | undefined, param: string): ModelParamSpec | undefined => {
+export const getParamSpec = (model: AssistantModel | undefined, param: string): ModelParamSpec | undefined => {
   if (!model || !(SUPPORTED_PARAMS as readonly string[]).includes(param)) return undefined;
   return model.config[param];
 };
 
-export const configForModel = (model: KaapiModel | undefined, current: ModelConfig): ModelConfig => {
+export const configForModel = (model: AssistantModel | undefined, current: ModelConfig): ModelConfig => {
   if (!model) return current;
 
   const temperature = model.config.temperature?.default;

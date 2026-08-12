@@ -7,7 +7,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
-import type { KaapiModel, ModelConfig, ModelParamSpec } from 'containers/AIEvaluation/types/assistantType';
+import type { AssistantModel, ModelConfig, ModelParamSpec } from 'containers/AIEvaluation/types/assistantType';
 import { configForModel, getModel, getParamSpec } from '../../assistantModels';
 import {
   PromptAnswers,
@@ -19,7 +19,7 @@ import styles from './PersonaPrompt.module.css';
 export interface PersonaPromptProps {
   prompt: string;
   config: ModelConfig;
-  models: KaapiModel[];
+  models: AssistantModel[];
   onPromptChange: (prompt: string) => void;
   onConfigChange: (config: ModelConfig) => void;
 }
