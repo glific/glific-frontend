@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 import { setNotification } from 'common/notification';
 import { copyToClipboardMethod, exportCsvFile } from 'common/utils';
+import { setOrganizationServices } from 'services/AuthService';
 import { getFilterTagQuery } from 'mocks/Tag';
 import {
   HSM_LIST_V2,
@@ -83,6 +84,7 @@ test('renders page title and action buttons', async () => {
 });
 
 test('opens the template library modal via the header button, and closing it hides the dialog again', async () => {
+  setOrganizationServices('{"__typename":"OrganizationServicesResult","templateLibraryEnabled":true}');
   renderComponent([...baseMocks, templateLibraryMock()]);
 
   await waitFor(() => {
