@@ -61,10 +61,6 @@ export const BlockContactList = () => {
   };
 
   const [unblockContact] = useMutation(UPDATE_CONTACT, {
-    onCompleted: () => {
-      setUnblockDialog(false);
-      setNotification(t('Contact unblocked successfully'));
-    },
     refetchQueries: [
       { query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES },
       { query: CONTACT_SEARCH_QUERY, variables: contactSearchQueryVariables },
@@ -79,7 +75,7 @@ export const BlockContactList = () => {
     setUnblockDialog(true);
   };
 
-  const handleUnblock = () => {
+  const handleUnblock = async () => {
     const variables = {
       id: contactId,
       input: {
@@ -87,9 +83,9 @@ export const BlockContactList = () => {
       },
     };
 
-    unblockContact({
-      variables,
-    });
+    await unblockContact({ variables });
+    setUnblockDialog(false);
+    setNotification(t('Contact unblocked successfully'));
   };
 
   if (unblockDialog) {

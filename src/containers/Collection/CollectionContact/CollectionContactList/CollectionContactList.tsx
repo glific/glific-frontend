@@ -74,9 +74,11 @@ export const CollectionContactList = ({ title, descriptionBox = <></> }: Collect
 
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
 
-  const handleCollectionRemove = () => {
+  const handleCollectionRemove = async () => {
     const idsToRemove = selectedContacts.map((collection: any) => collection.id);
-    updateCollectionContacts({
+    setRemoveContactsDialogShow(false);
+    setContactsToRemove([]);
+    await updateCollectionContacts({
       variables: {
         input: {
           groupId: collectionId,
@@ -84,13 +86,9 @@ export const CollectionContactList = ({ title, descriptionBox = <></> }: Collect
           deleteContactIds: idsToRemove,
         },
       },
-      onCompleted: () => {
-        setNotification(t('Contact has been removed successfully from the collection.'), 'success');
-        setUpdateCollection(!updateCollection);
-      },
     });
-    setRemoveContactsDialogShow(false);
-    setContactsToRemove([]);
+    setNotification(t('Contact has been removed successfully from the collection.'), 'success');
+    setUpdateCollection(!updateCollection);
   };
 
   const setDialogBox = (selectedContacts: any) => {

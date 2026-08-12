@@ -67,31 +67,29 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
     groupOptions = collections.groups;
   }
 
-  const [importContacts] = useMutation(IMPORT_CONTACTS, {
-    onCompleted: (data: any) => {
-      const { errors } = data.importContacts;
-      if (errors) {
+  const [importContacts] = useMutation(IMPORT_CONTACTS);
+
+  const uploadContacts = async (details: any) => {
+    try {
+      const { data } = await importContacts({
+        variables: {
+          type: 'DATA',
+          data: csvContent,
+          groupLabel: details.collection.label,
+        },
+      });
+      const { errors: importErrors } = data.importContacts;
+      if (importErrors) {
         setNotification(data.errors[0].message, 'warning');
       } else {
         setUploadingContacts(false);
         setShowStatus(true);
       }
-    },
-    onError: (errors) => {
+    } catch (errors: any) {
       setDialog(false);
       setNotification(errors.message, 'warning');
       setUploadingContacts(false);
-    },
-  });
-
-  const uploadContacts = (details: any) => {
-    importContacts({
-      variables: {
-        type: 'DATA',
-        data: csvContent,
-        groupLabel: details.collection.label,
-      },
-    });
+    }
   };
 
   const validationSchema = Yup.object().shape({

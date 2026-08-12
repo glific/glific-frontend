@@ -54,11 +54,7 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
     </div>
   );
 
-  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS, {
-    onCompleted: () => {
-      setNotification('Organization updated successfully');
-    },
-  });
+  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
 
   const getStatus = (id: any, status: string) => {
     const options = [
@@ -71,13 +67,14 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
     ];
 
     const statusField = {
-      onChange: (event: any) => {
-        updateOrganizationStatus({
+      onChange: async (event: any) => {
+        await updateOrganizationStatus({
           variables: {
             updateOrganizationId: id,
             status: event.target.value,
           },
         });
+        setNotification('Organization updated successfully');
       },
       value: status,
       style: { width: '187px' },

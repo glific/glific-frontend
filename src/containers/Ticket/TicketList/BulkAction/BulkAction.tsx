@@ -20,10 +20,6 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
 
   const [updateTicketsStatus, { loading }] = useMutation(UPDATE_TICKETS_STATUS, {
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      setNotification('Tickets closed successfully');
-      setShowBulkClose(false);
-    },
   });
 
   const { data: dataLabels } = useQuery(GET_ALL_FLOW_LABELS, {
@@ -52,9 +48,9 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
   return (
     <Formik
       initialValues={{ topic: undefined }}
-      onSubmit={(values: any) => {
+      onSubmit={async (values: any) => {
         if (values.topic) {
-          updateTicketsStatus({
+          await updateTicketsStatus({
             variables: {
               input: {
                 status: 'closed',
@@ -62,6 +58,8 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
               },
             },
           });
+          setNotification('Tickets closed successfully');
+          setShowBulkClose(false);
         }
       }}
       validationSchema={validationSchema}
