@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
