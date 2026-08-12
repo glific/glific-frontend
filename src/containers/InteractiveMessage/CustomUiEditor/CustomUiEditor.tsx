@@ -2,14 +2,14 @@ import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { getIn } from 'formik';
 import {
   CUSTOM_UI_MAX_BYTES,
-  getPayloadSize,
+  getEnvelopeSize,
   validateCustomUiPayload,
 } from 'containers/InteractiveMessage/CustomUi.helper';
 import styles from './CustomUiEditor.module.css';
 
 export interface CustomUiEditorProps {
   field: any;
-  form: { touched: any; errors: any; setFieldValue: any };
+  form: { touched: any; errors: any; setFieldValue: any; values?: any };
   label?: string;
   helperText?: string;
   disabled?: boolean;
@@ -25,7 +25,7 @@ export interface CustomUiEditorProps {
  */
 export const CustomUiEditor = ({
   field,
-  form: { touched, errors, setFieldValue },
+  form: { touched, errors, setFieldValue, values },
   label,
   helperText,
   disabled = false,
@@ -36,9 +36,12 @@ export const CustomUiEditor = ({
   const formTouched = getIn(touched, field.name);
   const hasFormError = !!(formTouched && formError);
 
-  const size = getPayloadSize(value);
+  // §7 — the budget is spent by the ASSEMBLED envelope (type/version/fallback included),
+  // compactly encoded, not by the pretty-printed editor text.
+  const fallback = values?.body ?? '';
+  const size = getEnvelopeSize(value, fallback);
   const overLimit = size > CUSTOM_UI_MAX_BYTES;
-  const { errors: liveErrors } = validateCustomUiPayload(value);
+  const { errors: liveErrors } = validateCustomUiPayload(value, fallback);
 
   return (
     <div className={styles.Container} data-testid="customUiEditor">

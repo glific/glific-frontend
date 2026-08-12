@@ -3,6 +3,8 @@ import {
   CUSTOM_UI_PRESETS,
   envelopeToEditorPayload,
   getCustomUiPreset,
+  getEnvelopeSize,
+  getJsonDepth,
   getPayloadSize,
   getPresetPayload,
   validateCustomUiPayload,
@@ -74,11 +76,37 @@ describe('validateCustomUiPayload — envelope rules (contract §7)', () => {
     expect(errors.some((error) => /the limit is 64 KB/.test(error.message))).toBe(true);
   });
 
+  // §7 — the budget is spent by the assembled envelope, so the fallback text counts against it
+  test('measures the assembled envelope, not the editor text', () => {
+    const payload = JSON.stringify({ component: 'tap/a', props: { blob: 'x'.repeat(64 * 1024 - 120) } });
+
+    expect(validateCustomUiPayload(payload, '').valid).toBe(true);
+    expect(validateCustomUiPayload(payload, 'y'.repeat(500)).valid).toBe(false);
+  });
+
   test('rejects a payload nested deeper than 10 levels', () => {
     let deep: any = 'leaf';
     for (let i = 0; i < 12; i += 1) deep = { nested: deep };
     const { errors } = validateCustomUiPayload(JSON.stringify({ component: 'tap/a', props: deep }));
     expect(errors.some((error) => /nested deeper than 10/.test(error.message))).toBe(true);
+  });
+
+  // §7 fixes the base: scalar = 0, each enclosing container adds 1. The assembled envelope is
+  // itself one container, so props may nest 9 deep and no further.
+  test('depth is measured on the same base as the backend', () => {
+    const nest = (levels: number) => {
+      let deep: any = 'leaf';
+      for (let i = 0; i < levels; i += 1) deep = { nested: deep };
+      return JSON.stringify({ component: 'tap/a', props: deep });
+    };
+
+    expect(getJsonDepth('leaf')).toBe(0);
+    expect(getJsonDepth({ a: 1 })).toBe(1);
+    expect(getJsonDepth({})).toBe(1);
+    expect(getJsonDepth({ a: [{ b: 1 }] })).toBe(3);
+
+    expect(validateCustomUiPayload(nest(9)).valid).toBe(true);
+    expect(validateCustomUiPayload(nest(10)).valid).toBe(false);
   });
 });
 
@@ -121,6 +149,93 @@ describe('validateCustomUiPayload — glific block schemas (contract §6)', () =
       props: { fields: [{ id: 'name', label: 'Your name', required: 'yes' }] },
     });
     expect(validateCustomUiPayload(payload).errors[0].path).toBe('props.fields[0].required');
+  });
+
+  // §6 — unknown keys are rejected in props and in every item, same as the backend
+  test('rejects an unknown key in props', () => {
+    const payload = JSON.stringify({
+      component: 'glific/image_panel',
+      props: {
+        id: 'course',
+        header: 'nope',
+        options: [{ id: 'c1', image: 'https://example.com/a.png', label: 'Spoken English' }],
+      },
+    });
+    const { errors } = validateCustomUiPayload(payload);
+    expect(errors).toEqual([{ path: 'props.header', message: '"props.header" is not a known key' }]);
+  });
+
+  test('rejects an unknown key inside an option, card or field', () => {
+    const optionErrors = validateCustomUiPayload(
+      JSON.stringify({
+        component: 'glific/image_panel',
+        props: { id: 'course', options: [{ id: 'c1', image: 'https://x/a.png', label: 'A', subtitle: 'nope' }] },
+      })
+    ).errors;
+    expect(optionErrors[0].message).toBe('"props.options[0].subtitle" is not a known key');
+
+    const cardErrors = validateCustomUiPayload(
+      JSON.stringify({
+        component: 'glific/carousel',
+        props: { id: 'p', cards: [{ id: 'p1', image: 'https://x/a.png', title: 'A', price: '10' }] },
+      })
+    ).errors;
+    expect(cardErrors[0].message).toBe('"props.cards[0].price" is not a known key');
+
+    const fieldErrors = validateCustomUiPayload(
+      JSON.stringify({
+        component: 'glific/form',
+        props: { fields: [{ id: 'name', label: 'Your name', maxlength: 10 }] },
+      })
+    ).errors;
+    expect(fieldErrors[0].message).toBe('"props.fields[0].maxlength" is not a known key');
+  });
+
+  test('keeps the known optional keys of every item', () => {
+    const payload = JSON.stringify({
+      component: 'glific/form',
+      props: {
+        id: 'signup',
+        body: 'About you',
+        submit_label: 'Go',
+        fields: [{ id: 'name', label: 'Your name', placeholder: 'Asha', required: true }],
+      },
+    });
+    expect(validateCustomUiPayload(payload).errors).toEqual([]);
+  });
+
+  // §6 — duplicate ids silently lose an answer in the widget (React keys and the values map)
+  test('rejects duplicate item ids', () => {
+    const duplicate = (component: string, key: string, items: any[]) =>
+      validateCustomUiPayload(JSON.stringify({ component, props: { id: 'x', [key]: items } })).errors;
+
+    expect(
+      duplicate('glific/image_panel', 'options', [
+        { id: 'c1', image: 'https://x/a.png', label: 'A' },
+        { id: 'c1', image: 'https://x/b.png', label: 'B' },
+      ])[0]
+    ).toEqual({ path: 'props.options[1].id', message: '"props.options[1].id" must be unique' });
+
+    expect(
+      duplicate('glific/carousel', 'cards', [
+        { id: 'p1', image: 'https://x/a.png', title: 'A' },
+        { id: 'p1', image: 'https://x/b.png', title: 'B' },
+      ])[0].path
+    ).toBe('props.cards[1].id');
+
+    expect(
+      validateCustomUiPayload(
+        JSON.stringify({
+          component: 'glific/form',
+          props: {
+            fields: [
+              { id: 'name', label: 'Your name' },
+              { id: 'name', label: 'Again' },
+            ],
+          },
+        })
+      ).errors[0].path
+    ).toBe('props.fields[1].id');
   });
 
   test('every built-in preset is valid out of the box', () => {
@@ -184,6 +299,15 @@ describe('misc helpers', () => {
   test('getPayloadSize counts bytes, not characters', () => {
     expect(getPayloadSize('abc')).toBe(3);
     expect(getPayloadSize('कोर्स')).toBeGreaterThan(5);
+  });
+
+  test('getEnvelopeSize measures the compact assembled envelope', () => {
+    const pretty = JSON.stringify({ component: 'tap/a', props: { a: 1 } }, null, 2);
+    const expected = getPayloadSize(JSON.stringify(buildCustomUiEnvelope(pretty, 'Fallback text')));
+
+    expect(getEnvelopeSize(pretty, 'Fallback text')).toBe(expected);
+    // the pretty-printed editor text is not what is measured
+    expect(getEnvelopeSize(pretty, 'Fallback text')).not.toBe(getPayloadSize(pretty));
   });
 
   test('getCustomUiPreset looks up by component name', () => {

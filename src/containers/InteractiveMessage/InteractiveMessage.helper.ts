@@ -109,7 +109,9 @@ export const validator = (templateType: any, t: any) => {
     validation.customUiPayload = Yup.string()
       .required(t('Payload is required.'))
       .test('valid-custom-ui-payload', t('Payload is not valid'), function testPayload(value: any) {
-        const { errors } = validateCustomUiPayload(value || '');
+        // the Message field is the fallback text — pass it so the 64 KB check measures the
+        // assembled envelope, exactly as the backend does (contract §7)
+        const { errors } = validateCustomUiPayload(value || '', this.parent?.body ?? '');
         if (errors.length === 0) return true;
         return this.createError({ path: 'customUiPayload', message: errors[0].message });
       });
