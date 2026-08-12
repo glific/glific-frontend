@@ -29,9 +29,7 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
-import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
 import * as FlowEditorHelper from './FlowEditor.helper';
 
@@ -433,103 +431,37 @@ test('should show warning when no keywords are present and share responder link 
 test('should display read-only banner when flow is being edited by another user', async () => {
   mockedAxios.post.mockResolvedValue({ data: {} });
 
-  // @ts-expect-error - Mock implementation with simplified types for testing
   vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
     setTimeout(callback, 0);
-    return {}; // Simple object return instead of 'as unknown'
+    return [];
   });
 
-  const errorData = {
-    flowGet: {
-      flow: null,
-      errors: [
-        {
-          key: 'error',
-          message: 'The flow is being edited by NGO Main Account',
-        },
-      ],
+  const readOnlyMocks = [...activeFlowMocks, getFreeFlowForced];
+
+  const { container } = render(wrapperFunction(readOnlyMocks));
+
+  await screen.findByTestId('flowName');
+
+  await waitFor(
+    () => {
+      const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
+      expect(readOnlyBanner).toBeInTheDocument();
     },
-  };
+    { timeout: 5000, interval: 200 }
+  );
 
-  const takenOverData = {
-    flowGet: {
-      flow: { id: '1' },
-      errors: [],
-    },
-  };
+  const banner = container.querySelector('[class*="ReadOnlyBanner"]');
+  expect(banner).toHaveTextContent('View Only Mode');
+  expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
 
-  // FlowEditor calls useLazyQuery(GET_FREE_FLOW, ...) from two distinct call sites
-  // (`getFreeFlow` then `getFreeFlowForced`), always in that order per render since hook
-  // order is stable. Track calls by position (odd = getFreeFlow, even = getFreeFlowForced)
-  // so each hook instance's own `onCompleted` can be triggered independently.
-  let hookInstanceCount = 0;
-  let getFreeFlowCalled = false;
-  let getFreeFlowForcedCalled = false;
-  const realUseLazyQuery = Apollo.useLazyQuery;
+  expect(screen.getByTestId('button')).toBeDisabled();
+  expect(screen.getByTestId('translateButton')).toBeDisabled();
 
-  const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: unknown, options?: unknown) => {
-    if (query === GET_FREE_FLOW) {
-      hookInstanceCount += 1;
-      const isForcedHookInstance = hookInstanceCount % 2 === 0;
-      const onCompleted = (options as { onCompleted?: (data: unknown) => void } | undefined)?.onCompleted;
+  fireEvent.click(screen.getByText('Take Over'));
 
-      const mockGetFreeFlow = vi.fn(() => {
-        const alreadyCalled = isForcedHookInstance ? getFreeFlowForcedCalled : getFreeFlowCalled;
-        if (!alreadyCalled) {
-          if (isForcedHookInstance) {
-            getFreeFlowForcedCalled = true;
-          } else {
-            getFreeFlowCalled = true;
-          }
-          if (onCompleted) {
-            setTimeout(() => onCompleted(isForcedHookInstance ? takenOverData : errorData), 0);
-          }
-        }
-        return Promise.resolve({ data: isForcedHookInstance ? takenOverData : errorData });
-      });
-
-      return [
-        mockGetFreeFlow,
-        {
-          called: false,
-          loading: false,
-          data: null,
-        },
-      ] as unknown;
-    }
-
-    // @ts-expect-error - Mocking Apollo Client's useLazyQuery with unknown types
-    return (realUseLazyQuery as unknown)(query, options);
+  await waitFor(() => {
+    expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
   });
-
-  try {
-    const { container } = render(wrapperFunction(activeFlowMocks));
-
-    await screen.findByTestId('flowName');
-
-    await waitFor(
-      () => {
-        const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
-        expect(readOnlyBanner).toBeInTheDocument();
-      },
-      { timeout: 5000, interval: 200 }
-    );
-
-    const banner = container.querySelector('[class*="ReadOnlyBanner"]');
-    expect(banner).toHaveTextContent('View Only Mode');
-    expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
-
-    expect(screen.getByTestId('button')).toBeDisabled();
-    expect(screen.getByTestId('translateButton')).toBeDisabled();
-
-    fireEvent.click(screen.getByText('Take Over'));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
-    });
-  } finally {
-    useLazyQuerySpy.mockRestore();
-  }
 });
 
 test('flow editor becomes editable immediately after Take Over succeeds, without requiring a page refresh', async () => {

@@ -73,55 +73,11 @@ export const TranslateButton = ({
     setImporting(false);
   };
 
-  const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE, {
-    onCompleted: ({ translateInteractiveTemplate }: any) => {
-      const { interactiveTemplate, message } = translateInteractiveTemplate;
-      setStates(interactiveTemplate);
+  const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE);
 
-      if (message) {
-        setTranslateMessage(message);
-      } else {
-        setNotification('Interactive Message Translated Successfully', 'success');
-      }
+  const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(EXPORT_INTERACTIVE_TEMPLATE);
 
-      handleClose();
-    },
-    onError(error: any) {
-      handleClose();
-      setErrorMessage(error);
-    },
-  });
-
-  const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(EXPORT_INTERACTIVE_TEMPLATE, {
-    onCompleted: ({ exportInteractiveTemplate }) => {
-      const { exportData } = exportInteractiveTemplate;
-      exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
-      setNotification('Interactive Message Exported Successfully', 'success');
-      handleClose();
-    },
-    onError(error: any) {
-      handleClose();
-      setErrorMessage(error);
-    },
-  });
-
-  const [importInteractiveMessage, { loading: importingLoad }] = useMutation(IMPORT_INTERACTIVE_TEMPLATE, {
-    onCompleted: ({ importInteractiveTemplate }) => {
-      const { interactiveTemplate, message } = importInteractiveTemplate;
-      setStates(interactiveTemplate);
-
-      if (message) {
-        setTranslateMessage(message);
-      } else {
-        setNotification('Interactive Message Imported Successfully!', 'success');
-      }
-      handleClose();
-    },
-    onError: (error: any) => {
-      setErrorMessage(error);
-      handleClose();
-    },
-  });
+  const [importInteractiveMessage, { loading: importingLoad }] = useMutation(IMPORT_INTERACTIVE_TEMPLATE);
 
   const importButton = (
     <ImportButton
@@ -129,10 +85,27 @@ export const TranslateButton = ({
       onImport={() => {
         setImporting(true);
       }}
-      afterImport={(result: string) => {
-        importInteractiveMessage({
-          variables: { translation: result, importInteractiveTemplateId: templateId },
-        });
+      afterImport={async (result: string) => {
+        try {
+          const { data } = await importInteractiveMessage({
+            variables: { translation: result, importInteractiveTemplateId: templateId },
+          });
+          const importInteractiveTemplate = data?.importInteractiveTemplate;
+          if (importInteractiveTemplate) {
+            const { interactiveTemplate, message } = importInteractiveTemplate;
+            setStates(interactiveTemplate);
+
+            if (message) {
+              setTranslateMessage(message);
+            } else {
+              setNotification('Interactive Message Imported Successfully!', 'success');
+            }
+          }
+          handleClose();
+        } catch (error: any) {
+          setErrorMessage(error);
+          handleClose();
+        }
       }}
     />
   );
@@ -151,19 +124,40 @@ export const TranslateButton = ({
     setTranslateOption(event.target.value);
   };
 
-  const handleTranslateOptions = () => {
-    if (translateOption === 'translate') {
-      translateInteractiveMessage({
-        variables: { translateInteractiveTemplateId: templateId },
-      });
-    } else if (translateOption === 'export-translate') {
-      exportInteractiveMessage({
-        variables: { exportInteractiveTemplateId: templateId, addTranslation: true },
-      });
-    } else if (translateOption === 'export') {
-      exportInteractiveMessage({
-        variables: { exportInteractiveTemplateId: templateId, addTranslation: false },
-      });
+  const handleTranslateOptions = async () => {
+    try {
+      if (translateOption === 'translate') {
+        const { data } = await translateInteractiveMessage({
+          variables: { translateInteractiveTemplateId: templateId },
+        });
+        const translateInteractiveTemplate = data?.translateInteractiveTemplate;
+        if (translateInteractiveTemplate) {
+          const { interactiveTemplate, message } = translateInteractiveTemplate;
+          setStates(interactiveTemplate);
+
+          if (message) {
+            setTranslateMessage(message);
+          } else {
+            setNotification('Interactive Message Translated Successfully', 'success');
+          }
+        }
+      } else if (translateOption === 'export-translate' || translateOption === 'export') {
+        const { data } = await exportInteractiveMessage({
+          variables: {
+            exportInteractiveTemplateId: templateId,
+            addTranslation: translateOption === 'export-translate',
+          },
+        });
+        if (data) {
+          const { exportData } = data.exportInteractiveTemplate;
+          exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
+          setNotification('Interactive Message Exported Successfully', 'success');
+        }
+      }
+      handleClose();
+    } catch (error: any) {
+      handleClose();
+      setErrorMessage(error);
     }
   };
 

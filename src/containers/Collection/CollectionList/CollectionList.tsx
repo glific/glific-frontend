@@ -81,19 +81,7 @@ export const CollectionList = () => {
     columnStyles,
   };
 
-  const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
-    onCompleted: (data) => {
-      if (data.exportCollection.errors) {
-        setNotification(data.exportCollection.errors[0].message, 'warning');
-      } else if (data.exportCollection.status) {
-        exportCsvFile(data.exportCollection.status, 'collection');
-      }
-      setExportData(false);
-    },
-    onError: (error) => {
-      setNotification('An error occured while exporting the collection', 'warning');
-    },
-  });
+  const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA);
 
   const dialogMessage = t("You won't be able to use this collection again.");
 
@@ -104,13 +92,26 @@ export const CollectionList = () => {
     setAddContactsDialogShow(true);
   };
 
-  const exportCollection = (id: string) => {
+  const exportCollection = async (id: string) => {
     setExportData(true);
-    exportCollectionData({
-      variables: {
-        exportCollectionId: id,
-      },
-    });
+    try {
+      const { data, error } = await exportCollectionData({
+        variables: {
+          exportCollectionId: id,
+        },
+      });
+      if (error) {
+        setNotification('An error occured while exporting the collection', 'warning');
+      } else if (data?.exportCollection.errors) {
+        setNotification(data.exportCollection.errors[0].message, 'warning');
+      } else if (data?.exportCollection.status) {
+        exportCsvFile(data.exportCollection.status, 'collection');
+      }
+    } catch {
+      setNotification('An error occured while exporting the collection', 'warning');
+    } finally {
+      setExportData(false);
+    }
   };
 
   if (addContactsDialogShow) {

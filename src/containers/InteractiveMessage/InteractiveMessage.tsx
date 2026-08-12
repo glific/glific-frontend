@@ -176,20 +176,9 @@ export const InteractiveMessage = () => {
     setUploadedFile(null);
   };
 
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
-    onCompleted: (data: any) => {
-      setAttachmentURL(data.uploadMedia);
-      setNotification('File uploaded successfully');
-      setShowUploadButton(false);
-    },
-    onError: (error) => {
-      setNotification('File upload failed. Please try again.');
-      resetUploadState();
-      setShowUploadButton(true);
-    },
-  });
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA);
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = async (file: File) => {
     if (!file) {
       console.warn('No file');
       return;
@@ -209,12 +198,21 @@ export const InteractiveMessage = () => {
       setType({ id: 'DOCUMENT', label: 'DOCUMENT' });
     }
 
-    uploadMedia({
-      variables: {
-        media: file,
-        extension,
-      },
-    });
+    try {
+      const { data } = await uploadMedia({
+        variables: {
+          media: file,
+          extension,
+        },
+      });
+      setAttachmentURL(data.uploadMedia);
+      setNotification('File uploaded successfully');
+      setShowUploadButton(false);
+    } catch (error) {
+      setNotification('File upload failed. Please try again.');
+      resetUploadState();
+      setShowUploadButton(true);
+    }
   };
 
   useEffect(() => {

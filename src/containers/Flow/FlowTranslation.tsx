@@ -38,54 +38,57 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
 
   const { t } = useTranslation();
 
-  const [autoTranslateFlow, { loading }] = useMutation(AUTO_TRANSLATE_FLOW, {
-    onCompleted: ({ inlineFlowLocalization }) => {
-      if (inlineFlowLocalization.success) {
-        setDialog(false);
-        setNotification(t('Flow has been translated successfully'));
-        loadFlowEditor();
-      } else if (inlineFlowLocalization.errors) {
-        setDialog(false);
-        setNotification(inlineFlowLocalization.errors[0].message, 'warning');
-      }
-    },
-    onError: (error: any) => {
-      setDialog(false);
-      setErrorMessage(error);
-    },
-  });
+  const [autoTranslateFlow, { loading }] = useMutation(AUTO_TRANSLATE_FLOW);
 
   const [exportFlowTranslations, { loading: exportLoad }] = useLazyQuery(EXPORT_FLOW_LOCALIZATIONS, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlowLocalization }) => {
-      const { exportData } = exportFlowLocalization;
-      exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+  });
+
+  const [importFlow, { loading: importingLoad }] = useMutation(IMPORT_FLOW_LOCALIZATIONS);
+
+  const handleAuto = async () => {
+    try {
+      const { data } = await autoTranslateFlow({ variables: { id: flowId } });
+      const inlineFlowLocalization = data?.inlineFlowLocalization;
+      if (inlineFlowLocalization?.success) {
+        setDialog(false);
+        setNotification(t('Flow has been translated successfully'));
+        loadFlowEditor();
+      } else if (inlineFlowLocalization?.errors) {
+        setDialog(false);
+        setNotification(inlineFlowLocalization.errors[0].message, 'warning');
+      }
+    } catch (error: any) {
       setDialog(false);
-    },
-    onError: (error) => {
+      setErrorMessage(error);
+    }
+  };
+
+  const runExportFlowTranslations = async (addTranslation: boolean) => {
+    try {
+      const { data, error } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
+      if (error) {
+        setDialog(false);
+        setNotification(t('An error occured while exporting flow translations'), 'warning');
+        return;
+      }
+      if (data) {
+        const { exportData } = data.exportFlowLocalization;
+        exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+      }
+      setDialog(false);
+    } catch {
       setDialog(false);
       setNotification(t('An error occured while exporting flow translations'), 'warning');
-    },
-  });
-
-  const [importFlow, { loading: importingLoad }] = useMutation(IMPORT_FLOW_LOCALIZATIONS, {
-    onCompleted: (result: any) => {
-      setImporting(false);
-      setDialog(false);
-      loadFlowEditor();
-    },
-  });
-
-  const handleAuto = () => {
-    autoTranslateFlow({ variables: { id: flowId } });
+    }
   };
 
   const handleExport = async () => {
-    exportFlowTranslations({ variables: { id: flowId, addTranslation: false } });
+    await runExportFlowTranslations(false);
   };
 
   const handleAutoExport = () => {
-    exportFlowTranslations({ variables: { id: flowId, addTranslation: true } });
+    runExportFlowTranslations(true);
   };
 
   const handleOk = () => {
@@ -112,7 +115,16 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     <ImportButton
       title={t('Import translations')}
       onImport={() => setImporting(true)}
-      afterImport={(result: string) => importFlow({ variables: { localization: result, id: flowId } })}
+      afterImport={async (result: string) => {
+        try {
+          await importFlow({ variables: { localization: result, id: flowId } });
+          setImporting(false);
+          setDialog(false);
+          loadFlowEditor();
+        } catch {
+          setImporting(false);
+        }
+      }}
     />
   );
 
