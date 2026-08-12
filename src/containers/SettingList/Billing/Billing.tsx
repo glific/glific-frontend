@@ -62,22 +62,25 @@ export const BillingForm = () => {
     fetchPolicy: 'network-only',
   });
 
-  const [getCouponCode, { data: couponCode, loading: couponLoading, error: couponError }] = useLazyQuery(
-    GET_COUPON_CODE,
-    {
-      onCompleted: ({ getCouponCode: couponCodeResult }) => {
-        if (couponCodeResult.code) {
-          setCouponApplied(true);
-        }
-      },
+  const [getCouponCode, { data: couponCode, loading: couponLoading, error: couponError }] =
+    useLazyQuery(GET_COUPON_CODE);
+
+  useEffect(() => {
+    if (couponCode?.getCouponCode?.code) {
+      setCouponApplied(true);
     }
-  );
+  }, [couponCode]);
+
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
-    onCompleted: (customerPortal: any) => {
-      window.open(customerPortal.customerPortal.url, '_blank');
-    },
   });
+
+  const visitCustomerPortal = async () => {
+    const { data } = await getCustomerPortal();
+    if (data) {
+      window.open(data.customerPortal.url, '_blank');
+    }
+  };
 
   const formFieldItems = [
     {
@@ -112,54 +115,7 @@ export const BillingForm = () => {
   const [updateBilling] = useMutation(UPDATE_BILLING);
   const [createBilling] = useMutation(CREATE_BILLING);
 
-  const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
-    onCompleted: (data) => {
-      const result = JSON.parse(data.createBillingSubscription.subscription);
-      // needs additional security (3d secure)
-      if (result.status === 'pending') {
-        if (stripe) {
-          stripe
-            .confirmCardSetup(result.client_secret, {
-              payment_method: paymentMethodId,
-            })
-            .then((securityResult: any) => {
-              if (securityResult.error?.message) {
-                setNotification(securityResult.error?.message, 'warning');
-                setLoading(false);
-                refetch().then(({ data: refetchedData }) => {
-                  updateBilling({
-                    variables: {
-                      id: refetchedData.getOrganizationBilling?.billing?.id,
-                      input: {
-                        stripeSubscriptionId: null,
-                        stripeSubscriptionStatus: null,
-                      },
-                    },
-                  }).then(() => {
-                    refetch();
-                  });
-                });
-              } else if (securityResult.setupIntent.status === 'succeeded') {
-                setDisable(true);
-                setLoading(false);
-                setNotification('Your billing account is setup successfully');
-              }
-            });
-        }
-      } // successful subscription
-      else if (result.status === 'active') {
-        refetch();
-        setDisable(true);
-        setLoading(false);
-        setNotification('Your billing account is setup successfully');
-      }
-    },
-    onError: (error) => {
-      refetch();
-      setNotification(error.message, 'warning');
-      setLoading(false);
-    },
-  });
+  const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION);
 
   if (billLoading || portalLoading) {
     return <Loading whiteBackground />;
@@ -211,9 +167,47 @@ export const BillingForm = () => {
         variables.couponCode = couponCode.getCouponCode.id;
       }
 
-      await createSubscription({
-        variables,
-      });
+      try {
+        const { data } = await createSubscription({ variables });
+        const result = JSON.parse(data.createBillingSubscription.subscription);
+        // needs additional security (3d secure)
+        if (result.status === 'pending') {
+          if (stripe) {
+            const securityResult: any = await stripe.confirmCardSetup(result.client_secret, {
+              payment_method: paymentMethodId,
+            });
+            if (securityResult.error?.message) {
+              setNotification(securityResult.error?.message, 'warning');
+              setLoading(false);
+              const { data: refetchedData } = await refetch();
+              await updateBilling({
+                variables: {
+                  id: refetchedData.getOrganizationBilling?.billing?.id,
+                  input: {
+                    stripeSubscriptionId: null,
+                    stripeSubscriptionStatus: null,
+                  },
+                },
+              });
+              refetch();
+            } else if (securityResult.setupIntent.status === 'succeeded') {
+              setDisable(true);
+              setLoading(false);
+              setNotification('Your billing account is setup successfully');
+            }
+          }
+        } // successful subscription
+        else if (result.status === 'active') {
+          refetch();
+          setDisable(true);
+          setLoading(false);
+          setNotification('Your billing account is setup successfully');
+        }
+      } catch (subscriptionError: any) {
+        refetch();
+        setNotification(subscriptionError.message, 'warning');
+        setLoading(false);
+      }
     }
   };
 
@@ -304,7 +298,7 @@ export const BillingForm = () => {
         className={styles.Portal}
         data-testid="customerPortalButton"
         onClick={() => {
-          getCustomerPortal();
+          visitCustomerPortal();
         }}
       >
         Visit Stripe portal <CallMadeIcon />

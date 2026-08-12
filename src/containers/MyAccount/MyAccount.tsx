@@ -35,8 +35,6 @@ export const MyAccount = () => {
   // user language selection
   const [userLanguage, setUserLanguage] = useState('');
 
-  const [message, setMessage] = useState<string>('');
-
   const client = useApolloClient();
 
   // get the information on current user
@@ -48,9 +46,12 @@ export const MyAccount = () => {
   const { t, i18n } = useTranslation();
 
   // set the mutation to update the logged in user password
-  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
-    onCompleted: (data) => {
-      if (data.updateCurrentUser.errors) {
+  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER);
+
+  const handleUpdateCurrentUser = async (input: any, successMessage: string) => {
+    try {
+      const { data } = await updateCurrentUser({ variables: { input } });
+      if (data?.updateCurrentUser?.errors) {
         if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
           setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
         } else {
@@ -61,10 +62,12 @@ export const MyAccount = () => {
         }
       } else {
         setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message });
+        setToastMessageInfo({ severity: 'success', message: successMessage });
       }
-    },
-  });
+    } catch (error: any) {
+      setToastMessageInfo({ severity: 'error', message: t('Sorry! An error occurred!') });
+    }
+  };
 
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
@@ -104,10 +107,7 @@ export const MyAccount = () => {
 
   // save the form if data is valid
   const saveHandler = (item: any) => {
-    setMessage(t('Password updated successfully!'));
-    updateCurrentUser({
-      variables: { input: item },
-    });
+    handleUpdateCurrentUser(item, t('Password updated successfully!'));
   };
 
   const handlePasswordVisibility = () => {
@@ -273,11 +273,8 @@ export const MyAccount = () => {
       (lang: any) => lang.locale === event.target.value
     );
 
-    setMessage(t('Language changed successfully!'));
     // update user's language
-    updateCurrentUser({
-      variables: { input: { languageId: languageID[0].id } },
-    });
+    handleUpdateCurrentUser({ languageId: languageID[0].id }, t('Language changed successfully!'));
 
     // writing cache to restore value
     const userDataCopy = JSON.parse(JSON.stringify(userData));

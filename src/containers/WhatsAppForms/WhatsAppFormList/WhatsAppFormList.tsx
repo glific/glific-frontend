@@ -51,13 +51,13 @@ export const WhatsAppFormList = () => {
 
   const navigate = useNavigate();
 
-  const handleFormUpdates = () => {
-    syncWhatsappForm();
-  };
-
   const [syncWhatsappForm, { loading: syncLoading }] = useMutation(SYNC_FORM, {
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
+  });
+
+  const handleFormUpdates = async () => {
+    try {
+      const { data } = await syncWhatsappForm();
       const errors = data?.syncWhatsappForm?.errors;
       if (errors?.length) {
         setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
@@ -67,33 +67,14 @@ export const WhatsAppFormList = () => {
           'success'
         );
       }
-    },
-    onError: () => {
+    } catch {
       setNotification('Sorry, failed to sync whatsapp forms updates.', 'warning');
-    },
-  });
+    }
+  };
 
-  const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM, {
-    onCompleted: () => {
-      setFormId(null);
-      setDialogType(null);
-      setNotification('Form activated successfully');
-    },
-    onError: (errors) => {
-      setErrorMessage(errors);
-    },
-  });
+  const [activateForm, { loading: activateFormLoading }] = useMutation(ACTIVATE_FORM);
 
-  const [deactivateForm, { loading: deactivateLoading }] = useMutation(DEACTIVATE_FORM, {
-    onCompleted: () => {
-      setFormId(null);
-      setDialogType(null);
-      setNotification('Form deactivated successfully');
-    },
-    onError: (errors) => {
-      setErrorMessage(errors);
-    },
-  });
+  const [deactivateForm, { loading: deactivateLoading }] = useMutation(DEACTIVATE_FORM);
 
   const columnNames = [
     { label: 'Name', name: 'name' },
@@ -152,9 +133,16 @@ export const WhatsAppFormList = () => {
       label: 'Activate',
       icon: <AddCircleOutlineIcon className={styles.IconSize} data-testid="activate-icon" />,
       parameter: 'id',
-      dialog: (id: string) => {
+      dialog: async (id: string) => {
         setFormId(id);
-        activateForm({ variables: { activateWhatsappFormId: id } });
+        try {
+          await activateForm({ variables: { activateWhatsappFormId: id } });
+          setFormId(null);
+          setDialogType(null);
+          setNotification('Form activated successfully');
+        } catch (error: any) {
+          setErrorMessage(error);
+        }
       },
     };
     const configureIcon = {
@@ -226,9 +214,16 @@ export const WhatsAppFormList = () => {
 
   let dialog = null;
   if (formId && dialogType) {
-    const handleOk = () => {
+    const handleOk = async () => {
       if (dialogType === 'inactive') {
-        deactivateForm({ variables: { id: formId } });
+        try {
+          await deactivateForm({ variables: { id: formId } });
+          setFormId(null);
+          setDialogType(null);
+          setNotification('Form deactivated successfully');
+        } catch (error: any) {
+          setErrorMessage(error);
+        }
       }
     };
 

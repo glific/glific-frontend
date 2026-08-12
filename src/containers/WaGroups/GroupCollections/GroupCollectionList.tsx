@@ -68,9 +68,11 @@ export const GroupCollectionList = () => {
 
   const [updateCollectionGroups] = useMutation(UPDATE_COLLECTION_WA_GROUP);
 
-  const handleCollectionRemove = () => {
+  const handleCollectionRemove = async () => {
     const idsToRemove = selectedGroups.map((collection: any) => collection.id);
-    updateCollectionGroups({
+    setRemoveGroupsDialogShow(false);
+    setGroupsToRemove([]);
+    await updateCollectionGroups({
       variables: {
         input: {
           groupId: collectionId,
@@ -78,13 +80,9 @@ export const GroupCollectionList = () => {
           deleteWaGroupIds: idsToRemove,
         },
       },
-      onCompleted: () => {
-        setNotification(t('Group has been removed successfully from the collection.'), 'success');
-        setUpdateCollection(!updateCollection);
-      },
     });
-    setRemoveGroupsDialogShow(false);
-    setGroupsToRemove([]);
+    setNotification(t('Group has been removed successfully from the collection.'), 'success');
+    setUpdateCollection(!updateCollection);
   };
 
   const setDialogBox = (selectedGroups: any) => {
