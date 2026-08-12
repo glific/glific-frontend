@@ -26,7 +26,6 @@ vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
   ),
 }));
 
-// shaped exactly like kaapiModels: config arrives as a JSON string
 export const rawModels = [
   {
     modelName: 'gpt-4.1',

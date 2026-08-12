@@ -43,8 +43,6 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
     const next = getModel(models, modelName);
     if (!next) return;
 
-    // each model declares its own settings and defaults, so carrying the old values over
-    // would leave the form holding numbers the new model does not accept
     onConfigChange(configForModel(next, config));
 
     if (temperatureSpec && !next.config.temperature) {
