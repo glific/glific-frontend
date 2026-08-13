@@ -7,6 +7,7 @@ import { getAllOrganizations } from 'mocks/Organization';
 
 import UploadContactsDialog from './UploadContactsDialog';
 import { getCollectionsList } from 'mocks/Collection';
+import { importContacts, importContactsNetworkError } from 'mocks/Contact';
 
 const mocks = [...getAllOrganizations, getCollectionsList(''), getCollectionsList('Optin group'), getCollectionsList()];
 
@@ -39,5 +40,62 @@ test('Upload contact dialog renders correctly and search works for dropdown', as
 
   await waitFor(() => {
     expect(screen.getByText('Optin group')).toBeInTheDocument();
+  });
+});
+
+const fillAndSubmitForm = async () => {
+  await waitFor(() => {
+    expect(screen.getByText('Upload Contacts')).toBeInTheDocument();
+  });
+
+  const combobox = screen.getByRole('combobox');
+  fireEvent.keyDown(combobox, { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('Optin group'));
+
+  fireEvent.click(screen.getByRole('checkbox'));
+
+  const csvContent = `name,phone
+  John Doe,919876543210`;
+  const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
+  const fileInput = screen.getByTestId('uploadcontacts');
+  fireEvent.change(fileInput, { target: { files: [file] } });
+
+  await waitFor(() => {
+    expect(screen.getByText('test.csv')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+};
+
+test('uploads contacts successfully when the form is submitted', async () => {
+  const setShowStatus = vi.fn();
+  render(
+    <MockedProvider mocks={[...mocks, importContacts]} addTypename={false}>
+      <Router>
+        <UploadContactsDialog {...props} setShowStatus={setShowStatus} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await fillAndSubmitForm();
+
+  await waitFor(() => {
+    expect(setShowStatus).toHaveBeenCalledWith(true);
+  });
+});
+
+test('closes the dialog and shows a warning when uploading contacts fails unexpectedly', async () => {
+  render(
+    <MockedProvider mocks={[...mocks, importContactsNetworkError]} addTypename={false}>
+      <Router>
+        <UploadContactsDialog {...props} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await fillAndSubmitForm();
+
+  await waitFor(() => {
+    expect(setDialogMock).toHaveBeenCalledWith(false);
   });
 });

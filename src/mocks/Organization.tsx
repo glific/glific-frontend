@@ -850,6 +850,26 @@ export const setOrganizationReadyToDelete = {
   },
 };
 
+export const updateOrganizationStatusToSuspended = {
+  request: {
+    query: UPDATE_ORGANIZATION_STATUS,
+    variables: { updateOrganizationId: '1', status: 'SUSPENDED' },
+  },
+  result: {
+    data: {
+      updateOrganizationStatus: {
+        organization: {
+          id: '1',
+          name: 'Glific',
+          status: 'SUSPENDED',
+          insertedAt: '2021-04-28T05:06:30Z',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
 export const deleteOrganization = {
   request: {
     query: DELETE_ORGANIZATION,
