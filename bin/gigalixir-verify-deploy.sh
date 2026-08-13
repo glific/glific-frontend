@@ -14,9 +14,9 @@
 # Read-only: it never pushes, restarts, scales, or rolls anything back.
 #
 # Usage
-#   bin/gigalixir-verify-deploy.sh --env staging
-#   bin/gigalixir-verify-deploy.sh --env staging --probe        # one poll, print + exit
-#   bin/gigalixir-verify-deploy.sh --app glific-staging --sha abc1234
+#   bin/gigalixir-verify-deploy.sh --env frontend-staging
+#   bin/gigalixir-verify-deploy.sh --env frontend-staging --probe        # one poll, print + exit
+#   bin/gigalixir-verify-deploy.sh --app glific-frontend-staging --sha abc1234
 #   bin/gigalixir-verify-deploy.sh --ci --app "$APP" --sha "$GITHUB_SHA"
 #
 # Exit codes
@@ -34,7 +34,6 @@ readonly E_ROLLBACK=4 E_UNHEALTHY=5 E_SUPERSEDED=6
 #   env|app name|git remote
 # --------------------------------------------------------------------------------------
 readonly TARGETS="
-staging|glific-staging|staging
 frontend-staging|glific-frontend-staging|gigalixir
 production|tides|production
 "
