@@ -119,7 +119,7 @@ export const templateStatusInfo: HelpDataProps = {
   heading: (
     <div>
       <p>
-        <b>Submitted:</b> The template is under review and can take up to 24 hours. This status indicates that the
+        <b>Pending:</b> The template is under review and can take up to 24 hours. This status indicates that the
         template has not yet been approved or rejected.
       </p>
       <p>
