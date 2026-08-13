@@ -19,7 +19,8 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT, getFlowChannels } from 'common/constants';
+import { ChannelBadges } from 'components/blocks/ChannelBadges';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -56,16 +57,10 @@ const getLastPublished = (date: string, fallback: string = '') =>
   );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-// Channel pill: Web flows (flow_type WEB_MESSAGE) render blue, WhatsApp flows (default) render
-// glific green. Keeps the flow-type discriminator visible at a glance in the list.
-const getChannel = (flowType: string) => {
-  const isWeb = flowType === 'WEB_MESSAGE';
-  return (
-    <div className={`${styles.ChannelPill} ${isWeb ? styles.ChannelWeb : styles.ChannelWhatsapp}`}>
-      {isWeb ? 'Web' : 'WhatsApp'}
-    </div>
-  );
-};
+// A flow reaches every channel its nodes allow, so this is a set, not a discriminator: an
+// omnichannel flow shows both badges. Same derivation and same component as the flow form, so
+// the list and the form can never disagree.
+const getChannel = (flowType: string) => <ChannelBadges channels={getFlowChannels(flowType)} compact />;
 
 const columnStyles = [
   styles.Pinned,
