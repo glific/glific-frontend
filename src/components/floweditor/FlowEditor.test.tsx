@@ -12,13 +12,18 @@ import {
   getOrganizationServicesQuery,
   publishFlow,
   publishFlowWithDuplicateErrors,
+  publishFlowSuccess,
+  publishFlowNetworkError,
   getFreeFlow,
   getFreeFlowForced,
+  getFreeFlowAvailable,
   resetFlowCount,
+  resetFlowCountNetworkError,
   getFlowTranslations,
   getTemplateFlow,
   getFlowWithManyKeywords,
   exportFlow,
+  exportFlowNetworkError,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -521,4 +526,124 @@ test('should not display read-only banner when flow is available for editing', a
   const translateButton = screen.getByTestId('translateButton');
   expect(publishButton).not.toBeDisabled();
   expect(translateButton).not.toBeDisabled();
+});
+
+test('loads flow editor as editable when the flow is available on first fetch', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
+    setTimeout(callback, 0);
+    return [];
+  });
+  const setConfigSpy = vi.spyOn(FlowEditorHelper, 'setConfig');
+  setConfigSpy.mockClear();
+  const availableFlowMocks = [
+    ...mocks.filter((mock: any) => mock !== getFreeFlow),
+    getFreeFlowAvailable,
+    getFreeFlowAvailable,
+    getActiveFlow,
+  ];
+
+  render(wrapperFunction(availableFlowMocks));
+
+  await waitFor(() => {
+    expect(setConfigSpy).toHaveBeenCalled();
+  });
+
+  const lastCallArgs = setConfigSpy.mock.calls[setConfigSpy.mock.calls.length - 1];
+  expect(lastCallArgs[2]).toBe(false);
+});
+
+test('shows an error when exporting the flow fails', async () => {
+  const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const exportErrorMocks = [...mocks.filter((mock: any) => mock !== exportFlow), exportFlowNetworkError, getActiveFlow];
+
+  const { getByTestId, getByText } = render(wrapperFunction(exportErrorMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('moreButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('moreButton'));
+  fireEvent.click(getByText('Export flow'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
+  });
+});
+
+test('shows a warning when resetting the flow count fails', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const resetErrorMocks = [
+    ...noKeywordMocks.filter((mock: any) => mock !== resetFlowCount),
+    resetFlowCountNetworkError,
+  ];
+
+  const { getByTestId, getByText } = render(wrapperFunction(resetErrorMocks));
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(getByTestId('moreButton'));
+  fireEvent.click(getByText('Reset flow count'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('An error occured while resetting the flow count', 'warning');
+  });
+});
+
+test('publishes the flow successfully', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const successMocks = [...mocks.filter((mock: any) => mock !== publishFlow), publishFlowSuccess, getActiveFlow];
+
+  const { getByTestId } = render(wrapperFunction(successMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('The flow has been published');
+  });
+});
+
+test('shows a warning when publishing the flow fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const errorMocks = [...mocks.filter((mock: any) => mock !== publishFlow), publishFlowNetworkError, getActiveFlow];
+
+  const { getByTestId } = render(wrapperFunction(errorMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occurred', 'warning');
+  });
 });

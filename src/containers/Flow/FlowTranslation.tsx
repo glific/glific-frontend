@@ -49,12 +49,12 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
   const handleAuto = async () => {
     try {
       const { data } = await autoTranslateFlow({ variables: { id: flowId } });
-      const inlineFlowLocalization = data?.inlineFlowLocalization;
-      if (inlineFlowLocalization?.success) {
+      const { inlineFlowLocalization } = data;
+      if (inlineFlowLocalization.success) {
         setDialog(false);
         setNotification(t('Flow has been translated successfully'));
         loadFlowEditor();
-      } else if (inlineFlowLocalization?.errors) {
+      } else if (inlineFlowLocalization.errors) {
         setDialog(false);
         setNotification(inlineFlowLocalization.errors[0].message, 'warning');
       }
@@ -65,22 +65,17 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
   };
 
   const runExportFlowTranslations = async (addTranslation: boolean) => {
-    try {
-      const { data, error } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
-      if (error) {
-        setDialog(false);
-        setNotification(t('An error occured while exporting flow translations'), 'warning');
-        return;
-      }
-      if (data) {
-        const { exportData } = data.exportFlowLocalization;
-        exportCsvFile(exportData, `Flow_Translations_${flowId}`);
-      }
-      setDialog(false);
-    } catch {
+    const { data, error } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
+    if (error) {
       setDialog(false);
       setNotification(t('An error occured while exporting flow translations'), 'warning');
+      return;
     }
+    if (data) {
+      const { exportData } = data.exportFlowLocalization;
+      exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+    }
+    setDialog(false);
   };
 
   const handleExport = async () => {

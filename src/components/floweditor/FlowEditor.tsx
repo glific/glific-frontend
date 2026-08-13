@@ -192,7 +192,7 @@ export const FlowEditor = () => {
   const handleResetFlowCount = async () => {
     try {
       const { data } = await resetFlowCountMethod({ variables: { flowId } });
-      if (data?.resetFlowCount?.success) {
+      if (data.resetFlowCount.success) {
         setNotification('Flow counts have been reset', 'success');
         setShowResetFlowModal(false);
         window.location.reload();
@@ -290,10 +290,10 @@ export const FlowEditor = () => {
   const handlePublishFlow = async () => {
     try {
       const { data } = await publishFlow({ variables: { uuid: params.uuid } });
-      if (data?.publishFlow?.errors && data.publishFlow.errors.length > 0) {
+      if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
         setFlowValidation(data.publishFlow.errors);
         setIsError(true);
-      } else if (data?.publishFlow?.success) {
+      } else if (data.publishFlow.success) {
         setPublished(true);
       }
       setPublishLoading(false);

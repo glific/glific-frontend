@@ -408,6 +408,14 @@ export const exportCollectionsQueryWithErrors = {
   },
 };
 
+export const exportCollectionsQueryNetworkError = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  error: new Error('Failed to export collection'),
+};
+
 export const addContactToCollection = {
   request: {
     query: UPDATE_COLLECTION_CONTACTS,

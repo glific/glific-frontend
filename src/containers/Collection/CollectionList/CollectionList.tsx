@@ -94,24 +94,19 @@ export const CollectionList = () => {
 
   const exportCollection = async (id: string) => {
     setExportData(true);
-    try {
-      const { data, error } = await exportCollectionData({
-        variables: {
-          exportCollectionId: id,
-        },
-      });
-      if (error) {
-        setNotification('An error occured while exporting the collection', 'warning');
-      } else if (data?.exportCollection.errors) {
-        setNotification(data.exportCollection.errors[0].message, 'warning');
-      } else if (data?.exportCollection.status) {
-        exportCsvFile(data.exportCollection.status, 'collection');
-      }
-    } catch {
+    const { data, error } = await exportCollectionData({
+      variables: {
+        exportCollectionId: id,
+      },
+    });
+    if (error) {
       setNotification('An error occured while exporting the collection', 'warning');
-    } finally {
-      setExportData(false);
+    } else if (data?.exportCollection.errors) {
+      setNotification(data.exportCollection.errors[0].message, 'warning');
+    } else if (data?.exportCollection.status) {
+      exportCsvFile(data.exportCollection.status, 'collection');
     }
+    setExportData(false);
   };
 
   if (addContactsDialogShow) {

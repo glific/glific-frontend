@@ -465,7 +465,7 @@ export const KnowledgeBaseOptions = ({
         },
       });
 
-      const knowledgeBaseData = data?.createKnowledgeBase;
+      const { createKnowledgeBase: knowledgeBaseData } = data;
       if (knowledgeBaseData) {
         const updatedFiles = files
           .filter((file) => file.status === 'attached')

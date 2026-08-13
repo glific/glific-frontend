@@ -659,6 +659,67 @@ export const getFreeFlowForced = {
   },
 };
 
+export const getFreeFlowAvailable = {
+  request: {
+    query: GET_FREE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      flowGet: {
+        flow: {
+          id: '1',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+        errors: [],
+      },
+    },
+  },
+};
+
+export const exportFlowNetworkError = {
+  request: {
+    query: EXPORT_FLOW,
+    variables: { id: '1' },
+  },
+  error: new Error('Failed to export flow'),
+};
+
+export const resetFlowCountNetworkError = {
+  request: {
+    query: RESET_FLOW_COUNT,
+    variables: { flowId: '1' },
+  },
+  error: new Error('Failed to reset flow count'),
+};
+
+export const publishFlowSuccess = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: null,
+        success: true,
+      },
+    },
+  },
+};
+
+export const publishFlowNetworkError = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  error: new Error('Failed to publish flow'),
+};
+
 export const resetFlowCount = {
   request: {
     query: RESET_FLOW_COUNT,
