@@ -10,3 +10,14 @@
 .Checkbox {
   margin-top: 8px;
 }
+
+.Channels {
+  margin: 4px 0 16px;
+}
+
+.ChannelsHelper {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: #999999;
+}

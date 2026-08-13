@@ -7,7 +7,6 @@ import { useQuery, useMutation } from '@apollo/client';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION } from 'graphql/queries/Organization';
@@ -20,8 +19,19 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
 import { flowInfo } from 'common/HelpData';
+import { getFlowChannels } from 'common/constants';
+import { ChannelBadges } from 'components/blocks/ChannelBadges';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
+
+// Flows are omnichannel by default and the channel is never an authoring choice: the backend
+// derives flow_type from the flow's nodes on save, so the form only reports it.
+const ChannelsDisplay = ({ channels, helperText }: { channels: string[]; helperText?: string }) => (
+  <div className={styles.Channels} data-testid="flowChannels">
+    <ChannelBadges channels={channels} />
+    {helperText && <p className={styles.ChannelsHelper}>{helperText}</p>}
+  </div>
+);
 
 const queries = {
   getItemQuery: GET_FLOW,
@@ -51,15 +61,6 @@ export const Flow = () => {
   const [flowType, setFlowType] = useState('MESSAGE');
 
   const { t } = useTranslation();
-
-  // Editing an existing flow locks the channel — switching a flow's channel after it has nodes
-  // could strand channel-specific actions (e.g. an HSM node on a web flow).
-  const isEditing = Boolean(params.id);
-
-  const channelOptions = [
-    { id: 'MESSAGE', label: t('WhatsApp') },
-    { id: 'WEB_MESSAGE', label: t('Web') },
-  ];
 
   let isTemplate = false;
   if (locationState === 'template') {
@@ -213,13 +214,12 @@ export const Flow = () => {
       disabled: isTemplate,
     },
     {
-      component: Dropdown,
+      component: ChannelsDisplay,
       name: 'flowType',
-      placeholder: t('Channel'),
-      options: channelOptions,
-      // Web flows restrict which nodes can be built (no WhatsApp-group / HSM template).
-      helperText: t('Web flows cannot use HSM templates or WhatsApp group actions.'),
-      disabled: isTemplate || isEditing,
+      label: t('Channels'),
+      channels: getFlowChannels(flowType),
+      helperText: t("Channels are derived from the flow's content and cannot be edited."),
+      skipPayload: true,
     },
     {
       component: Input,

@@ -1104,44 +1104,53 @@ export const InteractiveMessage = () => {
     return <Loading />;
   }
 
+  const formLayout = (
+    <FormLayout
+      {...queries}
+      states={states}
+      setStates={setStates}
+      setPayload={setPayload}
+      title={header}
+      type={stateType}
+      validationSchema={validationScheme}
+      listItem="interactiveTemplate"
+      listItemName="Interactive message"
+      dialogMessage={dialogMessage}
+      formFields={formFields}
+      redirectionLink={backButton}
+      cancelLink={backButton}
+      icon={interactiveMessageIcon}
+      languageSupport={false}
+      getQueryFetchPolicy="cache-and-network"
+      afterSave={afterSave}
+      saveOnPageChange={false}
+      buttonState={{ text: t('Validating URL'), status: validatingURL, show: true }}
+      helpData={interactiveMessageInfo}
+      backLinkButton={`/${backButton}`}
+      customStyles={styles.WideForm}
+    />
+  );
+
   return (
     <>
-      <FormLayout
-        {...queries}
-        states={states}
-        setStates={setStates}
-        setPayload={setPayload}
-        title={header}
-        type={stateType}
-        validationSchema={validationScheme}
-        listItem="interactiveTemplate"
-        listItemName="Interactive message"
-        dialogMessage={dialogMessage}
-        formFields={formFields}
-        redirectionLink={backButton}
-        cancelLink={backButton}
-        icon={interactiveMessageIcon}
-        languageSupport={false}
-        getQueryFetchPolicy="cache-and-network"
-        afterSave={afterSave}
-        saveOnPageChange={false}
-        buttonState={{ text: t('Validating URL'), status: validatingURL, show: true }}
-        helpData={interactiveMessageInfo}
-        backLinkButton={`/${backButton}`}
-        customStyles={styles.WideForm}
-      />
       {isBlocksType ? (
-        <div className={styles.PreviewPanel}>{blocksPreviewPanel}</div>
-      ) : (
-        <div className={styles.Simulator}>
-          <Simulator
-            isPreviewMessage
-            message={{}}
-            showHeader={sendWithTitle}
-            interactiveMessage={previewData}
-            simulatorIcon={false}
-          />
+        <div className={styles.BlocksLayout}>
+          {formLayout}
+          <div className={styles.PreviewPanel}>{blocksPreviewPanel}</div>
         </div>
+      ) : (
+        <>
+          {formLayout}
+          <div className={styles.Simulator}>
+            <Simulator
+              isPreviewMessage
+              message={{}}
+              showHeader={sendWithTitle}
+              interactiveMessage={previewData}
+              simulatorIcon={false}
+            />
+          </div>
+        </>
       )}
       {translateMessage && messageDialog}
       {showWarning && warningDialog}

@@ -193,6 +193,14 @@ export const CHANNEL_WEB = 'Web';
 
 export const getSupportedChannels = (templateType: string): string[] =>
   templateType === BLOCKS ? [CHANNEL_WEB] : [CHANNEL_WHATSAPP, CHANNEL_WEB];
+
+// flow_type_enum. Derived from the flow's nodes on save, never author-chosen: a flow is
+// omnichannel unless its content pins it to the web channel.
+export const FLOW_TYPE_WEB = 'WEB_MESSAGE';
+
+export const getFlowChannels = (flowType: string): string[] =>
+  flowType === FLOW_TYPE_WEB ? [CHANNEL_WEB] : [CHANNEL_WHATSAPP, CHANNEL_WEB];
+
 export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
 
