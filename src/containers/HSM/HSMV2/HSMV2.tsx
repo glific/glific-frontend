@@ -33,6 +33,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
 import { TemplateLibraryModal } from '../TemplateLibraryModal/TemplateLibraryModal';
@@ -99,13 +100,13 @@ const AutoTranslateButton = ({
 }) => (
   <Button
     variant="outlined"
-    className={styles.AutoTranslateButton}
+    className={`${styles.OutlinePillButton} ${styles.SectionTitleAction}`}
     onClick={onTranslate}
     disabled={disabled}
     loading={loading}
     data-testid="auto-translate-button"
   >
-    <LanguageIcon className={styles.AutoTranslateIcon} />
+    <LanguageIcon className={styles.OutlinePillButtonIcon} />
     {t('Auto-translate')}
   </Button>
 );
@@ -113,8 +114,13 @@ const AutoTranslateButton = ({
 // Same shortcut the HSM list page offers, surfaced here too so a user already
 // on the create page doesn't have to leave it to browse the catalog.
 const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
-  <Button variant="outlined" className={styles.AutoTranslateButton} onClick={onClick} data-testid="templateLibrary">
-    <GridViewIcon className={styles.AutoTranslateIcon} />
+  <Button
+    variant="outlined"
+    className={`${styles.OutlinePillButton} ${styles.SectionTitleAction}`}
+    onClick={onClick}
+    data-testid="templateLibrary"
+  >
+    <GridViewIcon className={styles.OutlinePillButtonIcon} />
     {t('Template library')}
   </Button>
 );
@@ -153,6 +159,7 @@ export const HSMV2 = () => {
   const isCopyState = location.state?.mode === 'copy';
   const copySourceId = isCopyState ? location.state?.sourceId : undefined;
   const languageAnchorId = params.id || location.state?.languageAnchorId;
+  const isTemplateLibraryEnabled = getOrganizationServices('templateLibraryEnabled');
 
   const [language, setLanguageId] = useState<any>(null);
   const [body, setBody] = useState<any>('');
@@ -596,7 +603,12 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionTemplateDetails',
       title: t('Template Details'),
-      action: mode === 'create' ? <TemplateLibraryButton onClick={() => setShowLibrary(true)} /> : undefined,
+    },
+    {
+      component: TemplateLibraryButton,
+      name: '__templateLibraryButton',
+      onClick: () => setShowLibrary(true),
+      skip: !(mode === 'create' && isTemplateLibraryEnabled),
     },
     {
       component: AutoComplete,
@@ -638,10 +650,14 @@ export const HSMV2 = () => {
       component: SectionTitle,
       name: '__sectionMessageContent',
       title: t('Message Content'),
-      action:
-        mode === 'addLanguage' && anchorReference ? (
-          <AutoTranslateButton disabled={false} loading={translating} onTranslate={handleAutoTranslate} />
-        ) : undefined,
+    },
+    {
+      component: AutoTranslateButton,
+      name: '__autoTranslateButton',
+      disabled: false,
+      loading: translating,
+      onTranslate: handleAutoTranslate,
+      skip: !(mode === 'addLanguage' && anchorReference),
     },
     ...(mode === 'addLanguage' && anchorReference
       ? [
@@ -677,9 +693,7 @@ export const HSMV2 = () => {
       name: 'footer',
       disabled: isReadOnly,
       referenceValue: mode === 'addLanguage' ? anchorReference?.footer : undefined,
-      inputProp: {
-        onChange: (event: any) => setFooter(event.target.value),
-      },
+      onChange: (value: any) => setFooter(value),
     },
     {
       component: SectionTitle,
@@ -844,7 +858,9 @@ export const HSMV2 = () => {
 
   return (
     <div className={styles.Page}>
-      {mode === 'create' && <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />}
+      {mode === 'create' && isTemplateLibraryEnabled && (
+        <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />
+      )}
       {Boolean(languageAnchorId) && (
         <Heading
           backLink={`/${backButton}`}
