@@ -27,7 +27,7 @@ readonly VERIFIER="${SCRIPT_DIR}/gigalixir-verify-deploy.sh"
 readonly TARGETS="
 staging|glific-staging|staging
 frontend-staging|glific-frontend-staging|gigalixir
-production|glific|production
+production|tides|production
 "
 
 ENV_NAME="" APP="" REMOTE="" NEW_VERSION="" BUMP="" RELEASE_TITLE=""

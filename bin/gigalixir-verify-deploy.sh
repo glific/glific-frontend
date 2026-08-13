@@ -36,7 +36,7 @@ readonly E_ROLLBACK=4 E_UNHEALTHY=5 E_SUPERSEDED=6
 readonly TARGETS="
 staging|glific-staging|staging
 frontend-staging|glific-frontend-staging|gigalixir
-production|glific|production
+production|tides|production
 "
 
 # --------------------------------------------------------------------------------------
