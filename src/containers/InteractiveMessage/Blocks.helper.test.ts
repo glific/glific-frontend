@@ -13,6 +13,7 @@ import {
   isTypedNode,
   RESERVED_IDS,
   unwrap,
+  unwrapNode,
   validateBlocksPayload,
 } from './Blocks.helper';
 
@@ -33,19 +34,46 @@ const payloadFor = (props: any) => JSON.stringify({ props });
 
 describe('unwrap (contract §2.2)', () => {
   test('collapses every typed node to exactly its value, recursively', () => {
-    expect(unwrap(T('hi'))).toBe('hi');
-    expect(unwrap({ a: T('hi'), b: I('https://x/a.png') })).toEqual({ a: 'hi', b: 'https://x/a.png' });
-    expect(unwrap(L([{ id: 'c1', label: T('A') }]))).toEqual([{ id: 'c1', label: 'A' }]);
+    expect(unwrapNode(T('hi'))).toBe('hi');
+    expect(unwrapNode({ a: T('hi'), b: I('https://x/a.png') })).toEqual({ a: 'hi', b: 'https://x/a.png' });
+    expect(unwrapNode(L([{ id: 'c1', label: T('A') }]))).toEqual([{ id: 'c1', label: 'A' }]);
   });
 
   test('is uniform — a node with translate collapses the same way', () => {
-    expect(unwrap({ kind: 'text', value: 'brand', translate: false })).toBe('brand');
+    expect(unwrapNode({ kind: 'text', value: 'brand', translate: false })).toBe('brand');
   });
 
   test('leaves plain maps, arrays and scalars alone', () => {
+    expect(unwrapNode({ type: 'blocks', version: 1 })).toEqual({ type: 'blocks', version: 1 });
+    expect(unwrapNode([1, 'a', null])).toEqual([1, 'a', null]);
+    expect(unwrapNode(null)).toBe(null);
+  });
+
+  // §2.2 — unwrapping is scoped to props, exactly as the backend's
+  // `unwrap(%{"props" => props} = envelope)` is
+  test('never walks context, so a kind/value-shaped map an org parked there survives verbatim', () => {
+    const context = { ticket: { kind: 'crm-ref', value: 'AB-12' }, nested: { deep: T('not a body') } };
+    const envelope = { type: 'blocks', version: 1, component: 'tap/a', props: { body: T('hi') }, context };
+
+    expect(unwrap(envelope)).toEqual({
+      type: 'blocks',
+      version: 1,
+      component: 'tap/a',
+      props: { body: 'hi' },
+      context,
+    });
+  });
+
+  test('leaves an envelope without props alone', () => {
     expect(unwrap({ type: 'blocks', version: 1 })).toEqual({ type: 'blocks', version: 1 });
-    expect(unwrap([1, 'a', null])).toEqual([1, 'a', null]);
-    expect(unwrap(null)).toBe(null);
+  });
+
+  test('the unwrapped size counts the untouched context, so it equals what the backend measures', () => {
+    const context = { ticket: { kind: 'crm-ref', value: 'AB-12' } };
+    const envelope = buildBlocksEnvelope(JSON.stringify({ component: 'tap/a', props: { body: T('hi') }, context }));
+
+    expect(unwrap(envelope).context).toEqual(context);
+    expect(getUnwrappedSize(envelope)).toBe(getPayloadSize(JSON.stringify({ ...envelope, props: { body: 'hi' } })));
   });
 
   test('does not collapse the envelope itself — the node key is kind, not type', () => {
@@ -65,12 +93,12 @@ describe('unwrap (contract §2.2)', () => {
 
   test('a map carrying extra keys beside kind/value is a plain value', () => {
     expect(isTypedNode({ kind: 'text', value: 'x', extra: 1 })).toBe(false);
-    expect(unwrap({ kind: 'text', value: 'x', extra: 1 })).toEqual({ kind: 'text', value: 'x', extra: 1 });
+    expect(unwrapNode({ kind: 'text', value: 'x', extra: 1 })).toEqual({ kind: 'text', value: 'x', extra: 1 });
   });
 });
 
 describe('deriveBody (contract §9)', () => {
-  test('joins text nodes in document order with an em dash', () => {
+  test('joins text nodes in sorted key order with an em dash', () => {
     const envelope = buildBlocksEnvelope(payloadFor(imagePanelProps), 'glific/image-panel');
     expect(deriveBody(envelope)).toBe('Pick a course — Spoken English');
   });
@@ -99,6 +127,35 @@ describe('deriveBody (contract §9)', () => {
 
   test('returns an empty string when there are no text nodes', () => {
     expect(deriveBody({ props: {} })).toBe('');
+  });
+
+  test('returns an empty string when props is missing or is not a map', () => {
+    expect(deriveBody({})).toBe('');
+    expect(deriveBody({ props: [T('hi')] })).toBe('');
+    expect(deriveBody(null)).toBe('');
+  });
+
+  // §9 — sorted, not authored: jsonb normalises key order on write and Elixir re-sorts bytewise
+  // on decode, so an in-memory preset must derive what the inbox will show after the round trip
+  test('visits map keys sorted bytewise ascending, whatever order they were written in', () => {
+    expect(deriveBody({ props: { zebra: T('Z'), apple: T('A'), Mango: T('M') } })).toBe('M — A — Z');
+  });
+
+  test('list elements keep their array order', () => {
+    expect(deriveBody({ props: { rows: L([{ a: T('first') }, { a: T('second') }]) } })).toBe('first — second');
+  });
+
+  test('derives the bundled carousel preset the way the backend will', () => {
+    const envelope = buildBlocksEnvelope(getPresetPayload('glific/carousel'), 'glific/carousel');
+    expect(deriveBody(envelope)).toBe(
+      'Browse our courses — Six weeks, evenings — Course A — Four weeks, weekends — Course B'
+    );
+  });
+
+  // §2.2 — context is never walked, so a text node parked there is not body copy
+  test('ignores text nodes outside props', () => {
+    const envelope = { component: 'tap/a', props: { body: T('In props') }, context: { note: T('In context') } };
+    expect(deriveBody(envelope)).toBe('In props');
   });
 });
 
@@ -210,7 +267,7 @@ describe('validateBlocksPayload — envelope rules (contract §7)', () => {
   test('a typed wrapper does not consume depth budget', () => {
     // three typed nodes nested through lists unwrap to three plain containers
     const props = { a: L([{ id: 'x', b: L([{ id: 'y', c: T('deep') }]) }]) };
-    expect(getJsonDepth(unwrap(props))).toBeLessThan(getJsonDepth(props));
+    expect(getJsonDepth(unwrapNode(props))).toBeLessThan(getJsonDepth(props));
   });
 });
 
@@ -301,17 +358,55 @@ describe('validateBlocksPayload — reserved ids (contract §5.1)', () => {
     expect(errors.filter((error) => /is a reserved id/.test(error.message))).toHaveLength(1);
   });
 
-  test('uniqueness spans the whole block, not one list at a time', () => {
+  // the backend's collect_ids/1 walks the whole props tree for any map carrying an id, whatever
+  // the component and whatever the nesting
+  test('rejects a reserved id anywhere in a Custom Block props tree', () => {
     const { errors } = validateBlocksPayload(
-      JSON.stringify({
-        component: 'tap/a',
-        props: { rows: L([{ id: 'c1' }]), extras: L([{ id: 'c1' }]) },
-      })
+      JSON.stringify({ component: 'tap/a', props: { detail: { id: 'input' } } })
     );
-    expect(errors[0].message).toMatch(/must be unique within the block/);
+    expect(errors).toEqual([
+      {
+        path: 'props.detail.id',
+        message: `"input" is a reserved id — flow results use it. Reserved: ${RESERVED_IDS.join(', ')}`,
+      },
+    ]);
   });
 
-  test('rejects duplicate ids within a block', () => {
+  test('finds a reserved id nested inside a list node of a Custom Block', () => {
+    const { errors } = validateBlocksPayload(
+      JSON.stringify({ component: 'tap/a', props: { rows: L([{ id: 'r1', child: { id: 'summary' } }]) } })
+    );
+    expect(errors).toEqual([
+      {
+        path: 'props.rows[0].child.id',
+        message: `"summary" is a reserved id — flow results use it. Reserved: ${RESERVED_IDS.join(', ')}`,
+      },
+    ]);
+  });
+
+  // collect_ids/1 matches a BINARY id only — a non-string id falls through its clause, so
+  // flagging one here would trade one divergence for another
+  test('ignores a non-string id in an opaque part of the tree', () => {
+    expect(validateBlocksPayload(JSON.stringify({ component: 'tap/a', props: { detail: { id: 7 } } })).valid).toBe(
+      true
+    );
+  });
+});
+
+describe('validateBlocksPayload — id uniqueness (contract §6)', () => {
+  // uniqueness is per list and glific-only, which is where the backend runs it; the reserved-id
+  // rule above is the wider of the two, and the difference is deliberate
+  test('accepts the same id in two independent lists of a Custom Block', () => {
+    const { valid } = validateBlocksPayload(
+      JSON.stringify({
+        component: 'tap/a',
+        props: { rows: L([{ id: 'a' }]), extras: L([{ id: 'a' }]) },
+      })
+    );
+    expect(valid).toBe(true);
+  });
+
+  test('rejects duplicate ids within one glific list', () => {
     const { errors } = validateBlocksPayload(
       payloadFor({
         id: 'course',
@@ -324,8 +419,43 @@ describe('validateBlocksPayload — reserved ids (contract §5.1)', () => {
     );
     expect(errors[0]).toEqual({
       path: 'props.options[1].id',
-      message: '"props.options[1].id" must be unique within the block',
+      message: '"props.options[1].id" must be unique within "props.options"',
     });
+  });
+
+  test('a glific block may reuse its props.id as an item id', () => {
+    const { errors } = validateBlocksPayload(
+      payloadFor({
+        id: 'name',
+        fields: L([{ id: 'name', label: T('Your name') }]),
+        submit_label: T('Go'),
+      }),
+      'glific/form'
+    );
+    expect(errors).toEqual([]);
+  });
+});
+
+// §2.1 — the console is deliberately stricter than the backend's `~r{^https?://}` here, and the
+// backend is being tightened to this same rule; both directions are pinned so the pair stays locked
+describe('validateBlocksPayload — absolute URL rule (contract §2.1)', () => {
+  const urlPayload = (value: string) => JSON.stringify({ component: 'tap/a', props: { a: { kind: 'image', value } } });
+
+  test('the scheme is case-insensitive', () => {
+    expect(validateBlocksPayload(urlPayload('HTTP://example.com/a.png')).valid).toBe(true);
+    expect(validateBlocksPayload(urlPayload('HttpS://example.com/a.png')).valid).toBe(true);
+  });
+
+  test('something must follow the scheme', () => {
+    expect(validateBlocksPayload(urlPayload('http://')).errors[0].message).toMatch(/absolute http\(s\) URL/);
+    expect(validateBlocksPayload(urlPayload('https:// example.com')).errors[0].message).toMatch(
+      /absolute http\(s\) URL/
+    );
+  });
+
+  test('rejects a non-http scheme and a bare path', () => {
+    expect(validateBlocksPayload(urlPayload('ftp://example.com/a.png')).valid).toBe(false);
+    expect(validateBlocksPayload(urlPayload('/a.png')).valid).toBe(false);
   });
 });
 

@@ -40,6 +40,9 @@ export const TYPED_NODE_KINDS = ['text', 'alt', 'image', 'url', 'number', 'boole
 export const MAX_SUMMARY_LENGTH = 500;
 
 const MAX_ITEMS = 10;
+// case-insensitive scheme, and something must follow it: the backend's `~r{^https?://}` is being
+// tightened to this same rule, so `HTTP://host/a.png` stays authorable and a bare `http://` stays
+// rejected in both repos
 const ABSOLUTE_URL_REGEX = /^https?:\/\/\S+$/i;
 
 export interface BlocksError {
@@ -74,16 +77,28 @@ export const isTypedNode = (value: any): boolean => {
  * §2.2 — every typed node collapses to exactly its `value`, recursively, with no exceptions.
  * The unwrapped output is byte-identical to what the widget renders.
  */
-export const unwrap = (value: any): any => {
-  if (Array.isArray(value)) return value.map(unwrap);
+export const unwrapNode = (value: any): any => {
+  if (Array.isArray(value)) return value.map(unwrapNode);
   if (isPlainObject(value)) {
-    if (isTypedNode(value)) return unwrap((value as any).value);
+    if (isTypedNode(value)) return unwrapNode((value as any).value);
     return Object.keys(value).reduce((acc: any, key: string) => {
-      acc[key] = unwrap((value as any)[key]);
+      acc[key] = unwrapNode((value as any)[key]);
       return acc;
     }, {});
   }
   return value;
+};
+
+/**
+ * §2.2 — unwrapping is scoped to `props`: `type`, `version`, `component` and `context` pass
+ * through untouched, so a `{kind, value}`-shaped map an org parked in `context` comes back
+ * verbatim. This mirrors the backend's
+ * `unwrap(%{"props" => props} = envelope), do: %{envelope | "props" => unwrap_node(props)}`,
+ * which also keeps the client's computed unwrapped size and depth equal to the backend's.
+ */
+export const unwrap = (envelope: any): any => {
+  if (!isPlainObject(envelope) || !Object.prototype.hasOwnProperty.call(envelope, 'props')) return envelope;
+  return { ...envelope, props: unwrapNode(envelope.props) };
 };
 
 /**
@@ -106,11 +121,19 @@ export const clampText = (text: string, limit = MAX_SUMMARY_LENGTH): string => {
 };
 
 /**
- * §9 — the derived body: walk the typed payload in document order, concatenate the value of
- * each `kind: "text"` node joined with `" — "`, clamped to 500 chars. `kind: "alt"` nodes are
+ * §9 — the derived body: walk `props` in SORTED key order — at each map level visit keys sorted
+ * bytewise ascending, list elements keep array order — and concatenate the value of each
+ * `kind: "text"` node joined with `" — "`, clamped to 500 chars. `kind: "alt"` nodes are
  * skipped: alt text is accessibility metadata, not body copy.
+ *
+ * Sorted rather than authored order because authored order cannot survive the round trip: jsonb
+ * normalises object keys on write and Elixir's map decode re-sorts bytewise. Sorting here is what
+ * keeps the pre-save preview equal to what the inbox shows afterwards.
  */
 export const deriveBody = (envelope: any): string => {
+  const props = envelope?.props;
+  if (!isPlainObject(props)) return '';
+
   const texts: string[] = [];
 
   const walk = (node: any) => {
@@ -130,10 +153,12 @@ export const deriveBody = (envelope: any): string => {
       walk(node.value);
       return;
     }
-    Object.keys(node).forEach((key) => walk(node[key]));
+    Object.keys(node)
+      .sort()
+      .forEach((key) => walk(node[key]));
   };
 
-  walk(envelope);
+  walk(props);
   return clampText(texts.join(' — '));
 };
 
@@ -228,10 +253,7 @@ const validateTypedNodes = (errors: BlocksError[], node: any, path: string) => {
   Object.keys(node).forEach((key) => validateTypedNodes(errors, node[key], `${path}.${key}`));
 };
 
-/**
- * §5.1 — an author-chosen id that collides with a reserved flow-result key silently overwrites
- * it. Rejected wherever an id appears: `props.id` and every `id` inside a list item.
- */
+/** Shape rules for an id the schema demands; the reserved-id rule is a separate whole-tree walk. */
 const validateId = (errors: BlocksError[], value: any, path: string, { optional = false } = {}) => {
   if (value === undefined || value === null) {
     if (!optional) errors.push({ path, message: `"${path}" is required` });
@@ -243,50 +265,39 @@ const validateId = (errors: BlocksError[], value: any, path: string, { optional 
   }
   if (!value.trim()) {
     errors.push({ path, message: `"${path}" cannot be blank` });
-    return;
-  }
-  if (RESERVED_IDS.includes(value)) {
-    errors.push({
-      path,
-      message: `"${value}" is a reserved id — flow results use it. Reserved: ${RESERVED_IDS.join(', ')}`,
-    });
   }
 };
 
 /**
- * Every `id` reachable through a list node, for the reserved-id and uniqueness checks (§5.1/§6).
+ * §5.1 — an author-chosen id that collides with a reserved flow-result key silently overwrites
+ * it. The backend's `collect_ids/1` walks the WHOLE `props` tree for any map carrying a string
+ * `id`, whatever the component and whatever the nesting, so this walk does the same — a Custom
+ * Block's `props: { detail: { id: "input" } }` is rejected in both places.
  *
- * Presence is NOT required here: §6 makes an item id required only for the `glific/*` schemas,
- * which enforce it themselves. A Custom Block's props are opaque, so a list item without an `id`
- * is accepted exactly as the backend accepts it. `seen` is per block, not per list, so the
- * uniqueness message means what it says.
+ * Only string ids are considered, again matching `collect_ids/1`: a non-string `id` falls through
+ * the backend's clause and is ignored, so flagging it here would trade one divergence for another.
+ * Presence, type and blankness of the ids a schema demands are `validateId`'s job.
  */
-const validateListItemIds = (errors: BlocksError[], node: any, path: string, seen: Set<string>) => {
+const validateReservedIds = (errors: BlocksError[], node: any, path: string) => {
   if (Array.isArray(node)) {
-    node.forEach((child, index) => validateListItemIds(errors, child, `${path}[${index}]`, seen));
+    node.forEach((child, index) => validateReservedIds(errors, child, `${path}[${index}]`));
     return;
   }
   if (!isPlainObject(node)) return;
 
   if (isTypedNode(node)) {
-    if (node.kind === 'list' && Array.isArray(node.value)) {
-      node.value.forEach((item: any, index: number) => {
-        const itemPath = `${path}[${index}]`;
-        if (!isPlainObject(item)) return;
-        validateId(errors, item.id, `${itemPath}.id`, { optional: true });
-        if (typeof item.id === 'string' && item.id) {
-          if (seen.has(item.id)) {
-            errors.push({ path: `${itemPath}.id`, message: `"${itemPath}.id" must be unique within the block` });
-          }
-          seen.add(item.id);
-        }
-        validateListItemIds(errors, item, itemPath, seen);
-      });
-    }
+    validateReservedIds(errors, node.value, path);
     return;
   }
 
-  Object.keys(node).forEach((key) => validateListItemIds(errors, node[key], `${path}.${key}`, seen));
+  if (typeof node.id === 'string' && RESERVED_IDS.includes(node.id)) {
+    errors.push({
+      path: `${path}.id`,
+      message: `"${node.id}" is a reserved id — flow results use it. Reserved: ${RESERVED_IDS.join(', ')}`,
+    });
+  }
+
+  Object.keys(node).forEach((key) => validateReservedIds(errors, node[key], `${path}.${key}`));
 };
 
 /** §6 — unknown keys are rejected, in `props` and in every list item. */
@@ -340,16 +351,25 @@ const validateItemList = (errors: BlocksError[], props: any, key: string, spec: 
     return;
   }
 
+  // §6 — uniqueness is per list and only for the glific schemas, exactly where the backend runs
+  // it (`validate_unique_item_ids/1`, reachable only from `validate_item_list/2`). The
+  // reserved-id rule has the wider scope of the two: every id anywhere under props.
+  const seen = new Set<string>();
+
   list.forEach((item: any, index: number) => {
     const itemPath = `props.${key}[${index}]`;
     if (!isPlainObject(item)) {
       errors.push({ path: itemPath, message: `"${itemPath}" must be an object` });
       return;
     }
-    // §6 — an item id is REQUIRED for every glific block; the reserved/unique checks run
-    // separately over the whole payload
     if (item.id === undefined || item.id === null) {
       errors.push({ path: `${itemPath}.id`, message: `"${itemPath}.id" is required` });
+    }
+    if (typeof item.id === 'string' && item.id) {
+      if (seen.has(item.id)) {
+        errors.push({ path: `${itemPath}.id`, message: `"${itemPath}.id" must be unique within "props.${key}"` });
+      }
+      seen.add(item.id);
     }
     Object.keys(spec.required).forEach((field) =>
       requireNode(errors, item, field, spec.required[field], `${itemPath}.${field}`)
@@ -484,7 +504,7 @@ export const validateBlocksPayload = (payload: string, component: string | null 
     errors.push({ path: 'props', message: '"props" must be an object' });
   } else {
     validateTypedNodes(errors, envelope.props, 'props');
-    validateListItemIds(errors, envelope.props, 'props', new Set<string>());
+    validateReservedIds(errors, envelope.props, 'props');
     if (GLIFIC_BLOCKS.includes(effectiveComponent)) {
       validateGlificProps(errors, effectiveComponent, envelope.props);
     } else {

@@ -100,6 +100,32 @@ describe('BlocksRenderer', () => {
     expect(screen.getByTestId('blocksBody')).toHaveTextContent('Pick something');
   });
 
+  // §2.2 — unwrap is scoped to props, so what the staff sees is unchanged by a kind/value-shaped
+  // map in context, and that map is never collapsed on its way through the renderer
+  test('renders identically whatever context carries, and leaves context alone', () => {
+    const props = { id: 'course', options: L([{ id: 'c1', image: I('https://x/a.png'), label: T('Spoken English') }]) };
+    const context = { ticket: { kind: 'crm-ref', value: 'AB-12' } };
+
+    const plain = render(<BlocksRenderer content={envelope('glific/image-panel', props)} />).container.innerHTML;
+    cleanup();
+    const withContext = render(<BlocksRenderer content={{ ...envelope('glific/image-panel', props), context }} />)
+      .container.innerHTML;
+
+    expect(withContext).toBe(plain);
+    expect(context).toEqual({ ticket: { kind: 'crm-ref', value: 'AB-12' } });
+  });
+
+  // §9 — the derived body of a Custom Block comes from props only
+  test('the no-preview body ignores text nodes parked in context', () => {
+    render(
+      <BlocksRenderer
+        content={{ ...envelope('tap/course-picker', { body: T('Pick something') }), context: { note: T('Internal') } }}
+      />
+    );
+    expect(screen.getByTestId('blocksBody')).toHaveTextContent('Pick something');
+    expect(screen.queryByText(/Internal/)).not.toBeInTheDocument();
+  });
+
   test('shows the answered state written into the outbound content', () => {
     render(
       <BlocksRenderer

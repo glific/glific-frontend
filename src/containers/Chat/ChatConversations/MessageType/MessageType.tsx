@@ -54,7 +54,7 @@ export const MessageType = ({ type, body = '', color = 'light' }: MessageTypePro
     LIST: 'List',
     LOCATION_REQUEST_MESSAGE: 'Location Request',
     POLL: body,
-    // Blocks carries the fallback text, its response carries the summary — both read as text.
+    // Blocks carries the derived body (§9), its response carries the summary — both read as text.
     BLOCKS: body,
     BLOCKS_RESPONSE: body,
   };
