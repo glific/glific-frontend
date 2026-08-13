@@ -32,7 +32,13 @@
   word-break: break-all;
 }
 
-.Fallback {
+.Response {
+  background: white;
+}
+
+/* Custom Blocks have no console renderer — the derived body (§9) stands in for one. */
+.DerivedBody,
+.Summary {
   font-size: 14px;
   color: #073f24;
   white-space: pre-wrap;

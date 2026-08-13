@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import {
-  createCustomUiMock,
+  createBlocksMock,
   getTemplateMocks1,
   getTemplateMocks2,
   getTemplateMocks3,
@@ -21,8 +21,8 @@ import {
 } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { validator } from './InteractiveMessage.helper';
-import { getPresetPayload } from './CustomUi.helper';
-import { CUSTOM_UI } from 'common/constants';
+import { getPresetPayload } from './Blocks.helper';
+import { BLOCKS } from 'common/constants';
 import * as Yup from 'yup';
 import { FLOW_EDITOR_API } from 'config';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -366,63 +366,103 @@ describe('Add mode', () => {
   });
 });
 
-describe('Custom UI type', () => {
-  // The type picker lists Reply buttons / List message / Location request / Custom UI.
-  const selectCustomUiType = async () => {
+describe('Blocks types (contract §11)', () => {
+  /**
+   * §11 — one grouped selector:
+   *   WhatsApp  Reply buttons · List · Location request
+   *   Web       Image panel · Carousel · Form · Custom Block
+   * `index` is the zero-based position in that flattened order.
+   */
+  const selectType = async (index: number) => {
     await waitFor(() => {
       expect(screen.getByText('Create a new Interactive message')).toBeInTheDocument();
     });
 
     const [interactiveType] = screen.getAllByTestId('autocomplete-element');
     interactiveType.focus();
-    for (let i = 0; i < 4; i += 1) {
+    for (let i = 0; i <= index; i += 1) {
       fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
     }
     fireEvent.keyDown(interactiveType, { key: 'Enter' });
+  };
 
+  const selectBlocksType = async (index = 3) => {
+    await selectType(index);
     await waitFor(() => {
-      expect(screen.getByTestId('customUiEditor')).toBeInTheDocument();
+      expect(screen.getByTestId('blocksEditor')).toBeInTheDocument();
     });
   };
 
-  test('groups the type picker by derived channel compatibility and hints that flows go web-only', async () => {
+  test('groups the type picker into WhatsApp and Web, with no separate component dropdown', async () => {
     render(interactiveMessage());
-    await selectCustomUiType();
 
-    expect(
-      screen.getByText(
-        'Custom UI messages are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts will receive the fallback text as a plain message instead.'
-      )
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Create a new Interactive message')).toBeInTheDocument();
+    });
 
     const [interactiveType] = screen.getAllByTestId('autocomplete-element');
     interactiveType.focus();
     fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
 
     await waitFor(() => {
-      expect(screen.getByText('Web + WhatsApp')).toBeInTheDocument();
-      expect(screen.getAllByText('Web only').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('WhatsApp').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Web').length).toBeGreaterThan(0);
     });
+
+    ['Reply buttons', 'List', 'Location request', 'Image panel', 'Carousel', 'Form', 'Custom Block'].forEach((label) =>
+      expect(screen.getAllByText(label).length).toBeGreaterThan(0)
+    );
+
+    // §11 — no visible "Blocks" entry, and no "Start from" component picker
+    expect(screen.queryByText('Blocks')).not.toBeInTheDocument();
+    expect(screen.queryByText('Start from')).not.toBeInTheDocument();
   });
 
-  test('pre-fills a valid image panel payload and fallback, and saves the contract envelope', async () => {
+  test('every Web entry writes type = blocks and differs only in the component', async () => {
+    const cases: [number, string][] = [
+      [3, 'glific/image-panel'],
+      [4, 'glific/carousel'],
+      [5, 'glific/form'],
+    ];
+
+    for (const [index, component] of cases) {
+      cleanup();
+      let captured: any = null;
+      render(interactiveMessage([createBlocksMock((variables: any) => (captured = variables))]));
+
+      await selectBlocksType(index);
+      fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'Course picker' } });
+      fireEvent.click(screen.getByTestId('submitActionButton'));
+
+      await waitFor(() => expect(captured).not.toBeNull());
+      expect(captured.input.type).toBe('BLOCKS');
+      expect(JSON.parse(captured.input.interactiveContent).component).toBe(component);
+    }
+  });
+
+  test('pre-fills a valid typed payload and saves the contract envelope', async () => {
     let captured: any = null;
-    render(interactiveMessage([createCustomUiMock((variables: any) => (captured = variables))]));
+    render(interactiveMessage([createBlocksMock((variables: any) => (captured = variables))]));
 
-    await selectCustomUiType();
+    await selectBlocksType();
 
-    // the default preset seeds a payload that is already valid
-    expect(screen.queryByTestId('customUiPayloadErrors')).not.toBeInTheDocument();
-    expect(screen.getByTestId('customUiPayloadSize')).toHaveTextContent('of 64 KB');
+    // the preset seeds a payload that is already valid
+    expect(screen.queryByTestId('blocksPayloadErrors')).not.toBeInTheDocument();
+    expect(screen.getByTestId('blocksPayloadSize')).toHaveTextContent('of 64 KB');
 
-    const payloadInput = screen.getByTestId('customUiPayloadTextarea') as HTMLTextAreaElement;
-    expect(JSON.parse(payloadInput.value).component).toBe('glific/image_panel');
+    // §9 — no fallback field: the body is derived server-side
+    expect(screen.queryByText('Fallback text*')).not.toBeInTheDocument();
 
-    // the simulator preview shows the same generic card the inbox uses
+    // §11 — the phone simulator is replaced by the web-widget preview
     await waitFor(() => {
-      expect(screen.getByTestId('customUiCard')).toBeInTheDocument();
+      expect(screen.getByTestId('blocksPreview')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('customUiHeader')).toHaveTextContent('Interactive · glific/image_panel');
+    expect(screen.getByTestId('blocksImagePanel')).toBeInTheDocument();
+
+    // §11 — the derived channel chip sits in the form; blocks is Web only
+    expect(screen.getByTestId('channelBadges')).toBeInTheDocument();
+    expect(screen.getByTestId('channelBadgeWeb')).toHaveTextContent('Web');
+    expect(screen.queryByTestId('channelBadgeWhatsapp')).not.toBeInTheDocument();
 
     fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'Course picker' } });
     fireEvent.click(screen.getByTestId('submitActionButton'));
@@ -431,53 +471,52 @@ describe('Custom UI type', () => {
       expect(captured).not.toBeNull();
     });
 
-    expect(captured.input.type).toBe('CUSTOM_UI');
+    expect(captured.input.type).toBe('BLOCKS');
     expect(captured.input.label).toBe('Course picker');
 
     const envelope = JSON.parse(captured.input.interactiveContent);
-    // contract §2 — `type` inside the payload is what the backend keys off
-    expect(Object.keys(envelope)).toEqual(['type', 'version', 'component', 'props', 'fallback']);
-    expect(envelope.type).toBe('custom_ui');
-    expect(envelope.version).toBe('1');
-    expect(envelope.component).toBe('glific/image_panel');
-    expect(envelope.props.options).toHaveLength(2);
-    expect(envelope.fallback).toBe('Pick a course: Spoken English or Digital skills');
-
-    // the translation for the authoring language carries the same envelope
-    expect(JSON.parse(captured.input.translations)['1'].fallback).toBe(envelope.fallback);
+    // §2 — `type` inside the payload is what the backend keys off; there is no `fallback`
+    expect(Object.keys(envelope)).toEqual(['type', 'version', 'component', 'props']);
+    expect(envelope.type).toBe('blocks');
+    expect(envelope.version).toBe(1);
+    expect(envelope.component).toBe('glific/image-panel');
+    expect(envelope.props.options.kind).toBe('list');
+    expect(envelope.props.options.value).toHaveLength(2);
   });
 
-  test('switching preset to Form swaps the payload and the suggested fallback', async () => {
-    render(interactiveMessage());
-    await selectCustomUiType();
+  test('Custom Block shows no preview and keeps the author-supplied component', async () => {
+    let captured: any = null;
+    render(interactiveMessage([createBlocksMock((variables: any) => (captured = variables))]));
 
-    const presetPicker = screen.getAllByTestId('autocomplete-element')[1];
-    presetPicker.focus();
-    fireEvent.keyDown(presetPicker, { key: 'ArrowDown' });
-    fireEvent.keyDown(presetPicker, { key: 'ArrowDown' });
-    fireEvent.keyDown(presetPicker, { key: 'ArrowDown' });
-    fireEvent.keyDown(presetPicker, { key: 'Enter' });
+    await selectBlocksType(6);
 
     await waitFor(() => {
-      const payloadInput = screen.getByTestId('customUiPayloadTextarea') as HTMLTextAreaElement;
-      expect(JSON.parse(payloadInput.value).component).toBe('glific/form');
+      expect(screen.getByTestId('blocksNoPreview')).toHaveTextContent('This block has no preview');
     });
-    expect(screen.queryByTestId('customUiPayloadErrors')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'My block' } });
+    fireEvent.change(screen.getByTestId('blocksPayloadTextarea'), {
+      target: { value: JSON.stringify({ component: 'tap/course-picker', props: { id: 'answer' } }) },
+    });
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => expect(captured).not.toBeNull());
+    expect(JSON.parse(captured.input.interactiveContent).component).toBe('tap/course-picker');
   });
 
-  test('rejects an unknown name in the reserved glific namespace', async () => {
+  test('rejects a Custom Block that claims the reserved glific namespace', async () => {
     let captured: any = null;
-    render(interactiveMessage([createCustomUiMock((variables: any) => (captured = variables))]));
+    render(interactiveMessage([createBlocksMock((variables: any) => (captured = variables))]));
 
-    await selectCustomUiType();
+    await selectBlocksType(6);
 
     fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'Course picker' } });
-    fireEvent.change(screen.getByTestId('customUiPayloadTextarea'), {
+    fireEvent.change(screen.getByTestId('blocksPayloadTextarea'), {
       target: { value: JSON.stringify({ component: 'glific/foo', props: {} }) },
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('customUiPayloadErrors')).toHaveTextContent('glific/ namespace is reserved');
+      expect(screen.getByTestId('blocksPayloadErrors')).toHaveTextContent('glific/ namespace is reserved');
     });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
@@ -490,35 +529,50 @@ describe('Custom UI type', () => {
 
   test('names the offending field when a glific block is missing a prop', async () => {
     render(interactiveMessage());
-    await selectCustomUiType();
+    await selectBlocksType();
 
-    fireEvent.change(screen.getByTestId('customUiPayloadTextarea'), {
+    fireEvent.change(screen.getByTestId('blocksPayloadTextarea'), {
       target: {
         value: JSON.stringify({
-          component: 'glific/image_panel',
-          props: { id: 'course', options: [{ id: 'c1', label: 'Spoken English' }] },
+          props: {
+            id: 'course',
+            options: { kind: 'list', value: [{ id: 'c1', label: { kind: 'text', value: 'A' } }] },
+          },
         }),
       },
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('customUiPayloadErrors')).toHaveTextContent('"props.options[0].image" is required');
+      expect(screen.getByTestId('blocksPayloadErrors')).toHaveTextContent('"props.options[0].image" is required');
+    });
+  });
+
+  test('rejects a reserved result id', async () => {
+    render(interactiveMessage());
+    await selectBlocksType();
+
+    fireEvent.change(screen.getByTestId('blocksPayloadTextarea'), {
+      target: { value: JSON.stringify({ props: { id: 'input' } }) },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('blocksPayloadErrors')).toHaveTextContent('is a reserved id');
     });
   });
 
   test('reports invalid JSON', async () => {
     render(interactiveMessage());
-    await selectCustomUiType();
+    await selectBlocksType();
 
-    fireEvent.change(screen.getByTestId('customUiPayloadTextarea'), { target: { value: '{ nope' } });
+    fireEvent.change(screen.getByTestId('blocksPayloadTextarea'), { target: { value: '{ nope' } });
 
     await waitFor(() => {
-      expect(screen.getByTestId('customUiPayloadErrors')).toHaveTextContent('Invalid JSON');
+      expect(screen.getByTestId('blocksPayloadErrors')).toHaveTextContent('Invalid JSON');
     });
   });
 
-  test('requires the fallback text and the payload on every language', async () => {
-    const schema = Yup.object().shape(validator(CUSTOM_UI, (text: string) => text));
+  test('requires the payload but never a body', async () => {
+    const schema = Yup.object().shape(validator(BLOCKS, (text: string) => text, 'glific/image-panel'));
 
     const errorsFor = async (values: any) => {
       try {
@@ -529,19 +583,14 @@ describe('Custom UI type', () => {
       }
     };
 
-    expect(
-      await errorsFor({ title: 'Course picker', body: '', customUiPayload: getPresetPayload('glific/form') })
-    ).toContain('Fallback text is required.');
+    expect(await errorsFor({ title: 'Course picker', blocksPayload: '' })).toContain('Payload is required.');
 
-    expect(await errorsFor({ title: 'Course picker', body: 'Pick a course', customUiPayload: '' })).toContain(
-      'Payload is required.'
-    );
-
+    // §9 — no body is authored, so an empty one is fine
     expect(
       await errorsFor({
         title: 'Course picker',
-        body: 'Pick a course',
-        customUiPayload: getPresetPayload('glific/image_panel'),
+        body: '',
+        blocksPayload: getPresetPayload('glific/image-panel'),
       })
     ).toEqual([]);
   });

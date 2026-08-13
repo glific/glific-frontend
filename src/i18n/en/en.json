@@ -243,13 +243,7 @@
   "Message": "Message",
   "You can also use variables in message enter @ to see the available list": "You can also use variables in message enter @ to see the available list",
   "Footer": "Footer",
-  "Custom UI messages are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts will receive the fallback text as a plain message instead.": "Custom UI messages are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts will receive the fallback text as a plain message instead.",
-  "Start from": "Start from",
-  "Pick a built-in block to pre-fill a working payload, or start blank.": "Pick a built-in block to pre-fill a working payload, or start blank.",
-  "Fallback text": "Fallback text",
-  "Shown wherever the block cannot render, and required on every language.": "Shown wherever the block cannot render, and required on every language.",
   "Payload": "Payload",
-  "The component and its props. glific/* blocks are schema-checked; other namespaces are passed through untouched.": "The component and its props. glific/* blocks are schema-checked; other namespaces are passed through untouched.",
   "Fallback text is required.": "Fallback text is required.",
   "Payload is required.": "Payload is required.",
   "Payload is not valid": "Payload is not valid",
@@ -791,7 +785,6 @@
   "Something went wrong while checking your AI Evaluations access.": "Something went wrong while checking your AI Evaluations access.",
   "Please": "Please",
   "Click refresh to try again or contact our support team for help": "Click refresh to try again or contact our support team for help",
-  "Refresh": "Refresh",
   "Data Analytics": "Data Analytics",
   "No templates found": "No templates found",
   "Languages": "Languages",
@@ -824,5 +817,9 @@
   "View sample": "View sample",
   "All Tags": "All Tags",
   "Add new language": "Add new language",
-  "Filter": "Filter"
+  "Filter": "Filter",
+  "Blocks are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts receive the message text as a plain message instead.": "Blocks are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts receive the message text as a plain message instead.",
+  "Delivered on": "Delivered on",
+  "The typed props for this block. Every authored leaf is a { \"kind\": …, \"value\": … } node.": "The typed props for this block. Every authored leaf is a { \"kind\": …, \"value\": … } node.",
+  "The component and its typed props. Custom Blocks must use your own namespace, not glific/.": "The component and its typed props. Custom Blocks must use your own namespace, not glific/."
 }

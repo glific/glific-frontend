@@ -12,7 +12,8 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
   LOCATION_REQUEST,
-  CUSTOM_UI,
+  BLOCKS,
+  BLOCKS_RESPONSE,
 } from 'common/constants';
 import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
@@ -28,7 +29,7 @@ import { setNotification } from 'common/notification';
 import { LocationRequestTemplate } from './LocationRequestTemplate/LocationRequestTemplate';
 import { PollMessage } from './PollMessage/PollMessage';
 import { WhatsAppFormResponse } from './WhatsappFormResponse/WhatsAppFormResponse';
-import { CustomUiCard } from './CustomUiCard/CustomUiCard';
+import { BlocksCard, BlocksResponseCard } from './BlocksCard/BlocksCard';
 
 export interface ChatMessageProps {
   id: number;
@@ -304,11 +305,12 @@ export const ChatMessage = ({
     template = <LocationRequestTemplate content={content} disabled />;
   }
 
-  if (type === CUSTOM_UI) {
-    template = <CustomUiCard content={content} disabled />;
+  if (type === BLOCKS) {
+    template = <BlocksCard content={content} disabled />;
   }
 
   let displayLabel;
+
   if (flowLabel) {
     const labels = flowLabel.split(',');
     if (labels.length > 0) {
@@ -338,6 +340,16 @@ export const ChatMessage = ({
   let messageBody: any;
   if (isInteractiveContentPresent && !isSender) {
     messageBody = template;
+  } else if (type === BLOCKS_RESPONSE && isInteractiveContentPresent) {
+    // The inbound reply carries the raw `values` map (§4); it lives on this message only, which
+    // is why the response JSON is shown here and not on the outbound bubble.
+    messageBody = (
+      <>
+        {contactName}
+        <BlocksResponseCard content={content} />
+        {dateAndSendBy}
+      </>
+    );
   } else if (type === 'POLL') {
     const pollContentJson = pollContent ? JSON.parse(pollContent) : {};
 

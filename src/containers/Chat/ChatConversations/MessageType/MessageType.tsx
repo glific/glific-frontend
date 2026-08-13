@@ -54,9 +54,9 @@ export const MessageType = ({ type, body = '', color = 'light' }: MessageTypePro
     LIST: 'List',
     LOCATION_REQUEST_MESSAGE: 'Location Request',
     POLL: body,
-    // Custom UI carries the fallback text, its response carries the summary — both read as text.
-    CUSTOM_UI: body,
-    CUSTOM_UI_RESPONSE: body,
+    // Blocks carries the fallback text, its response carries the summary — both read as text.
+    BLOCKS: body,
+    BLOCKS_RESPONSE: body,
   };
 
   const option = (

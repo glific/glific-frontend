@@ -1,50 +1,52 @@
 import { FormControl, FormHelperText, TextField } from '@mui/material';
 import { getIn } from 'formik';
 import {
-  CUSTOM_UI_MAX_BYTES,
-  getEnvelopeSize,
-  validateCustomUiPayload,
-} from 'containers/InteractiveMessage/CustomUi.helper';
-import styles from './CustomUiEditor.module.css';
+  BLOCKS_MAX_UNWRAPPED_BYTES,
+  buildBlocksEnvelope,
+  getUnwrappedSize,
+  validateBlocksPayload,
+} from 'containers/InteractiveMessage/Blocks.helper';
+import styles from './BlocksEditor.module.css';
 
-export interface CustomUiEditorProps {
+export interface BlocksEditorProps {
   field: any;
   form: { touched: any; errors: any; setFieldValue: any; values?: any };
   label?: string;
   helperText?: string;
   disabled?: boolean;
+  /** The component fixed by the type selector; null for a Custom Block (author-supplied). */
+  componentName?: string | null;
   onChange?: (value: string) => void;
 }
 
 /**
- * Monospace JSON editor for the Custom UI payload.
+ * Monospace JSON editor for the typed Blocks payload.
  *
- * Save-time validation lives in `validateCustomUiPayload` and is surfaced through the Yup schema;
+ * Save-time validation lives in `validateBlocksPayload` and is surfaced through the Yup schema;
  * this component additionally shows live problems and the 64 KB budget so authors do not have to
- * hit Save to find out something is wrong.
+ * hit Save to find out something is wrong. The budget shown is the OUTBOUND one, measured on the
+ * unwrapped envelope (contract §7) — the typed wrapper does not count against the author.
  */
-export const CustomUiEditor = ({
+export const BlocksEditor = ({
   field,
-  form: { touched, errors, setFieldValue, values },
+  form: { touched, errors, setFieldValue },
   label,
   helperText,
   disabled = false,
+  componentName = null,
   onChange,
-}: CustomUiEditorProps) => {
+}: BlocksEditorProps) => {
   const value = field.value || '';
   const formError = getIn(errors, field.name);
   const formTouched = getIn(touched, field.name);
   const hasFormError = !!(formTouched && formError);
 
-  // §7 — the budget is spent by the ASSEMBLED envelope (type/version/fallback included),
-  // compactly encoded, not by the pretty-printed editor text.
-  const fallback = values?.body ?? '';
-  const size = getEnvelopeSize(value, fallback);
-  const overLimit = size > CUSTOM_UI_MAX_BYTES;
-  const { errors: liveErrors } = validateCustomUiPayload(value, fallback);
+  const size = getUnwrappedSize(buildBlocksEnvelope(value, componentName));
+  const overLimit = size > BLOCKS_MAX_UNWRAPPED_BYTES;
+  const { errors: liveErrors } = validateBlocksPayload(value, componentName);
 
   return (
-    <div className={styles.Container} data-testid="customUiEditor">
+    <div className={styles.Container} data-testid="blocksEditor">
       <FormControl fullWidth error={hasFormError || overLimit}>
         <TextField
           multiline
@@ -56,8 +58,8 @@ export const CustomUiEditor = ({
           label={label}
           value={value}
           error={hasFormError || overLimit}
-          data-testid="customUiPayloadInput"
-          slotProps={{ htmlInput: { className: styles.Editor, 'data-testid': 'customUiPayloadTextarea' } }}
+          data-testid="blocksPayloadInput"
+          slotProps={{ htmlInput: { className: styles.Editor, 'data-testid': 'blocksPayloadTextarea' } }}
           onChange={(event) => {
             setFieldValue(field.name, event.target.value);
             if (onChange) onChange(event.target.value);
@@ -68,7 +70,7 @@ export const CustomUiEditor = ({
           {helperText && <FormHelperText className={styles.Helper}>{helperText}</FormHelperText>}
           <FormHelperText
             className={overLimit ? styles.SizeOver : styles.Size}
-            data-testid="customUiPayloadSize"
+            data-testid="blocksPayloadSize"
             error={overLimit}
           >
             {(size / 1024).toFixed(1)} KB of 64 KB
@@ -76,7 +78,7 @@ export const CustomUiEditor = ({
         </div>
 
         {liveErrors.length > 0 && (
-          <ul className={styles.ErrorList} data-testid="customUiPayloadErrors">
+          <ul className={styles.ErrorList} data-testid="blocksPayloadErrors">
             {liveErrors.map((error) => (
               <li key={`${error.path}-${error.message}`}>{error.message}</li>
             ))}
@@ -84,7 +86,7 @@ export const CustomUiEditor = ({
         )}
 
         {hasFormError && liveErrors.length === 0 && (
-          <FormHelperText error data-testid="customUiPayloadError">
+          <FormHelperText error data-testid="blocksPayloadError">
             {formError}
           </FormHelperText>
         )}
@@ -93,4 +95,4 @@ export const CustomUiEditor = ({
   );
 };
 
-export default CustomUiEditor;
+export default BlocksEditor;

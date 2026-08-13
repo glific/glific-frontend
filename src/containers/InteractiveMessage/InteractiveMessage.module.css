@@ -16,6 +16,53 @@
   text-align: center;
 }
 
+/* §11 — laptop viewports are 1920 wide, so the blocks form gets 30% more room than
+   FormLayout's shared 530px. The preview panel takes the remainder. */
+.WideForm {
+  width: 690px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .WideForm {
+    width: 100% !important;
+  }
+}
+
+.PreviewPanel {
+  position: absolute;
+  top: 130px;
+  right: 32px;
+  width: calc(100% - 810px);
+  min-width: 340px;
+  max-width: 460px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (max-width: 1280px) {
+  .PreviewPanel {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 24px 24px;
+    box-sizing: border-box;
+    justify-content: flex-start;
+  }
+}
+
+.ChannelRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ChannelRowLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #93a29b;
+}
+
 .UploadButtonContainer {
   margin-top: 8px;
   margin-bottom: 20px;

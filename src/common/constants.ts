@@ -182,17 +182,17 @@ export const LIST = 'LIST';
 export const QUICK_REPLY = 'QUICK_REPLY';
 export const WHATSAPP_FORM = 'WHATSAPP_FORM';
 export const LOCATION_REQUEST = 'LOCATION_REQUEST_MESSAGE';
-// Custom UI: the interactive template type and the outbound message type share this value
-export const CUSTOM_UI = 'CUSTOM_UI';
-// Inbound reply to a custom UI message. Its body is the response summary, so it renders as text.
-export const CUSTOM_UI_RESPONSE = 'CUSTOM_UI_RESPONSE';
+// Blocks: the interactive template type and the outbound message type share this value
+export const BLOCKS = 'BLOCKS';
+// Inbound reply to a blocks message. Its body is the response summary, so it renders as text.
+export const BLOCKS_RESPONSE = 'BLOCKS_RESPONSE';
 
-// Channel compatibility is derived from the interactive template type, never author-chosen.
-export const CHANNEL_COMPATIBILITY_ALL = 'Web + WhatsApp';
-export const CHANNEL_COMPATIBILITY_WEB_ONLY = 'Web only';
+// Channel support is derived from the interactive template type, never author-chosen (§11).
+export const CHANNEL_WHATSAPP = 'WhatsApp';
+export const CHANNEL_WEB = 'Web';
 
-export const getChannelCompatibility = (templateType: string) =>
-  templateType === CUSTOM_UI ? CHANNEL_COMPATIBILITY_WEB_ONLY : CHANNEL_COMPATIBILITY_ALL;
+export const getSupportedChannels = (templateType: string): string[] =>
+  templateType === BLOCKS ? [CHANNEL_WEB] : [CHANNEL_WHATSAPP, CHANNEL_WEB];
 export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
 

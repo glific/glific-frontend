@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { CUSTOM_UI, LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
+import { BLOCKS, LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import * as Yup from 'yup';
-import { envelopeToEditorPayload, validateCustomUiPayload } from './CustomUi.helper';
+import { deriveBody, envelopeToEditorPayload, GLIFIC_BLOCKS, validateBlocksPayload } from './Blocks.helper';
 
 Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
   return this.test('unique', message, function test(list: any) {
@@ -33,7 +33,7 @@ Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
   });
 });
 
-export const validator = (templateType: any, t: any) => {
+export const validator = (templateType: any, t: any, blocksComponent: string | null = null) => {
   const validation: any = {
     title: Yup.string().required(t('Title is required')).max(60, t('Title can be at most 60 characters')),
     body: Yup.string().when('type', {
@@ -102,18 +102,16 @@ export const validator = (templateType: any, t: any) => {
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       });
-  } else if (templateType === CUSTOM_UI) {
-    // The Message field doubles as the translatable fallback text (contract §2/§7).
-    validation.body = Yup.string().required(t('Fallback text is required.'));
+  } else if (templateType === BLOCKS) {
+    // §9 — the body is derived from the payload's text nodes, never authored.
+    validation.body = Yup.string().nullable();
 
-    validation.customUiPayload = Yup.string()
+    validation.blocksPayload = Yup.string()
       .required(t('Payload is required.'))
-      .test('valid-custom-ui-payload', t('Payload is not valid'), function testPayload(value: any) {
-        // the Message field is the fallback text — pass it so the 64 KB check measures the
-        // assembled envelope, exactly as the backend does (contract §7)
-        const { errors } = validateCustomUiPayload(value || '', this.parent?.body ?? '');
+      .test('valid-blocks-payload', t('Payload is not valid'), function testPayload(value: any) {
+        const { errors } = validateBlocksPayload(value || '', blocksComponent);
         if (errors.length === 0) return true;
-        return this.createError({ path: 'customUiPayload', message: errors[0].message });
+        return this.createError({ path: 'blocksPayload', message: errors[0].message });
       });
   }
 
@@ -169,12 +167,15 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
       result = { body: body.text, title: label };
       break;
     }
-    case CUSTOM_UI: {
-      // `body` on the form is the translatable fallback text; the editor holds the rest.
+    case BLOCKS: {
+      // §9 — there is no authored body; the editor holds the whole typed payload. The component
+      // is surfaced so the caller can resolve the grouped selector entry (§11).
+      const component = data.component ?? null;
       result = {
         title: label,
-        body: data.fallback || '',
-        customUiPayload: envelopeToEditorPayload(data),
+        body: '',
+        component,
+        blocksPayload: envelopeToEditorPayload(data, !GLIFIC_BLOCKS.includes(component)),
       };
       break;
     }
@@ -224,10 +225,11 @@ export const getDefaultValuesByTemplate = (templateData: any) => {
   } else if (templateType === LOCATION_REQUEST) {
     result.body = { text: '' };
     result.title = '';
-  } else if (templateType === CUSTOM_UI) {
-    // A translation is the same envelope with a translated fallback (contract §2), so keep
-    // component/props/context verbatim and only blank the fallback.
-    result = { ...data, fallback: '' };
+  } else if (templateType === BLOCKS) {
+    // A translation is the same typed envelope with translated text nodes (§2/§10). Blanking
+    // leaves here would destroy the payload if the empty state were saved, so it is returned
+    // verbatim and auto-translation fills it.
+    result = { ...data };
   }
   return result;
 };
@@ -335,10 +337,12 @@ export const getTranslation = (interactiveType: string, attribute: any, translat
         default:
           return null;
       }
-    } else if (interactiveType === CUSTOM_UI) {
+    } else if (interactiveType === BLOCKS) {
+      // §9 — a blocks template has no authored body; the default-language reference text shown
+      // beside a translation is the derived one.
       switch (attribute) {
         case 'body':
-          return defaultTemplate.fallback;
+          return deriveBody(defaultTemplate);
         default:
           return null;
       }

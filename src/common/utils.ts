@@ -12,6 +12,7 @@ import {
   renewAuthToken,
 } from 'services/AuthService';
 import { CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
+import { deriveBody } from 'containers/InteractiveMessage/Blocks.helper';
 import { SIMULATOR_NUMBER_START, STANDARD_DATE_TIME_FORMAT } from './constants';
 import { setNotification } from './notification';
 
@@ -156,9 +157,10 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
     }
   } else if (interactiveJSON.type === 'location_request_message') {
     messageBody = interactiveJSON.body.text;
-  } else if (interactiveJSON.type === 'custom_ui') {
-    // A Custom UI envelope has no body — the fallback text is what a human reads.
-    messageBody = interactiveJSON.fallback;
+  } else if (interactiveJSON.type === 'blocks') {
+    // A Blocks envelope carries no authored body — it is derived by walking text nodes, the
+    // same derivation the backend uses to populate `messages.body` (contract §9).
+    messageBody = deriveBody(interactiveJSON);
   }
 
   return messageBody;

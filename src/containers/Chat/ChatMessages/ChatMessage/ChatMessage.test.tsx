@@ -2,7 +2,7 @@ import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import dayjs from 'dayjs';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { CUSTOM_UI_RESPONSE, SHORT_TIME_FORMAT } from 'common/constants';
+import { BLOCKS_RESPONSE, SHORT_TIME_FORMAT } from 'common/constants';
 
 import ChatMessage from './ChatMessage';
 
@@ -419,63 +419,77 @@ describe('<ChatMessage />', () => {
     });
   });
 
-  describe('custom UI messages', () => {
-    const customUiEnvelope: any = {
-      type: 'custom_ui',
-      version: '1',
-      component: 'glific/image_panel',
-      props: { id: 'course', options: [{ id: 'c1', image: 'https://example.com/a.png', label: 'Spoken English' }] },
-      fallback: 'Pick a course: Spoken English',
+  describe('blocks messages', () => {
+    // the stored envelope is TYPED; the renderer unwraps it client-side (contract §2.2)
+    const blocksEnvelope: any = {
+      type: 'blocks',
+      version: 1,
+      component: 'glific/image-panel',
+      props: {
+        id: 'course',
+        body: { kind: 'text', value: 'Pick a course' },
+        options: {
+          kind: 'list',
+          value: [
+            {
+              id: 'c1',
+              image: { kind: 'image', value: 'https://example.com/a.png' },
+              label: { kind: 'text', value: 'Spoken English' },
+            },
+          ],
+        },
+      },
     };
 
     // entityId as a string keeps `sender.id === entityId` false, i.e. an outbound message.
-    const customUiProps = (envelope: any) =>
+    const blocksProps = (envelope: any) =>
       getProps({
-        type: 'CUSTOM_UI',
+        type: 'BLOCKS',
         interactiveContent: JSON.stringify(envelope),
-        body: envelope.fallback,
+        body: 'Pick a course — Spoken English',
         entityId: '2',
       });
 
-    test('renders the custom UI card with the component name and fallback', async () => {
+    test('renders the blocks card with the MUI renderer', async () => {
       render(
         <MockedProvider addTypename={false}>
-          <ChatMessage {...customUiProps(customUiEnvelope)} />
+          <ChatMessage {...blocksProps(blocksEnvelope)} />
         </MockedProvider>
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId('customUiCard')).toBeInTheDocument();
+        expect(screen.getByTestId('blocksCard')).toBeInTheDocument();
       });
-      expect(screen.getByTestId('customUiHeader')).toHaveTextContent('Interactive · glific/image_panel');
-      expect(screen.getByTestId('customUiFallback')).toHaveTextContent('Pick a course: Spoken English');
+      expect(screen.getByTestId('blocksHeader')).toHaveTextContent('Block · glific/image-panel');
+      expect(screen.getByTestId('blocksImagePanel')).toBeInTheDocument();
+      expect(screen.getByText('Spoken English')).toBeInTheDocument();
       // staff never interact with the block from the inbox
-      expect(screen.queryByTestId('customUiRespondButton')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('blocksRespondButton')).not.toBeInTheDocument();
     });
 
     test('renders the answered state once the contact has replied', async () => {
       render(
         <MockedProvider addTypename={false}>
-          <ChatMessage {...customUiProps({ ...customUiEnvelope, answered: true, answer_summary: 'Digital skills' })} />
+          <ChatMessage {...blocksProps({ ...blocksEnvelope, answered: true, answer_summary: 'Digital skills' })} />
         </MockedProvider>
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId('customUiCard')).toHaveAttribute('data-answered', 'true');
+        expect(screen.getByTestId('blocksCard')).toHaveAttribute('data-answered', 'true');
       });
-      expect(screen.getByTestId('customUiAnswerSummary')).toHaveTextContent('Answered: Digital skills');
+      expect(screen.getByTestId('blocksAnswered')).toHaveTextContent('Answered: Digital skills');
     });
 
-    test('renders an inbound custom UI response as plain text, not a card', async () => {
+    test('renders an inbound blocks response with its summary and raw values', async () => {
       render(
         <MockedProvider addTypename={false}>
           <ChatMessage
             {...getProps({
-              type: CUSTOM_UI_RESPONSE,
+              type: BLOCKS_RESPONSE,
               // contract §4 — the persisted inbound message carries a populated envelope
               interactiveContent: JSON.stringify({
-                type: 'custom_ui_response',
-                component: 'glific/image_panel',
+                type: 'blocks_response',
+                component: 'glific/image-panel',
                 values: { course: 'c2' },
                 summary: 'Digital skills',
                 context: {},
@@ -487,9 +501,10 @@ describe('<ChatMessage />', () => {
       );
 
       await waitFor(() => {
-        expect(screen.queryByTestId('customUiCard')).not.toBeInTheDocument();
+        expect(screen.getByTestId('blocksResponseCard')).toBeInTheDocument();
       });
-      expect(screen.getAllByText('Digital skills').length).toBeGreaterThan(0);
+      expect(screen.queryByTestId('blocksCard')).not.toBeInTheDocument();
+      expect(screen.getByTestId('blocksResponseSummary')).toHaveTextContent('Digital skills');
     });
   });
 });

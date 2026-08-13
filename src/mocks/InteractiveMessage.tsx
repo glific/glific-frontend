@@ -542,37 +542,56 @@ export const translateWitTrimmingMocks = [
 ];
 
 /**
- * Custom UI (web channel) — a stored `glific/image_panel` envelope, contract §2/§6.
+ * Blocks (web channel) — a stored, TYPED `glific/image-panel` envelope, contract §2/§6.
  */
-export const customUiEnvelope = {
-  type: 'custom_ui',
-  version: '1',
-  component: 'glific/image_panel',
+export const blocksEnvelope = {
+  type: 'blocks',
+  version: 1,
+  component: 'glific/image-panel',
   props: {
     id: 'course',
-    body: 'Pick a course',
-    options: [
-      { id: 'c1', image: 'https://picsum.photos/seed/english/300/200', label: 'Spoken English' },
-      { id: 'c2', image: 'https://picsum.photos/seed/digital/300/200', label: 'Digital skills' },
-    ],
+    body: { kind: 'text', value: 'Pick a course' },
+    options: {
+      kind: 'list',
+      value: [
+        {
+          id: 'c1',
+          image: { kind: 'image', value: 'https://picsum.photos/seed/english/300/200' },
+          image_alt: { kind: 'alt', value: 'Adult English class' },
+          label: { kind: 'text', value: 'Spoken English' },
+        },
+        {
+          id: 'c2',
+          image: { kind: 'image', value: 'https://picsum.photos/seed/digital/300/200' },
+          label: { kind: 'text', value: 'Digital skills' },
+        },
+      ],
+    },
   },
-  fallback: 'Pick a course: Spoken English or Digital skills',
 };
 
-export const customUiTemplateMock = {
+/** A Custom Block: opaque props, no console renderer (§6). */
+export const customBlockEnvelope = {
+  type: 'blocks',
+  version: 1,
+  component: 'tap/course-picker',
+  props: { id: 'answer', body: { kind: 'text', value: 'Rendered by your own component.' } },
+};
+
+export const blocksTemplateMock = {
   id: '7',
-  type: 'CUSTOM_UI',
+  type: 'BLOCKS',
   label: 'Course picker',
   sendWithTitle: false,
-  interactiveContent: JSON.stringify(customUiEnvelope),
-  translations: JSON.stringify({ 1: customUiEnvelope }),
+  interactiveContent: JSON.stringify(blocksEnvelope),
+  translations: JSON.stringify({ 1: blocksEnvelope }),
   language: { id: '1', label: 'English' },
 };
 
 /**
  * Captures the variables the authoring page sends so a test can assert the exact envelope.
  */
-export const createCustomUiMock = (capture: (variables: any) => void) => ({
+export const createBlocksMock = (capture: (variables: any) => void) => ({
   request: { query: CREATE_INTERACTIVE },
   variableMatcher: (variables: any) => {
     capture(variables);
@@ -584,9 +603,9 @@ export const createCustomUiMock = (capture: (variables: any) => void) => ({
         interactiveTemplate: {
           id: '7',
           label: 'Course picker',
-          type: 'CUSTOM_UI',
-          interactiveContent: JSON.stringify(customUiEnvelope),
-          translations: JSON.stringify({ 1: customUiEnvelope }),
+          type: 'BLOCKS',
+          interactiveContent: JSON.stringify(blocksEnvelope),
+          translations: JSON.stringify({ 1: blocksEnvelope }),
           language: { id: '1', label: 'English' },
         },
         errors: null,
@@ -595,14 +614,14 @@ export const createCustomUiMock = (capture: (variables: any) => void) => ({
   },
 });
 
-export const getCustomUiTemplateMocks = [
+export const getBlocksTemplateMocks = [
   ...mocks,
-  getTemplateByType('7', customUiTemplateMock),
-  getTemplateByType('7', customUiTemplateMock),
+  getTemplateByType('7', blocksTemplateMock),
+  getTemplateByType('7', blocksTemplateMock),
 ];
 
-/** List page: a Custom UI row alongside the WhatsApp-compatible ones. */
-export const filterCustomUiInteractiveQuery = {
+/** List page: a Blocks row alongside the WhatsApp-compatible ones. */
+export const filterBlocksInteractiveQuery = {
   request: {
     query: FILTER_INTERACTIVE_MESSAGES,
     variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' } },
@@ -623,18 +642,20 @@ export const filterCustomUiInteractiveQuery = {
         {
           id: '7',
           label: 'Course picker',
-          type: 'CUSTOM_UI',
+          type: 'BLOCKS',
           sendWithTitle: false,
           language: { id: '1', label: 'English' },
-          translations: JSON.stringify({ 2: { ...customUiEnvelope, fallback: 'कोर्स चुनें' } }),
-          interactiveContent: JSON.stringify(customUiEnvelope),
+          translations: JSON.stringify({
+            2: { ...blocksEnvelope, props: { ...blocksEnvelope.props, body: { kind: 'text', value: 'कोर्स चुनें' } } },
+          }),
+          interactiveContent: JSON.stringify(blocksEnvelope),
         },
       ],
     },
   },
 };
 
-export const customUiInteractiveCountQuery = {
+export const blocksInteractiveCountQuery = {
   request: {
     query: GET_INTERACTIVE_MESSAGES_COUNT,
     variables: { filter: {} },

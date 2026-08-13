@@ -23,17 +23,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import Simulator from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import {
-  CHANNEL_COMPATIBILITY_ALL,
-  CHANNEL_COMPATIBILITY_WEB_ONLY,
-  CUSTOM_UI,
-  getChannelCompatibility,
-  LIST,
-  LOCATION_REQUEST,
-  MEDIA_MESSAGE_TYPES,
-  QUICK_REPLY,
-  VALID_URL_REGEX,
-} from 'common/constants';
+import { BLOCKS, LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY, VALID_URL_REGEX } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
@@ -51,8 +41,11 @@ import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/Create
 import { interactiveMessageInfo } from 'common/HelpData';
 import { TranslateButton } from './TranslateButton/TranslateButton';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { CustomUiEditor } from './CustomUiEditor/CustomUiEditor';
-import { buildCustomUiEnvelope, CUSTOM_UI_PRESETS, getCustomUiPreset, getPresetPayload } from './CustomUi.helper';
+import { BlocksEditor } from './BlocksEditor/BlocksEditor';
+import { buildBlocksEnvelope, getPresetPayload, validateBlocksPayload } from './Blocks.helper';
+import { BlocksPreview } from 'components/blocks/BlocksPreview';
+import { ChannelBadges } from 'components/blocks/ChannelBadges';
+import { getTemplateTypeOption, TEMPLATE_TYPE_OPTIONS } from './TemplateTypeOptions';
 
 const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />;
 
@@ -64,16 +57,8 @@ const queries = {
 };
 const UPLOAD_ATTACHMENT_ID = 'UPLOAD_ATTACHMENT';
 
-// `group` is derived channel compatibility, not an authoring choice — see getChannelCompatibility.
-const templateTypeOptions = [
-  { id: QUICK_REPLY, label: 'Reply buttons', group: CHANNEL_COMPATIBILITY_ALL },
-  { id: LIST, label: 'List message', group: CHANNEL_COMPATIBILITY_ALL },
-  { id: LOCATION_REQUEST, label: 'Location request', group: CHANNEL_COMPATIBILITY_ALL },
-  { id: CUSTOM_UI, label: 'Custom UI', group: CHANNEL_COMPATIBILITY_WEB_ONLY },
-];
-
-const CUSTOM_UI_FLOW_HINT =
-  'Custom UI messages are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts will receive the fallback text as a plain message instead.';
+const BLOCKS_FLOW_HINT =
+  'Blocks are delivered on the web channel only. A flow that uses one becomes web-only — WhatsApp contacts receive the message text as a plain message instead.';
 
 export const InteractiveMessage = () => {
   const location: any = useLocation();
@@ -83,7 +68,7 @@ export const InteractiveMessage = () => {
   const [footer, setFooter] = useState('');
   const [body, setBody] = useState<any>();
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
-  const [templateTypeField, setTemplateTypeField] = useState<any>(templateTypeOptions[0]);
+  const [templateTypeField, setTemplateTypeField] = useState<any>(TEMPLATE_TYPE_OPTIONS[0]);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
@@ -98,9 +83,10 @@ export const InteractiveMessage = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
 
-  // Custom UI authoring state: the JSON payload and the "start from" preset that seeded it.
-  const [customUiPayload, setCustomUiPayload] = useState<string>(getPresetPayload(CUSTOM_UI_PRESETS[0].id));
-  const [customUiPreset, setCustomUiPreset] = useState<any>(CUSTOM_UI_PRESETS[0]);
+  // Blocks authoring state: the typed JSON payload, plus the component the type selector fixed
+  // (null for a Custom Block, whose component is author-supplied inside the payload).
+  const [blocksPayload, setBlocksPayload] = useState<string>('');
+  const [blocksComponent, setBlocksComponent] = useState<string | null>(null);
 
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
   const [saveClicked, setSaveClicked] = useState<boolean>(false);
@@ -128,7 +114,7 @@ export const InteractiveMessage = () => {
   const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const isLocationRequestType = templateType === LOCATION_REQUEST;
-  const isCustomUiType = templateType === CUSTOM_UI;
+  const isBlocksType = templateType === BLOCKS;
 
   const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
@@ -272,8 +258,7 @@ export const InteractiveMessage = () => {
     type,
     attachmentURL,
     dynamicMedia,
-    customUiPayload,
-    customUiPreset,
+    blocksPayload,
   };
 
   const updateStates = ({
@@ -295,7 +280,7 @@ export const InteractiveMessage = () => {
     setBody(data.body || '');
     setEditorState(data.body || '');
     setTemplateType(typeValue);
-    setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
+    setTemplateTypeField(getTemplateTypeOption(typeValue, data.component));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
 
     if (typeValue === LIST) {
@@ -307,8 +292,9 @@ export const InteractiveMessage = () => {
       setAttachmentURL(data.attachmentURL);
     }
 
-    if (typeValue === CUSTOM_UI && data.customUiPayload && JSON.parse(data.customUiPayload)?.component) {
-      setCustomUiPayload(data.customUiPayload);
+    if (typeValue === BLOCKS && data.blocksPayload) {
+      setBlocksPayload(data.blocksPayload);
+      setBlocksComponent(getTemplateTypeOption(typeValue, data.component).component);
     }
   };
 
@@ -374,7 +360,7 @@ export const InteractiveMessage = () => {
     setBody(data.body || '');
     setEditorState(data.body || '');
     setTemplateType(typeValue);
-    setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
+    setTemplateTypeField(getTemplateTypeOption(typeValue, data.component));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
 
     if (typeValue === LIST) {
@@ -386,12 +372,9 @@ export const InteractiveMessage = () => {
       setAttachmentURL(data.attachmentURL);
     }
 
-    if (typeValue === CUSTOM_UI && data.customUiPayload) {
-      const component = JSON.parse(data.customUiPayload)?.component;
-      if (component) {
-        setCustomUiPayload(data.customUiPayload);
-        setCustomUiPreset(getCustomUiPreset(component) || null);
-      }
+    if (typeValue === BLOCKS && data.blocksPayload) {
+      setBlocksPayload(data.blocksPayload);
+      setBlocksComponent(getTemplateTypeOption(typeValue, data.component).component);
     }
 
     if (isEditing && data.attachmentURL) {
@@ -442,8 +425,8 @@ export const InteractiveMessage = () => {
       QUICK_REPLY: { value: '' },
       LIST: { title: '', options: [{ title: '', description: '' }] },
       LOCATION_REQUEST_MESSAGE: {},
-      // Custom UI has no per-button authoring — the payload lives in the JSON editor.
-      CUSTOM_UI: {},
+      // Blocks has no per-button authoring — the payload lives in the JSON editor.
+      BLOCKS: {},
     };
 
     const templateResult = stateToRestore || [buttonType[templateTypeVal]];
@@ -649,53 +632,41 @@ export const InteractiveMessage = () => {
     },
     {
       component: AutoComplete,
+      // §11 — one grouped selector. The four Web entries all write `type = blocks` and differ
+      // only in the component, so the option id is a selector key, not the template type.
       onChange: (change: any) => {
-        const value = change.id;
-        const stateToRestore = previousState[value];
-        setTemplateType(value);
-        setTemplateTypeField(change);
+        if (!change) return;
+        const option = getTemplateTypeOption(change.templateType, change.component);
+        const stateToRestore = previousState[option.templateType];
+        setTemplateType(option.templateType);
+        setTemplateTypeField(option);
+        setBlocksComponent(option.component);
         setPreviousState({ [templateType]: templateButtons });
-        handleAddInteractiveTemplate(false, value, stateToRestore);
+        handleAddInteractiveTemplate(false, option.templateType, stateToRestore);
 
-        // Seed the default preset so switching to Custom UI already yields a saveable template.
-        if (value === CUSTOM_UI && !body) {
-          const preset = CUSTOM_UI_PRESETS[0];
-          setCustomUiPreset(preset);
-          setCustomUiPayload(getPresetPayload(preset.id));
-          setBody(preset.fallback);
-          setEditorState(preset.fallback);
+        if (option.templateType === BLOCKS) {
+          setBlocksPayload(getPresetPayload(option.component));
         }
       },
       name: 'templateTypeField',
-      options: templateTypeOptions,
-      multiple: false,
-      disabled: params?.id !== undefined,
-      label: `${t('Type')}*`,
-      optionLabel: 'label',
-      groupBy: (option: any) => option.group || getChannelCompatibility(option.id),
-      helperText: isCustomUiType ? t(CUSTOM_UI_FLOW_HINT) : '',
-    },
-    {
-      skip: !isCustomUiType,
-      component: AutoComplete,
-      name: 'customUiPreset',
-      options: CUSTOM_UI_PRESETS,
-      optionLabel: 'label',
-      additionalOptionLabel: 'description',
+      options: TEMPLATE_TYPE_OPTIONS,
       multiple: false,
       disableClearable: true,
       disabled: params?.id !== undefined,
-      label: t('Start from'),
-      helperText: t('Pick a built-in block to pre-fill a working payload, or start blank.'),
-      onChange: (value: any) => {
-        if (!value) return;
-        setCustomUiPreset(value);
-        setCustomUiPayload(getPresetPayload(value.id));
-        if (value.fallback) {
-          setBody(value.fallback);
-          setEditorState(value.fallback);
-        }
-      },
+      label: `${t('Type')}*`,
+      optionLabel: 'label',
+      groupBy: (option: any) => option.group,
+      helperText: isBlocksType ? t(BLOCKS_FLOW_HINT) : '',
+    },
+    {
+      // §11 — derived, read-only channel support. No validation hangs off it.
+      field: 'channelBadges',
+      component: () => (
+        <div className={styles.ChannelRow}>
+          <span className={styles.ChannelRowLabel}>{t('Delivered on')}</span>
+          <ChannelBadges templateType={templateType} />
+        </div>
+      ),
     },
     {
       translation: hasTranslations && getTranslation(templateType, 'title', translations, defaultLanguage),
@@ -710,7 +681,7 @@ export const InteractiveMessage = () => {
     },
     // checkbox is not needed in media types
     {
-      skip: (type && type.label) || isLocationRequestType || isCustomUiType,
+      skip: (type && type.label) || isLocationRequestType || isBlocksType,
       component: Checkbox,
       name: 'sendWithTitle',
       title: t('Show title in message'),
@@ -718,24 +689,24 @@ export const InteractiveMessage = () => {
       addLabelStyle: false,
     },
     {
+      // §9 — a blocks message has no authored body. The body is derived server-side by walking
+      // the payload's text nodes, so the console must not ask the author for one.
+      skip: isBlocksType,
       translation: hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      // For Custom UI this field is the envelope's translatable fallback text (contract §2/§7).
-      label: isCustomUiType ? `${t('Fallback text')}*` : `${t('Message')}*`,
+      label: `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      helperText: isCustomUiType
-        ? t('Shown wherever the block cannot render, and required on every language.')
-        : t('You can also use variables in message enter @ to see the available list'),
+      helperText: t('You can also use variables in message enter @ to see the available list'),
       handleChange: (value: any) => {
         setBody(value);
       },
       inputProp: {
         suggestions: contactVariables,
       },
-      defaultValue: (isEditing || isCustomUiType) && editorState,
+      defaultValue: isEditing && editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,
@@ -749,20 +720,22 @@ export const InteractiveMessage = () => {
       },
     },
     {
-      skip: !isCustomUiType,
-      component: CustomUiEditor,
-      name: 'customUiPayload',
+      skip: !isBlocksType,
+      component: BlocksEditor,
+      name: 'blocksPayload',
       label: t('Payload'),
-      helperText: t(
-        'The component and its props. glific/* blocks are schema-checked; other namespaces are passed through untouched.'
-      ),
+      // named `componentName`, not `component`: FormLayout reads `component` to pick the field
+      componentName: blocksComponent,
+      helperText: blocksComponent
+        ? t('The typed props for this block. Every authored leaf is a { "kind": …, "value": … } node.')
+        : t('The component and its typed props. Custom Blocks must use your own namespace, not glific/.'),
       disabled: hasTranslations,
       onChange: (value: string) => {
-        setCustomUiPayload(value);
+        setBlocksPayload(value);
       },
     },
     {
-      skip: isCustomUiType,
+      skip: isBlocksType,
       translation: hasTranslations && getTranslation(templateType, 'options', translations, defaultLanguage),
       component: InteractiveOptions,
       isAddButtonChecked: true,
@@ -862,14 +835,14 @@ export const InteractiveMessage = () => {
       });
     }
 
-    if (templateTypeVal === CUSTOM_UI) {
+    if (templateTypeVal === BLOCKS) {
       // `type` and `version` are injected, never taken from the editor — the backend derives the
       // message type from interactive_content["type"] (contract §2).
-      const customUiJSON = buildCustomUiEnvelope(payload.customUiPayload ?? customUiPayload, payload.body);
+      const blocksJSON = buildBlocksEnvelope(payload.blocksPayload ?? blocksPayload, blocksComponent);
 
       Object.assign(updatedPayload, {
-        type: CUSTOM_UI,
-        interactiveContent: JSON.stringify(customUiJSON),
+        type: BLOCKS,
+        interactiveContent: JSON.stringify(blocksJSON),
       });
     }
     return updatedPayload;
@@ -1052,12 +1025,12 @@ export const InteractiveMessage = () => {
     },
   ];
 
-  const validation = validator(templateType, t);
+  const validation = validator(templateType, t, blocksComponent);
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
     const bodyText = body;
-    if (!title && !bodyText && !footer) return null;
+    if (!isBlocksType && !title && !bodyText && !footer) return null;
 
     const payload = {
       title,
@@ -1066,7 +1039,7 @@ export const InteractiveMessage = () => {
       footer,
       attachmentURL,
       language,
-      customUiPayload,
+      blocksPayload,
     };
 
     const { interactiveContent } = convertStateDataToJSON(payload, title, templateType, templateButtons, globalButton);
@@ -1084,8 +1057,16 @@ export const InteractiveMessage = () => {
     globalButton,
     type,
     attachmentURL,
-    customUiPayload,
+    blocksPayload,
+    blocksComponent,
   ]);
+
+  // §11 — the draggable phone is replaced by a web-widget preview for Blocks types. A blocks
+  // message never reaches WhatsApp, so a phone frame would misrepresent it.
+  const blocksPreviewPanel = useMemo(() => {
+    const { valid, errors: payloadErrors, envelope } = validateBlocksPayload(blocksPayload, blocksComponent);
+    return <BlocksPreview envelope={envelope} error={valid ? undefined : payloadErrors[0]?.message} />;
+  }, [blocksPayload, blocksComponent]);
 
   let messageDialog;
   if (translateMessage) {
@@ -1147,16 +1128,21 @@ export const InteractiveMessage = () => {
         buttonState={{ text: t('Validating URL'), status: validatingURL, show: true }}
         helpData={interactiveMessageInfo}
         backLinkButton={`/${backButton}`}
+        customStyles={styles.WideForm}
       />
-      <div className={styles.Simulator}>
-        <Simulator
-          isPreviewMessage
-          message={{}}
-          showHeader={sendWithTitle}
-          interactiveMessage={previewData}
-          simulatorIcon={false}
-        />
-      </div>
+      {isBlocksType ? (
+        <div className={styles.PreviewPanel}>{blocksPreviewPanel}</div>
+      ) : (
+        <div className={styles.Simulator}>
+          <Simulator
+            isPreviewMessage
+            message={{}}
+            showHeader={sendWithTitle}
+            interactiveMessage={previewData}
+            simulatorIcon={false}
+          />
+        </div>
+      )}
       {translateMessage && messageDialog}
       {showWarning && warningDialog}
     </>

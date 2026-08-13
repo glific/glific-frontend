@@ -26,7 +26,7 @@ import {
   QUICK_REPLY,
   DEFAULT_MESSAGE_LIMIT,
   LOCATION_REQUEST,
-  CUSTOM_UI,
+  BLOCKS,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -53,7 +53,7 @@ import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessag
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
-import { CustomUiCard } from 'containers/Chat/ChatMessages/ChatMessage/CustomUiCard/CustomUiCard';
+import { BlocksCard } from 'containers/Chat/ChatMessages/ChatMessage/BlocksCard/BlocksCard';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -382,18 +382,18 @@ const Simulator = ({
           />
         );
       }
-      if (isInteractiveContentPresent && messageType === CUSTOM_UI) {
+      if (isInteractiveContentPresent && messageType === BLOCKS) {
         template = (
           <>
-            <CustomUiCard
+            <BlocksCard
               content={content}
               isSimulator
               disabled={isInteractive}
               /**
                * The staff simulator talks to the WhatsApp callback, not the web-channel socket,
-               * so a Custom UI reply is delivered as its summary text. Per contract §5 that takes
+               * so a Blocks reply is delivered as its summary text. Per contract §5 that takes
                * the router's default "Responded" exit, which is the same exit a real
-               * custom_ui_response takes.
+               * blocks_response takes.
                */
               onRespond={({ summary }: any) => sendMessage(sender, null, summary)}
             />

@@ -3,9 +3,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 
 import {
-  customUiInteractiveCountQuery,
+  blocksInteractiveCountQuery,
   filterByTagInteractiveQuery,
-  filterCustomUiInteractiveQuery,
+  filterBlocksInteractiveQuery,
   filterInteractiveQuery,
   getFilterInteractiveCountQuery,
   getInteractiveCountQuery,
@@ -60,7 +60,7 @@ test('Interactive message list renders correctly', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Are you excited for Glific?')).toBeInTheDocument();
-    expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Reply buttons')[0]).toBeInTheDocument();
   });
 });
 
@@ -106,10 +106,10 @@ test('It navigates to edit on clicking copy ', async () => {
   });
 });
 
-describe('channel compatibility badge', () => {
-  const customUiList = (
+describe('blocks rows (contract §11)', () => {
+  const blocksList = (
     <MockedProvider
-      mocks={[filterCustomUiInteractiveQuery, customUiInteractiveCountQuery, getFilterTagQuery]}
+      mocks={[filterBlocksInteractiveQuery, blocksInteractiveCountQuery, getFilterTagQuery]}
       addTypename={false}
     >
       <Router>
@@ -118,29 +118,41 @@ describe('channel compatibility badge', () => {
     </MockedProvider>
   );
 
-  test('labels Custom UI as web only and the WhatsApp-capable types as Web + WhatsApp', async () => {
-    render(customUiList);
+  // §11 — the type label comes from interactive_content.component, not the enum
+  test('derives the type label from the component', async () => {
+    render(blocksList);
 
     await waitFor(() => {
       expect(screen.getByText('Course picker')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Custom UI')).toBeInTheDocument();
-    expect(screen.getByText('Web only')).toBeInTheDocument();
-    expect(screen.getByText('Web + WhatsApp')).toBeInTheDocument();
-    expect(screen.getAllByTestId('channelCompatibilityBadge')).toHaveLength(2);
+    expect(screen.getByText('Image panel')).toBeInTheDocument();
+    expect(screen.queryByText('Blocks')).not.toBeInTheDocument();
   });
 
-  test('shows the fallback text as the message body for Custom UI rows', async () => {
-    render(customUiList);
+  test('badges blocks as Web and the WhatsApp-capable types as WhatsApp + Web', async () => {
+    render(blocksList);
 
     await waitFor(() => {
-      expect(screen.getByText('Pick a course: Spoken English or Digital skills')).toBeInTheDocument();
+      expect(screen.getByText('Course picker')).toBeInTheDocument();
+    });
+
+    expect(screen.getAllByTestId('channelBadges')).toHaveLength(2);
+    expect(screen.getAllByTestId('channelBadgeWeb')).toHaveLength(2);
+    expect(screen.getAllByTestId('channelBadgeWhatsapp')).toHaveLength(1);
+  });
+
+  // §9 — the message column shows the derived body, never JSON
+  test('shows the derived body as the message for blocks rows', async () => {
+    render(blocksList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Pick a course — Spoken English — Digital skills')).toBeInTheDocument();
     });
   });
 
-  test('shows the translated fallback in the all-languages row', async () => {
-    render(customUiList);
+  test('shows the translated derived body in the all-languages row', async () => {
+    render(blocksList);
 
     await waitFor(() => {
       expect(screen.getByText('Course picker')).toBeInTheDocument();
@@ -149,7 +161,7 @@ describe('channel compatibility badge', () => {
     fireEvent.click(screen.getAllByTestId('down-arrow')[1]);
 
     await waitFor(() => {
-      expect(screen.getByText('कोर्स चुनें')).toBeInTheDocument();
+      expect(screen.getByText('कोर्स चुनें — Spoken English — Digital skills')).toBeInTheDocument();
     });
   });
 });

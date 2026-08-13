@@ -7,7 +7,9 @@ import { List } from 'containers/List/List';
 import { FILTER_INTERACTIVE_MESSAGES, GET_INTERACTIVE_MESSAGES_COUNT } from 'graphql/queries/InteractiveMessage';
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
-import { CHANNEL_COMPATIBILITY_WEB_ONLY, CUSTOM_UI, getChannelCompatibility, QUICK_REPLY } from 'common/constants';
+import { BLOCKS, QUICK_REPLY } from 'common/constants';
+import { ChannelBadges } from 'components/blocks/ChannelBadges';
+import { deriveBody, getComponentLabel } from 'containers/InteractiveMessage/Blocks.helper';
 import { useNavigate, useSearchParams } from 'react-router';
 import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
@@ -21,30 +23,42 @@ const getLabel = (text: string) => (
   </p>
 );
 
-const getType = (text: string) => {
-  const typeMappings: any = {
-    LOCATION_REQUEST_MESSAGE: 'Location request',
-    QUICK_REPLY: 'Quick Reply',
-    LIST: 'List',
-    CUSTOM_UI: 'Custom UI',
-  };
+const typeMappings: any = {
+  LOCATION_REQUEST_MESSAGE: 'Location request',
+  QUICK_REPLY: 'Reply buttons',
+  LIST: 'List',
+};
 
-  // Channel compatibility is derived from the type, never author-chosen.
-  const compatibility = getChannelCompatibility(text);
-  const isWebOnly = compatibility === CHANNEL_COMPATIBILITY_WEB_ONLY;
+/**
+ * §11 — a blocks template's type label comes from `interactive_content.component`
+ * ("Carousel", "Image panel", "Form", "Custom Block"), never from the enum: all four Web
+ * entries in the type selector share `BLOCKS`.
+ */
+const getType = (type: string, interactiveContent: string) => {
+  let label = typeMappings[type];
+  if (type === BLOCKS) {
+    let component;
+    try {
+      component = JSON.parse(interactiveContent)?.component;
+    } catch (error) {
+      component = undefined;
+    }
+    label = getComponentLabel(component);
+  }
 
   return (
     <div className={styles.TableText}>
-      <p className={styles.TypeLabel}>{typeMappings[text]}</p>
-      <span
-        className={`${styles.ChannelBadge} ${isWebOnly ? styles.WebOnlyBadge : styles.AllChannelsBadge}`}
-        data-testid="channelCompatibilityBadge"
-      >
-        {compatibility}
-      </span>
+      <p className={styles.TypeLabel}>{label ?? type}</p>
     </div>
   );
 };
+
+/** §11 — derived, read-only channel support. Pure presentation over the type. */
+const getChannels = (type: string) => (
+  <div className={styles.TableText}>
+    <ChannelBadges templateType={type} compact />
+  </div>
+);
 
 const getBody = (text: string) => {
   const message = getInteractiveMessageBody(JSON.parse(text));
@@ -58,12 +72,12 @@ const getTranslations = (type: string, language: any, data: string) => {
   }
 
   const result = Object.keys(dataObj).reduce((acc: any, langId: string) => {
-    const { content, body, fallback } = dataObj[langId];
+    const { content, body } = dataObj[langId];
     if (type === QUICK_REPLY) {
       acc[langId] = { body: content?.text || '' };
-    } else if (type === CUSTOM_UI) {
-      // A Custom UI envelope has no body — the translatable text is the fallback.
-      acc[langId] = { body: fallback || '' };
+    } else if (type === BLOCKS) {
+      // §9 — a Blocks envelope has no authored body; it is derived from its text nodes.
+      acc[langId] = { body: deriveBody(dataObj[langId]) };
     } else {
       acc[langId] = { body };
     }
@@ -73,7 +87,7 @@ const getTranslations = (type: string, language: any, data: string) => {
   return JSON.stringify(result);
 };
 
-const columnStyles = [styles.Label, styles.Message, styles.Type, styles.Actions];
+const columnStyles = [styles.Label, styles.Message, styles.Type, styles.Channel, styles.Actions];
 const interactiveMsgIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -95,7 +109,8 @@ export const InteractiveMessageList = () => {
     id,
     label: getLabel(label),
     message: getBody(interactiveContent),
-    type: getType(type),
+    type: getType(type, interactiveContent),
+    channel: getChannels(type),
     translations: getTranslations(type, language, translations),
   });
 
@@ -103,6 +118,7 @@ export const InteractiveMessageList = () => {
     { name: 'label', label: 'Title' },
     { label: t('Message') },
     { label: t('Type') },
+    { label: t('Channel') },
     { label: t('Actions') },
   ];
 
