@@ -7,6 +7,8 @@ import {
   deactivateWhatsappFormError,
   syncWhatsappFormQueryWithErrors,
   syncWhatsappForm,
+  activateWhatsappForm,
+  activateWhatsappFormError,
 } from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
@@ -131,6 +133,30 @@ describe('<WhatsAppFormList />', () => {
 
     const ConfirmButton = await waitFor(() => getByTestId('ok-button'));
     fireEvent.click(ConfirmButton);
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('activates a form successfully when activate button is clicked', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { getAllByTestId } = render(wrapper([activateWhatsappForm]));
+
+    const activateIcon = await waitFor(() => getAllByTestId('activate-icon')[0]);
+    fireEvent.click(activateIcon);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Form activated successfully');
+    });
+  });
+
+  test('shows error message when activate API fails', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
+    const { getAllByTestId } = render(wrapper([activateWhatsappFormError]));
+
+    const activateIcon = await waitFor(() => getAllByTestId('activate-icon')[0]);
+    fireEvent.click(activateIcon);
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();

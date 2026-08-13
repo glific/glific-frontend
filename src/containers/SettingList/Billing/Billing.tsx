@@ -319,7 +319,7 @@ export const BillingForm = () => {
           className={styles.Portal}
           data-testid="customerPortalButton"
           onClick={() => {
-            getCustomerPortal();
+            visitCustomerPortal();
           }}
         >
           Visit Stripe portal <CallMadeIcon />
