@@ -1,20 +1,36 @@
+import { useState } from 'react';
 import { Button, TextField } from '@mui/material';
-import { GLIFIC_BLOCKS, deriveBody, unwrap } from 'containers/InteractiveMessage/Blocks.helper';
+import {
+  BlocksResponse,
+  GLIFIC_BLOCKS,
+  buildCarouselResponse,
+  buildFormResponse,
+  buildImagePanelResponse,
+  deriveBody,
+  unwrap,
+} from 'containers/InteractiveMessage/Blocks.helper';
 import styles from './BlocksRenderer.module.css';
 
 /**
  * MUI reimplementation of the web widget's block renderer (contract §11).
  *
- * Used in two read-only places: the interactive-message preview panel and the staff Chat
- * thread. Fidelity is best-effort — the contact sees the real thing in the widget — so nothing
- * here is interactive. The answered state is driven by `answered` / `answer_summary`, which the
+ * Read-only by default — the interactive-message preview panel and the staff Chat thread both
+ * render it that way, and the answered state comes from `answered` / `answer_summary`, which the
  * backend writes into the outbound message's `interactive_content` on response receipt (§3).
+ *
+ * The flow preview simulator's Web tab passes `interactive`, which turns the controls live and
+ * produces a real `{ values, summary }` per §6. That is the only place a console-side response is
+ * generated, and it is the only tab that exercises the blocks response contract (§13.5).
  */
 export interface BlocksRendererProps {
   /** The envelope, typed (template) or unwrapped (message) — `unwrap` is idempotent. */
   content: any;
   /** Rendered small, for the staff Chat thread rather than the preview panel. */
   compact?: boolean;
+  /** Turn the controls live. Off everywhere except the simulator's Web tab. */
+  interactive?: boolean;
+  /** Called with the §6 `{ values, summary }` when an interactive block is answered. */
+  onRespond?: (response: BlocksResponse) => void;
 }
 
 interface OptionLike {
@@ -24,6 +40,12 @@ interface OptionLike {
   label?: string;
   title?: string;
   description?: string;
+}
+
+interface BlockProps {
+  props: any;
+  interactive: boolean;
+  onRespond: (response: BlocksResponse) => void;
 }
 
 const asArray = (value: any): any[] => (Array.isArray(value) ? value : []);
@@ -40,21 +62,28 @@ const BlockBody = ({ text }: { text?: string }) =>
     </div>
   ) : null;
 
-const ImagePanel = ({ props }: { props: any }) => (
+const ImagePanel = ({ props, interactive, onRespond }: BlockProps) => (
   <div className={styles.Block} data-testid="blocksImagePanel">
     <BlockBody text={props.body} />
     <div className={styles.OptionGrid}>
       {asArray(props.options).map((option: OptionLike, index: number) => (
-        <div key={option.id ?? `option-${index}`} className={styles.Option} data-testid="imagePanelOption">
+        <button
+          type="button"
+          key={option.id ?? `option-${index}`}
+          className={`${styles.Option} ${interactive ? styles.Selectable : ''}`}
+          data-testid="imagePanelOption"
+          disabled={!interactive}
+          onClick={() => onRespond(buildImagePanelResponse(props, option))}
+        >
           <BlockImage url={option.image} alt={option.image_alt} className={styles.OptionImage} />
           <span className={styles.OptionLabel}>{option.label}</span>
-        </div>
+        </button>
       ))}
     </div>
   </div>
 );
 
-const Carousel = ({ props }: { props: any }) => (
+const Carousel = ({ props, interactive, onRespond }: BlockProps) => (
   <div className={styles.Block} data-testid="blocksCarousel">
     <BlockBody text={props.body} />
     <div className={styles.CarouselTrack} data-testid="carouselTrack">
@@ -64,7 +93,15 @@ const Carousel = ({ props }: { props: any }) => (
           <div className={styles.CardText}>
             <span className={styles.CardTitle}>{card.title}</span>
             {card.description && <span className={styles.CardDescription}>{card.description}</span>}
-            <Button variant="outlined" size="small" disabled fullWidth className={styles.CardButton}>
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={!interactive}
+              fullWidth
+              className={styles.CardButton}
+              data-testid="carouselSelect"
+              onClick={() => onRespond(buildCarouselResponse(props, card))}
+            >
               Select
             </Button>
           </div>
@@ -74,29 +111,45 @@ const Carousel = ({ props }: { props: any }) => (
   </div>
 );
 
-const FormBlock = ({ props }: { props: any }) => (
-  <div className={styles.Block} data-testid="blocksForm">
-    <BlockBody text={props.body} />
-    <div className={styles.Fields}>
-      {asArray(props.fields).map((field: any, index: number) => (
-        <TextField
-          key={field.id ?? `field-${index}`}
+const FormBlock = ({ props, interactive, onRespond }: BlockProps) => {
+  const [values, setValues] = useState<Record<string, string>>({});
+  const fields = asArray(props.fields);
+  const missingRequired = fields.some((field: any) => field.required && !(values[field.id] ?? '').trim());
+
+  return (
+    <div className={styles.Block} data-testid="blocksForm">
+      <BlockBody text={props.body} />
+      <div className={styles.Fields}>
+        {fields.map((field: any, index: number) => (
+          <TextField
+            key={field.id ?? `field-${index}`}
+            size="small"
+            fullWidth
+            disabled={!interactive}
+            variant="outlined"
+            label={field.label}
+            required={!!field.required}
+            placeholder={field.placeholder}
+            data-testid="formField"
+            value={values[field.id] ?? ''}
+            slotProps={{ htmlInput: { 'aria-label': field.label || field.id } }}
+            onChange={(event) => setValues({ ...values, [field.id]: event.target.value })}
+          />
+        ))}
+        <Button
+          variant="contained"
           size="small"
+          disabled={!interactive || missingRequired}
           fullWidth
-          disabled
-          variant="outlined"
-          label={field.label}
-          required={!!field.required}
-          placeholder={field.placeholder}
-          data-testid="formField"
-        />
-      ))}
-      <Button variant="contained" size="small" disabled fullWidth data-testid="formSubmit">
-        {props.submit_label || 'Submit'}
-      </Button>
+          data-testid="formSubmit"
+          onClick={() => onRespond(buildFormResponse(props, values))}
+        >
+          {props.submit_label || 'Submit'}
+        </Button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /** §6 — a Custom Block is rendered by the org's own component in the widget, not here. */
 const NoPreview = ({ body }: { body: string }) => (
@@ -106,19 +159,26 @@ const NoPreview = ({ body }: { body: string }) => (
   </div>
 );
 
-export const BlocksRenderer = ({ content, compact = false }: BlocksRendererProps) => {
+export const BlocksRenderer = ({
+  content,
+  compact = false,
+  interactive = false,
+  onRespond = () => {},
+}: BlocksRendererProps) => {
   const envelope = unwrap(content ?? {});
   const component: string = envelope?.component ?? '';
   const props = envelope?.props ?? {};
   const answered = !!envelope?.answered;
+  // an already-answered block is never re-answerable: the backend rejects a second submit
+  const live = interactive && !answered;
 
   let block;
   if (component === 'glific/image-panel') {
-    block = <ImagePanel props={props} />;
+    block = <ImagePanel props={props} interactive={live} onRespond={onRespond} />;
   } else if (component === 'glific/carousel') {
-    block = <Carousel props={props} />;
+    block = <Carousel props={props} interactive={live} onRespond={onRespond} />;
   } else if (component === 'glific/form') {
-    block = <FormBlock props={props} />;
+    block = <FormBlock props={props} interactive={live} onRespond={onRespond} />;
   } else {
     block = <NoPreview body={deriveBody(content ?? {})} />;
   }
@@ -129,6 +189,7 @@ export const BlocksRenderer = ({ content, compact = false }: BlocksRendererProps
       data-testid="blocksRenderer"
       data-component={component}
       data-answered={answered}
+      data-interactive={live}
     >
       {block}
       {answered && (

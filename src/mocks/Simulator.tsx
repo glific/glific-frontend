@@ -1,4 +1,6 @@
 import { DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
+import { SIMULATOR_WEB_MESSAGE } from 'graphql/mutations/Simulator';
 import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import {
@@ -88,6 +90,7 @@ export const simulatorSearchQuery = {
                 id: '716',
               },
               type: 'LIST',
+              channel: 'whatsapp',
             },
           ],
         },
@@ -118,6 +121,7 @@ export const messageReceivedSubscription = (variables: any = { organizationId: '
           phone: '919090709009',
         },
         type: 'TEXT',
+        channel: 'whatsapp',
         media: {
           caption: null,
           url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
@@ -146,6 +150,8 @@ const messageSubscriptionData = {
     },
 
     type: 'TEXT',
+
+    channel: 'whatsapp',
 
     media: {
       caption: null,
@@ -194,6 +200,7 @@ export const keywordSentSubscription = {
           id: '1',
         },
         type: 'TEXT',
+        channel: 'whatsapp',
       },
     },
   },
@@ -227,8 +234,90 @@ export const interactiveMessageReceiveSubscription = {
           id: '6',
         },
         type: 'QUICK_REPLY',
+        channel: 'whatsapp',
       },
     },
   },
   delay: 50,
 };
+
+/** A mixed-channel transcript, so the two preview tabs can be shown to filter their own (§13.4). */
+export const webSimulatorSearchQuery = {
+  request: {
+    query: SIMULATOR_SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      filter: { id: '1' },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          contact: { id: '1', name: 'Glific Simulator', phone: '987654321' },
+          messages: [
+            {
+              body: 'Browse our courses',
+              bspMessageId: null,
+              id: '4211',
+              uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae32',
+              insertedAt: '2025-07-17T08:55:27.476328Z',
+              interactiveContent: JSON.stringify({
+                type: 'blocks',
+                version: 1,
+                component: 'glific/carousel',
+                props: { id: 'product', body: 'Browse our courses', cards: [{ id: 'p1', title: 'Course A' }] },
+              }),
+              location: null,
+              media: null,
+              receiver: { id: '1' },
+              sender: { id: '6' },
+              type: 'BLOCKS',
+              channel: 'web',
+            },
+            {
+              body: 'a whatsapp only message',
+              bspMessageId: null,
+              id: '4210',
+              uuid: 'e2a84fd5-dfac-4688-91e1-379b20bcae33',
+              insertedAt: '2025-07-17T08:55:20.476328Z',
+              interactiveContent: '{}',
+              location: null,
+              media: null,
+              receiver: { id: '1' },
+              sender: { id: '6' },
+              type: 'TEXT',
+              channel: 'whatsapp',
+            },
+          ],
+        },
+      ],
+    },
+  },
+};
+
+export const clearSimulatorMessagesMutation = {
+  request: {
+    query: CLEAR_MESSAGES,
+    variables: { contactId: '1' },
+  },
+  result: {
+    data: { clearMessages: { success: true, errors: null } },
+  },
+};
+
+export const simulatorWebMessageMutation = (input: any) => ({
+  request: {
+    query: SIMULATOR_WEB_MESSAGE,
+    variables: { input: { contactId: '1', ...input } },
+  },
+  result: {
+    data: {
+      simulatorWebMessage: {
+        message: { id: '9999', body: input.body ?? '', type: input.type, channel: 'web' },
+        errors: null,
+      },
+    },
+  },
+});

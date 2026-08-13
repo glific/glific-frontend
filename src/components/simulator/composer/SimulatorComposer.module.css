@@ -1,0 +1,34 @@
+.Composer {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+}
+
+.Whatsapp {
+  background-color: #ffffff;
+  border-radius: 20px;
+  margin: 4px;
+}
+
+.Web {
+  background-color: #ffffff;
+  border-top: 1px solid #e4e8e6;
+}
+
+.Input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  padding: 6px 8px;
+  background-color: transparent;
+}
+
+.Dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 280px;
+}

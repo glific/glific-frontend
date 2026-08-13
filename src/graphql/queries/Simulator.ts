@@ -31,6 +31,7 @@ export const SIMULATOR_MESSAGE_FRAGMENT = `
     }
     bspMessageId
     type
+    channel
     media {
       url
       caption

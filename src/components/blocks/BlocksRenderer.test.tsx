@@ -1,4 +1,5 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
 import { BlocksRenderer, hasBlockPreview } from './BlocksRenderer';
 
 afterEach(cleanup);
@@ -159,6 +160,136 @@ describe('BlocksRenderer', () => {
   test('tolerates missing optional values at runtime', () => {
     render(<BlocksRenderer content={envelope('glific/form', {})} />);
     expect(screen.getByTestId('formSubmit')).toHaveTextContent('Submit');
+  });
+});
+
+describe('BlocksRenderer interactive mode (contract §6)', () => {
+  test('is read-only unless `interactive` is passed, so the preview and inbox are unchanged', () => {
+    const onRespond = vi.fn();
+    render(
+      <BlocksRenderer
+        content={envelope('glific/image-panel', {
+          id: 'course',
+          options: L([{ id: 'c1', image: I('https://x/a.png'), label: T('Spoken English') }]),
+        })}
+        onRespond={onRespond}
+      />
+    );
+
+    const option = screen.getByTestId('imagePanelOption');
+    expect(option).toBeDisabled();
+    fireEvent.click(option);
+    expect(onRespond).not.toHaveBeenCalled();
+  });
+
+  test('image panel: values are keyed by props.id, summary is the option label', () => {
+    const onRespond = vi.fn();
+    render(
+      <BlocksRenderer
+        interactive
+        onRespond={onRespond}
+        content={envelope('glific/image-panel', {
+          id: 'course',
+          options: L([
+            { id: 'c1', image: I('https://x/a.png'), label: T('Spoken English') },
+            { id: 'c2', image: I('https://x/b.png'), label: T('Basic Maths') },
+          ]),
+        })}
+      />
+    );
+
+    fireEvent.click(screen.getAllByTestId('imagePanelOption')[1]);
+    expect(onRespond).toHaveBeenCalledWith({ values: { course: 'c2' }, summary: 'Basic Maths' });
+  });
+
+  test('carousel: values are keyed by props.id, summary is the card title', () => {
+    const onRespond = vi.fn();
+    render(
+      <BlocksRenderer
+        interactive
+        onRespond={onRespond}
+        content={envelope('glific/carousel', {
+          id: 'product',
+          cards: L([{ id: 'p1', image: I('https://x/a.png'), title: T('Course A'), description: T('Evenings') }]),
+        })}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId('carouselSelect'));
+    expect(onRespond).toHaveBeenCalledWith({ values: { product: 'p1' }, summary: 'Course A' });
+  });
+
+  test('form: every field is in values, but only the filled ones are in the summary', () => {
+    const onRespond = vi.fn();
+    render(
+      <BlocksRenderer
+        interactive
+        onRespond={onRespond}
+        content={envelope('glific/form', {
+          id: 'signup',
+          fields: L([
+            { id: 'name', label: T('Your name') },
+            { id: 'city', label: T('Your city') },
+          ]),
+        })}
+      />
+    );
+
+    fireEvent.change(screen.getAllByTestId('formField')[0].querySelector('input')!, { target: { value: 'Asha' } });
+    fireEvent.click(screen.getByTestId('formSubmit'));
+
+    expect(onRespond).toHaveBeenCalledWith({ values: { name: 'Asha', city: '' }, summary: 'Your name: Asha' });
+  });
+
+  test('form: submit stays blocked until every required field is filled', () => {
+    render(
+      <BlocksRenderer
+        interactive
+        content={envelope('glific/form', {
+          fields: L([{ id: 'name', label: T('Your name'), required: B(true) }]),
+        })}
+      />
+    );
+
+    expect(screen.getByTestId('formSubmit')).toBeDisabled();
+    fireEvent.change(screen.getByTestId('formField').querySelector('input')!, { target: { value: 'Asha' } });
+    expect(screen.getByTestId('formSubmit')).not.toBeDisabled();
+  });
+
+  test('an already-answered block is not re-answerable', () => {
+    render(
+      <BlocksRenderer
+        interactive
+        content={{
+          ...envelope('glific/image-panel', {
+            id: 'course',
+            options: L([{ id: 'c1', image: I('https://x/a.png'), label: T('Spoken English') }]),
+          }),
+          answered: true,
+          answer_summary: 'Spoken English',
+        }}
+      />
+    );
+
+    expect(screen.getByTestId('imagePanelOption')).toBeDisabled();
+    expect(screen.getByTestId('blocksAnswered')).toHaveTextContent('Spoken English');
+  });
+
+  test('a blank summary is never emitted — it becomes the message body (§6)', () => {
+    const onRespond = vi.fn();
+    render(
+      <BlocksRenderer
+        interactive
+        onRespond={onRespond}
+        content={envelope('glific/image-panel', {
+          id: 'course',
+          options: L([{ id: 'c1', image: I('https://x/a.png'), label: T('') }]),
+        })}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId('imagePanelOption'));
+    expect(onRespond).toHaveBeenCalledWith({ values: { course: 'c1' }, summary: 'c1' });
   });
 });
 

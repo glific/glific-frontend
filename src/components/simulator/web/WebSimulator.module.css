@@ -1,0 +1,135 @@
+.Browser {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 520px;
+  overflow: hidden;
+  border: 1px solid #d0d5d3;
+  border-radius: 10px;
+  background-color: #f2f4f3;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+}
+
+.BrowserBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background-color: #e4e8e6;
+  border-bottom: 1px solid #d0d5d3;
+}
+
+.Dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.Red {
+  background-color: #ff5f57;
+}
+
+.Amber {
+  background-color: #febc2e;
+}
+
+.Green {
+  background-color: #28c840;
+}
+
+.AddressBar {
+  flex: 1;
+  margin-left: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: #555;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.Widget {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #e4e8e6;
+  border-radius: 10px;
+}
+
+.WidgetHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #119656;
+}
+
+.Avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  color: #119656;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+
+.Messages {
+  flex: 1;
+  min-height: 0;
+  padding: 8px;
+  overflow-y: auto;
+  background-color: #f7f9f8;
+}
+
+.SentRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ReceivedRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.Bubble {
+  max-width: 80%;
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  word-break: break-word;
+  border-radius: 10px;
+}
+
+.Sent {
+  color: #ffffff;
+  background-color: #119656;
+}
+
+.Received {
+  color: #333333;
+  background-color: #ffffff;
+  border: 1px solid #e4e8e6;
+}
+
+.Time {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  text-align: right;
+  opacity: 0.7;
+}
+
+.NoPreview {
+  font-size: 12px;
+  font-style: italic;
+  color: #666666;
+}

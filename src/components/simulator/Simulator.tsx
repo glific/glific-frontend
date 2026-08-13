@@ -27,6 +27,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   LOCATION_REQUEST,
   BLOCKS,
+  MEDIA_MESSAGE_TYPES,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -54,6 +55,7 @@ import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
 import { BlocksCard } from 'containers/Chat/ChatMessages/ChatMessage/BlocksCard/BlocksCard';
+import { SimulatorComposer, SimulatorLocation, SimulatorMedia } from './composer/SimulatorComposer';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -66,6 +68,18 @@ export interface SimulatorProps {
   showHeader?: boolean;
   hasResetButton?: boolean;
   pollContent?: any;
+  /**
+   * A simulator contact allocated by an owner ABOVE this component (`SimulatorPanel`, contract
+   * §13.4 — both tabs share one contact). When set, this component neither acquires nor releases
+   * the contact and does not watch the release subscription; the owner does all three.
+   */
+  simulatorContact?: Sender | null;
+  /** Rendered inside an owner's chrome: no `Draggable`, no close button. */
+  embedded?: boolean;
+  /** Restrict the transcript, e.g. to the WhatsApp channel when a Web tab exists (§13.4). */
+  messageFilter?: (message: any) => boolean;
+  /** Use the shared composer with a real file picker instead of the canned media list (§13.6). */
+  realAttachments?: boolean;
 }
 
 interface Sender {
@@ -128,6 +142,10 @@ const Simulator = ({
   showHeader = true,
   hasResetButton = false,
   pollContent,
+  simulatorContact = null,
+  embedded = false,
+  messageFilter,
+  realAttachments = false,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -226,7 +244,8 @@ const Simulator = ({
   useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     fetchPolicy: 'network-only',
     variables,
-    skip: isPreviewMessage,
+    // the owner watches the release when it owns the allocation
+    skip: isPreviewMessage || !!simulatorContact,
     onData: ({ data: simulatorSubscribe }) => {
       if (simulatorSubscribe.data) {
         try {
@@ -443,7 +462,7 @@ const Simulator = ({
   };
 
   const getChatMessage = () => {
-    const chatMessage = messages
+    const chatMessage = (messageFilter ? messages.filter(messageFilter) : messages)
       .map((simulatorMessage: any, index: number) => {
         if (simulatorMessage.receiver.id === simulatorId) {
           return renderMessage(simulatorMessage, 'received', index, false);
@@ -570,127 +589,162 @@ const Simulator = ({
     <div className={styles.DisconnectedBanner}>Simulator connection lost. Try to reload.</div>
   );
 
-  const simulator = (
-    <Draggable nodeRef={nodeRef}>
-      <div ref={nodeRef} data-testid="simulator-container" className={styles.SimContainer}>
-        <div>
-          <div id="simulator" className={styles.Simulator}>
-            <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
-            {!isPreviewMessage && (
-              <>
-                <ClearIcon
-                  className={styles.ClearIcon}
-                  onClick={() => {
-                    releaseUserSimulator();
-                  }}
-                  data-testid="clearIcon"
-                />
-                {hasResetButton && (
-                  <ResetIcon
-                    data-testid="resetIcon"
-                    className={styles.ResetIcon}
-                    onClick={() => {
-                      sendMessage(sender);
-                    }}
-                  />
-                )}
-              </>
+  const controls = realAttachments ? (
+    <div className={styles.Controls}>
+      <SimulatorComposer
+        disabled={isPreviewMessage || isDisconnected}
+        mediaTypes={MEDIA_MESSAGE_TYPES}
+        onSendText={(text: string) => sendMessage(sender, null, text)}
+        onSendMedia={(media: SimulatorMedia) =>
+          sendMediaMessage(media.type.toLowerCase(), { url: media.url, caption: media.caption })
+        }
+        onSendLocation={(location: SimulatorLocation) =>
+          sendMediaMessage('location', {
+            latitude: String(location.latitude),
+            longitude: String(location.longitude),
+          })
+        }
+      />
+    </div>
+  ) : (
+    <div className={styles.Controls}>
+      <div>
+        <InsertEmoticonIcon className={styles.Icon} />
+        <input
+          type="text"
+          data-testid="simulatorInput"
+          onKeyPress={(event: any) => {
+            if (event.key === 'Enter') {
+              sendMessage(sender);
+            }
+          }}
+          value={inputMessage}
+          placeholder="Type a message"
+          disabled={isPreviewMessage || isDisconnected}
+          onChange={(event) => setInputMessage(event.target.value)}
+        />
+        <AttachFileIcon data-testid="attachment" className={styles.AttachFileIcon} onClick={() => setIsOpen(!isOpen)} />
+        {isOpen ? dropdown : null}
+        <CameraAltIcon className={styles.Icon} />
+      </div>
+
+      <Button
+        variant="contained"
+        className={styles.SendButton}
+        disabled={isPreviewMessage || isDisconnected}
+        onClick={() => sendMessage(sender)}
+      >
+        <MicIcon />
+      </Button>
+    </div>
+  );
+
+  const phone = (
+    <div>
+      <div id="simulator" className={styles.Simulator}>
+        <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
+        {!isPreviewMessage && (
+          <>
+            {!embedded && (
+              <ClearIcon
+                className={styles.ClearIcon}
+                onClick={() => {
+                  releaseUserSimulator();
+                }}
+                data-testid="clearIcon"
+              />
             )}
+            {hasResetButton && (
+              <ResetIcon
+                data-testid="resetIcon"
+                className={styles.ResetIcon}
+                onClick={() => {
+                  sendMessage(sender);
+                }}
+              />
+            )}
+          </>
+        )}
 
-            <div className={styles.Screen}>
-              <div className={styles.Header} data-testid="simulatorHeader">
-                <ArrowBackIcon />
-                <img src={DefaultWhatsappImage} alt="default" />
-                <span data-testid="beneficiaryName">Beneficiary</span>
-                <div>
-                  <VideocamIcon />
-                  <CallIcon />
-                  <MoreVertIcon />
-                </div>
-              </div>
-              {disconnectionBanner}
-
-              <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
-                {simulatedMessages}
-              </div>
-              {isDrawerOpen && <div className={styles.BackgroundTint} />}
-              <div className={styles.Controls}>
-                <div>
-                  <InsertEmoticonIcon className={styles.Icon} />
-                  <input
-                    type="text"
-                    data-testid="simulatorInput"
-                    onKeyPress={(event: any) => {
-                      if (event.key === 'Enter') {
-                        sendMessage(sender);
-                      }
-                    }}
-                    value={inputMessage}
-                    placeholder="Type a message"
-                    disabled={isPreviewMessage || isDisconnected}
-                    onChange={(event) => setInputMessage(event.target.value)}
-                  />
-                  <AttachFileIcon
-                    data-testid="attachment"
-                    className={styles.AttachFileIcon}
-                    onClick={() => setIsOpen(!isOpen)}
-                  />
-                  {isOpen ? dropdown : null}
-                  <CameraAltIcon className={styles.Icon} />
-                </div>
-
-                <Button
-                  variant="contained"
-                  className={styles.SendButton}
-                  disabled={isPreviewMessage || isDisconnected}
-                  onClick={() => sendMessage(sender)}
-                >
-                  <MicIcon />
-                </Button>
-              </div>
-              {isDrawerOpen && (
-                <ListReplyTemplateDrawer
-                  drawerTitle="Items"
-                  items={selectedListTemplate}
-                  disableSend={!!interactiveMessage}
-                  onItemClick={handleListDrawerItemClick}
-                  onDrawerClose={handleListReplyDrawerClose}
-                />
-              )}
+        <div className={styles.Screen}>
+          <div className={styles.Header} data-testid="simulatorHeader">
+            <ArrowBackIcon />
+            <img src={DefaultWhatsappImage} alt="default" />
+            <span data-testid="beneficiaryName">Beneficiary</span>
+            <div>
+              <VideocamIcon />
+              <CallIcon />
+              <MoreVertIcon />
             </div>
           </div>
+          {disconnectionBanner}
+
+          <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
+            {simulatedMessages}
+          </div>
+          {isDrawerOpen && <div className={styles.BackgroundTint} />}
+          {controls}
+          {isDrawerOpen && (
+            <ListReplyTemplateDrawer
+              drawerTitle="Items"
+              items={selectedListTemplate}
+              disableSend={!!interactiveMessage}
+              onItemClick={handleListDrawerItemClick}
+              onDrawerClose={handleListReplyDrawerClose}
+            />
+          )}
         </div>
+      </div>
+    </div>
+  );
+
+  const simulator = embedded ? (
+    <div data-testid="simulator-container" className={styles.SimContainer}>
+      {phone}
+    </div>
+  ) : (
+    <Draggable nodeRef={nodeRef}>
+      <div ref={nodeRef} data-testid="simulator-container" className={styles.SimContainer}>
+        {phone}
       </div>
     </Draggable>
   );
 
+  const loadConversation = (contactId: string) =>
+    client
+      .query({
+        fetchPolicy: 'network-only',
+        query: SIMULATOR_SEARCH_QUERY,
+        variables: getSimulatorVariables(contactId),
+      })
+      .then(({ data: searchData }: any) => {
+        setAllConversations(searchData);
+        if (searchData?.search.length > 0) {
+          getSimulatorId(searchData.search[0].contact.id);
+          sendMessage({
+            name: searchData.search[0].contact.name,
+            phone: searchData.search[0].contact.phone,
+            id: searchData.search[0].contact.id,
+          });
+        }
+      })
+      .catch((error) => {
+        setLogs('SIMULATOR_SEARCH_QUERY error', 'error', true);
+        setLogs(error, 'error', true);
+        setIsDisconnected(true);
+      });
+
   const handleSimulator = () => {
+    if (simulatorContact) {
+      loadConversation(simulatorContact.id);
+      return;
+    }
+
     client
       .query({ query: GET_SIMULATOR, fetchPolicy: 'network-only' })
       .then(({ data: simulatorData }: any) => {
         if (simulatorData.simulatorGet) {
-          client
-            .query({
-              fetchPolicy: 'network-only',
-              query: SIMULATOR_SEARCH_QUERY,
-              variables: getSimulatorVariables(simulatorData.simulatorGet.id),
-            })
-            .then(({ data: searchData }: any) => {
-              setAllConversations(searchData);
-              if (searchData?.search.length > 0) {
-                getSimulatorId(searchData.search[0].contact.id);
-                sendMessage({
-                  name: searchData.search[0].contact.name,
-                  phone: searchData.search[0].contact.phone,
-                  id: searchData.search[0].contact.id,
-                });
-              }
-            })
-            .catch((error) => {
-              setLogs('SIMULATOR_SEARCH_QUERY error', 'error', true);
-              setLogs(error, 'error', true);
-              setIsDisconnected(true);
-            });
+          loadConversation(simulatorData.simulatorGet.id);
         } else {
           setNotification(
             'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',

@@ -13,7 +13,7 @@ import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 import PublishIcon from 'assets/images/icons/Publish/PublishWhite.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
-import Simulator from 'components/simulator/Simulator';
+import SimulatorPanel from 'components/simulator/SimulatorPanel';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
@@ -149,7 +149,7 @@ export const FlowEditor = () => {
     },
   });
 
-  const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
+  const { data: flowName, refetch: refetchFlowDetails } = useQuery(GET_FLOW_DETAILS, {
     fetchPolicy: 'network-only',
     variables: {
       filter: {
@@ -470,7 +470,11 @@ export const FlowEditor = () => {
             variant="outlined"
             color="primary"
             data-testid="previewButton"
-            onClick={() => setShowSimulator(!showSimulator)}
+            onClick={() => {
+              // the channel is derived on autosave, so a stale flowType would gate the wrong tab
+              if (!showSimulator) refetchFlowDetails();
+              setShowSimulator(!showSimulator);
+            }}
           >
             <PreviewIcon className={styles.Icon} />
             Preview
@@ -503,7 +507,7 @@ export const FlowEditor = () => {
         </div>
       )}
       {showSimulator && (
-        <Simulator setShowSimulator={setShowSimulator} hasResetButton flowSimulator message={getFlowKeyword()} />
+        <SimulatorPanel setShowSimulator={setShowSimulator} flowType={flowType} keyword={getFlowKeyword()} />
       )}
       {modal}
       <div className={styles.FlowContainer}>

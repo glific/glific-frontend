@@ -37,9 +37,21 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
   border: 1px solid #e4e8e6;
   border-radius: 8px;
   background-color: #ffffff;
+}
+
+.Selectable {
+  cursor: pointer;
+}
+
+.Selectable:hover {
+  border-color: #119656;
 }
 
 .OptionImage {

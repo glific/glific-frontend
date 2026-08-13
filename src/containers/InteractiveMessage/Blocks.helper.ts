@@ -121,6 +121,51 @@ export const clampText = (text: string, limit = MAX_SUMMARY_LENGTH): string => {
 };
 
 /**
+ * §6 — the summary a block response carries. Clamped, and **never blank**: the summary becomes
+ * the inbound message's body, so an empty one substitutes a non-empty stand-in. This mirrors
+ * `clampSummary` in the widget's `src/components/chat/blocks/values.ts` — the two must agree,
+ * since the backend validates whichever one produced the response.
+ */
+export const clampSummary = (summary: string, fallback: string): string =>
+  clampText((summary || '').trim() || fallback || 'Submitted');
+
+export interface BlocksResponse {
+  values: Record<string, any>;
+  summary: string;
+}
+
+/** §6 `glific/image-panel` — `{ <props.id>: <option id> }`, summary is the option's label. */
+export const buildImagePanelResponse = (props: any, option: any): BlocksResponse => ({
+  values: { [props?.id || 'selection']: option?.id },
+  summary: clampSummary(option?.label ?? '', option?.id ?? ''),
+});
+
+/** §6 `glific/carousel` — `{ <props.id>: <card id> }`, summary is the card's title. */
+export const buildCarouselResponse = (props: any, card: any): BlocksResponse => ({
+  values: { [props?.id || 'selection']: card?.id },
+  summary: clampSummary(card?.title ?? '', card?.id ?? ''),
+});
+
+/**
+ * §6 `glific/form` — values are keyed by FIELD id (not nested under `props.id`, unlike the other
+ * two blocks) and carry every field, empty string if untouched. The summary is `label: value`
+ * pairs joined with `", "`, skipping the fields the contact left empty.
+ */
+export const buildFormResponse = (props: any, values: Record<string, string>): BlocksResponse => {
+  const fields = Array.isArray(props?.fields) ? props.fields : [];
+  const answer: Record<string, string> = {};
+  const pairs: string[] = [];
+
+  fields.forEach((field: any) => {
+    const value = (values[field?.id] ?? '').trim();
+    answer[field?.id] = value;
+    if (value) pairs.push(`${field?.label || field?.id}: ${value}`);
+  });
+
+  return { values: answer, summary: clampSummary(pairs.join(', '), props?.submit_label || 'Submitted') };
+};
+
+/**
  * §9 — the derived body: walk `props` in SORTED key order — at each map level visit keys sorted
  * bytewise ascending, list elements keep array order — and concatenate the value of each
  * `kind: "text"` node joined with `" — "`, clamped to 500 chars. `kind: "alt"` nodes are
