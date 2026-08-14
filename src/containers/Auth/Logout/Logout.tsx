@@ -52,6 +52,7 @@ export const Logout = () => {
 
     await userLogout();
 
+    // clear local storage session
     clearLocalSession();
 
     // clear apollo cache
