@@ -25,7 +25,7 @@ import {
   TabKey,
   VersionBar,
 } from './components';
-import { KnowledgeBase, PersonaPrompt } from './Tabs';
+import { Evaluation, KnowledgeBase, PersonaPrompt } from './Tabs';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
@@ -331,6 +331,7 @@ export const AssistantDetail = () => {
     persona: (
       <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
     ),
+    evaluation: <Evaluation versionNumber={selectedVersion?.versionNumber} />,
     knowledgeBase: (
       <KnowledgeBase
         files={knowledgeBaseFiles}

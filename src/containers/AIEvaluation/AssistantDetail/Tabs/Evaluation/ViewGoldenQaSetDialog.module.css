@@ -1,0 +1,166 @@
+/*
+ * Two columns of prose need far more room than a dialog's usual 600px, so the width is set
+ * here rather than through DialogBox's fullWidth, which pins the paper at 600px.
+ */
+.WidePaper {
+  width: min(75rem, 94vw) !important;
+  max-width: min(75rem, 94vw) !important;
+}
+
+/*
+ * The footer group is right-aligned by default; here the back link sits opposite Done, and
+ * both line up with the table above — the dialog's content is inset by 2rem, which no single
+ * spacing token matches.
+ */
+.WidePaper :global(.MuiDialogActions-root) {
+  margin-left: 0 !important;
+  justify-content: space-between !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+  padding-right: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+/* a link, not a button: Button carries a white fill and a shadow of its own */
+.WidePaper :global(.MuiDialogActions-root) button:first-child {
+  padding-left: 0;
+  border: none;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--app-color-brand-primary);
+}
+
+.Body {
+  padding-top: 0;
+}
+
+/*
+ * The shared dialog spaces its title for a one-line confirmation, and indents it 4px further
+ * than the content below. Here the title and its description read as one block, so they share
+ * a left edge and the gap between them closes.
+ */
+.WidePaper :global(.MuiDialogTitle-root) {
+  padding-top: var(--app-space-3xl) !important;
+  padding-bottom: 0 !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+.WidePaper :global(.MuiDialogContent-root) {
+  padding-top: var(--app-space-2xs) !important;
+}
+
+.Intro {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.SummaryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  min-height: 2rem;
+  margin-bottom: var(--app-space-sm);
+}
+
+/* destructive, so it reads red even while it is disabled */
+.DeleteButton {
+  flex-shrink: 0;
+  margin-left: auto;
+  border: 1px solid var(--app-color-error) !important;
+  border-radius: var(--app-radius-pill) !important;
+  color: var(--app-color-error) !important;
+  text-transform: none !important;
+}
+
+.ExportButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
+.Summary {
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+}
+
+.TableWrap {
+  max-height: 26rem;
+  overflow: auto;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+}
+
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+
+  th,
+  td {
+    padding: var(--app-space-lg);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  td {
+    border-bottom: 1px solid var(--app-color-border);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    background-color: var(--app-color-green-secondary);
+    font-size: var(--app-font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--app-color-white);
+  }
+
+  /* the question is the column being scanned, so it carries the weight */
+  td:nth-child(2) {
+    font-weight: 600;
+    color: var(--app-color-text-heading);
+  }
+}
+
+.Category {
+  display: inline-block;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-green-tertiary);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-green-primary);
+  white-space: nowrap;
+}
+
+.Answer {
+  color: var(--app-color-text-tertiary);
+}
+
+.Fallback {
+  padding: var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  text-align: center;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.FallbackAction {
+  margin-top: var(--app-space-lg);
+}
+
+.FallbackNote {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
