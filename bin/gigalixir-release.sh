@@ -10,12 +10,12 @@
 # Works in both glific (mix.exs) and glific-frontend (package.json).
 #
 # Usage
-#   bin/gigalixir-release.sh --env staging --dry-run    # walk it, execute nothing
-#   bin/gigalixir-release.sh --env staging
+#   bin/gigalixir-release.sh --env frontend-staging --dry-run    # walk it, execute nothing
+#   bin/gigalixir-release.sh --env frontend-staging
 #   bin/gigalixir-release.sh --env production
 #
 # Note on staging: merging to master already triggers a CI deploy to staging, so
-# --env staging is for testing this script, not a normal path. Production is the
+# --env frontend-staging is for testing this script, not a normal path. Production is the
 # manual target this exists for.
 
 set -uo pipefail
@@ -25,9 +25,8 @@ readonly VERIFIER="${SCRIPT_DIR}/gigalixir-verify-deploy.sh"
 
 # env|app name|git remote  (must stay in sync with gigalixir-verify-deploy.sh)
 readonly TARGETS="
-staging|glific-staging|staging
 frontend-staging|glific-frontend-staging|gigalixir
-production|glific|production
+production|tides|production
 "
 
 ENV_NAME="" APP="" REMOTE="" NEW_VERSION="" BUMP="" RELEASE_TITLE=""
@@ -104,7 +103,7 @@ parse_args() {
     esac
   done
 
-  [ -n "$ENV_NAME" ] || [ -n "$APP" ] || die "--env is required (staging | frontend-staging | production)"
+  [ -n "$ENV_NAME" ] || [ -n "$APP" ] || die "--env is required (frontend-staging | production)"
 
   if [ -n "$ENV_NAME" ]; then
     local row
