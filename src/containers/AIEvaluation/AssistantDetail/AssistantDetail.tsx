@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -10,9 +10,10 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
+import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { DEFAULT_MODEL_CONFIG } from './assistantModels';
+import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
 import {
   AssistantHeader,
   canPublishVersion,
@@ -25,7 +26,7 @@ import {
   TabKey,
   VersionBar,
 } from './components';
-import { Evaluation, KnowledgeBase, PersonaPrompt } from './Tabs';
+import { KnowledgeBase, PersonaPrompt, TryItOut, Evaluation } from './Tabs';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
@@ -58,7 +59,6 @@ const editorStateFromVersion = (version: AssistantVersion): EditorState => {
       model: version.model || DEFAULT_MODEL_CONFIG.model,
       temperature: settings.temperature != null ? String(settings.temperature) : DEFAULT_MODEL_CONFIG.temperature,
       ...(settings.effort ? { effort: settings.effort as ModelConfig['effort'] } : {}),
-      ...(settings.verbosity ? { verbosity: settings.verbosity as ModelConfig['verbosity'] } : {}),
     },
     files: filesFromVectorStore(version.vectorStore ?? null),
   };
@@ -70,6 +70,7 @@ const editorStateFromAssistant = (assistant: any): EditorState => ({
     ...DEFAULT_MODEL_CONFIG,
     model: assistant.model || DEFAULT_MODEL_CONFIG.model,
     temperature: assistant.temperature != null ? String(assistant.temperature) : DEFAULT_MODEL_CONFIG.temperature,
+    ...(assistant.effort ? { effort: assistant.effort as ModelConfig['effort'] } : {}),
   },
   files: filesFromVectorStore(assistant.vectorStore ?? null),
 });
@@ -113,6 +114,14 @@ export const AssistantDetail = () => {
     fetchPolicy: 'network-only',
   });
 
+  const { data: modelData } = useQuery(GET_ASSISTANT_MODELS);
+  const models = useMemo(() => parseAssistantModels(modelData?.kaapiModels), [modelData]);
+
+  const { data: goldenQaData } = useQuery(LIST_GOLDEN_QA, {
+    variables: { filter: {}, opts: {} },
+    skip: activeTab !== 'tryItOut',
+  });
+
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
   const [createAssistant] = useMutation(CREATE_ASSISTANT);
   const [setLiveVersion, { loading: publishing }] = useMutation(SET_LIVE_VERSION);
@@ -154,6 +163,13 @@ export const AssistantDetail = () => {
     setAwaitingVersionAbove(null);
   }, [awaitingVersionAbove, versionData]);
 
+  useEffect(() => {
+    if (models.length === 0 || modelConfig.model) return;
+    const loaded = configForModel(models[0], modelConfig);
+    setModelConfig(loaded);
+    setBaseline((current) => ({ ...current, config: loaded }));
+  }, [models, modelConfig]);
+
   const filesChanged = JSON.stringify(knowledgeBaseFiles) !== JSON.stringify(baseline.files);
 
   const dirtyTabs: Partial<Record<TabKey, boolean>> = {
@@ -191,10 +207,16 @@ export const AssistantDetail = () => {
     const knowledgeBaseStoreId =
       (selectedVersion ? selectedVersion.vectorStore?.id : assistant?.vectorStore?.id) ?? null;
     const temperature = Number(modelConfig.temperature);
+    // the backend rejects a temperature on a model that does not take one
+    const selectedModel = getModel(models, modelConfig.model);
+    const takesTemperature = Boolean(getParamSpec(selectedModel, 'temperature'));
+    const takesEffort = Boolean(getParamSpec(selectedModel, 'effort'));
+
     const input: Record<string, any> = {
       instructions: prompt,
       model: modelConfig.model,
-      ...(modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
+      ...(takesTemperature && modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
+      ...(takesEffort && modelConfig.effort ? { effort: modelConfig.effort } : {}),
     };
 
     try {
@@ -329,7 +351,13 @@ export const AssistantDetail = () => {
 
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
     persona: (
-      <PersonaPrompt prompt={prompt} config={modelConfig} onPromptChange={setPrompt} onConfigChange={setModelConfig} />
+      <PersonaPrompt
+        prompt={prompt}
+        config={modelConfig}
+        models={models}
+        onPromptChange={setPrompt}
+        onConfigChange={setModelConfig}
+      />
     ),
     evaluation: <Evaluation versionNumber={selectedVersion?.versionNumber} />,
     knowledgeBase: (
@@ -341,6 +369,21 @@ export const AssistantDetail = () => {
         onUploadingChange={setUploadingFiles}
         vectorStoreId={vectorStore?.vectorStoreId ?? null}
         legacy={vectorStore?.legacy ?? false}
+      />
+    ),
+    tryItOut: (
+      <TryItOut
+        hasVersions={versions.length > 0}
+        isDirty={isDirty}
+        versionId={selectedVersion?.id}
+        versionNumber={selectedVersion?.versionNumber}
+        versionStatus={selectedVersion?.status}
+        liveVersionNumber={liveVersion?.versionNumber ?? null}
+        hasGoldenQaSets={(goldenQaData?.goldenQas ?? []).length > 0}
+        assistantId={assistantId}
+        onGoToPersona={() => setActiveTab('persona')}
+        onSave={handleSaveVersion}
+        onRunEvaluation={() => setActiveTab('evaluation')}
       />
     ),
   };
@@ -386,7 +429,13 @@ export const AssistantDetail = () => {
       <TabBar activeTab={activeTab} onChange={setActiveTab} dirtyTabs={dirtyTabs} />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
-        {activePanel ?? `${t(activeTabLabel)} ${t('coming soon')}`}
+        {Object.entries(TAB_PANELS).map(([key, panel]) => (
+          <div key={key} hidden={key !== activeTab} data-testid={`tabPanel-${key}`}>
+            {panel}
+          </div>
+        ))}
+
+        {!activePanel && `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
 
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
