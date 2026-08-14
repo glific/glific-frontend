@@ -612,6 +612,8 @@ export const HSMV2 = () => {
     return parsedText ? (message || ' ') + parsedText : message || '';
   };
 
+  const activeAnchorReference = mode === 'addLanguage' ? anchorReference : undefined;
+
   const fields = [
     {
       component: SectionTitle,
@@ -671,15 +673,15 @@ export const HSMV2 = () => {
       disabled: false,
       loading: translating,
       onTranslate: handleAutoTranslate,
-      skip: !(mode === 'addLanguage' && anchorReference),
+      skip: !activeAnchorReference,
     },
-    ...(mode === 'addLanguage' && anchorReference
+    ...(activeAnchorReference
       ? [
           {
             component: SourceReferenceCard,
             name: '__sourceReference',
-            body: anchorReference.body,
-            referenceLanguage: anchorReference.language?.label,
+            body: activeAnchorReference.body,
+            referenceLanguage: activeAnchorReference.language?.label,
           },
         ]
       : []),
@@ -701,15 +703,15 @@ export const HSMV2 = () => {
       setVariables,
       isEditing: isReadOnly,
       attached: true,
-      variableReferences: mode === 'addLanguage' ? anchorReference?.variables : undefined,
-      referenceLanguage: mode === 'addLanguage' ? anchorReference?.language?.label : undefined,
+      variableReferences: activeAnchorReference?.variables,
+      referenceLanguage: activeAnchorReference?.language?.label,
     },
     {
       component: FooterField,
       name: 'footer',
       disabled: isReadOnly,
-      referenceValue: mode === 'addLanguage' ? anchorReference?.footer : undefined,
-      referenceLanguage: mode === 'addLanguage' ? anchorReference?.language?.label : undefined,
+      referenceValue: activeAnchorReference?.footer,
+      referenceLanguage: activeAnchorReference?.language?.label,
       onChange: (value: any) => setFooter(value),
     },
     {
@@ -736,10 +738,8 @@ export const HSMV2 = () => {
       templateType,
       inputFields: templateButtons,
       anchorButtons:
-        mode === 'addLanguage' && anchorReference?.buttonType === templateType?.id
-          ? anchorReference?.buttons
-          : undefined,
-      referenceLanguage: mode === 'addLanguage' ? anchorReference?.language?.label : undefined,
+        activeAnchorReference?.buttonType === templateType?.id ? activeAnchorReference?.buttons : undefined,
+      referenceLanguage: activeAnchorReference?.language?.label,
       disabled: isReadOnly,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
