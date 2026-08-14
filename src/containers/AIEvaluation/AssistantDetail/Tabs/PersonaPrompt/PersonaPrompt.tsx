@@ -35,7 +35,6 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
   const selectedModel = getModel(models, config.model);
   const temperatureSpec = getParamSpec(selectedModel, 'temperature');
   const effortSpec = getParamSpec(selectedModel, 'effort');
-  const verbositySpec = getParamSpec(selectedModel, 'verbosity');
 
   const modelOptions = models.map((model) => ({ id: model.modelName, label: model.modelName }));
 
@@ -115,7 +114,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
             {t('Settings for')} {selectedModel.modelName}
           </div>
 
-          {(effortSpec || verbositySpec) && (
+          {effortSpec && (
             <div className={styles.ParamColumns}>
               {effortSpec && (
                 <SegmentedControl
@@ -128,20 +127,6 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
                   value={config.effort}
                   onChange={(effort: string) => onConfigChange({ ...config, effort })}
                   helperText={effortSpec.description}
-                />
-              )}
-
-              {verbositySpec && (
-                <SegmentedControl
-                  className={styles.ParamColumn}
-                  trackClassName={styles.SegmentTrack}
-                  testId="verbositySegment"
-                  label={t('Verbosity')}
-                  labelClassName={styles.FieldLabel}
-                  options={segmentOptions(verbositySpec)}
-                  value={config.verbosity}
-                  onChange={(verbosity: string) => onConfigChange({ ...config, verbosity })}
-                  helperText={verbositySpec.description}
                 />
               )}
             </div>
@@ -166,7 +151,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
             </div>
           )}
 
-          {!effortSpec && !verbositySpec && !temperatureSpec && (
+          {!effortSpec && !temperatureSpec && (
             <div className={styles.Note} data-testid="noModelParams">
               {t('This model has no settings to tune.')}
             </div>

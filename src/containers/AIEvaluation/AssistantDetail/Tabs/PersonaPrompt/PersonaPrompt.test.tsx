@@ -85,7 +85,7 @@ const renderTab = (config: Partial<ModelConfig> = {}, props: Record<string, unkn
     <MockedProvider mocks={[]}>
       <PersonaPrompt
         prompt="You are a helpful assistant."
-        config={{ model: 'gpt-4.1', temperature: '1', effort: '', verbosity: '', ...config }}
+        config={{ model: 'gpt-4.1', temperature: '1', effort: '', ...config }}
         models={models}
         onPromptChange={onPromptChange}
         onConfigChange={onConfigChange}
@@ -117,7 +117,6 @@ describe('settings follow the model', () => {
 
     expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
     expect(screen.queryByTestId('effortSegment')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('verbositySegment')).not.toBeInTheDocument();
   });
 
   test('a model with an effort spec shows effort and hides temperature', () => {
@@ -174,7 +173,6 @@ describe('editing', () => {
       model: 'gpt-5',
       temperature: '',
       effort: 'medium',
-      verbosity: '',
     });
   });
 
@@ -298,7 +296,7 @@ describe('settings the API describes loosely', () => {
       provider: 'openai',
       completionType: ['text'],
       config: JSON.stringify({
-        verbosity: { description: 'How long the replies run.', options: ['low', 'medium', 'high'], default: 'medium' },
+        effort: { description: 'How hard it thinks.', options: ['low', 'high'], default: 'low' },
       }),
     },
   ]);
@@ -324,16 +322,6 @@ describe('settings the API describes loosely', () => {
 
     expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
     expect(screen.queryByTestId('effortSegment-low')).not.toBeInTheDocument();
-  });
-
-  test('a model that declares verbosity shows it, and picking one reports upward', () => {
-    const { onConfigChange } = renderTab({ model: 'chatty', verbosity: 'medium' }, { models: looseModels });
-
-    expect(screen.getByTestId('verbositySegment')).toBeInTheDocument();
-    expect(screen.getByTestId('verbositySegment').textContent).toContain('low');
-
-    fireEvent.click(screen.getByTestId('verbositySegment-low'));
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ verbosity: 'low' }));
   });
 
   test('moving between two models that both take a temperature says nothing', () => {
@@ -364,7 +352,7 @@ describe('reading what the API returned', () => {
   });
 
   test('configForModel leaves the config alone when there is no model', () => {
-    const current = { model: 'gpt-4.1', temperature: '1', effort: '', verbosity: '' };
+    const current = { model: 'gpt-4.1', temperature: '1', effort: '' };
 
     expect(configForModel(undefined, current)).toBe(current);
   });
@@ -377,16 +365,14 @@ describe('reading what the API returned', () => {
         config: JSON.stringify({
           temperature: { default: 0.7 },
           effort: { default: 'high' },
-          verbosity: { default: 'low' },
         }),
       },
     ]);
 
-    expect(configForModel(model, { model: '', temperature: '', effort: '', verbosity: '' })).toEqual({
+    expect(configForModel(model, { model: '', temperature: '', effort: '' })).toEqual({
       model: 'defaults',
       temperature: '0.7',
       effort: 'high',
-      verbosity: 'low',
     });
   });
 });

@@ -58,7 +58,6 @@ const editorStateFromVersion = (version: AssistantVersion): EditorState => {
       model: version.model || DEFAULT_MODEL_CONFIG.model,
       temperature: settings.temperature != null ? String(settings.temperature) : DEFAULT_MODEL_CONFIG.temperature,
       ...(settings.effort ? { effort: settings.effort as ModelConfig['effort'] } : {}),
-      ...(settings.verbosity ? { verbosity: settings.verbosity as ModelConfig['verbosity'] } : {}),
     },
     files: filesFromVectorStore(version.vectorStore ?? null),
   };

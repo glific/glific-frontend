@@ -9,10 +9,9 @@ export const DEFAULT_MODEL_CONFIG: ModelConfig = {
   model: '',
   temperature: '',
   effort: '',
-  verbosity: '',
 };
 
-export const SUPPORTED_PARAMS = ['temperature', 'effort', 'verbosity'] as const;
+export const SUPPORTED_PARAMS = ['temperature', 'effort'] as const;
 
 const parseConfig = (config?: string | null): Record<string, ModelParamSpec> => {
   if (!config) return {};
@@ -45,12 +44,10 @@ export const configForModel = (model: AssistantModel | undefined, current: Model
 
   const temperature = model.config.temperature?.default;
   const effort = model.config.effort?.default;
-  const verbosity = model.config.verbosity?.default;
 
   return {
     model: model.modelName,
     temperature: temperature != null ? String(temperature) : '',
     effort: effort != null ? String(effort) : '',
-    verbosity: verbosity != null ? String(verbosity) : '',
   };
 };

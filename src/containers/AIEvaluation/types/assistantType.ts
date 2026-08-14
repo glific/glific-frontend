@@ -50,7 +50,6 @@ export interface ModelConfig {
   model: string;
   temperature: string;
   effort: string;
-  verbosity: string;
 }
 
 export interface EditorState {
