@@ -1304,6 +1304,44 @@ describe('HSMV2 language versions', () => {
     expect(screen.queryByDisplayValue('footer')).not.toBeInTheDocument();
   });
 
+  test('starting "Add new language" from a non-English anchor shows that language on the reference chips, not English', async () => {
+    const anchorOnly = [{ ...familyVariants[1], language: { id: '2', label: 'Marathi', locale: 'mr' } }];
+    const marathiAnchorMock = templateEditMock('2', {
+      hasButtons: true,
+      buttons: JSON.stringify([{ type: 'PHONE_NUMBER', text: 'Call Us', phone_number: '1234567890' }]),
+      buttonType: 'CALL_TO_ACTION',
+      language: { __typename: 'Language', id: '2', label: 'Marathi' },
+    });
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, marathiAnchorMock, familyFetchMock(anchorOnly)];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '2', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Marathi — source reference')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('English — source reference')).not.toBeInTheDocument();
+
+    const footerReference = screen.getByTestId('footer-source-reference');
+    expect(within(footerReference).getByText('Marathi:')).toBeInTheDocument();
+
+    const buttonReference = screen.getByTestId('button-source-reference');
+    expect(within(buttonReference).getByText('Marathi:')).toBeInTheDocument();
+  });
+
   test('keeps the English source reference after clicking "Add new language" a second time', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
@@ -1436,6 +1474,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         {
           languageId: '2',
+          sourceLanguageId: '1',
           body: anchorBody,
           footer: 'footer',
           // the anchor's own {{1}} sample value ("003", from its example field)
@@ -1492,12 +1531,77 @@ describe('HSMV2 language versions', () => {
     expect(setNotification).toHaveBeenCalledWith('Content translated — review and adjust before submitting.');
   });
 
+  test('clicking Auto-translate from a non-English anchor sends that language as the source, not a hardcoded English', async () => {
+    const anchorOnly = [{ ...familyVariants[1], language: { id: '2', label: 'Marathi', locale: 'mr' } }];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const marathiAnchorMock = templateEditMock('2', {
+      hasButtons: false,
+      buttons: null,
+      buttonType: null,
+      language: { __typename: 'Language', id: '2', label: 'Marathi' },
+    });
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      marathiAnchorMock,
+      familyFetchMock(anchorOnly),
+      translateSessionTemplateMock(
+        {
+          languageId: '1',
+          sourceLanguageId: '2',
+          body: anchorBody,
+          footer: 'Sample footer',
+          buttons: ['003'],
+        },
+        { body: 'translated body', footer: 'translated footer', buttons: ['००३'] }
+      ),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '2', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('English'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('translated body');
+    });
+    expect(screen.getByDisplayValue('translated footer')).toBeInTheDocument();
+  });
+
   test('re-running Auto-translate re-fills the message body even when the translation is identical to before', async () => {
     const anchorOnly = [familyVariants[0]];
     const anchorBody =
       'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
     const translateRequest = {
       languageId: '2',
+      sourceLanguageId: '1',
       body: anchorBody,
       footer: 'footer',
       buttons: ['View Account Balance', 'View Mini Statement', '003'],
@@ -1576,6 +1680,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateErrorMock(
         {
           languageId: '2',
+          sourceLanguageId: '1',
           body: anchorBody,
           footer: 'footer',
           buttons: ['View Account Balance', 'View Mini Statement', '003'],
@@ -1673,6 +1778,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         {
           languageId: '2',
+          sourceLanguageId: '1',
           body: anchorBody,
           footer: 'Sample footer',
           buttons: ['Call Us', 'Visit Us', '003'],
@@ -1735,7 +1841,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         // no button text sent — the type mismatch means neither branch applies —
         // but the {{1}} variable value still rides along on its own.
-        { languageId: '2', body: anchorBody, footer: 'footer', buttons: ['003'] },
+        { languageId: '2', sourceLanguageId: '1', body: anchorBody, footer: 'footer', buttons: ['003'] },
         { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['००३'] }
       ),
     ];
@@ -1793,6 +1899,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateResultErrorMock(
         {
           languageId: '2',
+          sourceLanguageId: '1',
           body: anchorBody,
           footer: 'footer',
           buttons: ['View Account Balance', 'View Mini Statement', '003'],

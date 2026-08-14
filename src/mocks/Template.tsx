@@ -122,7 +122,7 @@ export const translateSessionTemplateMock = (
 ) => ({
   request: {
     query: TRANSLATE_SESSION_TEMPLATE,
-    variables: { buttons: undefined, sourceLanguageId: '1', ...variables },
+    variables: { buttons: undefined, ...variables },
   },
   result: {
     data: {
@@ -148,7 +148,7 @@ export const translateSessionTemplateErrorMock = (
 ) => ({
   request: {
     query: TRANSLATE_SESSION_TEMPLATE,
-    variables: { buttons: undefined, sourceLanguageId: '1', ...variables },
+    variables: { buttons: undefined, ...variables },
   },
   error: new Error(message),
 });
@@ -165,7 +165,7 @@ export const translateSessionTemplateResultErrorMock = (
 ) => ({
   request: {
     query: TRANSLATE_SESSION_TEMPLATE,
-    variables: { buttons: undefined, sourceLanguageId: '1', ...variables },
+    variables: { buttons: undefined, ...variables },
   },
   result: {
     data: {
