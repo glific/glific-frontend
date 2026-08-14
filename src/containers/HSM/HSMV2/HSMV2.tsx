@@ -125,24 +125,28 @@ const TemplateLibraryButton = ({ onClick }: { onClick: () => void }) => (
   </Button>
 );
 
-const SourceReferenceCard = ({ body }: { body: string }) => {
+const SourceReferenceCard = ({ body, referenceLanguage }: { body: string; referenceLanguage?: string }) => {
   if (!body) return null;
 
   return (
     <div className={styles.SourceReferenceCard} data-testid="source-reference-card">
-      <SourceReferenceChip language={t('English — source reference')} titleOnly />
+      <SourceReferenceChip language={`${referenceLanguage || t('English')} — ${t('source reference')}`} titleOnly />
       <div className={styles.SourceReferenceBody}>{WhatsAppToJsx(body)}</div>
     </div>
   );
 };
 
-const FooterField = ({ referenceValue, ...inputProps }: any) => (
+const FooterField = ({ referenceValue, referenceLanguage, ...inputProps }: any) => (
   <div>
     <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
       {`${t('Footer')} (${t('optional')})`}
     </Typography>
     {referenceValue && (
-      <SourceReferenceChip language={t('English')} value={referenceValue} data-testid="footer-source-reference" />
+      <SourceReferenceChip
+        language={referenceLanguage || t('English')}
+        value={referenceValue}
+        data-testid="footer-source-reference"
+      />
     )}
     <Input {...inputProps} />
   </div>
@@ -186,6 +190,7 @@ export const HSMV2 = () => {
     buttons: Array<CallToActionTemplate | QuickReplyTemplate | WhatsappFormTemplate>;
     buttonType?: string;
     variables: Array<{ id: number; text: string }>;
+    language?: { id: string; label: string };
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [showLibrary, setShowLibrary] = useState(false);
@@ -460,7 +465,15 @@ export const HSMV2 = () => {
     setAddPagePreviewId(null);
     setLanguageId(null);
     setAnchorReference(
-      (prev) => prev ?? { body, footer, buttons: templateButtons, buttonType: templateType?.id, variables }
+      (prev) =>
+        prev ?? {
+          body,
+          footer,
+          buttons: templateButtons,
+          buttonType: templateType?.id,
+          variables,
+          language: language ? { id: language.id, label: language.label } : undefined,
+        }
     );
 
     setBody('');
@@ -512,6 +525,7 @@ export const HSMV2 = () => {
       const { data } = await translateSessionTemplate({
         variables: {
           languageId: language.id,
+          sourceLanguageId: anchorReference.language?.id,
           body: anchorReference.body,
           footer: anchorReference.footer || undefined,
           buttons: combinedTexts.length ? combinedTexts : undefined,
@@ -665,6 +679,7 @@ export const HSMV2 = () => {
             component: SourceReferenceCard,
             name: '__sourceReference',
             body: anchorReference.body,
+            referenceLanguage: anchorReference.language?.label,
           },
         ]
       : []),
@@ -687,12 +702,14 @@ export const HSMV2 = () => {
       isEditing: isReadOnly,
       attached: true,
       variableReferences: mode === 'addLanguage' ? anchorReference?.variables : undefined,
+      referenceLanguage: mode === 'addLanguage' ? anchorReference?.language?.label : undefined,
     },
     {
       component: FooterField,
       name: 'footer',
       disabled: isReadOnly,
       referenceValue: mode === 'addLanguage' ? anchorReference?.footer : undefined,
+      referenceLanguage: mode === 'addLanguage' ? anchorReference?.language?.label : undefined,
       onChange: (value: any) => setFooter(value),
     },
     {
@@ -722,6 +739,7 @@ export const HSMV2 = () => {
         mode === 'addLanguage' && anchorReference?.buttonType === templateType?.id
           ? anchorReference?.buttons
           : undefined,
+      referenceLanguage: mode === 'addLanguage' ? anchorReference?.language?.label : undefined,
       disabled: isReadOnly,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
