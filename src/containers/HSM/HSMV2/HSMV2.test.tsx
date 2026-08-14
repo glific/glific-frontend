@@ -1342,6 +1342,100 @@ describe('HSMV2 language versions', () => {
     expect(within(buttonReference).getByText('Marathi:')).toBeInTheDocument();
   });
 
+  test('starting "Add new language" from an anchor with no language falls back to English on the reference chips', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateNullLanguage, familyFetchMock(anchorOnly)];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByText('English — source reference')).toBeInTheDocument();
+    });
+
+    const footerReference = screen.getByTestId('footer-source-reference');
+    expect(within(footerReference).getByText('English:')).toBeInTheDocument();
+  });
+
+  test('clicking Auto-translate omits footer and buttons from the request when the anchor has neither', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody = 'Simple message with no variables or footer.';
+    const noExtrasMock = templateEditMock('1', {
+      body: anchorBody,
+      example: anchorBody,
+      footer: null,
+      hasButtons: false,
+      buttons: null,
+      buttonType: null,
+    });
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      noExtrasMock,
+      familyFetchMock(anchorOnly),
+      translateSessionTemplateMock(
+        {
+          languageId: '2',
+          sourceLanguageId: '1',
+          body: anchorBody,
+          footer: undefined,
+          buttons: undefined,
+        },
+        { body: 'translated message' }
+      ),
+    ];
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('footer-source-reference')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('button-source-reference')).not.toBeInTheDocument();
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('translated message');
+    });
+  });
+
   test('keeps the English source reference after clicking "Add new language" a second time', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
