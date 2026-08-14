@@ -136,7 +136,11 @@ export const WhatsAppFormList = () => {
       dialog: async (id: string) => {
         setFormId(id);
         try {
-          await activateForm({ variables: { activateWhatsappFormId: id } });
+          const { data } = await activateForm({ variables: { activateWhatsappFormId: id } });
+          if (data?.activateWhatsappForm?.errors) {
+            setNotification(data.activateWhatsappForm.errors[0].message, 'warning');
+            return;
+          }
           setFormId(null);
           setDialogType(null);
           setNotification('Form activated successfully');

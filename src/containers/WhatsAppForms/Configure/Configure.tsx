@@ -118,7 +118,11 @@ export const Configure = () => {
 
   const handlePublishForm = async () => {
     try {
-      await publishWhatsappForm({ variables: { id: params.id } });
+      const { data } = await publishWhatsappForm({ variables: { id: params.id } });
+      if (data?.publishWhatsappForm?.errors) {
+        setNotification(data.publishWhatsappForm.errors[0].message, 'warning');
+        return;
+      }
       setNotification('Form published successfully', 'success');
       setOpenDialog(false);
       navigate('/whatsapp-forms');
@@ -161,7 +165,7 @@ export const Configure = () => {
     const flowJSON = convertFormBuilderToFlowJSON(screens);
 
     try {
-      await saveWhatsappFormRevision({
+      const { data } = await saveWhatsappFormRevision({
         variables: {
           input: {
             whatsappFormId: params.id,
@@ -169,6 +173,10 @@ export const Configure = () => {
           },
         },
       });
+      if (data?.saveWhatsappFormRevision?.errors) {
+        setNotification('Error saving form revision', 'warning');
+        hasUnsavedChangesRef.current = true;
+      }
     } catch (error) {
       setNotification('Error saving form revision', 'warning');
       setLogs(error, 'error');

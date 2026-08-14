@@ -60,12 +60,14 @@ export const MyAccount = () => {
             message: t('Too many attempts, please retry after sometime.'),
           });
         }
-      } else {
-        setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message: successMessage });
+        return false;
       }
+      setShowOTPButton(true);
+      setToastMessageInfo({ severity: 'success', message: successMessage });
+      return true;
     } catch (error: any) {
       setToastMessageInfo({ severity: 'error', message: t('Sorry! An error occurred!') });
+      return false;
     }
   };
 
@@ -262,19 +264,27 @@ export const MyAccount = () => {
     setUserLanguage(userData.currentUser.user.language.locale);
   }
 
-  const changeLanguage = (event: any) => {
-    setUserLanguage(event.target.value);
-
-    // change the user interface
-    i18n.changeLanguage(event.target.value);
+  const changeLanguage = async (event: any) => {
+    const locale = event.target.value;
 
     // get language id
     const languageID = organizationData.currentUser.user.organization.activeLanguages.filter(
-      (lang: any) => lang.locale === event.target.value
+      (lang: any) => lang.locale === locale
     );
 
     // update user's language
-    handleUpdateCurrentUser({ languageId: languageID[0].id }, t('Language changed successfully!'));
+    const updated = await handleUpdateCurrentUser(
+      { languageId: languageID[0].id },
+      t('Language changed successfully!')
+    );
+    if (!updated) {
+      return;
+    }
+
+    setUserLanguage(locale);
+
+    // change the user interface
+    i18n.changeLanguage(locale);
 
     // writing cache to restore value
     const userDataCopy = JSON.parse(JSON.stringify(userData));

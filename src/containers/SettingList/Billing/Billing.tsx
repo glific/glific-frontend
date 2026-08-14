@@ -39,7 +39,6 @@ export const BillingForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useState(false);
-  const [paymentMethodId, setPaymentMethodId] = useState('');
   const [cardError, setCardError] = useState<any>('');
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [pending, setPending] = useState(false);
@@ -78,7 +77,7 @@ export const BillingForm = () => {
   const visitCustomerPortal = async () => {
     const { data } = await getCustomerPortal();
     if (data) {
-      window.open(data.customerPortal.url, '_blank');
+      window.open(data.customerPortal.url, '_blank', 'noopener');
     }
   };
 
@@ -157,8 +156,6 @@ export const BillingForm = () => {
       refetch();
       setNotification(error.message ? error.message : 'An error occurred', 'warning');
     } else if (paymentMethod) {
-      setPaymentMethodId(paymentMethod.id);
-
       const variables: any = {
         stripePaymentMethodId: paymentMethod.id,
       };
@@ -173,7 +170,7 @@ export const BillingForm = () => {
         // needs additional security (3d secure)
         if (result.status === 'pending') {
           const securityResult: any = await stripe.confirmCardSetup(result.client_secret, {
-            payment_method: paymentMethodId,
+            payment_method: paymentMethod.id,
           });
           if (securityResult.error?.message) {
             setNotification(securityResult.error?.message, 'warning');

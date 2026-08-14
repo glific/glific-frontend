@@ -253,7 +253,7 @@ export const activateWhatsappForm = {
   result: {
     data: {
       activateWhatsappForm: {
-        whatsappForm: { id: '1', status: 'INACTIVE', __typename: 'WhatsappForm' },
+        whatsappForm: { id: '1', status: 'PUBLISHED', __typename: 'WhatsappForm' },
         errors: null,
       },
     },
@@ -268,6 +268,23 @@ export const activateWhatsappFormError = {
     },
   },
   error: new Error('Failed to activate'),
+};
+
+export const activateWhatsappFormPayloadError = {
+  request: {
+    query: ACTIVATE_FORM,
+    variables: {
+      activateWhatsappFormId: '1',
+    },
+  },
+  result: {
+    data: {
+      activateWhatsappForm: {
+        whatsappForm: null,
+        errors: [{ message: 'Form could not be activated' }],
+      },
+    },
+  },
 };
 
 export const publishWhatsappFormError = {
@@ -288,6 +305,23 @@ export const publishWhatsappFormErrorId1 = {
     },
   },
   error: new Error('Failed to publish'),
+};
+
+export const publishWhatsappFormPayloadErrorId1 = {
+  request: {
+    query: PUBLISH_FORM,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      publishWhatsappForm: {
+        whatsappForm: null,
+        errors: [{ message: 'Form could not be published' }],
+      },
+    },
+  },
 };
 
 export const deactivateWhatsappFormError = {
@@ -701,6 +735,22 @@ export const revertWhatsappFormRevisionErrorMock = {
     variables: { whatsappFormId: '1', revisionId: 4 },
   },
   error: new Error('Failed to revert to selected version'),
+};
+
+export const revertWhatsappFormRevisionPayloadErrorMock = {
+  request: {
+    query: REVERT_TO_WHATSAPP_FORM_REVISION,
+    variables: { whatsappFormId: '1', revisionId: 4 },
+  },
+  result: {
+    data: {
+      revertToWhatsappFormRevision: {
+        __typename: 'WhatsappFormRevisionResult',
+        errors: [{ key: 'revision', message: 'Revision could not be reverted' }],
+        whatsappFormRevision: null,
+      },
+    },
+  },
 };
 
 export const WHATSAPP_FORM_MOCKS = [

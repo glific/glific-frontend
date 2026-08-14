@@ -57,6 +57,10 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
             revisionId: selectedRevision.id,
           },
         });
+        if (revertData?.revertToWhatsappFormRevision?.errors) {
+          setNotification(revertData.revertToWhatsappFormRevision.errors[0].message, 'warning');
+          return;
+        }
         setNotification('Successfully reverted to selected version', 'success');
         setShowRevertDialog(false);
         setSelectedRevision(null);

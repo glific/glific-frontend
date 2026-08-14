@@ -9,6 +9,7 @@ import {
   syncWhatsappForm,
   activateWhatsappForm,
   activateWhatsappFormError,
+  activateWhatsappFormPayloadError,
 } from 'mocks/WhatsAppForm';
 import { MockedProvider } from '@apollo/client/testing';
 import WhatsAppForms from '../WhatsAppForms';
@@ -160,6 +161,18 @@ describe('<WhatsAppFormList />', () => {
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('shows a warning when activate returns a payload error', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { getAllByTestId } = render(wrapper([activateWhatsappFormPayloadError]));
+
+    const activateIcon = await waitFor(() => getAllByTestId('activate-icon')[0]);
+    fireEvent.click(activateIcon);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Form could not be activated', 'warning');
     });
   });
 

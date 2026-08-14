@@ -227,7 +227,7 @@ test('subscription status is already in pending state', async () => {
   fireEvent.click(getByTestId('customerPortalButton'));
 
   await waitFor(() => {
-    expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank');
+    expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank', 'noopener');
   });
 });
 
@@ -295,7 +295,7 @@ test('open customer portal', async () => {
   fireEvent.click(getByTestId('customerPortalButton'));
 
   await waitFor(() => {
-    expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank');
+    expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank', 'noopener');
   });
 });
 

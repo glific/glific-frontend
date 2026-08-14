@@ -16,7 +16,9 @@ import {
   validScreen,
   revertWhatsappFormRevisionMock,
   revertWhatsappFormRevisionErrorMock,
+  revertWhatsappFormRevisionPayloadErrorMock,
   publishWhatsappFormErrorId1,
+  publishWhatsappFormPayloadErrorId1,
 } from 'mocks/WhatsAppForm';
 import { PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
 
@@ -686,6 +688,46 @@ describe('<Configure />', () => {
     });
   });
 
+  test('it shows a warning when reverting returns a payload error', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const errorMocks = WHATSAPP_FORM_MOCKS.map((mock) =>
+      mock === revertWhatsappFormRevisionMock ? revertWhatsappFormRevisionPayloadErrorMock : mock
+    );
+
+    render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
+          <Routes>
+            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Revision History'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('version-history')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('revert-version-button')[4]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Are you sure you want to revert?')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Revision could not be reverted', 'warning');
+    });
+  });
+
   test('it should rename the variables', async () => {
     render(wrapper());
 
@@ -864,6 +906,46 @@ describe('<Configure />', () => {
     await waitFor(() => {
       expect(errorMessageSpy).toHaveBeenCalled();
     });
+  });
+
+  test('it shows a warning and does not navigate away when publish returns a payload error', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const errorMocks = WHATSAPP_FORM_MOCKS.map((mock: any) =>
+      mock.request?.query === PUBLISH_FORM && mock.request?.variables?.id === '1'
+        ? publishWhatsappFormPayloadErrorId1
+        : mock
+    );
+
+    render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
+          <Routes>
+            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Submit to Meta'));
+
+    fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+    fireEvent.click(screen.getByText('Submit to Meta'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Publish Form')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Form could not be published', 'warning');
+    });
+    expect(screen.queryByText('WhatsApp Forms')).not.toBeInTheDocument();
   });
 
   test("should navigate back to whatsapp forms list when 'Back' is clicked", async () => {
