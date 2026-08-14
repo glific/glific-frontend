@@ -9,6 +9,7 @@ import { usePostHog } from '@posthog/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { USER_SESSION } from 'config';
 import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
+import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
 import { resetRolePermissions } from 'context/role';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
 import { clearListSession } from 'services/ListService';
@@ -36,26 +37,23 @@ export const Logout = () => {
     await axios.delete(USER_SESSION);
   };
 
+  const clearLocalSession = () => {
+    clearAuthSession();
+    clearUserSession();
+    resetRolePermissions();
+    clearListSession();
+    clearOrgEvalAccessCache();
+    clearAllSandboxChats();
+  };
+
   const handleLogout = async () => {
     posthog?.capture('user_logged_out');
     posthog?.reset();
 
     await userLogout();
 
-    // clear local storage auth session
-    clearAuthSession();
-
-    // clear local storage user session
-    clearUserSession();
-
-    // clear role & access permissions
-    resetRolePermissions();
-
-    // clear local storage list sort session
-    clearListSession();
-
-    // clear org eval request access cache
-    clearOrgEvalAccessCache();
+    // clear local storage session
+    clearLocalSession();
 
     // clear apollo cache
     await client.clearStore();
