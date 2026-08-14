@@ -206,7 +206,7 @@ export const Organization = () => {
       className: styles.Checkbox,
       name: 'sendWarningMail',
       handleChange: handleSendWarningMails,
-      title: t('Recieve warning mails?'),
+      title: t('Receive warning mails?'),
     },
     {
       component: Input,
@@ -214,7 +214,7 @@ export const Organization = () => {
       type: 'number',
       label: t('Low balance threshold for warning emails'),
       disabled: !sendWarningMail,
-      helperText: t('Recieve low balance threshold mails once a week.'),
+      helperText: t('Receive low balance threshold mails once a week.'),
     },
     {
       component: Input,
@@ -222,7 +222,7 @@ export const Organization = () => {
       type: 'number',
       label: t('Critical balance threshold for warning emails'),
       disabled: !sendWarningMail,
-      helperText: t('Recieve critical balance threshold mails every two days.'),
+      helperText: t('Receive critical balance threshold mails every two days.'),
     },
   ];
 

@@ -28,11 +28,11 @@ test('it should render the placeholders correctly', async () => {
     expect(getByTestId('formLayout')).toHaveTextContent('Default language');
     expect(getByTestId('formLayout')).toHaveTextContent('Organization phone number');
     // Todo: Fix this
-    // expect(getByTestId('formLayout')).toHaveTextContent('Recieve low balance threshold mails once a week​');
+    // expect(getByTestId('formLayout')).toHaveTextContent('Receive low balance threshold mails once a week​');
     // expect(getByTestId('formLayout')).toHaveTextContent(
-    //   'Recieve critical balance threshold mails every two days.'
+    //   'Receive critical balance threshold mails every two days.'
     // );
-    expect(getByTestId('formLayout')).toHaveTextContent('Recieve warning mails?');
+    expect(getByTestId('formLayout')).toHaveTextContent('Receive warning mails?');
   });
 });
 
