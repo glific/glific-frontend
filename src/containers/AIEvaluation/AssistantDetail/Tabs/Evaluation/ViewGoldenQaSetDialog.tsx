@@ -79,6 +79,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
   }, [signedUrl, queryFailed]);
 
   const categories = rows ? goldenQaCategories(rows) : [];
+  const hasCategories = categories.length > 0;
 
   const body = () => {
     if (reading) return <Loading />;
@@ -138,7 +139,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
           <table className={styles.Table}>
             <thead>
               <tr>
-                <th>{t('Category')}</th>
+                {hasCategories && <th>{t('Category')}</th>}
                 <th>{t('Question')}</th>
                 <th>{t('Expected answer')}</th>
               </tr>
@@ -146,10 +147,12 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
             <tbody>
               {rows.map((row, index) => (
                 <tr key={`${row.question}-${index}`} data-testid="goldenQaViewRow">
-                  <td>
-                    <span className={styles.Category}>{row.category || t('Uncategorised')}</span>
-                  </td>
-                  <td>{row.question}</td>
+                  {hasCategories && (
+                    <td>
+                      <span className={styles.Category}>{row.category || t('Uncategorised')}</span>
+                    </td>
+                  )}
+                  <td className={styles.Question}>{row.question}</td>
                   <td className={styles.Answer}>{row.answer}</td>
                 </tr>
               ))}

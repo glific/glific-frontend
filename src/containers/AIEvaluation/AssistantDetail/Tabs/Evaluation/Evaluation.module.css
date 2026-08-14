@@ -34,7 +34,7 @@
 .FootNote {
   margin-top: var(--app-space-xl);
   text-align: center;
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);
 }
 
@@ -63,15 +63,15 @@
 }
 
 .BlockerTitle {
-  font-size: var(--app-font-size-sm);
+  font-size: var(--app-font-size-lg);
   font-weight: 800;
   color: var(--app-color-text-heading);
 }
 
 .BlockerNote {
-  max-width: 27rem;
+  max-width: 32rem;
   margin: var(--app-space-sm) auto 0;
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   line-height: 1.55;
   color: var(--app-color-text-tertiary);
 }

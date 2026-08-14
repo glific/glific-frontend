@@ -3,8 +3,8 @@
  * here rather than through DialogBox's fullWidth, which pins the paper at 600px.
  */
 .WidePaper {
-  width: min(75rem, 94vw) !important;
-  max-width: min(75rem, 94vw) !important;
+  width: min(62rem, 92vw) !important;
+  max-width: min(62rem, 92vw) !important;
 }
 
 /*
@@ -123,12 +123,6 @@
     text-transform: uppercase;
     color: var(--app-color-white);
   }
-
-  /* the question is the column being scanned, so it carries the weight */
-  td:nth-child(2) {
-    font-weight: 600;
-    color: var(--app-color-text-heading);
-  }
 }
 
 .Category {
@@ -140,6 +134,11 @@
   font-weight: 600;
   color: var(--app-color-green-primary);
   white-space: nowrap;
+}
+
+.Question {
+  font-weight: 400;
+  color: var(--app-color-text-heading);
 }
 
 .Answer {

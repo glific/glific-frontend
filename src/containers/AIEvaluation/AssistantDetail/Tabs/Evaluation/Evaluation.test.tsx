@@ -342,6 +342,7 @@ describe('viewing a set', () => {
     });
     expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent('2 questions · showing 2');
     expect(screen.getByTestId('goldenQaViewCategories')).toHaveTextContent('ANC, Nutrition');
+    expect(screen.getByRole('columnheader', { name: 'Category' })).toBeInTheDocument();
     expect(screen.getAllByTestId('goldenQaViewRow')[0]).toHaveTextContent('When is the first check-up?');
   });
 
@@ -357,7 +358,10 @@ describe('viewing a set', () => {
     const summary = await screen.findByTestId('goldenQaViewSummary');
     expect(summary).toHaveTextContent('1 question · showing 1');
     expect(screen.getByTestId('goldenQaViewCategories')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('goldenQaViewRow')).toHaveTextContent('Uncategorised');
+
+    // nothing is categorised, so the column is left out entirely
+    expect(screen.queryByRole('columnheader', { name: 'Category' })).not.toBeInTheDocument();
+    expect(screen.getByTestId('goldenQaViewRow')).not.toHaveTextContent('Uncategorised');
   });
 
   test('the set can be exported from the table', async () => {
@@ -609,4 +613,22 @@ test('the footnote link goes straight to History', async () => {
 
   expect(screen.getByTestId('evaluationHistoryEmpty')).toBeInTheDocument();
   expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
+});
+
+test('a partly categorised file keeps the column and labels the gaps', async () => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('question,answer,category\nQ1,A1,ANC\nQ2,A2') })
+  );
+  renderTab([listMock(oneSet), viewSignedUrlMock]);
+
+  fireEvent.click(await screen.findByTestId('manageSetsButton'));
+  fireEvent.click(await screen.findByTestId('manageGoldenQaSet'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('goldenQaViewRow')).toHaveLength(2);
+  });
+  expect(screen.getByRole('columnheader', { name: 'Category' })).toBeInTheDocument();
+  expect(screen.getAllByTestId('goldenQaViewRow')[1]).toHaveTextContent('Uncategorised');
+  vi.unstubAllGlobals();
 });
