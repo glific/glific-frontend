@@ -944,15 +944,9 @@ describe('HSMV2 language versions', () => {
       status: 'PENDING',
     },
   ];
-  // HSMV2 fetches its own family by the anchor's shortcode instead of
-  // relying on navigation state (see HSMListV2.tsx) — getHSMTemplateTypeText
-  // (the default anchor mock, id '1') has shortcode 'account_balance'.
   const familyFetchMock = (variants: any[] = familyVariants) =>
     sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, variants, familyFetchOpts);
 
-  // most tests in this block land on the "Add new language" flow via
-  // navigation state rather than a dedicated URL — this centralises that
-  // provider/router setup so each test only has to supply its own mocks.
   const renderHSMV2 = (
     MOCKS: any[],
     { languageAnchorId = '1', anchorShortcode = 'account_balance', routeState = {} } = {}
