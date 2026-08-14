@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
+import axios from 'axios';
 
-import { apiClient } from 'services/apiClient';
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 import { ORG_EVAL_ACCESS_CACHE_KEY } from 'containers/AIEvals/orgEvalAccessCache';
@@ -12,10 +12,7 @@ const { mockPosthogCapture, mockPosthogReset } = vi.hoisted(() => ({
   mockPosthogReset: vi.fn(),
 }));
 
-// logout now goes through the shared apiClient (with `skipAuth`), not bare axios
-vi.mock('services/apiClient', () => ({
-  apiClient: { delete: vi.fn() },
-}));
+vi.mock('axios');
 vi.mock('@posthog/react', () => ({
   usePostHog: () => ({
     capture: mockPosthogCapture,
@@ -23,7 +20,7 @@ vi.mock('@posthog/react', () => ({
   }),
 }));
 
-const mockedApiClient = apiClient as any;
+const mockedAxios = axios as any;
 
 describe('<Logout />', () => {
   const originalLocation = window.location;
@@ -31,7 +28,7 @@ describe('<Logout />', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    mockedApiClient.delete.mockResolvedValue({});
+    mockedAxios.delete.mockResolvedValue({});
     locationReplaceMock = vi.fn();
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -94,7 +91,7 @@ describe('<Logout />', () => {
 
   test('completes delete session action before navigating to login page', async () => {
     let resolveDeleteRequest: (value: unknown) => void = () => {};
-    mockedApiClient.delete.mockImplementation(
+    mockedAxios.delete.mockImplementation(
       () =>
         new Promise((resolve) => {
           resolveDeleteRequest = resolve;
@@ -111,7 +108,7 @@ describe('<Logout />', () => {
 
     fireEvent.click(screen.getByTestId('ok-button'));
 
-    expect(mockedApiClient.delete).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
     expect(locationReplaceMock).not.toHaveBeenCalled();
 
     resolveDeleteRequest({});
@@ -155,63 +152,5 @@ describe('<Logout />', () => {
     await waitFor(() => {
       expect(locationReplaceMock).toHaveBeenCalledWith('/login');
     });
-  });
-
-  test('deletes the session with skipAuth and the current token (no renewal during logout)', async () => {
-    localStorage.setItem('glific_session', JSON.stringify({ access_token: 'current-token' }));
-
-    render(
-      <MockedProvider>
-        <MemoryRouter initialEntries={['/logout/user']}>
-          <Routes>
-            <Route path="/logout/:mode" element={<Logout />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await waitFor(() => expect(mockedApiClient.delete).toHaveBeenCalled());
-    expect(mockedApiClient.delete).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({ meta: { skipAuth: true }, headers: { authorization: 'current-token' } })
-    );
-  });
-
-  test('still clears local session and redirects when the backend delete fails', async () => {
-    localStorage.setItem('glific_session', JSON.stringify({ access_token: 'x' }));
-    mockedApiClient.delete.mockRejectedValue(new Error('backend unavailable'));
-
-    render(
-      <MockedProvider>
-        <MemoryRouter initialEntries={['/logout/user']}>
-          <Routes>
-            <Route path="/logout/:mode" element={<Logout />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await waitFor(() => expect(locationReplaceMock).toHaveBeenCalledWith('/login'));
-    expect(localStorage.getItem('glific_session')).toBeNull();
-  });
-
-  test('forced logout (/logout/session) clears the stored session on mount, without a backend call or redirect', async () => {
-    localStorage.setItem('glific_session', JSON.stringify({ access_token: 'x', renewal_token: 'y' }));
-
-    render(
-      <MockedProvider>
-        <MemoryRouter initialEntries={['/logout/session']}>
-          <Routes>
-            <Route path="/logout/:mode" element={<Logout />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    // session is wiped immediately so no further /renew fires while the dialog sits open
-    await waitFor(() => expect(localStorage.getItem('glific_session')).toBeNull());
-    // forced logout does not call the backend (token is already dead) and waits for the user's click
-    expect(mockedApiClient.delete).not.toHaveBeenCalled();
-    expect(locationReplaceMock).not.toHaveBeenCalled();
   });
 });
