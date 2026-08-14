@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import Simulator from 'components/simulator/Simulator';
+import SimulatorContainer from 'components/simulator/SimulatorContainer';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { getUserRole } from 'context/role';
@@ -210,7 +210,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         />
       )}
       {simulatorAccess && !selectedCollectionId && showSimulator ? (
-        <Simulator setShowSimulator={handleCloseSimulator} getSimulatorId={getSimulatorId} />
+        <SimulatorContainer mode="live" getSimulatorId={getSimulatorId} onClose={() => handleCloseSimulator(false)} />
       ) : null}
     </Paper>
   );

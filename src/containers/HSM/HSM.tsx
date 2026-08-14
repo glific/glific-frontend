@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 
-import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { BUTTON_OPTIONS, CALL_TO_ACTION, CHANNEL_WHATSAPP, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -16,7 +16,7 @@ import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/Create
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import Simulator from 'components/simulator/Simulator';
+import SimulatorContainer from 'components/simulator/SimulatorContainer';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { setNotification } from 'common/notification';
@@ -915,7 +915,7 @@ export const HSM = () => {
         entityId={params.id}
         afterSave={() => refetchShortcodes()}
       />
-      <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
+      <SimulatorContainer mode="preview" channels={[CHANNEL_WHATSAPP]} message={sampleMessages} />
     </>
   );
 };

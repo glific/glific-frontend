@@ -201,6 +201,25 @@ export const FLOW_TYPE_WEB = 'WEB_MESSAGE';
 export const getFlowChannels = (flowType: string): string[] =>
   flowType === FLOW_TYPE_WEB ? [CHANNEL_WEB] : [CHANNEL_WHATSAPP, CHANNEL_WEB];
 
+// The API emits lowercase channel values while the constants above are display-cased and double
+// as `Tab value` and label. A silent case mismatch disables every tab, so the two vocabularies
+// only ever meet here.
+const API_CHANNEL_VALUES: Record<string, string> = {
+  whatsapp: CHANNEL_WHATSAPP,
+  web: CHANNEL_WEB,
+};
+
+/** Maps the API's `channels` array onto the UI channel constants, in a stable order. */
+export const mapApiChannels = (apiChannels?: string[] | null): string[] => {
+  const mapped = new Set(
+    (apiChannels ?? []).map((channel: string) => API_CHANNEL_VALUES[String(channel).toLowerCase()]).filter(Boolean)
+  );
+  const ordered = [CHANNEL_WHATSAPP, CHANNEL_WEB].filter((channel) => mapped.has(channel));
+
+  // An absent field means an older backend, not a channel-less flow, so fall back to omnichannel.
+  return ordered.length ? ordered : [CHANNEL_WHATSAPP, CHANNEL_WEB];
+};
+
 export const TERMS_OF_USE_LINK = 'https://glific.org/glific-terms-and-conditions/';
 export const COMPACT_MESSAGE_LENGTH = 35;
 

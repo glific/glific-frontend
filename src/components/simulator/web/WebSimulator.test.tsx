@@ -98,7 +98,8 @@ describe('WebSimulator', () => {
       type: 'BLOCKS_RESPONSE',
       messageId: '4211',
       component: 'glific/carousel',
-      values: { product: 'p1' },
+      // The `Json` scalar takes an encoded string, never an object — see `sendBlocksResponse`.
+      values: JSON.stringify({ product: 'p1' }),
       summary: 'Course A',
     });
     const spy = vi.fn(() => responseMock.result);

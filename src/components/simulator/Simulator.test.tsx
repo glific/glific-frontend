@@ -7,9 +7,6 @@ import { conversationQuery } from 'mocks/Chat';
 import {
   messageReceivedSubscription,
   messageSendSubscription,
-  simulatorGetQuery,
-  simulatorReleaseQuery,
-  simulatorReleaseSubscription,
   simulatorSearchQuery,
   keywordSentSubscription,
   interactiveMessageReceiveSubscription,
@@ -21,59 +18,45 @@ vi.mock('axios');
 const mockedAxios = axios as any;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
-const mockSetShowSimulator = vi.fn();
+
+const simulatorContact = { id: '1', name: 'Glific Simulator', phone: '987654321' };
 
 const mocks = [
   conversationQuery,
-  simulatorReleaseSubscription(),
-  simulatorReleaseQuery,
-  simulatorReleaseQuery,
   simulatorSearchQuery,
   simulatorSearchQuery,
   messageReceivedSubscription(),
   messageSendSubscription(),
-  simulatorGetQuery,
-  simulatorGetQuery,
 ];
+
 const getDefaultProps = () => ({
-  showSimulator: false,
-  setShowSimulator: mockSetShowSimulator,
-  setSimulatorId: mockSetShowSimulator,
+  simulatorContact,
   isPreviewMessage: false,
-  resetMessage: vi.fn(),
 });
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('opened simulator should close when click of simulator icon', async () => {
-  const props = getDefaultProps();
-  const mockOpenSimulator = vi.fn();
-  props.setShowSimulator = mockOpenSimulator;
-  const { getByTestId } = render(
+test('the phone body owns neither a close nor a reset control — the container does', async () => {
+  render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
+      <Simulator {...getDefaultProps()} />
     </MockedProvider>
   );
+
   await waitFor(() => {
-    expect(getByTestId('clearIcon')).toBeInTheDocument();
+    expect(screen.getByTestId('simulatorHeader')).toBeInTheDocument();
   });
-  // To open simulator
-  const button = getByTestId('clearIcon');
-  fireEvent.click(button);
-  await waitFor(() => {
-    expect(mockOpenSimulator).toHaveBeenCalledTimes(1);
-  });
+  expect(screen.queryByTestId('clearIcon')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('resetIcon')).not.toBeInTheDocument();
 });
 
 test('send a message/media from the simulator', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
+      <Simulator {...getDefaultProps()} />
     </MockedProvider>
   );
 
@@ -91,7 +74,6 @@ test('send a message/media from the simulator', async () => {
     expect(input).toHaveTextContent('');
   });
 
-  // Get attachment icon
   const attachmentIcon = screen.getByTestId('attachment');
   expect(attachmentIcon).toBeInTheDocument();
 
@@ -107,22 +89,13 @@ test('send a message/media from the simulator', async () => {
 
 test('Receive an interactive message and send the response with correct uuid', async () => {
   const expectedUuid = interactiveMessageReceiveSubscription.result.data.sentSimulatorMessage.uuid;
-  const mocks = [
-    simulatorSearchQuery,
-    simulatorReleaseSubscription(),
-    simulatorReleaseQuery,
-    simulatorGetQuery,
-    keywordSentSubscription,
-    interactiveMessageReceiveSubscription,
-  ];
+  const interactiveMocks = [simulatorSearchQuery, keywordSentSubscription, interactiveMessageReceiveSubscription];
 
-  const props = getDefaultProps();
-  props.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
   const { getByTestId } = render(
-    <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
+    <MockedProvider mocks={interactiveMocks}>
+      <Simulator {...getDefaultProps()} />
     </MockedProvider>
   );
   await waitFor(() => {
@@ -148,26 +121,32 @@ test('Receive an interactive message and send the response with correct uuid', a
   });
 });
 
-test('click on clear icon closes the simulator', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
-  const { getByTestId } = render(
+test('a bumped resetNonce resends the keyword to restart the flow', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { rerender } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
+      <Simulator simulatorContact={simulatorContact} message="draft:a" resetNonce={0} />
     </MockedProvider>
   );
+
   await waitFor(() => {
-    fireEvent.click(getByTestId('clearIcon'));
+    expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
-  expect(mockSetShowSimulator).toBeCalled();
+
+  rerender(
+    <MockedProvider mocks={mocks}>
+      <Simulator simulatorContact={simulatorContact} message="draft:a" resetNonce={1} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+  });
+  expect(mockedAxios.post.mock.calls[1][1].payload.payload).toEqual({ text: 'draft:a' });
 });
 
 const HSMProps: any = {
-  showSimulator: true,
-  setShowSimulator: mockSetShowSimulator,
-  setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: true,
-  simulatorIcon: false,
 };
 
 const HSMSimulator = (
@@ -204,39 +183,7 @@ test('simulator should render template message', () => {
   );
 });
 
-const props = {
-  showSimulator: true,
-  setSimulatorId: vi.fn(),
-  message: 'fake_message',
-  simulatorIcon: true,
-  isPreviewMessage: false,
-  flowSimulator: false,
-  hasResetButton: true,
-};
-
-test('simulator should reset on clicking the reset button message', async () => {
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
-  const { getByTestId } = render(
-    <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
-    </MockedProvider>
-  );
-
-  await waitFor(() => {
-    expect(getByTestId('resetIcon')).toBeInTheDocument();
-  });
-
-  const resetButton = getByTestId('resetIcon');
-  fireEvent.click(resetButton);
-  await waitFor(() => {
-    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
-  });
-});
-
 test('disconnection banner should not be displayed when simulator is connected', async () => {
-  const connectionProps = getDefaultProps();
-  connectionProps.showSimulator = true;
-
   Object.defineProperty(window.navigator, 'onLine', {
     writable: true,
     value: true,
@@ -244,7 +191,7 @@ test('disconnection banner should not be displayed when simulator is connected',
 
   const { queryByText } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...connectionProps} />
+      <Simulator {...getDefaultProps()} />
     </MockedProvider>
   );
 
@@ -254,12 +201,10 @@ test('disconnection banner should not be displayed when simulator is connected',
 });
 
 test('disconnection banner should be displayed when simulator connection is lost', async () => {
-  const disconnectionProps = getDefaultProps();
-  disconnectionProps.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText, queryByText } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...disconnectionProps} />
+      <Simulator {...getDefaultProps()} />
     </MockedProvider>
   );
 

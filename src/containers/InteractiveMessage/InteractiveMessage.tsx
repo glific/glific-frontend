@@ -21,9 +21,17 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import Simulator from 'components/simulator/Simulator';
+import SimulatorContainer from 'components/simulator/SimulatorContainer';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { BLOCKS, LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY, VALID_URL_REGEX } from 'common/constants';
+import {
+  BLOCKS,
+  LIST,
+  LOCATION_REQUEST,
+  MEDIA_MESSAGE_TYPES,
+  QUICK_REPLY,
+  VALID_URL_REGEX,
+  getSupportedChannels,
+} from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
@@ -1133,25 +1141,17 @@ export const InteractiveMessage = () => {
 
   return (
     <>
-      {isBlocksType ? (
-        <div className={styles.BlocksLayout}>
-          {formLayout}
-          <div className={styles.PreviewPanel}>{blocksPreviewPanel}</div>
-        </div>
-      ) : (
-        <>
-          {formLayout}
-          <div className={styles.Simulator}>
-            <Simulator
-              isPreviewMessage
-              message={{}}
-              showHeader={sendWithTitle}
-              interactiveMessage={previewData}
-              simulatorIcon={false}
-            />
-          </div>
-        </>
-      )}
+      {formLayout}
+      <div className={styles.Simulator}>
+        <SimulatorContainer
+          mode="preview"
+          channels={getSupportedChannels(templateType)}
+          message={{}}
+          showHeader={sendWithTitle}
+          interactiveMessage={previewData}
+          webPreview={isBlocksType ? blocksPreviewPanel : undefined}
+        />
+      </div>
       {translateMessage && messageDialog}
       {showWarning && warningDialog}
     </>

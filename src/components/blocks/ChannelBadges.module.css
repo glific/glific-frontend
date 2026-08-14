@@ -10,11 +10,17 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px 2px 6px;
+  padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.4;
+}
+
+/* An icon carries its own optical space, so the leading pad is trimmed only when one is drawn.
+   Applying that trim unconditionally left the icon-less `compact` badge visibly off-centre. */
+.ChannelTagWithIcon {
+  padding-left: 7px;
 }
 
 .ChannelTagIcon {

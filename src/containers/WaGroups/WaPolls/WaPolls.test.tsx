@@ -44,6 +44,24 @@ beforeEach(() => {
 });
 
 describe('Create', () => {
+  test('the poll preview is WhatsApp-only and has no close action', async () => {
+    render(
+      <MockedProvider mocks={WaPollMocks}>
+        <MemoryRouter initialEntries={['/group/polls/add']}>
+          <Routes>
+            <Route path="group/polls/add" element={<WaPolls />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorTab-WhatsApp')).not.toBeDisabled();
+    });
+    expect(screen.getByTestId('simulatorTab-Web')).toBeDisabled();
+    expect(screen.queryByTestId('simulatorClose')).not.toBeInTheDocument();
+  });
+
   test('it should create a whatsapp poll', async () => {
     render(
       <MockedProvider mocks={WaPollMocks}>

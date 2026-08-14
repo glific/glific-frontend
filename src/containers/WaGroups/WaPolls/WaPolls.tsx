@@ -7,7 +7,8 @@ import * as Yup from 'yup';
 import PollsIcon from 'assets/images/Polls.svg?react';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Input } from 'components/UI/Form/Input/Input';
-import Simulator from 'components/simulator/Simulator';
+import SimulatorContainer from 'components/simulator/SimulatorContainer';
+import { CHANNEL_WHATSAPP } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { COPY_POLL, CREATE_POLL, DELETE_POLL } from 'graphql/mutations/WaPolls';
 import { GET_POLL } from 'graphql/queries/WaPolls';
@@ -198,7 +199,7 @@ export const WaPolls = () => {
         {...queries}
       />
       <div className={styles.Simulator}>
-        <Simulator isPreviewMessage message={{}} pollContent={previewData} simulatorIcon={false} />
+        <SimulatorContainer mode="preview" channels={[CHANNEL_WHATSAPP]} message={{}} pollContent={previewData} />
       </div>
     </>
   );

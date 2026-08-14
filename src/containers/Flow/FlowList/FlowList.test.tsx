@@ -127,6 +127,18 @@ setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPer
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 describe('<FlowList />', () => {
+  test('the channel badges come off the server field, not a derivation', async () => {
+    render(flowList());
+
+    await waitFor(() => {
+      expect(screen.getByText('help, मदद')).toBeInTheDocument();
+    });
+
+    // two omnichannel flows plus one web-only flow, per the mocked `channels`
+    expect(screen.getAllByTestId('channelBadgeWhatsapp')).toHaveLength(2);
+    expect(screen.getAllByTestId('channelBadgeWeb')).toHaveLength(3);
+  });
+
   test('should render Flow', async () => {
     const { getByText, getByTestId } = render(flowList());
     expect(getByTestId('loading')).toBeInTheDocument();

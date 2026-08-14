@@ -19,7 +19,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
 import { flowInfo } from 'common/HelpData';
-import { getFlowChannels } from 'common/constants';
+import { getFlowChannels, mapApiChannels } from 'common/constants';
 import { ChannelBadges } from 'components/blocks/ChannelBadges';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
@@ -59,6 +59,8 @@ export const Flow = () => {
   const [skipValidation, setSkipValidation] = useState(false);
   // Channel discriminator (flow_type_enum): 'MESSAGE' = WhatsApp (default), 'WEB_MESSAGE' = Web.
   const [flowType, setFlowType] = useState('MESSAGE');
+  // Derived server-side and read off the same field the flow list and the preview panel read.
+  const [channels, setChannels] = useState<string[]>(getFlowChannels('MESSAGE'));
 
   const { t } = useTranslation();
 
@@ -116,6 +118,7 @@ export const Flow = () => {
     roles: rolesValue,
     skipValidation: skipValidation,
     flowType: flowTypeValue,
+    channels: channelsValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -153,6 +156,8 @@ export const Flow = () => {
     setSkipValidation(skipValidation);
     // copyTemplate/copy reuse the source flow's channel; default to WhatsApp when unset.
     setFlowType(flowTypeValue || 'MESSAGE');
+    // `channels` is the source of truth; the flowType derivation only covers a backend without it.
+    setChannels(channelsValue ? mapApiChannels(channelsValue) : getFlowChannels(flowTypeValue || 'MESSAGE'));
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -217,7 +222,7 @@ export const Flow = () => {
       component: ChannelsDisplay,
       name: 'flowType',
       label: t('Channels'),
-      channels: getFlowChannels(flowType),
+      channels,
       helperText: t("Channels are derived from the flow's content and cannot be edited."),
       skipPayload: true,
     },

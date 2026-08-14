@@ -13,7 +13,7 @@ import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 import PublishIcon from 'assets/images/icons/Publish/PublishWhite.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
-import SimulatorPanel from 'components/simulator/SimulatorPanel';
+import SimulatorContainer, { FLOW_DISABLED_REASON } from 'components/simulator/SimulatorContainer';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
@@ -22,6 +22,7 @@ import { setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
+import { CHANNEL_WEB, CHANNEL_WHATSAPP, getFlowChannels, mapApiChannels } from 'common/constants';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -29,6 +30,12 @@ import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation
 import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
 
 declare function showFlowEditor(node: any, config: any): void;
+
+/**
+ * The flow editor autosaves through its own bundle and offers no save callback, so while the
+ * preview panel is open the only way to notice that a save changed the flow's channels is to ask.
+ */
+const FLOW_DETAILS_POLL_INTERVAL = 5000;
 
 customElements.define = checkElementInRegistry(customElements.define);
 
@@ -62,6 +69,8 @@ export const FlowEditor = () => {
   // Channel discriminator (flow_type_enum): 'MESSAGE' = WhatsApp, 'WEB_MESSAGE' = Web. Drives
   // both the editor node restrictions (via setConfig filters) and the header channel tag.
   const [flowType, setFlowType] = useState('MESSAGE');
+  // The channels the flow actually runs on, straight off the server field. Gates the preview tabs.
+  const [channels, setChannels] = useState<string[]>([CHANNEL_WHATSAPP, CHANNEL_WEB]);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -149,7 +158,12 @@ export const FlowEditor = () => {
     },
   });
 
-  const { data: flowName, refetch: refetchFlowDetails } = useQuery(GET_FLOW_DETAILS, {
+  const {
+    data: flowName,
+    refetch: refetchFlowDetails,
+    startPolling,
+    stopPolling,
+  } = useQuery(GET_FLOW_DETAILS, {
     fetchPolicy: 'network-only',
     variables: {
       filter: {
@@ -158,6 +172,17 @@ export const FlowEditor = () => {
       opts: {},
     },
   });
+
+  // Channels are derived on save, so an open panel must keep asking; clicking Preview cannot be
+  // the trigger, since that same click is what closes the panel.
+  useEffect(() => {
+    if (showSimulator) {
+      startPolling(FLOW_DETAILS_POLL_INTERVAL);
+    } else {
+      stopPolling();
+    }
+    return () => stopPolling();
+  }, [showSimulator]);
 
   const menuItems = [
     {
@@ -191,7 +216,11 @@ export const FlowEditor = () => {
       setFlowId(flowName.flows[0].id);
       setIsTemplate(flowName.flows[0].isTemplate);
       setSkipValidation(flowName.flows[0].skipValidation);
-      setFlowType(flowName.flows[0].flowType || 'MESSAGE');
+      const flow = flowName.flows[0];
+      setFlowType(flow.flowType || 'MESSAGE');
+      // `channels` is the source of truth; the flowType derivation only covers a backend that has
+      // not shipped the field yet, where trusting the default would enable both tabs on a web flow.
+      setChannels(flow.channels ? mapApiChannels(flow.channels) : getFlowChannels(flow.flowType || 'MESSAGE'));
 
       if (flowName.flows[0].isTemplate) {
         setIsReadOnly(true);
@@ -410,19 +439,21 @@ export const FlowEditor = () => {
             </Typography>
             <div className={styles.KeywordRow}>
               {flowKeywords}
-              {(() => {
-                const isWeb = flowType === 'WEB_MESSAGE';
+              {/* Same server field the preview tabs and the flow list read, so the three agree. */}
+              {channels.map((channel) => {
+                const isWeb = channel === CHANNEL_WEB;
                 return (
                   <span
+                    key={channel}
                     className={`${styles.ChannelTag} ${isWeb ? styles.ChannelTagWeb : styles.ChannelTagWhatsapp}`}
                     data-testid="channelTag"
-                    title={isWeb ? 'Web channel flow' : 'WhatsApp channel flow'}
+                    title={`${channel} channel flow`}
                   >
                     <LocalOfferIcon className={styles.ChannelTagIcon} />
-                    {isWeb ? 'Web' : 'WhatsApp'}
+                    {channel}
                   </span>
                 );
-              })()}
+              })}
             </div>
           </div>
         </div>
@@ -471,8 +502,8 @@ export const FlowEditor = () => {
             color="primary"
             data-testid="previewButton"
             onClick={() => {
-              // the channel is derived on autosave, so a stale flowType would gate the wrong tab
-              if (!showSimulator) refetchFlowDetails();
+              // the channels are derived on autosave, so a stale set would gate the wrong tab
+              refetchFlowDetails();
               setShowSimulator(!showSimulator);
             }}
           >
@@ -507,7 +538,14 @@ export const FlowEditor = () => {
         </div>
       )}
       {showSimulator && (
-        <SimulatorPanel setShowSimulator={setShowSimulator} flowType={flowType} keyword={getFlowKeyword()} />
+        <SimulatorContainer
+          mode="live"
+          realAttachments
+          channels={channels}
+          disabledReason={FLOW_DISABLED_REASON}
+          keyword={getFlowKeyword()}
+          onClose={() => setShowSimulator(false)}
+        />
       )}
       {modal}
       <div className={styles.FlowContainer}>

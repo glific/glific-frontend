@@ -148,6 +148,8 @@ const filterFlowResult = {
         updatedAt: '2021-03-05T04:32:23Z',
         uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
         isPinned: true,
+        flowType: 'MESSAGE',
+        channels: ['whatsapp', 'web'],
         roles: [
           {
             id: '1',
@@ -174,6 +176,8 @@ const filterFlowResult = {
         tag: null,
         updatedAt: '2024-03-23T15:26:41.447361Z',
         uuid: '63397051-789d-418d-9388-2ef7eb1268bb',
+        flowType: 'WEB_MESSAGE',
+        channels: ['web'],
       },
       {
         description: null,
@@ -190,6 +194,8 @@ const filterFlowResult = {
         tag: null,
         updatedAt: '2024-03-23T15:26:40.634989Z',
         uuid: '9e607fd5-232e-43c8-8fac-d8a99d72561e',
+        flowType: 'MESSAGE',
+        channels: ['whatsapp', 'web'],
       },
     ],
   },
@@ -288,7 +294,13 @@ export const filterFlowWithNameOrKeywordOrTagQuery = {
   },
 };
 
-const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false) => ({
+const getFlowDetails = (
+  isActive = true,
+  keywords = ['help'],
+  isTemplate = false,
+  channels = ['whatsapp', 'web'],
+  flowType = 'MESSAGE'
+) => ({
   request: {
     query: GET_FLOW_DETAILS,
     variables: {
@@ -309,6 +321,8 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
           keywords,
           isTemplate,
           skipValidation: true,
+          flowType,
+          channels,
         },
       ],
     },
@@ -316,6 +330,9 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
 });
 
 export const getActiveFlow = getFlowDetails();
+export const getWebOnlyFlow = getFlowDetails(true, ['help'], false, ['web'], 'WEB_MESSAGE');
+/** A backend that has not shipped the `channels` field yet — the flowType fallback must cover it. */
+export const getWebOnlyFlowWithoutChannels = getFlowDetails(true, ['help'], false, null as any, 'WEB_MESSAGE');
 export const getInactiveFlow = getFlowDetails(false);
 export const getFlowWithoutKeyword = getFlowDetails(true, []);
 export const getTemplateFlow = getFlowDetails(true, [], true);

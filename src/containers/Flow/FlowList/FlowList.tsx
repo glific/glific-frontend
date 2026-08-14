@@ -19,7 +19,7 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { STANDARD_DATE_TIME_FORMAT, getFlowChannels } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT, getFlowChannels, mapApiChannels } from 'common/constants';
 import { ChannelBadges } from 'components/blocks/ChannelBadges';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
@@ -58,9 +58,11 @@ const getLastPublished = (date: string, fallback: string = '') =>
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
 // A flow reaches every channel its nodes allow, so this is a set, not a discriminator: an
-// omnichannel flow shows both badges. Same derivation and same component as the flow form, so
-// the list and the form can never disagree.
-const getChannel = (flowType: string) => <ChannelBadges channels={getFlowChannels(flowType)} compact />;
+// omnichannel flow shows both badges. Read off the server field the preview panel also reads, so
+// the list and the panel can never disagree; `flowType` is only the pre-`channels` fallback.
+const getChannel = (channels: string[] | null | undefined, flowType: string) => (
+  <ChannelBadges channels={channels ? mapApiChannels(channels) : getFlowChannels(flowType)} compact />
+);
 
 const columnStyles = [
   styles.Pinned,
@@ -325,10 +327,21 @@ export const FlowList = () => {
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id, flowType }: any) => ({
+  const getColumns = ({
+    name,
+    keywords,
+    lastChangedAt,
+    lastPublishedAt,
+    tag,
+    roles,
+    isPinned,
+    id,
+    flowType,
+    channels,
+  }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
-    channel: getChannel(flowType),
+    channel: getChannel(channels, flowType),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),

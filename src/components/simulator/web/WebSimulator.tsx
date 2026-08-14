@@ -52,6 +52,8 @@ export interface WebSimulatorProps {
   keyword?: string;
   /** Web-channel message types the composer may send (§13.2 freezes the enum). */
   mediaTypes?: string[];
+  /** Bumped by the container's reset action; restarts the flow by resending the keyword. */
+  resetNonce?: number;
 }
 
 const WEB_CHANNEL = 'web';
@@ -65,7 +67,7 @@ const getSimulatorVariables = (id: any) => ({
 /** A message belongs to the Web tab only if the backend stamped it `channel: "web"`. */
 export const isWebMessage = (message: any): boolean => message?.channel === WEB_CHANNEL;
 
-export const WebSimulator = ({ contact, keyword, mediaTypes }: WebSimulatorProps) => {
+export const WebSimulator = ({ contact, keyword, mediaTypes, resetNonce = 0 }: WebSimulatorProps) => {
   const client = useApolloClient();
   const [allConversations, setAllConversations] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -113,13 +115,19 @@ export const WebSimulator = ({ contact, keyword, mediaTypes }: WebSimulatorProps
   const sendLocation = (location: SimulatorLocation) =>
     send({ type: 'LOCATION', latitude: location.latitude, longitude: location.longitude });
 
-  /** §13.5 — the Web tab is the only one that exercises the real blocks response path. */
+  /**
+   * §13.5 — the Web tab is the only one that exercises the real blocks response path.
+   *
+   * `values` is the `Json` scalar, whose `parse/1` only accepts an `Absinthe.Blueprint.Input.String`
+   * (`generic_types.ex:79`). An object — literal or variable — reaches it as an `Input.Object`, which
+   * matches no clause and fails validation field by field. It must go over the wire JSON-encoded.
+   */
   const sendBlocksResponse = (messageObject: any, component: string, response: BlocksResponse) =>
     send({
       type: BLOCKS_RESPONSE,
       messageId: messageObject.id,
       component,
-      values: response.values,
+      values: JSON.stringify(response.values ?? {}),
       summary: response.summary,
     });
 
@@ -139,6 +147,12 @@ export const WebSimulator = ({ contact, keyword, mediaTypes }: WebSimulatorProps
         setLogs(error, 'error', true);
       });
   }, [contact.id]);
+
+  // The container's reset has already cleared the transcript; this side restarts the flow on the
+  // web channel.
+  useEffect(() => {
+    if (resetNonce && keyword) sendText(keyword);
+  }, [resetNonce]);
 
   const messages = (allConversations?.search?.[0]?.messages ?? []).filter(isWebMessage);
 

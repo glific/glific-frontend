@@ -440,6 +440,38 @@ describe('Blocks types (contract §11)', () => {
     }
   });
 
+  test('a blocks type disables the WhatsApp tab and opens on the web preview', async () => {
+    render(interactiveMessage());
+
+    await selectBlocksType();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorTab-WhatsApp')).toBeDisabled();
+    });
+    expect(screen.getByTestId('simulatorTab-Web')).not.toBeDisabled();
+    expect(screen.getByTestId('blocksPreview')).toBeInTheDocument();
+    expect(screen.queryByTestId('simulatorClose')).not.toBeInTheDocument();
+  });
+
+  test('a non-blocks type offers both tabs and switches without a confirmation', async () => {
+    render(interactiveMessage());
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorTab-WhatsApp')).not.toBeDisabled();
+    });
+    expect(screen.getByTestId('simulatorTab-Web')).not.toBeDisabled();
+    // WhatsApp first: the phone chrome, not the browser chrome
+    expect(screen.getByTestId('simulatorHeader')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('simulatorTab-Web'));
+
+    // preview mode has no flow context, so nothing to clear and nothing to wait for
+    expect(screen.queryByTestId('simulatorSwitching')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('webPreview')).toBeInTheDocument();
+    });
+  });
+
   test('pre-fills a valid typed payload and saves the contract envelope', async () => {
     let captured: any = null;
     render(interactiveMessage([createBlocksMock((variables: any) => (captured = variables))]));

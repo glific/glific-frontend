@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
+import { useState, useEffect, useCallback } from 'react';
+import { useApolloClient, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Draggable from 'react-draggable';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import MicIcon from '@mui/icons-material/Mic';
@@ -11,14 +10,12 @@ import CallIcon from '@mui/icons-material/Call';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import BackgroundPhoneImage from 'assets/images/phone.png';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 
-import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
   SHORT_TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
@@ -32,7 +29,7 @@ import {
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
-import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
+import { SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import setLogs from 'config/logs';
@@ -52,34 +49,34 @@ import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
-import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
 import { BlocksCard } from 'containers/Chat/ChatMessages/ChatMessage/BlocksCard/BlocksCard';
 import { SimulatorComposer, SimulatorLocation, SimulatorMedia } from './composer/SimulatorComposer';
 
+/**
+ * The WhatsApp body of the simulator: phone chrome, transcript, composer and the Gupshup webhook
+ * send path. It renders inside `SimulatorContainer` and nothing else — the container owns the
+ * drag, the header, the tabs, the reset and close actions, and the simulator-contact allocation.
+ *
+ * Because allocation lives one level up, this component can neither acquire nor release a contact
+ * and does not watch the release subscription. That is what makes "a preview page issues no
+ * `GET_SIMULATOR`" a structural property rather than a prop that has to be passed correctly.
+ */
 export interface SimulatorProps {
-  setShowSimulator?: any;
-  simulatorIcon?: boolean;
   message?: any;
-  flowSimulator?: boolean;
   isPreviewMessage?: boolean;
   getSimulatorId?: any;
   interactiveMessage?: any;
   showHeader?: boolean;
-  hasResetButton?: boolean;
   pollContent?: any;
-  /**
-   * A simulator contact allocated by an owner ABOVE this component (`SimulatorPanel`, contract
-   * §13.4 — both tabs share one contact). When set, this component neither acquires nor releases
-   * the contact and does not watch the release subscription; the owner does all three.
-   */
+  /** The contact the container allocated; both tabs share one (§13.4). Absent in preview mode. */
   simulatorContact?: Sender | null;
-  /** Rendered inside an owner's chrome: no `Draggable`, no close button. */
-  embedded?: boolean;
   /** Restrict the transcript, e.g. to the WhatsApp channel when a Web tab exists (§13.4). */
   messageFilter?: (message: any) => boolean;
   /** Use the shared composer with a real file picker instead of the canned media list (§13.6). */
   realAttachments?: boolean;
+  /** Bumped by the container's reset action; restarts the flow by resending the keyword. */
+  resetNonce?: number;
 }
 
 interface Sender {
@@ -134,23 +131,20 @@ const getSimulatorVariables = (id: any) => ({
 });
 
 const Simulator = ({
-  setShowSimulator = () => {},
   message,
   isPreviewMessage,
   getSimulatorId = () => {},
   interactiveMessage,
   showHeader = true,
-  hasResetButton = false,
   pollContent,
   simulatorContact = null,
-  embedded = false,
   messageFilter,
   realAttachments = false,
+  resetNonce = 0,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
-  const nodeRef = useRef<HTMLDivElement>(null!);
   const [isDisconnected, setIsDisconnected] = useState(false);
 
   const client = useApolloClient();
@@ -241,31 +235,6 @@ const Simulator = ({
     setInputMessage('');
   };
 
-  useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
-    fetchPolicy: 'network-only',
-    variables,
-    // the owner watches the release when it owns the allocation
-    skip: isPreviewMessage || !!simulatorContact,
-    onData: ({ data: simulatorSubscribe }) => {
-      if (simulatorSubscribe.data) {
-        try {
-          const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release.user_id;
-          if (userId.toString() === getUserSession('id')) {
-            setNotification('Sorry! Simulator timeout. Please click Preview again', 'warning');
-            setShowSimulator(false);
-          }
-        } catch (error) {
-          setLogs('simulator release error', 'error', true);
-        }
-      }
-    },
-    onError: (error) => {
-      setLogs('SIMULATOR_RELEASE_SUBSCRIPTION error', 'error', true);
-      setLogs(error, 'error', true);
-      setIsDisconnected(true);
-    },
-  });
-
   useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
     variables,
     skip: isPreviewMessage,
@@ -299,10 +268,6 @@ const Simulator = ({
     },
   });
 
-  const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
-    fetchPolicy: 'network-only',
-  });
-
   if (allConversations && allConversations.search && allConversations.search.length > 0) {
     const simulatedContact = allConversations.search;
     messages = simulatedContact[0].messages;
@@ -311,11 +276,6 @@ const Simulator = ({
     sender.phone = simulatedContact[0].contact.phone;
     sender.id = simulatedContact[0].contact.id;
   }
-
-  const releaseUserSimulator = () => {
-    releaseSimulator();
-    setShowSimulator(false);
-  };
 
   const handleOpenListReplyDrawer = (items: any, messageUuid: string) => {
     setSelectedListTemplate(items);
@@ -518,6 +478,18 @@ const Simulator = ({
     }
   }, [message]);
 
+  // The container's reset has already cleared the transcript by the time the nonce changes; this
+  // side restarts the flow on the WhatsApp channel. A remount would do the same, but would also
+  // flash the full-screen loader that covers an unresolved `simulatorId`.
+  useEffect(() => {
+    if (!resetNonce) return;
+    if (isPreviewMessage) {
+      getPreviewMessage();
+      return;
+    }
+    sendMessage(sender);
+  }, [resetNonce]);
+
   // for loading conversation
   useEffect(() => {
     if (allConversations) {
@@ -643,28 +615,6 @@ const Simulator = ({
     <div>
       <div id="simulator" className={styles.Simulator}>
         <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
-        {!isPreviewMessage && (
-          <>
-            {!embedded && (
-              <ClearIcon
-                className={styles.ClearIcon}
-                onClick={() => {
-                  releaseUserSimulator();
-                }}
-                data-testid="clearIcon"
-              />
-            )}
-            {hasResetButton && (
-              <ResetIcon
-                data-testid="resetIcon"
-                className={styles.ResetIcon}
-                onClick={() => {
-                  sendMessage(sender);
-                }}
-              />
-            )}
-          </>
-        )}
 
         <div className={styles.Screen}>
           <div className={styles.Header} data-testid="simulatorHeader">
@@ -698,16 +648,10 @@ const Simulator = ({
     </div>
   );
 
-  const simulator = embedded ? (
+  const simulator = (
     <div data-testid="simulator-container" className={styles.SimContainer}>
       {phone}
     </div>
-  ) : (
-    <Draggable nodeRef={nodeRef}>
-      <div ref={nodeRef} data-testid="simulator-container" className={styles.SimContainer}>
-        {phone}
-      </div>
-    </Draggable>
   );
 
   const loadConversation = (contactId: string) =>
@@ -735,29 +679,7 @@ const Simulator = ({
       });
 
   const handleSimulator = () => {
-    if (simulatorContact) {
-      loadConversation(simulatorContact.id);
-      return;
-    }
-
-    client
-      .query({ query: GET_SIMULATOR, fetchPolicy: 'network-only' })
-      .then(({ data: simulatorData }: any) => {
-        if (simulatorData.simulatorGet) {
-          loadConversation(simulatorData.simulatorGet.id);
-        } else {
-          setNotification(
-            'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
-            'warning'
-          );
-        }
-      })
-      .catch((error) => {
-        setNotification('Sorry! Failed to get simulator', 'warning');
-        setLogs('GET_SIMULATOR error', 'error', true);
-        setLogs(error, 'error', true);
-        setIsDisconnected(true);
-      });
+    if (simulatorContact) loadConversation(simulatorContact.id);
   };
 
   return isPreviewMessage ? (

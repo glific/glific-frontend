@@ -19,6 +19,8 @@ import {
   getTemplateFlow,
   getFlowWithManyKeywords,
   exportFlow,
+  getWebOnlyFlow,
+  getWebOnlyFlowWithoutChannels,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -28,8 +30,10 @@ import {
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
   simulatorSearchQuery,
+  webSimulatorSearchQuery,
 } from 'mocks/Simulator';
 import { GET_FREE_FLOW } from 'graphql/queries/Flow';
+import { CHANNEL_WHATSAPP } from 'common/constants';
 import * as Notification from 'common/notification';
 import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
@@ -267,6 +271,61 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   await waitFor(() => {
     expect(screen.getByTestId('simulator')).toHaveTextContent('draft:help');
   });
+});
+
+test("the preview panel gates its tabs on the flow's channels field", async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  render(wrapperFunction([...mocks, getWebOnlyFlow, getWebOnlyFlow, webSimulatorSearchQuery]));
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getByTestId('previewButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId(`simulatorTab-${CHANNEL_WHATSAPP}`)).toBeDisabled();
+  });
+});
+
+test('falls back to the flowType derivation when the backend has no channels field yet', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  render(
+    wrapperFunction([...mocks, getWebOnlyFlowWithoutChannels, getWebOnlyFlowWithoutChannels, webSimulatorSearchQuery])
+  );
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getByTestId('previewButton'));
+
+  // without the fallback this would default to omnichannel and enable a tab the flow cannot run on
+  await waitFor(() => {
+    expect(screen.getByTestId(`simulatorTab-${CHANNEL_WHATSAPP}`)).toBeDisabled();
+  });
+});
+
+test('a save that narrows the channels re-gates the open panel without reopening it', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+
+  // the first load and the open-click refetch both see an omnichannel flow; the poll sees the save
+  render(wrapperFunction([...mocks, getActiveFlow, getActiveFlow, getWebOnlyFlow, webSimulatorSearchQuery]));
+
+  await vi.advanceTimersByTimeAsync(0);
+  fireEvent.click(screen.getByTestId('previewButton'));
+
+  await vi.advanceTimersByTimeAsync(0);
+  expect(screen.getByTestId(`simulatorTab-${CHANNEL_WHATSAPP}`)).not.toBeDisabled();
+
+  await vi.advanceTimersByTimeAsync(6000);
+
+  expect(screen.getByTestId(`simulatorTab-${CHANNEL_WHATSAPP}`)).toBeDisabled();
+  // the panel never closed
+  expect(screen.getByTestId('simulatorContainer')).toBeInTheDocument();
+
+  vi.useRealTimers();
 });
 
 test.skip('if the flow the inactive', async () => {

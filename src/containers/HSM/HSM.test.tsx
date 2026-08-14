@@ -99,6 +99,18 @@ describe('Add mode', () => {
 
   const user = userEvent.setup();
 
+  test('the preview is WhatsApp-only, with no close action and no simulator allocation', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorTab-WhatsApp')).not.toBeDisabled();
+    });
+    expect(screen.getByTestId('simulatorTab-Web')).toBeDisabled();
+    // a page-embedded preview has nothing to close, and must never consume a pooled simulator
+    expect(screen.queryByTestId('simulatorClose')).not.toBeInTheDocument();
+    expect(screen.getByTestId('simulatorReset')).toBeInTheDocument();
+  });
+
   test('check for validations for the HSM form', async () => {
     const { getByText, container } = render(template);
     await waitFor(() => {

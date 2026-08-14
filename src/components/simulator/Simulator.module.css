@@ -58,7 +58,7 @@
 .BackgroundImage {
   position: absolute;
   top: 0px;
-  right: 38px;
+  left: 0px;
 }
 
 .TimeSent {
@@ -81,49 +81,14 @@
   bottom: 2px;
 }
 
-.SimulatorIcon {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 5px 0 0 0;
-  width: 35px;
-  height: 45px;
-}
-
-.SimulatorIconNormal {
-  composes: SimulatorIcon;
-  background-color: #119656;
-}
-
-@media only screen and (max-width: 768px) {
-  .SimulatorIconNormal {
-    display: none;
-  }
-}
-
-.SimulatorIconClicked {
-  composes: SimulatorIcon;
-  background-color: #073f24;
-}
-
+/* The phone is laid out with absolutely positioned children (the frame image and the screen), so
+   it needs an in-flow box of its own size to anchor them. It used to be `position: fixed`, from
+   when the bare simulator placed itself against the viewport; inside `SimulatorContainer`'s flex
+   body that left the flow and the panel collapsed to header height. */
 .SimContainer {
-  position: fixed;
-  right: 20px;
-  top: 100px;
-  z-index: 10000;
-}
-
-.ImageBackground {
-  position: absolute;
-  height: 576px;
-  width: 304px;
-}
-
-.Simulator {
-  transition: right 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
-  transition-delay: 100ms;
+  position: relative;
+  width: 300px;
+  height: 580px;
 }
 
 .Simulator input:focus {
@@ -149,12 +114,11 @@
 
 .Simulator .Screen {
   top: 12px;
-  right: 50px;
+  left: 14px;
   width: 269px;
   height: 554px;
   border-radius: 30px;
   position: absolute;
-  margin: 0px 5px;
   cursor: default;
   background-image: url('../../assets/images/whatsappBackground.jpg');
   background-size: contain;
@@ -267,30 +231,8 @@
   height: 15px;
 }
 
-.ClearIcon {
-  position: absolute;
-  top: -3px;
-  color: #073f24;
-  right: 0px;
-  cursor: pointer;
-}
-
-.ResetIcon {
-  position: absolute;
-  top: 30px;
-  right: 2px;
-  cursor: pointer;
-}
-
 .Image {
   width: 175px;
-}
-
-.PreviewButton {
-  z-index: 1000;
-  position: fixed;
-  right: 120px;
-  bottom: 12px;
 }
 
 .Button {
@@ -312,7 +254,7 @@
   display: flex;
   z-index: 1000;
   overflow: visible;
-  right: 75px;
+  right: 37px;
   width: 237px;
   box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.24);
   flex-direction: column;

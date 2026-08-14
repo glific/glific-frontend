@@ -25,6 +25,14 @@ import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { getAllCollectionsQuery } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
 import { getAllFlowLabelsQuery } from 'mocks/Flow';
+import {
+  messageReceivedSubscription,
+  messageSendSubscription,
+  simulatorGetQuery,
+  simulatorReleaseQuery,
+  simulatorReleaseSubscription,
+  simulatorSearchQuery,
+} from 'mocks/Simulator';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -117,6 +125,14 @@ const mocks = [
   savedSearchQuery,
   markAsReadMock('2'),
   getWhatsAppManagedPhonesStatusMock,
+  simulatorGetQuery,
+  simulatorGetQuery,
+  simulatorReleaseQuery,
+  simulatorReleaseSubscription(),
+  simulatorSearchQuery,
+  simulatorSearchQuery,
+  messageReceivedSubscription(),
+  messageSendSubscription(),
 ];
 
 const wrapper = (
@@ -131,6 +147,22 @@ setUserSession(JSON.stringify({ organization: { id: '1' } }));
 window.HTMLElement.prototype.scrollIntoView = function () {};
 
 describe('Chat interface', () => {
+  test('the simulator opens in the universal container with both channel tabs', async () => {
+    render(wrapper);
+
+    fireEvent.click(await screen.findByTestId('simulatorIcon'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('simulatorContainer')).toBeInTheDocument();
+    });
+
+    // the staff simulator is a real contact, so both channels are previewable
+    expect(screen.getByTestId('simulatorTab-WhatsApp')).not.toBeDisabled();
+    expect(screen.getByTestId('simulatorTab-Web')).not.toBeDisabled();
+    // and this is a live container, so it owns a close action
+    expect(screen.getByTestId('simulatorClose')).toBeInTheDocument();
+  });
+
   test('it should render chat interface component correctly', async () => {
     render(wrapper);
 

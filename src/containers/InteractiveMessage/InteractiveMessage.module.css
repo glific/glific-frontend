@@ -28,52 +28,6 @@
   }
 }
 
-/* §11 — the blocks preview is a column in the page flow, not a floating panel. The phone
-   simulator it replaces is fixed-positioned, and copying that put the panel on top of the
-   Translate button (itself fixed to the top-right). The top padding drops the column below
-   that button. */
-.BlocksLayout {
-  display: flex;
-  align-items: stretch;
-  height: 100%;
-}
-
-.BlocksLayout > :first-child {
-  flex: 0 1 auto;
-  min-width: 0;
-}
-
-.PreviewPanel {
-  flex: 1 1 340px;
-  min-width: 340px;
-  max-width: 460px;
-  box-sizing: border-box;
-  padding: 200px 32px 24px 0;
-  overflow-y: auto;
-  display: flex;
-  justify-content: flex-end;
-}
-
-@media screen and (max-width: 1280px) {
-  .BlocksLayout {
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .BlocksLayout > :first-child {
-    flex: 0 0 auto;
-  }
-
-  .PreviewPanel {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    padding: 0 24px 24px;
-    overflow-y: visible;
-    justify-content: flex-start;
-  }
-}
-
 .ChannelRow {
   display: flex;
   align-items: center;

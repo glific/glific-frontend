@@ -21,7 +21,13 @@ export const ChannelBadges = ({ templateType, channels, compact = false }: Chann
     {(channels ?? getSupportedChannels(templateType ?? '')).map((channel: string) => (
       <span
         key={channel}
-        className={`${styles.ChannelTag} ${channel === CHANNEL_WEB ? styles.ChannelTagWeb : styles.ChannelTagWhatsapp}`}
+        className={[
+          styles.ChannelTag,
+          channel === CHANNEL_WEB ? styles.ChannelTagWeb : styles.ChannelTagWhatsapp,
+          compact ? '' : styles.ChannelTagWithIcon,
+        ]
+          .filter(Boolean)
+          .join(' ')}
         data-testid={channel === CHANNEL_WHATSAPP ? 'channelBadgeWhatsapp' : 'channelBadgeWeb'}
         title={`Delivered on ${channel}`}
       >

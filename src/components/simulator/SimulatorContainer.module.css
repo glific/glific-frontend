@@ -1,0 +1,81 @@
+/* Matches the fixed placement the bare simulator used before it was wrapped, so the per-page
+   offsets written against it (e.g. InteractiveMessage's `.Simulator > div`) still apply.
+
+   The z-index has to sit ABOVE the MUI modal range (1300) so the panel clears page chrome, and
+   BELOW `DialogBox`'s `alwaysOntop` (1501) so a dialog opened over the page is not buried. */
+.Panel {
+  position: fixed;
+  right: 20px;
+  top: 100px;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid #d0d5d3;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 8px;
+  cursor: move;
+  border-bottom: 1px solid #e4e8e6;
+}
+
+/* The app-wide `.MuiTabs-indicator` override (index.css) paints a full-height green pill; without
+   a stacking context of its own the label is painted underneath it and disappears when selected. */
+.Tab {
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #191c1a;
+  text-transform: none;
+}
+
+.TabSelected {
+  color: #ffffff !important;
+}
+
+.DisabledTab {
+  display: inline-flex;
+}
+
+.Spinner {
+  color: #119656;
+}
+
+.Actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.Reset {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.Close {
+  cursor: pointer;
+  color: #073f24;
+}
+
+/* min-width keeps the box from resizing horizontally as the tabs swap bodies of different widths. */
+.Body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 336px;
+  padding: 8px;
+}
+
+.Loading {
+  padding: 40px 20px;
+  font-size: 13px;
+  color: #555555;
+}
