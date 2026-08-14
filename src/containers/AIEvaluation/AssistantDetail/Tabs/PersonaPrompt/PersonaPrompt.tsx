@@ -116,19 +116,17 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
 
           {effortSpec && (
             <div className={styles.ParamColumns}>
-              {effortSpec && (
-                <SegmentedControl
-                  className={styles.ParamColumn}
-                  trackClassName={styles.SegmentTrack}
-                  testId="effortSegment"
-                  label={t('Reasoning effort')}
-                  labelClassName={styles.FieldLabel}
-                  options={segmentOptions(effortSpec)}
-                  value={config.effort}
-                  onChange={(effort: string) => onConfigChange({ ...config, effort })}
-                  helperText={effortSpec.description}
-                />
-              )}
+              <SegmentedControl
+                className={styles.ParamColumn}
+                trackClassName={styles.SegmentTrack}
+                testId="effortSegment"
+                label={t('Reasoning effort')}
+                labelClassName={styles.FieldLabel}
+                options={segmentOptions(effortSpec)}
+                value={config.effort}
+                onChange={(effort: string) => onConfigChange({ ...config, effort })}
+                helperText={effortSpec.description}
+              />
             </div>
           )}
 
