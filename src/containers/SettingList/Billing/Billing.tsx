@@ -172,29 +172,27 @@ export const BillingForm = () => {
         const result = JSON.parse(data.createBillingSubscription.subscription);
         // needs additional security (3d secure)
         if (result.status === 'pending') {
-          if (stripe) {
-            const securityResult: any = await stripe.confirmCardSetup(result.client_secret, {
-              payment_method: paymentMethodId,
-            });
-            if (securityResult.error?.message) {
-              setNotification(securityResult.error?.message, 'warning');
-              setLoading(false);
-              const { data: refetchedData } = await refetch();
-              await updateBilling({
-                variables: {
-                  id: refetchedData.getOrganizationBilling?.billing?.id,
-                  input: {
-                    stripeSubscriptionId: null,
-                    stripeSubscriptionStatus: null,
-                  },
+          const securityResult: any = await stripe.confirmCardSetup(result.client_secret, {
+            payment_method: paymentMethodId,
+          });
+          if (securityResult.error?.message) {
+            setNotification(securityResult.error?.message, 'warning');
+            setLoading(false);
+            const { data: refetchedData } = await refetch();
+            await updateBilling({
+              variables: {
+                id: refetchedData.getOrganizationBilling?.billing?.id,
+                input: {
+                  stripeSubscriptionId: null,
+                  stripeSubscriptionStatus: null,
                 },
-              });
-              refetch();
-            } else if (securityResult.setupIntent.status === 'succeeded') {
-              setDisable(true);
-              setLoading(false);
-              setNotification('Your billing account is setup successfully');
-            }
+              },
+            });
+            refetch();
+          } else if (securityResult.setupIntent.status === 'succeeded') {
+            setDisable(true);
+            setLoading(false);
+            setNotification('Your billing account is setup successfully');
           }
         } // successful subscription
         else if (result.status === 'active') {
