@@ -22,7 +22,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
-import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
+import { checkElementInRegistry, getKeywords, loadfiles, setConfig, setupInteractiveTemplateCache } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
@@ -256,6 +256,7 @@ export const FlowEditor = () => {
   useEffect(() => {
     if (flowId) {
       const { fetch, xmlSend, xmlOpen } = setAuthHeaders();
+      setupInteractiveTemplateCache();
       const files = loadfiles(() => {
         getFreeFlow({ variables: { id: flowId } });
       });
