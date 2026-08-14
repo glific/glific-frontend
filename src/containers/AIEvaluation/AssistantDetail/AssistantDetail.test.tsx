@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
@@ -7,10 +7,12 @@ import {
   CREATE_ASSISTANT,
   CREATE_KNOWLEDGE_BASE,
   SET_LIVE_VERSION,
+  SEND_ASSISTANT_MESSAGE,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS, GET_ASSISTANT_MODELS } from 'graphql/queries/Assistant';
+import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
 import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
@@ -1022,6 +1024,47 @@ describe('unsaved changes across tabs', () => {
   });
 });
 
+describe('try it out tab', () => {
+  test('opens the sandbox for a saved version', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-tryItOut')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+    expect(screen.getByTestId('tryItOut')).toBeInTheDocument();
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 1');
+  });
+
+  test('blocks on unsaved changes, and its Save button saves the page', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+    fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+    expect(screen.getByTestId('tryItOutBlocker')).toHaveTextContent('Save a version to try it out');
+    expect(screen.getByTestId('saveFromTryItOutButton')).toBeInTheDocument();
+  });
+
+  test('a brand new assistant is sent to Persona & Prompt first', async () => {
+    renderDetail('/ai-evaluation-v2/add', []);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-tryItOut')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+    expect(screen.getByTestId('tryItOutBlocker')).toHaveTextContent('Save your first version to try it out');
+
+    fireEvent.click(screen.getByTestId('goToPersonaButton'));
+    expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
+  });
+});
+
 describe('version status', () => {
   test('a version still building shows In Progress and cannot be published', async () => {
     const building = { ...version(2, false), status: 'in_progress' };
@@ -1332,10 +1375,13 @@ describe('switching versions', () => {
   });
 
   test('an upload landing after a version switch appends to the new list', async () => {
+    // the upload must not settle until the switch has happened, and a wall-clock delay loses
+    // that race whenever the suite runs slowly — so the clock is held still instead
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     const slowUpload = {
       request: { query: UPLOAD_FILE_TO_KAAPI },
       variableMatcher: () => true,
-      delay: 60,
+      delay: 5_000,
       result: {
         data: {
           uploadFilesearchFile: {
@@ -1366,6 +1412,13 @@ describe('switching versions', () => {
     await openVersionMenu();
     fireEvent.click(screen.getByTestId('versionOption-2'));
 
+    // the switch lands first: nothing has changed yet, so there is nothing to confirm
+    await waitFor(() => {
+      expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('older_policy.pdf');
+    });
+
+    await act(async () => void (await vi.advanceTimersByTimeAsync(5_000)));
+
     await waitFor(() => {
       expect(screen.getAllByTestId('knowledgeBaseFile')).toHaveLength(2);
     });
@@ -1373,6 +1426,8 @@ describe('switching versions', () => {
     expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('older_policy.pdf');
     expect(screen.getByTestId('knowledgeBase')).toHaveTextContent('guide.pdf');
     expect(screen.queryByText('Accelerator Guide (1).pdf')).not.toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 
   test('a save moves the selection onto the version it just created', async () => {
@@ -1489,4 +1544,113 @@ test('an assistant with no versions shows the effort it was saved with', async (
   const high = await screen.findByTestId('effortSegment-high');
   expect(high).toHaveAttribute('aria-checked', 'true');
   expect(screen.getByTestId('effortSegment-low')).toHaveAttribute('aria-checked', 'false');
+});
+
+describe('resilience', () => {
+  test('a version whose settings will not parse still loads', async () => {
+    const broken = { ...version(1, true), settings: 'not json' };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([broken])]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    // the prompt still comes through; only the unreadable settings fall back to defaults
+    expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
+  });
+
+  test('reselecting the version already on screen does nothing', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(screen.getByTestId('versionOption-1'));
+
+    // version 1 is already selected, so there is nothing to confirm or reload
+    expect(screen.queryByText('Switch version?')).not.toBeInTheDocument();
+    expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1');
+  });
+
+  test('a publish that throws is reported', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failingPublish = {
+      request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
+      error: new Error('Network down'),
+    };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingPublish]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(screen.getByTestId('versionOption-2'));
+
+    fireEvent.click(await screen.findByTestId('publishButton'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+    errorSpy.mockRestore();
+  });
+
+  test('leaving with unsaved changes warns the browser too', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Be concise.' } });
+
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+
+    // a cancelled beforeunload is what makes the browser show its confirm dialog
+    expect(event.defaultPrevented).toBe(true);
+  });
+});
+
+test('a reply that lands while another tab is open is not lost', async () => {
+  const sendMock = {
+    request: { query: SEND_ASSISTANT_MESSAGE },
+    variableMatcher: () => true,
+    result: {
+      data: {
+        sendAssistantMessage: { answer: null, conversationId: 'c1', jobId: 'j1', requestId: 'r1', errors: null },
+      },
+    },
+  };
+  const replyMock = {
+    request: { query: ASSISTANT_CHAT_RESPONSE },
+    result: {
+      data: {
+        assistantChatResponse: {
+          answer: 'Here you go',
+          conversationId: 'c1',
+          jobId: 'j1',
+          requestId: 'r1',
+          errors: null,
+        },
+      },
+    },
+    delay: 150,
+  };
+  renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), sendMock, replyMock]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('tab-tryItOut'));
+  fireEvent.change(await screen.findByTestId('sandboxInput'), { target: { value: 'Hello' } });
+  fireEvent.click(screen.getByTestId('sendMessageButton'));
+  await screen.findByTestId('pendingMessage');
+
+  // walk away while the answer is still in flight
+  fireEvent.click(screen.getByTestId('tab-persona'));
+  expect(screen.getByTestId('tabPanel-tryItOut')).toHaveAttribute('hidden');
+
+  fireEvent.click(screen.getByTestId('tab-tryItOut'));
+
+  expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Here you go');
 });

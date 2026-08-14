@@ -10,6 +10,7 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
+import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
 import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
@@ -25,7 +26,7 @@ import {
   TabKey,
   VersionBar,
 } from './components';
-import { KnowledgeBase, PersonaPrompt } from './Tabs';
+import { KnowledgeBase, PersonaPrompt, TryItOut } from './Tabs';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
@@ -115,6 +116,11 @@ export const AssistantDetail = () => {
 
   const { data: modelData } = useQuery(GET_ASSISTANT_MODELS);
   const models = useMemo(() => parseAssistantModels(modelData?.kaapiModels), [modelData]);
+
+  const { data: goldenQaData } = useQuery(LIST_GOLDEN_QA, {
+    variables: { filter: {}, opts: {} },
+    skip: activeTab !== 'tryItOut',
+  });
 
   const [updateAssistant, { loading: savingName }] = useMutation(UPDATE_ASSISTANT);
   const [createAssistant] = useMutation(CREATE_ASSISTANT);
@@ -364,6 +370,21 @@ export const AssistantDetail = () => {
         legacy={vectorStore?.legacy ?? false}
       />
     ),
+    tryItOut: (
+      <TryItOut
+        hasVersions={versions.length > 0}
+        isDirty={isDirty}
+        versionId={selectedVersion?.id}
+        versionNumber={selectedVersion?.versionNumber}
+        versionStatus={selectedVersion?.status}
+        liveVersionNumber={liveVersion?.versionNumber ?? null}
+        hasGoldenQaSets={(goldenQaData?.goldenQas ?? []).length > 0}
+        assistantId={assistantId}
+        onGoToPersona={() => setActiveTab('persona')}
+        onSave={handleSaveVersion}
+        onRunEvaluation={() => setActiveTab('evaluation')}
+      />
+    ),
   };
 
   const activePanel = TAB_PANELS[activeTab];
@@ -407,7 +428,13 @@ export const AssistantDetail = () => {
       <TabBar activeTab={activeTab} onChange={setActiveTab} dirtyTabs={dirtyTabs} />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
-        {activePanel ?? `${t(activeTabLabel)} ${t('coming soon')}`}
+        {Object.entries(TAB_PANELS).map(([key, panel]) => (
+          <div key={key} hidden={key !== activeTab} data-testid={`tabPanel-${key}`}>
+            {panel}
+          </div>
+        ))}
+
+        {!activePanel && `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
 
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
