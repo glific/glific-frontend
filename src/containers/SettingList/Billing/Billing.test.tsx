@@ -13,6 +13,7 @@ import {
   createBillingSubscriptionPromoQuery,
   getCouponCode,
   getCustomerPortalQuery,
+  getCustomerPortalNetworkErrorQuery,
   getPendingBillingQuery,
   getBillingQueryWithoutVars,
   updateBillingQueryMock3,
@@ -229,6 +230,32 @@ test('subscription status is already in pending state', async () => {
   await waitFor(() => {
     expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank', 'noopener');
   });
+});
+
+test('shows a warning when opening the customer portal fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  (window.open as any).mockClear();
+  const { getByText, getByTestId } = render(
+    <MockedProvider
+      mocks={[getPendingBillingQuery, getCustomerPortalNetworkErrorQuery, getBillingQueryWithoutVars]}
+      addTypename={false}
+    >
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Your payment is in pending state'));
+  });
+
+  fireEvent.click(getByTestId('customerPortalButton'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('An error occurred', 'warning');
+  });
+  expect(window.open).not.toHaveBeenCalled();
 });
 
 test('complete a subscription', async () => {

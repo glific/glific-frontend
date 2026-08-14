@@ -62,7 +62,6 @@ export const MyAccount = () => {
         }
         return false;
       }
-      setShowOTPButton(true);
       setToastMessageInfo({ severity: 'success', message: successMessage });
       return true;
     } catch (error: any) {
@@ -108,8 +107,11 @@ export const MyAccount = () => {
   };
 
   // save the form if data is valid
-  const saveHandler = (item: any) => {
-    handleUpdateCurrentUser(item, t('Password updated successfully!'));
+  const saveHandler = async (item: any) => {
+    const updated = await handleUpdateCurrentUser(item, t('Password updated successfully!'));
+    if (updated) {
+      setShowOTPButton(true);
+    }
   };
 
   const handlePasswordVisibility = () => {

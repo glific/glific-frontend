@@ -75,8 +75,12 @@ export const BillingForm = () => {
   });
 
   const visitCustomerPortal = async () => {
-    const { data } = await getCustomerPortal();
-    if (data) {
+    const { data, error } = await getCustomerPortal();
+    if (error) {
+      setNotification(error.message ? error.message : 'An error occurred', 'warning');
+      return;
+    }
+    if (data?.customerPortal?.url) {
       window.open(data.customerPortal.url, '_blank', 'noopener');
     }
   };

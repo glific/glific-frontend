@@ -234,6 +234,13 @@ export const getCustomerPortalQuery = {
   },
 };
 
+export const getCustomerPortalNetworkErrorQuery = {
+  request: {
+    query: GET_CUSTOMER_PORTAL,
+  },
+  error: new Error('An error occurred'),
+};
+
 export const getCouponCode = {
   request: {
     query: GET_COUPON_CODE,
