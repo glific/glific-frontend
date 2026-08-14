@@ -854,6 +854,17 @@ export const importFlowTranslationsMock = {
   },
 };
 
+export const importFlowTranslationsUnsuccessfulMock = {
+  ...importFlowTranslationsMock,
+  result: {
+    data: {
+      importFlowLocalization: {
+        success: false,
+      },
+    },
+  },
+};
+
 export const exportFlowTranslationsMock = (autoTranslate: boolean) => ({
   request: {
     query: EXPORT_FLOW_LOCALIZATIONS,

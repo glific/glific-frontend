@@ -98,7 +98,7 @@ export const TranslateButton = ({
             if (message) {
               setTranslateMessage(message);
             } else {
-              setNotification('Interactive Message Imported Successfully!', 'success');
+              setNotification(t('Interactive Message Imported Successfully!'), 'success');
             }
           }
           handleClose();
@@ -138,7 +138,7 @@ export const TranslateButton = ({
           if (message) {
             setTranslateMessage(message);
           } else {
-            setNotification('Interactive Message Translated Successfully', 'success');
+            setNotification(t('Interactive Message Translated Successfully'), 'success');
           }
         }
       } else if (translateOption === 'export-translate' || translateOption === 'export') {
@@ -151,7 +151,7 @@ export const TranslateButton = ({
         if (data) {
           const { exportData } = data.exportInteractiveTemplate;
           exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
-          setNotification('Interactive Message Exported Successfully', 'success');
+          setNotification(t('Interactive Message Exported Successfully'), 'success');
         }
       }
       handleClose();

@@ -1030,5 +1030,12 @@
   "Loads the prompt and settings saved in that version into the editor.": "Loads the prompt and settings saved in that version into the editor.",
   "This version is still being prepared": "This version is still being prepared",
   "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation.",
-  "could not be uploaded. Try again.": "could not be uploaded. Try again."
+  "could not be uploaded. Try again.": "could not be uploaded. Try again.",
+  "An error occured while importing flow translations": "An error occured while importing flow translations",
+  "Invalid Email": "Invalid Email",
+  "Email is Required": "Email is Required",
+  "File uploaded successfully": "File uploaded successfully",
+  "Interactive Message Imported Successfully!": "Interactive Message Imported Successfully!",
+  "Interactive Message Translated Successfully": "Interactive Message Translated Successfully",
+  "Interactive Message Exported Successfully": "Interactive Message Exported Successfully"
 }

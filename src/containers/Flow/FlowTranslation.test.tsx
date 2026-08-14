@@ -10,6 +10,7 @@ import {
   getFlowTranslationsNetworkError,
   getFlowTranslationsWithErrors,
   importFlowTranslationsMock,
+  importFlowTranslationsUnsuccessfulMock,
 } from 'mocks/Flow';
 
 // The real ImportButton drives the mutation off a FileReader completion event, which
@@ -170,6 +171,25 @@ describe('Testing Translation flows', () => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
       expect(mockLoadFlowEditor).toHaveBeenCalled();
     });
+  });
+
+  it('shows a warning and keeps the dialog open when the import responds unsuccessfully', async () => {
+    const mockLoadFlowEditor = vi.fn();
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { getByText, getByTestId } = render(
+      <MockedProvider mocks={[importFlowTranslationsUnsuccessfulMock]} addTypename={false}>
+        <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(getByText('Import translations'));
+    fireEvent.click(getByTestId('mock-import-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('An error occured while importing flow translations', 'warning');
+    });
+    expect(mockSetDialog).not.toHaveBeenCalledWith(false);
+    expect(mockLoadFlowEditor).not.toHaveBeenCalled();
   });
 
   it('stops the importing state when the import mutation fails', async () => {

@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import {
@@ -205,13 +205,15 @@ export const InteractiveMessage = () => {
           extension,
         },
       });
-      setAttachmentURL(data.uploadMedia);
-      setNotification('File uploaded successfully');
+      setAttachmentURL(data?.uploadMedia);
+      setNotification(t('File uploaded successfully'), 'success');
       setShowUploadButton(false);
     } catch (error) {
-      setNotification('File upload failed. Please try again.');
+      setErrorMessage(error);
       resetUploadState();
       setShowUploadButton(true);
+    } finally {
+      setUploadingFile(false);
     }
   };
 

@@ -582,9 +582,7 @@ test('shows a warning when resetting the flow count fails', async () => {
 
   const { getByTestId, getByText } = render(wrapperFunction(resetErrorMocks));
 
-  await waitFor(() => {
-    expect(screen.findByText('help workflow'));
-  });
+  await screen.findByText('help workflow');
 
   fireEvent.click(getByTestId('moreButton'));
   fireEvent.click(getByText('Reset flow count'));

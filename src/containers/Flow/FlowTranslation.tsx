@@ -112,12 +112,17 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
       onImport={() => setImporting(true)}
       afterImport={async (result: string) => {
         try {
-          await importFlow({ variables: { localization: result, id: flowId } });
+          const { data } = await importFlow({ variables: { localization: result, id: flowId } });
           setImporting(false);
-          setDialog(false);
-          loadFlowEditor();
-        } catch {
+          if (data?.importFlowLocalization?.success) {
+            setDialog(false);
+            loadFlowEditor();
+          } else {
+            setNotification(t('An error occured while importing flow translations'), 'warning');
+          }
+        } catch (error) {
           setImporting(false);
+          setErrorMessage(error);
         }
       }}
     />

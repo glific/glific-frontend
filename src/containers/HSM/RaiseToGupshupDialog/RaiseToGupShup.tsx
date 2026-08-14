@@ -47,7 +47,7 @@ export const RaiseToGupShup = ({ handleCancel, templateId, label }: RaiseToGupSh
   const [reportToGupshup] = useMutation(REPORT_TO_GUPSHUP);
 
   const validation = {
-    email: Yup.string().email('Invalid Email').required('Email is Required'),
+    email: Yup.string().email(t('Invalid Email')).required(t('Email is Required')),
   };
 
   const FormSchema = Yup.object().shape(validation);

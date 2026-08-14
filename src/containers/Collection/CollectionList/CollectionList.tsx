@@ -100,7 +100,7 @@ export const CollectionList = () => {
       },
     });
     if (error) {
-      setNotification('An error occured while exporting the collection', 'warning');
+      setNotification('An error occurred while exporting the collection', 'warning');
     } else if (data?.exportCollection.errors) {
       setNotification(data.exportCollection.errors[0].message, 'warning');
     } else if (data?.exportCollection.status) {

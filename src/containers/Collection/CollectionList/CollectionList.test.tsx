@@ -239,7 +239,7 @@ describe('<CollectionList />', () => {
     fireEvent.click(screen.getByTestId('export-icon'));
 
     await waitFor(() => {
-      expect(setNotification).toHaveBeenCalledWith('An error occured while exporting the collection', 'warning');
+      expect(setNotification).toHaveBeenCalledWith('An error occurred while exporting the collection', 'warning');
     });
   });
 

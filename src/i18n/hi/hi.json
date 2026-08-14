@@ -893,5 +893,12 @@
   "Loads the prompt and settings saved in that version into the editor.": "उस संस्करण में सहेजे गए प्रॉम्प्ट और सेटिंग्स को एडिटर में लोड करता है।",
   "This version is still being prepared": "यह संस्करण अभी तैयार किया जा रहा है",
   "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।",
-  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।"
+  "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।",
+  "An error occured while importing flow translations": "फ्लो अनुवाद आयात करते समय एक त्रुटि हुई",
+  "Invalid Email": "अमान्य ईमेल",
+  "Email is Required": "ईमेल आवश्यक है",
+  "File uploaded successfully": "फ़ाइल सफलतापूर्वक अपलोड हो गई",
+  "Interactive Message Imported Successfully!": "इंटरैक्टिव संदेश सफलतापूर्वक आयात किया गया!",
+  "Interactive Message Translated Successfully": "इंटरैक्टिव संदेश का अनुवाद सफलतापूर्वक हुआ",
+  "Interactive Message Exported Successfully": "इंटरैक्टिव संदेश सफलतापूर्वक निर्यात किया गया"
 }

@@ -661,13 +661,19 @@ test('it uploads a file and shows the attachment URL on success', async () => {
   await selectUploadAttachmentFile(mockFile);
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('File uploaded successfully');
+    expect(setNotification).toHaveBeenCalledWith('File uploaded successfully', 'success');
   });
+  await waitFor(() => {
+    expect(screen.getByDisplayValue(uploadUrl)).toBeInTheDocument();
+  });
+  // the busy spinner clears once the upload settles
+  expect(screen.queryByText('Uploading...')).not.toBeInTheDocument();
 });
 
 test('it shows a warning and resets upload state when the file upload fails', async () => {
   const uploadErrorMock = {
     request: { query: UPLOAD_MEDIA },
+    variableMatcher: () => true,
     error: new Error('Failed to upload'),
   };
 
@@ -677,6 +683,10 @@ test('it shows a warning and resets upload state when the file upload fails', as
   await selectUploadAttachmentFile(mockFile);
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('File upload failed. Please try again.');
+    expect(setErrorMessage).toHaveBeenCalled();
+  });
+  // the upload UI returns to its retry state instead of staying stuck on "Uploading..."
+  await waitFor(() => {
+    expect(screen.getByText('Choose File')).toBeInTheDocument();
   });
 });
