@@ -111,10 +111,19 @@ export const deleteTemplateErrorMock = (id: string, message: string) => ({
 });
 
 export const translateSessionTemplateMock = (
-  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  variables: {
+    languageId: string;
+    sourceLanguageId?: string;
+    body?: string;
+    footer?: string;
+    buttons?: string[];
+  },
   result: { body: string; footer?: string | null; buttons?: string[] }
 ) => ({
-  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  request: {
+    query: TRANSLATE_SESSION_TEMPLATE,
+    variables: { buttons: undefined, ...variables },
+  },
   result: {
     data: {
       translateSessionTemplate: {
@@ -128,18 +137,36 @@ export const translateSessionTemplateMock = (
 });
 
 export const translateSessionTemplateErrorMock = (
-  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  variables: {
+    languageId: string;
+    sourceLanguageId?: string;
+    body?: string;
+    footer?: string;
+    buttons?: string[];
+  },
   message: string
 ) => ({
-  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  request: {
+    query: TRANSLATE_SESSION_TEMPLATE,
+    variables: { buttons: undefined, ...variables },
+  },
   error: new Error(message),
 });
 
 export const translateSessionTemplateResultErrorMock = (
-  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  variables: {
+    languageId: string;
+    sourceLanguageId?: string;
+    body?: string;
+    footer?: string;
+    buttons?: string[];
+  },
   error: { key: string; message: string }
 ) => ({
-  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  request: {
+    query: TRANSLATE_SESSION_TEMPLATE,
+    variables: { buttons: undefined, ...variables },
+  },
   result: {
     data: {
       translateSessionTemplate: {
