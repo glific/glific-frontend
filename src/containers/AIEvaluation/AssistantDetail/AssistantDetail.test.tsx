@@ -12,9 +12,10 @@ import {
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
-import { GET_ASSISTANT, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
+import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
 import AssistantDetail from './AssistantDetail';
 
 const version = (versionNumber: number, isLive: boolean) => ({
@@ -48,9 +49,16 @@ const versionsMock = (assistantVersions = [version(1, true), version(2, false)])
 
 const defaultMocks = () => [getAssistant('1'), versionsMock()];
 
+// every render loads the model list, so the mock rides along with whatever else a test needs
+const assistantModelsMock = {
+  request: { query: GET_ASSISTANT_MODELS },
+  result: { data: { kaapiModels: rawModels } },
+  maxUsageCount: Number.POSITIVE_INFINITY,
+};
+
 const renderDetail = (path = '/ai-evaluation-v2/1', mocks: any[] = defaultMocks()) =>
   render(
-    <MockedProvider mocks={mocks}>
+    <MockedProvider mocks={[...mocks, assistantModelsMock]}>
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/ai-evaluation-v2" element={<div data-testid="list-page" />} />
@@ -220,9 +228,9 @@ describe('edit mode', () => {
     renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock([])]);
 
     await waitFor(() => {
-      expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4.1');
+      expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4.1');
     });
-    expect(screen.getByTestId('temperatureInput')).toHaveValue(0.01);
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     fireEvent.click(screen.getByTestId('editNameButton'));
     expect(screen.getByTestId('nameInput')).toHaveValue('');
@@ -585,7 +593,7 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 0.01, name: 'Untitled assistant' },
+          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 1, name: 'Untitled assistant' },
         },
       },
       result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
@@ -607,7 +615,7 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 0.01, name: 'Untitled assistant' },
+          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 1, name: 'Untitled assistant' },
         },
       },
       result: { data: { createAssistant: { assistant: null, errors: [{ message: 'Name taken', key: 'name' }] } } },
@@ -1147,7 +1155,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
     });
-    expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4o');
+    expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4o');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     await openVersionMenu();
@@ -1156,7 +1164,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
     });
-    expect(screen.getByRole('combobox')).toHaveTextContent('GPT-4.1');
+    expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4.1');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(0.5);
     // loading a version is not an edit
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
@@ -1460,6 +1468,82 @@ describe('switching versions', () => {
     });
     expect(screen.getByTestId('promptInput')).toHaveValue('Be concise.');
   });
+});
+
+describe('what a save sends', () => {
+  const captureSave = () => {
+    const sent: { variables?: any } = {};
+    return {
+      sent,
+      mock: {
+        request: { query: UPDATE_ASSISTANT },
+        variableMatcher: (variables: any) => {
+          if (variables.input?.name && Object.keys(variables.input).length === 1) return false;
+          sent.variables = variables;
+          return true;
+        },
+        result: { data: { updateAssistant: { errors: null } } },
+      },
+    };
+  };
+
+  test('a reasoning model sends its effort and no temperature', async () => {
+    const { sent, mock } = captureSave();
+    const reasoning = { ...version(1, true), model: 'gpt-5', settings: { effort: 'medium' } as any };
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([reasoning]), mock]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('effortSegment-high'));
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(sent.variables).toBeDefined();
+    });
+    expect(sent.variables.input.effort).toBe('high');
+    // gpt-5 declares no temperature, so sending one would be rejected
+    expect(sent.variables.input).not.toHaveProperty('temperature');
+  });
+
+  test('a standard model sends its temperature and no effort', async () => {
+    const { sent, mock } = captureSave();
+    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true)]), mock]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.5' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(sent.variables).toBeDefined();
+    });
+    expect(sent.variables.input.temperature).toBe(0.5);
+    expect(sent.variables.input).not.toHaveProperty('effort');
+  });
+});
+
+test('an assistant with no versions shows the effort it was saved with', async () => {
+  const reasoningAssistant = {
+    ...getAssistant('1', { model: 'gpt-5' }),
+    result: {
+      data: {
+        assistant: {
+          ...getAssistant('1').result.data.assistant,
+          assistant: {
+            ...getAssistant('1', { model: 'gpt-5' }).result.data.assistant.assistant,
+            effort: 'high',
+          },
+        },
+      },
+    },
+  };
+  renderDetail('/ai-evaluation-v2/1', [reasoningAssistant, versionsMock([])]);
+
+  const high = await screen.findByTestId('effortSegment-high');
+  expect(high).toHaveAttribute('aria-checked', 'true');
+  expect(screen.getByTestId('effortSegment-low')).toHaveAttribute('aria-checked', 'false');
 });
 
 describe('resilience', () => {

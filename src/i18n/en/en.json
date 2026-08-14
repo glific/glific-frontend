@@ -971,7 +971,6 @@
   "reasoning": "reasoning",
   "Settings for": "Settings for",
   "Reasoning effort": "Reasoning effort",
-  "Verbosity": "Verbosity",
   "none": "none",
   "minimal": "minimal",
   "low": "low",
@@ -979,7 +978,6 @@
   "high": "high",
   "How long the replies run. Low suits WhatsApp, where long messages get truncated.": "How long the replies run. Low suits WhatsApp, where long messages get truncated.",
   "Lower = more predictable. Keep near 0 for factual assistants.": "Lower = more predictable. Keep near 0 for factual assistants.",
-  "Temperature is not supported on reasoning models — use reasoning effort and verbosity.": "Temperature is not supported on reasoning models — use reasoning effort and verbosity.",
   "Reasoning off — temperature is available again.": "Reasoning off — temperature is available again.",
   "Reliable general-purpose model. Good default for most assistants.": "Reliable general-purpose model. Good default for most assistants.",
   "Fast and multimodal. Good when latency matters.": "Fast and multimodal. Good when latency matters.",
@@ -1059,5 +1057,7 @@
   "Send": "Send",
   "New chat": "New chat",
   "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation.",
-  "could not be uploaded. Try again.": "could not be uploaded. Try again."
+  "could not be uploaded. Try again.": "could not be uploaded. Try again.",
+  "This model does not take a temperature — use the settings it offers instead.": "This model does not take a temperature — use the settings it offers instead.",
+  "This model has no settings to tune.": "This model has no settings to tune."
 }
