@@ -950,6 +950,25 @@ describe('HSMV2 language versions', () => {
   const familyFetchMock = (variants: any[] = familyVariants) =>
     sessionTemplatesV2Mock({ isHsm: true, shortcode: 'account_balance' }, variants, familyFetchOpts);
 
+  // most tests in this block land on the "Add new language" flow via
+  // navigation state rather than a dedicated URL — this centralises that
+  // provider/router setup so each test only has to supply its own mocks.
+  const renderHSMV2 = (
+    MOCKS: any[],
+    { languageAnchorId = '1', anchorShortcode = 'account_balance', routeState = {} } = {}
+  ) =>
+    render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/add', state: { languageAnchorId, anchorShortcode, ...routeState } }]}
+        >
+          <Routes>
+            <Route path="/add" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
   test('the dedicated /:id/edit route shows the language versions summary read-only, with the Add new language option available', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
@@ -1061,17 +1080,7 @@ describe('HSMV2 language versions', () => {
       familyFetchMock(),
       deleteTemplateMock('2'),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
@@ -1132,17 +1141,7 @@ describe('HSMV2 language versions', () => {
       { id: '3', language: { id: '3', label: 'Spanish', locale: 'es' }, category: 'UTILITY', status: 'REJECTED' },
     ];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(variantsWithRejected)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(within(screen.getByTestId('status-tab-Rejected')).getByText('1')).toBeInTheDocument();
@@ -1163,22 +1162,7 @@ describe('HSMV2 language versions', () => {
       familyFetchMock(anchorOnly),
       familyFetchMock(anchorOnly),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[
-            {
-              pathname: '/add',
-              state: { languageAnchorId: '1', anchorShortcode: 'account_balance', openAddLanguage: true },
-            },
-          ]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS, { routeState: { openAddLanguage: true } });
 
     await waitFor(() => {
       expect(screen.getByTestId('auto-translate-button')).toBeInTheDocument();
@@ -1225,17 +1209,7 @@ describe('HSMV2 language versions', () => {
   test('"Add new language" prefills the draft from the anchor template and unlocks the Language field', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByText('Language versions')).toBeInTheDocument();
@@ -1264,17 +1238,7 @@ describe('HSMV2 language versions', () => {
   test('shows the English source reference and prompts to pick a language when Auto-translate is clicked without one', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1313,17 +1277,7 @@ describe('HSMV2 language versions', () => {
       language: { __typename: 'Language', id: '2', label: 'Marathi' },
     });
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, marathiAnchorMock, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '2', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS, { languageAnchorId: '2' });
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1345,17 +1299,7 @@ describe('HSMV2 language versions', () => {
   test('starting "Add new language" from an anchor with no language falls back to English on the reference chips', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateNullLanguage, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1397,17 +1341,7 @@ describe('HSMV2 language versions', () => {
         { body: 'translated message' }
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1439,17 +1373,7 @@ describe('HSMV2 language versions', () => {
   test('keeps the English source reference after clicking "Add new language" a second time', async () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1479,17 +1403,7 @@ describe('HSMV2 language versions', () => {
     // setStates), so it's already visible without any extra clicks.
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1516,17 +1430,7 @@ describe('HSMV2 language versions', () => {
     // not translatable button text.
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1582,17 +1486,7 @@ describe('HSMV2 language versions', () => {
         }
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1651,17 +1545,7 @@ describe('HSMV2 language versions', () => {
         { body: 'translated body', footer: 'translated footer', buttons: ['००३'] }
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '2', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS, { languageAnchorId: '2' });
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1714,17 +1598,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(translateRequest, translateResult),
       translateSessionTemplateMock(translateRequest, translateResult),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1782,17 +1656,7 @@ describe('HSMV2 language versions', () => {
         'network error'
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1828,17 +1692,7 @@ describe('HSMV2 language versions', () => {
       buttonType: 'CALL_TO_ACTION',
     });
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ctaAnchorMock, familyFetchMock(anchorOnly)];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Call Us')).toBeInTheDocument();
@@ -1885,17 +1739,7 @@ describe('HSMV2 language versions', () => {
         }
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -1939,17 +1783,7 @@ describe('HSMV2 language versions', () => {
         { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['००३'] }
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -2001,17 +1835,7 @@ describe('HSMV2 language versions', () => {
         { key: 'translation_error', message: 'Unable to translate content right now.' }
       ),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
@@ -2039,17 +1863,7 @@ describe('HSMV2 language versions', () => {
 
   test('canceling the delete confirmation dialog leaves the variant untouched', async () => {
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock()];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
@@ -2075,17 +1889,7 @@ describe('HSMV2 language versions', () => {
       familyFetchMock(),
       deleteTemplateErrorMock('2', 'network error'),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
@@ -2123,17 +1927,7 @@ describe('HSMV2 language versions', () => {
       }),
       deleteTemplateMock('2'),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(within(screen.getByTestId('status-tab-Approved')).getByText('1')).toBeInTheDocument();
@@ -2207,17 +2001,7 @@ describe('HSMV2 language versions', () => {
       ...CREATE_SESSION_TEMPLATE_MOCK,
       sessionTemplatesV2ErrorMock({ isHsm: true, shortcode: 'element_name' }, 'network error', familyFetchOpts),
     ];
-    render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
-        <MemoryRouter
-          initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
-        >
-          <Routes>
-            <Route path="/add" element={<HSMV2 />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderHSMV2(MOCKS);
 
     await waitFor(() => {
       expect(screen.getByText('Language versions')).toBeInTheDocument();
