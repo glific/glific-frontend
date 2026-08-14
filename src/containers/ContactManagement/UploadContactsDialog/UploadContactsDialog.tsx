@@ -79,12 +79,13 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
         },
       });
       const { errors: importErrors } = data.importContacts;
-      if (importErrors) {
-        setNotification(data.errors[0].message, 'warning');
-      } else {
+      if (importErrors?.length > 0) {
+        setNotification(importErrors[0].message, 'warning');
         setUploadingContacts(false);
-        setShowStatus(true);
+        return;
       }
+      setUploadingContacts(false);
+      setShowStatus(true);
     } catch (errors: any) {
       setDialog(false);
       setNotification(errors.message, 'warning');

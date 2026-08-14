@@ -184,6 +184,7 @@ test('it deletes the contact field and associated data successfully', async () =
 });
 
 test('it shows a warning when deleting the contact field and associated data fails', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
   const mocks: any = [...contactFieldMocks, deleteContactFieldWithDataErrorMock];
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
@@ -206,6 +207,7 @@ test('it shows a warning when deleting the contact field and associated data fai
   fireEvent.click(screen.getByTestId('middle-button'));
 
   await waitFor(() => {
-    expect(screen.getByTestId('middle-button')).toBeInTheDocument();
+    expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occured while deleting the contact field', 'warning');
   });
+  expect(screen.getByTestId('middle-button')).toBeInTheDocument();
 });

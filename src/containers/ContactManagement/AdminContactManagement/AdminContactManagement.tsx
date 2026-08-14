@@ -29,13 +29,13 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
         },
       });
       const { errors: moveContactsErrors } = data.moveContacts;
-      if (moveContactsErrors) {
+      if (moveContactsErrors?.length > 0) {
         setErrors(moveContactsErrors);
       } else {
-        setUploadingContacts(false);
         setShowStatus(true);
       }
       setFileName('');
+      setUploadingContacts(false);
     } catch (error: any) {
       setErrors([{ message: error.message }]);
       setFileName('');

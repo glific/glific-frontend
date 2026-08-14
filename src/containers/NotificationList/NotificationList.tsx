@@ -94,6 +94,25 @@ export const NotificationList = () => {
     }
   };
 
+  const downloadContactUploadReport = async (userJobId: number) => {
+    try {
+      const { data } = await getStatus({
+        variables: {
+          userJobId,
+        },
+      });
+      const { csvRows, error } = data?.getContactUploadReport || {};
+      if (error) {
+        setNotification(error, 'warning');
+        return;
+      }
+      exportCsvFile(csvRows, `Contact_Upload_Status`);
+      setNotification(t('Downloaded the status of the contact upload'), 'success');
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+
   const setDialog = (id: any, item: any) => {
     const category = item.category;
     const entity = JSON.parse(item.entity);
@@ -121,23 +140,7 @@ export const NotificationList = () => {
         break;
       case 'Contact Upload':
       case 'WA Group Member Upload':
-        getStatus({
-          variables: {
-            userJobId: entity?.user_job_id,
-          },
-        })
-          .then(({ data }) => {
-            const { csvRows, error } = data?.getContactUploadReport || {};
-            if (error) {
-              setNotification(error, 'warning');
-              return;
-            }
-            exportCsvFile(csvRows, `Contact_Upload_Status`);
-            setNotification('Downloaded the status of the contact upload', 'success');
-          })
-          .catch((error) => {
-            setErrorMessage(error);
-          });
+        downloadContactUploadReport(entity?.user_job_id);
         break;
       case 'Collection Primary Phone':
         downloadCollectionPrimaryReport(entity?.user_job_id);

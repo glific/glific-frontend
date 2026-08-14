@@ -13,7 +13,7 @@ import { useMutation } from '@apollo/client';
 import { Button } from 'components/UI/Form/Button/Button';
 import { getContactStatus, getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
 
 export interface CollectionContactListProps {
@@ -76,19 +76,23 @@ export const CollectionContactList = ({ title, descriptionBox = <></> }: Collect
 
   const handleCollectionRemove = async () => {
     const idsToRemove = selectedContacts.map((collection: any) => collection.id);
-    setRemoveContactsDialogShow(false);
-    setContactsToRemove([]);
-    await updateCollectionContacts({
-      variables: {
-        input: {
-          groupId: collectionId,
-          addContactIds: [],
-          deleteContactIds: idsToRemove,
+    try {
+      await updateCollectionContacts({
+        variables: {
+          input: {
+            groupId: collectionId,
+            addContactIds: [],
+            deleteContactIds: idsToRemove,
+          },
         },
-      },
-    });
-    setNotification(t('Contact has been removed successfully from the collection.'), 'success');
-    setUpdateCollection(!updateCollection);
+      });
+      setRemoveContactsDialogShow(false);
+      setContactsToRemove([]);
+      setNotification(t('Contact has been removed successfully from the collection.'), 'success');
+      setUpdateCollection(!updateCollection);
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   const setDialogBox = (selectedContacts: any) => {

@@ -8,6 +8,7 @@ import { getAllOrganizations } from 'mocks/Organization';
 import UploadContactsDialog from './UploadContactsDialog';
 import { getCollectionsList } from 'mocks/Collection';
 import { importContacts, importContactsNetworkError } from 'mocks/Contact';
+import * as Notification from 'common/notification';
 
 const mocks = [...getAllOrganizations, getCollectionsList(''), getCollectionsList('Optin group'), getCollectionsList()];
 
@@ -85,6 +86,7 @@ test('uploads contacts successfully when the form is submitted', async () => {
 });
 
 test('closes the dialog and shows a warning when uploading contacts fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
   render(
     <MockedProvider mocks={[...mocks, importContactsNetworkError]} addTypename={false}>
       <Router>
@@ -96,6 +98,7 @@ test('closes the dialog and shows a warning when uploading contacts fails unexpe
   await fillAndSubmitForm();
 
   await waitFor(() => {
-    expect(setDialogMock).toHaveBeenCalledWith(false);
+    expect(notificationSpy).toHaveBeenCalledWith('An error occurred', 'warning');
   });
+  expect(setDialogMock).toHaveBeenCalledWith(false);
 });

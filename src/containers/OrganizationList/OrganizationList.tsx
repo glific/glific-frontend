@@ -68,13 +68,21 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
 
     const statusField = {
       onChange: async (event: any) => {
-        await updateOrganizationStatus({
-          variables: {
-            updateOrganizationId: id,
-            status: event.target.value,
-          },
-        });
-        setNotification('Organization updated successfully');
+        try {
+          const { data } = await updateOrganizationStatus({
+            variables: {
+              updateOrganizationId: id,
+              status: event.target.value,
+            },
+          });
+          if (data?.updateOrganizationStatus?.errors) {
+            setNotification(data.updateOrganizationStatus.errors[0].message, 'warning');
+            return;
+          }
+          setNotification('Organization updated successfully');
+        } catch (error) {
+          setErrorMessage(error);
+        }
       },
       value: status,
       style: { width: '187px' },

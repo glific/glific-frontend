@@ -1030,5 +1030,9 @@
   "Loads the prompt and settings saved in that version into the editor.": "Loads the prompt and settings saved in that version into the editor.",
   "This version is still being prepared": "This version is still being prepared",
   "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation.",
-  "could not be uploaded. Try again.": "could not be uploaded. Try again."
+  "could not be uploaded. Try again.": "could not be uploaded. Try again.",
+  "Sorry! An error occured while updating the contact field": "Sorry! An error occured while updating the contact field",
+  "Contact field deleted successfully!": "Contact field deleted successfully!",
+  "Sorry! An error occured while deleting the contact field": "Sorry! An error occured while deleting the contact field",
+  "Downloaded the status of the contact upload": "Downloaded the status of the contact upload"
 }

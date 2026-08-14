@@ -6,7 +6,7 @@ import BlockIcon from 'assets/images/icons/Block.svg?react';
 import UnblockIcon from 'assets/images/icons/Unblock.svg?react';
 import { List } from 'containers/List/List';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { DELETE_CONTACT, UPDATE_CONTACT } from 'graphql/mutations/Contact';
@@ -83,9 +83,13 @@ export const BlockContactList = () => {
       },
     };
 
-    await unblockContact({ variables });
-    setUnblockDialog(false);
-    setNotification(t('Contact unblocked successfully'));
+    try {
+      await unblockContact({ variables });
+      setUnblockDialog(false);
+      setNotification(t('Contact unblocked successfully'));
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   if (unblockDialog) {
