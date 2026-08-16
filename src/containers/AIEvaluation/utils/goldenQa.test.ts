@@ -1,4 +1,10 @@
-import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from './goldenQa';
+import {
+  downloadFromUrl,
+  goldenQaCategories,
+  isValidGoldenQaName,
+  parseGoldenQaCsv,
+  suggestedGoldenQaName,
+} from './goldenQa';
 
 describe('parseGoldenQaCsv', () => {
   test('reads question, answer and category', () => {
@@ -121,5 +127,39 @@ describe('separators other than a comma', () => {
     const rows = parseGoldenQaCsv('﻿question,answer,category\nQ1,A1,C1');
 
     expect(rows).toEqual([{ question: 'Q1', answer: 'A1', category: 'C1' }]);
+  });
+});
+
+describe('naming a set', () => {
+  test('a name the backend accepts', () => {
+    expect(isValidGoldenQaName('maternal_health_core')).toBe(true);
+    expect(isValidGoldenQaName('set123')).toBe(true);
+  });
+
+  test('anything outside lowercase, digits and underscores is refused', () => {
+    expect(isValidGoldenQaName('Maternal Health')).toBe(false);
+    expect(isValidGoldenQaName('maternal-health')).toBe(false);
+    expect(isValidGoldenQaName('MaternalHealth')).toBe(false);
+    expect(isValidGoldenQaName('')).toBe(false);
+  });
+
+  test('a filename becomes a name the backend accepts', () => {
+    expect(suggestedGoldenQaName('Maternal Health.csv')).toBe('maternal_health');
+    expect(suggestedGoldenQaName('ANC — core set (v2).csv')).toBe('anc_core_set_v2');
+    expect(suggestedGoldenQaName('already_fine.csv')).toBe('already_fine');
+  });
+
+  test('only the extension is dropped, not every dot', () => {
+    expect(suggestedGoldenQaName('set.v1.final.csv')).toBe('set_v1_final');
+  });
+
+  test('a filename with nothing usable in it comes back empty', () => {
+    expect(suggestedGoldenQaName('___.csv')).toBe('');
+  });
+
+  test('what it suggests is always what it would accept', () => {
+    const suggested = suggestedGoldenQaName('Maternal Health — ANC.csv');
+
+    expect(isValidGoldenQaName(suggested)).toBe(true);
   });
 });

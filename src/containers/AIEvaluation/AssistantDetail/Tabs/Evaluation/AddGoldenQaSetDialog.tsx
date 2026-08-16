@@ -6,9 +6,15 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
+import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
-import { goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa';
+import {
+  goldenQaCategories,
+  isValidGoldenQaName,
+  parseGoldenQaCsv,
+  suggestedGoldenQaName,
+} from 'containers/AIEvaluation/utils/goldenQa';
 import styles from './AddGoldenQaSetDialog.module.css';
 
 export interface AddGoldenQaSetDialogProps {
@@ -16,19 +22,7 @@ export interface AddGoldenQaSetDialogProps {
   onAdded: () => void;
 }
 
-/** replace with the published template once it exists */
-const SHEET_TEMPLATE_URL = 'https://docs.google.com/spreadsheets/d/1REPLACE_WITH_REAL_TEMPLATE_ID/copy';
 const DEFAULT_DUPLICATION_FACTOR = 1;
-
-/** the backend only accepts lowercase letters, digits and underscores */
-const NAME_PATTERN = /^[a-z0-9_]+$/;
-
-const suggestedName = (filename: string) =>
-  filename
-    .replace(/\.[^.]+$/, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
 
 export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogProps) => {
   const { t } = useTranslation();
@@ -57,7 +51,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     setFile(selected);
     setRows(parsed);
     // a name is only suggested while the field is untouched, so typing is never overwritten
-    setName((current) => current || suggestedName(selected.name));
+    setName((current) => current || suggestedGoldenQaName(selected.name));
   };
 
   const handleDrop = (event: React.DragEvent) => {
@@ -70,7 +64,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
   const handleSubmit = async () => {
     const trimmed = name.trim();
 
-    if (!NAME_PATTERN.test(trimmed)) {
+    if (!isValidGoldenQaName(trimmed)) {
       setNameError(
         trimmed ? t('Use lowercase letters, numbers and underscores only.') : t('Give this Golden Q&A set a name.')
       );
@@ -174,7 +168,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
           />
         </button>
 
-        <a className={styles.TemplateLink} href={SHEET_TEMPLATE_URL} target="_blank" rel="noopener noreferrer">
+        <a className={styles.TemplateLink} href={GOLDEN_QA_TEMPLATE_LINK} target="_blank" rel="noopener noreferrer">
           <DescriptionOutlinedIcon className={styles.TemplateIcon} />
           {t('Use our Google Sheet template')}
         </a>

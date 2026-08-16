@@ -15,11 +15,6 @@ const sniffDelimiter = (text: string) => {
   );
 };
 
-/**
- * A hand-rolled reader rather than a split on the separator: an ideal answer is prose, so it
- * will contain separators, quoted passages and line breaks of its own — all of which are legal
- * inside a quoted field and none of which survive a naive split.
- */
 const readRows = (text: string, delimiter: string): string[][] => {
   const rows: string[][] = [];
   let row: string[] = [];
@@ -86,12 +81,10 @@ export const parseGoldenQaCsv = (text: string): GoldenQaRow[] => {
     .filter((row) => row.question !== '');
 };
 
-/** the categories present, in the order they first appear, ignoring uncategorised rows */
 export const goldenQaCategories = (rows: GoldenQaRow[]) => [
   ...new Set(rows.map((row) => row.category).filter(Boolean)),
 ];
 
-/** a signed URL is short-lived, so it is clicked as soon as it arrives rather than stored */
 export const downloadFromUrl = (url: string) => {
   const link = document.createElement('a');
   link.href = url;
@@ -100,3 +93,12 @@ export const downloadFromUrl = (url: string) => {
   link.click();
   document.body.removeChild(link);
 };
+
+export const isValidGoldenQaName = (name: string) => /^[a-z0-9_]+$/.test(name);
+
+export const suggestedGoldenQaName = (filename: string) =>
+  filename
+    .replace(/\.[^.]+$/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
