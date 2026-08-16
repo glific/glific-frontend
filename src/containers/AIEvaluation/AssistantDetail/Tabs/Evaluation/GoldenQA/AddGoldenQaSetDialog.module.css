@@ -56,8 +56,6 @@
 }
 
 .DropIcon {
-  width: var(--app-size-icon-lg);
-  height: var(--app-size-icon-lg);
   color: var(--app-color-text-tertiary);
 }
 
@@ -73,7 +71,7 @@
   align-items: center;
   gap: var(--app-space-2xs);
   margin-top: var(--app-space-sm);
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
   color: var(--app-color-brand-primary);
 }
