@@ -34,7 +34,7 @@ export const ManageGoldenQaSetsDialog = ({ sets, onView, onAdd, onClose }: Manag
       fullWidth
       customStyles={{ paper: styles.Paper }}
     >
-      <div className={styles.Body} data-testid="manageGoldenQaSetsDialog">
+      <div data-testid="manageGoldenQaSetsDialog">
         <div className={styles.Intro}>
           {t(
             'A fixed set of questions and their ideal answers. Every version is scored against the same set, so results stay comparable.'

@@ -1,7 +1,3 @@
-/*
- * The shared dialog spaces its title for a one-line confirmation and indents it 4px further
- * than the content below, so the title and its description read as one block here instead.
- */
 .Paper :global(.MuiDialogTitle-root) {
   padding-top: var(--app-space-3xl) !important;
   padding-bottom: 0 !important;
@@ -13,13 +9,8 @@
   padding-bottom: var(--app-space-sm) !important;
 }
 
-/* the add button and Done are the same decision point, so they sit close together */
 .Paper :global(.MuiDialogActions-root) {
   padding-top: 0 !important;
-}
-
-.Body {
-  padding-top: 0;
 }
 
 .Intro {
