@@ -9,6 +9,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
+import type { EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
 import styles from './Evaluation.module.css';
@@ -17,12 +18,10 @@ export interface EvaluationProps {
   versionNumber?: number;
 }
 
-type SubTab = 'run' | 'history';
-
 export const Evaluation = ({ versionNumber }: EvaluationProps) => {
   const { t } = useTranslation();
 
-  const [subTab, setSubTab] = useState<SubTab>('run');
+  const [subTab, setSubTab] = useState<EvaluationSubTab>('run');
   const [manageOpen, setManageOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [viewing, setViewing] = useState<GoldenQaSet | null>(null);
@@ -80,7 +79,7 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
 
   return (
     <div data-testid="evaluationTab">
-      <SegmentedControl<SubTab>
+      <SegmentedControl<EvaluationSubTab>
         className={styles.SubTabs}
         testId="evaluationSubTabs"
         options={[

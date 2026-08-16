@@ -28,7 +28,6 @@ const readRows = (text: string, delimiter: string): string[][] => {
       if (char !== '"') {
         field += char;
       } else if (text[index + 1] === '"') {
-        // "" is how a quote escapes itself inside a quoted field
         field += '"';
         index += 1;
       } else {
@@ -71,7 +70,6 @@ export const parseGoldenQaCsv = (text: string): GoldenQaRow[] => {
   const isHeader = rows[0][0]?.trim().toLowerCase() === GOLDEN_QA_COLUMNS[0];
   const body = isHeader ? rows.slice(1) : rows;
 
-  // readRows always yields at least one cell, so only the trailing columns can be absent
   return body
     .map((cells) => ({
       question: cells[0].trim(),

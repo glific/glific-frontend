@@ -55,11 +55,6 @@
   margin: 0 auto var(--app-space-lg);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-hover);
-
-  svg {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
 }
 
 .BlockerTitle {

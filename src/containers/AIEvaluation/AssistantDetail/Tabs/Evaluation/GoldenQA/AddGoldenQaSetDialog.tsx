@@ -50,7 +50,6 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
 
     setFile(selected);
     setRows(parsed);
-    // a name is only suggested while the field is untouched, so typing is never overwritten
     setName((current) => current || suggestedGoldenQaName(selected.name));
   };
 
