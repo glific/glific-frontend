@@ -116,7 +116,7 @@ export const ChatMessageType = ({
         <div data-testid="documentMessage" className={styles.Document}>
           <div>
             <DocumentIconDark className={styles.DocumentIcon} />
-            <span className={isSender ? styles.CaptionSender : styles.CaptionReciever}>{media.caption}</span>
+            <span className={isSender ? styles.CaptionSender : styles.CaptionReceiver}>{media.caption}</span>
           </div>
           <a href={mediaUrl} className={styles.DocumentText} download={media.caption} target="_blank" rel="noreferrer">
             {!isContextMessage && <DownloadIcon className={styles.DownloadIcon} />}
