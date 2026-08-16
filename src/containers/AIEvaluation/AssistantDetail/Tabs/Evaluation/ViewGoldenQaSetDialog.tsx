@@ -5,6 +5,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { DataTable } from '../../components';
 import { GET_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import type { GoldenQaRow, GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa';
@@ -20,7 +21,6 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
   const { t } = useTranslation();
 
   const [rows, setRows] = useState<GoldenQaRow[] | null>(null);
-  // which step gave up, so the message can say something the reader can act on
   const [failure, setFailure] = useState<'link' | 'file' | 'empty' | null>(null);
   const [reading, setReading] = useState(true);
 
@@ -59,9 +59,6 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
         }
         setReading(false);
       } catch (error: unknown) {
-        // storage may refuse to serve the file to the browser, which is a CORS setting on the
-        // bucket rather than anything this app can work around
-        // eslint-disable-next-line no-console
         console.error('Golden Q&A set could not be read from storage:', error);
         if (!cancelled) {
           setFailure('file');
@@ -134,30 +131,23 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
           )}
         </div>
 
-        <div className={styles.TableWrap}>
-          <table className={styles.Table}>
-            <thead>
-              <tr>
-                {hasCategories && <th>{t('Category')}</th>}
-                <th>{t('Question')}</th>
-                <th>{t('Expected answer')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, index) => (
-                <tr key={`${row.question}-${index}`} data-testid="goldenQaViewRow">
-                  {hasCategories && (
-                    <td>
-                      <span className={styles.Category}>{row.category || t('Uncategorised')}</span>
-                    </td>
-                  )}
-                  <td className={styles.Question}>{row.question}</td>
-                  <td className={styles.Answer}>{row.answer}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          testId="goldenQaViewTable"
+          rowTestId="goldenQaViewRow"
+          columns={[
+            ...(hasCategories ? [{ label: t('Category') }] : []),
+            { label: t('Question') },
+            { label: t('Expected answer') },
+          ]}
+          rows={rows.map((row, index) => ({
+            key: `${row.question}-${index}`,
+            cells: [
+              ...(hasCategories ? [<span className={styles.Category}>{row.category || t('Uncategorised')}</span>] : []),
+              <span className={styles.Question}>{row.question}</span>,
+              <span className={styles.Answer}>{row.answer}</span>,
+            ],
+          }))}
+        />
       </>
     );
   };
@@ -175,7 +165,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
       handleCancel={onClose}
       customStyles={{ paper: styles.WidePaper }}
     >
-      <div className={styles.Body} data-testid="viewGoldenQaSetDialog">
+      <div data-testid="viewGoldenQaSetDialog">
         <div className={styles.Intro} data-testid="goldenQaViewSummary">
           {rows && (
             <>

@@ -1,17 +1,8 @@
-/*
- * Two columns of prose need far more room than a dialog's usual 600px, so the width is set
- * here rather than through DialogBox's fullWidth, which pins the paper at 600px.
- */
 .WidePaper {
   width: min(62rem, 92vw) !important;
   max-width: min(62rem, 92vw) !important;
 }
 
-/*
- * The footer group is right-aligned by default; here the back link sits opposite Done, and
- * both line up with the table above — the dialog's content is inset by 2rem, which no single
- * spacing token matches.
- */
 .WidePaper :global(.MuiDialogActions-root) {
   margin-left: 0 !important;
   justify-content: space-between !important;
@@ -19,7 +10,6 @@
   padding-right: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
 }
 
-/* a link, not a button: Button carries a white fill and a shadow of its own */
 .WidePaper :global(.MuiDialogActions-root) button:first-child {
   padding-left: 0;
   border: none;
@@ -28,15 +18,6 @@
   color: var(--app-color-brand-primary);
 }
 
-.Body {
-  padding-top: 0;
-}
-
-/*
- * The shared dialog spaces its title for a one-line confirmation, and indents it 4px further
- * than the content below. Here the title and its description read as one block, so they share
- * a left edge and the gap between them closes.
- */
 .WidePaper :global(.MuiDialogTitle-root) {
   padding-top: var(--app-space-3xl) !important;
   padding-bottom: 0 !important;
@@ -58,11 +39,9 @@
   display: flex;
   align-items: center;
   gap: var(--app-space-sm);
-  min-height: 2rem;
   margin-bottom: var(--app-space-sm);
 }
 
-/* destructive, so it reads red even while it is disabled */
 .DeleteButton {
   flex-shrink: 0;
   margin-left: auto;
@@ -82,47 +61,6 @@
   font-size: var(--app-font-size-xs);
   font-weight: 600;
   color: var(--app-color-text-tertiary);
-}
-
-.TableWrap {
-  max-height: 26rem;
-  overflow: auto;
-  border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-lg);
-  background-color: var(--app-color-surface-raised);
-}
-
-.Table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--app-font-size-sm);
-  line-height: 1.55;
-
-  th,
-  td {
-    padding: var(--app-space-lg);
-    text-align: left;
-    vertical-align: top;
-  }
-
-  td {
-    border-bottom: 1px solid var(--app-color-border);
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  th {
-    position: sticky;
-    top: 0;
-    background-color: var(--app-color-green-secondary);
-    font-size: var(--app-font-size-xs);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--app-color-white);
-  }
 }
 
 .Category {
