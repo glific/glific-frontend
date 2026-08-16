@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
@@ -631,4 +631,21 @@ test('a partly categorised file keeps the column and labels the gaps', async () 
   expect(screen.getByRole('columnheader', { name: 'Category' })).toBeInTheDocument();
   expect(screen.getAllByTestId('goldenQaViewRow')[1]).toHaveTextContent('Uncategorised');
   vi.unstubAllGlobals();
+});
+
+test('many sets all render, inside a list of their own that can scroll', async () => {
+  const many = Array.from({ length: 8 }, (_, index) => ({
+    id: `g${index}`,
+    name: `set_${index}`,
+    insertedAt: '2026-08-10T10:00:00Z',
+  }));
+  renderTab([listMock(many)]);
+
+  fireEvent.click(await screen.findByTestId('manageSetsButton'));
+
+  const list = await screen.findByTestId('goldenQaSetList');
+  expect(within(list).getAllByTestId('manageGoldenQaSet')).toHaveLength(8);
+  // the add button stays outside the scroll area so it is always reachable
+  expect(within(list).queryByTestId('addGoldenQaSetButton')).not.toBeInTheDocument();
+  expect(screen.getByTestId('addGoldenQaSetButton')).toBeInTheDocument();
 });

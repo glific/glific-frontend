@@ -20,6 +20,12 @@
   color: var(--app-color-text-tertiary);
 }
 
+.SetList {
+  max-height: 18rem;
+  overflow-y: auto;
+  padding-right: var(--app-space-2xs);
+}
+
 .Set {
   display: flex;
   align-items: center;

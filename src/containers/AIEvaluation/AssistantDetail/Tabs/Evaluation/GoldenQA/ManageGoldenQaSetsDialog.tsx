@@ -41,29 +41,31 @@ export const ManageGoldenQaSetsDialog = ({ sets, onView, onAdd, onClose }: Manag
           )}
         </div>
 
-        {sets.map((set) => (
-          <button
-            type="button"
-            className={styles.Set}
-            key={set.id}
-            onClick={() => onView(set)}
-            data-testid="manageGoldenQaSet"
-          >
-            <span className={styles.SetIcon}>
-              <DocumentIcon />
-            </span>
-            <span className={styles.SetText}>
-              <span className={styles.SetName}>{set.name}</span>
-              <span className={styles.Note}>
-                {t('Added')} {dayjs(set.insertedAt).fromNow()}
+        <div className={styles.SetList} data-testid="goldenQaSetList">
+          {sets.map((set) => (
+            <button
+              type="button"
+              className={styles.Set}
+              key={set.id}
+              onClick={() => onView(set)}
+              data-testid="manageGoldenQaSet"
+            >
+              <span className={styles.SetIcon}>
+                <DocumentIcon />
               </span>
-            </span>
-            <span className={styles.ViewLink}>
-              {t('View')}
-              <ArrowForwardIcon className={styles.ViewIcon} />
-            </span>
-          </button>
-        ))}
+              <span className={styles.SetText}>
+                <span className={styles.SetName}>{set.name}</span>
+                <span className={styles.Note}>
+                  {t('Added')} {dayjs(set.insertedAt).fromNow()}
+                </span>
+              </span>
+              <span className={styles.ViewLink}>
+                {t('View')}
+                <ArrowForwardIcon className={styles.ViewIcon} />
+              </span>
+            </button>
+          ))}
+        </div>
 
         <Button
           variant="outlined"
