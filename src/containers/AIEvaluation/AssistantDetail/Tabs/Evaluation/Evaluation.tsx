@@ -10,9 +10,7 @@ import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedContro
 import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
-import { AddGoldenQaSetDialog } from './AddGoldenQaSetDialog';
-import { ManageGoldenQaSetsDialog } from './ManageGoldenQaSetsDialog';
-import { ViewGoldenQaSetDialog } from './ViewGoldenQaSetDialog';
+import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
 import styles from './Evaluation.module.css';
 
 export interface EvaluationProps {
@@ -50,7 +48,6 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
     return <Loading />;
   }
 
-  // nothing can be evaluated until there is something to evaluate against
   if (sets.length === 0) {
     return (
       <div data-testid="evaluationTab">

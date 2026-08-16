@@ -5,7 +5,7 @@ import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import { GET_GOLDEN_QA, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import Evaluation from './Evaluation';
-import ViewGoldenQaSetDialog from './ViewGoldenQaSetDialog';
+import { ViewGoldenQaSetDialog } from './GoldenQA';
 
 const listVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 

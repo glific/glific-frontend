@@ -5,7 +5,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { DataTable } from '../../components';
+import { DataTable } from '../../../components';
 import { GET_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import type { GoldenQaRow, GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa';
