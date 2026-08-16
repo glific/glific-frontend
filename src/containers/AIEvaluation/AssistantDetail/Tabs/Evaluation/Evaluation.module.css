@@ -63,7 +63,7 @@
 }
 
 .BlockerTitle {
-  font-size: var(--app-font-size-lg);
+  font-size: var(--app-font-size-md);
   font-weight: 800;
   color: var(--app-color-text-heading);
 }

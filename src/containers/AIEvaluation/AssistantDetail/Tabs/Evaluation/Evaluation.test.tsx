@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
