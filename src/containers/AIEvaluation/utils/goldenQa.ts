@@ -1,6 +1,6 @@
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
 
-export const GOLDEN_QA_COLUMNS = ['question', 'answer', 'category'];
+const GOLDEN_QA_COLUMNS = ['question', 'answer', 'category'];
 
 const DELIMITERS = [',', ';', '\t'];
 
