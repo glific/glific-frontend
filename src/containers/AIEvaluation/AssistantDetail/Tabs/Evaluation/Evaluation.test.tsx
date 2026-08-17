@@ -1,9 +1,16 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
+import * as utils from 'common/utils';
+import { toCsv } from 'containers/AIEvaluation/utils/csv';
 import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa';
-import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
-import { GET_GOLDEN_QA, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
+import {
+  GET_EVALUATION_SCORES,
+  GET_GOLDEN_QA,
+  LIST_AI_EVALUATIONS,
+  LIST_GOLDEN_QA,
+} from 'graphql/queries/AIEvaluations';
 import Evaluation from './Evaluation';
 import { ViewGoldenQaSetDialog } from './GoldenQA';
 
@@ -648,4 +655,680 @@ test('many sets all render, inside a list of their own that can scroll', async (
   // the add button stays outside the scroll area so it is always reachable
   expect(within(list).queryByTestId('addGoldenQaSetButton')).not.toBeInTheDocument();
   expect(screen.getByTestId('addGoldenQaSetButton')).toBeInTheDocument();
+});
+
+const scoresMock = (id: string, traces: any[] = []) => ({
+  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  result: { data: { evaluationScores: { scores: JSON.stringify({ score: { traces } }), errors: [] } } },
+  maxUsageCount: Number.POSITIVE_INFINITY,
+});
+
+describe('running an evaluation', () => {
+  const runsMock = (aiEvaluations: any[]) => ({
+    request: {
+      query: LIST_AI_EVALUATIONS,
+      variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+    },
+    result: { data: { aiEvaluations } },
+    maxUsageCount: Number.POSITIVE_INFINITY,
+  });
+
+  const completedRun = {
+    id: 'r1',
+    name: 'run_1',
+    status: 'COMPLETED',
+    failureReason: null,
+    results:
+      '{"summary_scores":[{"total_pairs":10,"std":0.64,"name":"Adherence to Ground Truth","avg":4.6},' +
+      '{"total_pairs":10,"std":0.1,"name":"Adherence to Knowledge Base","avg":3.2},' +
+      '{"total_pairs":10,"std":0.0,"name":"Adherence to Prompt","avg":1.4}]}',
+    goldenQa: { id: 'g1', name: 'maternal_health_core', duplicationFactor: 5 },
+    assistantConfigVersion: { id: 'v1', versionNumber: 1, assistant: { id: '1', name: 'Assistant' } },
+    insertedAt: '2026-08-10T10:00:00Z',
+    updatedAt: '2026-08-10T10:05:00Z',
+  };
+
+  const renderWithRuns = (runs: any[], mocks: any[] = []) =>
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock(runs), scoresMock('r1'), ...mocks]}>
+        <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+  test('the run dialog offers the sets and starts a run', async () => {
+    let sent: any;
+    const createMock = {
+      request: { query: CREATE_EVALUATION },
+      variableMatcher: (variables: any) => {
+        sent = variables;
+        return true;
+      },
+      result: { data: { createEvaluation: { evaluation: { status: 'pending' }, errors: null } } },
+    };
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    renderWithRuns([], [createMock]);
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent('Version 1');
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+    expect(sent.input.goldenQaId).toBe('g1');
+    expect(sent.input.configId).toBe('v1');
+    expect(sent.input.evaluationName).toMatch(/^assistant_v1_maternal_health_core_\d+$/);
+    notificationSpy.mockRestore();
+  });
+
+  test('a backend refusal is reported and the dialog stays open', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+    const failing = {
+      request: { query: CREATE_EVALUATION },
+      variableMatcher: () => true,
+      result: { data: { createEvaluation: { evaluation: null, errors: [{ message: 'Quota exceeded' }] } } },
+    };
+
+    renderWithRuns([], [failing]);
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+    await screen.findByTestId('runEvaluationDialog');
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalledWith({ message: 'Quota exceeded' });
+    });
+    expect(screen.getByTestId('runEvaluationDialog')).toBeInTheDocument();
+    errorSpy.mockRestore();
+  });
+
+  test('a finished run replaces the empty state with its result', async () => {
+    renderWithRuns([completedRun]);
+
+    const panel = await screen.findByTestId('evaluationResult');
+    expect(panel).toHaveTextContent('Version 1 · maternal_health_core · 5× duplication');
+    // 4.6*.5 + 3.2*.3 + 1.4*.2 = 3.5
+    expect(within(panel).getByTestId('overallScore')).toHaveTextContent('3.5');
+    expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
+  });
+
+  test('a run still going says so instead of showing a score', async () => {
+    renderWithRuns([{ ...completedRun, status: 'PENDING', results: null }]);
+
+    expect(await screen.findByTestId('evaluationRunning')).toHaveTextContent('Evaluation in progress');
+    expect(screen.queryByTestId('overallScore')).not.toBeInTheDocument();
+  });
+
+  test('History shows runs from every version', async () => {
+    renderWithRuns([{ ...completedRun, assistantConfigVersion: { id: 'v2', versionNumber: 2 } }]);
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+
+    expect(await screen.findByTestId('evaluationHistory')).toHaveTextContent('Version 2');
+    expect(screen.queryByTestId('evaluationHistoryEmpty')).not.toBeInTheDocument();
+  });
+});
+
+test('the two ways of running are offered as cards, and the choice sticks', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: {
+            query: LIST_AI_EVALUATIONS,
+            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+          },
+          result: { data: { aiEvaluations: [] } },
+        },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+  await screen.findByTestId('runEvaluationDialog');
+
+  const quick = screen.getByTestId('duplicationOption-1');
+  const consistency = screen.getByTestId('duplicationOption-5');
+
+  // each card explains the trade-off, which is why it is a card and not a segment
+  expect(quick).toHaveTextContent('Quick smoke test');
+  expect(quick).toHaveTextContent('Asks each question once');
+  expect(consistency).toHaveTextContent('Consistency check');
+  expect(quick).toHaveAttribute('aria-checked', 'true');
+
+  fireEvent.click(consistency);
+
+  expect(screen.getByTestId('duplicationOption-5')).toHaveAttribute('aria-checked', 'true');
+  expect(screen.getByTestId('duplicationOption-1')).toHaveAttribute('aria-checked', 'false');
+});
+
+describe('the result panel above the table', () => {
+  const runsMock = (aiEvaluations: any[]) => ({
+    request: {
+      query: LIST_AI_EVALUATIONS,
+      variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+    },
+    result: { data: { aiEvaluations } },
+    maxUsageCount: Number.POSITIVE_INFINITY,
+  });
+
+  const run = (overrides: any = {}) => ({
+    id: 'r1',
+    name: 'run_1',
+    status: 'COMPLETED',
+    failureReason: null,
+    results:
+      '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":2.6},' +
+      '{"name":"Adherence to Knowledge Base","avg":2.2},{"name":"Adherence to Prompt","avg":3.4}]}',
+    goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+    assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+    insertedAt: '2026-08-10T10:00:00Z',
+    ...overrides,
+  });
+
+  const renderWithRun = (value: any) =>
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([value]), scoresMock('r1')]}>
+        <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+  test('shows the overall score, its band, and every check with a bar', async () => {
+    renderWithRun(run());
+
+    const panel = await screen.findByTestId('evaluationResult');
+    // 2.6*.5 + 2.2*.3 + 3.4*.2 = 2.64 -> 2.6
+    expect(within(panel).getByTestId('overallScore')).toHaveTextContent('2.6');
+    expect(within(panel).getByTestId('scoreBand')).toHaveTextContent('Could improve');
+
+    expect(within(panel).getByTestId('metric-groundTruth')).toHaveTextContent('weight 50%');
+    expect(within(panel).getByTestId('metric-knowledgeBase')).toHaveTextContent('2.2');
+    expect(within(panel).getByTestId('metric-prompt')).toHaveTextContent('3.4');
+    expect(within(panel).getAllByTestId('scoreBar')).toHaveLength(3);
+
+    // the weakest check is what the reader should act on
+    expect(panel).toHaveTextContent('adherence to knowledge base');
+    expect(panel).toHaveTextContent('Version 1 · core_set · 1× duplication');
+  });
+
+  test('a check the run did not score says so instead of drawing an empty bar', async () => {
+    renderWithRun(
+      run({
+        results:
+          '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7},{"name":"Adherence to Prompt","avg":5}]}',
+      })
+    );
+
+    const panel = await screen.findByTestId('evaluationResult');
+    expect(within(panel).getByTestId('metric-knowledgeBase')).toHaveTextContent('Not scored in this run');
+    expect(within(panel).getAllByTestId('scoreBar')).toHaveLength(2);
+    // re-weighted over what was scored: (4.7*.5 + 5*.2) / .7
+    expect(within(panel).getByTestId('overallScore')).toHaveTextContent('4.8');
+    expect(within(panel).getByTestId('scoreBand')).toHaveTextContent('Good');
+  });
+
+  test('a run still going shows no scores at all', async () => {
+    renderWithRun(run({ status: 'PENDING', results: null }));
+
+    expect(await screen.findByTestId('evaluationRunning')).toHaveTextContent('Evaluation in progress');
+    expect(screen.queryByTestId('evaluationResult')).not.toBeInTheDocument();
+  });
+
+  test('a failed run shows why', async () => {
+    renderWithRun(run({ status: 'FAILED', results: null, failureReason: 'The judge timed out' }));
+
+    expect(await screen.findByTestId('evaluationFailed')).toHaveTextContent('The judge timed out');
+  });
+});
+
+test('the ring fills to the score and takes the band colour', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: {
+            query: LIST_AI_EVALUATIONS,
+            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+          },
+          result: {
+            data: {
+              aiEvaluations: [
+                {
+                  id: 'r1',
+                  name: 'run',
+                  status: 'COMPLETED',
+                  failureReason: null,
+                  // every check at 2.5, so the overall is 2.5 — half of five
+                  results:
+                    '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":2.5},' +
+                    '{"name":"Adherence to Knowledge Base","avg":2.5},{"name":"Adherence to Prompt","avg":2.5}]}',
+                  goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  insertedAt: '2026-08-10T10:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  const ring = await screen.findByTestId('overallScore');
+
+  // half the score is half the sweep
+  expect(ring.getAttribute('style')).toContain('180deg');
+  expect(ring).toHaveTextContent('2.5/5');
+  expect(ring).toHaveTextContent('Overall');
+  expect(screen.getByTestId('scoreBand')).toHaveTextContent('Could improve');
+});
+
+describe('question-level results', () => {
+  const runsMock = (aiEvaluations: any[]) => ({
+    request: {
+      query: LIST_AI_EVALUATIONS,
+      variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+    },
+    result: { data: { aiEvaluations } },
+    maxUsageCount: Number.POSITIVE_INFINITY,
+  });
+
+  const completed = {
+    id: 'r1',
+    name: 'run',
+    status: 'COMPLETED',
+    failureReason: null,
+    results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4}]}',
+    goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+    assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+    insertedAt: '2026-08-10T10:00:00Z',
+  };
+
+  const renderWith = (scores: any) =>
+    render(
+      <MockedProvider
+        mocks={[
+          listMock(oneSet),
+          runsMock([completed]),
+          {
+            request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+            result: { data: { evaluationScores: scores } },
+          },
+        ]}
+      >
+        <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+  test('each question becomes a row, with a column per metric the judge used', async () => {
+    renderWith({
+      scores: JSON.stringify({
+        score: {
+          traces: [
+            {
+              question_id: '1',
+              question: 'What is anaemia?',
+              ground_truth_answer: 'Low haemoglobin.',
+              llm_answer: 'A blood condition.',
+              scores: [
+                { name: 'Adherence to Ground Truth', value: 4.5 },
+                { name: 'Adherence to Prompt', value: 1.2 },
+              ],
+            },
+          ],
+        },
+      }),
+      errors: [],
+    });
+
+    const rows = await screen.findAllByTestId('evaluationScoreRow');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toHaveTextContent('What is anaemia?');
+    expect(rows[0]).toHaveTextContent('Low haemoglobin.');
+    expect(rows[0]).toHaveTextContent('A blood condition.');
+    expect(rows[0]).toHaveTextContent('4.5');
+    expect(rows[0]).toHaveTextContent('1.2');
+
+    // the shared "Adherence to" prefix is dropped so the answers get the width
+    expect(screen.getByRole('columnheader', { name: 'Ground Truth' })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: 'Prompt' })).toBeInTheDocument();
+    expect(screen.getByTestId('evaluationScores')).toHaveTextContent('1 question');
+  });
+
+  test('a run with no per-question results says so', async () => {
+    renderWith({ scores: JSON.stringify({ score: { traces: [] } }), errors: [] });
+
+    expect(await screen.findByTestId('evaluationScoresEmpty')).toHaveTextContent('no question-level results');
+  });
+
+  test('an error from the server is shown rather than an empty table', async () => {
+    renderWith({ scores: null, errors: [{ message: 'Scores have expired' }] });
+
+    expect(await screen.findByTestId('evaluationScoresError')).toHaveTextContent('Scores have expired');
+  });
+});
+
+test('a markdown answer is rendered, not shown as asterisks', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: {
+            query: LIST_AI_EVALUATIONS,
+            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+          },
+          result: {
+            data: {
+              aiEvaluations: [
+                {
+                  id: 'r1',
+                  name: 'run',
+                  status: 'COMPLETED',
+                  failureReason: null,
+                  results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
+                  goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  insertedAt: '2026-08-10T10:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+        {
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          result: {
+            data: {
+              evaluationScores: {
+                scores: JSON.stringify({
+                  score: {
+                    traces: [
+                      {
+                        question_id: '1',
+                        question: 'What is health?',
+                        ground_truth_answer: 'Complete well-being.',
+                        llm_answer: 'In modern biology, **health is a dynamic state**.\n\n- physically\n- mentally',
+                        scores: [{ name: 'Adherence to Prompt', value: 5 }],
+                      },
+                    ],
+                  },
+                }),
+                errors: [],
+              },
+            },
+          },
+        },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  const row = await screen.findByTestId('evaluationScoreRow');
+
+  // the bold text became an element, and the list became a list
+  expect(within(row).getByText('health is a dynamic state').tagName).toBe('STRONG');
+  expect(within(row).getAllByRole('listitem')).toHaveLength(2);
+  expect(row).not.toHaveTextContent('**');
+});
+
+test('the question-level table lives inside the result card, under a divider', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: {
+            query: LIST_AI_EVALUATIONS,
+            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+          },
+          result: {
+            data: {
+              aiEvaluations: [
+                {
+                  id: 'r1',
+                  name: 'run',
+                  status: 'COMPLETED',
+                  failureReason: null,
+                  results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
+                  goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  insertedAt: '2026-08-10T10:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+        {
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          result: {
+            data: {
+              evaluationScores: {
+                scores: JSON.stringify({
+                  score: { traces: [{ question_id: '1', question: 'Q', llm_answer: 'A', scores: [] }] },
+                }),
+                errors: [],
+              },
+            },
+          },
+        },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  const card = await screen.findByTestId('evaluationResult');
+
+  // one card holds the summary and the questions, rather than two stacked boxes
+  expect(await within(card).findByTestId('evaluationScores')).toBeInTheDocument();
+  expect(within(card).getByTestId('overallScore')).toBeInTheDocument();
+});
+
+test('a markdown table in an answer renders as a table', async () => {
+  const answer = [
+    'Here is a comparison:',
+    '',
+    '| Feature | Innate | Adaptive |',
+    '| --- | --- | --- |',
+    '| Onset | Immediate | Slow at first |',
+    '| Memory | None | Has memory |',
+  ].join('\n');
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: {
+            query: LIST_AI_EVALUATIONS,
+            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+          },
+          result: {
+            data: {
+              aiEvaluations: [
+                {
+                  id: 'r1',
+                  name: 'run',
+                  status: 'COMPLETED',
+                  failureReason: null,
+                  results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
+                  goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  insertedAt: '2026-08-10T10:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+        {
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          result: {
+            data: {
+              evaluationScores: {
+                scores: JSON.stringify({
+                  score: { traces: [{ question_id: '1', question: 'Compare them', llm_answer: answer, scores: [] }] },
+                }),
+                errors: [],
+              },
+            },
+          },
+        },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  const row = await screen.findByTestId('evaluationScoreRow');
+
+  // the pipes became a real table rather than a wall of text
+  expect(within(row).getByRole('table')).toBeInTheDocument();
+  expect(
+    within(row)
+      .getAllByRole('columnheader')
+      .map((cell) => cell.textContent)
+  ).toEqual(['Feature', 'Innate', 'Adaptive']);
+  expect(within(row).getAllByRole('row')).toHaveLength(3);
+  expect(row).not.toHaveTextContent('| --- |');
+});
+
+test("the judge's summary replaces the weakest-check line when the run has one", async () => {
+  const summary = 'Overall the run looks healthy. The one mild gap is item_0, which scored 3 on ground truth.';
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: {
+            query: LIST_AI_EVALUATIONS,
+            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+          },
+          result: {
+            data: {
+              aiEvaluations: [
+                {
+                  id: 'r1',
+                  name: 'run',
+                  status: 'COMPLETED',
+                  failureReason: null,
+                  results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
+                  goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  insertedAt: '2026-08-10T10:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+        {
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          result: {
+            data: {
+              evaluationScores: {
+                scores: JSON.stringify({
+                  score: { overall: { overall_score: 4.79, verdict: 'Good', ai_summary: summary }, traces: [] },
+                }),
+                errors: [],
+              },
+            },
+          },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('evaluationSummary')).toHaveTextContent('Overall the run looks healthy');
+  expect(screen.queryByText(/Weakest check is/)).not.toBeInTheDocument();
+});
+
+test('Export CSV downloads the question-level results as a CSV file', async () => {
+  const download = vi.spyOn(utils, 'downloadFile').mockImplementation(() => {});
+  const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:scores');
+
+  const traces = [
+    {
+      question_id: '1',
+      question: 'When is the first check-up?',
+      ground_truth_answer: 'In the first trimester, ideally by week 12.',
+      llm_answer: 'Book it early — "within 12 weeks", per the guidance.',
+      scores: [
+        { name: 'Adherence to Ground Truth', value: 4.5 },
+        { name: 'Adherence to Prompt', value: 5 },
+      ],
+    },
+    {
+      question_id: '2',
+      question: 'How much iron is needed?',
+      ground_truth_answer: 'One tablet a day.',
+      llm_answer: 'One a day.',
+      scores: [{ name: 'Adherence to Ground Truth', value: 3 }],
+    },
+  ];
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: {
+            data: {
+              aiEvaluations: [
+                {
+                  id: 'r1',
+                  name: 'run',
+                  status: 'COMPLETED',
+                  failureReason: null,
+                  results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.5}]}',
+                  goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  insertedAt: '2026-08-10T10:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+        scoresMock('r1', traces),
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('exportScoresButton'));
+
+  expect(download).toHaveBeenCalledWith('blob:scores', 'evaluation-r1-question-level-results.csv');
+
+  const csv = toCsv([
+    ['Question', 'Expected answer', 'Assistant answer', 'Adherence to Ground Truth', 'Adherence to Prompt'],
+    [
+      'When is the first check-up?',
+      'In the first trimester, ideally by week 12.',
+      'Book it early — "within 12 weeks", per the guidance.',
+      '4.5',
+      '5',
+    ],
+    ['How much iron is needed?', 'One tablet a day.', 'One a day.', '3', ''],
+  ]);
+
+  // commas and quotes inside an answer stay inside one field
+  expect(csv).toContain('"Book it early — ""within 12 weeks"", per the guidance."');
+  expect((createObjectURL.mock.calls[0][0] as Blob).size).toBe(new Blob([`\uFEFF${csv}`]).size);
+
+  download.mockRestore();
+  createObjectURL.mockRestore();
 });

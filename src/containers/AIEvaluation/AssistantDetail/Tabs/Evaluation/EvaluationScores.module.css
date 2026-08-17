@@ -1,0 +1,111 @@
+.Header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-lg);
+}
+
+/* the export sits opposite the title, matching the pill buttons in the tab header above */
+.ExportButton {
+  margin-left: auto !important;
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
+.Title {
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.Count,
+.Note {
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+/*
+ * Column widths are only advisory while the table sizes itself to its content, and a long
+ * answer takes the lot. Fixing the layout makes the percentages authoritative, and long words
+ * wrap instead of forcing the table wider than the card.
+ */
+.ScoresTable table {
+  table-layout: fixed;
+}
+
+.ScoresTable td {
+  overflow-wrap: anywhere;
+}
+
+.QuestionColumn {
+  width: 18%;
+}
+
+.ExpectedColumn {
+  width: 26%;
+}
+
+.AnswerColumn {
+  width: 30%;
+}
+
+.ScoreColumn {
+  width: 8%;
+}
+
+.Question {
+  font-weight: 600;
+  color: var(--app-color-text-heading);
+}
+
+/*
+ * A long answer scrolls inside its own cell rather than stretching the whole row. The app
+ * paints a scrollbar track on everything scrollable, which here reads as a stray line beside
+ * every answer — so the bar is hidden until the pointer is actually in the cell. The width is
+ * still reserved, so nothing shifts when it appears.
+ */
+.Answer {
+  max-height: 9rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  color: var(--app-color-text-tertiary);
+}
+
+.Answer::-webkit-scrollbar-track,
+.Answer::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.Answer:hover {
+  scrollbar-width: thin;
+}
+
+.Answer:hover::-webkit-scrollbar-thumb {
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-border);
+}
+
+/* the answer under judgement is the thing being read, so it is not muted like the reference */
+.AssistantAnswer {
+  color: var(--app-color-text-heading);
+}
+
+.NoScore {
+  color: var(--app-color-text-tertiary);
+}
+
+.good {
+  font-weight: 700;
+  color: var(--app-color-brand-primary);
+}
+
+.okay {
+  font-weight: 700;
+  color: var(--app-color-attention);
+}
+
+.bad {
+  font-weight: 700;
+  color: var(--app-color-error);
+}

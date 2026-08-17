@@ -6,3 +6,4 @@ export type { TabKey } from './TabBar/TabBar';
 export { DiscardDialog, LeaveDialog, SwitchVersionDialog } from './UnsavedChangesDialogs/UnsavedChangesDialogs';
 export { DataTable } from './DataTable/DataTable';
 export type { DataTableColumn, DataTableRow } from './DataTable/DataTable';
+export { MarkdownAnswer } from './MarkdownAnswer/MarkdownAnswer';

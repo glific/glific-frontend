@@ -1,0 +1,309 @@
+.Wrap {
+  margin-bottom: var(--app-space-xl);
+}
+
+.Card {
+  padding: var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.MetaLine {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.MetaLabel {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.Failed {
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-error);
+}
+
+.PendingCard {
+  padding: var(--app-space-6xl) var(--app-space-3xl);
+  text-align: center;
+}
+
+/* a run reports nothing until it finishes, so the dot only says "still working" */
+.PendingDot {
+  display: block;
+  width: var(--app-space-lg);
+  height: var(--app-space-lg);
+  margin: 0 auto var(--app-space-lg);
+  border-radius: 50%;
+  background-color: var(--app-color-brand-primary);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.PendingTitle {
+  font-size: var(--app-font-size-md);
+  font-weight: 800;
+  color: var(--app-color-text-heading);
+}
+
+.PendingNote {
+  max-width: 32rem;
+  margin: var(--app-space-sm) auto 0;
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+}
+
+.Banner {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-xl);
+  padding: var(--app-space-xl);
+  border-radius: var(--app-radius-lg);
+}
+
+.goodBanner {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%);
+}
+
+.okayBanner {
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 12%);
+}
+
+.badBanner {
+  background-color: var(--app-color-surface-hover);
+}
+
+/*
+ * The ring is a progress arc, not a border: the sweep is set inline from the score, and the
+ * band colour arrives as `currentColor` so the gradient can use it.
+ */
+.Ring {
+  display: grid;
+  place-items: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.goodRing {
+  color: var(--app-color-brand-primary);
+}
+
+.okayRing {
+  color: var(--app-color-attention);
+}
+
+.badRing {
+  color: var(--app-color-error);
+}
+
+/* punches the middle out, leaving the arc as a thick ring */
+.RingInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - var(--app-space-lg));
+  height: calc(100% - var(--app-space-lg));
+  border-radius: 50%;
+  background-color: var(--app-color-surface-raised);
+}
+
+.RingScore {
+  font-size: var(--app-font-size-lg);
+  font-weight: 800;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.RingOutOf {
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+}
+
+.RingLabel {
+  font-size: var(--app-font-size-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+  font-weight: 400;
+}
+
+.BannerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.BandPill {
+  display: inline-block;
+  padding: var(--app-space-2xs) var(--app-space-lg);
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+}
+
+.goodPill {
+  background-color: var(--app-color-brand-primary);
+  color: var(--app-color-white);
+}
+
+.okayPill {
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 22%);
+  color: var(--app-color-attention);
+}
+
+.badPill {
+  background-color: var(--app-color-surface-hover);
+  color: var(--app-color-error);
+}
+
+.BannerNote {
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-primary);
+}
+
+/* the judge's write-up runs to a paragraph or two, so it scrolls rather than pushing the card */
+.BannerSummary {
+  max-height: 9rem;
+  overflow-y: auto;
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.6;
+  color: var(--app-color-text-primary);
+}
+
+.BuiltFrom {
+  margin: var(--app-space-xl) 0 var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+
+  b {
+    color: var(--app-color-text-heading);
+  }
+}
+
+.Metric {
+  margin-bottom: var(--app-space-lg);
+}
+
+.MetricHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-space-2xs);
+  margin-bottom: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
+}
+
+.MetricLabel {
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.MetricWeight {
+  color: var(--app-color-text-tertiary);
+}
+
+.MetricScore {
+  margin-left: auto;
+  font-weight: 800;
+}
+
+.MetricOutOf {
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+}
+
+.NoScore {
+  color: var(--app-color-text-tertiary);
+}
+
+.NotScored {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.Bar {
+  display: flex;
+  gap: var(--app-space-2xs);
+}
+
+.Step {
+  flex: 1;
+  height: var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-surface-hover);
+  overflow: hidden;
+}
+
+.StepFill {
+  display: block;
+  height: 100%;
+}
+
+.goodFill {
+  background-color: var(--app-color-brand-primary);
+}
+
+.okayFill {
+  background-color: var(--app-color-attention);
+}
+
+.badFill {
+  background-color: var(--app-color-error);
+}
+
+.goodText {
+  color: var(--app-color-brand-primary);
+}
+
+.okayText {
+  color: var(--app-color-attention);
+}
+
+.badText {
+  color: var(--app-color-error);
+}
+
+/* separates the summary above from the question-level results below, in the one card */
+.Divider {
+  margin: var(--app-space-xl) 0;
+  border-top: 1px solid var(--app-color-border);
+}
+
+.Legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-lg);
+  margin-top: var(--app-space-lg);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+
+  i {
+    display: inline-block;
+    width: var(--app-size-dot);
+    height: var(--app-size-dot);
+    margin-right: var(--app-space-2xs);
+    border-radius: 50%;
+  }
+}

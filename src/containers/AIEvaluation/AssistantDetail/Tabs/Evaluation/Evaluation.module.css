@@ -1,12 +1,16 @@
-.SubTabs {
+/* sub-tabs on the left, run actions on the right, one line */
+.Header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-lg);
   margin-bottom: var(--app-space-lg);
 }
 
 .Actions {
   display: flex;
-  justify-content: flex-end;
   gap: var(--app-space-sm);
-  margin-bottom: var(--app-space-lg);
+  margin-left: auto;
 }
 
 .ManageButton,
@@ -31,8 +35,14 @@
   text-decoration: underline;
 }
 
+/*
+ * The space below has to be padding: this is the last thing on the page, and a scroll
+ * container leaves the bottom margin of its final child out of the scrollable area, so a
+ * margin here would simply not exist. Padding is part of the box, so it is scrolled to.
+ */
 .FootNote {
   margin-top: var(--app-space-xl);
+  padding-bottom: var(--app-space-3xl);
   text-align: center;
   font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);

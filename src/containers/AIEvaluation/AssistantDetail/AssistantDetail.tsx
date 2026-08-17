@@ -359,7 +359,14 @@ export const AssistantDetail = () => {
         onConfigChange={setModelConfig}
       />
     ),
-    evaluation: <Evaluation versionNumber={selectedVersion?.versionNumber} />,
+    evaluation: (
+      <Evaluation
+        versionId={selectedVersion?.id}
+        versionNumber={selectedVersion?.versionNumber}
+        assistantId={assistantId}
+        assistantName={assistant?.name}
+      />
+    ),
     knowledgeBase: (
       <KnowledgeBase
         files={knowledgeBaseFiles}
