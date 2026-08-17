@@ -20,12 +20,42 @@ export const createBillingSubscriptionQuery = {
   },
 };
 
+export const createBillingSubscriptionNetworkErrorQuery = {
+  request: {
+    query: CREATE_BILLING_SUBSCRIPTION,
+    variables: {
+      stripePaymentMethodId: 'qwerty',
+    },
+  },
+  error: new Error('Failed to create subscription'),
+};
+
 export const updateBillingQueryMock3 = {
   request: {
     query: UPDATE_BILLING,
     variables: {
       id: '1',
       input: { name: 'Glific Admin 1', email: 'glific@glific.com', currency: 'inr' },
+    },
+  },
+  result: {
+    data: {
+      updateBilling: {
+        billing: {
+          id: '1',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const resetSubscriptionAfterSecureFailureQuery = {
+  request: {
+    query: UPDATE_BILLING,
+    variables: {
+      id: '1',
+      input: { stripeSubscriptionId: null, stripeSubscriptionStatus: null },
     },
   },
   result: {
@@ -202,6 +232,13 @@ export const getCustomerPortalQuery = {
       },
     },
   },
+};
+
+export const getCustomerPortalNetworkErrorQuery = {
+  request: {
+    query: GET_CUSTOMER_PORTAL,
+  },
+  error: new Error('An error occurred'),
 };
 
 export const getCouponCode = {

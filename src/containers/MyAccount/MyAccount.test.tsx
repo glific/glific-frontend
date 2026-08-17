@@ -5,7 +5,7 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
+import { getCurrentUserQuery, updateUserQuery, updateUserNetworkErrorQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -197,5 +197,74 @@ describe('<MyAccount />', () => {
     });
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
+  });
+
+  test('updates the password successfully', async () => {
+    const { container } = render(wrapper);
+
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(() => {
+      const generateOTPButton = screen.getByText('Generate OTP');
+      user.click(generateOTPButton);
+    });
+
+    const input = await screen.findByPlaceholderText('OTP');
+    await user.click(input);
+    await user.keyboard('76554');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('Pass123456!');
+
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
+    });
+  });
+
+  test('shows a generic error when updating the password fails unexpectedly', async () => {
+    const { container } = render(
+      <MockedProvider
+        mocks={[getCurrentUserQuery, updateUserNetworkErrorQuery, getOrganizationLanguagesQuery]}
+        addTypename={false}
+      >
+        <MemoryRouter>
+          <MyAccount />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(() => {
+      const generateOTPButton = screen.getByText('Generate OTP');
+      user.click(generateOTPButton);
+    });
+
+    const input = await screen.findByPlaceholderText('OTP');
+    await user.click(input);
+    await user.keyboard('76554');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('Pass123456!');
+
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sorry! An error occurred!')).toBeInTheDocument();
+    });
   });
 });

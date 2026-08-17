@@ -1062,6 +1062,10 @@
   "Interactive Message Imported Successfully!": "Interactive Message Imported Successfully!",
   "Interactive Message Translated Successfully": "Interactive Message Translated Successfully",
   "Interactive Message Exported Successfully": "Interactive Message Exported Successfully",
+  "Sorry! An error occured while updating the contact field": "Sorry! An error occured while updating the contact field",
+  "Contact field deleted successfully!": "Contact field deleted successfully!",
+  "Sorry! An error occured while deleting the contact field": "Sorry! An error occured while deleting the contact field",
+  "Downloaded the status of the contact upload": "Downloaded the status of the contact upload",
   "This model does not take a temperature — use the settings it offers instead.": "This model does not take a temperature — use the settings it offers instead.",
   "This model has no settings to tune.": "This model has no settings to tune."
 }

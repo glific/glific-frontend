@@ -1,4 +1,4 @@
-import { render, cleanup, fireEvent, act, screen, waitFor } from '@testing-library/react';
+import { render, cleanup, fireEvent, act, screen, waitFor, within } from '@testing-library/react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import UserEvent from '@testing-library/user-event';
 import { BrowserRouter as Router } from 'react-router';
@@ -10,6 +10,7 @@ import {
   getAllOrganizations,
   setOrganizationReadyToDelete,
   setOrganizationReadyToDeletePayloadError,
+  updateOrganizationStatusToSuspended,
 } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
 import * as Notification from 'common/notification';
@@ -69,6 +70,24 @@ test('Organization list renders correctly', async () => {
   expect(label).toBeInTheDocument();
   expect(nameLabel).toBeInTheDocument();
   expect(statusLabel).toBeInTheDocument();
+});
+
+test('changes the organization status from the status dropdown', async () => {
+  render(renderList([...getAllOrganizations, updateOrganizationStatusToSuspended]));
+
+  await waitFor(() => {
+    expect(screen.getByText('Organizations')).toBeInTheDocument();
+  });
+
+  const dropdowns = screen.getAllByTestId('dropdown');
+  const combobox = within(dropdowns[1]).getByRole('combobox');
+  fireEvent.mouseDown(combobox);
+
+  fireEvent.click(screen.getByText('Suspended'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Organization updated successfully');
+  });
 });
 
 test('Update status', async () => {
