@@ -1,5 +1,5 @@
 import { collectionCountQuery, savedSearchStatusQuery } from 'mocks/Chat';
-import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from 'graphql/queries/Search';
+import { SEARCH_QUERY, SEARCH_MULTI_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { collectionCountSubscription } from 'mocks/Search';
 import { getAllCollectionsQuery, getCollectionsQuery } from 'mocks/Collection';
@@ -150,19 +150,6 @@ export const searchMultiQuery = (
   };
 };
 
-export const searchOffset = {
-  request: {
-    query: SEARCH_OFFSET,
-    variables: { offset: 0, search: 'hi' },
-  },
-  result: {
-    data: {
-      offset: 0,
-      search: 'hi',
-    },
-  },
-};
-
 export const SearchConversationsMocks = [searchMultiQuery(), searchMultiQuery(), searchMultiQuery('a')];
 
 export const sampleMessage = {
@@ -231,7 +218,6 @@ export const ChatConversationMocks = [
   savedSearchStatusQuery,
   ...SearchConversationsMocks,
   ...SearchConversationsMocks,
-  searchOffset,
   searchQueryForSavedSearch,
   ...getAllCollectionsQuery,
 ];

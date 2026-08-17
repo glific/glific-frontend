@@ -80,18 +80,23 @@ const mocks = [
   releaseFlow,
   getFilterTagQuery,
   updateFlowQuery,
-  createFlowQuery({
-    isActive: true,
-    isPinned: false,
-    isBackground: false,
-    name: 'New Flow',
-    keywords: [],
-    description: '',
-    ignoreKeywords: false,
-    addRoleIds: [],
-    deleteRoleIds: [],
-    skipValidation: false,
-  }),
+  {
+    ...createFlowQuery({
+      isActive: true,
+      isPinned: false,
+      isBackground: false,
+      name: 'New Flow',
+      keywords: [],
+      description: '',
+      ignoreKeywords: false,
+      addRoleIds: [],
+      deleteRoleIds: [],
+      skipValidation: false,
+    }),
+    // slow this mutation down so the button's transient loading state is reliably observable
+    // (a delay comparable to waitFor's polling interval is too easy to race past)
+    delay: 300,
+  },
   copyFlowQuery({
     isActive: true,
     isPinned: false,
@@ -293,7 +298,10 @@ it('should configure the flow', async () => {
 
 it('should edit the flow and show error if exists', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQueryWithError]}>
+    // updateFlowQueryWithError must come before `mocks` (which already contains the
+    // success-case updateFlowQuery mock for the same request/variables) - Apollo Client 4's
+    // MockLink matches the first equal-variables entry, so array order picks the winner here.
+    <MockedProvider mocks={[updateFlowQueryWithError, ...mocks]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />

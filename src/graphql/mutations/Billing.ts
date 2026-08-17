@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const CREATE_BILLING_SUBSCRIPTION = gql`
   mutation createBillingSubscription($couponCode: String, $stripePaymentMethodId: String!) {

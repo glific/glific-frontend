@@ -610,6 +610,8 @@ export const getProfileMock = (id: string, profileDetails?: any) => ({
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
+  getCurrentUserQuery,
+  getCurrentUserQuery,
   getContactProfiles,
   getContactDetailsQuery('1', { activeProfile: null }),
   getContactDetailsQuery('1', { activeProfile: null }),
@@ -755,6 +757,7 @@ export const getExcludedContactsQuery = (filter?: any) => ({
 export const importContacts = {
   request: {
     query: IMPORT_CONTACTS,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -764,15 +767,14 @@ export const importContacts = {
       },
     },
   },
-  variableMatcher: (variables: any) => true,
 };
 
 export const importContactsNetworkError = {
   request: {
     query: IMPORT_CONTACTS,
+    variables: (variables: any) => true,
   },
   error: new Error('An error occurred'),
-  variableMatcher: (variables: any) => true,
 };
 
 export const terminateFlowQuery = (error: boolean = false) => ({

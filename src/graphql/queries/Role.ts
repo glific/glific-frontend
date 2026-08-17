@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const FILTER_ROLES = gql`
   query AccessRoles($opts: Opts, $filter: AccessRoleFilter) {

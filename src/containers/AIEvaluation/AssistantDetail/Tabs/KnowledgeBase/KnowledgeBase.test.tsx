@@ -9,8 +9,7 @@ import KnowledgeBase from './KnowledgeBase';
 const existingFile = { fileId: 'file-1', filename: 'nutrition_faq.pdf', fileSize: 1_200_000 };
 
 const uploadMock = (filename: string, fileId: string) => ({
-  request: { query: UPLOAD_FILE_TO_KAAPI },
-  variableMatcher: () => true,
+  request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true },
   result: {
     data: {
       uploadFilesearchFile: { fileId, filename, uploadedAt: '2026-08-04T10:00:00Z', fileSize: 2048 },
@@ -106,8 +105,7 @@ test('uploads on pick and stages the file — no knowledge base call yet', async
 test('strips __typename from the upload result — FileInfoInput rejects it', async () => {
   const { onFilesUploaded } = renderTab({}, [
     {
-      request: { query: UPLOAD_FILE_TO_KAAPI },
-      variableMatcher: () => true,
+      request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true },
       result: {
         data: {
           uploadFilesearchFile: {
@@ -135,7 +133,7 @@ test('strips __typename from the upload result — FileInfoInput rejects it', as
 test('a failed upload is reported and nothing is staged', async () => {
   const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
   const { onFilesUploaded } = renderTab({}, [
-    { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher: () => true, error: new Error('Upload failed') },
+    { request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true }, error: new Error('Upload failed') },
   ]);
 
   pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));
@@ -213,7 +211,7 @@ test('a mixed batch keeps the files that uploaded and names the ones that did no
   // first file succeeds, second fails — the batch must not lose the first
   const { onFilesUploaded } = renderTab({}, [
     uploadMock('good.pdf', 'file-good'),
-    { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher: () => true, error: new Error('Upload failed') },
+    { request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true }, error: new Error('Upload failed') },
   ]);
 
   pickFiles([
@@ -242,7 +240,7 @@ test('a failure that is not rate limiting is not retried', async () => {
   const variableMatcher = vi.fn().mockReturnValue(true);
 
   const { onFilesUploaded } = renderTab({}, [
-    { request: { query: UPLOAD_FILE_TO_KAAPI }, variableMatcher, error: new Error('Upload failed') },
+    { request: { query: UPLOAD_FILE_TO_KAAPI, variables: variableMatcher }, error: new Error('Upload failed') },
   ]);
 
   pickFile(new File(['x'], 'guide.pdf', { type: 'application/pdf' }));

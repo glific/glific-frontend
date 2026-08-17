@@ -89,7 +89,7 @@ export const loadMoreQuery = (
   },
 });
 
-const cache = new InMemoryCache({ });
+const cache = new InMemoryCache({});
 
 cache.writeQuery(searchQuery);
 
@@ -614,7 +614,7 @@ test('should open emoji picker', async () => {
   });
 });
 
-const groupscache = new InMemoryCache({ });
+const groupscache = new InMemoryCache({});
 groupscache.writeQuery(waGroup);
 groupscache.writeQuery(waGroupcollection);
 

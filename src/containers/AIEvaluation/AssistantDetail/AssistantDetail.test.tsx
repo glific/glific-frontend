@@ -652,8 +652,7 @@ describe('knowledge base', () => {
   const uploadedFile = { fileId: 'file-9', filename: 'guide.pdf', uploadedAt: '2026-08-04T10:00:00Z', fileSize: 2048 };
 
   const uploadMock = {
-    request: { query: UPLOAD_FILE_TO_KAAPI },
-    variableMatcher: () => true,
+    request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true },
     result: { data: { uploadFilesearchFile: uploadedFile } },
   };
 
@@ -687,8 +686,7 @@ describe('knowledge base', () => {
   test('an upload in progress survives switching tabs', async () => {
     // a slow upload so the tab switch happens while it is still in flight
     const slowUpload = {
-      request: { query: UPLOAD_FILE_TO_KAAPI },
-      variableMatcher: () => true,
+      request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true },
       delay: 60,
       result: { data: { uploadFilesearchFile: uploadedFile } },
     };
@@ -920,8 +918,7 @@ describe('tabs', () => {
 
 describe('unsaved changes across tabs', () => {
   const uploadMock = {
-    request: { query: UPLOAD_FILE_TO_KAAPI },
-    variableMatcher: () => true,
+    request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true },
     result: {
       data: {
         uploadFilesearchFile: {
@@ -1379,8 +1376,7 @@ describe('switching versions', () => {
     // that race whenever the suite runs slowly — so the clock is held still instead
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const slowUpload = {
-      request: { query: UPLOAD_FILE_TO_KAAPI },
-      variableMatcher: () => true,
+      request: { query: UPLOAD_FILE_TO_KAAPI, variables: () => true },
       delay: 5_000,
       result: {
         data: {
@@ -1476,11 +1472,13 @@ describe('what a save sends', () => {
     return {
       sent,
       mock: {
-        request: { query: UPDATE_ASSISTANT },
-        variableMatcher: (variables: any) => {
-          if (variables.input?.name && Object.keys(variables.input).length === 1) return false;
-          sent.variables = variables;
-          return true;
+        request: {
+          query: UPDATE_ASSISTANT,
+          variables: (variables: any) => {
+            if (variables.input?.name && Object.keys(variables.input).length === 1) return false;
+            sent.variables = variables;
+            return true;
+          },
         },
         result: { data: { updateAssistant: { errors: null } } },
       },
@@ -1612,8 +1610,7 @@ describe('resilience', () => {
 
 test('a reply that lands while another tab is open is not lost', async () => {
   const sendMock = {
-    request: { query: SEND_ASSISTANT_MESSAGE },
-    variableMatcher: () => true,
+    request: { query: SEND_ASSISTANT_MESSAGE, variables: () => true },
     result: {
       data: {
         sendAssistantMessage: { answer: null, conversationId: 'c1', jobId: 'j1', requestId: 'r1', errors: null },

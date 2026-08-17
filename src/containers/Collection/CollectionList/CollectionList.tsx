@@ -94,17 +94,19 @@ export const CollectionList = () => {
 
   const exportCollection = async (id: string) => {
     setExportData(true);
-    const { data, error } = await exportCollectionData({
-      variables: {
-        exportCollectionId: id,
-      },
-    });
-    if (error) {
+    try {
+      const { data } = await exportCollectionData({
+        variables: {
+          exportCollectionId: id,
+        },
+      });
+      if (data?.exportCollection.errors) {
+        setNotification(data.exportCollection.errors[0].message, 'warning');
+      } else if (data?.exportCollection.status) {
+        exportCsvFile(data.exportCollection.status, 'collection');
+      }
+    } catch {
       setNotification('An error occurred while exporting the collection', 'warning');
-    } else if (data?.exportCollection.errors) {
-      setNotification(data.exportCollection.errors[0].message, 'warning');
-    } else if (data?.exportCollection.status) {
-      exportCsvFile(data.exportCollection.status, 'collection');
     }
     setExportData(false);
   };

@@ -465,8 +465,10 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     const mocks = [
       createUploadErrorMock('rate-limit-retry.txt', rateLimitError),
       {
-        request: { query: UPLOAD_FILE_TO_KAAPI },
-        variableMatcher: (variables: any) => variables?.media?.name === 'rate-limit-retry.txt',
+        request: {
+          query: UPLOAD_FILE_TO_KAAPI,
+          variables: (variables: any) => variables?.media?.name === 'rate-limit-retry.txt',
+        },
         result: () => {
           successResponseCount += 1;
           return {

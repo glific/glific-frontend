@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const SAVE_MESSAGE_TEMPLATE_MUTATION = gql`
   mutation createTemplateFormMessage($messageId: ID!, $templateInput: MessageToTemplateInput!) {

@@ -3,8 +3,29 @@ import { vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
 import { cleanup, configure } from '@testing-library/react';
+import { MockLink } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
+import { LocalState } from '@apollo/client/local-state';
 
 configure({ asyncUtilTimeout: 2000 });
+
+// Apollo Client 4's MockLink defaults to a randomized "realistic" delay (simulating network
+// latency) instead of resolving on the next macrotask. This suite predates that change and has
+// many assertions that read the DOM synchronously right after render, so restore the old
+// near-immediate resolution globally rather than rewriting every test to await/findBy*. A delay
+// of 1ms (rather than 0) still resolves on a real timer tick instead of a microtask, so tests
+// that assert an initial loading state before the mock resolves keep seeing it.
+MockLink.defaultOptions.delay = 1;
+
+// Apollo Client 4 throws if a query contains @client fields (e.g. NOTIFICATION/ERROR_MESSAGE,
+// SEARCH_OFFSET, SCROLL_HEIGHT) and no LocalState is configured, once that query ever misses the
+// cache. This app has no local resolvers - it writes @client fields directly via cache.writeQuery
+// - so a resolver-less LocalState is enough to satisfy the check everywhere MockedProvider is used,
+// without touching every individual test file.
+(MockedProvider as any).defaultProps = {
+  ...(MockedProvider as any).defaultProps,
+  localState: new LocalState(),
+};
 
 // runs a cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {

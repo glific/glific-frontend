@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GROUP_SEARCH_QUERY = gql`
   query WaSearch($filter: WaSearchFilter!, $waGroupOpts: Opts!, $waMessageOpts: Opts!) {

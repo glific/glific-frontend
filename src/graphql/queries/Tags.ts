@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_TAGS = gql`
   query Tags($filter: TagFilter) {

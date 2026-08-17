@@ -229,34 +229,15 @@ export const ConversationList = ({
       groups
     );
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(searchQuery);
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(searchQuery, {
+    fetchPolicy: 'network-only',
+  });
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery, {
-    onCompleted: (multiSearch) => {
-      setSearchMultiData(multiSearch);
-    },
-  });
+  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery);
 
   // load more messages for multi search load more
-  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
-    onCompleted: (multiSearch) => {
-      if (!searchMultiData) {
-        setSearchMultiData(multiSearch);
-      } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
-        const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
-        // append new messages to existing messages
-        searchMultiDataCopy.searchMulti.messages = [
-          ...searchMultiData.searchMulti.messages,
-          ...multiSearch.searchMulti.messages,
-        ];
-        setSearchMultiData(searchMultiDataCopy);
-      } else {
-        setShowLoadMore(false);
-      }
-      setShowLoading(false);
-    },
-  });
+  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(SEARCH_MULTI_QUERY);
 
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
@@ -264,6 +245,8 @@ export const ConversationList = ({
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
+      }).then(({ data: multiSearch }) => {
+        setSearchMultiData(multiSearch);
       });
     } else if (hasSearchParams || savedSearchCriteria || phonenumber || selectedCollectionId) {
       // This is used for filtering the searches, when you click on it, so only call it
@@ -293,7 +276,6 @@ export const ConversationList = ({
       );
       getFilterConvos({
         variables,
-        fetchPolicy: 'network-only',
       }).then(({ data }) => {
         if (searchParam.dateFrom || searchParam.dateTo) {
           const entityId = data?.search[0]?.contact?.id || '';
@@ -461,6 +443,21 @@ export const ConversationList = ({
 
       getLoadMoreFilterSearch({
         variables,
+      }).then(({ data: multiSearch }) => {
+        if (!searchMultiData) {
+          setSearchMultiData(multiSearch);
+        } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
+          const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
+          // append new messages to existing messages
+          searchMultiDataCopy.searchMulti.messages = [
+            ...searchMultiData.searchMulti.messages,
+            ...multiSearch.searchMulti.messages,
+          ];
+          setSearchMultiData(searchMultiDataCopy);
+        } else {
+          setShowLoadMore(false);
+        }
+        setShowLoading(false);
       });
     } else {
       let filter: any = {};
@@ -510,7 +507,7 @@ export const ConversationList = ({
       );
 
       client
-        .query({
+        .query<any>({
           query: searchQuery,
           variables: conversationLoadMoreVariables,
         })

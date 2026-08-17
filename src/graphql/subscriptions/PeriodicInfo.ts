@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const BSP_BALANCE_SUBSCRIPTION = gql`
   subscription ($organizationId: ID!) {

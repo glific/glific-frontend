@@ -5,6 +5,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
+import { LocalState } from '@apollo/client/local-state';
 import { print } from 'graphql/language/printer';
 
 import { createClient } from 'graphql-ws';
@@ -202,6 +203,11 @@ const gqlClient = (navigate: any) => {
   return new ApolloClient({
     link,
     cache,
+    // NOTIFICATION/ERROR_MESSAGE (see common/notification.ts) are @client-only fields written
+    // directly via cache.writeQuery rather than resolved through a resolver function, but Apollo
+    // Client 4 requires LocalState to be configured for any query containing @client fields,
+    // even with no resolvers, or it throws once such a query misses the cache.
+    localState: new LocalState(),
   });
 };
 

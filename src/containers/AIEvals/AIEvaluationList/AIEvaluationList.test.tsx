@@ -32,14 +32,12 @@ vi.mock('common/notification', () => ({
 }));
 
 const emptyListMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: { data: { aiEvaluations: [] } },
 };
 
 const countAiEvaluationsMock = {
-  request: { query: COUNT_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: COUNT_AI_EVALUATIONS, variables: () => true },
   result: { data: { countAiEvaluations: 2 } },
 };
 
@@ -431,8 +429,7 @@ describe('AIEvaluationList', () => {
 
   it('does not render sub-info lines when all display fields are null', async () => {
     const nullFieldsMock = {
-      request: { query: LIST_AI_EVALUATIONS },
-      variableMatcher: () => true,
+      request: { query: LIST_AI_EVALUATIONS, variables: () => true },
       result: {
         data: {
           aiEvaluations: [

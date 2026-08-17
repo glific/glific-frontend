@@ -107,8 +107,6 @@ describe('Testing Translation flows', () => {
       expect(errorMessageSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'Network error: Failed to translate flow',
-          graphQLErrors: [],
-          networkError: expect.objectContaining({ message: 'Network error: Failed to translate flow' }),
         })
       );
     });

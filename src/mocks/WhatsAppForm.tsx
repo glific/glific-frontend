@@ -663,6 +663,7 @@ const latestRevisionMock = (id: string) => {
 const saveRevisionMock = {
   request: {
     query: SAVE_WHATSAPP_FORM_REVISION,
+    variables: () => true,
   },
   result: {
     data: {
@@ -674,7 +675,6 @@ const saveRevisionMock = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 const listRevisions = {

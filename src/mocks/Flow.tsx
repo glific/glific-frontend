@@ -520,7 +520,7 @@ export const importFlow = {
 };
 
 export const importFlowWithAssistantError = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -535,11 +535,10 @@ export const importFlowWithAssistantError = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const importFlowWithSheetError = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -554,11 +553,10 @@ export const importFlowWithSheetError = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const importFlowWithAssistantAndSheetError = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -573,11 +571,10 @@ export const importFlowWithAssistantAndSheetError = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const importFlowWithoutNodeFields = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -590,7 +587,6 @@ export const importFlowWithoutNodeFields = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const exportFlow = {
@@ -935,15 +931,15 @@ export const createFlowQuery = (input: any) => ({
     variables: {
       input,
     },
-    result: {
-      data: {
-        createFlow: {
-          errors: null,
-          flow: {
-            ...input,
-            roles: [],
-            uuid: 'c18190b4-5f14-47f3-acfd-c301e5edf3a0',
-          },
+  },
+  result: {
+    data: {
+      createFlow: {
+        errors: null,
+        flow: {
+          ...input,
+          roles: [],
+          uuid: 'c18190b4-5f14-47f3-acfd-c301e5edf3a0',
         },
       },
     },

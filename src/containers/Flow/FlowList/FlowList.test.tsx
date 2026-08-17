@@ -468,9 +468,9 @@ describe('Error handling', () => {
     const importFlowError = {
       request: {
         query: IMPORT_FLOW,
+        variables: () => true,
       },
       error: new Error('Import failed'),
-      variableMatcher: () => true,
     };
 
     class FileReaderMock {

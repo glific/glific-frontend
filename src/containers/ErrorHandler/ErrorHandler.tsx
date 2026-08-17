@@ -11,7 +11,7 @@ import styles from './ErrorHandler.module.css';
 const ErrorHandler = () => {
   const { t } = useTranslation();
   const { data } = useQuery(ERROR_MESSAGE);
-  let { message } = data ? data.errorMessage : '';
+  let { message } = data?.errorMessage ? data.errorMessage : '';
 
   if (!data) {
     return null;
@@ -21,8 +21,8 @@ const ErrorHandler = () => {
     setErrorMessage('');
   };
 
-  // return if error is cleared or not set
-  if (data.errorMessage === '') {
+  // return if error is cleared or not set (an unwritten @client field resolves to null)
+  if (!data.errorMessage) {
     return null;
   }
 

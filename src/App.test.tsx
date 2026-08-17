@@ -108,7 +108,7 @@ describe('App Component - Token Refresh Tests', () => {
       },
     });
 
-    checkAuthSpy.mockResolvedValue(false);
+    checkAuthSpy.mockReturnValue(false);
 
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() - 1);
@@ -136,7 +136,7 @@ describe('App Component - Token Refresh Tests', () => {
     const checkAuthSpy = vi.spyOn(AuthService, 'checkAuthStatusService');
 
     renewTokenSpy.mockRejectedValue(new Error('Token refresh failed'));
-    checkAuthSpy.mockResolvedValue(false);
+    checkAuthSpy.mockReturnValue(false);
 
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() - 1);

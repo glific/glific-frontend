@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const FILTER_NOTIFICATIONS = gql`
   query notifications($filter: NotificationFilter, $opts: Opts) {

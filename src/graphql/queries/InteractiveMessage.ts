@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_INTERACTIVE_MESSAGES_COUNT = gql`
   query countInteractiveTemplates($filter: InteractiveTemplateFilter!) {

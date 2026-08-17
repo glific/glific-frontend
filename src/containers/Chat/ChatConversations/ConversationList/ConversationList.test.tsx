@@ -1,6 +1,6 @@
 import { MemoryRouter, BrowserRouter as Router } from 'react-router';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import { MockedProvider } from '@apollo/client/testing/react';
 
@@ -12,14 +12,14 @@ import { cache as collectionCache } from 'config/apolloclient';
 import { searchGroupQuery, waGroup } from 'mocks/Groups';
 import { collection, collectionWithLoadMore, contact } from 'containers/Chat/ChatMessages/ChatMessages.test';
 
-const contactCache = new InMemoryCache({ });
-const groupsCache = new InMemoryCache({ });
+const contactCache = new InMemoryCache({});
+const groupsCache = new InMemoryCache({});
 
 contactCache.writeQuery(contact);
 
 const clientForContact = new ApolloClient({
   cache: contactCache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
 });
 const conversationList = (
@@ -62,7 +62,7 @@ collectionCache.writeQuery(collectionWithLoadMore);
 
 const clientForCollection = new ApolloClient({
   cache: collectionCache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
 });
 
@@ -89,7 +89,7 @@ test('it should render conversation collection list with readMore', async () => 
   });
 });
 
-const collectionCacheWithSearch = new InMemoryCache({ });
+const collectionCacheWithSearch = new InMemoryCache({});
 collectionCacheWithSearch.writeQuery(collection);
 
 const searchCollectionMocks = [
@@ -189,7 +189,7 @@ let route = '/group/chat';
 
 const clientForGroup = new ApolloClient({
   cache: groupsCache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
 });
 
@@ -217,15 +217,13 @@ test('it renders whatsapp groups for multi search', async () => {
     ...propsForGroups,
     searchVal: 'group 2',
   };
-  const { getByText } = render(
+  render(
     <MockedProvider mocks={searchGroupQuery}>
       <MemoryRouter initialEntries={[route]}>
         <ConversationList {...propsForGroups} />
       </MemoryRouter>
     </MockedProvider>
   );
-
-  expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(async () => {
     const listItems = screen.getAllByTestId('list');

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing/react';
-import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
 import { Providers } from './Providers';
@@ -21,17 +21,17 @@ const user = userEvent.setup();
 
 const wrapper = (
   <MockedProvider mocks={mocks}>
-    <Router>
+    <MemoryRouter>
       <Providers />
-    </Router>
+    </MemoryRouter>
   </MockedProvider>
 );
 
 const wrapperWithType = (
   <MockedProvider mocks={mocks}>
-    <Router>
+    <MemoryRouter>
       <Providers />
-    </Router>
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -274,6 +274,13 @@ describe('gupshup dialog', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+
+    // wait for the credential query's data to populate the form fields - clicking Save before
+    // that finishes hits required-field validation errors instead of the confirmation dialog,
+    // since the form still holds its empty initial values.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Please enter your App Name here')).toBeInTheDocument();
     });
 
     const saveButton = await screen.findByTestId('submitActionButton');

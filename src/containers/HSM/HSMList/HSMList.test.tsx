@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router';
+import { MemoryRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing/react';
 
 import { HSM_LIST, bulkApplyMutation, bulkApplyMutationWIthError } from 'mocks/Template';

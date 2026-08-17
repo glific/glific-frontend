@@ -65,15 +65,14 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
   };
 
   const runExportFlowTranslations = async (addTranslation: boolean) => {
-    const { data, error } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
-    if (error) {
-      setDialog(false);
+    try {
+      const { data } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
+      if (data) {
+        const { exportData } = data.exportFlowLocalization;
+        exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+      }
+    } catch {
       setNotification(t('An error occured while exporting flow translations'), 'warning');
-      return;
-    }
-    if (data) {
-      const { exportData } = data.exportFlowLocalization;
-      exportCsvFile(exportData, `Flow_Translations_${flowId}`);
     }
     setDialog(false);
   };

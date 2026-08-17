@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 import { SIMULATOR_MESSAGE_FRAGMENT } from 'graphql/queries/Simulator';
 
 // need to replaced by simulator subscriptions

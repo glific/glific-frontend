@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const UPDATE_TICKET = gql`
   mutation updateTicket($id: ID!, $input: TicketInput) {

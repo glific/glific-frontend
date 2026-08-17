@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_POLLS = gql`
   query WaPolls($filter: WaPollFilter, $opts: Opts) {

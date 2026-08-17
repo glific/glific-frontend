@@ -99,19 +99,17 @@ export const ConversationHeader = ({
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
-    variables: setVariables({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION }),
     fetchPolicy: 'cache-and-network',
   });
 
   // get contact collections
   const [getContactCollections, { data }] = useLazyQuery(GET_CONTACT_COLLECTIONS, {
-    variables: { id: entityId },
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
     if (entityId && !groups) {
-      getContactCollections();
+      getContactCollections({ variables: { id: entityId } });
     }
   }, [entityId]);
 
@@ -421,7 +419,7 @@ export const ConversationHeader = ({
       data-testid="collectionButton"
       className={styles.ListButtonPrimary}
       onClick={() => {
-        getCollections();
+        getCollections({ variables: setVariables({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION }) });
         setShowCollectionDialog(true);
       }}
     >

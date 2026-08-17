@@ -1,16 +1,18 @@
 import { MemoryRouter } from 'react-router';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { LocalState } from '@apollo/client/local-state';
 
 import { ApolloProvider } from '@apollo/client/react';
 
 import { setUserSession } from 'services/AuthService';
-import { GROUP_QUERY_VARIABLES } from 'common/constants';
+import { GROUP_QUERY_VARIABLES, COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
 import GroupChatInterface from './GroupChatInterface';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { waGroupcollection } from 'mocks/Groups';
 
-const cache = new InMemoryCache({ });
+const cache = new InMemoryCache({});
 cache.writeQuery({
   query: GROUP_SEARCH_QUERY,
   variables: GROUP_QUERY_VARIABLES,
@@ -184,6 +186,29 @@ cache.writeQuery({
 
 cache.writeQuery(waGroupcollection);
 
+// CollectionConversations (rendered for the "collections" tab) renders ConversationList
+// without a `groups` prop, so it queries SEARCH_QUERY/COLLECTION_SEARCH_QUERY_VARIABLES rather
+// than the GROUP_* variants seeded above - without this the query misses the cache and falls
+// through to a real network fetch.
+cache.writeQuery({
+  query: SEARCH_QUERY,
+  variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+  data: {
+    search: [],
+  },
+});
+
+// ChatMessages (rendered inside ConversationList/CollectionConversations for the message pane)
+// also queries SEARCH_QUERY, but with the plain SEARCH_QUERY_VARIABLES when there's no groups
+// path segment and no collectionId selected yet (the initial state here).
+cache.writeQuery({
+  query: SEARCH_QUERY,
+  variables: SEARCH_QUERY_VARIABLES,
+  data: {
+    search: [],
+  },
+});
+
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
   ...(await vi.importActual('react-router')),
@@ -192,8 +217,9 @@ vi.mock('react-router', async () => ({
 
 const client = new ApolloClient({
   cache: cache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
+  localState: new LocalState(),
 });
 
 window.HTMLElement.prototype.scrollIntoView = function scrollIntoViewMock() {};
@@ -235,21 +261,20 @@ describe('<GroupChatInterface />', () => {
   });
 
   test('should have Collections as heading', async () => {
-    const { getByText, getByTestId } = render(
+    const { getByTestId } = render(
       <ApolloProvider client={client}>
         <MemoryRouter>
           <GroupChatInterface collections={true} />
         </MemoryRouter>
       </ApolloProvider>
     );
-    expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByTestId('heading')).toHaveTextContent('Group Collections');
     });
   });
 
-  const emptyCache = new InMemoryCache({ });
+  const emptyCache = new InMemoryCache({});
 
   emptyCache.writeQuery({
     query: GROUP_SEARCH_QUERY,
@@ -259,14 +284,33 @@ describe('<GroupChatInterface />', () => {
     },
   });
 
+  // see the matching comments on the shared `cache` above - CollectionConversations and
+  // ChatMessages query SEARCH_QUERY, not the GROUP_* variants.
+  emptyCache.writeQuery({
+    query: SEARCH_QUERY,
+    variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+    data: {
+      search: [],
+    },
+  });
+
+  emptyCache.writeQuery({
+    query: SEARCH_QUERY,
+    variables: SEARCH_QUERY_VARIABLES,
+    data: {
+      search: [],
+    },
+  });
+
   const clientForEmptyCache = new ApolloClient({
     cache: emptyCache,
-    uri: 'http://localhost:4000/',
+    link: new HttpLink({ uri: 'http://localhost:4000/' }),
     assumeImmutableResults: true,
+    localState: new LocalState(),
   });
 
   test('should render no conversations if there are no conversations', async () => {
-    const { getByTestId } = render(
+    const { getAllByTestId } = render(
       <ApolloProvider client={clientForEmptyCache}>
         <MemoryRouter>
           <GroupChatInterface />
@@ -274,8 +318,9 @@ describe('<GroupChatInterface />', () => {
       </ApolloProvider>
     );
 
+    // both the conversation list and the message pane show their own empty state
     await waitFor(() => {
-      expect(getByTestId('empty-result')).toBeInTheDocument();
+      expect(getAllByTestId('empty-result').length).toBeGreaterThan(0);
     });
   });
 });

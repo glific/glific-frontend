@@ -19,8 +19,7 @@ export const knowledgeBaseOptionsBaseProps = {
 };
 
 export const createUploadSuccessMock = (filename: string, delay?: number) => ({
-  request: { query: UPLOAD_FILE_TO_KAAPI },
-  variableMatcher: (variables: any) => variables?.media?.name === filename,
+  request: { query: UPLOAD_FILE_TO_KAAPI, variables: (variables: any) => variables?.media?.name === filename },
   ...(delay !== undefined ? { delay } : {}),
   result: {
     data: {
@@ -35,8 +34,7 @@ export const createUploadSuccessMock = (filename: string, delay?: number) => ({
 });
 
 export const createUploadErrorMock = (filename: string, error: Error, delay?: number) => ({
-  request: { query: UPLOAD_FILE_TO_KAAPI },
-  variableMatcher: (variables: any) => variables?.media?.name === filename,
+  request: { query: UPLOAD_FILE_TO_KAAPI, variables: (variables: any) => variables?.media?.name === filename },
   ...(delay !== undefined ? { delay } : {}),
   error,
 });

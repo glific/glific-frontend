@@ -21,8 +21,7 @@ const defaultProps = {
 };
 
 const sendMock = (result: Record<string, unknown>) => ({
-  request: { query: SEND_ASSISTANT_MESSAGE },
-  variableMatcher: () => true,
+  request: { query: SEND_ASSISTANT_MESSAGE, variables: () => true },
   result: { data: { sendAssistantMessage: { conversationId: 'c1', jobId: 'j1', errors: null, ...result } } },
 });
 
@@ -184,17 +183,17 @@ describe('the sandbox', () => {
   test('a failed send is reported and keeps the question in the transcript', async () => {
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
     renderTab({}, [
-      { request: { query: SEND_ASSISTANT_MESSAGE }, variableMatcher: () => true, error: new Error('Network down') },
+      { request: { query: SEND_ASSISTANT_MESSAGE, variables: () => true }, error: new Error('Network down') },
     ]);
 
     type('Anything there?');
     fireEvent.click(screen.getByTestId('sendMessageButton'));
 
     await waitFor(() => {
-      expect(errorSpy).toHaveBeenCalled();
+      expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Could not get a reply');
     });
     expect(screen.getByTestId('userMessage')).toHaveTextContent('Anything there?');
-    expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Could not get a reply');
+    expect(errorSpy).toHaveBeenCalled();
     errorSpy.mockRestore();
   });
 
@@ -273,8 +272,7 @@ test('sends only the fields AssistantChatInput accepts', async () => {
   const variableMatcher = vi.fn().mockReturnValue(true);
   renderTab({}, [
     {
-      request: { query: SEND_ASSISTANT_MESSAGE },
-      variableMatcher,
+      request: { query: SEND_ASSISTANT_MESSAGE, variables: variableMatcher },
       result: {
         data: {
           sendAssistantMessage: {
@@ -348,8 +346,7 @@ describe('starting over', () => {
   test('clears the transcript and starts a fresh conversation on the server', async () => {
     const variableMatcher = vi.fn().mockReturnValue(true);
     const mock = {
-      request: { query: SEND_ASSISTANT_MESSAGE },
-      variableMatcher,
+      request: { query: SEND_ASSISTANT_MESSAGE, variables: variableMatcher },
       maxUsageCount: Number.POSITIVE_INFINITY,
       result: {
         data: {
@@ -396,8 +393,7 @@ describe('the chat survives leaving the tab', () => {
   test('a remount restores the transcript and the conversation it belongs to', async () => {
     const variableMatcher = vi.fn().mockReturnValue(true);
     const mock = {
-      request: { query: SEND_ASSISTANT_MESSAGE },
-      variableMatcher,
+      request: { query: SEND_ASSISTANT_MESSAGE, variables: variableMatcher },
       maxUsageCount: Number.POSITIVE_INFINITY,
       result: {
         data: {
@@ -528,8 +524,7 @@ test('an answer that arrives before the mutation returns is still applied', asyn
   // the server issues the requestId, so an event can land before we know ours. The slow
   // mutation forces exactly that ordering.
   const slowAck = {
-    request: { query: SEND_ASSISTANT_MESSAGE },
-    variableMatcher: () => true,
+    request: { query: SEND_ASSISTANT_MESSAGE, variables: () => true },
     delay: 60,
     result: {
       data: {

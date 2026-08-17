@@ -650,8 +650,7 @@ const selectUploadAttachmentFile = async (mockFile: File) => {
 test('it uploads a file and shows the attachment URL on success', async () => {
   const uploadUrl = 'https://storage.example.com/test-image.png';
   const uploadMock = {
-    request: { query: UPLOAD_MEDIA },
-    variableMatcher: () => true,
+    request: { query: UPLOAD_MEDIA, variables: () => true },
     result: { data: { uploadMedia: uploadUrl } },
   };
 
@@ -672,8 +671,7 @@ test('it uploads a file and shows the attachment URL on success', async () => {
 
 test('it shows a warning and resets upload state when the file upload fails', async () => {
   const uploadErrorMock = {
-    request: { query: UPLOAD_MEDIA },
-    variableMatcher: () => true,
+    request: { query: UPLOAD_MEDIA, variables: () => true },
     error: new Error('Failed to upload'),
   };
 

@@ -20,8 +20,7 @@ import * as AuthService from 'services/AuthService';
 import AIEvalsPage from './AIEvalsPage';
 
 const aiEvaluationsListMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: { data: { aiEvaluations: [] } },
 };
 

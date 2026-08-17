@@ -46,10 +46,10 @@ describe('<MyAccount />', () => {
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     render(wrapper);
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // set the mock
@@ -58,17 +58,17 @@ describe('<MyAccount />', () => {
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on resend button
       const resendButton = screen.getByTestId('resendOtp');
-      user.click(resendButton);
+      await user.click(resendButton);
     });
 
     // trigger validation errors
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on save button
       const saveButton = screen.getByText('Save');
-      user.click(saveButton);
+      await user.click(saveButton);
     });
 
     // check for validation errors
@@ -97,10 +97,10 @@ describe('<MyAccount />', () => {
     const errorMessage = 'Cannot register 919967665667';
     mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // close the alert
@@ -118,10 +118,10 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     await waitFor(() => {
@@ -129,7 +129,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
     const cancelButton = screen.getByText('Cancel');
-    user.click(cancelButton);
+    await user.click(cancelButton);
   });
 
   test('generate OTP error with incorrect OTP', async () => {
@@ -139,21 +139,21 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    user.click(input);
-    user.keyboard('1234');
+    await user.click(input);
+    await user.keyboard('1234');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    user.click(password);
-    user.keyboard('pass123456');
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
@@ -175,21 +175,21 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    user.click(input);
-    user.keyboard('4567');
+    await user.click(input);
+    await user.keyboard('4567');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    user.click(password);
-    user.keyboard('pass123456');
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
@@ -205,9 +205,9 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+    await waitFor(async () => {
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     const input = await screen.findByPlaceholderText('OTP');
@@ -231,9 +231,7 @@ describe('<MyAccount />', () => {
 
   test('shows a generic error when updating the password fails unexpectedly', async () => {
     const { container } = render(
-      <MockedProvider
-        mocks={[getCurrentUserQuery, updateUserNetworkErrorQuery, getOrganizationLanguagesQuery]}
-      >
+      <MockedProvider mocks={[getCurrentUserQuery, updateUserNetworkErrorQuery, getOrganizationLanguagesQuery]}>
         <MemoryRouter>
           <MyAccount />
         </MemoryRouter>
@@ -243,9 +241,9 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+    await waitFor(async () => {
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     const input = await screen.findByPlaceholderText('OTP');

@@ -1,6 +1,6 @@
 import { cleanup, render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing/react';
-import { InMemoryCache, ApolloClient } from '@apollo/client';
+import { InMemoryCache, ApolloClient, HttpLink } from '@apollo/client';
 
 import { ApolloProvider } from '@apollo/client/react';
 
@@ -14,8 +14,8 @@ const { capturedUpdateQueries } = vi.hoisted(() => ({
   capturedUpdateQueries: [] as Array<(prev: any, options: any) => any>,
 }));
 
-vi.mock('@apollo/client', async () => {
-  const actual = await vi.importActual<any>('@apollo/client');
+vi.mock('@apollo/client/react', async () => {
+  const actual = await vi.importActual<any>('@apollo/client/react');
   const subscribeToMore = (options: any) => {
     if (options?.updateQuery) {
       capturedUpdateQueries.push(options.updateQuery);
@@ -92,7 +92,7 @@ const body = {
   whatsappFormResponse: null,
 };
 
-const cache = new InMemoryCache({ });
+const cache = new InMemoryCache({});
 export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
@@ -187,7 +187,7 @@ cache.writeQuery({
 
 const client = new ApolloClient({
   cache: cache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
 });
 

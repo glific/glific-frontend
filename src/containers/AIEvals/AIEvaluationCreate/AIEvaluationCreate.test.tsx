@@ -497,9 +497,12 @@ describe('AIEvaluationCreate', () => {
     const varCapture: any[] = [];
     const matchingMock = {
       ...getCreateEvaluationSuccessMock,
-      variableMatcher: (vars: any) => {
-        varCapture.push(vars);
-        return true;
+      request: {
+        ...getCreateEvaluationSuccessMock.request,
+        variables: (vars: any) => {
+          varCapture.push(vars);
+          return true;
+        },
       },
     };
 
@@ -522,9 +525,12 @@ describe('AIEvaluationCreate', () => {
     const varCapture: any[] = [];
     const matchingMock = {
       ...getCreateEvaluationSuccessMock,
-      variableMatcher: (vars: any) => {
-        varCapture.push(vars);
-        return true;
+      request: {
+        ...getCreateEvaluationSuccessMock.request,
+        variables: (vars: any) => {
+          varCapture.push(vars);
+          return true;
+        },
       },
     };
 
@@ -548,9 +554,12 @@ describe('AIEvaluationCreate', () => {
     const varCapture: any[] = [];
     const matchingMock = {
       ...getCreateEvaluationSuccessMock,
-      variableMatcher: (vars: any) => {
-        varCapture.push(vars);
-        return true;
+      request: {
+        ...getCreateEvaluationSuccessMock.request,
+        variables: (vars: any) => {
+          varCapture.push(vars);
+          return true;
+        },
       },
     };
 

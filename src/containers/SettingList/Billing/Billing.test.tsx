@@ -117,9 +117,7 @@ describe('<Billing />', () => {
 
 test('creating a subscription with response as pending', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}
-    >
+    <MockedProvider mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}>
       <Router>
         <Billing />
       </Router>
@@ -205,9 +203,7 @@ test('shows a warning when creating the subscription fails unexpectedly', async 
 
 test('subscription status is already in pending state', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}
-    >
+    <MockedProvider mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}>
       <Router>
         <Billing />
       </Router>
@@ -232,9 +228,7 @@ test('shows a warning when opening the customer portal fails unexpectedly', asyn
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   (window.open as any).mockClear();
   const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[getPendingBillingQuery, getCustomerPortalNetworkErrorQuery, getBillingQueryWithoutVars]}
-    >
+    <MockedProvider mocks={[getPendingBillingQuery, getCustomerPortalNetworkErrorQuery, getBillingQueryWithoutVars]}>
       <Router>
         <Billing />
       </Router>

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
   subscription ReceivedWaGroupMessage($organizationId: ID!) {

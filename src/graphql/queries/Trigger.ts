@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const TRIGGER_LIST_QUERY = gql`
   query triggers($filter: TriggerFilter, $opts: Opts) {

@@ -149,6 +149,7 @@ const getAssistantListOnSearch = {
 const uploadFileToFileSearch = {
   request: {
     query: UPLOAD_FILE_TO_KAAPI,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -160,12 +161,12 @@ const uploadFileToFileSearch = {
       },
     },
   },
-  variableMatcher: (variables: any) => true,
 };
 
 export const uploadFileToFileSearchWithError = {
   request: {
     query: UPLOAD_FILE_TO_KAAPI,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -183,7 +184,6 @@ export const uploadFileToFileSearchWithError = {
       },
     ],
   },
-  variableMatcher: (variables: any) => true,
 };
 
 const fileWithUploadedAt = {
