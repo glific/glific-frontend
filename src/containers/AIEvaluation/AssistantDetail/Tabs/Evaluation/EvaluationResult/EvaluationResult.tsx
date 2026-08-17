@@ -1,6 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
@@ -35,6 +38,12 @@ const BAND_LABEL = {
   good: 'Good',
   okay: 'Could improve',
   bad: 'Needs improvement',
+} as const;
+
+const BAND_ICON = {
+  good: CheckIcon,
+  okay: WarningAmberIcon,
+  bad: CloseIcon,
 } as const;
 
 const ScoreBar = ({ score, band }: { score: number; band: string }) => (
@@ -106,6 +115,7 @@ export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
   }
 
   const band = scoreBand(overall);
+  const BandIcon = BAND_ICON[band];
 
   return (
     <div className={styles.Wrap} data-testid="evaluationResult">
@@ -131,6 +141,7 @@ export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
 
           <div className={styles.BannerText}>
             <span className={`${styles.BandPill} ${styles[`${band}Pill`]}`} data-testid="scoreBand">
+              <BandIcon className={styles.BandIcon} />
               {t(BAND_LABEL[band])}
             </span>
             {summary && (

@@ -846,6 +846,10 @@ describe('the result panel above the table', () => {
     // 2.6*.5 + 2.2*.3 + 3.4*.2 = 2.64 -> 2.6
     expect(within(panel).getByTestId('overallScore')).toHaveTextContent('2.6');
     expect(within(panel).getByTestId('scoreBand')).toHaveTextContent('Could improve');
+    expect(within(panel).getByTestId('scoreBand').querySelector('svg')).toHaveAttribute(
+      'data-testid',
+      'WarningAmberIcon'
+    );
 
     expect(within(panel).getByTestId('metric-groundTruth')).toHaveTextContent('weight 50%');
     expect(within(panel).getByTestId('metric-knowledgeBase')).toHaveTextContent('2.2');
@@ -869,6 +873,7 @@ describe('the result panel above the table', () => {
     // re-weighted over what was scored: (4.7*.5 + 5*.2) / .7
     expect(within(panel).getByTestId('overallScore')).toHaveTextContent('4.8');
     expect(within(panel).getByTestId('scoreBand')).toHaveTextContent('Good');
+    expect(within(panel).getByTestId('scoreBand').querySelector('svg')).toHaveAttribute('data-testid', 'CheckIcon');
   });
 
   test('a run still going shows no scores at all', async () => {

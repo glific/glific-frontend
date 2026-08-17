@@ -146,11 +146,17 @@
 }
 
 .BandPill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
   padding: var(--app-space-2xs) var(--app-space-lg);
   border-radius: var(--app-radius-pill);
   font-size: var(--app-font-size-sm);
   font-weight: 700;
+}
+
+.BandIcon {
+  font-size: var(--app-font-size-md) !important;
 }
 
 .goodPill {
