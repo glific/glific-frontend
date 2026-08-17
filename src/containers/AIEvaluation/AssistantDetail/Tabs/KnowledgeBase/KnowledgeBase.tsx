@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { setErrorMessage, setNotification } from 'common/notification';

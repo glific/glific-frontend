@@ -1,5 +1,6 @@
 import { render, cleanup, fireEvent, act, screen, waitFor, within } from '@testing-library/react';
-import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import { MockLink } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import UserEvent from '@testing-library/user-event';
 import { BrowserRouter as Router } from 'react-router';
 
@@ -30,7 +31,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const props = { openExtensionModal: false, openCustomerModal: false };
 
-const renderList = (listMocks: readonly MockedResponse[] = mocks) => (
+const renderList = (listMocks: readonly MockLink.MockedResponse[] = mocks) => (
   <MockedProvider mocks={listMocks} addTypename={false}>
     <Router>
       <OrganizationList {...props} />

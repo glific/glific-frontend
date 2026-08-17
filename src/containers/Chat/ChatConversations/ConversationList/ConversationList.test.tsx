@@ -1,7 +1,8 @@
 import { MemoryRouter, BrowserRouter as Router } from 'react-router';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { MockedProvider } from '@apollo/client/testing';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { searchContactCollection } from 'mocks/Search';
 import ConversationList from './ConversationList';

@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import ShareResponderLink from './ShareResponderLink';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Utils from 'common/utils';

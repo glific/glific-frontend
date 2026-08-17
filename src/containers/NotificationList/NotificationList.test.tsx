@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import {
   getUnFitleredNotificationCountQuery,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import {
   EXPORT_INTERACTIVE_TEMPLATE,

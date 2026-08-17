@@ -1,5 +1,6 @@
 // eslint-disable-next-line
-import { useApolloClient } from '@apollo/client';
+
+import { useApolloClient } from '@apollo/client/react';
 import axios from 'axios';
 import { CSSProperties, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';

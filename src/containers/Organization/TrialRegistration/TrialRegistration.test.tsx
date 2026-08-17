@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { BrowserRouter } from 'react-router';
 import axios from 'axios';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';

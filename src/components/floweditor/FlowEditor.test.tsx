@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import axios from 'axios';

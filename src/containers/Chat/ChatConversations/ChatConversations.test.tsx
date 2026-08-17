@@ -1,7 +1,9 @@
 import { BrowserRouter as Router } from 'react-router';
 import { render, waitFor, fireEvent, cleanup, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing/react';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+import { ApolloProvider } from '@apollo/client/react';
 
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';

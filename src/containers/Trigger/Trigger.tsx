@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { CircularProgress } from '@mui/material';
 import { useLocation, useParams } from 'react-router';
 import dayjs from 'dayjs';

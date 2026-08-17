@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Toolbar, Typography, Popper, Fade, Paper, Button, ClickAwayListener, IconButton } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';

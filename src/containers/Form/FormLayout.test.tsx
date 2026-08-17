@@ -1,6 +1,6 @@
 import { render, waitFor, within, fireEvent } from '@testing-library/react';
 import { Route, Routes, BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import { FlowList } from 'containers/Flow/FlowList/FlowList';

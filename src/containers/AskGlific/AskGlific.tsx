@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useSubscription } from '@apollo/client';
+import { useLazyQuery, useMutation, useSubscription } from '@apollo/client/react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';

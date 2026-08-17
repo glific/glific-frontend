@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { Typography } from '@mui/material';
 import Upload from '@mui/icons-material/Upload';
 import { useEffect, useState } from 'react';

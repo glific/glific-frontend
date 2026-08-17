@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { REPORT_TO_GUPSHUP } from 'graphql/mutations/Template';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { setNotification } from 'common/notification';
 
 export interface RaiseToGupShupPropTypes {

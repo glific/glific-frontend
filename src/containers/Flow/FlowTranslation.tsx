@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import {
   FormControl,

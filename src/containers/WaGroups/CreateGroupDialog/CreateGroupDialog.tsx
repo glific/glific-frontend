@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import { setErrorMessage, setNotification } from 'common/notification';

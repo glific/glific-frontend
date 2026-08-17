@@ -1,5 +1,5 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import { GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';

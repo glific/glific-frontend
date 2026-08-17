@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { Typography } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client/react';
 import { Navigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 

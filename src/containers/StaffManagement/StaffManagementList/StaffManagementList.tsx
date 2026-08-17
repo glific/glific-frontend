@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
 import StaffIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { staffManagementInfo } from 'common/HelpData';

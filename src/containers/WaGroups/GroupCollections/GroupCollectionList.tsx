@@ -10,7 +10,7 @@ import { List } from 'containers/List/List';
 import styles from './GroupCollectionList.module.css';
 
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useState } from 'react';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';

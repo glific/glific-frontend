@@ -1,7 +1,7 @@
 import { MemoryRouter } from 'react-router';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect } from 'vitest';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { InMemoryCache } from '@apollo/client';
 
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';

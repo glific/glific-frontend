@@ -1,6 +1,6 @@
 import { useEffect, useState, Fragment } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';

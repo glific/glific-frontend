@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { MessageDialog } from './MessageDialog';
 import { getAttachmentPermissionMock } from 'mocks/Attachment';

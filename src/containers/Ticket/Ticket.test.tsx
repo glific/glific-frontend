@@ -1,5 +1,5 @@
 import { render, waitFor, cleanup, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { Ticket } from './Ticket';

@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { FormControlLabel, Popover, Radio, RadioGroup } from '@mui/material';
 import dayjs from 'dayjs';

@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';

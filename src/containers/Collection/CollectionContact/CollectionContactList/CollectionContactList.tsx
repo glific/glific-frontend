@@ -9,7 +9,7 @@ import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { getContactStatus, getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';

@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';

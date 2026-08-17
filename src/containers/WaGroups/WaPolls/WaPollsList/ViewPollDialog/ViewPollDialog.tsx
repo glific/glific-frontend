@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';

@@ -11,7 +11,7 @@ import {
   activateWhatsappFormError,
   activateWhatsappFormPayloadError,
 } from 'mocks/WhatsAppForm';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import WhatsAppForms from '../WhatsAppForms';
 import * as Notification from 'common/notification';
 import { WhatsAppFormList } from './WhatsAppFormList';

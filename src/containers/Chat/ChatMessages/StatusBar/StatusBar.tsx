@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 import { getUserSession } from 'services/AuthService';
 import { BSPBALANCE, GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { OutlinedInput } from '@mui/material';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import { DELETE_ORGANIZATION, UPDATE_ORGANIZATION_STATUS } from 'graphql/mutations/Organization';

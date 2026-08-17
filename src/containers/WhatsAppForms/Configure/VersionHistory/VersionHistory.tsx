@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { Box, Button, CircularProgress, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { DATE_TIME_FORMAT_WITH_AMPM_LONG } from 'common/constants';

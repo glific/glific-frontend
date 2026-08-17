@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';

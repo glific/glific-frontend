@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 
 import { useTranslation } from 'react-i18next';
 import { GET_COLLECTIONS_LIST } from 'graphql/queries/Collection';

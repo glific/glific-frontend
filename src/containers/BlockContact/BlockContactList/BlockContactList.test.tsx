@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { conversationQuery } from 'mocks/Chat';
 import { setUserSession } from 'services/AuthService';

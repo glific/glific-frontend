@@ -1,5 +1,5 @@
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { setNotification } from 'common/notification';
 import { TERMINATE_FLOW } from 'graphql/mutations/Flow';
 import styles from './TerminateFlow.module.css';

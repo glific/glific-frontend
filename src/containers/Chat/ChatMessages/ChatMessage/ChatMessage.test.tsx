@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import dayjs from 'dayjs';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { SHORT_TIME_FORMAT } from 'common/constants';
 

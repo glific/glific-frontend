@@ -1,5 +1,5 @@
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import { ISO_DATE_FORMAT, setVariables } from 'common/constants';
 import { EXPORT_CONSULTING_HOURS } from 'graphql/queries/Consulting';

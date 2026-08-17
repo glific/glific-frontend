@@ -1,5 +1,5 @@
 import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';

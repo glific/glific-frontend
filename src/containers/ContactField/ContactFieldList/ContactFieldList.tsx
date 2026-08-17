@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, Button } from '@mui/material';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import { List } from 'containers/List/List';
 import { InlineInput } from 'components/UI/Form/InlineInput/InlineInput';

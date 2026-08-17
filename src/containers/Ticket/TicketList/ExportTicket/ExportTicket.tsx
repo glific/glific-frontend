@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 

@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import {
   CERTIFICATE_LIST_MOCKS,
   CERTIFICATE_MOCKS,

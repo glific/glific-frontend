@@ -1,5 +1,5 @@
-import { useMutation } from '@apollo/client';
-import { MockedProvider } from '@apollo/client/testing';
+import { useMutation } from '@apollo/client/react';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';

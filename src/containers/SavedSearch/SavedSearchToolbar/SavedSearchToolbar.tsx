@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useQuery, useSubscription } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client/react';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@mui/material';
 
 import OptionsIcon from 'assets/images/icons/MoreOptions/More.svg?react';

@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useParams } from 'react-router';
 import { vi } from 'vitest';

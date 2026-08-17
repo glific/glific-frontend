@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import * as Notification from 'common/notification';
 import { FlowTranslation } from './FlowTranslation';
 import {

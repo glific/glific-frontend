@@ -3,7 +3,7 @@ import Upload from '@mui/icons-material/Upload';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams, useNavigate } from 'react-router';
-import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';

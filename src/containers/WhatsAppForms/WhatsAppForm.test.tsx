@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { formJson, WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';

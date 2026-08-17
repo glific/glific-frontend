@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 import axios from 'axios';
 
 import { Logout } from './Logout';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { ORG_EVAL_ACCESS_CACHE_KEY } from 'containers/AIEvals/orgEvalAccessCache';
 
 const { mockPosthogCapture, mockPosthogReset } = vi.hoisted(() => ({

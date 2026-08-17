@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client/react';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

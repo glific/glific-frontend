@@ -1,5 +1,5 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import HSM from 'containers/HSM/HSM';

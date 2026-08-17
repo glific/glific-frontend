@@ -4,7 +4,7 @@ import { render, cleanup, waitFor, screen, fireEvent } from '@testing-library/re
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import CollectionConversations from './CollectionConversations';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { searchCollectionsQuery } from 'mocks/Chat';
 
 const searchQueryMock = {

@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Container } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

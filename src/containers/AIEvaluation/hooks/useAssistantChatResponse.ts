@@ -1,4 +1,4 @@
-import { useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client/react';
 import { useEffect, useRef } from 'react';
 import { t } from 'i18next';
 import { setErrorMessage } from 'common/notification';

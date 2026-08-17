@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

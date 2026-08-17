@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { CollectionInformation } from './CollectionInformation';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { getCollectionInfo, getCollectionUsersQuery } from 'mocks/Collection';
 import { GET_COLLECTION_USERS } from 'graphql/queries/Collection';

@@ -1,4 +1,5 @@
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { type MockLink } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
@@ -42,7 +43,10 @@ const countAiEvaluationsMock = {
   result: { data: { countAiEvaluations: 2 } },
 };
 
-const renderComponent = (mocks: MockedResponse[] = [getListAiEvaluationsWithItemsMock], searchQuery?: string) =>
+const renderComponent = (
+  mocks: MockLink.MockedResponse[] = [getListAiEvaluationsWithItemsMock],
+  searchQuery?: string
+) =>
   render(
     <MockedProvider mocks={[countAiEvaluationsMock, ...mocks]} addTypename={false}>
       <MemoryRouter>

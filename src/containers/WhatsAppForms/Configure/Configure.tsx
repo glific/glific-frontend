@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import { setErrorMessage, setNotification } from 'common/notification';

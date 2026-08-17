@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePostHog } from '@posthog/react';
 
 import InfoIcon from '@mui/icons-material/Info';
-import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { useNavigate, Navigate, useParams } from 'react-router';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';

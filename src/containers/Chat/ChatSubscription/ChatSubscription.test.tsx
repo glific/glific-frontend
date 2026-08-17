@@ -1,6 +1,8 @@
 import { cleanup, render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing/react';
+import { InMemoryCache, ApolloClient } from '@apollo/client';
+
+import { ApolloProvider } from '@apollo/client/react';
 
 import { setUserSession } from 'services/AuthService';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';

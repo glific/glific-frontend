@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';

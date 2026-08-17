@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';

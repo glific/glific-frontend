@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import dayjs from 'dayjs';
 
 import { GET_TICKET } from 'graphql/queries/Ticket';

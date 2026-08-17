@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
 import { Navigate, useLocation, useNavigate } from 'react-router';

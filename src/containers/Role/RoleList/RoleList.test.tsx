@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { RoleList } from './RoleList';

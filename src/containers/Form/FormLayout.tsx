@@ -2,7 +2,8 @@ import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
-import { DocumentNode, useQuery, useMutation } from '@apollo/client';
+import { DocumentNode } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

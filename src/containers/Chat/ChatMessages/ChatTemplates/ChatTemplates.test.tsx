@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import ChatTemplates from './ChatTemplates';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from 'mocks/Template';

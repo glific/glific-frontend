@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import dayjs from 'dayjs';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter } from 'react-router';
 
 import { MARK_AS_READ } from 'graphql/mutations/Chat';

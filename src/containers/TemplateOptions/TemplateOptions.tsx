@@ -26,7 +26,7 @@ import {
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
 import { Fragment, useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { GET_WHATSAPP_FORM_DEFINITIONS } from 'graphql/queries/WhatsAppForm';
 import { getOrganizationServices } from 'services/AuthService';
 

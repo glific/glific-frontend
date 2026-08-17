@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import dayjs from 'dayjs';
 
 import SheetIcon from 'assets/images/icons/Sheets/Sheet.svg?react';

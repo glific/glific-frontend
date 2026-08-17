@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';

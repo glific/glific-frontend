@@ -10,7 +10,7 @@ import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
 import { useNavigate, useSearchParams } from 'react-router';
 import styles from './InteractiveMessageList.module.css';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { interactiveMessageInfo } from 'common/HelpData';

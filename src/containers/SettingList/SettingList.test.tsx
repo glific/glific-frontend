@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { BrowserRouter as Router } from 'react-router';
 
 import { SettingList } from './SettingList';

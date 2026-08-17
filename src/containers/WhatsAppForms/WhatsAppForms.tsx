@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import Update from '@mui/icons-material/Update';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';

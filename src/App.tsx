@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, Route, Routes } from 'react-router';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import 'i18n/config';
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';

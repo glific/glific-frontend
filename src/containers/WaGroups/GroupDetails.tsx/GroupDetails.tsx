@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useState } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';

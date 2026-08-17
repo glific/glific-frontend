@@ -1,6 +1,6 @@
 import { AddToCollection } from './AddToCollection';
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';

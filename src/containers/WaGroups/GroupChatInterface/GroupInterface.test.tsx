@@ -1,6 +1,8 @@
 import { MemoryRouter } from 'react-router';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+import { ApolloProvider } from '@apollo/client/react';
 
 import { setUserSession } from 'services/AuthService';
 import { GROUP_QUERY_VARIABLES } from 'common/constants';

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { AI_EVALS_INTRO_VIDEO_URL } from 'config';
 import { OrgEvalAccessGateError, OrgEvalAccessGateLoading } from 'containers/AIEvals/OrgEvalAccessGateUi';
