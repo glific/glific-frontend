@@ -8,6 +8,16 @@ export interface EvaluationMetrics {
   prompt: number | null;
 }
 
+export type ScoreBand = 'good' | 'okay' | 'bad';
+
+export interface EvaluationTrace {
+  questionId: string;
+  question: string;
+  expected: string;
+  answer: string;
+  scores: { name: string; value: number | null }[];
+}
+
 export interface EvaluationRun {
   id: string;
   name: string;

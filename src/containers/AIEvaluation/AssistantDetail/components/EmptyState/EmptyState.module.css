@@ -1,0 +1,36 @@
+.Wrap {
+  text-align: center;
+  padding: var(--app-space-6xl) var(--app-space-3xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.Icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto var(--app-space-lg);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-hover);
+}
+
+.Title {
+  font-size: var(--app-font-size-md);
+  font-weight: 800;
+  color: var(--app-color-text-heading);
+}
+
+.Note {
+  max-width: 32rem;
+  margin: var(--app-space-sm) auto 0;
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+}
+
+.Action {
+  margin-top: var(--app-space-lg);
+}

@@ -1,6 +1,6 @@
 import {
   formatScore,
-  parseEvaluationOverall,
+  parseEvaluationSummary,
   shortMetricName,
   parseEvaluationScores,
   traceMetricNames,
@@ -227,32 +227,25 @@ describe('shortMetricName', () => {
   });
 });
 
-describe('parseEvaluationOverall', () => {
-  const payload = JSON.stringify({
-    score: {
-      overall: {
-        overall_score: 4.79,
-        verdict: 'Good',
-        ai_summary: '  Overall the run looks healthy. The one mild gap is item_0.  ',
-      },
-    },
-  });
-
-  test('reads the judge write-up, its score and its verdict', () => {
-    expect(parseEvaluationOverall(payload)).toEqual({
-      score: 4.79,
-      verdict: 'Good',
-      summary: 'Overall the run looks healthy. The one mild gap is item_0.',
+describe('parseEvaluationSummary', () => {
+  test("reads the judge's write-up and trims it", () => {
+    const payload = JSON.stringify({
+      score: { overall: { ai_summary: '  Overall the run looks healthy. The one mild gap is item_0.  ' } },
     });
+
+    expect(parseEvaluationSummary(payload)).toBe('Overall the run looks healthy. The one mild gap is item_0.');
   });
 
-  test('a run with no overall block has nothing to report', () => {
-    for (const value of [null, 'not json', '{}', '{"score":{}}', { score: { overall: null } }]) {
-      expect(parseEvaluationOverall(value)).toEqual({ score: null, verdict: null, summary: null });
+  test('a run with nothing to report reads as no summary', () => {
+    for (const value of [
+      null,
+      'not json',
+      '{}',
+      '{"score":{}}',
+      { score: { overall: null } },
+      { score: { overall: { ai_summary: '   ' } } },
+    ]) {
+      expect(parseEvaluationSummary(value)).toBeNull();
     }
-  });
-
-  test('an empty summary counts as no summary', () => {
-    expect(parseEvaluationOverall({ score: { overall: { ai_summary: '   ' } } }).summary).toBeNull();
   });
 });

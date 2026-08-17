@@ -1,4 +1,3 @@
-/* sub-tabs on the left, run actions on the right, one line */
 .Header {
   display: flex;
   align-items: center;
@@ -18,69 +17,4 @@
   flex-shrink: 0;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
-}
-
-.FootNoteLink {
-  padding: 0;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 700;
-  color: var(--app-color-brand-primary);
-  cursor: pointer;
-}
-
-.FootNoteLink:hover {
-  text-decoration: underline;
-}
-
-/*
- * The space below has to be padding: this is the last thing on the page, and a scroll
- * container leaves the bottom margin of its final child out of the scrollable area, so a
- * margin here would simply not exist. Padding is part of the box, so it is scrolled to.
- */
-.FootNote {
-  margin-top: var(--app-space-xl);
-  padding-bottom: var(--app-space-3xl);
-  text-align: center;
-  font-size: var(--app-font-size-sm);
-  color: var(--app-color-text-tertiary);
-}
-
-.Blocker {
-  text-align: center;
-  padding: var(--app-space-6xl) var(--app-space-3xl);
-  border-radius: var(--app-radius-lg);
-  background-color: var(--app-color-surface-raised);
-  box-shadow: var(--app-shadow-card);
-}
-
-.BlockerIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  margin: 0 auto var(--app-space-lg);
-  border-radius: var(--app-radius-lg);
-  background-color: var(--app-color-surface-hover);
-}
-
-.BlockerTitle {
-  font-size: var(--app-font-size-md);
-  font-weight: 800;
-  color: var(--app-color-text-heading);
-}
-
-.BlockerNote {
-  max-width: 32rem;
-  margin: var(--app-space-sm) auto 0;
-  font-size: var(--app-font-size-sm);
-  line-height: 1.55;
-  color: var(--app-color-text-tertiary);
-}
-
-.BlockerAction {
-  margin-top: var(--app-space-lg);
 }

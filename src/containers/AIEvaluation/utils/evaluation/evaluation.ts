@@ -1,10 +1,14 @@
-import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
+import type {
+  EvaluationMetrics,
+  EvaluationRun,
+  EvaluationTrace,
+  ScoreBand,
+} from 'containers/AIEvaluation/types/evaluationType';
 
 export const MAX_SCORE = 5;
 
 export const METRIC_WEIGHTS = { groundTruth: 0.5, knowledgeBase: 0.3, prompt: 0.2 };
 
-/** the judge names each metric in prose, so matching is on words rather than an exact string */
 const METRIC_MATCHERS: { key: keyof EvaluationMetrics; matches: (name: string) => boolean }[] = [
   { key: 'groundTruth', matches: (name) => name.includes('ground') && name.includes('truth') },
   { key: 'knowledgeBase', matches: (name) => name.includes('knowledge') },
@@ -16,9 +20,7 @@ const EMPTY_METRICS: EvaluationMetrics = { groundTruth: null, knowledgeBase: nul
 const asScore = (value: unknown) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
 
 /**
- * `results` arrives as a JSON string holding `summary_scores` — one entry per metric, named in
- * prose ("Adherence to Ground Truth") with its average. A run only reports the metrics that
- * applied to it: an assistant with no knowledge base has no knowledge-base score.
+ * `results` is a JSON string containing `summary_scores`, with one average score per applicable metric named in plain language; metrics that don’t apply to a run are omitted.
  */
 export const parseEvaluationResults = (results: unknown): EvaluationMetrics => {
   let parsed: any = results;
@@ -61,9 +63,7 @@ export const parseEvaluationResults = (results: unknown): EvaluationMetrics => {
 };
 
 /**
- * A weighted average of whatever the run actually scored. The weights are re-normalised over
- * the metrics present, so a run without a knowledge-base score is not dragged down by it —
- * null only when nothing was scored at all.
+ * `overall_score` is a weighted average of the metrics actually scored, with weights re-normalised for the metrics present; it is null only when no metrics were scored.
  */
 export const overallScore = (metrics: EvaluationMetrics) => {
   const scored = (Object.keys(METRIC_WEIGHTS) as (keyof EvaluationMetrics)[]).filter((key) => metrics[key] != null);
@@ -75,9 +75,6 @@ export const overallScore = (metrics: EvaluationMetrics) => {
   return Math.round((weighted / totalWeight) * 10) / 10;
 };
 
-export type ScoreBand = 'good' | 'okay' | 'bad';
-
-/** the judge scores 0–5: 0–1 unusable, 2–3 partly right, 4–5 correct */
 export const scoreBand = (score: number): ScoreBand => {
   if (score >= 4) return 'good';
   if (score >= 2) return 'okay';
@@ -86,29 +83,14 @@ export const scoreBand = (score: number): ScoreBand => {
 
 export const formatScore = (score: number | null) => (score == null ? '—' : score.toFixed(1));
 
-/** the backend reports status in upper case, so every check works off a normalised copy */
 const statusOf = (run: EvaluationRun) => String(run.status ?? '').toLowerCase();
 
-/** a run is only worth reading once the judge has finished with it */
 export const isRunComplete = (run: EvaluationRun) => ['success', 'completed'].includes(statusOf(run));
 
 export const isRunFailed = (run: EvaluationRun) => ['failed', 'error'].includes(statusOf(run));
 
 export const isRunInProgress = (run: EvaluationRun) => !isRunComplete(run) && !isRunFailed(run);
 
-export interface EvaluationTrace {
-  questionId: string;
-  question: string;
-  expected: string;
-  answer: string;
-  scores: { name: string; value: number | null }[];
-}
-
-/**
- * `scores` is a JSON string wrapping `score.traces` — one entry per question asked, each
- * carrying the answer the assistant gave and whatever the judge scored it on. Field names
- * differ between runs (`ground_truth_answer` vs `golden_answer`), so each is read by turns.
- */
 export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
   let parsed: any = raw;
   if (typeof raw === 'string') {
@@ -158,42 +140,21 @@ export const traceMetricNames = (traces: EvaluationTrace[]) => [
 ];
 
 /**
- * Column headings repeat "Adherence to" three times over, which costs width the answers need.
- * The prefix is dropped for display only — the full name still identifies the metric.
+ * Column headings repeat "Adherence to" three times over, prefix is dropped for display only.
  */
 export const shortMetricName = (name: string) => name.replace(/^adherence to\s+/i, '').trim() || name;
 
-export interface EvaluationOverall {
-  score: number | null;
-  verdict: string | null;
-  summary: string | null;
-}
-
-/**
- * `score.overall` is the judge's own read of the run — its score, its verdict, and a written
- * summary of what went well and what to look at. Only the summary is shown today, but the
- * whole thing is parsed so the rest is there when it is wanted.
- */
-export const parseEvaluationOverall = (raw: unknown): EvaluationOverall => {
-  const empty = { score: null, verdict: null, summary: null };
-
+export const parseEvaluationSummary = (raw: unknown): string | null => {
   let parsed: any = raw;
   if (typeof raw === 'string') {
     try {
       parsed = JSON.parse(raw);
     } catch {
-      return empty;
+      return null;
     }
   }
 
-  const overall = parsed?.score?.overall;
-  if (!overall || typeof overall !== 'object') return empty;
+  const summary = parsed?.score?.overall?.ai_summary;
 
-  const summary = typeof overall.ai_summary === 'string' ? overall.ai_summary.trim() : '';
-
-  return {
-    score: asScore(overall.overall_score),
-    verdict: typeof overall.verdict === 'string' ? overall.verdict : null,
-    summary: summary || null,
-  };
+  return typeof summary === 'string' && summary.trim() ? summary.trim() : null;
 };

@@ -124,5 +124,3 @@ export const EvaluationScores = ({ runId }: EvaluationScoresProps) => {
     </div>
   );
 };
-
-export default EvaluationScores;

@@ -12,7 +12,7 @@ import {
   isRunFailed,
   isRunInProgress,
   overallScore,
-  parseEvaluationOverall,
+  parseEvaluationSummary,
   parseEvaluationResults,
   scoreBand,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
@@ -59,7 +59,7 @@ export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
     variables: { id: run.id },
     fetchPolicy: 'cache-first',
   });
-  const { summary } = parseEvaluationOverall(scoreData?.evaluationScores?.scores);
+  const summary = parseEvaluationSummary(scoreData?.evaluationScores?.scores);
 
   const metrics = parseEvaluationResults(run.results);
   const overall = overallScore(metrics);
@@ -208,5 +208,3 @@ export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
     </div>
   );
 };
-
-export default EvaluationResult;

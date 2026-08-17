@@ -139,5 +139,3 @@ export const RunEvaluationDialog = ({
     </DialogBox>
   );
 };
-
-export default RunEvaluationDialog;

@@ -12,20 +12,19 @@ import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
+import { EmptyState } from '../../components';
 import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
-import { EvaluationResult } from './EvaluationResult/EvaluationResult';
-import { EvaluationScores } from './EvaluationScores/EvaluationScores';
 import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
+import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
 
 export interface EvaluationProps {
   versionId?: string;
   versionNumber?: number;
-  assistantId?: string;
   assistantName?: string;
 }
 
-export const Evaluation = ({ versionId, versionNumber, assistantId, assistantName }: EvaluationProps) => {
+export const Evaluation = ({ versionId, versionNumber, assistantName }: EvaluationProps) => {
   const { t } = useTranslation();
 
   const [subTab, setSubTab] = useState<EvaluationSubTab>('run');
@@ -67,17 +66,14 @@ export const Evaluation = ({ versionId, versionNumber, assistantId, assistantNam
   if (sets.length === 0) {
     return (
       <div data-testid="evaluationTab">
-        <div className={styles.Blocker} data-testid="goldenQaEmpty">
-          <div className={styles.BlockerIcon}>
-            <DocumentIcon />
-          </div>
-          <div className={styles.BlockerTitle}>{t('Add a Golden Q&A set to evaluate this assistant')}</div>
-          <div className={styles.BlockerNote}>
-            {t(
-              'A fixed set of questions and their ideal answers. Every version is scored against the same set, so results stay comparable.'
-            )}
-          </div>
-          <div className={styles.BlockerAction}>
+        <EmptyState
+          testId="goldenQaEmpty"
+          icon={<DocumentIcon />}
+          title={t('Add a Golden Q&A set to evaluate this assistant')}
+          note={t(
+            'A fixed set of questions and their ideal answers. Every version is scored against the same set, so results stay comparable.'
+          )}
+          action={
             <Button
               variant="contained"
               color="primary"
@@ -87,8 +83,8 @@ export const Evaluation = ({ versionId, versionNumber, assistantId, assistantNam
             >
               {t('Add a Golden Q&A set')}
             </Button>
-          </div>
-        </div>
+          }
+        />
         {addDialog}
       </div>
     );
@@ -134,44 +130,17 @@ export const Evaluation = ({ versionId, versionNumber, assistantId, assistantNam
       </div>
 
       {subTab === 'run' ? (
-        <>
-          {latestRun ? (
-            <EvaluationResult run={latestRun}>
-              <EvaluationScores runId={latestRun.id} />
-            </EvaluationResult>
-          ) : (
-            <div className={styles.Blocker} data-testid="noEvaluationsYet">
-              <div className={styles.BlockerTitle}>
-                {t('No evaluations yet for')} {versionNumber ? `${t('Version')} ${versionNumber}` : t('this version')}
-              </div>
-              <div className={styles.BlockerNote}>
-                {t('Run one to see how this version scores against a Golden Q&A set.')}
-              </div>
-            </div>
-          )}
-
-          <div className={styles.FootNote}>
-            {t('See every past run in the')}{' '}
-            <button
-              type="button"
-              className={styles.FootNoteLink}
-              onClick={() => setSubTab('history')}
-              data-testid="goToHistoryButton"
-            >
-              {t('History')}
-            </button>{' '}
-            {t('tab above.')}
-          </div>
-        </>
+        <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
       ) : allRuns.length > 0 ? (
         <EvaluationHistory runs={allRuns} />
       ) : (
-        <div className={styles.Blocker} data-testid="evaluationHistoryEmpty">
-          <div className={styles.BlockerTitle}>{t('No evaluations yet')}</div>
-          <div className={styles.BlockerNote}>
-            {t('Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.')}
-          </div>
-          <div className={styles.BlockerAction}>
+        <EmptyState
+          testId="evaluationHistoryEmpty"
+          title={t('No evaluations yet')}
+          note={t(
+            'Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.'
+          )}
+          action={
             <Button
               variant="contained"
               color="primary"
@@ -182,8 +151,8 @@ export const Evaluation = ({ versionId, versionNumber, assistantId, assistantNam
             >
               {t('Run your first evaluation')}
             </Button>
-          </div>
-        </div>
+          }
+        />
       )}
 
       {manageOpen && (

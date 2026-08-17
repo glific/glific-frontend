@@ -3,7 +3,6 @@ import { splitMarkdownTables } from 'containers/AIEvaluation/utils/markdownTable
 import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox/sandbox';
 import styles from './MarkdownAnswer.module.css';
 
-/** an answer's links point away from the app, so they open in a new tab */
 const LINK_IN_NEW_TAB = {
   a: ({ node, ...props }: any) => <a {...props} target="_blank" rel="noopener noreferrer" />,
 };
@@ -13,10 +12,6 @@ export interface MarkdownAnswerProps {
   className?: string;
 }
 
-/**
- * Renders an assistant's answer. Pipe tables are drawn here because the markdown renderer only
- * understands CommonMark, which has no tables; everything else is markdown as usual.
- */
 export const MarkdownAnswer = ({ text, className }: MarkdownAnswerProps) => (
   <div className={`${styles.Markdown} ${className ?? ''}`} data-testid="markdownAnswer">
     {splitMarkdownTables(normalizeLineBreaks(text)).map((block, index) =>
@@ -53,5 +48,3 @@ export const MarkdownAnswer = ({ text, className }: MarkdownAnswerProps) => (
     )}
   </div>
 );
-
-export default MarkdownAnswer;

@@ -94,5 +94,3 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
     </div>
   );
 };
-
-export default EvaluationHistory;

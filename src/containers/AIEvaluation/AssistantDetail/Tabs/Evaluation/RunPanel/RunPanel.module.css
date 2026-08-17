@@ -1,0 +1,27 @@
+.FootNoteLink {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  color: var(--app-color-brand-primary);
+  cursor: pointer;
+}
+
+.FootNoteLink:hover {
+  text-decoration: underline;
+}
+
+/*
+ * The space below has to be padding: this is the last thing on the page, and a scroll
+ * container leaves the bottom margin of its final child out of the scrollable area, so a
+ * margin here would simply not exist. Padding is part of the box, so it is scrolled to.
+ */
+.FootNote {
+  margin-top: var(--app-space-xl);
+  padding-bottom: var(--app-space-3xl);
+  text-align: center;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
