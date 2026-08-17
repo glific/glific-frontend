@@ -91,6 +91,7 @@ export const getAssistant = (
           instructions: null,
           status: 'active',
           temperature: 1,
+          effort: null,
           vectorStore: {
             id: 'vs-1',
             vectorStoreId: 'vs_abc123',

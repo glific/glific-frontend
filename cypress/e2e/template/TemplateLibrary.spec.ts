@@ -169,7 +169,10 @@ const expandGroup = (usecase: string) => {
 beforeEach(() => {
   cy.login();
   cy.window().then((win) => {
-    win.localStorage.setItem('organizationServices', JSON.stringify({ templateV2Enabled: true }));
+    win.localStorage.setItem(
+      'organizationServices',
+      JSON.stringify({ templateV2Enabled: true, templateLibraryEnabled: true })
+    );
   });
 });
 
