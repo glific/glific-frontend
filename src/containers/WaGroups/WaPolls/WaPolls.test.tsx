@@ -95,7 +95,7 @@ describe('Copy', () => {
     mockUseLocationValue.state = 'copy';
 
     const copyFlow = (
-      <MockedProvider mocks={WaPollMocks} addTypename={false}>
+      <MockedProvider mocks={WaPollMocks}>
         <MemoryRouter initialEntries={[`/group/polls/1/edit`]}>
           <Routes>
             <Route path="group/polls/:id/edit" element={<WaPolls />} />

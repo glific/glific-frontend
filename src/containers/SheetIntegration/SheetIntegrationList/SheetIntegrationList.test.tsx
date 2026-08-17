@@ -32,7 +32,7 @@ const wrapper = (mockQuery?: any) => {
 
   return (
     <MemoryRouter>
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <SheetIntegrationList />
       </MockedProvider>
     </MemoryRouter>
@@ -109,7 +109,7 @@ describe('SheetIntegrationList', () => {
     ];
     const { getAllByTestId } = render(
       <MemoryRouter>
-        <MockedProvider mocks={errorMocks} addTypename={false}>
+        <MockedProvider mocks={errorMocks}>
           <SheetIntegrationList />
         </MockedProvider>
       </MemoryRouter>

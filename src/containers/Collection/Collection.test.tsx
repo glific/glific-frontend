@@ -38,7 +38,7 @@ const mocks = [
 ];
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <BrowserRouter>
       <Collection />
     </BrowserRouter>
@@ -61,7 +61,7 @@ describe('collection', () => {
 
   test('should render Collection and hit save', async () => {
     const { getByText, getAllByTestId, getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter initialEntries={['/collection/1/edit']}>
           <Routes>
             <Route path="collection/:id/edit" element={<Collection />} />

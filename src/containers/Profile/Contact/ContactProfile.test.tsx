@@ -11,7 +11,7 @@ describe('contact profile with single profile', () => {
 
   const contactProfile = (
     <MemoryRouter initialEntries={['/contact-profile/1']}>
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <Routes>
           <Route path="contact-profile/:id/*" element={<ContactProfile />} />
         </Routes>

@@ -10,7 +10,7 @@ import GroupChatInterface from './GroupChatInterface';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { waGroupcollection } from 'mocks/Groups';
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache({ });
 cache.writeQuery({
   query: GROUP_SEARCH_QUERY,
   variables: GROUP_QUERY_VARIABLES,
@@ -249,7 +249,7 @@ describe('<GroupChatInterface />', () => {
     });
   });
 
-  const emptyCache = new InMemoryCache({ addTypename: false });
+  const emptyCache = new InMemoryCache({ });
 
   emptyCache.writeQuery({
     query: GROUP_SEARCH_QUERY,

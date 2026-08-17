@@ -87,7 +87,7 @@ const templateFlowMocks = [...mocks, getTemplateFlow, resetFlowCount];
 const manyKeywordsMocks = [...mocks, getFlowWithManyKeywords, resetFlowCount];
 
 const wrapperFunction = (mocks: any) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <FlowEditor />
     </Router>

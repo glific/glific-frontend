@@ -37,7 +37,7 @@ const defaultmocks = [getFlowTranslations];
 const mockSetDialog = vi.fn();
 const flowTranslation = (mocks: any = defaultmocks) => {
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <FlowTranslation loadFlowEditor={vi.fn()} flowId="1" setDialog={mockSetDialog} />
     </MockedProvider>
   );
@@ -159,7 +159,7 @@ describe('Testing Translation flows', () => {
   it('imports a translated flow', async () => {
     const mockLoadFlowEditor = vi.fn();
     const { getByText, getByTestId } = render(
-      <MockedProvider mocks={[importFlowTranslationsMock]} addTypename={false}>
+      <MockedProvider mocks={[importFlowTranslationsMock]}>
         <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
       </MockedProvider>
     );
@@ -177,7 +177,7 @@ describe('Testing Translation flows', () => {
     const mockLoadFlowEditor = vi.fn();
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     const { getByText, getByTestId } = render(
-      <MockedProvider mocks={[importFlowTranslationsUnsuccessfulMock]} addTypename={false}>
+      <MockedProvider mocks={[importFlowTranslationsUnsuccessfulMock]}>
         <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
       </MockedProvider>
     );
@@ -199,7 +199,7 @@ describe('Testing Translation flows', () => {
       error: new Error('Failed to import translations'),
     };
     const { getByText, getByTestId, queryByText } = render(
-      <MockedProvider mocks={[importError]} addTypename={false}>
+      <MockedProvider mocks={[importError]}>
         <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
       </MockedProvider>
     );

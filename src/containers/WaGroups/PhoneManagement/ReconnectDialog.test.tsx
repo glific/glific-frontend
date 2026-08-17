@@ -22,7 +22,7 @@ const phone = { id: '2', phone: '918416933262', label: 'Backup' };
 
 const renderDialog = (mocks: any[], props: any = {}) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <ReconnectDialog phone={phone} onClose={vi.fn()} onReconnected={vi.fn()} {...props} />
     </MockedProvider>
   );

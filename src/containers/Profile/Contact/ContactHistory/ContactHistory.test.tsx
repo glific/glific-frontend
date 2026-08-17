@@ -12,7 +12,7 @@ const defaultProps = {
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <ContactHistory {...defaultProps} />
     </MockedProvider>
   </MemoryRouter>

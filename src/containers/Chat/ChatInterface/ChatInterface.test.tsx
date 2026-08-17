@@ -39,7 +39,7 @@ vi.mock('react-router', async () => ({
   useNavigate: () => mockedUsedNavigate,
 }));
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache({ });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
@@ -190,7 +190,7 @@ describe('Chat interface', () => {
   });
 });
 
-const emptyCache = new InMemoryCache({ addTypename: false });
+const emptyCache = new InMemoryCache({ });
 
 emptyCache.writeQuery({
   query: SEARCH_QUERY,
@@ -227,7 +227,7 @@ describe('Chat interface for empty cache', () => {
 });
 
 describe('Chat interface with filters', () => {
-  const cache = new InMemoryCache({ addTypename: false });
+  const cache = new InMemoryCache({ });
   cache.writeQuery(searchQuery);
   const MOCKS = [
     ...mocks,

@@ -29,7 +29,7 @@ const importMock = {
 
 const renderDialog = (mocks: any[] = [], onClose = vi.fn()) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <AddMembersDialog waGroupId="1" onClose={onClose} />
     </MockedProvider>
   );

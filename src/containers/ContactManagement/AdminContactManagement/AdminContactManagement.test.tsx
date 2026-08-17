@@ -31,7 +31,7 @@ const uploadCsv = async () => {
 setUserSession(JSON.stringify({ roles: [{ label: 'Admin' }], organization: { id: '1' } }));
 
 const contactManagement = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <AdminContactManagement setShowStatus={vi.fn()} />
     </Router>
@@ -106,7 +106,7 @@ test('it removes the selected file', async () => {
 test('moves contacts successfully when upload button is clicked', async () => {
   const setShowStatus = vi.fn();
   render(
-    <MockedProvider mocks={[...mocks, moveContacts]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, moveContacts]}>
       <Router>
         <AdminContactManagement setShowStatus={setShowStatus} />
       </Router>
@@ -124,7 +124,7 @@ test('moves contacts successfully when upload button is clicked', async () => {
 
 test('shows errors returned by the server when moving contacts', async () => {
   render(
-    <MockedProvider mocks={[...mocks, moveContactsWithErrors]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, moveContactsWithErrors]}>
       <Router>
         <AdminContactManagement setShowStatus={vi.fn()} />
       </Router>
@@ -142,7 +142,7 @@ test('shows errors returned by the server when moving contacts', async () => {
 
 test('shows an error when moving contacts fails unexpectedly', async () => {
   render(
-    <MockedProvider mocks={[...mocks, moveContactsNetworkError]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, moveContactsNetworkError]}>
       <Router>
         <AdminContactManagement setShowStatus={vi.fn()} />
       </Router>

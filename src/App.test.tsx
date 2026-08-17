@@ -24,7 +24,7 @@ vi.mock('react-router', async () => ({
 }));
 
 const app = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/login']}>
       <App />
     </MemoryRouter>
@@ -166,7 +166,7 @@ describe('App Component - Token Refresh Tests', () => {
 
   test('should handle logout route correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter initialEntries={['/logout/user']}>
           <App />
         </MemoryRouter>

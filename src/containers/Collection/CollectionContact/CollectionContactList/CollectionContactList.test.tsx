@@ -79,7 +79,7 @@ const mocks = [
   }),
 ];
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <CollectionContactList title={'Default Collection'} />
     </MemoryRouter>

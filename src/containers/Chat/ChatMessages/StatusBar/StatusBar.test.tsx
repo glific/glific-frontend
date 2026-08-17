@@ -7,7 +7,6 @@ import { getInactiveStatusMock, getWhatsAppManagedPhonesStatusMock, orgSuspended
 import StatusBar from './StatusBar';
 
 const cache = new InMemoryCache({
-  addTypename: false,
 });
 
 const wrapper = (bspbalance: string, mock?: any) => {

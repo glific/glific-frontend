@@ -30,7 +30,7 @@ describe('<ErrorHandler />', () => {
 
   test('it should render <ErrorHandler /> component correctly', async () => {
     const { getByText } = render(
-      <MockedProvider resolvers={resolvers} addTypename={false}>
+      <MockedProvider resolvers={resolvers}>
         <ErrorHandler />
       </MockedProvider>
     );
@@ -67,7 +67,7 @@ test('it should render <ErrorHandler /> component with custom message', async ()
     },
   };
   const { getByText } = render(
-    <MockedProvider resolvers={resolvers} addTypename={false}>
+    <MockedProvider resolvers={resolvers}>
       <ErrorHandler />
     </MockedProvider>
   );
@@ -103,7 +103,7 @@ test('it should render <ErrorHandler /> component with custom title', async () =
     },
   };
   render(
-    <MockedProvider resolvers={resolvers} addTypename={false}>
+    <MockedProvider resolvers={resolvers}>
       <ErrorHandler />
     </MockedProvider>
   );
@@ -117,7 +117,7 @@ test('it should render <ErrorHandler /> component with custom title', async () =
 
 test('it should render <ErrorHandler /> component with no error message', async () => {
   render(
-    <MockedProvider resolvers={resolversWithNullError} addTypename={false}>
+    <MockedProvider resolvers={resolversWithNullError}>
       <ErrorHandler />
     </MockedProvider>
   );

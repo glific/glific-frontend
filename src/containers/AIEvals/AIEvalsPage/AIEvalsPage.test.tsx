@@ -34,7 +34,7 @@ const defaultMocks = [
 
 const renderComponent = (mocks: any[] = defaultMocks) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={['/ai-evaluations']}>
         <Routes>
           <Route path="/ai-evaluations" element={<AIEvalsPage />} />

@@ -16,7 +16,7 @@ const mocks = [USER_COUNT_MOCK, FILTER_USER_MOCK, getOrganizationPhone];
 mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
 const staffManagement = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <StaffManagementList />
     </Router>

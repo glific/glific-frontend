@@ -14,7 +14,7 @@ const mocks = LIST_MOCKS;
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 const list = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <List {...defaultProps} />
     </Router>
@@ -76,7 +76,7 @@ describe('<List />', () => {
 });
 
 const listButtons = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Routes>
         <Route path="/" element={<List {...defaultProps} />} />

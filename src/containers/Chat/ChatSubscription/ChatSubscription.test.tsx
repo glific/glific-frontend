@@ -43,7 +43,7 @@ describe('<ChatSubscription />', () => {
 
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <ChatSubscription {...ChatSubscriptionParams} />
       </MockedProvider>
     );
@@ -92,7 +92,7 @@ const body = {
   whatsappFormResponse: null,
 };
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache({ });
 export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
@@ -195,7 +195,7 @@ describe('<ChatSubscription />', () => {
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
       <ApolloProvider client={client}>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <ChatSubscription {...ChatSubscriptionParams} />
         </MockedProvider>
       </ApolloProvider>

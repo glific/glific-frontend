@@ -11,7 +11,7 @@ import { importContacts, moveContacts } from 'mocks/Contact';
 const mocks = [getCollectionsList(''), importContacts, moveContacts];
 
 const contactManagement = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <ContactManagement />
     </Router>

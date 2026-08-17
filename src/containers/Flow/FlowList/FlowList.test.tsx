@@ -90,7 +90,7 @@ const renderImportFlowDialog = async (importMock: any) => {
   stubFileReader();
 
   render(
-    <MockedProvider mocks={testMocks} addTypename={false}>
+    <MockedProvider mocks={testMocks}>
       <MemoryRouter>
         <FlowList />
       </MemoryRouter>
@@ -154,7 +154,7 @@ describe('<FlowList />', () => {
 
   test('should redirect to make a copy', async () => {
     const copyFlow = () => (
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter>
           <Flow />
         </MemoryRouter>

@@ -23,7 +23,7 @@ const props = {
 };
 
 const dialogBox = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <UploadContactsDialog {...props} />
     </Router>
@@ -71,7 +71,7 @@ const fillAndSubmitForm = async () => {
 test('uploads contacts successfully when the form is submitted', async () => {
   const setShowStatus = vi.fn();
   render(
-    <MockedProvider mocks={[...mocks, importContacts]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, importContacts]}>
       <Router>
         <UploadContactsDialog {...props} setShowStatus={setShowStatus} />
       </Router>
@@ -88,7 +88,7 @@ test('uploads contacts successfully when the form is submitted', async () => {
 test('closes the dialog and shows a warning when uploading contacts fails unexpectedly', async () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   render(
-    <MockedProvider mocks={[...mocks, importContactsNetworkError]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, importContactsNetworkError]}>
       <Router>
         <UploadContactsDialog {...props} />
       </Router>

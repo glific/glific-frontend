@@ -45,7 +45,7 @@ const defaultProps = {
 };
 
 const wrapperContainer = (props: any) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <ChatConversation {...props} />
     </MemoryRouter>

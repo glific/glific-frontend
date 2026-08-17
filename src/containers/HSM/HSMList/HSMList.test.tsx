@@ -56,7 +56,7 @@ export const syncTemplateQueryFailedQuery = {
 const mocks = [...HSM_LIST, ...HSM_LIST, ...HSM_LIST, ...HSM_LIST];
 
 const template = (mockQuery?: any) => (
-  <MockedProvider mocks={mockQuery ? [...mocks, mockQuery] : mocks} addTypename={false}>
+  <MockedProvider mocks={mockQuery ? [...mocks, mockQuery] : mocks}>
     <Router>
       <HSMList />
     </Router>

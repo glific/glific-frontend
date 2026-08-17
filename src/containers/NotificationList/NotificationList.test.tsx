@@ -53,7 +53,7 @@ const notifications = (mock?: any) => {
     MOCKS = [...MOCKS, mock];
   }
   return (
-    <MockedProvider mocks={MOCKS} addTypename={false}>
+    <MockedProvider mocks={MOCKS}>
       <Router>
         <NotificationList />
       </Router>
@@ -185,7 +185,6 @@ const renderCollection = (reportMock: any) =>
         markAllNotificationAsRead,
         reportMock,
       ]}
-      addTypename={false}
     >
       <Router>
         <NotificationList />

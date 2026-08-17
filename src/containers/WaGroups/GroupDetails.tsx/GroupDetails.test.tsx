@@ -44,7 +44,7 @@ vi.mock('react-router', async () => {
 });
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <GroupDetails />
     </MemoryRouter>
@@ -145,7 +145,7 @@ test('should close dialog box', async () => {
 });
 
 const renderWith = (extraMocks: any[] = []) => (
-  <MockedProvider mocks={[waGroupContacts, countWaGroupContacts, getWaGroupQuery, ...extraMocks]} addTypename={false}>
+  <MockedProvider mocks={[waGroupContacts, countWaGroupContacts, getWaGroupQuery, ...extraMocks]}>
     <MemoryRouter>
       <GroupDetails />
     </MemoryRouter>

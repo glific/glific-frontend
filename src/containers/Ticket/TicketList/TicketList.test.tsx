@@ -31,7 +31,7 @@ const mocks = [
 ];
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <TicketList />
     </MemoryRouter>

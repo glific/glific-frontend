@@ -42,7 +42,7 @@ const defaultProps = {
 
 const renderDialog = (mocks: any[] = [contactsListForCreateGroup], props = {}) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <CreateGroupDialog {...defaultProps} {...props} />
     </MockedProvider>
   );

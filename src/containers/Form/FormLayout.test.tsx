@@ -18,7 +18,7 @@ const mocks = LIST_ITEM_MOCKS;
 const defaultProps = listItemProps;
 
 const addItem = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <FormLayout {...defaultProps} />
     </Router>
@@ -41,7 +41,7 @@ it('should have a form with inputs', async () => {
 });
 
 const editItem = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <FormLayout {...defaultProps} />
     </Router>
@@ -61,7 +61,7 @@ test('inputs should have mock values', async () => {
 
 test('cancel button should redirect to flowlist page', async () => {
   const { container, getByText, getByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <Router>
         <Routes>
           <Route path="/" element={<FormLayout {...defaultProps} />} />

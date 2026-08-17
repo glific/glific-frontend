@@ -9,7 +9,7 @@ import { countTagQuery, filterTagQuery, getTagQuery } from 'mocks/Tag';
 const mocks = [getTagQuery, filterTagQuery, countTagQuery];
 
 const tagList = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <TagList />
     </MemoryRouter>

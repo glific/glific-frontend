@@ -48,7 +48,7 @@ const renderComponent = (
   searchQuery?: string
 ) =>
   render(
-    <MockedProvider mocks={[countAiEvaluationsMock, ...mocks]} addTypename={false}>
+    <MockedProvider mocks={[countAiEvaluationsMock, ...mocks]}>
       <MemoryRouter>
         <AIEvaluationList searchQuery={searchQuery} />
       </MemoryRouter>

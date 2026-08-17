@@ -32,7 +32,6 @@ const wrapper = (props?: any, mocks: any = []) => (
       exportInteractiveTemplateMockWithoutTranslation(),
       ...mocks,
     ]}
-    addTypename={false}
   >
     <TranslateButton {...props} {...defaultProps} />
   </MockedProvider>
@@ -70,7 +69,7 @@ test('it auto translates the interactive message successfully', async () => {
 
 test('it shows a warning when the auto-translated message exceeds the limit', async () => {
   render(
-    <MockedProvider mocks={[translateInteractiveTemplateWithTrimMock]} addTypename={false}>
+    <MockedProvider mocks={[translateInteractiveTemplateWithTrimMock]}>
       <TranslateButton {...defaultProps} saveClicked={false} />
     </MockedProvider>
   );
@@ -150,7 +149,6 @@ const containerForErrorStates = (
       exportInteractiveTemplateMock(true),
       exportInteractiveTemplateMockWithoutTranslation(true),
     ]}
-    addTypename={false}
   >
     <TranslateButton {...defaultProps} saveClicked={false} />
   </MockedProvider>

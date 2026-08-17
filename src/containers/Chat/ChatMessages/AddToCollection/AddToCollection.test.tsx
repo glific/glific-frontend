@@ -36,7 +36,7 @@ const renderAddToCollection = (
   testMocks: any[] = mocks,
   props: Partial<Parameters<typeof AddToCollection>[0]> = {}
 ) => (
-  <MockedProvider mocks={testMocks} addTypename={false}>
+  <MockedProvider mocks={testMocks}>
     <AddToCollection {...defaultProps} {...props} />
   </MockedProvider>
 );
@@ -164,7 +164,7 @@ const groupsmocks = [
 ];
 
 const addGroups = (
-  <MockedProvider mocks={groupsmocks} addTypename={false}>
+  <MockedProvider mocks={groupsmocks}>
     <AddToCollection {...defaultProps} groups={true} />
   </MockedProvider>
 );
@@ -197,7 +197,7 @@ test('uses plural form when multiple whatsapp groups are added', async () => {
   ];
 
   const { getByTestId, getByText } = render(
-    <MockedProvider mocks={pluralGroupMocks} addTypename={false}>
+    <MockedProvider mocks={pluralGroupMocks}>
       <AddToCollection {...defaultProps} groups={true} />
     </MockedProvider>
   );

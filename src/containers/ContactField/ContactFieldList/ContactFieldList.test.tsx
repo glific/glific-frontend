@@ -27,7 +27,7 @@ vi.mock('react-router', async () => ({
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const list = (
-  <MockedProvider mocks={contactFieldMocks} addTypename={false}>
+  <MockedProvider mocks={contactFieldMocks}>
     <Router>
       <ContactFieldList />
     </Router>
@@ -126,7 +126,7 @@ test('it shows a warning when updating the contact field fails unexpectedly', as
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   const networkErrorMocks: any = [updateContactFieldNetworkErrorMock, ...contactFieldMocks];
   render(
-    <MockedProvider mocks={networkErrorMocks} addTypename={false}>
+    <MockedProvider mocks={networkErrorMocks}>
       <Router>
         <ContactFieldList />
       </Router>
@@ -159,7 +159,7 @@ test('it shows a warning when updating the contact field fails unexpectedly', as
 test('it deletes the contact field and associated data successfully', async () => {
   const mocks: any = [...contactFieldMocks, deleteContactFieldWithDataMock, ...contactFieldMocks];
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <Router>
         <ContactFieldList />
       </Router>
@@ -187,7 +187,7 @@ test('it shows a warning when deleting the contact field and associated data fai
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   const mocks: any = [...contactFieldMocks, deleteContactFieldWithDataErrorMock];
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <Router>
         <ContactFieldList />
       </Router>

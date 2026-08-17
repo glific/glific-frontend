@@ -8,7 +8,7 @@ import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <SettingList />
     </Router>

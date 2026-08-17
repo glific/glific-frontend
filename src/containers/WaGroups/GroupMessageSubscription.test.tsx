@@ -18,7 +18,7 @@ describe('<GroupMessageSubscription />', () => {
 
   test('should render <GroupMessageSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <GroupMessageSubscription {...GroupMessageParams} />
       </MockedProvider>
     );
@@ -32,7 +32,7 @@ describe('<GroupMessageSubscription />', () => {
 describe('<GroupMessageSubscription />', () => {
   test('should render <GroupMessageSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <GroupMessageSubscription {...GroupMessageParams} />
       </MockedProvider>
     );

@@ -26,7 +26,7 @@ describe('<ChatTemplates />', () => {
 
   const chatTemplates = () => {
     return (
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <ChatTemplates {...defaultProps} />
       </MockedProvider>
     );

@@ -28,7 +28,7 @@ const props = {
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={createMocks} addTypename={false}>
+    <MockedProvider mocks={createMocks}>
       <Extensions {...props} />
     </MockedProvider>
   </MemoryRouter>
@@ -69,7 +69,7 @@ test('it should render form correctly', async () => {
 test('it should render filled form with extension details', async () => {
   render(
     <MemoryRouter>
-      <MockedProvider mocks={updateMocks} addTypename={false}>
+      <MockedProvider mocks={updateMocks}>
         <Extensions {...props} />
       </MockedProvider>
     </MemoryRouter>

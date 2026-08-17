@@ -23,7 +23,7 @@ const mocks = [
 
 const sheetIntegration = () => (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <SheetIntegration />
     </MockedProvider>
   </MemoryRouter>
@@ -65,7 +65,7 @@ test('sheet succesfully created and list page should open ', async () => {
 
 test('edit sheet', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={['/sheet-integration/28/edit']}>
         <Routes>
           <Route path="sheet-integration/:id/edit" element={<SheetIntegration />} />

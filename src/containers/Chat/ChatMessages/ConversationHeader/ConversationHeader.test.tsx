@@ -53,7 +53,7 @@ const renderHeader = (
   props: Partial<Parameters<typeof ConversationHeader>[0]> = {},
   initialEntries: string[] = ['/']
 ) => (
-  <MockedProvider mocks={testMocks} addTypename={false}>
+  <MockedProvider mocks={testMocks}>
     <MemoryRouter initialEntries={initialEntries}>
       <ConversationHeader {...defaultProps} {...props} />
     </MemoryRouter>
@@ -91,7 +91,7 @@ test('it should have a session timer', async () => {
 
 test('terminate a flow should show errors', async () => {
   render(
-    <MockedProvider mocks={[...mocks, terminateFlowQuery(true)]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, terminateFlowQuery(true)]}>
       <MemoryRouter>
         <ConversationHeader {...defaultProps} />
       </MemoryRouter>
@@ -222,7 +222,7 @@ describe('Menu test', () => {
   });
 
   const componentWithBspStatusNone = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <ConversationHeader {...propsWithBspStatusNone} />
       </MemoryRouter>
@@ -261,7 +261,7 @@ describe('Collection test', () => {
   };
 
   const component = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <ConversationHeader {...collectionDefaultProps} />
       </MemoryRouter>
@@ -320,7 +320,7 @@ const propsForGroups = {
 const mocksForGroups = [...searchGroupQuery];
 
 const groupsComponent = (
-  <MockedProvider mocks={mocksForGroups} addTypename={false}>
+  <MockedProvider mocks={mocksForGroups}>
     <MemoryRouter initialEntries={[route]}>
       <ConversationHeader {...propsForGroups} groups={true} />
     </MemoryRouter>

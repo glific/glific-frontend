@@ -9,7 +9,7 @@ import { TriggerList } from './TriggerList';
 const mocks = [triggerListQuery, triggerCountQuery];
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <TriggerList />
     </MemoryRouter>

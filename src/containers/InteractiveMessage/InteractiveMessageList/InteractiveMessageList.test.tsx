@@ -27,7 +27,7 @@ beforeEach(() => {
 });
 
 const list = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <InteractiveMessageList />
     </Router>

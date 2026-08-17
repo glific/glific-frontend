@@ -32,7 +32,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const props = { openExtensionModal: false, openCustomerModal: false };
 
 const renderList = (listMocks: readonly MockLink.MockedResponse[] = mocks) => (
-  <MockedProvider mocks={listMocks} addTypename={false}>
+  <MockedProvider mocks={listMocks}>
     <Router>
       <OrganizationList {...props} />
     </Router>

@@ -20,7 +20,7 @@ const mocks = [
   getOrganizationLanguagesWithoutOrder,
 ];
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Routes>
         <Route path="/" element={<Consulting organizationId="" setOpenDialog={setOpenDialogMock} />} />
@@ -73,7 +73,7 @@ test('Render component correctly with empty form', async () => {
 });
 
 const consultingEditForm = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Routes>
         <Route path="/" element={<Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />} />

@@ -22,7 +22,7 @@ const expectMenuSelected = async (title: string) => {
 
 const renderSideMenus = (pathname = '/') =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[pathname]}>
         <SideMenus opened={true} />
       </MemoryRouter>

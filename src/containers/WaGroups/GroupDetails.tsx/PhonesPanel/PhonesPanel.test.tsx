@@ -70,7 +70,7 @@ const refetchMock = {
 
 const renderPanel = (overrides?: { phones?: any; mocks?: any[] }) =>
   render(
-    <MockedProvider mocks={overrides?.mocks ?? []} addTypename={false}>
+    <MockedProvider mocks={overrides?.mocks ?? []}>
       <PhonesPanel phones={overrides?.phones ?? phones} waGroupId="1" />
     </MockedProvider>
   );

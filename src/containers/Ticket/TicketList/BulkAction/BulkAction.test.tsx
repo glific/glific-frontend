@@ -15,7 +15,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const setShowBulkCloseMock = vi.fn();
 
 const bulkUpdate = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <BulkAction setShowBulkClose={setShowBulkCloseMock} />
     </Router>

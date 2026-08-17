@@ -67,7 +67,7 @@ const mocks = [
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <CollectionList />
     </MockedProvider>
   </MemoryRouter>
@@ -182,7 +182,7 @@ describe('<CollectionList />', () => {
   test('should export collection', async () => {
     const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
-        <MockedProvider mocks={[...mocks, exportCollectionsQuery]} addTypename={false}>
+        <MockedProvider mocks={[...mocks, exportCollectionsQuery]}>
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -204,7 +204,7 @@ describe('<CollectionList />', () => {
   test('should show error if export collection failed', async () => {
     const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
-        <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]} addTypename={false}>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]}>
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -225,7 +225,7 @@ describe('<CollectionList />', () => {
   test('should show error if exporting the collection fails with a network error', async () => {
     const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
-        <MockedProvider mocks={[...mocks, exportCollectionsQueryNetworkError]} addTypename={false}>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryNetworkError]}>
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -288,7 +288,6 @@ describe('<CollectionList />', () => {
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
         ]}
-        addTypename={false}
       >
         <Routes>
           <Route path="group/collection" element={<CollectionList />} />

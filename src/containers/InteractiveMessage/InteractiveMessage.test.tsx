@@ -118,7 +118,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const renderInteractiveMessage = (id: string, mocks: any) => {
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
         <Routes>
           <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
@@ -135,7 +135,7 @@ const interactiveMessage = (mock?: any) => {
   }
 
   return (
-    <MockedProvider mocks={MOCKS} addTypename={false}>
+    <MockedProvider mocks={MOCKS}>
       <MemoryRouter>
         <InteractiveMessage />
       </MemoryRouter>

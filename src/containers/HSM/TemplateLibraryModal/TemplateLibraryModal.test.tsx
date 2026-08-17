@@ -34,7 +34,7 @@ vi.mock('react-router', async () => ({
 
 const renderModal = (mocks: any[] = [templateLibraryMock()], open = true, onClose = vi.fn()) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <TemplateLibraryModal open={open} onClose={onClose} />
       </MemoryRouter>
@@ -63,7 +63,7 @@ test('reopening keeps showing the already-cached list instead of a spinner durin
   const mocks = [templateLibraryMock(), templateLibraryMock()];
   const onClose = vi.fn();
   const tree = (open: boolean) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <TemplateLibraryModal open={open} onClose={onClose} />
       </MemoryRouter>
@@ -195,7 +195,7 @@ test('closing the modal resets the language filter and topic expansion for the n
   const mocks = [templateLibraryMock(), templateLibraryMock()];
   const onClose = vi.fn();
   const tree = (open: boolean) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <TemplateLibraryModal open={open} onClose={onClose} />
       </MemoryRouter>

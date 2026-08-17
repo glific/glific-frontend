@@ -23,7 +23,7 @@ const props: any = {
 };
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Profile {...props} />
     </Router>
@@ -43,7 +43,7 @@ it('should render profile page for contact profile', async () => {
   props.removePhoneField = true;
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <Router>
         <Profile {...props} />
       </Router>
@@ -66,7 +66,7 @@ it('should show default profile deletion warning pop up when deleting default pr
   const mocks2 = [...MULTIPLE_PROFILE_MOCK, getUsersEmptyVars2];
 
   render(
-    <MockedProvider mocks={mocks2} addTypename={false}>
+    <MockedProvider mocks={mocks2}>
       <Router>
         <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
@@ -97,7 +97,7 @@ it('should show staff account linked to this contact will also get deleted warni
   };
   const mocks3 = [...MULTIPLE_PROFILE_MOCK, getUsersEmptyVars];
   render(
-    <MockedProvider mocks={mocks3} addTypename={false}>
+    <MockedProvider mocks={mocks3}>
       <Router>
         <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>
@@ -127,7 +127,7 @@ it('should show only profile deletion warning pop up when deleting  profile', as
   };
   const mocks4 = [...MULTIPLE_PROFILE_MOCK, getUsersEmptyVars2];
   render(
-    <MockedProvider mocks={mocks4} addTypename={false}>
+    <MockedProvider mocks={mocks4}>
       <Router>
         <Profile {...props} multiProfileAttributes={multiProfileAttributes} />
       </Router>

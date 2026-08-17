@@ -225,7 +225,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     );
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <KnowledgeBaseOptions
           {...baseProps}
           formikValues={{
@@ -275,7 +275,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     const mocks = [createUploadSuccessMock('in-progress.txt', Infinity)];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <KnowledgeBaseOptions {...baseProps} />
       </MockedProvider>
     );
@@ -428,7 +428,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <KnowledgeBaseOptions {...baseProps} />
       </MockedProvider>
     );
@@ -980,7 +980,7 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     const mocks = [createUploadErrorMock(fileName, new Error('upload-failure'))];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <KnowledgeBaseOptions {...baseProps} />
       </MockedProvider>
     );

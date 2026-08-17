@@ -10,7 +10,7 @@ afterEach(cleanup);
 const mocks = [...SPEED_SEND_LIST, ...SPEED_SEND_LIST];
 
 const speedSend = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <SpeedSendList />
     </Router>

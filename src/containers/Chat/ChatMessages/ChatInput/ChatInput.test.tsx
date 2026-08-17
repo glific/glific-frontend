@@ -70,7 +70,7 @@ describe('<ChatInput />', () => {
   };
 
   const chatInput = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <LexicalWrapper>
         <ChatInput {...defaultProps} />
       </LexicalWrapper>
@@ -186,7 +186,7 @@ describe('<ChatInput />', () => {
     const propsWithBspStatusNone = { ...defaultProps };
     propsWithBspStatusNone.contactBspStatus = 'NONE';
     const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <LexicalWrapper>
           <ChatInput {...propsWithBspStatusNone} />
         </LexicalWrapper>
@@ -204,7 +204,7 @@ describe('<ChatInput />', () => {
     const propsWithBspStatusHSM = { ...defaultProps };
     propsWithBspStatusHSM.contactBspStatus = 'HSM';
     const { getByText, getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <LexicalWrapper>
           <ChatInput {...propsWithBspStatusHSM} />
         </LexicalWrapper>
@@ -218,7 +218,7 @@ describe('<ChatInput />', () => {
     const propsWithBspStatusSession = { ...defaultProps };
     propsWithBspStatusSession.contactBspStatus = 'SESSION';
     const { getByText, getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <LexicalWrapper>
           <ChatInput {...propsWithBspStatusSession} />
         </LexicalWrapper>
@@ -235,7 +235,7 @@ describe('<ChatInput />', () => {
     propsWithChatWindowOver.lastMessageTime = date;
 
     const { getByText, getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <LexicalWrapper>
           <ChatInput {...propsWithChatWindowOver} />
         </LexicalWrapper>
@@ -250,7 +250,7 @@ describe('<ChatInput />', () => {
     const sendMessageMock = vi.fn();
     propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <LexicalWrapper>
           <ChatInput {...propsWithMockSend} />
         </LexicalWrapper>

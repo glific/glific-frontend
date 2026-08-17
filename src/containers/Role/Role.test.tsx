@@ -23,7 +23,7 @@ vi.mock('react-router', async () => ({
 }));
 
 const role = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Role />
     </MemoryRouter>

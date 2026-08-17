@@ -13,7 +13,7 @@ const mocks = [createContactField, ...contactFieldMocks];
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <ContactField setOpenDialog={vi.fn()} />
     </MockedProvider>
   </MemoryRouter>

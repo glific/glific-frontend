@@ -20,7 +20,7 @@ const mocks = LIST_ITEM_MOCKS;
 const user = userEvent.setup();
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Providers />
     </Router>
@@ -28,7 +28,7 @@ const wrapper = (
 );
 
 const wrapperWithType = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Providers />
     </Router>
@@ -76,7 +76,7 @@ const maytapiProvider = (error: boolean = false) => {
 
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
         </Routes>
@@ -88,7 +88,7 @@ const gupshupProvider = () => {
   const MOCKS: any = [...getProvidersQuery, ...getCredential, ...getCredential];
   return (
     <MemoryRouter initialEntries={[`/settings/gupshup`]}>
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
         </Routes>
@@ -174,7 +174,7 @@ const container = (error: boolean = false) => {
   ];
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
         </Routes>

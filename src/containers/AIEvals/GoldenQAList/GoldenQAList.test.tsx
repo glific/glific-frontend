@@ -17,7 +17,7 @@ const renderComponent = (
   mocks: MockLink.MockedResponse[] = [getListGoldenQaMock, getCountGoldenQaMock]
 ) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <GoldenQAList searchQuery={searchQuery} />
       </MemoryRouter>

@@ -53,7 +53,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5, false)];
 
       const { container } = render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -67,7 +67,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5, true, true)];
 
       const { container } = render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -81,7 +81,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(8)];
 
       const { container } = render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -95,7 +95,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(7)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -110,7 +110,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(1)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -126,7 +126,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -142,7 +142,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(2)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -156,7 +156,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(1)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -172,7 +172,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -196,7 +196,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -228,7 +228,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -256,7 +256,7 @@ describe('TrialExpiryBanner', () => {
       const mocks = [createMockData(5)];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -303,7 +303,7 @@ describe('TrialExpiryBanner', () => {
       ];
 
       const { container } = render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );
@@ -324,7 +324,7 @@ describe('TrialExpiryBanner', () => {
       ];
 
       const { container } = render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <TrialExpiryBanner />
         </MockedProvider>
       );

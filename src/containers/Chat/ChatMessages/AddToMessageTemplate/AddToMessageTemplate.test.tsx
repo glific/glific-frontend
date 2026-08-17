@@ -43,7 +43,7 @@ const defaultProps = {
 afterEach(cleanup);
 
 const messageTemplate = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <AddToMessageTemplate {...defaultProps} />
   </MockedProvider>
 );

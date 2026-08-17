@@ -70,7 +70,7 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 describe('<ChatMessage />', () => {
   const chatMessage = (type: any) => (
-    <MockedProvider mocks={[]} addTypename={false}>
+    <MockedProvider mocks={[]}>
       <ChatMessage {...getProps({ type })} />
     </MockedProvider>
   );
@@ -189,7 +189,7 @@ describe('<ChatMessage />', () => {
   test('it should render error with payload', async () => {
     props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
     render(
-      <MockedProvider mocks={[]} addTypename={false}>
+      <MockedProvider mocks={[]}>
         <ChatMessage {...props} />
       </MockedProvider>
     );
@@ -207,7 +207,7 @@ describe('<ChatMessage />', () => {
     imageProps.errors = '{"message": ["Something went wrong"]}';
 
     render(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage {...imageProps} />
       </MockedProvider>
     );
@@ -216,7 +216,7 @@ describe('<ChatMessage />', () => {
   test('it should render error with error message', () => {
     props.errors = '{"error": "Something went wrong"}';
     render(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage {...props} />
       </MockedProvider>
     );
@@ -257,7 +257,7 @@ describe('<ChatMessage />', () => {
 
   test('it should render with image', async () => {
     const { rerender } = render(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );
@@ -273,7 +273,7 @@ describe('<ChatMessage />', () => {
     const newProps = { ...receivedProps };
     newProps.showMessage = false;
     rerender(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage {...newProps} />
       </MockedProvider>
     );
@@ -332,7 +332,7 @@ describe('<ChatMessage />', () => {
     receivedProps.type = 'QUICK_REPLY';
 
     render(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );
@@ -343,7 +343,7 @@ describe('<ChatMessage />', () => {
     receivedProps.type = 'LIST';
 
     render(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );
@@ -360,7 +360,7 @@ describe('<ChatMessage />', () => {
 
     test('renders the managed phone number on outgoing WA group messages', () => {
       render(
-        <MockedProvider addTypename={false}>
+        <MockedProvider>
           <ChatMessage {...groupOutboundProps({ phone: '917834811200' })} />
         </MockedProvider>
       );
@@ -369,7 +369,7 @@ describe('<ChatMessage />', () => {
 
     test('does NOT render the phone label on incoming WA group messages', () => {
       render(
-        <MockedProvider addTypename={false}>
+        <MockedProvider>
           <ChatMessage
             {...getProps({
               type: 'TEXT',
@@ -386,7 +386,7 @@ describe('<ChatMessage />', () => {
 
     test('does NOT render the phone label on normal (non-group) chat messages', () => {
       render(
-        <MockedProvider addTypename={false}>
+        <MockedProvider>
           <ChatMessage
             {...getProps({
               type: 'TEXT',
@@ -401,7 +401,7 @@ describe('<ChatMessage />', () => {
 
   test('should render location request template', async () => {
     render(
-      <MockedProvider addTypename={false}>
+      <MockedProvider>
         <ChatMessage
           {...getProps({
             type: 'LOCATION_REQUEST_MESSAGE',

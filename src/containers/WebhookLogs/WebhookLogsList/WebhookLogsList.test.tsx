@@ -21,7 +21,7 @@ beforeEach(() => {
 const mocks = [getWebhookLogsQuery, getWebhookLogsQuery, getWebhookLogsCountQuery];
 
 const webhookLogs = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <WebhookLogsList />
     </Router>

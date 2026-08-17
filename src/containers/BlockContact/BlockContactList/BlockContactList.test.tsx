@@ -10,7 +10,7 @@ import { CONTACT_LIST_MOCKS } from './BlockContact.test.helper';
 const mocks = [...CONTACT_LIST_MOCKS, conversationQuery];
 
 const blockContactList = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <BlockContactList />
     </Router>

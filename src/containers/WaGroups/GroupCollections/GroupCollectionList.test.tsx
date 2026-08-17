@@ -62,7 +62,7 @@ vi.mock('common/notification', async (importOriginal) => {
 });
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/collection/1/groups']}>
       <GroupCollectionList />
     </MemoryRouter>
@@ -209,7 +209,7 @@ describe('<GroupCollectionList />', () => {
     ];
 
     const { getByTestId, getByText } = render(
-      <MockedProvider mocks={errorMocks} addTypename={false}>
+      <MockedProvider mocks={errorMocks}>
         <MemoryRouter initialEntries={['/collection/1/groups']}>
           <GroupCollectionList />
         </MemoryRouter>

@@ -48,7 +48,7 @@ test('should load the search edit', async () => {
   props.searchParam = { ...props.searchParam, ...inclusive };
 
   const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <Router>
         <Search {...props} />
       </Router>
@@ -73,7 +73,7 @@ test('should load the search edit', async () => {
 
 test('it renders component with saveSearch params', async () => {
   const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <Router>
         <Search {...defaultProps('saveSearch')} />
       </Router>

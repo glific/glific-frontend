@@ -19,7 +19,7 @@ describe('testing <SavedSearchToolbar />', () => {
   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
   const savedSearchToolbar = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <SavedSearchToolbar {...defaultProps} />
     </MockedProvider>
   );

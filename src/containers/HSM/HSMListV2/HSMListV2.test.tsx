@@ -60,7 +60,7 @@ const baseMocks = [...HSM_LIST_V2, ...HSM_LIST_V2, getFilterTagQuery, getFilterT
 
 const renderComponent = (mocks: any[] = baseMocks) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <HSMListV2 />
       </MemoryRouter>

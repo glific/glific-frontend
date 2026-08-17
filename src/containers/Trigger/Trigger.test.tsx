@@ -95,7 +95,7 @@ const getDates = (startTime: any, startDate: any, endDate: any) => {
 };
 
 const wrapper = (mock?: any) => (
-  <MockedProvider mocks={mock ? [...MOCKS, mock] : MOCKS} addTypename={false}>
+  <MockedProvider mocks={mock ? [...MOCKS, mock] : MOCKS}>
     <MemoryRouter initialEntries={['/trigger/add']}>
       <Routes>
         <Route path="trigger/add" element={<Trigger />} />
@@ -106,7 +106,7 @@ const wrapper = (mock?: any) => (
 );
 
 const editWrapper = (mocks?: any) => (
-  <MockedProvider mocks={mocks ? [...MOCKS, ...mocks] : MOCKS} addTypename={false}>
+  <MockedProvider mocks={mocks ? [...MOCKS, ...mocks] : MOCKS}>
     <MemoryRouter initialEntries={['/trigger/1/edit']}>
       <Routes>
         <Route path="trigger/:id/edit" element={<Trigger />} />
@@ -624,7 +624,7 @@ describe('handleFlowChange error handling', () => {
     ];
 
     render(
-      <MockedProvider mocks={mocksWithError} addTypename={false}>
+      <MockedProvider mocks={mocksWithError}>
         <MemoryRouter initialEntries={['/trigger/add']}>
           <Routes>
             <Route path="trigger/add" element={<Trigger />} />

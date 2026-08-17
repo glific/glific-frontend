@@ -28,7 +28,7 @@ const baseMocks = [managedPhonesCountMock, managedPhonesHealthMock, managedPhone
 
 const renderPage = (mocks: any[] = baseMocks) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <PhoneManagement />
       </MemoryRouter>

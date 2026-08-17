@@ -90,7 +90,7 @@ vi.mock('@stripe/react-stripe-js', async () => {
 });
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Billing />
     </Router>
@@ -119,7 +119,6 @@ test('creating a subscription with response as pending', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider
       mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -154,7 +153,6 @@ test('shows a warning and resets the subscription when 3D-secure confirmation fa
         resetSubscriptionAfterSecureFailureQuery,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -187,7 +185,6 @@ test('shows a warning when creating the subscription fails unexpectedly', async 
         createBillingSubscriptionNetworkErrorQuery,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -210,7 +207,6 @@ test('subscription status is already in pending state', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider
       mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -238,7 +234,6 @@ test('shows a warning when opening the customer portal fails unexpectedly', asyn
   const { getByText, getByTestId } = render(
     <MockedProvider
       mocks={[getPendingBillingQuery, getCustomerPortalNetworkErrorQuery, getBillingQueryWithoutVars]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -269,7 +264,6 @@ test('complete a subscription', async () => {
         getBillingQueryWithoutVars,
         getCustomerPortalQuery,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -301,7 +295,6 @@ test('open customer portal', async () => {
         getCustomerPortalQuery,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -337,7 +330,6 @@ test('update billing details', async () => {
         getBillingQueryWithoutVars,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -372,7 +364,6 @@ test('update billing details with coupon code', async () => {
         getBillingQueryWithoutVars,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />

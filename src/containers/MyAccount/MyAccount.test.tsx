@@ -22,7 +22,7 @@ const mockedAxios = axios as any;
 const user = userEvent.setup();
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <MyAccount />
     </MemoryRouter>
@@ -233,7 +233,6 @@ describe('<MyAccount />', () => {
     const { container } = render(
       <MockedProvider
         mocks={[getCurrentUserQuery, updateUserNetworkErrorQuery, getOrganizationLanguagesQuery]}
-        addTypename={false}
       >
         <MemoryRouter>
           <MyAccount />

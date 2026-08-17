@@ -30,7 +30,7 @@ describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', async () => {
     render(
       <MemoryRouter>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <Chat />
         </MockedProvider>
       </MemoryRouter>
@@ -45,7 +45,7 @@ describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', async () => {
     render(
       <MemoryRouter initialEntries={['/group/chat']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <Chat />
         </MockedProvider>
       </MemoryRouter>

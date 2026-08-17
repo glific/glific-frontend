@@ -12,7 +12,7 @@ const defaultProps = {
 const mocks = [getCollectionInfo({ id: '1' }), getCollectionUsersQuery];
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <CollectionDescription {...defaultProps}></CollectionDescription>
   </MockedProvider>
 );

@@ -140,7 +140,7 @@ beforeEach(() => {
 });
 
 const flow = () => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Flow />
     </MemoryRouter>
@@ -226,7 +226,7 @@ it('should not allow special characters in keywords', async () => {
 
 it('should edit the flow', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, updateFlowQuery]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow" element={<FlowList />} />
@@ -259,7 +259,7 @@ it('should edit the flow', async () => {
 
 it('should configure the flow', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, updateFlowQuery]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow" element={<FlowList />} />
@@ -293,7 +293,7 @@ it('should configure the flow', async () => {
 
 it('should edit the flow and show error if exists', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQueryWithError]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, updateFlowQueryWithError]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -326,7 +326,7 @@ it('should create copy of flow', async () => {
   mockUseLocationValue.state = 'copy';
 
   const copyFlow = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -353,7 +353,7 @@ it('buttons should be disabled in template state', async () => {
   mockUseLocationValue.state = 'template';
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -382,7 +382,7 @@ it('should create copy of a template flow', async () => {
   mockUseLocationValue.state = 'copyTemplate';
 
   const copyFlow = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />

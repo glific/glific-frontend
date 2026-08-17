@@ -8,7 +8,7 @@ import { MemoryRouter } from 'react-router';
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <SearchList />
     </MemoryRouter>
