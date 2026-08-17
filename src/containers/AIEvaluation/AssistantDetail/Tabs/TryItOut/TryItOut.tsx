@@ -11,7 +11,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import type { AssistantChatResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
-import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox';
+import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox/sandbox';
 import { MarkdownAnswer } from '../../components';
 import { useAssistantChatResponse } from 'containers/AIEvaluation/hooks/useAssistantChatResponse';
 import styles from './TryItOut.module.css';

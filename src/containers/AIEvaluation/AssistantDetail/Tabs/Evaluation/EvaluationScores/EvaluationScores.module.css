@@ -50,8 +50,9 @@
   width: 30%;
 }
 
-.ScoreColumn {
+.ScoresTable .ScoreColumn {
   width: 8%;
+  text-align: center;
 }
 
 .Question {
@@ -59,12 +60,6 @@
   color: var(--app-color-text-heading);
 }
 
-/*
- * A long answer scrolls inside its own cell rather than stretching the whole row. The app
- * paints a scrollbar track on everything scrollable, which here reads as a stray line beside
- * every answer — so the bar is hidden until the pointer is actually in the cell. The width is
- * still reserved, so nothing shifts when it appears.
- */
 .Answer {
   max-height: 9rem;
   overflow-y: auto;
@@ -86,7 +81,6 @@
   background: var(--app-color-border);
 }
 
-/* the answer under judgement is the thing being read, so it is not muted like the reference */
 .AssistantAnswer {
   color: var(--app-color-text-heading);
 }

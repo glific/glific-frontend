@@ -14,7 +14,7 @@ import {
   isValidGoldenQaName,
   parseGoldenQaCsv,
   suggestedGoldenQaName,
-} from 'containers/AIEvaluation/utils/goldenQa';
+} from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import styles from './AddGoldenQaSetDialog.module.css';
 
 export interface AddGoldenQaSetDialogProps {

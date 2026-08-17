@@ -89,7 +89,6 @@
   border-left: 5px solid transparent;
 }
 
-/* the shared renderer brings its own type styles; the bubble only undoes its pre-wrap */
 .Markdown {
   white-space: normal;
 }

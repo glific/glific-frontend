@@ -15,7 +15,7 @@ import {
   parseEvaluationOverall,
   parseEvaluationResults,
   scoreBand,
-} from 'containers/AIEvaluation/utils/evaluation';
+} from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import styles from './EvaluationResult.module.css';
 
 dayjs.extend(relativeTime);

@@ -31,10 +31,6 @@ const DUPLICATION_OPTIONS = [
   },
 ] as const;
 
-/**
- * The backend wants a unique name per run; the dialog does not ask for one, so it is built
- * from what the run already is — which version, which set, and when it was started.
- */
 const runName = (assistantName: string, versionNumber: number | undefined, setName: string) =>
   `${assistantName}-v${versionNumber ?? 1}-${setName}-${Date.now()}`
     .toLowerCase()

@@ -4,15 +4,15 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
-import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv';
+import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
 import {
   formatScore,
   parseEvaluationScores,
   scoreBand,
   shortMetricName,
   traceMetricNames,
-} from 'containers/AIEvaluation/utils/evaluation';
-import { DataTable, MarkdownAnswer } from '../../components';
+} from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import { DataTable, MarkdownAnswer } from '../../../components';
 import styles from './EvaluationScores.module.css';
 
 export interface EvaluationScoresProps {

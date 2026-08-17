@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
-import { splitMarkdownTables } from 'containers/AIEvaluation/utils/markdownTable';
-import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox';
+import { splitMarkdownTables } from 'containers/AIEvaluation/utils/markdownTable/markdownTable';
+import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox/sandbox';
 import styles from './MarkdownAnswer.module.css';
 
 /** an answer's links point away from the app, so they open in a new tab */

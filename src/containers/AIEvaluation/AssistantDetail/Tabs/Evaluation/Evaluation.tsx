@@ -12,10 +12,10 @@ import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
-import { EvaluationHistory } from './EvaluationHistory';
-import { EvaluationResult } from './EvaluationResult';
-import { EvaluationScores } from './EvaluationScores';
-import { RunEvaluationDialog } from './RunEvaluationDialog';
+import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
+import { EvaluationResult } from './EvaluationResult/EvaluationResult';
+import { EvaluationScores } from './EvaluationScores/EvaluationScores';
+import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import styles from './Evaluation.module.css';
 
 export interface EvaluationProps {

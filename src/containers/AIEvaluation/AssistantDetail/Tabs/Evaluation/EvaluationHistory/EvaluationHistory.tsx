@@ -9,8 +9,8 @@ import {
   overallScore,
   parseEvaluationResults,
   scoreBand,
-} from 'containers/AIEvaluation/utils/evaluation';
-import { DataTable } from '../../components';
+} from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import { DataTable } from '../../../components';
 import styles from './EvaluationHistory.module.css';
 
 dayjs.extend(relativeTime);

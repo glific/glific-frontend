@@ -2,8 +2,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as utils from 'common/utils';
-import { toCsv } from 'containers/AIEvaluation/utils/csv';
-import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa';
+import { toCsv } from 'containers/AIEvaluation/utils/csv/csv';
+import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import {
   GET_EVALUATION_SCORES,
