@@ -174,13 +174,6 @@
   color: var(--app-color-error);
 }
 
-.BannerNote {
-  margin-top: var(--app-space-sm);
-  font-size: var(--app-font-size-sm);
-  line-height: 1.55;
-  color: var(--app-color-text-primary);
-}
-
 /* the judge's write-up runs to a paragraph or two, so it scrolls rather than pushing the card */
 .BannerSummary {
   max-height: 9rem;

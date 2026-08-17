@@ -64,9 +64,6 @@ export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
   const metrics = parseEvaluationResults(run.results);
   const overall = overallScore(metrics);
 
-  const scored = METRIC_ORDER.filter((metric) => metrics[metric.key] != null);
-  const weakest = [...scored].sort((a, b) => (metrics[a.key] as number) - (metrics[b.key] as number))[0];
-
   const meta = [
     run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : null,
     run.goldenQa?.name,
@@ -138,17 +135,10 @@ export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
             <span className={`${styles.BandPill} ${styles[`${band}Pill`]}`} data-testid="scoreBand">
               {t(BAND_LABEL[band])}
             </span>
-            {summary ? (
+            {summary && (
               <div className={styles.BannerSummary} data-testid="evaluationSummary">
                 {summary}
               </div>
-            ) : (
-              weakest && (
-                <div className={styles.BannerNote}>
-                  {t('Weakest check is')} <b>{t(weakest.label).toLowerCase()}</b> {t('at')}{' '}
-                  {formatScore(metrics[weakest.key])}/{MAX_SCORE}.
-                </div>
-              )
             )}
           </div>
         </div>

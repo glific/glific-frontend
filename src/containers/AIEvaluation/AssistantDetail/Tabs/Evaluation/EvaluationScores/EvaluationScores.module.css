@@ -89,17 +89,26 @@
   color: var(--app-color-text-tertiary);
 }
 
-.good {
+.Score {
+  display: inline-block;
+  min-width: 2.25rem;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
   font-weight: 700;
+  text-align: center;
+}
+
+.good {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 12%);
   color: var(--app-color-brand-primary);
 }
 
 .okay {
-  font-weight: 700;
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 16%);
   color: var(--app-color-attention);
 }
 
 .bad {
-  font-weight: 700;
+  background-color: var(--app-color-surface-hover);
   color: var(--app-color-error);
 }

@@ -852,8 +852,6 @@ describe('the result panel above the table', () => {
     expect(within(panel).getByTestId('metric-prompt')).toHaveTextContent('3.4');
     expect(within(panel).getAllByTestId('scoreBar')).toHaveLength(3);
 
-    // the weakest check is what the reader should act on
-    expect(panel).toHaveTextContent('adherence to knowledge base');
     expect(panel).toHaveTextContent('Version 1 · core_set · 1× duplication');
   });
 
@@ -1202,7 +1200,7 @@ test('a markdown table in an answer renders as a table', async () => {
   expect(row).not.toHaveTextContent('| --- |');
 });
 
-test("the judge's summary replaces the weakest-check line when the run has one", async () => {
+test("the judge's summary is shown in the banner", async () => {
   const summary = 'Overall the run looks healthy. The one mild gap is item_0, which scored 3 on ground truth.';
 
   render(
@@ -1252,7 +1250,6 @@ test("the judge's summary replaces the weakest-check line when the run has one",
   );
 
   expect(await screen.findByTestId('evaluationSummary')).toHaveTextContent('Overall the run looks healthy');
-  expect(screen.queryByText(/Weakest check is/)).not.toBeInTheDocument();
 });
 
 test('Export CSV downloads the question-level results as a CSV file', async () => {
@@ -1331,4 +1328,36 @@ test('Export CSV downloads the question-level results as a CSV file', async () =
 
   download.mockRestore();
   createObjectURL.mockRestore();
+});
+
+test('the banner shows nothing in place of the summary while it is still loading', async () => {
+  const run = {
+    id: 'r1',
+    name: 'run',
+    status: 'COMPLETED',
+    failureReason: null,
+    results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
+    goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+    assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+    insertedAt: '2026-08-10T10:00:00Z',
+  };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [run] } },
+        },
+        { request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } }, delay: Infinity, result: { data: {} } },
+      ]}
+    >
+      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  // the card is on screen, but the write-up's own query has not come back
+  await screen.findByTestId('evaluationResult');
+  expect(screen.queryByTestId('evaluationSummary')).not.toBeInTheDocument();
 });

@@ -84,7 +84,7 @@ export const EvaluationScores = ({ runId }: EvaluationScoresProps) => {
         return score == null ? (
           <span className={styles.NoScore}>—</span>
         ) : (
-          <span className={styles[scoreBand(score)]}>{formatScore(score)}</span>
+          <span className={`${styles.Score} ${styles[scoreBand(score)]}`}>{formatScore(score)}</span>
         );
       }),
     ],
