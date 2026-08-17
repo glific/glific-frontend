@@ -133,7 +133,9 @@ export const RunEvaluationDialog = ({
         </div>
 
         <div className={styles.Note}>
-          {t('Evaluations run in the background. You can keep working and come back — the result appears when it completes.')}
+          {t(
+            'Evaluations run in the background. You can keep working and come back — the result appears when it completes.'
+          )}
         </div>
       </div>
     </DialogBox>
