@@ -1,16 +1,9 @@
-export interface MarkdownTable {
-  header: string[];
-  rows: string[][];
-}
+import type { MarkdownBlock } from 'containers/AIEvaluation/types/markdownTableType';
 
-export type MarkdownBlock = { type: 'text'; content: string } | { type: 'table'; table: MarkdownTable };
-
-/** `| --- | :--: |` — the row that turns the line above it into a header */
 const isDelimiterRow = (line: string) => /^\s*\|?[\s:|-]+\|[\s:|-]*$/.test(line) && line.includes('-');
 
 const isTableRow = (line: string) => line.includes('|');
 
-/** `| a | b |` → ['a', 'b'], dropping the empties either side of the outer pipes */
 const readCells = (line: string) => {
   const trimmed = line.trim().replace(/^\|/, '').replace(/\|$/, '');
   return trimmed.split('|').map((cell) => cell.trim());

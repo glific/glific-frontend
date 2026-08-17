@@ -2,7 +2,6 @@ import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/t
 
 export const MAX_SCORE = 5;
 
-/** an overall score weights correctness highest, then grounding, then instruction-following */
 export const METRIC_WEIGHTS = { groundTruth: 0.5, knowledgeBase: 0.3, prompt: 0.2 };
 
 /** the judge names each metric in prose, so matching is on words rather than an exact string */
@@ -154,7 +153,6 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
     });
 };
 
-/** every metric name the run scored, in the order the judge first reported them */
 export const traceMetricNames = (traces: EvaluationTrace[]) => [
   ...new Set(traces.flatMap((trace) => trace.scores.map((score) => score.name))),
 ];
