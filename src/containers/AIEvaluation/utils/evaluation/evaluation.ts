@@ -158,3 +158,9 @@ export const parseEvaluationSummary = (raw: unknown): string | null => {
 
   return typeof summary === 'string' && summary.trim() ? summary.trim() : null;
 };
+
+export const evaluationRunName = (assistantName: string, versionNumber: number | undefined, setName: string) =>
+  `${assistantName}-v${versionNumber ?? 1}-${setName}-${Date.now()}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');

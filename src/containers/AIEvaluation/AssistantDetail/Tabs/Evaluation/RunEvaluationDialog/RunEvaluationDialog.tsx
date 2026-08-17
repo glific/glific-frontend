@@ -5,6 +5,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
+import { evaluationRunName } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { DuplicationFactor } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import styles from './RunEvaluationDialog.module.css';
@@ -31,12 +32,6 @@ const DUPLICATION_OPTIONS = [
   },
 ] as const;
 
-const runName = (assistantName: string, versionNumber: number | undefined, setName: string) =>
-  `${assistantName}-v${versionNumber ?? 1}-${setName}-${Date.now()}`
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-
 export const RunEvaluationDialog = ({
   sets,
   versionId,
@@ -62,7 +57,7 @@ export const RunEvaluationDialog = ({
           input: {
             goldenQaId,
             configId: versionId,
-            evaluationName: runName(assistantName, versionNumber, set.name),
+            evaluationName: evaluationRunName(assistantName, versionNumber, set.name),
           },
         },
       });

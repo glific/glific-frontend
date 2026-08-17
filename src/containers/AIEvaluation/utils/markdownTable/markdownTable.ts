@@ -11,10 +11,6 @@ const readCells = (line: string) => {
 
 /**
  * Splits an answer into plain-markdown stretches and the pipe tables between them.
- *
- * Tables are a GitHub extension that the markdown renderer does not handle, so they would
- * otherwise reach the reader as a wall of pipes. Rather than pull in a plugin, the tables are
- * lifted out here and rendered as real tables, and everything else is left to the renderer.
  */
 export const splitMarkdownTables = (text: string): MarkdownBlock[] => {
   const lines = text.split('\n');

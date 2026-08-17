@@ -69,7 +69,7 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
         columns={[
           { label: t('Version') },
           { label: t('Golden Q&A set') },
-          { label: t('Asked') },
+          { label: t('Duplication Factor') },
           { label: t('Overall') },
           { label: t('Ground truth') },
           { label: t('Knowledge base') },

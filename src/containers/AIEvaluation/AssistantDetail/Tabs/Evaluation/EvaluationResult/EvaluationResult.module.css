@@ -32,7 +32,6 @@
   text-align: center;
 }
 
-/* a run reports nothing until it finishes, so the dot only says "still working" */
 .PendingDot {
   display: block;
   width: var(--app-space-lg);
@@ -88,10 +87,6 @@
   background-color: var(--app-color-surface-hover);
 }
 
-/*
- * The ring is a progress arc, not a border: the sweep is set inline from the score, and the
- * band colour arrives as `currentColor` so the gradient can use it.
- */
 .Ring {
   display: grid;
   place-items: center;
@@ -113,7 +108,6 @@
   color: var(--app-color-error);
 }
 
-/* punches the middle out, leaving the arc as a thick ring */
 .RingInner {
   display: flex;
   flex-direction: column;
@@ -174,7 +168,6 @@
   color: var(--app-color-error);
 }
 
-/* the judge's write-up runs to a paragraph or two, so it scrolls rather than pushing the card */
 .BannerSummary {
   max-height: 9rem;
   overflow-y: auto;
@@ -277,7 +270,6 @@
   color: var(--app-color-error);
 }
 
-/* separates the summary above from the question-level results below, in the one card */
 .Divider {
   margin: var(--app-space-xl) 0;
   border-top: 1px solid var(--app-color-border);

@@ -49,10 +49,6 @@ export const EvaluationScores = ({ runId }: EvaluationScoresProps) => {
     );
   }
 
-  /*
-   * The export carries the raw scores and the full metric names rather than what the table
-   * shows — a spreadsheet has no width to save, and rounded scores cannot be re-averaged.
-   */
   const exportScores = () => {
     const rows = [
       [t('Question'), t('Expected answer'), t('Assistant answer'), ...metricNames],

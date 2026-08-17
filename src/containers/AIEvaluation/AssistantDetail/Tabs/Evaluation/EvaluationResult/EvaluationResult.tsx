@@ -37,7 +37,6 @@ const BAND_LABEL = {
   bad: 'Needs improvement',
 } as const;
 
-/** five steps, each filled by however much of that point the score reached */
 const ScoreBar = ({ score, band }: { score: number; band: string }) => (
   <div className={styles.Bar} data-testid="scoreBar">
     {Array.from({ length: MAX_SCORE }, (_, step) => (
@@ -54,7 +53,6 @@ const ScoreBar = ({ score, band }: { score: number; band: string }) => (
 export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
   const { t } = useTranslation();
 
-  // the same payload the question-level table reads; Apollo serves it from cache
   const { data: scoreData } = useQuery(GET_EVALUATION_SCORES, {
     variables: { id: run.id },
     fetchPolicy: 'cache-first',

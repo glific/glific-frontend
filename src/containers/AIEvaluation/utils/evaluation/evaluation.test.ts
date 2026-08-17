@@ -1,5 +1,6 @@
 import {
   formatScore,
+  evaluationRunName,
   parseEvaluationSummary,
   shortMetricName,
   parseEvaluationScores,
@@ -247,5 +248,19 @@ describe('parseEvaluationSummary', () => {
     ]) {
       expect(parseEvaluationSummary(value)).toBeNull();
     }
+  });
+});
+
+describe('evaluationRunName', () => {
+  test('folds the assistant, version and set into one lowercase name', () => {
+    expect(evaluationRunName('Maternal Health Bot', 3, 'core_set')).toMatch(/^maternal_health_bot_v3_core_set_\d+$/);
+  });
+
+  test('a set named with punctuation cannot leak into the name', () => {
+    expect(evaluationRunName('Bot', 1, 'ANC / PNC (v2)!')).toMatch(/^bot_v1_anc_pnc_v2_\d+$/);
+  });
+
+  test('a version-less run is filed under v1', () => {
+    expect(evaluationRunName('Bot', undefined, 'set')).toMatch(/^bot_v1_set_\d+$/);
   });
 });

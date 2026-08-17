@@ -5,7 +5,6 @@
   margin-bottom: var(--app-space-lg);
 }
 
-/* the export sits opposite the title, matching the pill buttons in the tab header above */
 .ExportButton {
   margin-left: auto !important;
   flex-shrink: 0;
@@ -25,11 +24,6 @@
   color: var(--app-color-text-tertiary);
 }
 
-/*
- * Column widths are only advisory while the table sizes itself to its content, and a long
- * answer takes the lot. Fixing the layout makes the percentages authoritative, and long words
- * wrap instead of forcing the table wider than the card.
- */
 .ScoresTable table {
   table-layout: fixed;
 }
