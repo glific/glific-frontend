@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
 import { useApolloClient, useMutation, useSubscription } from '@apollo/client';
 import dayjs from 'dayjs';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   BLOCKS,
@@ -11,26 +11,26 @@ import {
   QUICK_REPLY,
   SHORT_TIME_FORMAT,
 } from 'common/constants';
+import { setNotification } from 'common/notification';
 import { BlocksRenderer, hasBlockPreview } from 'components/blocks/BlocksRenderer';
-import { BlocksResponse, deriveBody } from 'containers/InteractiveMessage/Blocks.helper';
+import setLogs from 'config/logs';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
-import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
 import {
   ListReplyTemplate,
   ListReplyTemplateDrawer,
   SimulatorTemplate,
 } from 'containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
+import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
+import { BlocksResponse, deriveBody } from 'containers/InteractiveMessage/Blocks.helper';
 import { SIMULATOR_WEB_MESSAGE } from 'graphql/mutations/Simulator';
 import { SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
 import {
   SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
   SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Simulator';
-import { updateSimulatorConversations } from 'services/SubscriptionService';
 import { getUserSession } from 'services/AuthService';
-import { setNotification } from 'common/notification';
-import setLogs from 'config/logs';
+import { updateSimulatorConversations } from 'services/SubscriptionService';
 import { SimulatorComposer, SimulatorLocation, SimulatorMedia } from '../composer/SimulatorComposer';
 import styles from './WebSimulator.module.css';
 
