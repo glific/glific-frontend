@@ -265,6 +265,7 @@ export const getOrganizationServicesQuery = {
         copyNodeEnabled: false,
         promptGeneratorEnabled: false,
         templateV2Enabled: true,
+        templateLibraryEnabled: true,
       },
     },
   },
