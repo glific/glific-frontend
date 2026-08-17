@@ -62,34 +62,36 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
         {t('on-demand runs against your curated questions.')}
       </div>
 
-      <DataTable
-        testId="evaluationHistoryTable"
-        rowTestId="evaluationRun"
-        maxHeight="30rem"
-        columns={[
-          { label: t('Version') },
-          { label: t('Golden Q&A set') },
-          { label: t('Duplication Factor') },
-          { label: t('Overall') },
-          { label: t('Ground truth') },
-          { label: t('Knowledge base') },
-          { label: t('Prompt') },
-          { label: t('When') },
-        ]}
-        rows={rows}
-      />
+      <div className={styles.Card}>
+        <DataTable
+          testId="evaluationHistoryTable"
+          rowTestId="evaluationRun"
+          maxHeight="30rem"
+          columns={[
+            { label: t('Version') },
+            { label: t('Golden Q&A set') },
+            { label: t('Duplication Factor') },
+            { label: t('Overall') },
+            { label: t('Ground truth') },
+            { label: t('Knowledge base') },
+            { label: t('Prompt') },
+            { label: t('When') },
+          ]}
+          rows={rows}
+        />
 
-      <div className={styles.Legend}>
-        <span>
-          <i className={styles.badFill} /> 0–1 {t('needs improvement')}
-        </span>
-        <span>
-          <i className={styles.okayFill} /> 2–3 {t('could improve')}
-        </span>
-        <span>
-          <i className={styles.goodFill} /> 4–5 {t('good')}
-        </span>
-        <span className={styles.LegendNote}>{t('all scores out of 5')}</span>
+        <div className={styles.Legend}>
+          <span>
+            <i className={styles.badFill} /> 0–1 {t('needs improvement')}
+          </span>
+          <span>
+            <i className={styles.okayFill} /> 2–3 {t('could improve')}
+          </span>
+          <span>
+            <i className={styles.goodFill} /> 4–5 {t('good')}
+          </span>
+          <span className={styles.LegendNote}>{t('all scores out of 5')}</span>
+        </div>
       </div>
     </div>
   );

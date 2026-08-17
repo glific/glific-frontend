@@ -4,6 +4,13 @@
   color: var(--app-color-text-tertiary);
 }
 
+.Card {
+  padding: var(--app-space-xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
 .Version {
   font-weight: 700;
   color: var(--app-color-text-heading);

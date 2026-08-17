@@ -4,7 +4,6 @@
 
 .Card {
   padding: var(--app-space-xl);
-  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
   box-shadow: var(--app-shadow-card);
