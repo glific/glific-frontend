@@ -106,26 +106,24 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     }
   };
 
+  const handleImport = async (result: string) => {
+    try {
+      const { data } = await importFlow({ variables: { localization: result, id: flowId } });
+      setImporting(false);
+      if (data?.importFlowLocalization?.success) {
+        setDialog(false);
+        loadFlowEditor();
+      } else {
+        setNotification(t('An error occured while importing flow translations'), 'warning');
+      }
+    } catch (error) {
+      setImporting(false);
+      setErrorMessage(error);
+    }
+  };
+
   const importButton = (
-    <ImportButton
-      title={t('Import translations')}
-      onImport={() => setImporting(true)}
-      afterImport={async (result: string) => {
-        try {
-          const { data } = await importFlow({ variables: { localization: result, id: flowId } });
-          setImporting(false);
-          if (data?.importFlowLocalization?.success) {
-            setDialog(false);
-            loadFlowEditor();
-          } else {
-            setNotification(t('An error occured while importing flow translations'), 'warning');
-          }
-        } catch (error) {
-          setImporting(false);
-          setErrorMessage(error);
-        }
-      }}
-    />
+    <ImportButton title={t('Import translations')} onImport={() => setImporting(true)} afterImport={handleImport} />
   );
 
   if (importing) {

@@ -79,34 +79,36 @@ export const TranslateButton = ({
 
   const [importInteractiveMessage, { loading: importingLoad }] = useMutation(IMPORT_INTERACTIVE_TEMPLATE);
 
+  const handleImport = async (result: string) => {
+    try {
+      const { data } = await importInteractiveMessage({
+        variables: { translation: result, importInteractiveTemplateId: templateId },
+      });
+      const importInteractiveTemplate = data?.importInteractiveTemplate;
+      if (importInteractiveTemplate) {
+        const { interactiveTemplate, message } = importInteractiveTemplate;
+        setStates(interactiveTemplate);
+
+        if (message) {
+          setTranslateMessage(message);
+        } else {
+          setNotification(t('Interactive Message Imported Successfully!'), 'success');
+        }
+      }
+      handleClose();
+    } catch (error: any) {
+      setErrorMessage(error);
+      handleClose();
+    }
+  };
+
   const importButton = (
     <ImportButton
       title={t('Import translations')}
       onImport={() => {
         setImporting(true);
       }}
-      afterImport={async (result: string) => {
-        try {
-          const { data } = await importInteractiveMessage({
-            variables: { translation: result, importInteractiveTemplateId: templateId },
-          });
-          const importInteractiveTemplate = data?.importInteractiveTemplate;
-          if (importInteractiveTemplate) {
-            const { interactiveTemplate, message } = importInteractiveTemplate;
-            setStates(interactiveTemplate);
-
-            if (message) {
-              setTranslateMessage(message);
-            } else {
-              setNotification(t('Interactive Message Imported Successfully!'), 'success');
-            }
-          }
-          handleClose();
-        } catch (error: any) {
-          setErrorMessage(error);
-          handleClose();
-        }
-      }}
+      afterImport={handleImport}
     />
   );
 
