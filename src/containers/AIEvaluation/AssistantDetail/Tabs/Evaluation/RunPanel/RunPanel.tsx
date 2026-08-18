@@ -34,16 +34,18 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
   });
 
   const scores = data?.evaluationScores;
+  const awaitingScores = finished && loading && !data;
   const failure =
     error || scores?.errors?.length ? scores?.errors?.[0]?.message || t('These results could not be loaded.') : null;
 
   return (
     <>
-      {run ? (
+      {run && (
         <EvaluationResult
           run={run}
           overall={parseOverallScore(scores?.scores)}
           summary={parseEvaluationSummary(scores?.scores)}
+          loading={awaitingScores}
         >
           <EvaluationScores
             runId={run.id}
@@ -52,7 +54,9 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
             failure={failure}
           />
         </EvaluationResult>
-      ) : (
+      )}
+
+      {!run && (
         <EmptyState
           testId="noEvaluationsYet"
           title={

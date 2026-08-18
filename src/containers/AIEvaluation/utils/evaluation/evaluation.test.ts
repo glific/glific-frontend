@@ -81,12 +81,12 @@ describe('parseEvaluationResults', () => {
 
 describe('overallScore', () => {
   test('weights correctness highest, then grounding, then instructions', () => {
-    expect(overallScore({ groundTruth: 4.6, knowledgeBase: 3.2, prompt: 1.4 })).toBe(3.5);
+    expect(overallScore({ groundTruth: 4.6, knowledgeBase: 3.2, prompt: 1.4 })).toBe(3.54);
   });
 
   test('weights are re-normalised over the metrics a run actually scored', () => {
     // ground truth .5 and prompt .2, so (4.7*.5 + 5*.2) / .7
-    expect(overallScore({ groundTruth: 4.7, knowledgeBase: null, prompt: 5 })).toBe(4.8);
+    expect(overallScore({ groundTruth: 4.7, knowledgeBase: null, prompt: 5 })).toBe(4.79);
   });
 
   test('one metric alone is its own overall score', () => {

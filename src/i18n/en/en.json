@@ -1146,5 +1146,7 @@
   "Asks each question once. The fastest way to see if things broadly work.": "Asks each question once. The fastest way to see if things broadly work.",
   "Consistency check": "Consistency check",
   "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
-  "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish."
+  "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish.",
+  "Loading out the overall score": "Loading out the overall score",
+  "The checks below are in already; the summary lands in a moment.": "The checks below are in already; the summary lands in a moment."
 }

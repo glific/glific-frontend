@@ -72,7 +72,7 @@ export const overallScore = (metrics: EvaluationMetrics) => {
   const totalWeight = scored.reduce((sum, key) => sum + METRIC_WEIGHTS[key], 0);
   const weighted = scored.reduce((sum, key) => sum + (metrics[key] as number) * METRIC_WEIGHTS[key], 0);
 
-  return Math.round((weighted / totalWeight) * 10) / 10;
+  return Math.round((weighted / totalWeight) * 100) / 100;
 };
 
 export const scoreBand = (score: number): ScoreBand => {

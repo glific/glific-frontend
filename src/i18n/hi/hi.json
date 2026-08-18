@@ -1011,5 +1011,7 @@
   "Asks each question once. The fastest way to see if things broadly work.": "हर प्रश्न एक बार पूछता है। मोटे तौर पर सब ठीक है या नहीं, यह देखने का सबसे तेज़ तरीका।",
   "Consistency check": "निरंतरता जांच",
   "Asks each question five times. Catches answers that change between attempts.": "हर प्रश्न पांच बार पूछता है। हर बार बदलने वाले उत्तर पकड़ता है।",
-  "An evaluation is already running. Wait for it to finish.": "एक मूल्यांकन पहले से चल रहा है। उसके पूरा होने का इंतज़ार करें।"
+  "An evaluation is already running. Wait for it to finish.": "एक मूल्यांकन पहले से चल रहा है। उसके पूरा होने का इंतज़ार करें।",
+  "Loading out the overall score": "कुल स्कोर निकाला जा रहा है",
+  "The checks below are in already; the summary lands in a moment.": "नीचे की जांचें आ चुकी हैं; सारांश एक पल में आ जाएगा।"
 }
