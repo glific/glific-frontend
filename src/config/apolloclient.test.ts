@@ -165,6 +165,25 @@ describe('apolloclient', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
+  test('does not retry a GraphQL-level (business) error - it fails fast on the first attempt', async () => {
+    // retryIf must not retry CombinedGraphQLErrors (a successful HTTP response carrying a
+    // deterministic error like "name already exists") - retrying it just repeats the same
+    // failure up to 5 times, needlessly delaying the error reaching the UI.
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse({
+        data: null,
+        errors: [{ message: 'Name already exists', locations: [{ line: 1, column: 1 }], path: ['testField'] }],
+      })
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const client = gqlClient(navigate);
+
+    await expect(client.query({ query: TEST_QUERY, fetchPolicy: 'no-cache' })).rejects.toThrow('Name already exists');
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   test('logs the user out on a 401 network error', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('Unauthorized', { status: 401 })));
 

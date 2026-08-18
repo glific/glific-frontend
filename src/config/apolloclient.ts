@@ -156,6 +156,13 @@ const gqlClient = (navigate: any) => {
       console.log('Skipping retry - logging out');
       return false;
     }
+    // CombinedGraphQLErrors is a successful HTTP response carrying deterministic GraphQL-level
+    // errors (e.g. validation, "name already exists") - retrying it just repeats the same
+    // failure several times over, delaying the error reaching the UI for no benefit. Only
+    // genuine network-level failures are worth retrying.
+    if (CombinedGraphQLErrors.is(error)) {
+      return false;
+    }
     const doNotRetryCodes = [500, 400, 401];
     return !!error && !doNotRetryCodes.includes(error.statusCode);
   };
