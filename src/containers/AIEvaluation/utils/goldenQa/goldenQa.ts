@@ -1,6 +1,10 @@
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
 
-const GOLDEN_QA_COLUMNS = ['question', 'answer', 'category'];
+const HEADER_PATTERNS = {
+  question: /^questions?$/,
+  answer: /^(expected\s+)?answers?$/,
+  category: /^categor(y|ies)$/,
+};
 
 const DELIMITERS = [',', ';', '\t'];
 
@@ -67,14 +71,26 @@ export const parseGoldenQaCsv = (text: string): GoldenQaRow[] => {
   const rows = readRows(text, sniffDelimiter(text));
   if (rows.length === 0) return [];
 
-  const isHeader = rows[0][0]?.trim().toLowerCase() === GOLDEN_QA_COLUMNS[0];
-  const body = isHeader ? rows.slice(1) : rows;
+  const header = rows[0].map((cell) => cell.trim().toLowerCase());
+  const found = (pattern: RegExp) => header.findIndex((cell) => pattern.test(cell));
 
-  return body
+  const questionAt = found(HEADER_PATTERNS.question);
+  const isHeader = questionAt !== -1;
+
+  const at = {
+    question: isHeader ? questionAt : 0,
+    answer: isHeader ? found(HEADER_PATTERNS.answer) : 1,
+    category: isHeader ? found(HEADER_PATTERNS.category) : 2,
+  };
+
+  const cell = (cells: string[], index: number) =>
+    index === -1 ? '' : (cells[index] || '').replace(/\r\n/g, '\n').trim();
+
+  return (isHeader ? rows.slice(1) : rows)
     .map((cells) => ({
-      question: cells[0].trim(),
-      answer: (cells[1] || '').trim(),
-      category: (cells[2] || '').trim(),
+      question: cell(cells, at.question),
+      answer: cell(cells, at.answer),
+      category: cell(cells, at.category),
     }))
     .filter((row) => row.question !== '');
 };

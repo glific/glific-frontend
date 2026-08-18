@@ -74,6 +74,34 @@
   white-space: nowrap;
 }
 
+.RowsTable table {
+  table-layout: fixed;
+}
+
+.RowsTable td {
+  overflow-wrap: anywhere;
+}
+
+.CategoryColumn {
+  width: 12%;
+}
+
+.QuestionColumn {
+  width: 30%;
+}
+
+.AnswerColumn {
+  width: 58%;
+}
+
+.Question,
+.Answer {
+  display: block;
+  max-height: 12rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
 .Question {
   font-weight: 400;
   color: var(--app-color-text-heading);
