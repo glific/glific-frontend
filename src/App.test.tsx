@@ -7,15 +7,9 @@ import { getCurrentUserQuery } from 'mocks/User';
 import { MemoryRouter } from 'react-router';
 import { setAuthSession, setUserSession } from 'services/AuthService';
 import * as AuthService from 'services/AuthService';
-import * as TokenManager from 'services/TokenManager';
 
 const mocks = [...CONVERSATION_MOCKS, getCurrentUserQuery];
 vi.mock('axios');
-// The logout route renders <Logout/>, which calls apiClient.delete. A bare axios mock makes
-// axios.create() undefined, so mock the apiClient module the same way its own tests do.
-vi.mock('services/apiClient', () => ({
-  apiClient: { delete: vi.fn(), get: vi.fn(), post: vi.fn(), put: vi.fn() },
-}));
 const mockedUsedNavigate = vi.fn();
 const setAuthSessionMock = vi.spyOn(AuthService, 'setAuthSession');
 
@@ -100,10 +94,21 @@ describe('App Component', () => {
 });
 
 describe('App Component - Token Refresh Tests', () => {
-  test('proactively renews the access token via TokenManager when a session is present', async () => {
-    const getValidAccessTokenSpy = vi
-      .spyOn(TokenManager, 'getValidAccessToken')
-      .mockResolvedValue('fresh_access_token');
+  test('should handle token refresh on GraphQL 401 error', async () => {
+    const renewTokenSpy = vi.spyOn(AuthService, 'renewAuthToken');
+    const checkAuthSpy = vi.spyOn(AuthService, 'checkAuthStatusService');
+
+    renewTokenSpy.mockResolvedValue({
+      data: {
+        data: {
+          access_token: 'new_access_token',
+          renewal_token: 'new_renewal_token',
+          token_expiry_time: new Date(Date.now() + 3600000).toISOString(),
+        },
+      },
+    });
+
+    checkAuthSpy.mockResolvedValue(false);
 
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() - 1);
@@ -118,35 +123,45 @@ describe('App Component - Token Refresh Tests', () => {
 
     render(app);
 
-    // Apollo's authLink asks TokenManager for a valid token before sending the operation.
     await waitFor(() => {
-      expect(getValidAccessTokenSpy).toHaveBeenCalled();
+      expect(renewTokenSpy).toHaveBeenCalled();
     });
 
-    getValidAccessTokenSpy.mockRestore();
+    renewTokenSpy.mockRestore();
+    checkAuthSpy.mockRestore();
   });
 
-  test('navigates to /logout/session when TokenManager emits a forced logout', async () => {
-    let emitForcedLogout: ((reason: string) => void) | undefined;
-    const onForcedLogoutSpy = vi.spyOn(TokenManager, 'onForcedLogout').mockImplementation((cb) => {
-      emitForcedLogout = cb;
-      return () => {};
+  test('should navigate to logout on token refresh failure', async () => {
+    const renewTokenSpy = vi.spyOn(AuthService, 'renewAuthToken');
+    const checkAuthSpy = vi.spyOn(AuthService, 'checkAuthStatusService');
+
+    renewTokenSpy.mockRejectedValue(new Error('Token refresh failed'));
+    checkAuthSpy.mockResolvedValue(false);
+
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() - 1);
+
+    setAuthSession({
+      access_token: 'expired_token',
+      renewal_token: 'invalid_renewal_token',
+      token_expiry_time: tokenExpiryDate,
     });
+
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
     render(app);
 
-    // App wires exactly one forced-logout subscriber that turns the event into navigation.
     await waitFor(() => {
-      expect(onForcedLogoutSpy).toHaveBeenCalled();
+      expect(renewTokenSpy).toHaveBeenCalled();
     });
 
-    emitForcedLogout?.('refresh_unauthorized');
-
+    // Should eventually navigate to logout
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/logout/session');
     });
 
-    onForcedLogoutSpy.mockRestore();
+    renewTokenSpy.mockRestore();
+    checkAuthSpy.mockRestore();
   });
 
   test('should handle logout route correctly', async () => {
