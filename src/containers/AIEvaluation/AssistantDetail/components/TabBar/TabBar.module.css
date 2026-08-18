@@ -51,13 +51,3 @@
   border-radius: 50%;
   background-color: var(--app-color-attention);
 }
-
-.SandboxBadge {
-  font-size: var(--app-font-size-xs);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--app-color-text-tertiary);
-  background-color: var(--app-color-gray-secondary);
-  border-radius: var(--app-radius-lg);
-  padding: var(--app-space-2xs) var(--app-space-sm);
-}

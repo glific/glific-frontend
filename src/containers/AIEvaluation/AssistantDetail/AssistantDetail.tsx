@@ -108,13 +108,13 @@ export const AssistantDetail = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: versionData } = useQuery(GET_ASSISTANT_VERSIONS, {
+  const { data: versionData, loading: versionsLoading } = useQuery(GET_ASSISTANT_VERSIONS, {
     variables: { assistantId },
     skip: isCreateMode,
     fetchPolicy: 'network-only',
   });
 
-  const { data: modelData } = useQuery(GET_ASSISTANT_MODELS);
+  const { data: modelData, loading: modelsLoading } = useQuery(GET_ASSISTANT_MODELS);
   const models = useMemo(() => parseAssistantModels(modelData?.kaapiModels), [modelData]);
 
   const { data: goldenQaData } = useQuery(LIST_GOLDEN_QA, {
@@ -334,7 +334,13 @@ export const AssistantDetail = () => {
     }
   };
 
-  if (!isCreateMode && loading && !assistant) {
+  const stillLoading = (loading && !assistant) || (versionsLoading && !versionData) || (modelsLoading && !modelData);
+
+  if (!isCreateMode && stillLoading) {
+    return <Loading />;
+  }
+
+  if (isCreateMode && modelsLoading && !modelData) {
     return <Loading />;
   }
 

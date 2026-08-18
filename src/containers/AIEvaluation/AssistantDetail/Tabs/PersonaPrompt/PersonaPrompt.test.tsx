@@ -228,12 +228,14 @@ describe('editing', () => {
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '' }));
   });
 
-  test('a partly typed value is left alone so it can be finished', () => {
+  test('the slider and the number box set the same value', () => {
     const { onConfigChange } = renderTab({ model: 'gpt-4.1' });
 
-    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.0' } });
+    expect(screen.getByTestId('temperatureSlider')).toBeInTheDocument();
 
-    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0.0' }));
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.7' } });
+
+    expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '0.7' }));
   });
 });
 
@@ -305,9 +307,6 @@ describe('settings the API describes loosely', () => {
     const { onConfigChange } = renderTab({ model: 'loose-temp', temperature: '1' }, { models: looseModels });
 
     const input = screen.getByTestId('temperatureInput');
-    // the spec pins no range, so the field carries none either
-    expect(input).not.toHaveAttribute('min');
-    expect(input).not.toHaveAttribute('max');
 
     // typed values still land in the 0–2 range every model shares
     fireEvent.change(input, { target: { value: '5' } });
@@ -385,4 +384,38 @@ test('the reasoning effort toggle is the shared control, styled like every other
   // no per-usage class overrides — the look comes from SegmentedControl itself
   expect(track.className.split(' ').filter(Boolean)).toHaveLength(1);
   expect(track.querySelectorAll('[role="radio"]').length).toBeGreaterThan(1);
+});
+
+describe('writing the prompt in a dialog', () => {
+  test('the expand control opens a bigger editor holding the same text', () => {
+    renderTab({}, { prompt: 'You are a helpful assistant.' });
+
+    fireEvent.click(screen.getByTestId('expandPromptButton'));
+
+    expect(screen.getByTestId('promptExpandedInput')).toHaveValue('You are a helpful assistant.');
+  });
+
+  test('Save reports what was written, Cancel leaves the prompt alone', () => {
+    const { onPromptChange } = renderTab({}, { prompt: 'Old' });
+
+    fireEvent.click(screen.getByTestId('expandPromptButton'));
+    fireEvent.change(screen.getByTestId('promptExpandedInput'), { target: { value: 'New instructions' } });
+
+    // nothing reaches the parent until Save — Cancel has to be able to walk it back
+    expect(onPromptChange).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+    expect(onPromptChange).toHaveBeenCalledWith('New instructions');
+  });
+
+  test('Cancel throws the edit away', () => {
+    const { onPromptChange } = renderTab({}, { prompt: 'Old' });
+
+    fireEvent.click(screen.getByTestId('expandPromptButton'));
+    fireEvent.change(screen.getByTestId('promptExpandedInput'), { target: { value: 'Discard me' } });
+    fireEvent.click(screen.getByTestId('cancel-button'));
+
+    expect(onPromptChange).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('promptExpandedInput')).not.toBeInTheDocument();
+  });
 });

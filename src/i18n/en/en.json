@@ -945,7 +945,6 @@
   "Guardrails": "Guardrails",
   "Golden Q&A Evaluation": "Golden Q&A Evaluation",
   "Try It Out": "Try It Out",
-  "SANDBOX": "SANDBOX",
   "coming soon": "coming soon",
   "Publish & Go Live": "Publish & Go Live",
   "Not published": "Not published",
@@ -1008,7 +1007,6 @@
   "No files yet. + Add files the assistant should answer from.": "No files yet. + Add files the assistant should answer from.",
   "Files added — the knowledge base is rebuilding": "Files added — the knowledge base is rebuilding",
   "File removed — the knowledge base is rebuilding": "File removed — the knowledge base is rebuilding",
-  "Technical details": "Technical details",
   "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.",
   "No vector store yet — one is created when you add your first file.": "No vector store yet — one is created when you add your first file.",
   "The file is detached and the knowledge base is rebuilt without it.": "The file is detached and the knowledge base is rebuilt without it.",
@@ -1146,5 +1144,7 @@
   "Asks each question once. The fastest way to see if things broadly work.": "Asks each question once. The fastest way to see if things broadly work.",
   "Consistency check": "Consistency check",
   "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
-  "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish."
+  "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish.",
+  "Knowledge Base ID": "Knowledge Base ID",
+  "Edit system instructions": "Edit system instructions"
 }

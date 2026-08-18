@@ -98,3 +98,52 @@ span.GenerateBeta {
   flex: 1;
   min-width: 11.875rem;
 }
+
+/* the slider sets the value roughly, the box exactly — both drive the same setting */
+.TemperatureRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+}
+
+.TemperatureSlider {
+  flex: 1;
+  color: var(--app-color-brand-primary) !important;
+}
+
+.TemperatureValue {
+  width: 4.5rem;
+  padding: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  font-family: inherit;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-primary);
+  text-align: center;
+}
+
+/* the expand control sits in the bottom-right corner of the box it opens */
+.Expand {
+  height: 100%;
+  max-height: none;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* left at the icon's own 24px, the size the old editor used */
+.ExpandButton {
+  border-radius: var(--app-radius-lg);
+  color: var(--app-color-text-tertiary);
+  cursor: pointer;
+}
+
+.ExpandButton:hover {
+  background-color: var(--app-color-surface-hover);
+}
+
+/* room to actually write in — the point of opening it */
+.ExpandedPaper {
+  width: min(56rem, 92vw) !important;
+  max-width: min(56rem, 92vw) !important;
+}

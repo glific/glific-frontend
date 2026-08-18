@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { InputAdornment, Slider } from '@mui/material';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
@@ -28,6 +31,8 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
   const { t } = useTranslation();
 
   const [generatorOpen, setGeneratorOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [draft, setDraft] = useState('');
   const [answers, setAnswers] = useState<PromptAnswers>(initialPromptAnswers);
 
   const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
@@ -47,21 +52,18 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
     }
   };
 
-  const handleTemperatureChange = (value: string) => {
+  const handleTemperatureChange = (value: string | number) => {
+    // an emptied box means "leave temperature out", which the save payload honours
     if (value === '') {
       onConfigChange({ ...config, temperature: '' });
       return;
     }
 
-    const parsed = Number(value);
     const min = temperatureSpec?.min ?? 0;
     const max = temperatureSpec?.max ?? 2;
+    const temperature = Math.min(max, Math.max(min, Number(value)));
 
-    let temperature = value;
-    if (parsed > max) temperature = String(max);
-    else if (parsed < min) temperature = String(min);
-
-    onConfigChange({ ...config, temperature });
+    onConfigChange({ ...config, temperature: String(temperature) });
   };
 
   const segmentOptions = (spec: ModelParamSpec) => (spec.options ?? []).map((value) => ({ value, label: value }));
@@ -87,6 +89,19 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
       <Input
         textArea
         rows={6}
+        endAdornment={
+          <InputAdornment className={styles.Expand} position="end">
+            <ExpandIcon
+              className={styles.ExpandButton}
+              onClick={() => {
+                setDraft(prompt);
+                setExpanded(true);
+              }}
+              aria-label={t('Edit system instructions')}
+              data-testid="expandPromptButton"
+            />
+          </InputAdornment>
+        }
         placeholder={t(
           'Describe who this assistant is, what it helps with, what it must never do, and what language it should reply in…'
         )}
@@ -132,18 +147,27 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
           {temperatureSpec && (
             <div>
               <div className={styles.FieldLabel}>{t('Temperature')}</div>
-              <Input
-                type="number"
-                placeholder=""
-                field={{ name: 'temperature', value: config.temperature, onBlur: () => {} }}
-                onChange={handleTemperatureChange}
-                inputProp={{
-                  min: temperatureSpec.min,
-                  max: temperatureSpec.max,
-                  step: 0.01,
-                  'data-testid': 'temperatureInput',
-                }}
-              />
+              <div className={styles.TemperatureRow}>
+                <Slider
+                  className={styles.TemperatureSlider}
+                  value={Number(config.temperature) || (temperatureSpec.min ?? 0)}
+                  min={temperatureSpec.min ?? 0}
+                  max={temperatureSpec.max ?? 2}
+                  step={0.01}
+                  onChange={(_, value) => handleTemperatureChange(Number(value))}
+                  data-testid="temperatureSlider"
+                />
+                <input
+                  type="number"
+                  className={styles.TemperatureValue}
+                  value={config.temperature}
+                  min={temperatureSpec.min ?? 0}
+                  max={temperatureSpec.max ?? 2}
+                  step={0.01}
+                  onChange={(event) => handleTemperatureChange(event.target.value)}
+                  data-testid="temperatureInput"
+                />
+              </div>
               <div className={styles.Note}>{temperatureSpec.description}</div>
             </div>
           )}
@@ -154,6 +178,35 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
             </div>
           )}
         </div>
+      )}
+
+      {expanded && (
+        <DialogBox
+          open
+          titleAlign="left"
+          title={t('Edit system instructions')}
+          buttonOk={t('Save')}
+          buttonCancel={t('Cancel')}
+          alignButtons="right"
+          handleOk={() => {
+            onPromptChange(draft);
+            setExpanded(false);
+          }}
+          handleCancel={() => setExpanded(false)}
+          fullWidth
+          customStyles={{ paper: styles.ExpandedPaper }}
+        >
+          <Input
+            textArea
+            rows={16}
+            placeholder={t(
+              'Describe who this assistant is, what it helps with, what it must never do, and what language it should reply in…'
+            )}
+            field={{ name: 'promptExpanded', value: draft, onBlur: () => {} }}
+            onChange={setDraft}
+            inputProp={{ 'data-testid': 'promptExpandedInput' }}
+          />
+        </DialogBox>
       )}
 
       {generatorOpen && (

@@ -15,6 +15,8 @@
 .ManageButton,
 .RunButton {
   flex-shrink: 0;
+  /* the shared Button's own margin-right would stack on this row's gap */
+  margin-right: 0 !important;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }

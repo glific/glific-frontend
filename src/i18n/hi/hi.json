@@ -803,7 +803,6 @@
   "Guardrails": "सुरक्षा नियम",
   "Golden Q&A Evaluation": "गोल्डन प्रश्नोत्तर मूल्यांकन",
   "Try It Out": "आज़माकर देखें",
-  "SANDBOX": "सैंडबॉक्स",
   "coming soon": "जल्द आ रहा है",
   "Publish & Go Live": "प्रकाशित करें और लाइव करें",
   "Not published": "प्रकाशित नहीं",
@@ -871,7 +870,6 @@
   "No files yet. + Add files the assistant should answer from.": "अभी कोई फ़ाइल नहीं। वे दस्तावेज़ जोड़ें जिनसे असिस्टेंट उत्तर देगा।",
   "Files added — the knowledge base is rebuilding": "फ़ाइलें जोड़ी गईं — नॉलेज बेस फिर से बन रहा है",
   "File removed — the knowledge base is rebuilding": "फ़ाइल हटाई गई — नॉलेज बेस फिर से बन रहा है",
-  "Technical details": "तकनीकी विवरण",
   "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.": "यह वह वेक्टर स्टोर है जिसमें असिस्टेंट रनटाइम पर खोजता है — इंजीनियरिंग के साथ डिबग करने के अलावा इसकी ज़रूरत नहीं पड़ेगी।",
   "No vector store yet — one is created when you add your first file.": "अभी कोई वेक्टर स्टोर नहीं — पहली फ़ाइल जोड़ने पर बन जाएगा।",
   "The file is detached and the knowledge base is rebuilt without it.": "फ़ाइल हटा दी जाती है और नॉलेज बेस उसके बिना फिर से बनता है।",
@@ -1011,5 +1009,7 @@
   "Asks each question once. The fastest way to see if things broadly work.": "हर प्रश्न एक बार पूछता है। मोटे तौर पर सब ठीक है या नहीं, यह देखने का सबसे तेज़ तरीका।",
   "Consistency check": "निरंतरता जांच",
   "Asks each question five times. Catches answers that change between attempts.": "हर प्रश्न पांच बार पूछता है। हर बार बदलने वाले उत्तर पकड़ता है।",
-  "An evaluation is already running. Wait for it to finish.": "एक मूल्यांकन पहले से चल रहा है। उसके पूरा होने का इंतज़ार करें।"
+  "An evaluation is already running. Wait for it to finish.": "एक मूल्यांकन पहले से चल रहा है। उसके पूरा होने का इंतज़ार करें।",
+  "Knowledge Base ID": "नॉलेज बेस आईडी",
+  "Edit system instructions": "सिस्टम निर्देश संपादित करें"
 }
