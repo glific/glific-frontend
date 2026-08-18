@@ -18,8 +18,3 @@
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }
-
-.SubTabOption {
-  padding: var(--app-space-2xs) var(--app-space-lg);
-  font-size: var(--app-font-size-sm);
-}

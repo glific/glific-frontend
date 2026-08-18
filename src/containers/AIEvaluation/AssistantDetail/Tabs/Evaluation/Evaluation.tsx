@@ -113,7 +113,6 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
     <div data-testid="evaluationTab">
       <div className={styles.Header}>
         <SegmentedControl<EvaluationSubTab>
-          optionClassName={styles.SubTabOption}
           testId="evaluationSubTabs"
           options={[
             { value: 'run', label: t('Run') },

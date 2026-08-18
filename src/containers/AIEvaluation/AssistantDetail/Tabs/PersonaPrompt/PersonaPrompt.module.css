@@ -98,7 +98,3 @@ span.GenerateBeta {
   flex: 1;
   min-width: 11.875rem;
 }
-
-.SegmentTrack {
-  background-color: rgb(var(--app-color-white-rgb) / 70%);
-}

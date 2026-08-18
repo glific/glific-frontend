@@ -45,7 +45,6 @@
   color: var(--app-color-error);
 }
 
-/* solid band colours for the legend dots — the tints above are for score pills and read as washed out at dot size */
 .goodFill {
   background-color: var(--app-color-brand-primary);
 }
