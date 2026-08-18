@@ -9,12 +9,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
-import {
-  goldenQaCategories,
-  isValidGoldenQaName,
-  parseGoldenQaCsv,
-  suggestedGoldenQaName,
-} from 'containers/AIEvaluation/utils/goldenQa';
+import { isValidGoldenQaName, parseGoldenQaCsv, suggestedGoldenQaName } from 'containers/AIEvaluation/utils/goldenQa';
 import styles from './AddGoldenQaSetDialog.module.css';
 
 export interface AddGoldenQaSetDialogProps {
@@ -32,6 +27,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
   const [rows, setRows] = useState<GoldenQaRow[] | null>(null);
   const [fileError, setFileError] = useState('');
   const [nameError, setNameError] = useState('');
+  const [nameTouched, setNameTouched] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,7 +46,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
 
     setFile(selected);
     setRows(parsed);
-    setName((current) => current || suggestedGoldenQaName(selected.name));
+    if (!nameTouched) setName(suggestedGoldenQaName(selected.name));
   };
 
   const handleDrop = (event: React.DragEvent) => {
@@ -95,8 +91,6 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     }
   };
 
-  const categories = rows ? goldenQaCategories(rows) : [];
-
   return (
     <DialogBox
       open
@@ -127,6 +121,8 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
           field={{ name: 'goldenQaName', value: name, onBlur: () => {} }}
           onChange={(value: string) => {
             setName(value);
+            // clearing the field hands the name back to the file
+            setNameTouched(value.trim() !== '');
             setNameError('');
           }}
           inputProp={{ 'data-testid': 'goldenQaNameInput' }}
@@ -183,11 +179,6 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
             <div className={styles.ParsedTitle}>
               {t('Parsed')} {rows.length} {rows.length === 1 ? t('question') : t('questions')}
             </div>
-            {categories.length > 0 && (
-              <div className={styles.Note}>
-                {t('Categories')}: {categories.join(', ')}
-              </div>
-            )}
           </div>
         )}
       </div>
