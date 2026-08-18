@@ -9,7 +9,11 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
-import { isValidGoldenQaName, parseGoldenQaCsv, suggestedGoldenQaName } from 'containers/AIEvaluation/utils/goldenQa';
+import {
+  isValidGoldenQaName,
+  parseGoldenQaCsv,
+  suggestedGoldenQaName,
+} from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import styles from './AddGoldenQaSetDialog.module.css';
 
 export interface AddGoldenQaSetDialogProps {
