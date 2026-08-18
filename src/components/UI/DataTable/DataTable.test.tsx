@@ -40,15 +40,7 @@ test('the ids callers query by can be overridden', () => {
   expect(screen.getAllByTestId('questionRow')).toHaveLength(2);
 });
 
-test('an empty set says so across the full width', () => {
-  render(<DataTable columns={columns} rows={[]} emptyText="Nothing here yet" />);
-
-  const empty = screen.getByTestId('dataTableEmpty');
-  expect(empty).toHaveTextContent('Nothing here yet');
-  expect(within(empty).getByRole('cell')).toHaveAttribute('colspan', '2');
-});
-
-test('with no empty text an empty set is simply an empty body', () => {
+test('an empty set is simply an empty body', () => {
   render(<DataTable columns={columns} rows={[]} />);
 
   expect(screen.queryByTestId('dataTableEmpty')).not.toBeInTheDocument();

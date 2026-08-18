@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import UploadIcon from '@mui/icons-material/FileUploadOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -9,7 +11,11 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
-import { isValidGoldenQaName, parseGoldenQaCsv, suggestedGoldenQaName } from 'containers/AIEvaluation/utils/goldenQa';
+import {
+  GOLDEN_QA_NAME_PATTERN,
+  parseGoldenQaCsv,
+  suggestedGoldenQaName,
+} from 'containers/AIEvaluation/utils/goldenQa';
 import styles from './AddGoldenQaSetDialog.module.css';
 
 export interface AddGoldenQaSetDialogProps {
@@ -22,73 +28,85 @@ const DEFAULT_DUPLICATION_FACTOR = 1;
 export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogProps) => {
   const { t } = useTranslation();
 
-  const [name, setName] = useState('');
-  const [file, setFile] = useState<File | null>(null);
   const [rows, setRows] = useState<GoldenQaRow[] | null>(null);
-  const [fileError, setFileError] = useState('');
-  const [nameError, setNameError] = useState('');
+  // the file could not be read at all — distinct from "no file chosen yet", which Yup reports
+  const [readError, setReadError] = useState('');
+  // a name the reader typed is theirs to keep; a suggested one follows whichever file is picked
   const [nameTouched, setNameTouched] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [createGoldenQa, { loading }] = useMutation(CREATE_GOLDEN_QA);
 
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .trim()
+      .required(t('Give this Golden Q&A set a name.'))
+      .matches(GOLDEN_QA_NAME_PATTERN, t('Use lowercase letters, numbers and underscores only.')),
+    file: Yup.mixed().required(t('Choose a CSV file to upload.')),
+  });
+
+  const formik = useFormik<{ name: string; file: File | null }>({
+    initialValues: { name: '', file: null },
+    validationSchema,
+    onSubmit: async ({ name, file }) => {
+      try {
+        const { data } = await createGoldenQa({
+          variables: {
+            input: { name: name.trim(), file, duplication_factor: DEFAULT_DUPLICATION_FACTOR },
+          },
+        });
+
+        const errors = data?.createGoldenQa?.errors;
+        if (errors?.length) {
+          setErrorMessage(errors[0]);
+          return;
+        }
+
+        setNotification(t('Golden Q&A set added'));
+        onAdded();
+      } catch (error: unknown) {
+        setErrorMessage(error);
+      }
+    },
+  });
+
+  /*
+   * Reading a File can reject — a file removed from disk between picking and reading, or a
+   * permission the browser withdraws — and this runs unawaited from event handlers, so a
+   * rejection here would otherwise surface as nothing at all for the reader.
+   */
   const readFile = async (selected: File) => {
-    setFileError('');
+    setReadError('');
 
-    const parsed = parseGoldenQaCsv(await selected.text());
-    if (parsed.length === 0) {
-      setFile(null);
+    try {
+      const parsed = parseGoldenQaCsv(await selected.text());
+
+      if (parsed.length === 0) {
+        setRows(null);
+        formik.setFieldValue('file', null);
+        setReadError(t('No questions found. Check the file has a question column with rows under it.'));
+        return;
+      }
+
+      setRows(parsed);
+      formik.setValues({
+        file: selected,
+        name: nameTouched ? formik.values.name : suggestedGoldenQaName(selected.name),
+      });
+      formik.setFieldTouched('file', true, false);
+    } catch {
       setRows(null);
-      setFileError(t('No questions found. Check the file has a question column with rows under it.'));
-      return;
+      formik.setFieldValue('file', null);
+      setReadError(t('That file could not be read. Try choosing it again.'));
     }
-
-    setFile(selected);
-    setRows(parsed);
-    if (!nameTouched) setName(suggestedGoldenQaName(selected.name));
   };
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setDragging(false);
     const dropped = event.dataTransfer.files?.[0];
-    if (dropped) readFile(dropped);
-  };
-
-  const handleSubmit = async () => {
-    const trimmed = name.trim();
-
-    if (!isValidGoldenQaName(trimmed)) {
-      setNameError(
-        trimmed ? t('Use lowercase letters, numbers and underscores only.') : t('Give this Golden Q&A set a name.')
-      );
-      return;
-    }
-
-    if (!file) {
-      setFileError(t('Choose a CSV file to upload.'));
-      return;
-    }
-
-    try {
-      const { data } = await createGoldenQa({
-        variables: {
-          input: { name: trimmed, file, duplication_factor: DEFAULT_DUPLICATION_FACTOR },
-        },
-      });
-
-      const errors = data?.createGoldenQa?.errors;
-      if (errors?.length) {
-        setErrorMessage(errors[0]);
-        return;
-      }
-
-      setNotification(t('Golden Q&A set added'));
-      onAdded();
-    } catch (error: unknown) {
-      setErrorMessage(error);
-    }
+    if (dropped) void readFile(dropped);
   };
 
   return (
@@ -102,7 +120,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
       buttonOkLoading={loading}
       disableOk={loading}
       skipCancel={loading}
-      handleOk={handleSubmit}
+      handleOk={formik.handleSubmit}
       handleCancel={() => !loading && onClose()}
       fullWidth
       customStyles={{ paper: styles.Paper }}
@@ -118,18 +136,17 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
         <Input
           type="text"
           placeholder={t('e.g. maternal_health_core')}
-          field={{ name: 'goldenQaName', value: name, onBlur: () => {} }}
+          field={{ name: 'name', value: formik.values.name, onBlur: formik.handleBlur }}
           onChange={(value: string) => {
-            setName(value);
+            formik.setFieldValue('name', value);
             // clearing the field hands the name back to the file
             setNameTouched(value.trim() !== '');
-            setNameError('');
           }}
           inputProp={{ 'data-testid': 'goldenQaNameInput' }}
         />
-        {nameError && (
+        {formik.touched.name && formik.errors.name && (
           <div className={styles.Error} data-testid="goldenQaNameError">
-            {nameError}
+            {formik.errors.name}
           </div>
         )}
 
@@ -155,7 +172,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
             accept=".csv"
             onChange={(event) => {
               const selected = event.target.files?.[0];
-              if (selected) readFile(selected);
+              if (selected) void readFile(selected);
               // let the same file be picked again after a failed read
               event.target.value = '';
             }}
@@ -168,16 +185,16 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
           {t('Use our Google Sheet template')}
         </a>
 
-        {fileError && (
+        {(readError || (formik.touched.file && formik.errors.file)) && (
           <div className={styles.Error} data-testid="goldenQaFileError">
-            {fileError}
+            {readError || formik.errors.file}
           </div>
         )}
 
         {rows && (
           <div className={styles.Parsed} data-testid="goldenQaParsed">
             <div className={styles.ParsedTitle}>
-              {t('Parsed')} {rows.length} {rows.length === 1 ? t('question') : t('questions')}
+              {rows.length === 1 ? t('Parsed 1 question') : t('Parsed {{count}} questions', { count: rows.length })}
             </div>
           </div>
         )}
@@ -185,5 +202,3 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     </DialogBox>
   );
 };
-
-export default AddGoldenQaSetDialog;

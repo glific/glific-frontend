@@ -38,8 +38,3 @@
     color: var(--app-color-white);
   }
 }
-
-.Empty {
-  text-align: center;
-  color: var(--app-color-text-tertiary);
-}

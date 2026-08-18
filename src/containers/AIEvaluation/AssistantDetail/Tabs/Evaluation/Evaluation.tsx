@@ -2,17 +2,22 @@ import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Button } from 'components/UI/Form/Button/Button';
+import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
-import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
 import styles from './Evaluation.module.css';
+
+/** stands in for the tab name while the sentence around the link is split */
+const TAB_SLOT = '\u0000';
 
 export interface EvaluationProps {
   versionNumber?: number;
@@ -26,12 +31,19 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
   const [addOpen, setAddOpen] = useState(false);
   const [viewing, setViewing] = useState<GoldenQaSet | null>(null);
 
-  const { data, loading, refetch } = useQuery(LIST_GOLDEN_QA, {
-    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+  const { data, loading, error, refetch } = useQuery(LIST_GOLDEN_QA, {
+    variables: GOLDEN_QA_LIST_VARIABLES,
     fetchPolicy: 'cache-and-network',
   });
 
   const sets: GoldenQaSet[] = data?.goldenQas ?? [];
+
+  /*
+   * The sentence stays one key so a translator can put the tab name where their grammar wants
+   * it; only that word is the link. A sentinel is interpolated and split on, rather than the
+   * tab name itself, so a translation that repeats the word still splits in the right place.
+   */
+  const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
@@ -47,20 +59,35 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
     return <Loading />;
   }
 
+  if (error && sets.length === 0) {
+    return (
+      <div data-testid="evaluationTab">
+        <EmptyState
+          testId="goldenQaLoadError"
+          icon={<ErrorOutlineIcon fontSize="inherit" />}
+          title={t('Golden Q&A sets could not be loaded')}
+          note={t('The server did not answer. Check your connection and try again.')}
+          action={
+            <Button variant="outlined" onClick={() => refetch()} data-testid="retryGoldenQaButton">
+              {t('Try again')}
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
+
   if (sets.length === 0) {
     return (
       <div data-testid="evaluationTab">
-        <div className={styles.Blocker} data-testid="goldenQaEmpty">
-          <div className={styles.BlockerIcon}>
-            <DocumentIcon />
-          </div>
-          <div className={styles.BlockerTitle}>{t('Add a Golden Q&A set to evaluate this assistant')}</div>
-          <div className={styles.BlockerNote}>
-            {t(
-              'A fixed set of questions and their ideal answers. Every version is scored against the same set, so results stay comparable.'
-            )}
-          </div>
-          <div className={styles.BlockerAction}>
+        <EmptyState
+          testId="goldenQaEmpty"
+          icon={<DocumentIcon />}
+          title={t('Add a Golden Q&A set to evaluate this assistant')}
+          note={t(
+            'A fixed set of questions and their ideal answers. Every version is scored against the same set, so results stay comparable.'
+          )}
+          action={
             <Button
               variant="contained"
               color="primary"
@@ -70,8 +97,8 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
             >
               {t('Add a Golden Q&A set')}
             </Button>
-          </div>
-        </div>
+          }
+        />
         {addDialog}
       </div>
     );
@@ -81,6 +108,7 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
     <div data-testid="evaluationTab">
       <SegmentedControl<EvaluationSubTab>
         className={styles.SubTabs}
+        optionClassName={styles.SubTabOption}
         testId="evaluationSubTabs"
         options={[
           { value: 'run', label: t('Run') },
@@ -114,17 +142,18 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
             </Button>
           </div>
 
-          <div className={styles.Blocker} data-testid="noEvaluationsYet">
-            <div className={styles.BlockerTitle}>
-              {t('No evaluations yet for')} {versionNumber ? `${t('Version')} ${versionNumber}` : t('this version')}
-            </div>
-            <div className={styles.BlockerNote}>
-              {t('Run one to see how this version scores against a Golden Q&A set.')}
-            </div>
-          </div>
+          <EmptyState
+            testId="noEvaluationsYet"
+            title={
+              versionNumber
+                ? t('No evaluations yet for version {{version}}', { version: versionNumber })
+                : t('No evaluations yet for this version')
+            }
+            note={t('Run one to see how this version scores against a Golden Q&A set.')}
+          />
 
           <div className={styles.FootNote}>
-            {t('See every past run in the')}{' '}
+            {footNote[0]}
             <button
               type="button"
               className={styles.FootNoteLink}
@@ -132,17 +161,18 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
               data-testid="goToHistoryButton"
             >
               {t('History')}
-            </button>{' '}
-            {t('tab above.')}
+            </button>
+            {footNote[1]}
           </div>
         </>
       ) : (
-        <div className={styles.Blocker} data-testid="evaluationHistoryEmpty">
-          <div className={styles.BlockerTitle}>{t('No evaluations yet')}</div>
-          <div className={styles.BlockerNote}>
-            {t('Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.')}
-          </div>
-          <div className={styles.BlockerAction}>
+        <EmptyState
+          testId="evaluationHistoryEmpty"
+          title={t('No evaluations yet')}
+          note={t(
+            'Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.'
+          )}
+          action={
             <Button
               variant="contained"
               color="primary"
@@ -153,8 +183,8 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
             >
               {t('Run your first evaluation')}
             </Button>
-          </div>
-        </div>
+          }
+        />
       )}
 
       {manageOpen && (
