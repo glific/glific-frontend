@@ -7,7 +7,7 @@ import { getAllOrganizations } from 'mocks/Organization';
 
 import UploadContactsDialog from './UploadContactsDialog';
 import { getCollectionsList } from 'mocks/Collection';
-import { importContacts, importContactsNetworkError } from 'mocks/Contact';
+import { importContacts, importContactsNetworkError, importContactsPayloadError } from 'mocks/Contact';
 import * as Notification from 'common/notification';
 
 const mocks = [...getAllOrganizations, getCollectionsList(''), getCollectionsList('Optin group'), getCollectionsList()];
@@ -82,6 +82,23 @@ test('uploads contacts successfully when the form is submitted', async () => {
 
   await waitFor(() => {
     expect(setShowStatus).toHaveBeenCalledWith(true);
+  });
+});
+
+test('shows a warning when the import mutation returns a payload error', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  render(
+    <MockedProvider mocks={[...mocks, importContactsPayloadError]}>
+      <Router>
+        <UploadContactsDialog {...props} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await fillAndSubmitForm();
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Please check the CSV file and try again', 'warning');
   });
 });
 

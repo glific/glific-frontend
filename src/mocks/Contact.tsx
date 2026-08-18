@@ -263,6 +263,19 @@ export const updateContactStatusQuery = {
   },
 };
 
+export const updateContactStatusQueryError = {
+  request: {
+    query: UPDATE_CONTACT,
+    variables: {
+      id: '1',
+      input: {
+        status: 'VALID',
+      },
+    },
+  },
+  error: new Error('An error occurred while unblocking the contact'),
+};
+
 export const moveContacts = {
   request: {
     query: MOVE_CONTACTS,
@@ -764,6 +777,22 @@ export const importContacts = {
       importContacts: {
         errors: null,
         status: 'Test Row',
+      },
+    },
+  },
+};
+
+// Mutation resolves but returns payload-level errors.
+export const importContactsPayloadError = {
+  request: {
+    query: IMPORT_CONTACTS,
+    variables: (variables: any) => true,
+  },
+  result: {
+    data: {
+      importContacts: {
+        errors: [{ message: 'Please check the CSV file and try again' }],
+        status: null,
       },
     },
   },

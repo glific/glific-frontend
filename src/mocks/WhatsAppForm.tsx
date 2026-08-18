@@ -709,6 +709,53 @@ const listRevisions = {
   },
 };
 
+export const saveWhatsappFormRevisionPayloadErrorMock = {
+  request: {
+    query: SAVE_WHATSAPP_FORM_REVISION,
+    variables: () => true,
+  },
+  result: {
+    data: {
+      saveWhatsappFormRevision: {
+        whatsappFormRevision: null,
+        errors: [{ key: 'form', message: 'Form revision could not be saved' }],
+      },
+    },
+  },
+};
+
+export const saveWhatsappFormRevisionNetworkErrorMock = {
+  request: {
+    query: SAVE_WHATSAPP_FORM_REVISION,
+    variables: () => true,
+  },
+  error: new Error('Failed to save form revision'),
+};
+
+export const latestRevisionInvalidJsonMock = {
+  request: {
+    query: GET_LATEST_WHATSAPP_FORM_REVISION,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      whatsappForm: {
+        __typename: 'WhatsappFormResult',
+        whatsappForm: {
+          __typename: 'WhatsappForm',
+          name: 'Whatsapp Form',
+          revision: {
+            __typename: 'WhatsappFormRevision',
+            definition: '{ invalid json ]',
+            id: '417',
+          },
+          status: 'DRAFT',
+        },
+      },
+    },
+  },
+};
+
 export const revertWhatsappFormRevisionMock = {
   request: {
     query: REVERT_TO_WHATSAPP_FORM_REVISION,
@@ -748,6 +795,34 @@ export const revertWhatsappFormRevisionPayloadErrorMock = {
         __typename: 'WhatsappFormRevisionResult',
         errors: [{ key: 'revision', message: 'Revision could not be reverted' }],
         whatsappFormRevision: null,
+      },
+    },
+  },
+};
+
+export const getPublishedWhatsAppForm = {
+  request: {
+    query: GET_WHATSAPP_FORM,
+    variables: {
+      id: '2',
+    },
+  },
+  result: {
+    data: {
+      whatsappForm: {
+        whatsappForm: {
+          categories: ['customer_support'],
+          revision: {
+            id: '1',
+            definition: JSON.stringify(formJson),
+          },
+          description: 'This is test form',
+          id: '2',
+          metaFlowId: '1473834353902269',
+          name: 'This is form name',
+          status: 'PUBLISHED',
+          sheet: null,
+        },
       },
     },
   },

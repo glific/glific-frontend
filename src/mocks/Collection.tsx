@@ -456,6 +456,14 @@ export const deleteContactFromCollection = {
   },
 };
 
+export const deleteContactFromCollectionError = {
+  request: {
+    query: UPDATE_COLLECTION_CONTACTS,
+    variables: { input: { addContactIds: [], groupId: '1', deleteContactIds: ['1'] } },
+  },
+  error: new Error('Unable to remove contact from collection'),
+};
+
 export const getCollectionsList = (label?: any) => ({
   request: {
     query: GET_COLLECTIONS_LIST,

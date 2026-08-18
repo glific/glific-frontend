@@ -871,6 +871,31 @@ export const updateOrganizationStatusToSuspended = {
   },
 };
 
+// Status dropdown transition resolves but returns a payload-level error.
+export const updateOrganizationStatusToSuspendedPayloadError = {
+  request: {
+    query: UPDATE_ORGANIZATION_STATUS,
+    variables: { updateOrganizationId: '1', status: 'SUSPENDED' },
+  },
+  result: {
+    data: {
+      updateOrganizationStatus: {
+        organization: null,
+        errors: [{ key: 'status', message: 'Unable to update organization status' }],
+      },
+    },
+  },
+};
+
+// Status dropdown transition rejects outright.
+export const updateOrganizationStatusToSuspendedError = {
+  request: {
+    query: UPDATE_ORGANIZATION_STATUS,
+    variables: { updateOrganizationId: '1', status: 'SUSPENDED' },
+  },
+  error: new Error('Unable to update organization status'),
+};
+
 export const deleteOrganization = {
   request: {
     query: DELETE_ORGANIZATION,

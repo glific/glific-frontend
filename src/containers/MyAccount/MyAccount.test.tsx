@@ -5,7 +5,12 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { getCurrentUserQuery, updateUserQuery, updateUserNetworkErrorQuery } from 'mocks/User';
+import {
+  getCurrentUserQuery,
+  updateUserQuery,
+  updateUserNetworkErrorQuery,
+  updateUserIncorrectOtpQuery,
+} from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -226,6 +231,42 @@ describe('<MyAccount />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
+    });
+  });
+
+  test('shows a validation error when the payload reports an incorrect OTP', async () => {
+    const { container } = render(
+      <MockedProvider mocks={[getCurrentUserQuery, updateUserIncorrectOtpQuery, getOrganizationLanguagesQuery]}>
+        <MemoryRouter>
+          <MyAccount />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(async () => {
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
+    });
+
+    const input = await screen.findByPlaceholderText('OTP');
+    await user.click(input);
+    await user.keyboard('11111');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('Pass123456!');
+
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Please enter a valid OTP')).toBeInTheDocument();
     });
   });
 

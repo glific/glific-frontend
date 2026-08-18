@@ -19,8 +19,12 @@ import {
   revertWhatsappFormRevisionPayloadErrorMock,
   publishWhatsappFormErrorId1,
   publishWhatsappFormPayloadErrorId1,
+  saveWhatsappFormRevisionPayloadErrorMock,
+  saveWhatsappFormRevisionNetworkErrorMock,
+  latestRevisionInvalidJsonMock,
 } from 'mocks/WhatsAppForm';
-import { PUBLISH_FORM } from 'graphql/mutations/WhatsAppForm';
+import { PUBLISH_FORM, SAVE_WHATSAPP_FORM_REVISION } from 'graphql/mutations/WhatsAppForm';
+import { GET_LATEST_WHATSAPP_FORM_REVISION } from 'graphql/queries/WhatsAppForm';
 
 let capturedOnDragEnd: ((event: any) => void) | null = null;
 
@@ -98,6 +102,87 @@ describe('<Configure />', () => {
     await waitFor(() => {
       expect(screen.getByText('Saving')).toBeInTheDocument();
     });
+  });
+
+  test('it shows a warning when saving a form revision returns a payload error', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const errorMocks = WHATSAPP_FORM_MOCKS.filter(
+      (mock: any) => mock.request?.query !== SAVE_WHATSAPP_FORM_REVISION
+    ).concat(saveWhatsappFormRevisionPayloadErrorMock as any);
+
+    render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
+          <Routes>
+            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Error saving form revision', 'warning');
+    });
+  });
+
+  test('it shows a warning and logs the error when saving a form revision throws', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const errorMocks = WHATSAPP_FORM_MOCKS.filter(
+      (mock: any) => mock.request?.query !== SAVE_WHATSAPP_FORM_REVISION
+    ).concat(saveWhatsappFormRevisionNetworkErrorMock as any);
+
+    render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
+          <Routes>
+            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Error saving form revision', 'warning');
+    });
+  });
+
+  test('it silently catches a parse error when the latest revision has invalid JSON', async () => {
+    const errorMocks = WHATSAPP_FORM_MOCKS.map((mock: any) =>
+      mock.request?.query === GET_LATEST_WHATSAPP_FORM_REVISION && mock.request?.variables?.id === '1'
+        ? latestRevisionInvalidJsonMock
+        : mock
+    );
+
+    render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
+          <Routes>
+            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-screen')).toBeInTheDocument();
+    });
+
+    expect(screen.queryAllByTestId('form-screen')).toHaveLength(0);
   });
 
   test('it updates the screen name and button label which should be saved ', async () => {

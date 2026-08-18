@@ -162,6 +162,32 @@ export const bulkActionQuery = {
   },
 };
 
+// Mutation resolves but reports the bulk close as unsuccessful.
+export const bulkActionQueryUnsuccessful = {
+  request: {
+    query: UPDATE_TICKETS_STATUS,
+    variables: { input: { status: 'closed', topic: 'dob' } },
+  },
+  result: {
+    data: {
+      updateTicketStatusBasedOnTopic: {
+        __typename: 'BulkTicketResult',
+        message: 'Unable to close tickets',
+        success: false,
+      },
+    },
+  },
+};
+
+// Mutation rejects outright.
+export const bulkActionQueryError = {
+  request: {
+    query: UPDATE_TICKETS_STATUS,
+    variables: { input: { status: 'closed', topic: 'dob' } },
+  },
+  error: new Error('Unable to close tickets for this topic'),
+};
+
 export const exportTicketsMock = {
   request: {
     query: EXPORT_SUPPORT_TICKETS,

@@ -132,7 +132,14 @@ test('creating a subscription with response as pending', async () => {
 
   fireEvent.click(getByTestId('submitButton'));
 
-  await waitFor(() => {});
+  // Wait for the full stripePayment() promise chain (confirmCardSetup -> success) to settle
+  // before this test returns. Otherwise the click's still-pending async work (and its use of
+  // the module-level `confirmCardSetupMock`, shared across every test in this file) can resolve
+  // during a *later* test and steal that test's `mockResolvedValueOnce`/`mockImplementationOnce`
+  // queue entries, causing flaky "No more mocked responses" failures there.
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
+  });
 });
 
 test('shows a warning and resets the subscription when 3D-secure confirmation fails', async () => {

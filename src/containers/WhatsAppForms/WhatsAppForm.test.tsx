@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
-import { formJson, WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
+import { formJson, getPublishedWhatsAppForm, WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import WhatsAppFormList from './WhatsAppFormList/WhatsAppFormList';
 import WhatsAppForms from './WhatsAppForms';
@@ -76,6 +76,25 @@ describe('<WhatsAppForms />', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
+  });
+
+  test('it should disable the form fields when the form is already published', async () => {
+    const { getByText } = render(
+      <MockedProvider mocks={[...WHATSAPP_FORM_MOCKS, getPublishedWhatsAppForm]}>
+        <MemoryRouter initialEntries={['/whatsapp-forms/2/edit']}>
+          <Routes>
+            <Route path="/whatsapp-forms/:id/edit" element={<WhatsAppForms />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('WhatsApp Form')).toBeInTheDocument();
+    });
+
+    expect(getByText('Please view below details')).toBeInTheDocument();
   });
 
   test('error should include form instead of flow', async () => {

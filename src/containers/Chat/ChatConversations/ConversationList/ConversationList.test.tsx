@@ -12,6 +12,8 @@ import { conversationCollectionQuery } from 'mocks/Chat';
 import { cache as collectionCache } from 'config/apolloclient';
 import { searchGroupQuery, waGroup } from 'mocks/Groups';
 import { collection, collectionWithLoadMore, contact } from 'containers/Chat/ChatMessages/ChatMessages.test';
+import { SEARCH_MULTI_QUERY } from 'graphql/queries/Search';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, DEFAULT_MESSAGE_LOADMORE_LIMIT } from 'common/constants';
 
 const contactCache = new InMemoryCache({});
 const groupsCache = new InMemoryCache({});
@@ -233,5 +235,136 @@ test('it renders whatsapp groups for multi search', async () => {
     const listItems = screen.getAllByTestId('list');
     expect(listItems.length).toBe(6);
     fireEvent.click(listItems[0]);
+  });
+});
+
+const buildMultiSearchMessage = (id: number, term: string) => ({
+  id: `${id}`,
+  body: `Please check this ${id} - ${term}`,
+  messageNumber: id,
+  insertedAt: '2021-05-05T05:40:02.434957Z',
+  contact: {
+    id: `${id}`,
+    name: `Contact ${id}`,
+    phone: '+919090909090',
+    maskedPhone: '9090******90',
+    lastMessageAt: '2021-05-03T04:56:38Z',
+    status: 'VALID',
+    bspStatus: 'NONE',
+  },
+  receiver: { id: '1' },
+  sender: { id: '1' },
+  type: 'TEXT',
+  media: null,
+  contextMessage: null,
+  flowLabel: null,
+});
+
+const multiSearchTerm = 'loadmoreterm';
+
+const multiSearchRequestVariables = (offset: number, limit: number) => ({
+  contactOpts: { limit: DEFAULT_ENTITY_LIMIT, order: 'DESC' },
+  searchFilter: { term: multiSearchTerm },
+  messageOpts: { limit, offset, order: 'ASC' },
+});
+
+// exercises loadMoreMessages()'s multi-search branch in ConversationList.tsx: appending
+// additional messages, an errored request (caught by `.catch`), and finally an empty page that
+// flips `showLoadMore` off.
+test('multi-search load more: appends messages, recovers from an error, then exhausts results', async () => {
+  const initialMultiSearchMock = {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: multiSearchRequestVariables(0, DEFAULT_MESSAGE_LIMIT),
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [],
+          messages: Array.from({ length: 20 }, (_, i) => buildMultiSearchMessage(i + 1, multiSearchTerm)),
+          labels: [],
+        },
+      },
+    },
+  };
+
+  const appendMultiSearchMock = {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: multiSearchRequestVariables(20, DEFAULT_MESSAGE_LOADMORE_LIMIT),
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [],
+          messages: [buildMultiSearchMessage(21, multiSearchTerm)],
+          labels: [],
+        },
+      },
+    },
+  };
+
+  const erroredMultiSearchMock = {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: multiSearchRequestVariables(21, DEFAULT_MESSAGE_LOADMORE_LIMIT),
+    },
+    error: new Error('Network error'),
+  };
+
+  const emptyMultiSearchMock = {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: multiSearchRequestVariables(21, DEFAULT_MESSAGE_LOADMORE_LIMIT),
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [],
+          messages: [],
+          labels: [],
+        },
+      },
+    },
+  };
+
+  const multiSearchLoadMoreProps: any = {
+    searchVal: multiSearchTerm,
+    searchMode: false,
+    searchParam: {},
+    entityType: 'contact',
+  };
+
+  render(
+    <MockedProvider
+      mocks={[initialMultiSearchMock, appendMultiSearchMock, erroredMultiSearchMock, emptyMultiSearchMock]}
+    >
+      <Router>
+        <ConversationList {...multiSearchLoadMoreProps} />
+      </Router>
+    </MockedProvider>
+  );
+
+  // 20 messages > DEFAULT_MESSAGE_LIMIT - 1 makes the "Load more" button render
+  await waitFor(() => {
+    expect(screen.getByText('Load more')).toBeInTheDocument();
+  });
+
+  // click 1: a non-empty response appends to the existing multi-search messages
+  fireEvent.click(screen.getByText('Load more'));
+  await waitFor(() => {
+    expect(screen.getByText('Load more')).toBeInTheDocument();
+  });
+
+  // click 2: a network error is swallowed by `.catch`, leaving `showLoadMore` untouched
+  fireEvent.click(screen.getByText('Load more'));
+  await waitFor(() => {
+    expect(screen.getByText('Load more')).toBeInTheDocument();
+  });
+
+  // click 3: an empty page sets `showLoadMore(false)`, hiding the "Load more" button
+  fireEvent.click(screen.getByText('Load more'));
+  await waitFor(() => {
+    expect(screen.queryByText('Load more')).not.toBeInTheDocument();
   });
 });
