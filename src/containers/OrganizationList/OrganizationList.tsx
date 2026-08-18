@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { OutlinedInput } from '@mui/material';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import { DELETE_ORGANIZATION, UPDATE_ORGANIZATION_STATUS } from 'graphql/mutations/Organization';
@@ -54,11 +54,7 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
     </div>
   );
 
-  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS, {
-    onCompleted: () => {
-      setNotification('Organization updated successfully');
-    },
-  });
+  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
 
   const getStatus = (id: any, status: string) => {
     const options = [
@@ -71,13 +67,22 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
     ];
 
     const statusField = {
-      onChange: (event: any) => {
-        updateOrganizationStatus({
-          variables: {
-            updateOrganizationId: id,
-            status: event.target.value,
-          },
-        });
+      onChange: async (event: any) => {
+        try {
+          const { data } = await updateOrganizationStatus({
+            variables: {
+              updateOrganizationId: id,
+              status: event.target.value,
+            },
+          });
+          if (data?.updateOrganizationStatus?.errors) {
+            setNotification(data.updateOrganizationStatus.errors[0].message, 'warning');
+            return;
+          }
+          setNotification('Organization updated successfully');
+        } catch (error) {
+          setErrorMessage(error);
+        }
       },
       value: status,
       style: { width: '187px' },

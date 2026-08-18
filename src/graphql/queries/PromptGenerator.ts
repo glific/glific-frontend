@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const PROMPT_GENERATION = gql`
   query PromptGeneration($id: ID!) {

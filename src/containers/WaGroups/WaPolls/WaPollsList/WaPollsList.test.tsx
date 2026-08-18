@@ -1,8 +1,8 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
-import { WaPollListMocks } from 'mocks/WaPolls';
+import { WaPollListMocks, deletePollErrorQuery } from 'mocks/WaPolls';
 import WaPolls from '../WaPolls';
 import WaPollsList from './WaPollsList';
 
@@ -99,5 +99,37 @@ test('it should delete the poll', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('it shows an error when deleting the poll fails', async () => {
+  const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+  const errorMocks: any[] = [...WaPollListMocks.filter((mock) => mock !== WaPollListMocks[6]), deletePollErrorQuery];
+
+  render(
+    <MockedProvider mocks={errorMocks}>
+      <MemoryRouter initialEntries={['/group/polls']}>
+        <Routes>
+          <Route path="group/polls" element={<WaPollsList />} />
+          <Route path="group/polls/:id/edit" element={<WaPolls />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('delete-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
   });
 });

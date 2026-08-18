@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import * as Notification from 'common/notification';

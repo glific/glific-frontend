@@ -313,6 +313,7 @@ export const CREATE_SESSION_TEMPLATE_MOCK = [
   {
     request: {
       query: CREATE_TEMPLATE,
+      variables: () => true,
     },
     result: () => ({
       data: {
@@ -350,7 +351,6 @@ export const CREATE_SESSION_TEMPLATE_MOCK = [
       },
     }),
     maxUsageCount: Number.POSITIVE_INFINITY,
-    variableMatcher: () => true,
   },
 ];
 
@@ -602,6 +602,7 @@ export const getSpeedSendTemplate2 = {
 export const updateSessiontemplate = {
   request: {
     query: UPDATE_TEMPLATE,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -640,7 +641,6 @@ export const updateSessiontemplate = {
       },
     },
   },
-  variableMatcher: (variables: any) => true,
 };
 
 export const templatesData = [

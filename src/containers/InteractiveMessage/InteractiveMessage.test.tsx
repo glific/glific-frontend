@@ -1,6 +1,6 @@
 import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router';
 import { vi } from 'vitest';
@@ -118,7 +118,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const renderInteractiveMessage = (id: string, mocks: any) => {
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
         <Routes>
           <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
@@ -135,7 +135,7 @@ const interactiveMessage = (mock?: any) => {
   }
 
   return (
-    <MockedProvider mocks={MOCKS} addTypename={false}>
+    <MockedProvider mocks={MOCKS}>
       <MemoryRouter>
         <InteractiveMessage />
       </MemoryRouter>
@@ -628,57 +628,63 @@ describe('copy interactive message', () => {
   });
 });
 
-test('it uploads a file successfully', async () => {
-  const uploadUrl = 'https://storage.example.com/test-image.png';
-  const uploadMock = {
-    request: { query: UPLOAD_MEDIA },
-    newData: () => Promise.resolve({ data: { uploadMedia: uploadUrl } }),
-  };
-
-  render(interactiveMessage([uploadMock]));
-
+const selectUploadAttachmentFile = async (mockFile: File) => {
   const autos = await screen.findAllByRole('combobox');
   expect(autos.length).toBeGreaterThan(1);
 
   fireEvent.mouseDown(autos[1]);
 
-  // Now "UPLOAD ATTACHMENT" should be visible!
   const uploadOption = await screen.findByRole('option', { name: /upload attachment/i });
   await userEvent.click(uploadOption);
 
-  const mockFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
-  const origClick = HTMLInputElement.prototype.click;
-  const origPicker = (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> })
-    .showOpenFilePicker;
+  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+  const fileList = {
+    0: mockFile,
+    length: 1,
+    item: (i: number) => (i === 0 ? mockFile : null),
+  } as unknown as FileList;
+  Object.defineProperty(fileInput, 'files', { configurable: true, get: () => fileList });
+  fireEvent.change(fileInput);
+};
 
-  HTMLInputElement.prototype.click = function patchedClick(this: HTMLInputElement): void {
-    if (this.type === 'file') {
-      const fileList = {
-        0: mockFile,
-        length: 1,
-        item: (i: number) => (i === 0 ? mockFile : null),
-      } as unknown as FileList;
-      Object.defineProperty(this, 'files', { configurable: true, get: () => fileList });
-      this.dispatchEvent(new Event('input', { bubbles: true }));
-      this.dispatchEvent(new Event('change', { bubbles: true }));
-      return;
-    }
-    origClick.call(this);
+test('it uploads a file and shows the attachment URL on success', async () => {
+  const uploadUrl = 'https://storage.example.com/test-image.png';
+  const uploadMock = {
+    request: { query: UPLOAD_MEDIA, variables: () => true },
+    result: { data: { uploadMedia: uploadUrl } },
   };
 
-  (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> }).showOpenFilePicker = async () => [
-    {
-      getFile: async () => mockFile,
-    } as FileSystemFileHandle,
-  ];
+  render(interactiveMessage([uploadMock]));
 
-  await waitFor(
-    () => {
-      expect(setNotification).toHaveBeenCalled();
-    },
-    { timeout: 3000 }
-  );
+  const mockFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
+  await selectUploadAttachmentFile(mockFile);
 
-  HTMLInputElement.prototype.click = origClick;
-  (window as Window & { showOpenFilePicker?: () => Promise<FileSystemFileHandle[]> }).showOpenFilePicker = origPicker;
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('File uploaded successfully', 'success');
+  });
+  await waitFor(() => {
+    expect(screen.getByDisplayValue(uploadUrl)).toBeInTheDocument();
+  });
+  // the busy spinner clears once the upload settles
+  expect(screen.queryByText('Uploading...')).not.toBeInTheDocument();
+});
+
+test('it shows a warning and resets upload state when the file upload fails', async () => {
+  const uploadErrorMock = {
+    request: { query: UPLOAD_MEDIA, variables: () => true },
+    error: new Error('Failed to upload'),
+  };
+
+  render(interactiveMessage([uploadErrorMock]));
+
+  const mockFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
+  await selectUploadAttachmentFile(mockFile);
+
+  await waitFor(() => {
+    expect(setErrorMessage).toHaveBeenCalled();
+  });
+  // the upload UI returns to its retry state instead of staying stuck on "Uploading..."
+  await waitFor(() => {
+    expect(screen.getByText('Choose File')).toBeInTheDocument();
+  });
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import {
   FormControl,
@@ -38,8 +38,18 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
 
   const { t } = useTranslation();
 
-  const [autoTranslateFlow, { loading }] = useMutation(AUTO_TRANSLATE_FLOW, {
-    onCompleted: ({ inlineFlowLocalization }) => {
+  const [autoTranslateFlow, { loading }] = useMutation(AUTO_TRANSLATE_FLOW);
+
+  const [exportFlowTranslations, { loading: exportLoad }] = useLazyQuery(EXPORT_FLOW_LOCALIZATIONS, {
+    fetchPolicy: 'network-only',
+  });
+
+  const [importFlow, { loading: importingLoad }] = useMutation(IMPORT_FLOW_LOCALIZATIONS);
+
+  const handleAuto = async () => {
+    try {
+      const { data } = await autoTranslateFlow({ variables: { id: flowId } });
+      const { inlineFlowLocalization } = data;
       if (inlineFlowLocalization.success) {
         setDialog(false);
         setNotification(t('Flow has been translated successfully'));
@@ -48,44 +58,31 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         setDialog(false);
         setNotification(inlineFlowLocalization.errors[0].message, 'warning');
       }
-    },
-    onError: (error: any) => {
+    } catch (error: any) {
       setDialog(false);
       setErrorMessage(error);
-    },
-  });
+    }
+  };
 
-  const [exportFlowTranslations, { loading: exportLoad }] = useLazyQuery(EXPORT_FLOW_LOCALIZATIONS, {
-    fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlowLocalization }) => {
-      const { exportData } = exportFlowLocalization;
-      exportCsvFile(exportData, `Flow_Translations_${flowId}`);
-      setDialog(false);
-    },
-    onError: (error) => {
-      setDialog(false);
+  const runExportFlowTranslations = async (addTranslation: boolean) => {
+    try {
+      const { data } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
+      if (data) {
+        const { exportData } = data.exportFlowLocalization;
+        exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+      }
+    } catch {
       setNotification(t('An error occured while exporting flow translations'), 'warning');
-    },
-  });
-
-  const [importFlow, { loading: importingLoad }] = useMutation(IMPORT_FLOW_LOCALIZATIONS, {
-    onCompleted: (result: any) => {
-      setImporting(false);
-      setDialog(false);
-      loadFlowEditor();
-    },
-  });
-
-  const handleAuto = () => {
-    autoTranslateFlow({ variables: { id: flowId } });
+    }
+    setDialog(false);
   };
 
   const handleExport = async () => {
-    exportFlowTranslations({ variables: { id: flowId, addTranslation: false } });
+    await runExportFlowTranslations(false);
   };
 
   const handleAutoExport = () => {
-    exportFlowTranslations({ variables: { id: flowId, addTranslation: true } });
+    runExportFlowTranslations(true);
   };
 
   const handleOk = () => {
@@ -108,12 +105,24 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     }
   };
 
+  const handleImport = async (result: string) => {
+    try {
+      const { data } = await importFlow({ variables: { localization: result, id: flowId } });
+      setImporting(false);
+      if (data?.importFlowLocalization?.success) {
+        setDialog(false);
+        loadFlowEditor();
+      } else {
+        setNotification(t('An error occured while importing flow translations'), 'warning');
+      }
+    } catch (error) {
+      setImporting(false);
+      setErrorMessage(error);
+    }
+  };
+
   const importButton = (
-    <ImportButton
-      title={t('Import translations')}
-      onImport={() => setImporting(true)}
-      afterImport={(result: string) => importFlow({ variables: { localization: result, id: flowId } })}
-    />
+    <ImportButton title={t('Import translations')} onImport={() => setImporting(true)} afterImport={handleImport} />
   );
 
   if (importing) {

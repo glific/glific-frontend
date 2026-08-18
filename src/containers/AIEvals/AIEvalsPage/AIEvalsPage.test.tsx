@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
@@ -20,8 +20,7 @@ import * as AuthService from 'services/AuthService';
 import AIEvalsPage from './AIEvalsPage';
 
 const aiEvaluationsListMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: { data: { aiEvaluations: [] } },
 };
 
@@ -34,7 +33,7 @@ const defaultMocks = [
 
 const renderComponent = (mocks: any[] = defaultMocks) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={['/ai-evaluations']}>
         <Routes>
           <Route path="/ai-evaluations" element={<AIEvalsPage />} />

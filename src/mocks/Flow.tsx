@@ -520,7 +520,7 @@ export const importFlow = {
 };
 
 export const importFlowWithAssistantError = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -535,11 +535,10 @@ export const importFlowWithAssistantError = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const importFlowWithSheetError = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -554,11 +553,10 @@ export const importFlowWithSheetError = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const importFlowWithAssistantAndSheetError = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -573,11 +571,10 @@ export const importFlowWithAssistantAndSheetError = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const importFlowWithoutNodeFields = {
-  request: { query: IMPORT_FLOW },
+  request: { query: IMPORT_FLOW, variables: () => true },
   result: {
     data: {
       importFlow: {
@@ -590,7 +587,6 @@ export const importFlowWithoutNodeFields = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 export const exportFlow = {
@@ -657,6 +653,67 @@ export const getFreeFlowForced = {
       },
     },
   },
+};
+
+export const getFreeFlowAvailable = {
+  request: {
+    query: GET_FREE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      flowGet: {
+        flow: {
+          id: '1',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+        errors: [],
+      },
+    },
+  },
+};
+
+export const exportFlowNetworkError = {
+  request: {
+    query: EXPORT_FLOW,
+    variables: { id: '1' },
+  },
+  error: new Error('Failed to export flow'),
+};
+
+export const resetFlowCountNetworkError = {
+  request: {
+    query: RESET_FLOW_COUNT,
+    variables: { flowId: '1' },
+  },
+  error: new Error('Failed to reset flow count'),
+};
+
+export const publishFlowSuccess = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: null,
+        success: true,
+      },
+    },
+  },
+};
+
+export const publishFlowNetworkError = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  error: new Error('Failed to publish flow'),
 };
 
 export const resetFlowCount = {
@@ -793,6 +850,17 @@ export const importFlowTranslationsMock = {
   },
 };
 
+export const importFlowTranslationsUnsuccessfulMock = {
+  ...importFlowTranslationsMock,
+  result: {
+    data: {
+      importFlowLocalization: {
+        success: false,
+      },
+    },
+  },
+};
+
 export const exportFlowTranslationsMock = (autoTranslate: boolean) => ({
   request: {
     query: EXPORT_FLOW_LOCALIZATIONS,
@@ -863,15 +931,15 @@ export const createFlowQuery = (input: any) => ({
     variables: {
       input,
     },
-    result: {
-      data: {
-        createFlow: {
-          errors: null,
-          flow: {
-            ...input,
-            roles: [],
-            uuid: 'c18190b4-5f14-47f3-acfd-c301e5edf3a0',
-          },
+  },
+  result: {
+    data: {
+      createFlow: {
+        errors: null,
+        flow: {
+          ...input,
+          roles: [],
+          uuid: 'c18190b4-5f14-47f3-acfd-c301e5edf3a0',
         },
       },
     },

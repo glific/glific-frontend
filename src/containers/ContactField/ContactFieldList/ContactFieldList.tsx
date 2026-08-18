@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, Button } from '@mui/material';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import { List } from 'containers/List/List';
 import { InlineInput } from 'components/UI/Form/InlineInput/InlineInput';
@@ -25,11 +25,7 @@ const ContactFieldList = () => {
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
   const [error, setError] = useState<any>(null);
 
-  const [deleteContactField] = useMutation(DELETE_CONTACT_FIELDS, {
-    onError: () => {
-      setNotification('Sorry! An error occured while deleting the contact field', 'warning');
-    },
-  });
+  const [deleteContactField] = useMutation(DELETE_CONTACT_FIELDS);
 
   let dialog;
 
@@ -53,21 +49,7 @@ const ContactFieldList = () => {
     setItemToBeEdited(null);
   };
 
-  const [updateContactField] = useMutation(UPDATE_CONTACT_FIELDS, {
-    onCompleted: (response: any) => {
-      const { errors: _errors } = response.updateContactsField;
-      if (_errors?.length > 0) {
-        const { key, message } = _errors[0];
-        setError(`${key} ${message}`);
-      } else {
-        // Cleanup
-        handleCloseModal();
-      }
-    },
-    onError: () => {
-      setNotification('Sorry! An error occured while updating the contact field', 'warning');
-    },
-  });
+  const [updateContactField] = useMutation(UPDATE_CONTACT_FIELDS);
 
   const queries = {
     countQuery: COUNT_CONTACT_FIELDS,
@@ -75,7 +57,7 @@ const ContactFieldList = () => {
     deleteItemQuery: DELETE_CONTACT_FIELDS,
   };
 
-  const handleEditCallback = (row: any, updatedVal: string, column: string) => {
+  const handleEditCallback = async (row: any, updatedVal: string, column: string) => {
     if (!updatedVal) {
       setError('Required');
       return;
@@ -88,7 +70,19 @@ const ContactFieldList = () => {
       input: payload,
     };
 
-    updateContactField({ variables });
+    try {
+      const { data: response } = await updateContactField({ variables });
+      const { errors: _errors } = response.updateContactsField;
+      if (_errors?.length > 0) {
+        const { key, message } = _errors[0];
+        setError(`${key} ${message}`);
+      } else {
+        // Cleanup
+        handleCloseModal();
+      }
+    } catch {
+      setNotification(t('Sorry! An error occured while updating the contact field'), 'warning');
+    }
   };
 
   const columnNames = [
@@ -168,18 +162,20 @@ const ContactFieldList = () => {
         buttonOk: 'Delete field',
         buttonMiddle: 'Delete field & data',
         additionalTitleStyles: styles.Title,
-        handleMiddle: () => {
-          deleteContactField({
-            variables: {
-              deleteAssoc: true,
-              id: deleteItemID,
-            },
-            onCompleted: () => {
-              setNotification('Contact field deleted successfully!');
-              refetch();
-              setDeleteItemID(null);
-            },
-          });
+        handleMiddle: async () => {
+          try {
+            await deleteContactField({
+              variables: {
+                deleteAssoc: true,
+                id: deleteItemID,
+              },
+            });
+            setNotification(t('Contact field deleted successfully!'));
+            refetch();
+            setDeleteItemID(null);
+          } catch {
+            setNotification(t('Sorry! An error occured while deleting the contact field'), 'warning');
+          }
         },
       },
     };

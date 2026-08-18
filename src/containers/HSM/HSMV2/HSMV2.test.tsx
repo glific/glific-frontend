@@ -1,5 +1,5 @@
 import { render, waitFor, fireEvent, screen, within } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSMV2 } from './HSMV2';
@@ -73,7 +73,7 @@ describe('HSMV2 edit mode', () => {
     );
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyMock];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -108,7 +108,7 @@ describe('HSMV2 edit mode', () => {
     );
     const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia, familyMock];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -130,7 +130,7 @@ describe('HSMV2 edit mode', () => {
   test('copy mode prefixes the label with "Copy of" and leaves the element name blank', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, ...CREATE_SESSION_TEMPLATE_MOCK];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={[{ pathname: '/add', state: { mode: 'copy', sourceId: '1' } }]}>
           <Routes>
             <Route path="/add" element={<HSMV2 />} />
@@ -152,7 +152,7 @@ describe('HSMV2 edit mode', () => {
 describe('HSMV2 add mode', () => {
   const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK, templateLibraryMock()];
   const template = (
-    <MockedProvider mocks={MOCKS} addTypename={false}>
+    <MockedProvider mocks={MOCKS}>
       <MemoryRouter>
         <HSMV2 />
       </MemoryRouter>
@@ -244,7 +244,7 @@ describe('HSMV2 add mode', () => {
 
     setOrganizationServices('{"__typename":"OrganizationServicesResult","templateLibraryEnabled":true}');
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter>
           <HSMV2 />
         </MemoryRouter>
@@ -312,7 +312,7 @@ describe('HSMV2 add mode', () => {
     };
 
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={[{ pathname: '/add', state: { libraryTemplate } }]}>
           <HSMV2 />
         </MemoryRouter>
@@ -354,7 +354,7 @@ describe('HSMV2 add mode', () => {
     };
 
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={[{ pathname: '/add', state: { libraryTemplate } }]}>
           <HSMV2 />
         </MemoryRouter>
@@ -637,7 +637,6 @@ describe('HSMV2 add mode', () => {
           ...CREATE_SESSION_TEMPLATE_MOCK,
           uploadMediaSuccessMock('photo.png', 'image/png', 'https://gcs.test.com/photo.png'),
         ]}
-        addTypename={false}
       >
         <MemoryRouter>
           <HSMV2 />
@@ -721,7 +720,6 @@ describe('HSMV2 add mode', () => {
           ...CREATE_SESSION_TEMPLATE_MOCK,
           uploadMediaSuccessMock('sample.pdf', 'application/pdf', 'https://gcs.test.com/sample.pdf'),
         ]}
-        addTypename={false}
       >
         <MemoryRouter>
           <HSMV2 />
@@ -756,7 +754,6 @@ describe('HSMV2 add mode', () => {
           ...CREATE_SESSION_TEMPLATE_MOCK,
           uploadMediaFailureMock('broken.png', 'image/png', 'upload failed'),
         ]}
-        addTypename={false}
       >
         <MemoryRouter>
           <HSMV2 />
@@ -860,7 +857,7 @@ describe('HSMV2 add mode', () => {
 
   test('clicking the back icon navigates back to the HSM list', async () => {
     render(
-      <MockedProvider mocks={[...mocks, ...WHATSAPP_FORM_MOCKS]} addTypename={false}>
+      <MockedProvider mocks={[...mocks, ...WHATSAPP_FORM_MOCKS]}>
         <MemoryRouter initialEntries={['/template/add']}>
           <Routes>
             <Route path="/template/add" element={<HSMV2 />} />
@@ -891,7 +888,7 @@ describe('HSMV2 add mode', () => {
       }),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter>
           <HSMV2 />
         </MemoryRouter>
@@ -953,7 +950,7 @@ describe('HSMV2 language versions', () => {
   test('the dedicated /:id/edit route shows the language versions summary read-only, with the Add new language option available', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -980,7 +977,7 @@ describe('HSMV2 language versions', () => {
   test('the detail form is collapsed on arrival and only appears after clicking View', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyFetchMock()];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -1013,7 +1010,7 @@ describe('HSMV2 language versions', () => {
     );
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -1035,7 +1032,7 @@ describe('HSMV2 language versions', () => {
   test('the dedicated /:id/edit route never offers Delete — only the add-language flow does', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, familyFetchMock()];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -1062,7 +1059,7 @@ describe('HSMV2 language versions', () => {
       deleteTemplateMock('2'),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1102,7 +1099,7 @@ describe('HSMV2 language versions', () => {
       deleteTemplateMock('1'),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1133,7 +1130,7 @@ describe('HSMV2 language versions', () => {
     ];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(variantsWithRejected)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1164,7 +1161,7 @@ describe('HSMV2 language versions', () => {
       familyFetchMock(anchorOnly),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[
             {
@@ -1203,7 +1200,7 @@ describe('HSMV2 language versions', () => {
       familyFetchMock([familyVariants[0]]),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSMV2 />} />
@@ -1226,7 +1223,7 @@ describe('HSMV2 language versions', () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1265,7 +1262,7 @@ describe('HSMV2 language versions', () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1308,7 +1305,7 @@ describe('HSMV2 language versions', () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1348,7 +1345,7 @@ describe('HSMV2 language versions', () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1385,7 +1382,7 @@ describe('HSMV2 language versions', () => {
     const anchorOnly = [familyVariants[0]];
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock(anchorOnly)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1450,7 +1447,7 @@ describe('HSMV2 language versions', () => {
       ),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1517,7 +1514,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(translateRequest, translateResult),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1584,7 +1581,7 @@ describe('HSMV2 language versions', () => {
       ),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1630,7 +1627,7 @@ describe('HSMV2 language versions', () => {
     });
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ctaAnchorMock, familyFetchMock(anchorOnly)];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1686,7 +1683,7 @@ describe('HSMV2 language versions', () => {
       ),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1740,7 +1737,7 @@ describe('HSMV2 language versions', () => {
       ),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1801,7 +1798,7 @@ describe('HSMV2 language versions', () => {
       ),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1839,7 +1836,7 @@ describe('HSMV2 language versions', () => {
   test('canceling the delete confirmation dialog leaves the variant untouched', async () => {
     const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, getHSMTemplateTypeText, familyFetchMock()];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1875,7 +1872,7 @@ describe('HSMV2 language versions', () => {
       deleteTemplateErrorMock('2', 'network error'),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1923,7 +1920,7 @@ describe('HSMV2 language versions', () => {
       deleteTemplateMock('2'),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >
@@ -1977,7 +1974,7 @@ describe('HSMV2 language versions', () => {
       }),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/template/1/edit']}>
           <Routes>
             <Route path="/template/:id/edit" element={<HSMV2 />} />
@@ -2007,7 +2004,7 @@ describe('HSMV2 language versions', () => {
       sessionTemplatesV2ErrorMock({ isHsm: true, shortcode: 'element_name' }, 'network error', familyFetchOpts),
     ];
     render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter
           initialEntries={[{ pathname: '/add', state: { languageAnchorId: '1', anchorShortcode: 'account_balance' } }]}
         >

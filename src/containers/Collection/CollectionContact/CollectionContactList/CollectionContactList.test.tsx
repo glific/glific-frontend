@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
@@ -12,8 +12,12 @@ import {
 } from 'mocks/Contact';
 import { setUserSession } from 'services/AuthService';
 import { CollectionContactList } from './CollectionContactList';
-import { addContactToCollection, deleteContactFromCollection } from 'mocks/Collection';
-import { setNotification } from 'common/notification';
+import {
+  addContactToCollection,
+  deleteContactFromCollection,
+  deleteContactFromCollectionError,
+} from 'mocks/Collection';
+import { setNotification, setErrorMessage } from 'common/notification';
 
 const mockedNavigate = vi.fn();
 vi.mock('react-router', async () => {
@@ -79,7 +83,7 @@ const mocks = [
   }),
 ];
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <CollectionContactList title={'Default Collection'} />
     </MemoryRouter>
@@ -93,6 +97,7 @@ vi.mock('common/notification', async (importOriginal) => {
     setNotification: vi.fn((...args) => {
       return args[1];
     }),
+    setErrorMessage: vi.fn(),
   };
 });
 
@@ -146,6 +151,51 @@ describe('<CollectionContactList />', () => {
     });
 
     fireEvent.click(screen.getByTestId('ok-button'));
+  });
+
+  test('shows an error when removing a contact from the collection fails', async () => {
+    const errorMocks = [
+      countCollectionContactsQuery,
+      getCollectionContactsQuery({
+        filter: { includeGroups: '1' },
+        opts: {
+          limit: 50,
+          offset: 0,
+          order: 'ASC',
+          orderWith: 'name',
+        },
+      }),
+      deleteContactFromCollectionError,
+    ];
+    const { getByTestId, getByText } = render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter>
+          <CollectionContactList title={'Default Collection'} />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Glific User')).toBeInTheDocument();
+    });
+
+    const checkboxes = screen.getAllByRole('checkbox');
+
+    fireEvent.click(checkboxes[1]);
+
+    fireEvent.click(getByTestId('deleteBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
   });
 
   test('add contacts', async () => {

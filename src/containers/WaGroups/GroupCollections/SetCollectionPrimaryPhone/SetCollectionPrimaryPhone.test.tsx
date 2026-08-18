@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import {
@@ -29,7 +29,7 @@ vi.mock('context/role', () => ({
 
 const renderComponent = (mocks: any[] = [phonesMock]) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <SetCollectionPrimaryPhone collectionId="5" />
     </MockedProvider>
   );

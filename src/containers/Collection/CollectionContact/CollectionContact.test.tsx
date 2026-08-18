@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
@@ -42,7 +42,7 @@ const mocks = [
 ];
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <CollectionContact />
     </MemoryRouter>

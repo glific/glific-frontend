@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_ASK_GLIFIC_CONVERSATIONS = gql`
   query AskGlificConversations($limit: Int, $lastId: String) {

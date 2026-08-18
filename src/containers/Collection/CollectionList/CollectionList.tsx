@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
@@ -81,19 +81,7 @@ export const CollectionList = () => {
     columnStyles,
   };
 
-  const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
-    onCompleted: (data) => {
-      if (data.exportCollection.errors) {
-        setNotification(data.exportCollection.errors[0].message, 'warning');
-      } else if (data.exportCollection.status) {
-        exportCsvFile(data.exportCollection.status, 'collection');
-      }
-      setExportData(false);
-    },
-    onError: (error) => {
-      setNotification('An error occured while exporting the collection', 'warning');
-    },
-  });
+  const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA);
 
   const dialogMessage = t("You won't be able to use this collection again.");
 
@@ -104,13 +92,23 @@ export const CollectionList = () => {
     setAddContactsDialogShow(true);
   };
 
-  const exportCollection = (id: string) => {
+  const exportCollection = async (id: string) => {
     setExportData(true);
-    exportCollectionData({
-      variables: {
-        exportCollectionId: id,
-      },
-    });
+    try {
+      const { data } = await exportCollectionData({
+        variables: {
+          exportCollectionId: id,
+        },
+      });
+      if (data?.exportCollection.errors) {
+        setNotification(data.exportCollection.errors[0].message, 'warning');
+      } else if (data?.exportCollection.status) {
+        exportCsvFile(data.exportCollection.status, 'collection');
+      }
+    } catch {
+      setNotification('An error occurred while exporting the collection', 'warning');
+    }
+    setExportData(false);
   };
 
   if (addContactsDialogShow) {

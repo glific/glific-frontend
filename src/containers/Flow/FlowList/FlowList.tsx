@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 
 import { FormControl, IconButton, MenuItem, Select } from '@mui/material';
 

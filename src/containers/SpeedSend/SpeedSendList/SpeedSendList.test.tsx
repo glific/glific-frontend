@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { cleanup, render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router';
 
@@ -10,7 +10,7 @@ afterEach(cleanup);
 const mocks = [...SPEED_SEND_LIST, ...SPEED_SEND_LIST];
 
 const speedSend = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <SpeedSendList />
     </Router>

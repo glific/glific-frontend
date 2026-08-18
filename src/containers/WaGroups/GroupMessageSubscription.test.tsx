@@ -1,5 +1,5 @@
 import { cleanup, render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { setUserSession } from 'services/AuthService';
 import { GroupMessageSubscription } from './GroupMessageSubscription';
 import { GROUP_CONVERSATION_MOCKS } from 'mocks/Groups';
@@ -18,7 +18,7 @@ describe('<GroupMessageSubscription />', () => {
 
   test('should render <GroupMessageSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <GroupMessageSubscription {...GroupMessageParams} />
       </MockedProvider>
     );
@@ -32,7 +32,7 @@ describe('<GroupMessageSubscription />', () => {
 describe('<GroupMessageSubscription />', () => {
   test('should render <GroupMessageSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <GroupMessageSubscription {...GroupMessageParams} />
       </MockedProvider>
     );

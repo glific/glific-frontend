@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { render, waitFor } from '@testing-library/react';
 import { CreateAutoComplete } from './CreateAutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';

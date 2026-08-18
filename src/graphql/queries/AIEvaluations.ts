@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const COUNT_AI_EVALUATIONS = gql`
   query countAiEvaluations($filter: AiEvaluationFilter) {

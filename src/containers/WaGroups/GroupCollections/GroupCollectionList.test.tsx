@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
@@ -14,7 +14,8 @@ import {
   updateWaGroupCollection,
 } from 'mocks/Groups';
 import { setVariables } from 'common/constants';
-import { setNotification } from 'common/notification';
+import { setNotification, setErrorMessage } from 'common/notification';
+import { UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
 
 let getCollectionsVariables = {
   filter: { includeGroups: '1' },
@@ -56,11 +57,12 @@ vi.mock('common/notification', async (importOriginal) => {
     setNotification: vi.fn((...args) => {
       return args[1];
     }),
+    setErrorMessage: vi.fn(),
   };
 });
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/collection/1/groups']}>
       <GroupCollectionList />
     </MemoryRouter>
@@ -185,5 +187,54 @@ describe('<GroupCollectionList />', () => {
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
+  });
+
+  test('shows an error and keeps the dialog open when removing groups fails', async () => {
+    const errorMocks = [
+      ...mocks.filter(
+        (mock: any) =>
+          !(
+            mock.request.query === UPDATE_COLLECTION_WA_GROUP &&
+            JSON.stringify(mock.request.variables) ===
+              JSON.stringify({ input: { groupId: '1', addWaGroupIds: [], deleteWaGroupIds: ['19'] } })
+          )
+      ),
+      {
+        request: {
+          query: UPDATE_COLLECTION_WA_GROUP,
+          variables: { input: { groupId: '1', addWaGroupIds: [], deleteWaGroupIds: ['19'] } },
+        },
+        error: new Error('An error occurred'),
+      },
+    ];
+
+    const { getByTestId, getByText } = render(
+      <MockedProvider mocks={errorMocks}>
+        <MemoryRouter initialEntries={['/collection/1/groups']}>
+          <GroupCollectionList />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Group 12')).toBeInTheDocument();
+    });
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    fireEvent.click(checkboxes[1]);
+    fireEvent.click(getByTestId('deleteBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
   });
 });

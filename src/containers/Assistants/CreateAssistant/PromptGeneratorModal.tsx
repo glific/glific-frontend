@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
@@ -150,12 +150,18 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   const allAnswered = answersFilledCount === questions.length;
 
   const [generatePrompt, { loading: generating }] = useMutation(GENERATE_PROMPT);
-  const [pollPromptGeneration, { data: pollData, error: pollError, stopPolling, startPolling }] = useLazyQuery(
-    PROMPT_GENERATION,
-    {
+  const [pollPromptGeneration, { called: pollCalled, data: pollData, error: pollError, stopPolling, startPolling }] =
+    useLazyQuery(PROMPT_GENERATION, {
       fetchPolicy: 'network-only',
+    });
+
+  // Apollo Client 4 throws if stopPolling is called before the lazy query has ever executed
+  // (e.g. closing the modal before generation starts).
+  const safeStopPolling = () => {
+    if (pollCalled) {
+      stopPolling();
     }
-  );
+  };
 
   const clearTimers = () => {
     if (timeoutRef.current) {
@@ -166,14 +172,14 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
 
   const handleFailure = (message: string) => {
     clearTimers();
-    stopPolling();
+    safeStopPolling();
     setInlineError(message);
     setPhase('error');
   };
 
   const markReady = (text: string) => {
     clearTimers();
-    stopPolling();
+    safeStopPolling();
     setGeneratedText(text);
     setPhase('ready');
   };
@@ -207,7 +213,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
   useEffect(
     () => () => {
       clearTimers();
-      stopPolling();
+      safeStopPolling();
     },
     []
   );
@@ -218,7 +224,7 @@ export const PromptGeneratorModal = ({ open, onClose, onApply, answers, setAnswe
 
   const handleClose = () => {
     clearTimers();
-    stopPolling();
+    safeStopPolling();
     onClose();
   };
 

@@ -1,5 +1,5 @@
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -29,7 +29,7 @@ const renderWrapper = (props?: any) => {
   };
 
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <StartAFlow {...defaultProps} />
     </MockedProvider>
   );
@@ -194,7 +194,7 @@ test('shows error toast when contact flow mutation fails', async () => {
 
   const errorMocks = [getPublishedFlowQuery, addFlowToContactQueryError];
   const { getByTestId, getByText, getByRole } = render(
-    <MockedProvider mocks={errorMocks} addTypename={false}>
+    <MockedProvider mocks={errorMocks}>
       <StartAFlow collectionId="" entityId="1" groups={false} setShowFlowDialog={setShowFlowDialogMock} />
     </MockedProvider>
   );
@@ -226,7 +226,7 @@ test('shows error toast when collection flow mutation fails', async () => {
 
   const errorMocks = [getPublishedFlowQuery, addFlowToCollectionQueryError];
   const { getByTestId, getByText, getByRole } = render(
-    <MockedProvider mocks={errorMocks} addTypename={false}>
+    <MockedProvider mocks={errorMocks}>
       <StartAFlow collectionId="1" entityId="" groups={false} setShowFlowDialog={setShowFlowDialogMock} />
     </MockedProvider>
   );

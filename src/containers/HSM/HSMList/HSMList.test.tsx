@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MemoryRouter as Router } from 'react-router';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { HSM_LIST, bulkApplyMutation, bulkApplyMutationWIthError } from 'mocks/Template';
 import { BULK_APPLY_TEMPLATES } from 'graphql/mutations/Template';
@@ -56,7 +56,7 @@ export const syncTemplateQueryFailedQuery = {
 const mocks = [...HSM_LIST, ...HSM_LIST, ...HSM_LIST, ...HSM_LIST];
 
 const template = (mockQuery?: any) => (
-  <MockedProvider mocks={mockQuery ? [...mocks, mockQuery] : mocks} addTypename={false}>
+  <MockedProvider mocks={mockQuery ? [...mocks, mockQuery] : mocks}>
     <Router>
       <HSMList />
     </Router>

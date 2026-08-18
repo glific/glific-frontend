@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useParams } from 'react-router';
 import { Box, Collapse } from '@mui/material';
 import { useTranslation } from 'react-i18next';

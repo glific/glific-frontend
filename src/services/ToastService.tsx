@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 import { setNotification } from 'common/notification';
 import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';

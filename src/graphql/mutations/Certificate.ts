@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const CREATE_CERTIFICATE = gql`
   mutation CreateCertificateTemplate($input: CertificateTemplateInput!) {

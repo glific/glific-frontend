@@ -10,9 +10,9 @@ import { List } from 'containers/List/List';
 import styles from './GroupCollectionList.module.css';
 
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useState } from 'react';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
@@ -68,23 +68,25 @@ export const GroupCollectionList = () => {
 
   const [updateCollectionGroups] = useMutation(UPDATE_COLLECTION_WA_GROUP);
 
-  const handleCollectionRemove = () => {
+  const handleCollectionRemove = async () => {
     const idsToRemove = selectedGroups.map((collection: any) => collection.id);
-    updateCollectionGroups({
-      variables: {
-        input: {
-          groupId: collectionId,
-          addWaGroupIds: [],
-          deleteWaGroupIds: idsToRemove,
+    try {
+      await updateCollectionGroups({
+        variables: {
+          input: {
+            groupId: collectionId,
+            addWaGroupIds: [],
+            deleteWaGroupIds: idsToRemove,
+          },
         },
-      },
-      onCompleted: () => {
-        setNotification(t('Group has been removed successfully from the collection.'), 'success');
-        setUpdateCollection(!updateCollection);
-      },
-    });
-    setRemoveGroupsDialogShow(false);
-    setGroupsToRemove([]);
+      });
+      setRemoveGroupsDialogShow(false);
+      setGroupsToRemove([]);
+      setNotification(t('Group has been removed successfully from the collection.'), 'success');
+      setUpdateCollection(!updateCollection);
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   const setDialogBox = (selectedGroups: any) => {

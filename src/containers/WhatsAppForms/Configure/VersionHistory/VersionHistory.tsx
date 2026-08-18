@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { Box, Button, CircularProgress, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { DATE_TIME_FORMAT_WITH_AMPM_LONG } from 'common/constants';
@@ -41,33 +41,35 @@ export const VersionHistory = ({ whatsappFormId, onRevisionReverted, onRevisionP
     fetchPolicy: 'network-only',
   });
 
-  const [revertToRevision, { loading: reverting }] = useMutation(REVERT_TO_WHATSAPP_FORM_REVISION, {
-    onCompleted: (data) => {
-      setNotification('Successfully reverted to selected version', 'success');
-      setShowRevertDialog(false);
-      setSelectedRevision(null);
-      onRevisionReverted(data);
-      refetch();
-    },
-    onError: (error) => {
-      setNotification('Error reverting to version', 'warning');
-      setLogs(error, 'error');
-    },
-  });
+  const [revertToRevision, { loading: reverting }] = useMutation(REVERT_TO_WHATSAPP_FORM_REVISION);
 
   const handleRevertClick = (revision: Revision) => {
     setSelectedRevision(revision);
     setShowRevertDialog(true);
   };
 
-  const handleConfirmRevert = () => {
+  const handleConfirmRevert = async () => {
     if (selectedRevision) {
-      revertToRevision({
-        variables: {
-          whatsappFormId,
-          revisionId: selectedRevision.id,
-        },
-      });
+      try {
+        const { data: revertData } = await revertToRevision({
+          variables: {
+            whatsappFormId,
+            revisionId: selectedRevision.id,
+          },
+        });
+        if (revertData?.revertToWhatsappFormRevision?.errors) {
+          setNotification(revertData.revertToWhatsappFormRevision.errors[0].message, 'warning');
+          return;
+        }
+        setNotification('Successfully reverted to selected version', 'success');
+        setShowRevertDialog(false);
+        setSelectedRevision(null);
+        onRevisionReverted(revertData);
+        refetch();
+      } catch (error) {
+        setNotification('Error reverting to version', 'warning');
+        setLogs(error, 'error');
+      }
     }
   };
 

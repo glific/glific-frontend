@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import BlockIcon from 'assets/images/icons/Block.svg?react';
 import UnblockIcon from 'assets/images/icons/Unblock.svg?react';
 import { List } from 'containers/List/List';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { DELETE_CONTACT, UPDATE_CONTACT } from 'graphql/mutations/Contact';
@@ -61,10 +61,6 @@ export const BlockContactList = () => {
   };
 
   const [unblockContact] = useMutation(UPDATE_CONTACT, {
-    onCompleted: () => {
-      setUnblockDialog(false);
-      setNotification(t('Contact unblocked successfully'));
-    },
     refetchQueries: [
       { query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES },
       { query: CONTACT_SEARCH_QUERY, variables: contactSearchQueryVariables },
@@ -79,7 +75,7 @@ export const BlockContactList = () => {
     setUnblockDialog(true);
   };
 
-  const handleUnblock = () => {
+  const handleUnblock = async () => {
     const variables = {
       id: contactId,
       input: {
@@ -87,9 +83,13 @@ export const BlockContactList = () => {
       },
     };
 
-    unblockContact({
-      variables,
-    });
+    try {
+      await unblockContact({ variables });
+      setUnblockDialog(false);
+      setNotification(t('Contact unblocked successfully'));
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   if (unblockDialog) {

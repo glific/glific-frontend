@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from 'App';
 import axios from 'axios';
@@ -24,7 +24,7 @@ vi.mock('react-router', async () => ({
 }));
 
 const app = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter initialEntries={['/login']}>
       <App />
     </MemoryRouter>
@@ -108,7 +108,7 @@ describe('App Component - Token Refresh Tests', () => {
       },
     });
 
-    checkAuthSpy.mockResolvedValue(false);
+    checkAuthSpy.mockReturnValue(false);
 
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() - 1);
@@ -136,7 +136,7 @@ describe('App Component - Token Refresh Tests', () => {
     const checkAuthSpy = vi.spyOn(AuthService, 'checkAuthStatusService');
 
     renewTokenSpy.mockRejectedValue(new Error('Token refresh failed'));
-    checkAuthSpy.mockResolvedValue(false);
+    checkAuthSpy.mockReturnValue(false);
 
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() - 1);
@@ -166,7 +166,7 @@ describe('App Component - Token Refresh Tests', () => {
 
   test('should handle logout route correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter initialEntries={['/logout/user']}>
           <App />
         </MemoryRouter>

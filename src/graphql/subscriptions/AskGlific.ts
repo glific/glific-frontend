@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const ASK_GLIFIC_RESPONSE_SUBSCRIPTION = gql`
   subscription AskGlificResponse($organizationId: ID!) {

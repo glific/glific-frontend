@@ -39,8 +39,7 @@ export const getCreateEvaluationWithVariablesMock = (input: {
 });
 
 export const getCreateEvaluationSuccessMock = {
-  request: { query: CREATE_EVALUATION },
-  variableMatcher: () => true,
+  request: { query: CREATE_EVALUATION, variables: () => true },
   result: evaluationSuccessResult,
 };
 
@@ -136,8 +135,7 @@ export const getAssistantConfigVersionsMultipleNamesMock = {
 };
 
 export const createGoldenQaSuccessMock = {
-  request: { query: CREATE_GOLDEN_QA },
-  variableMatcher: () => true,
+  request: { query: CREATE_GOLDEN_QA, variables: () => true },
   result: {
     data: {
       createGoldenQa: {
@@ -150,8 +148,7 @@ export const createGoldenQaSuccessMock = {
 };
 
 export const createGoldenQaErrorMock = {
-  request: { query: CREATE_GOLDEN_QA },
-  variableMatcher: () => true,
+  request: { query: CREATE_GOLDEN_QA, variables: () => true },
   result: {
     data: {
       createGoldenQa: {
@@ -164,8 +161,7 @@ export const createGoldenQaErrorMock = {
 };
 
 export const createGoldenQaNetworkErrorMock = {
-  request: { query: CREATE_GOLDEN_QA },
-  variableMatcher: () => true,
+  request: { query: CREATE_GOLDEN_QA, variables: () => true },
   error: new Error('Network error'),
 };
 
@@ -175,8 +171,7 @@ export const createGoldenQaCustomSuccessMock = (
   id = '456',
   datasetId = '999'
 ) => ({
-  request: { query: CREATE_GOLDEN_QA },
-  variableMatcher: () => true,
+  request: { query: CREATE_GOLDEN_QA, variables: () => true },
   result: {
     data: {
       createGoldenQa: {
@@ -189,8 +184,7 @@ export const createGoldenQaCustomSuccessMock = (
 });
 
 export const createGoldenQaNoMessageErrorMock = {
-  request: { query: CREATE_GOLDEN_QA },
-  variableMatcher: () => true,
+  request: { query: CREATE_GOLDEN_QA, variables: () => true },
   result: {
     data: {
       createGoldenQa: {
@@ -387,14 +381,12 @@ export const completedEvaluationWithBothMetrics = {
 };
 
 export const getListAiEvaluationsWithItemsMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: { data: { aiEvaluations: [failedEvaluationItem, completedEvaluationItem] } },
 };
 
 export const getListAiEvaluationsInvalidResultsMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: {
     data: {
       aiEvaluations: [{ ...completedEvaluationItem, id: '5', name: 'bad-results-eval', results: 'not-valid-json{{' }],
@@ -403,8 +395,7 @@ export const getListAiEvaluationsInvalidResultsMock = {
 };
 
 export const getListAiEvaluationsAllStatusesMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: {
     data: {
       aiEvaluations: [failedEvaluationItem, completedEvaluationItem, runningEvaluationItem],
@@ -413,8 +404,7 @@ export const getListAiEvaluationsAllStatusesMock = {
 };
 
 export const getListAiEvaluationsBothMetricsMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: { data: { aiEvaluations: [completedEvaluationWithBothMetrics] } },
 };
 
@@ -638,8 +628,7 @@ export const secondCompletedEvaluationItem = {
 };
 
 export const getListAiEvaluationsTwoCompletedMock = {
-  request: { query: LIST_AI_EVALUATIONS },
-  variableMatcher: () => true,
+  request: { query: LIST_AI_EVALUATIONS, variables: () => true },
   result: { data: { aiEvaluations: [completedEvaluationItem, secondCompletedEvaluationItem] } },
 };
 

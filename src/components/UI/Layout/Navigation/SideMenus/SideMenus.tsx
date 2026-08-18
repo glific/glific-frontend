@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {
   Accordion,
@@ -73,18 +73,19 @@ const SideMenus = ({ opened }: SideMenusProps) => {
 
   // handle count for notifictions
   const [getNotificationCount, { data: notificationData }] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
-    variables: {
-      filter: {
-        is_read: false,
-      },
-    },
     fetchPolicy: 'cache-and-network',
   });
 
   const notificationCount = notificationData?.countNotifications ?? 0;
 
   useEffect(() => {
-    getNotificationCount();
+    getNotificationCount({
+      variables: {
+        filter: {
+          is_read: false,
+        },
+      },
+    });
   }, []);
 
   // let's get count specific to menu paths

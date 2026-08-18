@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 

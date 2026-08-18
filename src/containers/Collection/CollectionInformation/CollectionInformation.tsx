@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import { GET_COLLECTION_INFO } from 'graphql/queries/Collection';

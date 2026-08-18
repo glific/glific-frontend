@@ -1,7 +1,7 @@
 import { ListItemButton } from '@mui/material';
 import { Link, useLocation } from 'react-router';
 import dayjs from 'dayjs';
-import { useApolloClient, useMutation } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 
 import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
 import { MARK_AS_READ } from 'graphql/mutations/Chat';

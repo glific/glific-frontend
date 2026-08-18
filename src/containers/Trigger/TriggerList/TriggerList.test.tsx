@@ -1,5 +1,5 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter } from 'react-router';
 
 import { triggerListQuery, triggerCountQuery } from 'mocks/Trigger';
@@ -9,7 +9,7 @@ import { TriggerList } from './TriggerList';
 const mocks = [triggerListQuery, triggerCountQuery];
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <TriggerList />
     </MemoryRouter>

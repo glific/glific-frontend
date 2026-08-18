@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import * as Notification from 'common/notification';
 import { FlowTranslation } from './FlowTranslation';
 import {
@@ -10,21 +10,44 @@ import {
   getFlowTranslationsNetworkError,
   getFlowTranslationsWithErrors,
   importFlowTranslationsMock,
+  importFlowTranslationsUnsuccessfulMock,
 } from 'mocks/Flow';
-import userEvent from '@testing-library/user-event';
+
+// The real ImportButton drives the mutation off a FileReader completion event, which
+// doesn't reliably fire through userEvent.upload() in jsdom. Mock it so the import tests
+// exercise FlowTranslation's own success/error handling instead of file-reading plumbing.
+vi.mock('components/UI/ImportButton/ImportButton', () => ({
+  ImportButton: ({ onImport, afterImport }: any) => (
+    <button
+      data-testid="mock-import-button"
+      onClick={() => {
+        onImport?.();
+        afterImport(
+          'Type,UUID,en,hi\nType,UUID,English,Hindi\naction,6e3ce9b0-f4a0-4a9d-a182-02647cdbcc80,No worries. You can always change that by sending us *help*.,चिंता न करें। आप हमेशा मदद मेनू में जाकर उसे बदल सकते हैं। आप अभी भी हमें कभी भी मैसेज कर सकते हैं।\naction,852fc451-7482-4c09-b3c6-55cad8546b6b,Thank you for giving us the permission. We really appreciate it.,हमें अनुमति देने के लिए धन्यवाद। हम वास्तव में इसकी बहुत सराहना करते हैं।\n'
+        );
+      }}
+    >
+      Mock Import
+    </button>
+  ),
+}));
 
 const defaultmocks = [getFlowTranslations];
 
 const mockSetDialog = vi.fn();
 const flowTranslation = (mocks: any = defaultmocks) => {
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <FlowTranslation loadFlowEditor={vi.fn()} flowId="1" setDialog={mockSetDialog} />
     </MockedProvider>
   );
 };
 
 describe('Testing Translation flows', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should render <FlowTranslation>', async () => {
     const wrapper = render(flowTranslation());
     await waitFor(() => {
@@ -84,8 +107,6 @@ describe('Testing Translation flows', () => {
       expect(errorMessageSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'Network error: Failed to translate flow',
-          graphQLErrors: [],
-          networkError: expect.objectContaining({ message: 'Network error: Failed to translate flow' }),
         })
       );
     });
@@ -134,18 +155,59 @@ describe('Testing Translation flows', () => {
   });
 
   it('imports a translated flow', async () => {
-    const user = userEvent.setup();
-    const { getByText, getByTestId } = render(flowTranslation([importFlowTranslationsMock]));
-
-    const csvContent =
-      'Type,UUID,en,hi\nType,UUID,English,Hindi\naction,6e3ce9b0-f4a0-4a9d-a182-02647cdbcc80,No worries. You can always change that by sending us *help*.,चिंता न करें। आप हमेशा मदद मेनू में जाकर उसे बदल सकते हैं। आप अभी भी हमें कभी भी मैसेज कर सकते हैं।\naction,852fc451-7482-4c09-b3c6-55cad8546b6b,Thank you for giving us the permission. We really appreciate it.,हमें अनुमति देने के लिए धन्यवाद। हम वास्तव में इसकी बहुत सराहना करते हैं।\n';
-    const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
+    const mockLoadFlowEditor = vi.fn();
+    const { getByText, getByTestId } = render(
+      <MockedProvider mocks={[importFlowTranslationsMock]}>
+        <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
+      </MockedProvider>
+    );
 
     fireEvent.click(getByText('Import translations'));
-    await user.upload(getByTestId('import'), file);
+    fireEvent.click(getByTestId('mock-import-button'));
 
     await waitFor(() => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
+      expect(mockLoadFlowEditor).toHaveBeenCalled();
+    });
+  });
+
+  it('shows a warning and keeps the dialog open when the import responds unsuccessfully', async () => {
+    const mockLoadFlowEditor = vi.fn();
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { getByText, getByTestId } = render(
+      <MockedProvider mocks={[importFlowTranslationsUnsuccessfulMock]}>
+        <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(getByText('Import translations'));
+    fireEvent.click(getByTestId('mock-import-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('An error occured while importing flow translations', 'warning');
+    });
+    expect(mockSetDialog).not.toHaveBeenCalledWith(false);
+    expect(mockLoadFlowEditor).not.toHaveBeenCalled();
+  });
+
+  it('stops the importing state when the import mutation fails', async () => {
+    const mockLoadFlowEditor = vi.fn();
+    const importError = {
+      request: importFlowTranslationsMock.request,
+      error: new Error('Failed to import translations'),
+    };
+    const { getByText, getByTestId, queryByText } = render(
+      <MockedProvider mocks={[importError]}>
+        <FlowTranslation loadFlowEditor={mockLoadFlowEditor} flowId="1" setDialog={mockSetDialog} />
+      </MockedProvider>
+    );
+
+    fireEvent.click(getByText('Import translations'));
+    fireEvent.click(getByTestId('mock-import-button'));
+
+    await waitFor(() => {
+      expect(queryByText('Uploading...')).not.toBeInTheDocument();
+      expect(mockLoadFlowEditor).not.toHaveBeenCalled();
     });
   });
   it('it closes the warning dialog box', async () => {

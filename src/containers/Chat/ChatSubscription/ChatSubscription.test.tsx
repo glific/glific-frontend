@@ -1,6 +1,8 @@
 import { cleanup, render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing/react';
+import { InMemoryCache, ApolloClient, HttpLink } from '@apollo/client';
+
+import { ApolloProvider } from '@apollo/client/react';
 
 import { setUserSession } from 'services/AuthService';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
@@ -12,8 +14,8 @@ const { capturedUpdateQueries } = vi.hoisted(() => ({
   capturedUpdateQueries: [] as Array<(prev: any, options: any) => any>,
 }));
 
-vi.mock('@apollo/client', async () => {
-  const actual = await vi.importActual<any>('@apollo/client');
+vi.mock('@apollo/client/react', async () => {
+  const actual = await vi.importActual<any>('@apollo/client/react');
   const subscribeToMore = (options: any) => {
     if (options?.updateQuery) {
       capturedUpdateQueries.push(options.updateQuery);
@@ -41,7 +43,7 @@ describe('<ChatSubscription />', () => {
 
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <ChatSubscription {...ChatSubscriptionParams} />
       </MockedProvider>
     );
@@ -90,7 +92,7 @@ const body = {
   whatsappFormResponse: null,
 };
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache({});
 export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
@@ -185,7 +187,7 @@ cache.writeQuery({
 
 const client = new ApolloClient({
   cache: cache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
 });
 
@@ -193,7 +195,7 @@ describe('<ChatSubscription />', () => {
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
       <ApolloProvider client={client}>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <ChatSubscription {...ChatSubscriptionParams} />
         </MockedProvider>
       </ApolloProvider>

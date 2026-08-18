@@ -1,7 +1,7 @@
 import { MemoryRouter } from 'react-router';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect } from 'vitest';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { InMemoryCache } from '@apollo/client';
 
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
@@ -39,7 +39,7 @@ vi.mock('react-router', async () => ({
   useNavigate: () => mockedUsedNavigate,
 }));
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache({});
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
@@ -190,7 +190,7 @@ describe('Chat interface', () => {
   });
 });
 
-const emptyCache = new InMemoryCache({ addTypename: false });
+const emptyCache = new InMemoryCache({});
 
 emptyCache.writeQuery({
   query: SEARCH_QUERY,
@@ -227,7 +227,7 @@ describe('Chat interface for empty cache', () => {
 });
 
 describe('Chat interface with filters', () => {
-  const cache = new InMemoryCache({ addTypename: false });
+  const cache = new InMemoryCache({});
   cache.writeQuery(searchQuery);
   const MOCKS = [
     ...mocks,
@@ -264,18 +264,17 @@ describe('Chat interface with filters', () => {
       expect(screen.getByText('Search conversations')).toBeInTheDocument();
     });
 
-    const dateFrom = screen.queryByTestId('Date from');
-    const dateTo = screen.queryByTestId('Date to');
-
-    if (dateFrom) {
-      fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
-    }
+    const dateFrom = await screen.findByTestId('Date from');
+    fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
   });
 
   test('should show filtered messages after applying `to` date filter', async () => {
@@ -291,17 +290,17 @@ describe('Chat interface with filters', () => {
       expect(screen.getByText('Search conversations')).toBeInTheDocument();
     });
 
-    const dateTo = screen.queryByTestId('Date to');
-
-    if (dateTo) {
-      fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
-    }
+    const dateTo = await screen.findByTestId('Date to');
+    fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
 
     fireEvent.click(screen.getByTestId('loadMoreMessages'));
   });
@@ -319,19 +318,19 @@ describe('Chat interface with filters', () => {
       expect(screen.getByText('Search conversations')).toBeInTheDocument();
     });
 
-    const dateFrom = screen.queryByTestId('Date from');
-    const dateTo = screen.queryByTestId('Date to');
-
-    if (dateTo && dateFrom) {
-      fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
-      fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
-    }
+    const dateFrom = await screen.findByTestId('Date from');
+    const dateTo = await screen.findByTestId('Date to');
+    fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
+    fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
 
     fireEvent.click(screen.getByTestId('show-current-messages'));
 
@@ -343,8 +342,11 @@ describe('Chat interface with filters', () => {
 
     fireEvent.click(screen.getByTestId('additionalActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
   });
 });

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 /** @deprecated Use FILTER_ASSISTANTS instead */
 export const GET_ASSISTANTS = gql`

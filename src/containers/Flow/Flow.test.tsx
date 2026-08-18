@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useParams } from 'react-router';
 import { vi } from 'vitest';
@@ -80,18 +80,23 @@ const mocks = [
   releaseFlow,
   getFilterTagQuery,
   updateFlowQuery,
-  createFlowQuery({
-    isActive: true,
-    isPinned: false,
-    isBackground: false,
-    name: 'New Flow',
-    keywords: [],
-    description: '',
-    ignoreKeywords: false,
-    addRoleIds: [],
-    deleteRoleIds: [],
-    skipValidation: false,
-  }),
+  {
+    ...createFlowQuery({
+      isActive: true,
+      isPinned: false,
+      isBackground: false,
+      name: 'New Flow',
+      keywords: [],
+      description: '',
+      ignoreKeywords: false,
+      addRoleIds: [],
+      deleteRoleIds: [],
+      skipValidation: false,
+    }),
+    // slow this mutation down so the button's transient loading state is reliably observable
+    // (a delay comparable to waitFor's polling interval is too easy to race past)
+    delay: 300,
+  },
   copyFlowQuery({
     isActive: true,
     isPinned: false,
@@ -140,7 +145,7 @@ beforeEach(() => {
 });
 
 const flow = () => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Flow />
     </MemoryRouter>
@@ -226,7 +231,7 @@ it('should not allow special characters in keywords', async () => {
 
 it('should edit the flow', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, updateFlowQuery]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow" element={<FlowList />} />
@@ -259,7 +264,7 @@ it('should edit the flow', async () => {
 
 it('should configure the flow', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
+    <MockedProvider mocks={[...mocks, updateFlowQuery]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow" element={<FlowList />} />
@@ -293,7 +298,10 @@ it('should configure the flow', async () => {
 
 it('should edit the flow and show error if exists', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={[...mocks, updateFlowQueryWithError]} addTypename={false}>
+    // updateFlowQueryWithError must come before `mocks` (which already contains the
+    // success-case updateFlowQuery mock for the same request/variables) - Apollo Client 4's
+    // MockLink matches the first equal-variables entry, so array order picks the winner here.
+    <MockedProvider mocks={[updateFlowQueryWithError, ...mocks]}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -326,7 +334,7 @@ it('should create copy of flow', async () => {
   mockUseLocationValue.state = 'copy';
 
   const copyFlow = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -353,7 +361,7 @@ it('buttons should be disabled in template state', async () => {
   mockUseLocationValue.state = 'template';
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -382,7 +390,7 @@ it('should create copy of a template flow', async () => {
   mockUseLocationValue.state = 'copyTemplate';
 
   const copyFlow = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />

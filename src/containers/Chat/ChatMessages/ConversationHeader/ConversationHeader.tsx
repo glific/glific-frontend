@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Toolbar, Typography, Popper, Fade, Paper, Button, ClickAwayListener, IconButton } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
@@ -99,19 +99,17 @@ export const ConversationHeader = ({
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
-    variables: setVariables({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION }),
     fetchPolicy: 'cache-and-network',
   });
 
   // get contact collections
   const [getContactCollections, { data }] = useLazyQuery(GET_CONTACT_COLLECTIONS, {
-    variables: { id: entityId },
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
     if (entityId && !groups) {
-      getContactCollections();
+      getContactCollections({ variables: { id: entityId } });
     }
   }, [entityId]);
 
@@ -421,7 +419,7 @@ export const ConversationHeader = ({
       data-testid="collectionButton"
       className={styles.ListButtonPrimary}
       onClick={() => {
-        getCollections();
+        getCollections({ variables: setVariables({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION }) });
         setShowCollectionDialog(true);
       }}
     >

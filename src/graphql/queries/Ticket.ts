@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const TICKET_LIST_QUERY = gql`
   query Tickets($filter: TicketFilter, $opts: Opts) {

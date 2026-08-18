@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
@@ -28,7 +28,7 @@ vi.mock('common/notification', () => ({
 
 const renderComponent = (mocks: any[] = [getOrgEvalAccessRequestNoneMock]) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <AIEvalsRequestAcess />
       </MemoryRouter>
@@ -117,7 +117,7 @@ describe('AIEvalsRequestAcess', () => {
 
   it('redirects to main AI Evaluations when access is already approved', async () => {
     render(
-      <MockedProvider mocks={[getOrgEvalAccessRequestApprovedMock]} addTypename={false}>
+      <MockedProvider mocks={[getOrgEvalAccessRequestApprovedMock]}>
         <MemoryRouter initialEntries={['/ai-evaluations/intro']}>
           <Routes>
             <Route path="/ai-evaluations/intro" element={<AIEvalsRequestAcess />} />
@@ -205,7 +205,7 @@ describe('AIEvalsRequestAcess', () => {
     );
 
     render(
-      <MockedProvider mocks={[]} addTypename={false}>
+      <MockedProvider mocks={[]}>
         <MemoryRouter initialEntries={['/ai-evaluations/intro']}>
           <Routes>
             <Route path="/ai-evaluations/intro" element={<AIEvalsRequestAcess />} />

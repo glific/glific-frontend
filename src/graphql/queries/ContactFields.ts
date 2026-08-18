@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_ALL_CONTACT_FIELDS = gql`
   query contactsFields($filter: ContactsFieldFilter, $opts: Opts) {

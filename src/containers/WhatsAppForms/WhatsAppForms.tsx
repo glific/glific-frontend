@@ -1,6 +1,6 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import Update from '@mui/icons-material/Update';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import * as Yup from 'yup';
 
@@ -51,24 +51,28 @@ export const WhatsAppForms = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  useQuery(GET_WHATSAPP_FORM, {
+  const { data: whatsappFormData } = useQuery(GET_WHATSAPP_FORM, {
     skip: !params.id,
     variables: { id: params.id },
-    onCompleted: ({ whatsappForm }) => {
-      if (whatsappForm?.whatsappForm?.status === 'PUBLISHED') {
-        setDisabled(true);
-      }
-    },
   });
+
+  useEffect(() => {
+    if (whatsappFormData?.whatsappForm?.whatsappForm?.status === 'PUBLISHED') {
+      setDisabled(true);
+    }
+  }, [whatsappFormData]);
+
   let isEditing = false;
   if (params.id) {
     isEditing = true;
   }
 
-  const { loading } = useQuery(LIST_FORM_CATEGORIES, {
-    onCompleted: ({ whatsappFormCategories }) => {
+  const { loading, data: formCategoriesData } = useQuery(LIST_FORM_CATEGORIES);
+
+  useEffect(() => {
+    if (formCategoriesData?.whatsappFormCategories) {
       setCategories(
-        whatsappFormCategories.map((category: string) => ({
+        formCategoriesData.whatsappFormCategories.map((category: string) => ({
           id: category,
           name: category
             .toLowerCase()
@@ -76,8 +80,8 @@ export const WhatsAppForms = () => {
             .replace(/\b\w/g, (c) => c.toUpperCase()),
         }))
       );
-    },
-  });
+    }
+  }, [formCategoriesData]);
 
   const states = {
     name,

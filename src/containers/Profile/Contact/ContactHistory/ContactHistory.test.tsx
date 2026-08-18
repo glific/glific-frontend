@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { ContactHistory } from './ContactHistory';
 import { contactHistoryQuery, countContactHistoryQuery, contactHistoryQueryUpdatedOffset } from 'mocks/Contact';
@@ -12,7 +12,7 @@ const defaultProps = {
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <ContactHistory {...defaultProps} />
     </MockedProvider>
   </MemoryRouter>

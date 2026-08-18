@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@mui/material';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import AttachmentIcon from 'assets/images/icons/Attachment/Unselected.svg?react';

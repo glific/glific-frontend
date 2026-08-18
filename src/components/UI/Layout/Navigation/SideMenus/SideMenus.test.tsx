@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { resetRolePermissions, setUserRolePermissions } from 'context/role';
 import { getNotificationCountQuery, markAllNotificationAsRead } from 'mocks/Notifications';
@@ -22,7 +22,7 @@ const expectMenuSelected = async (title: string) => {
 
 const renderSideMenus = (pathname = '/') =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[pathname]}>
         <SideMenus opened={true} />
       </MemoryRouter>

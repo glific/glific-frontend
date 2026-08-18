@@ -9,11 +9,11 @@ import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { getContactStatus, getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
 
 export interface CollectionContactListProps {
@@ -74,23 +74,25 @@ export const CollectionContactList = ({ title, descriptionBox = <></> }: Collect
 
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
 
-  const handleCollectionRemove = () => {
+  const handleCollectionRemove = async () => {
     const idsToRemove = selectedContacts.map((collection: any) => collection.id);
-    updateCollectionContacts({
-      variables: {
-        input: {
-          groupId: collectionId,
-          addContactIds: [],
-          deleteContactIds: idsToRemove,
+    try {
+      await updateCollectionContacts({
+        variables: {
+          input: {
+            groupId: collectionId,
+            addContactIds: [],
+            deleteContactIds: idsToRemove,
+          },
         },
-      },
-      onCompleted: () => {
-        setNotification(t('Contact has been removed successfully from the collection.'), 'success');
-        setUpdateCollection(!updateCollection);
-      },
-    });
-    setRemoveContactsDialogShow(false);
-    setContactsToRemove([]);
+      });
+      setRemoveContactsDialogShow(false);
+      setContactsToRemove([]);
+      setNotification(t('Contact has been removed successfully from the collection.'), 'success');
+      setUpdateCollection(!updateCollection);
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   const setDialogBox = (selectedContacts: any) => {

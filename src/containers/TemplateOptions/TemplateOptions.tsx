@@ -25,8 +25,8 @@ import {
   BUTTON_OPTIONS,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
-import { Fragment, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { Fragment, useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client/react';
 import { GET_WHATSAPP_FORM_DEFINITIONS } from 'graphql/queries/WhatsAppForm';
 import { getOrganizationServices } from 'services/AuthService';
 
@@ -84,21 +84,24 @@ export const TemplateOptions = ({
     buttonOptions = BUTTON_OPTIONS.filter((option: any) => option.id !== WHATSAPP_FORM);
   }
 
-  useQuery(GET_WHATSAPP_FORM_DEFINITIONS, {
+  const { data: whatsappFormsData } = useQuery(GET_WHATSAPP_FORM_DEFINITIONS, {
     variables: {
       filter: { status: 'PUBLISHED' },
     },
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
+  });
+
+  useEffect(() => {
+    if (whatsappFormsData) {
       setForms(
-        data.listWhatsappForms.map((form: any) => ({
+        whatsappFormsData.listWhatsappForms.map((form: any) => ({
           label: form?.name,
           id: form?.metaFlowId,
           definition: form?.revision?.definition,
         }))
       );
-    },
-  });
+    }
+  }, [whatsappFormsData]);
 
   const handleAddClick = (helper: any, type: boolean) => {
     const obj = type ? { type: '', value: '', title: '', url_type: '', sampleSuffix: '' } : { value: '' };

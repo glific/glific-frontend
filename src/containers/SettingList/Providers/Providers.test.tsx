@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router';
+import { MockedProvider } from '@apollo/client/testing/react';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
 import { Providers } from './Providers';
@@ -20,18 +20,18 @@ const mocks = LIST_ITEM_MOCKS;
 const user = userEvent.setup();
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
+  <MockedProvider mocks={mocks}>
+    <MemoryRouter>
       <Providers />
-    </Router>
+    </MemoryRouter>
   </MockedProvider>
 );
 
 const wrapperWithType = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
+  <MockedProvider mocks={mocks}>
+    <MemoryRouter>
       <Providers />
-    </Router>
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -76,7 +76,7 @@ const maytapiProvider = (error: boolean = false) => {
 
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
         </Routes>
@@ -88,7 +88,7 @@ const gupshupProvider = () => {
   const MOCKS: any = [...getProvidersQuery, ...getCredential, ...getCredential];
   return (
     <MemoryRouter initialEntries={[`/settings/gupshup`]}>
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
         </Routes>
@@ -174,7 +174,7 @@ const container = (error: boolean = false) => {
   ];
   return (
     <MemoryRouter initialEntries={[`/settings/maytapi`]}>
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <Routes>
           <Route path="settings/:type" element={<Providers />} />
         </Routes>
@@ -274,6 +274,13 @@ describe('gupshup dialog', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+
+    // wait for the credential query's data to populate the form fields - clicking Save before
+    // that finishes hits required-field validation errors instead of the confirmation dialog,
+    // since the form still holds its empty initial values.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Please enter your App Name here')).toBeInTheDocument();
     });
 
     const saveButton = await screen.findByTestId('submitActionButton');

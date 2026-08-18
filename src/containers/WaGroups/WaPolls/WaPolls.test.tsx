@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
@@ -95,7 +95,7 @@ describe('Copy', () => {
     mockUseLocationValue.state = 'copy';
 
     const copyFlow = (
-      <MockedProvider mocks={WaPollMocks} addTypename={false}>
+      <MockedProvider mocks={WaPollMocks}>
         <MemoryRouter initialEntries={[`/group/polls/1/edit`]}>
           <Routes>
             <Route path="group/polls/:id/edit" element={<WaPolls />} />

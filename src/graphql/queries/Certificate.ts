@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const LIST_CERTIFICATES = gql`
   query CertificateTemplates($filter: CertificateTemplateFilter, $opts: Opts) {

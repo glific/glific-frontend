@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import dayjs from 'dayjs';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter } from 'react-router';
 
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
@@ -45,7 +45,7 @@ const defaultProps = {
 };
 
 const wrapperContainer = (props: any) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <ChatConversation {...props} />
     </MemoryRouter>

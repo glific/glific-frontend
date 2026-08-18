@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { AddMembersDialog } from './AddMembersDialog';
@@ -29,7 +29,7 @@ const importMock = {
 
 const renderDialog = (mocks: any[] = [], onClose = vi.fn()) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <AddMembersDialog waGroupId="1" onClose={onClose} />
     </MockedProvider>
   );

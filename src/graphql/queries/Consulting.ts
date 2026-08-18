@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_CONSULTING_HOURS_BY_ID = gql`
   query consultingHour($id: ID!) {

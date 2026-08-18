@@ -408,6 +408,14 @@ export const exportCollectionsQueryWithErrors = {
   },
 };
 
+export const exportCollectionsQueryNetworkError = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  error: new Error('Failed to export collection'),
+};
+
 export const addContactToCollection = {
   request: {
     query: UPDATE_COLLECTION_CONTACTS,
@@ -446,6 +454,14 @@ export const deleteContactFromCollection = {
       },
     },
   },
+};
+
+export const deleteContactFromCollectionError = {
+  request: {
+    query: UPDATE_COLLECTION_CONTACTS,
+    variables: { input: { addContactIds: [], groupId: '1', deleteContactIds: ['1'] } },
+  },
+  error: new Error('Unable to remove contact from collection'),
 };
 
 export const getCollectionsList = (label?: any) => ({

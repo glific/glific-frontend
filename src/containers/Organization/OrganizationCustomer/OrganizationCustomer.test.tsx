@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { organizationCustomerMock } from 'mocks/Billing';
@@ -19,7 +19,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Glific_admin
 test('it renders organization-customer component successfully without form data', async () => {
   const app = (
     <MemoryRouter>
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <OrganizationCustomer openDialog />
       </MockedProvider>
     </MemoryRouter>
@@ -46,7 +46,7 @@ test('it renders organization-customer component successfully without form data'
 test('it renders organization-customer component successfully with form data', async () => {
   render(
     <MemoryRouter>
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <OrganizationCustomer openDialog />
       </MockedProvider>
     </MemoryRouter>

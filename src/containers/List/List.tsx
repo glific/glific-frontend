@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, Fragment } from 'react';
 import { useNavigate, Navigate, useSearchParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
+import { DocumentNode, TypedDocumentNode } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { Backdrop, Checkbox, Divider, IconButton, Menu, MenuItem } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
@@ -99,9 +100,9 @@ export interface ListProps {
   descriptionBox?: any;
   loadingList?: boolean;
   columnNames?: Array<ColumnNames>;
-  countQuery?: DocumentNode;
+  countQuery?: TypedDocumentNode<any, any>;
   listItem: string;
-  filterItemsQuery: DocumentNode;
+  filterItemsQuery: TypedDocumentNode<any, any>;
   deleteItemQuery: DocumentNode | null;
   listItemName: string;
   dialogMessage?: string | any;
@@ -339,19 +340,17 @@ export const List = ({
   // Get the total number of items here
 
   let refetchCount: any;
+  let execCount: any;
   let countData;
   let e;
   let l;
 
   if (countQuery) {
-    [, { data: countData, error: e, loading: l, refetch: refetchCount }] = useLazyQuery(countQuery, {
-      variables: { filter },
-    });
+    [execCount, { data: countData, error: e, loading: l, refetch: refetchCount }] = useLazyQuery(countQuery);
   }
 
   // Get item data here
-  const [, { loading, error, data, refetch: refetchValues }] = useLazyQuery(filterItemsQuery, {
-    variables: filterPayload(),
+  const [execValues, { loading, error, data, refetch: refetchValues }] = useLazyQuery(filterItemsQuery, {
     fetchPolicy: 'cache-first',
   });
 
@@ -364,11 +363,15 @@ export const List = ({
 
   useEffect(() => {
     // Todo: refetching values twice. Need to think of a better way to do this
-    refetchValues();
+    execValues({ variables: filterPayload() });
     if (countQuery) {
-      refetchCount();
+      execCount({ variables: { filter } });
     }
-  }, [searchVal, filters, refreshList]);
+    // `filters` is often passed as a fresh object literal by callers on every render - depend on
+    // its serialized content instead of its reference, or this effect (and its network fetches)
+    // would re-run on every unrelated parent re-render instead of only when filters actually change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchVal, JSON.stringify(filters), refreshList]);
 
   useEffect(() => {
     if (userRole.length === 0) {

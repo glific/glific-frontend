@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
@@ -11,7 +11,7 @@ describe('contact profile with single profile', () => {
 
   const contactProfile = (
     <MemoryRouter initialEntries={['/contact-profile/1']}>
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <Routes>
           <Route path="contact-profile/:id/*" element={<ContactProfile />} />
         </Routes>

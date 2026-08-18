@@ -1055,6 +1055,17 @@
   "New chat": "New chat",
   "AI Evaluation v2 is not enabled for your organisation.": "AI Evaluation v2 is not enabled for your organisation.",
   "could not be uploaded. Try again.": "could not be uploaded. Try again.",
+  "An error occured while importing flow translations": "An error occured while importing flow translations",
+  "Invalid Email": "Invalid Email",
+  "Email is Required": "Email is Required",
+  "File uploaded successfully": "File uploaded successfully",
+  "Interactive Message Imported Successfully!": "Interactive Message Imported Successfully!",
+  "Interactive Message Translated Successfully": "Interactive Message Translated Successfully",
+  "Interactive Message Exported Successfully": "Interactive Message Exported Successfully",
+  "Sorry! An error occured while updating the contact field": "Sorry! An error occured while updating the contact field",
+  "Contact field deleted successfully!": "Contact field deleted successfully!",
+  "Sorry! An error occured while deleting the contact field": "Sorry! An error occured while deleting the contact field",
+  "Downloaded the status of the contact upload": "Downloaded the status of the contact upload",
   "This model does not take a temperature — use the settings it offers instead.": "This model does not take a temperature — use the settings it offers instead.",
   "This model has no settings to tune.": "This model has no settings to tune."
 }

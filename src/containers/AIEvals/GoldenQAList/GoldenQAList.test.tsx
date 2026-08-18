@@ -1,4 +1,5 @@
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { type MockLink } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
@@ -11,9 +12,12 @@ import {
 } from 'mocks/AIEvaluations';
 import { GoldenQAList } from './GoldenQAList';
 
-const renderComponent = (searchQuery = '', mocks: MockedResponse[] = [getListGoldenQaMock, getCountGoldenQaMock]) =>
+const renderComponent = (
+  searchQuery = '',
+  mocks: MockLink.MockedResponse[] = [getListGoldenQaMock, getCountGoldenQaMock]
+) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <GoldenQAList searchQuery={searchQuery} />
       </MemoryRouter>

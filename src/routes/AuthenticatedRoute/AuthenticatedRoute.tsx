@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Fab, Tooltip } from '@mui/material';
 import AskGlificIcon from 'assets/images/icons/AskGlific/Icon.svg?react';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';

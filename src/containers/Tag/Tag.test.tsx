@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
@@ -38,7 +38,7 @@ vi.mock('react-router', async () => ({
 }));
 
 const tag = () => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Tag />
     </MemoryRouter>
@@ -54,7 +54,7 @@ it('should render Tag', async () => {
 
 it('should create the tag', async () => {
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={['/tag/add']}>
         <Tag />
       </MemoryRouter>
@@ -75,7 +75,7 @@ it('should create the tag', async () => {
 
 it('should edit the tag', async () => {
   const edittag = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={[`/tag/13/edit`]}>
         <Routes>
           <Route path="tag/:id/edit" element={<Tag />} />

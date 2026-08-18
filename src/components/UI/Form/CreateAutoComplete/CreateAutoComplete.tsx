@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { AutoComplete, AutocompleteProps } from '../AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
 

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const CONTACT_SEARCH_QUERY = gql`
   query contacts($filter: ContactFilter!, $opts: Opts!) {

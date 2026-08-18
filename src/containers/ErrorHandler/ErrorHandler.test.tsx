@@ -1,28 +1,22 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent } from '@testing-library/dom';
 
+import { ERROR_MESSAGE } from 'graphql/queries/Notification';
 import ErrorHandler from './ErrorHandler';
 
-const resolvers = {
-  Query: {
-    errorMessage: () => {
-      return {
-        message: 'An error has occurred!',
-        type: 'Error',
-        networkError: 'Unable to fetch',
-        graphqlError: null,
-      };
-    },
-  },
-};
-
-const resolversWithNullError = {
-  Query: {
-    errorMessage: () => {
-      return '';
-    },
-  },
+// MockedProvider's local-resolver support (v3's `resolvers` prop) requires opting in to
+// Apollo Client 4's LocalState, which this app doesn't otherwise use - setErrorMessage()
+// writes directly to the cache instead. So these tests seed the @client errorMessage field
+// the same way the app does, via cache.writeQuery, rather than a local resolver function.
+const cacheWithErrorMessage = (errorMessage: any) => {
+  const cache = new InMemoryCache();
+  cache.writeQuery({
+    query: ERROR_MESSAGE,
+    data: { errorMessage },
+  });
+  return cache;
 };
 
 describe('<ErrorHandler />', () => {
@@ -30,7 +24,14 @@ describe('<ErrorHandler />', () => {
 
   test('it should render <ErrorHandler /> component correctly', async () => {
     const { getByText } = render(
-      <MockedProvider resolvers={resolvers} addTypename={false}>
+      <MockedProvider
+        cache={cacheWithErrorMessage({
+          message: 'An error has occurred!',
+          type: 'Error',
+          networkError: 'Unable to fetch',
+          graphqlError: null,
+        })}
+      >
         <ErrorHandler />
       </MockedProvider>
     );
@@ -54,20 +55,15 @@ describe('<ErrorHandler />', () => {
 });
 
 test('it should render <ErrorHandler /> component with custom message', async () => {
-  const resolvers = {
-    Query: {
-      errorMessage: () => {
-        return {
-          message: [{ message: 'An error has occurred!' }],
-          type: 'Error',
-          networkError: 'Unable to fetch',
-          graphqlError: null,
-        };
-      },
-    },
-  };
   const { getByText } = render(
-    <MockedProvider resolvers={resolvers} addTypename={false}>
+    <MockedProvider
+      cache={cacheWithErrorMessage({
+        message: [{ message: 'An error has occurred!' }],
+        type: 'Error',
+        networkError: 'Unable to fetch',
+        graphqlError: null,
+      })}
+    >
       <ErrorHandler />
     </MockedProvider>
   );
@@ -89,21 +85,16 @@ test('it should render <ErrorHandler /> component with custom message', async ()
 });
 
 test('it should render <ErrorHandler /> component with custom title', async () => {
-  const resolvers = {
-    Query: {
-      errorMessage: () => {
-        return {
-          title: 'Error Title',
-          message: [{ message: 'An error has occurred!' }],
-          type: 'Error',
-          networkError: 'Unable to fetch',
-          graphqlError: null,
-        };
-      },
-    },
-  };
   render(
-    <MockedProvider resolvers={resolvers} addTypename={false}>
+    <MockedProvider
+      cache={cacheWithErrorMessage({
+        title: 'Error Title',
+        message: [{ message: 'An error has occurred!' }],
+        type: 'Error',
+        networkError: 'Unable to fetch',
+        graphqlError: null,
+      })}
+    >
       <ErrorHandler />
     </MockedProvider>
   );
@@ -117,7 +108,7 @@ test('it should render <ErrorHandler /> component with custom title', async () =
 
 test('it should render <ErrorHandler /> component with no error message', async () => {
   render(
-    <MockedProvider resolvers={resolversWithNullError} addTypename={false}>
+    <MockedProvider cache={cacheWithErrorMessage('')}>
       <ErrorHandler />
     </MockedProvider>
   );

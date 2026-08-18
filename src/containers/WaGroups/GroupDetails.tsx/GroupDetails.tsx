@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useState } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -53,24 +53,6 @@ export const GroupDetails = () => {
       { query: GET_WA_GROUP, variables: { waGroupId: params.id } },
       { query: LIST_CONTACTS_WA_GROUPS, variables: { filter: { waGroupId: params.id } } },
     ],
-    onCompleted: (responseData) => {
-      const errors = responseData?.removeWaGroupContact?.errors;
-      if (errors?.length) {
-        setNotification(
-          errors
-            .map((e: { message?: string }) => e?.message)
-            .filter(Boolean)
-            .join('; '),
-          'warning'
-        );
-        return;
-      }
-      setNotification(t('Removed Contact from Group'), 'success');
-      setShowDeleteDialog(false);
-    },
-    onError: () => {
-      setNotification(t('Could not remove contact from the group'), 'warning');
-    },
   });
 
   const { loading: groupDataLoading, data } = useQuery(GET_WA_GROUP, {
@@ -156,13 +138,30 @@ export const GroupDetails = () => {
     setDeleteVariables({ contactId: contact.id });
   };
 
-  const handleRemoveContact = () => {
-    removeContact({
-      variables: {
-        waGroupId: params.id,
-        contactId: deleteVariables?.contactId,
-      },
-    });
+  const handleRemoveContact = async () => {
+    try {
+      const { data: responseData } = await removeContact({
+        variables: {
+          waGroupId: params.id,
+          contactId: deleteVariables?.contactId,
+        },
+      });
+      const errors = responseData?.removeWaGroupContact?.errors;
+      if (errors?.length) {
+        setNotification(
+          errors
+            .map((e: { message?: string }) => e?.message)
+            .filter(Boolean)
+            .join('; '),
+          'warning'
+        );
+        return;
+      }
+      setNotification(t('Removed Contact from Group'), 'success');
+      setShowDeleteDialog(false);
+    } catch {
+      setNotification(t('Could not remove contact from the group'), 'warning');
+    }
   };
 
   let dialog: any;

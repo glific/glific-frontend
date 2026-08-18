@@ -1,5 +1,5 @@
 import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { SAVE_MESSAGE_TEMPLATE_MUTATION } from 'graphql/mutations/MessageTemplate';
 import { filterTemplatesQuery } from 'mocks/Template';
@@ -43,7 +43,7 @@ const defaultProps = {
 afterEach(cleanup);
 
 const messageTemplate = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <AddToMessageTemplate {...defaultProps} />
   </MockedProvider>
 );

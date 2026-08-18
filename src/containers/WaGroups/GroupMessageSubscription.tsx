@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
 import {
   DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,

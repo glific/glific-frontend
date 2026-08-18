@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 
 import { useTranslation } from 'react-i18next';
 import { GET_COLLECTIONS_LIST } from 'graphql/queries/Collection';
@@ -67,31 +67,30 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
     groupOptions = collections.groups;
   }
 
-  const [importContacts] = useMutation(IMPORT_CONTACTS, {
-    onCompleted: (data: any) => {
-      const { errors } = data.importContacts;
-      if (errors) {
-        setNotification(data.errors[0].message, 'warning');
-      } else {
+  const [importContacts] = useMutation(IMPORT_CONTACTS);
+
+  const uploadContacts = async (details: any) => {
+    try {
+      const { data } = await importContacts({
+        variables: {
+          type: 'DATA',
+          data: csvContent,
+          groupLabel: details.collection.label,
+        },
+      });
+      const { errors: importErrors } = data.importContacts;
+      if (importErrors?.length > 0) {
+        setNotification(importErrors[0].message, 'warning');
         setUploadingContacts(false);
-        setShowStatus(true);
+        return;
       }
-    },
-    onError: (errors) => {
+      setUploadingContacts(false);
+      setShowStatus(true);
+    } catch (errors: any) {
       setDialog(false);
       setNotification(errors.message, 'warning');
       setUploadingContacts(false);
-    },
-  });
-
-  const uploadContacts = (details: any) => {
-    importContacts({
-      variables: {
-        type: 'DATA',
-        data: csvContent,
-        groupLabel: details.collection.label,
-      },
-    });
+    }
   };
 
   const validationSchema = Yup.object().shape({

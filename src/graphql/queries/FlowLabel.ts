@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_ALL_FLOW_LABELS = gql`
   query flowLabels($filter: FlowLabelFilter, $opts: Opts) {

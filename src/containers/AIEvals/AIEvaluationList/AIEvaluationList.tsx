@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AssistantsIcon from 'assets/images/Assistants.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';

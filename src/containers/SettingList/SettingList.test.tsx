@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { BrowserRouter as Router } from 'react-router';
 
 import { SettingList } from './SettingList';
@@ -8,7 +8,7 @@ import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <SettingList />
     </Router>

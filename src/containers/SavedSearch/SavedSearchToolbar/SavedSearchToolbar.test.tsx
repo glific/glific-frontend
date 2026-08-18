@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 
@@ -19,7 +19,7 @@ describe('testing <SavedSearchToolbar />', () => {
   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
   const savedSearchToolbar = (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <SavedSearchToolbar {...defaultProps} />
     </MockedProvider>
   );

@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { SearchList } from './SearchList';
 import { LIST_ITEM_MOCKS } from '../Search.test.helper';
@@ -8,7 +8,7 @@ import { MemoryRouter } from 'react-router';
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <SearchList />
     </MemoryRouter>

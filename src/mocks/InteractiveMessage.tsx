@@ -273,6 +273,7 @@ const createInteractiveCustomMock = () => ({
 const updateMockByType = (response: any, message: any = null) => ({
   request: {
     query: UPDATE_INTERACTIVE,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -290,7 +291,6 @@ const updateMockByType = (response: any, message: any = null) => ({
       errors: null,
     },
   },
-  variableMatcher: (variables: any) => true,
 });
 
 const getTemplateByType = (id: string, body: any) => ({
@@ -390,6 +390,7 @@ export const translateInteractiveTemplateWithTrimMock = {
 export const importInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
     query: IMPORT_INTERACTIVE_TEMPLATE,
+    variables: (variables: any) => true,
   },
   [error ? 'error' : 'result']: error
     ? new Error('An error occured')
@@ -402,12 +403,12 @@ export const importInteractiveTemplateMock = (error: boolean = false) => ({
           },
         },
       },
-  variableMatcher: (variables: any) => true,
 });
 
 export const importInteractiveTemplateWithTrimmingMock = {
   request: {
     query: IMPORT_INTERACTIVE_TEMPLATE,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -418,7 +419,6 @@ export const importInteractiveTemplateWithTrimmingMock = {
       },
     },
   },
-  variableMatcher: (variables: any) => true,
 };
 
 export const exportInteractiveTemplateMock = (error: boolean = false) => ({

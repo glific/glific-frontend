@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { ContactField } from './ContactField';
@@ -13,7 +13,7 @@ const mocks = [createContactField, ...contactFieldMocks];
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <ContactField setOpenDialog={vi.fn()} />
     </MockedProvider>
   </MemoryRouter>

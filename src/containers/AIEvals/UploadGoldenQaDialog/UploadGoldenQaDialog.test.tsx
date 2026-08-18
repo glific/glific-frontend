@@ -1,5 +1,5 @@
-import { useMutation } from '@apollo/client';
-import { MockedProvider } from '@apollo/client/testing';
+import { useMutation } from '@apollo/client/react';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -17,8 +17,8 @@ import { UploadGoldenQaDialog } from './UploadGoldenQaDialog';
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 
-vi.mock('@apollo/client', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('@apollo/client')>();
+vi.mock('@apollo/client/react', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('@apollo/client/react')>();
   return {
     ...mod,
     useMutation: vi.fn((...args: any[]) => (mod as any).useMutation(...args)),

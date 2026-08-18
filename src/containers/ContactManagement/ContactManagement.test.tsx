@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { BrowserRouter as Router } from 'react-router';
 
@@ -11,7 +11,7 @@ import { importContacts, moveContacts } from 'mocks/Contact';
 const mocks = [getCollectionsList(''), importContacts, moveContacts];
 
 const contactManagement = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <ContactManagement />
     </Router>

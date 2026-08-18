@@ -918,6 +918,17 @@
   "New chat": "नई चैट",
   "AI Evaluation v2 is not enabled for your organisation.": "आपके संगठन के लिए AI मूल्यांकन v2 सक्षम नहीं है।",
   "could not be uploaded. Try again.": "अपलोड नहीं हो सका। दोबारा कोशिश करें।",
+  "An error occured while importing flow translations": "फ्लो अनुवाद आयात करते समय एक त्रुटि हुई",
+  "Invalid Email": "अमान्य ईमेल",
+  "Email is Required": "ईमेल आवश्यक है",
+  "File uploaded successfully": "फ़ाइल सफलतापूर्वक अपलोड हो गई",
+  "Interactive Message Imported Successfully!": "इंटरैक्टिव संदेश सफलतापूर्वक आयात किया गया!",
+  "Interactive Message Translated Successfully": "इंटरैक्टिव संदेश का अनुवाद सफलतापूर्वक हुआ",
+  "Interactive Message Exported Successfully": "इंटरैक्टिव संदेश सफलतापूर्वक निर्यात किया गया",
+  "Sorry! An error occured while updating the contact field": "खेद है! संपर्क फ़ील्ड को अपडेट करते समय एक त्रुटि हुई",
+  "Contact field deleted successfully!": "संपर्क फ़ील्ड सफलतापूर्वक हटा दी गई!",
+  "Sorry! An error occured while deleting the contact field": "खेद है! संपर्क फ़ील्ड को हटाते समय एक त्रुटि हुई",
+  "Downloaded the status of the contact upload": "संपर्क अपलोड की स्थिति डाउनलोड हो गई",
   "This model does not take a temperature — use the settings it offers instead.": "यह मॉडल तापमान नहीं लेता — इसके द्वारा दी गई सेटिंग्स का उपयोग करें।",
   "This model has no settings to tune.": "इस मॉडल में समायोजित करने के लिए कोई सेटिंग नहीं है।"
 }

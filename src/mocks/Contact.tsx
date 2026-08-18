@@ -263,6 +263,19 @@ export const updateContactStatusQuery = {
   },
 };
 
+export const updateContactStatusQueryError = {
+  request: {
+    query: UPDATE_CONTACT,
+    variables: {
+      id: '1',
+      input: {
+        status: 'VALID',
+      },
+    },
+  },
+  error: new Error('An error occurred while unblocking the contact'),
+};
+
 export const moveContacts = {
   request: {
     query: MOVE_CONTACTS,
@@ -280,6 +293,36 @@ export const moveContacts = {
       },
     },
   },
+};
+
+export const moveContactsWithErrors = {
+  request: {
+    query: MOVE_CONTACTS,
+    variables: {
+      type: 'DATA',
+      data: 'name,phone,collection\n  John Doe,919876543210,"Optin collection,Optout Collection"\n  Virat Kohli,919876543220,Cricket',
+    },
+  },
+  result: {
+    data: {
+      moveContacts: {
+        errors: [{ message: 'Invalid phone number', key: 'phone' }],
+        csvRows: null,
+        status: null,
+      },
+    },
+  },
+};
+
+export const moveContactsNetworkError = {
+  request: {
+    query: MOVE_CONTACTS,
+    variables: {
+      type: 'DATA',
+      data: 'name,phone,collection\n  John Doe,919876543210,"Optin collection,Optout Collection"\n  Virat Kohli,919876543220,Cricket',
+    },
+  },
+  error: new Error('An error occurred'),
 };
 
 export const countCollectionContactsQuery = {
@@ -580,6 +623,8 @@ export const getProfileMock = (id: string, profileDetails?: any) => ({
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
+  getCurrentUserQuery,
+  getCurrentUserQuery,
   getContactProfiles,
   getContactDetailsQuery('1', { activeProfile: null }),
   getContactDetailsQuery('1', { activeProfile: null }),
@@ -725,6 +770,7 @@ export const getExcludedContactsQuery = (filter?: any) => ({
 export const importContacts = {
   request: {
     query: IMPORT_CONTACTS,
+    variables: (variables: any) => true,
   },
   result: {
     data: {
@@ -734,7 +780,30 @@ export const importContacts = {
       },
     },
   },
-  variableMatcher: (variables: any) => true,
+};
+
+// Mutation resolves but returns payload-level errors.
+export const importContactsPayloadError = {
+  request: {
+    query: IMPORT_CONTACTS,
+    variables: (variables: any) => true,
+  },
+  result: {
+    data: {
+      importContacts: {
+        errors: [{ message: 'Please check the CSV file and try again' }],
+        status: null,
+      },
+    },
+  },
+};
+
+export const importContactsNetworkError = {
+  request: {
+    query: IMPORT_CONTACTS,
+    variables: (variables: any) => true,
+  },
+  error: new Error('An error occurred'),
 };
 
 export const terminateFlowQuery = (error: boolean = false) => ({

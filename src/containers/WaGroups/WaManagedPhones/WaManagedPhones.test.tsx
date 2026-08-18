@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import WaManagedPhones from './WaManagedPhones';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { setNotification } from 'common/notification';
@@ -9,7 +9,8 @@ import {
   syncWaGroupContactsNoActivePhones,
   waManagedPhonesQuery,
 } from 'mocks/Groups';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
 
 const mock: any = [waManagedPhonesQuery];
@@ -54,7 +55,7 @@ cache.writeQuery({
 
 const client = new ApolloClient({
   cache: cache,
-  uri: 'http://localhost:4000/',
+  link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
 });
 

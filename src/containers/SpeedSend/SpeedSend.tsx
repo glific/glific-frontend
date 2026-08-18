@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import * as Yup from 'yup';
 import SpeedSendIcon from 'assets/images/icons/SpeedSend/Selected.svg?react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import styles from './SpeedSend.module.css';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';

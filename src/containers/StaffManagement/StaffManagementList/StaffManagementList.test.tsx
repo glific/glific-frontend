@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { StaffManagementList } from './StaffManagementList';
@@ -16,7 +16,7 @@ const mocks = [USER_COUNT_MOCK, FILTER_USER_MOCK, getOrganizationPhone];
 mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
 const staffManagement = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <StaffManagementList />
     </Router>

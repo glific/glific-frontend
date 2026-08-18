@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
@@ -30,7 +30,7 @@ describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', async () => {
     render(
       <MemoryRouter>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <Chat />
         </MockedProvider>
       </MemoryRouter>
@@ -45,7 +45,7 @@ describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', async () => {
     render(
       <MemoryRouter initialEntries={['/group/chat']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <Chat />
         </MockedProvider>
       </MemoryRouter>

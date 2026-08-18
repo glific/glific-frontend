@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client/react';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
@@ -176,16 +176,16 @@ export const ConversationList = ({
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom && !params.dateTo) {
         filter.dateRange = {
-          from: dayjs(params.dateFrom).utc().format(ISO_DATE_FORMAT),
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
         };
       } else if (!params.dateFrom && params.dateTo) {
         filter.dateRange = {
-          to: dayjs(params.dateTo).utc().format(ISO_DATE_FORMAT),
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
         };
       } else if (params.dateFrom && params.dateTo) {
         filter.dateRange = {
-          from: dayjs(params.dateFrom).utc().format(ISO_DATE_FORMAT),
-          to: dayjs(params.dateTo).utc().format(ISO_DATE_FORMAT),
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
         };
       }
     }
@@ -229,34 +229,15 @@ export const ConversationList = ({
       groups
     );
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(searchQuery);
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(searchQuery, {
+    fetchPolicy: 'network-only',
+  });
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery, {
-    onCompleted: (multiSearch) => {
-      setSearchMultiData(multiSearch);
-    },
-  });
+  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery);
 
   // load more messages for multi search load more
-  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
-    onCompleted: (multiSearch) => {
-      if (!searchMultiData) {
-        setSearchMultiData(multiSearch);
-      } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
-        const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
-        // append new messages to existing messages
-        searchMultiDataCopy.searchMulti.messages = [
-          ...searchMultiData.searchMulti.messages,
-          ...multiSearch.searchMulti.messages,
-        ];
-        setSearchMultiData(searchMultiDataCopy);
-      } else {
-        setShowLoadMore(false);
-      }
-      setShowLoading(false);
-    },
-  });
+  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(SEARCH_MULTI_QUERY);
 
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
@@ -264,19 +245,25 @@ export const ConversationList = ({
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
-      });
+      })
+        .then(({ data: multiSearch }) => {
+          setSearchMultiData(multiSearch);
+        })
+        .catch(() => {});
     } else if (hasSearchParams || savedSearchCriteria || phonenumber || selectedCollectionId) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
       getFilterConvos({
         variables: filterVariables(),
-      }).then(({ data }) => {
-        if (searchParam.dateFrom || searchParam.dateTo) {
-          const entityId = data?.search[0]?.contact?.id || '';
-          navigate(`/chat/${entityId}`);
-        }
-      });
+      })
+        .then(({ data }) => {
+          if (searchParam.dateFrom || searchParam.dateTo) {
+            const entityId = data?.search[0]?.contact?.id || '';
+            navigate(`/chat/${entityId}`);
+          }
+        })
+        .catch(() => {});
     } else if (
       searchParam &&
       Object.keys(searchParam).length === 0 &&
@@ -293,13 +280,14 @@ export const ConversationList = ({
       );
       getFilterConvos({
         variables,
-        fetchPolicy: 'network-only',
-      }).then(({ data }) => {
-        if (searchParam.dateFrom || searchParam.dateTo) {
-          const entityId = data?.search[0]?.contact?.id || '';
-          navigate(`/chat/${entityId}`);
-        }
-      });
+      })
+        .then(({ data }) => {
+          if (searchParam.dateFrom || searchParam.dateTo) {
+            const entityId = data?.search[0]?.contact?.id || '';
+            navigate(`/chat/${entityId}`);
+          }
+        })
+        .catch(() => {});
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
@@ -461,7 +449,24 @@ export const ConversationList = ({
 
       getLoadMoreFilterSearch({
         variables,
-      });
+      })
+        .then(({ data: multiSearch }) => {
+          if (!searchMultiData) {
+            setSearchMultiData(multiSearch);
+          } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
+            const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
+            // append new messages to existing messages
+            searchMultiDataCopy.searchMulti.messages = [
+              ...searchMultiData.searchMulti.messages,
+              ...multiSearch.searchMulti.messages,
+            ];
+            setSearchMultiData(searchMultiDataCopy);
+          } else {
+            setShowLoadMore(false);
+          }
+          setShowLoading(false);
+        })
+        .catch(() => setShowLoading(false));
     } else {
       let filter: any = {};
       // for saved search use filter value of selected search
@@ -484,16 +489,16 @@ export const ConversationList = ({
 
       if (searchParam?.dateFrom && !searchParam?.dateTo) {
         filter.dateRange = {
-          from: dayjs(searchParam.dateFrom).utc().format(ISO_DATE_FORMAT),
+          from: dayjs(searchParam.dateFrom).format(ISO_DATE_FORMAT),
         };
       } else if (!searchParam?.dateFrom && searchParam?.dateTo) {
         filter.dateRange = {
-          to: dayjs(searchParam.dateTo).utc().format(ISO_DATE_FORMAT),
+          to: dayjs(searchParam.dateTo).format(ISO_DATE_FORMAT),
         };
       } else if (searchParam?.dateFrom && searchParam?.dateTo) {
         filter.dateRange = {
-          from: dayjs(searchParam.dateFrom).utc().format(ISO_DATE_FORMAT),
-          to: dayjs(searchParam.dateTo).utc().format(ISO_DATE_FORMAT),
+          from: dayjs(searchParam.dateFrom).format(ISO_DATE_FORMAT),
+          to: dayjs(searchParam.dateTo).format(ISO_DATE_FORMAT),
         };
       }
 
@@ -510,7 +515,7 @@ export const ConversationList = ({
       );
 
       client
-        .query({
+        .query<any>({
           query: searchQuery,
           variables: conversationLoadMoreVariables,
         })

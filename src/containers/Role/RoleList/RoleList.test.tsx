@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { setUserSession } from 'services/AuthService';
 import { RoleList } from './RoleList';
@@ -10,7 +10,7 @@ import { countRolesQuery, filterRolesQuery } from 'mocks/Role';
 const mocks = [countRolesQuery, filterRolesQuery];
 
 const rolesList = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <RoleList />
     </MemoryRouter>

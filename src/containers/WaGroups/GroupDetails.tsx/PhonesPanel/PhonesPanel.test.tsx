@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { SET_PRIMARY_PHONE } from 'graphql/mutations/Group';
@@ -70,7 +70,7 @@ const refetchMock = {
 
 const renderPanel = (overrides?: { phones?: any; mocks?: any[] }) =>
   render(
-    <MockedProvider mocks={overrides?.mocks ?? []} addTypename={false}>
+    <MockedProvider mocks={overrides?.mocks ?? []}>
       <PhonesPanel phones={overrides?.phones ?? phones} waGroupId="1" />
     </MockedProvider>
   );

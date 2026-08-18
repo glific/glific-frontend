@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import {
@@ -90,7 +90,7 @@ const renderImportFlowDialog = async (importMock: any) => {
   stubFileReader();
 
   render(
-    <MockedProvider mocks={testMocks} addTypename={false}>
+    <MockedProvider mocks={testMocks}>
       <MemoryRouter>
         <FlowList />
       </MemoryRouter>
@@ -154,7 +154,7 @@ describe('<FlowList />', () => {
 
   test('should redirect to make a copy', async () => {
     const copyFlow = () => (
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter>
           <Flow />
         </MemoryRouter>
@@ -468,9 +468,9 @@ describe('Error handling', () => {
     const importFlowError = {
       request: {
         query: IMPORT_FLOW,
+        variables: () => true,
       },
       error: new Error('Import failed'),
-      variableMatcher: () => true,
     };
 
     class FileReaderMock {

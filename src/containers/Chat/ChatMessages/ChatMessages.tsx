@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
 import { Navigate, useLocation, useNavigate } from 'react-router';
@@ -88,9 +88,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   // get the conversations stored from the cache
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
 
-  const [getContactStatus] = useLazyQuery(GET_CONTACT_STATUS, {
-    variables: { id: entityId },
-  });
+  const [getContactStatus] = useLazyQuery(GET_CONTACT_STATUS);
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -151,11 +149,13 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
     if (!groups && entityId) {
       markAsRead({
         variables: { contactId: entityId.toString() },
-      }).then(({ data }) => {
-        if (data?.markContactMessagesAsRead) {
-          updateContactCache(client, entityId);
-        }
-      });
+      })
+        .then(({ data }) => {
+          if (data?.markContactMessagesAsRead) {
+            updateContactCache(client, entityId);
+          }
+        })
+        .catch(() => {});
     }
   }, []);
 
@@ -171,7 +171,11 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
     fetchMore,
   } = useQuery(searchQuery, {
     variables: queryVariables,
-    fetchPolicy: 'cache-only',
+    // Was 'cache-only', relying on fetchMore's network fetch to backfill a cache miss (e.g. a
+    // contact/collection not already loaded by the sibling ChatConversations list query).
+    // Apollo Client 4 no longer allows fetchMore on a cache-only query, so this uses
+    // 'cache-first' instead: same fast path when the cache is warm, network fallback otherwise.
+    fetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
   });
 
@@ -420,15 +424,17 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
             if (fetchMoreResult.search && fetchMoreResult.search.length) {
               return updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType);
             } else {
-              getContactStatus().then(({ data }) => {
-                if (data && data.contact && data.contact.contact && data.contact.contact.status) {
-                  const status = data.contact.contact.status;
-                  if (status === 'BLOCKED') {
-                    setNotification('The contact is blocked', 'warning');
-                    navigate('/chat');
+              getContactStatus({ variables: { id: entityId } })
+                .then(({ data }) => {
+                  if (data && data.contact && data.contact.contact && data.contact.contact.status) {
+                    const status = data.contact.contact.status;
+                    if (status === 'BLOCKED') {
+                      setNotification('The contact is blocked', 'warning');
+                      navigate('/chat');
+                    }
                   }
-                }
-              });
+                })
+                .catch(() => {});
             }
           },
         });
@@ -450,7 +456,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
         getSearchParameterQuery({
           variables,
-        }).then(({ data }) => handleSearchParameterCompleted(data));
+        })
+          .then(({ data }) => handleSearchParameterCompleted(data))
+          .catch(() => {});
       }
     }
   };
@@ -646,22 +654,24 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       variables,
       updateQuery: (prev: any, { fetchMoreResult }: any) =>
         updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true, direction),
-    }).then((fetchMoreResult: any) => {
-      const conversationData = fetchMoreResult.data;
+    })
+      .then((fetchMoreResult: any) => {
+        const conversationData = fetchMoreResult.data;
 
-      if (
-        (conversationData && conversationData.search.length === 0) ||
-        conversationData.search[0].messages.length === 0
-      ) {
-        if (direction === 'past') {
-          setShowLoadMore(false);
-        } else {
-          setShowNewMessages(false);
+        if (
+          (conversationData && conversationData.search.length === 0) ||
+          conversationData.search[0].messages.length === 0
+        ) {
+          if (direction === 'past') {
+            setShowLoadMore(false);
+          } else {
+            setShowNewMessages(false);
+          }
         }
-      }
 
-      setScrollToMessageNumber(messageNumber);
-    });
+        setScrollToMessageNumber(messageNumber);
+      })
+      .catch(() => {});
   };
 
   const loadMoreMessagesRegular = () => {
@@ -692,22 +702,24 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       variables,
       updateQuery: (prev: any, { fetchMoreResult }: any) =>
         updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true, direction),
-    }).then((fetchMoreResult: any) => {
-      const conversationData = fetchMoreResult.data;
+    })
+      .then((fetchMoreResult: any) => {
+        const conversationData = fetchMoreResult.data;
 
-      if (
-        (conversationData && conversationData.search.length === 0) ||
-        conversationData.search[0].messages.length === 0
-      ) {
-        if (direction === 'past') {
-          setShowLoadMore(false);
-        } else {
-          setShowNewMessages(false);
+        if (
+          (conversationData && conversationData.search.length === 0) ||
+          conversationData.search[0].messages.length === 0
+        ) {
+          if (direction === 'past') {
+            setShowLoadMore(false);
+          } else {
+            setShowNewMessages(false);
+          }
         }
-      }
 
-      setScrollToMessageNumber(messageNumber);
-    });
+        setScrollToMessageNumber(messageNumber);
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -815,7 +827,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
       getSearchParameterQuery({
         variables,
-      }).then(({ data }) => handleSearchParameterCompleted(data));
+      })
+        .then(({ data }) => handleSearchParameterCompleted(data))
+        .catch(() => {});
     }
 
     scrollToLatestMessage();

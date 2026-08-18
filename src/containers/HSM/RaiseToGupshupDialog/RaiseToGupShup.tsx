@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { REPORT_TO_GUPSHUP } from 'graphql/mutations/Template';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { setNotification } from 'common/notification';
 
 export interface RaiseToGupShupPropTypes {
@@ -44,29 +44,27 @@ export const RaiseToGupShup = ({ handleCancel, templateId, label }: RaiseToGupSh
     });
   }, [email]);
 
-  const [reportToGupshup] = useMutation(REPORT_TO_GUPSHUP, {
-    onCompleted: (data: any) => {
-      setNotification('Email Sent Successfully!');
-      handleCancel();
-    },
-    onError: (error: any) => {
-      setNotification(error?.message, 'warning');
-    },
-  });
+  const [reportToGupshup] = useMutation(REPORT_TO_GUPSHUP);
 
   const validation = {
-    email: Yup.string().email('Invalid Email').required('Email is Required'),
+    email: Yup.string().email(t('Invalid Email')).required(t('Email is Required')),
   };
 
   const FormSchema = Yup.object().shape(validation);
 
-  const performTask = (data: any) => {
-    reportToGupshup({
-      variables: {
-        cc: JSON.stringify(data),
-        templateId: templateId,
-      },
-    });
+  const performTask = async (data: any) => {
+    try {
+      await reportToGupshup({
+        variables: {
+          cc: JSON.stringify(data),
+          templateId: templateId,
+        },
+      });
+      setNotification('Email Sent Successfully!');
+      handleCancel();
+    } catch (error: any) {
+      setNotification(error?.message, 'warning');
+    }
   };
 
   const form = (

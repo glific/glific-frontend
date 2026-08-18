@@ -127,7 +127,50 @@ export const updateUserQuery = [
       },
     },
   },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '76554', password: 'Pass123456!' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: null,
+          user: {
+            id: '2',
+            name: 'Updated Name',
+            email: 'you@domain.com',
+          },
+        },
+      },
+    },
+  },
 ];
+
+// A strong-enough password (passes yup validation) paired with a wrong OTP,
+// so the mutation actually fires and returns a payload-level error.
+export const updateUserIncorrectOtpQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '11111', password: 'Pass123456!' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: [{ message: 'incorrect_code' }],
+        user: null,
+      },
+    },
+  },
+};
+
+export const updateUserNetworkErrorQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '76554', password: 'Pass123456!' } },
+  },
+  error: new Error('Failed to update password'),
+};
 
 export const getCurrentUserErrorQuery = {
   request: {

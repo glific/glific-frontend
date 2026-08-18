@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const GET_SHEET = gql`
   query Sheet($id: ID!) {

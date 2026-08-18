@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'config/gql';
 
 export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
   subscription ($organizationId: ID!) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Paper, Tab, Tabs } from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 

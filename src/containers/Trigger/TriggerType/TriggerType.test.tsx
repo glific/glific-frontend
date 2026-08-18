@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { TriggerType } from './TriggerType';
 import { fireEvent, render } from '@testing-library/react';
 

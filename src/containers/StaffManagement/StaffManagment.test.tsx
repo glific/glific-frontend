@@ -1,5 +1,5 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { BrowserRouter as Router } from 'react-router';
 import { StaffManagement } from './StaffManagement';
 import {
@@ -36,7 +36,7 @@ beforeEach(() => {
 const mocks = STAFF_MANAGEMENT_MOCKS;
 
 const staffManagement = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <StaffManagement />
     </Router>
@@ -142,7 +142,7 @@ test('can select multiple roles if dynamic roles are enabled', async () => {
 
 test('return error if roles api does not have data', async () => {
   render(
-    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES} addTypename={false}>
+    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES}>
       <Router>
         <StaffManagement />
       </Router>
@@ -158,7 +158,7 @@ test('if the user is manager they should not see Admin role in the list', async 
   const roleSpy = vi.spyOn(Role, 'getUserRole');
   roleSpy.mockImplementation(() => ['Manager']);
   render(
-    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_MANAGER_ROLE} addTypename={false}>
+    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_MANAGER_ROLE}>
       <Router>
         <StaffManagement />
       </Router>
@@ -190,7 +190,7 @@ test('if the user is Admin they should not see Glific admin role in the list', a
   const roleSpy = vi.spyOn(Role, 'getUserRole');
   roleSpy.mockImplementation(() => ['Admin']);
   render(
-    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_ADMIN_ROLE} addTypename={false}>
+    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_ADMIN_ROLE}>
       <Router>
         <StaffManagement />
       </Router>
@@ -282,7 +282,7 @@ test('admin should logout if they demote their own role', async () => {
     }
   });
   render(
-    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_ADMIN_ROLE} addTypename={false}>
+    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_ADMIN_ROLE}>
       <Router>
         <StaffManagement />
       </Router>

@@ -1,22 +1,26 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { BrowserRouter as Router } from 'react-router';
 import { vi } from 'vitest';
 
 import {
   createBillingSubscriptionQuery,
+  createBillingSubscriptionNetworkErrorQuery,
   getBillingQuery,
   createStatusPendingQuery,
   getBillingQueryWithoutsubscription,
   createBillingSubscriptionPromoQuery,
   getCouponCode,
   getCustomerPortalQuery,
+  getCustomerPortalNetworkErrorQuery,
   getPendingBillingQuery,
   getBillingQueryWithoutVars,
   updateBillingQueryMock3,
+  resetSubscriptionAfterSecureFailureQuery,
 } from 'mocks/Billing';
 import { Billing } from './Billing';
+import * as Notification from 'common/notification';
 
 const mocks = [createBillingSubscriptionQuery, getBillingQuery, getBillingQueryWithoutVars];
 
@@ -44,6 +48,13 @@ const mockElements = () => {
   };
 };
 
+const confirmCardSetupMock = vi.fn((): Promise<any> => {
+  return Promise.resolve({
+    error: null,
+    setupIntent: { status: 'succeeded' },
+  });
+});
+
 const mockStripe = () => ({
   elements: vi.fn(() => mockElements()),
   createToken: vi.fn(),
@@ -55,12 +66,7 @@ const mockStripe = () => ({
     };
   }),
   confirmCardPayment: vi.fn(),
-  confirmCardSetup: vi.fn((props) => {
-    return Promise.resolve({
-      error: null,
-      setupIntent: { status: 'succeeded' },
-    });
-  }),
+  confirmCardSetup: confirmCardSetupMock,
   paymentRequest: vi.fn(),
   _registerWrapper: vi.fn(),
 });
@@ -84,12 +90,21 @@ vi.mock('@stripe/react-stripe-js', async () => {
 });
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Billing />
     </Router>
   </MockedProvider>
 );
+
+afterEach(() => {
+  confirmCardSetupMock.mockImplementation(() =>
+    Promise.resolve({
+      error: null,
+      setupIntent: { status: 'succeeded' },
+    })
+  );
+});
 
 describe('<Billing />', () => {
   it('renders component properly', async () => {
@@ -102,10 +117,7 @@ describe('<Billing />', () => {
 
 test('creating a subscription with response as pending', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}
-      addTypename={false}
-    >
+    <MockedProvider mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}>
       <Router>
         <Billing />
       </Router>
@@ -120,15 +132,85 @@ test('creating a subscription with response as pending', async () => {
 
   fireEvent.click(getByTestId('submitButton'));
 
-  await waitFor(() => {});
+  // Wait for the full stripePayment() promise chain (confirmCardSetup -> success) to settle
+  // before this test returns. Otherwise the click's still-pending async work (and its use of
+  // the module-level `confirmCardSetupMock`, shared across every test in this file) can resolve
+  // during a *later* test and steal that test's `mockResolvedValueOnce`/`mockImplementationOnce`
+  // queue entries, causing flaky "No more mocked responses" failures there.
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
+  });
+});
+
+test('shows a warning and resets the subscription when 3D-secure confirmation fails', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  confirmCardSetupMock.mockResolvedValueOnce({
+    error: { message: '3D-secure authentication failed' },
+    setupIntent: null,
+  });
+
+  const { getByText, getByTestId } = render(
+    <MockedProvider
+      mocks={[
+        createStatusPendingQuery,
+        getBillingQueryWithoutVars,
+        getBillingQueryWithoutVars,
+        resetSubscriptionAfterSecureFailureQuery,
+        getBillingQueryWithoutVars,
+      ]}
+    >
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Subscribe for monthly billing')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('submitButton'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('3D-secure authentication failed', 'warning');
+  });
+
+  await waitFor(() => {
+    expect(getByText('Subscribe for monthly billing')).toBeInTheDocument();
+  });
+});
+
+test('shows a warning when creating the subscription fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  const user = UserEvent.setup();
+  const { getByText, getByTestId } = render(
+    <MockedProvider
+      mocks={[
+        getBillingQueryWithoutsubscription,
+        createBillingSubscriptionNetworkErrorQuery,
+        getBillingQueryWithoutVars,
+      ]}
+    >
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Variable charges as usage increases')).toBeInTheDocument();
+  });
+
+  user.click(getByTestId('submitButton'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Failed to create subscription', 'warning');
+  });
 });
 
 test('subscription status is already in pending state', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}
-      addTypename={false}
-    >
+    <MockedProvider mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}>
       <Router>
         <Billing />
       </Router>
@@ -143,7 +225,33 @@ test('subscription status is already in pending state', async () => {
 
   // check for customer portal button and click on it
   fireEvent.click(getByTestId('customerPortalButton'));
-  await waitFor(() => {});
+
+  await waitFor(() => {
+    expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank', 'noopener');
+  });
+});
+
+test('shows a warning when opening the customer portal fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  (window.open as any).mockClear();
+  const { getByText, getByTestId } = render(
+    <MockedProvider mocks={[getPendingBillingQuery, getCustomerPortalNetworkErrorQuery, getBillingQueryWithoutVars]}>
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByText('Your payment is in pending state'));
+  });
+
+  fireEvent.click(getByTestId('customerPortalButton'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('An error occurred', 'warning');
+  });
+  expect(window.open).not.toHaveBeenCalled();
 });
 
 test('complete a subscription', async () => {
@@ -157,7 +265,6 @@ test('complete a subscription', async () => {
         getBillingQueryWithoutVars,
         getCustomerPortalQuery,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -189,7 +296,6 @@ test('open customer portal', async () => {
         getCustomerPortalQuery,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -202,7 +308,16 @@ test('open customer portal', async () => {
   });
 
   user.click(getByTestId('submitButton'));
-  await waitFor(() => {});
+
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('customerPortalButton'));
+
+  await waitFor(() => {
+    expect(window.open).toHaveBeenCalledWith('billing.glific.com/session/_sdjsjscbjwew', '_blank', 'noopener');
+  });
 });
 
 test('update billing details', async () => {
@@ -216,7 +331,6 @@ test('update billing details', async () => {
         getBillingQueryWithoutVars,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />
@@ -251,7 +365,6 @@ test('update billing details with coupon code', async () => {
         getBillingQueryWithoutVars,
         getBillingQueryWithoutVars,
       ]}
-      addTypename={false}
     >
       <Router>
         <Billing />

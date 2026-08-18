@@ -1,5 +1,5 @@
 import { useNavigate, Outlet, useLocation } from 'react-router';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Box, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';

@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { TagList } from './TagList';
@@ -9,7 +9,7 @@ import { countTagQuery, filterTagQuery, getTagQuery } from 'mocks/Tag';
 const mocks = [getTagQuery, filterTagQuery, countTagQuery];
 
 const tagList = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <TagList />
     </MemoryRouter>

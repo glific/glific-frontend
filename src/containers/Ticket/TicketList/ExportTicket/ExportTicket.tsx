@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -23,10 +23,6 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
 
   const [getTicketDetails, { loading }] = useLazyQuery(EXPORT_SUPPORT_TICKETS, {
     fetchPolicy: 'network-only',
-    onCompleted: ({ fetchSupportTickets }) => {
-      downloadFile(`data:attachment/csv,${encodeURIComponent(fetchSupportTickets)}`, 'tickets.csv');
-      setShowExportDialog(false);
-    },
   });
 
   const formFields = [
@@ -57,9 +53,9 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
   return (
     <Formik
       initialValues={{ startDate: '', endDate: '' }}
-      onSubmit={(values) => {
+      onSubmit={async (values) => {
         if (values.startDate && values.endDate) {
-          getTicketDetails({
+          const { data } = await getTicketDetails({
             variables: {
               filter: {
                 startDate: formatDate(values.startDate),
@@ -67,6 +63,10 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
               },
             },
           });
+          if (data) {
+            downloadFile(`data:attachment/csv,${encodeURIComponent(data.fetchSupportTickets)}`, 'tickets.csv');
+            setShowExportDialog(false);
+          }
         }
       }}
       validationSchema={validationSchema}

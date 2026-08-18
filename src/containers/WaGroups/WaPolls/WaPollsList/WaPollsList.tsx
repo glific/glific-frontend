@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -61,16 +61,15 @@ export const WaPollsList = () => {
     navigate(`/group/polls/${id}/edit`, { state: 'copy' });
   };
 
-  const handleDelete = () => {
-    deletePoll({
-      variables: { deleteWaPollId },
-      onCompleted: () => {
-        setNotification('Poll deleted successfully', 'success');
-        setDeleteWaPollId(null);
-        setRefreshList(!refreshList);
-      },
-      onError: (error) => setErrorMessage(error),
-    });
+  const handleDelete = async () => {
+    try {
+      await deletePoll({ variables: { deleteWaPollId } });
+      setNotification('Poll deleted successfully', 'success');
+      setDeleteWaPollId(null);
+      setRefreshList(!refreshList);
+    } catch (error: any) {
+      setErrorMessage(error);
+    }
   };
 
   const copyUuid = (_id: string, item: any) => {

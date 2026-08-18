@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client/react';
 import { Typography } from '@mui/material';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';

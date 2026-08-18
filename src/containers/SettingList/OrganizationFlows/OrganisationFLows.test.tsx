@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { BrowserRouter as Router } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
@@ -9,7 +9,7 @@ import { OrganizationFlows } from './OrganizationFlows';
 const mocks = ORGANIZATION_MOCKS;
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <OrganizationFlows />
     </Router>
@@ -38,7 +38,7 @@ test('it renders component and clicks Cancel Button', async () => {
 
 test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
+    <MockedProvider mocks={[...ORGANIZATION_MOCKS]}>
       <Router>
         <OrganizationFlows />
       </Router>

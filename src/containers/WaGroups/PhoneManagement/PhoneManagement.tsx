@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import QrCode2Icon from '@mui/icons-material/QrCode2';

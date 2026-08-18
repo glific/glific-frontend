@@ -1,5 +1,5 @@
 import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
@@ -43,7 +43,7 @@ describe('Edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
     const { getByText, getAllByRole } = render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSM />} />
@@ -63,7 +63,7 @@ describe('Edit mode', () => {
   test('HSM templates with media', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia];
     const { getByText, getAllByRole } = render(
-      <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MockedProvider mocks={MOCKS}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSM />} />
@@ -91,7 +91,7 @@ describe('Edit mode', () => {
 describe('Add mode', () => {
   const MOCKS = [...mocks, ...WHATSAPP_FORM_MOCKS, ...CREATE_SESSION_TEMPLATE_MOCK];
   const template = (
-    <MockedProvider mocks={MOCKS} addTypename={false}>
+    <MockedProvider mocks={MOCKS}>
       <MemoryRouter>
         <HSM />
       </MemoryRouter>
@@ -295,7 +295,7 @@ describe('Add mode', () => {
     const INVALID_MOCKS = [listWhatsappFormsForHsmInvalidDef, ...MOCKS];
 
     render(
-      <MockedProvider mocks={INVALID_MOCKS} addTypename={false}>
+      <MockedProvider mocks={INVALID_MOCKS}>
         <MemoryRouter>
           <HSM />
         </MemoryRouter>

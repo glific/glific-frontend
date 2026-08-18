@@ -1,5 +1,5 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
@@ -12,6 +12,7 @@ import {
   getCollectionContactsQuery,
   addContactToCollection,
   exportCollectionsQueryWithErrors,
+  exportCollectionsQueryNetworkError,
 } from 'mocks/Collection';
 import { getContactsQuery, getContactsSearchQuery, getExcludedContactsQuery } from 'mocks/Contact';
 import { getCurrentUserQuery } from 'mocks/User';
@@ -66,7 +67,7 @@ const mocks = [
 
 const wrapper = (
   <MemoryRouter>
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <CollectionList />
     </MockedProvider>
   </MemoryRouter>
@@ -181,7 +182,7 @@ describe('<CollectionList />', () => {
   test('should export collection', async () => {
     const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
-        <MockedProvider mocks={[...mocks, exportCollectionsQuery]} addTypename={false}>
+        <MockedProvider mocks={[...mocks, exportCollectionsQuery]}>
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -203,7 +204,7 @@ describe('<CollectionList />', () => {
   test('should show error if export collection failed', async () => {
     const { getByTestId, getAllByTestId } = render(
       <MemoryRouter>
-        <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]} addTypename={false}>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]}>
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -218,6 +219,27 @@ describe('<CollectionList />', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('should show error if exporting the collection fails with a network error', async () => {
+    const { getByTestId, getAllByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryNetworkError]}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('export-icon'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('An error occurred while exporting the collection', 'warning');
     });
   });
 
@@ -266,7 +288,6 @@ describe('<CollectionList />', () => {
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
         ]}
-        addTypename={false}
       >
         <Routes>
           <Route path="group/collection" element={<CollectionList />} />

@@ -1,6 +1,6 @@
 import { fireEvent, render, waitFor, cleanup, screen, within } from '@testing-library/react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 
 import { getConsultingHour, getOrganizationList, createConsultingHour, updateConsultingHour } from 'mocks/Consulting';
 import { setUserSession } from 'services/AuthService';
@@ -20,7 +20,7 @@ const mocks = [
   getOrganizationLanguagesWithoutOrder,
 ];
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Routes>
         <Route path="/" element={<Consulting organizationId="" setOpenDialog={setOpenDialogMock} />} />
@@ -73,7 +73,7 @@ test('Render component correctly with empty form', async () => {
 });
 
 const consultingEditForm = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <Routes>
         <Route path="/" element={<Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />} />

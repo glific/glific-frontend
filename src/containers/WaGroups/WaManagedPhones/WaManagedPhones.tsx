@@ -3,7 +3,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './WaManagedPhones.module.css';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';

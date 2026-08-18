@@ -3,7 +3,7 @@
  */
 
 import { InMemoryCache } from '@apollo/client';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
@@ -89,7 +89,7 @@ export const loadMoreQuery = (
   },
 });
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache({});
 
 cache.writeQuery(searchQuery);
 
@@ -614,7 +614,7 @@ test('should open emoji picker', async () => {
   });
 });
 
-const groupscache = new InMemoryCache({ addTypename: false });
+const groupscache = new InMemoryCache({});
 groupscache.writeQuery(waGroup);
 groupscache.writeQuery(waGroupcollection);
 
@@ -715,5 +715,179 @@ test('Blocked contacts should redirect to chat page', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith('The contact is blocked', 'warning');
+  });
+});
+
+test('should fetch the search-parameter message when the contact is already cached', async () => {
+  const [searchParamMessage] = messages(1, 99);
+  searchParamMessage.body = 'Jumped to search message';
+
+  const searchParamContact = {
+    contact: {
+      id: '2',
+      name: 'Effie Cormier',
+      phone: '987654321',
+      maskedPhone: '98****321',
+      lastMessageAt: new Date(),
+      status: 'VALID',
+      fields: '{}',
+      bspStatus: 'SESSION_AND_HSM',
+      isOrgRead: true,
+    },
+    group: null,
+    id: 'contact_2',
+    messages: [searchParamMessage],
+  };
+
+  // Use an isolated cache (rather than the shared module-level `cache`, which accumulates
+  // fetchMore merges from every other test in this file) seeded the same way as `searchQuery`
+  // so entityId "2" matches directly on the first pass. This exercises the
+  // `conversationIndex > -1 && messageParameterOffset` branch of findContactInAllConversations,
+  // which fires getSearchParameterQuery for the message-number offset encoded in `?search=`.
+  const isolatedCache = new InMemoryCache({});
+  isolatedCache.writeQuery(searchQuery);
+
+  const searchParamMocks = [
+    ...mocks,
+    conversationMock(
+      {
+        contactOpts: { limit: 1 },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 38 },
+        filter: { id: '2' },
+      },
+      [searchParamContact]
+    ),
+  ];
+
+  // ChatMessages reads the `search` param off `window.location.href` directly (not off
+  // react-router's location), so the URL needs to be set on `window.location` itself for
+  // `messageParameterOffset` to be computed from it.
+  window.history.pushState({}, '', '/chat/2?search=48');
+
+  render(
+    <MemoryRouter initialEntries={['/chat/2?search=48']}>
+      <MockedProvider mocks={searchParamMocks} cache={isolatedCache}>
+        <ChatMessages entityId="2" />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+  });
+
+  // give the getSearchParameterQuery lazy query time to resolve so its `.then` callback runs
+  await waitFor(() => {
+    expect(screen.getByTestId('messageContainer')).toBeInTheDocument();
+  });
+
+  // restore the URL so later tests in this file aren't affected by the `?search=` param
+  window.history.pushState({}, '', '/');
+});
+
+const dateFilterContactFixture = {
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [
+      {
+        id: 'contact_2',
+        group: null,
+        contact: {
+          id: '2',
+          name: 'Effie Cormier',
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          fields: '{}',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        // 20 messages so loadMoreOption's `length > DEFAULT_MESSAGE_LIMIT - 1` check passes,
+        // making the "Load more messages" button render.
+        messages: messages(20, 1),
+      },
+    ],
+  },
+};
+
+const buildEmptyMessagesResponse = (offset: number) => [
+  {
+    contact: {
+      id: '2',
+      name: 'Effie Cormier',
+      phone: '987654321',
+      maskedPhone: '98****321',
+      lastMessageAt: new Date(),
+      status: 'VALID',
+      fields: '{}',
+      bspStatus: 'SESSION_AND_HSM',
+      isOrgRead: true,
+    },
+    group: null,
+    id: 'contact_2',
+    messages: [],
+  },
+];
+
+test('date-range load more: exhausting past and future messages toggles their respective affordances', async () => {
+  const dateFilterCache = new InMemoryCache({});
+  dateFilterCache.writeQuery(dateFilterContactFixture);
+
+  // last message of messages(20, 1) has messageNumber 24 -> past offset = max(1, 24-20) = 4
+  // first message of messages(20, 1) has messageNumber 5 -> future offset = 5 + 1 = 6
+  const dateFilterMocks = [
+    ...mocks,
+    conversationMock(
+      {
+        contactOpts: { limit: 1 },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 4 },
+        filter: { id: '2' },
+      },
+      buildEmptyMessagesResponse(4)
+    ),
+    conversationMock(
+      {
+        contactOpts: { limit: 1 },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 6 },
+        filter: { id: '2' },
+      },
+      buildEmptyMessagesResponse(6)
+    ),
+  ];
+
+  render(
+    <MemoryRouter>
+      <MockedProvider mocks={dateFilterMocks} cache={dateFilterCache}>
+        <ChatMessages entityId="2" appliedFilters={{ dateFrom: '2024-01-01', dateTo: '2024-01-31' }} />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+  });
+
+  // hasDateFilter renders the "show current messages" affordance up front
+  expect(screen.getByTestId('show-current-messages')).toBeInTheDocument();
+
+  // exercises loadMoreMessagesForDateRange('past'): an empty page sets showLoadMore(false)
+  fireEvent.click(screen.getByTestId('loadMoreMessages'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('beneficiaryName')).toBeInTheDocument();
+  });
+
+  // exercises loadMoreMessagesForDateRange('future'): an empty page sets showNewMessages(false),
+  // which hides the "show current messages" affordance
+  fireEvent.click(screen.getByTestId('show-current-messages'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('show-current-messages')).not.toBeInTheDocument();
   });
 });

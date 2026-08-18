@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { CreateGroupDialog } from './CreateGroupDialog';
@@ -42,7 +42,7 @@ const defaultProps = {
 
 const renderDialog = (mocks: any[] = [contactsListForCreateGroup], props = {}) =>
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <CreateGroupDialog {...defaultProps} {...props} />
     </MockedProvider>
   );

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import axios from 'axios';
@@ -12,13 +12,18 @@ import {
   getOrganizationServicesQuery,
   publishFlow,
   publishFlowWithDuplicateErrors,
+  publishFlowSuccess,
+  publishFlowNetworkError,
   getFreeFlow,
   getFreeFlowForced,
+  getFreeFlowAvailable,
   resetFlowCount,
+  resetFlowCountNetworkError,
   getFlowTranslations,
   getTemplateFlow,
   getFlowWithManyKeywords,
   exportFlow,
+  exportFlowNetworkError,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -29,9 +34,7 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import { GET_FREE_FLOW } from 'graphql/queries/Flow';
 import * as Notification from 'common/notification';
-import * as Apollo from '@apollo/client';
 import * as Utils from 'common/utils';
 import * as FlowEditorHelper from './FlowEditor.helper';
 
@@ -84,7 +87,7 @@ const templateFlowMocks = [...mocks, getTemplateFlow, resetFlowCount];
 const manyKeywordsMocks = [...mocks, getFlowWithManyKeywords, resetFlowCount];
 
 const wrapperFunction = (mocks: any) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <FlowEditor />
     </Router>
@@ -433,103 +436,37 @@ test('should show warning when no keywords are present and share responder link 
 test('should display read-only banner when flow is being edited by another user', async () => {
   mockedAxios.post.mockResolvedValue({ data: {} });
 
-  // @ts-expect-error - Mock implementation with simplified types for testing
   vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
     setTimeout(callback, 0);
-    return {}; // Simple object return instead of 'as unknown'
+    return [];
   });
 
-  const errorData = {
-    flowGet: {
-      flow: null,
-      errors: [
-        {
-          key: 'error',
-          message: 'The flow is being edited by NGO Main Account',
-        },
-      ],
+  const readOnlyMocks = [...activeFlowMocks, getFreeFlowForced];
+
+  const { container } = render(wrapperFunction(readOnlyMocks));
+
+  await screen.findByTestId('flowName');
+
+  await waitFor(
+    () => {
+      const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
+      expect(readOnlyBanner).toBeInTheDocument();
     },
-  };
+    { timeout: 5000, interval: 200 }
+  );
 
-  const takenOverData = {
-    flowGet: {
-      flow: { id: '1' },
-      errors: [],
-    },
-  };
+  const banner = container.querySelector('[class*="ReadOnlyBanner"]');
+  expect(banner).toHaveTextContent('View Only Mode');
+  expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
 
-  // FlowEditor calls useLazyQuery(GET_FREE_FLOW, ...) from two distinct call sites
-  // (`getFreeFlow` then `getFreeFlowForced`), always in that order per render since hook
-  // order is stable. Track calls by position (odd = getFreeFlow, even = getFreeFlowForced)
-  // so each hook instance's own `onCompleted` can be triggered independently.
-  let hookInstanceCount = 0;
-  let getFreeFlowCalled = false;
-  let getFreeFlowForcedCalled = false;
-  const realUseLazyQuery = Apollo.useLazyQuery;
+  expect(screen.getByTestId('button')).toBeDisabled();
+  expect(screen.getByTestId('translateButton')).toBeDisabled();
 
-  const useLazyQuerySpy = vi.spyOn(Apollo, 'useLazyQuery').mockImplementation((query: unknown, options?: unknown) => {
-    if (query === GET_FREE_FLOW) {
-      hookInstanceCount += 1;
-      const isForcedHookInstance = hookInstanceCount % 2 === 0;
-      const onCompleted = (options as { onCompleted?: (data: unknown) => void } | undefined)?.onCompleted;
+  fireEvent.click(screen.getByText('Take Over'));
 
-      const mockGetFreeFlow = vi.fn(() => {
-        const alreadyCalled = isForcedHookInstance ? getFreeFlowForcedCalled : getFreeFlowCalled;
-        if (!alreadyCalled) {
-          if (isForcedHookInstance) {
-            getFreeFlowForcedCalled = true;
-          } else {
-            getFreeFlowCalled = true;
-          }
-          if (onCompleted) {
-            setTimeout(() => onCompleted(isForcedHookInstance ? takenOverData : errorData), 0);
-          }
-        }
-        return Promise.resolve({ data: isForcedHookInstance ? takenOverData : errorData });
-      });
-
-      return [
-        mockGetFreeFlow,
-        {
-          called: false,
-          loading: false,
-          data: null,
-        },
-      ] as unknown;
-    }
-
-    // @ts-expect-error - Mocking Apollo Client's useLazyQuery with unknown types
-    return (realUseLazyQuery as unknown)(query, options);
+  await waitFor(() => {
+    expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
   });
-
-  try {
-    const { container } = render(wrapperFunction(activeFlowMocks));
-
-    await screen.findByTestId('flowName');
-
-    await waitFor(
-      () => {
-        const readOnlyBanner = container.querySelector('[class*="ReadOnlyBanner"]');
-        expect(readOnlyBanner).toBeInTheDocument();
-      },
-      { timeout: 5000, interval: 200 }
-    );
-
-    const banner = container.querySelector('[class*="ReadOnlyBanner"]');
-    expect(banner).toHaveTextContent('View Only Mode');
-    expect(banner).toHaveTextContent('The flow is being edited by NGO Main Account');
-
-    expect(screen.getByTestId('button')).toBeDisabled();
-    expect(screen.getByTestId('translateButton')).toBeDisabled();
-
-    fireEvent.click(screen.getByText('Take Over'));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('ReadOnlyBanner')).not.toBeInTheDocument();
-    });
-  } finally {
-    useLazyQuerySpy.mockRestore();
-  }
 });
 
 test('flow editor becomes editable immediately after Take Over succeeds, without requiring a page refresh', async () => {
@@ -589,4 +526,122 @@ test('should not display read-only banner when flow is available for editing', a
   const translateButton = screen.getByTestId('translateButton');
   expect(publishButton).not.toBeDisabled();
   expect(translateButton).not.toBeDisabled();
+});
+
+test('loads flow editor as editable when the flow is available on first fetch', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  vi.spyOn(FlowEditorHelper, 'loadfiles').mockImplementation((callback: () => void) => {
+    setTimeout(callback, 0);
+    return [];
+  });
+  const setConfigSpy = vi.spyOn(FlowEditorHelper, 'setConfig');
+  setConfigSpy.mockClear();
+  const availableFlowMocks = [
+    ...mocks.filter((mock: any) => mock !== getFreeFlow),
+    getFreeFlowAvailable,
+    getFreeFlowAvailable,
+    getActiveFlow,
+  ];
+
+  render(wrapperFunction(availableFlowMocks));
+
+  await waitFor(() => {
+    expect(setConfigSpy).toHaveBeenCalled();
+  });
+
+  const lastCallArgs = setConfigSpy.mock.calls[setConfigSpy.mock.calls.length - 1];
+  expect(lastCallArgs[2]).toBe(false);
+});
+
+test('shows an error when exporting the flow fails', async () => {
+  const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const exportErrorMocks = [...mocks.filter((mock: any) => mock !== exportFlow), exportFlowNetworkError, getActiveFlow];
+
+  const { getByTestId, getByText } = render(wrapperFunction(exportErrorMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('moreButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('moreButton'));
+  fireEvent.click(getByText('Export flow'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
+  });
+});
+
+test('shows a warning when resetting the flow count fails', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const resetErrorMocks = [
+    ...noKeywordMocks.filter((mock: any) => mock !== resetFlowCount),
+    resetFlowCountNetworkError,
+  ];
+
+  const { getByTestId, getByText } = render(wrapperFunction(resetErrorMocks));
+
+  await screen.findByText('help workflow');
+
+  fireEvent.click(getByTestId('moreButton'));
+  fireEvent.click(getByText('Reset flow count'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('An error occured while resetting the flow count', 'warning');
+  });
+});
+
+test('publishes the flow successfully', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const successMocks = [...mocks.filter((mock: any) => mock !== publishFlow), publishFlowSuccess, getActiveFlow];
+
+  const { getByTestId } = render(wrapperFunction(successMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('The flow has been published');
+  });
+});
+
+test('shows a warning when publishing the flow fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const errorMocks = [...mocks.filter((mock: any) => mock !== publishFlow), publishFlowNetworkError, getActiveFlow];
+
+  const { getByTestId } = render(wrapperFunction(errorMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occurred', 'warning');
+  });
 });

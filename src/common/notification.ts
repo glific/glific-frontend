@@ -1,3 +1,4 @@
+import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { cache } from 'config/apolloclient';
 import { NOTIFICATION, ERROR_MESSAGE } from 'graphql/queries/Notification';
 
@@ -22,12 +23,16 @@ export const setErrorMessage = (error: any, title?: string) => {
       type: 'Error',
     };
   } else if (error !== '') {
+    // Apollo Client 4 removed the ApolloError wrapper (with separate .networkError/.graphQLErrors
+    // properties) in favor of throwing/emitting a single `error` that's either a
+    // CombinedGraphQLErrors (GraphQL-level errors) or the underlying network error directly.
+    const isGraphQLError = CombinedGraphQLErrors.is(error);
     errorMessage = {
       title,
       message: error.message,
       type: error.name,
-      networkError: error.networkError,
-      graphqlError: error.graphQLErrors,
+      networkError: isGraphQLError ? undefined : error,
+      graphqlError: isGraphQLError ? error.errors : undefined,
     };
   } else {
     errorMessage = '';

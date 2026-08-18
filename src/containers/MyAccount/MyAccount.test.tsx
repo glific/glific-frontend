@@ -1,11 +1,16 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
+import {
+  getCurrentUserQuery,
+  updateUserQuery,
+  updateUserNetworkErrorQuery,
+  updateUserIncorrectOtpQuery,
+} from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
@@ -22,7 +27,7 @@ const mockedAxios = axios as any;
 const user = userEvent.setup();
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <MyAccount />
     </MemoryRouter>
@@ -46,10 +51,10 @@ describe('<MyAccount />', () => {
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     render(wrapper);
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // set the mock
@@ -58,17 +63,17 @@ describe('<MyAccount />', () => {
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on resend button
       const resendButton = screen.getByTestId('resendOtp');
-      user.click(resendButton);
+      await user.click(resendButton);
     });
 
     // trigger validation errors
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on save button
       const saveButton = screen.getByText('Save');
-      user.click(saveButton);
+      await user.click(saveButton);
     });
 
     // check for validation errors
@@ -97,10 +102,10 @@ describe('<MyAccount />', () => {
     const errorMessage = 'Cannot register 919967665667';
     mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // close the alert
@@ -118,10 +123,10 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     await waitFor(() => {
@@ -129,7 +134,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
     const cancelButton = screen.getByText('Cancel');
-    user.click(cancelButton);
+    await user.click(cancelButton);
   });
 
   test('generate OTP error with incorrect OTP', async () => {
@@ -139,21 +144,21 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    user.click(input);
-    user.keyboard('1234');
+    await user.click(input);
+    await user.keyboard('1234');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    user.click(password);
-    user.keyboard('pass123456');
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
@@ -175,21 +180,21 @@ describe('<MyAccount />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       // click on generate OTP
-      const generateOTPButton = screen.getByText('Generate OTP');
-      user.click(generateOTPButton);
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
     });
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    user.click(input);
-    user.keyboard('4567');
+    await user.click(input);
+    await user.keyboard('4567');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    user.click(password);
-    user.keyboard('pass123456');
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
@@ -197,5 +202,107 @@ describe('<MyAccount />', () => {
     });
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
+  });
+
+  test('updates the password successfully', async () => {
+    const { container } = render(wrapper);
+
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(async () => {
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
+    });
+
+    const input = await screen.findByPlaceholderText('OTP');
+    await user.click(input);
+    await user.keyboard('76554');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('Pass123456!');
+
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
+    });
+  });
+
+  test('shows a validation error when the payload reports an incorrect OTP', async () => {
+    const { container } = render(
+      <MockedProvider mocks={[getCurrentUserQuery, updateUserIncorrectOtpQuery, getOrganizationLanguagesQuery]}>
+        <MemoryRouter>
+          <MyAccount />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(async () => {
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
+    });
+
+    const input = await screen.findByPlaceholderText('OTP');
+    await user.click(input);
+    await user.keyboard('11111');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('Pass123456!');
+
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Please enter a valid OTP')).toBeInTheDocument();
+    });
+  });
+
+  test('shows a generic error when updating the password fails unexpectedly', async () => {
+    const { container } = render(
+      <MockedProvider mocks={[getCurrentUserQuery, updateUserNetworkErrorQuery, getOrganizationLanguagesQuery]}>
+        <MemoryRouter>
+          <MyAccount />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(async () => {
+      const generateOTPButton = screen.getByTestId('generateOTP');
+      fireEvent.click(generateOTPButton);
+    });
+
+    const input = await screen.findByPlaceholderText('OTP');
+    await user.click(input);
+    await user.keyboard('76554');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('Pass123456!');
+
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sorry! An error occurred!')).toBeInTheDocument();
+    });
   });
 });

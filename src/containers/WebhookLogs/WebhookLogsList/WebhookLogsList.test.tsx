@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing/react';
 import { vi } from 'vitest';
 
 import { getWebhookLogsQuery, getWebhookLogsCountQuery } from 'mocks/WebhookLogs';
@@ -21,7 +21,7 @@ beforeEach(() => {
 const mocks = [getWebhookLogsQuery, getWebhookLogsQuery, getWebhookLogsCountQuery];
 
 const webhookLogs = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
       <WebhookLogsList />
     </Router>
