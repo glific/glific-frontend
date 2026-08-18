@@ -5,7 +5,6 @@ import { EvaluationResult } from '../EvaluationResult/EvaluationResult';
 import { EvaluationScores } from '../EvaluationScores/EvaluationScores';
 import styles from './RunPanel.module.css';
 
-/** stands in for the tab name while the sentence around the link is split */
 const TAB_SLOT = '\u0000';
 
 export interface RunPanelProps {
@@ -17,11 +16,6 @@ export interface RunPanelProps {
 export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) => {
   const { t } = useTranslation();
 
-  /*
-   * The sentence stays one key so a translator can put the tab name where their grammar wants
-   * it; only that word is the link. A sentinel is interpolated and split on, rather than the
-   * tab name itself, so a translation that repeats the word still splits in the right place.
-   */
   const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
 
   return (
