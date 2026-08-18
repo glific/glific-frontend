@@ -148,9 +148,9 @@ describe('adding a set', () => {
     pickFile(csvFile(SAMPLE_CSV));
 
     const parsed = await screen.findByTestId('goldenQaParsed');
-    expect(parsed).toHaveTextContent('2');
-    expect(parsed).toHaveTextContent('ANC, Nutrition');
-    // the rows themselves belong in the view dialog, not here
+    expect(parsed).toHaveTextContent('Parsed 2 questions');
+    // the count is the whole summary — categories and rows belong in the view dialog
+    expect(parsed).not.toHaveTextContent('ANC');
     expect(screen.queryByTestId('goldenQaPreviewRow')).not.toBeInTheDocument();
   });
 
@@ -163,6 +163,31 @@ describe('adding a set', () => {
     await waitFor(() => {
       expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health');
     });
+  });
+
+  test('picking another file re-suggests the name from it', async () => {
+    renderTab();
+    await openDialog();
+
+    pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health'));
+
+    pickFile(csvFile(SAMPLE_CSV, 'Child Nutrition.csv'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('child_nutrition'));
+  });
+
+  test('a name the reader typed survives picking another file', async () => {
+    renderTab();
+    await openDialog();
+
+    pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health'));
+
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'my_own_set' } });
+    pickFile(csvFile(SAMPLE_CSV, 'Child Nutrition.csv'));
+
+    await screen.findByTestId('goldenQaParsed');
+    expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('my_own_set');
   });
 
   test('a file with no questions is refused, and nothing can be added', async () => {
@@ -259,7 +284,7 @@ describe('the drop zone', () => {
     fireEvent.dragOver(zone);
     fireEvent.drop(zone, { dataTransfer: { files: [csvFile(SAMPLE_CSV)] } });
 
-    expect(await screen.findByTestId('goldenQaParsed')).toHaveTextContent('ANC, Nutrition');
+    expect(await screen.findByTestId('goldenQaParsed')).toHaveTextContent('Parsed 2 questions');
   });
 
   test('dragging away again leaves the zone alone', async () => {
