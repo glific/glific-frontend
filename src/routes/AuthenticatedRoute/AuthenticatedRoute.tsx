@@ -93,9 +93,6 @@ const staffRoutes = (
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="myaccount" element={<MyAccount />} />
     <Route path="analytics" element={<Analytics />} />
-    <Route path="assistants" element={<AssistantList />} />
-    <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-    <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
     <Route path="/*" element={<Chat />} />
   </Routes>
 );

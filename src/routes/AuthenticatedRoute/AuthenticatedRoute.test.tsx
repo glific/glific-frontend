@@ -97,17 +97,14 @@ describe('<AuthenticatedRoute />', () => {
     });
   });
 
-  test.each(['Staff', 'Manager', 'Admin', 'Glific_admin'])(
-    'renders AssistantList at /assistants for %s role',
-    async (role) => {
-      setUserSession(JSON.stringify({ organization: { id: '1' }, roles: [role] }));
-      renderAuthenticatedRoute({ initialEntries: ['/assistants'] });
+  test('renders AssistantList at /assistants', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    renderAuthenticatedRoute({ initialEntries: ['/assistants'] });
 
-      await waitFor(() => {
-        expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
-      });
-    }
-  );
+    await waitFor(() => {
+      expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
+    });
+  });
 
   test.each(['Staff', 'Manager', 'Admin', 'Glific_admin'])(
     'renders Analytics at /analytics for %s role',
