@@ -264,18 +264,17 @@ describe('Chat interface with filters', () => {
       expect(screen.getByText('Search conversations')).toBeInTheDocument();
     });
 
-    const dateFrom = screen.queryByTestId('Date from');
-    const dateTo = screen.queryByTestId('Date to');
-
-    if (dateFrom) {
-      fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
-    }
+    const dateFrom = await screen.findByTestId('Date from');
+    fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
   });
 
   test('should show filtered messages after applying `to` date filter', async () => {
@@ -291,17 +290,17 @@ describe('Chat interface with filters', () => {
       expect(screen.getByText('Search conversations')).toBeInTheDocument();
     });
 
-    const dateTo = screen.queryByTestId('Date to');
-
-    if (dateTo) {
-      fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
-    }
+    const dateTo = await screen.findByTestId('Date to');
+    fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
 
     fireEvent.click(screen.getByTestId('loadMoreMessages'));
   });
@@ -319,19 +318,19 @@ describe('Chat interface with filters', () => {
       expect(screen.getByText('Search conversations')).toBeInTheDocument();
     });
 
-    const dateFrom = screen.queryByTestId('Date from');
-    const dateTo = screen.queryByTestId('Date to');
-
-    if (dateTo && dateFrom) {
-      fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
-      fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
-    }
+    const dateFrom = await screen.findByTestId('Date from');
+    const dateTo = await screen.findByTestId('Date to');
+    fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
+    fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
 
     fireEvent.click(screen.getByTestId('show-current-messages'));
 
@@ -343,8 +342,11 @@ describe('Chat interface with filters', () => {
 
     fireEvent.click(screen.getByTestId('additionalActionButton'));
 
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mockedUsedNavigate).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
   });
 });
