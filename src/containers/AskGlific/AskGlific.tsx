@@ -168,17 +168,21 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   });
 
   const loadConversations = async (append = false) => {
-    const { data } = await fetchConversations({
-      variables: { limit: 10, lastId: append ? lastConversationId : '' },
-    });
-    const result = data?.askGlificConversations;
-    const conversations: DifyConversation[] = result?.conversations || [];
-    const newItems = toHistoryItems(conversations);
+    try {
+      const { data } = await fetchConversations({
+        variables: { limit: 10, lastId: append ? lastConversationId : '' },
+      });
+      const result = data?.askGlificConversations;
+      const conversations: DifyConversation[] = result?.conversations || [];
+      const newItems = toHistoryItems(conversations);
 
-    setChatHistory((prev) => (append ? [...prev, ...newItems] : newItems));
-    setHasMoreConversations(result?.hasMore || false);
-    if (conversations.length > 0) {
-      setLastConversationId(conversations[conversations.length - 1].id);
+      setChatHistory((prev) => (append ? [...prev, ...newItems] : newItems));
+      setHasMoreConversations(result?.hasMore || false);
+      if (conversations.length > 0) {
+        setLastConversationId(conversations[conversations.length - 1].id);
+      }
+    } catch {
+      // ignore - e.g. cancelled because the component unmounted mid-fetch
     }
   };
 

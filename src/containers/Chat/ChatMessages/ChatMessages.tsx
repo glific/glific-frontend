@@ -149,11 +149,13 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
     if (!groups && entityId) {
       markAsRead({
         variables: { contactId: entityId.toString() },
-      }).then(({ data }) => {
-        if (data?.markContactMessagesAsRead) {
-          updateContactCache(client, entityId);
-        }
-      });
+      })
+        .then(({ data }) => {
+          if (data?.markContactMessagesAsRead) {
+            updateContactCache(client, entityId);
+          }
+        })
+        .catch(() => {});
     }
   }, []);
 
@@ -422,15 +424,17 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
             if (fetchMoreResult.search && fetchMoreResult.search.length) {
               return updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType);
             } else {
-              getContactStatus({ variables: { id: entityId } }).then(({ data }) => {
-                if (data && data.contact && data.contact.contact && data.contact.contact.status) {
-                  const status = data.contact.contact.status;
-                  if (status === 'BLOCKED') {
-                    setNotification('The contact is blocked', 'warning');
-                    navigate('/chat');
+              getContactStatus({ variables: { id: entityId } })
+                .then(({ data }) => {
+                  if (data && data.contact && data.contact.contact && data.contact.contact.status) {
+                    const status = data.contact.contact.status;
+                    if (status === 'BLOCKED') {
+                      setNotification('The contact is blocked', 'warning');
+                      navigate('/chat');
+                    }
                   }
-                }
-              });
+                })
+                .catch(() => {});
             }
           },
         });
@@ -452,7 +456,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
         getSearchParameterQuery({
           variables,
-        }).then(({ data }) => handleSearchParameterCompleted(data));
+        })
+          .then(({ data }) => handleSearchParameterCompleted(data))
+          .catch(() => {});
       }
     }
   };
@@ -648,22 +654,24 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       variables,
       updateQuery: (prev: any, { fetchMoreResult }: any) =>
         updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true, direction),
-    }).then((fetchMoreResult: any) => {
-      const conversationData = fetchMoreResult.data;
+    })
+      .then((fetchMoreResult: any) => {
+        const conversationData = fetchMoreResult.data;
 
-      if (
-        (conversationData && conversationData.search.length === 0) ||
-        conversationData.search[0].messages.length === 0
-      ) {
-        if (direction === 'past') {
-          setShowLoadMore(false);
-        } else {
-          setShowNewMessages(false);
+        if (
+          (conversationData && conversationData.search.length === 0) ||
+          conversationData.search[0].messages.length === 0
+        ) {
+          if (direction === 'past') {
+            setShowLoadMore(false);
+          } else {
+            setShowNewMessages(false);
+          }
         }
-      }
 
-      setScrollToMessageNumber(messageNumber);
-    });
+        setScrollToMessageNumber(messageNumber);
+      })
+      .catch(() => {});
   };
 
   const loadMoreMessagesRegular = () => {
@@ -694,22 +702,24 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       variables,
       updateQuery: (prev: any, { fetchMoreResult }: any) =>
         updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true, direction),
-    }).then((fetchMoreResult: any) => {
-      const conversationData = fetchMoreResult.data;
+    })
+      .then((fetchMoreResult: any) => {
+        const conversationData = fetchMoreResult.data;
 
-      if (
-        (conversationData && conversationData.search.length === 0) ||
-        conversationData.search[0].messages.length === 0
-      ) {
-        if (direction === 'past') {
-          setShowLoadMore(false);
-        } else {
-          setShowNewMessages(false);
+        if (
+          (conversationData && conversationData.search.length === 0) ||
+          conversationData.search[0].messages.length === 0
+        ) {
+          if (direction === 'past') {
+            setShowLoadMore(false);
+          } else {
+            setShowNewMessages(false);
+          }
         }
-      }
 
-      setScrollToMessageNumber(messageNumber);
-    });
+        setScrollToMessageNumber(messageNumber);
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -817,7 +827,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
       getSearchParameterQuery({
         variables,
-      }).then(({ data }) => handleSearchParameterCompleted(data));
+      })
+        .then(({ data }) => handleSearchParameterCompleted(data))
+        .catch(() => {});
     }
 
     scrollToLatestMessage();

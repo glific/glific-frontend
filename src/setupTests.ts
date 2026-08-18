@@ -94,6 +94,29 @@ window.HTMLDocument = Document;
 // unmocked fetch in a test environment actually represents (no network available).
 window.fetch = vi.fn(() => Promise.reject(new Error('fetch is not mocked in tests'))) as any;
 
+// Apollo Client 4's internal query tracking (and its MockedProvider unmount cleanup) rejects an
+// internal promise with an "AbortError"/"QueryManager stopped" error whenever an ObservableQuery
+// is torn down before it ever received data - e.g. a component unmounting while a mocked query's
+// artificial delay hasn't resolved yet. Nothing in app or test code holds a reference to that
+// promise to catch it, so it otherwise surfaces as a Vitest-failing unhandled rejection for a
+// perfectly normal test teardown. Vitest treats any additional 'unhandledRejection' listener as a
+// sign the rejection is being handled by user code, so filter out only this known-benign class
+// here and let anything else re-surface as an uncaught exception (still fails the run, on its own
+// listener) so real bugs stay visible.
+const BENIGN_APOLLO_CLEANUP_REJECTIONS = [
+  'QueryManager stopped while query was in flight',
+  'The operation was aborted',
+];
+(globalThis as any).process?.on('unhandledRejection', (reason: any) => {
+  const message = reason?.message ?? String(reason);
+  if (BENIGN_APOLLO_CLEANUP_REJECTIONS.some((pattern) => message.includes(pattern))) {
+    return;
+  }
+  queueMicrotask(() => {
+    throw reason;
+  });
+});
+
 window.URL.createObjectURL = vi.fn();
 
 (globalThis.crypto as any).randomUUID = () => 'mock-request-id-1234-5678-90ab-cdef00000000';
