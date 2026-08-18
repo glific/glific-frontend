@@ -1,6 +1,7 @@
 import { MemoryRouter, BrowserRouter as Router } from 'react-router';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { LocalState } from '@apollo/client/local-state';
 import { ApolloProvider } from '@apollo/client/react';
 import { MockedProvider } from '@apollo/client/testing/react';
 
@@ -21,6 +22,7 @@ const clientForContact = new ApolloClient({
   cache: contactCache,
   link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
+  localState: new LocalState(),
 });
 const conversationList = (
   <ApolloProvider client={clientForContact}>
@@ -64,6 +66,7 @@ const clientForCollection = new ApolloClient({
   cache: collectionCache,
   link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
+  localState: new LocalState(),
 });
 
 test('it should render conversation collection list with readMore', async () => {
@@ -191,6 +194,7 @@ const clientForGroup = new ApolloClient({
   cache: groupsCache,
   link: new HttpLink({ uri: 'http://localhost:4000/' }),
   assumeImmutableResults: true,
+  localState: new LocalState(),
 });
 
 test('it renders whatsapp groups with phone number filter', async () => {
