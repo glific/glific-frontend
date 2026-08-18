@@ -897,7 +897,7 @@ describe('the result panel above the table', () => {
     expect(within(panel).getByTestId('metric-knowledgeBase')).toHaveTextContent('Not scored in this run');
     expect(within(panel).getAllByTestId('scoreBar')).toHaveLength(2);
     // re-weighted over what was scored: (4.7*.5 + 5*.2) / .7
-    expect(within(panel).getByTestId('overallScore')).toHaveTextContent('4.8');
+    expect(within(panel).getByTestId('overallScore')).toHaveTextContent('4.79');
     expect(within(panel).getByTestId('scoreBand')).toHaveTextContent('Good');
     expect(within(panel).getByTestId('scoreBand').querySelector('svg')).toHaveAttribute('data-testid', 'CheckIcon');
   });
@@ -1361,7 +1361,7 @@ test('Export CSV downloads the question-level results as a CSV file', async () =
   createObjectURL.mockRestore();
 });
 
-test('the banner shows nothing in place of the summary while it is still loading', async () => {
+test('the result card waits for the score payload rather than showing a number that then changes', async () => {
   const run = {
     id: 'r1',
     name: 'run',
@@ -1388,9 +1388,17 @@ test('the banner shows nothing in place of the summary while it is still loading
     </MockedProvider>
   );
 
-  // the card is on screen, but the write-up's own query has not come back
-  await screen.findByTestId('evaluationResult');
+  await screen.findByTestId('evaluationTab');
+
+  const panel = await screen.findByTestId('evaluationResult');
+
+  expect(panel).toHaveTextContent('Version 1 · core_set');
+  expect(within(panel).getByTestId('evaluationScoreLoading')).toBeInTheDocument();
+  expect(within(panel).getByTestId('metric-groundTruth')).toBeInTheDocument();
+  expect(within(panel).queryByTestId('overallScore')).not.toBeInTheDocument();
   expect(screen.queryByTestId('evaluationSummary')).not.toBeInTheDocument();
+  // and it is not sitting next to "nothing has run yet", which is a different state
+  expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
 });
 
 test('only the tab name in the footnote is the link', async () => {

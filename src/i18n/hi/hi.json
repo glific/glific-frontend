@@ -1011,5 +1011,7 @@
   "Asks each question five times. Catches answers that change between attempts.": "हर प्रश्न पांच बार पूछता है। हर बार बदलने वाले उत्तर पकड़ता है।",
   "An evaluation is already running. Wait for it to finish.": "एक मूल्यांकन पहले से चल रहा है। उसके पूरा होने का इंतज़ार करें।",
   "Knowledge Base ID": "नॉलेज बेस आईडी",
-  "Edit system instructions": "सिस्टम निर्देश संपादित करें"
+  "Edit system instructions": "सिस्टम निर्देश संपादित करें",
+  "Loading out the overall score": "कुल स्कोर निकाला जा रहा है",
+  "The checks below are in already; the summary lands in a moment.": "नीचे की जांचें आ चुकी हैं; सारांश एक पल में आ जाएगा।"
 }

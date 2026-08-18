@@ -24,6 +24,7 @@ export interface EvaluationResultProps {
   run: EvaluationRun;
   overall?: number | null;
   summary?: string | null;
+  loading?: boolean;
   children?: ReactNode;
 }
 
@@ -58,7 +59,13 @@ const ScoreBar = ({ score, band }: { score: number; band: string }) => (
   </div>
 );
 
-export const EvaluationResult = ({ run, overall: reported, summary, children }: EvaluationResultProps) => {
+export const EvaluationResult = ({
+  run,
+  overall: reported,
+  summary,
+  loading = false,
+  children,
+}: EvaluationResultProps) => {
   const { t } = useTranslation();
 
   const metrics = parseEvaluationResults(run.results);
@@ -104,7 +111,7 @@ export const EvaluationResult = ({ run, overall: reported, summary, children }: 
     );
   }
 
-  if (isRunFailed(run) || overall == null) {
+  if (!loading && (isRunFailed(run) || overall == null)) {
     return (
       <div className={styles.Wrap} data-testid="evaluationFailed">
         {metaLine}
@@ -115,7 +122,7 @@ export const EvaluationResult = ({ run, overall: reported, summary, children }: 
     );
   }
 
-  const band = scoreBand(overall);
+  const band = scoreBand(overall ?? 0);
   const BandIcon = BAND_ICON[band];
 
   return (
@@ -123,35 +130,45 @@ export const EvaluationResult = ({ run, overall: reported, summary, children }: 
       {metaLine}
 
       <div className={styles.Card}>
-        <div className={`${styles.Banner} ${styles[`${band}Banner`]}`}>
-          <div
-            className={`${styles.Ring} ${styles[`${band}Ring`]}`}
-            style={{
-              background: `conic-gradient(currentColor ${(overall / MAX_SCORE) * 360}deg, var(--app-color-border) 0)`,
-            }}
-            data-testid="overallScore"
-          >
-            <span className={styles.RingInner}>
-              <span className={styles.RingScore}>
-                {formatScore(overall)}
-                <span className={styles.RingOutOf}>/{MAX_SCORE}</span>
+        {loading ? (
+          <div className={styles.BannerLoading} data-testid="evaluationScoreLoading">
+            <span className={styles.PendingDot} />
+            <div className={styles.PendingTitle}>{t('Loading out the overall score')}</div>
+            <div className={styles.PendingNote}>
+              {t('The checks below are in already; the summary lands in a moment.')}
+            </div>
+          </div>
+        ) : (
+          <div className={`${styles.Banner} ${styles[`${band}Banner`]}`}>
+            <div
+              className={`${styles.Ring} ${styles[`${band}Ring`]}`}
+              style={{
+                background: `conic-gradient(currentColor ${((overall ?? 0) / MAX_SCORE) * 360}deg, var(--app-color-border) 0)`,
+              }}
+              data-testid="overallScore"
+            >
+              <span className={styles.RingInner}>
+                <span className={styles.RingScore}>
+                  {formatScore(overall)}
+                  <span className={styles.RingOutOf}>/{MAX_SCORE}</span>
+                </span>
+                <span className={styles.RingLabel}>{t('Overall')}</span>
               </span>
-              <span className={styles.RingLabel}>{t('Overall')}</span>
-            </span>
-          </div>
+            </div>
 
-          <div className={styles.BannerText}>
-            <span className={`${styles.BandPill} ${styles[`${band}Pill`]}`} data-testid="scoreBand">
-              <BandIcon className={styles.BandIcon} />
-              {t(BAND_LABEL[band])}
-            </span>
-            {summary && (
-              <div className={styles.BannerSummary} data-testid="evaluationSummary">
-                {summary}
-              </div>
-            )}
+            <div className={styles.BannerText}>
+              <span className={`${styles.BandPill} ${styles[`${band}Pill`]}`} data-testid="scoreBand">
+                <BandIcon className={styles.BandIcon} />
+                {t(BAND_LABEL[band])}
+              </span>
+              {summary && (
+                <div className={styles.BannerSummary} data-testid="evaluationSummary">
+                  {summary}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className={styles.Divider} />
 

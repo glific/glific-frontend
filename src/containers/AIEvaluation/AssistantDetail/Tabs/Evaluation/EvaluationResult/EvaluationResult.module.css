@@ -298,7 +298,11 @@
   }
 }
 
-/* the Golden Q&A set is what a reader looks for in this line, so it is the part that stands out */
 .MetaSet {
   color: var(--app-color-text-primary);
+}
+
+.BannerLoading {
+  padding: var(--app-space-3xl) var(--app-space-xl);
+  text-align: center;
 }
