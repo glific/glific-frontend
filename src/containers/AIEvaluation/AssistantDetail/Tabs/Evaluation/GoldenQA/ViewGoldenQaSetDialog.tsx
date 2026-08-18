@@ -132,12 +132,14 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
         </div>
 
         <DataTable
+          className={styles.RowsTable}
           testId="goldenQaViewTable"
           rowTestId="goldenQaViewRow"
+          maxHeight="30rem"
           columns={[
-            ...(hasCategories ? [{ label: t('Category') }] : []),
-            { label: t('Question') },
-            { label: t('Expected answer') },
+            ...(hasCategories ? [{ label: t('Category'), className: styles.CategoryColumn }] : []),
+            { label: t('Question'), className: styles.QuestionColumn },
+            { label: t('Expected answer'), className: styles.AnswerColumn },
           ]}
           rows={rows.map((row, index) => ({
             key: `${row.question}-${index}`,

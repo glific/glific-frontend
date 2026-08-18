@@ -163,3 +163,34 @@ describe('naming a set', () => {
     expect(isValidGoldenQaName(suggested)).toBe(true);
   });
 });
+
+describe('reading real-world exports', () => {
+  test('a header that says Questions and Answers is still a header', () => {
+    expect(parseGoldenQaCsv('Questions,Answers\nQ1,A1')).toEqual([{ question: 'Q1', answer: 'A1', category: '' }]);
+  });
+
+  test('the columns are read by name, not by position', () => {
+    const csv = ['Category,Expected Answer,Question', 'ANC,In the first trimester.,When is the check-up?'].join('\n');
+
+    expect(parseGoldenQaCsv(csv)).toEqual([
+      { question: 'When is the check-up?', answer: 'In the first trimester.', category: 'ANC' },
+    ]);
+  });
+
+  test('a file with no answer column still yields its questions', () => {
+    expect(parseGoldenQaCsv('question\nQ1\nQ2')).toEqual([
+      { question: 'Q1', answer: '', category: '' },
+      { question: 'Q2', answer: '', category: '' },
+    ]);
+  });
+
+  test("Excel's carriage returns inside a field become plain line breaks", () => {
+    const rows = parseGoldenQaCsv('question,answer\r\n"Q one","A one\r\n1. first\r\n2. second"\r\n');
+
+    expect(rows[0].answer).toBe('A one\n1. first\n2. second');
+  });
+
+  test('a headerless file is still read by position', () => {
+    expect(parseGoldenQaCsv('Q1,A1,C1')).toEqual([{ question: 'Q1', answer: 'A1', category: 'C1' }]);
+  });
+});
