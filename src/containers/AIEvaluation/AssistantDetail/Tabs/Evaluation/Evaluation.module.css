@@ -38,7 +38,6 @@
   color: var(--app-color-text-tertiary);
 }
 
-/* the sub-tabs sit above a full-width panel, so they read a step larger than an inline control */
 .SubTabOption {
   padding: var(--app-space-2xs) var(--app-space-lg);
   font-size: var(--app-font-size-sm);

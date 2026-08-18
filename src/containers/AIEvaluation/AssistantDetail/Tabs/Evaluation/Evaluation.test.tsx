@@ -452,6 +452,29 @@ describe('viewing a set', () => {
     expect(screen.queryByTestId('goldenQaViewDownloadButton')).not.toBeInTheDocument();
   });
 
+  test('a set the server describes without a link falls back instead of spinning', async () => {
+    renderTab([
+      listMock(oneSet),
+      {
+        request: { query: GET_GOLDEN_QA, variables: { id: 'g1', includeSignedUrl: true } },
+        // the query succeeded, but the stored file has no link to read it back from
+        result: {
+          data: {
+            goldenQa: {
+              goldenQa: { id: 'g1', name: 'maternal_health_core', signedUrl: null, insertedAt: '' },
+              errors: null,
+            },
+          },
+        },
+      },
+    ]);
+
+    await openView();
+
+    expect(await screen.findByTestId('goldenQaViewFallback')).toBeInTheDocument();
+    expect(screen.queryByTestId('goldenQaViewDownloadButton')).not.toBeInTheDocument();
+  });
+
   test('closing while the file is still arriving writes nothing', async () => {
     let release: (value: any) => void = () => {};
     const pending = new Promise((resolve) => {

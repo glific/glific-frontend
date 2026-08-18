@@ -38,11 +38,6 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
 
   const sets: GoldenQaSet[] = data?.goldenQas ?? [];
 
-  /*
-   * The sentence stays one key so a translator can put the tab name where their grammar wants
-   * it; only that word is the link. A sentinel is interpolated and split on, rather than the
-   * tab name itself, so a translation that repeats the word still splits in the right place.
-   */
   const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
 
   const addDialog = addOpen && (

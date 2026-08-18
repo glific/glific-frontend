@@ -29,9 +29,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
   const { t } = useTranslation();
 
   const [rows, setRows] = useState<GoldenQaRow[] | null>(null);
-  // the file could not be read at all — distinct from "no file chosen yet", which Yup reports
   const [readError, setReadError] = useState('');
-  // a name the reader typed is theirs to keep; a suggested one follows whichever file is picked
   const [nameTouched, setNameTouched] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,11 +69,6 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     },
   });
 
-  /*
-   * Reading a File can reject — a file removed from disk between picking and reading, or a
-   * permission the browser withdraws — and this runs unawaited from event handlers, so a
-   * rejection here would otherwise surface as nothing at all for the reader.
-   */
   const readFile = async (selected: File) => {
     setReadError('');
 
@@ -139,7 +132,6 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
           field={{ name: 'name', value: formik.values.name, onBlur: formik.handleBlur }}
           onChange={(value: string) => {
             formik.setFieldValue('name', value);
-            // clearing the field hands the name back to the file
             setNameTouched(value.trim() !== '');
           }}
           inputProp={{ 'data-testid': 'goldenQaNameInput' }}

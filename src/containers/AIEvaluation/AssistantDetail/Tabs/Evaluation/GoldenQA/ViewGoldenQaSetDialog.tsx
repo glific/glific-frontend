@@ -40,7 +40,13 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
       return undefined;
     }
 
-    if (!signedUrl) return undefined;
+    if (!signedUrl) {
+      if (data) {
+        setFailure('link');
+        setReading(false);
+      }
+      return undefined;
+    }
 
     let cancelled = false;
 
@@ -72,7 +78,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
     return () => {
       cancelled = true;
     };
-  }, [signedUrl, queryFailed]);
+  }, [data, signedUrl, queryFailed]);
 
   const categories = rows ? goldenQaCategories(rows) : [];
   const hasCategories = categories.length > 0;
