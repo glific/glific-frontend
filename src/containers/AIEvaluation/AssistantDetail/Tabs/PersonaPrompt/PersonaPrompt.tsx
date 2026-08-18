@@ -53,7 +53,6 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
   };
 
   const handleTemperatureChange = (value: string | number) => {
-    // an emptied box means "leave temperature out", which the save payload honours
     if (value === '') {
       onConfigChange({ ...config, temperature: '' });
       return;

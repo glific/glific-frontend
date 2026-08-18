@@ -106,7 +106,6 @@ span.GenerateBeta {
   display: flex;
 }
 
-/* left at the icon's own 24px, the size the old editor used */
 .ExpandButton {
   border-radius: var(--app-radius-lg);
   color: var(--app-color-text-tertiary);
@@ -117,7 +116,6 @@ span.GenerateBeta {
   background-color: var(--app-color-surface-hover);
 }
 
-/* room to actually write in — the point of opening it */
 .ExpandedPaper {
   width: min(56rem, 92vw) !important;
   max-width: min(56rem, 92vw) !important;
