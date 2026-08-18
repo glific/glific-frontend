@@ -12,7 +12,8 @@ import {
   shortMetricName,
   traceMetricNames,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
-import { DataTable, MarkdownAnswer } from '../../../components';
+import { DataTable } from 'components/UI/DataTable/DataTable';
+import { MarkdownAnswer } from '../../../components';
 import styles from './EvaluationScores.module.css';
 
 export interface EvaluationScoresProps {
@@ -91,7 +92,7 @@ export const EvaluationScores = ({ runId }: EvaluationScoresProps) => {
       <div className={styles.Header}>
         <span className={styles.Title}>{t('Question-level results')}</span>
         <span className={styles.Count}>
-          {traces.length} {traces.length === 1 ? t('question') : t('questions')}
+          {traces.length === 1 ? t('1 question') : t('{{count}} questions', { count: traces.length })}
         </span>
         <Button
           variant="outlined"

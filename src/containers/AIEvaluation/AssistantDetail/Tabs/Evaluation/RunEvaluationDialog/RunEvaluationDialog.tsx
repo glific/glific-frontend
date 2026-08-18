@@ -93,8 +93,11 @@ export const RunEvaluationDialog = ({
     >
       <div data-testid="runEvaluationDialog">
         <div className={styles.Intro}>
-          {t('Score')} <b>{versionNumber ? `${t('Version')} ${versionNumber}` : t('this version')}</b>{' '}
-          {t('against a Golden Q&A set. Each answer is scored 0–5.')}
+          {versionNumber
+            ? t('Score version {{version}} against a Golden Q&A set. Each answer is scored 0–5.', {
+                version: versionNumber,
+              })
+            : t('Score this version against a Golden Q&A set. Each answer is scored 0–5.')}
         </div>
 
         <div className={styles.FieldLabel}>{t('Golden Q&A set')}</div>

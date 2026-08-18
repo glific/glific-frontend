@@ -6,11 +6,12 @@ export interface EmptyStateProps {
   note: ReactNode;
   icon?: ReactNode;
   action?: ReactNode;
+  className?: string;
   testId?: string;
 }
 
-export const EmptyState = ({ title, note, icon, action, testId }: EmptyStateProps) => (
-  <div className={styles.Wrap} data-testid={testId}>
+export const EmptyState = ({ title, note, icon, action, className, testId }: EmptyStateProps) => (
+  <div className={`${styles.Wrap} ${className ?? ''}`} data-testid={testId}>
     {icon && <div className={styles.Icon}>{icon}</div>}
     <div className={styles.Title}>{title}</div>
     <div className={styles.Note}>{note}</div>

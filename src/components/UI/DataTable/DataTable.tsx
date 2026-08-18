@@ -14,22 +14,15 @@ export interface DataTableRow {
 export interface DataTableProps {
   columns: DataTableColumn[];
   rows: DataTableRow[];
-  emptyText?: ReactNode;
   maxHeight?: string;
   className?: string;
   testId?: string;
   rowTestId?: string;
 }
 
-/**
- * A scrollable table with a sticky header, for data already in hand. Callers pass the header
- * labels and the cells; anything about how a cell reads — a pill, muted text — belongs in the
- * cell itself, so the same table can be reused wherever the styling should match.
- */
 export const DataTable = ({
   columns,
   rows,
-  emptyText,
   maxHeight,
   className,
   testId = 'dataTable',
@@ -51,26 +44,16 @@ export const DataTable = ({
         </tr>
       </thead>
       <tbody>
-        {rows.length === 0 && emptyText ? (
-          <tr data-testid={`${testId}Empty`}>
-            <td className={styles.Empty} colSpan={columns.length}>
-              {emptyText}
-            </td>
+        {rows.map((row) => (
+          <tr key={row.key} data-testid={rowTestId}>
+            {row.cells.map((cell, index) => (
+              <td key={`${row.key}-${index}`} className={columns[index]?.className}>
+                {cell}
+              </td>
+            ))}
           </tr>
-        ) : (
-          rows.map((row) => (
-            <tr key={row.key} data-testid={rowTestId}>
-              {row.cells.map((cell, index) => (
-                <td key={`${row.key}-${index}`} className={columns[index]?.className}>
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))
-        )}
+        ))}
       </tbody>
     </table>
   </div>
 );
-
-export default DataTable;

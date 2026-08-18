@@ -49,5 +49,3 @@ export const TabBar = ({ activeTab, onChange, dirtyTabs = {} }: TabBarProps) => 
     </div>
   );
 };
-
-export default TabBar;

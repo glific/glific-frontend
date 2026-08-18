@@ -5,7 +5,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { DataTable } from '../../../../components';
+import { DataTable } from 'components/UI/DataTable/DataTable';
 import { GET_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import type { GoldenQaRow, GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
@@ -40,7 +40,13 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
       return undefined;
     }
 
-    if (!signedUrl) return undefined;
+    if (!signedUrl) {
+      if (data) {
+        setFailure('link');
+        setReading(false);
+      }
+      return undefined;
+    }
 
     let cancelled = false;
 
@@ -72,7 +78,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
     return () => {
       cancelled = true;
     };
-  }, [signedUrl, queryFailed]);
+  }, [data, signedUrl, queryFailed]);
 
   const categories = rows ? goldenQaCategories(rows) : [];
   const hasCategories = categories.length > 0;
@@ -169,17 +175,15 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
     >
       <div data-testid="viewGoldenQaSetDialog">
         <div className={styles.Intro} data-testid="goldenQaViewSummary">
-          {rows && (
-            <>
-              {rows.length} {rows.length === 1 ? t('question') : t('questions')} · {t('showing')} {rows.length}.{' '}
-            </>
-          )}
-          {t('These are the questions every evaluation on this set asks.')}
+          <b className={styles.SetName}>{set.name}</b>
+          {rows &&
+            ' · ' +
+              (rows.length === 1
+                ? t('Every evaluation on this set asks this 1 question.')
+                : t('Every evaluation on this set asks these {{count}} questions.', { count: rows.length }))}
         </div>
         {body()}
       </div>
     </DialogBox>
   );
 };
-
-export default ViewGoldenQaSetDialog;

@@ -21,6 +21,9 @@ field components (below); it isn't itself a component.
 | ------------------------------------------------- | ----------------------------------------------------------- |
 | Modal, confirmation popup, form-in-a-dialog       | `DialogBox`                                                 |
 | "Pick from a searchable list" modal               | `SearchDialogBox`                                           |
+| Read-only table of rows already in hand           | `DataTable`                                                 |
+| "Nothing here yet" card with a next step          | `EmptyState`                                                |
+| Two or three mutually exclusive inline choices    | `SegmentedControl`                                          |
 | Full-page or full-section loading state           | `Layout/Loading`                                            |
 | Full-page error state                             | `ErrorPage`                                                 |
 | Any button                                        | `Form/Button`                                               |
@@ -57,13 +60,21 @@ feature file.
 
 ## Loading, error & status
 
-| Component        | Purpose                                                         | Key props                               | Used in       | Notes                                                                                                                                                                                 |
-| ---------------- | --------------------------------------------------------------- | --------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Layout/Loading` | Centered spinner + message, optional rotating "pro tip"         | `message`, `showTip`, `whiteBackground` | **37 files**  | The standard loader — don't wrap raw `CircularProgress`.                                                                                                                              |
-| `DotLoader`      | Small inline animated dot/spinner                               | none                                    | 1 file (chat) | For inline "sending/typing" indicators only; use `Loading` for section-level states.                                                                                                  |
-| `ErrorPage`      | Full-page error state with Refresh action                       | `title`, `onRefresh`                    | 2 files       | Route/boundary-level only, not inline field errors.                                                                                                                                   |
-| `ToastMessage`   | Snackbar+Alert toast                                            | `open`, `severity`, `message`           | 2 files       | **Prefer `setNotification`/`setErrorMessage`** (see root `CLAUDE.md`) over using this directly — toasts should go through the Apollo-cache notification service, not component state. |
-| `Timer`          | WhatsApp 24-hour session-window countdown, or opt-out indicator | `time`, `contactStatus`, `variant`      | 3 files       | Domain-specific to WhatsApp session windows, not a generic timer.                                                                                                                     |
+| Component        | Purpose                                                           | Key props                                   | Used in                 | Notes                                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------- | ------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Layout/Loading` | Centered spinner + message, optional rotating "pro tip"           | `message`, `showTip`, `whiteBackground`     | **37 files**            | The standard loader — don't wrap raw `CircularProgress`.                                                                                                                              |
+| `DotLoader`      | Small inline animated dot/spinner                                 | none                                        | 1 file (chat)           | For inline "sending/typing" indicators only; use `Loading` for section-level states.                                                                                                  |
+| `ErrorPage`      | Full-page error state with Refresh action                         | `title`, `onRefresh`                        | 2 files                 | Route/boundary-level only, not inline field errors.                                                                                                                                   |
+| `EmptyState`     | Card for a screen with nothing to show: icon, title, note, action | `title`, `note`, `icon`, `action`, `testId` | 2 files (AI Evaluation) | Use for "nothing here yet" and for blocked states with a next step. Not for inline field errors or full-page failures (`ErrorPage`).                                                  |
+| `ToastMessage`   | Snackbar+Alert toast                                              | `open`, `severity`, `message`               | 2 files                 | **Prefer `setNotification`/`setErrorMessage`** (see root `CLAUDE.md`) over using this directly — toasts should go through the Apollo-cache notification service, not component state. |
+| `Timer`          | WhatsApp 24-hour session-window countdown, or opt-out indicator   | `time`, `contactStatus`, `variant`          | 3 files                 | Domain-specific to WhatsApp session windows, not a generic timer.                                                                                                                     |
+
+## Data display
+
+| Component          | Purpose                                                           | Key props                                                          | Used in                 | Notes                                                                                                          |
+| ------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `DataTable`        | Scrollable table with a sticky header, for rows already in memory | `columns`, `rows`, `maxHeight`, `className`, `testId`, `rowTestId` | 1 file (AI Evaluation)  | For data you already hold. Query-driven, paginated list pages belong in `containers/List` instead.             |
+| `SegmentedControl` | Pill track of two or three mutually exclusive options             | `options`, `value`, `onChange`, `label`, `optionClassName`         | 2 files (AI Evaluation) | Style per-usage through `optionClassName`/`trackClassName` — don't edit the component's own CSS, it is shared. |
 
 ## Page structure
 

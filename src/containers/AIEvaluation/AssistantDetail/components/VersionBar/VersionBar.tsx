@@ -155,5 +155,3 @@ export const VersionBar = ({
     </div>
   );
 };
-
-export default VersionBar;

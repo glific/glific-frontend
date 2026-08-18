@@ -14,6 +14,18 @@ import {
 import Evaluation from './Evaluation';
 import { ViewGoldenQaSetDialog } from './GoldenQA';
 
+/*
+ * The global mock returns keys verbatim, which would leave "{{count}}" in the assertions below.
+ * This one fills interpolation in so the tests read the sentence a user actually sees.
+ */
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options ? key.replace(/{{(\w+)}}/g, (token, name) => (name in options ? String(options[name]) : token)) : key,
+    i18n: { changeLanguage: () => new Promise(() => {}) },
+  }),
+}));
+
 const listVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 
 const listMock = (goldenQas: { id: string; name: string; insertedAt: string }[]) => ({
@@ -79,7 +91,7 @@ describe('listing sets', () => {
     renderTab([listMock(oneSet)]);
 
     expect(await screen.findByTestId('evaluationSubTabs')).toBeInTheDocument();
-    expect(screen.getByTestId('noEvaluationsYet')).toHaveTextContent('Version 1');
+    expect(screen.getByTestId('noEvaluationsYet')).toHaveTextContent('No evaluations yet for version 1');
     expect(screen.queryByTestId('manageGoldenQaSet')).not.toBeInTheDocument();
   });
 
@@ -372,7 +384,9 @@ describe('viewing a set', () => {
     await waitFor(() => {
       expect(screen.getAllByTestId('goldenQaViewRow')).toHaveLength(2);
     });
-    expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent('2 questions · showing 2');
+    expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent(
+      'Every evaluation on this set asks these 2 questions.'
+    );
     expect(screen.getByTestId('goldenQaViewCategories')).toHaveTextContent('ANC, Nutrition');
     expect(screen.getByRole('columnheader', { name: 'Category' })).toBeInTheDocument();
     expect(screen.getAllByTestId('goldenQaViewRow')[0]).toHaveTextContent('When is the first check-up?');
@@ -388,7 +402,7 @@ describe('viewing a set', () => {
     await openView();
 
     const summary = await screen.findByTestId('goldenQaViewSummary');
-    expect(summary).toHaveTextContent('1 question · showing 1');
+    expect(summary).toHaveTextContent('Every evaluation on this set asks this 1 question.');
     expect(screen.getByTestId('goldenQaViewCategories')).toBeEmptyDOMElement();
 
     // nothing is categorised, so the column is left out entirely
@@ -436,6 +450,29 @@ describe('viewing a set', () => {
       {
         request: { query: GET_GOLDEN_QA, variables: { id: 'g1', includeSignedUrl: true } },
         result: { data: { goldenQa: { goldenQa: null, errors: [{ message: 'gone' }] } } },
+      },
+    ]);
+
+    await openView();
+
+    expect(await screen.findByTestId('goldenQaViewFallback')).toBeInTheDocument();
+    expect(screen.queryByTestId('goldenQaViewDownloadButton')).not.toBeInTheDocument();
+  });
+
+  test('a set the server describes without a link falls back instead of spinning', async () => {
+    renderTab([
+      listMock(oneSet),
+      {
+        request: { query: GET_GOLDEN_QA, variables: { id: 'g1', includeSignedUrl: true } },
+        // the query succeeded, but the stored file has no link to read it back from
+        result: {
+          data: {
+            goldenQa: {
+              goldenQa: { id: 'g1', name: 'maternal_health_core', signedUrl: null, insertedAt: '' },
+              errors: null,
+            },
+          },
+        },
       },
     ]);
 
@@ -735,7 +772,7 @@ describe('running an evaluation', () => {
     renderWithRuns([], [createMock]);
 
     fireEvent.click(await screen.findByTestId('runEvaluationButton'));
-    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent('Version 1');
+    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent('Score version 1 against');
 
     fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -1390,4 +1427,26 @@ test('the banner shows nothing in place of the summary while it is still loading
   // the card is on screen, but the write-up's own query has not come back
   await screen.findByTestId('evaluationResult');
   expect(screen.queryByTestId('evaluationSummary')).not.toBeInTheDocument();
+});
+
+test('only the tab name in the footnote is the link', async () => {
+  renderTab([listMock(oneSet)]);
+
+  const link = await screen.findByTestId('goToHistoryButton');
+
+  // the sentence reads whole, but the reader can only click the tab name
+  expect(link).toHaveTextContent('History');
+  expect(link.parentElement).toHaveTextContent('See every past run in the History tab');
+  expect(link.textContent).toBe('History');
+});
+
+test('the first file picked clears the "choose a file" error', async () => {
+  renderTab();
+  fireEvent.click(await screen.findByTestId('addFirstSetButton'));
+  await screen.findByTestId('addGoldenQaSetDialog');
+
+  pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
+
+  await screen.findByTestId('goldenQaParsed');
+  expect(screen.queryByTestId('goldenQaFileError')).not.toBeInTheDocument();
 });

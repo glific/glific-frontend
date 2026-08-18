@@ -10,7 +10,7 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
-import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
 import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
@@ -118,7 +118,7 @@ export const AssistantDetail = () => {
   const models = useMemo(() => parseAssistantModels(modelData?.kaapiModels), [modelData]);
 
   const { data: goldenQaData } = useQuery(LIST_GOLDEN_QA, {
-    variables: { filter: {}, opts: {} },
+    variables: GOLDEN_QA_LIST_VARIABLES,
     skip: activeTab !== 'tryItOut',
   });
 

@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
-import { EmptyState } from '../../../components';
+import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { EvaluationResult } from '../EvaluationResult/EvaluationResult';
 import { EvaluationScores } from '../EvaluationScores/EvaluationScores';
 import styles from './RunPanel.module.css';
+
+/** stands in for the tab name while the sentence around the link is split */
+const TAB_SLOT = '\u0000';
 
 export interface RunPanelProps {
   run?: EvaluationRun;
@@ -14,6 +17,13 @@ export interface RunPanelProps {
 export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) => {
   const { t } = useTranslation();
 
+  /*
+   * The sentence stays one key so a translator can put the tab name where their grammar wants
+   * it; only that word is the link. A sentinel is interpolated and split on, rather than the
+   * tab name itself, so a translation that repeats the word still splits in the right place.
+   */
+  const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
+
   return (
     <>
       {run ? (
@@ -23,17 +33,21 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
       ) : (
         <EmptyState
           testId="noEvaluationsYet"
-          title={`${t('No evaluations yet for')} ${versionNumber ? `${t('Version')} ${versionNumber}` : t('this version')}`}
+          title={
+            versionNumber
+              ? t('No evaluations yet for version {{version}}', { version: versionNumber })
+              : t('No evaluations yet for this version')
+          }
           note={t('Run one to see how this version scores against a Golden Q&A set.')}
         />
       )}
 
       <div className={styles.FootNote}>
-        {t('See every past run in the')}{' '}
+        {footNote[0]}
         <button type="button" className={styles.FootNoteLink} onClick={onGoToHistory} data-testid="goToHistoryButton">
           {t('History')}
-        </button>{' '}
-        {t('tab above.')}
+        </button>
+        {footNote[1]}
       </div>
     </>
   );

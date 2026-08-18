@@ -80,5 +80,3 @@ export const ManageGoldenQaSetsDialog = ({ sets, onView, onAdd, onClose }: Manag
     </DialogBox>
   );
 };
-
-export default ManageGoldenQaSetsDialog;

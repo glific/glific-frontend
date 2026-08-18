@@ -2,17 +2,18 @@ import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Button } from 'components/UI/Form/Button/Button';
+import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
-import { LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { GOLDEN_QA_LIST_VARIABLES, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
-import { EmptyState } from '../../components';
 import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
 import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import { RunPanel } from './RunPanel/RunPanel';
@@ -33,8 +34,8 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
   const [viewing, setViewing] = useState<GoldenQaSet | null>(null);
   const [runOpen, setRunOpen] = useState(false);
 
-  const { data, loading, refetch } = useQuery(LIST_GOLDEN_QA, {
-    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+  const { data, loading, error, refetch } = useQuery(LIST_GOLDEN_QA, {
+    variables: GOLDEN_QA_LIST_VARIABLES,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -61,6 +62,24 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
 
   if (loading && sets.length === 0) {
     return <Loading />;
+  }
+
+  if (error && sets.length === 0) {
+    return (
+      <div data-testid="evaluationTab">
+        <EmptyState
+          testId="goldenQaLoadError"
+          icon={<ErrorOutlineIcon fontSize="inherit" />}
+          title={t('Golden Q&A sets could not be loaded')}
+          note={t('The server did not answer. Check your connection and try again.')}
+          action={
+            <Button variant="outlined" onClick={() => refetch()} data-testid="retryGoldenQaButton">
+              {t('Try again')}
+            </Button>
+          }
+        />
+      </div>
+    );
   }
 
   if (sets.length === 0) {
@@ -94,6 +113,7 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
     <div data-testid="evaluationTab">
       <div className={styles.Header}>
         <SegmentedControl<EvaluationSubTab>
+          optionClassName={styles.SubTabOption}
           testId="evaluationSubTabs"
           options={[
             { value: 'run', label: t('Run') },

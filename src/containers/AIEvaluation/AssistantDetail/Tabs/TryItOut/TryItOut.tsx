@@ -8,6 +8,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import { setErrorMessage } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
+import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import type { AssistantChatResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
@@ -237,12 +238,7 @@ export const TryItOut = ({
   };
 
   const blocker = (title: string, note: string, action: ReactNode, icon?: ReactNode) => (
-    <div className={styles.Blocker} data-testid="tryItOutBlocker">
-      {icon && <div className={styles.BlockerIcon}>{icon}</div>}
-      <div className={styles.BlockerTitle}>{title}</div>
-      <div className={styles.BlockerNote}>{note}</div>
-      <div className={styles.BlockerAction}>{action}</div>
-    </div>
+    <EmptyState testId="tryItOutBlocker" title={title} note={note} action={action} icon={icon} />
   );
 
   if (!hasVersions) {
