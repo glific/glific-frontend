@@ -87,7 +87,12 @@ vi.mock('config/logs', () => {
 
 window.ResizeObserver = ResizeObserver;
 window.HTMLDocument = Document;
-window.fetch = vi.fn() as any;
+// A bare `vi.fn()` returns `undefined`, and Apollo Client 4's HttpLink calls `.then()` on the
+// fetch call directly - any query that isn't fully mocked and genuinely reaches this (e.g. a raw
+// ApolloClient/HttpLink in a test with no matching MockedProvider mock) throws synchronously
+// instead of surfacing as a normal, catchable async rejection. Reject instead, matching what an
+// unmocked fetch in a test environment actually represents (no network available).
+window.fetch = vi.fn(() => Promise.reject(new Error('fetch is not mocked in tests'))) as any;
 
 window.URL.createObjectURL = vi.fn();
 
