@@ -136,7 +136,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--app-color-text-tertiary);
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .BannerText {
@@ -296,4 +296,9 @@
     margin-right: var(--app-space-2xs);
     border-radius: 50%;
   }
+}
+
+/* the Golden Q&A set is what a reader looks for in this line, so it is the part that stands out */
+.MetaSet {
+  color: var(--app-color-text-primary);
 }

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -12,6 +12,7 @@ import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedContro
 import { GOLDEN_QA_LIST_VARIABLES, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
+import { isRunInProgress } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
 import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
@@ -19,13 +20,16 @@ import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
 
+const RUN_POLL_MS = 15000;
+
 export interface EvaluationProps {
+  assistantId?: string;
   versionId?: string;
   versionNumber?: number;
   assistantName?: string;
 }
 
-export const Evaluation = ({ versionId, versionNumber, assistantName }: EvaluationProps) => {
+export const Evaluation = ({ assistantId, versionId, versionNumber, assistantName }: EvaluationProps) => {
   const { t } = useTranslation();
 
   const [subTab, setSubTab] = useState<EvaluationSubTab>('run');
@@ -39,16 +43,31 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: runData, refetch: refetchRuns } = useQuery(LIST_AI_EVALUATIONS, {
+  const {
+    data: runData,
+    refetch: refetchRuns,
+    startPolling,
+    stopPolling,
+  } = useQuery(LIST_AI_EVALUATIONS, {
     variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
     fetchPolicy: 'cache-and-network',
   });
 
   const sets: GoldenQaSet[] = data?.goldenQas ?? [];
-  const allRuns: EvaluationRun[] = runData?.aiEvaluations ?? [];
+  const assistantRuns: EvaluationRun[] = (runData?.aiEvaluations ?? []).filter(
+    (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+  );
   // the Run panel is about the version on screen; History is about the whole assistant
-  const versionRuns = allRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
+  const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
   const latestRun = versionRuns[0];
+  const runsInProgress = assistantRuns.some(isRunInProgress);
+
+  useEffect(() => {
+    if (runsInProgress) startPolling(RUN_POLL_MS);
+    else stopPolling();
+
+    return stopPolling;
+  }, [runsInProgress, startPolling, stopPolling]);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
@@ -138,7 +157,8 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
               color="primary"
               className={styles.RunButton}
               startIcon={<PlayArrowIcon />}
-              disabled={!versionId}
+              disabled={!versionId || runsInProgress}
+              title={runsInProgress ? t('An evaluation is already running. Wait for it to finish.') : undefined}
               onClick={() => setRunOpen(true)}
               data-testid="runEvaluationButton"
             >
@@ -150,8 +170,8 @@ export const Evaluation = ({ versionId, versionNumber, assistantName }: Evaluati
 
       {subTab === 'run' ? (
         <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
-      ) : allRuns.length > 0 ? (
-        <EvaluationHistory runs={allRuns} />
+      ) : assistantRuns.length > 0 ? (
+        <EvaluationHistory runs={assistantRuns} />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"

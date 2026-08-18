@@ -1094,9 +1094,6 @@
   "This model has no settings to tune.": "This model has no settings to tune.",
   "Evaluation started — the result appears here once it completes.": "Evaluation started — the result appears here once it completes.",
   "Golden Q&A set": "Golden Q&A set",
-  "How many times to ask each question": "How many times to ask each question",
-  "Asks each question once. The fastest way to see if things broadly work.": "Asks each question once. The fastest way to see if things broadly work.",
-  "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
   "Evaluations run in the background. You can keep working and come back — the result appears when it completes.": "Evaluations run in the background. You can keep working and come back — the result appears when it completes.",
   "Running": "Running",
   "evaluation": "evaluation",
@@ -1110,8 +1107,6 @@
   "needs improvement": "needs improvement",
   "all scores out of 5": "all scores out of 5",
   "Run another evaluation": "Run another evaluation",
-  "Quick smoke test": "Quick smoke test",
-  "Consistency check": "Consistency check",
   "Last run": "Last run",
   "duplication": "duplication",
   "This evaluation did not produce a score.": "This evaluation did not produce a score.",
@@ -1145,5 +1140,11 @@
   "1 question": "1 question",
   "{{count}} questions": "{{count}} questions",
   "Score version {{version}} against a Golden Q&A set. Each answer is scored 0–5.": "Score version {{version}} against a Golden Q&A set. Each answer is scored 0–5.",
-  "Score this version against a Golden Q&A set. Each answer is scored 0–5.": "Score this version against a Golden Q&A set. Each answer is scored 0–5."
+  "Score this version against a Golden Q&A set. Each answer is scored 0–5.": "Score this version against a Golden Q&A set. Each answer is scored 0–5.",
+  "How many times to ask each question": "How many times to ask each question",
+  "Quick smoke test": "Quick smoke test",
+  "Asks each question once. The fastest way to see if things broadly work.": "Asks each question once. The fastest way to see if things broadly work.",
+  "Consistency check": "Consistency check",
+  "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
+  "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish."
 }

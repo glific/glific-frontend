@@ -958,9 +958,6 @@
   "This model has no settings to tune.": "इस मॉडल में समायोजित करने के लिए कोई सेटिंग नहीं है।",
   "Evaluation started — the result appears here once it completes.": "मूल्यांकन शुरू हुआ — पूरा होते ही परिणाम यहां दिखेगा।",
   "Golden Q&A set": "गोल्डन प्रश्नोत्तर सेट",
-  "How many times to ask each question": "हर प्रश्न कितनी बार पूछा जाए",
-  "Asks each question once. The fastest way to see if things broadly work.": "हर प्रश्न एक बार पूछता है। मोटे तौर पर जांचने का सबसे तेज़ तरीका।",
-  "Asks each question five times. Catches answers that change between attempts.": "हर प्रश्न पांच बार पूछता है। हर बार बदलने वाले उत्तर पकड़ता है।",
   "Evaluations run in the background. You can keep working and come back — the result appears when it completes.": "मूल्यांकन पृष्ठभूमि में चलते हैं। आप काम जारी रख सकते हैं और वापस आ सकते हैं — रिजल्ट पूरा होने पर दिखता है.",
   "Running": "चल रहा है",
   "Failed": "विफल",
@@ -975,8 +972,6 @@
   "needs improvement": "सुधार चाहिए",
   "all scores out of 5": "सभी स्कोर 5 में से",
   "Run another evaluation": "एक और मूल्यांकन चलाएं",
-  "Quick smoke test": "त्वरित जांच",
-  "Consistency check": "निरंतरता जांच",
   "Last run": "पिछला रन",
   "duplication": "पुनरावृत्ति",
   "This evaluation did not produce a score.": "इस मूल्यांकन से कोई स्कोर नहीं मिला।",
@@ -1010,5 +1005,11 @@
   "1 question": "1 प्रश्न",
   "{{count}} questions": "{{count}} प्रश्न",
   "Score version {{version}} against a Golden Q&A set. Each answer is scored 0–5.": "संस्करण {{version}} को गोल्डन प्रश्नोत्तर सेट के मुकाबले स्कोर करें। हर उत्तर 0–5 पर आंका जाता है।",
-  "Score this version against a Golden Q&A set. Each answer is scored 0–5.": "इस संस्करण को गोल्डन प्रश्नोत्तर सेट के मुकाबले स्कोर करें। हर उत्तर 0–5 पर आंका जाता है।"
+  "Score this version against a Golden Q&A set. Each answer is scored 0–5.": "इस संस्करण को गोल्डन प्रश्नोत्तर सेट के मुकाबले स्कोर करें। हर उत्तर 0–5 पर आंका जाता है।",
+  "How many times to ask each question": "हर प्रश्न कितनी बार पूछा जाए",
+  "Quick smoke test": "त्वरित जांच",
+  "Asks each question once. The fastest way to see if things broadly work.": "हर प्रश्न एक बार पूछता है। मोटे तौर पर सब ठीक है या नहीं, यह देखने का सबसे तेज़ तरीका।",
+  "Consistency check": "निरंतरता जांच",
+  "Asks each question five times. Catches answers that change between attempts.": "हर प्रश्न पांच बार पूछता है। हर बार बदलने वाले उत्तर पकड़ता है।",
+  "An evaluation is already running. Wait for it to finish.": "एक मूल्यांकन पहले से चल रहा है। उसके पूरा होने का इंतज़ार करें।"
 }

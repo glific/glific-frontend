@@ -1,43 +1,37 @@
-import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
 import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
 import {
   formatScore,
-  parseEvaluationScores,
   scoreBand,
   shortMetricName,
   traceMetricNames,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import type { EvaluationTrace } from 'containers/AIEvaluation/types/evaluationType';
 import { DataTable } from 'components/UI/DataTable/DataTable';
 import { MarkdownAnswer } from '../../../components';
 import styles from './EvaluationScores.module.css';
 
 export interface EvaluationScoresProps {
   runId: string;
+  traces: EvaluationTrace[];
+  loading?: boolean;
+  failure?: string | null;
 }
 
-export const EvaluationScores = ({ runId }: EvaluationScoresProps) => {
+export const EvaluationScores = ({ runId, traces, loading = false, failure = null }: EvaluationScoresProps) => {
   const { t } = useTranslation();
 
-  const { data, loading, error } = useQuery(GET_EVALUATION_SCORES, {
-    variables: { id: runId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const failures: { message: string }[] = data?.evaluationScores?.errors ?? [];
-  const traces = parseEvaluationScores(data?.evaluationScores?.scores);
   const metricNames = traceMetricNames(traces);
 
-  if (loading && !data) return <Loading />;
+  if (loading && traces.length === 0) return <Loading />;
 
-  if (error || failures.length > 0) {
+  if (failure) {
     return (
       <div className={styles.Note} data-testid="evaluationScoresError">
-        {failures[0]?.message || t('These results could not be loaded.')}
+        {failure}
       </div>
     );
   }

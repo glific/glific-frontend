@@ -25,7 +25,11 @@ export interface EvaluationRun {
   failureReason?: string | null;
   results?: unknown;
   goldenQa?: { id: string; name: string; duplicationFactor?: number | null } | null;
-  assistantConfigVersion?: { id: string; versionNumber: number } | null;
+  assistantConfigVersion?: {
+    id: string;
+    versionNumber: number;
+    assistant?: { id: string; name: string } | null;
+  } | null;
   insertedAt: string;
   updatedAt?: string | null;
 }

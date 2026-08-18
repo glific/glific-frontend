@@ -834,42 +834,6 @@ describe('running an evaluation', () => {
   });
 });
 
-test('the two ways of running are offered as cards, and the choice sticks', async () => {
-  render(
-    <MockedProvider
-      mocks={[
-        listMock(oneSet),
-        {
-          request: {
-            query: LIST_AI_EVALUATIONS,
-            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
-          },
-          result: { data: { aiEvaluations: [] } },
-        },
-      ]}
-    >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
-    </MockedProvider>
-  );
-
-  fireEvent.click(await screen.findByTestId('runEvaluationButton'));
-  await screen.findByTestId('runEvaluationDialog');
-
-  const quick = screen.getByTestId('duplicationOption-1');
-  const consistency = screen.getByTestId('duplicationOption-5');
-
-  // each card explains the trade-off, which is why it is a card and not a segment
-  expect(quick).toHaveTextContent('Quick smoke test');
-  expect(quick).toHaveTextContent('Asks each question once');
-  expect(consistency).toHaveTextContent('Consistency check');
-  expect(quick).toHaveAttribute('aria-checked', 'true');
-
-  fireEvent.click(consistency);
-
-  expect(screen.getByTestId('duplicationOption-5')).toHaveAttribute('aria-checked', 'true');
-  expect(screen.getByTestId('duplicationOption-1')).toHaveAttribute('aria-checked', 'false');
-});
-
 describe('the result panel above the table', () => {
   const runsMock = (aiEvaluations: any[]) => ({
     request: {
@@ -1449,4 +1413,163 @@ test('the first file picked clears the "choose a file" error', async () => {
 
   await screen.findByTestId('goldenQaParsed');
   expect(screen.queryByTestId('goldenQaFileError')).not.toBeInTheDocument();
+});
+
+const runFor = (id: string, assistantId: string, setName: string) => ({
+  id,
+  name: `run_${id}`,
+  status: 'COMPLETED',
+  failureReason: null,
+  results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
+  goldenQa: { id: 'g1', name: setName, duplicationFactor: 1 },
+  assistantConfigVersion: { id: `v-${id}`, versionNumber: 1, assistant: { id: assistantId, name: 'A' } },
+  insertedAt: '2026-08-10T10:00:00Z',
+});
+
+test('History lists this assistant’s runs only, not the whole organisation’s', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [runFor('r1', 'a1', 'mine'), runFor('r2', 'a2', 'someone_elses')] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('evaluationSubTabs-history'));
+
+  const rows = await screen.findAllByTestId('evaluationRun');
+  expect(rows).toHaveLength(1);
+  expect(rows[0]).toHaveTextContent('mine');
+  expect(rows[0]).not.toHaveTextContent('someone_elses');
+});
+
+test('a run still being judged keeps the list polling until it settles', async () => {
+  const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [running] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  // the in-progress card is what the poll is waiting to replace
+  expect(await screen.findByTestId('evaluationRunning')).toBeInTheDocument();
+  // and nothing asks for scores while there are none to read
+  expect(screen.queryByTestId('evaluationScores')).not.toBeInTheDocument();
+});
+
+test('the two ways of running are offered as cards, and the choice sticks', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [] } },
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+  await screen.findByTestId('runEvaluationDialog');
+
+  const quick = screen.getByTestId('duplicationOption-1');
+  const consistency = screen.getByTestId('duplicationOption-5');
+
+  // each card explains the trade-off, which is why it is a card and not a segment
+  expect(quick).toHaveTextContent('Quick smoke test');
+  expect(quick).toHaveTextContent('Asks each question once');
+  expect(consistency).toHaveTextContent('Consistency check');
+  expect(quick).toHaveAttribute('aria-checked', 'true');
+
+  fireEvent.click(consistency);
+
+  expect(screen.getByTestId('duplicationOption-5')).toHaveAttribute('aria-checked', 'true');
+  expect(screen.getByTestId('duplicationOption-1')).toHaveAttribute('aria-checked', 'false');
+});
+
+test('a second run cannot be started while one is still going', async () => {
+  const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [running] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  await screen.findByTestId('evaluationRunning');
+  expect(screen.getByTestId('runEvaluationButton')).toBeDisabled();
+});
+
+test('once the run settles another one can be started', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [runFor('r1', 'a1', 'mine')] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  await screen.findByTestId('evaluationResult');
+  expect(screen.getByTestId('runEvaluationButton')).toBeEnabled();
+});
+
+test('the meta line puts the weight on the Golden Q&A set', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          result: { data: { aiEvaluations: [runFor('r1', 'a1', 'ai_cohort_v2_1')] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  const panel = await screen.findByTestId('evaluationResult');
+
+  expect(panel).toHaveTextContent('Version 1 · ai_cohort_v2_1 · 1× duplication');
+  expect(panel.querySelector('b')).toHaveTextContent('ai_cohort_v2_1');
 });

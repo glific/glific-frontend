@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
@@ -6,7 +5,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   MAX_SCORE,
@@ -15,7 +13,6 @@ import {
   isRunFailed,
   isRunInProgress,
   overallScore,
-  parseEvaluationSummary,
   parseEvaluationResults,
   scoreBand,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
@@ -25,6 +22,7 @@ dayjs.extend(relativeTime);
 
 export interface EvaluationResultProps {
   run: EvaluationRun;
+  summary?: string | null;
   children?: ReactNode;
 }
 
@@ -59,30 +57,32 @@ const ScoreBar = ({ score, band }: { score: number; band: string }) => (
   </div>
 );
 
-export const EvaluationResult = ({ run, children }: EvaluationResultProps) => {
+export const EvaluationResult = ({ run, summary, children }: EvaluationResultProps) => {
   const { t } = useTranslation();
-
-  const { data: scoreData } = useQuery(GET_EVALUATION_SCORES, {
-    variables: { id: run.id },
-    fetchPolicy: 'cache-first',
-  });
-  const summary = parseEvaluationSummary(scoreData?.evaluationScores?.scores);
 
   const metrics = parseEvaluationResults(run.results);
   const overall = overallScore(metrics);
 
-  const meta = [
+  const meta: ReactNode[] = [
     run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : null,
-    run.goldenQa?.name,
+    run.goldenQa?.name ? (
+      <b className={styles.MetaSet} key="set">
+        {run.goldenQa.name}
+      </b>
+    ) : null,
     `${run.goldenQa?.duplicationFactor ?? 1}× ${t('duplication')}`,
     dayjs(run.insertedAt).fromNow(),
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  ].filter(Boolean);
 
   const metaLine = (
     <div className={styles.MetaLine}>
-      <span className={styles.MetaLabel}>{t('Last run')}</span> {meta}
+      <span className={styles.MetaLabel}>{t('Last run')}</span>{' '}
+      {meta.map((part, index) => (
+        <span key={index}>
+          {index > 0 && ' · '}
+          {part}
+        </span>
+      ))}
     </div>
   );
 

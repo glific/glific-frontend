@@ -1,5 +1,12 @@
+import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
+import {
+  isRunComplete,
+  parseEvaluationScores,
+  parseEvaluationSummary,
+} from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { EvaluationResult } from '../EvaluationResult/EvaluationResult';
 import { EvaluationScores } from '../EvaluationScores/EvaluationScores';
@@ -18,11 +25,27 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
 
   const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
 
+  const finished = Boolean(run) && isRunComplete(run as EvaluationRun);
+  const { data, loading, error } = useQuery(GET_EVALUATION_SCORES, {
+    variables: { id: run?.id },
+    skip: !finished,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const scores = data?.evaluationScores;
+  const failure =
+    error || scores?.errors?.length ? scores?.errors?.[0]?.message || t('These results could not be loaded.') : null;
+
   return (
     <>
       {run ? (
-        <EvaluationResult run={run}>
-          <EvaluationScores runId={run.id} />
+        <EvaluationResult run={run} summary={parseEvaluationSummary(scores?.scores)}>
+          <EvaluationScores
+            runId={run.id}
+            traces={parseEvaluationScores(scores?.scores)}
+            loading={loading}
+            failure={failure}
+          />
         </EvaluationResult>
       ) : (
         <EmptyState
