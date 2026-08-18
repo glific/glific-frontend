@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InputAdornment, Slider } from '@mui/material';
 import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { RangeSlider } from 'components/UI/Form/RangeSlider/RangeSlider';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
@@ -90,7 +90,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
         textArea
         rows={6}
         endAdornment={
-          <InputAdornment className={styles.Expand} position="end">
+          <span className={styles.Expand}>
             <ExpandIcon
               className={styles.ExpandButton}
               onClick={() => {
@@ -100,7 +100,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
               aria-label={t('Edit system instructions')}
               data-testid="expandPromptButton"
             />
-          </InputAdornment>
+          </span>
         }
         placeholder={t(
           'Describe who this assistant is, what it helps with, what it must never do, and what language it should reply in…'
@@ -147,27 +147,15 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
           {temperatureSpec && (
             <div>
               <div className={styles.FieldLabel}>{t('Temperature')}</div>
-              <div className={styles.TemperatureRow}>
-                <Slider
-                  className={styles.TemperatureSlider}
-                  value={Number(config.temperature) || (temperatureSpec.min ?? 0)}
-                  min={temperatureSpec.min ?? 0}
-                  max={temperatureSpec.max ?? 2}
-                  step={0.01}
-                  onChange={(_, value) => handleTemperatureChange(Number(value))}
-                  data-testid="temperatureSlider"
-                />
-                <input
-                  type="number"
-                  className={styles.TemperatureValue}
-                  value={config.temperature}
-                  min={temperatureSpec.min ?? 0}
-                  max={temperatureSpec.max ?? 2}
-                  step={0.01}
-                  onChange={(event) => handleTemperatureChange(event.target.value)}
-                  data-testid="temperatureInput"
-                />
-              </div>
+              <RangeSlider
+                value={Number(config.temperature) || (temperatureSpec.min ?? 0)}
+                min={temperatureSpec.min ?? 0}
+                max={temperatureSpec.max ?? 2}
+                testId="temperatureSlider"
+                inputTestId="temperatureInput"
+                onChange={handleTemperatureChange}
+                onClear={() => handleTemperatureChange('')}
+              />
               <div className={styles.Note}>{temperatureSpec.description}</div>
             </div>
           )}

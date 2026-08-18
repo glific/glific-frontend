@@ -1,0 +1,26 @@
+.Wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+}
+
+.Slider {
+  flex: 1;
+  color: var(--app-color-brand-primary) !important;
+}
+
+.Value {
+  width: 4.5rem;
+  padding: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  font-family: inherit;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-primary);
+  text-align: center;
+}
+
+.Value:disabled {
+  opacity: 0.5;
+}
