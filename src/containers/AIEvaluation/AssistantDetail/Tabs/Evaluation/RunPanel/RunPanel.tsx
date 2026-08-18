@@ -6,6 +6,7 @@ import {
   isRunComplete,
   parseEvaluationScores,
   parseEvaluationSummary,
+  parseOverallScore,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { EvaluationResult } from '../EvaluationResult/EvaluationResult';
@@ -39,7 +40,11 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
   return (
     <>
       {run ? (
-        <EvaluationResult run={run} summary={parseEvaluationSummary(scores?.scores)}>
+        <EvaluationResult
+          run={run}
+          overall={parseOverallScore(scores?.scores)}
+          summary={parseEvaluationSummary(scores?.scores)}
+        >
           <EvaluationScores
             runId={run.id}
             traces={parseEvaluationScores(scores?.scores)}

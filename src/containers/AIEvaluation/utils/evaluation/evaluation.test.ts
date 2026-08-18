@@ -1,5 +1,6 @@
 import {
   formatScore,
+  parseOverallScore,
   evaluationRunName,
   parseEvaluationSummary,
   shortMetricName,
@@ -109,12 +110,25 @@ describe('scoreBand', () => {
 });
 
 describe('formatScore', () => {
-  test('always one decimal, and a dash when there is nothing to show', () => {
+  test('keeps the judge’s precision, gives a whole number one decimal, dashes when there is none', () => {
+    expect(formatScore(2.27)).toBe('2.27');
+    expect(formatScore(1.47)).toBe('1.47');
+    expect(formatScore(2.5)).toBe('2.5');
+    expect(formatScore(5)).toBe('5.0');
     expect(formatScore(4)).toBe('4.0');
-    expect(formatScore(3.44)).toBe('3.4');
-    // 3.55 is not exactly representable, so toFixed rounds it down — real behaviour, not a bug
-    expect(formatScore(3.55)).toBe('3.5');
     expect(formatScore(null)).toBe('—');
+  });
+});
+
+describe('parseOverallScore', () => {
+  test('reads the overall the judge reported', () => {
+    expect(parseOverallScore(JSON.stringify({ score: { overall: { overall_score: 2.58 } } }))).toBe(2.58);
+  });
+
+  test('a payload without one reports nothing rather than guessing', () => {
+    for (const value of [null, 'not json', '{}', '{"score":{}}', { score: { overall: {} } }]) {
+      expect(parseOverallScore(value)).toBeNull();
+    }
   });
 });
 

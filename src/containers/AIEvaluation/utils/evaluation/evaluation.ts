@@ -81,7 +81,11 @@ export const scoreBand = (score: number): ScoreBand => {
   return 'bad';
 };
 
-export const formatScore = (score: number | null) => (score == null ? '—' : score.toFixed(1));
+export const formatScore = (score: number | null) => {
+  if (score == null) return '—';
+
+  return Number.isInteger(score) ? score.toFixed(1) : String(score);
+};
 
 const statusOf = (run: EvaluationRun) => String(run.status ?? '').toLowerCase();
 
@@ -143,6 +147,20 @@ export const traceMetricNames = (traces: EvaluationTrace[]) => [
  * Column headings repeat "Adherence to" three times over, prefix is dropped for display only.
  */
 export const shortMetricName = (name: string) => name.replace(/^adherence to\s+/i, '').trim() || name;
+
+/** the judge's own overall score, so the card does not have to invent one */
+export const parseOverallScore = (raw: unknown): number | null => {
+  let parsed: any = raw;
+  if (typeof raw === 'string') {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  return asScore(parsed?.score?.overall?.overall_score);
+};
 
 export const parseEvaluationSummary = (raw: unknown): string | null => {
   let parsed: any = raw;

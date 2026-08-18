@@ -22,6 +22,7 @@ dayjs.extend(relativeTime);
 
 export interface EvaluationResultProps {
   run: EvaluationRun;
+  overall?: number | null;
   summary?: string | null;
   children?: ReactNode;
 }
@@ -57,11 +58,11 @@ const ScoreBar = ({ score, band }: { score: number; band: string }) => (
   </div>
 );
 
-export const EvaluationResult = ({ run, summary, children }: EvaluationResultProps) => {
+export const EvaluationResult = ({ run, overall: reported, summary, children }: EvaluationResultProps) => {
   const { t } = useTranslation();
 
   const metrics = parseEvaluationResults(run.results);
-  const overall = overallScore(metrics);
+  const overall = reported ?? overallScore(metrics);
 
   const meta: ReactNode[] = [
     run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : null,
