@@ -27,11 +27,11 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   LOCATION_REQUEST,
 } from 'common/constants';
-import { GUPSHUP_CALLBACK_URL } from 'config';
+import { SIMULATOR_MESSAGE_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
 import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
-import { getUserSession } from 'services/AuthService';
+import { getAuthSession, getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import setLogs from 'config/logs';
 import { WhatsAppTemplateButton } from 'common/RichEditor';
@@ -106,6 +106,15 @@ const TimeComponent = ({ direction, insertedAt }: any) => (
     </span>
   </>
 );
+
+// The simulator endpoint is authenticated, and the token is refreshed during a session,
+// so the header is built per request rather than captured once.
+const simulatorRequestConfig = () => ({
+  headers: {
+    Authorization: getAuthSession('access_token'),
+    'Content-Type': 'application/json',
+  },
+});
 
 const getSimulatorVariables = (id: any) => ({
   contactOpts: {
@@ -202,19 +211,23 @@ const Simulator = ({
     }
 
     axios
-      .post(GUPSHUP_CALLBACK_URL, {
-        type: 'message',
-        payload: {
-          id: uuidv4(),
-          type,
-          payload,
-          sender: senderDetails,
-          context,
+      .post(
+        SIMULATOR_MESSAGE_URL,
+        {
+          type: 'message',
+          payload: {
+            id: uuidv4(),
+            type,
+            payload,
+            sender: senderDetails,
+            context,
+          },
         },
-      })
+        simulatorRequestConfig()
+      )
       .catch((error) => {
         // add log's
-        setLogs(`sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
+        setLogs(`sendMessageText:${sendMessageText} SIMULATOR_MESSAGE_URL:${SIMULATOR_MESSAGE_URL}`, 'info');
         setLogs(error, 'error', true);
         setIsDisconnected(true);
       });
@@ -304,22 +317,26 @@ const Simulator = ({
 
   const sendMediaMessage = (type: string, payload: any) => {
     axios
-      .post(GUPSHUP_CALLBACK_URL, {
-        type: 'message',
-        payload: {
-          id: uuidv4(),
-          type,
-          payload,
-          sender: {
-            // this number will be the simulated contact number
-            phone: sender.phone || '',
-            name: sender.name || '',
+      .post(
+        SIMULATOR_MESSAGE_URL,
+        {
+          type: 'message',
+          payload: {
+            id: uuidv4(),
+            type,
+            payload,
+            sender: {
+              // this number will be the simulated contact number
+              phone: sender.phone || '',
+              name: sender.name || '',
+            },
           },
         },
-      })
+        simulatorRequestConfig()
+      )
       .catch((error) => {
         // add log's
-        setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
+        setLogs(`sendMediaMessage:${type} SIMULATOR_MESSAGE_URL:${SIMULATOR_MESSAGE_URL}`, 'info');
         setLogs(error, 'error', true);
         setIsDisconnected(true);
       });
