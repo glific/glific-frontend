@@ -967,5 +967,7 @@
   "The server did not answer. Check your connection and try again.": "सर्वर से उत्तर नहीं मिला। अपना कनेक्शन जांचें और फिर कोशिश करें।",
   "Try again": "फिर कोशिश करें",
   "That file could not be read. Try choosing it again.": "यह फ़ाइल पढ़ी नहीं जा सकी। इसे दोबारा चुनकर देखें।",
-  "See every past run in the {{tab}} tab": "हर पिछला रन {{tab}} टैब में देखें"
+  "See every past run in the {{tab}} tab": "हर पिछला रन {{tab}} टैब में देखें",
+  "Choose a .csv file — that one is a different format.": ".csv फ़ाइल चुनें — वह किसी और फ़ॉर्मैट की है।",
+  "That file is larger than {{size}}MB.": "यह फ़ाइल {{size}}MB से बड़ी है।"
 }

@@ -133,3 +133,8 @@
 .SetName {
   color: var(--app-color-text-heading);
 }
+
+.BackIcon {
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+}

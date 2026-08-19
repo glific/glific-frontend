@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -168,7 +169,17 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
       buttonOk={t('Done')}
       alignButtons="right"
       skipCancel
-      {...(onBack ? { buttonMiddle: `‹ ${t('All sets')}`, handleMiddle: onBack } : {})}
+      {...(onBack
+        ? {
+            buttonMiddle: (
+              <>
+                <ChevronLeftIcon className={styles.BackIcon} />
+                {t('All sets')}
+              </>
+            ),
+            handleMiddle: onBack,
+          }
+        : {})}
       handleOk={onClose}
       handleCancel={onClose}
       customStyles={{ paper: styles.WidePaper }}

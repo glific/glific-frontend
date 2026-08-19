@@ -1103,5 +1103,7 @@
   "The server did not answer. Check your connection and try again.": "The server did not answer. Check your connection and try again.",
   "Try again": "Try again",
   "That file could not be read. Try choosing it again.": "That file could not be read. Try choosing it again.",
-  "See every past run in the {{tab}} tab": "See every past run in the {{tab}} tab"
+  "See every past run in the {{tab}} tab": "See every past run in the {{tab}} tab",
+  "Choose a .csv file — that one is a different format.": "Choose a .csv file — that one is a different format.",
+  "That file is larger than {{size}}MB.": "That file is larger than {{size}}MB."
 }
