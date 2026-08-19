@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -19,8 +19,6 @@ import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
 import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
-
-const RUN_POLL_MS = 15000;
 
 export interface EvaluationProps {
   assistantId?: string;
@@ -43,12 +41,7 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
     fetchPolicy: 'cache-and-network',
   });
 
-  const {
-    data: runData,
-    refetch: refetchRuns,
-    startPolling,
-    stopPolling,
-  } = useQuery(LIST_AI_EVALUATIONS, {
+  const { data: runData, refetch: refetchRuns } = useQuery(LIST_AI_EVALUATIONS, {
     variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
     fetchPolicy: 'cache-and-network',
   });
@@ -60,14 +53,8 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
   // the Run panel is about the version on screen; History is about the whole assistant
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
   const latestRun = versionRuns[0];
+  // TODO: a subscription will report when a run lands; until then the list refreshes on revisit
   const runsInProgress = assistantRuns.some(isRunInProgress);
-
-  useEffect(() => {
-    if (runsInProgress) startPolling(RUN_POLL_MS);
-    else stopPolling();
-
-    return stopPolling;
-  }, [runsInProgress, startPolling, stopPolling]);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
