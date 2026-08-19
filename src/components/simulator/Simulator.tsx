@@ -12,7 +12,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ClearIcon from '@mui/icons-material/Clear';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import BackgroundPhoneImage from 'assets/images/phone.png';
@@ -27,11 +26,11 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   LOCATION_REQUEST,
 } from 'common/constants';
-import { GUPSHUP_CALLBACK_URL } from 'config';
+import { SIMULATOR_MESSAGE_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
 import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
-import { getUserSession } from 'services/AuthService';
+import { getAuthSession, getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import setLogs from 'config/logs';
 import { WhatsAppTemplateButton } from 'common/RichEditor';
@@ -106,6 +105,24 @@ const TimeComponent = ({ direction, insertedAt }: any) => (
     </span>
   </>
 );
+
+// The token is only attached automatically while the flow editor is mounted, since that is the
+// one place calling setAuthHeaders, so the simulator sends it itself. fetch is used rather than
+// axios because the flow editor's patch overwrites this header instead of appending a second
+// copy of it, which a request config on an XHR would do.
+const postSimulatorMessage = (body: any, onFailure: () => void) =>
+  fetch(SIMULATOR_MESSAGE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: getAuthSession('access_token'),
+    },
+    body: JSON.stringify(body),
+  })
+    .then((response) => {
+      if (!response.ok) onFailure();
+    })
+    .catch(onFailure);
 
 const getSimulatorVariables = (id: any) => ({
   contactOpts: {
@@ -201,8 +218,8 @@ const Simulator = ({
       payload.text = sendMessageText;
     }
 
-    axios
-      .post(GUPSHUP_CALLBACK_URL, {
+    postSimulatorMessage(
+      {
         type: 'message',
         payload: {
           id: uuidv4(),
@@ -211,13 +228,9 @@ const Simulator = ({
           sender: senderDetails,
           context,
         },
-      })
-      .catch((error) => {
-        // add log's
-        setLogs(`sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
-        setLogs(error, 'error', true);
-        setIsDisconnected(true);
-      });
+      },
+      () => setIsDisconnected(true)
+    );
     setInputMessage('');
   };
 
@@ -303,8 +316,8 @@ const Simulator = ({
   };
 
   const sendMediaMessage = (type: string, payload: any) => {
-    axios
-      .post(GUPSHUP_CALLBACK_URL, {
+    postSimulatorMessage(
+      {
         type: 'message',
         payload: {
           id: uuidv4(),
@@ -316,13 +329,9 @@ const Simulator = ({
             name: sender.name || '',
           },
         },
-      })
-      .catch((error) => {
-        // add log's
-        setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
-        setLogs(error, 'error', true);
-        setIsDisconnected(true);
-      });
+      },
+      () => setIsDisconnected(true)
+    );
   };
 
   const renderMessage = (
