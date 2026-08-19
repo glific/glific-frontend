@@ -4,6 +4,7 @@ import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   isRunComplete,
+  parseEvaluationResults,
   parseEvaluationScores,
   parseEvaluationSummary,
   parseOverallScore,
@@ -11,6 +12,7 @@ import {
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { EvaluationResult } from '../EvaluationResult/EvaluationResult';
 import { EvaluationScores } from '../EvaluationScores/EvaluationScores';
+import { SuggestedPrompt } from '../SuggestedPrompt/SuggestedPrompt';
 import styles from './RunPanel.module.css';
 
 const TAB_SLOT = '\u0000';
@@ -34,6 +36,7 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
   });
 
   const scores = data?.evaluationScores;
+  const overall = parseOverallScore(scores?.scores);
   const awaitingScores = finished && loading && !data;
   const failure =
     error || scores?.errors?.length ? scores?.errors?.[0]?.message || t('These results could not be loaded.') : null;
@@ -43,7 +46,7 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
       {run && (
         <EvaluationResult
           run={run}
-          overall={parseOverallScore(scores?.scores)}
+          overall={overall}
           summary={parseEvaluationSummary(scores?.scores)}
           loading={awaitingScores}
         >
@@ -54,6 +57,10 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
             failure={failure}
           />
         </EvaluationResult>
+      )}
+
+      {run && !awaitingScores && overall != null && (
+        <SuggestedPrompt runId={run.id} overall={overall} metrics={parseEvaluationResults(run.results)} />
       )}
 
       {!run && (
