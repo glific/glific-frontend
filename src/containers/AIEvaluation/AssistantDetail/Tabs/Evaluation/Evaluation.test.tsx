@@ -1581,3 +1581,44 @@ test('the meta line puts the weight on the Golden Q&A set', async () => {
   expect(panel).toHaveTextContent('Version 1 · ai_cohort_v2_1 · 1× duplication');
   expect(panel.querySelector('b')).toHaveTextContent('ai_cohort_v2_1');
 });
+
+describe('what the drop zone will accept', () => {
+  const openUpload = async () => {
+    fireEvent.click(await screen.findByTestId('addFirstSetButton'));
+    return screen.findByTestId('addGoldenQaSetDialog');
+  };
+
+  test('a file that is not a CSV is refused before it is read', async () => {
+    renderTab();
+    await openUpload();
+
+    const notCsv = new File(['<html></html>'], 'report.html', { type: 'text/html' });
+    fireEvent.drop(screen.getByTestId('goldenQaDropZone'), { dataTransfer: { files: [notCsv] } });
+
+    expect(await screen.findByTestId('goldenQaFileError')).toHaveTextContent('Choose a .csv file');
+    expect(screen.queryByTestId('goldenQaParsed')).not.toBeInTheDocument();
+  });
+
+  test('a CSV over the size ceiling is refused before it is read', async () => {
+    renderTab();
+    await openUpload();
+
+    const huge = csvFile(SAMPLE_CSV, 'huge.csv');
+    // a real 20MB+ file would be slow to build, so only the size the check reads is faked
+    Object.defineProperty(huge, 'size', { value: 21 * 1024 * 1024 });
+    pickFile(huge);
+
+    expect(await screen.findByTestId('goldenQaFileError')).toHaveTextContent('larger than 20MB');
+    expect(screen.queryByTestId('goldenQaParsed')).not.toBeInTheDocument();
+  });
+
+  test('a CSV within the ceiling is read as before', async () => {
+    renderTab();
+    await openUpload();
+
+    pickFile(csvFile(SAMPLE_CSV));
+
+    expect(await screen.findByTestId('goldenQaParsed')).toHaveTextContent('Parsed 2 questions');
+    expect(screen.queryByTestId('goldenQaFileError')).not.toBeInTheDocument();
+  });
+});

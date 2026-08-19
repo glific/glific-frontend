@@ -1,7 +1,7 @@
 import {
   downloadFromUrl,
   goldenQaCategories,
-  isValidGoldenQaName,
+  GOLDEN_QA_NAME_PATTERN,
   parseGoldenQaCsv,
   suggestedGoldenQaName,
 } from './goldenQa';
@@ -132,15 +132,15 @@ describe('separators other than a comma', () => {
 
 describe('naming a set', () => {
   test('a name the backend accepts', () => {
-    expect(isValidGoldenQaName('maternal_health_core')).toBe(true);
-    expect(isValidGoldenQaName('set123')).toBe(true);
+    expect(GOLDEN_QA_NAME_PATTERN.test('maternal_health_core')).toBe(true);
+    expect(GOLDEN_QA_NAME_PATTERN.test('set123')).toBe(true);
   });
 
   test('anything outside lowercase, digits and underscores is refused', () => {
-    expect(isValidGoldenQaName('Maternal Health')).toBe(false);
-    expect(isValidGoldenQaName('maternal-health')).toBe(false);
-    expect(isValidGoldenQaName('MaternalHealth')).toBe(false);
-    expect(isValidGoldenQaName('')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('Maternal Health')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('maternal-health')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('MaternalHealth')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('')).toBe(false);
   });
 
   test('a filename becomes a name the backend accepts', () => {
@@ -157,10 +157,10 @@ describe('naming a set', () => {
     expect(suggestedGoldenQaName('___.csv')).toBe('');
   });
 
-  test('what it suggests is always what it would accept', () => {
+  test('what it suggests is always what the schema would accept', () => {
     const suggested = suggestedGoldenQaName('Maternal Health — ANC.csv');
 
-    expect(isValidGoldenQaName(suggested)).toBe(true);
+    expect(GOLDEN_QA_NAME_PATTERN.test(suggested)).toBe(true);
   });
 });
 

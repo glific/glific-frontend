@@ -1148,5 +1148,7 @@
   "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
   "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish.",
   "Loading out the overall score": "Loading out the overall score",
-  "The checks below are in already; the summary lands in a moment.": "The checks below are in already; the summary lands in a moment."
+  "The checks below are in already; the summary lands in a moment.": "The checks below are in already; the summary lands in a moment.",
+  "Choose a .csv file — that one is a different format.": "Choose a .csv file — that one is a different format.",
+  "That file is larger than {{size}}MB.": "That file is larger than {{size}}MB."
 }

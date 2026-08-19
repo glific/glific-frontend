@@ -25,6 +25,9 @@ export interface AddGoldenQaSetDialogProps {
 
 const DEFAULT_DUPLICATION_FACTOR = 1;
 
+const MAX_FILE_SIZE_MB = 20;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogProps) => {
   const { t } = useTranslation();
 
@@ -69,29 +72,42 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     },
   });
 
+  const rejectFile = (message: string) => {
+    setRows(null);
+    formik.setFieldValue('file', null);
+    setReadError(message);
+  };
+
   const readFile = async (selected: File) => {
     setReadError('');
+
+    if (!selected.name.toLowerCase().endsWith('.csv')) {
+      rejectFile(t('Choose a .csv file — that one is a different format.'));
+      return;
+    }
+
+    if (selected.size > MAX_FILE_SIZE_BYTES) {
+      rejectFile(t('That file is larger than {{size}}MB.', { size: MAX_FILE_SIZE_MB }));
+      return;
+    }
 
     try {
       const parsed = parseGoldenQaCsv(await selected.text());
 
       if (parsed.length === 0) {
-        setRows(null);
-        formik.setFieldValue('file', null);
-        setReadError(t('No questions found. Check the file has a question column with rows under it.'));
+        rejectFile(t('No questions found. Check the file has a question column with rows under it.'));
         return;
       }
 
       setRows(parsed);
-      formik.setValues({
+      formik.setValues((current) => ({
+        ...current,
         file: selected,
-        name: nameTouched ? formik.values.name : suggestedGoldenQaName(selected.name),
-      });
+        name: nameTouched ? current.name : suggestedGoldenQaName(selected.name),
+      }));
       formik.setFieldTouched('file', true, false);
     } catch {
-      setRows(null);
-      formik.setFieldValue('file', null);
-      setReadError(t('That file could not be read. Try choosing it again.'));
+      rejectFile(t('That file could not be read. Try choosing it again.'));
     }
   };
 
