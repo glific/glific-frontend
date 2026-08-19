@@ -1013,5 +1013,7 @@
   "Knowledge Base ID": "नॉलेज बेस आईडी",
   "Edit system instructions": "सिस्टम निर्देश संपादित करें",
   "Loading out the overall score": "कुल स्कोर निकाला जा रहा है",
-  "The checks below are in already; the summary lands in a moment.": "नीचे की जांचें आ चुकी हैं; सारांश एक पल में आ जाएगा।"
+  "The checks below are in already; the summary lands in a moment.": "नीचे की जांचें आ चुकी हैं; सारांश एक पल में आ जाएगा।",
+  "Choose a .csv file — that one is a different format.": ".csv फ़ाइल चुनें — वह किसी और फ़ॉर्मैट की है।",
+  "That file is larger than {{size}}MB.": "यह फ़ाइल {{size}}MB से बड़ी है।"
 }

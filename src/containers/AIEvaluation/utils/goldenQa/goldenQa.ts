@@ -110,8 +110,6 @@ export const downloadFromUrl = (url: string) => {
 
 export const GOLDEN_QA_NAME_PATTERN = /^[a-z0-9_]+$/;
 
-export const isValidGoldenQaName = (name: string) => GOLDEN_QA_NAME_PATTERN.test(name);
-
 export const suggestedGoldenQaName = (filename: string) =>
   filename
     .replace(/\.[^.]+$/, '')
