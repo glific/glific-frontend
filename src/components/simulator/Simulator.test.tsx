@@ -16,6 +16,7 @@ import {
 } from 'mocks/Simulator';
 import Simulator from './Simulator';
 import { setUserSession } from 'services/AuthService';
+import { SIMULATOR_MESSAGE_URL } from 'config';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
@@ -45,6 +46,82 @@ const getDefaultProps = () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+});
+
+const sendSimulatorMessage = async (getByTestId: any, body: string) => {
+  await waitFor(() => {
+    expect(getByTestId('simulatorInput')).toBeInTheDocument();
+  });
+
+  fireEvent.change(getByTestId('simulatorInput'), { target: { value: body } });
+
+  await waitFor(() => {
+    fireEvent.keyPress(getByTestId('simulatorInput'), { key: 'Enter', code: 13, charCode: 13 });
+  });
+};
+
+test('messages are posted to the authenticated simulator endpoint', async () => {
+  const props = getDefaultProps();
+  props.showSimulator = true;
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  await sendSimulatorMessage(getByTestId, 'hello');
+
+  await waitFor(() => {
+    expect(mockedAxios.post).toHaveBeenCalled();
+  });
+
+  // must not be the BSP webhook, which only accepts the provider's own source IPs
+  expect(mockedAxios.post.mock.calls[0][0]).toEqual(SIMULATOR_MESSAGE_URL);
+});
+
+test('disconnection banner is displayed when the simulator request fails', async () => {
+  const props = getDefaultProps();
+  props.showSimulator = true;
+  mockedAxios.post.mockImplementation(() => Promise.reject(new Error('Request failed')));
+  const { getByTestId, getByText } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  await sendSimulatorMessage(getByTestId, 'hello');
+
+  await waitFor(() => {
+    expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
+  });
+});
+
+test('media messages are posted to the authenticated simulator endpoint', async () => {
+  const props = getDefaultProps();
+  props.showSimulator = true;
+  mockedAxios.post.mockImplementation(() => Promise.reject(new Error('Request failed')));
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('attachment')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('attachment'));
+  await waitFor(() => {});
+
+  const [imageButton] = screen.getAllByRole('button');
+  fireEvent.click(imageButton);
+
+  await waitFor(() => {
+    expect(mockedAxios.post).toHaveBeenCalled();
+  });
+
+  expect(mockedAxios.post.mock.calls[0][0]).toEqual(SIMULATOR_MESSAGE_URL);
 });
 
 test('opened simulator should close when click of simulator icon', async () => {
