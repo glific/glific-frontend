@@ -40,7 +40,6 @@ export interface AssistantVersion {
   settings: unknown;
   status: string;
   isLive: boolean;
-  description?: string;
   insertedAt: string;
   updatedAt: string;
   vectorStore?: AssistantVectorStore | null;

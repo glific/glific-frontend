@@ -238,7 +238,7 @@ describe('edit mode', () => {
 
   test('version rows fall back to insertedAt, and drop the timestamp when both are missing', async () => {
     const noUpdatedAt = { ...version(1, true), updatedAt: null };
-    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null, description: 'Draft config' };
+    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null };
 
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([noUpdatedAt, noDates])]);
 
@@ -248,7 +248,6 @@ describe('edit mode', () => {
     fireEvent.click(screen.getByTestId('versionPill'));
 
     expect(await screen.findByTestId('versionOption-1')).toHaveTextContent(/published .*ago/);
-    expect(screen.getByTestId('versionOption-2')).toHaveTextContent('Draft config');
     expect(screen.getByTestId('versionOption-2')).not.toHaveTextContent('ago');
   });
 
