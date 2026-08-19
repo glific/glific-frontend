@@ -4,7 +4,6 @@
   gap: var(--app-space-lg);
 }
 
-/* the ends of the range, so the track means something without dragging it */
 .Bound {
   flex-shrink: 0;
   font-size: var(--app-font-size-xs);
