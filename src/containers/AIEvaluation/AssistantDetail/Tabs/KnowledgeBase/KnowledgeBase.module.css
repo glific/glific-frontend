@@ -171,18 +171,6 @@
   stroke: var(--app-color-text-tertiary);
 }
 
-.CaretIcon path {
-  stroke: var(--app-color-text-tertiary);
-}
-
-.CaretClosed {
-  transform: rotate(-90deg);
-}
-
-.CaretOpen {
-  transform: rotate(0deg);
-}
-
 .TechnicalToggle {
   display: inline-flex;
   align-items: center;
