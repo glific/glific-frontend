@@ -48,6 +48,21 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
+const renderSimulator = (props: any = {}, simulatorMocks: any = mocks) =>
+  render(
+    <MockedProvider mocks={simulatorMocks}>
+      <Simulator {...getDefaultProps()} showSimulator {...props} />
+    </MockedProvider>
+  );
+
+// The app attaches the token by patching XMLHttpRequest, so a request config here would be a
+// second copy of the header. Asserting the argument count keeps that from creeping back.
+const expectPostedToSimulatorEndpoint = () => {
+  expect(mockedAxios.post.mock.calls[0]).toHaveLength(2);
+  expect(mockedAxios.post.mock.calls[0][0]).toEqual(SIMULATOR_MESSAGE_URL);
+  expect(mockedAxios.post.mock.calls[0][1]).toMatchObject({ type: 'message' });
+};
+
 const sendSimulatorMessage = async (getByTestId: any, body: string) => {
   await waitFor(() => {
     expect(getByTestId('simulatorInput')).toBeInTheDocument();
@@ -61,14 +76,8 @@ const sendSimulatorMessage = async (getByTestId: any, body: string) => {
 };
 
 test('messages are posted to the authenticated simulator endpoint', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
-  const { getByTestId } = render(
-    <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
-    </MockedProvider>
-  );
+  const { getByTestId } = renderSimulator();
 
   await sendSimulatorMessage(getByTestId, 'hello');
 
@@ -77,18 +86,12 @@ test('messages are posted to the authenticated simulator endpoint', async () => 
   });
 
   // must not be the BSP webhook, which only accepts the provider's own source IPs
-  expect(mockedAxios.post.mock.calls[0][0]).toEqual(SIMULATOR_MESSAGE_URL);
+  expectPostedToSimulatorEndpoint();
 });
 
 test('disconnection banner is displayed when the simulator request fails', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.reject(new Error('Request failed')));
-  const { getByTestId, getByText } = render(
-    <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
-    </MockedProvider>
-  );
+  const { getByTestId, getByText } = renderSimulator();
 
   await sendSimulatorMessage(getByTestId, 'hello');
 
@@ -98,14 +101,8 @@ test('disconnection banner is displayed when the simulator request fails', async
 });
 
 test('media messages are posted to the authenticated simulator endpoint', async () => {
-  const props = getDefaultProps();
-  props.showSimulator = true;
   mockedAxios.post.mockImplementation(() => Promise.reject(new Error('Request failed')));
-  const { getByTestId } = render(
-    <MockedProvider mocks={mocks}>
-      <Simulator {...props} />
-    </MockedProvider>
-  );
+  const { getByTestId } = renderSimulator();
 
   await waitFor(() => {
     expect(getByTestId('attachment')).toBeInTheDocument();
@@ -121,7 +118,7 @@ test('media messages are posted to the authenticated simulator endpoint', async 
     expect(mockedAxios.post).toHaveBeenCalled();
   });
 
-  expect(mockedAxios.post.mock.calls[0][0]).toEqual(SIMULATOR_MESSAGE_URL);
+  expectPostedToSimulatorEndpoint();
 });
 
 test('opened simulator should close when click of simulator icon', async () => {

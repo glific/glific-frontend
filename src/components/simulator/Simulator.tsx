@@ -212,10 +212,7 @@ const Simulator = ({
           context,
         },
       })
-      .catch((error) => {
-        // add log's
-        setLogs(`sendMessageText:${sendMessageText} SIMULATOR_MESSAGE_URL:${SIMULATOR_MESSAGE_URL}`, 'info');
-        setLogs(error, 'error', true);
+      .catch(() => {
         setIsDisconnected(true);
       });
     setInputMessage('');
@@ -317,10 +314,7 @@ const Simulator = ({
           },
         },
       })
-      .catch((error) => {
-        // add log's
-        setLogs(`sendMediaMessage:${type} SIMULATOR_MESSAGE_URL:${SIMULATOR_MESSAGE_URL}`, 'info');
-        setLogs(error, 'error', true);
+      .catch(() => {
         setIsDisconnected(true);
       });
   };
