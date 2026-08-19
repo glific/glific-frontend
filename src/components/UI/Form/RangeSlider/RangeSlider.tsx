@@ -9,6 +9,7 @@ export interface RangeSliderProps {
   disabled?: boolean;
   onChange: (value: number) => void;
   onClear?: () => void;
+  className?: string;
   testId?: string;
   inputTestId?: string;
 }
@@ -21,13 +22,15 @@ export const RangeSlider = ({
   disabled = false,
   onChange,
   onClear,
+  className,
   testId = 'rangeSlider',
   inputTestId = 'rangeSliderInput',
 }: RangeSliderProps) => {
   const clamp = (next: number) => Math.min(max, Math.max(min, next));
 
   return (
-    <div className={styles.Wrap}>
+    <div className={`${styles.Wrap} ${className ?? ''}`}>
+      <span className={styles.Bound}>{min}</span>
       <Slider
         className={styles.Slider}
         value={value}
@@ -36,8 +39,10 @@ export const RangeSlider = ({
         step={step}
         disabled={disabled}
         onChange={(_, next) => onChange(clamp(Number(next)))}
+        valueLabelDisplay="auto"
         data-testid={testId}
       />
+      <span className={styles.Bound}>{max}</span>
       <input
         type="number"
         className={styles.Value}

@@ -147,6 +147,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
             <div>
               <div className={styles.FieldLabel}>{t('Temperature')}</div>
               <RangeSlider
+                className={styles.Temperature}
                 value={Number(config.temperature) || (temperatureSpec.min ?? 0)}
                 min={temperatureSpec.min ?? 0}
                 max={temperatureSpec.max ?? 2}
