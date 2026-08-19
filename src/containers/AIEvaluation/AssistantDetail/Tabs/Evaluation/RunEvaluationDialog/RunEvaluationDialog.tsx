@@ -57,6 +57,7 @@ export const RunEvaluationDialog = ({
           input: {
             goldenQaId,
             configId: versionId,
+            duplicationFactor: Number(duplication),
             evaluationName: evaluationRunName(assistantName, versionNumber, set.name),
           },
         },
