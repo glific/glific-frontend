@@ -781,7 +781,37 @@ describe('running an evaluation', () => {
     });
     expect(sent.input.goldenQaId).toBe('g1');
     expect(sent.input.configId).toBe('v1');
+    expect(sent.input.duplicationFactor).toBe(1);
     expect(sent.input.evaluationName).toMatch(/^assistant_v1_maternal_health_core_\d+$/);
+    notificationSpy.mockRestore();
+  });
+
+  test('the duplication the reader picks is what gets run', async () => {
+    let sent: any;
+    const createMock = {
+      request: { query: CREATE_EVALUATION },
+      variableMatcher: (variables: any) => {
+        sent = variables;
+        return true;
+      },
+      result: { data: { createEvaluation: { evaluation: { status: 'pending' }, errors: null } } },
+    };
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    renderWithRuns([], [createMock]);
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+    await screen.findByTestId('runEvaluationDialog');
+
+    // the consistency check asks each question five times
+    fireEvent.click(screen.getByTestId('duplicationOption-5'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+    // a number, not the '5' the radio carries — the schema takes an integer
+    expect(sent.input.duplicationFactor).toBe(5);
     notificationSpy.mockRestore();
   });
 
@@ -1046,7 +1076,7 @@ describe('question-level results', () => {
   });
 });
 
-test('a markdown answer is rendered, not shown as asterisks', async () => {
+test('an answer is rendered the way WhatsApp would render it', async () => {
   render(
     <MockedProvider
       mocks={[
@@ -1085,7 +1115,7 @@ test('a markdown answer is rendered, not shown as asterisks', async () => {
                         question_id: '1',
                         question: 'What is health?',
                         ground_truth_answer: 'Complete well-being.',
-                        llm_answer: 'In modern biology, **health is a dynamic state**.\n\n- physically\n- mentally',
+                        llm_answer: 'In modern biology, *health is a dynamic state*.\n\n- physically\n- mentally',
                         scores: [{ name: 'Adherence to Prompt', value: 5 }],
                       },
                     ],
@@ -1104,10 +1134,10 @@ test('a markdown answer is rendered, not shown as asterisks', async () => {
 
   const row = await screen.findByTestId('evaluationScoreRow');
 
-  // the bold text became an element, and the list became a list
-  expect(within(row).getByText('health is a dynamic state').tagName).toBe('STRONG');
-  expect(within(row).getAllByRole('listitem')).toHaveLength(2);
-  expect(row).not.toHaveTextContent('**');
+  // WhatsApp's bold became an element; the lines stay lines, as a recipient would see them
+  expect(within(row).getByText('health is a dynamic state').tagName).toBe('B');
+  expect(row.querySelectorAll('br').length).toBeGreaterThan(1);
+  expect(row).toHaveTextContent('- physically');
 });
 
 test('the question-level table lives inside the result card, under a divider', async () => {
@@ -1163,7 +1193,7 @@ test('the question-level table lives inside the result card, under a divider', a
   expect(within(card).getByTestId('overallScore')).toBeInTheDocument();
 });
 
-test('a markdown table in an answer renders as a table', async () => {
+test('a markdown table stays as text, because WhatsApp cannot render one', async () => {
   const answer = [
     'Here is a comparison:',
     '',
@@ -1220,15 +1250,10 @@ test('a markdown table in an answer renders as a table', async () => {
 
   const row = await screen.findByTestId('evaluationScoreRow');
 
-  // the pipes became a real table rather than a wall of text
-  expect(within(row).getByRole('table')).toBeInTheDocument();
-  expect(
-    within(row)
-      .getAllByRole('columnheader')
-      .map((cell) => cell.textContent)
-  ).toEqual(['Feature', 'Innate', 'Adaptive']);
-  expect(within(row).getAllByRole('row')).toHaveLength(3);
-  expect(row).not.toHaveTextContent('| --- |');
+  // no table is drawn — the reader sees the pipes a WhatsApp recipient would see
+  expect(within(row).queryByRole('table')).not.toBeInTheDocument();
+  expect(row).toHaveTextContent('| Feature | Innate | Adaptive |');
+  expect(row).toHaveTextContent('| --- |');
 });
 
 test("the judge's summary is shown in the banner", async () => {
@@ -1459,7 +1484,7 @@ test('History lists this assistant’s runs only, not the whole organisation’s
   expect(rows[0]).not.toHaveTextContent('someone_elses');
 });
 
-test('a run still being judged keeps the list polling until it settles', async () => {
+test('a run still being judged shows as in progress and asks for no scores', async () => {
   const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
 
   render(
@@ -1477,7 +1502,6 @@ test('a run still being judged keeps the list polling until it settles', async (
     </MockedProvider>
   );
 
-  // the in-progress card is what the poll is waiting to replace
   expect(await screen.findByTestId('evaluationRunning')).toBeInTheDocument();
   // and nothing asks for scores while there are none to read
   expect(screen.queryByTestId('evaluationScores')).not.toBeInTheDocument();
