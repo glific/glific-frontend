@@ -419,3 +419,12 @@ describe('writing the prompt in a dialog', () => {
     expect(screen.queryByTestId('promptExpandedInput')).not.toBeInTheDocument();
   });
 });
+
+test('the temperature control shows the range it covers', () => {
+  renderTab({ model: 'gpt-4.1' });
+
+  // the ends are labelled, so the track means something before it is dragged
+  const control = screen.getByTestId('temperatureSlider').parentElement;
+  expect(control).toHaveTextContent('0');
+  expect(control).toHaveTextContent('2');
+});
