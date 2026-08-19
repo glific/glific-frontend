@@ -1,6 +1,5 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import axios from 'axios';
 import { vi } from 'vitest';
 
 import { conversationQuery } from 'mocks/Chat';
@@ -15,12 +14,15 @@ import {
   interactiveMessageReceiveSubscription,
 } from 'mocks/Simulator';
 import Simulator from './Simulator';
-import { setUserSession } from 'services/AuthService';
+import { setAuthSession, setUserSession } from 'services/AuthService';
+import { SIMULATOR_MESSAGE_URL } from 'config';
 
-vi.mock('axios');
-const mockedAxios = axios as any;
+const mockedFetch = vi.fn();
+const okResponse = () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+const failedResponse = () => Promise.reject(new Error('Request failed'));
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
+setAuthSession({ access_token: 'test_access_token' });
 const mockSetShowSimulator = vi.fn();
 
 const mocks = [
@@ -45,6 +47,83 @@ const getDefaultProps = () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubGlobal('fetch', mockedFetch);
+  mockedFetch.mockImplementation(okResponse);
+});
+
+const renderSimulator = (props: any = {}, simulatorMocks: any = mocks) =>
+  render(
+    <MockedProvider mocks={simulatorMocks}>
+      <Simulator {...getDefaultProps()} showSimulator {...props} />
+    </MockedProvider>
+  );
+
+// The app attaches the token by patching XMLHttpRequest, so a request config here would be a
+// second copy of the header. Asserting the argument count keeps that from creeping back.
+const expectPostedToSimulatorEndpoint = () => {
+  const [url, request]: any = mockedFetch.mock.calls[0];
+
+  expect(url).toEqual(SIMULATOR_MESSAGE_URL);
+  expect(request.headers.authorization).toBeTruthy();
+  expect(JSON.parse(request.body)).toMatchObject({ type: 'message' });
+};
+
+const sendSimulatorMessage = async (getByTestId: any, body: string) => {
+  await waitFor(() => {
+    expect(getByTestId('simulatorInput')).toBeInTheDocument();
+  });
+
+  fireEvent.change(getByTestId('simulatorInput'), { target: { value: body } });
+
+  await waitFor(() => {
+    fireEvent.keyPress(getByTestId('simulatorInput'), { key: 'Enter', code: 13, charCode: 13 });
+  });
+};
+
+test('messages are posted to the authenticated simulator endpoint', async () => {
+  mockedFetch.mockImplementation(okResponse);
+  const { getByTestId } = renderSimulator();
+
+  await sendSimulatorMessage(getByTestId, 'hello');
+
+  await waitFor(() => {
+    expect(mockedFetch).toHaveBeenCalled();
+  });
+
+  // must not be the BSP webhook, which only accepts the provider's own source IPs
+  expectPostedToSimulatorEndpoint();
+});
+
+test('disconnection banner is displayed when the simulator request fails', async () => {
+  mockedFetch.mockImplementation(failedResponse);
+  const { getByTestId, getByText } = renderSimulator();
+
+  await sendSimulatorMessage(getByTestId, 'hello');
+
+  await waitFor(() => {
+    expect(getByText('Simulator connection lost. Try to reload.')).toBeInTheDocument();
+  });
+});
+
+test('media messages are posted to the authenticated simulator endpoint', async () => {
+  mockedFetch.mockImplementation(failedResponse);
+  const { getByTestId } = renderSimulator();
+
+  await waitFor(() => {
+    expect(getByTestId('attachment')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('attachment'));
+  await waitFor(() => {});
+
+  const [imageButton] = screen.getAllByRole('button');
+  fireEvent.click(imageButton);
+
+  await waitFor(() => {
+    expect(mockedFetch).toHaveBeenCalled();
+  });
+
+  expectPostedToSimulatorEndpoint();
 });
 
 test('opened simulator should close when click of simulator icon', async () => {
@@ -70,7 +149,7 @@ test('opened simulator should close when click of simulator icon', async () => {
 test('send a message/media from the simulator', async () => {
   const props = getDefaultProps();
   props.showSimulator = true;
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedFetch.mockImplementation(okResponse);
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
@@ -118,7 +197,7 @@ test('Receive an interactive message and send the response with correct uuid', a
 
   const props = getDefaultProps();
   props.showSimulator = true;
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedFetch.mockImplementation(okResponse);
 
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
@@ -142,8 +221,8 @@ test('Receive an interactive message and send the response with correct uuid', a
   });
 
   await waitFor(() => {
-    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
-    const payload = mockedAxios.post.mock.calls[1][1];
+    expect(mockedFetch).toHaveBeenCalledTimes(2);
+    const payload: any = JSON.parse((mockedFetch.mock.calls[1][1] as any).body);
     expect(payload.payload.payload.id).toBe(expectedUuid);
   });
 });
@@ -177,7 +256,7 @@ const HSMSimulator = (
 );
 
 test('simulator should open by default in preview HSM', async () => {
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedFetch.mockImplementation(okResponse);
   const { getByTestId } = render(HSMSimulator);
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toBeInTheDocument();
@@ -185,7 +264,7 @@ test('simulator should open by default in preview HSM', async () => {
 });
 
 test('simulator icon should not be seen in preview HSM', async () => {
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedFetch.mockImplementation(okResponse);
   const { getByTestId } = render(HSMSimulator);
   expect(() => getByTestId('simulatorIcon')).toThrow();
 });
@@ -215,7 +294,7 @@ const props = {
 };
 
 test('simulator should reset on clicking the reset button message', async () => {
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedFetch.mockImplementation(okResponse);
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
@@ -229,7 +308,7 @@ test('simulator should reset on clicking the reset button message', async () => 
   const resetButton = getByTestId('resetIcon');
   fireEvent.click(resetButton);
   await waitFor(() => {
-    expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+    expect(mockedFetch).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -256,7 +335,7 @@ test('disconnection banner should not be displayed when simulator is connected',
 test('disconnection banner should be displayed when simulator connection is lost', async () => {
   const disconnectionProps = getDefaultProps();
   disconnectionProps.showSimulator = true;
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedFetch.mockImplementation(okResponse);
   const { getByTestId, getByText, queryByText } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...disconnectionProps} />
