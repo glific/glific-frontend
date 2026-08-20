@@ -191,6 +191,7 @@ describe('HSMV2 add mode', () => {
   });
 
   test('the "Template library" button opens the library modal and applies the picked template on the same page', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","templateLibraryEnabled":true}');
     render(template);
 
     await waitFor(() => {
@@ -241,6 +242,7 @@ describe('HSMV2 add mode', () => {
       templateLibraryMock(),
     ];
 
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","templateLibraryEnabled":true}');
     render(
       <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter>

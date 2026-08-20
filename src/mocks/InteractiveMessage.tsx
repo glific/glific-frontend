@@ -356,7 +356,7 @@ export const translateInteractiveTemplateMock = (error: boolean = false) => ({
     variables: { translateInteractiveTemplateId: '1' },
   },
   [error ? 'error' : 'result']: error
-    ? new Error('An error occured')
+    ? new Error('An error occurred')
     : {
         data: {
           translateInteractiveTemplate: {
@@ -392,7 +392,7 @@ export const importInteractiveTemplateMock = (error: boolean = false) => ({
     query: IMPORT_INTERACTIVE_TEMPLATE,
   },
   [error ? 'error' : 'result']: error
-    ? new Error('An error occured')
+    ? new Error('An error occurred')
     : {
         data: {
           importInteractiveTemplate: {
@@ -427,7 +427,7 @@ export const exportInteractiveTemplateMock = (error: boolean = false) => ({
     variables: { exportInteractiveTemplateId: '1', addTranslation: true },
   },
   [error ? 'error' : 'result']: error
-    ? new Error('An error occured')
+    ? new Error('An error occurred')
     : {
         data: {
           exportInteractiveTemplate: {
@@ -443,7 +443,7 @@ export const exportInteractiveTemplateMockWithoutTranslation = (error: boolean =
     variables: { exportInteractiveTemplateId: '1', addTranslation: false },
   },
   [error ? 'error' : 'result']: error
-    ? new Error('An error occured')
+    ? new Error('An error occurred')
     : {
         data: {
           exportInteractiveTemplate: {

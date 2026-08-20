@@ -109,5 +109,3 @@ export const AssistantHeader = ({
     </div>
   );
 };
-
-export default AssistantHeader;

@@ -398,7 +398,7 @@ export const exportCollectionsQueryWithErrors = {
       exportCollection: {
         errors: [
           {
-            message: 'An error occured',
+            message: 'An error occurred',
             key: 0,
           },
         ],
@@ -406,6 +406,14 @@ export const exportCollectionsQueryWithErrors = {
       },
     },
   },
+};
+
+export const exportCollectionsQueryNetworkError = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  error: new Error('Failed to export collection'),
 };
 
 export const addContactToCollection = {

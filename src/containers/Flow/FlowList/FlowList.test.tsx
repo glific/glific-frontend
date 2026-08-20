@@ -499,7 +499,7 @@ describe('Error handling', () => {
     fireEvent.change(input);
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('An error occured while importing the flow', 'warning');
+      expect(notificationSpy).toHaveBeenCalledWith('An error occurred while importing the flow', 'warning');
     });
   });
 

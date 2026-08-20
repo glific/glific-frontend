@@ -1,0 +1,102 @@
+.Paper :global(.MuiDialogTitle-root) {
+  padding-top: var(--app-space-3xl) !important;
+  padding-bottom: 0 !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+.Paper :global(.MuiDialogContent-root) {
+  padding-top: var(--app-space-2xs) !important;
+  padding-bottom: var(--app-space-sm) !important;
+}
+
+.Paper :global(.MuiDialogActions-root) {
+  padding-top: 0 !important;
+}
+
+.Intro {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.SetList {
+  max-height: 18rem;
+  overflow-y: auto;
+  padding-right: var(--app-space-2xs);
+}
+
+.Set {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  width: 100%;
+  padding: var(--app-space-sm) var(--app-space-lg);
+  margin-bottom: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.Set:hover {
+  border-color: var(--app-color-border-brand);
+}
+
+.SetIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-hover);
+
+  svg {
+    width: var(--app-size-icon-md);
+    height: var(--app-size-icon-md);
+  }
+}
+
+.SetText {
+  flex: 1;
+  min-width: 0;
+}
+
+.SetName {
+  display: block;
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+  overflow-wrap: anywhere;
+}
+
+.Note {
+  display: block;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.ViewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  flex-shrink: 0;
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-brand-primary);
+}
+
+.ViewIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+}
+
+.AddButton {
+  margin-top: var(--app-space-sm);
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}

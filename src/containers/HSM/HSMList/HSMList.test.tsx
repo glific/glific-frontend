@@ -213,7 +213,7 @@ test('bulk apply templates with network error', async () => {
   });
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('An error occured! Please check the format of the file', 'warning');
+    expect(setNotification).toHaveBeenCalledWith('An error occurred! Please check the format of the file', 'warning');
   });
 });
 

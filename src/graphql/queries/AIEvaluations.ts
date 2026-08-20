@@ -39,6 +39,11 @@ export const COUNT_GOLDEN_QA = gql`
   }
 `;
 
+export const GOLDEN_QA_LIST_VARIABLES = {
+  filter: {},
+  opts: { order: 'DESC', orderWith: 'inserted_at' },
+};
+
 export const LIST_GOLDEN_QA = gql`
   query GoldenQas($filter: GoldenQaFilter, $opts: Opts) {
     goldenQas(filter: $filter, opts: $opts) {
