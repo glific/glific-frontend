@@ -175,6 +175,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
           title={t('Edit system instructions')}
           buttonOk={t('Save')}
           buttonCancel={t('Cancel')}
+          colorCancel="primary"
           alignButtons="right"
           handleOk={() => {
             onPromptChange(draft);

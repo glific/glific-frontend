@@ -50,7 +50,6 @@
 }
 
 .Question {
-  font-weight: 600;
   color: var(--app-color-text-heading);
 }
 
@@ -58,7 +57,7 @@
   max-height: 9rem;
   overflow-y: auto;
   scrollbar-width: none;
-  color: var(--app-color-text-tertiary);
+  color: var(--app-color-text-heading);
 }
 
 .Answer::-webkit-scrollbar-track,
@@ -73,10 +72,6 @@
 .Answer:hover::-webkit-scrollbar-thumb {
   border-radius: var(--app-radius-pill);
   background: var(--app-color-border);
-}
-
-.AssistantAnswer {
-  color: var(--app-color-text-heading);
 }
 
 .NoScore {

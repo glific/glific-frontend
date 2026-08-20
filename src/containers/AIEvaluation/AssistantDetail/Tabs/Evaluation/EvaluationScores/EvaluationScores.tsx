@@ -66,9 +66,7 @@ export const EvaluationScores = ({ runId, traces, loading = false, failure = nul
     cells: [
       <span className={styles.Question}>{trace.question || '—'}</span>,
       <div className={styles.Answer}>{trace.expected || '—'}</div>,
-      <div className={`${styles.Answer} ${styles.AssistantAnswer}`}>
-        {trace.answer ? <MarkdownAnswer text={trace.answer} /> : '—'}
-      </div>,
+      <div className={styles.Answer}>{trace.answer ? <MarkdownAnswer text={trace.answer} /> : '—'}</div>,
       ...metricNames.map((name) => {
         const score = trace.scores.find((entry) => entry.name === name)?.value ?? null;
 
