@@ -11,3 +11,11 @@
   color: #119656;
   border: 1px solid #cccccc;
 }
+
+.buttonProgress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -10px;
+  margin-left: -10px;
+}

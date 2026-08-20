@@ -1,6 +1,13 @@
+.MyAccountBody {
+  width: 100%;
+  height: calc(100% - 110px);
+  overflow-y: auto;
+}
+
 .MyAccount {
   width: 500px;
   padding: 12px 32px;
+  padding-bottom: 40px;
 }
 
 .Title {
@@ -9,6 +16,17 @@
   vertical-align: middle;
   font-weight: 500 !important;
   color: #073f24;
+}
+
+.FormTitle {
+  margin-top: 30px;
+  vertical-align: middle;
+  font-weight: 500;
+  color: #073f24;
+}
+
+.FirstFormTitle {
+  margin-top: 10px;
 }
 
 .Icon {
@@ -40,6 +58,23 @@
   padding: 0px 20px;
 }
 
+.Buttons {
+  display: flex;
+  margin-top: 16px;
+}
+
+.Buttons > :not(:last-child) {
+  margin-right: 16px;
+}
+
 .ChangePasswordField {
   margin-bottom: 20px;
+}
+
+.FormTitle + .ChangePasswordField .FieldLabel {
+  margin-top: 10px;
+}
+
+.ChangePasswordField + .FormTitle {
+  margin-top: 30px;
 }

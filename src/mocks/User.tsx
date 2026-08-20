@@ -49,6 +49,53 @@ export const getCurrentUserQuery = {
   },
 };
 
+export const getCurrentUserNullEmailQuery = {
+  request: {
+    query: GET_CURRENT_USER,
+  },
+  result: {
+    data: {
+      currentUser: {
+        user: {
+          id: '1',
+          name: 'John Doe',
+          phone: '+919820198765',
+          roles: ['admin'],
+          email: null,
+          contact: {
+            id: '1',
+            name: 'Glific user',
+            phone: '9876543210',
+          },
+          accessRoles: [
+            {
+              id: '1',
+              label: 'Admin',
+            },
+          ],
+          groups: [
+            {
+              id: '1',
+              label: 'Default Collection',
+              description: '',
+            },
+          ],
+          organization: {
+            id: '1',
+            contact: {
+              phone: '917834811114',
+            },
+          },
+          language: {
+            id: '1',
+            locale: 'en',
+          },
+        },
+      },
+    },
+  },
+};
+
 export const getUsersQuery = {
   request: {
     query: GET_USERS,
@@ -66,68 +113,105 @@ export const getUsersQuery = {
   },
 };
 
-export const updateUserQuery = [
-  {
-    request: {
-      query: UPDATE_CURRENT_USER,
-      variables: { input: { otp: '76554', password: 'pass123456' } },
+export const updateLanguageQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { languageId: '2' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: null,
+        user: null,
+      },
     },
-    result: {
-      data: {
-        updateCurrentUser: {
-          errors: null,
-          user: {
-            id: '2',
-            name: 'Updated Name',
-            email: 'you@domain.com',
-          },
+  },
+};
+
+// saving with only the email changed (password left blank, so it's omitted from the input)
+export const updateAccountEmailOnlyQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '76554', email: 'newemail@domain.com' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: null,
+        user: {
+          id: '1',
+          name: 'John Doe',
+          email: 'newemail@domain.com',
         },
       },
     },
   },
-  {
-    request: {
-      query: UPDATE_CURRENT_USER,
-      variables: { input: { otp: '1234', password: 'pass123456' } },
-    },
-    result: {
-      data: {
-        updateCurrentUser: {
-          errors: [{ message: 'incorrect_code' }],
-          user: null,
+};
+
+// saving with both email (unchanged) and a new password
+export const updateAccountWithPasswordQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '76554', email: 'you@domain.com', password: 'Password123!' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: null,
+        user: {
+          id: '1',
+          name: 'John Doe',
+          email: 'you@domain.com',
         },
       },
     },
   },
-  {
-    request: {
-      query: UPDATE_CURRENT_USER,
-      variables: { input: { otp: '4567', password: 'pass123456' } },
-    },
-    result: {
-      data: {
-        updateCurrentUser: {
-          errors: [{ message: 'Too many attempts' }],
-          user: null,
-        },
+};
+
+export const updateAccountIncorrectOtpQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '1234', email: 'you@domain.com' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: [{ message: 'incorrect_code' }],
+        user: null,
       },
     },
   },
-  {
-    request: {
-      query: UPDATE_CURRENT_USER,
-      variables: { input: { languageId: '2' } },
-    },
-    result: {
-      data: {
-        updateCurrentUser: {
-          errors: null,
-          user: null,
-        },
+};
+
+export const updateAccountTooManyAttemptsQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '4567', email: 'you@domain.com' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: [{ message: 'Too many attempts' }],
+        user: null,
       },
     },
   },
-];
+};
+
+export const updateAccountEmailTakenQuery = {
+  request: {
+    query: UPDATE_CURRENT_USER,
+    variables: { input: { otp: '76554', email: 'taken@domain.com' } },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        errors: [{ key: 'email', message: 'has already been taken' }],
+        user: null,
+      },
+    },
+  },
+};
 
 export const getCurrentUserErrorQuery = {
   request: {
