@@ -68,5 +68,3 @@ export const HeaderActions = ({
     </Button>
   );
 };
-
-export default HeaderActions;

@@ -11,7 +11,7 @@ export const DEFAULT_MODEL_CONFIG: ModelConfig = {
   effort: '',
 };
 
-export const SUPPORTED_PARAMS = ['temperature', 'effort'] as const;
+const SUPPORTED_PARAMS = ['temperature', 'effort'] as const;
 
 const parseConfig = (config?: string | null): Record<string, ModelParamSpec> => {
   if (!config) return {};

@@ -22,7 +22,7 @@ export interface DialogProps {
   skipOk?: boolean;
   disableOk?: boolean;
   alwaysOntop?: boolean;
-  buttonMiddle?: string | null;
+  buttonMiddle?: ReactNode;
   additionalTitleStyles?: string | null;
   buttonOkLoading?: boolean;
   fullWidth?: boolean;

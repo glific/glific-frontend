@@ -887,7 +887,7 @@ describe('tabs', () => {
 
     fireEvent.click(screen.getByTestId('tab-evaluation'));
 
-    expect(screen.getByTestId('tabPanel')).toHaveTextContent('Golden Q&A Evaluation coming soon');
+    expect(await screen.findByTestId('evaluationTab')).toBeInTheDocument();
     expect(screen.getByTestId('tab-evaluation')).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByTestId('tab-persona')).toHaveAttribute('aria-selected', 'false');
   });
