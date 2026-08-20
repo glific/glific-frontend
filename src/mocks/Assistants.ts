@@ -225,7 +225,7 @@ const createKnowledgeBaseWithError = {
       mediaInfo: [fileWithUploadedAt],
     },
   },
-  error: new Error('An error occured'),
+  error: new Error('An error occurred'),
 };
 
 const createKnowledgeBaseForUpdate = {

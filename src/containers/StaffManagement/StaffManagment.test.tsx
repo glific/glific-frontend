@@ -150,7 +150,7 @@ test('return error if roles api does not have data', async () => {
   );
 
   await waitFor(() => {
-    expect(screen.getByText('An error occured! Not able to fetch collections or roles')).toBeInTheDocument();
+    expect(screen.getByText('An error occurred! Not able to fetch collections or roles')).toBeInTheDocument();
   });
 });
 

@@ -7,6 +7,7 @@ import {
   importInteractiveTemplateMock,
   importInteractiveTemplateWithTrimmingMock,
   translateInteractiveTemplateMock,
+  translateInteractiveTemplateWithTrimMock,
 } from 'mocks/InteractiveMessage';
 import { TranslateButton } from './TranslateButton';
 import * as Notification from 'common/notification';
@@ -47,6 +48,44 @@ test('it opens and closes dialog box', async () => {
   });
 
   fireEvent.click(screen.getByText('Cancel'));
+});
+
+test('it auto translates the interactive message successfully', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  render(wrapper({ saveClicked: false }));
+
+  fireEvent.click(screen.getByText('Translate'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Continue'));
+
+  await waitFor(() => {
+    expect(setStatesMock).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith('Interactive Message Translated Successfully', 'success');
+  });
+});
+
+test('it shows a warning when the auto-translated message exceeds the limit', async () => {
+  render(
+    <MockedProvider mocks={[translateInteractiveTemplateWithTrimMock]} addTypename={false}>
+      <TranslateButton {...defaultProps} saveClicked={false} />
+    </MockedProvider>
+  );
+
+  fireEvent.click(screen.getByText('Translate'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Continue'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
+  });
 });
 
 test('it exports the translation with translations', async () => {
@@ -116,6 +155,23 @@ const containerForErrorStates = (
     <TranslateButton {...defaultProps} saveClicked={false} />
   </MockedProvider>
 );
+
+test('should throw error for failed auto translation', async () => {
+  const errormessagespy = vi.spyOn(Notification, 'setErrorMessage');
+  render(containerForErrorStates);
+
+  fireEvent.click(screen.getByText('Translate'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Continue'));
+
+  await waitFor(() => {
+    expect(errormessagespy).toHaveBeenCalled();
+  });
+});
 
 test('should throw error for failed translations', async () => {
   const errormessagespy = vi.spyOn(Notification, 'setErrorMessage');
