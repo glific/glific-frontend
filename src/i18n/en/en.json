@@ -1150,5 +1150,6 @@
   "Loading out the overall score": "Loading out the overall score",
   "The checks below are in already; the summary lands in a moment.": "The checks below are in already; the summary lands in a moment.",
   "Choose a .csv file — that one is a different format.": "Choose a .csv file — that one is a different format.",
-  "That file is larger than {{size}}MB.": "That file is larger than {{size}}MB."
+  "That file is larger than {{size}}MB.": "That file is larger than {{size}}MB.",
+  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded"
 }
