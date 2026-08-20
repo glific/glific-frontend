@@ -952,6 +952,13 @@
   "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.": "एक बार मूल्यांकन चलाने के बाद हर रन यहां दिखेगा, ताकि आप संस्करणों और गोल्डन प्रश्नोत्तर सेट की तुलना कर सकें।",
   "Run your first evaluation": "अपना पहला मूल्यांकन चलाएं",
   "Run one to see how this version scores against a Golden Q&A set.": "यह देखने के लिए एक चलाएं कि यह संस्करण गोल्डन प्रश्नोत्तर सेट पर कैसा प्रदर्शन करता है।",
+  "An error occurred while importing flow translations": "फ्लो अनुवाद आयात करते समय एक त्रुटि हुई",
+  "Invalid Email": "अमान्य ईमेल",
+  "Email is Required": "ईमेल आवश्यक है",
+  "File uploaded successfully": "फ़ाइल सफलतापूर्वक अपलोड हो गई",
+  "Interactive Message Imported Successfully!": "इंटरैक्टिव संदेश सफलतापूर्वक आयात किया गया!",
+  "Interactive Message Translated Successfully": "इंटरैक्टिव संदेश का अनुवाद सफलतापूर्वक हुआ",
+  "Interactive Message Exported Successfully": "इंटरैक्टिव संदेश सफलतापूर्वक निर्यात किया गया",
   "This model does not take a temperature — use the settings it offers instead.": "यह मॉडल तापमान नहीं लेता — इसके द्वारा दी गई सेटिंग्स का उपयोग करें।",
   "This model has no settings to tune.": "इस मॉडल में समायोजित करने के लिए कोई सेटिंग नहीं है।",
   "Evaluation started — the result appears here once it completes.": "मूल्यांकन शुरू हुआ — पूरा होते ही परिणाम यहां दिखेगा।",
@@ -1034,5 +1041,6 @@
   "at": "पर",
   "adherence to ground truth": "ग्राउंड ट्रुथ का पालन",
   "adherence to knowledge base": "नॉलेज बेस का पालन",
-  "adherence to prompt": "प्रॉम्प्ट का पालन"
+  "adherence to prompt": "प्रॉम्प्ट का पालन",
+  "Evaluation runs could not be loaded": "मूल्यांकन रन लोड नहीं हो सके"
 }

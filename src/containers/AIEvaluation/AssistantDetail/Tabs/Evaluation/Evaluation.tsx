@@ -20,6 +20,8 @@ import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
 
+const RUN_LIMIT = 100;
+
 export interface EvaluationProps {
   assistantId?: string;
   versionId?: string;
@@ -41,8 +43,12 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: runData, refetch: refetchRuns } = useQuery(LIST_AI_EVALUATIONS, {
-    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+  const {
+    data: runData,
+    error: runsError,
+    refetch: refetchRuns,
+  } = useQuery(LIST_AI_EVALUATIONS, {
+    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at', limit: RUN_LIMIT } },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -111,6 +117,24 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
           }
         />
         {addDialog}
+      </div>
+    );
+  }
+
+  if (runsError && assistantRuns.length === 0) {
+    return (
+      <div data-testid="evaluationTab">
+        <EmptyState
+          testId="evaluationRunsLoadError"
+          icon={<ErrorOutlineIcon fontSize="inherit" />}
+          title={t('Evaluation runs could not be loaded')}
+          note={t('The server did not answer. Check your connection and try again.')}
+          action={
+            <Button variant="outlined" onClick={() => refetchRuns()} data-testid="retryRunsButton">
+              {t('Try again')}
+            </Button>
+          }
+        />
       </div>
     );
   }
