@@ -81,9 +81,13 @@ export const FlowEditor = () => {
     setLoading(false);
   };
 
-  const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
+  const [getFreeFlow, { data: freeFlowData }] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: ({ flowGet }) => {
+  });
+
+  useEffect(() => {
+    if (freeFlowData) {
+      const { flowGet } = freeFlowData;
       if (flowGet.flow && !flowEditorLoaded) {
         loadFlowEditor();
         setFlowEditorLoaded(true);
@@ -93,57 +97,42 @@ export const FlowEditor = () => {
         loadFlowEditor(true);
         setFlowEditorLoaded(true);
       }
-    },
-  });
+    }
+  }, [freeFlowData]);
 
-  const [exportFlowMutation, { loading: exportFlowloading }] = useLazyQuery(EXPORT_FLOW, {
-    fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlow }) => {
-      const { exportData } = exportFlow;
+  const [exportFlowMutation, { data: exportFlowData, error: exportFlowQueryError, loading: exportFlowloading }] =
+    useLazyQuery(EXPORT_FLOW, {
+      fetchPolicy: 'network-only',
+    });
+
+  useEffect(() => {
+    if (exportFlowData) {
+      const { exportData } = exportFlowData.exportFlow;
       exportFlowMethod(exportData, flowTitle);
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
-  const [resetFlowCountMethod] = useMutation(RESET_FLOW_COUNT, {
-    onCompleted: ({ resetFlowCount }) => {
-      const { success } = resetFlowCount;
-      if (success) {
-        setNotification('Flow counts have been reset', 'success');
-        setShowResetFlowModal(false);
-        window.location.reload();
-      }
-    },
-    onError: (error) => {
-      setNotification('An error occured while resetting the flow count', 'warning');
-    },
-  });
+    }
+  }, [exportFlowData]);
 
-  const [publishFlow] = useMutation(PUBLISH_FLOW, {
-    onCompleted: (data) => {
-      if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
-        setFlowValidation(data.publishFlow.errors);
-        setIsError(true);
-      } else if (data.publishFlow.success) {
-        setPublished(true);
-      }
-      setPublishLoading(false);
-    },
-    onError: () => {
-      setPublishLoading(false);
-      setNotification('Sorry! An error occurred', 'warning');
-    },
-  });
+  useEffect(() => {
+    if (exportFlowQueryError) {
+      setErrorMessage(exportFlowQueryError);
+    }
+  }, [exportFlowQueryError]);
 
-  const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
+  const [resetFlowCountMethod] = useMutation(RESET_FLOW_COUNT);
+
+  const [publishFlow] = useMutation(PUBLISH_FLOW);
+
+  const [getFreeFlowForced, { data: freeFlowForcedData }] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: () => {
+  });
+
+  useEffect(() => {
+    if (freeFlowForcedData) {
       loadFlowEditor(false);
       setReadOnlyMessage('');
       setIsReadOnly(false);
-    },
-  });
+    }
+  }, [freeFlowForcedData]);
 
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
     fetchPolicy: 'network-only',
@@ -200,8 +189,17 @@ export const FlowEditor = () => {
     flowKeywords = getKeywords(keywords);
   }
 
-  const handleResetFlowCount = () => {
-    resetFlowCountMethod({ variables: { flowId } });
+  const handleResetFlowCount = async () => {
+    try {
+      const { data } = await resetFlowCountMethod({ variables: { flowId } });
+      if (data.resetFlowCount.success) {
+        setNotification('Flow counts have been reset', 'success');
+        setShowResetFlowModal(false);
+        window.location.reload();
+      }
+    } catch {
+      setNotification('An error occurred while resetting the flow count', 'warning');
+    }
   };
 
   if (showResetFlowModal) {
@@ -289,8 +287,20 @@ export const FlowEditor = () => {
     return () => {};
   }, [flowId]);
 
-  const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: params.uuid } });
+  const handlePublishFlow = async () => {
+    try {
+      const { data } = await publishFlow({ variables: { uuid: params.uuid } });
+      if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
+        setFlowValidation(data.publishFlow.errors);
+        setIsError(true);
+      } else if (data.publishFlow.success) {
+        setPublished(true);
+      }
+      setPublishLoading(false);
+    } catch {
+      setPublishLoading(false);
+      setNotification('Sorry! An error occurred', 'warning');
+    }
   };
 
   const handleCancelFlow = () => {

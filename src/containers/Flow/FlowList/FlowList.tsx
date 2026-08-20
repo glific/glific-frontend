@@ -121,7 +121,7 @@ export const FlowList = () => {
       const { status } = data.importFlow;
       setImportStatus(status);
     } catch {
-      setNotification('An error occured while importing the flow', 'warning');
+      setNotification('An error occurred while importing the flow', 'warning');
     } finally {
       setImporting(false);
     }

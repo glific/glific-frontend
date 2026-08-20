@@ -27,6 +27,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 const listVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
+const runVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at', limit: 100 } };
 
 const listMock = (goldenQas: { id: string; name: string; insertedAt: string }[]) => ({
   request: { query: LIST_GOLDEN_QA, variables: listVariables },
@@ -35,9 +36,15 @@ const listMock = (goldenQas: { id: string; name: string; insertedAt: string }[])
 
 const oneSet = [{ id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' }];
 
+const noRunsMock = {
+  request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+  result: { data: { aiEvaluations: [] } },
+  maxUsageCount: Number.POSITIVE_INFINITY,
+};
+
 const renderTab = (mocks: any[] = [listMock([])]) =>
   render(
-    <MockedProvider mocks={mocks}>
+    <MockedProvider mocks={[...mocks, noRunsMock]}>
       <Evaluation versionNumber={1} />
     </MockedProvider>
   );
@@ -729,7 +736,7 @@ describe('running an evaluation', () => {
   const runsMock = (aiEvaluations: any[]) => ({
     request: {
       query: LIST_AI_EVALUATIONS,
-      variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+      variables: runVariables,
     },
     result: { data: { aiEvaluations } },
     maxUsageCount: Number.POSITIVE_INFINITY,
@@ -868,7 +875,7 @@ describe('the result panel above the table', () => {
   const runsMock = (aiEvaluations: any[]) => ({
     request: {
       query: LIST_AI_EVALUATIONS,
-      variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+      variables: runVariables,
     },
     result: { data: { aiEvaluations } },
     maxUsageCount: Number.POSITIVE_INFINITY,
@@ -954,7 +961,7 @@ test('the ring fills to the score and takes the band colour', async () => {
         {
           request: {
             query: LIST_AI_EVALUATIONS,
-            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+            variables: runVariables,
           },
           result: {
             data: {
@@ -995,7 +1002,7 @@ describe('question-level results', () => {
   const runsMock = (aiEvaluations: any[]) => ({
     request: {
       query: LIST_AI_EVALUATIONS,
-      variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+      variables: runVariables,
     },
     result: { data: { aiEvaluations } },
     maxUsageCount: Number.POSITIVE_INFINITY,
@@ -1084,7 +1091,7 @@ test('an answer is rendered the way WhatsApp would render it', async () => {
         {
           request: {
             query: LIST_AI_EVALUATIONS,
-            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+            variables: runVariables,
           },
           result: {
             data: {
@@ -1148,7 +1155,7 @@ test('the question-level table lives inside the result card, under a divider', a
         {
           request: {
             query: LIST_AI_EVALUATIONS,
-            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+            variables: runVariables,
           },
           result: {
             data: {
@@ -1210,7 +1217,7 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
         {
           request: {
             query: LIST_AI_EVALUATIONS,
-            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+            variables: runVariables,
           },
           result: {
             data: {
@@ -1266,7 +1273,7 @@ test("the judge's summary is shown in the banner", async () => {
         {
           request: {
             query: LIST_AI_EVALUATIONS,
-            variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+            variables: runVariables,
           },
           result: {
             data: {
@@ -1337,7 +1344,7 @@ test('Export CSV downloads the question-level results as a CSV file', async () =
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: {
             data: {
               aiEvaluations: [
@@ -1403,7 +1410,7 @@ test('the result card waits for the score payload rather than showing a number t
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [run] } },
         },
         { request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } }, delay: Infinity, result: { data: {} } },
@@ -1465,7 +1472,7 @@ test('History lists this assistant’s runs only, not the whole organisation’s
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [runFor('r1', 'a1', 'mine'), runFor('r2', 'a2', 'someone_elses')] } },
           maxUsageCount: Number.POSITIVE_INFINITY,
         },
@@ -1492,7 +1499,7 @@ test('a run still being judged shows as in progress and asks for no scores', asy
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [running] } },
           maxUsageCount: Number.POSITIVE_INFINITY,
         },
@@ -1513,7 +1520,7 @@ test('the two ways of running are offered as cards, and the choice sticks', asyn
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [] } },
         },
       ]}
@@ -1548,7 +1555,7 @@ test('a second run cannot be started while one is still going', async () => {
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [running] } },
           maxUsageCount: Number.POSITIVE_INFINITY,
         },
@@ -1568,7 +1575,7 @@ test('once the run settles another one can be started', async () => {
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [runFor('r1', 'a1', 'mine')] } },
           maxUsageCount: Number.POSITIVE_INFINITY,
         },
@@ -1589,7 +1596,7 @@ test('the meta line puts the weight on the Golden Q&A set', async () => {
       mocks={[
         listMock(oneSet),
         {
-          request: { query: LIST_AI_EVALUATIONS, variables: listVariables },
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [runFor('r1', 'a1', 'ai_cohort_v2_1')] } },
           maxUsageCount: Number.POSITIVE_INFINITY,
         },
@@ -1645,4 +1652,47 @@ describe('what the drop zone will accept', () => {
     expect(await screen.findByTestId('goldenQaParsed')).toHaveTextContent('Parsed 2 questions');
     expect(screen.queryByTestId('goldenQaFileError')).not.toBeInTheDocument();
   });
+});
+
+test('a failed runs fetch says so instead of claiming nothing has run', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        { request: { query: LIST_AI_EVALUATIONS, variables: runVariables }, error: new Error('network') },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('evaluationRunsLoadError')).toHaveTextContent('could not be loaded');
+  expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
+});
+
+test('the runs list is asked for with a cap rather than unbounded', async () => {
+  let sent: any;
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS },
+          variableMatcher: (variables: any) => {
+            sent = variables;
+            return true;
+          },
+          result: { data: { aiEvaluations: [] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  await screen.findByTestId('evaluationTab');
+  await waitFor(() => expect(sent).toBeDefined());
+  expect(sent.opts.limit).toBe(100);
 });

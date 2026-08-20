@@ -27,7 +27,7 @@ const ContactFieldList = () => {
 
   const [deleteContactField] = useMutation(DELETE_CONTACT_FIELDS, {
     onError: () => {
-      setNotification('Sorry! An error occured while deleting the contact field', 'warning');
+      setNotification('Sorry! An error occurred while deleting the contact field', 'warning');
     },
   });
 
@@ -65,7 +65,7 @@ const ContactFieldList = () => {
       }
     },
     onError: () => {
-      setNotification('Sorry! An error occured while updating the contact field', 'warning');
+      setNotification('Sorry! An error occurred while updating the contact field', 'warning');
     },
   });
 
