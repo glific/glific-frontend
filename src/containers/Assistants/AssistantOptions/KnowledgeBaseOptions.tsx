@@ -188,8 +188,6 @@ export const KnowledgeBaseOptions = ({
     uploadControllersRef.current.set(tempId, controller);
 
     const runAttempt = async () => {
-      let attemptError: any = null;
-      let uploadedData: any = null;
       const { data } = await uploadFileToKaapi({
         variables: {
           media: file,
@@ -199,19 +197,9 @@ export const KnowledgeBaseOptions = ({
             signal: controller.signal,
           },
         },
-        onCompleted: (payload) => {
-          uploadedData = payload?.uploadFilesearchFile;
-        },
-        onError: (uploadError) => {
-          attemptError = uploadError;
-        },
       });
 
-      if (attemptError) {
-        throw attemptError;
-      }
-
-      const responseData = uploadedData || data?.uploadFilesearchFile;
+      const responseData = data?.uploadFilesearchFile;
       uploadedFile = {
         fileId: responseData?.fileId,
         filename: responseData?.filename,
@@ -439,7 +427,7 @@ export const KnowledgeBaseOptions = ({
     return attachedFiles.some((file) => !file.fileId || !initialFileIds.has(file.fileId));
   };
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     if (files.some((file) => file.status === 'failed')) {
       setNotification('Remove or re-upload files that failed before saving.', 'warning');
       return;
@@ -464,17 +452,21 @@ export const KnowledgeBaseOptions = ({
     const controller = new AbortController();
     activeControllersRef.current.push(controller);
 
-    createKnowledgeBase({
-      variables: {
-        createKnowledgeBaseId: knowledgeBaseId || null,
-        mediaInfo: attachedFiles,
-      },
-      context: {
-        fetchOptions: {
-          signal: controller.signal,
+    try {
+      const { data } = await createKnowledgeBase({
+        variables: {
+          createKnowledgeBaseId: knowledgeBaseId || null,
+          mediaInfo: attachedFiles,
         },
-      },
-      onCompleted: ({ createKnowledgeBase: knowledgeBaseData }) => {
+        context: {
+          fetchOptions: {
+            signal: controller.signal,
+          },
+        },
+      });
+
+      const { createKnowledgeBase: knowledgeBaseData } = data;
+      if (knowledgeBaseData) {
         const updatedFiles = files
           .filter((file) => file.status === 'attached')
           .map(({ status, tempId, sourceFile, ...rest }) => rest);
@@ -486,13 +478,12 @@ export const KnowledgeBaseOptions = ({
         onFilesChange(true);
         setNotification("Knowledge base creation in progress, will notify once it's done", 'success');
         setShowUploadDialog(false);
-      },
-      onError: (error) => {
-        setErrorMessage(error);
-      },
-    }).finally(() => {
+      }
+    } catch (error: any) {
+      setErrorMessage(error);
+    } finally {
       activeControllersRef.current = activeControllersRef.current.filter((entry) => entry !== controller);
-    });
+    }
   };
 
   let dialog;

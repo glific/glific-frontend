@@ -431,7 +431,7 @@ test('shows warning notification when bulk apply throws a network error', async 
   fireEvent.change(screen.getByTestId('import'), { target: { files: [mockFile] } });
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('An error occured! Please check the format of the file', 'warning');
+    expect(setNotification).toHaveBeenCalledWith('An error occurred! Please check the format of the file', 'warning');
   });
 });
 
