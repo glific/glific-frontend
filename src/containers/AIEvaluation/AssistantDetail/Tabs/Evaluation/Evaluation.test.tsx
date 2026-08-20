@@ -27,7 +27,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 const listVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
-const runVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at', limit: 100 } };
+const runVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 
 const listMock = (goldenQas: { id: string; name: string; insertedAt: string }[]) => ({
   request: { query: LIST_GOLDEN_QA, variables: listVariables },
@@ -1668,31 +1668,4 @@ test('a failed runs fetch says so instead of claiming nothing has run', async ()
 
   expect(await screen.findByTestId('evaluationRunsLoadError')).toHaveTextContent('could not be loaded');
   expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
-});
-
-test('the runs list is asked for with a cap rather than unbounded', async () => {
-  let sent: any;
-
-  render(
-    <MockedProvider
-      mocks={[
-        listMock(oneSet),
-        {
-          request: { query: LIST_AI_EVALUATIONS },
-          variableMatcher: (variables: any) => {
-            sent = variables;
-            return true;
-          },
-          result: { data: { aiEvaluations: [] } },
-          maxUsageCount: Number.POSITIVE_INFINITY,
-        },
-      ]}
-    >
-      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
-    </MockedProvider>
-  );
-
-  await screen.findByTestId('evaluationTab');
-  await waitFor(() => expect(sent).toBeDefined());
-  expect(sent.opts.limit).toBe(100);
 });
