@@ -890,7 +890,7 @@ export const exportFlowTranslationsWithErrors = {
     errors: [
       {
         key: 'error',
-        message: 'An error occured',
+        message: 'An error occurred',
       },
     ],
   },

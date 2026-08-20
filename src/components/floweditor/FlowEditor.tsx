@@ -198,7 +198,7 @@ export const FlowEditor = () => {
         window.location.reload();
       }
     } catch {
-      setNotification('An error occured while resetting the flow count', 'warning');
+      setNotification('An error occurred while resetting the flow count', 'warning');
     }
   };
 

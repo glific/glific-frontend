@@ -398,7 +398,7 @@ export const exportCollectionsQueryWithErrors = {
       exportCollection: {
         errors: [
           {
-            message: 'An error occured',
+            message: 'An error occurred',
             key: 0,
           },
         ],

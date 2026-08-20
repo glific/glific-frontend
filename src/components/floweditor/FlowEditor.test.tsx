@@ -594,7 +594,7 @@ test('shows a warning when resetting the flow count fails', async () => {
   fireEvent.click(getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('An error occured while resetting the flow count', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith('An error occurred while resetting the flow count', 'warning');
   });
 });
 

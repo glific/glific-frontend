@@ -152,7 +152,7 @@ describe('Testing Translation flows', () => {
     fireEvent.click(submitButton);
     await waitFor(() => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
-      expect(notificationSpy).toHaveBeenCalledWith('An error occured while exporting flow translations', 'warning');
+      expect(notificationSpy).toHaveBeenCalledWith('An error occurred while exporting flow translations', 'warning');
     });
   });
 
@@ -186,7 +186,7 @@ describe('Testing Translation flows', () => {
     fireEvent.click(getByTestId('mock-import-button'));
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('An error occured while importing flow translations', 'warning');
+      expect(notificationSpy).toHaveBeenCalledWith('An error occurred while importing flow translations', 'warning');
     });
     expect(mockSetDialog).not.toHaveBeenCalledWith(false);
     expect(mockLoadFlowEditor).not.toHaveBeenCalled();

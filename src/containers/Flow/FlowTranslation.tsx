@@ -68,7 +68,7 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     const { data, error } = await exportFlowTranslations({ variables: { id: flowId, addTranslation } });
     if (error) {
       setDialog(false);
-      setNotification(t('An error occured while exporting flow translations'), 'warning');
+      setNotification(t('An error occurred while exporting flow translations'), 'warning');
       return;
     }
     if (data) {
@@ -114,7 +114,7 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         setDialog(false);
         loadFlowEditor();
       } else {
-        setNotification(t('An error occured while importing flow translations'), 'warning');
+        setNotification(t('An error occurred while importing flow translations'), 'warning');
       }
     } catch (error) {
       setImporting(false);

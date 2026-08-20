@@ -955,7 +955,7 @@
   "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.": "एक बार मूल्यांकन चलाने के बाद हर रन यहां दिखेगा, ताकि आप संस्करणों और गोल्डन प्रश्नोत्तर सेट की तुलना कर सकें।",
   "Run your first evaluation": "अपना पहला मूल्यांकन चलाएं",
   "Run one to see how this version scores against a Golden Q&A set.": "यह देखने के लिए एक चलाएं कि यह संस्करण गोल्डन प्रश्नोत्तर सेट पर कैसा प्रदर्शन करता है।",
-  "An error occured while importing flow translations": "फ्लो अनुवाद आयात करते समय एक त्रुटि हुई",
+  "An error occurred while importing flow translations": "फ्लो अनुवाद आयात करते समय एक त्रुटि हुई",
   "Invalid Email": "अमान्य ईमेल",
   "Email is Required": "ईमेल आवश्यक है",
   "File uploaded successfully": "फ़ाइल सफलतापूर्वक अपलोड हो गई",
