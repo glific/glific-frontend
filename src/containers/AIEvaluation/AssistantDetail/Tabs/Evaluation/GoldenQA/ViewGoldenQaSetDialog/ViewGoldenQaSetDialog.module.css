@@ -100,6 +100,7 @@
   max-height: 12rem;
   overflow-y: auto;
   white-space: pre-wrap;
+  font-weight: 400;
   color: var(--app-color-text-heading);
 }
 
