@@ -55,28 +55,6 @@ button.VersionPillLive {
   background-color: var(--app-color-brand-primary);
 }
 
-.LivePill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--app-space-2xs);
-  font-size: var(--app-font-size-xs);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--app-color-brand-primary);
-  background-color: var(--app-color-surface-raised);
-  border: 1px solid var(--app-color-brand-primary);
-  border-radius: var(--app-radius-pill);
-  padding: var(--app-space-2xs) var(--app-space-sm);
-}
-
-.LiveDot {
-  width: var(--app-size-dot);
-  height: var(--app-size-dot);
-  border-radius: 50%;
-  background-color: var(--app-color-brand-primary);
-  flex-shrink: 0;
-}
-
 .VersionLabel {
   font-size: var(--app-font-size-sm);
   font-weight: 600;

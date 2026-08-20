@@ -369,6 +369,7 @@ export const AssistantDetail = () => {
       <Evaluation
         assistantId={assistantId}
         versionId={selectedVersion?.id}
+        liveVersionId={liveVersion?.id}
         versionNumber={selectedVersion?.versionNumber}
         assistantName={assistant?.name}
       />

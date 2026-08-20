@@ -1315,6 +1315,99 @@ test("the judge's summary is shown in the banner", async () => {
   expect(await screen.findByTestId('evaluationSummary')).toHaveTextContent('Overall the run looks healthy');
 });
 
+test('History marks the run whose version is live', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [runFor('r1', 'a1', 'live_set'), runFor('r2', 'a1', 'old_set')] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" liveVersionId="v-r2" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('evaluationSubTabs-history'));
+
+  const rows = await screen.findAllByTestId('evaluationRun');
+  expect(within(rows[1]).getByTestId('livePill')).toBeInTheDocument();
+  expect(within(rows[0]).queryByTestId('livePill')).not.toBeInTheDocument();
+});
+
+test('Export CSV on History downloads every run as a CSV file', async () => {
+  const download = vi.spyOn(utils, 'downloadFile').mockImplementation(() => {});
+  const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:history');
+
+  const completed = {
+    id: 'r1',
+    name: 'run_1',
+    status: 'COMPLETED',
+    failureReason: null,
+    results:
+      '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.6},' +
+      '{"name":"Adherence to Knowledge Base","avg":4},{"name":"Adherence to Prompt","avg":5}]}',
+    goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+    assistantConfigVersion: { id: 'v1', versionNumber: 1, assistant: { id: 'a1', name: 'A' } },
+    insertedAt: '2026-08-10T10:00:00Z',
+  };
+  const failed = {
+    ...completed,
+    id: 'r2',
+    name: 'run_2',
+    status: 'FAILED',
+    failureReason: 'The judge timed out',
+    results: null,
+    assistantConfigVersion: { id: 'v2', versionNumber: 2, assistant: { id: 'a1', name: 'A' } },
+  };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [completed, failed] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('evaluationSubTabs-history'));
+  fireEvent.click(await screen.findByTestId('exportHistoryButton'));
+
+  expect(download).toHaveBeenCalledWith('blob:history', 'evaluation-history.csv');
+
+  const csv = toCsv([
+    [
+      'Version',
+      'Golden Q&A set',
+      'Duplication Factor',
+      'Status',
+      'Overall',
+      'Ground truth',
+      'Knowledge base',
+      'Prompt',
+      'When',
+    ],
+    ['1', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '2026-08-10 15:30'],
+    ['2', 'core_set', '1', 'Failed', '', '', '', '', '2026-08-10 15:30'],
+  ]);
+
+  expect((createObjectURL.mock.calls[0][0] as Blob).size).toBe(new Blob([`\uFEFF${csv}`]).size);
+
+  download.mockRestore();
+  createObjectURL.mockRestore();
+});
+
 test('Export CSV downloads the question-level results as a CSV file', async () => {
   const download = vi.spyOn(utils, 'downloadFile').mockImplementation(() => {});
   const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:scores');
