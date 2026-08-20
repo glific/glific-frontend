@@ -20,8 +20,6 @@ import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
 
-const RUN_LIMIT = 100;
-
 export interface EvaluationProps {
   assistantId?: string;
   versionId?: string;
@@ -48,7 +46,7 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
     error: runsError,
     refetch: refetchRuns,
   } = useQuery(LIST_AI_EVALUATIONS, {
-    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at', limit: RUN_LIMIT } },
+    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
     fetchPolicy: 'cache-and-network',
   });
 
