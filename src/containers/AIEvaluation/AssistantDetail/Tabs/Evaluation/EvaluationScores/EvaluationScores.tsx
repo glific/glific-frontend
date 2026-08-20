@@ -62,7 +62,7 @@ export const EvaluationScores = ({ runId, traces, loading = false, failure = nul
   };
 
   const rows = traces.map((trace, index) => ({
-    key: trace.questionId || `trace-${index}`,
+    key: `${trace.questionId || 'trace'}-${index}`,
     cells: [
       <span className={styles.Question}>{trace.question || '—'}</span>,
       <div className={styles.Answer}>{trace.expected || '—'}</div>,
