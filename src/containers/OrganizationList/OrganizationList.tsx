@@ -75,11 +75,12 @@ export const OrganizationList = ({ openExtensionModal, openCustomerModal }: Orga
               status: event.target.value,
             },
           });
-          if (data?.updateOrganizationStatus?.errors) {
-            setNotification(data.updateOrganizationStatus.errors[0].message, 'warning');
+          const statusErrors = data?.updateOrganizationStatus?.errors;
+          if (statusErrors?.length > 0) {
+            setNotification(statusErrors[0].message, 'warning');
             return;
           }
-          setNotification('Organization updated successfully');
+          setNotification(t('Organization updated successfully'));
         } catch (error) {
           setErrorMessage(error);
         }

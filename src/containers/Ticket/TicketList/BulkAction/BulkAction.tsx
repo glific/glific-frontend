@@ -60,10 +60,10 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
               },
             });
             if (!data?.updateTicketStatusBasedOnTopic?.success) {
-              setNotification('Unable to close tickets for this topic', 'warning');
+              setNotification(t('Unable to close tickets for this topic'), 'warning');
               return;
             }
-            setNotification('Tickets closed successfully');
+            setNotification(t('Tickets closed successfully'));
             setShowBulkClose(false);
           } catch (error) {
             setErrorMessage(error);

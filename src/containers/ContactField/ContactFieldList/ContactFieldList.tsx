@@ -81,7 +81,7 @@ const ContactFieldList = () => {
         handleCloseModal();
       }
     } catch {
-      setNotification(t('Sorry! An error occured while updating the contact field'), 'warning');
+      setNotification(t('Sorry! An error occurred while updating the contact field'), 'warning');
     }
   };
 
@@ -174,7 +174,7 @@ const ContactFieldList = () => {
             refetch();
             setDeleteItemID(null);
           } catch {
-            setNotification(t('Sorry! An error occured while deleting the contact field'), 'warning');
+            setNotification(t('Sorry! An error occurred while deleting the contact field'), 'warning');
           }
         },
       },

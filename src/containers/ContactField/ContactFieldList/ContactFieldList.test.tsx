@@ -152,7 +152,10 @@ test('it shows a warning when updating the contact field fails unexpectedly', as
   fireEvent.click(saveButton);
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occured while updating the contact field', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Sorry! An error occurred while updating the contact field',
+      'warning'
+    );
   });
 });
 
@@ -207,7 +210,10 @@ test('it shows a warning when deleting the contact field and associated data fai
   fireEvent.click(screen.getByTestId('middle-button'));
 
   await waitFor(() => {
-    expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occured while deleting the contact field', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Sorry! An error occurred while deleting the contact field',
+      'warning'
+    );
   });
   expect(screen.getByTestId('middle-button')).toBeInTheDocument();
 });
