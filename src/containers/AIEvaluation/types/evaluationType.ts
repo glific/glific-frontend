@@ -24,6 +24,7 @@ export interface EvaluationRun {
   status: string;
   failureReason?: string | null;
   results?: unknown;
+  duplicationFactor?: number | null;
   goldenQa?: { id: string; name: string; duplicationFactor?: number | null } | null;
   assistantConfigVersion?: {
     id: string;

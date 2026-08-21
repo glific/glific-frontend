@@ -45,9 +45,14 @@ export const NotificationList = () => {
 
   const menuRef = useRef(null);
 
-  const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
-    onCompleted: (data) => {
-      if (data.markNotificationAsRead) {
+  const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ);
+
+  const [getStatus] = useMutation(GET_CONTACT_IMPORT_STATUS);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      const { data } = await markNotificationAsRead();
+      if (data?.markNotificationAsRead) {
         client.writeQuery({
           query: GET_NOTIFICATIONS_COUNT,
           variables: {
@@ -59,28 +64,8 @@ export const NotificationList = () => {
           data: { countNotifications: 0 },
         });
       }
-    },
-  });
-
-  const [getStatus] = useMutation(GET_CONTACT_IMPORT_STATUS, {
-    onCompleted: ({ getContactUploadReport }) => {
-      const { csvRows, error } = getContactUploadReport;
-      if (error) {
-        setNotification(error, 'warning');
-        return;
-      }
-      exportCsvFile(csvRows, `Contact_Upload_Status`);
-      setNotification('Downloaded the status of the contact upload', 'success');
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
-
-  useEffect(() => {
-    setTimeout(() => {
-      markNotificationAsRead();
     }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // The collection primary-phone report is a query (not a mutation like the
@@ -106,6 +91,25 @@ export const NotificationList = () => {
       setNotification(t('Downloaded the collection primary-phone report'), 'success');
     } catch (error) {
       setErrorMessage(error as Error);
+    }
+  };
+
+  const downloadContactUploadReport = async (userJobId: number) => {
+    try {
+      const { data } = await getStatus({
+        variables: {
+          userJobId,
+        },
+      });
+      const { csvRows, error } = data?.getContactUploadReport || {};
+      if (error) {
+        setNotification(error, 'warning');
+        return;
+      }
+      exportCsvFile(csvRows, `Contact_Upload_Status`);
+      setNotification(t('Downloaded the status of the contact upload'), 'success');
+    } catch (error) {
+      setErrorMessage(error);
     }
   };
 
@@ -136,11 +140,7 @@ export const NotificationList = () => {
         break;
       case 'Contact Upload':
       case 'WA Group Member Upload':
-        getStatus({
-          variables: {
-            userJobId: entity?.user_job_id,
-          },
-        });
+        downloadContactUploadReport(entity?.user_job_id);
         break;
       case 'Collection Primary Phone':
         downloadCollectionPrimaryReport(entity?.user_job_id);

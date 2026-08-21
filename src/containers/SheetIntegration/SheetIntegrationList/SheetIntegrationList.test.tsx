@@ -12,6 +12,7 @@ import {
   getSheetCountQuery,
   syncSheetMutation,
   syncSheetMutationWithFailure,
+  syncSheetNetworkErrorMock,
 } from 'mocks/Sheet';
 
 const mocks = [
@@ -91,6 +92,40 @@ describe('SheetIntegrationList', () => {
 
     await waitFor(() => {
       expect(window.open).toHaveBeenCalled();
+    });
+  });
+
+  test('shows a warning when syncing a sheet fails unexpectedly', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const errorMocks = [
+      getSearchSheetQuery,
+      getSheetQuery,
+      getSheetQuery,
+      deleteSheetQuery({ id: '1' }),
+      createSheetQuery,
+      getSheetCountQuery,
+      getSheetCountQuery,
+      syncSheetNetworkErrorMock,
+    ];
+    const { getAllByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={errorMocks} addTypename={false}>
+          <SheetIntegrationList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('additionalButton')[0]);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith(
+        'Sorry! An error occurred while fetching data from the Google sheet.',
+        'warning'
+      );
     });
   });
 

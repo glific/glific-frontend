@@ -53,7 +53,7 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
           {liveVersionId && run.assistantConfigVersion?.id === liveVersionId && <LivePill />}
         </span>,
         run.goldenQa?.name ?? '—',
-        `${run.goldenQa?.duplicationFactor ?? 1}×`,
+        `${run.duplicationFactor ?? 1}×`,
         state(run) ?? score(overall),
         score(metrics.groundTruth),
         score(metrics.knowledgeBase),
@@ -86,7 +86,7 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
         return [
           run.assistantConfigVersion ? String(run.assistantConfigVersion.versionNumber) : '',
           run.goldenQa?.name ?? '',
-          String(run.goldenQa?.duplicationFactor ?? 1),
+          String(run.duplicationFactor ?? 1),
           status,
           cell(overallScore(metrics)),
           cell(metrics.groundTruth),

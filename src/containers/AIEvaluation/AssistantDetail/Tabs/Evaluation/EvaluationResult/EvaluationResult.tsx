@@ -78,7 +78,7 @@ export const EvaluationResult = ({
         {run.goldenQa.name}
       </b>
     ) : null,
-    `${run.goldenQa?.duplicationFactor ?? 1}× ${t('duplication')}`,
+    `${run.duplicationFactor ?? 1}× ${t('duplication')}`,
     dayjs(run.insertedAt).fromNow(),
   ].filter(Boolean);
 

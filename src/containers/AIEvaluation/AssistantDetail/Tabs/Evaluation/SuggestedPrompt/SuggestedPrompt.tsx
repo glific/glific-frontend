@@ -18,6 +18,8 @@ export interface SuggestedPromptProps {
   metrics: EvaluationMetrics;
 }
 
+const CHECK_SLOT = '\u0000';
+
 const WEAKNESS = [
   {
     key: 'groundTruth',
@@ -49,13 +51,29 @@ export const SuggestedPrompt = ({ runId, overall, metrics }: SuggestedPromptProp
 
   const heading = <div className={styles.ZoneTitle}>{t('What to change next')}</div>;
 
-  if (scoreBand(overall) === 'good' || !weakest) {
+  if (scoreBand(overall) === 'good') {
     return (
       <div className={styles.Zone} data-testid="suggestedPromptNone">
         {heading}
         <div className={`${styles.Card} ${styles.Settled}`}>
           <CheckCircleOutlineIcon className={styles.SettledIcon} />
           <div>{t("Nothing to change — this run scores well. Publish it when you're ready.")}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!weakest) {
+    return (
+      <div className={styles.Zone} data-testid="suggestedPromptUnscored">
+        {heading}
+        <div className={`${styles.Card} ${styles.Settled}`}>
+          <div className={styles.DismissedText}>
+            <div className={styles.CardTitle}>{t('No suggestion for this run')}</div>
+            <div className={styles.Note}>
+              {t('None of the checks reported a score, so there is nothing to pin a prompt change on.')}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -82,6 +100,11 @@ export const SuggestedPrompt = ({ runId, overall, metrics }: SuggestedPromptProp
       </div>
     );
   }
+
+  const why = t('Targets your weakest check — {{check}} at {{score}}', {
+    check: CHECK_SLOT,
+    score: `${formatScore(metrics[weakest.key])}/${MAX_SCORE}`,
+  }).split(CHECK_SLOT);
 
   const applyChange = async () => {
     try {
@@ -125,8 +148,9 @@ export const SuggestedPrompt = ({ runId, overall, metrics }: SuggestedPromptProp
 
         {whyOpen && (
           <div className={styles.WhyBox} data-testid="whyThisChange">
-            {t('Targets your weakest check')} — <b>{t(weakest.label)}</b> {t('at')} {formatScore(metrics[weakest.key])}/
-            {MAX_SCORE}.
+            {why[0]}
+            <b>{t(weakest.label)}</b>
+            {why[1]}
           </div>
         )}
 

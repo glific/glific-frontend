@@ -306,13 +306,13 @@ export const KnowledgeBase = ({
                 </div>
                 <div className={styles.Note}>
                   {t(
-                    "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering."
+                    "This is the ID of the knowledge base the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering."
                   )}
                 </div>
               </>
             ) : (
               <div className={styles.NoVectorStore} data-testid="noVectorStore">
-                {t('No vector store yet — one is created when you add your first file.')}
+                {t('No knowledge base yet — one is created when you add your first file.')}
               </div>
             ))}
         </div>

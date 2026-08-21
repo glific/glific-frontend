@@ -9,7 +9,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 import { setVariables } from 'common/constants';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 export interface BulkActionPropTypes {
   setShowBulkClose: any;
@@ -20,10 +20,6 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
 
   const [updateTicketsStatus, { loading }] = useMutation(UPDATE_TICKETS_STATUS, {
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      setNotification('Tickets closed successfully');
-      setShowBulkClose(false);
-    },
   });
 
   const { data: dataLabels } = useQuery(GET_ALL_FLOW_LABELS, {
@@ -52,16 +48,26 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
   return (
     <Formik
       initialValues={{ topic: undefined }}
-      onSubmit={(values: any) => {
+      onSubmit={async (values: any) => {
         if (values.topic) {
-          updateTicketsStatus({
-            variables: {
-              input: {
-                status: 'closed',
-                topic: values.topic.name,
+          try {
+            const { data } = await updateTicketsStatus({
+              variables: {
+                input: {
+                  status: 'closed',
+                  topic: values.topic.name,
+                },
               },
-            },
-          });
+            });
+            if (!data?.updateTicketStatusBasedOnTopic?.success) {
+              setNotification(t('Unable to close tickets for this topic'), 'warning');
+              return;
+            }
+            setNotification(t('Tickets closed successfully'));
+            setShowBulkClose(false);
+          } catch (error) {
+            setErrorMessage(error);
+          }
         }
       }}
       validationSchema={validationSchema}

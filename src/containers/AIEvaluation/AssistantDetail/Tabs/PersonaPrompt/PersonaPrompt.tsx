@@ -4,6 +4,7 @@ import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { IconButton } from 'components/UI/IconButton/IconButton';
 import { RangeSlider } from 'components/UI/Form/RangeSlider/RangeSlider';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
@@ -90,7 +91,8 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
         rows={6}
         endAdornment={
           <span className={styles.Expand}>
-            <ExpandIcon
+            <IconButton
+              size="small"
               className={styles.ExpandButton}
               onClick={() => {
                 setDraft(prompt);
@@ -98,7 +100,9 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
               }}
               aria-label={t('Edit system instructions')}
               data-testid="expandPromptButton"
-            />
+            >
+              <ExpandIcon aria-hidden="true" focusable="false" />
+            </IconButton>
           </span>
         }
         placeholder={t(
@@ -148,7 +152,7 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
               <div className={styles.FieldLabel}>{t('Temperature')}</div>
               <RangeSlider
                 className={styles.Temperature}
-                value={Number(config.temperature) || (temperatureSpec.min ?? 0)}
+                value={config.temperature === '' ? '' : Number(config.temperature)}
                 min={temperatureSpec.min ?? 0}
                 max={temperatureSpec.max ?? 2}
                 testId="temperatureSlider"

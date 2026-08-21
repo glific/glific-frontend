@@ -5,11 +5,28 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 
 import { getAllOrganizations } from 'mocks/Organization';
+import { moveContacts, moveContactsWithErrors, moveContactsNetworkError } from 'mocks/Contact';
 
 import { setUserSession } from 'services/AuthService';
 import { AdminContactManagement } from './AdminContactManagement';
 
 const mocks = getAllOrganizations;
+
+const uploadCsv = async () => {
+  const csvContent = `name,phone,collection
+  John Doe,919876543210,"Optin collection,Optout Collection"
+  Virat Kohli,919876543220,Cricket`;
+  const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
+
+  await waitFor(() => {
+    const fileInput = screen.getByTestId('uploadFile');
+    userEvent.upload(fileInput, file);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('test.csv')).toBeInTheDocument();
+  });
+};
 
 setUserSession(JSON.stringify({ roles: [{ label: 'Admin' }], organization: { id: '1' } }));
 
@@ -83,5 +100,60 @@ test('it removes the selected file', async () => {
 
   await waitFor(() => {
     expect(screen.queryByText('test.csv')).not.toBeInTheDocument();
+  });
+});
+
+test('moves contacts successfully when upload button is clicked', async () => {
+  const setShowStatus = vi.fn();
+  render(
+    <MockedProvider mocks={[...mocks, moveContacts]} addTypename={false}>
+      <Router>
+        <AdminContactManagement setShowStatus={setShowStatus} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await uploadCsv();
+
+  fireEvent.click(screen.getByTestId('moveContactsBtn'));
+
+  await waitFor(() => {
+    expect(setShowStatus).toHaveBeenCalledWith(true);
+  });
+});
+
+test('shows errors returned by the server when moving contacts', async () => {
+  render(
+    <MockedProvider mocks={[...mocks, moveContactsWithErrors]} addTypename={false}>
+      <Router>
+        <AdminContactManagement setShowStatus={vi.fn()} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await uploadCsv();
+
+  fireEvent.click(screen.getByTestId('moveContactsBtn'));
+
+  await waitFor(() => {
+    expect(screen.getByText(/Invalid phone number/)).toBeInTheDocument();
+  });
+});
+
+test('shows an error when moving contacts fails unexpectedly', async () => {
+  render(
+    <MockedProvider mocks={[...mocks, moveContactsNetworkError]} addTypename={false}>
+      <Router>
+        <AdminContactManagement setShowStatus={vi.fn()} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await uploadCsv();
+
+  fireEvent.click(screen.getByTestId('moveContactsBtn'));
+
+  await waitFor(() => {
+    expect(screen.getByText(/An error occurred/)).toBeInTheDocument();
   });
 });

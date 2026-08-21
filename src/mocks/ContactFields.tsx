@@ -1,4 +1,4 @@
-import { CREATE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
+import { CREATE_CONTACT_FIELDS, DELETE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS, GET_CONTACT_FIELD_BY_ID } from 'graphql/queries/ContactFields';
 
 const contactFieldsListMock = [
@@ -225,6 +225,37 @@ export const contactFieldErrorMock = {
       },
     },
   },
+};
+
+export const updateContactFieldNetworkErrorMock = {
+  request: {
+    query: UPDATE_CONTACT_FIELDS,
+    variables: { id: '1', input: { name: 'Age Group Name' } },
+  },
+  error: new Error('An error occurred'),
+};
+
+export const deleteContactFieldWithDataMock = {
+  request: {
+    query: DELETE_CONTACT_FIELDS,
+    variables: { id: '1', deleteAssoc: true },
+  },
+  result: {
+    data: {
+      deleteContactsField: {
+        contactsField: null,
+        errors: null,
+      },
+    },
+  },
+};
+
+export const deleteContactFieldWithDataErrorMock = {
+  request: {
+    query: DELETE_CONTACT_FIELDS,
+    variables: { id: '1', deleteAssoc: true },
+  },
+  error: new Error('An error occurred'),
 };
 
 export const createContactField = {

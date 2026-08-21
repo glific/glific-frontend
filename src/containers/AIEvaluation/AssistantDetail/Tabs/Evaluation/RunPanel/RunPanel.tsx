@@ -4,10 +4,10 @@ import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   isRunComplete,
-  parseEvaluationResults,
   parseEvaluationScores,
   parseEvaluationSummary,
   parseOverallScore,
+  parseScoreMetrics,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { EvaluationResult } from '../EvaluationResult/EvaluationResult';
@@ -60,7 +60,7 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
       )}
 
       {run && !awaitingScores && overall != null && (
-        <SuggestedPrompt runId={run.id} overall={overall} metrics={parseEvaluationResults(run.results)} />
+        <SuggestedPrompt runId={run.id} overall={overall} metrics={parseScoreMetrics(scores?.scores)} />
       )}
 
       {!run && (
