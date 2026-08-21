@@ -1,12 +1,15 @@
-.SubTabs {
+.Header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-lg);
   margin-bottom: var(--app-space-lg);
 }
 
 .Actions {
   display: flex;
-  justify-content: flex-end;
   gap: var(--app-space-sm);
-  margin-bottom: var(--app-space-lg);
+  margin-left: auto;
 }
 
 .ManageButton,
@@ -14,31 +17,4 @@
   flex-shrink: 0;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
-}
-
-.FootNoteLink {
-  padding: 0;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 700;
-  color: var(--app-color-brand-primary);
-  cursor: pointer;
-}
-
-.FootNoteLink:hover {
-  text-decoration: underline;
-}
-
-.FootNote {
-  margin-top: var(--app-space-xl);
-  text-align: center;
-  font-size: var(--app-font-size-sm);
-  color: var(--app-color-text-tertiary);
-}
-
-.SubTabOption {
-  padding: var(--app-space-2xs) var(--app-space-lg);
-  font-size: var(--app-font-size-sm);
 }

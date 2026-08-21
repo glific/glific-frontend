@@ -300,10 +300,10 @@ test('sends only the fields AssistantChatInput accepts', async () => {
   expect(variableMatcher.mock.calls[0][0]).toEqual({ input: { assistantId: '1', message: 'Hello' } });
 });
 
-test('renders the model markdown rather than printing the syntax', async () => {
+test("renders the reply the way WhatsApp would, and leaves what it can't format alone", async () => {
   renderTab({}, [
     sendMock({
-      answer: '**Haan**, safe hai — see [the guide](https://example.com)\n\n- one\n- two',
+      answer: '*Haan*, _safe_ hai — ~nahi~ https://example.com\n\n## Heading\n\n| a | b |',
       requestId: 'r1',
     }),
   ]);
@@ -313,13 +313,17 @@ test('renders the model markdown rather than printing the syntax', async () => {
 
   const bubble = await screen.findByTestId('assistantMessage');
 
-  expect(bubble.querySelector('strong')).toHaveTextContent('Haan');
-  expect(bubble.querySelectorAll('li')).toHaveLength(2);
-  // links open away from the app rather than replacing it
-  const link = bubble.querySelector('a');
-  expect(link).toHaveAttribute('href', 'https://example.com');
-  expect(link).toHaveAttribute('target', '_blank');
-  expect(bubble).not.toHaveTextContent('**Haan**');
+  // WhatsApp's own syntax is applied
+  expect(bubble.querySelector('b')).toHaveTextContent('Haan');
+  expect(bubble.querySelector('i')).toHaveTextContent('safe');
+  expect(bubble.querySelector('s')).toHaveTextContent('nahi');
+  expect(bubble.querySelector('a')).toHaveAttribute('href', 'https://example.com');
+
+  // and what WhatsApp cannot format stays as the text a recipient would actually receive
+  expect(bubble.querySelector('table')).not.toBeInTheDocument();
+  expect(bubble.querySelector('h2')).not.toBeInTheDocument();
+  expect(bubble).toHaveTextContent('## Heading');
+  expect(bubble).toHaveTextContent('| a | b |');
 });
 
 test('what the user typed is never treated as markdown', async () => {
@@ -745,16 +749,17 @@ describe('replies that arrive double-encoded', () => {
       'Want to try a quick test? Here are some options:\\n\\n- Quick Q&A\\n- Summarize\\n- Brainstorm\\n\\nWhat would you like to try first?'
     );
 
-    // the escapes are gone, and the list is a list rather than one run-on paragraph
+    // the escapes are gone, and each option sits on its own line rather than one run-on sentence
     expect(message).not.toHaveTextContent('\\n');
-    expect(within(message).getAllByRole('listitem')).toHaveLength(3);
-    expect(within(message).getAllByRole('listitem')[0]).toHaveTextContent('Quick Q&A');
+    expect(message.querySelectorAll('br').length).toBeGreaterThan(2);
+    expect(message).toHaveTextContent('Quick Q&A');
   });
 
   test('a reply that already has real line breaks is left alone', async () => {
     const message = await reply('First paragraph\n\n- One\n- Two');
 
-    expect(within(message).getAllByRole('listitem')).toHaveLength(2);
+    expect(message.querySelectorAll('br').length).toBeGreaterThan(1);
+    expect(message).toHaveTextContent('- One');
   });
 
   test('a snippet that prints an escape keeps it', async () => {
