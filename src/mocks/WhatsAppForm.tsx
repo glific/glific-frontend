@@ -2,6 +2,7 @@ import {
   CREATE_FORM,
   PUBLISH_FORM,
   DEACTIVATE_FORM,
+  ACTIVATE_FORM,
   SYNC_FORM,
   UPDATE_FORM,
   SAVE_WHATSAPP_FORM_REVISION,
@@ -242,6 +243,50 @@ export const deactivateWhatsappForm = {
   },
 };
 
+export const activateWhatsappForm = {
+  request: {
+    query: ACTIVATE_FORM,
+    variables: {
+      activateWhatsappFormId: '1',
+    },
+  },
+  result: {
+    data: {
+      activateWhatsappForm: {
+        whatsappForm: { id: '1', status: 'PUBLISHED', __typename: 'WhatsappForm' },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const activateWhatsappFormError = {
+  request: {
+    query: ACTIVATE_FORM,
+    variables: {
+      activateWhatsappFormId: '1',
+    },
+  },
+  error: new Error('Failed to activate'),
+};
+
+export const activateWhatsappFormPayloadError = {
+  request: {
+    query: ACTIVATE_FORM,
+    variables: {
+      activateWhatsappFormId: '1',
+    },
+  },
+  result: {
+    data: {
+      activateWhatsappForm: {
+        whatsappForm: null,
+        errors: [{ message: 'Form could not be activated' }],
+      },
+    },
+  },
+};
+
 export const publishWhatsappFormError = {
   request: {
     query: PUBLISH_FORM,
@@ -250,6 +295,33 @@ export const publishWhatsappFormError = {
     },
   },
   error: new Error('Failed to publish'),
+};
+
+export const publishWhatsappFormErrorId1 = {
+  request: {
+    query: PUBLISH_FORM,
+    variables: {
+      id: '1',
+    },
+  },
+  error: new Error('Failed to publish'),
+};
+
+export const publishWhatsappFormPayloadErrorId1 = {
+  request: {
+    query: PUBLISH_FORM,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      publishWhatsappForm: {
+        whatsappForm: null,
+        errors: [{ message: 'Form could not be published' }],
+      },
+    },
+  },
 };
 
 export const deactivateWhatsappFormError = {
@@ -637,7 +709,7 @@ const listRevisions = {
   },
 };
 
-const revertWhatsappFormRevisionMock = {
+export const revertWhatsappFormRevisionMock = {
   request: {
     query: REVERT_TO_WHATSAPP_FORM_REVISION,
     variables: { whatsappFormId: '1', revisionId: 4 },
@@ -652,6 +724,30 @@ const revertWhatsappFormRevisionMock = {
           definition:
             '{"version":"7.3","screens":[{"title":"Screen 1","terminal":true,"layout":{"type":"SingleColumnLayout","children":[{"type":"Form","name":"flow_path","children":[{"type":"TextHeading","text":"Text"},{"type":"TextInput","required":false,"name":"screen_0_Label_0","label":"Label","input-type":"text"},{"type":"TextHeading","text":"Text"},{"type":"RadioButtonsGroup","required":false,"name":"screen_0_Label_1","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"Dropdown","required":false,"name":"screen_0_Label_2","label":"Label","data-source":[{"title":"Option 1","id":"0_Option 1"},{"title":"Option 2","id":"1_Option 2"}]},{"type":"OptIn","required":false,"name":"screen_0_Label_3","label":"Label"},{"type":"Footer","on-click-action":{"payload":{"screen_0_Label_3":"${form.screen_0_Label_3}","screen_0_Label_2":"${form.screen_0_Label_2}","screen_0_Label_1":"${form.screen_0_Label_1}","screen_0_Label_0":"${form.screen_0_Label_0}"},"name":"complete"},"label":"Continue"}]}]},"id":"screen_one","data":{}}]}',
         },
+      },
+    },
+  },
+};
+
+export const revertWhatsappFormRevisionErrorMock = {
+  request: {
+    query: REVERT_TO_WHATSAPP_FORM_REVISION,
+    variables: { whatsappFormId: '1', revisionId: 4 },
+  },
+  error: new Error('Failed to revert to selected version'),
+};
+
+export const revertWhatsappFormRevisionPayloadErrorMock = {
+  request: {
+    query: REVERT_TO_WHATSAPP_FORM_REVISION,
+    variables: { whatsappFormId: '1', revisionId: 4 },
+  },
+  result: {
+    data: {
+      revertToWhatsappFormRevision: {
+        __typename: 'WhatsappFormRevisionResult',
+        errors: [{ key: 'revision', message: 'Revision could not be reverted' }],
+        whatsappFormRevision: null,
       },
     },
   },
