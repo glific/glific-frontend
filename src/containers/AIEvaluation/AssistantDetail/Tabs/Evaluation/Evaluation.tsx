@@ -9,36 +9,56 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
-import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { GOLDEN_QA_LIST_VARIABLES, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
-import type { EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
+import type { EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
+import { isRunInProgress } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
+import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
+import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
+import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
 
-/** stands in for the tab name while the sentence around the link is split */
-const TAB_SLOT = '\u0000';
-
 export interface EvaluationProps {
+  assistantId?: string;
+  versionId?: string;
   versionNumber?: number;
+  assistantName?: string;
 }
 
-export const Evaluation = ({ versionNumber }: EvaluationProps) => {
+export const Evaluation = ({ assistantId, versionId, versionNumber, assistantName }: EvaluationProps) => {
   const { t } = useTranslation();
 
   const [subTab, setSubTab] = useState<EvaluationSubTab>('run');
   const [manageOpen, setManageOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [viewing, setViewing] = useState<GoldenQaSet | null>(null);
+  const [runOpen, setRunOpen] = useState(false);
 
   const { data, loading, error, refetch } = useQuery(LIST_GOLDEN_QA, {
     variables: GOLDEN_QA_LIST_VARIABLES,
     fetchPolicy: 'cache-and-network',
   });
 
-  const sets: GoldenQaSet[] = data?.goldenQas ?? [];
+  const {
+    data: runData,
+    error: runsError,
+    refetch: refetchRuns,
+  } = useQuery(LIST_AI_EVALUATIONS, {
+    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+    fetchPolicy: 'cache-and-network',
+  });
 
-  const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
+  const sets: GoldenQaSet[] = data?.goldenQas ?? [];
+  const assistantRuns: EvaluationRun[] = (runData?.aiEvaluations ?? []).filter(
+    (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+  );
+  // the Run panel is about the version on screen; History is about the whole assistant
+  const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
+  const latestRun = versionRuns[0];
+  // TODO: a subscription will report when a run lands; until then the list refreshes on revisit
+  const runsInProgress = assistantRuns.some(isRunInProgress);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
@@ -99,22 +119,38 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
     );
   }
 
+  if (runsError && assistantRuns.length === 0) {
+    return (
+      <div data-testid="evaluationTab">
+        <EmptyState
+          testId="evaluationRunsLoadError"
+          icon={<ErrorOutlineIcon fontSize="inherit" />}
+          title={t('Evaluation runs could not be loaded')}
+          note={t('The server did not answer. Check your connection and try again.')}
+          action={
+            <Button variant="outlined" onClick={() => refetchRuns()} data-testid="retryRunsButton">
+              {t('Try again')}
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div data-testid="evaluationTab">
-      <SegmentedControl<EvaluationSubTab>
-        className={styles.SubTabs}
-        optionClassName={styles.SubTabOption}
-        testId="evaluationSubTabs"
-        options={[
-          { value: 'run', label: t('Run') },
-          { value: 'history', label: t('History') },
-        ]}
-        value={subTab}
-        onChange={setSubTab}
-      />
+      <div className={styles.Header}>
+        <SegmentedControl<EvaluationSubTab>
+          testId="evaluationSubTabs"
+          options={[
+            { value: 'run', label: t('Run') },
+            { value: 'history', label: t('History') },
+          ]}
+          value={subTab}
+          onChange={setSubTab}
+        />
 
-      {subTab === 'run' ? (
-        <>
+        {subTab === 'run' && (
           <div className={styles.Actions}>
             <Button
               variant="outlined"
@@ -129,37 +165,22 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
               variant="contained"
               color="primary"
               className={styles.RunButton}
-              disabled
-              title={t('Running evaluations is not available yet.')}
+              startIcon={<PlayArrowIcon />}
+              disabled={!versionId || runsInProgress}
+              title={runsInProgress ? t('An evaluation is already running. Wait for it to finish.') : undefined}
+              onClick={() => setRunOpen(true)}
               data-testid="runEvaluationButton"
             >
-              {t('Run evaluation')}
+              {latestRun ? t('Run another evaluation') : t('Run evaluation')}
             </Button>
           </div>
+        )}
+      </div>
 
-          <EmptyState
-            testId="noEvaluationsYet"
-            title={
-              versionNumber
-                ? t('No evaluations yet for version {{version}}', { version: versionNumber })
-                : t('No evaluations yet for this version')
-            }
-            note={t('Run one to see how this version scores against a Golden Q&A set.')}
-          />
-
-          <div className={styles.FootNote}>
-            {footNote[0]}
-            <button
-              type="button"
-              className={styles.FootNoteLink}
-              onClick={() => setSubTab('history')}
-              data-testid="goToHistoryButton"
-            >
-              {t('History')}
-            </button>
-            {footNote[1]}
-          </div>
-        </>
+      {subTab === 'run' ? (
+        <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
+      ) : assistantRuns.length > 0 ? (
+        <EvaluationHistory runs={assistantRuns} />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"
@@ -198,6 +219,20 @@ export const Evaluation = ({ versionNumber }: EvaluationProps) => {
       )}
 
       {addDialog}
+
+      {runOpen && (
+        <RunEvaluationDialog
+          sets={sets}
+          versionId={versionId}
+          versionNumber={versionNumber}
+          assistantName={assistantName}
+          onClose={() => setRunOpen(false)}
+          onStarted={() => {
+            setRunOpen(false);
+            refetchRuns();
+          }}
+        />
+      )}
 
       {viewing && (
         <ViewGoldenQaSetDialog

@@ -118,7 +118,6 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
             <div className={styles.ParamColumns}>
               <SegmentedControl
                 className={styles.ParamColumn}
-                trackClassName={styles.SegmentTrack}
                 testId="effortSegment"
                 label={t('Reasoning effort')}
                 labelClassName={styles.FieldLabel}

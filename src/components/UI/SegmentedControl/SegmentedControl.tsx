@@ -17,9 +17,6 @@ export interface SegmentedControlProps<T extends string = string> {
   disabled?: boolean;
   className?: string;
   labelClassName?: string;
-  trackClassName?: string;
-  optionClassName?: string;
-  activeOptionClassName?: string;
   testId?: string;
 }
 
@@ -32,9 +29,6 @@ export function SegmentedControl<T extends string = string>({
   disabled = false,
   className,
   labelClassName,
-  trackClassName,
-  optionClassName,
-  activeOptionClassName,
   testId = 'segmentedControl',
 }: SegmentedControlProps<T>) {
   return (
@@ -45,7 +39,7 @@ export function SegmentedControl<T extends string = string>({
         </div>
       )}
 
-      <div className={`${styles.Track} ${trackClassName ?? ''}`} role="radiogroup" data-testid={testId}>
+      <div className={styles.Track} role="radiogroup" data-testid={testId}>
         {options.map((option) => {
           const isActive = option.value === value;
           return (
@@ -55,9 +49,7 @@ export function SegmentedControl<T extends string = string>({
               key={option.value}
               aria-checked={isActive}
               disabled={disabled || option.disabled}
-              className={`${styles.Option} ${optionClassName ?? ''} ${
-                isActive ? `${styles.ActiveOption} ${activeOptionClassName ?? ''}` : ''
-              }`}
+              className={`${styles.Option} ${isActive ? styles.ActiveOption : ''}`}
               onClick={() => onChange(option.value)}
               data-testid={option.testId ?? `${testId}-${option.value}`}
             >

@@ -9,7 +9,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { DataTable } from 'components/UI/DataTable/DataTable';
 import { GET_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import type { GoldenQaRow, GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
-import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa';
+import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import styles from './ViewGoldenQaSetDialog.module.css';
 
 export interface ViewGoldenQaSetDialogProps {
