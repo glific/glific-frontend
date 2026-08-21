@@ -162,6 +162,30 @@ export const bulkActionQuery = {
   },
 };
 
+export const bulkActionQueryUnsuccessful = {
+  request: {
+    query: UPDATE_TICKETS_STATUS,
+    variables: { input: { status: 'closed', topic: 'dob' } },
+  },
+  result: {
+    data: {
+      updateTicketStatusBasedOnTopic: {
+        __typename: 'BulkTicketResult',
+        message: 'Unable to close tickets for this topic',
+        success: false,
+      },
+    },
+  },
+};
+
+export const bulkActionQueryError = {
+  request: {
+    query: UPDATE_TICKETS_STATUS,
+    variables: { input: { status: 'closed', topic: 'dob' } },
+  },
+  error: new Error('An error occurred'),
+};
+
 export const exportTicketsMock = {
   request: {
     query: EXPORT_SUPPORT_TICKETS,

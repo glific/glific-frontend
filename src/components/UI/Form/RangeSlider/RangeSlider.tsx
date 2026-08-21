@@ -2,7 +2,7 @@ import { Slider } from '@mui/material';
 import styles from './RangeSlider.module.css';
 
 export interface RangeSliderProps {
-  value: number;
+  value: number | '';
   min: number;
   max: number;
   step?: number;
@@ -27,13 +27,14 @@ export const RangeSlider = ({
   inputTestId = 'rangeSliderInput',
 }: RangeSliderProps) => {
   const clamp = (next: number) => Math.min(max, Math.max(min, next));
+  const sliderValue = value === '' ? min : value;
 
   return (
     <div className={`${styles.Wrap} ${className ?? ''}`}>
       <span className={styles.Bound}>{min}</span>
       <Slider
         className={styles.Slider}
-        value={value}
+        value={sliderValue}
         min={min}
         max={max}
         step={step}

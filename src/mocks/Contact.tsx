@@ -282,6 +282,36 @@ export const moveContacts = {
   },
 };
 
+export const moveContactsWithErrors = {
+  request: {
+    query: MOVE_CONTACTS,
+    variables: {
+      type: 'DATA',
+      data: 'name,phone,collection\n  John Doe,919876543210,"Optin collection,Optout Collection"\n  Virat Kohli,919876543220,Cricket',
+    },
+  },
+  result: {
+    data: {
+      moveContacts: {
+        errors: [{ message: 'Invalid phone number', key: 'phone' }],
+        csvRows: null,
+        status: null,
+      },
+    },
+  },
+};
+
+export const moveContactsNetworkError = {
+  request: {
+    query: MOVE_CONTACTS,
+    variables: {
+      type: 'DATA',
+      data: 'name,phone,collection\n  John Doe,919876543210,"Optin collection,Optout Collection"\n  Virat Kohli,919876543220,Cricket',
+    },
+  },
+  error: new Error('An error occurred'),
+};
+
 export const countCollectionContactsQuery = {
   request: {
     query: GET_CONTACT_COUNT,
@@ -734,6 +764,14 @@ export const importContacts = {
       },
     },
   },
+  variableMatcher: (variables: any) => true,
+};
+
+export const importContactsNetworkError = {
+  request: {
+    query: IMPORT_CONTACTS,
+  },
+  error: new Error('An error occurred'),
   variableMatcher: (variables: any) => true,
 };
 

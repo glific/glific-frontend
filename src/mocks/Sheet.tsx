@@ -219,3 +219,11 @@ export const syncSheetMutationWithFailure = {
 };
 
 export const syncSheetMutationWithWarnings = syncSheetMutationWithFailure;
+
+export const syncSheetNetworkErrorMock = {
+  request: {
+    query: SYNC_SHEET,
+    variables: { id: '1' },
+  },
+  error: new Error('An error occurred'),
+};

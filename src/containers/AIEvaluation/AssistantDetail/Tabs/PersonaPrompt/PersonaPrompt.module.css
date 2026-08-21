@@ -107,13 +107,9 @@ span.GenerateBeta {
 }
 
 .ExpandButton {
-  display: inline-flex;
-  padding: 0;
-  border: none;
-  background: none;
-  border-radius: var(--app-radius-lg);
-  color: var(--app-color-text-tertiary);
-  cursor: pointer;
+  padding: 0 !important;
+  border-radius: var(--app-radius-lg) !important;
+  color: var(--app-color-text-tertiary) !important;
 }
 
 .ExpandButton:hover {

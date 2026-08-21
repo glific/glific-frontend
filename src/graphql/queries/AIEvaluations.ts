@@ -14,6 +14,7 @@ export const LIST_AI_EVALUATIONS = gql`
       status
       failureReason
       results
+      duplicationFactor
       goldenQa {
         id
         name

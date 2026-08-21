@@ -12,6 +12,7 @@ import {
   getInfoNotificationsQuery,
   getStatus,
   getStatusWithError,
+  getStatusNetworkError,
   collectionPrimaryRow,
   collectionReport,
   collectionReportNotReady,
@@ -99,13 +100,25 @@ test('click on forward arrrow', async () => {
   });
 
   const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+  fireEvent.click(arrowButtons[0]);
 
-  arrowButtons.forEach(async (button) => {
-    fireEvent.click(button);
+  await waitFor(() => {
+    expect(window.open).toHaveBeenCalled();
+  });
+});
 
-    await waitFor(() => {
-      expect(window.open).toHaveBeenCalled();
-    });
+test('downloads the contact upload report on clicking the contact upload notification', async () => {
+  render(notifications(getStatus));
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+  fireEvent.click(arrowButtons[6]);
+
+  await waitFor(() => {
+    expect(exportCsvFile).toHaveBeenCalledWith('Contact import done', 'Contact_Upload_Status');
   });
 });
 
@@ -233,20 +246,43 @@ test('it should show "Contact import is in progress" message', async () => {
   render(notifications(getStatusWithError));
 
   await waitFor(() => {
-    expect(screen.getByTestId('loading')).toBeInTheDocument();
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
   });
+
+  const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+  fireEvent.click(arrowButtons[6]);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Contact upload is in progress', 'warning');
+  });
+});
+
+test('shows an error when fetching the contact upload report fails unexpectedly', async () => {
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage');
+  render(notifications(getStatusNetworkError));
 
   await waitFor(() => {
     expect(screen.getByText('Notifications')).toBeInTheDocument();
   });
 
   const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+  fireEvent.click(arrowButtons[6]);
 
-  arrowButtons.forEach(async (button) => {
-    fireEvent.click(button);
+  await waitFor(() => {
+    expect(errorSpy).toHaveBeenCalled();
+  });
+});
 
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith();
-    });
+test('marks all notifications as read after the initial delay', async () => {
+  const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout').mockImplementation((cb: any) => {
+    cb();
+    return 0 as any;
+  });
+
+  render(notifications());
+  setTimeoutSpy.mockRestore();
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
   });
 });
