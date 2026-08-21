@@ -1,7 +1,7 @@
 .DirtyActions {
   display: flex;
   align-items: center;
-  gap: var(--app-space-lg);
+  gap: var(--app-space-sm);
   flex-shrink: 0;
 }
 
@@ -25,23 +25,10 @@
   background-color: var(--app-color-attention);
 }
 
-.DiscardLink {
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--app-color-text-tertiary);
-  font-family: inherit;
-  font-size: var(--app-font-size-xs);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.DiscardLink:hover {
-  text-decoration: underline;
-}
-
+.CloseButton,
 .PublishButton {
   flex-shrink: 0;
+  margin-right: 0 !important;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }

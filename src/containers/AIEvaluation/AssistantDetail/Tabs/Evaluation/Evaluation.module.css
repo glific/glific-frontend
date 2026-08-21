@@ -15,6 +15,7 @@
 .ManageButton,
 .RunButton {
   flex-shrink: 0;
+  margin-right: 0 !important;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }

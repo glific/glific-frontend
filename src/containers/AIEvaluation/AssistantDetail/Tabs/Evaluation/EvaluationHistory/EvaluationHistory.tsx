@@ -45,7 +45,7 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
           {run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : '—'}
         </span>,
         run.goldenQa?.name ?? '—',
-        `${run.goldenQa?.duplicationFactor ?? 1}×`,
+        `${run.duplicationFactor ?? 1}×`,
         state(run) ?? score(overall),
         score(metrics.groundTruth),
         score(metrics.knowledgeBase),

@@ -14,7 +14,7 @@ import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import SettingsIcon from 'assets/images/icons/Settings/Settings.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
-import DownloadIcon from 'assets/images/icons/Download.svg?react';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import styles from './KnowledgeBase.module.css';
 
 export interface KnowledgeBaseProps {
@@ -231,14 +231,14 @@ export const KnowledgeBase = ({
               <div className={styles.FileActions}>
                 <IconButton
                   size="small"
-                  className={styles.FileAction}
+                  className={`${styles.FileAction} ${styles.FileActionDownload}`}
                   // TODO: needs a signed-url endpoint for assistant files; Golden QA has one
                   disabled
                   title={t('Downloads are not available yet')}
                   aria-label={t('Download')}
                   data-testid="downloadFileButton"
                 >
-                  <DownloadIcon />
+                  <FileDownloadOutlinedIcon />
                 </IconButton>
                 {!isReadOnly && (
                   <IconButton
@@ -281,7 +281,7 @@ export const KnowledgeBase = ({
             data-testid="technicalDetailsToggle"
           >
             <SettingsIcon className={`${styles.ToggleIcon} ${styles.GearIcon}`} />
-            {t('Technical details')}
+            {t('Knowledge Base ID')}
             {showTechnical ? (
               <ExpandMoreIcon className={styles.ToggleIcon} />
             ) : (
@@ -306,13 +306,13 @@ export const KnowledgeBase = ({
                 </div>
                 <div className={styles.Note}>
                   {t(
-                    "This is the vector store the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering."
+                    "This is the ID of the knowledge base the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering."
                   )}
                 </div>
               </>
             ) : (
               <div className={styles.NoVectorStore} data-testid="noVectorStore">
-                {t('No vector store yet — one is created when you add your first file.')}
+                {t('No knowledge base yet — one is created when you add your first file.')}
               </div>
             ))}
         </div>
