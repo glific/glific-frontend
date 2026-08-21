@@ -112,7 +112,10 @@ describe('<Billing />', () => {
     const { getByText } = renderBilling();
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    expect(mountElementMock).toHaveBeenCalled;
+
+    await waitFor(() => {
+      expect(getByText('Card Details')).toBeInTheDocument();
+    });
   });
 });
 

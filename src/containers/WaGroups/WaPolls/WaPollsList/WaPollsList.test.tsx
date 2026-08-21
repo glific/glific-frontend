@@ -1,4 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
+import type { MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
@@ -6,7 +7,7 @@ import { WaPollListMocks, deletePollErrorQuery } from 'mocks/WaPolls';
 import WaPolls from '../WaPolls';
 import WaPollsList from './WaPollsList';
 
-const renderWaPollsList = (mocksOverride: any[] = WaPollListMocks) =>
+const renderWaPollsList = (mocksOverride: MockedResponse[] = WaPollListMocks) =>
   render(
     <MockedProvider mocks={mocksOverride}>
       <MemoryRouter initialEntries={['/group/polls']}>
@@ -105,7 +106,10 @@ test('it should delete the poll', async () => {
 
 test('it shows an error when deleting the poll fails', async () => {
   const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
-  const errorMocks: any[] = [...WaPollListMocks.filter((mock) => mock !== WaPollListMocks[6]), deletePollErrorQuery];
+  const errorMocks: MockedResponse[] = [
+    ...WaPollListMocks.filter((mock) => mock !== WaPollListMocks[6]),
+    deletePollErrorQuery,
+  ];
 
   renderWaPollsList(errorMocks);
 
