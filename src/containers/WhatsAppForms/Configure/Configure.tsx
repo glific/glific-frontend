@@ -43,19 +43,9 @@ export const Configure = () => {
 
   const isViewOnly = isPublished || previewingVersion !== null;
 
-  const [saveWhatsappFormRevision, { loading: isSaving }] = useMutation(SAVE_WHATSAPP_FORM_REVISION, {
-    onError: (error) => {
-      setNotification('Error saving form revision', 'warning');
-      setLogs(error, 'error');
-      hasUnsavedChangesRef.current = true;
-    },
-  });
+  const [saveWhatsappFormRevision, { loading: isSaving }] = useMutation(SAVE_WHATSAPP_FORM_REVISION);
 
-  const [publishWhatsappForm, { loading }] = useMutation(PUBLISH_FORM, {
-    onError: (errors: any) => {
-      setErrorMessage(errors);
-    },
-  });
+  const [publishWhatsappForm, { loading }] = useMutation(PUBLISH_FORM);
 
   const handleViewJSON = () => {
     setShowJSON(true);
@@ -126,57 +116,72 @@ export const Configure = () => {
     setPreviewingVersion(null);
   };
 
-  const handlePublishForm = () => {
-    publishWhatsappForm({
-      variables: {
-        id: params.id,
-      },
-      onCompleted: () => {
-        setNotification('Form published successfully', 'success');
-        setOpenDialog(false);
-        navigate('/whatsapp-forms');
-      },
-    });
+  const handlePublishForm = async () => {
+    try {
+      const { data } = await publishWhatsappForm({ variables: { id: params.id } });
+      if (data?.publishWhatsappForm?.errors) {
+        setNotification(data.publishWhatsappForm.errors[0].message, 'warning');
+        return;
+      }
+      setNotification('Form published successfully', 'success');
+      setOpenDialog(false);
+      navigate('/whatsapp-forms');
+    } catch (errors: any) {
+      setErrorMessage(errors);
+    }
   };
 
-  useQuery(GET_LATEST_WHATSAPP_FORM_REVISION, {
+  const { data: latestRevisionData } = useQuery(GET_LATEST_WHATSAPP_FORM_REVISION, {
     skip: !params.id,
     variables: { id: params.id },
-    onCompleted: ({ whatsappForm }) => {
-      if (whatsappForm?.whatsappForm) {
-        setFlowName(whatsappForm?.whatsappForm?.name || '');
-        setIsPublished(whatsappForm?.whatsappForm?.status !== 'DRAFT');
-
-        if (whatsappForm?.whatsappForm?.revision) {
-          try {
-            const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
-
-            if (!flowJSON) return;
-
-            const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
-            hasUnsavedChangesRef.current = false;
-            currentScreensRef.current = convertedScreens;
-            setScreens(convertedScreens);
-          } catch (error) {
-            setLogs(error, 'error');
-          }
-        }
-      }
-    },
     fetchPolicy: 'network-only',
   });
 
-  const handleSaveWhatsappFormRevision = () => {
+  useEffect(() => {
+    const whatsappForm = latestRevisionData?.whatsappForm;
+    if (whatsappForm?.whatsappForm) {
+      setFlowName(whatsappForm?.whatsappForm?.name || '');
+      setIsPublished(whatsappForm?.whatsappForm?.status !== 'DRAFT');
+
+      if (whatsappForm?.whatsappForm?.revision) {
+        try {
+          const flowJSON = JSON.parse(whatsappForm?.whatsappForm?.revision?.definition);
+
+          if (!flowJSON) return;
+
+          const convertedScreens = convertFlowJSONToFormBuilder(flowJSON);
+          hasUnsavedChangesRef.current = false;
+          currentScreensRef.current = convertedScreens;
+          setScreens(convertedScreens);
+        } catch (error) {
+          setLogs(error, 'error');
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [latestRevisionData]);
+
+  const handleSaveWhatsappFormRevision = async () => {
     const flowJSON = convertFormBuilderToFlowJSON(screens);
 
-    saveWhatsappFormRevision({
-      variables: {
-        input: {
-          whatsappFormId: params.id,
-          definition: JSON.stringify(flowJSON),
+    try {
+      const { data } = await saveWhatsappFormRevision({
+        variables: {
+          input: {
+            whatsappFormId: params.id,
+            definition: JSON.stringify(flowJSON),
+          },
         },
-      },
-    });
+      });
+      if (data?.saveWhatsappFormRevision?.errors) {
+        setNotification('Error saving form revision', 'warning');
+        hasUnsavedChangesRef.current = true;
+      }
+    } catch (error) {
+      setNotification('Error saving form revision', 'warning');
+      setLogs(error, 'error');
+      hasUnsavedChangesRef.current = true;
+    }
   };
 
   useEffect(() => {

@@ -90,7 +90,8 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
         rows={6}
         endAdornment={
           <span className={styles.Expand}>
-            <ExpandIcon
+            <button
+              type="button"
               className={styles.ExpandButton}
               onClick={() => {
                 setDraft(prompt);
@@ -98,7 +99,9 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
               }}
               aria-label={t('Edit system instructions')}
               data-testid="expandPromptButton"
-            />
+            >
+              <ExpandIcon aria-hidden="true" focusable="false" />
+            </button>
           </span>
         }
         placeholder={t(

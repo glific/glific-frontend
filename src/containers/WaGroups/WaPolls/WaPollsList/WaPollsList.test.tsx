@@ -1,21 +1,23 @@
 import { MockedProvider } from '@apollo/client/testing';
+import type { MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Notification from 'common/notification';
-import { WaPollListMocks } from 'mocks/WaPolls';
+import { WaPollListMocks, deletePollErrorQuery } from 'mocks/WaPolls';
 import WaPolls from '../WaPolls';
 import WaPollsList from './WaPollsList';
 
-const wrapper = (
-  <MockedProvider mocks={WaPollListMocks}>
-    <MemoryRouter initialEntries={['/group/polls']}>
-      <Routes>
-        <Route path="group/polls" element={<WaPollsList />} />
-        <Route path="group/polls/:id/edit" element={<WaPolls />} />
-      </Routes>
-    </MemoryRouter>
-  </MockedProvider>
-);
+const renderWaPollsList = (mocksOverride: MockedResponse[] = WaPollListMocks) =>
+  render(
+    <MockedProvider mocks={mocksOverride}>
+      <MemoryRouter initialEntries={['/group/polls']}>
+        <Routes>
+          <Route path="group/polls" element={<WaPollsList />} />
+          <Route path="group/polls/:id/edit" element={<WaPolls />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const mockedUsedNavigate = vi.fn();
@@ -25,7 +27,7 @@ vi.mock('react-router', async () => ({
 }));
 
 test('it should render the WaPollsList component', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -37,7 +39,7 @@ test('it should render the WaPollsList component', async () => {
 });
 
 test('it should copy the uuid', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -51,7 +53,7 @@ test('it should copy the uuid', async () => {
 });
 
 test('it should open the view dialog box', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -67,7 +69,7 @@ test('it should open the view dialog box', async () => {
 });
 
 test('it navigates to create a copy', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -81,7 +83,7 @@ test('it navigates to create a copy', async () => {
 });
 
 test('it should delete the poll', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -99,5 +101,31 @@ test('it should delete the poll', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('it shows an error when deleting the poll fails', async () => {
+  const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
+  const errorMocks: MockedResponse[] = [
+    ...WaPollListMocks.filter((mock) => mock !== WaPollListMocks[6]),
+    deletePollErrorQuery,
+  ];
+
+  renderWaPollsList(errorMocks);
+
+  await waitFor(() => {
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('delete-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
   });
 });
