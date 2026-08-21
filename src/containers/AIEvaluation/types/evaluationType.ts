@@ -10,12 +10,19 @@ export interface EvaluationMetrics {
 
 export type ScoreBand = 'good' | 'okay' | 'bad';
 
+export type EvaluationScoresFormat = 'row' | 'grouped';
+
+export interface EvaluationTraceAnswer {
+  answer: string;
+  scores: { name: string; value: number | null }[];
+}
+
 export interface EvaluationTrace {
   questionId: string;
   question: string;
   expected: string;
-  answer: string;
-  scores: { name: string; value: number | null }[];
+  /** one entry per attempt — grouped runs repeat a question, row runs answer it once */
+  answers: EvaluationTraceAnswer[];
 }
 
 export interface EvaluationRun {
@@ -24,8 +31,8 @@ export interface EvaluationRun {
   status: string;
   failureReason?: string | null;
   results?: unknown;
-  duplicationFactor?: number | null;
-  goldenQa?: { id: string; name: string; duplicationFactor?: number | null } | null;
+  duplicationFactor?: DuplicationFactor;
+  goldenQa?: { id: string; name: string; duplicationFactor?: DuplicationFactor | null } | null;
   assistantConfigVersion?: {
     id: string;
     versionNumber: number;

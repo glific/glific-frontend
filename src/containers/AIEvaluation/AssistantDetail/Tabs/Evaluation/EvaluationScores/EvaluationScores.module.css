@@ -5,8 +5,12 @@
   margin-bottom: var(--app-space-lg);
 }
 
+.FormatToggle {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .ExportButton {
-  margin-left: auto !important;
   flex-shrink: 0;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
@@ -49,6 +53,49 @@
   text-align: center;
 }
 
+/* grouped runs add a column per attempt, so percentages would squeeze every column thinner
+   the more attempts there are — fixed widths keep them readable and the wrapper scrolls */
+.GroupedTable table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.GroupedTable .QuestionColumn {
+  width: 14rem;
+}
+
+.GroupedTable .ExpectedColumn {
+  width: 20rem;
+}
+
+.GroupedTable .AnswerColumn {
+  width: 22rem;
+}
+
+/* the judge's marks make the answer cell taller than the row view's 9rem cap, which left the
+   other cells blank below their own cap. Cap the whole cell instead and let the text areas
+   stretch to the row, so nothing is cut short and nothing is left empty */
+.GroupedTable td {
+  /* lets the percentage heights below resolve against the row rather than collapsing */
+  height: 1px;
+}
+
+.GroupedTable .AnswerCell {
+  max-height: 20rem;
+  height: 100%;
+}
+
+.GroupedTable .AnswerCell .Answer {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+}
+
+.GroupedTable .ExpectedColumn .Answer {
+  max-height: 20rem;
+  height: 100%;
+}
+
 .Question {
   color: var(--app-color-text-heading);
 }
@@ -72,6 +119,32 @@
 .Answer:hover::-webkit-scrollbar-thumb {
   border-radius: var(--app-radius-pill);
   background: var(--app-color-border);
+}
+
+.AnswerCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+}
+
+.AnswerScores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2xs);
+  padding-top: var(--app-space-sm);
+  border-top: 1px solid var(--app-color-border);
+}
+
+.AnswerScore {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.AnswerScoreName {
+  margin-right: auto;
 }
 
 .NoScore {
@@ -100,4 +173,22 @@
 .bad {
   background-color: var(--app-color-surface-hover);
   color: var(--app-color-error);
+}
+
+.LoadingArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+}
+
+/* the shared loader pads 100px above the spinner for full-page use, which pushes it to the
+   bottom of a short box like this one */
+.LoadingArea [data-testid='loader'] {
+  height: auto;
+  justify-content: center;
+}
+
+.LoadingArea [data-testid='loader'] > div:first-child {
+  padding-top: 0;
 }

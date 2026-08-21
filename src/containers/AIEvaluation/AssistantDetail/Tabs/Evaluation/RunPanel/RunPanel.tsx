@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { GET_EVALUATION_SCORES } from 'graphql/queries/AIEvaluations';
-import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
+import type { EvaluationRun, EvaluationScoresFormat } from 'containers/AIEvaluation/types/evaluationType';
 import {
   isRunComplete,
   parseEvaluationScores,
@@ -28,18 +29,39 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
 
   const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
 
+  const [scoresFormat, setScoresFormat] = useState<EvaluationScoresFormat>('row');
+
   const finished = Boolean(run) && isRunComplete(run as EvaluationRun);
   const { data, loading, error } = useQuery(GET_EVALUATION_SCORES, {
-    variables: { id: run?.id },
+    variables: { id: run?.id, exportFormat: 'row' },
     skip: !finished,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  // the grouped payload is shaped for the table only, so the banner and the suggestion keep
+  // reading the row payload — switching the table cannot take the overall score away
+  const {
+    data: groupedData,
+    loading: groupedLoading,
+    error: groupedError,
+  } = useQuery(GET_EVALUATION_SCORES, {
+    variables: { id: run?.id, exportFormat: 'grouped' },
+    skip: !finished || scoresFormat !== 'grouped',
     fetchPolicy: 'cache-and-network',
   });
 
   const scores = data?.evaluationScores;
   const overall = parseOverallScore(scores?.scores);
   const awaitingScores = finished && loading && !data;
+
+  const grouped = scoresFormat === 'grouped';
+  const tableScores = grouped ? groupedData?.evaluationScores : scores;
+  const tableLoading = grouped ? groupedLoading : loading;
+  const tableError = grouped ? groupedError : error;
   const failure =
-    error || scores?.errors?.length ? scores?.errors?.[0]?.message || t('These results could not be loaded.') : null;
+    tableError || tableScores?.errors?.length
+      ? tableScores?.errors?.[0]?.message || t('These results could not be loaded.')
+      : null;
 
   return (
     <>
@@ -52,9 +74,11 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
         >
           <EvaluationScores
             runId={run.id}
-            traces={parseEvaluationScores(scores?.scores)}
-            loading={loading}
+            traces={parseEvaluationScores(tableScores?.scores)}
+            loading={tableLoading}
             failure={failure}
+            format={scoresFormat}
+            onFormatChange={setScoresFormat}
           />
         </EvaluationResult>
       )}
