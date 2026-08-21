@@ -17,23 +17,31 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
 
-  const [moveContacts] = useMutation(MOVE_CONTACTS, {
-    onCompleted: ({ moveContacts }) => {
-      const { errors } = moveContacts;
-      if (errors) {
-        setErrors(errors);
+  const [moveContacts] = useMutation(MOVE_CONTACTS);
+
+  const handleMoveContacts = async () => {
+    setUploadingContacts(true);
+    try {
+      const { data } = await moveContacts({
+        variables: {
+          type: 'DATA',
+          data: csvContent,
+        },
+      });
+      const { errors: moveContactsErrors } = data.moveContacts;
+      if (moveContactsErrors?.length > 0) {
+        setErrors(moveContactsErrors);
       } else {
-        setUploadingContacts(false);
         setShowStatus(true);
       }
       setFileName('');
-    },
-    onError: (error) => {
+      setUploadingContacts(false);
+    } catch (error: any) {
       setErrors([{ message: error.message }]);
       setFileName('');
       setUploadingContacts(false);
-    },
-  });
+    }
+  };
 
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
@@ -141,15 +149,7 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
           color="primary"
           disabled={fileName === ''}
           loading={uploadingContacts}
-          onClick={() => {
-            setUploadingContacts(true);
-            moveContacts({
-              variables: {
-                type: 'DATA',
-                data: csvContent,
-              },
-            });
-          }}
+          onClick={handleMoveContacts}
         >
           Upload
         </Button>

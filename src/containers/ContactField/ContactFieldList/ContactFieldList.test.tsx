@@ -5,7 +5,14 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
-import { contactFieldMocks, contactFieldErrorMock } from 'mocks/ContactFields';
+import {
+  contactFieldMocks,
+  contactFieldErrorMock,
+  updateContactFieldNetworkErrorMock,
+  deleteContactFieldWithDataMock,
+  deleteContactFieldWithDataErrorMock,
+} from 'mocks/ContactFields';
+import * as Notification from 'common/notification';
 import ContactFieldList from './ContactFieldList';
 
 afterEach(() => {
@@ -113,4 +120,100 @@ test('it opens contact field dialog box', async () => {
   });
 
   fireEvent.click(screen.getByTestId('cancelActionButton'));
+});
+
+test('it shows a warning when updating the contact field fails unexpectedly', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  const networkErrorMocks: any = [updateContactFieldNetworkErrorMock, ...contactFieldMocks];
+  render(
+    <MockedProvider mocks={networkErrorMocks} addTypename={false}>
+      <Router>
+        <ContactFieldList />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('age_group')).toBeInTheDocument();
+  });
+
+  const editButtons = screen.getAllByTestId('edit-icon');
+  fireEvent.click(editButtons[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('inline-input')).toBeInTheDocument();
+  });
+
+  const inputFields = screen.getByTestId('inline-input') as HTMLElement;
+  await userEvent.click(inputFields);
+  await userEvent.type(inputFields.querySelector('input') as HTMLElement, ' Name');
+
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Sorry! An error occurred while updating the contact field',
+      'warning'
+    );
+  });
+});
+
+test('it deletes the contact field and associated data successfully', async () => {
+  const mocks: any = [...contactFieldMocks, deleteContactFieldWithDataMock, ...contactFieldMocks];
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <ContactFieldList />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('age_group')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('DeleteIcon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('middle-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('middle-button'));
+
+  await waitFor(() => {
+    expect(screen.queryByTestId('middle-button')).not.toBeInTheDocument();
+  });
+});
+
+test('it shows a warning when deleting the contact field and associated data fails', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  const mocks: any = [...contactFieldMocks, deleteContactFieldWithDataErrorMock];
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <ContactFieldList />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('age_group')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('DeleteIcon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('middle-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('middle-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Sorry! An error occurred while deleting the contact field',
+      'warning'
+    );
+  });
+  expect(screen.getByTestId('middle-button')).toBeInTheDocument();
 });

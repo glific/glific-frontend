@@ -67,12 +67,20 @@ export const SavedSearchToolbar = ({
     setSelectedSavedSearch(null);
   }
 
-  const { loading, error, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
+  const {
+    data: savedSearchData,
+    loading,
+    error,
+    refetch,
+  } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
-    onCompleted: (data) => {
-      setFixedSearches(data.savedSearches);
-    },
   });
+
+  useEffect(() => {
+    if (savedSearchData) {
+      setFixedSearches(savedSearchData.savedSearches);
+    }
+  }, [savedSearchData]);
 
   const handlerSavedSearchCriteria = (savedSearchCriteria: string | null, savedSearchId: number | null) => {
     savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
