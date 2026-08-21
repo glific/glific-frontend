@@ -1,4 +1,12 @@
 import { MockedProvider } from '@apollo/client/testing';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options ? key.replace(/\{\{(\w+)\}\}/g, (_match, name) => String(options[name] ?? '')) : key,
+    i18n: { changeLanguage: () => new Promise(() => {}) },
+  }),
+}));
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import * as Notification from 'common/notification';
@@ -22,7 +30,9 @@ const renderChange = (props: Partial<Parameters<typeof SuggestedPrompt>[0]> = {}
 test('a run that scored well has nothing to act on', () => {
   renderChange({ overall: 4.4 });
 
-  expect(screen.getByTestId('suggestedPromptNone')).toHaveTextContent('Nothing to change');
+  expect(screen.getByTestId('suggestedPromptNone')).toHaveTextContent(
+    "Nothing to change — this run scores well. Publish it when you're ready."
+  );
   expect(screen.queryByTestId('applySuggestionButton')).not.toBeInTheDocument();
 });
 
@@ -40,7 +50,9 @@ test('the reason behind it names the check and its score', () => {
 
   fireEvent.click(screen.getByTestId('whyThisChangeButton'));
 
-  expect(screen.getByTestId('whyThisChange')).toHaveTextContent('adherence to knowledge base at 1.47/5');
+  expect(screen.getByTestId('whyThisChange')).toHaveTextContent(
+    'Targets your weakest check — adherence to knowledge base at 1.47/5'
+  );
 });
 
 test('applying it asks the server to rewrite the prompt for this run', async () => {
@@ -80,8 +92,18 @@ test('dismissing it leaves a way back', () => {
   expect(screen.getByTestId('suggestedPrompt')).toBeInTheDocument();
 });
 
-test('a run with no check scored has nothing to suggest', () => {
+test('a poor run with no check scored is not told it scored well', () => {
   renderChange({ overall: 1.2, metrics: { groundTruth: null, knowledgeBase: null, prompt: null } });
 
-  expect(screen.getByTestId('suggestedPromptNone')).toBeInTheDocument();
+  const panel = screen.getByTestId('suggestedPromptUnscored');
+  expect(panel).toHaveTextContent('None of the checks reported a score');
+  expect(panel).not.toHaveTextContent('this run scores well');
+  expect(screen.queryByTestId('suggestedPromptNone')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('applySuggestionButton')).not.toBeInTheDocument();
+});
+
+test('a good run with no check scored still reads as settled', () => {
+  renderChange({ overall: 4.4, metrics: { groundTruth: null, knowledgeBase: null, prompt: null } });
+
+  expect(screen.getByTestId('suggestedPromptNone')).toHaveTextContent('this run scores well');
 });
