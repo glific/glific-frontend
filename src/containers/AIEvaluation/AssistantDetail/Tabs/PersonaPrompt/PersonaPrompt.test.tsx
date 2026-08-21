@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
@@ -94,6 +95,44 @@ const renderTab = (config: Partial<ModelConfig> = {}, props: Record<string, unkn
     </MockedProvider>
   );
   return { onConfigChange, onPromptChange };
+};
+
+// AssistantDetail owns the config and feeds it back, so anything asserting what the
+// field renders after a change has to be driven the same way
+const ControlledPersonaPrompt = ({
+  initial,
+  onConfigChange,
+}: {
+  initial: ModelConfig;
+  onConfigChange: (config: ModelConfig) => void;
+}) => {
+  const [config, setConfig] = useState<ModelConfig>(initial);
+
+  return (
+    <PersonaPrompt
+      prompt="You are a helpful assistant."
+      config={config}
+      models={models}
+      onPromptChange={() => {}}
+      onConfigChange={(next: ModelConfig) => {
+        onConfigChange(next);
+        setConfig(next);
+      }}
+    />
+  );
+};
+
+const renderControlledTab = (config: Partial<ModelConfig> = {}) => {
+  const onConfigChange = vi.fn();
+  render(
+    <MockedProvider mocks={[]}>
+      <ControlledPersonaPrompt
+        initial={{ model: 'gpt-4.1', temperature: '1', effort: '', ...config }}
+        onConfigChange={onConfigChange}
+      />
+    </MockedProvider>
+  );
+  return { onConfigChange };
 };
 
 describe('reading the model list', () => {
@@ -226,6 +265,22 @@ describe('editing', () => {
     fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '' } });
 
     expect(onConfigChange).toHaveBeenCalledWith(expect.objectContaining({ temperature: '' }));
+  });
+
+  test('a cleared temperature leaves the box empty instead of snapping to the minimum', () => {
+    renderControlledTab({ model: 'gpt-4.1' });
+
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '' } });
+
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(null);
+  });
+
+  test('a temperature the reader types survives being fed back in', () => {
+    renderControlledTab({ model: 'gpt-4.1' });
+
+    fireEvent.change(screen.getByTestId('temperatureInput'), { target: { value: '0.4' } });
+
+    expect(screen.getByTestId('temperatureInput')).toHaveValue(0.4);
   });
 
   test('the slider and the number box set the same value', () => {

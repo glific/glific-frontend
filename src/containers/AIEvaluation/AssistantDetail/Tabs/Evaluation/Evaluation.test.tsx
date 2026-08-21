@@ -751,6 +751,7 @@ describe('running an evaluation', () => {
       '{"summary_scores":[{"total_pairs":10,"std":0.64,"name":"Adherence to Ground Truth","avg":4.6},' +
       '{"total_pairs":10,"std":0.1,"name":"Adherence to Knowledge Base","avg":3.2},' +
       '{"total_pairs":10,"std":0.0,"name":"Adherence to Prompt","avg":1.4}]}',
+    duplicationFactor: 5,
     goldenQa: { id: 'g1', name: 'maternal_health_core', duplicationFactor: 5 },
     assistantConfigVersion: { id: 'v1', versionNumber: 1, assistant: { id: '1', name: 'Assistant' } },
     insertedAt: '2026-08-10T10:00:00Z',
@@ -843,6 +844,19 @@ describe('running an evaluation', () => {
     errorSpy.mockRestore();
   });
 
+  test('the meta line reports the run’s own duplication, not the set’s', async () => {
+    // a 5× run against a set uploaded as 1× — the two must not be confused
+    renderWithRuns([
+      {
+        ...completedRun,
+        duplicationFactor: 5,
+        goldenQa: { id: 'g1', name: 'maternal_health_core', duplicationFactor: 1 },
+      },
+    ]);
+
+    expect(await screen.findByTestId('evaluationResult')).toHaveTextContent('5× duplication');
+  });
+
   test('a finished run replaces the empty state with its result', async () => {
     renderWithRuns([completedRun]);
 
@@ -889,6 +903,7 @@ describe('the result panel above the table', () => {
     results:
       '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":2.6},' +
       '{"name":"Adherence to Knowledge Base","avg":2.2},{"name":"Adherence to Prompt","avg":3.4}]}',
+    duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
     assistantConfigVersion: { id: 'v1', versionNumber: 1 },
     insertedAt: '2026-08-10T10:00:00Z',
@@ -975,6 +990,7 @@ test('the ring fills to the score and takes the band colour', async () => {
                   results:
                     '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":2.5},' +
                     '{"name":"Adherence to Knowledge Base","avg":2.5},{"name":"Adherence to Prompt","avg":2.5}]}',
+                  duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
                   assistantConfigVersion: { id: 'v1', versionNumber: 1 },
                   insertedAt: '2026-08-10T10:00:00Z',
@@ -1014,6 +1030,7 @@ describe('question-level results', () => {
     status: 'COMPLETED',
     failureReason: null,
     results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4}]}',
+    duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
     assistantConfigVersion: { id: 'v1', versionNumber: 1 },
     insertedAt: '2026-08-10T10:00:00Z',
@@ -1102,6 +1119,7 @@ test('an answer is rendered the way WhatsApp would render it', async () => {
                   status: 'COMPLETED',
                   failureReason: null,
                   results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
+                  duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
                   assistantConfigVersion: { id: 'v1', versionNumber: 1 },
                   insertedAt: '2026-08-10T10:00:00Z',
@@ -1166,6 +1184,7 @@ test('the question-level table lives inside the result card, under a divider', a
                   status: 'COMPLETED',
                   failureReason: null,
                   results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
+                  duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
                   assistantConfigVersion: { id: 'v1', versionNumber: 1 },
                   insertedAt: '2026-08-10T10:00:00Z',
@@ -1228,6 +1247,7 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
                   status: 'COMPLETED',
                   failureReason: null,
                   results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
+                  duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
                   assistantConfigVersion: { id: 'v1', versionNumber: 1 },
                   insertedAt: '2026-08-10T10:00:00Z',
@@ -1284,6 +1304,7 @@ test("the judge's summary is shown in the banner", async () => {
                   status: 'COMPLETED',
                   failureReason: null,
                   results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
+                  duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
                   assistantConfigVersion: { id: 'v1', versionNumber: 1 },
                   insertedAt: '2026-08-10T10:00:00Z',
@@ -1354,6 +1375,7 @@ test('Export CSV downloads the question-level results as a CSV file', async () =
                   status: 'COMPLETED',
                   failureReason: null,
                   results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.5}]}',
+                  duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
                   assistantConfigVersion: { id: 'v1', versionNumber: 1 },
                   insertedAt: '2026-08-10T10:00:00Z',
@@ -1400,6 +1422,7 @@ test('the result card waits for the score payload rather than showing a number t
     status: 'COMPLETED',
     failureReason: null,
     results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
+    duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
     assistantConfigVersion: { id: 'v1', versionNumber: 1 },
     insertedAt: '2026-08-10T10:00:00Z',
@@ -1461,6 +1484,7 @@ const runFor = (id: string, assistantId: string, setName: string) => ({
   status: 'COMPLETED',
   failureReason: null,
   results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
+  duplicationFactor: 1,
   goldenQa: { id: 'g1', name: setName, duplicationFactor: 1 },
   assistantConfigVersion: { id: `v-${id}`, versionNumber: 1, assistant: { id: assistantId, name: 'A' } },
   insertedAt: '2026-08-10T10:00:00Z',
