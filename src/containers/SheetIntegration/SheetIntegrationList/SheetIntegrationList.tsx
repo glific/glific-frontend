@@ -106,26 +106,25 @@ export const SheetIntegrationList = () => {
 
   const [syncSheetMutation, { loading }] = useMutation(SYNC_SHEET, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ syncSheet }) => {
-      const notificationMessage = 'Data is successfully fetched from the Google sheet.';
-      if (syncSheet.sheet && syncSheet.sheet.failureReason) {
-        setShowDialog(true);
-        setFailureReason(syncSheet.sheet.failureReason);
-      } else {
-        setNotification(notificationMessage);
-      }
-    },
-    onError: () => {
-      setNotification('Sorry! An error occurred while fetching data from the Google sheet.', 'warning');
-    },
   });
 
   if (loading) {
     return <Loading message="Sync in progress" />;
   }
 
-  const syncSheet = (id: any) => {
-    syncSheetMutation({ variables: { id } });
+  const syncSheet = async (id: any) => {
+    try {
+      const { data } = await syncSheetMutation({ variables: { id } });
+      const notificationMessage = 'Data is successfully fetched from the Google sheet.';
+      if (data?.syncSheet?.sheet && data.syncSheet.sheet.failureReason) {
+        setShowDialog(true);
+        setFailureReason(data.syncSheet.sheet.failureReason);
+      } else {
+        setNotification(notificationMessage);
+      }
+    } catch {
+      setNotification('Sorry! An error occurred while fetching data from the Google sheet.', 'warning');
+    }
   };
 
   const linkSheet = (_id: any, item: any) => {
