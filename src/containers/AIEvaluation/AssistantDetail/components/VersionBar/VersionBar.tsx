@@ -87,9 +87,7 @@ export const VersionBar = ({
   const versionMeta = (version: AssistantVersion) => {
     const when = version.isLive ? t('published') : t('saved');
     const timestamp = version.updatedAt ?? version.insertedAt;
-    return [version.description, timestamp ? `${when} ${dayjs(timestamp).fromNow()}` : null]
-      .filter(Boolean)
-      .join(' · ');
+    return timestamp ? `${when} ${dayjs(timestamp).fromNow()}` : '';
   };
 
   return (

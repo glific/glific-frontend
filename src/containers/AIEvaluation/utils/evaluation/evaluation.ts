@@ -162,6 +162,19 @@ export const parseOverallScore = (raw: unknown): number | null => {
   return asScore(parsed?.score?.overall?.overall_score);
 };
 
+export const parseScoreMetrics = (raw: unknown): EvaluationMetrics => {
+  let parsed: any = raw;
+  if (typeof raw === 'string') {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return { ...EMPTY_METRICS };
+    }
+  }
+
+  return parseEvaluationResults(parsed?.score);
+};
+
 export const parseEvaluationSummary = (raw: unknown): string | null => {
   let parsed: any = raw;
   if (typeof raw === 'string') {

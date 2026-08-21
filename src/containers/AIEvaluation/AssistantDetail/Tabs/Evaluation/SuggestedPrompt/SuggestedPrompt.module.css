@@ -1,0 +1,128 @@
+.Zone {
+  margin-top: var(--app-space-xl);
+}
+
+.ZoneHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-lg);
+}
+
+.ZoneTitle {
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+}
+
+.ZoneSub {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.Card {
+  padding: var(--app-space-xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.Settled {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+}
+
+.SettledIcon {
+  flex-shrink: 0;
+  color: var(--app-color-brand-primary);
+}
+
+.DismissedText {
+  flex: 1;
+}
+
+.CardTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.Sparkle {
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+  color: var(--app-color-brand-primary);
+}
+
+.Reason {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+}
+
+.Note {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.Why {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  margin-top: var(--app-space-sm);
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-brand-primary);
+  cursor: pointer;
+}
+
+.Why:hover {
+  text-decoration: underline;
+}
+
+.WhyBox {
+  margin-top: var(--app-space-sm);
+  padding: var(--app-space-lg);
+  border: 1px solid rgb(var(--app-color-green-primary-rgb) / 25%);
+  border-radius: var(--app-radius-lg);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-primary);
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-sm);
+  margin-top: var(--app-space-xl);
+}
+
+.ApplyButton,
+.GhostButton {
+  flex-shrink: 0;
+  margin-right: 0 !important;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
+.WhyCaret {
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+}
