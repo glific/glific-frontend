@@ -35,20 +35,16 @@ vi.mock('@dnd-kit/core', async () => {
   };
 });
 
-const wrapper = (id: number = 1) => {
-  const mocks = WHATSAPP_FORM_MOCKS;
-
-  return (
-    <MockedProvider mocks={mocks}>
-      <MemoryRouter initialEntries={[`/whatsapp-forms/${id}/configure`]}>
-        <Routes>
-          <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
-          <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
-};
+const wrapper = (id: number = 1, mocksOverride: any[] = WHATSAPP_FORM_MOCKS) => (
+  <MockedProvider mocks={mocksOverride}>
+    <MemoryRouter initialEntries={[`/whatsapp-forms/${id}/configure`]}>
+      <Routes>
+        <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
+        <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
+);
 
 describe('<Configure />', () => {
   beforeEach(() => {
@@ -654,16 +650,7 @@ describe('<Configure />', () => {
       mock === revertWhatsappFormRevisionMock ? revertWhatsappFormRevisionErrorMock : mock
     );
 
-    render(
-      <MockedProvider mocks={errorMocks}>
-        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
-          <Routes>
-            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
-            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    render(wrapper(1, errorMocks));
 
     await waitFor(() => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
@@ -694,16 +681,7 @@ describe('<Configure />', () => {
       mock === revertWhatsappFormRevisionMock ? revertWhatsappFormRevisionPayloadErrorMock : mock
     );
 
-    render(
-      <MockedProvider mocks={errorMocks}>
-        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
-          <Routes>
-            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
-            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    render(wrapper(1, errorMocks));
 
     await waitFor(() => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
@@ -877,16 +855,7 @@ describe('<Configure />', () => {
       mock.request?.query === PUBLISH_FORM && mock.request?.variables?.id === '1' ? publishWhatsappFormErrorId1 : mock
     );
 
-    render(
-      <MockedProvider mocks={errorMocks}>
-        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
-          <Routes>
-            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
-            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    render(wrapper(1, errorMocks));
 
     await waitFor(() => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);
@@ -916,16 +885,7 @@ describe('<Configure />', () => {
         : mock
     );
 
-    render(
-      <MockedProvider mocks={errorMocks}>
-        <MemoryRouter initialEntries={['/whatsapp-forms/1/configure']}>
-          <Routes>
-            <Route path="/whatsapp-forms" element={<div>WhatsApp Forms</div>} />
-            <Route path="/whatsapp-forms/:id/configure" element={<Configure />} />
-          </Routes>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    render(wrapper(1, errorMocks));
 
     await waitFor(() => {
       expect(screen.getAllByTestId('form-screen')).toHaveLength(1);

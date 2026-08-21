@@ -12,17 +12,14 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
+import { setNotification } from 'common/notification';
 import styles from './MyAccount.module.css';
 import { Heading } from 'components/UI/Heading/Heading';
 
 export const MyAccount = () => {
-  // set the validation / errors / success message
-  const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
-
   // set the trigger to show next step
   const [showOTPButton, setShowOTPButton] = useState(true);
 
@@ -53,19 +50,16 @@ export const MyAccount = () => {
       const { data } = await updateCurrentUser({ variables: { input } });
       if (data?.updateCurrentUser?.errors) {
         if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
-          setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
+          setNotification(t('Please enter a valid OTP'), 'error');
         } else {
-          setToastMessageInfo({
-            severity: 'error',
-            message: t('Too many attempts, please retry after sometime.'),
-          });
+          setNotification(t('Too many attempts, please retry after sometime.'), 'error');
         }
         return false;
       }
-      setToastMessageInfo({ severity: 'success', message: successMessage });
+      setNotification(successMessage, 'success');
       return true;
     } catch (error: any) {
-      setToastMessageInfo({ severity: 'error', message: t('Sorry! An error occurred!') });
+      setNotification(t('Sorry! An error occurred!'), 'error');
       return false;
     }
   };
@@ -94,10 +88,7 @@ export const MyAccount = () => {
         setShowOTPButton(false);
       })
       .catch(() => {
-        setToastMessageInfo({
-          severity: 'error',
-          message: `Unable to send an OTP to ${loggedInUserPhone}.`,
-        });
+        setNotification(`Unable to send an OTP to ${loggedInUserPhone}.`, 'error');
       });
   };
 
@@ -117,25 +108,6 @@ export const MyAccount = () => {
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  // callback function when close icon is clicked
-  const closeToastMessage = () => {
-    // reset toast information
-    setToastMessageInfo({ message: '', severity: '' });
-  };
-
-  // set up toast message display, we use this for showing backend validation errors like
-  // invalid OTP and also display success message on password update
-  let displayToastMessage: any;
-  if (toastMessageInfo.message.length > 0) {
-    displayToastMessage = (
-      <ToastMessage
-        message={toastMessageInfo.message}
-        severity={toastMessageInfo.severity === 'success' ? 'success' : 'error'}
-        handleClose={closeToastMessage}
-      />
-    );
-  }
 
   // setup form schema base on Yup
   const FormSchema = Yup.object().shape({
@@ -229,7 +201,6 @@ export const MyAccount = () => {
     >
       {({ submitForm }) => (
         <Form className={styles.Form}>
-          {displayToastMessage}
           {formFieldLayout}
           <div className={styles.Buttons}>
             {showOTPButton ? (

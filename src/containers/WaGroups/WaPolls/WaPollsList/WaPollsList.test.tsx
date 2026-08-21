@@ -6,16 +6,17 @@ import { WaPollListMocks, deletePollErrorQuery } from 'mocks/WaPolls';
 import WaPolls from '../WaPolls';
 import WaPollsList from './WaPollsList';
 
-const wrapper = (
-  <MockedProvider mocks={WaPollListMocks}>
-    <MemoryRouter initialEntries={['/group/polls']}>
-      <Routes>
-        <Route path="group/polls" element={<WaPollsList />} />
-        <Route path="group/polls/:id/edit" element={<WaPolls />} />
-      </Routes>
-    </MemoryRouter>
-  </MockedProvider>
-);
+const renderWaPollsList = (mocksOverride: any[] = WaPollListMocks) =>
+  render(
+    <MockedProvider mocks={mocksOverride}>
+      <MemoryRouter initialEntries={['/group/polls']}>
+        <Routes>
+          <Route path="group/polls" element={<WaPollsList />} />
+          <Route path="group/polls/:id/edit" element={<WaPolls />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const mockedUsedNavigate = vi.fn();
@@ -25,7 +26,7 @@ vi.mock('react-router', async () => ({
 }));
 
 test('it should render the WaPollsList component', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -37,7 +38,7 @@ test('it should render the WaPollsList component', async () => {
 });
 
 test('it should copy the uuid', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -51,7 +52,7 @@ test('it should copy the uuid', async () => {
 });
 
 test('it should open the view dialog box', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -67,7 +68,7 @@ test('it should open the view dialog box', async () => {
 });
 
 test('it navigates to create a copy', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -81,7 +82,7 @@ test('it navigates to create a copy', async () => {
 });
 
 test('it should delete the poll', async () => {
-  render(wrapper);
+  renderWaPollsList();
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();
@@ -106,16 +107,7 @@ test('it shows an error when deleting the poll fails', async () => {
   const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
   const errorMocks: any[] = [...WaPollListMocks.filter((mock) => mock !== WaPollListMocks[6]), deletePollErrorQuery];
 
-  render(
-    <MockedProvider mocks={errorMocks}>
-      <MemoryRouter initialEntries={['/group/polls']}>
-        <Routes>
-          <Route path="group/polls" element={<WaPollsList />} />
-          <Route path="group/polls/:id/edit" element={<WaPolls />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  renderWaPollsList(errorMocks);
 
   await waitFor(() => {
     expect(screen.getByText('Group Polls')).toBeInTheDocument();

@@ -138,6 +138,7 @@ export const WhatsAppFormList = () => {
         try {
           const { data } = await activateForm({ variables: { activateWhatsappFormId: id } });
           if (data?.activateWhatsappForm?.errors) {
+            setFormId(null);
             setNotification(data.activateWhatsappForm.errors[0].message, 'warning');
             return;
           }
@@ -145,6 +146,7 @@ export const WhatsAppFormList = () => {
           setDialogType(null);
           setNotification('Form activated successfully');
         } catch (error: any) {
+          setFormId(null);
           setErrorMessage(error);
         }
       },

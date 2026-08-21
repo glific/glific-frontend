@@ -89,13 +89,14 @@ vi.mock('@stripe/react-stripe-js', async () => {
   };
 });
 
-const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <Billing />
-    </Router>
-  </MockedProvider>
-);
+const renderBilling = (mocksOverride: any[] = mocks) =>
+  render(
+    <MockedProvider mocks={mocksOverride} addTypename={false}>
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
 
 afterEach(() => {
   confirmCardSetupMock.mockImplementation(() =>
@@ -108,7 +109,7 @@ afterEach(() => {
 
 describe('<Billing />', () => {
   it('renders component properly', async () => {
-    const { getByText } = render(wrapper);
+    const { getByText } = renderBilling();
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     expect(mountElementMock).toHaveBeenCalled;
@@ -116,16 +117,11 @@ describe('<Billing />', () => {
 });
 
 test('creating a subscription with response as pending', async () => {
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    createStatusPendingQuery,
+    getBillingQueryWithoutVars,
+    getBillingQueryWithoutVars,
+  ]);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
@@ -145,22 +141,13 @@ test('shows a warning and resets the subscription when 3D-secure confirmation fa
     setupIntent: null,
   });
 
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[
-        createStatusPendingQuery,
-        getBillingQueryWithoutVars,
-        getBillingQueryWithoutVars,
-        resetSubscriptionAfterSecureFailureQuery,
-        getBillingQueryWithoutVars,
-      ]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    createStatusPendingQuery,
+    getBillingQueryWithoutVars,
+    getBillingQueryWithoutVars,
+    resetSubscriptionAfterSecureFailureQuery,
+    getBillingQueryWithoutVars,
+  ]);
 
   await waitFor(() => {
     expect(getByText('Subscribe for monthly billing')).toBeInTheDocument();
@@ -180,20 +167,11 @@ test('shows a warning and resets the subscription when 3D-secure confirmation fa
 test('shows a warning when creating the subscription fails unexpectedly', async () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   const user = UserEvent.setup();
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[
-        getBillingQueryWithoutsubscription,
-        createBillingSubscriptionNetworkErrorQuery,
-        getBillingQueryWithoutVars,
-      ]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    getBillingQueryWithoutsubscription,
+    createBillingSubscriptionNetworkErrorQuery,
+    getBillingQueryWithoutVars,
+  ]);
 
   await waitFor(() => {
     expect(getByText('Variable charges as usage increases')).toBeInTheDocument();
@@ -207,16 +185,11 @@ test('shows a warning when creating the subscription fails unexpectedly', async 
 });
 
 test('subscription status is already in pending state', async () => {
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    getPendingBillingQuery,
+    getCustomerPortalQuery,
+    getBillingQueryWithoutVars,
+  ]);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
@@ -235,16 +208,11 @@ test('subscription status is already in pending state', async () => {
 test('shows a warning when opening the customer portal fails unexpectedly', async () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification');
   (window.open as any).mockClear();
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[getPendingBillingQuery, getCustomerPortalNetworkErrorQuery, getBillingQueryWithoutVars]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    getPendingBillingQuery,
+    getCustomerPortalNetworkErrorQuery,
+    getBillingQueryWithoutVars,
+  ]);
 
   await waitFor(() => {
     expect(getByText('Your payment is in pending state'));
@@ -260,22 +228,13 @@ test('shows a warning when opening the customer portal fails unexpectedly', asyn
 
 test('complete a subscription', async () => {
   const user = UserEvent.setup();
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[
-        getBillingQueryWithoutsubscription,
-        createBillingSubscriptionQuery,
-        getBillingQueryWithoutVars,
-        getBillingQueryWithoutVars,
-        getCustomerPortalQuery,
-      ]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    getBillingQueryWithoutsubscription,
+    createBillingSubscriptionQuery,
+    getBillingQueryWithoutVars,
+    getBillingQueryWithoutVars,
+    getCustomerPortalQuery,
+  ]);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
@@ -293,21 +252,12 @@ test('complete a subscription', async () => {
 
 test('open customer portal', async () => {
   const user = UserEvent.setup();
-  const { getByText, getByTestId } = render(
-    <MockedProvider
-      mocks={[
-        getBillingQueryWithoutsubscription,
-        createBillingSubscriptionQuery,
-        getCustomerPortalQuery,
-        getBillingQueryWithoutVars,
-      ]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId } = renderBilling([
+    getBillingQueryWithoutsubscription,
+    createBillingSubscriptionQuery,
+    getCustomerPortalQuery,
+    getBillingQueryWithoutVars,
+  ]);
 
   await waitFor(() => {
     expect(getByText('One time setup')).toBeInTheDocument();
@@ -328,22 +278,13 @@ test('open customer portal', async () => {
 
 test('update billing details', async () => {
   const user = UserEvent.setup();
-  const { getByText, getByTestId, container } = render(
-    <MockedProvider
-      mocks={[
-        getBillingQueryWithoutsubscription,
-        createBillingSubscriptionQuery,
-        updateBillingQueryMock3,
-        getBillingQueryWithoutVars,
-        getBillingQueryWithoutVars,
-      ]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId, container } = renderBilling([
+    getBillingQueryWithoutsubscription,
+    createBillingSubscriptionQuery,
+    updateBillingQueryMock3,
+    getBillingQueryWithoutVars,
+    getBillingQueryWithoutVars,
+  ]);
   // loading is show initially
 
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -363,22 +304,13 @@ test('update billing details', async () => {
 
 test('update billing details with coupon code', async () => {
   const user = UserEvent.setup();
-  const { getByText, getByTestId, container } = render(
-    <MockedProvider
-      mocks={[
-        getBillingQueryWithoutsubscription,
-        createBillingSubscriptionPromoQuery,
-        getCouponCode,
-        getBillingQueryWithoutVars,
-        getBillingQueryWithoutVars,
-      ]}
-      addTypename={false}
-    >
-      <Router>
-        <Billing />
-      </Router>
-    </MockedProvider>
-  );
+  const { getByText, getByTestId, container } = renderBilling([
+    getBillingQueryWithoutsubscription,
+    createBillingSubscriptionPromoQuery,
+    getCouponCode,
+    getBillingQueryWithoutVars,
+    getBillingQueryWithoutVars,
+  ]);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 

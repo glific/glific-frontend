@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 
 import { getCurrentUserQuery, updateUserQuery, updateUserNetworkErrorQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
+import * as Notification from 'common/notification';
 import { MyAccount } from './MyAccount';
 
 const mocks = [
@@ -21,17 +22,18 @@ vi.mock('axios');
 const mockedAxios = axios as any;
 const user = userEvent.setup();
 
-const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <MemoryRouter>
-      <MyAccount />
-    </MemoryRouter>
-  </MockedProvider>
-);
+const renderMyAccount = (mocksOverride: any[] = mocks) =>
+  render(
+    <MockedProvider mocks={mocksOverride} addTypename={false}>
+      <MemoryRouter>
+        <MyAccount />
+      </MemoryRouter>
+    </MockedProvider>
+  );
 
 describe('<MyAccount />', () => {
   test('it should render', async () => {
-    const { getByText, findByTestId } = render(wrapper);
+    const { getByText, findByTestId } = renderMyAccount();
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
@@ -41,10 +43,11 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP success flow', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    render(wrapper);
+    renderMyAccount();
 
     await waitFor(() => {
       // click on generate OTP
@@ -84,14 +87,16 @@ describe('<MyAccount />', () => {
     });
     const [english, hindi] = screen.getAllByRole('option');
 
+    hindi.click();
+
     await waitFor(() => {
-      hindi.click();
-      expect(screen.getByText('Language changed successfully!')).toBeInTheDocument();
+      expect(notificationSpy).toHaveBeenCalledWith('Language changed successfully!', 'success');
     });
   });
 
   test('generate OTP error response', async () => {
-    const { findByTestId } = render(wrapper);
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    renderMyAccount();
 
     // let's mock error case sending of OTP
     const errorMessage = 'Cannot register 919967665667';
@@ -103,16 +108,13 @@ describe('<MyAccount />', () => {
       user.click(generateOTPButton);
     });
 
-    // close the alert
     await waitFor(() => {
-      expect(screen.getByTestId('crossIcon')).toBeInTheDocument();
+      expect(notificationSpy).toHaveBeenCalledWith('Unable to send an OTP to +919820198765.', 'error');
     });
-    const closeAlert = screen.getByTestId('crossIcon');
-    await user.click(closeAlert);
   });
 
   test('generate OTP success flow with cancel', async () => {
-    render(wrapper);
+    renderMyAccount();
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
@@ -133,7 +135,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with incorrect OTP', async () => {
-    const { container } = render(wrapper);
+    const { container } = renderMyAccount();
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
@@ -169,7 +171,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with too many attempts', async () => {
-    const { container } = render(wrapper);
+    const { container } = renderMyAccount();
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
@@ -200,7 +202,8 @@ describe('<MyAccount />', () => {
   });
 
   test('updates the password successfully', async () => {
-    const { container } = render(wrapper);
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { container } = renderMyAccount();
 
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
@@ -225,21 +228,17 @@ describe('<MyAccount />', () => {
     await user.click(saveButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
+      expect(notificationSpy).toHaveBeenCalledWith('Password updated successfully!', 'success');
     });
   });
 
   test('shows a generic error when updating the password fails unexpectedly', async () => {
-    const { container } = render(
-      <MockedProvider
-        mocks={[getCurrentUserQuery, updateUserNetworkErrorQuery, getOrganizationLanguagesQuery]}
-        addTypename={false}
-      >
-        <MemoryRouter>
-          <MyAccount />
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    const { container } = renderMyAccount([
+      getCurrentUserQuery,
+      updateUserNetworkErrorQuery,
+      getOrganizationLanguagesQuery,
+    ]);
 
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
@@ -264,7 +263,7 @@ describe('<MyAccount />', () => {
     await user.click(saveButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Sorry! An error occurred!')).toBeInTheDocument();
+      expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occurred!', 'error');
     });
   });
 });
