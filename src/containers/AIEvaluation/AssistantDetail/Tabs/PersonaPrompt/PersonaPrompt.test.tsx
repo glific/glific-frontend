@@ -376,3 +376,13 @@ describe('reading what the API returned', () => {
     });
   });
 });
+
+test('the reasoning effort toggle is the shared control, styled like every other one', () => {
+  renderTab({ model: 'gpt-5', effort: 'medium' });
+
+  const track = screen.getByTestId('effortSegment');
+
+  // no per-usage class overrides — the look comes from SegmentedControl itself
+  expect(track.className.split(' ').filter(Boolean)).toHaveLength(1);
+  expect(track.querySelectorAll('[role="radio"]').length).toBeGreaterThan(1);
+});

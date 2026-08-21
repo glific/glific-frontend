@@ -89,66 +89,8 @@
   border-left: 5px solid transparent;
 }
 
-/* the model's markdown, trimmed so it sits inside a chat bubble rather than a document */
 .Markdown {
   white-space: normal;
-
-  p {
-    margin: 0;
-  }
-
-  p + p,
-  ul,
-  ol,
-  pre,
-  blockquote {
-    margin: var(--app-space-sm) 0 0;
-  }
-
-  ul,
-  ol {
-    padding-left: var(--app-space-xl);
-  }
-
-  li + li {
-    margin-top: var(--app-space-2xs);
-  }
-
-  code {
-    padding: 0 var(--app-space-2xs);
-    border-radius: var(--app-radius-lg);
-    background-color: rgb(var(--app-color-slate-rgb) / 12%);
-    font-size: var(--app-font-size-xs);
-  }
-
-  pre {
-    overflow-x: auto;
-    padding: var(--app-space-sm);
-    border-radius: var(--app-radius-lg);
-    background-color: rgb(var(--app-color-slate-rgb) / 12%);
-
-    code {
-      padding: 0;
-      background: none;
-    }
-  }
-
-  a {
-    color: var(--app-color-brand-primary);
-  }
-
-  table {
-    display: block;
-    overflow-x: auto;
-    border-collapse: collapse;
-  }
-
-  th,
-  td {
-    padding: var(--app-space-2xs) var(--app-space-sm);
-    border: 1px solid var(--app-color-border);
-    text-align: left;
-  }
 }
 
 .FailedMessage {

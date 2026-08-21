@@ -1,3 +1,3 @@
-export { AddGoldenQaSetDialog } from './AddGoldenQaSetDialog';
-export { ManageGoldenQaSetsDialog } from './ManageGoldenQaSetsDialog';
-export { ViewGoldenQaSetDialog } from './ViewGoldenQaSetDialog';
+export { AddGoldenQaSetDialog } from './AddGoldenQaSetDialog/AddGoldenQaSetDialog';
+export { ManageGoldenQaSetsDialog } from './ManageGoldenQaSetsDialog/ManageGoldenQaSetsDialog';
+export { ViewGoldenQaSetDialog } from './ViewGoldenQaSetDialog/ViewGoldenQaSetDialog';

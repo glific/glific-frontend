@@ -1,5 +1,11 @@
 import type { SandboxChat, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
-import { SANDBOX_CHAT_KEY_PREFIX, currentOrganizationId, removeKey, resolveKey, sandboxKeys } from '../utils/sandbox';
+import {
+  SANDBOX_CHAT_KEY_PREFIX,
+  currentOrganizationId,
+  removeKey,
+  resolveKey,
+  sandboxKeys,
+} from '../utils/sandbox/sandbox';
 
 const MAX_CACHED_MESSAGES = 50;
 
