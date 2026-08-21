@@ -14,8 +14,8 @@
   border-radius: var(--app-radius-pill);
   background-color: rgb(var(--app-color-amber-primary-rgb) / 10%);
   color: var(--app-color-attention);
-  font-size: var(--app-font-size-xs);
-  font-weight: 800;
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
 }
 
 .UnsavedDot {
