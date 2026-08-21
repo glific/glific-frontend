@@ -11,6 +11,8 @@ import {
   setOrganizationReadyToDelete,
   setOrganizationReadyToDeletePayloadError,
   updateOrganizationStatusToSuspended,
+  updateOrganizationStatusToSuspendedPayloadError,
+  updateOrganizationStatusToSuspendedNetworkError,
 } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
 import * as Notification from 'common/notification';
@@ -87,6 +89,42 @@ test('changes the organization status from the status dropdown', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith('Organization updated successfully');
+  });
+});
+
+test('warns and stops when the status dropdown mutation returns a payload error', async () => {
+  render(renderList([...getAllOrganizations, updateOrganizationStatusToSuspendedPayloadError]));
+
+  await waitFor(() => {
+    expect(screen.getByText('Organizations')).toBeInTheDocument();
+  });
+
+  const dropdowns = screen.getAllByTestId('dropdown');
+  const combobox = within(dropdowns[1]).getByRole('combobox');
+  fireEvent.mouseDown(combobox);
+
+  fireEvent.click(screen.getByText('Suspended'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('Unable to update organization status', 'warning');
+  });
+});
+
+test('reports an error when the status dropdown mutation rejects', async () => {
+  render(renderList([...getAllOrganizations, updateOrganizationStatusToSuspendedNetworkError]));
+
+  await waitFor(() => {
+    expect(screen.getByText('Organizations')).toBeInTheDocument();
+  });
+
+  const dropdowns = screen.getAllByTestId('dropdown');
+  const combobox = within(dropdowns[1]).getByRole('combobox');
+  fireEvent.mouseDown(combobox);
+
+  fireEvent.click(screen.getByText('Suspended'));
+
+  await waitFor(() => {
+    expect(errorSpy).toHaveBeenCalled();
   });
 });
 
