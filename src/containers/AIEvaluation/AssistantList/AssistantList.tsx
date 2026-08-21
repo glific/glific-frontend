@@ -18,6 +18,7 @@ import { Heading } from 'components/UI/Heading/Heading';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { List } from 'containers/List/List';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { clearSandboxChatsForAssistant } from 'containers/AIEvaluation/services/sandboxChatCache';
 import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
 
 import styles from './AssistantList.module.css';
@@ -143,6 +144,8 @@ export const AssistantList = () => {
 
     try {
       await deleteAssistant({ variables: { deleteAssistantId: id } });
+      // its cached transcripts would otherwise outlive it
+      clearSandboxChatsForAssistant(id);
       setNotification(t('Assistant deleted successfully'));
       client.refetchQueries({ include: [FILTER_ASSISTANTS] });
     } catch (error: unknown) {

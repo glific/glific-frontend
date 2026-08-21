@@ -12,6 +12,7 @@ import {
   getCollectionContactsQuery,
   addContactToCollection,
   exportCollectionsQueryWithErrors,
+  exportCollectionsQueryNetworkError,
 } from 'mocks/Collection';
 import { getContactsQuery, getContactsSearchQuery, getExcludedContactsQuery } from 'mocks/Contact';
 import { getCurrentUserQuery } from 'mocks/User';
@@ -218,6 +219,27 @@ describe('<CollectionList />', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('should show error if exporting the collection fails with a network error', async () => {
+    const { getByTestId, getAllByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryNetworkError]} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('export-icon'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('An error occurred while exporting the collection', 'warning');
     });
   });
 

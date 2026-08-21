@@ -65,6 +65,7 @@ export const GET_ASSISTANT = gql`
         instructions
         status
         temperature
+        effort
         vectorStore {
           id
           vectorStoreId
@@ -108,6 +109,17 @@ export const GET_ASSISTANT_VERSIONS = gql`
           fileSize
         }
       }
+    }
+  }
+`;
+
+export const GET_ASSISTANT_MODELS = gql`
+  query AssistantModels {
+    kaapiModels {
+      modelName
+      provider
+      completionType
+      config
     }
   }
 `;

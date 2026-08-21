@@ -114,7 +114,7 @@ cache.writeQuery({
             body: 'hey',
             contact: {
               __typename: 'Contact',
-              name: 'default reciever',
+              name: 'default receiver',
             },
             waManagedPhone: {
               __typename: 'WaManagedPhone',

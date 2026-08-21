@@ -7,16 +7,8 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
-import type { ModelConfig, ReasoningEffort, Verbosity } from 'containers/AIEvaluation/types/assistantType';
-import {
-  ASSISTANT_MODELS,
-  EFFORT_HINTS,
-  TEMPERATURE_MAX,
-  TEMPERATURE_MIN,
-  VERBOSITY_OPTIONS,
-  getModel,
-  getModelParams,
-} from '../../assistantModels';
+import type { AssistantModel, ModelConfig, ModelParamSpec } from 'containers/AIEvaluation/types/assistantType';
+import { configForModel, getModel, getParamSpec } from '../../assistantModels';
 import {
   PromptAnswers,
   PromptGeneratorModal,
@@ -27,11 +19,12 @@ import styles from './PersonaPrompt.module.css';
 export interface PersonaPromptProps {
   prompt: string;
   config: ModelConfig;
+  models: AssistantModel[];
   onPromptChange: (prompt: string) => void;
   onConfigChange: (config: ModelConfig) => void;
 }
 
-export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }: PersonaPromptProps) => {
+export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfigChange }: PersonaPromptProps) => {
   const { t } = useTranslation();
 
   const [generatorOpen, setGeneratorOpen] = useState(false);
@@ -39,28 +32,18 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
 
   const isPromptGeneratorEnabled = getOrganizationServices('promptGeneratorEnabled');
 
-  const selectedModel = getModel(config.model);
-  const params = getModelParams(config);
+  const selectedModel = getModel(models, config.model);
+  const temperatureSpec = getParamSpec(selectedModel, 'temperature');
+  const effortSpec = getParamSpec(selectedModel, 'effort');
 
-  const modelOptions = ASSISTANT_MODELS.map((entry) => ({
-    id: entry.id,
-    label: entry.kind === 'reasoning' ? `${entry.label} · ${t('reasoning')}` : entry.label,
-  }));
+  const modelOptions = models.map((model) => ({ id: model.modelName, label: model.modelName }));
 
-  const handleModelChange = (id: string) => {
-    const previous = getModel(config.model);
-    const next = getModel(id);
-    const updated: ModelConfig = {
-      ...config,
-      model: id,
-      effort: next.kind === 'reasoning' ? (next.defaultEffort ?? config.effort) : config.effort,
-    };
+  const handleModelChange = (modelName: string) => {
+    const next = getModel(models, modelName);
+    onConfigChange(configForModel(next, config));
 
-    onConfigChange(updated);
-
-    // switching to a reasoning model silently drops temperature, so say so
-    if (previous.kind !== 'reasoning' && next.kind === 'reasoning' && !getModelParams(updated).temperature) {
-      setNotification(t('Temperature is not supported on reasoning models — use reasoning effort and verbosity.'));
+    if (temperatureSpec && !getParamSpec(next, 'temperature')) {
+      setNotification(t('This model does not take a temperature — use the settings it offers instead.'));
     }
   };
 
@@ -71,23 +54,17 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
     }
 
     const parsed = Number(value);
+    const min = temperatureSpec?.min ?? 0;
+    const max = temperatureSpec?.max ?? 2;
+
     let temperature = value;
-    if (parsed > TEMPERATURE_MAX) temperature = String(TEMPERATURE_MAX);
-    else if (parsed < TEMPERATURE_MIN) temperature = String(TEMPERATURE_MIN);
+    if (parsed > max) temperature = String(max);
+    else if (parsed < min) temperature = String(min);
 
     onConfigChange({ ...config, temperature });
   };
 
-  const handleEffortChange = (effort: ReasoningEffort) => {
-    onConfigChange({ ...config, effort });
-    if (effort === 'none') {
-      setNotification(t('Reasoning off — temperature is available again.'));
-    }
-  };
-
-  // effort and verbosity levels double as translation keys, so they render directly
-  const segmentOptions = <T extends ReasoningEffort | Verbosity>(values: T[]) =>
-    values.map((value) => ({ value, label: t(value) }));
+  const segmentOptions = (spec: ModelParamSpec) => (spec.options ?? []).map((value) => ({ value, label: value }));
 
   return (
     <div className={styles.Card} data-testid="personaPrompt">
@@ -130,66 +107,55 @@ export const PersonaPrompt = ({ prompt, config, onPromptChange, onConfigChange }
           onChange: (event: { target: { value: string } }) => handleModelChange(event.target.value),
         }}
       />
-      <div className={styles.Note} data-testid="modelBlurb">
-        {t(selectedModel.blurb)}
-      </div>
 
-      <div className={styles.ParamCard} data-testid="modelParams">
-        <div className={styles.ParamTitle}>
-          {t('Settings for')} {selectedModel.label}
-        </div>
+      {selectedModel && (
+        <div className={styles.ParamCard} data-testid="modelParams">
+          <div className={styles.ParamTitle}>
+            {t('Settings for')} {selectedModel.modelName}
+          </div>
 
-        {(params.effort || params.verbosity) && (
-          <div className={styles.ParamColumns}>
-            {params.effort && (
+          {effortSpec && (
+            <div className={styles.ParamColumns}>
               <SegmentedControl
                 className={styles.ParamColumn}
                 trackClassName={styles.SegmentTrack}
                 testId="effortSegment"
                 label={t('Reasoning effort')}
                 labelClassName={styles.FieldLabel}
-                options={segmentOptions(selectedModel.efforts ?? [])}
+                options={segmentOptions(effortSpec)}
                 value={config.effort}
-                onChange={handleEffortChange}
-                helperText={t(EFFORT_HINTS[config.effort])}
+                onChange={(effort: string) => onConfigChange({ ...config, effort })}
+                helperText={effortSpec.description}
               />
-            )}
+            </div>
+          )}
 
-            {params.verbosity && (
-              <SegmentedControl
-                className={styles.ParamColumn}
-                trackClassName={styles.SegmentTrack}
-                testId="verbositySegment"
-                label={t('Verbosity')}
-                labelClassName={styles.FieldLabel}
-                options={segmentOptions(VERBOSITY_OPTIONS)}
-                value={config.verbosity}
-                onChange={(verbosity: Verbosity) => onConfigChange({ ...config, verbosity })}
-                helperText={t('How long the replies run. Low suits WhatsApp, where long messages get truncated.')}
+          {temperatureSpec && (
+            <div>
+              <div className={styles.FieldLabel}>{t('Temperature')}</div>
+              <Input
+                type="number"
+                placeholder=""
+                field={{ name: 'temperature', value: config.temperature, onBlur: () => {} }}
+                onChange={handleTemperatureChange}
+                inputProp={{
+                  min: temperatureSpec.min,
+                  max: temperatureSpec.max,
+                  step: 0.01,
+                  'data-testid': 'temperatureInput',
+                }}
               />
-            )}
-          </div>
-        )}
+              <div className={styles.Note}>{temperatureSpec.description}</div>
+            </div>
+          )}
 
-        {params.temperature && (
-          <div>
-            <div className={styles.FieldLabel}>{t('Temperature')}</div>
-            <Input
-              type="number"
-              placeholder=""
-              field={{ name: 'temperature', value: config.temperature, onBlur: () => {} }}
-              onChange={handleTemperatureChange}
-              inputProp={{
-                min: TEMPERATURE_MIN,
-                max: TEMPERATURE_MAX,
-                step: 0.01,
-                'data-testid': 'temperatureInput',
-              }}
-            />
-            <div className={styles.Note}>{t('Lower = more predictable. Keep near 0 for factual assistants.')}</div>
-          </div>
-        )}
-      </div>
+          {!effortSpec && !temperatureSpec && (
+            <div className={styles.Note} data-testid="noModelParams">
+              {t('This model has no settings to tune.')}
+            </div>
+          )}
+        </div>
+      )}
 
       {generatorOpen && (
         <PromptGeneratorModal

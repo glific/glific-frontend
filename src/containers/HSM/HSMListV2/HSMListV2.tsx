@@ -23,6 +23,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { GET_HSM_CATEGORIES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { BULK_APPLY_TEMPLATES, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
+import { getOrganizationServices } from 'services/AuthService';
 
 import { TemplateLibraryModal } from '../TemplateLibraryModal/TemplateLibraryModal';
 import styles from './HSMListV2.module.css';
@@ -55,6 +56,7 @@ const HSMListV2 = () => {
   const [collapseRow, setCollapseRow] = useState('');
   const [refreshList, setRefreshList] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
+  const isTemplateLibraryEnabled = getOrganizationServices('templateLibraryEnabled');
   const importCancelledRef = useRef(false);
 
   const { data: tagsData } = useQuery(GET_TAGS, { variables: {}, fetchPolicy: 'network-only' });
@@ -130,7 +132,7 @@ const HSMListV2 = () => {
         }
       } catch {
         if (!importCancelledRef.current) {
-          setNotification(t('An error occured! Please check the format of the file'), 'warning');
+          setNotification(t('An error occurred! Please check the format of the file'), 'warning');
         }
       } finally {
         if (!importCancelledRef.current) setImporting(false);
@@ -271,7 +273,7 @@ const HSMListV2 = () => {
         <ImportButton title={t('Bulk apply')} onImport={handleStartImport} afterImport={handleBulkApply} />
       </div>
       {syncHSMButton}
-      {templateLibraryButton}
+      {isTemplateLibraryEnabled && templateLibraryButton}
     </div>
   );
 
@@ -338,7 +340,7 @@ const HSMListV2 = () => {
 
   return (
     <>
-      <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />
+      {isTemplateLibraryEnabled && <TemplateLibraryModal open={showLibrary} onClose={() => setShowLibrary(false)} />}
       {importing && (
         <DialogBox
           title={t('Processing your file')}

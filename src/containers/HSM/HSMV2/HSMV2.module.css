@@ -20,12 +20,17 @@
   width: 100% !important;
   max-width: 720px !important;
   padding: 0 !important;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
   gap: 0;
   /* aligns fields with the Heading title text: Heading's own 10px left padding
      plus its .HeadingWrapper's 46px margin-left. */
   margin: 0 0 0 56px;
+}
+
+.CustomFormShell > * {
+  grid-column: 1 / -1;
 }
 
 /* Bottom action buttons */
@@ -57,6 +62,7 @@
 .SectionTitleWrapper {
   width: 100%;
   margin-top: 32px;
+  grid-column: 1;
 }
 
 /* the detail form/simulator stay mounted while collapsed (see HSMV2.tsx) so
@@ -82,7 +88,7 @@
   width: 100%;
 }
 
-.AutoTranslateButton {
+.OutlinePillButton {
   display: inline-flex !important;
   align-items: center;
   gap: 6px;
@@ -97,10 +103,16 @@
   background: #ffffff !important;
 }
 
-.AutoTranslateIcon {
+.OutlinePillButtonIcon {
   font-size: 18px !important;
   width: 18px !important;
   height: 18px !important;
+}
+
+.SectionTitleAction {
+  grid-column: 2;
+  width: fit-content;
+  margin-top: 32px;
 }
 
 .SourceReferenceCard {
@@ -123,15 +135,9 @@
   line-height: 1.5;
 }
 
-/* Matches FormLayout.module.css's .FieldLabel exactly — FooterField renders
-   its own label instead of relying on FormLayout's field.label mechanism, so
-   it needs to look identical to every other field label on the page. */
+/* FooterField renders its own label instead of relying on FormLayout's
+   field.label mechanism, so it needs to look identical to every other field
+   label on the page — composed from the source instead of duplicated. */
 .FieldLabel {
-  margin-top: 24px;
-  vertical-align: middle;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 18px;
-  color: #555555;
-  padding-bottom: 14px;
+  composes: FieldLabel from '../../Form/FormLayout.module.css';
 }
