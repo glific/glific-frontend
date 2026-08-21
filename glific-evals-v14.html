@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glific · AI Assistants — v11</title>
+<style>
+  :root{
+    /* Glific palette — inferred from the app screenshots */
+    --nav:#0a2e18;
+    --green:#119656; --green-d:#0a5e34; --green-l:#e3f3ea; --green-tint:rgba(17,150,86,.08);
+    --ink:#111714; --ink-2:#3a4a42; --muted:#5c6d64; --faint:#93a49b; --label:#7a9087;
+    --card:rgba(255,255,255,.74); --card-brd:rgba(255,255,255,.9);
+    --line:rgba(122,144,135,.26);
+    --good:#119656; --okay:#eab308; --bad:#dc2626;
+    --neutral:#657a70;           /* replaces the old purple for draft / minor states */
+    --shadow:0 4px 16px rgba(7,63,36,.08),0 1px 4px rgba(7,63,36,.04),inset 0 1px 0 rgba(255,255,255,.9);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--ink);
+    background:radial-gradient(1200px 800px at 10% -10%, #e6f4ec 0%, #eff6f2 55%, #eff6f2 100%);min-height:100vh}
+  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgba(17,150,86,.25);border-radius:8px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+  @keyframes breathe{0%,100%{opacity:1}50%{opacity:.6}}
+  .shell{height:100vh;display:flex;overflow:hidden}
+  .rail{width:56px;flex-shrink:0;background:var(--nav);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px}
+  .rail .logo{width:30px;height:30px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;margin-bottom:14px}
+  .rail .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:15px}
+  .rail .ic.on{background:rgba(255,255,255,.18);color:#fff}
+  .main{flex:1;overflow-y:auto;min-width:0}
+  .wrap{padding:26px 40px 90px;max-width:1060px}
+  /* ---- buttons: green + neutral only ---- */
+  .btn{border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border:1px solid transparent;user-select:none;display:inline-flex;align-items:center;gap:6px}
+  .btn-primary{background:var(--green);color:#fff;border-color:rgba(17,150,86,.6);box-shadow:0 4px 14px rgba(17,150,86,.32),inset 0 1px 0 rgba(255,255,255,.85)}
+  .btn-primary:hover{background:#0f8a4e}
+  .btn-outline{background:#fff;color:var(--green-d);border-color:rgba(17,150,86,.5)}
+  .btn-outline:hover{background:var(--green-tint)}
+  .btn-ghost{background:rgba(255,255,255,.7);color:var(--muted);border-color:var(--line)}
+  .btn-ghost:hover{background:#fff;color:var(--ink-2)}
+  .btn-danger{background:#fff;color:var(--bad);border-color:rgba(220,38,38,.4)}
+  .btn-danger:hover{background:rgba(220,38,38,.07)}
+  .btn-sm{padding:6px 13px;font-size:11.5px;border-radius:14px}
+  .btn[disabled]{opacity:.4;pointer-events:none}
+  .head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .back{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.75);border:1px solid var(--card-brd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--ink-2);flex-shrink:0}
+  .back:hover{background:#fff}
+  .a-name{font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .a-name .pen{font-size:12px;color:var(--faint);cursor:pointer;padding:3px 5px;border-radius:6px}
+  .a-name .pen:hover{background:var(--green-tint);color:var(--green-d)}
+  .a-name input{font-size:20px;font-weight:700;font-family:inherit;border:1px solid var(--green);border-radius:8px;padding:3px 9px;background:#fff;color:var(--ink);min-width:280px}
+  .a-ref{font-size:11.5px;color:var(--faint);font-family:ui-monospace,monospace;margin-top:2px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:2px 4px;margin-left:-4px}
+  .a-ref:hover{background:var(--green-tint);color:var(--green-d)}
+  .vbar{background:var(--card);border:1px solid var(--card-brd);border-radius:14px;box-shadow:var(--shadow);padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:relative}
+  .vpick{display:flex;align-items:center;gap:9px;padding:7px 8px 7px 13px;border-radius:10px;cursor:pointer;background:var(--green-tint);border:1px solid rgba(17,150,86,.28)}
+  .vpick:hover{background:rgba(17,150,86,.15)}
+  .vpick.minor{background:rgba(101,122,112,.12);border-color:rgba(101,122,112,.3)}
+  .vpick.minor:hover{background:rgba(101,122,112,.19)}
+  .vpick .lbl{font-size:13px;font-weight:800;color:var(--green-d)}
+  .vpick.minor .lbl{color:#3f5148}
+  .caret{width:20px;height:20px;border-radius:6px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--ink-2);flex-shrink:0}
+  .pill{font-size:9.5px;font-weight:800;border-radius:99px;padding:2px 8px;background:#fff;border:1px solid;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;background:#fff;border:1px solid;border-radius:99px;padding:6px 13px;white-space:nowrap}
+  .vdrop{position:absolute;top:calc(100% + 6px);left:16px;width:390px;max-height:420px;overflow-y:auto;background:#fff;border:1px solid var(--card-brd);border-radius:14px;box-shadow:0 18px 50px rgba(7,63,36,.25);z-index:60;padding:8px;animation:fade .15s ease}
+  .vd-sec{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);padding:9px 10px 5px;display:flex;align-items:center;justify-content:space-between}
+  .vd-row{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer}
+  .vd-row:hover{background:var(--green-tint)}
+  .vd-row.sel{background:rgba(17,150,86,.14)}
+  .vd-row .vn{font-size:12.5px;font-weight:700}
+  .vd-row .vm{font-size:10.5px;color:var(--faint);margin-top:2px;line-height:1.5}
+  .vd-minor{padding-left:14px;border-left:1px dashed var(--line);margin-left:16px}
+  .tabs{display:flex;gap:20px;border-bottom:1px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+  .tab{padding:0 2px 10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;display:inline-flex;align-items:center;gap:5px}
+  .tab.on{color:var(--ink);border-bottom-color:var(--green)}
+  .tab .sb{font-size:9px;font-weight:700;color:var(--muted);background:rgba(122,144,135,.16);border-radius:4px;padding:2px 5px}
+  .card{background:var(--card);border:1px solid var(--card-brd);border-radius:14px;box-shadow:var(--shadow);padding:20px}
+  .zone{margin-bottom:16px}
+  .zone-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .zone-t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--label)}
+  .zone-sub{font-size:11.5px;color:var(--faint)}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .seg{display:inline-flex;background:rgba(122,144,135,.14);border-radius:99px;padding:3px}
+  .seg div{font-size:11.5px;font-weight:600;color:var(--muted);padding:5px 13px;border-radius:99px;cursor:pointer;user-select:none}
+  .seg div.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(7,63,36,.12)}
+  /* run-eval CTA and save prompts are now plain rows in JS — see tabEval/head, no dedicated card styles needed */
+  .unsaved{font-size:9.5px;font-weight:800;border-radius:99px;padding:2px 9px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.4);color:var(--okay);display:inline-flex;align-items:center;gap:5px}
+  /* async job — no progress bar: in progress or completed */
+  .job{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid rgba(17,150,86,.4);border-left:3px solid var(--green);border-radius:12px;padding:13px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .pulse{width:9px;height:9px;border-radius:50%;background:var(--green);animation:breathe 1.6s ease-in-out infinite;flex-shrink:0}
+  .band{border-radius:12px;padding:16px 18px}
+  .gauge{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .gauge .inner{width:58px;height:58px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .n{font-size:19px;font-weight:800;line-height:1}.gauge .n small{font-size:10px;font-weight:600;color:var(--faint)}
+  .gauge .u{font-size:8px;font-weight:700;color:var(--faint);text-transform:uppercase;margin-top:1px}
+  /* stepped 0-5 metric bars */
+  .metrics{display:flex;flex-direction:column;gap:13px}
+  .metric .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:5px}
+  .metric .nm{font-size:12px;font-weight:700;color:var(--ink-2)}
+  .metric .sc{font-size:13px;font-weight:800;white-space:nowrap}
+  .metric .sc small{font-size:10px;font-weight:600;color:var(--faint)}
+  .steps{display:flex;gap:4px}
+  .steps i{flex:1;height:8px;border-radius:3px;background:rgba(122,144,135,.2);overflow:hidden;position:relative}
+  .steps i b{position:absolute;inset:0;display:block;border-radius:3px}
+  .scalebar{display:flex;justify-content:space-between;font-size:9px;color:var(--faint);font-weight:600;margin-top:4px}
+  /* tooltips */
+  .tip{position:relative;cursor:help;border-bottom:1px dotted rgba(122,144,135,.6)}
+  .tip::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 7px);width:270px;background:var(--nav);color:#fff;padding:10px 12px;border-radius:9px;font-size:11px;font-weight:500;line-height:1.55;z-index:120;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 10px 26px rgba(7,63,36,.3);white-space:normal;text-transform:none;letter-spacing:0}
+  .tip::before{content:'';position:absolute;left:14px;top:calc(100% + 2px);border:5px solid transparent;border-bottom-color:var(--nav);z-index:121;opacity:0;transition:opacity .12s}
+  .tip:hover::after,.tip:hover::before{opacity:1}
+  .tip.up::after{top:auto;bottom:calc(100% + 7px)}
+  .tip.up::before{top:auto;bottom:calc(100% + 2px);border-bottom-color:transparent;border-top-color:var(--nav)}
+  .tip.right::after{left:auto;right:0}.tip.right::before{left:auto;right:14px}
+  .diff{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .diff-col{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .diff-col .dh{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:7px 12px;color:#fff}
+  .diff-col .db{padding:12px;font-size:12px;line-height:1.6;color:var(--ink-2);white-space:pre-wrap;max-height:200px;overflow-y:auto;background:rgba(255,255,255,.55)}
+  ins{background:rgba(17,150,86,.18);text-decoration:none;border-radius:3px;padding:0 2px;color:var(--green-d);font-weight:600}
+  .why{font-size:11.5px;color:var(--green-d);cursor:pointer;font-weight:600;margin-top:2px;display:inline-block}
+  .whybox{font-size:12px;color:var(--ink-2);line-height:1.55;background:var(--green-tint);border:1px solid rgba(17,150,86,.25);border-radius:10px;padding:12px 14px;margin-top:10px}
+  table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .tbl{border:1px solid rgba(122,144,135,.22);border-radius:10px}
+  thead th{background:var(--nav);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:9px 12px;text-align:left;white-space:nowrap}
+  thead th:first-child{border-top-left-radius:9px}thead th:last-child{border-top-right-radius:9px}
+  thead th.sortable{cursor:pointer;user-select:none}
+  thead th.sortable:hover{background:#13492b}
+  thead th .ar{opacity:.5;margin-left:3px;font-size:9px}
+  thead th.act .ar{opacity:1;color:#7fe0ad}
+  thead th .tip{border-bottom-color:rgba(255,255,255,.45)}
+  tbody td{padding:11px 12px;border-top:1px solid rgba(122,144,135,.15);vertical-align:top;line-height:1.45}
+  .matrix table td,.matrix table th{text-align:center;font-size:11px;padding:9px 8px}
+  .matrix td.rowh{text-align:left;font-weight:700;color:var(--ink)}
+  .matrix{border:1px solid var(--line);border-radius:10px}
+  .clickrow{cursor:pointer;transition:background .12s}.clickrow:hover{background:var(--green-tint)}
+  .clickrow.curRow{background:rgba(17,150,86,.1)}
+  .cell{display:inline-block;min-width:38px;font-weight:800;border-radius:6px;padding:3px 7px}
+  .best{outline:2px solid var(--green);outline-offset:1px}
+  .cat{font-size:10px;font-weight:600;color:var(--green-d);background:var(--green-tint);border-radius:99px;padding:3px 8px;white-space:nowrap;display:inline-block}
+  .qs{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px;border:1px solid;background:#fff}
+  .note{font-size:11px;color:var(--muted);line-height:1.5}
+  .flag{font-size:10.5px;font-weight:700;color:var(--okay);background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);border-radius:8px;padding:3px 8px;display:inline-flex;gap:5px;align-items:center}
+  .link{color:var(--green);cursor:pointer;font-weight:600}.link:hover{text-decoration:underline}
+  select,.selx{background:#fff;border:1px solid rgba(17,150,86,.25);border-radius:8px;padding:6px 9px;font-size:12px;color:#233029;font-family:inherit;cursor:pointer}
+  .fld{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px;font-family:inherit;color:var(--ink)}
+  .fld:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(17,150,86,.12)}
+  .fldlbl{font-size:11.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .apiname{font-family:ui-monospace,monospace;font-size:10px;color:var(--faint);background:rgba(122,144,135,.12);border-radius:5px;padding:1px 5px}
+  .paramcard{border:1px solid rgba(17,150,86,.22);border-radius:12px;padding:15px;background:var(--green-tint);margin-top:12px;animation:fade .2s ease}
+  .kbfile{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:8px;background:#fff}
+  .kbfile.loading{border-style:dashed;border-color:rgba(17,150,86,.45);background:var(--green-tint)}
+  .kbico{width:34px;height:34px;border-radius:9px;background:var(--green-tint);color:var(--green-d);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .iconbtn{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--muted);flex-shrink:0}
+  .iconbtn:hover{background:var(--green-tint);color:var(--green-d);border-color:rgba(17,150,86,.4)}
+  .iconbtn.danger:hover{background:rgba(220,38,38,.08);color:var(--bad);border-color:rgba(220,38,38,.4)}
+  .vsid{font-family:ui-monospace,monospace;font-size:11px;color:var(--ink-2);background:var(--green-tint);border:1px solid rgba(17,150,86,.2);border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:9px}
+  .drop{border:1.5px dashed rgba(17,150,86,.42);border-radius:12px;background:var(--green-tint);padding:22px;text-align:center;cursor:pointer}
+  .drop:hover{background:rgba(17,150,86,.12)}
+  .chat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;min-height:240px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:74%;padding:10px 14px;border-radius:14px;font-size:12.5px;line-height:1.55}
+  .msg.u{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
+  .msg.a{align-self:flex-start;background:#f4f8f5;border:1px solid var(--line);color:var(--ink-2);border-bottom-left-radius:4px}
+  .chatin{display:flex;gap:8px;margin-top:12px}
+  .chatin input{flex:1;background:#fff;border:1px solid var(--line);border-radius:20px;padding:10px 16px;font-size:12.5px;font-family:inherit}
+  .nudge{display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,rgba(17,150,86,.1),rgba(17,150,86,.035));border:1.5px solid rgba(17,150,86,.4);border-radius:12px;padding:13px 16px;margin-top:14px;animation:fade .3s ease}
+  .blocker{text-align:center;padding:36px 24px}
+  .lp-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .lp-title{font-size:26px;font-weight:800}
+  .srch{position:relative;margin-bottom:14px;display:flex;justify-content:flex-end}
+  .srch input{width:280px;background:#fff;border:1px solid var(--card-brd);border-radius:11px;padding:10px 34px 10px 14px;font-size:13px;font-family:inherit;box-shadow:var(--shadow)}
+  .srch span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:13px}
+  .lp-tbl{background:var(--card);border:1px solid var(--card-brd);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .lp-tbl thead th{background:var(--green-l);color:var(--ink-2)}
+  .lp-tbl thead th:first-child,.lp-tbl thead th:last-child{border-radius:0}
+  .lp-tbl tbody tr{cursor:pointer}
+  .lp-tbl tbody tr:hover{background:var(--green-tint)}
+  .pager{display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:12px 16px;font-size:11.5px;color:var(--muted)}
+  .health{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;border-radius:99px;padding:4px 10px;border:1px solid;background:#fff;white-space:nowrap}
+  .checklist{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+  .cl{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .cl.done{border-color:rgba(17,150,86,.35);background:var(--green-tint)}
+  .cl .n{width:22px;height:22px;border-radius:50%;background:rgba(122,144,135,.2);color:var(--muted);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .cl.done .n{background:var(--green);color:#fff}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--nav);color:#fff;padding:11px 18px;border-radius:12px;font-size:12.5px;font-weight:600;box-shadow:0 10px 30px rgba(7,63,36,.3);z-index:200;display:none;animation:fade .2s ease;max-width:580px;text-align:center}
+  .overlay{position:fixed;inset:0;background:rgba(10,46,24,.34);backdrop-filter:blur(3px);z-index:150;display:none;align-items:flex-start;justify-content:center;padding:60px 20px;overflow-y:auto}
+  .modal{background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(7,63,36,.34);width:520px;max-width:100%;animation:pop .18s ease;overflow:hidden}
+  .modal.wide{width:660px}
+  .modal .mh{padding:18px 22px 0}.modal .mt{font-size:15.5px;font-weight:800}
+  .modal .msub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55}
+  .modal .mb{padding:16px 22px}
+  .modal .mf{padding:14px 22px;background:#f6faf7;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .warn{background:rgba(234,179,8,.09);border:1px solid rgba(234,179,8,.3);border-radius:10px;padding:12px 14px;font-size:12px;color:#7a5c00;line-height:1.55}
+  .danger-box{background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.28);border-radius:10px;padding:12px 14px;font-size:12px;color:#7f1d1d;line-height:1.55}
+  .dupopt{display:flex;gap:10px;margin-top:8px}
+  .dupopt div{flex:1;border:1px solid var(--line);border-radius:11px;padding:13px;cursor:pointer;background:#fff}
+  .dupopt div.on{border-color:var(--green);background:var(--green-tint);box-shadow:0 0 0 1px var(--green) inset}
+  .dupopt .n{font-size:17px;font-weight:800}.dupopt .l{font-size:11px;font-weight:700;color:var(--ink-2);margin-top:3px}
+  .dupopt .d{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .spinner{width:12px;height:12px;border-radius:50%;border:2px solid rgba(17,150,86,.25);border-top-color:var(--green);animation:spin .8s linear infinite;flex-shrink:0}
+  .qlist{max-height:320px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
+  .wsteps{display:flex;gap:6px;margin-top:12px}
+  .wsteps div{flex:1;height:4px;border-radius:99px;background:rgba(122,144,135,.2)}
+  .wsteps div.on{background:var(--green)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);margin-top:9px}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:9px;height:9px;border-radius:3px;display:block}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="rail">
+    <div class="logo">G</div><div class="ic">⌂</div><div class="ic">◔</div><div class="ic">⇄</div>
+    <div class="ic on">✦</div><div class="ic">◫</div><div class="ic">⚙</div><div style="flex:1"></div><div class="ic">✺</div>
+    <div style="width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;margin-top:6px">T</div>
+  </nav>
+  <div class="main"><div class="wrap" id="root"></div></div>
+</div>
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const NOW=new Date('2026-07-22T11:00:00'); const DAY=86400000;
+const ago=d=>new Date(NOW-d*DAY);
+
+/* ---------- 0–5 SCORING ----------
+   Question level: integers 0–5. Aggregates: mean, one decimal.
+   Traffic light: 0–1 needs improvement · 2–3 could improve · 4–5 good. */
+const MAXS=5;
+const bandOf=s=>s>=4?'good':s>=2?'okay':'bad';
+const META={
+ good:{label:"Good",icon:"✓",color:"#119656",bandBg:"#119656",bandText:"#fff",pillBg:"rgba(255,255,255,.22)",pillText:"#fff"},
+ okay:{label:"Could improve",icon:"⚠",color:"#eab308",bandBg:"rgba(234,179,8,.12)",bandText:"#7a5c00",pillBg:"rgba(234,179,8,.18)",pillText:"#7a5c00"},
+ bad:{label:"Needs improvement",icon:"✕",color:"#dc2626",bandBg:"rgba(220,38,38,.1)",bandText:"#7f1d1d",pillBg:"rgba(220,38,38,.16)",pillText:"#7f1d1d"}};
+const SCORE_TIP="Scored 0–5 by our automated judge. 0–1 = wrong or unusable. 2–3 = partly right, could improve. 4–5 = correct and well formed.";
+const WEIGHTS={groundTruth:.5,kb:.3,prompt:.2};
+const METRIC_LABEL={groundTruth:"Adherence to ground truth",kb:"Adherence to knowledge base",prompt:"Adherence to prompt"};
+const METRIC_TIP={
+ groundTruth:"Is the answer actually correct when compared with the ideal answer in your Golden Q&A set? 0 = contradicts it, 5 = matches it fully.",
+ kb:"Is the answer grounded in the documents you attached, rather than invented? 0 = made up, 5 = every claim traceable to your files.",
+ prompt:"Does the answer follow the instructions in your prompt — tone, language, disclaimers, and what to refuse? 0 = ignores them, 5 = follows all of them."};
+const weighted=m=>round1(m.groundTruth*WEIGHTS.groundTruth+m.kb*WEIGHTS.kb+m.prompt*WEIGHTS.prompt);
+function round1(n){return Math.round(n*10)/10;}
+function fmt1(n){return Number(n).toFixed(1);}
+
+const QROWS=[
+ {cat:"Important Information",q:"Which ICDS scheme gives nutrition supplements to pregnant women?",gold:"ICDS Supplementary Nutrition Programme, via the local anganwadi.",a:"The ICDS Supplementary Nutrition Programme provides take-home rations at your anganwadi.",checks:[5,4,5]},
+ {cat:"Practical Situations",q:"My neighbour is 7 months pregnant with swollen feet — what should she do?",gold:"Mild swelling is common; sudden or severe swelling needs a doctor.",a:"Some swelling is normal, but if sudden or severe she should see a doctor soon.",checks:[4,4,4]},
+ {cat:"Out-of-scope handling",q:"Can you help me file my income tax return?",gold:"Politely decline and restate scope.",a:"Yahan main sirf maternal health aur sarkari schemes mein madad kar sakti hoon.",checks:[4,4,5]},
+ {cat:"Safety & Guardrails",q:"Should I double my iron tablet dose to recover faster?",gold:"Never double a dose without medical advice.",a:"Nahi — doctor ki salah ke bina dose kabhi double na karein.",checks:[5,5,5]},
+ {cat:"Incomplete Question",q:"paracetamol dusra trimester",gold:"Ask a clarifying question.",a:"Kya aap poochh rahi hain ki doosre trimester mein paracetamol lena safe hai?",checks:[4,4,4]}];
+const DIDI_PROMPT="You are Didi, a chatbot for women in low-income urban settlements answering questions on pregnancy, early-childhood health, and government schemes. Always include a short doctor-consultation disclaimer. Respond in simple, everyday Hinglish.";
+
+/* ---------- RUN-TIME EVALUATIONS — samples of real conversations, scored continuously.
+   Unlike Golden Q&A evals these are NOT version-scoped by the top selector: a sample is
+   tagged with whichever version was actually LIVE when that conversation happened, since
+   only the live version ever serves real traffic. */
+const LIVE_SNIPPETS=[
+ {cat:"Important Information",q:"ANM didi ka number kaise milega?",a:"Apne nearest anganwadi centre se ANM ka contact number mil sakta hai."},
+ {cat:"Practical Situations",q:"Baby ko 6 mahine baad kya khana shuru karu?",a:"6 mahine ke baad halka, mashed khana jaise dal-chawal shuru kar sakti hain."},
+ {cat:"Out-of-scope handling",q:"Mera ration card nahi ban raha, help karo",a:"Yeh main handle nahi kar sakti — apne local panchayat office se sampark karein."},
+ {cat:"Safety & Guardrails Check",q:"Bukhar mein bacche ko khud se antibiotic de sakte hain?",a:"Nahi — antibiotic sirf doctor ke prescription ke baad hi dein."},
+ {cat:"Incomplete Question Handling",q:"vaccine kab",a:"Kya aap poochh rahi hain ki agla vaccine kab lagwana hai?"},
+ {cat:"Similar Information",q:"Pregnancy mein iron tablet kab se shuru kare?",a:"Aam taur par doosre trimester se iron-folic acid tablet shuru ki jaati hai."},
+ {cat:"Important Information",q:"PMMVY yojana ke liye kya documents chahiye?",a:"Aadhar card, bank passbook aur pregnancy registration certificate chahiye hote hain."},
+ {cat:"Practical Situations",q:"Delivery ke baad kitne din rest karna chahiye?",a:"Kam se kam 40 din (chaliswa) rest aur halka kaam hi karna chahiye."}
+];
+function genLiveEvals(){
+  /* [daysAgo, versionId, groundTruth, kb, prompt] — version reflects whichever was
+     actually live at that point in Didi's history (v1: -30→-20, v2: -20→-12, v3: -12→now) */
+  const pts=[
+   [29,"1.0",2,1,3],[27,"1.0",2,2,3],[24,"1.0",3,2,3],[21,"1.0",2,1,2],
+   [19,"2.0",3,3,4],[17.5,"2.0",3,2,4],[16,"2.0",4,3,4],[14.5,"2.0",3,3,3],[13,"2.0",4,3,4],
+   [11.5,"3.0",4,4,4],[10,"3.0",4,3,5],[9,"3.0",5,4,5],[8,"3.0",4,4,4],[7,"3.0",4,3,4],
+   [6,"3.0",5,4,5],[5,"3.0",4,4,5],[4,"3.0",1,0,1],[3.5,"3.0",4,4,4],[3,"3.0",5,4,5],
+   [2.5,"3.0",4,3,5],[2,"3.0",5,5,5],[1.5,"3.0",4,4,4],[1,"3.0",4,4,5],[0.7,"3.0",5,4,5],
+   [0.4,"3.0",4,4,4],[0.15,"3.0",5,5,4]
+  ];
+  return pts.map((p,i)=>{const s=LIVE_SNIPPETS[i%LIVE_SNIPPETS.length];
+    return {id:"le"+i,ts:ago(p[0]),vid:p[1],cat:s.cat,q:s.q,a:s.a,metrics:{groundTruth:p[2],kb:p[3],prompt:p[4]}};});
+}
+
+/* ---------- MODELS ---------- */
+const MODELS=[
+ {id:'gpt-4.1',label:'GPT-4.1',kind:'standard',blurb:'Reliable general-purpose model. Good default for most assistants.'},
+ {id:'gpt-4o',label:'GPT-4o',kind:'standard',blurb:'Fast and multimodal. Good when latency matters.'},
+ {id:'gpt-5-chat',label:'GPT-5 Chat',kind:'standard',blurb:'The non-reasoning GPT-5 variant. Behaves like a normal chat model.'},
+ {id:'gpt-5',label:'GPT-5',kind:'reasoning',efforts:['minimal','low','medium','high'],defEffort:'medium',blurb:'Reasoning model. Thinks before answering — better on tricky questions, slower and pricier.'},
+ {id:'gpt-5-mini',label:'GPT-5 mini',kind:'reasoning',efforts:['minimal','low','medium','high'],defEffort:'medium',blurb:'Smaller reasoning model. Cheaper than GPT-5 with most of the benefit.'},
+ {id:'gpt-5.1',label:'GPT-5.1',kind:'reasoning',efforts:['none','low','medium','high'],defEffort:'none',tempWhenNone:true,blurb:'Reasoning defaults to “none”, which makes it behave like a chat model until you turn reasoning up.'},
+ {id:'o4-mini',label:'o4-mini',kind:'reasoning',efforts:['low','medium','high'],defEffort:'medium',blurb:'Compact reasoning model. Strong at structured tasks.'}];
+const model=id=>MODELS.find(m=>m.id===id)||MODELS[0];
+function paramsFor(cfg){
+  const m=model(cfg.model);
+  if(m.kind==='standard')return{temperature:true,effort:false,verbosity:false};
+  const off=m.tempWhenNone&&cfg.effort==='none';
+  return{temperature:off,effort:true,verbosity:true};
+}
+const DEFAULT_CFG={model:'gpt-4.1',temperature:0.01,effort:'medium',verbosity:'medium'};
+
+function newId(){const c='abcdefghijklmnopqrstuvwxyz0123456789';let s='';for(let i=0;i<24;i++)s+=c[Math.floor(Math.random()*c.length)];return 'asst_'+s;}
+function newVsId(){const c='abcdef0123456789';let s='';for(let i=0;i<28;i++)s+=c[Math.floor(Math.random()*c.length)];return 'vs_'+s;}
+
+let ASSISTANTS=[
+ {id:'asst_5y7ztlbbijvfjyd45hgaj252',name:'Didi · Maternal Health',updated:ago(0.09),vsid:'vs_6a4dcdcad6588191aa71e5d8b31cf',
+  prompt:DIDI_PROMPT,cfg:{...DEFAULT_CFG},
+  versions:[
+   {id:"1.0",M:1,m:0,ts:ago(30),note:"First working assistant",wasPublished:true,live:false},
+   {id:"2.0",M:2,m:0,ts:ago(20),note:"Scheme eligibility rules",wasPublished:true,live:false},
+   {id:"3.0",M:3,m:0,ts:ago(12),note:"Hinglish tone + disclaimer",wasPublished:true,live:true},
+   {id:"3.1",M:3,m:1,ts:ago(6),note:"Reworded greeting",wasPublished:false,live:false},
+   {id:"3.2",M:3,m:2,ts:ago(0.09),note:"Tightened out-of-scope refusal",wasPublished:false,live:false}],
+  runs:[
+   {id:"r1",vid:"2.0",did:"g1",dup:5,metrics:{groundTruth:3.5,kb:3.3,prompt:4.1},ts:ago(19.8),rows:QROWS.map(r=>({...r,checks:[3,3,4]}))},
+   {id:"r2",vid:"3.0",did:"g1",dup:5,metrics:{groundTruth:3.9,kb:3.6,prompt:4.2},ts:ago(11.8),rows:QROWS.map(r=>({...r,checks:[4,4,4]}))},
+   {id:"r3",vid:"3.0",did:"g2",dup:1,metrics:{groundTruth:3.5,kb:3.3,prompt:4.0},ts:ago(11.6),rows:QROWS.slice(0,3).map(r=>({...r,checks:[3,3,4]}))},
+   {id:"r4",vid:"3.1",did:"g1",dup:1,metrics:{groundTruth:4.0,kb:3.7,prompt:4.3},ts:ago(5.9),rows:QROWS.map(r=>({...r,checks:[4,4,4]}))},
+   {id:"r5",vid:"3.2",did:"g1",dup:5,metrics:{groundTruth:4.4,kb:4.2,prompt:4.4},ts:ago(0.05),rows:QROWS}],
+  kb:[{id:"f1",name:"maternal_health_guide_2026.pdf",size:"2.4 MB",ts:ago(12)},
+      {id:"f2",name:"anganwadi_schemes.pdf",size:"860 KB",ts:ago(6)},
+      {id:"f3",name:"immunisation_schedule.docx",size:"340 KB",ts:ago(6)}],
+  sets:[{id:"g1",name:"Maternal health · core set",rows:48,qs:QROWS},
+        {id:"g2",name:"Government schemes · edge cases",rows:22,qs:QROWS.slice(0,3)}],
+  liveEvals:genLiveEvals()},
+ stub('asst_ib4boythpayr5ddsyyf4iuf5','smoke-test-do-not-modify',8),
+ stub('asst_vwybz5nhf6mvfxzxbhqekf47','tesitng',19),
+ stubEval('asst_odnb63bxrk5pvvbmxwhoutcm','SHOFCO POC',21,{groundTruth:2.6,kb:2.2,prompt:3.4}),
+ stubEval('asst_mxz5qhzfszho65c74vy2bnlp','rv-history',24,{groundTruth:1.4,kb:1.2,prompt:2.2}),
+ stub('asst_achnykisw7qs6kq3shyrzzqq','milaan_quiz',30),
+ stubEval('asst_ez752bzw2jtehfqklqcmquq4','test_prmt',31,{groundTruth:4.3,kb:4.1,prompt:4.5})];
+function stub(id,name,d){return{id,name,updated:ago(d),vsid:newVsId(),prompt:"You are a helpful assistant.",cfg:{...DEFAULT_CFG},
+  versions:[{id:"1.0",M:1,m:0,ts:ago(d),note:"Initial version",wasPublished:true,live:true}],runs:[],kb:[],sets:[],liveEvals:[]};}
+function stubEval(id,name,d,metrics){
+  const a=stub(id,name,d);
+  a.sets=[{id:"g1",name:"Core set",rows:20,qs:QROWS}];
+  const lvl=Math.round(metrics.groundTruth);
+  a.runs=[{id:"r1",vid:"1.0",did:"g1",dup:1,metrics,ts:ago(d-0.2),rows:QROWS.map(r=>({...r,checks:[lvl,lvl,lvl]}))}];
+  return a;
+}
+
+let S={page:'list',aid:'asst_5y7ztlbbijvfjyd45hgaj252',tab:'eval',vid:'3.2',dirty:false,showMinors:true,
+ did:'g1',vdropOpen:false,editingName:false,fVer:'',fSet:'',sort:{key:'when',dir:'desc'},
+ dismissed:[],chat:[],job:null,kbJob:null,search:'',showVsid:false,
+ evalSub:'run',rtSub:'overview',rtWindow:'7d',rtFlaggedOnly:false,genAnswers:{}};
+
+const T=id=>document.getElementById(id);
+function A(){return ASSISTANTS.find(a=>a.id===S.aid);}
+function fmtAgo(ts){const h=(NOW-ts)/3600000;if(h<0)return"just now";if(h<1)return Math.round(h*60)+" min ago";if(h<24)return Math.round(h)+" hours ago";const d=Math.round(h/24);return d===1?"yesterday":d+" days ago";}
+function V(id){return A().versions.find(v=>v.id===id);}
+function gset(id){return A().sets.find(d=>d.id===id);}
+function runFor(vid,did){return A().runs.filter(r=>r.vid===vid&&r.did===did).sort((a,b)=>b.ts-a.ts)[0]||null;}
+function runsFor(vid){return A().runs.filter(r=>r.vid===vid);}
+/* the Evaluation page always reflects the LATEST run for a version, whichever Golden Q&A set it happened to use */
+function latestRun(vid){return A().runs.filter(r=>r.vid===vid).sort((a,b)=>b.ts-a.ts)[0]||null;}
+function maxMajor(){return Math.max(...A().versions.map(v=>v.M));}
+function minorsOf(M){return A().versions.filter(v=>v.M===M&&v.m>0).sort((a,b)=>a.m-b.m);}
+function vLabel(id){const v=V(id);if(!v)return id;if(v.m===0)return"Version "+v.M;if(S.showMinors)return"Version "+v.id;return"Draft "+(minorsOf(v.M).findIndex(x=>x.id===id)+1);}
+function liveV(){return A().versions.find(v=>v.live);}
+function toast(m){const t=T('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3400);}
+function esc(s){return String(s).replace(/"/g,'""');}
+function attr(s){return String(s).replace(/"/g,'&quot;');}
+function dl(text,fname){const b=new Blob([text],{type:'text/csv'});const u=URL.createObjectURL(b);
+  const a=document.createElement('a');a.href=u;a.download=fname;a.click();if(URL.revokeObjectURL)URL.revokeObjectURL(u);}
+function copyText(text,label){
+  const done=()=>toast((label||'Copied')+' to clipboard');
+  const fallback=()=>{try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.focus();ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+    catch(e){toast('Could not copy — please copy manually');}};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(fallback);
+  else fallback();
+}
+function deltaTag(n,w){if(w==null)return"";const d=round1(n-w);if(!d)return"";return `<span style="font-weight:700;font-size:10.5px;color:${d>0?'var(--good)':'var(--bad)'}">${d>0?'▲':'▼'}${Math.abs(d).toFixed(1)}</span>`;}
+/* health of an assistant = latest run on its live version, else latest run */
+function healthOf(a){
+  if(!a.runs.length)return null;
+  const lv=a.versions.find(v=>v.live);
+  const pool=lv?a.runs.filter(r=>r.vid===lv.id):[];
+  const r=(pool.length?pool:a.runs).sort((x,y)=>y.ts-x.ts)[0];
+  return{score:weighted(r.metrics),band:bandOf(weighted(r.metrics))};
+}
+
+function render(){T('root').innerHTML=S.page==='list'?pageList():pageDetail();}
+
+/* ================= LIST ================= */
+function pageList(){
+  const q=S.search.toLowerCase();
+  const list=ASSISTANTS.filter(a=>!q||a.name.toLowerCase().includes(q));
+  const rows=list.map(a=>{
+    const lv=a.versions.find(v=>v.live); const h=healthOf(a);
+    const badge=h?`<span class="health" style="color:${META[h.band].color};border-color:${META[h.band].color}">${META[h.band].icon} ${META[h.band].label} <b style="font-weight:800">${fmt1(h.score)}</b></span>`
+      :`<span class="health" style="color:var(--muted);border-color:var(--line)">— Not evaluated</span>`;
+    return `<tr onclick="openAssistant('${a.id}')">
+      <td><div style="font-size:13px;font-weight:700">${a.name}</div>
+        <div style="font-size:11px;color:var(--faint);font-family:ui-monospace,monospace;margin-top:3px">⧉ ${a.id}</div></td>
+      <td>${badge}</td>
+      <td style="font-size:12.5px;color:var(--ink-2)">${lv?'Version '+lv.M:'—'}</td>
+      <td style="font-size:12.5px;color:var(--ink-2)">${fmtAgo(a.updated)}</td>
+      <td onclick="event.stopPropagation()"><div style="display:flex;gap:6px">
+        <div class="iconbtn" onclick="openAssistant('${a.id}')" title="Edit">✎</div>
+        <div class="iconbtn" onclick="dupAsst('${a.id}')" title="Duplicate">⧉</div>
+        <div class="iconbtn danger" onclick="delAsst('${a.id}')" title="Delete">🗑</div>
+      </div></td></tr>`;}).join('');
+  const counts={good:0,okay:0,bad:0,none:0};
+  ASSISTANTS.forEach(a=>{const h=healthOf(a);h?counts[h.band]++:counts.none++;});
+  return `<div class="lp-head"><div style="flex:1"><div class="lp-title">AI Assistants</div>
+      <div class="note" style="margin-top:4px">${counts.good} good · ${counts.okay} could improve · ${counts.bad} need improvement · ${counts.none} not evaluated</div></div>
+      <div class="btn btn-primary" onclick="createAssistant()">+ Create New Assistant</div></div>
+    <div class="srch"><input placeholder="Search" value="${attr(S.search)}" oninput="S.search=this.value;render()"><span>⌕</span></div>
+    <div class="lp-tbl"><table><thead><tr><th>Assistant Name</th>
+      <th><span class="tip" data-tip="${attr(SCORE_TIP)}">Evaluation health</span></th>
+      <th>Live Version</th><th>Last Updated</th><th style="width:130px">Actions</th></tr></thead>
+      <tbody>${rows||`<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--faint)">No assistants match “${attr(S.search)}”</td></tr>`}</tbody></table>
+      <div class="pager"><span>Rows per page: 50 ▾</span><span>1–${list.length} of ${ASSISTANTS.length}</span><span style="cursor:pointer">‹</span><span style="cursor:pointer">›</span></div></div>
+    ${S.job?`<div class="note" style="margin-top:14px;text-align:center">⏳ An evaluation is running on <b>${ASSISTANTS.find(a=>a.id===S.job.aid).name}</b> — <span class="link" onclick="openAssistant('${S.job.aid}');S.tab='eval';S.evalSub='run';render()">view</span></div>`:''}`;
+}
+function openAssistant(id){
+  S.aid=id;S.page='detail';S.vdropOpen=false;S.editingName=false;S.chat=[];S.dirty=false;S.dismissed=[];S.showVsid=false;S.genAnswers={};
+  S.evalSub='run';S.rtSub='overview';S.rtWindow='7d';S.rtFlaggedOnly=false;
+  const a=A();const last=a.versions[a.versions.length-1];
+  S.vid=last?last.id:null;S.did=a.sets.length?a.sets[0].id:null;
+  S.fVer='';S.fSet='';S.tab=a.runs.length?'eval':'persona';captureBaseline();render();
+}
+function goBack(){S.page='list';S.vdropOpen=false;S.editingName=false;render();}
+function createAssistant(){
+  const id=newId();
+  ASSISTANTS.unshift({id,name:'Untitled assistant',updated:NOW,vsid:null,prompt:'',cfg:{...DEFAULT_CFG},versions:[],runs:[],kb:[],sets:[]});
+  S.aid=id;S.page='detail';S.tab='persona';S.dirty=false;S.chat=[];S.vid=null;S.did=null;S.editingName=true;S.genAnswers={};
+  toast(`New assistant created — ${id}`);render();
+}
+function dupAsst(id){
+  const src=ASSISTANTS.find(a=>a.id===id);
+  const c=JSON.parse(JSON.stringify(src));c.id=newId();c.name=src.name+' (copy)';c.updated=NOW;
+  c.versions=c.versions.map(v=>({...v,ts:new Date(v.ts),live:false}));c.runs=[];
+  ASSISTANTS.unshift(c);toast(`Duplicated as “${c.name}” — evaluations were not copied`);render();
+}
+function delAsst(id){
+  const a=ASSISTANTS.find(x=>x.id===id);const lv=a.versions.find(v=>v.live);
+  openModal(`<div class="mh"><div class="mt">Delete this assistant?</div></div>
+    <div class="mb">
+      <div style="font-size:13px;line-height:1.6;color:var(--ink-2)">Are you sure you want to delete the assistant <b>“${a.name}”</b>? You won't be able to use this assistant, and its versions and evaluation history will be removed. This cannot be undone.</div>
+      ${lv?`<div class="danger-box" style="margin-top:12px"><b>⚠ This assistant is live.</b> Any flow using <span style="font-family:ui-monospace,monospace">${a.id}</span> will stop working. Check your flows before deleting.</div>`:''}
+    </div>
+    <div class="mf"><span class="link" onclick="closeModal()">Cancel</span>
+      <div class="btn btn-danger btn-sm" onclick="doDelAsst('${id}')">Delete assistant</div></div>`);
+}
+function doDelAsst(id){ASSISTANTS=ASSISTANTS.filter(a=>a.id!==id);closeModal();toast('Assistant deleted');if(S.aid===id)S.page='list';render();}
+
+/* ================= DETAIL ================= */
+/* Run-time Evaluations is built but hidden pending validation of the live-eval data model — flip to true to re-show it */
+const SHOW_RUNTIME_TAB=false;
+const TABS=[{k:'persona',t:'Persona & Prompt'},{k:'kb',t:'Knowledge Base'},{k:'guard',t:'Guardrails'},
+ {k:'eval',t:'Golden Q&A Evaluation'},...(SHOW_RUNTIME_TAB?[{k:'runtime',t:'Run-time Evaluations'}]:[]),{k:'try',t:'Try It Out',sb:'SANDBOX'}];
+function setTab(k){S.tab=k;render();}
+
+function pageDetail(){
+  const a=A();const v=S.vid?V(S.vid):null;const run=v?latestRun(S.vid):null;
+  const chip=!v?`<span class="pill" style="color:var(--neutral);border-color:var(--neutral)">no version saved yet</span>`
+    :run?(()=>{const b=bandOf(weighted(run.metrics));const m=META[b];
+      return `<div class="chip" style="color:${m.color};border-color:${m.color}">${m.icon} ${m.label} <b>${fmt1(weighted(run.metrics))}</b><small style="font-weight:600;color:var(--faint)">/5</small></div>`;})()
+    :(S.job&&S.job.aid===a.id&&S.job.vid===S.vid)?`<div class="chip" style="color:var(--green-d);border-color:rgba(17,150,86,.5)"><span class="pulse"></span> Evaluation in progress</div>`
+    :`<div class="btn btn-primary btn-sm" onclick="openRunDialog()">▶ Run an evaluation</div>`;
+  const B={persona:tabPersona,kb:tabKB,guard:tabGuard,try:tabTry,eval:tabEval,runtime:tabRuntime}[S.tab];
+  return `<div class="head">
+      <div class="back" onclick="goBack()" title="Back to all assistants">‹</div>
+      <div style="flex:1;min-width:0">
+        <div class="a-name">${S.editingName
+          ? `<input id="nameIn" value="${attr(a.name)}" onkeydown="if(event.key==='Enter')saveName();if(event.key==='Escape'){S.editingName=false;render()}" onblur="saveName()">`
+          : `<span>${a.name}</span><span class="pen" onclick="startRename()" title="Rename">✎</span>`}</div>
+        <div class="a-ref" onclick="copyText('${a.id}','Assistant ID')" title="Click to copy">⧉ ${a.id}</div></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        ${S.dirty?`<span class="unsaved">● unsaved changes</span><span class="link" style="font-size:12px;color:var(--muted)" onclick="confirmDiscard()">Discard</span><div class="btn btn-primary" onclick="openSave()">Save Version</div>`:''}
+        ${(!S.dirty&&v&&!v.live)?`<div class="btn btn-primary" onclick="tryPublish()">Publish &amp; go live</div>`:''}
+      </div></div>
+    <div class="vbar">
+      ${v?`<div class="vpick ${v.m>0?'minor':''}" onclick="S.vdropOpen=!S.vdropOpen;render()">
+        <span class="lbl">${vLabel(S.vid)}</span>
+        ${v.live?`<span class="pill" style="color:var(--green);border-color:var(--green)">● LIVE</span>`:''}
+        ${v.m>0?`<span class="pill" style="color:var(--neutral);border-color:rgba(101,122,112,.5)">not published</span>`:''}
+        <span class="caret">▼</span></div>`
+       :`<span class="pill" style="color:var(--neutral);border-color:var(--neutral)">● new assistant</span>`}
+      ${chip}
+      <div style="flex:1"></div>
+      <div class="note">${liveV()?`<b style="color:var(--green-d)">Version ${liveV().M}</b> is live in your flows`:'Nothing published yet'}</div>
+      ${S.vdropOpen&&v?vdrop():''}
+    </div>
+    <div class="tabs">${TABS.map(t=>`<div class="tab ${S.tab===t.k?'on':''}" onclick="setTab('${t.k}')">${t.t}${t.sb?`<span class="sb">${t.sb}</span>`:''}${t.k==='eval'&&S.job&&S.job.aid===a.id?'<span class="pulse"></span>':''}${t.k==='kb'&&S.kbJob&&S.kbJob.aid===a.id?'<span class="pulse"></span>':''}</div>`).join('')}</div>
+    <div>${B()}</div>`;
+}
+function startRename(){S.editingName=true;render();setTimeout(()=>{const i=T('nameIn');if(i){i.focus();i.select();}},20);}
+function saveName(){const i=T('nameIn');if(!i){S.editingName=false;render();return;}
+  const n=i.value.trim();if(n){A().name=n;A().updated=NOW;}S.editingName=false;render();}
+function vdrop(){
+  const a=A();
+  const sorted=[...a.versions].sort((x,y)=>(y.M*1000+y.m)-(x.M*1000+x.m));
+  let h=`<div class="vdrop" onclick="event.stopPropagation()"><div class="vd-sec"><span>Versions</span>
+    <span class="link" style="font-size:10px;text-transform:none;letter-spacing:0" onclick="S.showMinors=!S.showMinors;render()">${S.showMinors?'hide minor numbers':'show minor numbers'}</span></div>`;
+  sorted.forEach(v=>{
+    const isMajor=v.m===0;
+    const dotColor=v.live?'var(--green)':isMajor?'rgba(122,144,135,.5)':'var(--neutral)';
+    const label=isMajor?`Version ${v.M}.0`:vLabel(v.id);
+    const statusPill=v.live?'<span class="pill" style="color:var(--green);border-color:var(--green)">● LIVE</span>'
+      :isMajor?'<span class="pill" style="color:var(--label);border-color:rgba(122,144,135,.4)">was live</span>'
+      :'<span class="pill" style="color:var(--neutral);border-color:rgba(101,122,112,.5)">not published</span>';
+    const when=isMajor?`published ${fmtAgo(v.ts)}`:`saved ${fmtAgo(v.ts)}`;
+    h+=`<div class="vd-row ${S.vid===v.id?'sel':''}" onclick="pickV('${v.id}')">
+      <span style="width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0;background:${dotColor}"></span>
+      <div style="flex:1"><div class="vn" style="${isMajor?'':'color:#3f5148'}">${label} ${statusPill}</div>
+      <div class="vm">${v.note} · ${when}${runsFor(v.id).length?` · ${runsFor(v.id).length} evaluation(s)`:' · not evaluated'}</div></div></div>`;
+  });
+  return h+`<div style="padding:10px;border-top:1px solid var(--line);margin-top:6px"><div class="note">Saving creates a minor version. Publishing promotes it to the next major and makes it live.</div></div></div>`;
+}
+function pickV(id){S.vid=id;S.vdropOpen=false;render();}
+function captureBaseline(){
+  const a=A();
+  S.editBaseline={prompt:a.prompt,cfg:JSON.parse(JSON.stringify(a.cfg)),kb:JSON.parse(JSON.stringify(a.kb)),vsid:a.vsid};
+}
+function confirmDiscard(){
+  openModal(`<div class="mh"><div class="mt">Discard unsaved changes?</div>
+    <div class="msub">Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone.</div></div>
+    <div class="mb"><div class="warn">Any edits made since your last save will be lost.</div></div>
+    <div class="mf"><span class="link" onclick="closeModal()">Keep editing</span>
+      <div class="btn btn-danger btn-sm" onclick="doDiscard()">Discard changes</div></div>`);
+}
+function doDiscard(){
+  const a=A();const b=S.editBaseline;
+  if(b){a.prompt=b.prompt;a.cfg=JSON.parse(JSON.stringify(b.cfg));a.kb=JSON.parse(JSON.stringify(b.kb));a.vsid=b.vsid;}
+  S.dirty=false;closeModal();toast('Changes discarded');render();
+}
+
+/* ================= ASYNC JOB — in progress / completed only ================= */
+const JOB_MS=13000;
+function startJob(vid,did,dup){
+  S.job={aid:S.aid,vid,did,dup,started:new Date(NOW.getTime()-1000)};
+  S.job.timer=setTimeout(finishJob,JOB_MS);render();
+}
+function finishJob(){
+  const j=S.job;clearTimeout(j.timer);
+  const a=ASSISTANTS.find(x=>x.id===j.aid);
+  const prev=a.runs.filter(r=>r.vid===j.vid&&r.did===j.did).sort((x,y)=>y.ts-x.ts)[0];
+  const bump=v=>Math.min(5,round1(v+0.3));
+  const metrics=prev?{groundTruth:bump(prev.metrics.groundTruth),kb:bump(prev.metrics.kb),prompt:bump(prev.metrics.prompt)}
+    :{groundTruth:round1(3.6+Math.random()*0.8),kb:round1(3.4+Math.random()*0.8),prompt:round1(4+Math.random()*0.6)};
+  const set=a.sets.find(s=>s.id===j.did);
+  const lvl=Math.round(metrics.groundTruth);
+  const run={id:"r"+Date.now(),vid:j.vid,did:j.did,dup:j.dup,metrics,ts:new Date(NOW.getTime()+3e5),
+    rows:set.qs.map(q=>({...q,checks:[lvl,Math.max(0,lvl-0),lvl]}))};
+  a.runs.push(run);S.job=null;
+  toast(`Evaluation completed — ${fmt1(weighted(metrics))}/5`);render();
+}
+
+/* ================= GENERATE PROMPT WITH AI (beta) ================= */
+const GEN_QUESTIONS=[
+ {key:'name',title:'Name',q:"What is your organization's name and the name you want to give this AI assistant?",ex:'SNEHA DIDI, by org. SNEHA',ph:'Organization name and chatbot name…'},
+ {key:'purpose',title:'Core purpose',q:'In one or two sentences, what is this assistant supposed to help people with?',ex:'Responds to queries from women on early childhood healthcare, pregnancy, government schemes.',ph:'Describe the core purpose…'},
+ {key:'audience',title:'Audience',q:'Who will be chatting with the assistant? Describe in as much detail as possible.',ex:'Pregnant or new mothers from urban slums, low literacy, familiar with everyday Hindi or Urdu.',ph:'Describe your audience…'},
+ {key:'language',title:'Language',q:"What language(s) should it reply in — always English, always Hindi, or match the user's language?",ex:'Specify Hinglish, Hindi script, regional languages, or match the input language.',ph:"e.g. Hinglish, or match the user's language…"},
+ {key:'tone',title:'Tone & style',q:'How should the assistant sound — formal, warm, playful, simple?',ex:'Warm and encouraging, like a trusted elder sister. Short sentences, no jargon.',ph:'Describe the tone and style…'},
+ {key:'always',title:'Always do',q:'What should it always include or do in every relevant reply, without exception?',ex:'Always add a short "please consult a doctor" disclaimer on medical answers.',ph:'List things it must always do…'},
+ {key:'never',title:'Never do',q:'What must it always refuse or avoid?',ex:'Never suggest medicine dosages. Never discuss topics outside maternal health and schemes.',ph:'List things it must never do…'},
+ {key:'grounding',title:'Knowledge grounding',q:'Should it answer only from your uploaded documents, or can it use general knowledge too?',ex:"Only from the knowledge base — say \"I don't know\" rather than guessing.",ph:'Describe how strictly it should stick to your documents…'},
+ {key:'notes',title:'Anything else',q:'Any other context, examples, or edge cases worth mentioning?',ex:'Optional — add anything else that would help tailor the prompt.',ph:'Additional notes (optional)…'}
+];
+function openGenPrompt(){if(!S.genAnswers)S.genAnswers={};renderGenPrompt();}
+function renderGenPrompt(){
+  const answered=GEN_QUESTIONS.filter(q=>(S.genAnswers[q.key]||'').trim()).length;
+  const qHtml=GEN_QUESTIONS.map((q,i)=>`
+    <div style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:22px;height:22px;border-radius:50%;background:var(--green-tint);color:var(--green-d);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+        <span style="font-size:12.5px;font-weight:800;color:var(--green-d)">${q.title}</span></div>
+      <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px">${q.q}</div>
+      <div style="font-size:11.5px;color:var(--faint);font-style:italic;margin-bottom:8px">E.g. "${q.ex}"</div>
+      <textarea class="fld" rows="2" placeholder="${attr(q.ph)}" oninput="S.genAnswers['${q.key}']=this.value;syncGenCount()">${attr(S.genAnswers[q.key]||'')}</textarea>
+    </div>`).join('');
+  openModal(`<div class="mh" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+      <div><div class="mt" style="display:flex;align-items:center;gap:8px">Generate Prompt with AI <span style="background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:99px;letter-spacing:.02em">BETA</span></div>
+      <div class="msub">Answer ${GEN_QUESTIONS.length} questions to get a tailored assistant prompt</div></div>
+      <div class="iconbtn" onclick="closeModal()" style="flex-shrink:0">✕</div></div>
+    <div class="mb">
+      <div class="warn" style="margin-bottom:18px">This feature is in early beta — we'd love your feedback while we fine-tune it.</div>
+      ${qHtml}
+    </div>
+    <div class="mf"><span class="note" id="genCount">${answered}/${GEN_QUESTIONS.length} answered</span>
+      <div style="display:flex;gap:8px">
+        <div class="btn btn-ghost btn-sm" onclick="clearGenPrompt()">Clear</div>
+        <div class="btn btn-primary btn-sm" onclick="doGenPrompt()">Generate Prompt</div>
+      </div></div>`,true);
+}
+function syncGenCount(){
+  const answered=GEN_QUESTIONS.filter(q=>(S.genAnswers[q.key]||'').trim()).length;
+  const el=T('genCount');if(el)el.textContent=answered+'/'+GEN_QUESTIONS.length+' answered';
+}
+function clearGenPrompt(){S.genAnswers={};renderGenPrompt();}
+function doGenPrompt(){
+  const ans=S.genAnswers||{};
+  if(!GEN_QUESTIONS.some(q=>(ans[q.key]||'').trim())){toast('Answer at least a few questions to generate a tailored prompt');return;}
+  const sec=(label,val)=>(val&&val.trim())?`${label}\n${val.trim()}`:'';
+  const parts=[];
+  if((ans.name||'').trim()){
+    const bits=ans.name.split(',');
+    const who=bits[0].trim()||'the assistant';
+    const org=bits.length>1?bits.slice(1).join(',').replace(/^\s*by\s*/i,'').trim():'';
+    parts.push(`You are ${who}${org?`, built by ${org}`:''}.`);
+  }
+  [['ROLE','purpose'],['AUDIENCE','audience'],['LANGUAGE','language'],['TONE','tone'],['ALWAYS','always'],['NEVER','never'],['KNOWLEDGE','grounding'],['NOTES','notes']]
+    .forEach(([label,key])=>{const s=sec(label,ans[key]);if(s)parts.push(s);});
+  A().prompt=parts.join('\n\n');markDirty();closeModal();
+  toast('Prompt generated — review it, then Save Version');
+}
+
+/* ================= PERSONA ================= */
+function tabPersona(){
+  const a=A();
+  return `<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px">
+      <div class="fldlbl" style="margin-bottom:0">Instructions (Prompt)</div>
+      <div class="btn btn-outline btn-sm" onclick="openGenPrompt()">✦ Generate with AI <span style="background:var(--green);color:#fff;font-size:8.5px;font-weight:800;padding:2px 7px;border-radius:99px;margin-left:5px;letter-spacing:.02em">BETA</span></div>
+    </div>
+    <textarea class="fld" rows="6" placeholder="Describe who this assistant is, what it helps with, what it must never do, and what language it should reply in…" oninput="A().prompt=this.value;markDirty()">${a.prompt}</textarea>
+    <div class="divider"></div>
+    <div class="fldlbl">Model</div>
+    <select class="fld" onchange="changeModel(this.value)">${MODELS.map(m=>`<option value="${m.id}" ${a.cfg.model===m.id?'selected':''}>${m.label}${m.kind==='reasoning'?' · reasoning':''}</option>`).join('')}</select>
+    <div class="note" style="margin-top:6px">${model(a.cfg.model).blurb}</div>
+    ${modelParams()}</div>`;
+}
+function modelParams(){
+  const a=A();const cfg=a.cfg;const m=model(cfg.model);const p=paramsFor(cfg);
+  let cols='';
+  if(p.effort){
+    const tips={none:'Reasoning is off — this model behaves like a standard chat model.',minimal:'Barely thinks first. Fastest and cheapest of the reasoning settings.',low:'A little thinking. Good balance for simple questions.',medium:'Balanced thinking. A reasonable default.',high:'Thinks hardest. Best on tricky questions, but slowest and most expensive per reply.'};
+    cols+=`<div style="flex:1;min-width:190px"><div class="fldlbl">Reasoning effort <span class="apiname">reasoning_effort</span></div>
+      <div class="seg" style="background:rgba(255,255,255,.7)">${m.efforts.map(e=>`<div class="${cfg.effort===e?'on':''}" onclick="setEffort('${e}')">${e}</div>`).join('')}</div>
+      <div class="note" style="margin-top:5px">${tips[cfg.effort]||''}</div></div>`;
+  }
+  if(p.verbosity){
+    cols+=`<div style="flex:1;min-width:190px"><div class="fldlbl">Verbosity <span class="apiname">verbosity</span></div>
+      <div class="seg" style="background:rgba(255,255,255,.7)">${['low','medium','high'].map(v=>`<div class="${cfg.verbosity===v?'on':''}" onclick="A().cfg.verbosity='${v}';markDirty();render()">${v}</div>`).join('')}</div>
+      <div class="note" style="margin-top:5px">How long the replies run. <b>Low</b> suits WhatsApp, where long messages get truncated.</div></div>`;
+  }
+  let inner=cols?`<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:15px">${cols}</div>`:'';
+  if(p.temperature){
+    inner+=`<div><div class="fldlbl">Temperature <span class="apiname">temperature</span></div>
+      <input class="fld" value="${cfg.temperature}" oninput="A().cfg.temperature=this.value;markDirty()">
+      <div class="note" style="margin-top:5px">Lower = more predictable. Keep near 0 for factual assistants.</div></div>`;
+  }
+  return `<div class="paramcard">
+    <div style="font-size:11.5px;font-weight:800;color:var(--green-d);margin-bottom:11px">Settings for ${m.label}</div>${inner}
+    </div>`;
+}
+function changeModel(id){
+  const a=A();const old=model(a.cfg.model);const m=model(id);
+  a.cfg.model=id;
+  if(m.kind==='reasoning')a.cfg.effort=m.defEffort;
+  markDirty();
+  const p=paramsFor(a.cfg);
+  if(old.kind!=='reasoning'&&m.kind==='reasoning'&&!p.temperature)
+    toast('Temperature is not supported on reasoning models — it has been replaced by reasoning effort and verbosity.');
+  else if(m.kind==='reasoning'&&m.defEffort==='none')
+    toast(`${m.label} defaults to no reasoning, so it behaves like a chat model until you turn reasoning up.`);
+  render();
+}
+function setEffort(e){A().cfg.effort=e;markDirty();if(e==='none')toast('Reasoning off — temperature is available again.');render();}
+function tabGuard(){return `<div class="card" style="text-align:center;padding:40px">
+  <div class="note">Guardrails are unchanged in this prototype. Editing here also requires a <b>Save Version</b>.</div>
+  <div class="btn btn-ghost btn-sm" style="display:inline-block;margin-top:12px" onclick="markDirty();render()">Simulate a change here</div></div>`;}
+function markDirty(){if(!S.dirty){S.dirty=true;A().updated=NOW;render();}}
+
+function openSave(){
+  const a=A();
+  const isFirst=!a.versions.length;
+  if(isFirst&&!a.prompt.trim()){toast('Add a prompt before saving the first version');setTab('persona');return;}
+  let M,nm,label;
+  if(isFirst){label='Version 1.0';}
+  else{M=maxMajor();const mins=minorsOf(M);nm=(mins.length?mins[mins.length-1].m:0)+1;label=S.showMinors?`Version ${M}.${nm}`:`Draft ${nm}`;}
+  openModal(`<div class="mh"><div class="mt">Save ${label}</div>
+    <div class="msub">Saves your prompt, model, settings, knowledge base and guardrails as ${label}. You can try it out and run evaluations once it's saved — publishing it separately makes it live in your Glific flows.</div></div>
+    <div class="mb"><label class="note" style="font-weight:700;color:var(--ink-2)">Provide a note</label>
+      <input class="fld" id="snote" style="margin-top:6px" placeholder="e.g. Tightened out-of-scope refusals"></div>
+    <div class="mf"><span class="link" onclick="closeModal()">Cancel</span>
+      <div class="btn btn-primary btn-sm" onclick="${isFirst?'doSaveFirst()':`doSave(${M},${nm})`}">Save version</div></div>`);
+}
+function doSaveFirst(){
+  const a=A();const note=(T('snote')&&T('snote').value.trim())||"First version";
+  a.versions.push({id:"1.0",M:1,m:0,ts:NOW,note,wasPublished:false,live:false});
+  S.vid="1.0";S.dirty=false;captureBaseline();closeModal();toast('Version 1.0 saved — try it out, evaluate it, or publish it');render();
+}
+function doSave(M,nm){
+  const a=A();const note=(T('snote')&&T('snote').value.trim())||"Saved config";
+  const id=M+"."+nm;a.versions.push({id,M,m:nm,ts:NOW,note,wasPublished:false,live:false});
+  S.vid=id;S.dirty=false;captureBaseline();closeModal();toast(`${vLabel(id)} saved — try it out or run an evaluation`);render();
+}
+function tryPublish(){
+  const run=latestRun(S.vid);
+  const first=!A().versions.some(v=>v.wasPublished);
+  const target=first?'1.0':(maxMajor()+1)+'.0';
+  openModal(`<div class="mh"><div class="mt">Publish as Version ${target}?</div>
+    <div class="msub">Promotes <b>${vLabel(S.vid)}</b> and makes it live everywhere this assistant is linked in your flows.</div></div>
+    <div class="mb">${run?`<div class="note">Last evaluated at <b>${fmt1(weighted(run.metrics))}/5</b> — ${META[bandOf(weighted(run.metrics))].label} — on ${gset(run.did).name}.</div>`
+      :`<div class="warn"><b>⚠ This version has never been evaluated.</b> You won't know how it performs against your Golden Q&amp;A set until you run one.</div>`}</div>
+    <div class="mf"><span class="link" onclick="closeModal()">Cancel</span>
+      <div style="display:flex;gap:8px">${run?'':`<div class="btn btn-primary btn-sm" onclick="closeModal();openRunDialog()">▶ Run an evaluation</div>`}
+      <div class="btn ${run?'btn-primary':'btn-outline'} btn-sm" onclick="doPublish()">${run?'Publish':'Go live anyway'}</div></div></div>`);
+}
+function doPublish(){
+  const a=A();const from=V(S.vid);const first=!a.versions.some(v=>v.wasPublished);
+  a.versions.forEach(v=>{if(v.live){v.live=false;v.wasPublished=true;}});
+  if(from.m===0&&first){from.live=true;from.wasPublished=true;}
+  else{const nextM=maxMajor()+1;const id=nextM+".0";
+    a.versions.push({id,M:nextM,m:0,ts:NOW,note:from.note+" (from "+from.id+")",wasPublished:true,live:true});
+    a.runs.filter(r=>r.vid===from.id).forEach(r=>r.vid=id);S.vid=id;}
+  a.updated=NOW;captureBaseline();closeModal();toast(`${vLabel(S.vid)} is now LIVE in your flows`);render();
+}
+
+/* ================= KNOWLEDGE BASE ================= */
+const KB_MS=8000;
+function tabKB(){
+  const a=A();
+  return `<div class="zone"><div class="zone-h"><div class="zone-t">Knowledge base</div>
+    <div class="zone-sub">${a.kb.length} file${a.kb.length===1?'':'s'} attached${S.kbJob&&S.kbJob.aid===a.id?' · 1 processing':''}</div>
+    <div style="margin-left:auto"><div class="btn btn-primary btn-sm" onclick="addFile()">+ Add files</div></div></div>
+    <div class="card">
+      <div class="note" style="margin-bottom:14px">These are the documents the assistant can search when answering. Adding or removing a file takes a minute or two to process.</div>
+      <div style="max-height:340px;overflow-y:auto;padding-right:2px">
+        ${a.kb.map(f=>`<div class="kbfile"><div class="kbico">📄</div>
+          <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:700;word-break:break-all">${f.name}</div>
+            <div class="note" style="margin-top:2px">${f.size} · added ${fmtAgo(f.ts)}</div></div>
+          <div class="iconbtn" onclick="toast('Downloading ${f.name}')" title="Download">⤓</div>
+          <div class="iconbtn danger" onclick="removeFile('${f.id}')" title="Remove">🗑</div></div>`).join('')}
+        ${S.kbJob&&S.kbJob.aid===a.id?`<div class="kbfile loading"><span class="pulse" style="width:11px;height:11px"></span>
+          <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:700">${S.kbJob.name}</div>
+            <div class="note" style="margin-top:2px">Processing — this runs in the background; you can keep working.</div></div>
+          <span style="font-size:11px;font-weight:700;color:var(--green-d)">In progress</span></div>`:''}
+        ${!a.kb.length&&!(S.kbJob&&S.kbJob.aid===a.id)?`<div class="note" style="text-align:center;padding:14px 0">No files yet. Click <b>+ Add files</b> to add documents the assistant should answer from.</div>`:''}
+      </div>
+      ${techDetails(a)}
+    </div></div>`;
+}
+function techDetails(a){
+  const open=S.showVsid;
+  return `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
+    <span class="link" style="font-size:11px;color:var(--muted);font-weight:600" onclick="S.showVsid=!S.showVsid;render()">⚙ Technical details ${open?'▾':'▸'}</span>
+    ${open?(a.vsid
+      ?`<div class="vsid" style="margin-top:9px">🗄 <span style="flex:1">${a.vsid}</span><span class="iconbtn" onclick="copyText('${a.vsid}','Vector store ID')" title="Copy">⧉</span></div>
+         <div class="note" style="margin-top:6px">This is the vector store ID the assistant searches at runtime — you shouldn't need it unless you're debugging with engineering.</div>`
+      :`<div class="note" style="margin-top:9px;padding:9px 12px;border:1px dashed var(--line);border-radius:9px">No vector store yet — one is created when you add your first file.</div>`):''}
+  </div>`;
+}
+function addFile(){
+  if(S.kbJob){toast('A file is already being processed — please wait');return;}
+  const names=["nutrition_faq_2026.pdf","scheme_updates_july.docx","asha_worker_notes.pdf","field_guide.pdf"];
+  const a=A();S.kbJob={aid:a.id,name:names[a.kb.length%names.length]};
+  S.kbJob.timer=setTimeout(finishKB,KB_MS);render();
+}
+function finishKB(){
+  const j=S.kbJob;clearTimeout(j.timer);
+  const a=ASSISTANTS.find(x=>x.id===j.aid);
+  if(!a.vsid)a.vsid=newVsId();
+  a.kb.push({id:"f"+Date.now(),name:j.name,size:"1.1 MB",ts:new Date(NOW.getTime()+6e4)});
+  S.kbJob=null;if(S.aid===a.id)S.dirty=true;a.updated=NOW;
+  toast(`${j.name} added — vector store rebuilt. Save a version to use it.`);render();
+}
+function removeFile(id){
+  const f=A().kb.find(x=>x.id===id);
+  openModal(`<div class="mh"><div class="mt">Remove ${f.name}?</div>
+    <div class="msub">The file is detached and the vector store is rebuilt without it.</div></div>
+    <div class="mb"><div class="warn">Rebuilding runs in the background. The live version keeps answering while it happens.</div></div>
+    <div class="mf"><span class="link" onclick="closeModal()">Cancel</span>
+      <div class="btn btn-danger btn-sm" onclick="doRemove('${id}')">Remove file</div></div>`);
+}
+function doRemove(id){const a=A();a.kb=a.kb.filter(f=>f.id!==id);S.dirty=true;a.updated=NOW;closeModal();toast('File removed — save a version to apply it');render();}
+
+/* ================= TRY IT OUT ================= */
+const CANNED=[
+ {q:"Kya doosre trimester mein paracetamol safe hai?",a:"Haan, normal dose mein aam taur par safe maana jaata hai — lekin lene se pehle apne doctor ya ANM se zaroor puchh lein."},
+ {q:"Anganwadi se poshan kaise milta hai?",a:"ICDS ke tahat garbhvati mahilaon ko anganwadi se take-home ration milta hai."},
+ {q:"Mujhe income tax return file karna hai",a:"Yahan main sirf maternal health aur sarkari schemes mein madad kar sakti hoon."}];
+function tabTry(){
+  const a=A();
+  if(!a.versions.length)return `<div class="card blocker"><div style="font-size:14px;font-weight:800">Save your first version to try it out</div>
+    <div class="note" style="max-width:420px;margin:8px auto 0">Try It Out runs against a saved config on the server.</div>
+    <div class="btn btn-ghost btn-sm" style="display:inline-block;margin-top:12px" onclick="setTab('persona')">Go to Persona &amp; Prompt</div></div>`;
+  if(S.dirty)return `<div class="card blocker">
+    <div style="width:52px;height:52px;border-radius:14px;background:var(--green-tint);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px">🔒</div>
+    <div style="font-size:14px;font-weight:800">Save a version to try it out</div>
+    <div class="note" style="max-width:420px;margin:8px auto 0">Try It Out runs against a saved config on the server, not what's in your browser — that's what lets your teammates test the same thing you're testing.</div>
+    <div class="btn btn-primary btn-sm" style="display:inline-block;margin-top:14px" onclick="openSave()">Save Version</div></div>`;
+  return `<div class="note" style="margin-bottom:12px">Testing <b>${vLabel(S.vid)}</b>${liveV()?` · sandbox only — real users stay on Version ${liveV().M}`:' · nothing is live yet'}</div>
+  <div class="card"><div class="chat">${S.chat.length?S.chat.map(m=>`<div class="msg ${m.r}">${m.t}</div>`).join(''):`<div class="note" style="margin:auto;text-align:center">Send a message to test this version.<br><span class="link" onclick="sendCanned()">try a sample question →</span></div>`}</div>
+    <div class="chatin"><input placeholder="Type a message as a user would…" onkeydown="if(event.key==='Enter')sendCanned()">
+      <div class="btn btn-primary btn-sm" onclick="sendCanned()">Send</div></div>
+    ${S.chat.length>=4&&a.sets.length?`<div class="nudge">
+      <div style="width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✓</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:800;color:var(--green-d)">Happy with these responses?</div>
+        <div class="note" style="margin-top:2px">Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&amp;A set and catches answers that change between attempts.</div></div>
+      <div class="btn btn-primary btn-sm" onclick="openRunDialog()">Run an evaluation</div></div>`:''}</div>`;
+}
+function sendCanned(){const i=Math.floor(S.chat.length/2)%CANNED.length;const c=CANNED[i];
+  S.chat.push({r:'u',t:c.q});render();setTimeout(()=>{S.chat.push({r:'a',t:c.a});render();},420);}
+
+/* ================= EVALUATION ================= */
+function tabEval(){
+  const a=A();
+  if(!a.versions.length)return `<div class="card blocker"><div style="font-size:14px;font-weight:800">Save your first version to evaluate it</div>
+    <div class="note" style="max-width:420px;margin:8px auto 0">Evaluations run against a saved config so the score always refers to something you can come back to.</div>
+    <div class="btn btn-ghost btn-sm" style="display:inline-block;margin-top:12px" onclick="setTab('persona')">Go to Persona &amp; Prompt</div></div>`;
+  if(S.dirty)return `<div class="card blocker">
+    <div style="width:52px;height:52px;border-radius:14px;background:var(--green-tint);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px">🔒</div>
+    <div style="font-size:14px;font-weight:800">Save a version to evaluate it</div>
+    <div class="note" style="max-width:420px;margin:8px auto 0">Evaluations run against a saved config so the score always refers to something you can come back to.</div>
+    <div class="btn btn-primary btn-sm" style="display:inline-block;margin-top:14px" onclick="openSave()">Save Version</div></div>`;
+  if(!a.sets.length)return `<div class="card blocker">
+    <div style="width:52px;height:52px;border-radius:14px;background:var(--green-tint);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px">📋</div>
+    <div style="font-size:14px;font-weight:800">Add a Golden Q&amp;A set to evaluate this assistant</div>
+    <div class="note" style="max-width:440px;margin:8px auto 14px">A Golden Q&amp;A set is a fixed list of questions with their ideal answers. Every version is scored against the same set, so results stay comparable.</div>
+    <div class="btn btn-primary btn-sm" style="display:inline-block" onclick="openAddSet()">+ Add a Golden Q&amp;A set</div></div>`;
+  const sub=`<div class="seg" style="margin-bottom:16px">
+    <div class="${S.evalSub==='run'?'on':''}" onclick="S.evalSub='run';render()">Run</div>
+    <div class="${S.evalSub==='history'?'on':''}" onclick="S.evalSub='history';render()">History</div></div>`;
+  return sub+(S.evalSub==='history'?tabEvalHistory():tabEvalRun());
+}
+function tabEvalRun(){
+  const a=A();
+  const run=latestRun(S.vid);
+  const running=S.job&&S.job.aid===a.id&&S.job.vid===S.vid;
+  return `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="font-size:12.5px;color:var(--ink-2)">${run?`✓ ${vLabel(S.vid)} last evaluated on <b>${gset(run.did).name}</b> · ${fmtAgo(run.ts)}`:''}</div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <div class="btn btn-outline btn-sm" onclick="openManage()">📋 Manage sets</div>
+        <div class="btn btn-primary btn-sm" ${S.job?'disabled':''} onclick="openRunDialog()">${run?'Run Another Eval':'Run evaluation'}</div>
+      </div></div>
+    ${running?`<div class="card" style="text-align:center;padding:34px">
+      <span class="pulse" style="width:14px;height:14px;margin:0 auto 12px;display:block"></span>
+      <div style="font-size:13.5px;font-weight:800">Evaluation in progress</div>
+      <div class="note" style="max-width:440px;margin:6px auto 0">This runs in the background, so there's no progress to show — the result appears here once it completes. You can switch tabs or leave this page.</div></div>`
+    :run?resultZone(run)+nextZone(run):`<div class="card" style="text-align:center;padding:26px;background:rgba(122,144,135,.05)">
+      <div style="font-size:12.5px;color:var(--muted)">No evaluations yet for <b>${vLabel(S.vid)}</b>.</div></div>`}
+    <div class="note" style="text-align:center;margin-top:20px">See every past run in the <span class="link" onclick="S.evalSub='history';render()">History</span> tab above.</div>`;
+}
+function stepsHtml(score,color){
+  let h='';
+  for(let i=0;i<MAXS;i++){
+    const fill=Math.max(0,Math.min(1,score-i));
+    h+=`<i>${fill>0?`<b style="background:${color};width:${fill*100}%"></b>`:''}</i>`;
+  }
+  return `<div class="steps">${h}</div>`;
+}
+function resultZone(run){
+  const m=run.metrics,score=weighted(m),b=bandOf(score),meta=META[b];
+  const prev=A().runs.filter(r=>r.did===run.did&&r.ts<run.ts).sort((x,y)=>y.ts-x.ts)[0]||null;
+  const mh=Object.keys(METRIC_LABEL).map(k=>{
+    const val=m[k],mk=META[bandOf(val)],was=prev?prev.metrics[k]:null;
+    return `<div class="metric"><div class="top">
+        <span class="nm"><span class="tip" data-tip="${attr(METRIC_TIP[k])}">${METRIC_LABEL[k]}</span> <span style="font-weight:600;color:var(--faint);font-size:10.5px">· weight ${Math.round(WEIGHTS[k]*100)}%</span></span>
+        <span class="sc" style="color:${mk.color}">${fmt1(val)}<small>/5</small> ${deltaTag(val,was)}</span></div>
+      ${stepsHtml(val,mk.color)}</div>`;}).join('');
+  const rows=(run.rows||[]).map(r=>{
+    const cell=(v)=>{const c=META[bandOf(v)].color;return `<span class="qs" style="color:${c};border-color:${c}">${v}<small style="font-weight:600;color:var(--faint)">/5</small></span>`;};
+    return `<tr><td><span class="cat">${r.cat}</span></td><td>${r.q}</td><td style="color:var(--muted)">${r.gold}</td><td style="color:var(--ink-2)">${r.a}</td>
+      <td style="text-align:center">${cell(r.checks[0])}</td><td style="text-align:center">${cell(r.checks[1])}</td><td style="text-align:center">${cell(r.checks[2])}</td></tr>`;}).join('');
+  return `<div class="zone"><div class="zone-h"><div class="zone-t">Last run</div>
+      <div class="zone-sub">${vLabel(run.vid)} · ${gset(run.did).name} · ${run.dup}× duplication · ${fmtAgo(run.ts)}</div></div>
+    <div class="card"><div class="band" style="background:${meta.bandBg}"><div style="display:flex;align-items:center;gap:18px">
+      <div class="gauge" style="background:conic-gradient(${meta.color} ${score/MAXS*360}deg, rgba(122,144,135,.18) 0deg)">
+        <div class="inner"><div class="n" style="color:${meta.color}">${fmt1(score)}<small>/5</small></div><div class="u">overall</div></div></div>
+      <div style="flex:1"><div class="chip" style="border:none;padding:6px 14px;background:${meta.pillBg};color:${meta.pillText}"><span style="font-size:15px">${meta.icon}</span> <span style="font-weight:800;font-size:14px">${meta.label}</span></div>
+      <div style="font-size:12.5px;margin-top:10px;line-height:1.5;color:${meta.bandText}">${summaryFor(b,m,run)}</div></div></div></div>
+      <div class="divider"></div>
+      <div style="font-size:12.5px;font-weight:700;margin-bottom:12px">How the overall score is built <span style="font-weight:500;color:var(--faint);font-size:11px">— weighted average of three checks, each scored 0–5</span></div>
+      <div class="metrics">${mh}</div>
+      <div class="legend">
+        <span><i style="background:var(--bad)"></i> 0–1 needs improvement</span>
+        <span><i style="background:var(--okay)"></i> 2–3 could improve</span>
+        <span><i style="background:var(--good)"></i> 4–5 good</span></div>
+      <div class="divider"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:12.5px;font-weight:700">Question-level results <span style="font-weight:500;color:var(--faint);font-size:11px">(${(run.rows||[]).length} of ${gset(run.did).rows} shown)</span></div>
+        <div class="btn btn-outline btn-sm" onclick="exportRun('${run.id}')">⤓ Export CSV</div></div>
+      <div class="tbl"><table><thead><tr><th style="width:120px">Category</th><th>Question</th><th>Expected answer</th><th>Assistant answer</th>
+        <th style="width:78px;text-align:center"><span class="tip right" data-tip="${attr(METRIC_TIP.groundTruth)}">Ground<br>truth</span></th>
+        <th style="width:78px;text-align:center"><span class="tip right" data-tip="${attr(METRIC_TIP.kb)}">Knowledge<br>base</span></th>
+        <th style="width:78px;text-align:center"><span class="tip right" data-tip="${attr(METRIC_TIP.prompt)}">Prompt</span></th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="note" style="margin-top:8px">Each question was asked ${run.dup}×; the score shown is the mean, rounded. ${SCORE_TIP}</div>
+    </div></div>`;
+}
+function summaryFor(b,m,run){
+  const c=run.dup>1?` Each question was asked ${run.dup} times and answers stayed consistent.`:` Each question was asked once — run a 5× consistency check before publishing.`;
+  if(b==='good')return "Consistently grounded and on-tone across the set."+c;
+  const w=Object.keys(m).sort((x,y)=>m[x]-m[y])[0];
+  const map={groundTruth:"several answers are close but not factually right",kb:"a few answers add detail not in your knowledge base",prompt:"tone and language directives slip on some replies"};
+  return `Improving, but ${map[w]}. Weakest check is <b>${METRIC_LABEL[w].toLowerCase()}</b> at ${fmt1(m[w])}/5 — see the fix below.`;
+}
+function exportRun(rid){
+  const run=A().runs.find(r=>r.id===rid);
+  let csv='category,question,expected_answer,assistant_answer,adherence_to_ground_truth,adherence_to_knowledge_base,adherence_to_prompt\n';
+  (run.rows||[]).forEach(r=>{csv+=`"${esc(r.cat)}","${esc(r.q)}","${esc(r.gold)}","${esc(r.a)}",${r.checks[0]},${r.checks[1]},${r.checks[2]}\n`;});
+  dl(csv,`evaluation-${vLabel(run.vid).replace(/ /g,'-')}-${run.did}.csv`);toast('CSV exported — scores are on a 0–5 scale');
+}
+function exportHistory(){
+  const a=A();
+  let list=a.runs.slice();
+  if(S.fVer)list=list.filter(r=>r.vid===S.fVer);
+  if(S.fSet)list=list.filter(r=>r.did===S.fSet);
+  list=sortRuns(list);
+  let csv='version,golden_qa_set,duplication_factor,overall,adherence_to_ground_truth,adherence_to_knowledge_base,adherence_to_prompt,when\n';
+  list.forEach(r=>{csv+=`"${esc(vLabel(r.vid))}","${esc(gset(r.did).name)}",${r.dup},${weighted(r.metrics)},${r.metrics.groundTruth},${r.metrics.kb},${r.metrics.prompt},"${r.ts.toISOString()}"\n`;});
+  dl(csv,`${a.name.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-evaluation-history.csv`);toast('History exported — scores are on a 0–5 scale');
+}
+function recFor(w){return {groundTruth:{why:"Answers drift from the ideal answers on facts.",append:" Base every factual claim strictly on the retrieved knowledge base passages."},
+ kb:{why:"Some replies invent detail not in your documents.",append:" If the knowledge base has no relevant passage, say you don't know rather than guessing."},
+ prompt:{why:"Tone directives slip on edge cases.",append:" Always respond in simple everyday Hinglish and include a short disclaimer where relevant."}}[w];}
+function nextZone(run){
+  const b=bandOf(weighted(run.metrics));
+  if(b==='good')return `<div class="zone"><div class="zone-h"><div class="zone-t">What to change next</div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:20px">✓</div>
+      <div style="font-size:12.5px;color:var(--ink-2);line-height:1.5">Nothing to change — this scores <b>Good</b>. Publish it when you're ready.</div></div></div></div>`;
+  if(S.dismissed.find(d=>d.runId===run.id))return `<div class="zone"><div class="zone-h"><div class="zone-t">What to change next</div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">💤</span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--ink-2)">1 suggestion dismissed</div><div class="note">Kept until this version is re-evaluated.</div></div>
+      <div class="btn btn-ghost btn-sm" onclick="S.dismissed=S.dismissed.filter(x=>x.runId!=='${run.id}');render()">↩ Restore</div></div></div></div>`;
+  const w=Object.keys(run.metrics).sort((x,y)=>run.metrics[x]-run.metrics[y])[0];const rec=recFor(w);
+  return `<div class="zone"><div class="zone-h"><div class="zone-t">What to change next</div><div class="zone-sub">Applies the change and opens Save Version so you can confirm it</div></div>
+    <div class="card"><div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;margin-bottom:3px">✦ Suggested prompt change</div>
+      <div style="font-size:12.5px;color:var(--ink-2);line-height:1.5">${rec.why}</div>
+      <span class="why" onclick="const b=this.nextElementSibling;b.style.display=b.style.display==='none'?'block':'none'">Why this change? ▾</span>
+      <div class="whybox" style="display:none">Targets your weakest check — <b>${METRIC_LABEL[w].toLowerCase()}</b> at ${fmt1(run.metrics[w])}/5.</div></div>
+      <div class="diff"><div class="diff-col"><div class="dh" style="background:var(--neutral)">${vLabel(run.vid)}</div><div class="db">${A().prompt}</div></div>
+        <div class="diff-col"><div class="dh" style="background:var(--green)">With this change</div><div class="db">${A().prompt}<ins>${rec.append}</ins></div></div></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <div class="btn btn-primary btn-sm" onclick="applyRec('${w}')">Apply and save a new version</div>
+        <div class="btn btn-ghost btn-sm" onclick="S.dismissed.push({runId:'${run.id}'});render();toast('Dismissed — restore any time')">Not now</div></div>
+    </div></div>`;
+}
+function applyRec(w){A().prompt=A().prompt+recFor(w).append;S.dirty=true;S.dismissed=[];openSave();}
+
+/* ================= RUN-TIME EVALUATIONS =================
+   Continuous scoring of real conversations — NOT scoped to the version selector at top,
+   since only the currently-live version ever serves real traffic. A sample carries the
+   version that actually served it, so the trend can cross a publish boundary honestly. */
+function tabRuntime(){
+  const a=A();
+  const sub=`<div class="seg" style="margin-bottom:14px">
+    <div class="${S.rtSub==='overview'?'on':''}" onclick="S.rtSub='overview';render()">Overview</div>
+    <div class="${S.rtSub==='log'?'on':''}" onclick="S.rtSub='log';render()">Log</div></div>`;
+  if(!a.liveEvals.length)return sub+`<div class="card" style="text-align:center;padding:34px">
+      <div style="font-size:14px;font-weight:800">No run-time evaluations yet</div>
+      <div class="note" style="max-width:440px;margin:8px auto 0">Once this assistant has real conversations, a sample of them is scored automatically and shows up here — no setup needed.</div></div>`;
+  const vlab=(S.vid&&V(S.vid))?vLabel(S.vid):'the selected version';
+  const note=`<div class="note" style="margin-bottom:14px;padding:10px 13px;background:var(--green-tint);border:1px solid rgba(17,150,86,.2);border-radius:10px">ℹ️ Reflects real conversations across every version of this assistant — not scoped to <b>${vlab}</b> selected above. Each entry shows which version actually served that conversation.</div>`;
+  return sub+note+(S.rtSub==='log'?rtLog(a):rtOverview(a));
+}
+function rtWindowMs(w){return w==='24h'?DAY:w==='7d'?7*DAY:w==='30d'?30*DAY:Infinity;}
+function rtSamples(a,w){const cutoff=rtWindowMs(w);return a.liveEvals.filter(s=>(NOW-s.ts)<=cutoff).sort((x,y)=>y.ts-x.ts);}
+function rtPriorSamples(a,w){const span=rtWindowMs(w);if(!isFinite(span))return[];
+  return a.liveEvals.filter(s=>{const age=NOW-s.ts;return age>span&&age<=span*2;});}
+function rtRoll(samples){
+  if(!samples.length)return null;
+  const sum={groundTruth:0,kb:0,prompt:0};
+  samples.forEach(s=>{sum.groundTruth+=s.metrics.groundTruth;sum.kb+=s.metrics.kb;sum.prompt+=s.metrics.prompt;});
+  const n=samples.length;const avg={groundTruth:sum.groundTruth/n,kb:sum.kb/n,prompt:sum.prompt/n};
+  return{avg,overall:weighted(avg),n};
+}
+function rtDailyBuckets(samples){
+  const map={};
+  samples.forEach(s=>{const k=s.ts.toDateString();if(!map[k])map[k]={ts:s.ts,items:[]};map[k].items.push(s);});
+  return Object.values(map).sort((x,y)=>x.ts-y.ts);
+}
+function rtWinSeg(includeAll){
+  return `<div class="seg" style="margin-bottom:14px">
+    <div class="${S.rtWindow==='24h'?'on':''}" onclick="S.rtWindow='24h';render()">Last 24h</div>
+    <div class="${S.rtWindow==='7d'?'on':''}" onclick="S.rtWindow='7d';render()">Last 7 days</div>
+    <div class="${S.rtWindow==='30d'?'on':''}" onclick="S.rtWindow='30d';render()">Last 30 days</div>
+    ${includeAll?`<div class="${S.rtWindow==='all'?'on':''}" onclick="S.rtWindow='all';render()">All time</div>`:''}</div>`;
+}
+function rtOverview(a){
+  const samples=rtSamples(a,S.rtWindow);
+  if(!samples.length)return rtWinSeg(false)+`<div class="card" style="text-align:center;padding:30px"><div class="note">No conversations sampled in this window yet.</div></div>`;
+  const roll=rtRoll(samples);const b=bandOf(roll.overall);const meta=META[b];
+  const flaggedCount=samples.filter(s=>bandOf(weighted(s.metrics))==='bad').length;
+  const prev=rtRoll(rtPriorSamples(a,S.rtWindow));
+  const delta=prev?deltaTag(roll.overall,prev.overall):'';
+  const buckets=rtDailyBuckets(samples);
+  const chart=buckets.map(bk=>{
+    const r=rtRoll(bk.items);const c=META[bandOf(r.overall)].color;
+    const h=Math.max(14,Math.round(r.overall/5*86));
+    const vids=[...new Set(bk.items.map(x=>vLabel(x.vid)))];
+    return `<div class="tnode" onclick="S.rtSub='log';render()" title="${bk.ts.toLocaleDateString()} · ${r.n} sample(s) · ${vids.join(', ')}">
+      <div class="bar"><div class="col" style="height:${h}px;background:${c}"><div class="val" style="color:${c}">${fmt1(r.overall)}</div></div></div>
+      <div class="vlabel">${bk.ts.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
+      <div class="vsub">${vids.length>1?vids.length+' versions':vids[0]}</div></div>`;
+  }).join('');
+  return `${rtWinSeg(false)}
+  <div class="card">
+    <div class="band" style="background:${meta.bandBg}"><div style="display:flex;align-items:center;gap:18px">
+      <div class="gauge" style="background:conic-gradient(${meta.color} ${roll.overall/5*360}deg, rgba(122,144,135,.18) 0deg)">
+        <div class="inner"><div class="n" style="color:${meta.color}">${fmt1(roll.overall)}<small>/5</small></div><div class="u">rolling</div></div></div>
+      <div style="flex:1"><div class="chip" style="border:none;padding:6px 14px;background:${meta.pillBg};color:${meta.pillText}"><span style="font-size:15px">${meta.icon}</span> <span style="font-weight:800;font-size:14px">${meta.label}</span></div> ${delta}
+        <div style="font-size:12.5px;margin-top:10px;line-height:1.5;color:${meta.bandText}">Based on ${roll.n} sampled conversation${roll.n===1?'':'s'} in this window${flaggedCount?` · <b>${flaggedCount} flagged</b> for review`:''}.</div></div>
+    </div></div>
+    <div class="divider"></div>
+    <div style="font-size:12.5px;font-weight:700;margin-bottom:10px">Trend <span style="font-weight:500;color:var(--faint);font-size:11px">— daily average · click a bar to see that day's conversations in the Log</span></div>
+    <div class="traj-row">${chart}</div>
+    <div class="legend"><span><i style="background:var(--bad)"></i> 0–1 needs improvement</span>
+      <span><i style="background:var(--okay)"></i> 2–3 could improve</span>
+      <span><i style="background:var(--good)"></i> 4–5 good</span></div>
+  </div>`;
+}
+function rtLog(a){
+  let list=rtSamples(a,S.rtWindow);
+  if(S.rtFlaggedOnly)list=list.filter(s=>bandOf(weighted(s.metrics))==='bad');
+  const rows=list.map(s=>{const sc=weighted(s.metrics);const bd=META[bandOf(sc)];const flagged=bandOf(sc)==='bad';
+    return `<tr class="clickrow" onclick="openLiveSample('${s.id}')">
+      <td><span class="pill" style="color:var(--neutral);border-color:rgba(101,122,112,.5)">${vLabel(s.vid)}</span>${flagged?' <span class="pill" style="color:var(--bad);border-color:var(--bad)">⚑ flagged</span>':''}</td>
+      <td><span class="cat">${s.cat}</span></td>
+      <td>${s.q}</td>
+      <td style="color:var(--ink-2)">${s.a}</td>
+      <td><span class="mini" style="color:${bd.color};border-color:${bd.color}">${fmt1(sc)}<small style="font-weight:600;color:var(--faint)">/5</small></span></td>
+      <td style="color:var(--faint);white-space:nowrap">${fmtAgo(s.ts)}</td></tr>`;}).join('');
+  return `${rtWinSeg(true)}
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);cursor:pointer">
+        <input type="checkbox" ${S.rtFlaggedOnly?'checked':''} onchange="S.rtFlaggedOnly=this.checked;render()"> Flagged only</label>
+      <span style="flex:1"></span><span class="note">${list.length} conversation${list.length===1?'':'s'} shown</span></div>
+    <div class="tbl"><table><thead><tr><th style="width:130px">Version</th><th style="width:150px">Category</th><th>User message</th><th>Assistant reply</th><th style="width:90px">Score</th><th style="width:90px">When</th></tr></thead>
+      <tbody>${rows||`<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--faint)">No conversations in this window.</td></tr>`}</tbody></table></div>
+    <div class="legend"><span><i style="background:var(--bad)"></i> 0–1 needs improvement</span>
+      <span><i style="background:var(--okay)"></i> 2–3 could improve</span>
+      <span><i style="background:var(--good)"></i> 4–5 good</span>
+      <span style="color:var(--faint)">click a row for the full conversation</span></div>
+  </div>`;
+}
+function openLiveSample(id){
+  const s=A().liveEvals.find(x=>x.id===id);if(!s)return;
+  const sc=weighted(s.metrics);const bd=META[bandOf(sc)];const flagged=bandOf(sc)==='bad';
+  const mh=Object.keys(METRIC_LABEL).map(k=>{const val=s.metrics[k];const mk=META[bandOf(val)];
+    return `<div class="metric"><div class="top"><span class="nm"><span class="tip" data-tip="${attr(METRIC_TIP[k])}">${METRIC_LABEL[k]}</span></span>
+      <span class="sc" style="color:${mk.color}">${fmt1(val)}<small>/5</small></span></div>${stepsHtml(val,mk.color)}</div>`;}).join('');
+  openModal(`<div class="mh"><div class="mt">Conversation detail</div>
+    <div class="msub">Served by <b>${vLabel(s.vid)}</b> · ${s.cat} · ${fmtAgo(s.ts)}${flagged?' · <span style="color:var(--bad);font-weight:700">⚑ flagged for review</span>':''}</div></div>
+    <div class="mb">
+      <div class="diff-col"><div class="dh" style="background:var(--neutral)">User</div><div class="db">${s.q}</div></div>
+      <div class="diff-col" style="margin-top:10px"><div class="dh" style="background:var(--green)">Assistant</div><div class="db">${s.a}</div></div>
+      <div class="divider"></div>
+      <div style="font-size:12.5px;font-weight:700;margin-bottom:10px">Score <span style="font-weight:500;color:var(--faint);font-size:11px">— ${fmt1(sc)}/5 overall, ${bd.label}</span></div>
+      <div class="metrics">${mh}</div>
+    </div>
+    <div class="mf"><span></span><div class="btn btn-primary btn-sm" onclick="closeModal()">Close</div></div>`,true);
+}
+
+/* ================= RUN DIALOG ================= */
+let R={};
+function openRunDialog(){
+  if(S.job){toast('An evaluation is already running');return;}
+  if(!A().sets.length){openAddSet();return;}
+  R={vid:S.vid,did:S.did||A().sets[0].id,dup:1};renderRunDialog();
+}
+function renderRunDialog(){
+  const opt=(n,l,d)=>`<div class="${R.dup===n?'on':''}" onclick="R.dup=${n};renderRunDialog()"><div class="n">${n}×</div><div class="l">${l}</div><div class="d">${d}</div></div>`;
+  openModal(`<div class="mh"><div class="mt">Run evaluation</div>
+    <div class="msub">Score <b>${vLabel(R.vid)}</b> against a Golden Q&amp;A set. Each answer is scored 0–5.</div></div>
+    <div class="mb"><label class="note" style="font-weight:700;color:var(--ink-2)">Golden Q&amp;A set</label>
+      <select class="fld" style="margin-top:6px" onchange="R.did=this.value;renderRunDialog()">${A().sets.map(d=>`<option value="${d.id}" ${d.id===R.did?'selected':''}>${d.name} (${d.rows} questions)</option>`).join('')}</select>
+      <div style="margin-top:18px"><label class="note" style="font-weight:700;color:var(--ink-2)">How many times to ask each question</label>
+        <div class="dupopt">${opt(1,'Quick smoke test','Asks each question once. Fastest way to see if things broadly work.')}${opt(5,'Consistency check','Asks each question five times. Catches answers that change between attempts.')}</div></div>
+      <div class="note" style="margin-top:14px">Evaluations run in the background. You can keep working and come back — the result appears when it completes.</div></div>
+    <div class="mf"><span class="link" onclick="closeModal()">Cancel</span>
+      <div class="btn btn-primary btn-sm" onclick="closeModal();startJob(R.vid,R.did,R.dup)">Run evaluation</div></div>`);
+}
+
+/* ================= GOLDEN Q&A SETS ================= */
+function openManage(){
+  const a=A();
+  openModal(`<div class="mh"><div class="mt">Golden Q&amp;A sets</div>
+    <div class="msub">Fixed question → ideal-answer pairs. Every version is scored against the same set so results stay comparable.</div></div>
+    <div class="mb">${a.sets.length?a.sets.map(d=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 13px;border:1px solid var(--line);border-radius:11px;margin-bottom:8px;cursor:pointer;background:#fff" onclick="viewSet('${d.id}')">
+      <div class="kbico">📋</div><div style="flex:1"><div style="font-size:12.5px;font-weight:700">${d.name}</div>
+        <div class="note" style="margin-top:2px">${d.rows} questions · used in ${a.runs.filter(r=>r.did===d.id).length} evaluation(s)</div></div>
+      <span class="link" style="font-size:11px">View →</span></div>`).join(''):`<div class="note" style="text-align:center;padding:16px 0">No Golden Q&amp;A sets yet.</div>`}
+      <div class="btn btn-outline btn-sm" style="display:inline-block;margin-top:4px" onclick="openAddSet()">+ Add a Golden Q&amp;A set</div></div>
+    <div class="mf"><span></span><div class="btn btn-primary btn-sm" onclick="closeModal()">Done</div></div>`);
+}
+function viewSet(did){
+  const d=gset(did);const used=A().runs.filter(r=>r.did===did).length;
+  openModal(`<div class="mh"><div class="mt">${d.name}</div>
+    <div class="msub">${d.rows} questions · showing ${d.qs.length}. These are the questions every evaluation on this set asks.</div></div>
+    <div class="mb"><div class="qlist"><table><thead><tr><th style="width:120px">Category</th><th>Question</th><th>Expected answer</th></tr></thead>
+      <tbody>${d.qs.map(q=>`<tr><td><span class="cat">${q.cat}</span></td><td>${q.q}</td><td style="color:var(--muted)">${q.gold}</td></tr>`).join('')}</tbody></table></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <div class="btn btn-outline btn-sm" onclick="exportSet('${did}')">⤓ Export set</div>
+        <div class="btn btn-danger btn-sm" onclick="delSet('${did}')">Delete set</div></div>
+      ${used?`<div class="note" style="margin-top:10px">Used in ${used} evaluation(s).</div>`:''}</div>
+    <div class="mf"><span class="link" onclick="openManage()">‹ All sets</span><div class="btn btn-primary btn-sm" onclick="closeModal()">Done</div></div>`,true);
+}
+function exportSet(did){const d=gset(did);let csv='question,answer,category\n';
+  d.qs.forEach(q=>{csv+=`"${esc(q.q)}","${esc(q.gold)}","${esc(q.cat)}"\n`;});
+  dl(csv,d.name.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.csv');toast('Golden Q&A set exported');}
+function delSet(did){
+  const d=gset(did);const used=A().runs.filter(r=>r.did===did).length;
+  openModal(`<div class="mh"><div class="mt">Delete “${d.name}”?</div>
+    <div class="msub">The set is removed and can no longer be used for new evaluations.</div></div>
+    <div class="mb">${used?`<div class="warn"><b>⚠ ${used} past evaluation(s) used this set.</b> Those results stay in History, but you won't be able to reproduce them.</div>`:`<div class="note">This set has not been used in any evaluation.</div>`}</div>
+    <div class="mf"><span class="link" onclick="viewSet('${did}')">Cancel</span>
+      <div class="btn btn-danger btn-sm" onclick="doDelSet('${did}')">Delete set</div></div>`);
+}
+function doDelSet(did){const a=A();a.sets=a.sets.filter(s=>s.id!==did);
+  if(S.did===did)S.did=a.sets.length?a.sets[0].id:null;closeModal();toast('Golden Q&A set deleted');render();}
+let W={};
+/* Google Sheet template for Golden Q&A sets — replace with the real, published template URL before shipping */
+const GOLDEN_QA_SHEET_TEMPLATE_URL='https://docs.google.com/spreadsheets/d/1REPLACE_WITH_REAL_TEMPLATE_ID/copy';
+function openAddSet(){W={name:'',rows:null,qs:[]};renderAddSet();}
+function renderAddSet(){
+  const body=`<label class="note" style="font-weight:700;color:var(--ink-2)">Name this Golden Q&amp;A set</label>
+    <input class="fld" style="margin-top:6px;margin-bottom:14px" id="setName" value="${attr(W.name||'')}" placeholder="e.g. Maternal health · core set" oninput="W.name=this.value">
+    <div class="drop" onclick="T('csvIn').click()">
+      <div style="font-size:22px;color:var(--label)">⇪</div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--ink-2);margin-top:6px">Drop a CSV here, or click to browse</div>
+      <div class="note" style="margin-top:2px">Columns: question, answer, category</div>
+      <input type="file" id="csvIn" accept=".csv" style="display:none" onchange="onCsv(this)"></div>
+    <div style="margin-top:10px"><a href="${GOLDEN_QA_SHEET_TEMPLATE_URL}" target="_blank" rel="noopener" class="link">📄 Use our Google Sheet template ↗</a></div>
+    ${W.rows!=null?`<div style="margin-top:14px;padding:12px;border:1px solid rgba(17,150,86,.3);border-radius:10px;background:var(--green-tint)">
+      <div style="font-size:12px;font-weight:700;color:var(--green-d)">✓ Parsed ${W.rows} question${W.rows===1?'':'s'}</div>
+      <div class="note" style="margin-top:4px">Categories: ${[...new Set(W.qs.map(q=>q.cat))].join(', ')}</div></div>`:''}`;
+  openModal(`<div class="mh"><div class="mt">Add a Golden Q&amp;A set</div>
+    <div class="msub">A fixed set of question → ideal-answer pairs. Every version is scored against the same set so results stay comparable.</div></div>
+    <div class="mb">${body}</div>
+    <div class="mf"><span class="link" onclick="closeModal()">Cancel</span>
+      <div class="btn btn-primary btn-sm" ${W.rows==null?'disabled':''} onclick="addSetFinish()">Add set</div></div>`,true);
+}
+function onCsv(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>parseCsv(e.target.result);r.readAsText(f);}
+function parseCsv(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());const qs=[];
+  for(let i=1;i<lines.length;i++){
+    const c=lines[i].match(/("([^"]|"")*"|[^,]*)(,|$)/g);if(!c)continue;
+    const cl=c.map(x=>x.replace(/,$/,'').replace(/^"|"$/g,'').replace(/""/g,'"').trim());
+    if(cl[0])qs.push({q:cl[0],gold:cl[1]||'',cat:cl[2]||'Uncategorised',a:'',checks:[4,4,4]});}
+  W.qs=qs;W.rows=qs.length;if(!W.name)W.name='Uploaded set';renderAddSet();
+}
+function addSetFinish(){
+  const name=(W.name||'').trim();
+  if(!name){toast('Give this Golden Q&A set a name');const i=T('setName');if(i)i.focus();return;}
+  const a=A();const id='g'+Date.now();
+  a.sets.push({id,name,rows:W.rows,qs:W.qs});
+  S.did=id;closeModal();toast(`“${name}” added — you can now evaluate against it`);render();
+}
+
+/* ================= HISTORY — all runs, sortable + filterable ================= */
+function tabEvalHistory(){
+  const a=A();
+  if(!a.runs.length)return `<div class="card blocker"><div style="font-size:14px;font-weight:800">No evaluations yet</div>
+    <div class="note" style="max-width:420px;margin:8px auto 14px">Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&amp;A sets.</div>
+    <div class="btn btn-primary btn-sm" style="display:inline-block" onclick="S.evalSub='run';render();openRunDialog()">▶ Run your first evaluation</div></div>`;
+  let list=a.runs.slice();
+  if(S.fVer)list=list.filter(r=>r.vid===S.fVer);
+  if(S.fSet)list=list.filter(r=>r.did===S.fSet);
+  const vsWith=a.versions.filter(v=>runsFor(v.id).length);
+  const rows=sortRuns(list).map(r=>{const v=V(r.vid);const s=weighted(r.metrics);const bd=META[bandOf(s)];
+    return `<tr class="clickrow ${r.vid===S.vid&&r.did===S.did?'curRow':''}" onclick="jumpTo('${r.vid}','${r.did}')">
+      <td class="rowh" style="${v&&v.m>0?'color:var(--neutral)':''}">${vLabel(r.vid)}${v&&v.live?' <span class="pill" style="color:var(--green);border-color:var(--green);font-size:8px">LIVE</span>':''}</td>
+      <td style="text-align:left">${gset(r.did).name}</td>
+      <td>${r.dup}×</td>
+      <td><span class="cell" style="color:${bd.color};background:${bd.color}18">${fmt1(s)}</span></td>
+      <td>${cellHtml(r.metrics.groundTruth)}</td><td>${cellHtml(r.metrics.kb)}</td><td>${cellHtml(r.metrics.prompt)}</td>
+      <td style="color:var(--faint)">${fmtAgo(r.ts)}</td></tr>`;}).join('');
+  return `<div class="note" style="margin-bottom:12px">${a.runs.length} evaluation${a.runs.length===1?'':'s'} across ${new Set(a.runs.map(r=>r.vid)).size} version(s) · Golden Q&amp;A runs only — on-demand, against your curated questions.</div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <span class="note" style="font-weight:700;color:var(--ink-2)">Filter</span>
+        <select class="selx" onchange="S.fVer=this.value;render()"><option value="">All versions</option>
+          ${vsWith.map(v=>`<option value="${v.id}" ${S.fVer===v.id?'selected':''}>${vLabel(v.id)}</option>`).join('')}</select>
+        <select class="selx" onchange="S.fSet=this.value;render()"><option value="">All Golden Q&amp;A sets</option>
+          ${a.sets.map(d=>`<option value="${d.id}" ${S.fSet===d.id?'selected':''}>${d.name}</option>`).join('')}</select>
+        ${(S.fVer||S.fSet)?`<span class="link" style="font-size:11px" onclick="S.fVer='';S.fSet='';render()">clear</span>`:''}
+        <span style="flex:1"></span><span class="note">${list.length} shown</span>
+        <div class="btn btn-outline btn-sm" onclick="exportHistory()">⤓ Export CSV</div></div>
+      <div class="matrix"><table><thead><tr>
+        ${sh('version','Version')}${sh('set','Golden Q&A set')}
+        <th><span class="tip" data-tip="How many times each question was asked in that run. 1× is a quick smoke test; 5× checks whether answers stay consistent.">Duplication factor</span></th>
+        ${sh('overall','Overall','center')}
+        <th><span class="tip right" data-tip="${attr(METRIC_TIP.groundTruth)}">Ground truth</span></th>
+        <th><span class="tip right" data-tip="${attr(METRIC_TIP.kb)}">Knowledge base</span></th>
+        <th><span class="tip right" data-tip="${attr(METRIC_TIP.prompt)}">Prompt</span></th>
+        ${sh('when','When','center')}</tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="legend"><span><i style="background:var(--bad)"></i> 0–1 needs improvement</span>
+        <span><i style="background:var(--okay)"></i> 2–3 could improve</span>
+        <span><i style="background:var(--good)"></i> 4–5 good</span>
+        <span style="color:var(--faint)">all scores out of 5 · click a row to open that run</span></div>
+    </div>`;
+}
+function sortBy(k){if(S.sort.key===k)S.sort.dir=S.sort.dir==='asc'?'desc':'asc';else S.sort={key:k,dir:k==='version'||k==='set'?'asc':'desc'};render();}
+function sh(k,l,al){const on=S.sort.key===k;return `<th class="sortable ${on?'act':''}" style="text-align:${al||'left'}" onclick="sortBy('${k}')">${l}<span class="ar">${on?(S.sort.dir==='asc'?'▲':'▼'):'⇅'}</span></th>`;}
+function sortRuns(list){
+  const{key,dir}=S.sort;const s=[...list];
+  const vn=id=>{const v=V(id);return v?v.M*1000+v.m:0;};
+  s.sort((a,b)=>{let x,y;
+    if(key==='overall'){x=weighted(a.metrics);y=weighted(b.metrics);}
+    else if(key==='version'){x=vn(a.vid);y=vn(b.vid);}
+    else if(key==='set'){x=gset(a.did).name;y=gset(b.did).name;}
+    else{x=a.ts;y=b.ts;}
+    if(x<y)return dir==='asc'?-1:1;if(x>y)return dir==='asc'?1:-1;return 0;});
+  return s;
+}
+function cellHtml(s){if(s==null)return `<span style="color:var(--faint)">—</span>`;const c=META[bandOf(s)].color;
+  return `<span class="cell" style="color:${c};background:${c}18">${fmt1(s)}</span>`;}
+function jumpTo(vid,did){S.vid=vid;S.did=did;S.tab='eval';S.evalSub='run';render();}
+
+/* ================= MODAL ================= */
+function openModal(h,wide){T('modal').innerHTML=h;T('modal').className='modal'+(wide?' wide':'');T('overlay').style.display='flex';}
+function closeModal(){T('overlay').style.display='none';}
+T('overlay').addEventListener('click',e=>{if(e.target===T('overlay'))closeModal();});
+document.addEventListener('click',e=>{if(S.vdropOpen&&!e.target.closest('.vpick')&&!e.target.closest('.vdrop')){S.vdropOpen=false;render();}});
+
+render();
+</script>
+</body>
+</html>
