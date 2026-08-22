@@ -2,6 +2,7 @@ import type {
   EvaluationMetrics,
   EvaluationRun,
   EvaluationTrace,
+  EvaluationTraceAnswer,
   ScoreBand,
 } from 'containers/AIEvaluation/types/evaluationType';
 
@@ -117,19 +118,34 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
     return '';
   };
 
+  const readScores = (raw: unknown) =>
+    (Array.isArray(raw) ? raw : [])
+      .filter((score: any) => score && typeof score.name === 'string')
+      .map((score: any) => ({
+        name: score.name,
+        value: asScore(score.value ?? score.avg ?? score.score),
+      }));
+
+  const readAnswers = (row: any): EvaluationTraceAnswer[] => {
+    if (Array.isArray(row.llm_answers)) {
+      // grouped: scores[i] belongs to llm_answers[i]
+      const grouped = Array.isArray(row.scores) ? row.scores : [];
+      return row.llm_answers.map((answer: unknown, index: number) => ({
+        answer: typeof answer === 'string' ? answer : '',
+        scores: readScores(grouped[index]),
+      }));
+    }
+
+    return [{ answer: text(row, 'llm_answer', 'answer'), scores: readScores(row.scores) }];
+  };
+
   return traces
     .filter((row) => row && typeof row === 'object')
     .map((row) => ({
       questionId: String(row.question_id ?? row.questionId ?? ''),
       question: text(row, 'question'),
       expected: text(row, 'ground_truth_answer', 'golden_answer', 'expected_answer'),
-      answer: text(row, 'llm_answer', 'answer'),
-      scores: (Array.isArray(row.scores) ? row.scores : [])
-        .filter((score: any) => score && typeof score.name === 'string')
-        .map((score: any) => ({
-          name: score.name,
-          value: asScore(score.value ?? score.avg ?? score.score),
-        })),
+      answers: readAnswers(row),
     }))
     .sort((a, b) => {
       const left = Number(a.questionId);
@@ -140,7 +156,7 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
 };
 
 export const traceMetricNames = (traces: EvaluationTrace[]) => [
-  ...new Set(traces.flatMap((trace) => trace.scores.map((score) => score.name))),
+  ...new Set(traces.flatMap((trace) => trace.answers.flatMap((entry) => entry.scores.map((score) => score.name)))),
 ];
 
 /**

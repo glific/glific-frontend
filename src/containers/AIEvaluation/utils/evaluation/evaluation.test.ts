@@ -188,8 +188,9 @@ describe('parseEvaluationScores', () => {
       questionId: '1',
       question: 'What is diabetes?',
       expected: 'A metabolic disease.',
-      answer: 'A chronic condition.',
     });
+    expect(traces[0].answers).toHaveLength(1);
+    expect(traces[0].answers[0].answer).toBe('A chronic condition.');
   });
 
   test('questions come back in numeric order, not the order the judge wrote them', () => {
@@ -213,7 +214,7 @@ describe('parseEvaluationScores', () => {
   test('a question missing a metric leaves it unscored rather than zero', () => {
     const traces = parseEvaluationScores(payload);
 
-    expect(traces[1].scores.find((score) => score.name === 'Adherence to Prompt')).toBeUndefined();
+    expect(traces[1].answers[0].scores.find((score) => score.name === 'Adherence to Prompt')).toBeUndefined();
   });
 
   test('anything unreadable is no questions at all', () => {

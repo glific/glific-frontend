@@ -23,11 +23,18 @@ import styles from './Evaluation.module.css';
 export interface EvaluationProps {
   assistantId?: string;
   versionId?: string;
+  liveVersionId?: string;
   versionNumber?: number;
   assistantName?: string;
 }
 
-export const Evaluation = ({ assistantId, versionId, versionNumber, assistantName }: EvaluationProps) => {
+export const Evaluation = ({
+  assistantId,
+  versionId,
+  liveVersionId,
+  versionNumber,
+  assistantName,
+}: EvaluationProps) => {
   const { t } = useTranslation();
 
   const [subTab, setSubTab] = useState<EvaluationSubTab>('run');
@@ -180,7 +187,7 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
       {subTab === 'run' ? (
         <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
       ) : assistantRuns.length > 0 ? (
-        <EvaluationHistory runs={assistantRuns} />
+        <EvaluationHistory runs={assistantRuns} liveVersionId={liveVersionId} />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"

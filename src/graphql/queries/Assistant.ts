@@ -123,3 +123,19 @@ export const GET_ASSISTANT_MODELS = gql`
     }
   }
 `;
+
+export const GET_KNOWLEDGE_BASE_FILE = gql`
+  query GetFile($fileId: String!) {
+    getFile(fileId: $fileId) {
+      fileId
+      filename
+      fileSize
+      uploadedAt
+      signedUrl
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
