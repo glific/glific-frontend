@@ -30,6 +30,8 @@
 
 .ScoresTable table {
   table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
 }
 
 .ScoresTable td {
@@ -37,37 +39,20 @@
 }
 
 .QuestionColumn {
-  width: 18%;
+  width: 11rem;
 }
 
 .ExpectedColumn {
-  width: 26%;
+  width: 16rem;
 }
 
 .AnswerColumn {
-  width: 30%;
-}
-
-.ScoresTable .ScoreColumn {
-  width: 8%;
-  text-align: center;
-}
-
-.GroupedTable table {
-  width: max-content;
-  min-width: 100%;
-}
-
-.GroupedTable .QuestionColumn {
-  width: 14rem;
-}
-
-.GroupedTable .ExpectedColumn {
   width: 20rem;
 }
 
-.GroupedTable .AnswerColumn {
-  width: 22rem;
+.ScoresTable .ScoreColumn {
+  width: 5rem;
+  text-align: center;
 }
 
 .GroupedTable td {
