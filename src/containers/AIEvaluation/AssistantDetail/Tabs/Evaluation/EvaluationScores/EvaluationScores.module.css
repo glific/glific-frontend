@@ -53,8 +53,6 @@
   text-align: center;
 }
 
-/* grouped runs add a column per attempt, so percentages would squeeze every column thinner
-   the more attempts there are — fixed widths keep them readable and the wrapper scrolls */
 .GroupedTable table {
   width: max-content;
   min-width: 100%;
@@ -72,11 +70,7 @@
   width: 22rem;
 }
 
-/* the judge's marks make the answer cell taller than the row view's 9rem cap, which left the
-   other cells blank below their own cap. Cap the whole cell instead and let the text areas
-   stretch to the row, so nothing is cut short and nothing is left empty */
 .GroupedTable td {
-  /* lets the percentage heights below resolve against the row rather than collapsing */
   height: 1px;
 }
 
@@ -182,8 +176,6 @@
   min-height: 12rem;
 }
 
-/* the shared loader pads 100px above the spinner for full-page use, which pushes it to the
-   bottom of a short box like this one */
 .LoadingArea [data-testid='loader'] {
   height: auto;
   justify-content: center;
