@@ -1185,5 +1185,12 @@
   "adherence to ground truth": "adherence to ground truth",
   "adherence to knowledge base": "adherence to knowledge base",
   "adherence to prompt": "adherence to prompt",
-  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded"
+  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded",
+  "Learn more": "Learn more",
+  "No details available.": "No details available.",
+  "Rewrite for utility with AI": "Rewrite for utility with AI",
+  "Rewriting for utility with AI…": "Rewriting for utility with AI…",
+  "What the AI changed": "What the AI changed",
+  "View what changed": "View what changed",
+  "Rewritten for utility — review the changes and adjust before submitting.": "Rewritten for utility — review the changes and adjust before submitting."
 }

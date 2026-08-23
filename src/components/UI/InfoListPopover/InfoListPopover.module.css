@@ -1,0 +1,112 @@
+.Trigger {
+  display: inline-flex !important;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-sm) !important;
+  border-radius: var(--app-radius-pill) !important;
+  font-size: var(--app-font-size-sm) !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  color: var(--app-color-brand-primary) !important;
+}
+
+.Trigger:hover {
+  background-color: var(--app-color-surface-hover) !important;
+}
+
+.Trigger:focus-visible {
+  outline: 0.125rem solid var(--app-color-brand-primary);
+  outline-offset: 0.125rem;
+}
+
+.TriggerIcon {
+  font-size: var(--app-size-icon-lg) !important;
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+}
+
+.PanelPaper {
+  border: 0.0625rem solid var(--app-color-border-muted);
+  border-radius: var(--app-radius-lg) !important;
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card) !important;
+}
+
+.Panel {
+  width: min(26rem, calc(100vw - var(--app-space-6xl)));
+  padding: var(--app-space-xl);
+}
+
+.Heading {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-md);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.Empty {
+  margin: 0;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.List {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.Entry {
+  padding-top: var(--app-space-lg);
+  border-top: 0.0625rem solid var(--app-color-border-muted);
+}
+
+.Entry:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.EntryTitle {
+  margin: 0;
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--app-color-text-primary);
+}
+
+.EntryDescription {
+  margin: var(--app-space-2xs) 0 0;
+  font-size: var(--app-font-size-xs);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+}
+
+.EntryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-brand-primary);
+  text-decoration: none;
+}
+
+.EntryLink:hover {
+  text-decoration: underline;
+}
+
+.EntryLink:focus-visible {
+  outline: 0.125rem solid var(--app-color-brand-primary);
+  outline-offset: 0.125rem;
+  border-radius: var(--app-space-2xs);
+}
+
+.EntryLinkIcon {
+  font-size: var(--app-size-icon-sm) !important;
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}

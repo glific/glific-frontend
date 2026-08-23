@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import { Typography } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
 import GridViewIcon from '@mui/icons-material/GridView';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import * as Yup from 'yup';
 
 import { BUTTON_OPTIONS, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
@@ -13,7 +14,10 @@ import { templateInfo, interactiveButtonsInfo, HelpDataProps } from 'common/Help
 import { setNotification, setErrorMessage } from 'common/notification';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import { Button } from 'components/UI/Form/Button/Button';
+import { InfoListPopover } from 'components/UI/InfoListPopover/InfoListPopover';
+import { ProgressBar } from 'components/UI/ProgressBar/ProgressBar';
 import { SourceReferenceChip } from 'components/UI/SourceReferenceChip/SourceReferenceChip';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -32,7 +36,7 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { FILTER_TEMPLATES, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { DELETE_TEMPLATE, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE, REWRITE_TEMPLATE_FOR_UTILITY, TRANSLATE_SESSION_TEMPLATE } from 'graphql/mutations/Template';
 import { getOrganizationServices } from 'services/AuthService';
 
 import { languageCode } from '../HSMListV2/HSMListV2.helper';
@@ -49,6 +53,7 @@ import {
   buildTemplateButtonsList,
   buildUpdatedButtons,
   buildValidationSchema,
+  collectButtonTexts,
   CallToActionTemplate,
   QuickReplyTemplate,
   WhatsappFormTemplate,
@@ -110,6 +115,65 @@ const AutoTranslateButton = ({
     {t('Auto-translate')}
   </Button>
 );
+
+export interface RewriteChange {
+  whatChanged: string;
+  why: string;
+  bestPractice?: string | null;
+  bestPracticeUrl?: string | null;
+}
+
+const RewriteForUtilityButton = ({
+  disabled,
+  loading,
+  onRewrite,
+}: {
+  disabled: boolean;
+  loading: boolean;
+  onRewrite: () => void;
+}) => (
+  <Button
+    variant="outlined"
+    className={`${styles.OutlinePillButton} ${styles.SectionTitleAction}`}
+    onClick={onRewrite}
+    disabled={disabled}
+    loading={loading}
+    data-testid="rewrite-utility-button"
+  >
+    <AutoAwesomeIcon className={styles.OutlinePillButtonIcon} />
+    {t('Rewrite for utility with AI')}
+    <BetaTag size="small" />
+  </Button>
+);
+
+// Sits under the message body: the progress bar while the rewrite runs, and afterwards the
+// way back into *what* the AI did to the draft — one entry per change, each with its own
+// best-practice link, which is more than HelpIcon can carry.
+const RewriteStatus = ({ loading, changes }: { loading: boolean; changes: RewriteChange[] }) => {
+  if (!loading && changes.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={styles.RewriteStatus}>
+      {loading ? (
+        <ProgressBar label={t('Rewriting for utility with AI…')} testId="rewrite-progress" />
+      ) : (
+        <InfoListPopover
+          testId="rewrite-changes"
+          heading={t('What the AI changed')}
+          triggerLabel={t('View what changed')}
+          entries={changes.map((change) => ({
+            title: change.whatChanged,
+            description: change.why,
+            linkLabel: change.bestPractice || undefined,
+            linkUrl: change.bestPracticeUrl || undefined,
+          }))}
+        />
+      )}
+    </div>
+  );
+};
 
 // Same shortcut the HSM list page offers, surfaced here too so a user already
 // on the create page doesn't have to leave it to browse the catalog.
@@ -187,6 +251,7 @@ export const HSMV2 = () => {
     buttonType?: string;
     variables: Array<{ id: number; text: string }>;
   } | null>(null);
+  const [rewriteChanges, setRewriteChanges] = useState<RewriteChange[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
   const [showLibrary, setShowLibrary] = useState(false);
   const [sampleMessages, setSampleMessages] = useState({
@@ -265,6 +330,7 @@ export const HSMV2 = () => {
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
   const [deleteTemplate, { loading: deleteLoading }] = useMutation(DELETE_TEMPLATE);
   const [translateSessionTemplate, { loading: translating }] = useMutation(TRANSLATE_SESSION_TEMPLATE);
+  const [rewriteTemplateForUtility, { loading: rewriting }] = useMutation(REWRITE_TEMPLATE_FOR_UTILITY);
   const [fetchFamilyVariants] = useLazyQuery(FILTER_TEMPLATES, { fetchPolicy: 'network-only' });
 
   const categoryOpn: any = [];
@@ -498,11 +564,7 @@ export const HSMV2 = () => {
     const buttonTypeMatchesAnchor = templateType?.id === anchorReference.buttonType;
     const isCallToAction = buttonTypeMatchesAnchor && templateType?.id === CALL_TO_ACTION;
     const isQuickReply = buttonTypeMatchesAnchor && templateType?.id === QUICK_REPLY;
-    const buttonTexts = isCallToAction
-      ? (anchorReference.buttons as CallToActionTemplate[]).map((button) => button.title)
-      : isQuickReply
-        ? (anchorReference.buttons as QuickReplyTemplate[]).map((button) => button.value)
-        : [];
+    const buttonTexts = buttonTypeMatchesAnchor ? collectButtonTexts(templateType?.id, anchorReference.buttons) : [];
 
     const anchorVariablesToTranslate = anchorReference.variables.filter((variable) => variable.text);
     const variableTexts = anchorVariablesToTranslate.map((variable) => variable.text);
@@ -556,6 +618,49 @@ export const HSMV2 = () => {
         );
       }
       setNotification(t('Content translated — review and adjust before submitting.'));
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+
+  const handleRewriteForUtility = async () => {
+    // only the buttons the user actually authored go across — variable sample values are
+    // deliberately left out, the rewrite must not touch buttons or variables.
+    const buttonTexts = isAddButtonChecked ? collectButtonTexts(templateType?.id, templateButtons).filter(Boolean) : [];
+    setRewriteChanges([]);
+
+    try {
+      const { data } = await rewriteTemplateForUtility({
+        variables: {
+          body,
+          footer: footer || undefined,
+          buttons: buttonTexts.length ? buttonTexts : undefined,
+          label: newShortcode || undefined,
+        },
+      });
+      const result = data?.rewriteTemplateForUtility;
+      if (result?.errors?.length) {
+        setErrorMessage(result.errors[0]);
+        return;
+      }
+      if (result?.body) {
+        // a plain setBody doesn't reach the Lexical editor — it only reads defaultValue on
+        // change, so the value has to be cleared and re-set on the next tick.
+        setBody(result.body);
+        setEditorState('');
+        setTimeout(() => setEditorState(result.body), 0);
+      }
+      if (result?.suggestedCategory) {
+        setCategory(
+          categoryOpn.find((option: any) => option.id === result.suggestedCategory) || {
+            id: result.suggestedCategory,
+            label: result.suggestedCategory,
+            description: categoryDescriptions[result.suggestedCategory],
+          }
+        );
+      }
+      setRewriteChanges(result?.changes || []);
+      setNotification(t('Rewritten for utility — review the changes and adjust before submitting.'));
     } catch (error) {
       setErrorMessage(error);
     }
@@ -652,6 +757,14 @@ export const HSMV2 = () => {
       title: t('Message Content'),
     },
     {
+      component: RewriteForUtilityButton,
+      name: '__rewriteForUtilityButton',
+      disabled: !body.trim(),
+      loading: rewriting,
+      onRewrite: handleRewriteForUtility,
+      skip: mode !== 'create' || isReadOnly,
+    },
+    {
       component: AutoTranslateButton,
       name: '__autoTranslateButton',
       disabled: false,
@@ -687,6 +800,13 @@ export const HSMV2 = () => {
       isEditing: isReadOnly,
       attached: true,
       variableReferences: mode === 'addLanguage' ? anchorReference?.variables : undefined,
+    },
+    {
+      component: RewriteStatus,
+      name: '__rewriteStatus',
+      loading: rewriting,
+      changes: rewriteChanges,
+      skip: mode !== 'create' || isReadOnly,
     },
     {
       component: FooterField,

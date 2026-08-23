@@ -138,3 +138,22 @@ export const TRANSLATE_SESSION_TEMPLATE = gql`
     }
   }
 `;
+
+export const REWRITE_TEMPLATE_FOR_UTILITY = gql`
+  mutation RewriteTemplateForUtility($body: String!, $footer: String, $buttons: [String], $label: String) {
+    rewriteTemplateForUtility(body: $body, footer: $footer, buttons: $buttons, label: $label) {
+      body
+      suggestedCategory
+      changes {
+        whatChanged
+        why
+        bestPractice
+        bestPracticeUrl
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

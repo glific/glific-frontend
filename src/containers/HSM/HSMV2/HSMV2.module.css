@@ -141,3 +141,14 @@
 .FieldLabel {
   composes: FieldLabel from '../../Form/FormLayout.module.css';
 }
+
+/* Progress bar while the AI rewrite runs, and the "what changed" affordance afterwards.
+   Sits directly under the message body + variables block. */
+.RewriteStatus {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--app-space-sm);
+  margin: var(--app-space-lg) 0 var(--app-space-sm);
+}

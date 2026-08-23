@@ -19,6 +19,12 @@ import {
   translateSessionTemplateResultErrorMock,
   templateLibraryData,
   templateLibraryMock,
+  getCategoriesMock,
+  getUtilityCategoriesMock,
+  rewriteTemplateForUtilityMock,
+  rewriteTemplateForUtilityErrorMock,
+  rewriteTemplateForUtilityResultErrorMock,
+  rewriteTemplateForUtilityChanges,
 } from 'mocks/Template';
 import { WHATSAPP_FORM_MOCKS } from 'mocks/WhatsAppForm';
 import { uploadMediaSuccessMock, uploadMediaFailureMock, createMediaMessageMock } from 'mocks/Attachment';
@@ -26,6 +32,8 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import * as utilsModule from 'common/utils';
 import { filterAvailableLanguages } from './HSMV2.helper';
+import { collectButtonTexts } from '../HSM.helper';
+import { CALL_TO_ACTION, QUICK_REPLY, WHATSAPP_FORM } from 'common/constants';
 
 const mocks = HSM_TEMPLATE_MOCKS;
 
@@ -2041,8 +2049,326 @@ describe('HSMV2 language versions', () => {
   });
 });
 
+describe('HSMV2 rewrite for utility with AI', () => {
+  // the rewrite suggests from WhatsApp's current category set, so swap in the categories
+  // mock that actually contains UTILITY.
+  const utilityMocks = [
+    ...mocks.filter((mock) => mock !== getCategoriesMock),
+    getUtilityCategoriesMock,
+    ...WHATSAPP_FORM_MOCKS,
+  ];
+
+  const renderRewriteForm = (extraMocks: any[] = []) =>
+    render(
+      <MockedProvider mocks={[...utilityMocks, ...extraMocks]} addTypename={false}>
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+  const user = userEvent.setup();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const fillDraft = async (body: string, elementName = 'element_name') => {
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: elementName } });
+    const lexicalEditor = inputs[1];
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: body });
+    return inputs;
+  };
+
+  const waitForCreateForm = () =>
+    waitFor(() => {
+      expect(screen.getByText('Create a new HSM Template')).toBeInTheDocument();
+    });
+
+  test('sends the draft, then applies the rewritten body and the suggested category', async () => {
+    renderRewriteForm([
+      rewriteTemplateForUtilityMock(
+        { body: 'Your order is on the way', label: 'element_name' },
+        { body: 'Your order {{1}} has shipped and will arrive soon.' }
+      ),
+    ]);
+    await waitForCreateForm();
+
+    await fillDraft('Your order is on the way');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Your order {{1}} has shipped and will arrive soon.');
+    });
+    expect(screen.getByText('Utility').closest('button')?.className).toContain('TileSelected');
+    expect(setNotification).toHaveBeenCalledWith(
+      'Rewritten for utility — review the changes and adjust before submitting.'
+    );
+  });
+
+  test('shows the progress bar while the rewrite is in flight, and the change list once it lands', async () => {
+    renderRewriteForm([
+      {
+        ...rewriteTemplateForUtilityMock(
+          { body: 'Your order is on the way', label: 'element_name' },
+          { body: 'Your order has shipped.' }
+        ),
+        delay: 30,
+      },
+    ]);
+    await waitForCreateForm();
+
+    await fillDraft('Your order is on the way');
+    expect(screen.queryByTestId('rewrite-progress')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rewrite-changes')).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    expect(screen.getByTestId('rewrite-progress')).toBeInTheDocument();
+    expect(screen.getByTestId('rewrite-utility-button')).toBeDisabled();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-changes')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('rewrite-progress')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('rewrite-changes'));
+
+    const changes = await screen.findAllByTestId('rewrite-changes-entry');
+    expect(changes).toHaveLength(rewriteTemplateForUtilityChanges.length);
+    expect(screen.getByText(rewriteTemplateForUtilityChanges[0].whatChanged)).toBeInTheDocument();
+    expect(screen.getByText(rewriteTemplateForUtilityChanges[0].why)).toBeInTheDocument();
+    const link = screen.getByRole('link', { name: new RegExp(rewriteTemplateForUtilityChanges[0].bestPractice!) });
+    expect(link).toHaveAttribute('href', rewriteTemplateForUtilityChanges[0].bestPracticeUrl);
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  test('sends the footer and the button texts, but never the variable values', async () => {
+    renderRewriteForm([
+      rewriteTemplateForUtilityMock(
+        {
+          body: 'Hi {{1}}, your order is on the way',
+          footer: 'Team Glific',
+          buttons: ['Track order'],
+          label: 'element_name',
+        },
+        { body: 'Hi {{1}}, your order has shipped.' }
+      ),
+    ]);
+    await waitForCreateForm();
+
+    const inputs = await fillDraft('Hi {{1}}, your order is on the way');
+
+    fireEvent.click(screen.getByText('Quick Reply'));
+    fireEvent.change(screen.getByPlaceholderText('e.g., Yes, No, More Info'), { target: { value: 'Track order' } });
+    fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'Priya' } });
+    fireEvent.change(inputs[2], { target: { value: 'Team Glific' } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    // the mock only matches if the variable's sample value stayed out of the request
+    await waitFor(() => {
+      const editorText = screen.getByTestId('editor-body').textContent || '';
+      expect(editorText).toContain('Hi {{1}}, your order has shipped.');
+    });
+    expect(setErrorMessage).not.toHaveBeenCalled();
+  });
+
+  test('an error in the response leaves the draft alone and explains itself in the error dialog', async () => {
+    const error = { key: 'rewrite', message: 'The rewritten template would exceed 1024 characters.' };
+    renderRewriteForm([
+      rewriteTemplateForUtilityResultErrorMock({ body: 'Your order is on the way', label: 'element_name' }, error),
+    ]);
+    await waitForCreateForm();
+
+    await fillDraft('Your order is on the way');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalledWith(error);
+    });
+    expect(screen.getByTestId('editor-body').textContent).toContain('Your order is on the way');
+    expect(screen.queryByTestId('rewrite-changes')).not.toBeInTheDocument();
+  });
+
+  test('a network failure is surfaced the same way as a returned error', async () => {
+    renderRewriteForm([rewriteTemplateForUtilityErrorMock({ body: 'Your order is on the way' }, 'Network error')]);
+    await waitForCreateForm();
+
+    // the element name is optional to the rewrite — it is only context for the model
+    await fillDraft('Your order is on the way', '');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
+    expect(screen.getByTestId('editor-body').textContent).toContain('Your order is on the way');
+    expect(screen.queryByTestId('rewrite-changes')).not.toBeInTheDocument();
+  });
+
+  test('applies a suggested category the organisation has no tile for, and shows no change list when none came back', async () => {
+    // the default category list has no UTILITY tile, so the applied category can only be
+    // observed through the submit button, which needs a category before it unlocks.
+    render(
+      <MockedProvider
+        mocks={[
+          ...mocks,
+          ...WHATSAPP_FORM_MOCKS,
+          ...CREATE_SESSION_TEMPLATE_MOCK,
+          rewriteTemplateForUtilityMock(
+            { body: 'Your order is on the way', label: 'element_name' },
+            { body: 'Your order has shipped.', changes: null }
+          ),
+        ]}
+        addTypename={false}
+      >
+        <MemoryRouter>
+          <HSMV2 />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+    await waitForCreateForm();
+
+    await fillDraft('Your order is on the way');
+    expect(screen.getByTestId('submitActionButton')).toBeDisabled();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('submitActionButton')).not.toBeDisabled();
+    });
+    expect(screen.queryByTestId('rewrite-changes')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rewrite-progress')).not.toBeInTheDocument();
+  });
+
+  test('a response with no body or category still explains the changes without wiping the draft', async () => {
+    renderRewriteForm([
+      rewriteTemplateForUtilityMock(
+        { body: 'Your order is on the way', label: 'element_name' },
+        {
+          body: null,
+          suggestedCategory: null,
+          // a change the model could not tie back to a documented best practice
+          changes: [
+            {
+              whatChanged: 'Trimmed the greeting.',
+              why: 'It read as marketing.',
+              bestPractice: null,
+              bestPracticeUrl: null,
+            },
+          ],
+        }
+      ),
+    ]);
+    await waitForCreateForm();
+
+    await fillDraft('Your order is on the way');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-utility-button')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('rewrite-utility-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewrite-changes')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('editor-body').textContent).toContain('Your order is on the way');
+    expect(screen.getByText('Utility').closest('button')?.className).not.toContain('TileSelected');
+
+    fireEvent.click(screen.getByTestId('rewrite-changes'));
+    expect(await screen.findByText('Trimmed the greeting.')).toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  test('there is nothing to rewrite while the message body is empty', async () => {
+    renderRewriteForm();
+    await waitForCreateForm();
+
+    expect(screen.getByTestId('rewrite-utility-button')).toBeDisabled();
+    expect(screen.queryByTestId('rewrite-progress')).not.toBeInTheDocument();
+  });
+
+  test('an approved template is immutable, so the rewrite is not offered in view mode', async () => {
+    const familyMock = sessionTemplatesV2Mock(
+      { isHsm: true, shortcode: 'account_balance' },
+      [
+        {
+          id: '1',
+          shortcode: 'account_balance',
+          language: { id: '1', label: 'English', locale: 'en' },
+          category: 'ACCOUNT_UPDATE',
+          status: 'APPROVED',
+        },
+      ],
+      familyFetchOpts
+    );
+    render(
+      <MockedProvider
+        mocks={[...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText, familyMock]}
+        addTypename={false}
+      >
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSMV2 />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('view-language-1')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('view-language-1'));
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('textbox')[0]).toHaveValue('account_balance');
+    });
+    expect(screen.queryByTestId('rewrite-utility-button')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rewrite-changes')).not.toBeInTheDocument();
+  });
+});
+
 describe('filterAvailableLanguages', () => {
   test('with no arguments, returns an empty list instead of throwing', () => {
     expect(filterAvailableLanguages()).toEqual([]);
+  });
+});
+
+describe('collectButtonTexts', () => {
+  test('reads a Call to Action button from its title and a Quick Reply from its value', () => {
+    expect(
+      collectButtonTexts(CALL_TO_ACTION, [{ type: 'PHONE_NUMBER', title: 'Call Us', value: '9998887776' }])
+    ).toEqual(['Call Us']);
+    expect(collectButtonTexts(QUICK_REPLY, [{ value: 'Yes' }, { value: 'No' }])).toEqual(['Yes', 'No']);
+  });
+
+  test('button types with no user-authored text, and no button type at all, contribute nothing', () => {
+    expect(collectButtonTexts(WHATSAPP_FORM, [{ form_id: '1', text: 'Open', navigate_screen: 'FIRST' }])).toEqual([]);
+    expect(collectButtonTexts(undefined, [{ value: 'Yes' }])).toEqual([]);
   });
 });

@@ -3,6 +3,7 @@ import {
   CREATE_TEMPLATE,
   DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
+  REWRITE_TEMPLATE_FOR_UTILITY,
   SYNC_HSM_TEMPLATES,
   TRANSLATE_SESSION_TEMPLATE,
   UPDATE_TEMPLATE,
@@ -100,6 +101,19 @@ export const getCategoriesMock = {
   },
 };
 
+// WhatsApp's current category set, which is what the AI rewrite suggests from.
+export const getUtilityCategoriesMock = {
+  request: {
+    query: GET_HSM_CATEGORIES,
+    variables: {},
+  },
+  result: {
+    data: {
+      whatsappHsmCategories: ['UTILITY', 'MARKETING'],
+    },
+  },
+};
+
 export const deleteTemplateMock = (id: string) => ({
   request: { query: DELETE_TEMPLATE, variables: { id } },
   result: { data: { deleteSessionTemplate: { errors: null } } },
@@ -150,6 +164,73 @@ export const translateSessionTemplateResultErrorMock = (
       },
     },
   },
+});
+
+type RewriteVariables = { body: string; footer?: string; buttons?: string[]; label?: string };
+type RewriteChangeMock = {
+  whatChanged: string;
+  why: string;
+  bestPractice: string | null;
+  bestPracticeUrl: string | null;
+};
+
+const rewriteRequest = (variables: RewriteVariables) => ({
+  query: REWRITE_TEMPLATE_FOR_UTILITY,
+  variables: { footer: undefined, buttons: undefined, label: undefined, ...variables },
+});
+
+export const rewriteTemplateForUtilityChanges: RewriteChangeMock[] = [
+  {
+    whatChanged: 'Removed the promotional opening line.',
+    why: 'Utility templates may not open with a marketing hook.',
+    bestPractice: 'Utility vs marketing categories',
+    bestPracticeUrl: 'https://glific.github.io/docs/utility-category',
+  },
+  {
+    whatChanged: 'Added the order number placeholder.',
+    why: 'A transactional message must reference the specific order it is about.',
+    bestPractice: 'Writing transactional messages',
+    bestPracticeUrl: 'https://glific.github.io/docs/transactional-messages',
+  },
+];
+
+export const rewriteTemplateForUtilityMock = (
+  variables: RewriteVariables,
+  result: { body: string | null; suggestedCategory?: string | null; changes?: RewriteChangeMock[] | null }
+) => ({
+  request: rewriteRequest(variables),
+  result: {
+    data: {
+      rewriteTemplateForUtility: {
+        body: result.body,
+        suggestedCategory: result.suggestedCategory === undefined ? 'UTILITY' : result.suggestedCategory,
+        changes: result.changes === undefined ? rewriteTemplateForUtilityChanges : result.changes,
+        errors: null,
+      },
+    },
+  },
+});
+
+export const rewriteTemplateForUtilityResultErrorMock = (
+  variables: RewriteVariables,
+  error: { key: string; message: string }
+) => ({
+  request: rewriteRequest(variables),
+  result: {
+    data: {
+      rewriteTemplateForUtility: {
+        body: null,
+        suggestedCategory: null,
+        changes: null,
+        errors: [error],
+      },
+    },
+  },
+});
+
+export const rewriteTemplateForUtilityErrorMock = (variables: RewriteVariables, message: string) => ({
+  request: rewriteRequest(variables),
+  error: new Error(message),
 });
 
 export const templateEditMock = (templateId: string, buttons: any) => ({

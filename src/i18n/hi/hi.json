@@ -1050,5 +1050,12 @@
   "adherence to ground truth": "ग्राउंड ट्रुथ का पालन",
   "adherence to knowledge base": "नॉलेज बेस का पालन",
   "adherence to prompt": "प्रॉम्प्ट का पालन",
-  "Evaluation runs could not be loaded": "मूल्यांकन रन लोड नहीं हो सके"
+  "Evaluation runs could not be loaded": "मूल्यांकन रन लोड नहीं हो सके",
+  "Learn more": "अधिक जानें",
+  "No details available.": "कोई विवरण उपलब्ध नहीं है।",
+  "Rewrite for utility with AI": "AI से यूटिलिटी के लिए पुनर्लेखन करें",
+  "Rewriting for utility with AI…": "AI से यूटिलिटी के लिए पुनर्लेखन हो रहा है…",
+  "What the AI changed": "AI ने क्या बदला",
+  "View what changed": "देखें क्या बदला",
+  "Rewritten for utility — review the changes and adjust before submitting.": "यूटिलिटी के लिए पुनर्लेखित — सबमिट करने से पहले बदलावों की समीक्षा करें और आवश्यकतानुसार बदलें।"
 }

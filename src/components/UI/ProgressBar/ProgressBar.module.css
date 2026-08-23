@@ -1,0 +1,32 @@
+.Wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+  width: 100%;
+}
+
+.Bar {
+  height: var(--app-space-2xs);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-green-tertiary);
+}
+
+.BarIndicator {
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-brand-primary);
+}
+
+.Label {
+  font-size: var(--app-font-size-xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+/* A moving bar is the whole point, so when motion is reduced fall back to a static
+   filled track rather than an empty one that reads as "nothing is happening". */
+@media (prefers-reduced-motion: reduce) {
+  .BarIndicator {
+    animation: none;
+    transform: none;
+  }
+}

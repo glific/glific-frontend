@@ -29,6 +29,28 @@ export const removeFirstLineBreak = (text: any) =>
   text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
 /**
+ * The user-visible text of each button, which is what the AI endpoints (translate, rewrite)
+ * operate on. Where the text lives depends on the button type, hence the single source here.
+ *
+ * @param buttonType id of the selected button type, or undefined when no buttons are added
+ * @param buttons the button rows currently in the draft
+ *
+ * @return array of button texts, empty for types that have no user-authored text
+ */
+export const collectButtonTexts = (
+  buttonType: string | undefined,
+  buttons: Array<CallToActionTemplate | QuickReplyTemplate | WhatsappFormTemplate>
+): string[] => {
+  if (buttonType === CALL_TO_ACTION) {
+    return (buttons as CallToActionTemplate[]).map((button) => button.title);
+  }
+  if (buttonType === QUICK_REPLY) {
+    return (buttons as QuickReplyTemplate[]).map((button) => button.value);
+  }
+  return [];
+};
+
+/**
  * Function to convert buttons to template format
  *
  * @param templateButtons buttons that need to be converted to gupshup format
