@@ -1900,6 +1900,28 @@ test('the two ways of running are offered as cards, and the choice sticks', asyn
   expect(screen.getByTestId('duplicationOption-1')).toHaveAttribute('aria-checked', 'false');
 });
 
+test('a run going on another version does not block this one', async () => {
+  // same assistant, different version — the two runs have nothing to do with each other
+  const runningElsewhere = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [runningElsewhere] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-other" versionNumber={2} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('runEvaluationButton')).not.toBeDisabled();
+});
+
 test('a second run cannot be started while one is still going', async () => {
   const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
 

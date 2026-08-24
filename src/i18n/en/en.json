@@ -1162,7 +1162,7 @@
   "Asks each question once. The fastest way to see if things broadly work.": "Asks each question once. The fastest way to see if things broadly work.",
   "Consistency check": "Consistency check",
   "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
-  "An evaluation is already running. Wait for it to finish.": "An evaluation is already running. Wait for it to finish.",
+  "An evaluation is already running for this version. Wait for it to finish.": "An evaluation is already running for this version. Wait for it to finish.",
   "Knowledge Base ID": "Knowledge Base ID",
   "Edit system instructions": "Edit system instructions",
   "Loading out the overall score": "Loading out the overall score",
@@ -1189,6 +1189,5 @@
   "adherence to ground truth": "adherence to ground truth",
   "adherence to knowledge base": "adherence to knowledge base",
   "adherence to prompt": "adherence to prompt",
-  "Could not listen for evaluation updates": "Could not listen for evaluation updates",
   "Evaluation runs could not be loaded": "Evaluation runs could not be loaded"
 }

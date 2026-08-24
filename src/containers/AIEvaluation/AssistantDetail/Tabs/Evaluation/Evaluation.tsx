@@ -5,7 +5,6 @@ import AddIcon from '@mui/icons-material/Add';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { setErrorMessage } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -64,7 +63,6 @@ export const Evaluation = ({
   const client = useApolloClient();
 
   useSubscription(AI_EVALUATION_UPDATED, {
-    onError: (subscriptionError) => setErrorMessage(subscriptionError, t('Could not listen for evaluation updates')),
     onData: ({ data: subscription }) => {
       const updated: EvaluationRun | undefined = subscription?.data?.aiEvaluationUpdated;
       if (!updated) return;
@@ -84,7 +82,7 @@ export const Evaluation = ({
   );
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
   const latestRun = versionRuns[0];
-  const runsInProgress = assistantRuns.some(isRunInProgress);
+  const versionRunInProgress = versionRuns.some(isRunInProgress);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
@@ -192,8 +190,12 @@ export const Evaluation = ({
               color="primary"
               className={styles.RunButton}
               startIcon={<PlayArrowIcon />}
-              disabled={!versionId || runsInProgress}
-              title={runsInProgress ? t('An evaluation is already running. Wait for it to finish.') : undefined}
+              disabled={!versionId || versionRunInProgress}
+              title={
+                versionRunInProgress
+                  ? t('An evaluation is already running for this version. Wait for it to finish.')
+                  : undefined
+              }
               onClick={() => setRunOpen(true)}
               data-testid="runEvaluationButton"
             >
