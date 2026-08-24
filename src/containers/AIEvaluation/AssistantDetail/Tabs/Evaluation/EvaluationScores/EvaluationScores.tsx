@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
@@ -13,6 +15,7 @@ import type {
   EvaluationScoresFormat,
   EvaluationTrace,
   EvaluationTraceAnswer,
+  EvaluationTraceScore,
 } from 'containers/AIEvaluation/types/evaluationType';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { DataTable } from 'components/UI/DataTable/DataTable';
@@ -72,6 +75,17 @@ export const EvaluationScores = ({
       <span className={`${styles.Score} ${styles[scoreBand(score)]}`}>{formatScore(score)}</span>
     );
 
+  const scoreWithReason = (score?: EvaluationTraceScore) => (
+    <span className={styles.ScoreCell}>
+      {scorePill(score?.value ?? null)}
+      {score?.comment ? (
+        <Tooltip title={score.comment} placement="top" tooltipClass={styles.ReasonTooltip} interactive>
+          <InfoOutlinedIcon className={styles.ReasonIcon} data-testid="scoreReason" />
+        </Tooltip>
+      ) : null}
+    </span>
+  );
+
   // in grouped view the judge's marks sit under the answer they belong to, not in their own columns
   const answerCell = (answer?: EvaluationTraceAnswer) => {
     if (!answer) return <span className={styles.NoScore}>—</span>;
@@ -83,8 +97,8 @@ export const EvaluationScores = ({
           <div className={styles.AnswerScores}>
             {answer.scores.map((score) => (
               <div className={styles.AnswerScore} key={score.name}>
-                <span className={styles.AnswerScoreName}>{score.name}</span>
-                {scorePill(score.value)}
+                <span className={styles.AnswerScoreName}>{shortMetricName(score.name)}</span>
+                {scoreWithReason(score)}
               </div>
             ))}
           </div>
@@ -118,7 +132,7 @@ export const EvaluationScores = ({
             <div className={styles.Answer}>
               {trace.answers[0]?.answer ? <MarkdownAnswer text={trace.answers[0].answer} /> : '—'}
             </div>,
-            ...metricNames.map((name) => scorePill(trace.answers[0] ? scoreOf(trace.answers[0], name) : null)),
+            ...metricNames.map((name) => scoreWithReason(trace.answers[0]?.scores.find((e) => e.name === name))),
           ]),
     ],
   }));

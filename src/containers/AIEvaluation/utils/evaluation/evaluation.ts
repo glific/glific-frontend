@@ -125,6 +125,7 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
       .map((score: any) => ({
         name: score.name,
         value: asScore(score.value ?? score.avg ?? score.score),
+        comment: typeof score.comment === 'string' ? score.comment : '',
       }));
 
   const readAnswers = (row: any): EvaluationTraceAnswer[] => {

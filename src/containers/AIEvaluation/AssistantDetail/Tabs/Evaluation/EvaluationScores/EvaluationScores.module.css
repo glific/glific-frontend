@@ -169,3 +169,23 @@
 .LoadingArea [data-testid='loader'] > div:first-child {
   padding-top: 0;
 }
+
+.ScoreCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+}
+
+.ReasonIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+  flex-shrink: 0;
+}
+
+.ReasonTooltip {
+  max-width: 26rem !important;
+  font-size: var(--app-font-size-xs) !important;
+  line-height: 1.5 !important;
+}

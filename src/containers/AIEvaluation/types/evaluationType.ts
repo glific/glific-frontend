@@ -12,9 +12,15 @@ export type ScoreBand = 'good' | 'okay' | 'bad';
 
 export type EvaluationScoresFormat = 'row' | 'grouped';
 
+export interface EvaluationTraceScore {
+  name: string;
+  value: number | null;
+  comment: string;
+}
+
 export interface EvaluationTraceAnswer {
   answer: string;
-  scores: { name: string; value: number | null }[];
+  scores: EvaluationTraceScore[];
 }
 
 export interface EvaluationTrace {

@@ -5,6 +5,7 @@ import * as utils from 'common/utils';
 import { toCsv } from 'containers/AIEvaluation/utils/csv/csv';
 import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
+import { AI_EVALUATION_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import {
   GET_EVALUATION_SCORES,
   GET_GOLDEN_QA,
@@ -909,7 +910,9 @@ describe('running an evaluation', () => {
     const cells = within(rows[0]).getAllByRole('cell');
     // each answer carries the judge's marks for that attempt, not the other's
     expect(cells[2]).toHaveTextContent('First attempt.');
-    expect(cells[2]).toHaveTextContent('Adherence to Ground Truth');
+    // the shared "Adherence to" prefix is dropped — it would repeat once per answer column
+    expect(cells[2]).toHaveTextContent('Ground Truth');
+    expect(cells[2]).not.toHaveTextContent('Adherence to');
     expect(cells[2]).toHaveTextContent('4.0');
     expect(cells[3]).toHaveTextContent('Second attempt.');
     expect(cells[3]).toHaveTextContent('2.0');
@@ -1171,6 +1174,38 @@ describe('question-level results', () => {
         <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
       </MockedProvider>
     );
+
+  test('the judge’s reasoning for a mark is reachable from the score', async () => {
+    renderWith({
+      scores: JSON.stringify({
+        score: {
+          traces: [
+            {
+              question_id: '1',
+              question: 'What is health?',
+              ground_truth_answer: 'Complete well-being.',
+              llm_answer: 'A dynamic capacity.',
+              scores: [
+                {
+                  name: 'Adherence to Ground Truth',
+                  value: 3,
+                  comment: 'The answer omits the mental and social dimensions.',
+                },
+                { name: 'Adherence to Prompt', value: 5, comment: 'No stated instruction was violated.' },
+              ],
+            },
+          ],
+        },
+      }),
+      errors: [],
+    });
+
+    const rows = await screen.findAllByTestId('evaluationScoreRow');
+    // one icon per scored metric, each carrying that metric's own comment
+    const reasons = within(rows[0]).getAllByTestId('scoreReason');
+    expect(reasons).toHaveLength(2);
+    expect(within(rows[0]).getByLabelText('The answer omits the mental and social dimensions.')).toBeInTheDocument();
+  });
 
   test('each question becomes a row, with a column per metric the judge used', async () => {
     renderWith({
@@ -1746,6 +1781,67 @@ test('History lists this assistant’s runs only, not the whole organisation’s
   expect(rows).toHaveLength(1);
   expect(rows[0]).toHaveTextContent('mine');
   expect(rows[0]).not.toHaveTextContent('someone_elses');
+});
+
+test('a run finishing in the background lands without the reader reloading', async () => {
+  const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        // the first read still says running; the refetch the update triggers sees it settled
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [running] } },
+        },
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [{ ...running, status: 'COMPLETED' }] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        {
+          request: { query: AI_EVALUATION_UPDATED },
+          result: { data: { aiEvaluationUpdated: { ...running, status: 'COMPLETED' } } },
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('evaluationRunning')).toBeInTheDocument();
+
+  // the published status replaces the in-progress card on its own
+  await waitFor(() => expect(screen.queryByTestId('evaluationRunning')).not.toBeInTheDocument());
+});
+
+test('an update carrying no run leaves what is on screen alone', async () => {
+  const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [running] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        {
+          request: { query: AI_EVALUATION_UPDATED },
+          result: { data: { aiEvaluationUpdated: null } },
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  // an empty payload must not clear the list or blank the panel
+  expect(await screen.findByTestId('evaluationRunning')).toBeInTheDocument();
+  await waitFor(() => expect(screen.getByTestId('evaluationRunning')).toBeInTheDocument());
 });
 
 test('a run still being judged shows as in progress and asks for no scores', async () => {
