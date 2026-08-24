@@ -9,10 +9,12 @@ import {
   isRunComplete,
   isRunFailed,
   isRunInProgress,
+  mergeEvaluationUpdate,
   overallScore,
   parseEvaluationResults,
   scoreBand,
 } from './evaluation';
+import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 
 describe('parseEvaluationResults', () => {
   test('reads the summary_scores the judge actually returns', () => {
@@ -277,5 +279,64 @@ describe('evaluationRunName', () => {
 
   test('a version-less run is filed under v1', () => {
     expect(evaluationRunName('Bot', undefined, 'set')).toMatch(/^bot_v1_set_\d+$/);
+  });
+});
+
+describe('folding a subscription update into the cached list', () => {
+  const run = (id: string, status: string) =>
+    ({ id, name: `run_${id}`, status, insertedAt: '2026-08-10T10:00:00Z' }) as EvaluationRun;
+
+  test('a run already on the list is updated in place, keeping its position', () => {
+    const previous = { aiEvaluations: [run('r2', 'PROCESSING'), run('r1', 'COMPLETED')] };
+
+    const merged = mergeEvaluationUpdate(previous, run('r2', 'COMPLETED'));
+
+    expect(merged.aiEvaluations?.map((entry) => entry.id)).toEqual(['r2', 'r1']);
+    expect(merged.aiEvaluations?.[0].status).toBe('COMPLETED');
+  });
+
+  test('fields the update does not carry are kept rather than wiped', () => {
+    const previous = { aiEvaluations: [{ ...run('r1', 'PROCESSING'), results: 'kept' } as EvaluationRun] };
+
+    const merged = mergeEvaluationUpdate(previous, { id: 'r1', status: 'COMPLETED' } as EvaluationRun);
+
+    expect(merged.aiEvaluations?.[0].results).toBe('kept');
+    expect(merged.aiEvaluations?.[0].status).toBe('COMPLETED');
+  });
+
+  test('nulls in the update do not wipe what the list already read', () => {
+    const previous = {
+      aiEvaluations: [{ ...run('r1', 'PROCESSING'), goldenQa: { id: 'g1', name: 'core_set' } } as EvaluationRun],
+    };
+
+    // the server publishes without preloading, so associations can come back null
+    const merged = mergeEvaluationUpdate(previous, {
+      id: 'r1',
+      status: 'COMPLETED',
+      goldenQa: null,
+    } as EvaluationRun);
+
+    expect(merged.aiEvaluations?.[0].status).toBe('COMPLETED');
+    expect(merged.aiEvaluations?.[0].goldenQa?.name).toBe('core_set');
+  });
+
+  test('a run started elsewhere is added at the top, where the newest belongs', () => {
+    const previous = { aiEvaluations: [run('r1', 'COMPLETED')] };
+
+    const merged = mergeEvaluationUpdate(previous, run('r9', 'PROCESSING'));
+
+    expect(merged.aiEvaluations?.map((entry) => entry.id)).toEqual(['r9', 'r1']);
+  });
+
+  test('an update that carries no run leaves the list alone', () => {
+    const previous = { aiEvaluations: [run('r1', 'COMPLETED')] };
+
+    expect(mergeEvaluationUpdate(previous, null).aiEvaluations).toEqual(previous.aiEvaluations);
+    expect(mergeEvaluationUpdate(previous, undefined).aiEvaluations).toEqual(previous.aiEvaluations);
+  });
+
+  test('an empty cache is safe to fold into', () => {
+    expect(mergeEvaluationUpdate(undefined, run('r1', 'COMPLETED')).aiEvaluations).toHaveLength(1);
+    expect(mergeEvaluationUpdate(undefined, null).aiEvaluations).toEqual([]);
   });
 });

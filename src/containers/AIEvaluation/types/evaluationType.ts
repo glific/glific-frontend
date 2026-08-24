@@ -25,6 +25,11 @@ export interface EvaluationTrace {
   answers: EvaluationTraceAnswer[];
 }
 
+/** shape of the cached `aiEvaluations` list, as the subscription folds updates into it */
+export interface EvaluationListData {
+  aiEvaluations?: EvaluationRun[];
+}
+
 export interface EvaluationRun {
   id: string;
   name: string;

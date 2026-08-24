@@ -1054,5 +1054,6 @@
   "adherence to ground truth": "ग्राउंड ट्रुथ का पालन",
   "adherence to knowledge base": "नॉलेज बेस का पालन",
   "adherence to prompt": "प्रॉम्प्ट का पालन",
+  "Could not listen for evaluation updates": "मूल्यांकन अपडेट सुनने में समस्या आई",
   "Evaluation runs could not be loaded": "मूल्यांकन रन लोड नहीं हो सके"
 }

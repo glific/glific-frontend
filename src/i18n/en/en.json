@@ -1189,5 +1189,6 @@
   "adherence to ground truth": "adherence to ground truth",
   "adherence to knowledge base": "adherence to knowledge base",
   "adherence to prompt": "adherence to prompt",
+  "Could not listen for evaluation updates": "Could not listen for evaluation updates",
   "Evaluation runs could not be loaded": "Evaluation runs could not be loaded"
 }

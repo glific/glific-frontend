@@ -340,3 +340,24 @@ test('a link that comes back empty says so rather than failing silently', async 
   download.mockRestore();
   notify.mockRestore();
 });
+
+test('a download the server never answers reports the failure', async () => {
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {});
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+  renderTab({}, [
+    {
+      request: { query: GET_KNOWLEDGE_BASE_FILE, variables: { fileId: 'file-1' } },
+      error: new Error('Network request failed'),
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    },
+  ]);
+
+  fireEvent.click(screen.getByTestId('downloadFileButton'));
+
+  await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+  expect(download).not.toHaveBeenCalled();
+
+  download.mockRestore();
+  errorSpy.mockRestore();
+});

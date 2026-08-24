@@ -916,6 +916,52 @@ describe('running an evaluation', () => {
     expect(cells[3]).not.toHaveTextContent('4.0');
   });
 
+  test('a question with fewer attempts than the widest leaves that column blank', async () => {
+    const unevenGrouped = {
+      request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'grouped' } },
+      result: {
+        data: {
+          evaluationScores: {
+            scores: JSON.stringify({
+              score: {
+                traces: [
+                  {
+                    question_id: 1,
+                    question: 'Asked twice',
+                    ground_truth_answer: 'Ground truth.',
+                    llm_answers: ['First attempt.', 'Second attempt.'],
+                    scores: [[{ name: 'Adherence to Ground Truth', value: 4 }], []],
+                  },
+                  {
+                    question_id: 2,
+                    question: 'Asked once',
+                    ground_truth_answer: 'Ground truth.',
+                    llm_answers: ['Only attempt.'],
+                    scores: [[{ name: 'Adherence to Ground Truth', value: 3 }]],
+                  },
+                ],
+              },
+            }),
+            errors: [],
+          },
+        },
+      },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+
+    renderWithRuns([completedRun], [unevenGrouped]);
+
+    fireEvent.click(await screen.findByTestId('scoresFormatToggle-grouped'));
+
+    const rows = await screen.findAllByTestId('evaluationScoreRow');
+    // the table keeps a column per attempt, so the shorter question gets an empty cell
+    // rather than a ragged row
+    const secondRow = within(rows[1]).getAllByRole('cell');
+    expect(secondRow).toHaveLength(4);
+    expect(secondRow[2]).toHaveTextContent('Only attempt.');
+    expect(secondRow[3]).toHaveTextContent('—');
+  });
+
   test('the toggle stays reachable while the grouped payload is still loading', async () => {
     const slowGrouped = {
       request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'grouped' } },
@@ -1623,6 +1669,14 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
     results: null,
     assistantConfigVersion: { id: 'v2', versionNumber: 2, assistant: { id: 'a1', name: 'A' } },
   };
+  const running = {
+    ...completed,
+    id: 'r3',
+    name: 'run_3',
+    status: 'PROCESSING',
+    results: null,
+    assistantConfigVersion: { id: 'v3', versionNumber: 3, assistant: { id: 'a1', name: 'A' } },
+  };
 
   render(
     <MockedProvider
@@ -1630,7 +1684,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
         listMock(oneSet),
         {
           request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
-          result: { data: { aiEvaluations: [completed, failed] } },
+          result: { data: { aiEvaluations: [completed, failed, running] } },
           maxUsageCount: Number.POSITIVE_INFINITY,
         },
         scoresMock('r1'),
@@ -1659,6 +1713,8 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
     ],
     ['1', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '2026-08-10 15:30'],
     ['2', 'core_set', '1', 'Failed', '', '', '', '', '2026-08-10 15:30'],
+    // a run still going says so rather than reading as complete with no scores
+    ['3', 'core_set', '1', 'Running', '', '', '', '', '2026-08-10 15:30'],
   ]);
 
   expect((createObjectURL.mock.calls[0][0] as Blob).size).toBe(new Blob([`\uFEFF${csv}`]).size);

@@ -1,4 +1,5 @@
 import type {
+  EvaluationListData,
   EvaluationMetrics,
   EvaluationRun,
   EvaluationTrace,
@@ -211,3 +212,25 @@ export const evaluationRunName = (assistantName: string, versionNumber: number |
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
+
+export const mergeEvaluationUpdate = (
+  previous: EvaluationListData | undefined,
+  updated?: EvaluationRun | null
+): EvaluationListData => {
+  const runs = previous?.aiEvaluations ?? [];
+
+  if (!updated?.id) return previous ?? { aiEvaluations: runs };
+
+  const known = runs.some((run) => run.id === updated.id);
+
+  const withoutBlanks = Object.fromEntries(
+    Object.entries(updated).filter(([, value]) => value !== null && value !== undefined)
+  ) as Partial<EvaluationRun>;
+
+  return {
+    ...previous,
+    aiEvaluations: known
+      ? runs.map((run) => (run.id === updated.id ? { ...run, ...withoutBlanks } : run))
+      : [updated, ...runs],
+  };
+};

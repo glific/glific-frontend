@@ -82,27 +82,29 @@ export const KnowledgeBase = ({
   const handleDownload = async (file: KnowledgeBaseFile) => {
     setDownloading(file.fileId);
 
-    try {
-      const { data } = await fetchFile({ variables: { fileId: file.fileId } });
+    // the lazy query resolves with an `error` rather than throwing, so it is read off the
+    // result — otherwise a failed request would fall through to the "no link yet" notice
+    const { data, error } = await fetchFile({ variables: { fileId: file.fileId } });
+    setDownloading(null);
 
-      const errors = data?.getFile?.errors;
-      if (errors?.length) {
-        setErrorMessage(errors[0]);
-        return;
-      }
-
-      const signedUrl = data?.getFile?.signedUrl;
-      if (!signedUrl) {
-        setNotification(t('This file has no download link yet. Try again in a moment.'), 'warning');
-        return;
-      }
-
-      downloadFile(signedUrl, data?.getFile?.filename || file.filename);
-    } catch (error: unknown) {
+    if (error) {
       setErrorMessage(error);
-    } finally {
-      setDownloading(null);
+      return;
     }
+
+    const errors = data?.getFile?.errors;
+    if (errors?.length) {
+      setErrorMessage(errors[0]);
+      return;
+    }
+
+    const signedUrl = data?.getFile?.signedUrl;
+    if (!signedUrl) {
+      setNotification(t('This file has no download link yet. Try again in a moment.'), 'warning');
+      return;
+    }
+
+    downloadFile(signedUrl, data?.getFile?.filename || file.filename);
   };
 
   const isUploading = uploading.length > 0;
