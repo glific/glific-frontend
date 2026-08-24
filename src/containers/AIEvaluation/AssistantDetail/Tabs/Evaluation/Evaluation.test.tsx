@@ -1790,7 +1790,6 @@ test('a run finishing in the background lands without the reader reloading', asy
     <MockedProvider
       mocks={[
         listMock(oneSet),
-        // the first read still says running; the refetch the update triggers sees it settled
         {
           request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [running] } },
