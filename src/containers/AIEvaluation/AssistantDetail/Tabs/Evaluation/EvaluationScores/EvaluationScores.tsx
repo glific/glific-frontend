@@ -43,7 +43,6 @@ export const EvaluationScores = ({
 
   const metricNames = traceMetricNames(traces);
   const grouped = format === 'grouped';
-  // grouped runs answer each question several times; every attempt gets its own column
   const answerCount = traces.reduce((most, trace) => Math.max(most, trace.answers.length), 1);
 
   const scoreOf = (answer: EvaluationTraceAnswer, name: string) =>
@@ -170,8 +169,6 @@ export const EvaluationScores = ({
     </div>
   );
 
-  // the header stays put through loading and failures, otherwise switching to a view that
-  // cannot load would strand the reader with no way back
   const body = () => {
     if (loading && traces.length === 0) {
       return (

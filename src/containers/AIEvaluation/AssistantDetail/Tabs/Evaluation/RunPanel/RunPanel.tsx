@@ -38,8 +38,6 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
     fetchPolicy: 'cache-and-network',
   });
 
-  // the grouped payload is shaped for the table only, so the banner and the suggestion keep
-  // reading the row payload — switching the table cannot take the overall score away
   const {
     data: groupedData,
     loading: groupedLoading,

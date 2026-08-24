@@ -27,11 +27,9 @@ export interface EvaluationTrace {
   questionId: string;
   question: string;
   expected: string;
-  /** one entry per attempt — grouped runs repeat a question, row runs answer it once */
   answers: EvaluationTraceAnswer[];
 }
 
-/** shape of the cached `aiEvaluations` list, as the subscription folds updates into it */
 export interface EvaluationListData {
   aiEvaluations?: EvaluationRun[];
 }

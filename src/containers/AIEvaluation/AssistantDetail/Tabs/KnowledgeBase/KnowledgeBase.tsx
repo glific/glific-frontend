@@ -82,8 +82,6 @@ export const KnowledgeBase = ({
   const handleDownload = async (file: KnowledgeBaseFile) => {
     setDownloading(file.fileId);
 
-    // the lazy query resolves with an `error` rather than throwing, so it is read off the
-    // result — otherwise a failed request would fall through to the "no link yet" notice
     const { data, error } = await fetchFile({ variables: { fileId: file.fileId } });
     setDownloading(null);
 
