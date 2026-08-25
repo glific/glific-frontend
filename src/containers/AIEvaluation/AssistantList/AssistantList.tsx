@@ -1,7 +1,7 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import CheckIcon from '@mui/icons-material/Check';
@@ -22,6 +22,7 @@ import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { List } from 'containers/List/List';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { clearSandboxChatsForAssistant } from 'containers/AIEvaluation/services/sandboxChatCache';
+import type { AssistantListItem } from 'containers/AIEvaluation/types/assistantType';
 import {
   BAND_LABEL,
   formatScore,
@@ -132,12 +133,12 @@ export const AssistantList = () => {
     }
   }, [pollingData]);
 
-  const handleEdit = (_id: string, item: any) => {
+  const handleEdit = (_id: string, item: AssistantListItem) => {
     if (!item) return;
     navigate(`/ai-evaluation-v2/${item.id}`);
   };
 
-  const handleDeleteClick = (_id: string, item: any) => {
+  const handleDeleteClick = (_id: string, item: AssistantListItem) => {
     setAssistantToDelete({ id: item.id, name: item.name });
   };
 
@@ -157,7 +158,7 @@ export const AssistantList = () => {
     }
   };
 
-  const handleCloneClick = (_id: string, item: any) => {
+  const handleCloneClick = (_id: string, item: AssistantListItem) => {
     setSelectedAssistant({
       id: item.id,
       name: item.name,
@@ -212,7 +213,13 @@ export const AssistantList = () => {
     );
   };
 
-  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, updatedAt, lastEvaluationSummary }: any) => ({
+  const getColumns = ({
+    name,
+    assistantDisplayId,
+    liveVersionNumber,
+    updatedAt,
+    lastEvaluationSummary,
+  }: AssistantListItem) => ({
     name: getAssistantName(name, assistantDisplayId),
     evaluationHealth: getEvaluationHealth(lastEvaluationSummary),
     liveVersion: getLiveVersion(liveVersionNumber),
@@ -248,7 +255,7 @@ export const AssistantList = () => {
     <div className={styles.SearchBar}>
       <SearchBar
         searchVal={searchInput}
-        handleChange={(e: any) => setSearchInput(e.target.value)}
+        handleChange={(event: ChangeEvent<HTMLInputElement>) => setSearchInput(event.target.value)}
         handleSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}
         onReset={() => {
           setSearchInput('');
