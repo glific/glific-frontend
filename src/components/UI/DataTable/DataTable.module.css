@@ -1,0 +1,40 @@
+.Wrap {
+  max-height: 26rem;
+  overflow: auto;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+}
+
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+
+  th,
+  td {
+    padding: var(--app-space-lg);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  td {
+    border-bottom: 1px solid var(--app-color-border);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    background-color: var(--app-color-green-secondary);
+    font-size: var(--app-font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--app-color-white);
+  }
+}

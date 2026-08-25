@@ -263,6 +263,16 @@ export const getStatusWithError = {
   },
 };
 
+export const getStatusNetworkError = {
+  request: {
+    query: GET_CONTACT_IMPORT_STATUS,
+    variables: {
+      userJobId: 1,
+    },
+  },
+  error: new Error('An error occurred'),
+};
+
 // Mocks for the "Collection Primary Phone" notification + its skip-report download.
 export const collectionPrimaryRow = {
   request: {

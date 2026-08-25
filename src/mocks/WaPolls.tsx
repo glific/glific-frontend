@@ -151,6 +151,14 @@ const deletePollQuery = {
   },
 };
 
+export const deletePollErrorQuery = {
+  request: {
+    query: DELETE_POLL,
+    variables: { deleteWaPollId: '1' },
+  },
+  error: new Error('Failed to delete poll'),
+};
+
 export const WaPollListMocks = [
   filterRolesQuery,
   listPollsQuery,

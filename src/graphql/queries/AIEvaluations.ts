@@ -14,6 +14,7 @@ export const LIST_AI_EVALUATIONS = gql`
       status
       failureReason
       results
+      duplicationFactor
       goldenQa {
         id
         name
@@ -38,6 +39,11 @@ export const COUNT_GOLDEN_QA = gql`
     countGoldenQas(filter: $filter)
   }
 `;
+
+export const GOLDEN_QA_LIST_VARIABLES = {
+  filter: {},
+  opts: { order: 'DESC', orderWith: 'inserted_at' },
+};
 
 export const LIST_GOLDEN_QA = gql`
   query GoldenQas($filter: GoldenQaFilter, $opts: Opts) {

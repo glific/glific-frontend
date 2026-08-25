@@ -30,9 +30,6 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
 
   const [getConsultingDetails] = useLazyQuery(EXPORT_CONSULTING_HOURS, {
     fetchPolicy: 'network-only',
-    onCompleted: ({ fetchConsultingHours }) => {
-      downloadFile(`data:attachment/csv,${encodeURIComponent(fetchConsultingHours)}`, 'consulting-hours.csv');
-    },
   });
 
   const formFields = [
@@ -113,8 +110,8 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
                 <ExportIcon
                   className={styles.ExportIcon}
                   data-testid="export"
-                  onClick={() => {
-                    getConsultingDetails({
+                  onClick={async () => {
+                    const { data } = await getConsultingDetails({
                       variables: {
                         filter: {
                           clientId: values.organization.id,
@@ -123,6 +120,12 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
                         },
                       },
                     });
+                    if (data) {
+                      downloadFile(
+                        `data:attachment/csv,${encodeURIComponent(data.fetchConsultingHours)}`,
+                        'consulting-hours.csv'
+                      );
+                    }
                   }}
                 />
               </div>

@@ -238,7 +238,7 @@ describe('edit mode', () => {
 
   test('version rows fall back to insertedAt, and drop the timestamp when both are missing', async () => {
     const noUpdatedAt = { ...version(1, true), updatedAt: null };
-    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null, description: 'Draft config' };
+    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null };
 
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([noUpdatedAt, noDates])]);
 
@@ -248,7 +248,6 @@ describe('edit mode', () => {
     fireEvent.click(screen.getByTestId('versionPill'));
 
     expect(await screen.findByTestId('versionOption-1')).toHaveTextContent(/published .*ago/);
-    expect(screen.getByTestId('versionOption-2')).toHaveTextContent('Draft config');
     expect(screen.getByTestId('versionOption-2')).not.toHaveTextContent('ago');
   });
 
@@ -887,12 +886,12 @@ describe('tabs', () => {
 
     fireEvent.click(screen.getByTestId('tab-evaluation'));
 
-    expect(screen.getByTestId('tabPanel')).toHaveTextContent('Golden Q&A Evaluation coming soon');
+    expect(await screen.findByTestId('evaluationTab')).toBeInTheDocument();
     expect(screen.getByTestId('tab-evaluation')).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByTestId('tab-persona')).toHaveAttribute('aria-selected', 'false');
   });
 
-  test('renders every tab, with the sandbox badge on Try It Out', async () => {
+  test('renders every tab', async () => {
     renderDetail();
 
     await waitFor(() => {
@@ -902,7 +901,6 @@ describe('tabs', () => {
     ['persona', 'knowledgeBase', 'guardrails', 'evaluation', 'tryItOut'].forEach((key) => {
       expect(screen.getByTestId(`tab-${key}`)).toBeInTheDocument();
     });
-    expect(screen.getByTestId('tab-tryItOut')).toHaveTextContent('SANDBOX');
   });
 
   test('tabs keep working in create mode', async () => {
@@ -1653,4 +1651,22 @@ test('a reply that lands while another tab is open is not lost', async () => {
   fireEvent.click(screen.getByTestId('tab-tryItOut'));
 
   expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Here you go');
+});
+
+test('the settings panel does not flip from Temperature to Reasoning effort while loading', async () => {
+  // the assistant record still names an older temperature model; its newest version is on gpt-5
+  renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), getAssistant('1'), versionsMock()]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
+  });
+
+  // whatever shows first is what stays — no swap once the queries have all landed
+  const shownFirst = screen.queryByTestId('temperatureSlider') ? 'temperature' : 'effort';
+
+  await waitFor(() => {
+    expect(screen.getByTestId('modelParams')).toBeInTheDocument();
+  });
+
+  expect(screen.queryByTestId('temperatureSlider') ? 'temperature' : 'effort').toBe(shownFirst);
 });

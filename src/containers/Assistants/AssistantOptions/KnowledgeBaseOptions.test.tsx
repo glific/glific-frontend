@@ -12,7 +12,13 @@ import {
   rateLimitError,
 } from 'mocks/KnowledgeBase';
 
-const setNotificationSpy = vi.spyOn(Notification, 'setNotification');
+let setNotificationSpy = vi.spyOn(Notification, 'setNotification');
+
+beforeEach(() => {
+  // Some tests below call vi.restoreAllMocks(), which detaches this spy from
+  // Notification.setNotification. Re-spy every test so later tests keep seeing calls.
+  setNotificationSpy = vi.spyOn(Notification, 'setNotification');
+});
 
 const baseProps = {
   ...knowledgeBaseOptionsBaseProps,
@@ -1024,6 +1030,68 @@ describe('KnowledgeBaseOptions upload queue behavior', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Proceed' }));
 
     await waitFor(() => {
+      expect(screen.queryByText('Manage Knowledge Base')).not.toBeInTheDocument();
+    });
+  });
+
+  test('updates fields and closes the dialog when createKnowledgeBase succeeds', async () => {
+    const keepFile = { fileId: 'keep-id', filename: 'keep.txt', uploadedAt: '2026-01-01', fileSize: 10 };
+    const removeFile = { fileId: 'remove-id', filename: 'remove.txt', uploadedAt: '2026-01-02', fileSize: 15 };
+    const setFieldValueSpy = vi.fn();
+
+    const kbSuccessMock = {
+      request: {
+        query: CREATE_KNOWLEDGE_BASE,
+        variables: {
+          createKnowledgeBaseId: 'kb-1',
+          mediaInfo: [{ fileId: 'keep-id', filename: 'keep.txt', uploadedAt: '2026-01-01', fileSize: 10 }],
+        },
+      },
+      result: {
+        data: {
+          createKnowledgeBase: {
+            knowledgeBase: {
+              knowledgeBaseVersionId: 'kbv-1',
+              name: 'My Knowledge Base',
+            },
+          },
+        },
+      },
+    };
+
+    render(
+      <MockedProvider mocks={[kbSuccessMock]}>
+        <KnowledgeBaseOptions
+          {...baseProps}
+          setFieldValue={setFieldValueSpy}
+          formikValues={{ ...baseProps.formikValues, initialFiles: [keepFile, removeFile] }}
+        />
+      </MockedProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('addFiles'));
+
+    await waitFor(() => {
+      expect(screen.getByText('remove.txt')).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      screen.getByText('remove.txt').closest('[data-testid="fileItem"]')!.querySelector('[data-testid="deleteFile"]')!
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('remove.txt')).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Proceed' })).not.toBeDisabled();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Proceed' }));
+
+    await waitFor(() => {
+      expect(setFieldValueSpy).toHaveBeenCalledWith('knowledgeBaseVersionId', 'kbv-1');
+      expect(setNotificationSpy).toHaveBeenCalledWith(
+        "Knowledge base creation in progress, will notify once it's done",
+        'success'
+      );
       expect(screen.queryByText('Manage Knowledge Base')).not.toBeInTheDocument();
     });
   });

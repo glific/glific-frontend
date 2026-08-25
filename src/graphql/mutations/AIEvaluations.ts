@@ -7,6 +7,7 @@ export const CREATE_EVALUATION = gql`
         status
       }
       errors {
+        key
         message
       }
     }
@@ -34,6 +35,19 @@ export const CREATE_GOLDEN_QA = gql`
       }
       errors {
         message
+      }
+    }
+  }
+`;
+
+export const IMPROVE_EVALUATION_PROMPT = gql`
+  mutation ImproveEvaluationPrompt($evaluationId: ID!) {
+    improveEvaluationPrompt(evaluationId: $evaluationId) {
+      errors {
+        message
+      }
+      improvePrompt {
+        status
       }
     }
   }

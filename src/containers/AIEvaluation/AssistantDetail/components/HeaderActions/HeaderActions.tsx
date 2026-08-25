@@ -34,9 +34,15 @@ export const HeaderActions = ({
           <span className={styles.UnsavedDot} />
           {t('Unsaved changes')}
         </span>
-        <button type="button" className={styles.DiscardLink} onClick={onDiscard} data-testid="discardButton">
-          {t('Discard')}
-        </button>
+        <Button
+          variant="outlined"
+          className={styles.CloseButton}
+          onClick={onDiscard}
+          disabled={saving}
+          data-testid="discardButton"
+        >
+          {t('Close')}
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -68,5 +74,3 @@ export const HeaderActions = ({
     </Button>
   );
 };
-
-export default HeaderActions;

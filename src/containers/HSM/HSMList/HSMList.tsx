@@ -213,7 +213,7 @@ export const HSMList = () => {
           setNotification(t('Templates applied successfully. Please check the csv file for the results'));
         }
       } catch {
-        setNotification(t('An error occured! Please check the format of the file'), 'warning');
+        setNotification(t('An error occurred! Please check the format of the file'), 'warning');
       } finally {
         setImporting(false);
       }

@@ -12,17 +12,14 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
+import { setNotification } from 'common/notification';
 import styles from './MyAccount.module.css';
 import { Heading } from 'components/UI/Heading/Heading';
 
 export const MyAccount = () => {
-  // set the validation / errors / success message
-  const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
-
   // set the trigger to show next step
   const [showOTPButton, setShowOTPButton] = useState(true);
 
@@ -35,8 +32,6 @@ export const MyAccount = () => {
   // user language selection
   const [userLanguage, setUserLanguage] = useState('');
 
-  const [message, setMessage] = useState<string>('');
-
   const client = useApolloClient();
 
   // get the information on current user
@@ -48,23 +43,26 @@ export const MyAccount = () => {
   const { t, i18n } = useTranslation();
 
   // set the mutation to update the logged in user password
-  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
-    onCompleted: (data) => {
-      if (data.updateCurrentUser.errors) {
+  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER);
+
+  const handleUpdateCurrentUser = async (input: any, successMessage: string) => {
+    try {
+      const { data } = await updateCurrentUser({ variables: { input } });
+      if (data?.updateCurrentUser?.errors) {
         if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
-          setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
+          setNotification(t('Please enter a valid OTP'), 'error');
         } else {
-          setToastMessageInfo({
-            severity: 'error',
-            message: t('Too many attempts, please retry after sometime.'),
-          });
+          setNotification(t('Too many attempts, please retry after sometime.'), 'error');
         }
-      } else {
-        setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message });
+        return false;
       }
-    },
-  });
+      setNotification(successMessage, 'success');
+      return true;
+    } catch (error: any) {
+      setNotification(t('Sorry! An error occurred!'), 'error');
+      return false;
+    }
+  };
 
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
@@ -90,10 +88,7 @@ export const MyAccount = () => {
         setShowOTPButton(false);
       })
       .catch(() => {
-        setToastMessageInfo({
-          severity: 'error',
-          message: `Unable to send an OTP to ${loggedInUserPhone}.`,
-        });
+        setNotification(`Unable to send an OTP to ${loggedInUserPhone}.`, 'error');
       });
   };
 
@@ -103,35 +98,16 @@ export const MyAccount = () => {
   };
 
   // save the form if data is valid
-  const saveHandler = (item: any) => {
-    setMessage(t('Password updated successfully!'));
-    updateCurrentUser({
-      variables: { input: item },
-    });
+  const saveHandler = async (item: any) => {
+    const updated = await handleUpdateCurrentUser(item, t('Password updated successfully!'));
+    if (updated) {
+      setShowOTPButton(true);
+    }
   };
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  // callback function when close icon is clicked
-  const closeToastMessage = () => {
-    // reset toast information
-    setToastMessageInfo({ message: '', severity: '' });
-  };
-
-  // set up toast message display, we use this for showing backend validation errors like
-  // invalid OTP and also display success message on password update
-  let displayToastMessage: any;
-  if (toastMessageInfo.message.length > 0) {
-    displayToastMessage = (
-      <ToastMessage
-        message={toastMessageInfo.message}
-        severity={toastMessageInfo.severity === 'success' ? 'success' : 'error'}
-        handleClose={closeToastMessage}
-      />
-    );
-  }
 
   // setup form schema base on Yup
   const FormSchema = Yup.object().shape({
@@ -225,7 +201,6 @@ export const MyAccount = () => {
     >
       {({ submitForm }) => (
         <Form className={styles.Form}>
-          {displayToastMessage}
           {formFieldLayout}
           <div className={styles.Buttons}>
             {showOTPButton ? (
@@ -262,22 +237,27 @@ export const MyAccount = () => {
     setUserLanguage(userData.currentUser.user.language.locale);
   }
 
-  const changeLanguage = (event: any) => {
-    setUserLanguage(event.target.value);
-
-    // change the user interface
-    i18n.changeLanguage(event.target.value);
+  const changeLanguage = async (event: any) => {
+    const locale = event.target.value;
 
     // get language id
     const languageID = organizationData.currentUser.user.organization.activeLanguages.filter(
-      (lang: any) => lang.locale === event.target.value
+      (lang: any) => lang.locale === locale
     );
 
-    setMessage(t('Language changed successfully!'));
     // update user's language
-    updateCurrentUser({
-      variables: { input: { languageId: languageID[0].id } },
-    });
+    const updated = await handleUpdateCurrentUser(
+      { languageId: languageID[0].id },
+      t('Language changed successfully!')
+    );
+    if (!updated) {
+      return;
+    }
+
+    setUserLanguage(locale);
+
+    // change the user interface
+    i18n.changeLanguage(locale);
 
     // writing cache to restore value
     const userDataCopy = JSON.parse(JSON.stringify(userData));

@@ -187,7 +187,7 @@ export const AddAttachment = ({
       }
     } catch {
       setFileName(null);
-      setNotification(t('An error occured while uploading the file'), 'warning');
+      setNotification(t('An error occurred while uploading the file'), 'warning');
     } finally {
       setUploading(false);
     }

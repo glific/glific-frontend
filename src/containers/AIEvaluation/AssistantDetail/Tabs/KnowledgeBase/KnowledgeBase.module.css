@@ -171,18 +171,6 @@
   stroke: var(--app-color-text-tertiary);
 }
 
-.CaretIcon path {
-  stroke: var(--app-color-text-tertiary);
-}
-
-.CaretClosed {
-  transform: rotate(-90deg);
-}
-
-.CaretOpen {
-  transform: rotate(0deg);
-}
-
 .TechnicalToggle {
   display: inline-flex;
   align-items: center;
@@ -227,4 +215,18 @@
   border-radius: var(--app-radius-lg);
   font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);
+}
+
+.FileActionDownload {
+  border-color: var(--app-color-border-brand) !important;
+  color: var(--app-color-brand-primary) !important;
+
+  svg {
+    width: var(--app-size-icon-md);
+    height: var(--app-size-icon-md);
+  }
+}
+
+.FileActionDownload:hover {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%) !important;
 }

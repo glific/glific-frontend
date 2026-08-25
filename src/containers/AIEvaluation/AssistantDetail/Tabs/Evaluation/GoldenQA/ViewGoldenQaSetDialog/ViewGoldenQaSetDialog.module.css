@@ -1,0 +1,133 @@
+.WidePaper {
+  width: min(62rem, 92vw) !important;
+  max-width: min(62rem, 92vw) !important;
+}
+
+.WidePaper :global(.MuiDialogActions-root) {
+  margin-left: 0 !important;
+  justify-content: space-between !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+  padding-right: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+.WidePaper :global(.MuiDialogActions-root) button:first-child {
+  padding-left: 0;
+  border: none;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--app-color-brand-primary);
+}
+
+.WidePaper :global(.MuiDialogTitle-root) {
+  padding-top: var(--app-space-3xl) !important;
+  padding-bottom: 0 !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+.WidePaper :global(.MuiDialogContent-root) {
+  padding-top: var(--app-space-2xs) !important;
+}
+
+.Intro {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.SummaryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-sm);
+}
+
+.DeleteButton {
+  flex-shrink: 0;
+  margin-left: auto;
+  border: 1px solid var(--app-color-error) !important;
+  border-radius: var(--app-radius-pill) !important;
+  color: var(--app-color-error) !important;
+  text-transform: none !important;
+}
+
+.ExportButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
+.Summary {
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+}
+
+.Category {
+  display: inline-block;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-green-tertiary);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  color: var(--app-color-green-primary);
+  white-space: nowrap;
+}
+
+.RowsTable table {
+  table-layout: fixed;
+}
+
+.RowsTable td {
+  overflow-wrap: anywhere;
+}
+
+.CategoryColumn {
+  width: 12%;
+}
+
+.QuestionColumn {
+  width: 30%;
+}
+
+.AnswerColumn {
+  width: 58%;
+}
+
+.Question,
+.Answer {
+  display: block;
+  max-height: 12rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-weight: 400;
+  color: var(--app-color-text-heading);
+}
+
+.Fallback {
+  padding: var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  text-align: center;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.FallbackAction {
+  margin-top: var(--app-space-lg);
+}
+
+.FallbackNote {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.SetName {
+  color: var(--app-color-text-heading);
+}
+
+.BackIcon {
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+}
