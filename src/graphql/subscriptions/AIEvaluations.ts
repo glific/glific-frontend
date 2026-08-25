@@ -27,3 +27,37 @@ export const AI_EVALUATION_UPDATED = gql`
     }
   }
 `;
+
+export const IMPROVE_PROMPT_UPDATED = gql`
+  subscription ImprovePromptUpdated {
+    improvePromptUpdated {
+      status
+      error
+      configVersion {
+        id
+        versionNumber
+        model
+        prompt
+        settings
+        status
+        isLive
+        description
+        insertedAt
+        updatedAt
+        vectorStore {
+          id
+          vectorStoreId
+          knowledgeBaseVersionId
+          name
+          legacy
+          size
+          files {
+            name
+            id
+            fileSize
+          }
+        }
+      }
+    }
+  }
+`;

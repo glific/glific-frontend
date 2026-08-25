@@ -1050,6 +1050,8 @@
   "Suggestion dismissed": "सुझाव हटाया गया",
   "Kept until this version is evaluated again.": "जब तक यह संस्करण दोबारा मूल्यांकित नहीं होता, तब तक रहेगा।",
   "Nothing to change — this run scores well. Publish it when you're ready.": "बदलने को कुछ नहीं — यह रन अच्छा स्कोर कर रहा है। तैयार हों तो प्रकाशित कर दें।",
+  "The prompt could not be improved": "प्रॉम्प्ट बेहतर नहीं किया जा सका",
+  "A new version with the improved prompt is ready": "बेहतर प्रॉम्प्ट वाला नया वर्ज़न तैयार है",
   "Prompt improvement started — the new version appears here once it is ready.": "प्रॉम्प्ट सुधार शुरू हुआ — तैयार होते ही नया संस्करण यहां दिखेगा।",
   "adherence to ground truth": "ग्राउंड ट्रुथ का पालन",
   "adherence to knowledge base": "नॉलेज बेस का पालन",

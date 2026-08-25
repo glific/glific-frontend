@@ -12,6 +12,7 @@ import {
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
+import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
@@ -1669,4 +1670,61 @@ test('the settings panel does not flip from Temperature to Reasoning effort whil
   });
 
   expect(screen.queryByTestId('temperatureSlider') ? 'temperature' : 'effort').toBe(shownFirst);
+});
+
+describe('a prompt improvement finishing in the background', () => {
+  const improvedMock = (improvePromptUpdated: any) => ({
+    request: { query: IMPROVE_PROMPT_UPDATED },
+    result: { data: { improvePromptUpdated } },
+  });
+
+  test('the version it wrote is selected without the reader reloading', async () => {
+    const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      // the improved prompt lands as version 3, which the refetch then returns
+      versionsMock([version(1, true), version(2, false), version(3, false)]),
+      improvedMock({ status: 'completed', error: null, configVersion: version(3, false) }),
+    ]);
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('A new version with the improved prompt is ready'));
+
+    notify.mockRestore();
+  });
+
+  test('a failed improvement says why rather than going quiet', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      improvedMock({ status: 'failed', error: 'The model refused the rewrite', configVersion: null }),
+    ]);
+
+    await waitFor(() =>
+      expect(errorSpy).toHaveBeenCalledWith('The model refused the rewrite', 'The prompt could not be improved')
+    );
+
+    errorSpy.mockRestore();
+  });
+
+  test('an update carrying neither a version nor an error changes nothing', async () => {
+    const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      improvedMock({ status: 'processing', error: null, configVersion: null }),
+    ]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    expect(notify).not.toHaveBeenCalledWith('A new version with the improved prompt is ready');
+    expect(errorSpy).not.toHaveBeenCalled();
+
+    notify.mockRestore();
+    errorSpy.mockRestore();
+  });
 });

@@ -1185,6 +1185,8 @@
   "Suggestion dismissed": "Suggestion dismissed",
   "Kept until this version is evaluated again.": "Kept until this version is evaluated again.",
   "Nothing to change — this run scores well. Publish it when you're ready.": "Nothing to change — this run scores well. Publish it when you're ready.",
+  "The prompt could not be improved": "The prompt could not be improved",
+  "A new version with the improved prompt is ready": "A new version with the improved prompt is ready",
   "Prompt improvement started — the new version appears here once it is ready.": "Prompt improvement started — the new version appears here once it is ready.",
   "adherence to ground truth": "adherence to ground truth",
   "adherence to knowledge base": "adherence to knowledge base",
