@@ -75,6 +75,25 @@ export const overallScore = (metrics: EvaluationMetrics) => {
   return Math.round((weighted / totalWeight) * 100) / 100;
 };
 
+export const BAND_LABEL = {
+  good: 'Good',
+  okay: 'Could improve',
+  bad: 'Needs improvement',
+} as const;
+
+export const parseAssistantHealth = (raw: unknown): number | null => {
+  let parsed: any = raw;
+  if (typeof raw === 'string') {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  return asScore(parsed?.overall_score);
+};
+
 export const scoreBand = (score: number): ScoreBand => {
   if (score >= 4) return 'good';
   if (score >= 2) return 'okay';

@@ -4,6 +4,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
@@ -19,20 +22,18 @@ import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { List } from 'containers/List/List';
 import { CLONE_ASSISTANT, DELETE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { clearSandboxChatsForAssistant } from 'containers/AIEvaluation/services/sandboxChatCache';
+import {
+  BAND_LABEL,
+  formatScore,
+  parseAssistantHealth,
+  scoreBand,
+} from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
-
 import styles from './AssistantList.module.css';
 
 dayjs.extend(relativeTime);
 
 const SEARCH_DEBOUNCE_MS = 400;
-
-const HEALTH_SUMMARY = [
-  { count: 0, label: 'good' },
-  { count: 0, label: 'could improve' },
-  { count: 0, label: 'need improvement' },
-  { count: 0, label: 'not evaluated' },
-] as const;
 
 const getAssistantName = (name: string, assistantDisplayId: string) => (
   <div className={styles.NameCell}>
@@ -68,8 +69,11 @@ const getLastUpdated = (updatedAt: string) => {
   return dayjs(updatedAt).fromNow();
 };
 
-// placeholder until the evaluation health score is available on the assistant
-const getEvaluationHealth = () => '-';
+const HEALTH_ICON = {
+  good: CheckIcon,
+  okay: WarningAmberIcon,
+  bad: CloseIcon,
+} as const;
 
 const columnStyles = [styles.NameColumn, styles.HealthColumn, styles.VersionColumn, styles.DateColumn, styles.Actions];
 
@@ -186,9 +190,32 @@ export const AssistantList = () => {
     }
   };
 
-  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
+  // the judge's verdict on the assistant's most recent run, read the same way the run card reads it
+  const getEvaluationHealth = (lastEvaluationSummary: unknown) => {
+    const score = parseAssistantHealth(lastEvaluationSummary);
+
+    if (score == null) {
+      return (
+        <span className={`${styles.Health} ${styles.HealthNone}`} data-testid="evaluationHealth">
+          — {t('Not evaluated')}
+        </span>
+      );
+    }
+
+    const band = scoreBand(score);
+    const BandIcon = HEALTH_ICON[band];
+
+    return (
+      <span className={`${styles.Health} ${styles[band]}`} data-testid="evaluationHealth">
+        <BandIcon className={styles.HealthIcon} />
+        {t(BAND_LABEL[band])} {formatScore(score)}
+      </span>
+    );
+  };
+
+  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, updatedAt, lastEvaluationSummary }: any) => ({
     name: getAssistantName(name, assistantDisplayId),
-    evaluationHealth: getEvaluationHealth(),
+    evaluationHealth: getEvaluationHealth(lastEvaluationSummary),
     liveVersion: getLiveVersion(liveVersionNumber),
     lastUpdated: getLastUpdated(updatedAt),
   });
@@ -233,8 +260,6 @@ export const AssistantList = () => {
     </div>
   );
 
-  const healthSummary = HEALTH_SUMMARY.map(({ count, label }) => `${count} ${t(label)}`).join(' • ');
-
   const additionalAction = () => [
     {
       label: t('Edit'),
@@ -261,7 +286,6 @@ export const AssistantList = () => {
       <Heading
         formTitle={t('AI Assistants')}
         helpData={assistantListInfo}
-        headerHelp={healthSummary}
         button={{
           show: true,
           label: t('Create New Assistant'),

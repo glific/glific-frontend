@@ -1087,6 +1087,7 @@
   "Uploaded dataset": "Uploaded dataset",
   "Delete set": "Delete set",
   "Deleting a set is not available yet.": "Deleting a set is not available yet.",
+  "Not evaluated": "Not evaluated",
   "No evaluations yet": "No evaluations yet",
   "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.": "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.",
   "Run your first evaluation": "Run your first evaluation",

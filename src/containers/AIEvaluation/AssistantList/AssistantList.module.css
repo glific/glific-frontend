@@ -84,3 +84,41 @@
 .NoVersion {
   color: var(--app-color-text-tertiary);
 }
+
+.Health {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-lg);
+  border: 1px solid;
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.HealthIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  flex-shrink: 0;
+}
+
+.good {
+  border-color: var(--app-color-brand-primary);
+  color: var(--app-color-brand-primary);
+}
+
+.okay {
+  border-color: var(--app-color-attention);
+  color: var(--app-color-attention);
+}
+
+.bad {
+  border-color: var(--app-color-error);
+  color: var(--app-color-error);
+}
+
+.HealthNone {
+  border-color: var(--app-color-border);
+  color: var(--app-color-text-tertiary);
+}
