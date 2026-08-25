@@ -185,14 +185,14 @@ const menus = (): Menu[] => [
     path: '/assistants',
     icon: 'assistant',
     type: 'sideDrawer',
-    roles: allRoles,
+    roles: managerLevel,
     children: [
       {
         title: 'AI Assistant',
         path: '/assistants',
         icon: 'assistant',
         type: 'sideDrawer',
-        roles: allRoles,
+        roles: managerLevel,
       },
       {
         title: 'AI Evals',
