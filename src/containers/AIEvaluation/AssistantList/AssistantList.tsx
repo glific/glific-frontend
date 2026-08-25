@@ -190,7 +190,6 @@ export const AssistantList = () => {
     }
   };
 
-  // the judge's verdict on the assistant's most recent run, read the same way the run card reads it
   const getEvaluationHealth = (lastEvaluationSummary: unknown) => {
     const score = parseAssistantHealth(lastEvaluationSummary);
 
