@@ -109,7 +109,6 @@ describe('edit mode', () => {
       getAssistant('1'),
       versionsMock(),
       publishMock,
-      // the refetch that follows a successful publish
       versionsMock([version(1, false), version(2, true)]),
     ]);
 
