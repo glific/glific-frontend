@@ -13,6 +13,7 @@ import {
   parseEvaluationResults,
   scoreBand,
 } from './evaluation';
+import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 
 describe('parseEvaluationResults', () => {
   test('reads the summary_scores the judge actually returns', () => {
@@ -276,5 +277,55 @@ describe('evaluationRunName', () => {
 
   test('a version-less run is filed under v1', () => {
     expect(evaluationRunName('Bot', undefined, 'set')).toMatch(/^bot_v1_set_\d+$/);
+  });
+});
+
+describe('shapes the parsers fall back on', () => {
+  test('a summary entry with no name is skipped rather than matched by accident', () => {
+    const metrics = parseEvaluationResults({
+      summary_scores: [{ avg: 4 }, { name: 'Adherence to Prompt', avg: 5 }],
+    });
+
+    expect(metrics.prompt).toBe(5);
+    expect(metrics.groundTruth).toBeNull();
+    expect(metrics.knowledgeBase).toBeNull();
+  });
+
+  test('a metric average is read whether it is called avg, average or score', () => {
+    expect(parseEvaluationResults({ summary_scores: [{ name: 'Adherence to Prompt', avg: 1 }] }).prompt).toBe(1);
+    expect(parseEvaluationResults({ summary_scores: [{ name: 'Adherence to Prompt', average: 2 }] }).prompt).toBe(2);
+    expect(parseEvaluationResults({ summary_scores: [{ name: 'Adherence to Prompt', score: 3 }] }).prompt).toBe(3);
+  });
+
+  test('a question id is read from either spelling, and missing ids do not crash the sort', () => {
+    const traces = parseEvaluationScores({
+      score: {
+        traces: [{ questionId: 'b', question: 'Second' }, { question: 'No id at all' }, { question_id: 'a' }],
+      },
+    });
+
+    // non-numeric ids fall back to alphabetical order instead of NaN comparisons
+    expect(traces.map((trace) => trace.questionId)).toEqual(['', 'a', 'b']);
+  });
+
+  test('a trace score is read whether it is called value, avg or score', () => {
+    const scored = (score: object) =>
+      parseEvaluationScores({ score: { traces: [{ question_id: '1', scores: [score] }] } })[0].scores[0].value;
+
+    expect(scored({ name: 'Adherence to Prompt', value: 1 })).toBe(1);
+    expect(scored({ name: 'Adherence to Prompt', avg: 2 })).toBe(2);
+    expect(scored({ name: 'Adherence to Prompt', score: 3 })).toBe(3);
+  });
+
+  test('a metric named only by the prefix keeps its own name rather than becoming blank', () => {
+    expect(shortMetricName('Adherence to ')).toBe('Adherence to ');
+  });
+
+  test('a run with no status at all reads as still in progress', () => {
+    const run = { id: 'r1', name: 'run', status: null } as unknown as EvaluationRun;
+
+    expect(isRunComplete(run)).toBe(false);
+    expect(isRunFailed(run)).toBe(false);
+    expect(isRunInProgress(run)).toBe(true);
   });
 });
