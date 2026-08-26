@@ -23,7 +23,9 @@ export interface AssistantVectorStore {
 
 export interface AssistantVersion {
   id: string;
-  versionNumber: number;
+  majorVersion: number;
+  minorVersion: number;
+  versionLabel: string;
   model: string;
   prompt: string;
   settings: any;
@@ -41,7 +43,7 @@ interface VersionPanelProps {
   onSelectVersion: (version: AssistantVersion) => void;
   onRefetchSelect?: (version: AssistantVersion) => void;
   refetchTrigger?: number;
-  initialVersionNumber?: number;
+  initialVersionLabel?: string;
 }
 
 const statusConfig: Record<string, { label: string; styleKey: string }> = {
@@ -55,7 +57,7 @@ export const VersionPanel = ({
   onSelectVersion,
   onRefetchSelect,
   refetchTrigger = 0,
-  initialVersionNumber,
+  initialVersionLabel,
 }: VersionPanelProps) => {
   const { t } = useTranslation();
   const initialSelectionDone = useRef(false);
@@ -67,14 +69,14 @@ export const VersionPanel = ({
   });
 
   const versions: AssistantVersion[] = data?.assistantVersions ?? [];
-  const sorted = [...versions].sort((a, b) => b.versionNumber - a.versionNumber);
+  const sorted = [...versions].sort((a, b) => b.majorVersion - a.majorVersion || b.minorVersion - a.minorVersion);
 
   // Initial auto-select: prefer version from URL param, fall back to live, then latest
   useEffect(() => {
     if (versions.length === 0 || initialSelectionDone.current) return;
     initialSelectionDone.current = true;
     const versionFromUrl =
-      initialVersionNumber != null ? versions.find((v) => v.versionNumber === initialVersionNumber) : null;
+      initialVersionLabel != null ? versions.find((v) => v.versionLabel === initialVersionLabel) : null;
     const target = versionFromUrl ?? versions.find((v) => v.isLive) ?? sorted[0];
 
     if (!target) return;
@@ -94,7 +96,9 @@ export const VersionPanel = ({
     refetch().then(({ data: newData }) => {
       if (!newData) return;
       const newVersions: AssistantVersion[] = newData.assistantVersions ?? [];
-      const latest = [...newVersions].sort((a, b) => b.versionNumber - a.versionNumber)[0];
+      const latest = [...newVersions].sort(
+        (a, b) => b.majorVersion - a.majorVersion || b.minorVersion - a.minorVersion
+      )[0];
       if (latest) (onRefetchSelect ?? onSelectVersion)(latest);
     });
   }, [refetchTrigger]);
@@ -115,7 +119,7 @@ export const VersionPanel = ({
               <div className={styles.CardHeader}>
                 <div className={styles.CardLeft}>
                   <span className={styles.VersionNumber}>
-                    {t('Version')} {version.versionNumber}
+                    {t('Version')} {version.versionLabel}
                   </span>
                   {version.isLive && (
                     <Chip data-testid="liveBadge" label={t('LIVE')} size="small" className={styles.LiveBadge} />

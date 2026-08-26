@@ -46,7 +46,8 @@ export interface EvaluationRun {
   goldenQa?: { id: string; name: string; duplicationFactor?: DuplicationFactor | null } | null;
   assistantConfigVersion?: {
     id: string;
-    versionNumber: number;
+    majorVersion: number;
+    minorVersion: number;
     assistant?: { id: string; name: string } | null;
   } | null;
   insertedAt: string;

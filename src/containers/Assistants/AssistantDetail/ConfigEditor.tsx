@@ -332,7 +332,7 @@ export const ConfigEditor = ({
         {/* Header */}
         {!createMode && (
           <div className={styles.Header}>
-            <span className={styles.Breadcrumb}>{`${assistantName} / ${t('Version')} ${version?.versionNumber}`}</span>
+            <span className={styles.Breadcrumb}>{`${assistantName} / ${t('Version')} ${version?.versionLabel}`}</span>
             <div className={styles.HeaderActions}>
               {hasUnsavedChanges && (
                 <span className={styles.UnsavedIndicator} data-testid="unsavedIndicator">

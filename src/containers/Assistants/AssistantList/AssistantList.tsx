@@ -45,9 +45,9 @@ const getAssistantName = (name: string, assistantDisplayId: string) => (
   </div>
 );
 
-const getLiveVersion = (liveVersionNumber: number | null) =>
-  liveVersionNumber ? (
-    <span className={styles.VersionBadge}>Version {liveVersionNumber}</span>
+const getLiveVersion = (liveVersionLabel: string | null) =>
+  liveVersionLabel ? (
+    <span className={styles.VersionBadge}>Version {liveVersionLabel}</span>
   ) : (
     <span className={styles.NoVersion}>-</span>
   );
@@ -104,8 +104,8 @@ export const AssistantList = () => {
 
   const handleEdit = (_id: string, item: any) => {
     if (!item) return;
-    if (item.liveVersionNumber != null) {
-      navigate(`/assistants/${item.id}/version/${item.liveVersionNumber}`);
+    if (item.liveVersionLabel != null) {
+      navigate(`/assistants/${item.id}/version/${item.liveVersionLabel}`);
     } else {
       navigate(`/assistants/${item.id}`);
     }
@@ -144,9 +144,9 @@ export const AssistantList = () => {
     }
   };
 
-  const getColumns = ({ name, assistantDisplayId, liveVersionNumber, updatedAt }: any) => ({
+  const getColumns = ({ name, assistantDisplayId, liveVersionLabel, updatedAt }: any) => ({
     name: getAssistantName(name, assistantDisplayId),
-    liveVersion: getLiveVersion(liveVersionNumber),
+    liveVersion: getLiveVersion(liveVersionLabel),
     lastUpdated: getLastUpdated(updatedAt),
   });
 

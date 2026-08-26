@@ -29,7 +29,7 @@ const renderAssistantList = (mocks: any[] = [filterAssistantsMock, countAssistan
           <Route path="/assistants" element={<AssistantList />} />
           <Route path="/assistants/add" element={<div data-testid="create-page" />} />
           <Route path="/assistants/:id" element={<div data-testid="edit-page" />} />
-          <Route path="/assistants/:id/version/:versionNumber" element={<div data-testid="edit-page" />} />
+          <Route path="/assistants/:id/version/:versionLabel" element={<div data-testid="edit-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -48,7 +48,7 @@ test('renders assistant rows with name and live version', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
-    expect(screen.getByText('Version 3')).toBeInTheDocument();
+    expect(screen.getByText('Version 3.0')).toBeInTheDocument();
     expect(screen.getByText('Assistant-2')).toBeInTheDocument();
     expect(screen.getByText('-')).toBeInTheDocument();
   });

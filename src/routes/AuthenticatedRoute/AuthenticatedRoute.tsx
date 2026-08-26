@@ -249,7 +249,7 @@ export const AuthenticatedRoute = () => {
         {adminRoutes}
         <Route path="assistants" element={<AssistantList />} />
         <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-        <Route path="assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
+        <Route path="assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
         {isTemplateV2Enabled ? (
           <>
             <Route path="template" element={<HSMListV2 />} />

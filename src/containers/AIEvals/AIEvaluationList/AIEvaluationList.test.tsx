@@ -338,7 +338,7 @@ describe('AIEvaluationList', () => {
     });
     const links = screen.getAllByTestId('assistantVersionLink');
     expect(links.length).toBeGreaterThan(0);
-    expect(links[0]).toHaveAttribute('href', '/assistants/45/version/1');
+    expect(links[0]).toHaveAttribute('href', '/assistants/45/version/1.0');
   });
 
   it('renders golden QA name and duplication factor in name cell', async () => {

@@ -49,8 +49,8 @@ describe('VersionPanel', () => {
 
     await waitFor(() => {
       const cards = screen.getAllByTestId('versionCard');
-      expect(cards[0]).toHaveTextContent('Version 2');
-      expect(cards[1]).toHaveTextContent('Version 1');
+      expect(cards[0]).toHaveTextContent('Version 2.0');
+      expect(cards[1]).toHaveTextContent('Version 1.0');
     });
   });
 
@@ -124,7 +124,7 @@ describe('VersionPanel', () => {
     const onSelectVersion = vi.fn();
     const onRefetchSelect = vi.fn();
 
-    renderVersionPanel({ onSelectVersion, onRefetchSelect, initialVersionNumber: 2 });
+    renderVersionPanel({ onSelectVersion, onRefetchSelect, initialVersionLabel: '2.0' });
 
     await waitFor(() => {
       expect(onRefetchSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'v2' }));
@@ -139,7 +139,7 @@ describe('VersionPanel', () => {
     renderVersionPanel({ onSelectVersion }, [getVersionsMock('1', versionsNoLive)]);
 
     await waitFor(() => {
-      expect(onSelectVersion).toHaveBeenCalledWith(expect.objectContaining({ id: 'v2', versionNumber: 2 }));
+      expect(onSelectVersion).toHaveBeenCalledWith(expect.objectContaining({ id: 'v2', versionLabel: '2.0' }));
     });
   });
 

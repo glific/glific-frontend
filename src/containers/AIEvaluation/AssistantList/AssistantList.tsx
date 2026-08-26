@@ -58,9 +58,9 @@ const getAssistantName = (name: string, assistantDisplayId: string) => (
   </div>
 );
 
-const getLiveVersion = (liveVersionNumber: number | null) =>
-  liveVersionNumber ? (
-    <span className={styles.VersionBadge}>Version {liveVersionNumber}</span>
+const getLiveVersion = (liveVersionLabel: string | null) =>
+  liveVersionLabel ? (
+    <span className={styles.VersionBadge}>Version {liveVersionLabel}</span>
   ) : (
     <span className={styles.NoVersion}>-</span>
   );
@@ -216,13 +216,13 @@ export const AssistantList = () => {
   const getColumns = ({
     name,
     assistantDisplayId,
-    liveVersionNumber,
+    liveVersionLabel,
     updatedAt,
     lastEvaluationSummary,
   }: AssistantListItem) => ({
     name: getAssistantName(name, assistantDisplayId),
     evaluationHealth: getEvaluationHealth(lastEvaluationSummary),
-    liveVersion: getLiveVersion(liveVersionNumber),
+    liveVersion: getLiveVersion(liveVersionLabel),
     lastUpdated: getLastUpdated(updatedAt),
   });
 

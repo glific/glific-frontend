@@ -26,7 +26,7 @@ import { ConfigEditor } from './ConfigEditor';
 import styles from './AssistantDetail.module.css';
 
 export const AssistantDetail = () => {
-  const { assistantId, versionNumber } = useParams<{ assistantId: string; versionNumber: string }>();
+  const { assistantId, versionLabel } = useParams<{ assistantId: string; versionLabel: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -117,7 +117,7 @@ export const AssistantDetail = () => {
       setPendingVersion(version);
     } else {
       setSelectedVersion(version);
-      window.history.replaceState(null, '', `/assistants/${assistantId}/version/${version.versionNumber}`);
+      window.history.replaceState(null, '', `/assistants/${assistantId}/version/${version.versionLabel}`);
     }
   };
 
@@ -125,7 +125,7 @@ export const AssistantDetail = () => {
     if (pendingVersion) {
       setHasUnsavedChanges(false);
       setSelectedVersion(pendingVersion);
-      window.history.replaceState(null, '', `/assistants/${assistantId}/version/${pendingVersion.versionNumber}`);
+      window.history.replaceState(null, '', `/assistants/${assistantId}/version/${pendingVersion.versionLabel}`);
       setPendingVersion(null);
     }
   };
@@ -210,7 +210,7 @@ export const AssistantDetail = () => {
               onSelectVersion={handleSelectVersion}
               onRefetchSelect={setSelectedVersion}
               refetchTrigger={versionRefetchTrigger}
-              initialVersionNumber={versionNumber != null ? Number(versionNumber) : undefined}
+              initialVersionLabel={versionLabel}
             />
           </div>
           <div className={styles.EditorWrapper}>

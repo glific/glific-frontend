@@ -108,27 +108,30 @@ interface NameCellProps {
   goldenQa?: { id?: string | null; name?: string | null; duplicationFactor?: number | null } | null;
   assistantConfigVersion?: {
     id?: string | null;
-    versionNumber?: number | null;
+    majorVersion?: number | null;
+    minorVersion?: number | null;
     assistant?: { id?: string | null; name?: string | null } | null;
   } | null;
 }
 
 const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
   const assistantName = assistantConfigVersion?.assistant?.name;
-  const versionNumber = assistantConfigVersion?.versionNumber;
+  const versionLabel =
+    assistantConfigVersion?.majorVersion != null
+      ? `${assistantConfigVersion.majorVersion}.${assistantConfigVersion.minorVersion ?? 0}`
+      : null;
   const assistantId = assistantConfigVersion?.assistant?.id;
   const goldenQaName = goldenQa?.name;
   const goldenQaDuplicationFactor = goldenQa?.duplicationFactor;
 
-  const assistantLabel = (assistantName ?? '—') + (versionNumber != null ? `/Version ${versionNumber}` : '');
+  const assistantLabel = (assistantName ?? '—') + (versionLabel ? `/Version ${versionLabel}` : '');
 
-  const assistantLink =
-    assistantId && versionNumber != null ? `/assistants/${assistantId}/version/${versionNumber}` : null;
+  const assistantLink = assistantId && versionLabel ? `/assistants/${assistantId}/version/${versionLabel}` : null;
 
   return (
     <div>
       <div className={styles.NameText}>{name}</div>
-      {(assistantName || versionNumber != null) && (
+      {(assistantName || versionLabel) && (
         <div className={styles.NameSubInfo}>
           <AssistantsIcon className={styles.SubInfoIcon} />
           {assistantLink ? (
