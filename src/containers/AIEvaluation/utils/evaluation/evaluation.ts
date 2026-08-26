@@ -4,6 +4,7 @@ import type {
   EvaluationRun,
   EvaluationTrace,
   EvaluationTraceAnswer,
+  JsonRecord,
   ScoreBand,
 } from 'containers/AIEvaluation/types/evaluationType';
 
@@ -21,29 +22,40 @@ const EMPTY_METRICS: EvaluationMetrics = { groundTruth: null, knowledgeBase: nul
 
 const asScore = (value: unknown) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
 
+/** payloads arrive either already parsed or as a JSON string; anything unreadable is undefined */
+const asJson = (raw: unknown): unknown => {
+  if (typeof raw !== 'string') return raw;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+};
+
+const isRecord = (value: unknown): value is JsonRecord => Boolean(value) && typeof value === 'object';
+
+/** walks a path through a payload without assuming any of it exists */
+const field = (source: unknown, ...path: string[]): unknown =>
+  path.reduce<unknown>((current, key) => (isRecord(current) ? current[key] : undefined), source);
+
 /**
  * `results` is a JSON string containing `summary_scores`, with one average score per applicable metric named in plain language; metrics that don’t apply to a run are omitted.
  */
 export const parseEvaluationResults = (results: unknown): EvaluationMetrics => {
-  let parsed: any = results;
-  if (typeof results === 'string') {
-    try {
-      parsed = JSON.parse(results);
-    } catch {
-      return EMPTY_METRICS;
-    }
-  }
-
-  if (!parsed || typeof parsed !== 'object') return EMPTY_METRICS;
+  const parsed = asJson(results);
+  if (!isRecord(parsed)) return EMPTY_METRICS;
 
   const metrics: EvaluationMetrics = { ...EMPTY_METRICS };
 
   const summary = parsed.summary_scores ?? parsed.summaryScores;
   if (Array.isArray(summary)) {
-    summary.forEach((entry: any) => {
-      const name = String(entry?.name ?? '').toLowerCase();
+    summary.forEach((entry) => {
+      const name = String(field(entry, 'name') ?? '').toLowerCase();
       const matched = METRIC_MATCHERS.find((matcher) => matcher.matches(name));
-      if (matched) metrics[matched.key] = asScore(entry?.avg ?? entry?.average ?? entry?.score);
+      if (matched) {
+        metrics[matched.key] = asScore(field(entry, 'avg') ?? field(entry, 'average') ?? field(entry, 'score'));
+      }
     });
     return metrics;
   }
@@ -77,6 +89,19 @@ export const overallScore = (metrics: EvaluationMetrics) => {
   return Math.round((weighted / totalWeight) * 100) / 100;
 };
 
+/** wording for each band, shared so the assistant list and the run card cannot drift apart */
+export const BAND_LABEL = {
+  good: 'Good',
+  okay: 'Could improve',
+  bad: 'Needs improvement',
+} as const;
+
+/**
+ * `lastEvaluationSummary` on an assistant is the judge's summary of its most recent run. The
+ * server flattens it when it stores the run, so `overall_score` sits at the top level.
+ */
+export const parseAssistantHealth = (raw: unknown): number | null => asScore(field(asJson(raw), 'overall_score'));
+
 export const scoreBand = (score: number): ScoreBand => {
   if (score >= 4) return 'good';
   if (score >= 2) return 'okay';
@@ -98,37 +123,29 @@ export const isRunFailed = (run: EvaluationRun) => ['failed', 'error'].includes(
 export const isRunInProgress = (run: EvaluationRun) => !isRunComplete(run) && !isRunFailed(run);
 
 export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
-  let parsed: any = raw;
-  if (typeof raw === 'string') {
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      return [];
-    }
-  }
+  const parsed = asJson(raw);
 
-  if (!parsed) return [];
-
-  const traces = Array.isArray(parsed) ? parsed : parsed.score?.traces;
+  const traces = Array.isArray(parsed) ? parsed : field(parsed, 'score', 'traces');
   if (!Array.isArray(traces)) return [];
 
-  const text = (row: any, ...keys: string[]) => {
+  const text = (row: JsonRecord, ...keys: string[]) => {
     for (const key of keys) {
-      if (typeof row?.[key] === 'string' && row[key] !== '') return row[key];
+      const value = row[key];
+      if (typeof value === 'string' && value !== '') return value;
     }
     return '';
   };
 
-  const readScores = (raw: unknown) =>
-    (Array.isArray(raw) ? raw : [])
-      .filter((score: any) => score && typeof score.name === 'string')
-      .map((score: any) => ({
-        name: score.name,
+  const readScores = (rawScores: unknown) =>
+    (Array.isArray(rawScores) ? rawScores : [])
+      .filter((score): score is JsonRecord => isRecord(score) && typeof score.name === 'string')
+      .map((score) => ({
+        name: String(score.name),
         value: asScore(score.value ?? score.avg ?? score.score),
         comment: typeof score.comment === 'string' ? score.comment : '',
       }));
 
-  const readAnswers = (row: any): EvaluationTraceAnswer[] => {
+  const readAnswers = (row: JsonRecord): EvaluationTraceAnswer[] => {
     if (Array.isArray(row.llm_answers)) {
       // grouped: scores[i] belongs to llm_answers[i]
       const grouped = Array.isArray(row.scores) ? row.scores : [];
@@ -142,7 +159,7 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
   };
 
   return traces
-    .filter((row) => row && typeof row === 'object')
+    .filter(isRecord)
     .map((row) => ({
       questionId: String(row.question_id ?? row.questionId ?? ''),
       question: text(row, 'question'),
@@ -168,42 +185,15 @@ export const shortMetricName = (name: string) => name.replace(/^adherence to\s+/
 
 /** the judge's own overall score, so the card does not have to invent one */
 export const parseOverallScore = (raw: unknown): number | null => {
-  let parsed: any = raw;
-  if (typeof raw === 'string') {
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-
-  return asScore(parsed?.score?.overall?.overall_score);
+  return asScore(field(asJson(raw), 'score', 'overall', 'overall_score'));
 };
 
 export const parseScoreMetrics = (raw: unknown): EvaluationMetrics => {
-  let parsed: any = raw;
-  if (typeof raw === 'string') {
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      return { ...EMPTY_METRICS };
-    }
-  }
-
-  return parseEvaluationResults(parsed?.score);
+  return parseEvaluationResults(field(asJson(raw), 'score'));
 };
 
 export const parseEvaluationSummary = (raw: unknown): string | null => {
-  let parsed: any = raw;
-  if (typeof raw === 'string') {
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  }
-
-  const summary = parsed?.score?.overall?.ai_summary;
+  const summary = field(asJson(raw), 'score', 'overall', 'ai_summary');
 
   return typeof summary === 'string' && summary.trim() ? summary.trim() : null;
 };

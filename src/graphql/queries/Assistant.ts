@@ -27,6 +27,7 @@ export const FILTER_ASSISTANTS = gql`
       liveVersionNumber
       activeConfigVersionId
       cloneStatus
+      lastEvaluationSummary
     }
   }
 `;

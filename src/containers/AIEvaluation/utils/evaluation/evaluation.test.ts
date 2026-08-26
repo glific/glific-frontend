@@ -10,6 +10,7 @@ import {
   isRunFailed,
   isRunInProgress,
   mergeEvaluationUpdate,
+  parseAssistantHealth,
   overallScore,
   parseEvaluationResults,
   scoreBand,
@@ -338,5 +339,82 @@ describe('folding a subscription update into the cached list', () => {
   test('an empty cache is safe to fold into', () => {
     expect(mergeEvaluationUpdate(undefined, run('r1', 'COMPLETED')).aiEvaluations).toHaveLength(1);
     expect(mergeEvaluationUpdate(undefined, null).aiEvaluations).toEqual([]);
+  });
+});
+
+describe('shapes the parsers fall back on', () => {
+  test('a summary entry with no name is skipped rather than matched by accident', () => {
+    const metrics = parseEvaluationResults({
+      summary_scores: [{ avg: 4 }, { name: 'Adherence to Prompt', avg: 5 }],
+    });
+
+    expect(metrics.prompt).toBe(5);
+    expect(metrics.groundTruth).toBeNull();
+    expect(metrics.knowledgeBase).toBeNull();
+  });
+
+  test('a metric average is read whether it is called avg, average or score', () => {
+    expect(parseEvaluationResults({ summary_scores: [{ name: 'Adherence to Prompt', avg: 1 }] }).prompt).toBe(1);
+    expect(parseEvaluationResults({ summary_scores: [{ name: 'Adherence to Prompt', average: 2 }] }).prompt).toBe(2);
+    expect(parseEvaluationResults({ summary_scores: [{ name: 'Adherence to Prompt', score: 3 }] }).prompt).toBe(3);
+  });
+
+  test('a question id is read from either spelling, and missing ids do not crash the sort', () => {
+    const traces = parseEvaluationScores({
+      score: {
+        traces: [{ questionId: 'b', question: 'Second' }, { question: 'No id at all' }, { question_id: 'a' }],
+      },
+    });
+
+    // non-numeric ids fall back to alphabetical order instead of NaN comparisons
+    expect(traces.map((trace) => trace.questionId)).toEqual(['', 'a', 'b']);
+  });
+
+  test('a trace score is read whether it is called value, avg or score', () => {
+    const scored = (score: object) =>
+      parseEvaluationScores({ score: { traces: [{ question_id: '1', scores: [score] }] } })[0].answers[0].scores[0]
+        .value;
+
+    expect(scored({ name: 'Adherence to Prompt', value: 1 })).toBe(1);
+    expect(scored({ name: 'Adherence to Prompt', avg: 2 })).toBe(2);
+    expect(scored({ name: 'Adherence to Prompt', score: 3 })).toBe(3);
+  });
+
+  test('a metric named only by the prefix keeps its own name rather than becoming blank', () => {
+    expect(shortMetricName('Adherence to ')).toBe('Adherence to ');
+  });
+
+  test('a run with no status at all reads as still in progress', () => {
+    const run = { id: 'r1', name: 'run', status: null } as unknown as EvaluationRun;
+
+    expect(isRunComplete(run)).toBe(false);
+    expect(isRunFailed(run)).toBe(false);
+    expect(isRunInProgress(run)).toBe(true);
+  });
+});
+
+describe('parseAssistantHealth', () => {
+  const lastEvaluationSummary = {
+    verdict: 'Good',
+    summary_scores: [
+      { total_pairs: 10, std: 0.46, name: 'Adherence to Ground Truth', data_type: 'NUMERIC', avg: 4.7 },
+      { total_pairs: 10, std: 1.2, name: 'Adherence to Prompt', data_type: 'NUMERIC', avg: 4.6 },
+      { total_pairs: 10, std: 1.75, name: 'Adherence to Knowledge Base', data_type: 'NUMERIC', avg: 3.5 },
+    ],
+    overall_score: 4.32,
+  };
+
+  test('reads the overall score out of a real summary', () => {
+    expect(parseAssistantHealth(lastEvaluationSummary)).toBe(4.32);
+  });
+
+  test('reads it whether the summary arrives parsed or as a JSON string', () => {
+    expect(parseAssistantHealth(JSON.stringify(lastEvaluationSummary))).toBe(4.32);
+  });
+
+  test('an assistant that was never evaluated has no score', () => {
+    for (const value of [null, undefined, '', 'not json', {}, { verdict: 'Good' }, 42]) {
+      expect(parseAssistantHealth(value)).toBeNull();
+    }
   });
 });

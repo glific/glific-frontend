@@ -1086,6 +1086,7 @@
   "No questions could be read from the stored file.": "No questions could be read from the stored file.",
   "Export the set to read it.": "Export the set to read it.",
   "Uploaded dataset": "Uploaded dataset",
+  "Not evaluated": "Not evaluated",
   "No evaluations yet": "No evaluations yet",
   "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.": "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.",
   "Run your first evaluation": "Run your first evaluation",

@@ -1,3 +1,5 @@
+export type JsonRecord = Record<string, unknown>;
+
 export type EvaluationSubTab = 'run' | 'history';
 
 export type DuplicationFactor = 1 | 5;
