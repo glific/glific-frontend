@@ -1,7 +1,9 @@
 import type {
+  EvaluationListData,
   EvaluationMetrics,
   EvaluationRun,
   EvaluationTrace,
+  EvaluationTraceAnswer,
   JsonRecord,
   ScoreBand,
 } from 'containers/AIEvaluation/types/evaluationType';
@@ -20,6 +22,7 @@ const EMPTY_METRICS: EvaluationMetrics = { groundTruth: null, knowledgeBase: nul
 
 const asScore = (value: unknown) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
 
+/** payloads arrive either already parsed or as a JSON string; anything unreadable is undefined */
 const asJson = (raw: unknown): unknown => {
   if (typeof raw !== 'string') return raw;
 
@@ -32,6 +35,7 @@ const asJson = (raw: unknown): unknown => {
 
 const isRecord = (value: unknown): value is JsonRecord => Boolean(value) && typeof value === 'object';
 
+/** walks a path through a payload without assuming any of it exists */
 const field = (source: unknown, ...path: string[]): unknown =>
   path.reduce<unknown>((current, key) => (isRecord(current) ? current[key] : undefined), source);
 
@@ -85,15 +89,18 @@ export const overallScore = (metrics: EvaluationMetrics) => {
   return Math.round((weighted / totalWeight) * 100) / 100;
 };
 
+/** wording for each band, shared so the assistant list and the run card cannot drift apart */
 export const BAND_LABEL = {
   good: 'Good',
   okay: 'Could improve',
   bad: 'Needs improvement',
 } as const;
 
-export const parseAssistantHealth = (raw: unknown): number | null => {
-  return asScore(field(asJson(raw), 'overall_score'));
-};
+/**
+ * `lastEvaluationSummary` on an assistant is the judge's summary of its most recent run. The
+ * server flattens it when it stores the run, so `overall_score` sits at the top level.
+ */
+export const parseAssistantHealth = (raw: unknown): number | null => asScore(field(asJson(raw), 'overall_score'));
 
 export const scoreBand = (score: number): ScoreBand => {
   if (score >= 4) return 'good';
@@ -129,19 +136,35 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
     return '';
   };
 
+  const readScores = (rawScores: unknown) =>
+    (Array.isArray(rawScores) ? rawScores : [])
+      .filter((score): score is JsonRecord => isRecord(score) && typeof score.name === 'string')
+      .map((score) => ({
+        name: String(score.name),
+        value: asScore(score.value ?? score.avg ?? score.score),
+        comment: typeof score.comment === 'string' ? score.comment : '',
+      }));
+
+  const readAnswers = (row: JsonRecord): EvaluationTraceAnswer[] => {
+    if (Array.isArray(row.llm_answers)) {
+      // grouped: scores[i] belongs to llm_answers[i]
+      const grouped = Array.isArray(row.scores) ? row.scores : [];
+      return row.llm_answers.map((answer: unknown, index: number) => ({
+        answer: typeof answer === 'string' ? answer : '',
+        scores: readScores(grouped[index]),
+      }));
+    }
+
+    return [{ answer: text(row, 'llm_answer', 'answer'), scores: readScores(row.scores) }];
+  };
+
   return traces
     .filter(isRecord)
     .map((row) => ({
       questionId: String(row.question_id ?? row.questionId ?? ''),
       question: text(row, 'question'),
       expected: text(row, 'ground_truth_answer', 'golden_answer', 'expected_answer'),
-      answer: text(row, 'llm_answer', 'answer'),
-      scores: (Array.isArray(row.scores) ? row.scores : [])
-        .filter((score): score is JsonRecord => isRecord(score) && typeof score.name === 'string')
-        .map((score) => ({
-          name: String(score.name),
-          value: asScore(score.value ?? score.avg ?? score.score),
-        })),
+      answers: readAnswers(row),
     }))
     .sort((a, b) => {
       const left = Number(a.questionId);
@@ -152,7 +175,7 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
 };
 
 export const traceMetricNames = (traces: EvaluationTrace[]) => [
-  ...new Set(traces.flatMap((trace) => trace.scores.map((score) => score.name))),
+  ...new Set(traces.flatMap((trace) => trace.answers.flatMap((entry) => entry.scores.map((score) => score.name)))),
 ];
 
 /**
@@ -180,3 +203,25 @@ export const evaluationRunName = (assistantName: string, versionNumber: number |
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
+
+export const mergeEvaluationUpdate = (
+  previous: EvaluationListData | undefined,
+  updated?: EvaluationRun | null
+): EvaluationListData => {
+  const runs = previous?.aiEvaluations ?? [];
+
+  if (!updated?.id) return previous ?? { aiEvaluations: runs };
+
+  const known = runs.some((run) => run.id === updated.id);
+
+  const withoutBlanks = Object.fromEntries(
+    Object.entries(updated).filter(([, value]) => value !== null && value !== undefined)
+  ) as Partial<EvaluationRun>;
+
+  return {
+    ...previous,
+    aiEvaluations: known
+      ? runs.map((run) => (run.id === updated.id ? { ...run, ...withoutBlanks } : run))
+      : [updated, ...runs],
+  };
+};

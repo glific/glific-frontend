@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
@@ -9,10 +9,12 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { GOLDEN_QA_LIST_VARIABLES, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { AI_EVALUATION_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
-import type { EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
-import { isRunInProgress } from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import type { EvaluationListData, EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
+import { isRunInProgress, mergeEvaluationUpdate } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
 import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
@@ -20,14 +22,23 @@ import { RunEvaluationDialog } from './RunEvaluationDialog/RunEvaluationDialog';
 import { RunPanel } from './RunPanel/RunPanel';
 import styles from './Evaluation.module.css';
 
+const RUN_LIST_VARIABLES = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
+
 export interface EvaluationProps {
   assistantId?: string;
   versionId?: string;
+  liveVersionId?: string;
   versionNumber?: number;
   assistantName?: string;
 }
 
-export const Evaluation = ({ assistantId, versionId, versionNumber, assistantName }: EvaluationProps) => {
+export const Evaluation = ({
+  assistantId,
+  versionId,
+  liveVersionId,
+  versionNumber,
+  assistantName,
+}: EvaluationProps) => {
   const { t } = useTranslation();
 
   const [subTab, setSubTab] = useState<EvaluationSubTab>('run');
@@ -45,20 +56,34 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
     data: runData,
     error: runsError,
     refetch: refetchRuns,
-  } = useQuery(LIST_AI_EVALUATIONS, {
-    variables: { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } },
+  } = useQuery<EvaluationListData>(LIST_AI_EVALUATIONS, {
+    variables: RUN_LIST_VARIABLES,
     fetchPolicy: 'cache-and-network',
+  });
+
+  const client = useApolloClient();
+
+  useSubscription(AI_EVALUATION_UPDATED, {
+    onData: ({ data: subscription }) => {
+      const updated: EvaluationRun | undefined = subscription?.data?.aiEvaluationUpdated;
+      if (!updated) return;
+
+      client.cache.updateQuery<EvaluationListData>(
+        { query: LIST_AI_EVALUATIONS, variables: RUN_LIST_VARIABLES },
+        (previous) => mergeEvaluationUpdate(previous ?? undefined, updated)
+      );
+
+      refetchRuns();
+    },
   });
 
   const sets: GoldenQaSet[] = data?.goldenQas ?? [];
   const assistantRuns: EvaluationRun[] = (runData?.aiEvaluations ?? []).filter(
     (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
   );
-  // the Run panel is about the version on screen; History is about the whole assistant
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
   const latestRun = versionRuns[0];
-  // TODO: a subscription will report when a run lands; until then the list refreshes on revisit
-  const runsInProgress = assistantRuns.some(isRunInProgress);
+  const versionRunInProgress = versionRuns.some(isRunInProgress);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
@@ -161,18 +186,26 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
             >
               {t('Manage sets')}
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className={styles.RunButton}
-              startIcon={<PlayArrowIcon />}
-              disabled={!versionId || runsInProgress}
-              title={runsInProgress ? t('An evaluation is already running. Wait for it to finish.') : undefined}
-              onClick={() => setRunOpen(true)}
-              data-testid="runEvaluationButton"
+            <Tooltip
+              title={
+                versionRunInProgress
+                  ? t('An evaluation is already running for this version. Wait for it to finish.')
+                  : ''
+              }
+              placement="top"
             >
-              {latestRun ? t('Run another evaluation') : t('Run evaluation')}
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={styles.RunButton}
+                startIcon={<PlayArrowIcon />}
+                disabled={!versionId || versionRunInProgress}
+                onClick={() => setRunOpen(true)}
+                data-testid="runEvaluationButton"
+              >
+                {latestRun ? t('Run another evaluation') : t('Run evaluation')}
+              </Button>
+            </Tooltip>
           </div>
         )}
       </div>
@@ -180,7 +213,7 @@ export const Evaluation = ({ assistantId, versionId, versionNumber, assistantNam
       {subTab === 'run' ? (
         <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
       ) : assistantRuns.length > 0 ? (
-        <EvaluationHistory runs={assistantRuns} />
+        <EvaluationHistory runs={assistantRuns} liveVersionId={liveVersionId} />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"

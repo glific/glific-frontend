@@ -10,16 +10,21 @@ import {
   parseEvaluationResults,
   scoreBand,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { Button } from 'components/UI/Form/Button/Button';
 import { DataTable } from 'components/UI/DataTable/DataTable';
+import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
+import { LivePill } from '../../../components';
 import styles from './EvaluationHistory.module.css';
 
 dayjs.extend(relativeTime);
 
 export interface EvaluationHistoryProps {
   runs: EvaluationRun[];
+  liveVersionId?: string;
 }
 
-export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
+export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProps) => {
   const { t } = useTranslation();
 
   const score = (value: number | null) => {
@@ -41,8 +46,11 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
     return {
       key: run.id,
       cells: [
-        <span className={styles.Version}>
-          {run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : '—'}
+        <span className={styles.VersionCell}>
+          <span className={styles.Version}>
+            {run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : '—'}
+          </span>
+          {liveVersionId && run.assistantConfigVersion?.id === liveVersionId && <LivePill />}
         </span>,
         run.goldenQa?.name ?? '—',
         `${run.duplicationFactor ?? 1}×`,
@@ -55,6 +63,43 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
     };
   });
 
+  const exportHistory = () => {
+    const csvRows = [
+      [
+        t('Version'),
+        t('Golden Q&A set'),
+        t('Duplication Factor'),
+        t('Status'),
+        t('Overall'),
+        t('Ground truth'),
+        t('Knowledge base'),
+        t('Prompt'),
+        t('When'),
+      ],
+      ...runs.map((run) => {
+        const metrics = parseEvaluationResults(run.results);
+        const cell = (value: number | null) => (value == null ? '' : formatScore(value));
+        let status = t('Completed');
+        if (isRunInProgress(run)) status = t('Running');
+        else if (isRunFailed(run)) status = t('Failed');
+
+        return [
+          run.assistantConfigVersion ? String(run.assistantConfigVersion.versionNumber) : '',
+          run.goldenQa?.name ?? '',
+          String(run.duplicationFactor ?? 1),
+          status,
+          cell(overallScore(metrics)),
+          cell(metrics.groundTruth),
+          cell(metrics.knowledgeBase),
+          cell(metrics.prompt),
+          dayjs(run.insertedAt).format('YYYY-MM-DD HH:mm'),
+        ];
+      }),
+    ];
+
+    downloadCsv('evaluation-history.csv', toCsv(csvRows));
+  };
+
   return (
     <div data-testid="evaluationHistory">
       <div className={styles.Summary}>
@@ -63,6 +108,18 @@ export const EvaluationHistory = ({ runs }: EvaluationHistoryProps) => {
       </div>
 
       <div className={styles.Card}>
+        <div className={styles.CardHeader}>
+          <Button
+            variant="outlined"
+            className={styles.ExportButton}
+            startIcon={<FileDownloadOutlinedIcon />}
+            onClick={exportHistory}
+            data-testid="exportHistoryButton"
+          >
+            {t('Export CSV')}
+          </Button>
+        </div>
+
         <DataTable
           testId="evaluationHistoryTable"
           rowTestId="evaluationRun"

@@ -1,6 +1,5 @@
 import {
   formatScore,
-  parseAssistantHealth,
   parseOverallScore,
   evaluationRunName,
   parseEvaluationSummary,
@@ -10,6 +9,8 @@ import {
   isRunComplete,
   isRunFailed,
   isRunInProgress,
+  mergeEvaluationUpdate,
+  parseAssistantHealth,
   overallScore,
   parseEvaluationResults,
   scoreBand,
@@ -190,8 +191,9 @@ describe('parseEvaluationScores', () => {
       questionId: '1',
       question: 'What is diabetes?',
       expected: 'A metabolic disease.',
-      answer: 'A chronic condition.',
     });
+    expect(traces[0].answers).toHaveLength(1);
+    expect(traces[0].answers[0].answer).toBe('A chronic condition.');
   });
 
   test('questions come back in numeric order, not the order the judge wrote them', () => {
@@ -215,7 +217,7 @@ describe('parseEvaluationScores', () => {
   test('a question missing a metric leaves it unscored rather than zero', () => {
     const traces = parseEvaluationScores(payload);
 
-    expect(traces[1].scores.find((score) => score.name === 'Adherence to Prompt')).toBeUndefined();
+    expect(traces[1].answers[0].scores.find((score) => score.name === 'Adherence to Prompt')).toBeUndefined();
   });
 
   test('anything unreadable is no questions at all', () => {
@@ -281,6 +283,65 @@ describe('evaluationRunName', () => {
   });
 });
 
+describe('folding a subscription update into the cached list', () => {
+  const run = (id: string, status: string) =>
+    ({ id, name: `run_${id}`, status, insertedAt: '2026-08-10T10:00:00Z' }) as EvaluationRun;
+
+  test('a run already on the list is updated in place, keeping its position', () => {
+    const previous = { aiEvaluations: [run('r2', 'PROCESSING'), run('r1', 'COMPLETED')] };
+
+    const merged = mergeEvaluationUpdate(previous, run('r2', 'COMPLETED'));
+
+    expect(merged.aiEvaluations?.map((entry) => entry.id)).toEqual(['r2', 'r1']);
+    expect(merged.aiEvaluations?.[0].status).toBe('COMPLETED');
+  });
+
+  test('fields the update does not carry are kept rather than wiped', () => {
+    const previous = { aiEvaluations: [{ ...run('r1', 'PROCESSING'), results: 'kept' } as EvaluationRun] };
+
+    const merged = mergeEvaluationUpdate(previous, { id: 'r1', status: 'COMPLETED' } as EvaluationRun);
+
+    expect(merged.aiEvaluations?.[0].results).toBe('kept');
+    expect(merged.aiEvaluations?.[0].status).toBe('COMPLETED');
+  });
+
+  test('nulls in the update do not wipe what the list already read', () => {
+    const previous = {
+      aiEvaluations: [{ ...run('r1', 'PROCESSING'), goldenQa: { id: 'g1', name: 'core_set' } } as EvaluationRun],
+    };
+
+    // the server publishes without preloading, so associations can come back null
+    const merged = mergeEvaluationUpdate(previous, {
+      id: 'r1',
+      status: 'COMPLETED',
+      goldenQa: null,
+    } as EvaluationRun);
+
+    expect(merged.aiEvaluations?.[0].status).toBe('COMPLETED');
+    expect(merged.aiEvaluations?.[0].goldenQa?.name).toBe('core_set');
+  });
+
+  test('a run started elsewhere is added at the top, where the newest belongs', () => {
+    const previous = { aiEvaluations: [run('r1', 'COMPLETED')] };
+
+    const merged = mergeEvaluationUpdate(previous, run('r9', 'PROCESSING'));
+
+    expect(merged.aiEvaluations?.map((entry) => entry.id)).toEqual(['r9', 'r1']);
+  });
+
+  test('an update that carries no run leaves the list alone', () => {
+    const previous = { aiEvaluations: [run('r1', 'COMPLETED')] };
+
+    expect(mergeEvaluationUpdate(previous, null).aiEvaluations).toEqual(previous.aiEvaluations);
+    expect(mergeEvaluationUpdate(previous, undefined).aiEvaluations).toEqual(previous.aiEvaluations);
+  });
+
+  test('an empty cache is safe to fold into', () => {
+    expect(mergeEvaluationUpdate(undefined, run('r1', 'COMPLETED')).aiEvaluations).toHaveLength(1);
+    expect(mergeEvaluationUpdate(undefined, null).aiEvaluations).toEqual([]);
+  });
+});
+
 describe('shapes the parsers fall back on', () => {
   test('a summary entry with no name is skipped rather than matched by accident', () => {
     const metrics = parseEvaluationResults({
@@ -311,7 +372,8 @@ describe('shapes the parsers fall back on', () => {
 
   test('a trace score is read whether it is called value, avg or score', () => {
     const scored = (score: object) =>
-      parseEvaluationScores({ score: { traces: [{ question_id: '1', scores: [score] }] } })[0].scores[0].value;
+      parseEvaluationScores({ score: { traces: [{ question_id: '1', scores: [score] }] } })[0].answers[0].scores[0]
+        .value;
 
     expect(scored({ name: 'Adherence to Prompt', value: 1 })).toBe(1);
     expect(scored({ name: 'Adherence to Prompt', avg: 2 })).toBe(2);

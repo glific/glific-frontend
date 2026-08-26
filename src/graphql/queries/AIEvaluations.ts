@@ -56,8 +56,8 @@ export const LIST_GOLDEN_QA = gql`
 `;
 
 export const GET_EVALUATION_SCORES = gql`
-  query EvaluationScores($id: ID!) {
-    evaluationScores(id: $id) {
+  query EvaluationScores($id: ID!, $exportFormat: String) {
+    evaluationScores(id: $id, exportFormat: $exportFormat) {
       scores
       errors {
         message
