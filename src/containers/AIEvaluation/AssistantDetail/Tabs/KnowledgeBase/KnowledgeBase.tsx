@@ -82,27 +82,30 @@ export const KnowledgeBase = ({
   const handleDownload = async (file: KnowledgeBaseFile) => {
     setDownloading(file.fileId);
 
-    const { data, error } = await fetchFile({ variables: { fileId: file.fileId } });
-    setDownloading(null);
+    try {
+      const { data, error } = await fetchFile({ variables: { fileId: file.fileId } });
 
-    if (error) {
-      setErrorMessage(error);
-      return;
+      if (error) {
+        setErrorMessage(error);
+        return;
+      }
+
+      const errors = data?.getFile?.errors;
+      if (errors?.length) {
+        setErrorMessage(errors[0]);
+        return;
+      }
+
+      const signedUrl = data?.getFile?.signedUrl;
+      if (!signedUrl) {
+        setNotification(t('This file has no download link yet. Try again in a moment.'), 'warning');
+        return;
+      }
+
+      downloadFile(signedUrl, data?.getFile?.filename || file.filename);
+    } finally {
+      setDownloading(null);
     }
-
-    const errors = data?.getFile?.errors;
-    if (errors?.length) {
-      setErrorMessage(errors[0]);
-      return;
-    }
-
-    const signedUrl = data?.getFile?.signedUrl;
-    if (!signedUrl) {
-      setNotification(t('This file has no download link yet. Try again in a moment.'), 'warning');
-      return;
-    }
-
-    downloadFile(signedUrl, data?.getFile?.filename || file.filename);
   };
 
   const isUploading = uploading.length > 0;
@@ -115,8 +118,6 @@ export const KnowledgeBase = ({
         const response = await uploadFile({ variables: { media: file } });
         const result = response.data?.uploadFilesearchFile;
         if (!result) return null;
-        // pick the fields explicitly: the response carries __typename, which
-        // CreateKnowledgeBase rejects because FileInfoInput has no such field
         return {
           fileId: result.fileId,
           filename: result.filename,

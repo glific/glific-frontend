@@ -1693,6 +1693,23 @@ describe('a prompt improvement finishing in the background', () => {
     notify.mockRestore();
   });
 
+  test('a version belonging to another assistant is ignored, not jumped to', async () => {
+    const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      versionsMock(),
+      // the topic is org-wide, so this can be someone else's run entirely
+      improvedMock({ status: 'completed', error: null, configVersion: { ...version(9, false), id: 'v-elsewhere' } }),
+    ]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    await waitFor(() => expect(notify).not.toHaveBeenCalledWith('A new version with the improved prompt is ready'));
+
+    notify.mockRestore();
+  });
+
   test('a failed improvement says why rather than going quiet', async () => {
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
 

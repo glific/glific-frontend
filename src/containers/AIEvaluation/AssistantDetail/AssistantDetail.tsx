@@ -121,7 +121,7 @@ export const AssistantDetail = () => {
 
   useSubscription(IMPROVE_PROMPT_UPDATED, {
     skip: isCreateMode,
-    onData: ({ data: subscription }) => {
+    onData: async ({ data: subscription }) => {
       const update = subscription?.data?.improvePromptUpdated;
       if (!update) return;
 
@@ -133,7 +133,12 @@ export const AssistantDetail = () => {
       const version = update.configVersion;
       if (!version) return;
 
-      refetchVersions();
+      const { data: refetched } = await refetchVersions();
+      const isOurs = (refetched?.assistantVersions ?? []).some(
+        (candidate: AssistantVersion) => candidate.id === version.id
+      );
+      if (!isOurs) return;
+
       setSelectedVersionId(version.id);
       setNotification(t('A new version with the improved prompt is ready'));
     },

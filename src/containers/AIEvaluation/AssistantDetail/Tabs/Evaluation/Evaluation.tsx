@@ -9,6 +9,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { GOLDEN_QA_LIST_VARIABLES, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { AI_EVALUATION_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
@@ -185,22 +186,26 @@ export const Evaluation = ({
             >
               {t('Manage sets')}
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className={styles.RunButton}
-              startIcon={<PlayArrowIcon />}
-              disabled={!versionId || versionRunInProgress}
+            <Tooltip
               title={
                 versionRunInProgress
                   ? t('An evaluation is already running for this version. Wait for it to finish.')
-                  : undefined
+                  : ''
               }
-              onClick={() => setRunOpen(true)}
-              data-testid="runEvaluationButton"
+              placement="top"
             >
-              {latestRun ? t('Run another evaluation') : t('Run evaluation')}
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={styles.RunButton}
+                startIcon={<PlayArrowIcon />}
+                disabled={!versionId || versionRunInProgress}
+                onClick={() => setRunOpen(true)}
+                data-testid="runEvaluationButton"
+              >
+                {latestRun ? t('Run another evaluation') : t('Run evaluation')}
+              </Button>
+            </Tooltip>
           </div>
         )}
       </div>

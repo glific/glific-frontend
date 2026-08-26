@@ -361,3 +361,22 @@ test('a download the server never answers reports the failure', async () => {
   download.mockRestore();
   errorSpy.mockRestore();
 });
+
+test('a download that blows up still stops the spinner, so the row can be retried', async () => {
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+  // a link-level failure rejects instead of resolving with an error
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {
+    throw new Error('the anchor blew up');
+  });
+
+  renderTab({}, [fileMock(downloadableFile)]);
+
+  const button = screen.getByTestId('downloadFileButton');
+  fireEvent.click(button);
+
+  await waitFor(() => expect(within(button).queryByRole('progressbar')).not.toBeInTheDocument());
+  expect(button).not.toBeDisabled();
+
+  download.mockRestore();
+  errorSpy.mockRestore();
+});
