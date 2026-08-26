@@ -5,6 +5,7 @@ import * as utils from 'common/utils';
 import { toCsv } from 'containers/AIEvaluation/utils/csv/csv';
 import * as goldenQaUtils from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import { CREATE_EVALUATION, CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
+import { AI_EVALUATION_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import {
   GET_EVALUATION_SCORES,
   GET_GOLDEN_QA,
@@ -671,17 +672,6 @@ describe('remaining details', () => {
   });
 });
 
-test('deleting a set is shown but not offered yet', async () => {
-  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(SAMPLE_CSV) }));
-  renderTab([listMock(oneSet), viewSignedUrlMock]);
-
-  fireEvent.click(await screen.findByTestId('manageSetsButton'));
-  fireEvent.click(await screen.findByTestId('manageGoldenQaSet'));
-
-  expect(await screen.findByTestId('deleteGoldenQaButton')).toBeDisabled();
-  vi.unstubAllGlobals();
-});
-
 test('the footnote link goes straight to History', async () => {
   renderTab([listMock(oneSet)]);
 
@@ -727,7 +717,7 @@ test('many sets all render, inside a list of their own that can scroll', async (
 });
 
 const scoresMock = (id: string, traces: any[] = []) => ({
-  request: { query: GET_EVALUATION_SCORES, variables: { id } },
+  request: { query: GET_EVALUATION_SCORES, variables: { id, exportFormat: 'row' } },
   result: { data: { evaluationScores: { scores: JSON.stringify({ score: { traces } }), errors: [] } } },
   maxUsageCount: Number.POSITIVE_INFINITY,
 });
@@ -855,6 +845,128 @@ describe('running an evaluation', () => {
     ]);
 
     expect(await screen.findByTestId('evaluationResult')).toHaveTextContent('5× duplication');
+  });
+
+  test('question-level results start on individual rows', async () => {
+    renderWithRuns([completedRun]);
+
+    await screen.findByTestId('evaluationScores');
+
+    expect(screen.getByTestId('scoresFormatToggle-row')).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('scoresFormatToggle-grouped')).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('grouping by question asks the server for the grouped payload and lists every attempt', async () => {
+    const groupedMock = {
+      request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'grouped' } },
+      result: {
+        data: {
+          evaluationScores: {
+            scores: JSON.stringify({
+              score: {
+                traces: [
+                  {
+                    question_id: 1,
+                    question: 'Is the water safe?',
+                    ground_truth_answer: 'Only with test results.',
+                    llm_answers: ['First attempt.', 'Second attempt.'],
+                    scores: [
+                      [{ name: 'Adherence to Ground Truth', value: 4 }],
+                      [{ name: 'Adherence to Ground Truth', value: 2 }],
+                    ],
+                  },
+                ],
+              },
+            }),
+            errors: [],
+          },
+        },
+      },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+
+    renderWithRuns([completedRun], [groupedMock]);
+
+    fireEvent.click(await screen.findByTestId('scoresFormatToggle-grouped'));
+
+    // one row for the question, and a column per attempt rather than one crowded cell
+    const rows = await screen.findAllByTestId('evaluationScoreRow');
+    expect(rows).toHaveLength(1);
+
+    const headers = screen.getAllByRole('columnheader').map((cell) => cell.textContent);
+    expect(headers).toEqual(['Question', 'Expected answer', 'Answer 1', 'Answer 2']);
+
+    const cells = within(rows[0]).getAllByRole('cell');
+    // each answer carries the judge's marks for that attempt, not the other's
+    expect(cells[2]).toHaveTextContent('First attempt.');
+    // the shared "Adherence to" prefix is dropped — it would repeat once per answer column
+    expect(cells[2]).toHaveTextContent('Ground Truth');
+    expect(cells[2]).not.toHaveTextContent('Adherence to');
+    expect(cells[2]).toHaveTextContent('4.0');
+    expect(cells[3]).toHaveTextContent('Second attempt.');
+    expect(cells[3]).toHaveTextContent('2.0');
+    expect(cells[3]).not.toHaveTextContent('4.0');
+  });
+
+  test('a question with fewer attempts than the widest leaves that column blank', async () => {
+    const unevenGrouped = {
+      request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'grouped' } },
+      result: {
+        data: {
+          evaluationScores: {
+            scores: JSON.stringify({
+              score: {
+                traces: [
+                  {
+                    question_id: 1,
+                    question: 'Asked twice',
+                    ground_truth_answer: 'Ground truth.',
+                    llm_answers: ['First attempt.', 'Second attempt.'],
+                    scores: [[{ name: 'Adherence to Ground Truth', value: 4 }], []],
+                  },
+                  {
+                    question_id: 2,
+                    question: 'Asked once',
+                    ground_truth_answer: 'Ground truth.',
+                    llm_answers: ['Only attempt.'],
+                    scores: [[{ name: 'Adherence to Ground Truth', value: 3 }]],
+                  },
+                ],
+              },
+            }),
+            errors: [],
+          },
+        },
+      },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+
+    renderWithRuns([completedRun], [unevenGrouped]);
+
+    fireEvent.click(await screen.findByTestId('scoresFormatToggle-grouped'));
+
+    const rows = await screen.findAllByTestId('evaluationScoreRow');
+    // the table keeps a column per attempt, so the shorter question gets an empty cell
+    // rather than a ragged row
+    const secondRow = within(rows[1]).getAllByRole('cell');
+    expect(secondRow).toHaveLength(4);
+    expect(secondRow[2]).toHaveTextContent('Only attempt.');
+    expect(secondRow[3]).toHaveTextContent('—');
+  });
+
+  test('the toggle stays reachable while the grouped payload is still loading', async () => {
+    const slowGrouped = {
+      request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'grouped' } },
+      delay: Infinity,
+      result: { data: {} },
+    };
+
+    renderWithRuns([completedRun], [slowGrouped]);
+
+    fireEvent.click(await screen.findByTestId('scoresFormatToggle-grouped'));
+
+    // without a way back a reader would be stuck on a view that never arrives
+    expect(await screen.findByTestId('scoresFormatToggle-row')).toBeInTheDocument();
   });
 
   test('a finished run replaces the empty state with its result', async () => {
@@ -1043,7 +1155,7 @@ describe('question-level results', () => {
           listMock(oneSet),
           runsMock([completed]),
           {
-            request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+            request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'row' } },
             result: { data: { evaluationScores: scores } },
           },
         ]}
@@ -1051,6 +1163,38 @@ describe('question-level results', () => {
         <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
       </MockedProvider>
     );
+
+  test('the judge’s reasoning for a mark is reachable from the score', async () => {
+    renderWith({
+      scores: JSON.stringify({
+        score: {
+          traces: [
+            {
+              question_id: '1',
+              question: 'What is health?',
+              ground_truth_answer: 'Complete well-being.',
+              llm_answer: 'A dynamic capacity.',
+              scores: [
+                {
+                  name: 'Adherence to Ground Truth',
+                  value: 3,
+                  comment: 'The answer omits the mental and social dimensions.',
+                },
+                { name: 'Adherence to Prompt', value: 5, comment: 'No stated instruction was violated.' },
+              ],
+            },
+          ],
+        },
+      }),
+      errors: [],
+    });
+
+    const rows = await screen.findAllByTestId('evaluationScoreRow');
+    // one icon per scored metric, each carrying that metric's own comment
+    const reasons = within(rows[0]).getAllByTestId('scoreReason');
+    expect(reasons).toHaveLength(2);
+    expect(within(rows[0]).getByLabelText('The answer omits the mental and social dimensions.')).toBeInTheDocument();
+  });
 
   test('each question becomes a row, with a column per metric the judge used', async () => {
     renderWith({
@@ -1080,6 +1224,11 @@ describe('question-level results', () => {
     expect(rows[0]).toHaveTextContent('A blood condition.');
     expect(rows[0]).toHaveTextContent('4.5');
     expect(rows[0]).toHaveTextContent('1.2');
+
+    // row view keeps a column per metric; grouped view swaps them for a column per answer
+    const headers = screen.getAllByRole('columnheader').map((cell) => cell.textContent);
+    expect(headers).toContain('Assistant answer');
+    expect(headers).not.toContain('Answer 1');
 
     // the shared "Adherence to" prefix is dropped so the answers get the width
     expect(screen.getByRole('columnheader', { name: 'Ground Truth' })).toBeInTheDocument();
@@ -1129,7 +1278,7 @@ test('an answer is rendered the way WhatsApp would render it', async () => {
           },
         },
         {
-          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'row' } },
           result: {
             data: {
               evaluationScores: {
@@ -1194,7 +1343,7 @@ test('the question-level table lives inside the result card, under a divider', a
           },
         },
         {
-          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'row' } },
           result: {
             data: {
               evaluationScores: {
@@ -1257,7 +1406,7 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
           },
         },
         {
-          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'row' } },
           result: {
             data: {
               evaluationScores: {
@@ -1314,7 +1463,7 @@ test("the judge's summary is shown in the banner", async () => {
           },
         },
         {
-          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } },
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'row' } },
           result: {
             data: {
               evaluationScores: {
@@ -1436,7 +1585,11 @@ test('the result card waits for the score payload rather than showing a number t
           request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
           result: { data: { aiEvaluations: [run] } },
         },
-        { request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1' } }, delay: Infinity, result: { data: {} } },
+        {
+          request: { query: GET_EVALUATION_SCORES, variables: { id: 'r1', exportFormat: 'row' } },
+          delay: Infinity,
+          result: { data: {} },
+        },
       ]}
     >
       <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
@@ -1490,6 +1643,110 @@ const runFor = (id: string, assistantId: string, setName: string) => ({
   insertedAt: '2026-08-10T10:00:00Z',
 });
 
+test('History marks the run whose version is live', async () => {
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [runFor('r1', 'a1', 'live_set'), runFor('r2', 'a1', 'old_set')] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" liveVersionId="v-r2" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('evaluationSubTabs-history'));
+
+  const rows = await screen.findAllByTestId('evaluationRun');
+  expect(within(rows[1]).getByTestId('livePill')).toBeInTheDocument();
+  expect(within(rows[0]).queryByTestId('livePill')).not.toBeInTheDocument();
+});
+
+test('Export CSV on History downloads every run as a CSV file', async () => {
+  const download = vi.spyOn(utils, 'downloadFile').mockImplementation(() => {});
+  const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:history');
+
+  const completed = {
+    id: 'r1',
+    name: 'run_1',
+    status: 'COMPLETED',
+    failureReason: null,
+    results:
+      '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.6},' +
+      '{"name":"Adherence to Knowledge Base","avg":4},{"name":"Adherence to Prompt","avg":5}]}',
+    duplicationFactor: 1,
+    goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+    assistantConfigVersion: { id: 'v1', versionNumber: 1, assistant: { id: 'a1', name: 'A' } },
+    insertedAt: '2026-08-10T10:00:00Z',
+  };
+  const failed = {
+    ...completed,
+    id: 'r2',
+    name: 'run_2',
+    status: 'FAILED',
+    failureReason: 'The judge timed out',
+    results: null,
+    assistantConfigVersion: { id: 'v2', versionNumber: 2, assistant: { id: 'a1', name: 'A' } },
+  };
+  const running = {
+    ...completed,
+    id: 'r3',
+    name: 'run_3',
+    status: 'PROCESSING',
+    results: null,
+    assistantConfigVersion: { id: 'v3', versionNumber: 3, assistant: { id: 'a1', name: 'A' } },
+  };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [completed, failed, running] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  fireEvent.click(await screen.findByTestId('evaluationSubTabs-history'));
+  fireEvent.click(await screen.findByTestId('exportHistoryButton'));
+
+  expect(download).toHaveBeenCalledWith('blob:history', 'evaluation-history.csv');
+
+  const csv = toCsv([
+    [
+      'Version',
+      'Golden Q&A set',
+      'Duplication Factor',
+      'Status',
+      'Overall',
+      'Ground truth',
+      'Knowledge base',
+      'Prompt',
+      'When',
+    ],
+    ['1', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '2026-08-10 15:30'],
+    ['2', 'core_set', '1', 'Failed', '', '', '', '', '2026-08-10 15:30'],
+    // a run still going says so rather than reading as complete with no scores
+    ['3', 'core_set', '1', 'Running', '', '', '', '', '2026-08-10 15:30'],
+  ]);
+
+  expect((createObjectURL.mock.calls[0][0] as Blob).size).toBe(new Blob([`\uFEFF${csv}`]).size);
+
+  download.mockRestore();
+  createObjectURL.mockRestore();
+});
+
 test('History lists this assistant’s runs only, not the whole organisation’s', async () => {
   render(
     <MockedProvider
@@ -1513,6 +1770,66 @@ test('History lists this assistant’s runs only, not the whole organisation’s
   expect(rows).toHaveLength(1);
   expect(rows[0]).toHaveTextContent('mine');
   expect(rows[0]).not.toHaveTextContent('someone_elses');
+});
+
+test('a run finishing in the background lands without the reader reloading', async () => {
+  const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [running] } },
+        },
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [{ ...running, status: 'COMPLETED' }] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        {
+          request: { query: AI_EVALUATION_UPDATED },
+          result: { data: { aiEvaluationUpdated: { ...running, status: 'COMPLETED' } } },
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('evaluationRunning')).toBeInTheDocument();
+
+  // the published status replaces the in-progress card on its own
+  await waitFor(() => expect(screen.queryByTestId('evaluationRunning')).not.toBeInTheDocument());
+});
+
+test('an update carrying no run leaves what is on screen alone', async () => {
+  const running = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [running] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        {
+          request: { query: AI_EVALUATION_UPDATED },
+          result: { data: { aiEvaluationUpdated: null } },
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  // an empty payload must not clear the list or blank the panel
+  expect(await screen.findByTestId('evaluationRunning')).toBeInTheDocument();
+  await waitFor(() => expect(screen.getByTestId('evaluationRunning')).toBeInTheDocument());
 });
 
 test('a run still being judged shows as in progress and asks for no scores', async () => {
@@ -1569,6 +1886,28 @@ test('the two ways of running are offered as cards, and the choice sticks', asyn
 
   expect(screen.getByTestId('duplicationOption-5')).toHaveAttribute('aria-checked', 'true');
   expect(screen.getByTestId('duplicationOption-1')).toHaveAttribute('aria-checked', 'false');
+});
+
+test('a run going on another version does not block this one', async () => {
+  // same assistant, different version — the two runs have nothing to do with each other
+  const runningElsewhere = { ...runFor('r1', 'a1', 'mine'), status: 'PENDING', results: null };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [runningElsewhere] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-other" versionNumber={2} assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('runEvaluationButton')).not.toBeDisabled();
 });
 
 test('a second run cannot be started while one is still going', async () => {

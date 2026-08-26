@@ -42,17 +42,9 @@
   margin-bottom: var(--app-space-sm);
 }
 
-.DeleteButton {
-  flex-shrink: 0;
-  margin-left: auto;
-  border: 1px solid var(--app-color-error) !important;
-  border-radius: var(--app-radius-pill) !important;
-  color: var(--app-color-error) !important;
-  text-transform: none !important;
-}
-
 .ExportButton {
   flex-shrink: 0;
+  margin-left: auto;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
 }
