@@ -116,15 +116,6 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
           <div className={styles.Summary} data-testid="goldenQaViewCategories">
             {categories.length > 0 && categories.join(', ')}
           </div>
-          <Button
-            variant="outlined"
-            className={styles.DeleteButton}
-            disabled
-            title={t('Deleting a set is not available yet.')}
-            data-testid="deleteGoldenQaButton"
-          >
-            {t('Delete set')}
-          </Button>
           {signedUrl && (
             <Button
               variant="outlined"

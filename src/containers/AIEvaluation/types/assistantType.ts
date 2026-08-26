@@ -56,3 +56,16 @@ export interface EditorState {
   config: ModelConfig;
   files: KnowledgeBaseFile[];
 }
+
+export interface AssistantListItem {
+  id: string;
+  name: string;
+  assistantDisplayId: string;
+  liveVersionNumber: number | null;
+  activeConfigVersionId: string | null;
+  status: string;
+  cloneStatus: string;
+  insertedAt: string;
+  updatedAt: string;
+  lastEvaluationSummary: unknown;
+}

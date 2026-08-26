@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
+  BAND_LABEL,
   MAX_SCORE,
   METRIC_WEIGHTS,
   formatScore,
@@ -33,12 +34,6 @@ const METRIC_ORDER = [
   { key: 'knowledgeBase', label: 'Adherence to knowledge base' },
   { key: 'prompt', label: 'Adherence to prompt' },
 ] as const satisfies readonly { key: keyof EvaluationMetrics; label: string }[];
-
-const BAND_LABEL = {
-  good: 'Good',
-  okay: 'Could improve',
-  bad: 'Needs improvement',
-} as const;
 
 const BAND_ICON = {
   good: CheckIcon,

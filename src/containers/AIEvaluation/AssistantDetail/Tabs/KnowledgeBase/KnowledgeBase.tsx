@@ -1,13 +1,14 @@
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { copyToClipboard } from 'common/utils';
+import { copyToClipboard, downloadFile } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import type { KnowledgeBaseFile, UploadError } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import { GET_KNOWLEDGE_BASE_FILE } from 'graphql/queries/Assistant';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
@@ -72,9 +73,42 @@ export const KnowledgeBase = ({
 
   const [fileToRemove, setFileToRemove] = useState<KnowledgeBaseFile | null>(null);
   const [showTechnical, setShowTechnical] = useState(false);
+  const [downloading, setDownloading] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [uploadFile] = useMutation(UPLOAD_FILE_TO_KAAPI);
+  const [fetchFile] = useLazyQuery(GET_KNOWLEDGE_BASE_FILE, { fetchPolicy: 'network-only' });
+
+  const handleDownload = async (file: KnowledgeBaseFile) => {
+    setDownloading(file.fileId);
+
+    try {
+      const { data, error } = await fetchFile({ variables: { fileId: file.fileId } });
+
+      if (error) {
+        setErrorMessage(error);
+        return;
+      }
+
+      const errors = data?.getFile?.errors;
+      if (errors?.length) {
+        setErrorMessage(errors[0]);
+        return;
+      }
+
+      const signedUrl = data?.getFile?.signedUrl;
+      if (!signedUrl) {
+        setNotification(t('This file has no download link yet. Try again in a moment.'), 'warning');
+        return;
+      }
+
+      downloadFile(signedUrl, data?.getFile?.filename || file.filename);
+    } catch (error: unknown) {
+      setErrorMessage(error);
+    } finally {
+      setDownloading(null);
+    }
+  };
 
   const isUploading = uploading.length > 0;
   const isReadOnly = legacy;
@@ -86,8 +120,6 @@ export const KnowledgeBase = ({
         const response = await uploadFile({ variables: { media: file } });
         const result = response.data?.uploadFilesearchFile;
         if (!result) return null;
-        // pick the fields explicitly: the response carries __typename, which
-        // CreateKnowledgeBase rejects because FileInfoInput has no such field
         return {
           fileId: result.fileId,
           filename: result.filename,
@@ -232,9 +264,8 @@ export const KnowledgeBase = ({
                 <IconButton
                   size="small"
                   className={`${styles.FileAction} ${styles.FileActionDownload}`}
-                  // TODO: needs a signed-url endpoint for assistant files; Golden QA has one
-                  disabled
-                  title={t('Downloads are not available yet')}
+                  onClick={() => handleDownload(file)}
+                  loading={downloading === file.fileId}
                   aria-label={t('Download')}
                   data-testid="downloadFileButton"
                 >

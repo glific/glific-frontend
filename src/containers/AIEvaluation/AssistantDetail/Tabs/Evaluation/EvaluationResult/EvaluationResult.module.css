@@ -83,7 +83,7 @@
 }
 
 .badBanner {
-  background-color: var(--app-color-surface-hover);
+  background-color: color-mix(in srgb, var(--app-color-error) 8%, transparent);
 }
 
 .Ring {
@@ -169,7 +169,7 @@
 }
 
 .badPill {
-  background-color: var(--app-color-surface-hover);
+  background-color: color-mix(in srgb, var(--app-color-error) 16%, transparent);
   color: var(--app-color-error);
 }
 

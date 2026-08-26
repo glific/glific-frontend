@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useSubscription } from '@apollo/client';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
@@ -11,6 +11,7 @@ import {
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
 import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
 import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
@@ -108,10 +109,39 @@ export const AssistantDetail = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: versionData, loading: versionsLoading } = useQuery(GET_ASSISTANT_VERSIONS, {
+  const {
+    data: versionData,
+    loading: versionsLoading,
+    refetch: refetchVersions,
+  } = useQuery(GET_ASSISTANT_VERSIONS, {
     variables: { assistantId },
     skip: isCreateMode,
     fetchPolicy: 'network-only',
+  });
+
+  useSubscription(IMPROVE_PROMPT_UPDATED, {
+    skip: isCreateMode,
+    onData: async ({ data: subscription }) => {
+      const update = subscription?.data?.improvePromptUpdated;
+      if (!update) return;
+
+      if (update.error) {
+        setErrorMessage(update.error, t('The prompt could not be improved'));
+        return;
+      }
+
+      const version = update.configVersion;
+      if (!version) return;
+
+      const { data: refetched } = await refetchVersions();
+      const isOurs = (refetched?.assistantVersions ?? []).some(
+        (candidate: AssistantVersion) => candidate.id === version.id
+      );
+      if (!isOurs) return;
+
+      setSelectedVersionId(version.id);
+      setNotification(t('A new version with the improved prompt is ready'));
+    },
   });
 
   const { data: modelData, loading: modelsLoading } = useQuery(GET_ASSISTANT_MODELS);
@@ -369,6 +399,7 @@ export const AssistantDetail = () => {
       <Evaluation
         assistantId={assistantId}
         versionId={selectedVersion?.id}
+        liveVersionId={liveVersion?.id}
         versionNumber={selectedVersion?.versionNumber}
         assistantName={assistant?.name}
       />

@@ -27,6 +27,7 @@ export const FILTER_ASSISTANTS = gql`
       liveVersionNumber
       activeConfigVersionId
       cloneStatus
+      lastEvaluationSummary
     }
   }
 `;
@@ -120,6 +121,22 @@ export const GET_ASSISTANT_MODELS = gql`
       provider
       completionType
       config
+    }
+  }
+`;
+
+export const GET_KNOWLEDGE_BASE_FILE = gql`
+  query GetFile($fileId: String!) {
+    getFile(fileId: $fileId) {
+      fileId
+      filename
+      fileSize
+      uploadedAt
+      signedUrl
+      errors {
+        key
+        message
+      }
     }
   }
 `;

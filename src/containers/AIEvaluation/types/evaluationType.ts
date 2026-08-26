@@ -1,3 +1,5 @@
+export type JsonRecord = Record<string, unknown>;
+
 export type EvaluationSubTab = 'run' | 'history';
 
 export type DuplicationFactor = 1 | 5;
@@ -10,12 +12,28 @@ export interface EvaluationMetrics {
 
 export type ScoreBand = 'good' | 'okay' | 'bad';
 
+export type EvaluationScoresFormat = 'row' | 'grouped';
+
+export interface EvaluationTraceScore {
+  name: string;
+  value: number | null;
+  comment: string;
+}
+
+export interface EvaluationTraceAnswer {
+  answer: string;
+  scores: EvaluationTraceScore[];
+}
+
 export interface EvaluationTrace {
   questionId: string;
   question: string;
   expected: string;
-  answer: string;
-  scores: { name: string; value: number | null }[];
+  answers: EvaluationTraceAnswer[];
+}
+
+export interface EvaluationListData {
+  aiEvaluations?: EvaluationRun[];
 }
 
 export interface EvaluationRun {
@@ -24,8 +42,8 @@ export interface EvaluationRun {
   status: string;
   failureReason?: string | null;
   results?: unknown;
-  duplicationFactor?: number | null;
-  goldenQa?: { id: string; name: string; duplicationFactor?: number | null } | null;
+  duplicationFactor?: DuplicationFactor;
+  goldenQa?: { id: string; name: string; duplicationFactor?: DuplicationFactor | null } | null;
   assistantConfigVersion?: {
     id: string;
     versionNumber: number;

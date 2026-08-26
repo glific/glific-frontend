@@ -1,9 +1,10 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { useState } from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
+import { GET_KNOWLEDGE_BASE_FILE } from 'graphql/queries/Assistant';
 import KnowledgeBase from './KnowledgeBase';
 
 const existingFile = { fileId: 'file-1', filename: 'nutrition_faq.pdf', fileSize: 1_200_000 };
@@ -253,5 +254,132 @@ test('a failure that is not rate limiting is not retried', async () => {
   // one attempt only — retrying a non-rate-limit error just delays the failure
   expect(variableMatcher).toHaveBeenCalledTimes(1);
   expect(onFilesUploaded).not.toHaveBeenCalled();
+  errorSpy.mockRestore();
+});
+
+const fileMock = (getFile: any) => ({
+  request: { query: GET_KNOWLEDGE_BASE_FILE, variables: { fileId: 'file-1' } },
+  result: { data: { getFile } },
+  maxUsageCount: Number.POSITIVE_INFINITY,
+});
+
+const downloadableFile = {
+  fileId: 'file-1',
+  filename: 'nutrition_faq.pdf',
+  fileSize: 1_200_000,
+  uploadedAt: '2026-08-04T10:00:00Z',
+  signedUrl: 'https://storage.test/nutrition_faq.pdf?sig=abc',
+  errors: null,
+};
+
+test('downloading a file fetches a fresh link and saves it under its own name', async () => {
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {});
+
+  renderTab({}, [fileMock(downloadableFile)]);
+
+  fireEvent.click(screen.getByTestId('downloadFileButton'));
+
+  await waitFor(() => {
+    expect(download).toHaveBeenCalledWith('https://storage.test/nutrition_faq.pdf?sig=abc', 'nutrition_faq.pdf');
+  });
+
+  download.mockRestore();
+});
+
+test('the icon becomes a spinner while the link is being fetched', async () => {
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {});
+
+  renderTab({}, [{ ...fileMock(downloadableFile), delay: 60 }]);
+
+  const button = screen.getByTestId('downloadFileButton');
+  expect(within(button).queryByRole('progressbar')).not.toBeInTheDocument();
+
+  fireEvent.click(button);
+
+  // while in flight the button reads as working, not as unavailable
+  await waitFor(() => expect(within(button).getByRole('progressbar')).toBeInTheDocument());
+
+  await waitFor(() => expect(download).toHaveBeenCalled());
+  await waitFor(() => expect(within(button).queryByRole('progressbar')).not.toBeInTheDocument());
+
+  download.mockRestore();
+});
+
+test('a file the server cannot sign reports why instead of downloading nothing', async () => {
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {});
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+  renderTab({}, [
+    fileMock({ ...downloadableFile, signedUrl: null, errors: [{ key: 'file', message: 'File not found' }] }),
+  ]);
+
+  fireEvent.click(screen.getByTestId('downloadFileButton'));
+
+  await waitFor(() => {
+    expect(errorSpy).toHaveBeenCalledWith({ key: 'file', message: 'File not found' });
+  });
+  expect(download).not.toHaveBeenCalled();
+
+  download.mockRestore();
+  errorSpy.mockRestore();
+});
+
+test('a link that comes back empty says so rather than failing silently', async () => {
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {});
+  const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+  renderTab({}, [fileMock({ ...downloadableFile, signedUrl: null, errors: null })]);
+
+  fireEvent.click(screen.getByTestId('downloadFileButton'));
+
+  await waitFor(() => {
+    expect(notify).toHaveBeenCalledWith('This file has no download link yet. Try again in a moment.', 'warning');
+  });
+  expect(download).not.toHaveBeenCalled();
+
+  download.mockRestore();
+  notify.mockRestore();
+});
+
+test('a download the server never answers reports the failure', async () => {
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {});
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+  renderTab({}, [
+    {
+      request: { query: GET_KNOWLEDGE_BASE_FILE, variables: { fileId: 'file-1' } },
+      error: new Error('Network request failed'),
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    },
+  ]);
+
+  fireEvent.click(screen.getByTestId('downloadFileButton'));
+
+  await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+  expect(download).not.toHaveBeenCalled();
+
+  download.mockRestore();
+  errorSpy.mockRestore();
+});
+
+test('a download that blows up still stops the spinner, so the row can be retried', async () => {
+  const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+  // a link-level failure rejects instead of resolving with an error
+  const download = vi.spyOn(Utils, 'downloadFile').mockImplementation(() => {
+    throw new Error('the anchor blew up');
+  });
+
+  renderTab({}, [fileMock(downloadableFile)]);
+
+  const button = screen.getByTestId('downloadFileButton');
+  fireEvent.click(button);
+
+  await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+  // the row stops spinning and stays clickable, and the failure is reported rather than
+  // escaping as an unhandled rejection
+  expect(within(button).queryByRole('progressbar')).not.toBeInTheDocument();
+  expect(button).not.toBeDisabled();
+
+  download.mockRestore();
   errorSpy.mockRestore();
 });
