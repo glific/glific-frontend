@@ -950,8 +950,6 @@
   "No questions could be read from the stored file.": "संग्रहीत फ़ाइल से कोई प्रश्न नहीं पढ़ा जा सका।",
   "Export the set to read it.": "इसे पढ़ने के लिए सेट निर्यात करें।",
   "Uploaded dataset": "अपलोड किया गया डेटासेट",
-  "Delete set": "सेट हटाएं",
-  "Deleting a set is not available yet.": "सेट हटाना अभी उपलब्ध नहीं है।",
   "No evaluations yet": "अभी तक कोई मूल्यांकन नहीं",
   "Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.": "एक बार मूल्यांकन चलाने के बाद हर रन यहां दिखेगा, ताकि आप संस्करणों और गोल्डन प्रश्नोत्तर सेट की तुलना कर सकें।",
   "Run your first evaluation": "अपना पहला मूल्यांकन चलाएं",

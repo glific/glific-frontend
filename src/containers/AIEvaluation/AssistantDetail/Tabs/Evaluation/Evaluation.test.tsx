@@ -672,17 +672,6 @@ describe('remaining details', () => {
   });
 });
 
-test('deleting a set is shown but not offered yet', async () => {
-  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(SAMPLE_CSV) }));
-  renderTab([listMock(oneSet), viewSignedUrlMock]);
-
-  fireEvent.click(await screen.findByTestId('manageSetsButton'));
-  fireEvent.click(await screen.findByTestId('manageGoldenQaSet'));
-
-  expect(await screen.findByTestId('deleteGoldenQaButton')).toBeDisabled();
-  vi.unstubAllGlobals();
-});
-
 test('the footnote link goes straight to History', async () => {
   renderTab([listMock(oneSet)]);
 
