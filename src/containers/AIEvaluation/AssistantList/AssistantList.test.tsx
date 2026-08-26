@@ -80,7 +80,13 @@ test('an evaluated assistant shows the judge’s verdict and score, banded by ho
     insertedAt: '2024-10-16T15:58:26Z',
     status: 'active',
     cloneStatus: 'none',
-    lastEvaluationSummary: { verdict: 'Good', overall_score: overallScore },
+    lastEvaluationSummary: {
+      verdict: 'Good',
+      summary_scores: [
+        { total_pairs: 10, std: 0.46, name: 'Adherence to Ground Truth', data_type: 'NUMERIC', avg: 4.7 },
+      ],
+      overall_score: overallScore,
+    },
   });
 
   renderAssistantList([

@@ -1,5 +1,6 @@
 import {
   formatScore,
+  parseAssistantHealth,
   parseOverallScore,
   evaluationRunName,
   parseEvaluationSummary,
@@ -327,5 +328,31 @@ describe('shapes the parsers fall back on', () => {
     expect(isRunComplete(run)).toBe(false);
     expect(isRunFailed(run)).toBe(false);
     expect(isRunInProgress(run)).toBe(true);
+  });
+});
+
+describe('parseAssistantHealth', () => {
+  const lastEvaluationSummary = {
+    verdict: 'Good',
+    summary_scores: [
+      { total_pairs: 10, std: 0.46, name: 'Adherence to Ground Truth', data_type: 'NUMERIC', avg: 4.7 },
+      { total_pairs: 10, std: 1.2, name: 'Adherence to Prompt', data_type: 'NUMERIC', avg: 4.6 },
+      { total_pairs: 10, std: 1.75, name: 'Adherence to Knowledge Base', data_type: 'NUMERIC', avg: 3.5 },
+    ],
+    overall_score: 4.32,
+  };
+
+  test('reads the overall score out of a real summary', () => {
+    expect(parseAssistantHealth(lastEvaluationSummary)).toBe(4.32);
+  });
+
+  test('reads it whether the summary arrives parsed or as a JSON string', () => {
+    expect(parseAssistantHealth(JSON.stringify(lastEvaluationSummary))).toBe(4.32);
+  });
+
+  test('an assistant that was never evaluated has no score', () => {
+    for (const value of [null, undefined, '', 'not json', {}, { verdict: 'Good' }, 42]) {
+      expect(parseAssistantHealth(value)).toBeNull();
+    }
   });
 });
