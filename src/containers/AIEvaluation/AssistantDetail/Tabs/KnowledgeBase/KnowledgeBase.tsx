@@ -103,6 +103,8 @@ export const KnowledgeBase = ({
       }
 
       downloadFile(signedUrl, data?.getFile?.filename || file.filename);
+    } catch (error: unknown) {
+      setErrorMessage(error);
     } finally {
       setDownloading(null);
     }

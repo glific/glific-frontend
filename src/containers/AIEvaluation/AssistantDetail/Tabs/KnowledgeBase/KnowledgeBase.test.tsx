@@ -374,7 +374,10 @@ test('a download that blows up still stops the spinner, so the row can be retrie
   const button = screen.getByTestId('downloadFileButton');
   fireEvent.click(button);
 
-  await waitFor(() => expect(within(button).queryByRole('progressbar')).not.toBeInTheDocument());
+  await waitFor(() => expect(errorSpy).toHaveBeenCalled());
+  // the row stops spinning and stays clickable, and the failure is reported rather than
+  // escaping as an unhandled rejection
+  expect(within(button).queryByRole('progressbar')).not.toBeInTheDocument();
   expect(button).not.toBeDisabled();
 
   download.mockRestore();
