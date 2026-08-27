@@ -6,12 +6,12 @@ type TranslationKey = keyof (typeof resources)['en']['translation'];
 
 export type TabKey = 'persona' | 'knowledgeBase' | 'guardrails' | 'evaluation' | 'tryItOut';
 
-export const TABS: { key: TabKey; label: TranslationKey; badge?: TranslationKey }[] = [
+export const TABS: { key: TabKey; label: TranslationKey }[] = [
   { key: 'persona', label: 'Persona & Prompt' },
   { key: 'knowledgeBase', label: 'Knowledge Base' },
   { key: 'guardrails', label: 'Guardrails' },
   { key: 'evaluation', label: 'Golden Q&A Evaluation' },
-  { key: 'tryItOut', label: 'Try It Out', badge: 'SANDBOX' },
+  { key: 'tryItOut', label: 'Try It Out' },
 ];
 
 export interface TabBarProps {
@@ -36,7 +36,6 @@ export const TabBar = ({ activeTab, onChange, dirtyTabs = {} }: TabBarProps) => 
           data-testid={`tab-${tab.key}`}
         >
           {t(tab.label)}
-          {tab.badge && <span className={styles.SandboxBadge}>{t(tab.badge)}</span>}
           {dirtyTabs[tab.key] && (
             <span
               className={styles.TabDirtyDot}
@@ -49,5 +48,3 @@ export const TabBar = ({ activeTab, onChange, dirtyTabs = {} }: TabBarProps) => 
     </div>
   );
 };
-
-export default TabBar;

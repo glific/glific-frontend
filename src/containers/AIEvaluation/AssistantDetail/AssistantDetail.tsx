@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useSubscription } from '@apollo/client';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
@@ -10,7 +10,8 @@ import {
   SET_LIVE_VERSION,
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
-import { LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
 import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
@@ -26,7 +27,7 @@ import {
   TabKey,
   VersionBar,
 } from './components';
-import { KnowledgeBase, PersonaPrompt, TryItOut } from './Tabs';
+import { KnowledgeBase, PersonaPrompt, TryItOut, Evaluation } from './Tabs';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
@@ -108,17 +109,46 @@ export const AssistantDetail = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: versionData } = useQuery(GET_ASSISTANT_VERSIONS, {
+  const {
+    data: versionData,
+    loading: versionsLoading,
+    refetch: refetchVersions,
+  } = useQuery(GET_ASSISTANT_VERSIONS, {
     variables: { assistantId },
     skip: isCreateMode,
     fetchPolicy: 'network-only',
   });
 
-  const { data: modelData } = useQuery(GET_ASSISTANT_MODELS);
+  useSubscription(IMPROVE_PROMPT_UPDATED, {
+    skip: isCreateMode,
+    onData: async ({ data: subscription }) => {
+      const update = subscription?.data?.improvePromptUpdated;
+      if (!update) return;
+
+      if (update.error) {
+        setErrorMessage(update.error, t('The prompt could not be improved'));
+        return;
+      }
+
+      const version = update.configVersion;
+      if (!version) return;
+
+      const { data: refetched } = await refetchVersions();
+      const isOurs = (refetched?.assistantVersions ?? []).some(
+        (candidate: AssistantVersion) => candidate.id === version.id
+      );
+      if (!isOurs) return;
+
+      setSelectedVersionId(version.id);
+      setNotification(t('A new version with the improved prompt is ready'));
+    },
+  });
+
+  const { data: modelData, loading: modelsLoading } = useQuery(GET_ASSISTANT_MODELS);
   const models = useMemo(() => parseAssistantModels(modelData?.kaapiModels), [modelData]);
 
   const { data: goldenQaData } = useQuery(LIST_GOLDEN_QA, {
-    variables: { filter: {}, opts: {} },
+    variables: GOLDEN_QA_LIST_VARIABLES,
     skip: activeTab !== 'tryItOut',
   });
 
@@ -334,7 +364,13 @@ export const AssistantDetail = () => {
     }
   };
 
-  if (!isCreateMode && loading && !assistant) {
+  const stillLoading = (loading && !assistant) || (versionsLoading && !versionData) || (modelsLoading && !modelData);
+
+  if (!isCreateMode && stillLoading) {
+    return <Loading />;
+  }
+
+  if (isCreateMode && modelsLoading && !modelData) {
     return <Loading />;
   }
 
@@ -357,6 +393,15 @@ export const AssistantDetail = () => {
         models={models}
         onPromptChange={setPrompt}
         onConfigChange={setModelConfig}
+      />
+    ),
+    evaluation: (
+      <Evaluation
+        assistantId={assistantId}
+        versionId={selectedVersion?.id}
+        liveVersionId={liveVersion?.id}
+        versionNumber={selectedVersion?.versionNumber}
+        assistantName={assistant?.name}
       />
     ),
     knowledgeBase: (

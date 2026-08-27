@@ -21,6 +21,9 @@ field components (below); it isn't itself a component.
 | ------------------------------------------------- | ----------------------------------------------------------- |
 | Modal, confirmation popup, form-in-a-dialog       | `DialogBox`                                                 |
 | "Pick from a searchable list" modal               | `SearchDialogBox`                                           |
+| Read-only table of rows already in hand           | `DataTable`                                                 |
+| "Nothing here yet" card with a next step          | `EmptyState`                                                |
+| Two or three mutually exclusive inline choices    | `SegmentedControl`                                          |
 | Full-page or full-section loading state           | `Layout/Loading`                                            |
 | Full-page error state                             | `ErrorPage`                                                 |
 | Any button                                        | `Form/Button`                                               |
@@ -29,6 +32,7 @@ field components (below); it isn't itself a component.
 | Single/multi-select with search                   | `Form/AutoComplete`                                         |
 | Simple single-select dropdown                     | `Form/Dropdown`                                             |
 | Boolean checkbox field                            | `Form/Checkbox`                                             |
+| Numeric value on a bounded scale                  | `Form/RangeSlider`                                          |
 | Phone number field                                | `Form/PhoneInput`                                           |
 | Date / time / date+time field                     | `Form/Calendar` / `Form/TimePicker` / `Form/DateTimePicker` |
 | Tooltip                                           | `Tooltip`                                                   |
@@ -57,13 +61,21 @@ feature file.
 
 ## Loading, error & status
 
-| Component        | Purpose                                                         | Key props                               | Used in       | Notes                                                                                                                                                                                 |
-| ---------------- | --------------------------------------------------------------- | --------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Layout/Loading` | Centered spinner + message, optional rotating "pro tip"         | `message`, `showTip`, `whiteBackground` | **37 files**  | The standard loader — don't wrap raw `CircularProgress`.                                                                                                                              |
-| `DotLoader`      | Small inline animated dot/spinner                               | none                                    | 1 file (chat) | For inline "sending/typing" indicators only; use `Loading` for section-level states.                                                                                                  |
-| `ErrorPage`      | Full-page error state with Refresh action                       | `title`, `onRefresh`                    | 2 files       | Route/boundary-level only, not inline field errors.                                                                                                                                   |
-| `ToastMessage`   | Snackbar+Alert toast                                            | `open`, `severity`, `message`           | 2 files       | **Prefer `setNotification`/`setErrorMessage`** (see root `CLAUDE.md`) over using this directly — toasts should go through the Apollo-cache notification service, not component state. |
-| `Timer`          | WhatsApp 24-hour session-window countdown, or opt-out indicator | `time`, `contactStatus`, `variant`      | 3 files       | Domain-specific to WhatsApp session windows, not a generic timer.                                                                                                                     |
+| Component        | Purpose                                                           | Key props                                   | Used in                 | Notes                                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------- | ------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Layout/Loading` | Centered spinner + message, optional rotating "pro tip"           | `message`, `showTip`, `whiteBackground`     | **37 files**            | The standard loader — don't wrap raw `CircularProgress`.                                                                                                                              |
+| `DotLoader`      | Small inline animated dot/spinner                                 | none                                        | 1 file (chat)           | For inline "sending/typing" indicators only; use `Loading` for section-level states.                                                                                                  |
+| `ErrorPage`      | Full-page error state with Refresh action                         | `title`, `onRefresh`                        | 2 files                 | Route/boundary-level only, not inline field errors.                                                                                                                                   |
+| `EmptyState`     | Card for a screen with nothing to show: icon, title, note, action | `title`, `note`, `icon`, `action`, `testId` | 2 files (AI Evaluation) | Use for "nothing here yet" and for blocked states with a next step. Not for inline field errors or full-page failures (`ErrorPage`).                                                  |
+| `ToastMessage`   | Snackbar+Alert toast                                              | `open`, `severity`, `message`               | 2 files                 | **Prefer `setNotification`/`setErrorMessage`** (see root `CLAUDE.md`) over using this directly — toasts should go through the Apollo-cache notification service, not component state. |
+| `Timer`          | WhatsApp 24-hour session-window countdown, or opt-out indicator   | `time`, `contactStatus`, `variant`          | 3 files                 | Domain-specific to WhatsApp session windows, not a generic timer.                                                                                                                     |
+
+## Data display
+
+| Component          | Purpose                                                           | Key props                                                          | Used in                 | Notes                                                                                                          |
+| ------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `DataTable`        | Scrollable table with a sticky header, for rows already in memory | `columns`, `rows`, `maxHeight`, `className`, `testId`, `rowTestId` | 1 file (AI Evaluation)  | For data you already hold. Query-driven, paginated list pages belong in `containers/List` instead.             |
+| `SegmentedControl` | Pill track of two or three mutually exclusive options             | `options`, `value`, `onChange`, `label`, `optionClassName`         | 2 files (AI Evaluation) | Style per-usage through `optionClassName`/`trackClassName` — don't edit the component's own CSS, it is shared. |
 
 ## Page structure
 
@@ -117,6 +129,7 @@ All Formik-integrated unless noted.
 | `CreateAutoComplete` | `AutoComplete` preconfigured to create a new Tag inline via `CREATE_LABEL`                        | extends `AutoComplete` props                                            | 3 files      | Tag-picker-with-create-inline only; use plain `AutoComplete` + your own `handleCreateItem` for anything else. |
 | `TimePicker`         | Time-only picker (MUI X)                                                                          | `placeholder`, `helperText`                                             | 2 files      |                                                                                                               |
 | `DateTimePicker`     | Combined date+time picker (MUI X, UTC-aware)                                                      | `format`, `minDate`                                                     | 1 file       | Low usage — check before building separate `Calendar`+`TimePicker` pairs elsewhere.                           |
+| `RangeSlider`        | Slider paired with a synced number box for a bounded numeric value                                | `value` (`number \| ''`), `min`, `max`, `step`, `onChange`, `onClear`, `disabled` | 1 file       | **Not Formik-integrated** — controlled through `value`/`onChange`. Pass `value=''` for "unset": the box renders empty and the slider rests at `min`. |
 | `RadioInput`         | Yes/No boolean radio pair                                                                         | `labelYes`, `labelNo`, `row`                                            | 1 file       | Low usage — `Checkbox` may be the more common boolean pattern; confirm intent before adding more.             |
 | `InlineInput`        | Standalone (non-Formik) inline-edit-in-place text field                                           | `value`, `callback`                                                     | 1 file       | Niche — one-off rename/edit-in-place UX outside a Formik form.                                                |
 | `WhatsAppEditor`     | Lexical plain-text chat composer with WhatsApp-style formatting shortcuts                         | `sendMessage`, `readOnly`                                               | 1 file       | Specific to the chat composer — not a general rich-text field.                                                |

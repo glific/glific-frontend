@@ -86,6 +86,7 @@ export const getAssistant = (
           id: assistantId,
           newVersionInProgress: options?.newVersionInProgress ?? false,
           cloneStatus: options?.cloneStatus ?? 'none',
+          lastEvaluationSummary: null,
           name: 'Assistant-405db438',
           model: options?.model ?? 'gpt-4o',
           instructions: null,
@@ -140,6 +141,7 @@ const getAssistantListOnSearch = {
           name: `testAssistant`,
           status: 'ready',
           cloneStatus: 'none',
+          lastEvaluationSummary: null,
         },
       ],
     },
@@ -225,7 +227,7 @@ const createKnowledgeBaseWithError = {
       mediaInfo: [fileWithUploadedAt],
     },
   },
-  error: new Error('An error occured'),
+  error: new Error('An error occurred'),
 };
 
 const createKnowledgeBaseForUpdate = {
@@ -659,6 +661,7 @@ export const filterAssistantsMock = {
           insertedAt: '2024-10-16T15:58:26Z',
           status: 'active',
           cloneStatus: 'none',
+          lastEvaluationSummary: null,
         },
         {
           id: '2',
@@ -670,6 +673,7 @@ export const filterAssistantsMock = {
           insertedAt: '2024-10-17T10:00:00Z',
           status: 'active',
           cloneStatus: 'none',
+          lastEvaluationSummary: null,
         },
       ],
     },
@@ -773,6 +777,7 @@ export const filterAssistantsAfterCloneMock = {
           insertedAt: '2024-10-16T15:58:26Z',
           status: 'active',
           cloneStatus: 'none',
+          lastEvaluationSummary: null,
         },
         {
           id: '2',
@@ -784,6 +789,7 @@ export const filterAssistantsAfterCloneMock = {
           insertedAt: '2024-10-17T10:00:00Z',
           status: 'active',
           cloneStatus: 'none',
+          lastEvaluationSummary: null,
         },
         {
           id: '3',
@@ -795,6 +801,7 @@ export const filterAssistantsAfterCloneMock = {
           insertedAt: '2024-10-18T10:00:00Z',
           status: 'active',
           cloneStatus: 'completed',
+          lastEvaluationSummary: null,
         },
       ],
     },

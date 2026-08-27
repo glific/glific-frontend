@@ -12,6 +12,7 @@ import {
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
 import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
+import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
@@ -108,7 +109,6 @@ describe('edit mode', () => {
       getAssistant('1'),
       versionsMock(),
       publishMock,
-      // the refetch that follows a successful publish
       versionsMock([version(1, false), version(2, true)]),
     ]);
 
@@ -238,7 +238,7 @@ describe('edit mode', () => {
 
   test('version rows fall back to insertedAt, and drop the timestamp when both are missing', async () => {
     const noUpdatedAt = { ...version(1, true), updatedAt: null };
-    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null, description: 'Draft config' };
+    const noDates = { ...version(2, false), updatedAt: null, insertedAt: null };
 
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([noUpdatedAt, noDates])]);
 
@@ -248,7 +248,6 @@ describe('edit mode', () => {
     fireEvent.click(screen.getByTestId('versionPill'));
 
     expect(await screen.findByTestId('versionOption-1')).toHaveTextContent(/published .*ago/);
-    expect(screen.getByTestId('versionOption-2')).toHaveTextContent('Draft config');
     expect(screen.getByTestId('versionOption-2')).not.toHaveTextContent('ago');
   });
 
@@ -887,12 +886,12 @@ describe('tabs', () => {
 
     fireEvent.click(screen.getByTestId('tab-evaluation'));
 
-    expect(screen.getByTestId('tabPanel')).toHaveTextContent('Golden Q&A Evaluation coming soon');
+    expect(await screen.findByTestId('evaluationTab')).toBeInTheDocument();
     expect(screen.getByTestId('tab-evaluation')).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByTestId('tab-persona')).toHaveAttribute('aria-selected', 'false');
   });
 
-  test('renders every tab, with the sandbox badge on Try It Out', async () => {
+  test('renders every tab', async () => {
     renderDetail();
 
     await waitFor(() => {
@@ -902,7 +901,6 @@ describe('tabs', () => {
     ['persona', 'knowledgeBase', 'guardrails', 'evaluation', 'tryItOut'].forEach((key) => {
       expect(screen.getByTestId(`tab-${key}`)).toBeInTheDocument();
     });
-    expect(screen.getByTestId('tab-tryItOut')).toHaveTextContent('SANDBOX');
   });
 
   test('tabs keep working in create mode', async () => {
@@ -1653,4 +1651,96 @@ test('a reply that lands while another tab is open is not lost', async () => {
   fireEvent.click(screen.getByTestId('tab-tryItOut'));
 
   expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Here you go');
+});
+
+test('the settings panel does not flip from Temperature to Reasoning effort while loading', async () => {
+  // the assistant record still names an older temperature model; its newest version is on gpt-5
+  renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), getAssistant('1'), versionsMock()]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
+  });
+
+  // whatever shows first is what stays — no swap once the queries have all landed
+  const shownFirst = screen.queryByTestId('temperatureSlider') ? 'temperature' : 'effort';
+
+  await waitFor(() => {
+    expect(screen.getByTestId('modelParams')).toBeInTheDocument();
+  });
+
+  expect(screen.queryByTestId('temperatureSlider') ? 'temperature' : 'effort').toBe(shownFirst);
+});
+
+describe('a prompt improvement finishing in the background', () => {
+  const improvedMock = (improvePromptUpdated: any) => ({
+    request: { query: IMPROVE_PROMPT_UPDATED },
+    result: { data: { improvePromptUpdated } },
+  });
+
+  test('the version it wrote is selected without the reader reloading', async () => {
+    const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      // the improved prompt lands as version 3, which the refetch then returns
+      versionsMock([version(1, true), version(2, false), version(3, false)]),
+      improvedMock({ status: 'completed', error: null, configVersion: version(3, false) }),
+    ]);
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('A new version with the improved prompt is ready'));
+
+    notify.mockRestore();
+  });
+
+  test('a version belonging to another assistant is ignored, not jumped to', async () => {
+    const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      versionsMock(),
+      // the topic is org-wide, so this can be someone else's run entirely
+      improvedMock({ status: 'completed', error: null, configVersion: { ...version(9, false), id: 'v-elsewhere' } }),
+    ]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    await waitFor(() => expect(notify).not.toHaveBeenCalledWith('A new version with the improved prompt is ready'));
+
+    notify.mockRestore();
+  });
+
+  test('a failed improvement says why rather than going quiet', async () => {
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      improvedMock({ status: 'failed', error: 'The model refused the rewrite', configVersion: null }),
+    ]);
+
+    await waitFor(() =>
+      expect(errorSpy).toHaveBeenCalledWith('The model refused the rewrite', 'The prompt could not be improved')
+    );
+
+    errorSpy.mockRestore();
+  });
+
+  test('an update carrying neither a version nor an error changes nothing', async () => {
+    const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      improvedMock({ status: 'processing', error: null, configVersion: null }),
+    ]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    expect(notify).not.toHaveBeenCalledWith('A new version with the improved prompt is ready');
+    expect(errorSpy).not.toHaveBeenCalled();
+
+    notify.mockRestore();
+    errorSpy.mockRestore();
+  });
 });

@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Markdown from 'react-markdown';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckIcon from '@mui/icons-material/Check';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
@@ -9,10 +8,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import { setErrorMessage } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
+import { EmptyState } from 'components/UI/EmptyState/EmptyState';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import type { AssistantChatResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
-import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox';
+import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox/sandbox';
+import { MarkdownAnswer } from '../../components';
 import { useAssistantChatResponse } from 'containers/AIEvaluation/hooks/useAssistantChatResponse';
 import styles from './TryItOut.module.css';
 
@@ -47,19 +48,7 @@ const ChatMessage = ({ message }: { message: SandboxMessage }) => {
       }`}
       data-testid={isUser ? 'userMessage' : 'assistantMessage'}
     >
-      {!isUser && !message.failed ? (
-        <div className={styles.Markdown}>
-          <Markdown
-            components={{
-              a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
-            }}
-          >
-            {text}
-          </Markdown>
-        </div>
-      ) : (
-        text
-      )}
+      {!isUser && !message.failed ? <MarkdownAnswer text={text} className={styles.Markdown} /> : text}
     </div>
   );
 };
@@ -249,12 +238,7 @@ export const TryItOut = ({
   };
 
   const blocker = (title: string, note: string, action: ReactNode, icon?: ReactNode) => (
-    <div className={styles.Blocker} data-testid="tryItOutBlocker">
-      {icon && <div className={styles.BlockerIcon}>{icon}</div>}
-      <div className={styles.BlockerTitle}>{title}</div>
-      <div className={styles.BlockerNote}>{note}</div>
-      <div className={styles.BlockerAction}>{action}</div>
-    </div>
+    <EmptyState testId="tryItOutBlocker" title={title} note={note} action={action} icon={icon} />
   );
 
   if (!hasVersions) {

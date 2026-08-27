@@ -132,7 +132,7 @@ const HSMListV2 = () => {
         }
       } catch {
         if (!importCancelledRef.current) {
-          setNotification(t('An error occured! Please check the format of the file'), 'warning');
+          setNotification(t('An error occurred! Please check the format of the file'), 'warning');
         }
       } finally {
         if (!importCancelledRef.current) setImporting(false);

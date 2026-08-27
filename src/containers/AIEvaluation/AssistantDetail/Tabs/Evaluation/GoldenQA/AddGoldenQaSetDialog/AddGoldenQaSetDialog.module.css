@@ -1,0 +1,96 @@
+.Paper :global(.MuiDialogTitle-root) {
+  padding-top: var(--app-space-3xl) !important;
+  padding-bottom: 0 !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+.Paper :global(.MuiDialogContent-root) {
+  padding-top: var(--app-space-2xs) !important;
+}
+
+.Intro {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.FieldLabel {
+  margin-top: var(--app-space-sm);
+  margin-bottom: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.Note {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.Error {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-error);
+}
+
+.Drop {
+  display: block;
+  width: 100%;
+  margin-top: var(--app-space-lg);
+  padding: var(--app-space-xl);
+  border: 1px dashed var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-page);
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.Drop:hover,
+.DropActive {
+  border-color: var(--app-color-brand-primary);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 6%);
+}
+
+.DropIcon {
+  color: var(--app-color-text-tertiary);
+}
+
+.DropTitle {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  color: var(--app-color-text-heading);
+}
+
+.TemplateLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  margin-top: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  color: var(--app-color-brand-primary);
+}
+
+.TemplateIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+}
+
+.Parsed {
+  margin-top: var(--app-space-lg);
+  padding: var(--app-space-lg);
+  border: 1px solid var(--app-color-border-brand);
+  border-radius: var(--app-radius-lg);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 6%);
+}
+
+.ParsedTitle {
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  color: var(--app-color-brand-primary);
+}

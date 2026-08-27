@@ -1,0 +1,21 @@
+.Header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-lg);
+  margin-bottom: var(--app-space-lg);
+}
+
+.Actions {
+  display: flex;
+  gap: var(--app-space-sm);
+  margin-left: auto;
+}
+
+.ManageButton,
+.RunButton {
+  flex-shrink: 0;
+  margin-right: 0 !important;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}

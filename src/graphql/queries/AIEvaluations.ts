@@ -14,6 +14,7 @@ export const LIST_AI_EVALUATIONS = gql`
       status
       failureReason
       results
+      duplicationFactor
       goldenQa {
         id
         name
@@ -39,6 +40,11 @@ export const COUNT_GOLDEN_QA = gql`
   }
 `;
 
+export const GOLDEN_QA_LIST_VARIABLES = {
+  filter: {},
+  opts: { order: 'DESC', orderWith: 'inserted_at' },
+};
+
 export const LIST_GOLDEN_QA = gql`
   query GoldenQas($filter: GoldenQaFilter, $opts: Opts) {
     goldenQas(filter: $filter, opts: $opts) {
@@ -50,8 +56,8 @@ export const LIST_GOLDEN_QA = gql`
 `;
 
 export const GET_EVALUATION_SCORES = gql`
-  query EvaluationScores($id: ID!) {
-    evaluationScores(id: $id) {
+  query EvaluationScores($id: ID!, $exportFormat: String) {
+    evaluationScores(id: $id, exportFormat: $exportFormat) {
       scores
       errors {
         message

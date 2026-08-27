@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { SelectMenuOption } from 'components/UI/SelectMenu/SelectMenu';
 import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
+import { LivePill } from '../LivePill/LivePill';
 import styles from './VersionBar.module.css';
 
 dayjs.extend(relativeTime);
@@ -29,14 +30,7 @@ export const VersionBar = ({
   const { t } = useTranslation();
 
   const publishPill = (version: AssistantVersion) =>
-    version.isLive ? (
-      <span className={styles.LivePill}>
-        <span className={styles.LiveDot} />
-        {t('LIVE')}
-      </span>
-    ) : (
-      <span className={styles.DraftPill}>{t('Not published')}</span>
-    );
+    version.isLive ? <LivePill /> : <span className={styles.DraftPill}>{t('Not published')}</span>;
 
   const buildPill = (version: AssistantVersion) => {
     if (version.status === 'in_progress') {
@@ -87,9 +81,7 @@ export const VersionBar = ({
   const versionMeta = (version: AssistantVersion) => {
     const when = version.isLive ? t('published') : t('saved');
     const timestamp = version.updatedAt ?? version.insertedAt;
-    return [version.description, timestamp ? `${when} ${dayjs(timestamp).fromNow()}` : null]
-      .filter(Boolean)
-      .join(' · ');
+    return timestamp ? `${when} ${dayjs(timestamp).fromNow()}` : '';
   };
 
   return (
@@ -155,5 +147,3 @@ export const VersionBar = ({
     </div>
   );
 };
-
-export default VersionBar;

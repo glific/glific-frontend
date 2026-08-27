@@ -1,0 +1,95 @@
+.Paper :global(.MuiDialogTitle-root) {
+  padding-top: var(--app-space-3xl) !important;
+  padding-bottom: 0 !important;
+  padding-left: calc(var(--app-space-3xl) + var(--app-space-sm)) !important;
+}
+
+.Paper :global(.MuiDialogContent-root) {
+  padding-top: var(--app-space-2xs) !important;
+}
+
+.Intro {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.FieldLabel {
+  margin-bottom: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.DuplicationLabel {
+  margin-top: var(--app-space-xl);
+  margin-bottom: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.DuplicationOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--app-space-lg);
+}
+
+.DuplicationCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-lg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-page);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.DuplicationCard:hover {
+  border-color: var(--app-color-border-brand);
+}
+
+.DuplicationCardActive {
+  border-color: var(--app-color-brand-primary);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 6%);
+}
+
+/* the count, the name and the explanation each sit in their own panel inside the card */
+.DuplicationCount,
+.DuplicationTitle,
+.DuplicationHint {
+  padding: var(--app-space-lg);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+}
+
+.DuplicationCount {
+  font-size: var(--app-font-size-lg);
+  font-weight: 800;
+  color: var(--app-color-text-heading);
+}
+
+.DuplicationTitle {
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.DuplicationHint {
+  flex: 1;
+  font-size: var(--app-font-size-xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}
+
+.Note {
+  margin-top: var(--app-space-xl);
+  font-size: var(--app-font-size-xs);
+  line-height: 1.5;
+  color: var(--app-color-text-tertiary);
+}

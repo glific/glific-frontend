@@ -1,0 +1,191 @@
+.Header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-lg);
+}
+
+.FormatToggle {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.ExportButton {
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
+.Title {
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.Count,
+.Note {
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.ScoresTable table {
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+}
+
+.ScoresTable td {
+  overflow-wrap: anywhere;
+}
+
+.QuestionColumn {
+  width: 11rem;
+}
+
+.ExpectedColumn {
+  width: 16rem;
+}
+
+.AnswerColumn {
+  width: 20rem;
+}
+
+.ScoresTable .ScoreColumn {
+  width: 5rem;
+  text-align: center;
+}
+
+.GroupedTable td {
+  height: 1px;
+}
+
+.GroupedTable .AnswerCell {
+  max-height: 20rem;
+  height: 100%;
+}
+
+.GroupedTable .AnswerCell .Answer {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+}
+
+.GroupedTable .ExpectedColumn .Answer {
+  max-height: 20rem;
+  height: 100%;
+}
+
+.Question {
+  color: var(--app-color-text-heading);
+}
+
+.Answer {
+  max-height: 9rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  color: var(--app-color-text-heading);
+}
+
+.Answer::-webkit-scrollbar-track,
+.Answer::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.Answer:hover {
+  scrollbar-width: thin;
+}
+
+.Answer:hover::-webkit-scrollbar-thumb {
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-border);
+}
+
+.AnswerCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+}
+
+.AnswerScores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2xs);
+  padding-top: var(--app-space-sm);
+  border-top: 1px solid var(--app-color-border);
+}
+
+.AnswerScore {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.AnswerScoreName {
+  margin-right: auto;
+}
+
+.NoScore {
+  color: var(--app-color-text-tertiary);
+}
+
+.Score {
+  display: inline-block;
+  min-width: 2.25rem;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  font-weight: 700;
+  text-align: center;
+}
+
+.good {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 12%);
+  color: var(--app-color-brand-primary);
+}
+
+.okay {
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 16%);
+  color: var(--app-color-attention);
+}
+
+.bad {
+  background-color: color-mix(in srgb, var(--app-color-error) 16%, transparent);
+  color: var(--app-color-error);
+}
+
+.LoadingArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+}
+
+.LoadingArea [data-testid='loader'] {
+  height: auto;
+  justify-content: center;
+}
+
+.LoadingArea [data-testid='loader'] > div:first-child {
+  padding-top: 0;
+}
+
+.ScoreCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+}
+
+.ReasonIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+  flex-shrink: 0;
+}
+
+.ReasonTooltip {
+  max-width: 26rem !important;
+  font-size: var(--app-font-size-xs) !important;
+  line-height: 1.5 !important;
+}

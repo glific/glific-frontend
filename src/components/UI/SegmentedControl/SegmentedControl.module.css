@@ -22,12 +22,12 @@
 }
 
 .Option {
-  padding: var(--app-space-sm) var(--app-space-lg);
+  padding: var(--app-space-2xs) var(--app-space-lg);
   border: none;
   border-radius: var(--app-radius-pill);
   background: none;
   font-family: inherit;
-  font-size: var(--app-font-size-xs);
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
   color: var(--app-color-text-tertiary);
   cursor: pointer;

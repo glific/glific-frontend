@@ -99,6 +99,55 @@ span.GenerateBeta {
   min-width: 11.875rem;
 }
 
-.SegmentTrack {
-  background-color: rgb(var(--app-color-white-rgb) / 70%);
+.Expand {
+  position: absolute;
+  right: var(--app-space-lg);
+  bottom: var(--app-space-lg);
+  display: flex;
+}
+
+.ExpandButton {
+  padding: 0 !important;
+  border-radius: var(--app-radius-lg) !important;
+  color: var(--app-color-text-tertiary) !important;
+}
+
+.ExpandButton:hover {
+  background-color: var(--app-color-surface-hover);
+}
+
+.ExpandedPaper {
+  width: min(56rem, 92vw) !important;
+  max-width: min(56rem, 92vw) !important;
+  margin-top: 0 !important;
+  max-height: 92vh !important;
+}
+
+:global(.MuiDialog-scrollPaper):has(.ExpandedPaper),
+:global(.MuiDialog-container):has(.ExpandedPaper) {
+  height: 100% !important;
+  max-height: 100% !important;
+  align-items: center !important;
+}
+
+.ExpandedPaper [aria-label='close'] {
+  display: none;
+}
+
+.ExpandedPaper :global(.MuiDialogTitle-root) {
+  padding: var(--app-space-xl) var(--app-space-xl) 0 !important;
+  font-size: var(--app-font-size-lg);
+  font-weight: 500;
+}
+
+.ExpandedPaper :global(.MuiDialogContent-root) {
+  padding: var(--app-space-xl) !important;
+}
+
+.ExpandedPaper :global(.MuiDialogActions-root) {
+  padding: 0 var(--app-space-xl) var(--app-space-xl) !important;
+}
+
+.Temperature {
+  max-width: 22rem;
 }

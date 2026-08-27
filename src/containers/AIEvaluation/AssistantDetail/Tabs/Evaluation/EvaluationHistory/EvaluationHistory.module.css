@@ -1,0 +1,116 @@
+.Summary {
+  margin-bottom: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.CardHeader {
+  display: flex;
+  margin-bottom: var(--app-space-lg);
+}
+
+.ExportButton {
+  margin-left: auto !important;
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
+.Card {
+  padding: var(--app-space-xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.VersionCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.Version {
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.When {
+  color: var(--app-color-text-tertiary);
+  white-space: nowrap;
+}
+
+.Score {
+  display: inline-block;
+  min-width: 2.25rem;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  font-weight: 700;
+  text-align: center;
+}
+
+.good {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 12%);
+  color: var(--app-color-brand-primary);
+}
+
+.okay {
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 16%);
+  color: var(--app-color-attention);
+}
+
+.bad {
+  background-color: color-mix(in srgb, var(--app-color-error) 16%, transparent);
+  color: var(--app-color-error);
+}
+
+.goodFill {
+  background-color: var(--app-color-brand-primary);
+}
+
+.okayFill {
+  background-color: var(--app-color-attention);
+}
+
+.badFill {
+  background-color: var(--app-color-error);
+}
+
+.NoScore {
+  color: var(--app-color-text-tertiary);
+}
+
+.Running,
+.Failed {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.Running {
+  color: var(--app-color-attention);
+}
+
+.Failed {
+  color: var(--app-color-error);
+}
+
+.Legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--app-space-lg);
+  margin-top: var(--app-space-lg);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+
+  i {
+    display: inline-block;
+    width: var(--app-size-dot);
+    height: var(--app-size-dot);
+    margin-right: var(--app-space-2xs);
+    border-radius: 50%;
+  }
+}
+
+.LegendNote {
+  margin-left: auto;
+}

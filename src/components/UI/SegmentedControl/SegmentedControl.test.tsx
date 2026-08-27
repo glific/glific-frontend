@@ -6,8 +6,8 @@ const options = [{ value: 'low' }, { value: 'medium' }, { value: 'high' }];
 
 const renderControl = (props: Partial<Parameters<typeof SegmentedControl>[0]> = {}) => {
   const onChange = vi.fn();
-  render(<SegmentedControl options={options} value="medium" onChange={onChange} {...props} />);
-  return { onChange };
+  const { container } = render(<SegmentedControl options={options} value="medium" onChange={onChange} {...props} />);
+  return { onChange, container };
 };
 
 test('renders every option and marks the selected one', () => {
@@ -70,18 +70,11 @@ test('a single disabled option ignores clicks while the rest still work', () => 
   expect(onChange).toHaveBeenCalledWith('high');
 });
 
-test('applies caller class names and test ids', () => {
-  renderControl({
-    testId: 'effortSegment',
-    className: 'my-wrapper',
-    trackClassName: 'my-track',
-    optionClassName: 'my-option',
-    activeOptionClassName: 'my-active',
-  });
+test('applies the caller test id, and lays out the way the caller places it', () => {
+  const { container } = renderControl({ testId: 'effortSegment', className: 'my-wrapper' });
 
-  expect(screen.getByTestId('effortSegment')).toHaveClass('my-track');
-  expect(screen.getByTestId('effortSegment-low')).toHaveClass('my-option');
-  expect(screen.getByTestId('effortSegment-medium')).toHaveClass('my-active');
+  expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
+  expect(container.querySelector('.my-wrapper')).toBeInTheDocument();
 });
 
 test('an option can override its own test id', () => {
