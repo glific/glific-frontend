@@ -103,6 +103,46 @@ test('an extension in capitals is folded down, since the server only matches low
   expect(sent).toEqual(['REPORT.pdf']);
 });
 
+test('a picker that hands back no files at all is a no-op', () => {
+  const { onFilesUploaded } = renderTab();
+
+  const input = screen.getByTestId('fileInput');
+  Object.defineProperty(input, 'files', { value: null, configurable: true });
+  fireEvent.change(input);
+
+  expect(onFilesUploaded).not.toHaveBeenCalled();
+});
+
+test('a name with no extension is sent through untouched', async () => {
+  const sent: string[] = [];
+  const { onFilesUploaded } = renderTab({}, [
+    {
+      request: { query: UPLOAD_FILE_TO_KAAPI },
+      variableMatcher: (variables: { media: File }) => {
+        sent.push(variables.media.name);
+        return true;
+      },
+      result: {
+        data: {
+          uploadFilesearchFile: {
+            fileId: 'file-4',
+            filename: 'NOTES',
+            uploadedAt: '2026-08-04T10:00:00Z',
+            fileSize: 2048,
+          },
+        },
+      },
+    },
+  ]);
+
+  pickFile(new File(['x'], 'NOTES', { type: 'text/plain' }));
+
+  await waitFor(() => {
+    expect(onFilesUploaded).toHaveBeenCalled();
+  });
+  expect(sent).toEqual(['NOTES']);
+});
+
 test('names the formats it takes beside the add button, so a rejected file is no surprise', () => {
   renderTab();
 

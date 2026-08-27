@@ -365,13 +365,11 @@ export const AssistantDetail = () => {
     }
   };
 
-  // the publish button greys out for more than one reason, so say which one on hover
   const publishBlockedReason = () => {
     if (!selectedVersion || canPublishVersion(selectedVersion)) return undefined;
-    if (selectedVersion.isLive) return t('This version is already live');
     if (selectedVersion.status === 'in_progress') return t('This version is still being prepared');
     if (selectedVersion.status === 'failed') return t('Cannot set a failed version as live');
-    return undefined;
+    return t('This version is already live');
   };
 
   const stillLoading = (loading && !assistant) || (versionsLoading && !versionData) || (modelsLoading && !modelData);
