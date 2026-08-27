@@ -49,11 +49,6 @@ const isRateLimitError = (error: unknown) => {
   );
 };
 
-/**
- * The server matches a file's extension case-sensitively, so REPORT.PDF is turned away while the
- * same file named report.pdf goes through. The case carries no meaning, so it is folded before
- * the file is sent rather than making the reader rename their own files.
- */
 const withLowercaseExtension = (file: File) => {
   const dot = file.name.lastIndexOf('.');
   if (dot < 1) return file;
@@ -192,8 +187,6 @@ export const KnowledgeBase = ({
 
     onUploadingChange(selected.map((file) => file.name));
 
-    // one file failing must not discard the ones that already uploaded, so each is settled
-    // on its own and the successes are staged regardless
     const results = await uploadAll(selected);
     const uploaded = results.flatMap((result) => (result.file ? [result.file] : []));
     const failed = results.filter((result) => !result.file);

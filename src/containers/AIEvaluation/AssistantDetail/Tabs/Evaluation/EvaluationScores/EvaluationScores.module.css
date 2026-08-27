@@ -107,8 +107,6 @@
 }
 
 .AnswerScores {
-  /* the judge's marks read as one strip under the answer rather than a stack, so a tall answer
-     keeps its column height; they wrap onto another line only when the column gets narrow */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -125,7 +123,6 @@
   color: var(--app-color-text-tertiary);
 }
 
-/* a marker in front of each metric so the strip reads as a list of marks, not one run-on line */
 .AnswerScore::before {
   content: '';
   width: var(--app-space-2xs);
@@ -191,8 +188,6 @@
   color: var(--app-color-text-tertiary);
   cursor: help;
   flex-shrink: 0;
-  /* Tooltip hands its child a plain inline span, so an inline icon would sit on that span's text
-     baseline and ride off centre — as a block it fills the span and the row centres it properly */
   display: block;
 }
 

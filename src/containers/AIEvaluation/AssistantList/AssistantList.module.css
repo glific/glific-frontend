@@ -11,8 +11,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--app-space-2xs);
-  /* the cell places this box on the text baseline, so centre it on the line instead and let the
-     label sit tight against its glyphs — otherwise the taller icon rides above the header text */
   vertical-align: middle;
   line-height: 1;
 }
@@ -106,8 +104,6 @@
   font-size: var(--app-font-size-xs);
   font-weight: 700;
   white-space: nowrap;
-  /* every band sits at the width of the longest one ("Needs improvement 0.00") so the column reads
-     as one stack rather than pills of three different sizes; nowrap keeps a label off a second line */
   min-width: var(--app-size-table-column-min);
 }
 

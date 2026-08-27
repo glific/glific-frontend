@@ -18,7 +18,6 @@ export interface TabBarProps {
   activeTab: TabKey;
   onChange: (tab: TabKey) => void;
   dirtyTabs?: Partial<Record<TabKey, boolean>>;
-  /** tabs with work still going on in the background, so the reader can leave the tab and know */
   runningTabs?: Partial<Record<TabKey, boolean>>;
 }
 

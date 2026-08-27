@@ -87,8 +87,6 @@ export const Evaluation = ({
   const latestRun = versionRuns[0];
   const versionRunInProgress = versionRuns.some(isRunInProgress);
 
-  // reported upward so the tab bar can flag it while the reader is on another tab; it follows the
-  // selected version, so a run on one version does not mark the others as busy
   useEffect(() => {
     onRunningChange?.(versionRunInProgress);
   }, [versionRunInProgress, onRunningChange]);

@@ -12,7 +12,6 @@ export interface HeaderActionsProps {
   showPublish?: boolean;
   publishing?: boolean;
   publishDisabled?: boolean;
-  /** why publishing is off — shown on hover, since a greyed-out button explains nothing on its own */
   publishDisabledReason?: string;
   onPublish?: () => void;
 }
@@ -78,8 +77,6 @@ export const HeaderActions = ({
     </Button>
   );
 
-  // a disabled button swallows no pointer events of its own, so the reason has to hang off a
-  // wrapper — which is exactly what Tooltip renders around its child
   if (publishDisabled && publishDisabledReason) {
     return (
       <Tooltip title={publishDisabledReason} placement="bottom">

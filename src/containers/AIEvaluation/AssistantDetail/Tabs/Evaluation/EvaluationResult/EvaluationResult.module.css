@@ -198,7 +198,6 @@
 
 .MetricHead {
   display: flex;
-  /* the row carries an icon as well as text now, so it centres rather than sitting on a baseline */
   align-items: center;
   gap: var(--app-space-2xs);
   margin-bottom: var(--app-space-2xs);
@@ -211,7 +210,6 @@
   color: var(--app-color-text-tertiary);
   cursor: help;
   flex-shrink: 0;
-  /* Tooltip wraps its child in a plain inline span; as a block the icon fills it and centres */
   display: block;
 }
 

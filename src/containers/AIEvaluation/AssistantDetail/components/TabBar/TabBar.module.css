@@ -52,7 +52,6 @@
   background-color: var(--app-color-attention);
 }
 
-/* the same dot the run itself shows, so a run left behind on another tab still reads as running */
 .TabRunningDot {
   width: var(--app-size-dot);
   height: var(--app-size-dot);
