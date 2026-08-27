@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   BAND_LABEL,
@@ -30,10 +32,22 @@ export interface EvaluationResultProps {
 }
 
 const METRIC_ORDER = [
-  { key: 'groundTruth', label: 'Adherence to ground truth' },
-  { key: 'knowledgeBase', label: 'Adherence to knowledge base' },
-  { key: 'prompt', label: 'Adherence to prompt' },
-] as const satisfies readonly { key: keyof EvaluationMetrics; label: string }[];
+  {
+    key: 'groundTruth',
+    label: 'Adherence to ground truth',
+    hint: 'Compares each answer with the expected answer in your Golden Q&A. The judge scores the meaning, not the exact wording.',
+  },
+  {
+    key: 'prompt',
+    label: 'Adherence to prompt',
+    hint: 'Checks each answer follows the instructions, tone and limits you set in the prompt for this version.',
+  },
+  {
+    key: 'knowledgeBase',
+    label: 'Adherence to knowledge base',
+    hint: 'Checks each answer stays within the files in your knowledge base instead of drawing on outside knowledge. It stays unscored when the run had no knowledge base to check against.',
+  },
+] as const satisfies readonly { key: keyof EvaluationMetrics; label: string; hint: string }[];
 
 const BAND_ICON = {
   good: CheckIcon,
@@ -182,6 +196,9 @@ export const EvaluationResult = ({
                 <span className={styles.MetricWeight}>
                   · {t('weight')} {weight}
                 </span>
+                <Tooltip title={t(metric.hint)} placement="top" tooltipClass={styles.MetricTooltip}>
+                  <InfoOutlinedIcon className={styles.MetricIcon} data-testid={`metricHint-${metric.key}`} />
+                </Tooltip>
                 <span
                   className={`${styles.MetricScore} ${score == null ? styles.NoScore : styles[`${scoreBand(score)}Text`]}`}
                 >

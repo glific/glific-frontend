@@ -91,6 +91,21 @@ describe('edit mode', () => {
     expect(screen.getByTestId('publishButton')).toBeDisabled();
   });
 
+  test('the greyed out publish button says on hover why it cannot be pressed', async () => {
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('publishButton')).toBeDisabled();
+    });
+
+    // the button itself takes no pointer events while disabled, so the wrapper carries the hover
+    fireEvent.mouseOver(screen.getByTestId('publishButton').parentElement as HTMLElement);
+
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('This version is already live');
+    });
+  });
+
   test('publishing a draft version calls setLiveVersion and refetches the versions', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const publishMock = {
@@ -854,6 +869,11 @@ describe('version dropdown', () => {
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
     // an existing assistant is not "new", however few versions it has
     expect(screen.queryByTestId('newAssistantPill')).not.toBeInTheDocument();
+
+    // with nothing saved there is no version to explain, so the button greys out without a tooltip
+    expect(screen.getByTestId('publishButton')).toBeDisabled();
+    fireEvent.mouseOver(screen.getByTestId('publishButton').parentElement as HTMLElement);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 });
 
@@ -1083,6 +1103,11 @@ describe('version status', () => {
     expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
     expect(screen.getByTestId('publishButton')).toBeDisabled();
+
+    fireEvent.mouseOver(screen.getByTestId('publishButton').parentElement as HTMLElement);
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('This version is still being prepared');
+    });
   });
 
   test('a failed version says so and cannot be published either', async () => {
@@ -1100,6 +1125,11 @@ describe('version status', () => {
     });
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Cannot set a failed version as live');
     expect(screen.getByTestId('publishButton')).toBeDisabled();
+
+    fireEvent.mouseOver(screen.getByTestId('publishButton').parentElement as HTMLElement);
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('Cannot set a failed version as live');
+    });
   });
 
   test('a live version being rebuilt keeps its LIVE badge', async () => {

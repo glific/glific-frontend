@@ -1,14 +1,28 @@
 .NameColumn {
-  width: 30%;
+  width: 35%;
   min-width: var(--app-size-table-column-min);
 }
 
 .HealthColumn {
-  width: 15%;
+  width: 20%;
 }
 
 .HealthHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  /* the cell places this box on the text baseline, so centre it on the line instead and let the
+     label sit tight against its glyphs — otherwise the taller icon rides above the header text */
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.HealthHeaderIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
   cursor: help;
+  flex-shrink: 0;
 }
 
 .SearchBar {
@@ -28,15 +42,11 @@
 }
 
 .VersionColumn {
-  width: 20%;
-}
-
-.DateColumn {
-  width: 20%;
+  width: 25%;
 }
 
 .Actions {
-  width: 15%;
+  width: 20%;
 }
 
 .Actions > div {
@@ -88,6 +98,7 @@
 .Health {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--app-space-2xs);
   padding: var(--app-space-2xs) var(--app-space-lg);
   border: 1px solid;
@@ -95,6 +106,9 @@
   font-size: var(--app-font-size-xs);
   font-weight: 700;
   white-space: nowrap;
+  /* every band sits at the width of the longest one ("Needs improvement 0.00") so the column reads
+     as one stack rather than pills of three different sizes; nowrap keeps a label off a second line */
+  min-width: var(--app-size-table-column-min);
 }
 
 .HealthIcon {

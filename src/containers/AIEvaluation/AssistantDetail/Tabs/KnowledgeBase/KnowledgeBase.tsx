@@ -49,6 +49,21 @@ const isRateLimitError = (error: unknown) => {
   );
 };
 
+/**
+ * The server matches a file's extension case-sensitively, so REPORT.PDF is turned away while the
+ * same file named report.pdf goes through. The case carries no meaning, so it is folded before
+ * the file is sent rather than making the reader rename their own files.
+ */
+const withLowercaseExtension = (file: File) => {
+  const dot = file.name.lastIndexOf('.');
+  if (dot < 1) return file;
+
+  const extension = file.name.slice(dot + 1);
+  if (extension === extension.toLowerCase()) return file;
+
+  return new File([file], `${file.name.slice(0, dot)}.${extension.toLowerCase()}`, { type: file.type });
+};
+
 const sleep = (ms: number) =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -161,7 +176,7 @@ export const KnowledgeBase = ({
   };
 
   const handleAddFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(event.target.files ?? []);
+    const selected = Array.from(event.target.files ?? []).map(withLowercaseExtension);
     // let the same file be picked again after a failure
     event.target.value = '';
     if (selected.length === 0) return;
@@ -234,6 +249,12 @@ export const KnowledgeBase = ({
             onChange={handleAddFiles}
             data-testid="fileInput"
           />
+          {!isReadOnly && (
+            // said next to the button, so an unsupported file is ruled out before the picker opens
+            <div className={styles.FormatsHint} data-testid="supportedFormats">
+              {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV')}
+            </div>
+          )}
         </div>
       </div>
 
@@ -299,7 +320,7 @@ export const KnowledgeBase = ({
 
           {files.length === 0 && !isUploading && (
             <div className={styles.EmptyState} data-testid="knowledgeBaseEmpty">
-              {t('No files yet. + Add files the assistant should answer from.')}
+              {t('No files added yet. Add files for the assistant to use when answering questions.')}
             </div>
           )}
         </div>

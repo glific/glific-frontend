@@ -7,7 +7,7 @@ type TranslationKey = keyof (typeof resources)['en']['translation'];
 export type TabKey = 'persona' | 'knowledgeBase' | 'guardrails' | 'evaluation' | 'tryItOut';
 
 export const TABS: { key: TabKey; label: TranslationKey }[] = [
-  { key: 'persona', label: 'Persona & Prompt' },
+  { key: 'persona', label: 'Model & Prompt' },
   { key: 'knowledgeBase', label: 'Knowledge Base' },
   { key: 'guardrails', label: 'Guardrails' },
   { key: 'evaluation', label: 'Golden Q&A Evaluation' },
@@ -18,9 +18,11 @@ export interface TabBarProps {
   activeTab: TabKey;
   onChange: (tab: TabKey) => void;
   dirtyTabs?: Partial<Record<TabKey, boolean>>;
+  /** tabs with work still going on in the background, so the reader can leave the tab and know */
+  runningTabs?: Partial<Record<TabKey, boolean>>;
 }
 
-export const TabBar = ({ activeTab, onChange, dirtyTabs = {} }: TabBarProps) => {
+export const TabBar = ({ activeTab, onChange, dirtyTabs = {}, runningTabs = {} }: TabBarProps) => {
   const { t } = useTranslation();
 
   return (
@@ -41,6 +43,13 @@ export const TabBar = ({ activeTab, onChange, dirtyTabs = {} }: TabBarProps) => 
               className={styles.TabDirtyDot}
               aria-label={t('This tab has unsaved changes')}
               data-testid={`tabDirtyDot-${tab.key}`}
+            />
+          )}
+          {runningTabs[tab.key] && (
+            <span
+              className={styles.TabRunningDot}
+              aria-label={t('An evaluation is running')}
+              data-testid={`tabRunningDot-${tab.key}`}
             />
           )}
         </button>

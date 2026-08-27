@@ -73,6 +73,42 @@ test('shows an empty state when nothing is attached', () => {
   expect(screen.getByTestId('fileCount')).toHaveTextContent('0 files attached');
 });
 
+test('an extension in capitals is folded down, since the server only matches lowercase ones', async () => {
+  const sent: string[] = [];
+  const { onFilesUploaded } = renderTab({}, [
+    {
+      request: { query: UPLOAD_FILE_TO_KAAPI },
+      variableMatcher: (variables: { media: File }) => {
+        sent.push(variables.media.name);
+        return true;
+      },
+      result: {
+        data: {
+          uploadFilesearchFile: {
+            fileId: 'file-3',
+            filename: 'report.pdf',
+            uploadedAt: '2026-08-04T10:00:00Z',
+            fileSize: 2048,
+          },
+        },
+      },
+    },
+  ]);
+
+  pickFile(new File(['x'], 'REPORT.PDF', { type: 'application/pdf' }));
+
+  await waitFor(() => {
+    expect(onFilesUploaded).toHaveBeenCalled();
+  });
+  expect(sent).toEqual(['REPORT.pdf']);
+});
+
+test('names the formats it takes beside the add button, so a rejected file is no surprise', () => {
+  renderTab();
+
+  expect(screen.getByTestId('supportedFormats')).toHaveTextContent('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV');
+});
+
 test('rejects a file over 20MB before uploading', () => {
   const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
   const { onFilesChange } = renderTab();
@@ -181,6 +217,8 @@ test('a legacy assistant is read-only', () => {
   expect(screen.getByTestId('legacyNotice')).toBeInTheDocument();
   expect(screen.getByTestId('addFilesButton')).toBeDisabled();
   expect(screen.queryByTestId('removeFileButton')).not.toBeInTheDocument();
+  // nothing can be uploaded here, so the format hint would only be noise
+  expect(screen.queryByTestId('supportedFormats')).not.toBeInTheDocument();
 });
 
 describe('technical details', () => {

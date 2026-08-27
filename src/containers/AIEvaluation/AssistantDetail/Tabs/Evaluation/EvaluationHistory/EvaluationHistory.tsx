@@ -67,7 +67,7 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
     const csvRows = [
       [
         t('Version'),
-        t('Golden Q&A set'),
+        t('Golden Q&A'),
         t('Duplication Factor'),
         t('Status'),
         t('Overall'),
@@ -126,7 +126,7 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
           maxHeight="30rem"
           columns={[
             { label: t('Version') },
-            { label: t('Golden Q&A set') },
+            { label: t('Golden Q&A') },
             { label: t('Duplication Factor') },
             { label: t('Overall') },
             { label: t('Ground truth') },

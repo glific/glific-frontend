@@ -107,9 +107,12 @@
 }
 
 .AnswerScores {
+  /* the judge's marks read as one strip under the answer rather than a stack, so a tall answer
+     keeps its column height; they wrap onto another line only when the column gets narrow */
   display: flex;
-  flex-direction: column;
-  gap: var(--app-space-2xs);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2xs) var(--app-space-xl);
   padding-top: var(--app-space-sm);
   border-top: 1px solid var(--app-color-border);
 }
@@ -117,13 +120,19 @@
 .AnswerScore {
   display: flex;
   align-items: center;
-  gap: var(--app-space-sm);
+  gap: var(--app-space-2xs);
   font-size: var(--app-font-size-xs);
   color: var(--app-color-text-tertiary);
 }
 
-.AnswerScoreName {
-  margin-right: auto;
+/* a marker in front of each metric so the strip reads as a list of marks, not one run-on line */
+.AnswerScore::before {
+  content: '';
+  width: var(--app-space-2xs);
+  height: var(--app-space-2xs);
+  border-radius: 50%;
+  background-color: var(--app-color-text-tertiary);
+  flex-shrink: 0;
 }
 
 .NoScore {
@@ -182,6 +191,9 @@
   color: var(--app-color-text-tertiary);
   cursor: help;
   flex-shrink: 0;
+  /* Tooltip hands its child a plain inline span, so an inline icon would sit on that span's text
+     baseline and ride off centre — as a block it fills the span and the row centres it properly */
+  display: block;
 }
 
 .ReasonTooltip {

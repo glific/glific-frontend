@@ -91,7 +91,7 @@ describe('listing sets', () => {
   test('an org with no sets is invited to add one', async () => {
     renderTab();
 
-    expect(await screen.findByTestId('goldenQaEmpty')).toHaveTextContent('Add a Golden Q&A set to evaluate');
+    expect(await screen.findByTestId('goldenQaEmpty')).toHaveTextContent('Add Golden Q&A to evaluate');
     expect(screen.queryByTestId('goldenQaSet')).not.toBeInTheDocument();
   });
 
@@ -103,7 +103,7 @@ describe('listing sets', () => {
     expect(screen.queryByTestId('manageGoldenQaSet')).not.toBeInTheDocument();
   });
 
-  test('Manage sets opens the list, and View opens that set', async () => {
+  test('Manage Golden Q&A opens the list, and View opens that set', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(SAMPLE_CSV) }));
     renderTab([listMock(oneSet), viewSignedUrlMock]);
 
@@ -254,7 +254,7 @@ describe('adding a set', () => {
     fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('Golden Q&A set added');
+      expect(notificationSpy).toHaveBeenCalledWith('Golden Q&A added');
     });
     expect(sent.input.name).toBe('maternal_health');
     expect(sent.input.duplication_factor).toBe(1);
@@ -393,7 +393,7 @@ describe('viewing a set', () => {
       expect(screen.getAllByTestId('goldenQaViewRow')).toHaveLength(2);
     });
     expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent(
-      'Every evaluation on this set asks these 2 questions.'
+      'Every evaluation on this Golden Q&A asks these 2 questions.'
     );
     expect(screen.getByTestId('goldenQaViewCategories')).toHaveTextContent('ANC, Nutrition');
     expect(screen.getByRole('columnheader', { name: 'Category' })).toBeInTheDocument();
@@ -410,7 +410,7 @@ describe('viewing a set', () => {
     await openView();
 
     const summary = await screen.findByTestId('goldenQaViewSummary');
-    expect(summary).toHaveTextContent('Every evaluation on this set asks this 1 question.');
+    expect(summary).toHaveTextContent('Every evaluation on this Golden Q&A asks this 1 question.');
     expect(screen.getByTestId('goldenQaViewCategories')).toBeEmptyDOMElement();
 
     // nothing is categorised, so the column is left out entirely
@@ -755,6 +755,58 @@ describe('running an evaluation', () => {
       </MockedProvider>
     );
 
+  test('a run still going is reported upward, so the tab bar can flag it from any tab', async () => {
+    const onRunningChange = vi.fn();
+    const runningRun = { ...completedRun, id: 'r9', status: 'RUNNING', results: null };
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([runningRun])]}>
+        <Evaluation versionId="v1" onRunningChange={onRunningChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(onRunningChange).toHaveBeenCalledWith(true);
+    });
+  });
+
+  test('a run on another version leaves this one unflagged', async () => {
+    const onRunningChange = vi.fn();
+    const otherVersionRun = {
+      ...completedRun,
+      id: 'r8',
+      status: 'RUNNING',
+      results: null,
+      assistantConfigVersion: { ...completedRun.assistantConfigVersion, id: 'v2' },
+    };
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([otherVersionRun])]}>
+        <Evaluation versionId="v1" onRunningChange={onRunningChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('runEvaluationButton')).toBeInTheDocument();
+    });
+    expect(onRunningChange).not.toHaveBeenCalledWith(true);
+  });
+
+  test('a finished run leaves nothing flagged', async () => {
+    const onRunningChange = vi.fn();
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([completedRun]), scoresMock('r1')]}>
+        <Evaluation versionId="v1" onRunningChange={onRunningChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('evaluationResult')).toBeInTheDocument();
+    });
+    expect(onRunningChange).not.toHaveBeenCalledWith(true);
+  });
+
   test('the run dialog offers the sets and starts a run', async () => {
     let sent: any;
     const createMock = {
@@ -1045,6 +1097,29 @@ describe('the result panel above the table', () => {
     expect(within(panel).getByTestId('metric-knowledgeBase')).toHaveTextContent('2.2');
     expect(within(panel).getByTestId('metric-prompt')).toHaveTextContent('3.4');
     expect(within(panel).getAllByTestId('scoreBar')).toHaveLength(3);
+
+    // knowledge base is the check most runs leave unscored, so it reads last
+    expect(
+      within(panel)
+        .getAllByTestId(/^metric-/)
+        .map((metric) => metric.dataset.testid)
+    ).toEqual(['metric-groundTruth', 'metric-prompt', 'metric-knowledgeBase']);
+
+    fireEvent.mouseOver(within(panel).getByTestId('metricHint-knowledgeBase'));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('stays within the files in your knowledge base');
+    });
+  });
+
+  test('each check explains on hover what the judge is measuring', async () => {
+    renderWithRun(run());
+
+    const panel = await screen.findByTestId('evaluationResult');
+
+    fireEvent.mouseOver(within(panel).getByTestId('metricHint-groundTruth'));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('Compares each answer with the expected answer');
+    });
 
     expect(panel).toHaveTextContent('Version 1 · core_set · 1× duplication');
   });
@@ -1726,7 +1801,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
   const csv = toCsv([
     [
       'Version',
-      'Golden Q&A set',
+      'Golden Q&A',
       'Duplication Factor',
       'Status',
       'Overall',
@@ -1953,7 +2028,7 @@ test('once the run settles another one can be started', async () => {
   expect(screen.getByTestId('runEvaluationButton')).toBeEnabled();
 });
 
-test('the meta line puts the weight on the Golden Q&A set', async () => {
+test('the meta line puts the weight on the Golden Q&A', async () => {
   render(
     <MockedProvider
       mocks={[

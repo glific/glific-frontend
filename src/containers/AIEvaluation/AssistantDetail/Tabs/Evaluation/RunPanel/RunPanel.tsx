@@ -93,7 +93,7 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
               ? t('No evaluations yet for version {{version}}', { version: versionNumber })
               : t('No evaluations yet for this version')
           }
-          note={t('Run one to see how this version scores against a Golden Q&A set.')}
+          note={t('Run one to see how this version scores against a Golden Q&A.')}
         />
       )}
 

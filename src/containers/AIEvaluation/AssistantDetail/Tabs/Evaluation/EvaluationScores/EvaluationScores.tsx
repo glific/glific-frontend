@@ -96,7 +96,7 @@ export const EvaluationScores = ({
           <div className={styles.AnswerScores}>
             {answer.scores.map((score) => (
               <div className={styles.AnswerScore} key={score.name}>
-                <span className={styles.AnswerScoreName}>{shortMetricName(score.name)}</span>
+                <span>{shortMetricName(score.name)}</span>
                 {scoreWithReason(score)}
               </div>
             ))}

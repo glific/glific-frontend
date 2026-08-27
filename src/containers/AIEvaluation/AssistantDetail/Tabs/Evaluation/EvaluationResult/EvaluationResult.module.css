@@ -198,10 +198,26 @@
 
 .MetricHead {
   display: flex;
-  align-items: baseline;
+  /* the row carries an icon as well as text now, so it centres rather than sitting on a baseline */
+  align-items: center;
   gap: var(--app-space-2xs);
   margin-bottom: var(--app-space-2xs);
   font-size: var(--app-font-size-sm);
+}
+
+.MetricIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+  flex-shrink: 0;
+  /* Tooltip wraps its child in a plain inline span; as a block the icon fills it and centres */
+  display: block;
+}
+
+.MetricTooltip {
+  max-width: 26rem !important;
+  font-size: var(--app-font-size-xs) !important;
 }
 
 .MetricLabel {
