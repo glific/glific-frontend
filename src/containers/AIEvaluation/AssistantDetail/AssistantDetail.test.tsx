@@ -617,6 +617,62 @@ describe('Unsaved changes', () => {
     errorSpy.mockRestore();
   });
 
+  test('a save moves the selection onto the newly created version', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const save = {
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      save,
+      getAssistant('1'),
+      versionsMock([version(1, true), version(2, false), version(3, false)]),
+    ]);
+    await edit();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 3.0');
+    });
+    notificationSpy.mockRestore();
+  });
+
+  test('a save on an assistant with no versions selects the version it creates', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const save = {
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock([]),
+      save,
+      getAssistant('1'),
+      versionsMock([version(1, false)]),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('noVersionPill')).toBeInTheDocument();
+    });
+    await edit();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1.0');
+    });
+    notificationSpy.mockRestore();
+  });
+
   test('a cleared temperature is left out of the save payload', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const saveWithoutTemperature = {

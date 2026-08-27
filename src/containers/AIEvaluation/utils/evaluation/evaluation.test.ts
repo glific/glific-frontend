@@ -1,4 +1,5 @@
 import {
+  configVersionLabel,
   formatScore,
   parseOverallScore,
   evaluationRunName,
@@ -418,5 +419,16 @@ describe('parseAssistantHealth', () => {
     for (const value of [null, undefined, '', 'not json', {}, { verdict: 'Good' }, 42]) {
       expect(parseAssistantHealth(value)).toBeNull();
     }
+  });
+});
+
+describe('configVersionLabel', () => {
+  test('joins the major and minor numbers', () => {
+    expect(configVersionLabel({ majorVersion: 2, minorVersion: 1 })).toBe('2.1');
+  });
+
+  test('a run with no config version has no label', () => {
+    expect(configVersionLabel(null)).toBe('');
+    expect(configVersionLabel(undefined)).toBe('');
   });
 });

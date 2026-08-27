@@ -46,6 +46,9 @@ interface VersionPanelProps {
   initialVersionLabel?: string;
 }
 
+const compareVersionsDesc = (a: AssistantVersion, b: AssistantVersion) =>
+  b.majorVersion - a.majorVersion || b.minorVersion - a.minorVersion;
+
 const statusConfig: Record<string, { label: string; styleKey: string }> = {
   in_progress: { label: 'In Progress', styleKey: 'InProgress' },
   failed: { label: 'Failed', styleKey: 'Failed' },
@@ -69,7 +72,7 @@ export const VersionPanel = ({
   });
 
   const versions: AssistantVersion[] = data?.assistantVersions ?? [];
-  const sorted = [...versions].sort((a, b) => b.majorVersion - a.majorVersion || b.minorVersion - a.minorVersion);
+  const sorted = [...versions].sort(compareVersionsDesc);
 
   // Initial auto-select: prefer version from URL param, fall back to live, then latest
   useEffect(() => {
@@ -96,9 +99,7 @@ export const VersionPanel = ({
     refetch().then(({ data: newData }) => {
       if (!newData) return;
       const newVersions: AssistantVersion[] = newData.assistantVersions ?? [];
-      const latest = [...newVersions].sort(
-        (a, b) => b.majorVersion - a.majorVersion || b.minorVersion - a.minorVersion
-      )[0];
+      const latest = [...newVersions].sort(compareVersionsDesc)[0];
       if (latest) (onRefetchSelect ?? onSelectVersion)(latest);
     });
   }, [refetchTrigger]);

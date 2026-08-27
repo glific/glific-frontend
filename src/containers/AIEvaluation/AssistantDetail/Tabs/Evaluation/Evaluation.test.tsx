@@ -995,6 +995,40 @@ describe('running an evaluation', () => {
     expect(await screen.findByTestId('evaluationHistory')).toHaveTextContent('Version 2.0');
     expect(screen.queryByTestId('evaluationHistoryEmpty')).not.toBeInTheDocument();
   });
+
+  test('a run with no config version is shown without a version', async () => {
+    render(
+      <MockedProvider
+        mocks={[listMock(oneSet), runsMock([{ ...completedRun, assistantConfigVersion: null }]), scoresMock('r1')]}
+      >
+        <Evaluation assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    expect(await screen.findByTestId('evaluationResult')).toHaveTextContent(
+      'Last run maternal_health_core · 5× duplication'
+    );
+
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+
+    const history = await screen.findByTestId('evaluationHistory');
+    expect(history).not.toHaveTextContent('Version 1.0');
+    expect(history).toHaveTextContent('—');
+  });
+
+  test('the run dialog falls back to generic copy when the version has no label', async () => {
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([]), scoresMock('r1')]}>
+        <Evaluation versionId="v1" assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+
+    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent(
+      'Score this version against a Golden Q&A set.'
+    );
+  });
 });
 
 describe('the result panel above the table', () => {

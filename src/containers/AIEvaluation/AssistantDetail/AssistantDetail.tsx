@@ -184,7 +184,7 @@ export const AssistantDetail = () => {
 
   useEffect(() => {
     if (awaitingVersionAbove === undefined) return;
-    const latest = [...(versionData?.assistantVersions ?? [])].sort(compareVersionsDesc)[0];
+    const latest = sortedVersions[0];
     if (!latest || !isNewerThan(latest, awaitingVersionAbove)) return;
     setSelectedVersionId(latest.id);
     setAwaitingVersionAbove(undefined);
@@ -356,7 +356,7 @@ export const AssistantDetail = () => {
         setErrorMessage(errors[0]);
         return;
       }
-      setAwaitingVersionAbove(sortedVersions[0] ?? null);
+      setAwaitingVersionAbove(sortedVersions[0]);
       setNotification(t('Version published — it is now live in your flows'));
     } catch (err: unknown) {
       setErrorMessage(err);

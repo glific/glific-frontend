@@ -105,6 +105,12 @@ describe('the sandbox', () => {
     expect(screen.getByTestId('testingNote')).toHaveTextContent('nothing is live yet');
   });
 
+  test('says nothing is live when the live version is not passed at all', () => {
+    renderTab({ liveVersionLabel: undefined });
+
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('nothing is live yet');
+  });
+
   test('without an assistant to test, nothing can be sent', () => {
     renderTab({ assistantId: undefined });
 
