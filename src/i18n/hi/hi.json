@@ -932,7 +932,7 @@
   "Give this Golden Q&A a name.": "इस गोल्डन प्रश्नोत्तर को एक नाम दें।",
   "Use lowercase letters, numbers and underscores only.": "केवल छोटे अक्षर, अंक और अंडरस्कोर का उपयोग करें।",
   "Drop a CSV here, or click to browse": "यहां CSV छोड़ें, या ब्राउज़ करने के लिए क्लिक करें",
-  "Columns: question, answer, category": "कॉलम: question, answer, category",
+  "Columns: question, answer": "कॉलम: question, answer",
   "Use our Google Sheet template": "हमारा Google Sheet टेम्पलेट इस्तेमाल करें",
   "Choose a CSV file to upload.": "अपलोड करने के लिए एक CSV फ़ाइल चुनें।",
   "No questions found. Check the file has a question column with rows under it.": "कोई प्रश्न नहीं मिला। जांचें कि फ़ाइल में question कॉलम और उसके नीचे पंक्तियाँ हैं।",

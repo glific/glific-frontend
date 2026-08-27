@@ -172,7 +172,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
         >
           <UploadIcon className={styles.DropIcon} />
           <div className={styles.DropTitle}>{t('Drop a CSV here, or click to browse')}</div>
-          <div className={styles.Note}>{t('Columns: question, answer, category')}</div>
+          <div className={styles.Note}>{t('Columns: question, answer')}</div>
           <input
             ref={fileInputRef}
             type="file"

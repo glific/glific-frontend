@@ -1069,7 +1069,7 @@
   "Give this Golden Q&A a name.": "Give this Golden Q&A a name.",
   "Use lowercase letters, numbers and underscores only.": "Use lowercase letters, numbers and underscores only.",
   "Drop a CSV here, or click to browse": "Drop a CSV here, or click to browse",
-  "Columns: question, answer, category": "Columns: question, answer, category",
+  "Columns: question, answer": "Columns: question, answer",
   "Use our Google Sheet template": "Use our Google Sheet template",
   "Choose a CSV file to upload.": "Choose a CSV file to upload.",
   "No questions found. Check the file has a question column with rows under it.": "No questions found. Check the file has a question column with rows under it.",
