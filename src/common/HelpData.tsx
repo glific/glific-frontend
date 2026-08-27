@@ -115,32 +115,34 @@ export const assistantListInfo: HelpDataProps = {
   link: 'https://glific.github.io/docs/docs/Integrations/Filesearch%20Using%20OpenAI%20Assistants/',
 };
 
+const TemplateStatusHeading = () => (
+  <div>
+    <p>
+      <b>{t('Pending')}:</b>{' '}
+      {t(
+        'The template is under review and can take up to 24 hours. This status indicates that the template has not yet been approved or rejected.'
+      )}
+    </p>
+    <p>
+      <b>{t('Approved')}:</b>{' '}
+      {t(
+        'The template has passed review and can be used to notify customers. This status indicates that the template meets all necessary criteria and policies.'
+      )}
+    </p>
+    <p>
+      <b>{t('Rejected')}:</b>{' '}
+      {t(
+        'The template has failed to be reviewed due to violations of the approval criteria. This status requires revising and resubmitting the template.'
+      )}
+    </p>
+    <p>
+      <b>{t('Failed')}:</b> {t("The template has failed the review process at Gupshup's end")}
+    </p>
+  </div>
+);
+
 export const templateStatusInfo: HelpDataProps = {
-  heading: (
-    <div>
-      <p>
-        <b>{t('Pending')}:</b>{' '}
-        {t(
-          'The template is under review and can take up to 24 hours. This status indicates that the template has not yet been approved or rejected.'
-        )}
-      </p>
-      <p>
-        <b>{t('Approved')}:</b>{' '}
-        {t(
-          'The template has passed review and can be used to notify customers. This status indicates that the template meets all necessary criteria and policies.'
-        )}
-      </p>
-      <p>
-        <b>{t('Rejected')}:</b>{' '}
-        {t(
-          'The template has failed to be reviewed due to violations of the approval criteria. This status requires revising and resubmitting the template.'
-        )}
-      </p>
-      <p>
-        <b>{t('Failed')}:</b> {t("The template has failed the review process at Gupshup's end")}
-      </p>
-    </div>
-  ),
+  heading: <TemplateStatusHeading />,
   link: 'https://docs.gupshup.io/docs/message-template-approvals-statuses',
 };
 
