@@ -1327,7 +1327,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         {
           languageId: '2',
-          sourceLanguageId: '1',
+          templateId: '1',
           body: anchorBody,
           footer: undefined,
           buttons: undefined,
@@ -1466,7 +1466,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         {
           languageId: '2',
-          sourceLanguageId: '1',
+          templateId: '1',
           body: anchorBody,
           footer: 'footer',
           // the anchor's own {{1}} sample value ("003", from its example field)
@@ -1531,7 +1531,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         {
           languageId: '1',
-          sourceLanguageId: '2',
+          templateId: '2',
           body: anchorBody,
           footer: 'Sample footer',
           buttons: ['003'],
@@ -1573,7 +1573,7 @@ describe('HSMV2 language versions', () => {
       'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
     const translateRequest = {
       languageId: '2',
-      sourceLanguageId: '1',
+      templateId: '1',
       body: anchorBody,
       footer: 'footer',
       buttons: ['View Account Balance', 'View Mini Statement', '003'],
@@ -1642,7 +1642,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateErrorMock(
         {
           languageId: '2',
-          sourceLanguageId: '1',
+          templateId: '1',
           body: anchorBody,
           footer: 'footer',
           buttons: ['View Account Balance', 'View Mini Statement', '003'],
@@ -1720,7 +1720,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         {
           languageId: '2',
-          sourceLanguageId: '1',
+          templateId: '1',
           body: anchorBody,
           footer: 'Sample footer',
           buttons: ['Call Us', 'Visit Us', '003'],
@@ -1773,7 +1773,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateMock(
         // no button text sent — the type mismatch means neither branch applies —
         // but the {{1}} variable value still rides along on its own.
-        { languageId: '2', sourceLanguageId: '1', body: anchorBody, footer: 'footer', buttons: ['003'] },
+        { languageId: '2', templateId: '1', body: anchorBody, footer: 'footer', buttons: ['003'] },
         { body: 'मराठी अनुवादित संदेश', footer: 'मराठी पादलेख', buttons: ['००३'] }
       ),
     ];
@@ -1821,7 +1821,7 @@ describe('HSMV2 language versions', () => {
       translateSessionTemplateResultErrorMock(
         {
           languageId: '2',
-          sourceLanguageId: '1',
+          templateId: '1',
           body: anchorBody,
           footer: 'footer',
           buttons: ['View Account Balance', 'View Mini Statement', '003'],

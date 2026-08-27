@@ -524,8 +524,8 @@ export const HSMV2 = () => {
     try {
       const { data } = await translateSessionTemplate({
         variables: {
+          templateId: languageAnchorId,
           languageId: language.id,
-          sourceLanguageId: anchorReference.language?.id,
           body: anchorReference.body,
           footer: anchorReference.footer || undefined,
           buttons: combinedTexts.length ? combinedTexts : undefined,
@@ -535,6 +535,9 @@ export const HSMV2 = () => {
       if (result?.errors?.length) {
         setErrorMessage(result.errors[0]);
         return;
+      }
+      if (result?.sourceLanguage) {
+        setAnchorReference((prev) => (prev ? { ...prev, language: result.sourceLanguage } : prev));
       }
       if (result?.body) {
         setBody(result.body);

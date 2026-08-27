@@ -112,13 +112,18 @@ export const deleteTemplateErrorMock = (id: string, message: string) => ({
 
 export const translateSessionTemplateMock = (
   variables: {
+    templateId: string;
     languageId: string;
-    sourceLanguageId?: string;
     body?: string;
     footer?: string;
     buttons?: string[];
   },
-  result: { body: string; footer?: string | null; buttons?: string[] }
+  result: {
+    body: string;
+    footer?: string | null;
+    buttons?: string[];
+    sourceLanguage?: { id: string; label: string } | null;
+  }
 ) => ({
   request: {
     query: TRANSLATE_SESSION_TEMPLATE,
@@ -130,6 +135,7 @@ export const translateSessionTemplateMock = (
         body: result.body,
         footer: result.footer ?? null,
         buttons: result.buttons ?? null,
+        sourceLanguage: result.sourceLanguage ?? null,
         errors: null,
       },
     },
@@ -138,8 +144,8 @@ export const translateSessionTemplateMock = (
 
 export const translateSessionTemplateErrorMock = (
   variables: {
+    templateId: string;
     languageId: string;
-    sourceLanguageId?: string;
     body?: string;
     footer?: string;
     buttons?: string[];
@@ -155,8 +161,8 @@ export const translateSessionTemplateErrorMock = (
 
 export const translateSessionTemplateResultErrorMock = (
   variables: {
+    templateId: string;
     languageId: string;
-    sourceLanguageId?: string;
     body?: string;
     footer?: string;
     buttons?: string[];
@@ -173,6 +179,7 @@ export const translateSessionTemplateResultErrorMock = (
         body: null,
         footer: null,
         buttons: null,
+        sourceLanguage: null,
         errors: [error],
       },
     },

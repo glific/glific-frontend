@@ -127,15 +127,15 @@ export const REPORT_TO_GUPSHUP = gql`
 
 export const TRANSLATE_SESSION_TEMPLATE = gql`
   mutation TranslateSessionTemplate(
+    $templateId: ID!
     $languageId: ID!
-    $sourceLanguageId: ID
     $body: String
     $footer: String
     $buttons: [String]
   ) {
     translateSessionTemplate(
+      templateId: $templateId
       languageId: $languageId
-      sourceLanguageId: $sourceLanguageId
       body: $body
       footer: $footer
       buttons: $buttons
@@ -143,6 +143,10 @@ export const TRANSLATE_SESSION_TEMPLATE = gql`
       body
       footer
       buttons
+      sourceLanguage {
+        id
+        label
+      }
       errors {
         key
         message
