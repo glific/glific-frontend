@@ -10,6 +10,7 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   BAND_LABEL,
+  configVersionLabel,
   MAX_SCORE,
   METRIC_WEIGHTS,
   formatScore,
@@ -81,7 +82,7 @@ export const EvaluationResult = ({
   const overall = reported ?? overallScore(metrics);
 
   const meta: ReactNode[] = [
-    run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : null,
+    run.assistantConfigVersion ? `${t('Version')} ${configVersionLabel(run.assistantConfigVersion)}` : null,
     run.goldenQa?.name ? (
       <b className={styles.MetaSet} key="set">
         {run.goldenQa.name}
@@ -112,7 +113,7 @@ export const EvaluationResult = ({
           <div className={styles.PendingTitle}>{t('Evaluation in progress')}</div>
           <div className={styles.PendingNote}>
             {t(
-              "This runs in the background, so there's no progress to show — the result appears here once it completes. You can switch tabs or leave this page."
+              'This runs in background, estimated time of about 10 mins. You can switch the tabs or leave this page. The result will be displayed here once the evaluation process is completed'
             )}
           </div>
         </div>

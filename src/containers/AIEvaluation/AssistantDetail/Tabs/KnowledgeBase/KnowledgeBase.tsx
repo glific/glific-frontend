@@ -250,9 +250,8 @@ export const KnowledgeBase = ({
             data-testid="fileInput"
           />
           {!isReadOnly && (
-            // said next to the button, so an unsupported file is ruled out before the picker opens
             <div className={styles.FormatsHint} data-testid="supportedFormats">
-              {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV')}
+              {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV')} · {MAX_FILE_SIZE_MB}MB {t('per file')}
             </div>
           )}
         </div>

@@ -106,7 +106,9 @@ test('an extension in capitals is folded down, since the server only matches low
 test('names the formats it takes beside the add button, so a rejected file is no surprise', () => {
   renderTab();
 
-  expect(screen.getByTestId('supportedFormats')).toHaveTextContent('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV');
+  expect(screen.getByTestId('supportedFormats')).toHaveTextContent(
+    'Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV · 20MB per file'
+  );
 });
 
 test('rejects a file over 20MB before uploading', () => {
