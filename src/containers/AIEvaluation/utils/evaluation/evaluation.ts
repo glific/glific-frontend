@@ -198,7 +198,6 @@ export const parseEvaluationSummary = (raw: unknown): string | null => {
   return typeof summary === 'string' && summary.trim() ? summary.trim() : null;
 };
 
-/** the label the server shows for a config version, e.g. "2.1" */
 export const configVersionLabel = (version?: { majorVersion: number; minorVersion: number } | null) =>
   version ? `${version.majorVersion}.${version.minorVersion}` : '';
 

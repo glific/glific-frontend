@@ -36,7 +36,6 @@ export interface AssistantVersion {
   id: string;
   majorVersion: number;
   minorVersion: number;
-  /** the two numbers as the server writes them for display, e.g. "2.1" */
   versionLabel: string;
   model: string;
   prompt: string;

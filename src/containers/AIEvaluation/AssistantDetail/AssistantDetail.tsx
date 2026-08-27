@@ -98,7 +98,6 @@ export const AssistantDetail = () => {
   const [discardOpen, setDiscardOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
-  // the newest version at the moment of saving; undefined means nothing is being waited for
   const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<AssistantVersion | null | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const loadedKey = useRef<string | null>(null);
@@ -183,8 +182,6 @@ export const AssistantDetail = () => {
     setBaseline(loaded);
   }, [data, selectedVersion]);
 
-  // a fresh save lands as the newest version, so move the selection onto it. The refetch can
-  // still be in flight when the mutation resolves, so wait for a newer one to show up.
   useEffect(() => {
     if (awaitingVersionAbove === undefined) return;
     const latest = [...(versionData?.assistantVersions ?? [])].sort(compareVersionsDesc)[0];
@@ -352,8 +349,6 @@ export const AssistantDetail = () => {
       const response = await setLiveVersion({
         variables: { assistantId, versionId: selectedVersion.id },
         refetchQueries: [{ query: GET_ASSISTANT_VERSIONS, variables: { assistantId } }],
-        // hold the button until the new list is in, otherwise it comes back alive against a
-        // version that is already published and can be fired again
         awaitRefetchQueries: true,
       });
       const errors = response.data?.setLiveVersion?.errors;
@@ -361,7 +356,6 @@ export const AssistantDetail = () => {
         setErrorMessage(errors[0]);
         return;
       }
-      // publishing promotes the version to the next major, so the reader belongs on that one
       setAwaitingVersionAbove(sortedVersions[0] ?? null);
       setNotification(t('Version published — it is now live in your flows'));
     } catch (err: unknown) {
