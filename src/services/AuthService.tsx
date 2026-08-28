@@ -24,7 +24,6 @@ type ServiceType =
   | 'whatsappFormsEnabled'
   | 'aiEvaluationsEnabled'
   | 'aiEvaluationV2Enabled'
-  | 'copyNodeEnabled'
   | 'promptGeneratorEnabled'
   | 'templateV2Enabled'
   | 'templateLibraryEnabled';

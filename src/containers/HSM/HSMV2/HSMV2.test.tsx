@@ -1513,6 +1513,62 @@ describe('HSMV2 language versions', () => {
     expect(setNotification).toHaveBeenCalledWith('Content translated — review and adjust before submitting.');
   });
 
+  test('clicking Auto-translate updates the source reference chip when the response identifies the real source language, and clears the footer when the response has none', async () => {
+    const anchorOnly = [familyVariants[0]];
+    const anchorBody =
+      'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.';
+    const MOCKS = [
+      ...mocks,
+      ...WHATSAPP_FORM_MOCKS,
+      getHSMTemplateTypeText,
+      familyFetchMock(anchorOnly),
+      translateSessionTemplateMock(
+        {
+          languageId: '2',
+          templateId: '1',
+          body: anchorBody,
+          footer: 'footer',
+          buttons: ['View Account Balance', 'View Mini Statement', '003'],
+        },
+        {
+          body: '',
+          footer: null,
+          buttons: [],
+          sourceLanguage: { id: '3', label: 'Hinglish' },
+        }
+      ),
+    ];
+    renderHSMV2(MOCKS);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('add-language-link')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('add-language-link'));
+
+    await waitFor(() => {
+      expect(screen.getByText('English — source reference')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(await screen.findByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auto-translate-button')).not.toBeDisabled();
+    });
+
+    fireEvent.click(screen.getByTestId('auto-translate-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hinglish — source reference')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('English — source reference')).not.toBeInTheDocument();
+    expect(screen.getByTestId('footer-source-reference')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('footer')).not.toBeInTheDocument();
+    expect(setNotification).toHaveBeenCalledWith('Content translated — review and adjust before submitting.');
+  });
+
   test('clicking Auto-translate from a non-English anchor sends that language as the source, not a hardcoded English', async () => {
     const anchorOnly = [{ ...familyVariants[1], language: { id: '2', label: 'Marathi', locale: 'mr' } }];
     const anchorBody =
