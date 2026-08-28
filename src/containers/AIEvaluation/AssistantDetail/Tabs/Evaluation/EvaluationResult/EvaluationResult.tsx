@@ -112,7 +112,7 @@ export const EvaluationResult = ({
           <div className={styles.PendingTitle}>{t('Evaluation in progress')}</div>
           <div className={styles.PendingNote}>
             {t(
-              'This runs in background, estimated time of about 10 mins. You can switch the tabs or leave this page. The result will be displayed here once the evaluation process is completed'
+              'This runs in the background, estimated time of about 10 mins. You can switch tabs or leave this page. The result will be displayed here once the evaluation process is completed'
             )}
           </div>
         </div>

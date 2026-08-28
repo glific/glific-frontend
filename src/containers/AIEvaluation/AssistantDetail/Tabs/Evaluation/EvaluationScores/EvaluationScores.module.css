@@ -38,6 +38,16 @@
   overflow-wrap: anywhere;
 }
 
+.IndexColumn {
+  width: 2.5rem;
+  text-align: center;
+}
+
+.Index {
+  color: var(--app-color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
 .QuestionColumn {
   width: 11rem;
 }

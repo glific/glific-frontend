@@ -107,6 +107,7 @@ export const EvaluationScores = ({
   };
 
   const columns = [
+    { label: '', className: styles.IndexColumn },
     { label: t('Question'), className: styles.QuestionColumn },
     { label: t('Expected answer'), className: styles.ExpectedColumn },
     ...(grouped
@@ -123,6 +124,7 @@ export const EvaluationScores = ({
   const rows = traces.map((trace, index) => ({
     key: `${trace.questionId || 'trace'}-${index}`,
     cells: [
+      <span className={styles.Index}>{index + 1}</span>,
       <span className={styles.Question}>{trace.question || '—'}</span>,
       <div className={styles.Answer}>{trace.expected || '—'}</div>,
       ...(grouped

@@ -946,18 +946,20 @@ describe('running an evaluation', () => {
     expect(rows).toHaveLength(1);
 
     const headers = screen.getAllByRole('columnheader').map((cell) => cell.textContent);
-    expect(headers).toEqual(['Question', 'Expected answer', 'Answer 1', 'Answer 2']);
+    // the row number leads, under a header left blank on purpose
+    expect(headers).toEqual(['', 'Question', 'Expected answer', 'Answer 1', 'Answer 2']);
 
     const cells = within(rows[0]).getAllByRole('cell');
+    expect(cells[0]).toHaveTextContent('1');
     // each answer carries the judge's marks for that attempt, not the other's
-    expect(cells[2]).toHaveTextContent('First attempt.');
+    expect(cells[3]).toHaveTextContent('First attempt.');
     // the shared "Adherence to" prefix is dropped — it would repeat once per answer column
-    expect(cells[2]).toHaveTextContent('Ground Truth');
-    expect(cells[2]).not.toHaveTextContent('Adherence to');
-    expect(cells[2]).toHaveTextContent('4.0');
-    expect(cells[3]).toHaveTextContent('Second attempt.');
-    expect(cells[3]).toHaveTextContent('2.0');
-    expect(cells[3]).not.toHaveTextContent('4.0');
+    expect(cells[3]).toHaveTextContent('Ground Truth');
+    expect(cells[3]).not.toHaveTextContent('Adherence to');
+    expect(cells[3]).toHaveTextContent('4.0');
+    expect(cells[4]).toHaveTextContent('Second attempt.');
+    expect(cells[4]).toHaveTextContent('2.0');
+    expect(cells[4]).not.toHaveTextContent('4.0');
   });
 
   test('a question with fewer attempts than the widest leaves that column blank', async () => {
@@ -1001,9 +1003,10 @@ describe('running an evaluation', () => {
     // the table keeps a column per attempt, so the shorter question gets an empty cell
     // rather than a ragged row
     const secondRow = within(rows[1]).getAllByRole('cell');
-    expect(secondRow).toHaveLength(4);
-    expect(secondRow[2]).toHaveTextContent('Only attempt.');
-    expect(secondRow[3]).toHaveTextContent('—');
+    expect(secondRow).toHaveLength(5);
+    expect(secondRow[0]).toHaveTextContent('2');
+    expect(secondRow[3]).toHaveTextContent('Only attempt.');
+    expect(secondRow[4]).toHaveTextContent('—');
   });
 
   test('the toggle stays reachable while the grouped payload is still loading', async () => {
@@ -1304,6 +1307,10 @@ describe('question-level results', () => {
     const headers = screen.getAllByRole('columnheader').map((cell) => cell.textContent);
     expect(headers).toContain('Assistant answer');
     expect(headers).not.toContain('Answer 1');
+
+    // the row number leads every row, and its header is left blank on purpose
+    expect(headers[0]).toBe('');
+    expect(within(rows[0]).getAllByRole('cell')[0]).toHaveTextContent('1');
 
     // the shared "Adherence to" prefix is dropped so the answers get the width
     expect(screen.getByRole('columnheader', { name: 'Ground Truth' })).toBeInTheDocument();

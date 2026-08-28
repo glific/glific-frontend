@@ -1143,7 +1143,7 @@
   "These results could not be loaded.": "These results could not be loaded.",
   "This run reported no question-level results.": "This run reported no question-level results.",
   "Evaluation in progress": "Evaluation in progress",
-  "This runs in background, estimated time of about 10 mins. You can switch the tabs or leave this page. The result will be displayed here once the evaluation process is completed": "This runs in background, estimated time of about 10 mins. You can switch the tabs or leave this page. The result will be displayed here once the evaluation process is completed",
+  "This runs in the background, estimated time of about 10 mins. You can switch tabs or leave this page. The result will be displayed here once the evaluation process is completed": "This runs in the background, estimated time of about 10 mins. You can switch tabs or leave this page. The result will be displayed here once the evaluation process is completed",
   "Export CSV": "Export CSV",
   "No evaluations yet for version {{version}}": "No evaluations yet for version {{version}}",
   "No evaluations yet for this version": "No evaluations yet for this version",
