@@ -11,9 +11,11 @@ const defaultProps = {
   hasVersions: true,
   isDirty: false,
   versionId: 'v2',
-  versionNumber: 2,
+  majorVersion: 2,
+  minorVersion: 0,
+  versionLabel: '2.0',
   versionStatus: 'ready',
-  liveVersionNumber: 1,
+  liveVersionLabel: '1.0',
   assistantId: '1',
   onGoToPersona: vi.fn(),
   onSave: vi.fn(),
@@ -93,12 +95,18 @@ describe('the sandbox', () => {
   test('says which version is being tested and which one real users get', () => {
     renderTab();
 
-    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 2');
-    expect(screen.getByTestId('testingNote')).toHaveTextContent('real users stay on Version 1');
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 2.0');
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('real users stay on Version 1.0');
   });
 
   test('says nothing is live when no version has been published', () => {
-    renderTab({ liveVersionNumber: null });
+    renderTab({ liveVersionLabel: null });
+
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('nothing is live yet');
+  });
+
+  test('says nothing is live when the live version is not passed at all', () => {
+    renderTab({ liveVersionLabel: undefined });
 
     expect(screen.getByTestId('testingNote')).toHaveTextContent('nothing is live yet');
   });
@@ -219,13 +227,13 @@ describe('the sandbox', () => {
 
     rerender(
       <MockedProvider mocks={[]}>
-        <TryItOut {...defaultProps} versionId="v3" versionNumber={3} />
+        <TryItOut {...defaultProps} versionId="v3" versionLabel="3.0" />
       </MockedProvider>
     );
 
     expect(screen.getByTestId('sandboxEmpty')).toBeInTheDocument();
     expect(screen.queryByTestId('userMessage')).not.toBeInTheDocument();
-    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 3');
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 3.0');
   });
 });
 
@@ -469,7 +477,7 @@ describe('the chat survives leaving the tab', () => {
     await sendOne('On version 2');
 
     // a different version is a different config, so a different conversation
-    renderTab({ versionId: 'v9', versionNumber: 9 }, []);
+    renderTab({ versionId: 'v9', versionLabel: '9.0' }, []);
     expect(screen.getAllByTestId('sandboxEmpty').length).toBeGreaterThan(0);
   });
 });

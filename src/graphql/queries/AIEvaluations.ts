@@ -22,7 +22,8 @@ export const LIST_AI_EVALUATIONS = gql`
       }
       assistantConfigVersion {
         id
-        versionNumber
+        majorVersion
+        minorVersion
         assistant {
           id
           name

@@ -21,9 +21,9 @@ export interface TryItOutProps {
   hasVersions: boolean;
   isDirty: boolean;
   versionId?: string;
-  versionNumber?: number;
+  versionLabel?: string;
   versionStatus?: string;
-  liveVersionNumber?: number | null;
+  liveVersionLabel?: string | null;
   hasGoldenQaSets?: boolean;
   assistantId?: string;
   onGoToPersona: () => void;
@@ -57,9 +57,9 @@ export const TryItOut = ({
   hasVersions,
   isDirty,
   versionId,
-  versionNumber,
+  versionLabel,
   versionStatus,
-  liveVersionNumber = null,
+  liveVersionLabel = null,
   hasGoldenQaSets = false,
   assistantId,
   onGoToPersona,
@@ -292,10 +292,10 @@ export const TryItOut = ({
         <div className={styles.TestingNote} data-testid="testingNote">
           {t('Testing')}{' '}
           <b>
-            {t('Version')} {versionNumber}
+            {t('Version')} {versionLabel}
           </b>
-          {liveVersionNumber
-            ? ` · ${t('sandbox only — real users stay on Version')} ${liveVersionNumber}`
+          {liveVersionLabel
+            ? ` · ${t('sandbox only — real users stay on Version')} ${liveVersionLabel}`
             : ` · ${t('nothing is live yet')}`}
         </div>
 

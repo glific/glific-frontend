@@ -19,9 +19,11 @@ import { getAssistant } from 'mocks/Assistants';
 import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
 import AssistantDetail from './AssistantDetail';
 
-const version = (versionNumber: number, isLive: boolean) => ({
-  id: `v${versionNumber}`,
-  versionNumber,
+const version = (major: number, isLive: boolean) => ({
+  id: `v${major}`,
+  majorVersion: major,
+  minorVersion: 0,
+  versionLabel: `${major}.0`,
   model: 'gpt-4o',
   prompt: 'You are a helpful assistant.',
   settings: { temperature: 1 } as { temperature: number } | string,
@@ -85,7 +87,7 @@ describe('edit mode', () => {
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1 is live in your flows');
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
     expect(screen.getByTestId('publishButton')).toBeInTheDocument();
     // version 1 is live and selected by default, so there is nothing to publish
     expect(screen.getByTestId('publishButton')).toBeDisabled();
@@ -113,7 +115,7 @@ describe('edit mode', () => {
       result: {
         data: {
           setLiveVersion: {
-            assistant: { id: '1', activeConfigVersionId: 'v2', liveVersionNumber: 2 },
+            assistant: { id: '1', activeConfigVersionId: 'v2', liveVersionLabel: 2 },
             errors: null,
           },
         },
@@ -132,7 +134,7 @@ describe('edit mode', () => {
     });
 
     fireEvent.click(screen.getByTestId('versionPill'));
-    fireEvent.click(await screen.findByTestId('versionOption-2'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('publishButton')).toBeEnabled();
@@ -143,6 +145,69 @@ describe('edit mode', () => {
       expect(notificationSpy).toHaveBeenCalledWith('Version published — it is now live in your flows');
     });
     notificationSpy.mockRestore();
+  });
+
+  test('publishing lands the reader on the version it created', async () => {
+    const publishMock = {
+      request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
+      result: {
+        data: {
+          setLiveVersion: {
+            assistant: { id: '1', activeConfigVersionId: 'v3', liveVersionLabel: '3.0' },
+            errors: null,
+          },
+        },
+      },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      publishMock,
+      // publishing promotes the version to the next major, so a new one comes back
+      versionsMock([version(1, false), version(2, false), version(3, true)]),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+
+    await waitFor(() => expect(screen.getByTestId('publishButton')).toBeEnabled());
+    fireEvent.click(screen.getByTestId('publishButton'));
+
+    // without this the reader stays on 2.0 and has to find 3.0 in the dropdown themselves
+    await waitFor(() => expect(screen.getByTestId('versionPill')).toHaveTextContent('3.0'));
+  });
+
+  test('the publish button cannot be fired twice while it is still publishing', async () => {
+    const publishMock = {
+      request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
+      delay: 50,
+      result: {
+        data: {
+          setLiveVersion: {
+            assistant: { id: '1', activeConfigVersionId: 'v2', liveVersionLabel: '2.0' },
+            errors: null,
+          },
+        },
+      },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      publishMock,
+      versionsMock([version(1, false), version(2, true)]),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+
+    const button = await screen.findByTestId('publishButton');
+    await waitFor(() => expect(button).toBeEnabled());
+    fireEvent.click(button);
+
+    // a second publish of the same version would otherwise be one click away
+    await waitFor(() => expect(button).toBeDisabled());
   });
 
   test('a publish that comes back with errors is reported', async () => {
@@ -162,7 +227,7 @@ describe('edit mode', () => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
-    fireEvent.click(await screen.findByTestId('versionOption-2'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
     fireEvent.click(screen.getByTestId('publishButton'));
 
     await waitFor(() => {
@@ -262,8 +327,8 @@ describe('edit mode', () => {
     });
     fireEvent.click(screen.getByTestId('versionPill'));
 
-    expect(await screen.findByTestId('versionOption-1')).toHaveTextContent(/published .*ago/);
-    expect(screen.getByTestId('versionOption-2')).not.toHaveTextContent('ago');
+    expect(await screen.findByTestId('versionOption-1.0')).toHaveTextContent(/published .*ago/);
+    expect(screen.getByTestId('versionOption-2.0')).not.toHaveTextContent('ago');
   });
 
   test('shows a not-found message when the query errors', async () => {
@@ -567,6 +632,62 @@ describe('Unsaved changes', () => {
     errorSpy.mockRestore();
   });
 
+  test('a save moves the selection onto the newly created version', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const save = {
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock(),
+      save,
+      getAssistant('1'),
+      versionsMock([version(1, true), version(2, false), version(3, false)]),
+    ]);
+    await edit();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 3.0');
+    });
+    notificationSpy.mockRestore();
+  });
+
+  test('a save on an assistant with no versions selects the version it creates', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const save = {
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+
+    renderDetail('/ai-evaluation-v2/1', [
+      getAssistant('1'),
+      versionsMock([]),
+      save,
+      getAssistant('1'),
+      versionsMock([version(1, false)]),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('noVersionPill')).toBeInTheDocument();
+    });
+    await edit();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1.0');
+    });
+    notificationSpy.mockRestore();
+  });
+
   test('a cleared temperature is left out of the save payload', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const saveWithoutTemperature = {
@@ -813,7 +934,7 @@ describe('version dropdown', () => {
     renderDetail();
 
     await waitFor(() => {
-      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1');
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1.0');
     });
     expect(screen.getByTestId('versionPill')).toHaveTextContent('LIVE');
   });
@@ -829,8 +950,8 @@ describe('version dropdown', () => {
 
     const options = await screen.findAllByRole('menuitem');
     expect(options.map((option) => option.textContent)).toEqual([
-      expect.stringContaining('Version 2'),
-      expect.stringContaining('Version 1'),
+      expect.stringContaining('Version 2.0'),
+      expect.stringContaining('Version 1.0'),
     ]);
     expect(
       screen.getByText('Saving creates a minor version. Publishing promotes it to the next major and makes it live.')
@@ -840,21 +961,21 @@ describe('version dropdown', () => {
     expect(options[0]).toHaveTextContent(/Not published.*saved .*ago/);
     expect(options[1]).toHaveTextContent(/LIVE.*published .*ago/);
 
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2');
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
     });
     expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
     // the live note keeps pointing at the published version, not the selected one
-    expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1 is live in your flows');
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
   });
 
   test('falls back to the latest version when nothing is published', async () => {
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, false), version(2, false)])]);
 
     await waitFor(() => {
-      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2');
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
     });
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
   });
@@ -896,7 +1017,7 @@ describe('create mode', () => {
 });
 
 describe('tabs', () => {
-  test('opens on Persona & Prompt and switches panels on click', async () => {
+  test('opens on Model & Prompt and switches panels on click', async () => {
     renderDetail();
 
     await waitFor(() => {
@@ -1052,7 +1173,7 @@ describe('try it out tab', () => {
     fireEvent.click(screen.getByTestId('tab-tryItOut'));
 
     expect(screen.getByTestId('tryItOut')).toBeInTheDocument();
-    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 1');
+    expect(screen.getByTestId('testingNote')).toHaveTextContent('Testing Version 1.0');
   });
 
   test('blocks on unsaved changes, and its Save button saves the page', async () => {
@@ -1068,7 +1189,7 @@ describe('try it out tab', () => {
     expect(screen.getByTestId('saveFromTryItOutButton')).toBeInTheDocument();
   });
 
-  test('a brand new assistant is sent to Persona & Prompt first', async () => {
+  test('a brand new assistant is sent to Model & Prompt first', async () => {
     renderDetail('/ai-evaluation-v2/add', []);
 
     await waitFor(() => {
@@ -1092,10 +1213,10 @@ describe('version status', () => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
-    expect(screen.getByTestId('inProgressPill-2')).toHaveTextContent('In Progress');
-    expect(screen.getByTestId('versionOption-2')).toHaveTextContent('Not published');
+    expect(screen.getByTestId('inProgressPill-2.0')).toHaveTextContent('In Progress');
+    expect(screen.getByTestId('versionOption-2.0')).toHaveTextContent('Not published');
 
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('In Progress');
@@ -1118,7 +1239,7 @@ describe('version status', () => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('Failed');
@@ -1152,7 +1273,7 @@ describe('version status', () => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
@@ -1187,7 +1308,7 @@ describe('switching versions', () => {
     expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
@@ -1203,7 +1324,7 @@ describe('switching versions', () => {
     renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, stringSettings])]);
 
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('temperatureInput')).toHaveValue(0.7);
@@ -1219,7 +1340,7 @@ describe('switching versions', () => {
     fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'My own words' } });
 
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     expect(await screen.findByText('Switch version?')).toBeInTheDocument();
     expect(screen.getByTestId('promptInput')).toHaveValue('My own words');
@@ -1241,7 +1362,7 @@ describe('switching versions', () => {
     fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'My own words' } });
 
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
     fireEvent.click(await screen.findByText('Switch version'));
 
     await waitFor(() => {
@@ -1273,7 +1394,7 @@ describe('switching versions', () => {
     expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('Accelerator Guide (1).pdf');
 
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('older_policy.pdf');
@@ -1299,7 +1420,7 @@ describe('switching versions', () => {
     });
     fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
   };
 
   test('a version with an empty store shows nothing attached, not the previous files', async () => {
@@ -1387,7 +1508,7 @@ describe('switching versions', () => {
     });
     fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('knowledgeBaseFile')).toHaveTextContent('older_policy.pdf');
@@ -1438,7 +1559,7 @@ describe('switching versions', () => {
 
     // switch versions while the upload is still going
     await openVersionMenu();
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     // the switch lands first: nothing has changed yet, so there is nothing to confirm
     await waitFor(() => {
@@ -1492,7 +1613,7 @@ describe('switching versions', () => {
 
     // the pill follows the new version instead of staying on the live one
     await waitFor(() => {
-      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 3');
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 3.0');
     });
     expect(screen.getByTestId('promptInput')).toHaveValue('Be concise.');
   });
@@ -1593,11 +1714,11 @@ describe('resilience', () => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
-    fireEvent.click(screen.getByTestId('versionOption-1'));
+    fireEvent.click(screen.getByTestId('versionOption-1.0'));
 
     // version 1 is already selected, so there is nothing to confirm or reload
     expect(screen.queryByText('Switch version?')).not.toBeInTheDocument();
-    expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1');
+    expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 1.0');
   });
 
   test('a publish that throws is reported', async () => {
@@ -1612,7 +1733,7 @@ describe('resilience', () => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
-    fireEvent.click(screen.getByTestId('versionOption-2'));
+    fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     fireEvent.click(await screen.findByTestId('publishButton'));
 

@@ -14,6 +14,7 @@ import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEval
 import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { compareVersionsDesc, isNewerThan } from 'containers/AIEvaluation/utils/assistantVersions';
 import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
 import {
   AssistantHeader,
@@ -98,7 +99,7 @@ export const AssistantDetail = () => {
   const [evaluationRunning, setEvaluationRunning] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
-  const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<number | null>(null);
+  const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<AssistantVersion | null | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const loadedKey = useRef<string | null>(null);
   const isCreateMode = !assistantId || assistantId === 'add';
@@ -160,7 +161,7 @@ export const AssistantDetail = () => {
 
   const assistant = data?.assistant?.assistant;
   const versions: AssistantVersion[] = versionData?.assistantVersions ?? [];
-  const sortedVersions = [...versions].sort((a, b) => b.versionNumber - a.versionNumber);
+  const sortedVersions = [...versions].sort(compareVersionsDesc);
   const liveVersion = versions.find((version) => version.isLive);
 
   // default to the live version, falling back to the latest one
@@ -182,16 +183,12 @@ export const AssistantDetail = () => {
     setBaseline(loaded);
   }, [data, selectedVersion]);
 
-  // a fresh save lands as the newest version, so move the selection onto it. The refetch can
-  // still be in flight when the mutation resolves, so wait for a higher number to show up.
   useEffect(() => {
-    if (awaitingVersionAbove === null) return;
-    const latest = [...(versionData?.assistantVersions ?? [])].sort(
-      (a: AssistantVersion, b: AssistantVersion) => b.versionNumber - a.versionNumber
-    )[0];
-    if (!latest || latest.versionNumber <= awaitingVersionAbove) return;
+    if (awaitingVersionAbove === undefined) return;
+    const latest = sortedVersions[0];
+    if (!latest || !isNewerThan(latest, awaitingVersionAbove)) return;
     setSelectedVersionId(latest.id);
-    setAwaitingVersionAbove(null);
+    setAwaitingVersionAbove(undefined);
   }, [awaitingVersionAbove, versionData]);
 
   useEffect(() => {
@@ -289,7 +286,7 @@ export const AssistantDetail = () => {
         return;
       }
       setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles });
-      setAwaitingVersionAbove(sortedVersions[0]?.versionNumber ?? 0);
+      setAwaitingVersionAbove(sortedVersions[0] ?? null);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
       setErrorMessage(err);
@@ -353,12 +350,14 @@ export const AssistantDetail = () => {
       const response = await setLiveVersion({
         variables: { assistantId, versionId: selectedVersion.id },
         refetchQueries: [{ query: GET_ASSISTANT_VERSIONS, variables: { assistantId } }],
+        awaitRefetchQueries: true,
       });
       const errors = response.data?.setLiveVersion?.errors;
       if (errors?.length > 0) {
         setErrorMessage(errors[0]);
         return;
       }
+      setAwaitingVersionAbove(sortedVersions[0]);
       setNotification(t('Version published — it is now live in your flows'));
     } catch (err: unknown) {
       setErrorMessage(err);
@@ -408,7 +407,7 @@ export const AssistantDetail = () => {
         assistantId={assistantId}
         versionId={selectedVersion?.id}
         liveVersionId={liveVersion?.id}
-        versionNumber={selectedVersion?.versionNumber}
+        versionLabel={selectedVersion?.versionLabel}
         assistantName={assistant?.name}
         onRunningChange={setEvaluationRunning}
       />
@@ -429,9 +428,9 @@ export const AssistantDetail = () => {
         hasVersions={versions.length > 0}
         isDirty={isDirty}
         versionId={selectedVersion?.id}
-        versionNumber={selectedVersion?.versionNumber}
+        versionLabel={selectedVersion?.versionLabel}
         versionStatus={selectedVersion?.status}
-        liveVersionNumber={liveVersion?.versionNumber ?? null}
+        liveVersionLabel={liveVersion?.versionLabel ?? null}
         hasGoldenQaSets={(goldenQaData?.goldenQas ?? []).length > 0}
         assistantId={assistantId}
         onGoToPersona={() => setActiveTab('persona')}
@@ -465,7 +464,7 @@ export const AssistantDetail = () => {
             onSave={handleSaveVersion}
             showPublish={!isCreateMode}
             publishing={publishing}
-            publishDisabled={!canPublishVersion(selectedVersion)}
+            publishDisabled={publishing || !canPublishVersion(selectedVersion)}
             publishDisabledReason={publishBlockedReason()}
             onPublish={handlePublish}
           />

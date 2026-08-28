@@ -25,7 +25,7 @@ const renderAssistantDetail = (mocks: any = ASSISTANT_DETAIL_MOCKS, assistantId 
       <MemoryRouter initialEntries={[`/assistants/${assistantId}`]}>
         <Routes>
           <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
           <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
@@ -38,7 +38,7 @@ const renderCreateMode = (mocks: any = []) =>
       <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
           <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
           <Route path="/assistants" element={<div data-testid="assistants-page" />} />
         </Routes>
       </MemoryRouter>
@@ -76,7 +76,7 @@ test('clicking a version card loads its data into the config editor', async () =
   fireEvent.click(screen.getAllByTestId('versionCard')[0]);
 
   await waitFor(() => {
-    expect(screen.getByText('Assistant-405db438 / Version 2')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 2.0')).toBeInTheDocument();
   });
 });
 
@@ -84,7 +84,7 @@ test('config editor shows the correct breadcrumb for selected version', async ()
   renderAssistantDetail();
 
   await waitFor(() => {
-    expect(screen.getByText('Assistant-405db438 / Version 1')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 1.0')).toBeInTheDocument();
   });
 });
 
@@ -291,7 +291,7 @@ test('Leave button switches to the pending version', async () => {
   renderAssistantDetail();
 
   await waitFor(() => {
-    expect(screen.getByText('Assistant-405db438 / Version 1')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 1.0')).toBeInTheDocument();
   });
 
   // Modify form to trigger unsaved changes
@@ -309,7 +309,7 @@ test('Leave button switches to the pending version', async () => {
 
   await waitFor(() => {
     expect(screen.queryByTestId('version-switch-leave')).not.toBeInTheDocument();
-    expect(screen.getByText('Assistant-405db438 / Version 2')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-405db438 / Version 2.0')).toBeInTheDocument();
   });
 });
 
@@ -351,7 +351,7 @@ test('create mode save navigates to the new assistant page', async () => {
       <MemoryRouter initialEntries={['/assistants/add']}>
         <Routes>
           <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
-          <Route path="/assistants/:assistantId/version/:versionNumber" element={<AssistantDetail />} />
+          <Route path="/assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>

@@ -28,7 +28,7 @@ export interface EvaluationProps {
   assistantId?: string;
   versionId?: string;
   liveVersionId?: string;
-  versionNumber?: number;
+  versionLabel?: string;
   assistantName?: string;
   onRunningChange?: (running: boolean) => void;
 }
@@ -37,7 +37,7 @@ export const Evaluation = ({
   assistantId,
   versionId,
   liveVersionId,
-  versionNumber,
+  versionLabel,
   assistantName,
   onRunningChange,
 }: EvaluationProps) => {
@@ -217,7 +217,7 @@ export const Evaluation = ({
       </div>
 
       {subTab === 'run' ? (
-        <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
+        <RunPanel run={latestRun} versionLabel={versionLabel} onGoToHistory={() => setSubTab('history')} />
       ) : assistantRuns.length > 0 ? (
         <EvaluationHistory runs={assistantRuns} liveVersionId={liveVersionId} />
       ) : (
@@ -261,7 +261,7 @@ export const Evaluation = ({
         <RunEvaluationDialog
           sets={sets}
           versionId={versionId}
-          versionNumber={versionNumber}
+          versionLabel={versionLabel}
           assistantName={assistantName}
           onClose={() => setRunOpen(false)}
           onStarted={() => {

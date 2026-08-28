@@ -173,7 +173,7 @@ describe('ConfigEditor — edit mode', () => {
 
   it('renders header with breadcrumb showing assistant name and version number', () => {
     renderEdit();
-    expect(screen.getByText('Test Assistant / Version 1')).toBeInTheDocument();
+    expect(screen.getByText('Test Assistant / Version 1.0')).toBeInTheDocument();
   });
 
   it('renders Set As LIVE and Save buttons in header', () => {

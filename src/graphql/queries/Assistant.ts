@@ -24,7 +24,7 @@ export const FILTER_ASSISTANTS = gql`
       updatedAt
       name
       status
-      liveVersionNumber
+      liveVersionLabel
       activeConfigVersionId
       cloneStatus
       lastEvaluationSummary
@@ -43,7 +43,8 @@ export const GET_ASSISTANT_CONFIG_VERSIONS = gql`
     assistantConfigVersions {
       id
       assistantId
-      versionNumber
+      majorVersion
+      minorVersion
       description
       model
       status
@@ -88,7 +89,9 @@ export const GET_ASSISTANT_VERSIONS = gql`
   query AssistantVersions($assistantId: ID!) {
     assistantVersions(assistantId: $assistantId) {
       id
-      versionNumber
+      majorVersion
+      minorVersion
+      versionLabel
       model
       prompt
       settings

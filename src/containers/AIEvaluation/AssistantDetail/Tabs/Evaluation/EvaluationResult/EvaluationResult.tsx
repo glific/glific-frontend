@@ -10,6 +10,7 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   BAND_LABEL,
+  configVersionLabel,
   MAX_SCORE,
   METRIC_WEIGHTS,
   formatScore,
@@ -81,7 +82,7 @@ export const EvaluationResult = ({
   const overall = reported ?? overallScore(metrics);
 
   const meta: ReactNode[] = [
-    run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : null,
+    run.assistantConfigVersion ? `${t('Version')} ${configVersionLabel(run.assistantConfigVersion)}` : null,
     run.goldenQa?.name ? (
       <b className={styles.MetaSet} key="set">
         {run.goldenQa.name}

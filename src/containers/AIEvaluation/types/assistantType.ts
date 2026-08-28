@@ -34,7 +34,9 @@ export interface AssistantVectorStore {
 
 export interface AssistantVersion {
   id: string;
-  versionNumber: number;
+  majorVersion: number;
+  minorVersion: number;
+  versionLabel: string;
   model: string;
   prompt: string;
   settings: unknown;
@@ -61,7 +63,7 @@ export interface AssistantListItem {
   id: string;
   name: string;
   assistantDisplayId: string;
-  liveVersionNumber: number | null;
+  liveVersionLabel: string | null;
   activeConfigVersionId: string | null;
   status: string;
   cloneStatus: string;

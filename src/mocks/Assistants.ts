@@ -366,7 +366,9 @@ const mockVectorStore = {
 export const mockVersions = [
   {
     id: 'v1',
-    versionNumber: 1,
+    majorVersion: 1,
+    minorVersion: 0,
+    versionLabel: '1.0',
     model: 'gpt-4o',
     prompt: 'You are a helpful assistant.',
     settings: { temperature: 1 },
@@ -379,7 +381,9 @@ export const mockVersions = [
   },
   {
     id: 'v2',
-    versionNumber: 2,
+    majorVersion: 2,
+    minorVersion: 0,
+    versionLabel: '2.0',
     model: 'gpt-4o-mini',
     prompt: 'You are a helpful assistant v2.',
     settings: { temperature: 0.5 },
@@ -392,7 +396,7 @@ export const mockVersions = [
   },
 ];
 
-const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber?: number; legacy?: boolean }) => ({
+const getAssistantVersions = (assistantId: string, options?: { liveVersionLabel?: string; legacy?: boolean }) => ({
   request: {
     query: GET_ASSISTANT_VERSIONS,
     variables: { assistantId },
@@ -402,12 +406,14 @@ const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber
       assistantVersions: [
         {
           id: 'v1',
-          versionNumber: 1,
+          majorVersion: 1,
+          minorVersion: 0,
+          versionLabel: '1.0',
           model: 'gpt-4o',
           prompt: 'You are a helpful assistant.',
           settings: { temperature: 1 },
           status: 'ready',
-          isLive: options?.liveVersionNumber === 1 || options?.liveVersionNumber === undefined ? true : false,
+          isLive: options?.liveVersionLabel === '1.0' || options?.liveVersionLabel === undefined,
           description: 'Initial version',
           insertedAt: '2024-10-16T15:00:00Z',
           updatedAt: '2024-10-16T15:00:00Z',
@@ -415,12 +421,14 @@ const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber
         },
         {
           id: 'v2',
-          versionNumber: 2,
+          majorVersion: 2,
+          minorVersion: 0,
+          versionLabel: '2.0',
           model: 'gpt-4o-mini',
           prompt: 'You are a helpful assistant v2.',
           settings: { temperature: 0.5 },
           status: 'ready',
-          isLive: options?.liveVersionNumber === 2,
+          isLive: options?.liveVersionLabel === '2.0',
           description: null,
           insertedAt: '2024-10-17T15:00:00Z',
           updatedAt: '2024-10-17T15:00:00Z',
@@ -431,7 +439,7 @@ const getAssistantVersions = (assistantId: string, options?: { liveVersionNumber
   },
 });
 
-const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumber: number) => ({
+const setLiveVersion = (assistantId: string, versionId: string, liveVersionLabel: string) => ({
   request: {
     query: SET_LIVE_VERSION,
     variables: { assistantId, versionId },
@@ -442,7 +450,7 @@ const setLiveVersion = (assistantId: string, versionId: string, liveVersionNumbe
         assistant: {
           id: assistantId,
           activeConfigVersionId: versionId,
-          liveVersionNumber,
+          liveVersionLabel,
         },
         errors: null,
       },
@@ -501,8 +509,8 @@ export const ASSISTANT_DETAIL_SET_LIVE_MOCKS = [
   getAssistantVersions('1'),
   getAssistantVersions('1'),
   getAssistantVersions('1'),
-  setLiveVersion('1', 'v2', 2),
-  getAssistantVersions('1', { liveVersionNumber: 2 }),
+  setLiveVersion('1', 'v2', '2.0'),
+  getAssistantVersions('1', { liveVersionLabel: '2.0' }),
 ];
 
 export const ASSISTANT_DETAIL_SAVE_MOCKS = [
@@ -655,7 +663,7 @@ export const filterAssistantsMock = {
           id: '1',
           name: 'Assistant-1',
           assistantDisplayId: 'asst_abc123',
-          liveVersionNumber: 3,
+          liveVersionLabel: '3.0',
           activeConfigVersionId: 'v1',
           updatedAt: '2024-10-16T15:58:26Z',
           insertedAt: '2024-10-16T15:58:26Z',
@@ -667,7 +675,7 @@ export const filterAssistantsMock = {
           id: '2',
           name: 'Assistant-2',
           assistantDisplayId: 'asst_def456',
-          liveVersionNumber: null,
+          liveVersionLabel: null,
           activeConfigVersionId: null,
           updatedAt: '2024-10-17T10:00:00Z',
           insertedAt: '2024-10-17T10:00:00Z',
@@ -771,7 +779,7 @@ export const filterAssistantsAfterCloneMock = {
           id: '1',
           name: 'Assistant-1',
           assistantDisplayId: 'asst_abc123',
-          liveVersionNumber: 3,
+          liveVersionLabel: '3.0',
           activeConfigVersionId: 'v1',
           updatedAt: '2024-10-16T15:58:26Z',
           insertedAt: '2024-10-16T15:58:26Z',
@@ -783,7 +791,7 @@ export const filterAssistantsAfterCloneMock = {
           id: '2',
           name: 'Assistant-2',
           assistantDisplayId: 'asst_def456',
-          liveVersionNumber: null,
+          liveVersionLabel: null,
           activeConfigVersionId: null,
           updatedAt: '2024-10-17T10:00:00Z',
           insertedAt: '2024-10-17T10:00:00Z',
@@ -795,7 +803,7 @@ export const filterAssistantsAfterCloneMock = {
           id: '3',
           name: 'Copy of Assistant-1',
           assistantDisplayId: 'asst_xyz789',
-          liveVersionNumber: null,
+          liveVersionLabel: null,
           activeConfigVersionId: null,
           updatedAt: '2024-10-18T10:00:00Z',
           insertedAt: '2024-10-18T10:00:00Z',

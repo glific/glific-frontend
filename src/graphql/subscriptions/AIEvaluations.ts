@@ -16,7 +16,8 @@ export const AI_EVALUATION_UPDATED = gql`
       }
       assistantConfigVersion {
         id
-        versionNumber
+        majorVersion
+        minorVersion
         assistant {
           id
           name
@@ -35,7 +36,8 @@ export const IMPROVE_PROMPT_UPDATED = gql`
       error
       configVersion {
         id
-        versionNumber
+        majorVersion
+        minorVersion
         model
         prompt
         settings

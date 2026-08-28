@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
+  configVersionLabel,
   formatScore,
   isRunFailed,
   isRunInProgress,
@@ -48,7 +49,7 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
       cells: [
         <span className={styles.VersionCell}>
           <span className={styles.Version}>
-            {run.assistantConfigVersion ? `${t('Version')} ${run.assistantConfigVersion.versionNumber}` : '—'}
+            {run.assistantConfigVersion ? `${t('Version')} ${configVersionLabel(run.assistantConfigVersion)}` : '—'}
           </span>
           {liveVersionId && run.assistantConfigVersion?.id === liveVersionId && <LivePill />}
         </span>,
@@ -84,7 +85,7 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
         else if (isRunFailed(run)) status = t('Failed');
 
         return [
-          run.assistantConfigVersion ? String(run.assistantConfigVersion.versionNumber) : '',
+          configVersionLabel(run.assistantConfigVersion),
           run.goldenQa?.name ?? '',
           String(run.duplicationFactor ?? 1),
           status,

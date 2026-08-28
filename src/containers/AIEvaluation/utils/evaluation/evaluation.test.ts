@@ -1,4 +1,5 @@
 import {
+  configVersionLabel,
   formatScore,
   parseOverallScore,
   evaluationRunName,
@@ -271,15 +272,17 @@ describe('parseEvaluationSummary', () => {
 
 describe('evaluationRunName', () => {
   test('folds the assistant, version and set into one lowercase name', () => {
-    expect(evaluationRunName('Maternal Health Bot', 3, 'core_set')).toMatch(/^maternal_health_bot_v3_core_set_\d+$/);
+    expect(evaluationRunName('Maternal Health Bot', '3.0', 'core_set')).toMatch(
+      /^maternal_health_bot_v3_0_core_set_\d+$/
+    );
   });
 
   test('a set named with punctuation cannot leak into the name', () => {
-    expect(evaluationRunName('Bot', 1, 'ANC / PNC (v2)!')).toMatch(/^bot_v1_anc_pnc_v2_\d+$/);
+    expect(evaluationRunName('Bot', '1.0', 'ANC / PNC (v2)!')).toMatch(/^bot_v1_0_anc_pnc_v2_\d+$/);
   });
 
-  test('a version-less run is filed under v1', () => {
-    expect(evaluationRunName('Bot', undefined, 'set')).toMatch(/^bot_v1_set_\d+$/);
+  test('a version-less run is filed under the first version', () => {
+    expect(evaluationRunName('Bot', undefined, 'set')).toMatch(/^bot_v1_0_set_\d+$/);
   });
 });
 
@@ -416,5 +419,16 @@ describe('parseAssistantHealth', () => {
     for (const value of [null, undefined, '', 'not json', {}, { verdict: 'Good' }, 42]) {
       expect(parseAssistantHealth(value)).toBeNull();
     }
+  });
+});
+
+describe('configVersionLabel', () => {
+  test('joins the major and minor numbers', () => {
+    expect(configVersionLabel({ majorVersion: 2, minorVersion: 1 })).toBe('2.1');
+  });
+
+  test('a run with no config version has no label', () => {
+    expect(configVersionLabel(null)).toBe('');
+    expect(configVersionLabel(undefined)).toBe('');
   });
 });

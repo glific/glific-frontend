@@ -13,7 +13,7 @@ import styles from './RunEvaluationDialog.module.css';
 export interface RunEvaluationDialogProps {
   sets: GoldenQaSet[];
   versionId?: string;
-  versionNumber?: number;
+  versionLabel?: string;
   assistantName?: string;
   onClose: () => void;
   onStarted: () => void;
@@ -35,7 +35,7 @@ const DUPLICATION_OPTIONS = [
 export const RunEvaluationDialog = ({
   sets,
   versionId,
-  versionNumber,
+  versionLabel,
   assistantName = 'assistant',
   onClose,
   onStarted,
@@ -58,7 +58,7 @@ export const RunEvaluationDialog = ({
             goldenQaId,
             configId: versionId,
             duplicationFactor: Number(duplication),
-            evaluationName: evaluationRunName(assistantName, versionNumber, set.name),
+            evaluationName: evaluationRunName(assistantName, versionLabel, set.name),
           },
         },
       });
@@ -94,9 +94,9 @@ export const RunEvaluationDialog = ({
     >
       <div data-testid="runEvaluationDialog">
         <div className={styles.Intro}>
-          {versionNumber
+          {versionLabel
             ? t('Score version {{version}} against a Golden Q&A. Each answer is scored 0–5.', {
-                version: versionNumber,
+                version: versionLabel,
               })
             : t('Score this version against a Golden Q&A. Each answer is scored 0–5.')}
         </div>
