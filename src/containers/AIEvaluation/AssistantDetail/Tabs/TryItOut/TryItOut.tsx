@@ -246,7 +246,7 @@ export const TryItOut = ({
       t('Save your first version to try it out'),
       t('Try It Out runs against a saved config on the server.'),
       <Button variant="outlined" onClick={onGoToPersona} data-testid="goToPersonaButton">
-        {t('Go to Persona & Prompt')}
+        {t('Go to Model & Prompt')}
       </Button>
     );
   }
@@ -278,7 +278,7 @@ export const TryItOut = ({
       t('This version failed to build'),
       t('Save a new version to try it out.'),
       <Button variant="outlined" onClick={onGoToPersona} data-testid="goToPersonaButton">
-        {t('Go to Persona & Prompt')}
+        {t('Go to Model & Prompt')}
       </Button>,
       <WarningIcon />
     );
@@ -391,7 +391,7 @@ export const TryItOut = ({
               <div className={styles.NudgeTitle}>{t('Happy with these responses?')}</div>
               <div className={styles.Note}>
                 {t(
-                  'Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.'
+                  'Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A and catches answers that change between attempts.'
                 )}
               </div>
             </div>

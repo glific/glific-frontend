@@ -38,6 +38,16 @@
   overflow-wrap: anywhere;
 }
 
+.IndexColumn {
+  width: 2.5rem;
+  text-align: center;
+}
+
+.Index {
+  color: var(--app-color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
 .QuestionColumn {
   width: 11rem;
 }
@@ -108,8 +118,9 @@
 
 .AnswerScores {
   display: flex;
-  flex-direction: column;
-  gap: var(--app-space-2xs);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2xs) var(--app-space-xl);
   padding-top: var(--app-space-sm);
   border-top: 1px solid var(--app-color-border);
 }
@@ -117,13 +128,18 @@
 .AnswerScore {
   display: flex;
   align-items: center;
-  gap: var(--app-space-sm);
+  gap: var(--app-space-2xs);
   font-size: var(--app-font-size-xs);
   color: var(--app-color-text-tertiary);
 }
 
-.AnswerScoreName {
-  margin-right: auto;
+.AnswerScore::before {
+  content: '';
+  width: var(--app-space-2xs);
+  height: var(--app-space-2xs);
+  border-radius: 50%;
+  background-color: var(--app-color-text-tertiary);
+  flex-shrink: 0;
 }
 
 .NoScore {
@@ -182,6 +198,7 @@
   color: var(--app-color-text-tertiary);
   cursor: help;
   flex-shrink: 0;
+  display: block;
 }
 
 .ReasonTooltip {

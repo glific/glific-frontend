@@ -25,6 +25,13 @@
 
 .ZoneAction {
   margin-left: auto;
+  text-align: right;
+}
+
+.FormatsHint {
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
 }
 
 .Card {

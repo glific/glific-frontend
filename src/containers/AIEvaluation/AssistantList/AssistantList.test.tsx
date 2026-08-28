@@ -202,18 +202,22 @@ describe('debounced search', () => {
   });
 });
 
-test('hovering the Evaluation health header shows the scoring tooltip', async () => {
+test('hovering the info icon beside the Evaluation health header shows the scoring tooltip', async () => {
   renderAssistantList();
 
   await waitFor(() => {
     expect(screen.getByText('Evaluation health')).toBeInTheDocument();
   });
 
+  // the header text itself stays quiet — only the info icon explains the scale
   fireEvent.mouseOver(screen.getByText('Evaluation health'));
+  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+  fireEvent.mouseOver(screen.getByTestId('evaluationHealthInfo'));
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(
-      'Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.'
+      'Scored 0–5 by our automated judge. 0–1 = Needs improvement. 2–3 = Could improve. 4–5 = Good.'
     );
   });
 });
