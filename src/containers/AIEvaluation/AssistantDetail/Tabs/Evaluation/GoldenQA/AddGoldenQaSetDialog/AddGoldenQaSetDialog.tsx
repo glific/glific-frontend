@@ -42,7 +42,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
   const validationSchema = Yup.object({
     name: Yup.string()
       .trim()
-      .required(t('Give this Golden Q&A set a name.'))
+      .required(t('Give this Golden Q&A a name.'))
       .matches(GOLDEN_QA_NAME_PATTERN, t('Use lowercase letters, numbers and underscores only.')),
     file: Yup.mixed().required(t('Choose a CSV file to upload.')),
   });
@@ -64,7 +64,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
           return;
         }
 
-        setNotification(t('Golden Q&A set added'));
+        setNotification(t('Golden Q&A added'));
         onAdded();
       } catch (error: unknown) {
         setErrorMessage(error);
@@ -122,8 +122,8 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     <DialogBox
       open
       titleAlign="left"
-      title={t('Add a Golden Q&A set')}
-      buttonOk={t('Add set')}
+      title={t('Add Golden Q&A')}
+      buttonOk={t('Add')}
       buttonCancel={t('Cancel')}
       alignButtons="right"
       buttonOkLoading={loading}
@@ -141,7 +141,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
           )}
         </div>
 
-        <div className={styles.FieldLabel}>{t('Name this Golden Q&A set')}</div>
+        <div className={styles.FieldLabel}>{t('Name this Golden Q&A')}</div>
         <Input
           type="text"
           placeholder={t('e.g. maternal_health_core')}
@@ -172,7 +172,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
         >
           <UploadIcon className={styles.DropIcon} />
           <div className={styles.DropTitle}>{t('Drop a CSV here, or click to browse')}</div>
-          <div className={styles.Note}>{t('Columns: question, answer, category')}</div>
+          <div className={styles.Note}>{t('Columns: question, answer')}</div>
           <input
             ref={fileInputRef}
             type="file"

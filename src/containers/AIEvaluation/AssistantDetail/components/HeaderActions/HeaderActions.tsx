@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './HeaderActions.module.css';
 
 export interface HeaderActionsProps {
@@ -11,6 +12,7 @@ export interface HeaderActionsProps {
   showPublish?: boolean;
   publishing?: boolean;
   publishDisabled?: boolean;
+  publishDisabledReason?: string;
   onPublish?: () => void;
 }
 
@@ -23,6 +25,7 @@ export const HeaderActions = ({
   showPublish = false,
   publishing = false,
   publishDisabled = false,
+  publishDisabledReason,
   onPublish,
 }: HeaderActionsProps) => {
   const { t } = useTranslation();
@@ -60,7 +63,7 @@ export const HeaderActions = ({
 
   if (!showPublish) return null;
 
-  return (
+  const publishButton = (
     <Button
       variant="contained"
       color="primary"
@@ -70,7 +73,17 @@ export const HeaderActions = ({
       disabled={publishDisabled}
       data-testid="publishButton"
     >
-      {t('Publish & Go Live')}
+      {t('Go Live')}
     </Button>
   );
+
+  if (publishDisabled && publishDisabledReason) {
+    return (
+      <Tooltip title={publishDisabledReason} placement="bottom">
+        {publishButton}
+      </Tooltip>
+    );
+  }
+
+  return publishButton;
 };

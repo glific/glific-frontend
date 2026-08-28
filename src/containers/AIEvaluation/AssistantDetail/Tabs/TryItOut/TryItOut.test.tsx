@@ -51,7 +51,7 @@ beforeEach(() => {
 const type = (text: string) => fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: text } });
 
 describe('blocked states', () => {
-  test('an assistant with no versions is pointed at Persona & Prompt', () => {
+  test('an assistant with no versions is pointed at Model & Prompt', () => {
     const { onGoToPersona } = renderTab({ hasVersions: false });
 
     expect(screen.getByTestId('tryItOutBlocker')).toHaveTextContent('Save your first version to try it out');
@@ -249,7 +249,7 @@ describe('the evaluation nudge', () => {
     }
   };
 
-  test('appears after two exchanges when Golden Q&A sets exist', async () => {
+  test('appears after two exchanges when Golden Q&A exist', async () => {
     const { onRunEvaluation } = renderTab({ hasGoldenQaSets: true }, [
       sendMock({ answer: 'Reply', requestId: 'r1' }),
       sendMock({ answer: 'Reply', requestId: 'r2' }),
@@ -265,7 +265,7 @@ describe('the evaluation nudge', () => {
     expect(onRunEvaluation).toHaveBeenCalled();
   });
 
-  test('stays hidden when there is no Golden Q&A set to run', async () => {
+  test('stays hidden when there is no Golden Q&A to run', async () => {
     renderTab({ hasGoldenQaSets: false }, [
       sendMock({ answer: 'Reply', requestId: 'r1' }),
       sendMock({ answer: 'Reply', requestId: 'r2' }),

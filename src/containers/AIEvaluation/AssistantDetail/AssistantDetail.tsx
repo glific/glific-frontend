@@ -96,6 +96,7 @@ export const AssistantDetail = () => {
   const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
+  const [evaluationRunning, setEvaluationRunning] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
   const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<AssistantVersion | null | undefined>(undefined);
@@ -363,6 +364,13 @@ export const AssistantDetail = () => {
     }
   };
 
+  const publishBlockedReason = () => {
+    if (!selectedVersion || canPublishVersion(selectedVersion)) return undefined;
+    if (selectedVersion.status === 'in_progress') return t('This version is still being prepared');
+    if (selectedVersion.status === 'failed') return t('Cannot set a failed version as live');
+    return t('This version is already live');
+  };
+
   const stillLoading = (loading && !assistant) || (versionsLoading && !versionData) || (modelsLoading && !modelData);
 
   if (!isCreateMode && stillLoading) {
@@ -401,6 +409,7 @@ export const AssistantDetail = () => {
         liveVersionId={liveVersion?.id}
         versionLabel={selectedVersion?.versionLabel}
         assistantName={assistant?.name}
+        onRunningChange={setEvaluationRunning}
       />
     ),
     knowledgeBase: (
@@ -456,6 +465,7 @@ export const AssistantDetail = () => {
             showPublish={!isCreateMode}
             publishing={publishing}
             publishDisabled={publishing || !canPublishVersion(selectedVersion)}
+            publishDisabledReason={publishBlockedReason()}
             onPublish={handlePublish}
           />
         }
@@ -469,7 +479,12 @@ export const AssistantDetail = () => {
         isCreateMode={isCreateMode}
       />
 
-      <TabBar activeTab={activeTab} onChange={setActiveTab} dirtyTabs={dirtyTabs} />
+      <TabBar
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        dirtyTabs={dirtyTabs}
+        runningTabs={{ evaluation: evaluationRunning }}
+      />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
         {Object.entries(TAB_PANELS).map(([key, panel]) => (

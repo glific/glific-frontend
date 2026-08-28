@@ -25,7 +25,7 @@ export const ManageGoldenQaSetsDialog = ({ sets, onView, onAdd, onClose }: Manag
     <DialogBox
       open
       titleAlign="left"
-      title={t('Golden Q&A sets')}
+      title={t('Golden Q&A')}
       buttonOk={t('Done')}
       alignButtons="right"
       skipCancel
@@ -74,7 +74,7 @@ export const ManageGoldenQaSetsDialog = ({ sets, onView, onAdd, onClose }: Manag
           onClick={onAdd}
           data-testid="addGoldenQaSetButton"
         >
-          {t('Add a Golden Q&A set')}
+          {t('Add Golden Q&A')}
         </Button>
       </div>
     </DialogBox>

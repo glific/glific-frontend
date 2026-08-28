@@ -95,13 +95,13 @@ export const RunEvaluationDialog = ({
       <div data-testid="runEvaluationDialog">
         <div className={styles.Intro}>
           {versionLabel
-            ? t('Score version {{version}} against a Golden Q&A set. Each answer is scored 0–5.', {
+            ? t('Score version {{version}} against a Golden Q&A. Each answer is scored 0–5.', {
                 version: versionLabel,
               })
-            : t('Score this version against a Golden Q&A set. Each answer is scored 0–5.')}
+            : t('Score this version against a Golden Q&A. Each answer is scored 0–5.')}
         </div>
 
-        <div className={styles.FieldLabel}>{t('Golden Q&A set')}</div>
+        <div className={styles.FieldLabel}>{t('Golden Q&A')}</div>
         <Dropdown
           placeholder=""
           options={sets.map((set) => ({ id: set.id, label: set.name }))}
