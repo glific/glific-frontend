@@ -110,6 +110,13 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfigExport> =
       sourcemap: enableSentry,
       rollupOptions: {
         output: {
+          // Use stable (hash-free) filenames so chunk URLs remain valid across deployments.
+          // Browsers must be served these files with Cache-Control: no-cache to always
+          // receive the latest version. Without hashes, old app instances can still
+          // dynamically import Login.js (etc.) after a new deploy instead of getting a 404.
+          chunkFileNames: 'assets/[name].js',
+          entryFileNames: 'assets/[name].js',
+          assetFileNames: 'assets/[name].[ext]',
           manualChunks: {
             react: ['react', 'react-dom'],
             apollo: ['@apollo/client'],
