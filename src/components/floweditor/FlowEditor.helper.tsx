@@ -8,6 +8,65 @@ import styles from './FlowEditor.module.css';
 
 const glificBase = FLOW_EDITOR_API;
 
+/**
+ * Patches window.fetch to intercept individual interactive-template requests from the flow
+ * editor and serve them from a single pre-fetched list, eliminating the N+1 API call pattern.
+ *
+ * Returns the original fetch reference so the caller can restore it on unmount.
+ */
+export const setupInteractiveTemplateCache = (): typeof window.fetch => {
+  const originalFetch = window.fetch;
+  const interactivesBase = `${glificBase}interactive-templates`;
+
+  // Cache: resolves to a map of { [id]: responseBody }
+  let cachePromise: Promise<Map<string, any>> | null = null;
+
+  const loadCache = (): Promise<Map<string, any>> => {
+    if (!cachePromise) {
+      cachePromise = originalFetch(interactivesBase)
+        .then((res) => res.json())
+        .then((items: any[]) => {
+          const map = new Map<string, any>();
+          if (Array.isArray(items)) {
+            items.forEach((item) => {
+              if (item.id !== undefined) {
+                map.set(String(item.id), item);
+              }
+            });
+          }
+          return map;
+        })
+        .catch(() => new Map<string, any>());
+    }
+    return cachePromise;
+  };
+
+  window.fetch = ((...args: Parameters<typeof fetch>) => {
+    const url = typeof args[0] === 'string' ? args[0] : args[0] instanceof URL ? args[0].href : '';
+
+    // Match requests like …/interactive-templates/{id} (including double-slash variants)
+    const match = url.match(/interactive-templates\/{1,2}(\d+)\/?(\?.*)?$/);
+    if (match) {
+      const id = match[1];
+      return loadCache().then((cache) => {
+        if (cache.has(id)) {
+          const body = JSON.stringify(cache.get(id));
+          return new Response(body, {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+        // Fallback to real network request if ID not in cache
+        return originalFetch(...args);
+      });
+    }
+
+    return originalFetch(...args);
+  }) as typeof window.fetch;
+
+  return originalFetch;
+};
+
 export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolean, posthog?: PostHog) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
