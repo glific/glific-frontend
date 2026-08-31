@@ -29,8 +29,6 @@ export const VersionBar = ({
 }: VersionBarProps) => {
   const { t } = useTranslation();
 
-  // only the live version is called out; the rest simply exist, and saying "not published" on each
-  // of them reads as "not saved"
   const publishPill = (version: AssistantVersion) => (version.isLive ? <LivePill /> : null);
 
   const buildPill = (version: AssistantVersion) => {
