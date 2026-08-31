@@ -29,8 +29,9 @@ export const VersionBar = ({
 }: VersionBarProps) => {
   const { t } = useTranslation();
 
-  const publishPill = (version: AssistantVersion) =>
-    version.isLive ? <LivePill /> : <span className={styles.DraftPill}>{t('Not published')}</span>;
+  // only the live version is called out; the rest simply exist, and saying "not published" on each
+  // of them reads as "not saved"
+  const publishPill = (version: AssistantVersion) => (version.isLive ? <LivePill /> : null);
 
   const buildPill = (version: AssistantVersion) => {
     if (version.status === 'in_progress') {

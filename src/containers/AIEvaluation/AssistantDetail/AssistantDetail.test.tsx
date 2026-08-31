@@ -1022,8 +1022,9 @@ describe('version dropdown', () => {
       screen.getByText('Saving creates a minor version. Publishing promotes it to the next major and makes it live.')
     ).toBeInTheDocument();
 
-    // the draft reads "saved <ago>", the published one "published <ago>"
-    expect(options[0]).toHaveTextContent(/Not published.*saved .*ago/);
+    // the draft reads "saved <ago>", the published one "published <ago>"; only the live one is badged
+    expect(options[0]).toHaveTextContent(/saved .*ago/);
+    expect(options[0]).not.toHaveTextContent('LIVE');
     expect(options[1]).toHaveTextContent(/LIVE.*published .*ago/);
 
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
@@ -1031,7 +1032,7 @@ describe('version dropdown', () => {
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
     });
-    expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
+    expect(screen.getByTestId('versionPill')).not.toHaveTextContent('LIVE');
     // the live note keeps pointing at the published version, not the selected one
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
   });
@@ -1279,14 +1280,12 @@ describe('version status', () => {
     });
     fireEvent.click(screen.getByTestId('versionPill'));
     expect(screen.getByTestId('inProgressPill-2.0')).toHaveTextContent('In Progress');
-    expect(screen.getByTestId('versionOption-2.0')).toHaveTextContent('Not published');
 
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('In Progress');
     });
-    expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
     expect(screen.getByTestId('publishButton')).toBeDisabled();
 
@@ -1331,7 +1330,7 @@ describe('version status', () => {
     expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
   });
 
-  test('a ready draft still shows not published and stays publishable', async () => {
+  test('a ready draft carries no badge and stays publishable', async () => {
     renderDetail('/assistants/1', [getAssistant('1'), versionsMock()]);
 
     await waitFor(() => {
@@ -1341,8 +1340,10 @@ describe('version status', () => {
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
     });
+    // a saved draft carries no badge of its own — it is simply not the live one
+    expect(screen.getByTestId('versionPill')).not.toHaveTextContent('LIVE');
     expect(screen.getByTestId('publishButton')).not.toBeDisabled();
   });
 });

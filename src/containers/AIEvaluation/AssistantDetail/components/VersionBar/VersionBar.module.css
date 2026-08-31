@@ -61,18 +61,6 @@ button.VersionPillLive {
   color: var(--app-color-text-heading);
 }
 
-.DraftPill {
-  display: inline-flex;
-  align-items: center;
-  font-size: var(--app-font-size-xs);
-  font-weight: 600;
-  color: var(--app-color-text-tertiary);
-  background-color: var(--app-color-surface-raised);
-  border: 1px solid var(--app-color-border-muted);
-  border-radius: var(--app-radius-pill);
-  padding: var(--app-space-2xs) var(--app-space-sm);
-}
-
 .PillGroup {
   display: inline-flex;
   align-items: center;
