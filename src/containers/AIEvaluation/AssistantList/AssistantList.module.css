@@ -1,5 +1,4 @@
 .NameColumn {
-  /* the name takes the slack; the other three share the rest evenly so the gaps read the same */
   width: 34%;
   min-width: var(--app-size-table-column-min);
 }

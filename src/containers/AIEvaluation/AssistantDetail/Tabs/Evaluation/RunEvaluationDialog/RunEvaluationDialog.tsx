@@ -12,7 +12,6 @@ import styles from './RunEvaluationDialog.module.css';
 
 export interface RunEvaluationDialogProps {
   sets: GoldenQaSet[];
-  /** the set the most recent run used, if it is still around */
   lastUsedSetId?: string;
   versionId?: string;
   versionLabel?: string;
@@ -45,7 +44,6 @@ export const RunEvaluationDialog = ({
 }: RunEvaluationDialogProps) => {
   const { t } = useTranslation();
 
-  // the reader almost always compares against the same questions, so the last one used leads
   const lastUsed = lastUsedSetId && sets.some((set) => set.id === lastUsedSetId) ? lastUsedSetId : undefined;
   const [goldenQaId, setGoldenQaId] = useState(lastUsed ?? sets[0]?.id ?? '');
   const [duplication, setDuplication] = useState<`${DuplicationFactor}`>('1');

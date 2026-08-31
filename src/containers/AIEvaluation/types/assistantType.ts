@@ -18,14 +18,12 @@ export interface RawAssistantModel {
   category?: string | null;
 }
 
-/** how the server files a model in the picker */
 export type ModelCategory = 'recommended' | 'all' | 'to_be_deprecated';
 
 export interface AssistantModel {
   modelName: string;
   provider: string;
   config: Record<string, ModelParamSpec>;
-  /** short note the server attaches, e.g. "Best value" — absent for most models */
   badge: string | null;
   category: ModelCategory;
 }

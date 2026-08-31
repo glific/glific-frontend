@@ -13,11 +13,8 @@ import {
 import styles from './PublishVersionDialog.module.css';
 
 export interface PublishVersionDialogProps {
-  /** the version being promoted */
   versionLabel: string;
-  /** the number it goes live as */
   targetLabel: string;
-  /** the most recent scored run for this version, if it has ever been evaluated */
   lastRun?: EvaluationRun | null;
   publishing?: boolean;
   onCancel: () => void;
@@ -25,7 +22,6 @@ export interface PublishVersionDialogProps {
   onRunEvaluation: () => void;
 }
 
-/** keeps the promoted version in bold without breaking the sentence into translatable scraps */
 const withVersionInBold = (sentence: string, version: string) => {
   const [before, ...rest] = sentence.split(version);
   if (rest.length === 0) return sentence;
@@ -63,13 +59,11 @@ export const PublishVersionDialog = ({
       open
       titleAlign="left"
       title={t('Publish as Version {{version}}?', { version: targetLabel })}
-      // an unevaluated version leads with the evaluation; publishing stays available but secondary
       buttonOk={evaluated ? t('Publish') : t('Run an evaluation')}
       handleOk={evaluated ? onPublish : onRunEvaluation}
       buttonOkLoading={evaluated && publishing}
       buttonMiddle={evaluated ? undefined : t('Go live anyway')}
       handleMiddle={onPublish}
-      // the close icon is the way out; a Cancel button beside two live actions only adds noise
       skipCancel
       handleCancel={onCancel}
       alignButtons="right"
