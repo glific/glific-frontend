@@ -829,7 +829,6 @@ describe('running an evaluation', () => {
     };
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
 
-    // the newest run used g2, so that is the one to come back to
     render(
       <MockedProvider
         mocks={[
