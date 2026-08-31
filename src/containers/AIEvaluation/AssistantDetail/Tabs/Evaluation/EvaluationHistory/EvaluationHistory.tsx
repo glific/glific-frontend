@@ -30,16 +30,16 @@ const ALL_SETS = 'all';
 export interface EvaluationHistoryProps {
   runs: EvaluationRun[];
   liveVersionId?: string;
-  sets?: GoldenQaSet[];
-  selectedSetId?: string;
-  onSetChange?: (goldenQaId: string) => void;
+  sets: GoldenQaSet[];
+  selectedSetId: string;
+  onSetChange: (goldenQaId: string) => void;
 }
 
 export const EvaluationHistory = ({
   runs,
   liveVersionId,
-  sets = [],
-  selectedSetId = '',
+  sets,
+  selectedSetId,
   onSetChange,
 }: EvaluationHistoryProps) => {
   const { t } = useTranslation();
@@ -135,7 +135,7 @@ export const EvaluationHistory = ({
 
       <div className={styles.Card}>
         <div className={styles.CardHeader}>
-          {onSetChange && sets.length > 0 && (
+          {sets.length > 0 && (
             <div className={styles.Filter}>
               <span className={styles.FilterLabel}>{t('Filter')}</span>
               <Dropdown

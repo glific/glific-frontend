@@ -72,9 +72,7 @@ export const Evaluation = ({
     fetchPolicy: 'cache-and-network',
   });
 
-  // History can be narrowed to one Golden Q&A; the unfiltered list above keeps driving the run
-  // panel, the tab dot and the publish step, which must see every run whatever History is showing
-  const { data: filteredRunData, refetch: refetchFilteredRuns } = useQuery<EvaluationListData>(LIST_AI_EVALUATIONS, {
+  const { data: filteredRunData } = useQuery<EvaluationListData>(LIST_AI_EVALUATIONS, {
     variables: { ...RUN_LIST_VARIABLES, filter: { goldenQaId: historySetId } },
     skip: !historySetId,
     fetchPolicy: 'cache-and-network',
@@ -92,8 +90,7 @@ export const Evaluation = ({
         (previous) => mergeEvaluationUpdate(previous ?? undefined, updated)
       );
 
-      refetchRuns();
-      if (historySetId) refetchFilteredRuns();
+      client.refetchQueries({ include: [LIST_AI_EVALUATIONS] });
     },
   });
 

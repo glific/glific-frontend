@@ -2030,6 +2030,29 @@ describe('a version changing while the page is open', () => {
     });
   });
 
+  test('an update that carries no version at all changes nothing', async () => {
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), configUpdate(null)]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    expect(screen.getByTestId('versionOption-2.0')).toBeInTheDocument();
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
+  });
+
+  test('a knowledge base update that carries nothing is ignored', async () => {
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), knowledgeBaseUpdate(null)]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
+  });
+
+  test('a knowledge base update landing before the versions do is ignored', async () => {
+    // nothing is in the cache yet, so there is no version to match the update against
+    renderDetail('/assistants/1', [getAssistant('1'), knowledgeBaseUpdate({ id: 'llm-vs-1', status: 'completed' })]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
+  });
+
   test('a version from another assistant is left alone', async () => {
     renderDetail('/assistants/1', [
       getAssistant('1'),

@@ -1166,6 +1166,69 @@ describe('running an evaluation', () => {
     await waitFor(() => {
       expect(screen.getByTestId('evaluationHistory')).toHaveTextContent('anc_followups');
     });
+    // the field keeps showing what it was narrowed to
+    expect(within(screen.getByTestId('evaluationHistory')).getByRole('combobox')).toHaveTextContent('anc_followups');
+
+    // and picking All puts every run back, without narrowing the request again
+    fireEvent.mouseDown(within(screen.getByTestId('evaluationHistory')).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'All Golden Q&A' }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('evaluationHistory')).toHaveTextContent('maternal_health_core');
+    });
+  });
+
+  test('a run finishing while History is filtered refreshes the narrowed list', async () => {
+    let filteredRequests = 0;
+    const filteredMock = {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: (variables: any) => {
+        if (!variables?.filter?.goldenQaId) return false;
+        filteredRequests += 1;
+        return true;
+      },
+      result: { data: { aiEvaluations: [] } },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+    const updateMock = {
+      request: { query: AI_EVALUATION_UPDATED },
+      // held back so it lands after the filter is chosen, the way a run finishing mid-session would
+      delay: 200,
+      result: { data: { aiEvaluationUpdated: { ...completedRun, id: 'r6', status: 'COMPLETED' } } },
+    };
+
+    render(
+      <MockedProvider
+        mocks={[
+          listMock([
+            { id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' },
+            { id: 'g2', name: 'anc_followups', insertedAt: '2026-08-11T10:00:00Z' },
+          ]),
+          runsMock([completedRun]),
+          scoresMock('r1'),
+          filteredMock,
+          updateMock,
+        ]}
+      >
+        <Evaluation assistantId="1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+    const history = await screen.findByTestId('evaluationHistory');
+
+    fireEvent.mouseDown(within(history).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'anc_followups' }));
+
+    await waitFor(() => {
+      expect(filteredRequests).toBeGreaterThan(0);
+    });
+
+    // the run that just landed belongs in this list too, so it is asked for again
+    await waitFor(() => {
+      expect(filteredRequests).toBeGreaterThan(1);
+    });
   });
 
   test('with no filter chosen History asks for nothing extra', async () => {
