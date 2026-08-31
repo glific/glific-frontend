@@ -80,11 +80,13 @@ describe('AIEvalsPage', () => {
     });
   });
 
-  it('shows Create AI Evaluation button on AI Evaluations tab', async () => {
+  it('shows Create AI Evaluation button on AI Evaluations tab, but leaves it inert', async () => {
     renderComponent();
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeInTheDocument();
     });
+    // runs start from the assistant's own Golden Q&A tab now; the button stays for orientation
+    expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeDisabled();
   });
 
   it('switches to Golden QA tab and shows list', async () => {

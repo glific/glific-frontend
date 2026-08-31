@@ -67,6 +67,7 @@ export default function AIEvalsPage() {
         button={{
           show: activeTab === 'ai-evaluations',
           label: 'Create AI Evaluation',
+          disabled: true,
           action: () => navigate('/ai-evaluations/create'),
         }}
       />

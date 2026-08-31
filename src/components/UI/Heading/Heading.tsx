@@ -16,6 +16,7 @@ export interface HeadingProps {
     action: any;
     icon?: any;
     loading?: boolean;
+    disabled?: boolean;
   };
 }
 
@@ -48,6 +49,7 @@ export const Heading = ({ formTitle, helpData, backLink, headerHelp, button }: H
             onClick={() => button.action && button.action()}
             data-testid="headingButton"
             loading={button.loading}
+            disabled={button.disabled}
           >
             {button.icon || addIcon} {button.label}
           </Button>
