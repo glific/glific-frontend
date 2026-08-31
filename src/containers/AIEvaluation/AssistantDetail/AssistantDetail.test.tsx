@@ -11,7 +11,11 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_KAAPI,
 } from 'graphql/mutations/Assistant';
-import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
+import {
+  ASSISTANT_CHAT_RESPONSE,
+  ASSISTANT_CONFIG_VERSION_UPDATED,
+  KNOWLEDGE_BASE_VERSION_UPDATED,
+} from 'graphql/subscriptions/Assistant';
 import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
@@ -1960,5 +1964,132 @@ describe('a prompt improvement finishing in the background', () => {
 
     notify.mockRestore();
     errorSpy.mockRestore();
+  });
+});
+
+describe('a version changing while the page is open', () => {
+  const configUpdate = (assistantConfigVersionUpdated: any) => ({
+    request: { query: ASSISTANT_CONFIG_VERSION_UPDATED },
+    result: { data: { assistantConfigVersionUpdated } },
+  });
+
+  const knowledgeBaseUpdate = (knowledgeBaseVersionUpdated: any) => ({
+    request: { query: KNOWLEDGE_BASE_VERSION_UPDATED },
+    result: { data: { knowledgeBaseVersionUpdated } },
+  });
+
+  test('a build finishing clears In Progress without a reload', async () => {
+    const building = { ...version(2, false), status: 'in_progress' };
+
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock([version(1, true), building]),
+      configUpdate({ ...building, status: 'ready' }),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+
+    // the pill goes as the build lands, and the version becomes publishable
+    await waitFor(() => {
+      expect(screen.queryByTestId('inProgressPill-2.0')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('publishButton')).toBeEnabled();
+  });
+
+  test('a version going live elsewhere moves the LIVE badge over', async () => {
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock(),
+      configUpdate({ ...version(2, false), isLive: true }),
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 2.0 is live in your flows');
+    });
+
+    // the badge belongs to one version at a time
+    fireEvent.click(screen.getByTestId('versionPill'));
+    expect(screen.getByTestId('versionOption-2.0')).toHaveTextContent('LIVE');
+    expect(screen.getByTestId('versionOption-1.0')).not.toHaveTextContent('LIVE');
+  });
+
+  test('an update that leaves the label out keeps the number on screen', async () => {
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock(),
+      // the server derives versionLabel when it lists versions, so a pushed one arrives without it
+      configUpdate({ ...version(2, false), versionLabel: null, status: 'ready' }),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
+    });
+  });
+
+  test('a version from another assistant is left alone', async () => {
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock(),
+      // org-wide topic, so this is someone else's assistant
+      configUpdate({ ...version(2, false), id: 'v-elsewhere', status: 'failed' }),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    await waitFor(() => {
+      expect(screen.getByTestId('versionOption-2.0')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('failedPill-2.0')).not.toBeInTheDocument();
+  });
+
+  test('the knowledge base finishing indexing reloads the versions', async () => {
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock(),
+      knowledgeBaseUpdate({
+        id: 'llm-vs-1',
+        knowledgeBaseId: 'kb-1',
+        versionNumber: 1,
+        status: 'completed',
+        size: 4096,
+        insertedAt: '2024-10-16T15:00:00Z',
+        updatedAt: '2024-10-16T15:05:00Z',
+      }),
+      // version 1 carries knowledge base version llm-vs-1, so the page asks for the versions again
+      versionsMock([version(1, true), version(2, false), version(3, false)]),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionOption-3.0')).toBeInTheDocument();
+    });
+  });
+
+  test('a knowledge base this assistant does not use is ignored', async () => {
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock(),
+      knowledgeBaseUpdate({
+        id: 'llm-vs-elsewhere',
+        knowledgeBaseId: 'kb-9',
+        versionNumber: 3,
+        status: 'completed',
+        size: 100,
+        insertedAt: '2024-10-16T15:00:00Z',
+        updatedAt: '2024-10-16T15:05:00Z',
+      }),
+      // a refetch would pick this up and show a third version — nothing should reach for it
+      versionsMock([version(1, true), version(2, false), version(3, false)]),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    await waitFor(() => {
+      expect(screen.getByTestId('versionOption-2.0')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('versionOption-3.0')).not.toBeInTheDocument();
   });
 });

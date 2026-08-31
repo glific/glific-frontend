@@ -56,6 +56,7 @@ export const Evaluation = ({
   const [addOpen, setAddOpen] = useState(false);
   const [viewing, setViewing] = useState<GoldenQaSet | null>(null);
   const [runOpen, setRunOpen] = useState(false);
+  const [historySetId, setHistorySetId] = useState('');
 
   const { data, loading, error, refetch } = useQuery(LIST_GOLDEN_QA, {
     variables: GOLDEN_QA_LIST_VARIABLES,
@@ -68,6 +69,14 @@ export const Evaluation = ({
     refetch: refetchRuns,
   } = useQuery<EvaluationListData>(LIST_AI_EVALUATIONS, {
     variables: RUN_LIST_VARIABLES,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  // History can be narrowed to one Golden Q&A; the unfiltered list above keeps driving the run
+  // panel, the tab dot and the publish step, which must see every run whatever History is showing
+  const { data: filteredRunData, refetch: refetchFilteredRuns } = useQuery<EvaluationListData>(LIST_AI_EVALUATIONS, {
+    variables: { ...RUN_LIST_VARIABLES, filter: { goldenQaId: historySetId } },
+    skip: !historySetId,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -84,6 +93,7 @@ export const Evaluation = ({
       );
 
       refetchRuns();
+      if (historySetId) refetchFilteredRuns();
     },
   });
 
@@ -92,6 +102,12 @@ export const Evaluation = ({
     (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
   );
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
+  // the server filter carries no assistant, so the same narrowing is applied to the filtered list
+  const historyRuns: EvaluationRun[] = historySetId
+    ? (filteredRunData?.aiEvaluations ?? []).filter(
+        (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+      )
+    : assistantRuns;
   const lastUsedSetId = assistantRuns[0]?.goldenQa?.id;
   const latestRun = versionRuns[0];
   const versionRunInProgress = versionRuns.some(isRunInProgress);
@@ -238,7 +254,13 @@ export const Evaluation = ({
       {subTab === 'run' ? (
         <RunPanel run={latestRun} versionLabel={versionLabel} onGoToHistory={() => setSubTab('history')} />
       ) : assistantRuns.length > 0 ? (
-        <EvaluationHistory runs={assistantRuns} liveVersionId={liveVersionId} />
+        <EvaluationHistory
+          runs={historyRuns}
+          liveVersionId={liveVersionId}
+          sets={sets}
+          selectedSetId={historySetId}
+          onSetChange={setHistorySetId}
+        />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"

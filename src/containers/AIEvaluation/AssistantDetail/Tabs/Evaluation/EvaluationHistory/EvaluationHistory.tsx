@@ -18,17 +18,30 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DataTable } from 'components/UI/DataTable/DataTable';
 import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { LivePill } from '../../../components';
 import styles from './EvaluationHistory.module.css';
 
 dayjs.extend(relativeTime);
 
+const ALL_SETS = 'all';
+
 export interface EvaluationHistoryProps {
   runs: EvaluationRun[];
   liveVersionId?: string;
+  sets?: GoldenQaSet[];
+  selectedSetId?: string;
+  onSetChange?: (goldenQaId: string) => void;
 }
 
-export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProps) => {
+export const EvaluationHistory = ({
+  runs,
+  liveVersionId,
+  sets = [],
+  selectedSetId = '',
+  onSetChange,
+}: EvaluationHistoryProps) => {
   const { t } = useTranslation();
 
   const score = (value: number | null) => {
@@ -122,6 +135,25 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
 
       <div className={styles.Card}>
         <div className={styles.CardHeader}>
+          {onSetChange && sets.length > 0 && (
+            <div className={styles.Filter}>
+              <span className={styles.FilterLabel}>{t('Filter')}</span>
+              <Dropdown
+                placeholder=""
+                options={[
+                  { id: ALL_SETS, label: t('All Golden Q&A') },
+                  ...sets.map((set) => ({ id: set.id, label: set.name })),
+                ]}
+                field={{
+                  name: 'historyGoldenQa',
+                  value: selectedSetId || ALL_SETS,
+                  onChange: (event: { target: { value: string } }) =>
+                    onSetChange(event.target.value === ALL_SETS ? '' : event.target.value),
+                }}
+                menuProps={{ 'data-testid': 'historyFilterMenu' }}
+              />
+            </div>
+          )}
           <Button
             variant="outlined"
             className={styles.ExportButton}

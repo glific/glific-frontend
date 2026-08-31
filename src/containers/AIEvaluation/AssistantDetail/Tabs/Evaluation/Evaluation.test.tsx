@@ -1117,6 +1117,69 @@ describe('running an evaluation', () => {
     expect(screen.queryByTestId('overallScore')).not.toBeInTheDocument();
   });
 
+  test('History can be narrowed to one Golden Q&A, and the server is asked for just that one', async () => {
+    const otherSetRun = {
+      ...completedRun,
+      id: 'r5',
+      goldenQa: { id: 'g2', name: 'anc_followups', duplicationFactor: 1 },
+    };
+    let askedFor: any;
+    const filteredMock = {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: (variables: any) => {
+        // the unfiltered list is served by runsMock; this one only answers the narrowed request
+        if (!variables?.filter?.goldenQaId) return false;
+        askedFor = variables.filter.goldenQaId;
+        return true;
+      },
+      result: { data: { aiEvaluations: [otherSetRun] } },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+
+    render(
+      <MockedProvider
+        mocks={[
+          listMock([
+            { id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' },
+            { id: 'g2', name: 'anc_followups', insertedAt: '2026-08-11T10:00:00Z' },
+          ]),
+          runsMock([completedRun]),
+          scoresMock('r1'),
+          filteredMock,
+        ]}
+      >
+        <Evaluation assistantId="1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+    const history = await screen.findByTestId('evaluationHistory');
+    expect(history).toHaveTextContent('maternal_health_core');
+
+    fireEvent.mouseDown(within(history).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'anc_followups' }));
+
+    await waitFor(() => {
+      expect(askedFor).toBe('g2');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('evaluationHistory')).toHaveTextContent('anc_followups');
+    });
+  });
+
+  test('with no filter chosen History asks for nothing extra', async () => {
+    renderWithRuns([completedRun]);
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+
+    // only the unfiltered list is mocked, so an extra request here would surface as a missing mock
+    const history = await screen.findByTestId('evaluationHistory');
+    expect(history).toHaveTextContent('maternal_health_core');
+    expect(within(history).getByRole('combobox')).toHaveTextContent('All Golden Q&A');
+  });
+
   test('History shows runs from every version', async () => {
     renderWithRuns([{ ...completedRun, assistantConfigVersion: { id: 'v2', majorVersion: 2, minorVersion: 0 } }]);
 

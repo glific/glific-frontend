@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery, useSubscription } from '@apollo/client';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
@@ -12,9 +12,15 @@ import {
 } from 'graphql/mutations/Assistant';
 import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
+import { ASSISTANT_CONFIG_VERSION_UPDATED, KNOWLEDGE_BASE_VERSION_UPDATED } from 'graphql/subscriptions/Assistant';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { compareVersionsDesc, isNewerThan, nextPublishLabel } from 'containers/AIEvaluation/utils/assistantVersions';
+import {
+  compareVersionsDesc,
+  isNewerThan,
+  mergeVersionUpdate,
+  nextPublishLabel,
+} from 'containers/AIEvaluation/utils/assistantVersions';
 import {
   DEFAULT_MODEL_CONFIG,
   configForModel,
@@ -131,6 +137,49 @@ export const AssistantDetail = () => {
     variables: { assistantId },
     skip: isCreateMode,
     fetchPolicy: 'network-only',
+  });
+
+  const client = useApolloClient();
+
+  useSubscription(ASSISTANT_CONFIG_VERSION_UPDATED, {
+    skip: isCreateMode,
+    onData: ({ data: subscription }) => {
+      const updated = subscription?.data?.assistantConfigVersionUpdated;
+      if (!updated) return;
+
+      client.cache.updateQuery<{ assistantVersions: AssistantVersion[] }>(
+        { query: GET_ASSISTANT_VERSIONS, variables: { assistantId } },
+        (previous) => {
+          const current = previous?.assistantVersions;
+          if (!current?.some((version) => version.id === updated.id)) return previous;
+
+          return {
+            ...previous,
+            assistantVersions: current.map((version) => {
+              if (version.id === updated.id) return mergeVersionUpdate(version, updated);
+              return updated.isLive && version.isLive ? { ...version, isLive: false } : version;
+            }),
+          };
+        }
+      );
+    },
+  });
+
+  useSubscription(KNOWLEDGE_BASE_VERSION_UPDATED, {
+    skip: isCreateMode,
+    onData: ({ data: subscription }) => {
+      const updated = subscription?.data?.knowledgeBaseVersionUpdated;
+      if (!updated) return;
+
+      const versions: AssistantVersion[] =
+        client.cache.readQuery<{ assistantVersions: AssistantVersion[] }>({
+          query: GET_ASSISTANT_VERSIONS,
+          variables: { assistantId },
+        })?.assistantVersions ?? [];
+
+      const isOurs = versions.some((version) => version.vectorStore?.knowledgeBaseVersionId === updated.id);
+      if (isOurs) refetchVersions();
+    },
   });
 
   useSubscription(IMPROVE_PROMPT_UPDATED, {
