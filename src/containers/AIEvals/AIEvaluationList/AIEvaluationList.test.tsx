@@ -338,7 +338,7 @@ describe('AIEvaluationList', () => {
     });
     const links = screen.getAllByTestId('assistantVersionLink');
     expect(links.length).toBeGreaterThan(0);
-    expect(links[0]).toHaveAttribute('href', '/assistants/45/version/1');
+    expect(links[0]).toHaveAttribute('href', '/assistants/45/version/1.0');
   });
 
   it('renders golden QA name and duplication factor in name cell', async () => {
@@ -453,5 +453,40 @@ describe('AIEvaluationList', () => {
       expect(screen.queryByText(/Version/)).not.toBeInTheDocument();
       expect(screen.queryByText(/\|/)).not.toBeInTheDocument();
     });
+  });
+
+  it('falls back to minor version 0 when the version only carries a major number', async () => {
+    const missingMinorMock = {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: () => true,
+      result: {
+        data: {
+          aiEvaluations: [
+            {
+              id: '98',
+              name: 'major-only-eval',
+              status: 'FAILED',
+              results: null,
+              failureReason: null,
+              goldenQa: null,
+              assistantConfigVersion: {
+                id: 'v4',
+                majorVersion: 4,
+                minorVersion: null,
+                assistant: { id: '1', name: 'Assistant-1' },
+              },
+              insertedAt: '2026-01-05T00:00:00Z',
+              updatedAt: '2026-01-05T00:00:00Z',
+            },
+          ],
+        },
+      },
+    };
+    renderComponent([missingMinorMock]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('assistantVersionLink')).toHaveTextContent('Assistant-1/Version 4.0');
+    });
+    expect(screen.getByTestId('assistantVersionLink')).toHaveAttribute('href', '/assistants/1/version/4.0');
   });
 });

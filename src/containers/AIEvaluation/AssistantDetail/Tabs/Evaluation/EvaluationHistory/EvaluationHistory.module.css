@@ -4,11 +4,29 @@
   color: var(--app-color-text-tertiary);
 }
 
+.CardHeader {
+  display: flex;
+  margin-bottom: var(--app-space-lg);
+}
+
+.ExportButton {
+  margin-left: auto !important;
+  flex-shrink: 0;
+  border-radius: var(--app-radius-pill) !important;
+  text-transform: none !important;
+}
+
 .Card {
   padding: var(--app-space-xl);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
   box-shadow: var(--app-shadow-card);
+}
+
+.VersionCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
 }
 
 .Version {
@@ -41,7 +59,7 @@
 }
 
 .bad {
-  background-color: var(--app-color-surface-hover);
+  background-color: color-mix(in srgb, var(--app-color-error) 16%, transparent);
   color: var(--app-color-error);
 }
 

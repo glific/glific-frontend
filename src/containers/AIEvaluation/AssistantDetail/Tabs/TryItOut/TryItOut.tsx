@@ -21,9 +21,9 @@ export interface TryItOutProps {
   hasVersions: boolean;
   isDirty: boolean;
   versionId?: string;
-  versionNumber?: number;
+  versionLabel?: string;
   versionStatus?: string;
-  liveVersionNumber?: number | null;
+  liveVersionLabel?: string | null;
   hasGoldenQaSets?: boolean;
   assistantId?: string;
   onGoToPersona: () => void;
@@ -57,9 +57,9 @@ export const TryItOut = ({
   hasVersions,
   isDirty,
   versionId,
-  versionNumber,
+  versionLabel,
   versionStatus,
-  liveVersionNumber = null,
+  liveVersionLabel = null,
   hasGoldenQaSets = false,
   assistantId,
   onGoToPersona,
@@ -246,7 +246,7 @@ export const TryItOut = ({
       t('Save your first version to try it out'),
       t('Try It Out runs against a saved config on the server.'),
       <Button variant="outlined" onClick={onGoToPersona} data-testid="goToPersonaButton">
-        {t('Go to Persona & Prompt')}
+        {t('Go to Model & Prompt')}
       </Button>
     );
   }
@@ -278,7 +278,7 @@ export const TryItOut = ({
       t('This version failed to build'),
       t('Save a new version to try it out.'),
       <Button variant="outlined" onClick={onGoToPersona} data-testid="goToPersonaButton">
-        {t('Go to Persona & Prompt')}
+        {t('Go to Model & Prompt')}
       </Button>,
       <WarningIcon />
     );
@@ -292,10 +292,10 @@ export const TryItOut = ({
         <div className={styles.TestingNote} data-testid="testingNote">
           {t('Testing')}{' '}
           <b>
-            {t('Version')} {versionNumber}
+            {t('Version')} {versionLabel}
           </b>
-          {liveVersionNumber
-            ? ` · ${t('sandbox only — real users stay on Version')} ${liveVersionNumber}`
+          {liveVersionLabel
+            ? ` · ${t('sandbox only — real users stay on Version')} ${liveVersionLabel}`
             : ` · ${t('nothing is live yet')}`}
         </div>
 
@@ -391,7 +391,7 @@ export const TryItOut = ({
               <div className={styles.NudgeTitle}>{t('Happy with these responses?')}</div>
               <div className={styles.Note}>
                 {t(
-                  'Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A set and catches answers that change between attempts.'
+                  'Trying a few questions by hand is a good start — an evaluation checks every question in your Golden Q&A and catches answers that change between attempts.'
                 )}
               </div>
             </div>

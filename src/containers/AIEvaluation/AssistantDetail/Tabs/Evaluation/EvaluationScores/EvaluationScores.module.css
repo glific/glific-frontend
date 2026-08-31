@@ -5,8 +5,12 @@
   margin-bottom: var(--app-space-lg);
 }
 
+.FormatToggle {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .ExportButton {
-  margin-left: auto !important;
   flex-shrink: 0;
   border-radius: var(--app-radius-pill) !important;
   text-transform: none !important;
@@ -26,27 +30,59 @@
 
 .ScoresTable table {
   table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
 }
 
 .ScoresTable td {
   overflow-wrap: anywhere;
 }
 
+.IndexColumn {
+  width: 2.5rem;
+  text-align: center;
+}
+
+.Index {
+  color: var(--app-color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
 .QuestionColumn {
-  width: 18%;
+  width: 11rem;
 }
 
 .ExpectedColumn {
-  width: 26%;
+  width: 16rem;
 }
 
 .AnswerColumn {
-  width: 30%;
+  width: 20rem;
 }
 
 .ScoresTable .ScoreColumn {
-  width: 8%;
+  width: 5rem;
   text-align: center;
+}
+
+.GroupedTable td {
+  height: 1px;
+}
+
+.GroupedTable .AnswerCell {
+  max-height: 20rem;
+  height: 100%;
+}
+
+.GroupedTable .AnswerCell .Answer {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+}
+
+.GroupedTable .ExpectedColumn .Answer {
+  max-height: 20rem;
+  height: 100%;
 }
 
 .Question {
@@ -74,6 +110,38 @@
   background: var(--app-color-border);
 }
 
+.AnswerCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+}
+
+.AnswerScores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2xs) var(--app-space-xl);
+  padding-top: var(--app-space-sm);
+  border-top: 1px solid var(--app-color-border);
+}
+
+.AnswerScore {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.AnswerScore::before {
+  content: '';
+  width: var(--app-space-2xs);
+  height: var(--app-space-2xs);
+  border-radius: 50%;
+  background-color: var(--app-color-text-tertiary);
+  flex-shrink: 0;
+}
+
 .NoScore {
   color: var(--app-color-text-tertiary);
 }
@@ -98,6 +166,43 @@
 }
 
 .bad {
-  background-color: var(--app-color-surface-hover);
+  background-color: color-mix(in srgb, var(--app-color-error) 16%, transparent);
   color: var(--app-color-error);
+}
+
+.LoadingArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+}
+
+.LoadingArea [data-testid='loader'] {
+  height: auto;
+  justify-content: center;
+}
+
+.LoadingArea [data-testid='loader'] > div:first-child {
+  padding-top: 0;
+}
+
+.ScoreCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+}
+
+.ReasonIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+  flex-shrink: 0;
+  display: block;
+}
+
+.ReasonTooltip {
+  max-width: 26rem !important;
+  font-size: var(--app-font-size-xs) !important;
+  line-height: 1.5 !important;
 }

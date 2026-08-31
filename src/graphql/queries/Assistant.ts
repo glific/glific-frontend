@@ -24,9 +24,10 @@ export const FILTER_ASSISTANTS = gql`
       updatedAt
       name
       status
-      liveVersionNumber
+      liveVersionLabel
       activeConfigVersionId
       cloneStatus
+      lastEvaluationSummary
     }
   }
 `;
@@ -42,7 +43,8 @@ export const GET_ASSISTANT_CONFIG_VERSIONS = gql`
     assistantConfigVersions {
       id
       assistantId
-      versionNumber
+      majorVersion
+      minorVersion
       description
       model
       status
@@ -87,7 +89,9 @@ export const GET_ASSISTANT_VERSIONS = gql`
   query AssistantVersions($assistantId: ID!) {
     assistantVersions(assistantId: $assistantId) {
       id
-      versionNumber
+      majorVersion
+      minorVersion
+      versionLabel
       model
       prompt
       settings
@@ -120,6 +124,22 @@ export const GET_ASSISTANT_MODELS = gql`
       provider
       completionType
       config
+    }
+  }
+`;
+
+export const GET_KNOWLEDGE_BASE_FILE = gql`
+  query GetFile($fileId: String!) {
+    getFile(fileId: $fileId) {
+      fileId
+      filename
+      fileSize
+      uploadedAt
+      signedUrl
+      errors {
+        key
+        message
+      }
     }
   }
 `;

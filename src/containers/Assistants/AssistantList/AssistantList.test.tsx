@@ -29,7 +29,7 @@ const renderAssistantList = (mocks: any[] = [filterAssistantsMock, countAssistan
           <Route path="/assistants" element={<AssistantList />} />
           <Route path="/assistants/add" element={<div data-testid="create-page" />} />
           <Route path="/assistants/:id" element={<div data-testid="edit-page" />} />
-          <Route path="/assistants/:id/version/:versionNumber" element={<div data-testid="edit-page" />} />
+          <Route path="/assistants/:id/version/:versionLabel" element={<div data-testid="edit-version-page" />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -48,7 +48,7 @@ test('renders assistant rows with name and live version', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
-    expect(screen.getByText('Version 3')).toBeInTheDocument();
+    expect(screen.getByText('Version 3.0')).toBeInTheDocument();
     expect(screen.getByText('Assistant-2')).toBeInTheDocument();
     expect(screen.getByText('-')).toBeInTheDocument();
   });
@@ -76,7 +76,7 @@ test('Create New Assistant button navigates to /assistants/add', async () => {
   });
 });
 
-test('edit icon navigates to /assistants/:id', async () => {
+test('edit icon navigates to the live version of the assistant', async () => {
   renderAssistantList();
 
   await waitFor(() => {
@@ -84,6 +84,21 @@ test('edit icon navigates to /assistants/:id', async () => {
   });
 
   fireEvent.click(screen.getAllByTestId('edit-icon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('edit-version-page')).toBeInTheDocument();
+  });
+});
+
+test('edit icon navigates to /assistants/:id when there is no live version', async () => {
+  renderAssistantList();
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('edit-icon')).toHaveLength(2);
+  });
+
+  // Assistant-2 has no live version, so there is no version segment to route to
+  fireEvent.click(screen.getAllByTestId('edit-icon')[1]);
 
   await waitFor(() => {
     expect(screen.getByTestId('edit-page')).toBeInTheDocument();

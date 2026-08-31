@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useSubscription } from '@apollo/client';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
@@ -11,8 +11,10 @@ import {
   UPDATE_ASSISTANT,
 } from 'graphql/mutations/Assistant';
 import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
+import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
+import { compareVersionsDesc, isNewerThan } from 'containers/AIEvaluation/utils/assistantVersions';
 import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
 import {
   AssistantHeader,
@@ -94,9 +96,10 @@ export const AssistantDetail = () => {
   const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
+  const [evaluationRunning, setEvaluationRunning] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
-  const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<number | null>(null);
+  const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<AssistantVersion | null | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const loadedKey = useRef<string | null>(null);
   const isCreateMode = !assistantId || assistantId === 'add';
@@ -108,10 +111,39 @@ export const AssistantDetail = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: versionData, loading: versionsLoading } = useQuery(GET_ASSISTANT_VERSIONS, {
+  const {
+    data: versionData,
+    loading: versionsLoading,
+    refetch: refetchVersions,
+  } = useQuery(GET_ASSISTANT_VERSIONS, {
     variables: { assistantId },
     skip: isCreateMode,
     fetchPolicy: 'network-only',
+  });
+
+  useSubscription(IMPROVE_PROMPT_UPDATED, {
+    skip: isCreateMode,
+    onData: async ({ data: subscription }) => {
+      const update = subscription?.data?.improvePromptUpdated;
+      if (!update) return;
+
+      if (update.error) {
+        setErrorMessage(update.error, t('The prompt could not be improved'));
+        return;
+      }
+
+      const version = update.configVersion;
+      if (!version) return;
+
+      const { data: refetched } = await refetchVersions();
+      const isOurs = (refetched?.assistantVersions ?? []).some(
+        (candidate: AssistantVersion) => candidate.id === version.id
+      );
+      if (!isOurs) return;
+
+      setSelectedVersionId(version.id);
+      setNotification(t('A new version with the improved prompt is ready'));
+    },
   });
 
   const { data: modelData, loading: modelsLoading } = useQuery(GET_ASSISTANT_MODELS);
@@ -129,7 +161,7 @@ export const AssistantDetail = () => {
 
   const assistant = data?.assistant?.assistant;
   const versions: AssistantVersion[] = versionData?.assistantVersions ?? [];
-  const sortedVersions = [...versions].sort((a, b) => b.versionNumber - a.versionNumber);
+  const sortedVersions = [...versions].sort(compareVersionsDesc);
   const liveVersion = versions.find((version) => version.isLive);
 
   // default to the live version, falling back to the latest one
@@ -151,16 +183,12 @@ export const AssistantDetail = () => {
     setBaseline(loaded);
   }, [data, selectedVersion]);
 
-  // a fresh save lands as the newest version, so move the selection onto it. The refetch can
-  // still be in flight when the mutation resolves, so wait for a higher number to show up.
   useEffect(() => {
-    if (awaitingVersionAbove === null) return;
-    const latest = [...(versionData?.assistantVersions ?? [])].sort(
-      (a: AssistantVersion, b: AssistantVersion) => b.versionNumber - a.versionNumber
-    )[0];
-    if (!latest || latest.versionNumber <= awaitingVersionAbove) return;
+    if (awaitingVersionAbove === undefined) return;
+    const latest = sortedVersions[0];
+    if (!latest || !isNewerThan(latest, awaitingVersionAbove)) return;
     setSelectedVersionId(latest.id);
-    setAwaitingVersionAbove(null);
+    setAwaitingVersionAbove(undefined);
   }, [awaitingVersionAbove, versionData]);
 
   useEffect(() => {
@@ -258,7 +286,7 @@ export const AssistantDetail = () => {
         return;
       }
       setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles });
-      setAwaitingVersionAbove(sortedVersions[0]?.versionNumber ?? 0);
+      setAwaitingVersionAbove(sortedVersions[0] ?? null);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
       setErrorMessage(err);
@@ -322,16 +350,25 @@ export const AssistantDetail = () => {
       const response = await setLiveVersion({
         variables: { assistantId, versionId: selectedVersion.id },
         refetchQueries: [{ query: GET_ASSISTANT_VERSIONS, variables: { assistantId } }],
+        awaitRefetchQueries: true,
       });
       const errors = response.data?.setLiveVersion?.errors;
       if (errors?.length > 0) {
         setErrorMessage(errors[0]);
         return;
       }
+      setAwaitingVersionAbove(sortedVersions[0]);
       setNotification(t('Version published — it is now live in your flows'));
     } catch (err: unknown) {
       setErrorMessage(err);
     }
+  };
+
+  const publishBlockedReason = () => {
+    if (!selectedVersion || canPublishVersion(selectedVersion)) return undefined;
+    if (selectedVersion.status === 'in_progress') return t('This version is still being prepared');
+    if (selectedVersion.status === 'failed') return t('Cannot set a failed version as live');
+    return t('This version is already live');
   };
 
   const stillLoading = (loading && !assistant) || (versionsLoading && !versionData) || (modelsLoading && !modelData);
@@ -369,8 +406,10 @@ export const AssistantDetail = () => {
       <Evaluation
         assistantId={assistantId}
         versionId={selectedVersion?.id}
-        versionNumber={selectedVersion?.versionNumber}
+        liveVersionId={liveVersion?.id}
+        versionLabel={selectedVersion?.versionLabel}
         assistantName={assistant?.name}
+        onRunningChange={setEvaluationRunning}
       />
     ),
     knowledgeBase: (
@@ -389,9 +428,9 @@ export const AssistantDetail = () => {
         hasVersions={versions.length > 0}
         isDirty={isDirty}
         versionId={selectedVersion?.id}
-        versionNumber={selectedVersion?.versionNumber}
+        versionLabel={selectedVersion?.versionLabel}
         versionStatus={selectedVersion?.status}
-        liveVersionNumber={liveVersion?.versionNumber ?? null}
+        liveVersionLabel={liveVersion?.versionLabel ?? null}
         hasGoldenQaSets={(goldenQaData?.goldenQas ?? []).length > 0}
         assistantId={assistantId}
         onGoToPersona={() => setActiveTab('persona')}
@@ -425,7 +464,8 @@ export const AssistantDetail = () => {
             onSave={handleSaveVersion}
             showPublish={!isCreateMode}
             publishing={publishing}
-            publishDisabled={!canPublishVersion(selectedVersion)}
+            publishDisabled={publishing || !canPublishVersion(selectedVersion)}
+            publishDisabledReason={publishBlockedReason()}
             onPublish={handlePublish}
           />
         }
@@ -439,7 +479,12 @@ export const AssistantDetail = () => {
         isCreateMode={isCreateMode}
       />
 
-      <TabBar activeTab={activeTab} onChange={setActiveTab} dirtyTabs={dirtyTabs} />
+      <TabBar
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        dirtyTabs={dirtyTabs}
+        runningTabs={{ evaluation: evaluationRunning }}
+      />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
         {Object.entries(TAB_PANELS).map(([key, panel]) => (

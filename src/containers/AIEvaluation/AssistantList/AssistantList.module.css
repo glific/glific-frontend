@@ -1,14 +1,26 @@
 .NameColumn {
-  width: 30%;
+  width: 35%;
   min-width: var(--app-size-table-column-min);
 }
 
 .HealthColumn {
-  width: 15%;
+  width: 20%;
 }
 
 .HealthHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.HealthHeaderIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
   cursor: help;
+  flex-shrink: 0;
 }
 
 .SearchBar {
@@ -28,15 +40,11 @@
 }
 
 .VersionColumn {
-  width: 20%;
-}
-
-.DateColumn {
-  width: 20%;
+  width: 25%;
 }
 
 .Actions {
-  width: 15%;
+  width: 20%;
 }
 
 .Actions > div {
@@ -82,5 +90,45 @@
 }
 
 .NoVersion {
+  color: var(--app-color-text-tertiary);
+}
+
+.Health {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-lg);
+  border: 1px solid;
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: var(--app-size-table-column-min);
+}
+
+.HealthIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  flex-shrink: 0;
+}
+
+.good {
+  border-color: var(--app-color-brand-primary);
+  color: var(--app-color-brand-primary);
+}
+
+.okay {
+  border-color: var(--app-color-attention);
+  color: var(--app-color-attention);
+}
+
+.bad {
+  border-color: var(--app-color-error);
+  color: var(--app-color-error);
+}
+
+.HealthNone {
+  border-color: var(--app-color-border);
   color: var(--app-color-text-tertiary);
 }

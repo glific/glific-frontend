@@ -154,7 +154,7 @@ export default function AIEvaluationCreate() {
     : (versionsData?.assistantConfigVersions ?? [])
         .map((v: any) => ({
           id: v.id,
-          label: `${v.assistantName} (Version ${v.versionNumber})`,
+          label: `${v.assistantName} (Version ${v.majorVersion}.${v.minorVersion})`,
         }))
         .sort((a: AssistantOption, b: AssistantOption) => collator.compare(a.label, b.label));
 

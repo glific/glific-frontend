@@ -83,7 +83,7 @@
 }
 
 .badBanner {
-  background-color: var(--app-color-surface-hover);
+  background-color: color-mix(in srgb, var(--app-color-error) 8%, transparent);
 }
 
 .Ring {
@@ -169,7 +169,7 @@
 }
 
 .badPill {
-  background-color: var(--app-color-surface-hover);
+  background-color: color-mix(in srgb, var(--app-color-error) 16%, transparent);
   color: var(--app-color-error);
 }
 
@@ -198,10 +198,24 @@
 
 .MetricHead {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--app-space-2xs);
   margin-bottom: var(--app-space-2xs);
   font-size: var(--app-font-size-sm);
+}
+
+.MetricIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+  flex-shrink: 0;
+  display: block;
+}
+
+.MetricTooltip {
+  max-width: 26rem !important;
+  font-size: var(--app-font-size-xs) !important;
 }
 
 .MetricLabel {

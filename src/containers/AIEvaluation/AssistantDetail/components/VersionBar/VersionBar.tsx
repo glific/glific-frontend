@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { SelectMenuOption } from 'components/UI/SelectMenu/SelectMenu';
 import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
+import { LivePill } from '../LivePill/LivePill';
 import styles from './VersionBar.module.css';
 
 dayjs.extend(relativeTime);
@@ -29,19 +30,12 @@ export const VersionBar = ({
   const { t } = useTranslation();
 
   const publishPill = (version: AssistantVersion) =>
-    version.isLive ? (
-      <span className={styles.LivePill}>
-        <span className={styles.LiveDot} />
-        {t('LIVE')}
-      </span>
-    ) : (
-      <span className={styles.DraftPill}>{t('Not published')}</span>
-    );
+    version.isLive ? <LivePill /> : <span className={styles.DraftPill}>{t('Not published')}</span>;
 
   const buildPill = (version: AssistantVersion) => {
     if (version.status === 'in_progress') {
       return (
-        <span className={styles.InProgressPill} data-testid={`inProgressPill-${version.versionNumber}`}>
+        <span className={styles.InProgressPill} data-testid={`inProgressPill-${version.versionLabel}`}>
           <span className={styles.InProgressDot} />
           {t('In Progress')}
         </span>
@@ -50,7 +44,7 @@ export const VersionBar = ({
 
     if (version.status === 'failed') {
       return (
-        <span className={styles.FailedPill} data-testid={`failedPill-${version.versionNumber}`}>
+        <span className={styles.FailedPill} data-testid={`failedPill-${version.versionLabel}`}>
           {t('Failed')}
         </span>
       );
@@ -77,7 +71,7 @@ export const VersionBar = ({
     return (
       <>
         <b>
-          {t('Version')} {liveVersion.versionNumber}
+          {t('Version')} {liveVersion.versionLabel}
         </b>{' '}
         {t('is live in your flows')}
       </>
@@ -120,7 +114,7 @@ export const VersionBar = ({
             trigger={
               <>
                 <span className={`${styles.VersionLabel} ${selectedVersion.isLive ? styles.VersionLabelLive : ''}`}>
-                  {t('Version')} {selectedVersion.versionNumber}
+                  {t('Version')} {selectedVersion.versionLabel}
                 </span>
                 {statusPill(selectedVersion)}
                 <span className={styles.CaretBox}>
@@ -130,13 +124,13 @@ export const VersionBar = ({
             }
             options={versions.map((version) => ({
               id: version.id,
-              testId: `versionOption-${version.versionNumber}`,
+              testId: `versionOption-${version.versionLabel}`,
               startAdornment: (
                 <span className={`${styles.VersionDot} ${version.isLive ? styles.VersionDotLive : ''}`} />
               ),
               label: (
                 <span className={`${styles.VersionLabel} ${version.isLive ? styles.VersionLabelLive : ''}`}>
-                  {t('Version')} {version.versionNumber}
+                  {t('Version')} {version.versionLabel}
                 </span>
               ),
               endAdornment: statusPill(version),

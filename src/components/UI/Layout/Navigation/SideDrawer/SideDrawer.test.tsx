@@ -43,7 +43,7 @@ describe('side drawer testing', () => {
     // Todo: Fix this test
   });
 
-  describe('AI Evals menu visibility based on aiEvaluationsEnabled flag', () => {
+  describe('AI Evals menu visibility', () => {
     const getAIToolkitChild = (title: string) =>
       getMenus('sideDrawer', 'Manager')
         .find((m) => m.title === 'AI toolkit')
@@ -53,34 +53,24 @@ describe('side drawer testing', () => {
       localStorage.removeItem('organizationServices');
     });
 
-    it('shows the menu item at /ai-evaluations when aiEvaluationsEnabled is true', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
+    it('always shows the AI Evals menu item at /ai-evaluations', () => {
+      setOrganizationServices(JSON.stringify({}));
       expect(getAIToolkitChild('AI Evals')?.path).toBe('/ai-evaluations');
       expect(getAIToolkitChild('AI Evals')?.show).toBeFalsy();
     });
 
-    it('hides the menu item when aiEvaluationsEnabled is false', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false }));
-      expect(getAIToolkitChild('AI Evals')).toBeUndefined();
-    });
-
-    it('hides the menu item when aiEvaluationsEnabled is not set', () => {
-      setOrganizationServices(JSON.stringify({}));
-      expect(getAIToolkitChild('AI Evals')).toBeUndefined();
-    });
-
     it('shows AI Evaluation v2 at /ai-evaluation-v2 when aiEvaluationV2Enabled is true', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
+      setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: true }));
       expect(getAIToolkitChild('AI Evaluation v2')?.path).toBe('/ai-evaluation-v2');
     });
 
     it('hides AI Evaluation v2 when aiEvaluationV2Enabled is false', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: false }));
+      setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: false }));
       expect(getAIToolkitChild('AI Evaluation v2')).toBeUndefined();
     });
 
-    it('hides AI Evaluation v2 when aiEvaluationsEnabled is off, even with aiEvaluationV2Enabled on', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false, aiEvaluationV2Enabled: true }));
+    it('hides AI Evaluation v2 when aiEvaluationV2Enabled is not set', () => {
+      setOrganizationServices(JSON.stringify({}));
       expect(getAIToolkitChild('AI Evaluation v2')).toBeUndefined();
     });
   });

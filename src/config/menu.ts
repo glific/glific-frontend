@@ -180,52 +180,40 @@ const menus = (): Menu[] => [
     showBadge: true,
     roles: managerLevel,
   },
-  ...(getOrganizationServices('aiEvaluationsEnabled')
-    ? [
-        {
-          title: 'AI toolkit',
-          path: '/assistants',
-          icon: 'assistant',
-          type: 'sideDrawer',
-          roles: allRoles,
-          children: [
+  {
+    title: 'AI toolkit',
+    path: '/assistants',
+    icon: 'assistant',
+    type: 'sideDrawer',
+    roles: managerLevel,
+    children: [
+      {
+        title: 'AI Assistant',
+        path: '/assistants',
+        icon: 'assistant',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'AI Evals',
+        path: '/ai-evaluations',
+        icon: 'aiEvals',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      ...(getOrganizationServices('aiEvaluationV2Enabled')
+        ? [
             {
-              title: 'AI Assistant',
-              path: '/assistants',
-              icon: 'assistant',
-              type: 'sideDrawer',
-              roles: allRoles,
-            },
-            {
-              title: 'AI Evals',
-              path: '/ai-evaluations',
+              title: 'AI Evaluation v2',
+              path: '/ai-evaluation-v2',
               icon: 'aiEvals',
               type: 'sideDrawer',
               roles: managerLevel,
             },
-            ...(getOrganizationServices('aiEvaluationV2Enabled')
-              ? [
-                  {
-                    title: 'AI Evaluation v2',
-                    path: '/ai-evaluation-v2',
-                    icon: 'aiEvals',
-                    type: 'sideDrawer',
-                    roles: managerLevel,
-                  },
-                ]
-              : []),
-          ],
-        },
-      ]
-    : [
-        {
-          title: 'AI Assistant',
-          path: '/assistants',
-          icon: 'assistant',
-          type: 'sideDrawer',
-          roles: allRoles,
-        },
-      ]),
+          ]
+        : []),
+    ],
+  },
   {
     title: 'Data Analytics',
     path: '/analytics',

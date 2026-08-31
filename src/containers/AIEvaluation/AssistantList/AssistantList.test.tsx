@@ -48,15 +48,14 @@ test('renders assistant rows with name and live version', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
-    expect(screen.getByText('Version 3')).toBeInTheDocument();
+    expect(screen.getByText('Version 3.0')).toBeInTheDocument();
     expect(screen.getByText('Assistant-2')).toBeInTheDocument();
-    // one placeholder for Assistant-2's missing live version, plus the evaluation health
-    // placeholder on both rows
-    expect(screen.getAllByText('-')).toHaveLength(3);
+    // the only placeholder left is Assistant-2's missing live version
+    expect(screen.getAllByText('-')).toHaveLength(1);
   });
 });
 
-test('renders the Evaluation health column with a placeholder value', async () => {
+test('an assistant that has never been evaluated says so rather than showing a score', async () => {
   renderAssistantList();
 
   await waitFor(() => {
@@ -67,7 +66,52 @@ test('renders the Evaluation health column with a placeholder value', async () =
   expect(headers.slice(0, 2)).toEqual(['Assistant Name', 'Evaluation health']);
 
   const firstRowCells = screen.getAllByRole('row')[1].querySelectorAll('td');
-  expect(firstRowCells[1]).toHaveTextContent('-');
+  expect(firstRowCells[1]).toHaveTextContent('Not evaluated');
+});
+
+test('an evaluated assistant shows the judge’s verdict and score, banded by how it did', async () => {
+  const scored = (id: string, name: string, overallScore: number) => ({
+    id,
+    name,
+    assistantDisplayId: `asst_${id}`,
+    liveVersionLabel: '1.0',
+    activeConfigVersionId: 'v1',
+    updatedAt: '2024-10-16T15:58:26Z',
+    insertedAt: '2024-10-16T15:58:26Z',
+    status: 'active',
+    cloneStatus: 'none',
+    lastEvaluationSummary: {
+      verdict: 'Good',
+      summary_scores: [
+        { total_pairs: 10, std: 0.46, name: 'Adherence to Ground Truth', data_type: 'NUMERIC', avg: 4.7 },
+      ],
+      overall_score: overallScore,
+    },
+  });
+
+  renderAssistantList([
+    {
+      request: {
+        query: FILTER_ASSISTANTS,
+        variables: { filter: {}, opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' } },
+      },
+      result: {
+        data: { assistants: [scored('1', 'Healthy', 4.32), scored('2', 'Middling', 2.6), scored('3', 'Poor', 1.5)] },
+      },
+    },
+    {
+      request: { query: GET_ASSISTANTS_COUNT, variables: { filter: {} } },
+      result: { data: { countAssistants: 3 } },
+    },
+  ]);
+
+  const pills = await screen.findAllByTestId('evaluationHealth');
+  expect(pills).toHaveLength(3);
+
+  // the band comes from the score, so the wording matches the run card exactly
+  expect(pills[0]).toHaveTextContent('Good 4.32');
+  expect(pills[1]).toHaveTextContent('Could improve 2.6');
+  expect(pills[2]).toHaveTextContent('Needs improvement 1.5');
 });
 
 describe('debounced search', () => {
@@ -91,12 +135,13 @@ describe('debounced search', () => {
             id: '2',
             name: 'Assistant-2',
             assistantDisplayId: 'asst_def456',
-            liveVersionNumber: null,
+            liveVersionLabel: null,
             activeConfigVersionId: null,
             updatedAt: '2024-10-17T10:00:00Z',
             insertedAt: '2024-10-17T10:00:00Z',
             status: 'active',
             cloneStatus: 'none',
+            lastEvaluationSummary: null,
           },
         ],
       },
@@ -157,18 +202,22 @@ describe('debounced search', () => {
   });
 });
 
-test('hovering the Evaluation health header shows the scoring tooltip', async () => {
+test('hovering the info icon beside the Evaluation health header shows the scoring tooltip', async () => {
   renderAssistantList();
 
   await waitFor(() => {
     expect(screen.getByText('Evaluation health')).toBeInTheDocument();
   });
 
+  // the header text itself stays quiet — only the info icon explains the scale
   fireEvent.mouseOver(screen.getByText('Evaluation health'));
+  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+  fireEvent.mouseOver(screen.getByTestId('evaluationHealthInfo'));
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(
-      'Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.'
+      'Scored 0–5 by our automated judge. 0–1 = Needs improvement. 2–3 = Could improve. 4–5 = Good.'
     );
   });
 });

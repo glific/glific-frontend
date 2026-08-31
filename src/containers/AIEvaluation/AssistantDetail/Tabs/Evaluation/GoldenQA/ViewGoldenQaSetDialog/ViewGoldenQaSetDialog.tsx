@@ -66,7 +66,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
         }
         setReading(false);
       } catch (error: unknown) {
-        console.error('Golden Q&A set could not be read from storage:', error);
+        console.error('Golden Q&A could not be read from storage:', error);
         if (!cancelled) {
           setFailure('file');
           setReading(false);
@@ -91,11 +91,11 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
       return (
         <div className={styles.Fallback} data-testid="goldenQaViewFallback">
           <div data-testid="goldenQaViewFailureReason">
-            {failure === 'link' && t('This set could not be loaded. Try again in a moment.')}
+            {failure === 'link' && t('This Golden Q&A could not be loaded. Try again in a moment.')}
             {failure === 'file' && t('The stored file could not be read by the browser.')}
             {failure === 'empty' && t('No questions could be read from the stored file.')}
           </div>
-          <div className={styles.FallbackNote}>{t('Export the set to read it.')}</div>
+          <div className={styles.FallbackNote}>{t('Export the Golden Q&A to read it.')}</div>
           {signedUrl && (
             <Button
               variant="outlined"
@@ -103,7 +103,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
               onClick={() => downloadFromUrl(signedUrl)}
               data-testid="goldenQaViewDownloadButton"
             >
-              {t('Export set')}
+              {t('Export Golden Q&A')}
             </Button>
           )}
         </div>
@@ -116,15 +116,6 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
           <div className={styles.Summary} data-testid="goldenQaViewCategories">
             {categories.length > 0 && categories.join(', ')}
           </div>
-          <Button
-            variant="outlined"
-            className={styles.DeleteButton}
-            disabled
-            title={t('Deleting a set is not available yet.')}
-            data-testid="deleteGoldenQaButton"
-          >
-            {t('Delete set')}
-          </Button>
           {signedUrl && (
             <Button
               variant="outlined"
@@ -133,7 +124,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
               onClick={() => downloadFromUrl(signedUrl)}
               data-testid="goldenQaViewDownloadButton"
             >
-              {t('Export set')}
+              {t('Export Golden Q&A')}
             </Button>
           )}
         </div>
@@ -174,7 +165,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
             buttonMiddle: (
               <>
                 <ChevronLeftIcon className={styles.BackIcon} />
-                {t('All sets')}
+                {t('All Golden Q&A')}
               </>
             ),
             handleMiddle: onBack,
@@ -190,8 +181,8 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
           {rows &&
             ' · ' +
               (rows.length === 1
-                ? t('Every evaluation on this set asks this 1 question.')
-                : t('Every evaluation on this set asks these {{count}} questions.', { count: rows.length }))}
+                ? t('Every evaluation on this Golden Q&A asks this 1 question.')
+                : t('Every evaluation on this Golden Q&A asks these {{count}} questions.', { count: rows.length }))}
         </div>
         {body()}
       </div>

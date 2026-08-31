@@ -51,3 +51,23 @@
   border-radius: 50%;
   background-color: var(--app-color-attention);
 }
+
+.TabRunningDot {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--app-color-brand-primary);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
