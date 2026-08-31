@@ -14,8 +14,15 @@ import { GOLDEN_QA_LIST_VARIABLES, LIST_GOLDEN_QA } from 'graphql/queries/AIEval
 import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion, EditorState, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { compareVersionsDesc, isNewerThan } from 'containers/AIEvaluation/utils/assistantVersions';
-import { DEFAULT_MODEL_CONFIG, configForModel, getModel, getParamSpec, parseAssistantModels } from './assistantModels';
+import { compareVersionsDesc, isNewerThan, nextPublishLabel } from 'containers/AIEvaluation/utils/assistantVersions';
+import {
+  DEFAULT_MODEL_CONFIG,
+  configForModel,
+  defaultModelName,
+  getModel,
+  getParamSpec,
+  parseAssistantModels,
+} from './assistantModels';
 import {
   AssistantHeader,
   canPublishVersion,
@@ -26,13 +33,15 @@ import {
   TABS,
   TabBar,
   TabKey,
+  PublishVersionDialog,
   VersionBar,
 } from './components';
 import { KnowledgeBase, PersonaPrompt, TryItOut, Evaluation } from './Tabs';
+import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
-const LIST_PATH = '/ai-evaluation-v2';
+const LIST_PATH = '/assistants';
 
 const parseSettings = (settings: unknown): Record<string, unknown> => {
   if (typeof settings === 'string') {
@@ -97,6 +106,9 @@ export const AssistantDetail = () => {
   const [draftName, setDraftName] = useState('');
   const [discardOpen, setDiscardOpen] = useState(false);
   const [evaluationRunning, setEvaluationRunning] = useState(false);
+  const [lastVersionRun, setLastVersionRun] = useState<EvaluationRun | null>(null);
+  const [publishConfirmOpen, setPublishConfirmOpen] = useState(false);
+  const [runRequest, setRunRequest] = useState(0);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
   const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<AssistantVersion | null | undefined>(undefined);
@@ -193,7 +205,7 @@ export const AssistantDetail = () => {
 
   useEffect(() => {
     if (models.length === 0 || modelConfig.model) return;
-    const loaded = configForModel(models[0], modelConfig);
+    const loaded = configForModel(getModel(models, defaultModelName(models)), modelConfig);
     setModelConfig(loaded);
     setBaseline((current) => ({ ...current, config: loaded }));
   }, [models, modelConfig]);
@@ -345,6 +357,7 @@ export const AssistantDetail = () => {
 
   const handlePublish = async () => {
     if (!selectedVersion) return;
+    setPublishConfirmOpen(false);
 
     try {
       const response = await setLiveVersion({
@@ -410,6 +423,8 @@ export const AssistantDetail = () => {
         versionLabel={selectedVersion?.versionLabel}
         assistantName={assistant?.name}
         onRunningChange={setEvaluationRunning}
+        onLastRunChange={setLastVersionRun}
+        openRunSignal={runRequest}
       />
     ),
     knowledgeBase: (
@@ -466,7 +481,7 @@ export const AssistantDetail = () => {
             publishing={publishing}
             publishDisabled={publishing || !canPublishVersion(selectedVersion)}
             publishDisabledReason={publishBlockedReason()}
-            onPublish={handlePublish}
+            onPublish={() => setPublishConfirmOpen(true)}
           />
         }
       />
@@ -502,6 +517,22 @@ export const AssistantDetail = () => {
 
       {pendingVersionId && (
         <SwitchVersionDialog onConfirm={confirmSwitchVersion} onCancel={() => setPendingVersionId(null)} />
+      )}
+
+      {publishConfirmOpen && selectedVersion && (
+        <PublishVersionDialog
+          versionLabel={selectedVersion.versionLabel}
+          targetLabel={nextPublishLabel(sortedVersions, selectedVersion, Boolean(liveVersion))}
+          lastRun={lastVersionRun}
+          publishing={publishing}
+          onCancel={() => setPublishConfirmOpen(false)}
+          onPublish={handlePublish}
+          onRunEvaluation={() => {
+            setPublishConfirmOpen(false);
+            setActiveTab('evaluation');
+            setRunRequest((request) => request + 1);
+          }}
+        />
       )}
     </div>
   );

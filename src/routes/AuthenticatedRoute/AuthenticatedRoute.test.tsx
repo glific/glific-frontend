@@ -25,11 +25,11 @@ vi.mock('components/UI/Layout/Layout', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('containers/Assistants/AssistantList/AssistantList', () => ({
+vi.mock('containers/AIEvaluation/AssistantList/AssistantList', () => ({
   default: () => <div data-testid="assistant-list-new" />,
 }));
 
-vi.mock('containers/Assistants/AssistantDetail/AssistantDetail', () => ({
+vi.mock('containers/AIEvaluation/AssistantDetail/AssistantDetail', () => ({
   default: () => <div data-testid="assistant-detail-new" />,
 }));
 

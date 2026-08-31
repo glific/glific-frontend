@@ -7,6 +7,14 @@ import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import { GET_KNOWLEDGE_BASE_FILE } from 'graphql/queries/Assistant';
 import KnowledgeBase from './KnowledgeBase';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options ? key.replace(/{{(\w+)}}/g, (token, name) => (name in options ? String(options[name]) : token)) : key,
+    i18n: { changeLanguage: () => new Promise(() => {}) },
+  }),
+}));
+
 const existingFile = { fileId: 'file-1', filename: 'nutrition_faq.pdf', fileSize: 1_200_000 };
 
 const uploadMock = (filename: string, fileId: string) => ({

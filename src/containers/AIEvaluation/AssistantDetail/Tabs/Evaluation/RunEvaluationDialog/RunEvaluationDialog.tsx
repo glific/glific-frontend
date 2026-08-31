@@ -12,6 +12,8 @@ import styles from './RunEvaluationDialog.module.css';
 
 export interface RunEvaluationDialogProps {
   sets: GoldenQaSet[];
+  /** the set the most recent run used, if it is still around */
+  lastUsedSetId?: string;
   versionId?: string;
   versionLabel?: string;
   assistantName?: string;
@@ -34,6 +36,7 @@ const DUPLICATION_OPTIONS = [
 
 export const RunEvaluationDialog = ({
   sets,
+  lastUsedSetId,
   versionId,
   versionLabel,
   assistantName = 'assistant',
@@ -42,7 +45,9 @@ export const RunEvaluationDialog = ({
 }: RunEvaluationDialogProps) => {
   const { t } = useTranslation();
 
-  const [goldenQaId, setGoldenQaId] = useState(sets[0]?.id ?? '');
+  // the reader almost always compares against the same questions, so the last one used leads
+  const lastUsed = lastUsedSetId && sets.some((set) => set.id === lastUsedSetId) ? lastUsedSetId : undefined;
+  const [goldenQaId, setGoldenQaId] = useState(lastUsed ?? sets[0]?.id ?? '');
   const [duplication, setDuplication] = useState<`${DuplicationFactor}`>('1');
 
   const [createEvaluation, { loading }] = useMutation(CREATE_EVALUATION);
@@ -104,7 +109,20 @@ export const RunEvaluationDialog = ({
         <div className={styles.FieldLabel}>{t('Golden Q&A')}</div>
         <Dropdown
           placeholder=""
-          options={sets.map((set) => ({ id: set.id, label: set.name }))}
+          options={sets.map((set) => ({
+            id: set.id,
+            label:
+              set.id === lastUsed ? (
+                <span className={styles.SetOption}>
+                  {set.name}
+                  <span className={styles.LastUsedPill} data-testid="lastUsedSet">
+                    {t('Last used')}
+                  </span>
+                </span>
+              ) : (
+                set.name
+              ),
+          }))}
           field={{
             name: 'goldenQaSet',
             value: goldenQaId,

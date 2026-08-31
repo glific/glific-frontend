@@ -151,3 +151,60 @@ span.GenerateBeta {
 .Temperature {
   max-width: 22rem;
 }
+
+button.ModelTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-sm);
+  width: 100%;
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  font-family: inherit;
+  font-size: var(--app-font-size-sm);
+  cursor: pointer;
+}
+
+button.ModelTrigger:hover {
+  border-color: var(--app-color-brand-primary);
+}
+
+.ModelName {
+  color: var(--app-color-text-heading);
+}
+
+.Caret {
+  width: 0;
+  height: 0;
+  border-left: 0.3125rem solid transparent;
+  border-right: 0.3125rem solid transparent;
+  border-top: 0.3125rem solid var(--app-color-brand-primary);
+  flex-shrink: 0;
+}
+
+.ModelMenuPaper {
+  /* width comes from the field itself, so the two line up */
+  max-height: 25rem;
+}
+
+.ModelBadge {
+  padding: 0 var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-surface-page);
+  color: var(--app-color-text-tertiary);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.RecommendedBadge {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 10%);
+  color: var(--app-color-brand-primary);
+}
+
+/* still selectable — an assistant may already be on one — but it should not read as a fresh choice */
+.RetiringModel {
+  color: var(--app-color-text-tertiary);
+}

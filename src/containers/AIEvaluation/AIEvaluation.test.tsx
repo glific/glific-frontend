@@ -8,7 +8,7 @@ import AIEvaluation from './AIEvaluation';
 test('renders the evaluation list', async () => {
   render(
     <MockedProvider mocks={[filterAssistantsMock, countAssistantsMock]}>
-      <MemoryRouter initialEntries={['/ai-evaluation-v2']}>
+      <MemoryRouter initialEntries={['/assistants']}>
         <AIEvaluation />
       </MemoryRouter>
     </MockedProvider>

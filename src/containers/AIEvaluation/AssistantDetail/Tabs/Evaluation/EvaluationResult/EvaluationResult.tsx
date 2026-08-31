@@ -12,6 +12,8 @@ import {
   BAND_LABEL,
   configVersionLabel,
   MAX_SCORE,
+  METRIC_HINT,
+  METRIC_LABEL,
   METRIC_WEIGHTS,
   formatScore,
   isRunFailed,
@@ -32,23 +34,7 @@ export interface EvaluationResultProps {
   children?: ReactNode;
 }
 
-const METRIC_ORDER = [
-  {
-    key: 'groundTruth',
-    label: 'Adherence to ground truth',
-    hint: 'Compares each answer with the expected answer in your Golden Q&A. The judge scores the meaning, not the exact wording.',
-  },
-  {
-    key: 'prompt',
-    label: 'Adherence to prompt',
-    hint: 'Checks each answer follows the instructions, tone and limits you set in the prompt for this version.',
-  },
-  {
-    key: 'knowledgeBase',
-    label: 'Adherence to knowledge base',
-    hint: 'Checks each answer stays within the files in your knowledge base instead of drawing on outside knowledge. It stays unscored when the run had no knowledge base to check against.',
-  },
-] as const satisfies readonly { key: keyof EvaluationMetrics; label: string; hint: string }[];
+const METRIC_ORDER = ['groundTruth', 'prompt', 'knowledgeBase'] as const satisfies readonly (keyof EvaluationMetrics)[];
 
 const BAND_ICON = {
   good: CheckIcon,
@@ -186,19 +172,19 @@ export const EvaluationResult = ({
           <b>{t('How the overall score is built')}</b> — {t('weighted average of each check, scored 0–5')}
         </div>
 
-        {METRIC_ORDER.map((metric) => {
-          const score = metrics[metric.key];
-          const weight = `${METRIC_WEIGHTS[metric.key] * 100}%`;
+        {METRIC_ORDER.map((key) => {
+          const score = metrics[key];
+          const weight = `${METRIC_WEIGHTS[key] * 100}%`;
 
           return (
-            <div className={styles.Metric} key={metric.key} data-testid={`metric-${metric.key}`}>
+            <div className={styles.Metric} key={key} data-testid={`metric-${key}`}>
               <div className={styles.MetricHead}>
-                <span className={styles.MetricLabel}>{t(metric.label)}</span>
+                <span className={styles.MetricLabel}>{t(METRIC_LABEL[key])}</span>
                 <span className={styles.MetricWeight}>
                   · {t('weight')} {weight}
                 </span>
-                <Tooltip title={t(metric.hint)} placement="top" tooltipClass={styles.MetricTooltip}>
-                  <InfoOutlinedIcon className={styles.MetricIcon} data-testid={`metricHint-${metric.key}`} />
+                <Tooltip title={t(METRIC_HINT[key])} placement="top" tooltipClass={styles.MetricTooltip}>
+                  <InfoOutlinedIcon className={styles.MetricIcon} data-testid={`metricHint-${key}`} />
                 </Tooltip>
                 <span
                   className={`${styles.MetricScore} ${score == null ? styles.NoScore : styles[`${scoreBand(score)}Text`]}`}

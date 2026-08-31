@@ -1,5 +1,6 @@
 import type {
   AssistantModel,
+  ModelCategory,
   ModelConfig,
   ModelParamSpec,
   RawAssistantModel,
@@ -22,6 +23,17 @@ const parseConfig = (config?: string | null): Record<string, ModelParamSpec> => 
   }
 };
 
+const CATEGORIES: ModelCategory[] = ['recommended', 'all', 'to_be_deprecated'];
+
+export const CATEGORY_LABEL = {
+  recommended: 'Recommended',
+  all: 'All models',
+  to_be_deprecated: 'To be deprecated',
+} as const satisfies Record<ModelCategory, string>;
+
+const asCategory = (category?: string | null): ModelCategory =>
+  CATEGORIES.includes(category as ModelCategory) ? (category as ModelCategory) : 'all';
+
 export const parseAssistantModels = (models?: RawAssistantModel[] | null): AssistantModel[] =>
   (models ?? [])
     .filter((model) => (model.completionType ?? []).includes('text'))
@@ -29,7 +41,19 @@ export const parseAssistantModels = (models?: RawAssistantModel[] | null): Assis
       modelName: model.modelName,
       provider: model.provider ?? '',
       config: parseConfig(model.config),
+      badge: model.badge ?? null,
+      category: asCategory(model.category),
     }));
+
+export const groupModelsByCategory = (models: AssistantModel[]) =>
+  CATEGORIES.map((category) => ({
+    category,
+    label: CATEGORY_LABEL[category],
+    models: models.filter((model) => model.category === category),
+  })).filter((group) => group.models.length > 0);
+
+export const defaultModelName = (models: AssistantModel[]) =>
+  models.find((model) => model.category === 'recommended')?.modelName ?? models[0]?.modelName ?? '';
 
 export const getModel = (models: AssistantModel[], modelName: string): AssistantModel | undefined =>
   models.find((model) => model.modelName === modelName) ?? models[0];

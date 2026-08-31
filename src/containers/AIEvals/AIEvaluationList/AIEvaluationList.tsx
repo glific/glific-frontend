@@ -10,7 +10,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { COUNT_AI_EVALUATIONS, GET_EVALUATION_SCORES, LIST_AI_EVALUATIONS } from 'graphql/queries/AIEvaluations';
 import { t } from 'i18next';
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
 import styles from './AIEvaluationList.module.css';
 
 dayjs.extend(relativeTime);
@@ -126,7 +125,7 @@ const getName = ({ name, goldenQa, assistantConfigVersion }: NameCellProps) => {
 
   const assistantLabel = (assistantName ?? '—') + (versionLabel ? `/Version ${versionLabel}` : '');
 
-  const assistantLink = assistantId && versionLabel ? `/assistants/${assistantId}/version/${versionLabel}` : null;
+  const assistantLink = assistantId ? `/assistants/${assistantId}` : null;
 
   return (
     <div>
@@ -231,7 +230,6 @@ const queries = {
 };
 
 export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
-  const navigate = useNavigate();
   const [fetchEvaluationScores] = useLazyQuery(GET_EVALUATION_SCORES);
   const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
   const downloadingIdsRef = useRef<Set<string>>(new Set());
@@ -334,7 +332,7 @@ export const AIEvaluationList = ({ searchQuery }: AIEvaluationListProps) => {
       searchActive={Boolean(searchQuery)}
       showHeader={false}
       showSearch={false}
-      button={{ show: true, label: 'Create New Evaluation', action: () => navigate('/ai-evaluations/create') }}
+      button={{ show: false }}
       dialogMessage="The evaluation will be permanently deleted and cannot be recovered."
       restrictedAction={() => ({ edit: false, delete: false })}
       additionalAction={additionalAction}

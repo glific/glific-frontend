@@ -748,6 +748,12 @@ describe('running an evaluation', () => {
     updatedAt: '2026-08-10T10:05:00Z',
   };
 
+  const onLastRunChange = vi.fn();
+
+  beforeEach(() => {
+    onLastRunChange.mockClear();
+  });
+
   const renderWithRuns = (runs: any[], mocks: any[] = []) =>
     render(
       <MockedProvider mocks={[listMock(oneSet), runsMock(runs), scoresMock('r1'), ...mocks]}>
@@ -805,6 +811,77 @@ describe('running an evaluation', () => {
       expect(screen.getByTestId('evaluationResult')).toBeInTheDocument();
     });
     expect(onRunningChange).not.toHaveBeenCalledWith(true);
+  });
+
+  test('the set the last run used leads the list, marked, and is the one already selected', async () => {
+    const twoSets = [
+      { id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' },
+      { id: 'g2', name: 'anc_followups', insertedAt: '2026-08-11T10:00:00Z' },
+    ];
+    let sent: any;
+    const createMock = {
+      request: { query: CREATE_EVALUATION },
+      variableMatcher: (variables: any) => {
+        sent = variables;
+        return true;
+      },
+      result: { data: { createEvaluation: { evaluation: { status: 'pending' }, errors: null } } },
+    };
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+
+    // the newest run used g2, so that is the one to come back to
+    render(
+      <MockedProvider
+        mocks={[
+          listMock(twoSets),
+          runsMock([{ ...completedRun, goldenQa: { id: 'g2', name: 'anc_followups', duplicationFactor: 1 } }]),
+          scoresMock('r1'),
+          createMock,
+        ]}
+      >
+        <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+    const dialog = await screen.findByTestId('runEvaluationDialog');
+    expect(within(dialog).getByTestId('lastUsedSet')).toBeInTheDocument();
+
+    // no picking needed — running straight away uses the set from last time
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+    expect(sent.input.goldenQaId).toBe('g2');
+    notificationSpy.mockRestore();
+  });
+
+  test('an evaluated version is published without the nudge, with its last score quoted', async () => {
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([completedRun]), scoresMock('r1')]}>
+        <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" onLastRunChange={onLastRunChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(onLastRunChange).toHaveBeenCalledWith(expect.objectContaining({ id: 'r1' }));
+    });
+  });
+
+  test('a version whose only run failed still counts as never evaluated', async () => {
+    const failedRun = { ...completedRun, id: 'r7', status: 'FAILED', results: null };
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([failedRun])]}>
+        <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" onLastRunChange={onLastRunChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(onLastRunChange).toHaveBeenCalledWith(null);
+    });
+    expect(onLastRunChange).not.toHaveBeenCalledWith(expect.objectContaining({ id: 'r7' }));
   });
 
   test('the run dialog offers the sets and starts a run', async () => {
@@ -1049,6 +1126,29 @@ describe('running an evaluation', () => {
 
     expect(await screen.findByTestId('evaluationHistory')).toHaveTextContent('Version 2.0');
     expect(screen.queryByTestId('evaluationHistoryEmpty')).not.toBeInTheDocument();
+  });
+
+  test('History explains each check on hover, and marks the overall as the one they add up to', async () => {
+    renderWithRuns([completedRun]);
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+    await screen.findByTestId('evaluationHistory');
+
+    fireEvent.mouseOver(screen.getByTestId('historyMetricHint-knowledgeBase'));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('stays within the files in your knowledge base');
+    });
+    fireEvent.mouseOut(screen.getByTestId('historyMetricHint-knowledgeBase'));
+
+    // the same wording the run panel uses, so the two views cannot drift apart
+    expect(screen.getByTestId('historyMetricHint-groundTruth')).toBeInTheDocument();
+    expect(screen.getByTestId('historyMetricHint-prompt')).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId('historyOverallHint'));
+    await waitFor(() => {
+      expect(screen.getAllByRole('tooltip').at(-1)).toHaveTextContent('weighted average of the three checks');
+    });
   });
 
   test('a run with no config version is shown without a version', async () => {

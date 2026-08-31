@@ -66,8 +66,6 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
-const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
-const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 const PhoneManagement = lazy(() => import('containers/WaGroups/PhoneManagement/PhoneManagement'));
@@ -82,7 +80,6 @@ const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPag
 const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
 const AIEvaluation = lazy(() => import('containers/AIEvaluation/AIEvaluation'));
 const AIEvaluationAssistantDetail = lazy(() => import('containers/AIEvaluation/AssistantDetail/AssistantDetail'));
-const AIEvaluationGuard = lazy(() => import('containers/AIEvaluation/AIEvaluationGuard/AIEvaluationGuard'));
 
 const staffRoutes = (
   <Routes>
@@ -172,10 +169,6 @@ const adminRoutes = (
     <Route path="ai-evaluations" element={<AIEvalsPage />} />
     <Route path="ai-evaluations/intro" element={<AIEvalsRequestAcess />} />
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
-    <Route path="ai-evaluation-v2" element={<AIEvaluationGuard />}>
-      <Route index element={<AIEvaluation />} />
-      <Route path=":assistantId" element={<AIEvaluationAssistantDetail />} />
-    </Route>
     <Route path="/*" element={<Chat />} />
   </>
 );
@@ -247,9 +240,8 @@ export const AuthenticatedRoute = () => {
     route = (
       <Routes>
         {adminRoutes}
-        <Route path="assistants" element={<AssistantList />} />
-        <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-        <Route path="assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
+        <Route path="assistants" element={<AIEvaluation />} />
+        <Route path="assistants/:assistantId" element={<AIEvaluationAssistantDetail />} />
         {isTemplateV2Enabled ? (
           <>
             <Route path="template" element={<HSMListV2 />} />
