@@ -4,9 +4,10 @@ Every reusable component that lives under `src/components/UI/**`, what it's for,
 _not_ to reach for it. This exists because the #1 reason UI gets rebuilt from scratch is
 that nobody could find the thing that already does it — check here first.
 
-Two project agents (`.claude/agents/ui-implementer.md` and
-`.claude/agents/ui-consistency-reviewer.md`) read this file before writing or reviewing UI
-code. Keep it current when you add, remove, or repurpose a component.
+Three project agents read this file — `.claude/agents/planner.md` when deciding what a feature
+should be assembled from, `.claude/agents/engineer.md` before writing UI code, and
+`.claude/agents/reviewer.md` when checking a diff for reinvention. Keep it current when you add,
+remove, or repurpose a component.
 
 **Not catalogued here:** `src/containers/List/List.tsx` and
 `src/containers/Form/FormLayout.tsx` — these are page-level CRUD patterns documented in the

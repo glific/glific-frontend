@@ -50,12 +50,13 @@ gh pr edit <PR#> --title "feat: <summary>"
 ```
 Self-review the diff for scope creep, leftover logs, and reuse opportunities (or run the **code-review** skill).
 
-If the diff touches `src/containers/**` or `src/components/UI/**`, also run the
-**`ui-consistency-reviewer`** agent (`.claude/agents/ui-consistency-reviewer.md`) — it
-checks specifically for raw-MUI-layering violations, hardcoded values instead of design
-tokens, and reinvented components, which the general **code-review** skill doesn't cover
-in depth. Address blocking findings before Phase 3. This is adversarial by design — treat
-its findings the same as a human reviewer's, not as optional.
+Then run the **`reviewer`** agent (`.claude/agents/reviewer.md`) — it checks the diff against
+the implementation plan and the original request first, then for raw-MUI-layering violations,
+hardcoded values instead of design tokens, reinvented components, and Apollo/i18n convention
+breaks, which the general **code-review** skill doesn't cover in depth. Give it the plan
+(`plans/<slug>.md`) and the original request if you have them. Address blocking findings before
+Phase 3. This is adversarial by design — treat its findings the same as a human reviewer's, not
+as optional.
 
 ## Phase 3 — Commit and push
 
@@ -104,7 +105,7 @@ All gating checks green on the head SHA, CodeRabbit review completed, reviewer t
 ## Related skills
 
 - **fix-flaky-tests**, **improve-code-coverage**, **code-review**.
-- **ui-implementer** / **ui-consistency-reviewer** (`.claude/agents/`) — the implement and
-  review-before-push steps for UI work specifically. `ui-implementer` is a separate,
-  upstream step (invoked when starting new feature UI, before this skill runs at all);
-  `ui-consistency-reviewer` slots into Phase 2 above for UI-touching diffs.
+- The standard agents (`.claude/agents/`): **planner** → **engineer** → **test-engineer** →
+  **reviewer**. The first three are upstream of this skill — they run while the feature is being
+  built. **reviewer** slots into Phase 2 above, and **test-engineer** owns the Phase 1 coverage
+  and Phase 4 e2e work.
