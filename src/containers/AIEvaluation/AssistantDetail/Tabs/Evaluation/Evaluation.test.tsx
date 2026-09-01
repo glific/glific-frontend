@@ -46,7 +46,7 @@ const noRunsMock = {
 const renderTab = (mocks: any[] = [listMock([])]) =>
   render(
     <MockedProvider mocks={[...mocks, noRunsMock]}>
-      <Evaluation versionNumber={1} />
+      <Evaluation versionLabel="1.0" />
     </MockedProvider>
   );
 
@@ -91,7 +91,7 @@ describe('listing sets', () => {
   test('an org with no sets is invited to add one', async () => {
     renderTab();
 
-    expect(await screen.findByTestId('goldenQaEmpty')).toHaveTextContent('Add a Golden Q&A set to evaluate');
+    expect(await screen.findByTestId('goldenQaEmpty')).toHaveTextContent('Add Golden Q&A to evaluate');
     expect(screen.queryByTestId('goldenQaSet')).not.toBeInTheDocument();
   });
 
@@ -103,7 +103,7 @@ describe('listing sets', () => {
     expect(screen.queryByTestId('manageGoldenQaSet')).not.toBeInTheDocument();
   });
 
-  test('Manage sets opens the list, and View opens that set', async () => {
+  test('Manage Golden Q&A opens the list, and View opens that set', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(SAMPLE_CSV) }));
     renderTab([listMock(oneSet), viewSignedUrlMock]);
 
@@ -254,7 +254,7 @@ describe('adding a set', () => {
     fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('Golden Q&A set added');
+      expect(notificationSpy).toHaveBeenCalledWith('Golden Q&A added');
     });
     expect(sent.input.name).toBe('maternal_health');
     expect(sent.input.duplication_factor).toBe(1);
@@ -393,7 +393,7 @@ describe('viewing a set', () => {
       expect(screen.getAllByTestId('goldenQaViewRow')).toHaveLength(2);
     });
     expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent(
-      'Every evaluation on this set asks these 2 questions.'
+      'Every evaluation on this Golden Q&A asks these 2 questions.'
     );
     expect(screen.getByTestId('goldenQaViewCategories')).toHaveTextContent('ANC, Nutrition');
     expect(screen.getByRole('columnheader', { name: 'Category' })).toBeInTheDocument();
@@ -410,7 +410,7 @@ describe('viewing a set', () => {
     await openView();
 
     const summary = await screen.findByTestId('goldenQaViewSummary');
-    expect(summary).toHaveTextContent('Every evaluation on this set asks this 1 question.');
+    expect(summary).toHaveTextContent('Every evaluation on this Golden Q&A asks this 1 question.');
     expect(screen.getByTestId('goldenQaViewCategories')).toBeEmptyDOMElement();
 
     // nothing is categorised, so the column is left out entirely
@@ -743,7 +743,7 @@ describe('running an evaluation', () => {
       '{"total_pairs":10,"std":0.0,"name":"Adherence to Prompt","avg":1.4}]}',
     duplicationFactor: 5,
     goldenQa: { id: 'g1', name: 'maternal_health_core', duplicationFactor: 5 },
-    assistantConfigVersion: { id: 'v1', versionNumber: 1, assistant: { id: '1', name: 'Assistant' } },
+    assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0, assistant: { id: '1', name: 'Assistant' } },
     insertedAt: '2026-08-10T10:00:00Z',
     updatedAt: '2026-08-10T10:05:00Z',
   };
@@ -751,9 +751,61 @@ describe('running an evaluation', () => {
   const renderWithRuns = (runs: any[], mocks: any[] = []) =>
     render(
       <MockedProvider mocks={[listMock(oneSet), runsMock(runs), scoresMock('r1'), ...mocks]}>
-        <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+        <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
       </MockedProvider>
     );
+
+  test('a run still going is reported upward, so the tab bar can flag it from any tab', async () => {
+    const onRunningChange = vi.fn();
+    const runningRun = { ...completedRun, id: 'r9', status: 'RUNNING', results: null };
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([runningRun])]}>
+        <Evaluation versionId="v1" onRunningChange={onRunningChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(onRunningChange).toHaveBeenCalledWith(true);
+    });
+  });
+
+  test('a run on another version leaves this one unflagged', async () => {
+    const onRunningChange = vi.fn();
+    const otherVersionRun = {
+      ...completedRun,
+      id: 'r8',
+      status: 'RUNNING',
+      results: null,
+      assistantConfigVersion: { ...completedRun.assistantConfigVersion, id: 'v2' },
+    };
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([otherVersionRun])]}>
+        <Evaluation versionId="v1" onRunningChange={onRunningChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('runEvaluationButton')).toBeInTheDocument();
+    });
+    expect(onRunningChange).not.toHaveBeenCalledWith(true);
+  });
+
+  test('a finished run leaves nothing flagged', async () => {
+    const onRunningChange = vi.fn();
+
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([completedRun]), scoresMock('r1')]}>
+        <Evaluation versionId="v1" onRunningChange={onRunningChange} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('evaluationResult')).toBeInTheDocument();
+    });
+    expect(onRunningChange).not.toHaveBeenCalledWith(true);
+  });
 
   test('the run dialog offers the sets and starts a run', async () => {
     let sent: any;
@@ -770,7 +822,7 @@ describe('running an evaluation', () => {
     renderWithRuns([], [createMock]);
 
     fireEvent.click(await screen.findByTestId('runEvaluationButton'));
-    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent('Score version 1 against');
+    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent('Score version 1.0 against');
 
     fireEvent.click(screen.getByTestId('ok-button'));
 
@@ -780,7 +832,7 @@ describe('running an evaluation', () => {
     expect(sent.input.goldenQaId).toBe('g1');
     expect(sent.input.configId).toBe('v1');
     expect(sent.input.duplicationFactor).toBe(1);
-    expect(sent.input.evaluationName).toMatch(/^assistant_v1_maternal_health_core_\d+$/);
+    expect(sent.input.evaluationName).toMatch(/^assistant_v1_0_maternal_health_core_\d+$/);
     notificationSpy.mockRestore();
   });
 
@@ -894,18 +946,20 @@ describe('running an evaluation', () => {
     expect(rows).toHaveLength(1);
 
     const headers = screen.getAllByRole('columnheader').map((cell) => cell.textContent);
-    expect(headers).toEqual(['Question', 'Expected answer', 'Answer 1', 'Answer 2']);
+    // the row number leads, under a header left blank on purpose
+    expect(headers).toEqual(['', 'Question', 'Expected answer', 'Answer 1', 'Answer 2']);
 
     const cells = within(rows[0]).getAllByRole('cell');
+    expect(cells[0]).toHaveTextContent('1');
     // each answer carries the judge's marks for that attempt, not the other's
-    expect(cells[2]).toHaveTextContent('First attempt.');
+    expect(cells[3]).toHaveTextContent('First attempt.');
     // the shared "Adherence to" prefix is dropped — it would repeat once per answer column
-    expect(cells[2]).toHaveTextContent('Ground Truth');
-    expect(cells[2]).not.toHaveTextContent('Adherence to');
-    expect(cells[2]).toHaveTextContent('4.0');
-    expect(cells[3]).toHaveTextContent('Second attempt.');
-    expect(cells[3]).toHaveTextContent('2.0');
-    expect(cells[3]).not.toHaveTextContent('4.0');
+    expect(cells[3]).toHaveTextContent('Ground Truth');
+    expect(cells[3]).not.toHaveTextContent('Adherence to');
+    expect(cells[3]).toHaveTextContent('4.0');
+    expect(cells[4]).toHaveTextContent('Second attempt.');
+    expect(cells[4]).toHaveTextContent('2.0');
+    expect(cells[4]).not.toHaveTextContent('4.0');
   });
 
   test('a question with fewer attempts than the widest leaves that column blank', async () => {
@@ -949,9 +1003,10 @@ describe('running an evaluation', () => {
     // the table keeps a column per attempt, so the shorter question gets an empty cell
     // rather than a ragged row
     const secondRow = within(rows[1]).getAllByRole('cell');
-    expect(secondRow).toHaveLength(4);
-    expect(secondRow[2]).toHaveTextContent('Only attempt.');
-    expect(secondRow[3]).toHaveTextContent('—');
+    expect(secondRow).toHaveLength(5);
+    expect(secondRow[0]).toHaveTextContent('2');
+    expect(secondRow[3]).toHaveTextContent('Only attempt.');
+    expect(secondRow[4]).toHaveTextContent('—');
   });
 
   test('the toggle stays reachable while the grouped payload is still loading', async () => {
@@ -973,7 +1028,7 @@ describe('running an evaluation', () => {
     renderWithRuns([completedRun]);
 
     const panel = await screen.findByTestId('evaluationResult');
-    expect(panel).toHaveTextContent('Version 1 · maternal_health_core · 5× duplication');
+    expect(panel).toHaveTextContent('Version 1.0 · maternal_health_core · 5× duplication');
     // 4.6*.5 + 3.2*.3 + 1.4*.2 = 3.5
     expect(within(panel).getByTestId('overallScore')).toHaveTextContent('3.5');
     expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
@@ -987,13 +1042,47 @@ describe('running an evaluation', () => {
   });
 
   test('History shows runs from every version', async () => {
-    renderWithRuns([{ ...completedRun, assistantConfigVersion: { id: 'v2', versionNumber: 2 } }]);
+    renderWithRuns([{ ...completedRun, assistantConfigVersion: { id: 'v2', majorVersion: 2, minorVersion: 0 } }]);
 
     await screen.findByTestId('evaluationSubTabs');
     fireEvent.click(screen.getByRole('radio', { name: 'History' }));
 
-    expect(await screen.findByTestId('evaluationHistory')).toHaveTextContent('Version 2');
+    expect(await screen.findByTestId('evaluationHistory')).toHaveTextContent('Version 2.0');
     expect(screen.queryByTestId('evaluationHistoryEmpty')).not.toBeInTheDocument();
+  });
+
+  test('a run with no config version is shown without a version', async () => {
+    render(
+      <MockedProvider
+        mocks={[listMock(oneSet), runsMock([{ ...completedRun, assistantConfigVersion: null }]), scoresMock('r1')]}
+      >
+        <Evaluation assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    expect(await screen.findByTestId('evaluationResult')).toHaveTextContent(
+      'Last run maternal_health_core · 5× duplication'
+    );
+
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+
+    const history = await screen.findByTestId('evaluationHistory');
+    expect(history).not.toHaveTextContent('Version 1.0');
+    expect(history).toHaveTextContent('—');
+  });
+
+  test('the run dialog falls back to generic copy when the version has no label', async () => {
+    render(
+      <MockedProvider mocks={[listMock(oneSet), runsMock([]), scoresMock('r1')]}>
+        <Evaluation versionId="v1" assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+
+    expect(await screen.findByTestId('runEvaluationDialog')).toHaveTextContent(
+      'Score this version against a Golden Q&A.'
+    );
   });
 });
 
@@ -1017,7 +1106,7 @@ describe('the result panel above the table', () => {
       '{"name":"Adherence to Knowledge Base","avg":2.2},{"name":"Adherence to Prompt","avg":3.4}]}',
     duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-    assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+    assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
     insertedAt: '2026-08-10T10:00:00Z',
     ...overrides,
   });
@@ -1025,7 +1114,7 @@ describe('the result panel above the table', () => {
   const renderWithRun = (value: any) =>
     render(
       <MockedProvider mocks={[listMock(oneSet), runsMock([value]), scoresMock('r1')]}>
-        <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+        <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
       </MockedProvider>
     );
 
@@ -1046,7 +1135,30 @@ describe('the result panel above the table', () => {
     expect(within(panel).getByTestId('metric-prompt')).toHaveTextContent('3.4');
     expect(within(panel).getAllByTestId('scoreBar')).toHaveLength(3);
 
-    expect(panel).toHaveTextContent('Version 1 · core_set · 1× duplication');
+    // knowledge base is the check most runs leave unscored, so it reads last
+    expect(
+      within(panel)
+        .getAllByTestId(/^metric-/)
+        .map((metric) => metric.dataset.testid)
+    ).toEqual(['metric-groundTruth', 'metric-prompt', 'metric-knowledgeBase']);
+
+    fireEvent.mouseOver(within(panel).getByTestId('metricHint-knowledgeBase'));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('stays within the files in your knowledge base');
+    });
+  });
+
+  test('each check explains on hover what the judge is measuring', async () => {
+    renderWithRun(run());
+
+    const panel = await screen.findByTestId('evaluationResult');
+
+    fireEvent.mouseOver(within(panel).getByTestId('metricHint-groundTruth'));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent('Compares each answer with the expected answer');
+    });
+
+    expect(panel).toHaveTextContent('Version 1.0 · core_set · 1× duplication');
   });
 
   test('a check the run did not score says so instead of drawing an empty bar', async () => {
@@ -1104,7 +1216,7 @@ test('the ring fills to the score and takes the band colour', async () => {
                     '{"name":"Adherence to Knowledge Base","avg":2.5},{"name":"Adherence to Prompt","avg":2.5}]}',
                   duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
                   insertedAt: '2026-08-10T10:00:00Z',
                 },
               ],
@@ -1113,7 +1225,7 @@ test('the ring fills to the score and takes the band colour', async () => {
         },
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1144,7 +1256,7 @@ describe('question-level results', () => {
     results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4}]}',
     duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-    assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+    assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
     insertedAt: '2026-08-10T10:00:00Z',
   };
 
@@ -1160,7 +1272,7 @@ describe('question-level results', () => {
           },
         ]}
       >
-        <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+        <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
       </MockedProvider>
     );
 
@@ -1230,6 +1342,10 @@ describe('question-level results', () => {
     expect(headers).toContain('Assistant answer');
     expect(headers).not.toContain('Answer 1');
 
+    // the row number leads every row, and its header is left blank on purpose
+    expect(headers[0]).toBe('');
+    expect(within(rows[0]).getAllByRole('cell')[0]).toHaveTextContent('1');
+
     // the shared "Adherence to" prefix is dropped so the answers get the width
     expect(screen.getByRole('columnheader', { name: 'Ground Truth' })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: 'Prompt' })).toBeInTheDocument();
@@ -1270,7 +1386,7 @@ test('an answer is rendered the way WhatsApp would render it', async () => {
                   results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
                   duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
                   insertedAt: '2026-08-10T10:00:00Z',
                 },
               ],
@@ -1302,7 +1418,7 @@ test('an answer is rendered the way WhatsApp would render it', async () => {
         },
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1335,7 +1451,7 @@ test('the question-level table lives inside the result card, under a divider', a
                   results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
                   duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
                   insertedAt: '2026-08-10T10:00:00Z',
                 },
               ],
@@ -1357,7 +1473,7 @@ test('the question-level table lives inside the result card, under a divider', a
         },
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1398,7 +1514,7 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
                   results: '{"summary_scores":[{"name":"Adherence to Prompt","avg":5}]}',
                   duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
                   insertedAt: '2026-08-10T10:00:00Z',
                 },
               ],
@@ -1420,7 +1536,7 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
         },
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1455,7 +1571,7 @@ test("the judge's summary is shown in the banner", async () => {
                   results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
                   duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
                   insertedAt: '2026-08-10T10:00:00Z',
                 },
               ],
@@ -1478,7 +1594,7 @@ test("the judge's summary is shown in the banner", async () => {
         },
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1526,7 +1642,7 @@ test('Export CSV downloads the question-level results as a CSV file', async () =
                   results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.5}]}',
                   duplicationFactor: 1,
                   goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-                  assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+                  assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
                   insertedAt: '2026-08-10T10:00:00Z',
                 },
               ],
@@ -1536,7 +1652,7 @@ test('Export CSV downloads the question-level results as a CSV file', async () =
         scoresMock('r1', traces),
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1573,7 +1689,7 @@ test('the result card waits for the score payload rather than showing a number t
     results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
     duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-    assistantConfigVersion: { id: 'v1', versionNumber: 1 },
+    assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0 },
     insertedAt: '2026-08-10T10:00:00Z',
   };
 
@@ -1592,7 +1708,7 @@ test('the result card waits for the score payload rather than showing a number t
         },
       ]}
     >
-      <Evaluation versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1600,7 +1716,7 @@ test('the result card waits for the score payload rather than showing a number t
 
   const panel = await screen.findByTestId('evaluationResult');
 
-  expect(panel).toHaveTextContent('Version 1 · core_set');
+  expect(panel).toHaveTextContent('Version 1.0 · core_set');
   expect(within(panel).getByTestId('evaluationScoreLoading')).toBeInTheDocument();
   expect(within(panel).getByTestId('metric-groundTruth')).toBeInTheDocument();
   expect(within(panel).queryByTestId('overallScore')).not.toBeInTheDocument();
@@ -1639,7 +1755,12 @@ const runFor = (id: string, assistantId: string, setName: string) => ({
   results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.7}]}',
   duplicationFactor: 1,
   goldenQa: { id: 'g1', name: setName, duplicationFactor: 1 },
-  assistantConfigVersion: { id: `v-${id}`, versionNumber: 1, assistant: { id: assistantId, name: 'A' } },
+  assistantConfigVersion: {
+    id: `v-${id}`,
+    majorVersion: 1,
+    minorVersion: 0,
+    assistant: { id: assistantId, name: 'A' },
+  },
   insertedAt: '2026-08-10T10:00:00Z',
 });
 
@@ -1656,7 +1777,7 @@ test('History marks the run whose version is live', async () => {
         scoresMock('r1'),
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" liveVersionId="v-r2" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" liveVersionId="v-r2" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1681,7 +1802,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
       '{"name":"Adherence to Knowledge Base","avg":4},{"name":"Adherence to Prompt","avg":5}]}',
     duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
-    assistantConfigVersion: { id: 'v1', versionNumber: 1, assistant: { id: 'a1', name: 'A' } },
+    assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0, assistant: { id: 'a1', name: 'A' } },
     insertedAt: '2026-08-10T10:00:00Z',
   };
   const failed = {
@@ -1691,7 +1812,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
     status: 'FAILED',
     failureReason: 'The judge timed out',
     results: null,
-    assistantConfigVersion: { id: 'v2', versionNumber: 2, assistant: { id: 'a1', name: 'A' } },
+    assistantConfigVersion: { id: 'v2', majorVersion: 2, minorVersion: 0, assistant: { id: 'a1', name: 'A' } },
   };
   const running = {
     ...completed,
@@ -1699,7 +1820,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
     name: 'run_3',
     status: 'PROCESSING',
     results: null,
-    assistantConfigVersion: { id: 'v3', versionNumber: 3, assistant: { id: 'a1', name: 'A' } },
+    assistantConfigVersion: { id: 'v3', majorVersion: 3, minorVersion: 0, assistant: { id: 'a1', name: 'A' } },
   };
 
   render(
@@ -1714,7 +1835,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
         scoresMock('r1'),
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1726,7 +1847,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
   const csv = toCsv([
     [
       'Version',
-      'Golden Q&A set',
+      'Golden Q&A',
       'Duplication Factor',
       'Status',
       'Overall',
@@ -1735,10 +1856,10 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
       'Prompt',
       'When',
     ],
-    ['1', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '2026-08-10 15:30'],
-    ['2', 'core_set', '1', 'Failed', '', '', '', '', '2026-08-10 15:30'],
+    ['1.0', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '2026-08-10 15:30'],
+    ['2.0', 'core_set', '1', 'Failed', '', '', '', '', '2026-08-10 15:30'],
     // a run still going says so rather than reading as complete with no scores
-    ['3', 'core_set', '1', 'Running', '', '', '', '', '2026-08-10 15:30'],
+    ['3.0', 'core_set', '1', 'Running', '', '', '', '', '2026-08-10 15:30'],
   ]);
 
   expect((createObjectURL.mock.calls[0][0] as Blob).size).toBe(new Blob([`\uFEFF${csv}`]).size);
@@ -1760,7 +1881,7 @@ test('History lists this assistant’s runs only, not the whole organisation’s
         scoresMock('r1'),
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1795,7 +1916,7 @@ test('a run finishing in the background lands without the reader reloading', asy
         scoresMock('r1'),
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1823,7 +1944,7 @@ test('an update carrying no run leaves what is on screen alone', async () => {
         },
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1846,7 +1967,7 @@ test('a run still being judged shows as in progress and asks for no scores', asy
         },
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1866,7 +1987,7 @@ test('the two ways of running are offered as cards, and the choice sticks', asyn
         },
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1903,7 +2024,7 @@ test('a run going on another version does not block this one', async () => {
         },
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-other" versionNumber={2} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-other" versionLabel="2.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1924,7 +2045,7 @@ test('a second run cannot be started while one is still going', async () => {
         },
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1945,7 +2066,7 @@ test('once the run settles another one can be started', async () => {
         scoresMock('r1'),
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
@@ -1953,7 +2074,7 @@ test('once the run settles another one can be started', async () => {
   expect(screen.getByTestId('runEvaluationButton')).toBeEnabled();
 });
 
-test('the meta line puts the weight on the Golden Q&A set', async () => {
+test('the meta line puts the weight on the Golden Q&A', async () => {
   render(
     <MockedProvider
       mocks={[
@@ -1966,13 +2087,13 @@ test('the meta line puts the weight on the Golden Q&A set', async () => {
         scoresMock('r1'),
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v-r1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 
   const panel = await screen.findByTestId('evaluationResult');
 
-  expect(panel).toHaveTextContent('Version 1 · ai_cohort_v2_1 · 1× duplication');
+  expect(panel).toHaveTextContent('Version 1.0 · ai_cohort_v2_1 · 1× duplication');
   expect(panel.querySelector('b')).toHaveTextContent('ai_cohort_v2_1');
 });
 
@@ -2025,7 +2146,7 @@ test('a failed runs fetch says so instead of claiming nothing has run', async ()
         { request: { query: LIST_AI_EVALUATIONS, variables: runVariables }, error: new Error('network') },
       ]}
     >
-      <Evaluation assistantId="a1" versionId="v1" versionNumber={1} assistantName="Assistant" />
+      <Evaluation assistantId="a1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
     </MockedProvider>
   );
 

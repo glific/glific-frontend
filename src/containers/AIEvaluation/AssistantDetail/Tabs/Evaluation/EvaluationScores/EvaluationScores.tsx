@@ -96,7 +96,7 @@ export const EvaluationScores = ({
           <div className={styles.AnswerScores}>
             {answer.scores.map((score) => (
               <div className={styles.AnswerScore} key={score.name}>
-                <span className={styles.AnswerScoreName}>{shortMetricName(score.name)}</span>
+                <span>{shortMetricName(score.name)}</span>
                 {scoreWithReason(score)}
               </div>
             ))}
@@ -107,6 +107,7 @@ export const EvaluationScores = ({
   };
 
   const columns = [
+    { label: '', className: styles.IndexColumn },
     { label: t('Question'), className: styles.QuestionColumn },
     { label: t('Expected answer'), className: styles.ExpectedColumn },
     ...(grouped
@@ -123,6 +124,7 @@ export const EvaluationScores = ({
   const rows = traces.map((trace, index) => ({
     key: `${trace.questionId || 'trace'}-${index}`,
     cells: [
+      <span className={styles.Index}>{index + 1}</span>,
       <span className={styles.Question}>{trace.question || '—'}</span>,
       <div className={styles.Answer}>{trace.expected || '—'}</div>,
       ...(grouped

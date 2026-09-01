@@ -48,7 +48,7 @@ test('renders assistant rows with name and live version', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Assistant-1')).toBeInTheDocument();
-    expect(screen.getByText('Version 3')).toBeInTheDocument();
+    expect(screen.getByText('Version 3.0')).toBeInTheDocument();
     expect(screen.getByText('Assistant-2')).toBeInTheDocument();
     // the only placeholder left is Assistant-2's missing live version
     expect(screen.getAllByText('-')).toHaveLength(1);
@@ -74,7 +74,7 @@ test('an evaluated assistant shows the judge’s verdict and score, banded by ho
     id,
     name,
     assistantDisplayId: `asst_${id}`,
-    liveVersionNumber: 1,
+    liveVersionLabel: '1.0',
     activeConfigVersionId: 'v1',
     updatedAt: '2024-10-16T15:58:26Z',
     insertedAt: '2024-10-16T15:58:26Z',
@@ -135,7 +135,7 @@ describe('debounced search', () => {
             id: '2',
             name: 'Assistant-2',
             assistantDisplayId: 'asst_def456',
-            liveVersionNumber: null,
+            liveVersionLabel: null,
             activeConfigVersionId: null,
             updatedAt: '2024-10-17T10:00:00Z',
             insertedAt: '2024-10-17T10:00:00Z',
@@ -202,18 +202,22 @@ describe('debounced search', () => {
   });
 });
 
-test('hovering the Evaluation health header shows the scoring tooltip', async () => {
+test('hovering the info icon beside the Evaluation health header shows the scoring tooltip', async () => {
   renderAssistantList();
 
   await waitFor(() => {
     expect(screen.getByText('Evaluation health')).toBeInTheDocument();
   });
 
+  // the header text itself stays quiet — only the info icon explains the scale
   fireEvent.mouseOver(screen.getByText('Evaluation health'));
+  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+  fireEvent.mouseOver(screen.getByTestId('evaluationHealthInfo'));
 
   await waitFor(() => {
     expect(screen.getByRole('tooltip')).toHaveTextContent(
-      'Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.'
+      'Scored 0–5 by our automated judge. 0–1 = Needs improvement. 2–3 = Could improve. 4–5 = Good.'
     );
   });
 });

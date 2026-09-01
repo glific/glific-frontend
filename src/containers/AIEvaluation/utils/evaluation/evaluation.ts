@@ -198,8 +198,11 @@ export const parseEvaluationSummary = (raw: unknown): string | null => {
   return typeof summary === 'string' && summary.trim() ? summary.trim() : null;
 };
 
-export const evaluationRunName = (assistantName: string, versionNumber: number | undefined, setName: string) =>
-  `${assistantName}-v${versionNumber ?? 1}-${setName}-${Date.now()}`
+export const configVersionLabel = (version?: { majorVersion: number; minorVersion: number } | null) =>
+  version ? `${version.majorVersion}.${version.minorVersion}` : '';
+
+export const evaluationRunName = (assistantName: string, versionLabel: string | undefined, setName: string) =>
+  `${assistantName}-v${versionLabel ?? '1.0'}-${setName}-${Date.now()}`
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');

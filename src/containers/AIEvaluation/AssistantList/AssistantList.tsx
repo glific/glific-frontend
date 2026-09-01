@@ -1,11 +1,10 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
@@ -32,8 +31,6 @@ import {
 import { FILTER_ASSISTANTS, GET_ASSISTANT, GET_ASSISTANTS_COUNT } from 'graphql/queries/Assistant';
 import styles from './AssistantList.module.css';
 
-dayjs.extend(relativeTime);
-
 const SEARCH_DEBOUNCE_MS = 400;
 
 const getAssistantName = (name: string, assistantDisplayId: string) => (
@@ -58,17 +55,12 @@ const getAssistantName = (name: string, assistantDisplayId: string) => (
   </div>
 );
 
-const getLiveVersion = (liveVersionNumber: number | null) =>
-  liveVersionNumber ? (
-    <span className={styles.VersionBadge}>Version {liveVersionNumber}</span>
+const getLiveVersion = (liveVersionLabel: string | null) =>
+  liveVersionLabel ? (
+    <span className={styles.VersionBadge}>Version {liveVersionLabel}</span>
   ) : (
     <span className={styles.NoVersion}>-</span>
   );
-
-const getLastUpdated = (updatedAt: string) => {
-  if (!updatedAt) return '-';
-  return dayjs(updatedAt).fromNow();
-};
 
 const HEALTH_ICON = {
   good: CheckIcon,
@@ -76,7 +68,7 @@ const HEALTH_ICON = {
   bad: CloseIcon,
 } as const;
 
-const columnStyles = [styles.NameColumn, styles.HealthColumn, styles.VersionColumn, styles.DateColumn, styles.Actions];
+const columnStyles = [styles.NameColumn, styles.HealthColumn, styles.VersionColumn, styles.Actions];
 
 const queries = {
   countQuery: GET_ASSISTANTS_COUNT,
@@ -213,35 +205,28 @@ export const AssistantList = () => {
     );
   };
 
-  const getColumns = ({
-    name,
-    assistantDisplayId,
-    liveVersionNumber,
-    updatedAt,
-    lastEvaluationSummary,
-  }: AssistantListItem) => ({
+  const getColumns = ({ name, assistantDisplayId, liveVersionLabel, lastEvaluationSummary }: AssistantListItem) => ({
     name: getAssistantName(name, assistantDisplayId),
     evaluationHealth: getEvaluationHealth(lastEvaluationSummary),
-    liveVersion: getLiveVersion(liveVersionNumber),
-    lastUpdated: getLastUpdated(updatedAt),
+    liveVersion: getLiveVersion(liveVersionLabel),
   });
 
   const columnNames = [
     { label: t('Assistant Name') },
     {
       label: (
-        <Tooltip
-          title={t(
-            'Scored 0–1 by our automated judge. 0–0.3 = Needs Improvement. 0.3–0.6 = Needs Refinement. 0.6–1 = Good.'
-          )}
-          placement="top"
-        >
-          <span className={styles.HealthHeader}>{t('Evaluation health')}</span>
-        </Tooltip>
+        <span className={styles.HealthHeader}>
+          {t('Evaluation health')}
+          <Tooltip
+            title={t('Scored 0–5 by our automated judge. 0–1 = Needs improvement. 2–3 = Could improve. 4–5 = Good.')}
+            placement="top"
+          >
+            <InfoOutlinedIcon className={styles.HealthHeaderIcon} data-testid="evaluationHealthInfo" />
+          </Tooltip>
+        </span>
       ),
     },
     { label: t('Live Version') },
-    { name: 'updated_at', label: t('Last Updated'), sort: true, order: 'desc' },
     { label: t('Actions') },
   ];
 

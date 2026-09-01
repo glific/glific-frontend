@@ -81,7 +81,7 @@ export const SET_LIVE_VERSION = gql`
       assistant {
         id
         activeConfigVersionId
-        liveVersionNumber
+        liveVersionLabel
       }
       errors {
         key

@@ -20,11 +20,11 @@ const TAB_SLOT = '\u0000';
 
 export interface RunPanelProps {
   run?: EvaluationRun;
-  versionNumber?: number;
+  versionLabel?: string;
   onGoToHistory: () => void;
 }
 
-export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) => {
+export const RunPanel = ({ run, versionLabel, onGoToHistory }: RunPanelProps) => {
   const { t } = useTranslation();
 
   const footNote = t('See every past run in the {{tab}} tab', { tab: TAB_SLOT }).split(TAB_SLOT);
@@ -89,11 +89,11 @@ export const RunPanel = ({ run, versionNumber, onGoToHistory }: RunPanelProps) =
         <EmptyState
           testId="noEvaluationsYet"
           title={
-            versionNumber
-              ? t('No evaluations yet for version {{version}}', { version: versionNumber })
+            versionLabel
+              ? t('No evaluations yet for version {{version}}', { version: versionLabel })
               : t('No evaluations yet for this version')
           }
-          note={t('Run one to see how this version scores against a Golden Q&A set.')}
+          note={t('Run one to see how this version scores against a Golden Q&A.')}
         />
       )}
 

@@ -77,9 +77,9 @@ const fillAndSubmitForm = async (evaluationName = 'test_evaluation') => {
 
   await openAssistantAutocomplete();
   await waitFor(() => {
-    expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Test Assistant (Version 2.0)' })).toBeInTheDocument();
   });
-  fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+  fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2.0)' }));
 
   fireEvent.click(screen.getByText('Run Evaluation'));
 };
@@ -254,7 +254,7 @@ describe('AIEvaluationCreate', () => {
     await openGoldenQaAutocomplete();
     fireEvent.click(screen.getByRole('option', { name: 'Diabetescare-0101' }));
     await openAssistantAutocomplete();
-    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2.0)' }));
 
     expect(screen.getByTestId('submitActionButton')).toBeDisabled();
   });
@@ -305,7 +305,7 @@ describe('AIEvaluationCreate', () => {
     expect((nameInput as HTMLInputElement).value).toBe('valid_evaluation-name123');
   });
 
-  test('shows assistant options from query using assistantName and versionNumber', async () => {
+  test('shows assistant options from query using assistantName and versionLabel', async () => {
     render(wrapper([...defaultMocks]));
 
     await waitFor(() => {
@@ -315,8 +315,8 @@ describe('AIEvaluationCreate', () => {
     await openAssistantAutocomplete();
 
     await waitFor(() => {
-      expect(screen.getByText('Test Assistant (Version 2)')).toBeInTheDocument();
-      expect(screen.getByText('Test Assistant (Version 1)')).toBeInTheDocument();
+      expect(screen.getByText('Test Assistant (Version 2.0)')).toBeInTheDocument();
+      expect(screen.getByText('Test Assistant (Version 1.0)')).toBeInTheDocument();
     });
   });
 
@@ -375,9 +375,9 @@ describe('AIEvaluationCreate', () => {
 
     await waitFor(() => {
       const options = screen.getAllByRole('option');
-      expect(options[0]).toHaveTextContent('Alpha Assistant (Version 1)');
-      expect(options[1]).toHaveTextContent('Beta Assistant (Version 1)');
-      expect(options[2]).toHaveTextContent('Beta Assistant (Version 2)');
+      expect(options[0]).toHaveTextContent('Alpha Assistant (Version 1.0)');
+      expect(options[1]).toHaveTextContent('Beta Assistant (Version 1.0)');
+      expect(options[2]).toHaveTextContent('Beta Assistant (Version 2.0)');
     });
   });
 
@@ -392,9 +392,9 @@ describe('AIEvaluationCreate', () => {
     await openAssistantAutocomplete();
 
     await waitFor(() => {
-      expect(screen.getByText('Alpha Assistant (Version 1)')).toBeInTheDocument();
-      expect(screen.getByText('Beta Assistant (Version 1)')).toBeInTheDocument();
-      expect(screen.getByText('Beta Assistant (Version 2)')).toBeInTheDocument();
+      expect(screen.getByText('Alpha Assistant (Version 1.0)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 1.0)')).toBeInTheDocument();
+      expect(screen.getByText('Beta Assistant (Version 2.0)')).toBeInTheDocument();
     });
   });
 
@@ -582,9 +582,9 @@ describe('AIEvaluationCreate', () => {
     fireEvent.focus(assistantCombobox);
     fireEvent.keyDown(assistantCombobox, { key: 'ArrowDown' });
     await waitFor(() => {
-      expect(screen.getByRole('option', { name: 'Test Assistant (Version 2)' })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: 'Test Assistant (Version 2.0)' })).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2)' }));
+    fireEvent.click(screen.getByRole('option', { name: 'Test Assistant (Version 2.0)' }));
 
     fireEvent.click(screen.getByText('Run Evaluation'));
 

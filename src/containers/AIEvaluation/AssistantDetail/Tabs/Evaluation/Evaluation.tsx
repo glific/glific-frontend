@@ -1,5 +1,5 @@
 import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -28,16 +28,18 @@ export interface EvaluationProps {
   assistantId?: string;
   versionId?: string;
   liveVersionId?: string;
-  versionNumber?: number;
+  versionLabel?: string;
   assistantName?: string;
+  onRunningChange?: (running: boolean) => void;
 }
 
 export const Evaluation = ({
   assistantId,
   versionId,
   liveVersionId,
-  versionNumber,
+  versionLabel,
   assistantName,
+  onRunningChange,
 }: EvaluationProps) => {
   const { t } = useTranslation();
 
@@ -85,6 +87,10 @@ export const Evaluation = ({
   const latestRun = versionRuns[0];
   const versionRunInProgress = versionRuns.some(isRunInProgress);
 
+  useEffect(() => {
+    onRunningChange?.(versionRunInProgress);
+  }, [versionRunInProgress, onRunningChange]);
+
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
       onClose={() => setAddOpen(false)}
@@ -105,7 +111,7 @@ export const Evaluation = ({
         <EmptyState
           testId="goldenQaLoadError"
           icon={<ErrorOutlineIcon fontSize="inherit" />}
-          title={t('Golden Q&A sets could not be loaded')}
+          title={t('Golden Q&A could not be loaded')}
           note={t('The server did not answer. Check your connection and try again.')}
           action={
             <Button variant="outlined" onClick={() => refetch()} data-testid="retryGoldenQaButton">
@@ -123,7 +129,7 @@ export const Evaluation = ({
         <EmptyState
           testId="goldenQaEmpty"
           icon={<DocumentIcon />}
-          title={t('Add a Golden Q&A set to evaluate this assistant')}
+          title={t('Add Golden Q&A to evaluate this assistant')}
           note={t(
             'A fixed set of questions and their ideal answers. Every version is scored against the same set, so results stay comparable.'
           )}
@@ -135,7 +141,7 @@ export const Evaluation = ({
               onClick={() => setAddOpen(true)}
               data-testid="addFirstSetButton"
             >
-              {t('Add a Golden Q&A set')}
+              {t('Add Golden Q&A')}
             </Button>
           }
         />
@@ -184,7 +190,7 @@ export const Evaluation = ({
               onClick={() => setManageOpen(true)}
               data-testid="manageSetsButton"
             >
-              {t('Manage sets')}
+              {t('Manage Golden Q&A')}
             </Button>
             <Tooltip
               title={
@@ -211,16 +217,14 @@ export const Evaluation = ({
       </div>
 
       {subTab === 'run' ? (
-        <RunPanel run={latestRun} versionNumber={versionNumber} onGoToHistory={() => setSubTab('history')} />
+        <RunPanel run={latestRun} versionLabel={versionLabel} onGoToHistory={() => setSubTab('history')} />
       ) : assistantRuns.length > 0 ? (
         <EvaluationHistory runs={assistantRuns} liveVersionId={liveVersionId} />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"
           title={t('No evaluations yet')}
-          note={t(
-            'Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A sets.'
-          )}
+          note={t('Once you run an evaluation, every run shows up here so you can compare versions and Golden Q&A.')}
           action={
             <Button
               variant="contained"
@@ -257,7 +261,7 @@ export const Evaluation = ({
         <RunEvaluationDialog
           sets={sets}
           versionId={versionId}
-          versionNumber={versionNumber}
+          versionLabel={versionLabel}
           assistantName={assistantName}
           onClose={() => setRunOpen(false)}
           onStarted={() => {
