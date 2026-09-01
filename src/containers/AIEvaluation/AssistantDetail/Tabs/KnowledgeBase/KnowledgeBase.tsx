@@ -244,7 +244,9 @@ export const KnowledgeBase = ({
           />
           {!isReadOnly && (
             <div className={styles.FormatsHint} data-testid="supportedFormats">
-              {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV')} · {MAX_FILE_SIZE_MB}MB {t('per file')}
+              {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV · {{size}}MB per file', {
+                size: MAX_FILE_SIZE_MB,
+              })}
             </div>
           )}
         </div>

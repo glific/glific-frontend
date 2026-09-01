@@ -66,8 +66,6 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
-const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
-const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 const PhoneManagement = lazy(() => import('containers/WaGroups/PhoneManagement/PhoneManagement'));
@@ -80,6 +78,8 @@ const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Confi
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
 const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
+const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
+const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const AIEvaluation = lazy(() => import('containers/AIEvaluation/AIEvaluation'));
 const AIEvaluationAssistantDetail = lazy(() => import('containers/AIEvaluation/AssistantDetail/AssistantDetail'));
 const AIEvaluationGuard = lazy(() => import('containers/AIEvaluation/AIEvaluationGuard/AIEvaluationGuard'));
@@ -172,10 +172,6 @@ const adminRoutes = (
     <Route path="ai-evaluations" element={<AIEvalsPage />} />
     <Route path="ai-evaluations/intro" element={<AIEvalsRequestAcess />} />
     <Route path="ai-evaluations/create" element={<AIEvaluationCreate />} />
-    <Route path="ai-evaluation-v2" element={<AIEvaluationGuard />}>
-      <Route index element={<AIEvaluation />} />
-      <Route path=":assistantId" element={<AIEvaluationAssistantDetail />} />
-    </Route>
     <Route path="/*" element={<Chat />} />
   </>
 );
@@ -210,6 +206,20 @@ export const AuthenticatedRoute = () => {
   const [showAskGlific, setShowAskGlific] = useState(false);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
   const isTemplateV2Enabled = getOrganizationServices('templateV2Enabled');
+  const isAIEvaluationV2Enabled = getOrganizationServices('aiEvaluationV2Enabled');
+
+  const assistantRoutes = isAIEvaluationV2Enabled ? (
+    <Route path="assistants" element={<AIEvaluationGuard />}>
+      <Route index element={<AIEvaluation />} />
+      <Route path=":assistantId" element={<AIEvaluationAssistantDetail />} />
+    </Route>
+  ) : (
+    <>
+      <Route path="assistants" element={<AssistantList />} />
+      <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+      <Route path="assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
+    </>
+  );
 
   useEffect(() => {
     if (organizationProvider) {
@@ -247,9 +257,7 @@ export const AuthenticatedRoute = () => {
     route = (
       <Routes>
         {adminRoutes}
-        <Route path="assistants" element={<AssistantList />} />
-        <Route path="assistants/:assistantId" element={<AssistantDetail />} />
-        <Route path="assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
+        {assistantRoutes}
         {isTemplateV2Enabled ? (
           <>
             <Route path="template" element={<HSMListV2 />} />

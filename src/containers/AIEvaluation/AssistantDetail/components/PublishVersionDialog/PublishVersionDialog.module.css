@@ -1,0 +1,47 @@
+.Paper {
+  max-width: 34rem !important;
+}
+
+.Intro {
+  margin-bottom: var(--app-space-xl);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+
+  b {
+    color: var(--app-color-text-heading);
+  }
+}
+
+.Warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border: 1px solid rgb(var(--app-color-amber-primary-rgb) / 30%);
+  border-radius: var(--app-radius-lg);
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 9%);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-attention);
+}
+
+.WarningIcon {
+  width: var(--app-size-icon-lg);
+  height: var(--app-size-icon-lg);
+  flex-shrink: 0;
+}
+
+.Note {
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-page);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.55;
+  color: var(--app-color-text-tertiary);
+
+  b {
+    color: var(--app-color-text-heading);
+  }
+}

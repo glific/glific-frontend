@@ -6,13 +6,13 @@ import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import { RangeSlider } from 'components/UI/Form/RangeSlider/RangeSlider';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
 import { Input } from 'components/UI/Form/Input/Input';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
 import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
 import type { AssistantModel, ModelConfig, ModelParamSpec } from 'containers/AIEvaluation/types/assistantType';
-import { configForModel, getModel, getParamSpec } from '../../assistantModels';
+import { configForModel, getModel, getParamSpec, groupModelsByCategory } from '../../assistantModels';
 import {
   PromptAnswers,
   PromptGeneratorModal,
@@ -42,7 +42,21 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
   const temperatureSpec = getParamSpec(selectedModel, 'temperature');
   const effortSpec = getParamSpec(selectedModel, 'effort');
 
-  const modelOptions = models.map((model) => ({ id: model.modelName, label: model.modelName }));
+  const modelOptions = groupModelsByCategory(models).flatMap((group) =>
+    group.models.map((model) => ({
+      id: model.modelName,
+      group: t(group.label),
+      testId: `modelOption-${model.modelName}`,
+      label: (
+        <span className={model.category === 'to_be_deprecated' ? styles.RetiringModel : ''}>{model.modelName}</span>
+      ),
+      endAdornment: model.badge ? (
+        <span className={`${styles.ModelBadge} ${model.category === 'recommended' ? styles.RecommendedBadge : ''}`}>
+          {model.badge}
+        </span>
+      ) : null,
+    }))
+  );
 
   const handleModelChange = (modelName: string) => {
     const next = getModel(models, modelName);
@@ -116,14 +130,20 @@ export const PersonaPrompt = ({ prompt, config, models, onPromptChange, onConfig
       <div className={styles.Divider} />
 
       <div className={styles.FieldLabel}>{t('Model')}</div>
-      <Dropdown
-        placeholder=""
+      <SelectMenu
+        testId="modelSelect"
+        triggerClassName={styles.ModelTrigger}
+        paperClassName={styles.ModelMenuPaper}
+        matchTriggerWidth
+        selectedId={config.model}
+        onSelect={(option) => handleModelChange(option.id)}
+        trigger={
+          <>
+            <span className={styles.ModelName}>{config.model}</span>
+            <span className={styles.Caret} />
+          </>
+        }
         options={modelOptions}
-        field={{
-          name: 'model',
-          value: config.model,
-          onChange: (event: { target: { value: string } }) => handleModelChange(event.target.value),
-        }}
       />
 
       {selectedModel && (

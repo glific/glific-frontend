@@ -39,6 +39,52 @@
   white-space: nowrap;
 }
 
+.HistoryTable .DuplicationColumn,
+.HistoryTable .MetricColumn,
+.HistoryTable .OverallColumn {
+  text-align: center;
+}
+
+.HistoryTable .MetricColumn,
+.HistoryTable .OverallColumn {
+  width: 9rem;
+}
+
+.HistoryTable td.OverallColumn {
+  border-right: 1px solid var(--app-color-border);
+  background-color: var(--app-color-surface-page);
+}
+
+.HistoryTable .OverallColumn .Score {
+  min-width: 3rem;
+  font-size: var(--app-font-size-md);
+}
+
+.MetricHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.MetricIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: currentcolor;
+  opacity: 0.75;
+  cursor: help;
+  flex-shrink: 0;
+  display: block;
+}
+
+.MetricTooltip {
+  max-width: 26rem !important;
+  font-size: var(--app-font-size-xs) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
 .Score {
   display: inline-block;
   min-width: 2.25rem;

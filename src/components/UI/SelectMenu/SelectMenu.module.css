@@ -59,3 +59,23 @@
   font-size: var(--app-font-size-xs);
   color: var(--app-color-text-tertiary);
 }
+
+.GroupHeading {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-lg) var(--app-space-xl) var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+  list-style: none;
+}
+
+.GroupHeading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--app-color-border);
+}

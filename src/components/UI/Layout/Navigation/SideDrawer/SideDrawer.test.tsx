@@ -59,18 +59,13 @@ describe('side drawer testing', () => {
       expect(getAIToolkitChild('AI Evals')?.show).toBeFalsy();
     });
 
-    it('shows AI Evaluation v2 at /ai-evaluation-v2 when aiEvaluationV2Enabled is true', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: true }));
-      expect(getAIToolkitChild('AI Evaluation v2')?.path).toBe('/ai-evaluation-v2');
-    });
-
-    it('hides AI Evaluation v2 when aiEvaluationV2Enabled is false', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: false }));
-      expect(getAIToolkitChild('AI Evaluation v2')).toBeUndefined();
-    });
-
-    it('hides AI Evaluation v2 when aiEvaluationV2Enabled is not set', () => {
+    it('sends AI Assistant to the assistant flow, whatever the org has enabled', () => {
       setOrganizationServices(JSON.stringify({}));
+      expect(getAIToolkitChild('AI Assistant')?.path).toBe('/assistants');
+    });
+
+    it('no longer carries a separate AI Evaluation v2 entry', () => {
+      setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: true }));
       expect(getAIToolkitChild('AI Evaluation v2')).toBeUndefined();
     });
   });

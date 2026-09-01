@@ -128,19 +128,19 @@ describe('AI Evals sibling menu selection', () => {
     items.forEach((el) => expect(el.className).not.toMatch(/SelectedText/));
   };
 
-  test('selects only AI Evaluation v2 on /ai-evaluation-v2', async () => {
-    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
-    renderSideMenus('/ai-evaluation-v2');
+  test('selects only AI Assistant on /assistants', async () => {
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
+    renderSideMenus('/assistants');
 
-    await expectMenuSelected('AI Evaluation v2');
+    await expectMenuSelected('AI Assistant');
     expectMenuNotSelected('AI Evals');
   });
 
   test('selects only AI Evals on /ai-evaluations/create', async () => {
-    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
     renderSideMenus('/ai-evaluations/create');
 
     await expectMenuSelected('AI Evals');
-    expectMenuNotSelected('AI Evaluation v2');
+    expectMenuNotSelected('AI Assistant');
   });
 });

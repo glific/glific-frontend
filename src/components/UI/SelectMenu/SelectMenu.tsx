@@ -1,5 +1,5 @@
 import { Menu, MenuItem } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { Fragment, ReactNode, useState } from 'react';
 import styles from './SelectMenu.module.css';
 
 export interface SelectMenuOption {
@@ -10,6 +10,7 @@ export interface SelectMenuOption {
   endAdornment?: ReactNode;
   disabled?: boolean;
   testId?: string;
+  group?: string;
 }
 
 export interface SelectMenuProps {
@@ -24,6 +25,7 @@ export interface SelectMenuProps {
   optionClassName?: string;
   disabled?: boolean;
   align?: 'left' | 'right';
+  matchTriggerWidth?: boolean;
   testId?: string;
 }
 
@@ -39,6 +41,7 @@ export const SelectMenu = ({
   optionClassName,
   disabled = false,
   align = 'left',
+  matchTriggerWidth = false,
   testId = 'selectMenu',
 }: SelectMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -71,29 +74,40 @@ export const SelectMenu = ({
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: align === 'left' ? 'left' : 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: align === 'left' ? 'left' : 'right' }}
-        slotProps={{ paper: { className: `${styles.Paper} ${paperClassName ?? ''}` } }}
+        slotProps={{
+          paper: {
+            className: `${styles.Paper} ${paperClassName ?? ''}`,
+            style: matchTriggerWidth && anchorEl ? { width: anchorEl.offsetWidth } : undefined,
+          },
+        }}
         data-testid={`${testId}-menu`}
       >
         {header && <div className={styles.Header}>{header}</div>}
 
-        {options.map((option) => (
-          <MenuItem
-            key={option.id}
-            selected={option.id === selectedId}
-            disabled={option.disabled}
-            onClick={() => handleSelect(option)}
-            className={`${styles.Option} ${optionClassName ?? ''}`}
-            data-testid={option.testId}
-          >
-            {option.startAdornment}
-            <span className={styles.OptionText}>
-              <span className={styles.OptionLabelRow}>
-                {option.label}
-                {option.endAdornment}
+        {options.map((option, index) => (
+          <Fragment key={option.id}>
+            {option.group && option.group !== options[index - 1]?.group && (
+              <li className={styles.GroupHeading} role="presentation" data-testid={`group-${option.group}`}>
+                {option.group}
+              </li>
+            )}
+            <MenuItem
+              selected={option.id === selectedId}
+              disabled={option.disabled}
+              onClick={() => handleSelect(option)}
+              className={`${styles.Option} ${optionClassName ?? ''}`}
+              data-testid={option.testId}
+            >
+              {option.startAdornment}
+              <span className={styles.OptionText}>
+                <span className={styles.OptionLabelRow}>
+                  {option.label}
+                  {option.endAdornment}
+                </span>
+                {option.description && <span className={styles.OptionDescription}>{option.description}</span>}
               </span>
-              {option.description && <span className={styles.OptionDescription}>{option.description}</span>}
-            </span>
-          </MenuItem>
+            </MenuItem>
+          </Fragment>
         ))}
 
         {footer && <div className={styles.Footer}>{footer}</div>}
