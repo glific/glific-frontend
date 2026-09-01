@@ -78,8 +78,11 @@ const WhatsappFormsConfigure = lazy(() => import('containers/WhatsAppForms/Confi
 const AIEvaluationCreate = lazy(() => import('containers/AIEvals/AIEvaluationCreate/AIEvaluationCreate'));
 const AIEvalsPage = lazy(() => import('containers/AIEvals/AIEvalsPage/AIEvalsPage'));
 const AIEvalsRequestAcess = lazy(() => import('containers/AIEvals/AIEvalsRequestAcess/AIEvalsRequestAcess'));
+const AssistantList = lazy(() => import('containers/Assistants/AssistantList/AssistantList'));
+const AssistantDetail = lazy(() => import('containers/Assistants/AssistantDetail/AssistantDetail'));
 const AIEvaluation = lazy(() => import('containers/AIEvaluation/AIEvaluation'));
 const AIEvaluationAssistantDetail = lazy(() => import('containers/AIEvaluation/AssistantDetail/AssistantDetail'));
+const AIEvaluationGuard = lazy(() => import('containers/AIEvaluation/AIEvaluationGuard/AIEvaluationGuard'));
 
 const staffRoutes = (
   <Routes>
@@ -203,6 +206,20 @@ export const AuthenticatedRoute = () => {
   const [showAskGlific, setShowAskGlific] = useState(false);
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
   const isTemplateV2Enabled = getOrganizationServices('templateV2Enabled');
+  const isAIEvaluationV2Enabled = getOrganizationServices('aiEvaluationV2Enabled');
+
+  const assistantRoutes = isAIEvaluationV2Enabled ? (
+    <Route path="assistants" element={<AIEvaluationGuard />}>
+      <Route index element={<AIEvaluation />} />
+      <Route path=":assistantId" element={<AIEvaluationAssistantDetail />} />
+    </Route>
+  ) : (
+    <>
+      <Route path="assistants" element={<AssistantList />} />
+      <Route path="assistants/:assistantId" element={<AssistantDetail />} />
+      <Route path="assistants/:assistantId/version/:versionLabel" element={<AssistantDetail />} />
+    </>
+  );
 
   useEffect(() => {
     if (organizationProvider) {
@@ -240,8 +257,7 @@ export const AuthenticatedRoute = () => {
     route = (
       <Routes>
         {adminRoutes}
-        <Route path="assistants" element={<AIEvaluation />} />
-        <Route path="assistants/:assistantId" element={<AIEvaluationAssistantDetail />} />
+        {assistantRoutes}
         {isTemplateV2Enabled ? (
           <>
             <Route path="template" element={<HSMListV2 />} />

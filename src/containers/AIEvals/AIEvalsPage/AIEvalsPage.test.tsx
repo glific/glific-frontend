@@ -80,12 +80,22 @@ describe('AIEvalsPage', () => {
     });
   });
 
-  it('shows Create AI Evaluation button on AI Evaluations tab, but leaves it inert', async () => {
+  it('keeps Create AI Evaluation usable while the new assistant flow is off', async () => {
     renderComponent();
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeInTheDocument();
     });
-    // runs start from the assistant's own Golden Q&A tab now; the button stays for orientation
+    expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeEnabled();
+  });
+
+  it('leaves Create AI Evaluation inert once the new assistant flow is on', async () => {
+    // runs are started from the assistant's own Golden Q&A tab there, so this one stops working
+    AuthService.setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: true }));
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeInTheDocument();
+    });
     expect(screen.getByRole('button', { name: /Create AI Evaluation/i })).toBeDisabled();
   });
 
