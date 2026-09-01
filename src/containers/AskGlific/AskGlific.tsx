@@ -1,9 +1,10 @@
 import { useLazyQuery, useMutation, useSubscription } from '@apollo/client';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import MinimizeIcon from '@mui/icons-material/Minimize';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import NorthEastIcon from '@mui/icons-material/NorthEast';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SettingsOverscanIcon from '@mui/icons-material/SettingsOverscan';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -19,6 +20,7 @@ import EditIcon from 'assets/images/icons/Edit.svg?react';
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
+import { copyToClipboardMethod } from 'common/utils';
 import { getUserSession } from 'services/AuthService';
 import styles from './AskGlific.module.css';
 import BetaTag from 'components/UI/BetaTag/BetaTag';
@@ -50,10 +52,10 @@ interface ChatHistoryItem {
 type DisplayMode = 'floating' | 'sidebar' | 'fullscreen';
 
 const QUICK_SUGGESTIONS = [
-  'Create your first chatbot',
-  'How to use AI Assistants',
-  'How to send bulk messages',
-  'Run a survey using WA forms',
+  'One flow has stopped working, how do i debug?',
+  'How do i integrate AI into my flow?',
+  'How do i use google sheets in my flow?',
+  'How do i broadcast my flow to the contacts?',
 ];
 
 const formatTimeAgo = (timestamp: number): string => {
@@ -401,7 +403,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = 'auto';
-      textAreaRef.current.style.height = `${Math.min(textAreaRef.current.scrollHeight, 120)}px`;
+      textAreaRef.current.style.height = `${Math.min(textAreaRef.current.scrollHeight, 160)}px`;
     }
   }, [message]);
 
@@ -496,15 +498,11 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                     <AskGlificIcon />
                   </div>
                 )}
-                <span>{getChatTitle()}</span>
+                <span className={styles.HeaderTitle}>{getChatTitle()}</span>
 
                 <KeyboardArrowDownIcon
-                  sx={{
-                    fontSize: 20,
-                    color: '#888',
-                    transform: showHistory || historyAnchor ? 'rotate(180deg)' : 'none',
-                    transition: 'transform 0.2s',
-                  }}
+                  className={showHistory || historyAnchor ? styles.HeaderCaretOpen : styles.HeaderCaret}
+                  sx={{ fontSize: 18 }}
                 />
 
                 <span onClick={(e) => e.stopPropagation()}>
@@ -615,15 +613,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                     Fullscreen
                   </MenuItem>
                 </Menu>
-                {hasMessages ? (
-                  <IconButton
-                    className={styles.HeaderIconButton}
-                    onClick={() => setOpen(false)}
-                    data-testid="minimize-btn"
-                  >
-                    <MinimizeIcon sx={{ fontSize: 18 }} />
-                  </IconButton>
-                ) : (
+                <Tooltip title="Close">
                   <IconButton
                     className={styles.HeaderIconButton}
                     onClick={() => setOpen(false)}
@@ -631,7 +621,7 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
                   >
                     <CloseIcon sx={{ fontSize: 18 }} />
                   </IconButton>
-                )}
+                </Tooltip>
               </div>
             </div>
 
@@ -641,118 +631,151 @@ const AskGlific = ({ open, setOpen }: AskGlificProps) => {
               </div>
             ) : !hasMessages && !isLoading ? (
               <div className={styles.WelcomeSection}>
-                <div className={styles.WelcomeIcon}>
-                  <AskGlificIcon />
-                </div>
-                <div className={styles.WelcomeText}>Ask Glific! Learn About How It Works?</div>
-                <div className={styles.SuggestionsGrid}>
-                  {QUICK_SUGGESTIONS.map((suggestion) => (
-                    <div
-                      key={suggestion}
-                      data-testid="suggestion"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className={styles.SuggestionCard}
-                    >
-                      {suggestion}
-                    </div>
-                  ))}
+                <div className={styles.WelcomeInner}>
+                  <div className={styles.WelcomeIcon}>
+                    <AskGlificIcon />
+                  </div>
+                  <div className={styles.WelcomeText}>Ask Glific! Learn About How It Works?</div>
+                  <div className={styles.WelcomeSubText}>
+                    Get answers about flows, chatbots, broadcasts and everything else in Glific.
+                  </div>
+                  <div className={styles.SuggestionsGrid}>
+                    {QUICK_SUGGESTIONS.map((suggestion) => (
+                      <button
+                        type="button"
+                        key={suggestion}
+                        data-testid="suggestion"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className={styles.SuggestionCard}
+                      >
+                        {suggestion}
+                        <NorthEastIcon className={styles.SuggestionArrow} sx={{ fontSize: 15 }} />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
               <div className={styles.Messages}>
-                {hasMoreMessages && (
-                  <div className={styles.LoadMoreButton} onClick={loadMoreMessages} data-testid="load-more-messages">
-                    {isLoadingHistory ? 'Loading...' : 'Load older messages'}
-                  </div>
-                )}
-                {isLoadingHistory && !hasMoreMessages && messages.length === 0 && (
-                  <div className={styles.LoadingContainer}>
-                    <span>Loading conversation...</span>
-                  </div>
-                )}
-                {messages
-                  .filter((i) => !i.prompt)
-                  .map((msg) => {
-                    const key = `${msg.timestamp?.toString()}-${msg.content?.slice(0, 5)}`;
-                    if (msg.role === 'user') {
-                      return (
-                        <div key={key} className={styles.User}>
-                          {msg.content}
-                        </div>
-                      );
-                    }
-                    if (msg.role === 'error') {
-                      return (
-                        <div key={key} className={styles.Error} data-testid="error-message">
-                          {msg.content}
-                        </div>
-                      );
-                    }
-                    return (
-                      <div key={key} className={styles.SystemWrapper}>
-                        <div className={styles.System}>
-                          <Markdown
-                            components={{
-                              a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
-                            }}
-                          >
+                <div className={styles.MessagesInner}>
+                  {hasMoreMessages && (
+                    <div className={styles.LoadMoreButton} onClick={loadMoreMessages} data-testid="load-more-messages">
+                      {isLoadingHistory ? 'Loading...' : 'Load older messages'}
+                    </div>
+                  )}
+                  {isLoadingHistory && !hasMoreMessages && messages.length === 0 && (
+                    <div className={styles.LoadingContainer}>
+                      <span>Loading conversation...</span>
+                    </div>
+                  )}
+                  {messages
+                    .filter((i) => !i.prompt)
+                    .map((msg) => {
+                      const key = `${msg.timestamp?.toString()}-${msg.content?.slice(0, 5)}`;
+                      if (msg.role === 'user') {
+                        return (
+                          <div key={key} className={styles.User}>
                             {msg.content}
-                          </Markdown>
-                        </div>
-                        <div className={styles.FeedbackButtons}>
-                          <IconButton
-                            className={msg.feedback === 'up' ? styles.FeedbackButtonActive : styles.FeedbackButton}
-                            onClick={() => handleFeedback(messages.indexOf(msg), 'up')}
-                            data-testid="feedback-up"
+                          </div>
+                        );
+                      }
+                      if (msg.role === 'error') {
+                        return (
+                          <div key={key} className={styles.Error} data-testid="error-message">
+                            {msg.content}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={key} className={styles.SystemWrapper}>
+                          <div className={styles.System}>
+                            <Markdown
+                              components={{
+                                a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                              }}
+                            >
+                              {msg.content}
+                            </Markdown>
+                          </div>
+                          <div
+                            className={`${styles.MessageActions} ${msg.feedback ? styles.MessageActionsPinned : ''}`}
                           >
-                            <ThumbUpOffAltIcon sx={{ fontSize: 16 }} />
-                          </IconButton>
-                          <IconButton
-                            className={msg.feedback === 'down' ? styles.FeedbackButtonActive : styles.FeedbackButton}
-                            onClick={() => handleFeedback(messages.indexOf(msg), 'down')}
-                            data-testid="feedback-down"
-                          >
-                            <ThumbDownOffAltIcon sx={{ fontSize: 16 }} />
-                          </IconButton>
+                            <Tooltip title="Copy">
+                              <IconButton
+                                className={styles.FeedbackButton}
+                                onClick={() => copyToClipboardMethod(msg.content)}
+                                data-testid="copy-message"
+                              >
+                                <ContentCopyIcon sx={{ fontSize: 15 }} />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Good response">
+                              <IconButton
+                                className={msg.feedback === 'up' ? styles.FeedbackButtonActive : styles.FeedbackButton}
+                                onClick={() => handleFeedback(messages.indexOf(msg), 'up')}
+                                data-testid="feedback-up"
+                              >
+                                <ThumbUpOffAltIcon sx={{ fontSize: 15 }} />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Bad response">
+                              <IconButton
+                                className={
+                                  msg.feedback === 'down' ? styles.FeedbackButtonActive : styles.FeedbackButton
+                                }
+                                onClick={() => handleFeedback(messages.indexOf(msg), 'down')}
+                                data-testid="feedback-down"
+                              >
+                                <ThumbDownOffAltIcon sx={{ fontSize: 15 }} />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                {isLoading && (
-                  <div className={styles.LoadingContainer}>
-                    <SettingsOverscanIcon className={styles.LoadingIcon} />
-                    <span>thinking...</span>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
+                      );
+                    })}
+                  {isLoading && (
+                    <div className={styles.LoadingContainer}>
+                      <span className={styles.TypingDots}>
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                      <span>thinking...</span>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
             )}
 
             {/* Input */}
             <div className={styles.InputContainer}>
-              <div className={styles.InputWrapper}>
-                <textarea
-                  ref={textAreaRef}
-                  data-testid="textbox"
-                  className={styles.TextArea}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask Glific anything!"
-                  rows={1}
-                  autoFocus
-                />
-                <div className={styles.InputFooter}>
-                  <div className={styles.InputActions}>
-                    <IconButton
-                      className={styles.SendButton}
-                      onClick={handleOk}
-                      disabled={!message.trim() || isLoading}
-                      data-testid="send-icon"
-                      size="small"
-                    >
-                      <ArrowUpwardIcon sx={{ fontSize: 18 }} />
-                    </IconButton>
+              <div className={styles.InputInner}>
+                <div className={styles.InputWrapper}>
+                  <textarea
+                    ref={textAreaRef}
+                    data-testid="textbox"
+                    className={styles.TextArea}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Ask Glific anything!"
+                    rows={1}
+                    autoFocus
+                  />
+                  <div className={styles.InputFooter}>
+                    <span className={styles.InputHint}>Enter to send &middot; Shift + Enter for a new line</span>
+                    <div className={styles.InputActions}>
+                      <IconButton
+                        className={styles.SendButton}
+                        onClick={handleOk}
+                        disabled={!message.trim() || isLoading}
+                        data-testid="send-icon"
+                        size="small"
+                      >
+                        <ArrowUpwardIcon sx={{ fontSize: 17 }} />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
               </div>

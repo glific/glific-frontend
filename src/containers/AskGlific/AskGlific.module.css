@@ -1,311 +1,726 @@
-.Container {
-  height: 100%;
-  width: 100%;
-  background-color: #fff;
-  overflow: hidden;
+:root {
+  /* Panel semantics, mapped onto the app-wide --app-* tokens in src/index.css.
+     Only the values with no app equivalent are literals. */
+  --ag-accent: var(--app-color-brand-primary);
+  --ag-accent-soft: rgb(var(--app-color-green-primary-rgb) / 12%);
+  --ag-surface: var(--app-color-surface-raised);
+  --ag-surface-sunken: var(--app-color-surface-page);
+  --ag-surface-hover: var(--app-color-surface-hover);
+  --ag-border: var(--app-color-border);
+  --ag-border-soft: rgb(var(--app-color-slate-rgb) / 20%);
+  --ag-text: var(--app-color-text-heading);
+  --ag-text-muted: var(--app-color-text-tertiary);
+  --ag-text-faint: rgb(var(--app-color-slate-rgb) / 85%);
+  --ag-radius-md: var(--app-radius-lg);
+
+  /* Reading column width. Overridden in fullscreen so long answers stay legible. */
+  --ag-col: 100%;
+  --ag-gutter: var(--app-space-xl);
+}
+
+.Panel {
+  box-sizing: border-box;
+}
+
+.Panel *,
+.Panel *::before,
+.Panel *::after {
+  box-sizing: border-box;
+}
+
+.FloatingWrapper {
+  composes: Panel;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1300;
   display: flex;
+  width: 420px;
+  height: min(640px, calc(100vh - 96px));
+  overflow: hidden;
+  border: 1px solid var(--ag-border);
+  border-radius: 20px;
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 6%),
+    0 12px 40px rgba(16, 24, 40, 16%);
+  animation: agRise 0.22s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.SidebarWrapper {
+  composes: Panel;
+  position: fixed;
+  top: var(--notification-bar-height);
+  right: 0;
+  z-index: 1300;
+  display: flex;
+  flex-direction: row;
+  width: min(720px, 100vw);
+  height: calc(100vh - var(--notification-bar-height));
+  overflow: hidden;
+  border-left: 1px solid var(--ag-border);
+  box-shadow: -8px 0 32px rgba(16, 24, 40, 8%);
+  animation: agSlide 0.22s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.FullscreenWrapper {
+  composes: Panel;
+  position: fixed;
+  top: var(--notification-bar-height);
+  right: 0;
+  z-index: 1300;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100vh - var(--notification-bar-height));
+  overflow: hidden;
+  animation: agFade 0.18s ease;
+}
+
+.FullscreenWrapper .Container {
+  --ag-col: 780px;
+  --ag-gutter: var(--app-space-3xl);
+}
+
+@keyframes agRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+}
+
+@keyframes agSlide {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+@keyframes agFade {
+  from {
+    opacity: 0;
+  }
+}
+
+.Container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  min-width: 0;
   flex-direction: column;
-  border-radius: 1rem;
-  z-index: 999;
-  position: absolute;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--ag-surface);
 }
 
 .Header {
-  padding: 0.75rem 1rem;
-  background-color: #fff;
-  color: #2e2e2e;
-  font-weight: 600;
-  font-size: 1rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  border-bottom: 1px solid #f0f0f0;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem 0.6rem 1rem;
+  border-bottom: 1px solid var(--ag-border-soft);
+  background-color: var(--ag-surface);
 }
 
 .HeaderLeft {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.25rem 0.4rem 0.25rem 0.3rem;
+  border-radius: 10px;
   cursor: pointer;
+  transition: background-color 0.15s;
 }
 
-.HeaderLeft span {
-  font-family: Heebo;
+.HeaderLeft:hover {
+  background-color: var(--ag-surface-hover);
+}
+
+.HeaderTitle {
+  overflow: hidden;
+  max-width: 190px;
+  color: var(--ag-text);
+  font-size: var(--app-font-size-sm);
   font-weight: 500;
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0;
-  vertical-align: middle;
-  color: #191c1a;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.HeaderLeft svg {
-  width: 20px;
-  height: 20px;
+.HeaderCaret {
+  flex-shrink: 0;
+  color: var(--ag-text-faint);
+  transition: transform 0.2s;
+}
+
+.HeaderCaretOpen {
+  composes: HeaderCaret;
+  transform: rotate(180deg);
 }
 
 .ChatIcon {
-  width: 32px;
-  height: 32px;
-  background-color: #119656;
-  border-radius: 50%;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--ag-accent);
 }
 
 .ChatIcon svg {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
 }
 
 .HeaderRight {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.125rem;
 }
 
 .HeaderIconButton {
-  padding: 0.35rem !important;
-  color: #555 !important;
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  color: var(--ag-text-muted) !important;
 }
 
 .HeaderIconButton:hover {
-  background-color: #f5f5f5 !important;
+  background-color: var(--ag-surface-hover) !important;
+  color: var(--ag-text) !important;
+}
+
+.HeaderIconButton svg {
+  width: 17px;
+  height: 17px;
 }
 
 .DisplayModeItem {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #333;
-  min-width: 160px;
+  gap: 0.625rem;
+  min-width: 172px;
+  padding: 0.5rem 0.875rem !important;
+  border-radius: 8px;
+  margin: 0 0.25rem;
+  color: var(--ag-text) !important;
+  font-size: 0.85rem !important;
 }
 
 .DisplayModeItem:hover {
-  background-color: #f5f5f5;
+  background-color: var(--ag-surface-hover) !important;
 }
 
 .DisplayModeItemActive {
   composes: DisplayModeItem;
-  color: #119656;
-  font-weight: 500;
-}
-
-.DisplayModeItemActive svg {
-  color: #119656;
+  background-color: var(--ag-accent-soft) !important;
+  color: var(--ag-accent) !important;
+  font-weight: 500 !important;
 }
 
 .WelcomeSection {
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
-  gap: 1rem;
+  overflow-y: auto;
+  padding: 1.5rem var(--ag-gutter);
+}
+
+.WelcomeInner {
+  display: flex;
+  width: 100%;
+  max-width: min(460px, 100%);
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .WelcomeIcon {
-  width: 56px;
-  height: 56px;
-  background-color: #119656;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 0.25rem;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #16b268 0%, #0e8149 100%);
+  box-shadow: 0 6px 18px rgba(17, 150, 86, 24%);
 }
 
 .WelcomeIcon svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
 }
 
 .WelcomeText {
-  color: #191c1a;
+  color: var(--ag-text);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
   text-align: center;
-  font-family: Heebo;
-  font-weight: 500;
-  font-size: 0.8rem;
-  line-height: 18px;
-  letter-spacing: 0;
-  vertical-align: middle;
+}
+
+.WelcomeSubText {
+  margin-bottom: 0.75rem;
+  color: var(--ag-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  text-align: center;
 }
 
 .SuggestionsGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
   width: 100%;
-  max-width: 420px;
-  margin-top: 0.5rem;
+  gap: 0.5rem;
+  grid-template-columns: 1fr;
 }
 
 .SuggestionCard {
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6875rem 0.875rem;
+  border: 1px solid var(--ag-border);
+  border-radius: var(--ag-radius-md);
+  background-color: var(--ag-surface);
+  color: var(--ag-text);
   cursor: pointer;
-  color: #191c1a;
-  background-color: #f5f5f5;
-  text-align: center;
-  transition: background-color 0.2s;
-  border: 1px solid #e8e8e8;
-  font-family: Heebo;
+  font-size: 0.8125rem;
   font-weight: 400;
-  font-size: 0.75rem;
-  line-height: 18px;
-  letter-spacing: 0;
-  vertical-align: middle;
+  line-height: 1.35;
+  text-align: left;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    transform 0.15s;
 }
 
 .SuggestionCard:hover {
-  background-color: #eee;
+  border-color: rgba(17, 150, 86, 40%);
+  background-color: rgba(17, 150, 86, 5%);
+  transform: translateY(-1px);
+}
+
+.SuggestionArrow {
+  flex-shrink: 0;
+  color: var(--ag-text-faint);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.SuggestionCard:hover .SuggestionArrow {
+  color: var(--ag-accent);
+  opacity: 1;
 }
 
 .Messages {
   flex: 1;
-  width: 100%;
-  padding: 1rem;
-  overflow-y: auto;
+  min-width: 0;
+  min-height: 0;
   overflow-x: hidden;
+  overflow-y: auto;
+  padding: 1.25rem var(--ag-gutter) 0.75rem;
+  scroll-behavior: smooth;
+}
+
+.MessagesInner {
   display: flex;
+  width: 100%;
+  max-width: var(--ag-col, 100%);
+  min-width: 0;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  margin: 0 auto;
+}
+
+.Messages::-webkit-scrollbar,
+.HistoryList::-webkit-scrollbar {
+  width: 10px;
+}
+
+.Messages::-webkit-scrollbar-thumb,
+.HistoryList::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 99px;
+  background-clip: content-box;
+  background-color: rgba(25, 28, 26, 16%);
+}
+
+.Messages::-webkit-scrollbar-thumb:hover,
+.HistoryList::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(25, 28, 26, 28%);
 }
 
 .Message {
-  max-width: 80%;
-  font-size: 0.8rem;
-  overflow-wrap: break-word;
-  line-height: 1.5;
-  font-family: Heebo;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  font-size: var(--app-font-size-sm);
   font-weight: 400;
-  letter-spacing: 0;
-  vertical-align: middle;
-}
-
-.System {
-  composes: Message;
-  align-self: flex-start;
-  color: #2e2e2e;
-  padding: 0.25rem 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .User {
   composes: Message;
+  width: fit-content;
+  max-width: 82%;
   align-self: flex-end;
-  background-color: #f0f0f0;
-  color: #2e2e2e;
-  padding: 0.6rem 1rem;
-  border-radius: 1.25rem;
+  padding: 0.5625rem 0.875rem;
+  border-radius: 16px 16px 4px 16px;
+  background-color: var(--ag-surface-sunken);
+  color: var(--ag-text);
+  white-space: pre-wrap;
+}
+
+.SystemWrapper {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.125rem;
+}
+
+.System {
+  composes: Message;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--ag-text);
+}
+
+.System *,
+.System *::before,
+.System *::after {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .Error {
   composes: Message;
   align-self: flex-start;
-  color: #c62828;
-  background-color: #fdecea;
-  padding: 0.6rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid #f5c2c0;
+  max-width: 92%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #f3c9c6;
+  border-radius: var(--ag-radius-md);
+  background-color: #fdf2f1;
+  color: #b3261e;
 }
 
-.SystemWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
+.System > :first-child {
+  margin-top: 0;
 }
 
-.FeedbackButtons {
+.System > :last-child {
+  margin-bottom: 0;
+}
+
+.System p {
+  margin: 0 0 0.75em;
+}
+
+.System h1,
+.System h2,
+.System h3,
+.System h4,
+.System h5 {
+  margin: 1.25em 0 0.5em;
+  color: var(--ag-text);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.System h1 {
+  font-size: 1.125rem;
+}
+
+.System h2 {
+  font-size: 1.0625rem;
+}
+
+.System h3 {
+  font-size: 0.9375rem;
+}
+
+.System h4,
+.System h5 {
+  font-size: var(--app-font-size-sm);
+}
+
+.System ul,
+.System ol {
+  margin: 0 0 0.75em;
+  padding-left: 1.35em;
+}
+
+.System li {
+  margin-bottom: 0.3em;
+}
+
+.System li::marker {
+  color: var(--ag-text-faint);
+}
+
+.System li > ul,
+.System li > ol {
+  margin-top: 0.3em;
+}
+
+.System a {
+  color: var(--ag-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.System a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.System strong {
+  color: var(--ag-text);
+  font-weight: 600;
+}
+
+.System code {
+  padding: 0.12em 0.35em;
+  border-radius: 5px;
+  background-color: var(--ag-surface-sunken);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.System pre,
+.System pre code {
+  white-space: pre;
+}
+
+.System pre {
+  overflow-x: auto;
+  margin: 0 0 0.75em;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--ag-border-soft);
+  border-radius: 10px;
+  background-color: var(--app-color-gray-tertiary);
+}
+
+.System pre code {
+  padding: 0;
+  background: none;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+.System blockquote {
+  margin: 0 0 0.75em;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--ag-border);
+  color: var(--ag-text-muted);
+}
+
+.System hr {
+  height: 1px;
+  margin: 1.25em 0;
+  border: 0;
+  background-color: var(--ag-border-soft);
+}
+
+.System table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 0.75em;
+  font-size: 0.8125rem;
+}
+
+.System th,
+.System td {
+  padding: 0.4rem 0.625rem;
+  border: 1px solid var(--ag-border-soft);
+  text-align: left;
+}
+
+.System th {
+  background-color: var(--ag-surface-sunken);
+  font-weight: 600;
+}
+
+.System img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.MessageActions {
   display: flex;
-  gap: 0.25rem;
+  align-self: flex-start;
+  gap: 0.125rem;
+  margin-left: -0.3rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.SystemWrapper:hover .MessageActions,
+.MessageActions:focus-within {
+  opacity: 1;
 }
 
 .FeedbackButton {
-  padding: 0.2rem !important;
-  color: #bbb !important;
+  width: 26px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  border-radius: 6px !important;
+  color: var(--ag-text-faint) !important;
 }
 
 .FeedbackButton:hover {
-  color: #777 !important;
+  background-color: var(--ag-surface-hover) !important;
+  color: var(--ag-text-muted) !important;
 }
 
 .FeedbackButtonActive {
   composes: FeedbackButton;
-  color: #119656 !important;
+  color: var(--ag-accent) !important;
+  opacity: 1;
 }
 
+.SystemWrapper .MessageActionsPinned {
+  opacity: 1;
+}
+
+/* ---- Loading ----------------------------------------------------------- */
 .LoadingContainer {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0;
-  color: #888;
-  font-size: 0.85rem;
+  padding: 0.125rem 0;
+  color: var(--ag-text-muted);
+  font-size: 0.8125rem;
 }
 
-.LoaderCenter {
-  flex: 1;
-  display: flex;
+.TypingDots {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  width: 100%;
+  gap: 3px;
 }
 
-.LoadingIcon {
-  animation: spin 1.5s linear infinite;
-  width: 18px;
-  height: 18px;
-  color: #119656;
+.TypingDots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--ag-accent);
+  animation: agBounce 1.1s ease-in-out infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+.TypingDots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.TypingDots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes agBounce {
+  0%,
+  60%,
+  100% {
+    opacity: 35%;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 100%;
+    transform: translateY(-3px);
   }
 }
 
-.InputContainer {
+.LoaderCenter {
+  box-sizing: border-box;
+  display: flex;
   width: 100%;
-  padding: 0.75rem 1rem 1rem;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.InputContainer {
+  padding: 0.5rem var(--ag-gutter) 0.875rem;
+  background-color: var(--ag-surface);
+}
+
+.InputInner {
+  width: 100%;
+  max-width: var(--ag-col, 100%);
+  margin: 0 auto;
 }
 
 .InputWrapper {
-  border: 2px solid #119656;
-  border-radius: 0.75rem;
-  overflow: hidden;
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  background-color: #fff;
+  border: 1px solid var(--ag-border);
+  border-radius: 18px;
+  background-color: var(--ag-surface);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 4%);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.InputWrapper:focus-within {
+  border-color: rgba(17, 150, 86, 55%);
+  box-shadow: 0 0 0 3px var(--ag-accent-soft);
 }
 
 .TextArea {
-  width: 100%;
+  min-height: 52px;
+  max-height: 160px;
+  padding: 0.875rem 0.875rem 0.25rem;
   border: none;
+  background: transparent;
+  color: var(--ag-text);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
   outline: none;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
-  font-family: inherit;
   resize: none;
-  min-height: 60px;
-  max-height: 120px;
-  color: #2e2e2e;
 }
 
 .TextArea::placeholder {
-  color: #aaa;
+  color: var(--ag-text-faint);
 }
 
 .InputFooter {
   display: flex;
-  justify-content: end;
   align-items: center;
-  padding: 0.25rem 0.75rem 0.5rem;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.25rem 0.4rem 0.4rem 0.875rem;
+}
+
+.InputHint {
+  overflow: hidden;
+  color: var(--ag-text-faint);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  line-height: 1;
 }
 
 .InputActions {
@@ -315,179 +730,138 @@
 }
 
 .SendButton {
-  width: 32px !important;
-  height: 32px !important;
-  background-color: #119656 !important;
-  color: #fff !important;
-  padding: 0 !important;
+  width: 30px !important;
+  height: 30px !important;
   min-width: unset !important;
+  padding: 0 !important;
+  background-color: var(--ag-accent) !important;
+  color: var(--app-color-white) !important;
+  transition: background-color 0.15s !important;
+}
+
+.SendButton:hover {
+  background-color: #0e8149 !important;
 }
 
 .SendButton:disabled {
-  background-color: #ccc !important;
-  color: #fff !important;
+  background-color: var(--app-color-gray-quaternary) !important;
+  color: var(--app-color-white) !important;
 }
 
 .SendButton svg {
-  font-size: 1.1rem;
-}
-
-.FloatingWrapper {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 1300;
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 15%);
-  overflow: hidden;
-  width: 414px;
-  height: 528px;
-  opacity: 1;
-}
-
-.SidebarWrapper {
-  position: fixed;
-  top: var(--notification-bar-height);
-  right: 0;
-  width: 680px;
-  height: calc(100vh - var(--notification-bar-height));
-  z-index: 1300;
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 10%);
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-}
-
-.SidebarWrapper .Container {
-  border-radius: 0;
-  position: relative;
-  flex: 1;
-  min-width: 0;
-}
-
-.FullscreenWrapper {
-  position: fixed;
-  top: var(--notification-bar-height);
-  right: 0;
-  width: 100%;
-  height: calc(100vh - var(--notification-bar-height));
-  z-index: 1300;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-}
-
-.FullscreenWrapper .Container {
-  border-radius: 0;
-  position: relative;
-  flex: 1;
-  min-width: 0;
+  width: 17px;
+  height: 17px;
 }
 
 .HistoryPanel {
-  width: 260px;
-  min-width: 260px;
-  height: 100%;
-  background-color: #fff;
-  border-right: 1px solid #f0f0f0;
   display: flex;
+  width: 264px;
+  min-width: 264px;
+  height: 100%;
   flex-direction: column;
   overflow: hidden;
+  border-right: 1px solid var(--ag-border-soft);
+  background-color: var(--ag-surface-sunken);
 }
 
 .HistoryHeader {
-  padding: 0.75rem 1rem;
-  font-family: Heebo;
-  font-weight: 600;
-  font-size: 1rem;
-  color: #191c1a;
-  border-bottom: 1px solid #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0.6rem 0.6rem 0.6rem 1rem;
+  color: var(--ag-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .HistoryCloseButton {
-  padding: 0.25rem !important;
-  color: #555 !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  color: var(--ag-text-muted) !important;
 }
 
 .HistoryCloseButton:hover {
-  background-color: #f5f5f5 !important;
+  background-color: var(--ag-surface-hover) !important;
 }
 
 .HistoryList {
   flex: 1;
   overflow-y: auto;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0.5rem 0.75rem;
 }
 
 .HistoryEmpty {
   padding: 1.5rem 1rem;
+  color: var(--ag-text-muted);
+  font-size: 0.8125rem;
   text-align: center;
-  color: #888;
-  font-family: Heebo;
-  font-size: 0.85rem;
 }
 
 .HistoryDateLabel {
-  padding: 0.5rem 1rem 0.25rem;
-  font-family: Heebo;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #888;
+  padding: 0.75rem 0.5rem 0.25rem;
+  color: var(--ag-text-faint);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .HistoryItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  gap: 0.25rem;
+  padding: 0.4375rem 0.375rem 0.4375rem 0.5rem;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.15s;
 }
 
 .HistoryItem:hover {
-  background-color: #f5f5f5;
+  background-color: var(--ag-surface-hover);
 }
 
 .HistoryItemActive {
-  background-color: #f5f5f5;
+  background-color: var(--app-color-green-tertiary);
 }
 
 .HistoryItemActive .HistoryItemTitle {
-  color: #119656;
+  color: var(--ag-accent);
+  font-weight: 600;
 }
 
 .HistoryItemContent {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
   min-width: 0;
   flex: 1;
+  flex-direction: column;
+  gap: 0.05rem;
 }
 
 .HistoryItemTitle {
-  font-family: Heebo;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #191c1a;
-  white-space: nowrap;
   overflow: hidden;
+  color: var(--ag-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.35;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .HistoryItemTime {
-  font-family: Heebo;
-  font-size: 0.7rem;
-  color: #767676;
+  color: var(--ag-text-faint);
+  font-size: 0.6875rem;
 }
 
 .HistoryItemMenu {
-  color: #bbb !important;
-  padding: 0.2rem !important;
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  border-radius: 6px !important;
+  color: var(--ag-text-faint) !important;
   opacity: 0;
   transition: opacity 0.15s;
 }
@@ -498,26 +872,32 @@
 
 .LoadMoreButton {
   padding: 0.5rem 1rem;
-  text-align: center;
-  color: #119656;
-  font-size: 0.8rem;
+  border-radius: 8px;
+  color: var(--ag-accent);
   cursor: pointer;
+  font-size: 0.78rem;
   font-weight: 500;
+  text-align: center;
 }
 
 .LoadMoreButton:hover {
-  text-decoration: underline;
+  background-color: var(--ag-accent-soft);
+}
+
+.HistoryDropdown ul {
+  min-width: 248px;
+  max-height: 360px;
+  padding: 0.25rem !important;
 }
 
 .HistoryDropdownDate {
-  font-family: Heebo !important;
-  font-size: 0.7rem !important;
-  font-weight: 500 !important;
-  color: #767676 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
-  padding: 0.5rem 1rem 0.25rem !important;
   min-height: unset !important;
+  padding: 0.5rem 0.625rem 0.25rem !important;
+  color: var(--ag-text-faint) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
 }
 
 .HistoryDropdownDate:disabled {
@@ -525,15 +905,41 @@
 }
 
 .HistoryDropdownItem {
-  font-family: Heebo !important;
-  font-size: 0.85rem !important;
+  overflow: hidden;
+  min-width: 200px;
+  padding: 0.4375rem 0.625rem !important;
+  border-radius: 8px !important;
+  color: var(--ag-text) !important;
+  font-size: 0.8125rem !important;
   font-weight: 500 !important;
-  color: #191c1a !important;
-  padding: 0.4rem 1rem !important;
-  min-width: 160px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.HistoryDropdownItem:hover {
+  background-color: var(--ag-surface-hover) !important;
 }
 
 .HistoryDropdownItemActive {
   composes: HistoryDropdownItem;
-  color: #119656 !important;
+  background-color: var(--ag-accent-soft) !important;
+  color: var(--ag-accent) !important;
+}
+
+@media (max-width: 768px) {
+  .FloatingWrapper {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100vw - 16px);
+    height: min(640px, calc(100vh - 80px));
+  }
+
+  .SidebarWrapper {
+    width: 100vw;
+  }
+
+  .HistoryPanel {
+    width: 220px;
+    min-width: 220px;
+  }
 }
