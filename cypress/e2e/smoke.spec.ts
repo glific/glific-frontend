@@ -24,17 +24,30 @@ describe('Flow smoke test', () => {
           const yyyy = today.getFullYear();
           const formattedDate = `${d}-${mm}-${yyyy}`;
 
-          const lastThree = $messages.toArray().slice(-3);
-          cy.wrap(lastThree[0]).within(() => {
-            cy.get('audio').should('not.exist');
-            cy.root().invoke('text').should('match', /\S/);
-          });
-
-          cy.wrap(lastThree[1]).within(() => {
+          const lastFive = $messages.toArray().slice(-5);
+          cy.wrap(lastFive[0]).within(() => {
             cy.get('[data-testid="audioMessage"]').should('exist');
           });
 
-          cy.wrap(lastThree[2]).within(() => {
+          cy.wrap(lastFive[1]).within(() => {
+            cy.get('audio').should('not.exist');
+            cy.root()
+              .invoke('text')
+              .should('match', /blue whale/);
+          });
+
+          cy.wrap(lastFive[2]).within(() => {
+            cy.get('audio').should('not.exist');
+            cy.root()
+              .invoke('text')
+              .should('match', /Bengaluru Urban/);
+          });
+
+          cy.wrap(lastFive[3]).within(() => {
+            cy.get('[data-testid="imageMessage"]').should('exist');
+          });
+
+          cy.wrap(lastFive[4]).within(() => {
             cy.get('audio').should('not.exist');
             cy.contains('Test Finished').should('be.visible');
             cy.contains(formattedDate).should('be.visible');
