@@ -1,6 +1,8 @@
 import { ASK_GLIFIC, ASK_GLIFIC_FEEDBACK } from 'graphql/mutations/AskGlific';
 import { GET_ASK_GLIFIC_CONVERSATIONS, GET_ASK_GLIFIC_MESSAGES } from 'graphql/queries/AskGlific';
 import { ASK_GLIFIC_RESPONSE_SUBSCRIPTION } from 'graphql/subscriptions/AskGlific';
+// Derived from the component's own list so the mocks cannot drift from the UI.
+import { QUICK_SUGGESTIONS } from 'containers/AskGlific/AskGlific';
 
 const now = Math.floor(Date.now() / 1000);
 
@@ -163,14 +165,14 @@ export const createAskGlificMock = (query: string) => ({
   },
 });
 
-export const suggestionMock = createAskGlificMock('Create your first chatbot');
+export const suggestionMock = createAskGlificMock(QUICK_SUGGESTIONS[0]);
 
 export const askGlificErrorMock = {
   request: {
     query: ASK_GLIFIC,
     variables: {
       input: {
-        query: 'Create your first chatbot',
+        query: QUICK_SUGGESTIONS[0],
         conversationId: '',
         pageUrl: window.location.href,
         requestId: MOCK_REQUEST_ID,
