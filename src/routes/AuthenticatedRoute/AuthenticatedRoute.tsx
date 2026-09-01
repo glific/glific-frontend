@@ -301,7 +301,7 @@ export const AuthenticatedRoute = () => {
                       </Fab>
                     </Tooltip>
                   )}
-                  {showAskGlific && <AskGlific open={showAskGlific} setOpen={setShowAskGlific} />}
+                  <AskGlific open={showAskGlific} setOpen={setShowAskGlific} />
                 </>
               )}
             </ErrorBoundary>

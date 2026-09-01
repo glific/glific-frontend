@@ -51,7 +51,7 @@ interface ChatHistoryItem {
 
 type DisplayMode = 'floating' | 'sidebar' | 'fullscreen';
 
-const QUICK_SUGGESTIONS = [
+export const QUICK_SUGGESTIONS = [
   'One flow has stopped working, how do i debug?',
   'How do i integrate AI into my flow?',
   'How do i use google sheets in my flow?',
