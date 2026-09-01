@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
+  METRIC_HINT,
   configVersionLabel,
   formatScore,
   isRunFailed,
@@ -12,6 +13,8 @@ import {
   scoreBand,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DataTable } from 'components/UI/DataTable/DataTable';
 import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
@@ -33,6 +36,15 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
 
     return <span className={`${styles.Score} ${styles[scoreBand(value)]}`}>{formatScore(value)}</span>;
   };
+
+  const metricHeader = (label: string, key: keyof typeof METRIC_HINT) => (
+    <span className={styles.MetricHeader}>
+      {label}
+      <Tooltip title={t(METRIC_HINT[key])} placement="top" tooltipClass={styles.MetricTooltip}>
+        <InfoOutlinedIcon className={styles.MetricIcon} data-testid={`historyMetricHint-${key}`} />
+      </Tooltip>
+    </span>
+  );
 
   const state = (run: EvaluationRun) => {
     if (isRunInProgress(run)) return <span className={styles.Running}>{t('Running')}</span>;
@@ -122,17 +134,32 @@ export const EvaluationHistory = ({ runs, liveVersionId }: EvaluationHistoryProp
         </div>
 
         <DataTable
+          className={styles.HistoryTable}
           testId="evaluationHistoryTable"
           rowTestId="evaluationRun"
           maxHeight="30rem"
           columns={[
             { label: t('Version') },
             { label: t('Golden Q&A') },
-            { label: t('Duplication Factor') },
-            { label: t('Overall') },
-            { label: t('Ground truth') },
-            { label: t('Knowledge base') },
-            { label: t('Prompt') },
+            { label: t('Duplication Factor'), className: styles.DuplicationColumn },
+            {
+              label: (
+                <span className={styles.MetricHeader}>
+                  {t('Overall')}
+                  <Tooltip
+                    title={t('The final score for this run — a weighted average of the three checks beside it.')}
+                    placement="top"
+                    tooltipClass={styles.MetricTooltip}
+                  >
+                    <InfoOutlinedIcon className={styles.MetricIcon} data-testid="historyOverallHint" />
+                  </Tooltip>
+                </span>
+              ),
+              className: styles.OverallColumn,
+            },
+            { label: metricHeader(t('Ground truth'), 'groundTruth'), className: styles.MetricColumn },
+            { label: metricHeader(t('Knowledge base'), 'knowledgeBase'), className: styles.MetricColumn },
+            { label: metricHeader(t('Prompt'), 'prompt'), className: styles.MetricColumn },
             { label: t('When') },
           ]}
           rows={rows}

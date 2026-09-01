@@ -127,7 +127,7 @@ export const AssistantList = () => {
 
   const handleEdit = (_id: string, item: AssistantListItem) => {
     if (!item) return;
-    navigate(`/ai-evaluation-v2/${item.id}`);
+    navigate(`/assistants/${item.id}`);
   };
 
   const handleDeleteClick = (_id: string, item: AssistantListItem) => {
@@ -280,7 +280,7 @@ export const AssistantList = () => {
         button={{
           show: true,
           label: t('Create New Assistant'),
-          action: () => navigate('/ai-evaluation-v2/add'),
+          action: () => navigate('/assistants/add'),
         }}
       />
 

@@ -7,6 +7,7 @@ import { AIEvaluationList } from 'containers/AIEvals/AIEvaluationList/AIEvaluati
 import { GoldenQAList } from 'containers/AIEvals/GoldenQAList/GoldenQAList';
 import { OrgEvalAccessGateError, OrgEvalAccessGateLoading } from 'containers/AIEvals/OrgEvalAccessGateUi';
 import { useOrgEvalAccessRequest } from 'containers/AIEvals/useOrgEvalAccessRequest';
+import { getOrganizationServices } from 'services/AuthService';
 import styles from './AIEvalsPage.module.css';
 
 type ActiveTab = 'ai-evaluations' | 'golden-qa';
@@ -67,6 +68,7 @@ export default function AIEvalsPage() {
         button={{
           show: activeTab === 'ai-evaluations',
           label: 'Create AI Evaluation',
+          disabled: Boolean(getOrganizationServices('aiEvaluationV2Enabled')),
           action: () => navigate('/ai-evaluations/create'),
         }}
       />

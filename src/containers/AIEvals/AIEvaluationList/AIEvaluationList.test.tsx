@@ -338,7 +338,7 @@ describe('AIEvaluationList', () => {
     });
     const links = screen.getAllByTestId('assistantVersionLink');
     expect(links.length).toBeGreaterThan(0);
-    expect(links[0]).toHaveAttribute('href', '/assistants/45/version/1.0');
+    expect(links[0]).toHaveAttribute('href', '/assistants/45');
   });
 
   it('renders golden QA name and duplication factor in name cell', async () => {
@@ -487,6 +487,6 @@ describe('AIEvaluationList', () => {
     await waitFor(() => {
       expect(screen.getByTestId('assistantVersionLink')).toHaveTextContent('Assistant-1/Version 4.0');
     });
-    expect(screen.getByTestId('assistantVersionLink')).toHaveAttribute('href', '/assistants/1/version/4.0');
+    expect(screen.getByTestId('assistantVersionLink')).toHaveAttribute('href', '/assistants/1');
   });
 });

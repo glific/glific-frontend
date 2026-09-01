@@ -14,7 +14,11 @@ import { GOLDEN_QA_LIST_VARIABLES, LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'g
 import { AI_EVALUATION_UPDATED } from 'graphql/subscriptions/AIEvaluations';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { EvaluationListData, EvaluationRun, EvaluationSubTab } from 'containers/AIEvaluation/types/evaluationType';
-import { isRunInProgress, mergeEvaluationUpdate } from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import {
+  isRunFailed,
+  isRunInProgress,
+  mergeEvaluationUpdate,
+} from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
 import { EvaluationHistory } from './EvaluationHistory/EvaluationHistory';
@@ -31,6 +35,8 @@ export interface EvaluationProps {
   versionLabel?: string;
   assistantName?: string;
   onRunningChange?: (running: boolean) => void;
+  onLastRunChange?: (run: EvaluationRun | null) => void;
+  openRunSignal?: number;
 }
 
 export const Evaluation = ({
@@ -40,6 +46,8 @@ export const Evaluation = ({
   versionLabel,
   assistantName,
   onRunningChange,
+  onLastRunChange,
+  openRunSignal = 0,
 }: EvaluationProps) => {
   const { t } = useTranslation();
 
@@ -84,12 +92,23 @@ export const Evaluation = ({
     (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
   );
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
+  const lastUsedSetId = assistantRuns[0]?.goldenQa?.id;
   const latestRun = versionRuns[0];
   const versionRunInProgress = versionRuns.some(isRunInProgress);
 
   useEffect(() => {
     onRunningChange?.(versionRunInProgress);
   }, [versionRunInProgress, onRunningChange]);
+
+  const lastScoredRun = versionRuns.find((run) => !isRunInProgress(run) && !isRunFailed(run)) ?? null;
+
+  useEffect(() => {
+    onLastRunChange?.(lastScoredRun);
+  }, [lastScoredRun, onLastRunChange]);
+
+  useEffect(() => {
+    if (openRunSignal > 0 && sets.length > 0) setRunOpen(true);
+  }, [openRunSignal, sets.length]);
 
   const addDialog = addOpen && (
     <AddGoldenQaSetDialog
@@ -260,6 +279,7 @@ export const Evaluation = ({
       {runOpen && (
         <RunEvaluationDialog
           sets={sets}
+          lastUsedSetId={lastUsedSetId}
           versionId={versionId}
           versionLabel={versionLabel}
           assistantName={assistantName}

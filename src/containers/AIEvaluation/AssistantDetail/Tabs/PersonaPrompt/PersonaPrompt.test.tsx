@@ -4,13 +4,13 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import { setOrganizationServices } from 'services/AuthService';
 import type { AssistantModel, ModelConfig } from 'containers/AIEvaluation/types/assistantType';
-import { configForModel, parseAssistantModels } from '../../assistantModels';
+import { configForModel, defaultModelName, groupModelsByCategory, parseAssistantModels } from '../../assistantModels';
 import PersonaPrompt from './PersonaPrompt';
 
-// the model field is a MUI Select — open it, then click the option
+// the model field opens a grouped menu — open it, then click the option
 const pickModel = (label: string) => {
-  fireEvent.mouseDown(screen.getByRole('combobox'));
-  fireEvent.click(screen.getByRole('option', { name: label }));
+  fireEvent.click(screen.getByTestId('modelSelect'));
+  fireEvent.click(screen.getByTestId(`modelOption-${label}`));
 };
 
 vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
@@ -29,6 +29,22 @@ vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
 
 export const rawModels = [
   {
+    badge: 'Best value',
+    category: 'recommended',
+    modelName: 'gpt-5.6-luna',
+    provider: 'openai',
+    completionType: ['text'],
+    config: JSON.stringify({
+      effort: {
+        description: 'How long the model spends reasoning.',
+        options: ['none', 'low', 'medium', 'high'],
+        type: 'enum',
+        default: 'medium',
+      },
+    }),
+  },
+  {
+    category: 'all',
     modelName: 'gpt-4.1',
     provider: 'openai',
     completionType: ['text'],
@@ -39,6 +55,8 @@ export const rawModels = [
     }),
   },
   {
+    badge: 'Deprecating',
+    category: 'to_be_deprecated',
     modelName: 'gpt-4o',
     provider: 'openai',
     completionType: ['text'],
@@ -137,7 +155,41 @@ const renderControlledTab = (config: Partial<ModelConfig> = {}) => {
 
 describe('reading the model list', () => {
   test('only chat models are offered — embeddings are filtered out', () => {
-    expect(models.map((model) => model.modelName)).toEqual(['gpt-4.1', 'gpt-4o', 'gpt-5', 'gpt-5.2-pro']);
+    expect(models.map((model) => model.modelName)).toEqual([
+      'gpt-5.6-luna',
+      'gpt-4.1',
+      'gpt-4o',
+      'gpt-5',
+      'gpt-5.2-pro',
+    ]);
+  });
+
+  test('the picker files models under the group the server put them in', () => {
+    const grouped = groupModelsByCategory(models);
+
+    expect(grouped.map((group) => group.label)).toEqual(['Recommended', 'All models', 'To be deprecated']);
+    expect(grouped[0].models.map((model) => model.modelName)).toEqual(['gpt-5.6-luna']);
+    expect(grouped[2].models.map((model) => model.modelName)).toEqual(['gpt-4o']);
+  });
+
+  test('a group the server sent nothing for is left out', () => {
+    const onlyAll = parseAssistantModels([{ modelName: 'gpt-4.1', completionType: ['text'], category: 'all' }]);
+
+    expect(groupModelsByCategory(onlyAll).map((group) => group.label)).toEqual(['All models']);
+  });
+
+  test('a brand new assistant starts on the recommended model', () => {
+    expect(defaultModelName(models)).toBe('gpt-5.6-luna');
+  });
+
+  test('with nothing recommended it falls back to the first model offered', () => {
+    const noRecommendation = parseAssistantModels([
+      { modelName: 'gpt-4.1', completionType: ['text'], category: 'all' },
+      { modelName: 'gpt-4o', completionType: ['text'], category: 'to_be_deprecated' },
+    ]);
+
+    expect(defaultModelName(noRecommendation)).toBe('gpt-4.1');
+    expect(defaultModelName([])).toBe('');
   });
 
   test('a config that will not parse leaves the model listed with no settings', () => {
@@ -147,6 +199,24 @@ describe('reading the model list', () => {
 
     expect(parsed).toHaveLength(1);
     expect(parsed[0].config).toEqual({});
+  });
+});
+
+describe('the model menu', () => {
+  test('groups the options and marks the ones the server calls out', () => {
+    renderTab();
+
+    fireEvent.click(screen.getByTestId('modelSelect'));
+
+    expect(screen.getByTestId('group-Recommended')).toBeInTheDocument();
+    expect(screen.getByTestId('group-All models')).toBeInTheDocument();
+    expect(screen.getByTestId('group-To be deprecated')).toBeInTheDocument();
+
+    // the badge rides along with the option it belongs to
+    expect(screen.getByTestId('modelOption-gpt-5.6-luna')).toHaveTextContent('Best value');
+    expect(screen.getByTestId('modelOption-gpt-4o')).toHaveTextContent('Deprecating');
+    // a model the server gave no badge is listed on its own
+    expect(screen.getByTestId('modelOption-gpt-5')).toHaveTextContent('gpt-5');
   });
 });
 
@@ -402,7 +472,8 @@ describe('reading what the API returned', () => {
   test('a model with no config is offered with nothing to tune', () => {
     const [model] = parseAssistantModels([{ modelName: 'bare', completionType: ['text'], config: null }]);
 
-    expect(model).toEqual({ modelName: 'bare', provider: '', config: {} });
+    // a model the server files nowhere lands in "all models", carrying no badge
+    expect(model).toEqual({ modelName: 'bare', provider: '', config: {}, badge: null, category: 'all' });
   });
 
   test('configForModel leaves the config alone when there is no model', () => {

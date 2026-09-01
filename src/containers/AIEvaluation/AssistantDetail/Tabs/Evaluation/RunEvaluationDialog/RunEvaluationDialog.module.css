@@ -93,3 +93,20 @@
   line-height: 1.5;
   color: var(--app-color-text-tertiary);
 }
+
+.SetOption {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.LastUsedPill {
+  padding: 0 var(--app-space-sm);
+  border: 1px solid var(--app-color-border-brand);
+  border-radius: var(--app-radius-pill);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%);
+  color: var(--app-color-brand-primary);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
