@@ -13,6 +13,8 @@ import {
 } from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
 
 import {
+  FLOW_JSON_COMPONENTS,
+  FOOTER_WITH_CAPTIONS,
   WHATSAPP_FORM_MOCKS,
   validScreen,
   revertWhatsappFormRevisionMock,
@@ -2226,199 +2228,6 @@ describe('round-trip preservation — unsupported components & extra attributes'
     expect(outputChildren.find((c: any) => c.type === 'Footer')['on-click-action'].payload).toEqual({});
   });
 
-  /**
-   * Every component the builder models, with every attribute Meta's reference page lists —
-   * each has its own conversion branch and its own CONSUMED_ATTRIBUTE_KEYS entry, so each can
-   * break independently.
-   *
-   * Passthrough components all share one code path (`rawComponent` returned verbatim), so only
-   * three representatives are covered: PhotoPicker (an input), Switch (nested children) and
-   * RichText (array-valued attribute). CalendarPicker, DocumentPicker, EmbeddedLink,
-   * NavigationList and ChipsSelector have their own dedicated tests above.
-   *
-   * Source: plans/Components.md (Meta's Flow JSON component reference) + the media upload page.
-   */
-  const COMPONENTS: Record<string, any> = {
-    TextHeading: { type: 'TextHeading', text: 'Heading', visible: true },
-    TextSubheading: { type: 'TextSubheading', text: 'Sub', visible: true },
-    TextBody: {
-      type: 'TextBody',
-      text: 'Body',
-      'font-weight': 'bold',
-      strikethrough: false,
-      visible: true,
-      markdown: true,
-    },
-    TextCaption: {
-      type: 'TextCaption',
-      text: 'Cap',
-      'font-weight': 'italic',
-      strikethrough: true,
-      visible: true,
-      markdown: false,
-    },
-    RichText: { type: 'RichText', text: ['# H1', 'some **bold**'], visible: true },
-    TextInput: {
-      type: 'TextInput',
-      label: 'Name',
-      'input-type': 'text',
-      pattern: '^[a-z]+$',
-      required: true,
-      'min-chars': 2,
-      'max-chars': 40,
-      'helper-text': 'Your name',
-      name: 'full_name',
-      visible: true,
-      'init-value': 'abc',
-      'error-message': 'Bad name',
-    },
-    TextArea: {
-      type: 'TextArea',
-      label: 'Notes',
-      required: false,
-      'max-length': 500,
-      name: 'notes',
-      'helper-text': 'Optional',
-      enabled: true,
-      visible: true,
-      'init-value': 'hi',
-      'error-message': 'Too long',
-    },
-    CheckboxGroup: {
-      type: 'CheckboxGroup',
-      name: 'toppings',
-      label: 'Toppings',
-      required: true,
-      'data-source': [
-        {
-          id: '1',
-          title: 'Cheese',
-          description: 'Extra',
-          metadata: 'meta',
-          enabled: true,
-          image: 'BASE64',
-          'alt-text': 'cheese',
-          color: '#ffffff',
-        },
-      ],
-      'min-selected-items': 1,
-      'max-selected-items': 3,
-      enabled: true,
-      visible: true,
-      'on-select-action': { name: 'update_data', payload: {} },
-      description: 'Pick some',
-      'init-value': ['1'],
-      'error-message': 'Pick one',
-      'media-size': 'regular',
-    },
-    RadioButtonsGroup: {
-      type: 'RadioButtonsGroup',
-      name: 'size',
-      label: 'Size',
-      required: true,
-      'data-source': [
-        {
-          id: '1',
-          title: 'Small',
-          description: 'S',
-          metadata: 'm',
-          enabled: true,
-          image: 'BASE64',
-          'alt-text': 'small',
-          color: '#000000',
-        },
-      ],
-      enabled: true,
-      visible: true,
-      'on-select-action': { name: 'update_data', payload: {} },
-      description: 'Choose',
-      'init-value': '1',
-      'error-message': 'Required',
-      'media-size': 'regular',
-    },
-    Dropdown: {
-      type: 'Dropdown',
-      label: 'City',
-      name: 'city',
-      'data-source': [
-        {
-          id: '1',
-          title: 'Pune',
-          description: 'MH',
-          metadata: 'm',
-          enabled: true,
-          image: 'BASE64',
-          'alt-text': 'pune',
-        },
-      ],
-      required: true,
-      enabled: true,
-      visible: true,
-      'on-select-action': { name: 'update_data', payload: {} },
-      'init-value': '1',
-      'error-message': 'Required',
-    },
-    DatePicker: {
-      type: 'DatePicker',
-      label: 'DOB',
-      'min-date': '1900-01-01',
-      'max-date': '2030-01-01',
-      name: 'dob',
-      'unavailable-dates': ['2025-01-01'],
-      visible: true,
-      'helper-text': 'Pick',
-      enabled: true,
-      'on-select-action': { name: 'update_data', payload: {} },
-      'init-value': '2000-01-01',
-      'error-message': 'Bad date',
-    },
-    OptIn: {
-      type: 'OptIn',
-      label: 'I agree',
-      required: true,
-      name: 'terms',
-      'on-click-action': { name: 'navigate', next: { type: 'screen', name: 'x' }, payload: {} },
-      visible: true,
-      'init-value': false,
-    },
-    Image: {
-      type: 'Image',
-      src: 'QkFTRTY0',
-      width: 200,
-      height: 100,
-      'scale-type': 'cover',
-      'aspect-ratio': 1,
-      'alt-text': 'pic',
-    },
-    PhotoPicker: {
-      type: 'PhotoPicker',
-      name: 'photos',
-      label: 'Photos',
-      description: 'up to 3',
-      'photo-source': 'camera_gallery',
-      'max-file-size-kb': 1024,
-      'min-uploaded-photos': 1,
-      'max-uploaded-photos': 3,
-      enabled: true,
-      visible: true,
-      'error-message': 'req',
-    },
-    Switch: {
-      type: 'Switch',
-      value: '${data.status}',
-      cases: { pending: [{ type: 'TextBody', text: 'p' }], done: [{ type: 'TextBody', text: 'd' }] },
-    },
-  };
-
-  const RICH_FOOTER = {
-    type: 'Footer',
-    label: 'Done',
-    'left-caption': 'L',
-    'right-caption': 'R',
-    enabled: true,
-    'on-click-action': { name: 'complete', payload: {} },
-  };
-
   const layoutAndFormChildren = (screen: any) => {
     const out: any[] = [];
     (screen.layout?.children || []).forEach((c: any) => {
@@ -2444,8 +2253,8 @@ describe('round-trip preservation — unsupported components & extra attributes'
       : [`${path}: ${JSON.stringify(want)} -> ${JSON.stringify(got)}`];
   };
 
-  it.each(Object.keys(COMPONENTS))('%s survives a round-trip with every documented attribute', (name) => {
-    const component = COMPONENTS[name];
+  it.each(Object.keys(FLOW_JSON_COMPONENTS))('%s survives a round-trip with every documented attribute', (name) => {
+    const component = FLOW_JSON_COMPONENTS[name];
     const input = makeFlowJSON([component]);
 
     expect(validateFlowJson(input).errors).toEqual([]);
@@ -2458,13 +2267,13 @@ describe('round-trip preservation — unsupported components & extra attributes'
   });
 
   it('preserves Footer attributes the builder does not edit', () => {
-    const input = makeFlowJSON([COMPONENTS.TextBody]);
-    input.screens[0].layout.children[0].children = [COMPONENTS.TextBody, RICH_FOOTER];
+    const input = makeFlowJSON([FLOW_JSON_COMPONENTS.TextBody]);
+    input.screens[0].layout.children[0].children = [FLOW_JSON_COMPONENTS.TextBody, FOOTER_WITH_CAPTIONS];
 
     const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
     const back = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'Footer');
 
-    expect(deepDiff(RICH_FOOTER, back)).toEqual([]);
+    expect(deepDiff(FOOTER_WITH_CAPTIONS, back)).toEqual([]);
   });
 
   it('generates option ids and titles when the data-source omits them', () => {

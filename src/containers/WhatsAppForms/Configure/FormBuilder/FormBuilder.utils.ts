@@ -264,11 +264,8 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
-      // Passthrough components only need field tracking when they actually hold a value
-      if (item.type === 'Unsupported') {
-        const raw = item.data.rawComponent;
-        if (!isInputComponent(raw)) return;
-        const name = uniqueName(raw.name, usedNames);
+      if (item.type === 'Unsupported' && isInputComponent(item.data.rawComponent)) {
+        const name = uniqueName(item.data.rawComponent.name, usedNames);
         usedNames.add(name);
         fieldNameMap.set(item.id, name);
         return;
