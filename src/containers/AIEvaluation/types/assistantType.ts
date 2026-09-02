@@ -14,12 +14,18 @@ export interface RawAssistantModel {
   provider?: string;
   completionType?: string[] | null;
   config?: string | null;
+  badge?: string | null;
+  category?: string | null;
 }
+
+export type ModelCategory = 'recommended' | 'all' | 'to_be_deprecated';
 
 export interface AssistantModel {
   modelName: string;
   provider: string;
   config: Record<string, ModelParamSpec>;
+  badge: string | null;
+  category: ModelCategory;
 }
 
 export interface AssistantVectorStore {

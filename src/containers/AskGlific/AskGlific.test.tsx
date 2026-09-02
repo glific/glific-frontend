@@ -114,6 +114,25 @@ describe('AskGlific', () => {
     expect(screen.getByTestId('feedback-down')).toBeInTheDocument();
   });
 
+  test('it should copy a bot response to the clipboard', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+
+    renderAskGlific({ mocks: [conversationsMock, suggestionMock, subscriptionMock] });
+
+    fireEvent.click(screen.getAllByTestId('suggestion')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('This is a mock response from the bot.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('copy-message'));
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith('This is a mock response from the bot.');
+    });
+  });
+
   test('it should toggle feedback on click', async () => {
     renderAskGlific({
       mocks: [

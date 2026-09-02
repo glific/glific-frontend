@@ -25,11 +25,19 @@ vi.mock('components/UI/Layout/Layout', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('containers/Assistants/AssistantList/AssistantList', () => ({
+vi.mock('containers/AIEvaluation/AssistantList/AssistantList', () => ({
   default: () => <div data-testid="assistant-list-new" />,
 }));
 
+vi.mock('containers/Assistants/AssistantList/AssistantList', () => ({
+  default: () => <div data-testid="assistant-list-old" />,
+}));
+
 vi.mock('containers/Assistants/AssistantDetail/AssistantDetail', () => ({
+  default: () => <div data-testid="assistant-detail-old" />,
+}));
+
+vi.mock('containers/AIEvaluation/AssistantDetail/AssistantDetail', () => ({
   default: () => <div data-testid="assistant-detail-new" />,
 }));
 
@@ -97,13 +105,47 @@ describe('<AuthenticatedRoute />', () => {
     });
   });
 
-  test('renders AssistantList at /assistants', async () => {
+  test('renders the assistant flow at /assistants when aiEvaluationV2Enabled is on', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true }));
     renderAuthenticatedRoute({ initialEntries: ['/assistants'] });
 
     await waitFor(() => {
       expect(screen.getByTestId('assistant-list-new')).toBeInTheDocument();
     });
+  });
+
+  test('renders the previous assistants screen at /assistants when the flag is off', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: false }));
+    renderAuthenticatedRoute({ initialEntries: ['/assistants'] });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('assistant-list-old')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('assistant-list-new')).not.toBeInTheDocument();
+  });
+
+  test('a version link opens the previous assistant screen while the flag is off', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: false }));
+    renderAuthenticatedRoute({ initialEntries: ['/assistants/1/version/2.0'] });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('assistant-detail-old')).toBeInTheDocument();
+    });
+  });
+
+  test('the new flow stays behind its gate when evaluations are not enabled', async () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    // the flag routes here, but the gate still asks for AI evaluations to be on
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: false, aiEvaluationV2Enabled: true }));
+    renderAuthenticatedRoute({ initialEntries: ['/assistants'] });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('aiEvaluationV2Disabled')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('assistant-list-new')).not.toBeInTheDocument();
   });
 
   test.each(['Staff', 'Manager', 'Admin', 'Glific_admin'])(

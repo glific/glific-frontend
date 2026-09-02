@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
@@ -45,6 +45,21 @@ const version = (major: number, isLive: boolean) => ({
     : null) as AssistantVersion['vectorStore'],
 });
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options ? key.replace(/{{(\w+)}}/g, (token, name) => (name in options ? String(options[name]) : token)) : key,
+    i18n: { changeLanguage: () => new Promise(() => {}) },
+  }),
+}));
+
+const confirmPublish = async () => {
+  // the button opens the confirmation first; nothing has been evaluated in these tests, so the
+  // dialog offers "Go live anyway" beside the nudge to run one
+  await screen.findByTestId('publishVersionDialog');
+  fireEvent.click(screen.getByTestId('middle-button'));
+};
+
 const versionsMock = (assistantVersions = [version(1, true), version(2, false)]) => ({
   request: { query: GET_ASSISTANT_VERSIONS, variables: { assistantId: '1' } },
   result: { data: { assistantVersions } },
@@ -59,13 +74,13 @@ const assistantModelsMock = {
   maxUsageCount: Number.POSITIVE_INFINITY,
 };
 
-const renderDetail = (path = '/ai-evaluation-v2/1', mocks: any[] = defaultMocks()) =>
+const renderDetail = (path = '/assistants/1', mocks: any[] = defaultMocks()) =>
   render(
     <MockedProvider mocks={[...mocks, assistantModelsMock]}>
       <MemoryRouter initialEntries={[path]}>
         <Routes>
-          <Route path="/ai-evaluation-v2" element={<div data-testid="list-page" />} />
-          <Route path="/ai-evaluation-v2/:assistantId" element={<AssistantDetail />} />
+          <Route path="/assistants" element={<div data-testid="list-page" />} />
+          <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -122,7 +137,7 @@ describe('edit mode', () => {
       },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       publishMock,
@@ -140,6 +155,7 @@ describe('edit mode', () => {
       expect(screen.getByTestId('publishButton')).toBeEnabled();
     });
     fireEvent.click(screen.getByTestId('publishButton'));
+    await confirmPublish();
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Version published — it is now live in your flows');
@@ -160,7 +176,7 @@ describe('edit mode', () => {
       },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       publishMock,
@@ -173,6 +189,7 @@ describe('edit mode', () => {
 
     await waitFor(() => expect(screen.getByTestId('publishButton')).toBeEnabled());
     fireEvent.click(screen.getByTestId('publishButton'));
+    await confirmPublish();
 
     // without this the reader stays on 2.0 and has to find 3.0 in the dropdown themselves
     await waitFor(() => expect(screen.getByTestId('versionPill')).toHaveTextContent('3.0'));
@@ -192,7 +209,7 @@ describe('edit mode', () => {
       },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       publishMock,
@@ -205,9 +222,62 @@ describe('edit mode', () => {
     const button = await screen.findByTestId('publishButton');
     await waitFor(() => expect(button).toBeEnabled());
     fireEvent.click(button);
+    await confirmPublish();
 
     // a second publish of the same version would otherwise be one click away
     await waitFor(() => expect(button).toBeDisabled());
+  });
+
+  test('publishing a never evaluated version nudges an evaluation first', async () => {
+    renderDetail();
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+    await waitFor(() => expect(screen.getByTestId('publishButton')).toBeEnabled());
+
+    fireEvent.click(screen.getByTestId('publishButton'));
+
+    const dialog = await screen.findByTestId('publishVersionDialog');
+    // 1.0 and 2.0 already exist, so going live lands above both of them
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Publish as Version 3.0?');
+    expect(within(dialog).getByTestId('publishNotEvaluated')).toHaveTextContent('never been evaluated');
+    expect(within(dialog).queryByTestId('publishLastRun')).not.toBeInTheDocument();
+
+    // running one is the offer that leads; publishing stays available beside it
+    expect(screen.getByTestId('ok-button')).toHaveTextContent('Run an evaluation');
+    expect(screen.getByTestId('middle-button')).toHaveTextContent('Go live anyway');
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    // the reader lands on the tab that can actually run one
+    await waitFor(() => {
+      expect(screen.getByTestId('tab-evaluation')).toHaveAttribute('aria-selected', 'true');
+    });
+    expect(screen.queryByTestId('publishVersionDialog')).not.toBeInTheDocument();
+  });
+
+  test('backing out of the confirmation publishes nothing', async () => {
+    const publishSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+    await waitFor(() => expect(screen.getByTestId('publishButton')).toBeEnabled());
+
+    fireEvent.click(screen.getByTestId('publishButton'));
+    await screen.findByTestId('publishVersionDialog');
+    // no Cancel button on this one — the close icon is the way out
+    expect(screen.queryByTestId('cancel-button')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('close'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('publishVersionDialog')).not.toBeInTheDocument();
+    });
+    expect(publishSpy).not.toHaveBeenCalled();
+    publishSpy.mockRestore();
   });
 
   test('a publish that comes back with errors is reported', async () => {
@@ -221,7 +291,7 @@ describe('edit mode', () => {
       },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingPublish, versionsMock()]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), failingPublish, versionsMock()]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
@@ -229,6 +299,7 @@ describe('edit mode', () => {
     fireEvent.click(screen.getByTestId('versionPill'));
     fireEvent.click(await screen.findByTestId('versionOption-2.0'));
     fireEvent.click(screen.getByTestId('publishButton'));
+    await confirmPublish();
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalledWith({ key: 'version', message: 'Version not ready' });
@@ -304,13 +375,13 @@ describe('edit mode', () => {
       },
     };
 
-    // with no versions the editor falls back to the assistant record
-    renderDetail('/ai-evaluation-v2/1', [sparse, versionsMock([])]);
+    // with no versions the editor falls back to the assistant record, and with no model on that
+    // record either it starts on the one the server recommends
+    renderDetail('/assistants/1', [sparse, versionsMock([])]);
 
     await waitFor(() => {
-      expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4.1');
+      expect(screen.getByTestId('modelSelect')).toHaveTextContent('gpt-5.6-luna');
     });
-    expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     fireEvent.click(screen.getByTestId('editNameButton'));
     expect(screen.getByTestId('nameInput')).toHaveValue('');
@@ -320,7 +391,7 @@ describe('edit mode', () => {
     const noUpdatedAt = { ...version(1, true), updatedAt: null };
     const noDates = { ...version(2, false), updatedAt: null, insertedAt: null };
 
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([noUpdatedAt, noDates])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([noUpdatedAt, noDates])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
@@ -336,7 +407,7 @@ describe('edit mode', () => {
       request: { query: GET_ASSISTANT, variables: { assistantId: '1' } },
       error: new Error('Network error'),
     };
-    renderDetail('/ai-evaluation-v2/1', [errorMock, versionsMock()]);
+    renderDetail('/assistants/1', [errorMock, versionsMock()]);
 
     await waitFor(() => {
       expect(screen.getByTestId('assistantNotFound')).toBeInTheDocument();
@@ -348,7 +419,7 @@ describe('edit mode', () => {
       request: { query: GET_ASSISTANT, variables: { assistantId: '1' } },
       result: { data: { assistant: { __typename: 'AssistantResult', assistant: null } } },
     };
-    renderDetail('/ai-evaluation-v2/1', [emptyMock, versionsMock()]);
+    renderDetail('/assistants/1', [emptyMock, versionsMock()]);
 
     await waitFor(() => {
       expect(screen.getByTestId('assistantNotFound')).toBeInTheDocument();
@@ -393,7 +464,7 @@ describe('renaming the assistant', () => {
   });
 
   test('saves the new name and shows it in the header', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), updateMock, renamedAssistantMock]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), updateMock, renamedAssistantMock]);
     await startEditing();
 
     fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Renamed assistant' } });
@@ -424,7 +495,7 @@ describe('renaming the assistant', () => {
       result: { data: { updateAssistant: { errors: [{ message: 'Name taken', key: 'name' }] } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingRename]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), failingRename]);
     await startEditing();
 
     fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Renamed assistant' } });
@@ -447,7 +518,7 @@ describe('renaming the assistant', () => {
       error: new Error('Network error'),
     };
 
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), networkError]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), networkError]);
     await startEditing();
 
     fireEvent.change(screen.getByTestId('nameInput'), { target: { value: 'Renamed assistant' } });
@@ -552,13 +623,7 @@ describe('Unsaved changes', () => {
       result: { data: { updateAssistant: { errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
-      getAssistant('1'),
-      versionsMock(),
-      saveMock,
-      getAssistant('1'),
-      versionsMock(),
-    ]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), saveMock, getAssistant('1'), versionsMock()]);
     await edit();
 
     fireEvent.click(screen.getByTestId('saveVersionButton'));
@@ -569,7 +634,7 @@ describe('Unsaved changes', () => {
   });
 
   test('renaming a new assistant opens prefilled with the placeholder name', async () => {
-    renderDetail('/ai-evaluation-v2/add', []);
+    renderDetail('/assistants/add', []);
 
     await waitFor(() => {
       expect(screen.getByTestId('editNameButton')).toBeInTheDocument();
@@ -604,7 +669,7 @@ describe('Unsaved changes', () => {
       result: { data: { updateAssistant: { errors: [{ message: 'Something went wrong', key: 'name' }] } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingSave]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), failingSave]);
     await edit();
     fireEvent.click(screen.getByTestId('saveVersionButton'));
 
@@ -622,7 +687,7 @@ describe('Unsaved changes', () => {
       error: new Error('Network error'),
     };
 
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), networkError]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), networkError]);
     await edit();
     fireEvent.click(screen.getByTestId('saveVersionButton'));
 
@@ -639,7 +704,7 @@ describe('Unsaved changes', () => {
       result: { data: { updateAssistant: { errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       save,
@@ -665,7 +730,7 @@ describe('Unsaved changes', () => {
       result: { data: { updateAssistant: { errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock([]),
       save,
@@ -702,7 +767,7 @@ describe('Unsaved changes', () => {
       result: { data: { updateAssistant: { errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       saveWithoutTemperature,
@@ -728,13 +793,13 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 1, name: 'Untitled assistant' },
+          input: { instructions: 'Hello', model: 'gpt-5.6-luna', effort: 'medium', name: 'Untitled assistant' },
         },
       },
       result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/add', [createMock]);
+    renderDetail('/assistants/add', [createMock]);
     await edit('Hello');
     fireEvent.click(screen.getByTestId('saveVersionButton'));
 
@@ -750,13 +815,13 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-4.1', temperature: 1, name: 'Untitled assistant' },
+          input: { instructions: 'Hello', model: 'gpt-5.6-luna', effort: 'medium', name: 'Untitled assistant' },
         },
       },
       result: { data: { createAssistant: { assistant: null, errors: [{ message: 'Name taken', key: 'name' }] } } },
     };
 
-    renderDetail('/ai-evaluation-v2/add', [failingCreate]);
+    renderDetail('/assistants/add', [failingCreate]);
     await edit('Hello');
     fireEvent.click(screen.getByTestId('saveVersionButton'));
 
@@ -768,7 +833,7 @@ describe('Unsaved changes', () => {
   });
 
   test('create mode starts clean and shows no publish button', async () => {
-    renderDetail('/ai-evaluation-v2/add', []);
+    renderDetail('/assistants/add', []);
 
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toBeInTheDocument();
@@ -807,7 +872,7 @@ describe('knowledge base', () => {
   };
 
   test('uploading marks the page dirty but does not attach anything yet', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), uploadMock]);
     await openTabAndUpload();
 
     // the assistant already ships with one file, so the upload makes two
@@ -827,7 +892,7 @@ describe('knowledge base', () => {
       delay: 60,
       result: { data: { uploadFilesearchFile: uploadedFile } },
     };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), slowUpload]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), slowUpload]);
 
     // edit first so the Save button exists to assert against
     await waitFor(() => {
@@ -854,7 +919,7 @@ describe('knowledge base', () => {
   });
 
   test('discarding throws the uploaded file away', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), uploadMock]);
     await openTabAndUpload();
 
     await waitFor(() => {
@@ -906,7 +971,7 @@ describe('knowledge base', () => {
       result: { data: { updateAssistant: { errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       uploadMock,
@@ -957,8 +1022,9 @@ describe('version dropdown', () => {
       screen.getByText('Saving creates a minor version. Publishing promotes it to the next major and makes it live.')
     ).toBeInTheDocument();
 
-    // the draft reads "saved <ago>", the published one "published <ago>"
-    expect(options[0]).toHaveTextContent(/Not published.*saved .*ago/);
+    // the draft reads "saved <ago>", the published one "published <ago>"; only the live one is badged
+    expect(options[0]).toHaveTextContent(/saved .*ago/);
+    expect(options[0]).not.toHaveTextContent('LIVE');
     expect(options[1]).toHaveTextContent(/LIVE.*published .*ago/);
 
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
@@ -966,13 +1032,13 @@ describe('version dropdown', () => {
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
     });
-    expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
+    expect(screen.getByTestId('versionPill')).not.toHaveTextContent('LIVE');
     // the live note keeps pointing at the published version, not the selected one
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
   });
 
   test('falls back to the latest version when nothing is published', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, false), version(2, false)])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([version(1, false), version(2, false)])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
@@ -981,7 +1047,7 @@ describe('version dropdown', () => {
   });
 
   test('shows a placeholder when the assistant has no versions yet', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('noVersionPill')).toHaveTextContent('No version saved yet');
@@ -1000,7 +1066,7 @@ describe('version dropdown', () => {
 
 describe('create mode', () => {
   test('renders an empty shell with nothing prefilled', async () => {
-    renderDetail('/ai-evaluation-v2/add', []);
+    renderDetail('/assistants/add', []);
 
     await waitFor(() => {
       expect(screen.getByTestId('assistantDetailContainer')).toBeInTheDocument();
@@ -1045,7 +1111,7 @@ describe('tabs', () => {
   });
 
   test('tabs keep working in create mode', async () => {
-    renderDetail('/ai-evaluation-v2/add', []);
+    renderDetail('/assistants/add', []);
 
     await waitFor(() => {
       expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
@@ -1089,7 +1155,7 @@ describe('unsaved changes across tabs', () => {
   });
 
   test('dots the knowledge base tab when its files change', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), uploadMock]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), uploadMock]);
 
     await waitFor(() => {
       expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
@@ -1190,7 +1256,7 @@ describe('try it out tab', () => {
   });
 
   test('a brand new assistant is sent to Model & Prompt first', async () => {
-    renderDetail('/ai-evaluation-v2/add', []);
+    renderDetail('/assistants/add', []);
 
     await waitFor(() => {
       expect(screen.getByTestId('tab-tryItOut')).toBeInTheDocument();
@@ -1207,21 +1273,19 @@ describe('try it out tab', () => {
 describe('version status', () => {
   test('a version still building shows In Progress and cannot be published', async () => {
     const building = { ...version(2, false), status: 'in_progress' };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true), building])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([version(1, true), building])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('versionPill'));
     expect(screen.getByTestId('inProgressPill-2.0')).toHaveTextContent('In Progress');
-    expect(screen.getByTestId('versionOption-2.0')).toHaveTextContent('Not published');
 
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('In Progress');
     });
-    expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
     expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
     expect(screen.getByTestId('publishButton')).toBeDisabled();
 
@@ -1233,7 +1297,7 @@ describe('version status', () => {
 
   test('a failed version says so and cannot be published either', async () => {
     const failed = { ...version(2, false), status: 'failed' };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true), failed])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([version(1, true), failed])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
@@ -1255,7 +1319,7 @@ describe('version status', () => {
 
   test('a live version being rebuilt keeps its LIVE badge', async () => {
     const rebuildingLive = { ...version(1, true), status: 'in_progress' };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([rebuildingLive, version(2, false)])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([rebuildingLive, version(2, false)])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toHaveTextContent('LIVE');
@@ -1266,8 +1330,8 @@ describe('version status', () => {
     expect(screen.getByTestId('liveNote')).toHaveTextContent('This version is still being prepared');
   });
 
-  test('a ready draft still shows not published and stays publishable', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock()]);
+  test('a ready draft carries no badge and stays publishable', async () => {
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock()]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
@@ -1276,8 +1340,10 @@ describe('version status', () => {
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('versionPill')).toHaveTextContent('Not published');
+      expect(screen.getByTestId('versionPill')).toHaveTextContent('Version 2.0');
     });
+    // a saved draft carries no badge of its own — it is simply not the live one
+    expect(screen.getByTestId('versionPill')).not.toHaveTextContent('LIVE');
     expect(screen.getByTestId('publishButton')).not.toBeDisabled();
   });
 });
@@ -1299,12 +1365,12 @@ describe('switching versions', () => {
   };
 
   test('loads the selected version prompt, model and temperature', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
     });
-    expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4o');
+    expect(screen.getByTestId('modelSelect')).toHaveTextContent('gpt-4o');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(1);
 
     await openVersionMenu();
@@ -1313,7 +1379,7 @@ describe('switching versions', () => {
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toHaveValue('Answer in one line.');
     });
-    expect(screen.getByRole('combobox')).toHaveTextContent('gpt-4.1');
+    expect(screen.getByTestId('modelSelect')).toHaveTextContent('gpt-4.1');
     expect(screen.getByTestId('temperatureInput')).toHaveValue(0.5);
     // loading a version is not an edit
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
@@ -1321,7 +1387,7 @@ describe('switching versions', () => {
 
   test('parses settings that arrive as a JSON string', async () => {
     const stringSettings = { ...draftV2, settings: JSON.stringify({ temperature: 0.7 }) };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, stringSettings])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, stringSettings])]);
 
     await openVersionMenu();
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
@@ -1332,7 +1398,7 @@ describe('switching versions', () => {
   });
 
   test('asks before throwing away unsaved edits, and keeps them on cancel', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toBeInTheDocument();
@@ -1354,7 +1420,7 @@ describe('switching versions', () => {
   });
 
   test('confirming the switch loads the other version', async () => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, draftV2])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toBeInTheDocument();
@@ -1384,7 +1450,7 @@ describe('switching versions', () => {
         files: [{ id: 'file-2', name: 'older_policy.pdf', fileSize: 2048 }],
       },
     };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, versionWithStore])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, versionWithStore])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
@@ -1414,7 +1480,7 @@ describe('switching versions', () => {
   });
 
   const openKnowledgeBaseFor = async (versionTwo: Record<string, unknown>) => {
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, versionTwo as any])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, versionTwo as any])]);
     await waitFor(() => {
       expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
     });
@@ -1494,7 +1560,7 @@ describe('switching versions', () => {
       result: { data: { updateAssistant: { errors: null } } },
     };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock([liveV1, versionTwo as any]),
       createKnowledgeBaseMock,
@@ -1543,7 +1609,7 @@ describe('switching versions', () => {
       },
     };
     const versionTwo = { ...draftV2, vectorStore: storeFor() };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([liveV1, versionTwo as any]), slowUpload]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([liveV1, versionTwo as any]), slowUpload]);
 
     await waitFor(() => {
       expect(screen.getByTestId('tab-knowledgeBase')).toBeInTheDocument();
@@ -1597,7 +1663,7 @@ describe('switching versions', () => {
     };
     const savedV3 = { ...version(3, false), prompt: 'Be concise.', model: 'gpt-4o' };
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock([liveV1, draftV2]),
       saveMock,
@@ -1639,7 +1705,7 @@ describe('what a save sends', () => {
   test('a reasoning model sends its effort and no temperature', async () => {
     const { sent, mock } = captureSave();
     const reasoning = { ...version(1, true), model: 'gpt-5', settings: { effort: 'medium' } as any };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([reasoning]), mock]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([reasoning]), mock]);
 
     await waitFor(() => {
       expect(screen.getByTestId('effortSegment')).toBeInTheDocument();
@@ -1657,7 +1723,7 @@ describe('what a save sends', () => {
 
   test('a standard model sends its temperature and no effort', async () => {
     const { sent, mock } = captureSave();
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([version(1, true)]), mock]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([version(1, true)]), mock]);
 
     await waitFor(() => {
       expect(screen.getByTestId('temperatureInput')).toBeInTheDocument();
@@ -1688,7 +1754,7 @@ test('an assistant with no versions shows the effort it was saved with', async (
       },
     },
   };
-  renderDetail('/ai-evaluation-v2/1', [reasoningAssistant, versionsMock([])]);
+  renderDetail('/assistants/1', [reasoningAssistant, versionsMock([])]);
 
   const high = await screen.findByTestId('effortSegment-high');
   expect(high).toHaveAttribute('aria-checked', 'true');
@@ -1698,7 +1764,7 @@ test('an assistant with no versions shows the effort it was saved with', async (
 describe('resilience', () => {
   test('a version whose settings will not parse still loads', async () => {
     const broken = { ...version(1, true), settings: 'not json' };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock([broken])]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([broken])]);
 
     await waitFor(() => {
       expect(screen.getByTestId('promptInput')).toBeInTheDocument();
@@ -1727,7 +1793,7 @@ describe('resilience', () => {
       request: { query: SET_LIVE_VERSION, variables: { assistantId: '1', versionId: 'v2' } },
       error: new Error('Network down'),
     };
-    renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), failingPublish]);
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), failingPublish]);
 
     await waitFor(() => {
       expect(screen.getByTestId('versionPill')).toBeInTheDocument();
@@ -1736,6 +1802,7 @@ describe('resilience', () => {
     fireEvent.click(screen.getByTestId('versionOption-2.0'));
 
     fireEvent.click(await screen.findByTestId('publishButton'));
+    await confirmPublish();
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalled();
@@ -1784,7 +1851,7 @@ test('a reply that lands while another tab is open is not lost', async () => {
     },
     delay: 150,
   };
-  renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), sendMock, replyMock]);
+  renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), sendMock, replyMock]);
 
   await waitFor(() => {
     expect(screen.getByTestId('versionPill')).toBeInTheDocument();
@@ -1806,7 +1873,7 @@ test('a reply that lands while another tab is open is not lost', async () => {
 
 test('the settings panel does not flip from Temperature to Reasoning effort while loading', async () => {
   // the assistant record still names an older temperature model; its newest version is on gpt-5
-  renderDetail('/ai-evaluation-v2/1', [getAssistant('1'), versionsMock(), getAssistant('1'), versionsMock()]);
+  renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), getAssistant('1'), versionsMock()]);
 
   await waitFor(() => {
     expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
@@ -1831,7 +1898,7 @@ describe('a prompt improvement finishing in the background', () => {
   test('the version it wrote is selected without the reader reloading', async () => {
     const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       // the improved prompt lands as version 3, which the refetch then returns
@@ -1847,7 +1914,7 @@ describe('a prompt improvement finishing in the background', () => {
   test('a version belonging to another assistant is ignored, not jumped to', async () => {
     const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       versionsMock(),
@@ -1864,7 +1931,7 @@ describe('a prompt improvement finishing in the background', () => {
   test('a failed improvement says why rather than going quiet', async () => {
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       improvedMock({ status: 'failed', error: 'The model refused the rewrite', configVersion: null }),
@@ -1881,7 +1948,7 @@ describe('a prompt improvement finishing in the background', () => {
     const notify = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
 
-    renderDetail('/ai-evaluation-v2/1', [
+    renderDetail('/assistants/1', [
       getAssistant('1'),
       versionsMock(),
       improvedMock({ status: 'processing', error: null, configVersion: null }),

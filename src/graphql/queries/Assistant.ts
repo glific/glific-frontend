@@ -124,6 +124,8 @@ export const GET_ASSISTANT_MODELS = gql`
       provider
       completionType
       config
+      badge
+      category
     }
   }
 `;
