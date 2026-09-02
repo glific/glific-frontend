@@ -12,6 +12,20 @@ export const MAX_SCORE = 5;
 
 export const METRIC_WEIGHTS = { groundTruth: 0.5, knowledgeBase: 0.3, prompt: 0.2 };
 
+export const METRIC_LABEL = {
+  groundTruth: 'Adherence to ground truth',
+  prompt: 'Adherence to prompt',
+  knowledgeBase: 'Adherence to knowledge base',
+} as const;
+
+export const METRIC_HINT = {
+  groundTruth:
+    'Compares each answer with the expected answer in your Golden Q&A. The judge scores the meaning, not the exact wording.',
+  prompt: 'Checks each answer follows the instructions, tone and limits you set in the prompt for this version.',
+  knowledgeBase:
+    'Checks each answer stays within the files in your knowledge base instead of drawing on outside knowledge. It stays unscored when the run had no knowledge base to check against.',
+} as const;
+
 const METRIC_MATCHERS: { key: keyof EvaluationMetrics; matches: (name: string) => boolean }[] = [
   { key: 'groundTruth', matches: (name) => name.includes('ground') && name.includes('truth') },
   { key: 'knowledgeBase', matches: (name) => name.includes('knowledge') },

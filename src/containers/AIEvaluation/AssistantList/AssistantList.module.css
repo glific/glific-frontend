@@ -1,10 +1,10 @@
 .NameColumn {
-  width: 35%;
+  width: 34%;
   min-width: var(--app-size-table-column-min);
 }
 
 .HealthColumn {
-  width: 20%;
+  width: 22%;
 }
 
 .HealthHeader {
@@ -40,11 +40,11 @@
 }
 
 .VersionColumn {
-  width: 25%;
+  width: 22%;
 }
 
 .Actions {
-  width: 20%;
+  width: 22%;
 }
 
 .Actions > div {
