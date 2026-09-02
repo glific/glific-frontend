@@ -1,0 +1,124 @@
+import { useRef, useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { Button, CircularProgress, FormHelperText, IconButton } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import CrossIcon from 'assets/images/icons/Cross.svg?react';
+import styles from './FileUpload.module.css';
+
+export interface FileUploadProps {
+  field: { name: string; value: any; onChange?: any; onBlur?: any };
+  form?: { setFieldValue: any; touched: any; errors: any };
+  disabled?: boolean;
+  helperText?: string;
+  /** Rejected before upload, so an oversized file never leaves the browser. */
+  maxSizeKb?: number;
+  /** Passed to the file picker and re-checked on the chosen file. */
+  accept?: string;
+  /** Show the stored URL as an image rather than as text. */
+  preview?: boolean;
+}
+
+const DEFAULT_MAX_SIZE_KB = 200;
+
+export const FileUpload = ({
+  field,
+  form,
+  disabled = false,
+  helperText,
+  maxSizeKb = DEFAULT_MAX_SIZE_KB,
+  accept = 'image/png,image/jpeg,image/webp,image/svg+xml',
+  preview = true,
+}: FileUploadProps) => {
+  const { t } = useTranslation();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA);
+
+  const setValue = (value: string) => form?.setFieldValue(field.name, value);
+
+  const onFileChosen = async (event: any) => {
+    const file = event.target.files?.[0];
+    // Reset immediately so choosing the same file twice after an error still fires onChange.
+    event.target.value = '';
+    if (!file) return;
+
+    setError(null);
+
+    const acceptedTypes = accept.split(',').map((type) => type.trim());
+    if (acceptedTypes.length && !acceptedTypes.includes(file.type)) {
+      setError(t('That file type is not supported.'));
+      return;
+    }
+
+    if (file.size > maxSizeKb * 1024) {
+      setError(
+        t('That file is {{size}}KB. Please upload something under {{max}}KB.', {
+          size: Math.round(file.size / 1024),
+          max: maxSizeKb,
+        })
+      );
+      return;
+    }
+
+    const extension = file.name.slice((Math.max(0, file.name.lastIndexOf('.')) || Infinity) + 1);
+    setUploading(true);
+
+    try {
+      const { data } = await uploadMedia({ variables: { media: file, extension } });
+      if (data?.uploadMedia) {
+        setValue(data.uploadMedia);
+      } else {
+        setError(t('The upload did not return a file. Please try again.'));
+      }
+    } catch {
+      setError(t('An error occurred while uploading the file.'));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const fieldError = form?.touched?.[field.name] && form?.errors?.[field.name];
+
+  return (
+    <div className={styles.FileUpload} data-testid="fileUpload">
+      {field.value ? (
+        <div className={styles.Current}>
+          {preview && (
+            <img src={field.value} alt={t('Uploaded file')} className={styles.Preview} data-testid="filePreview" />
+          )}
+          <a href={field.value} target="_blank" rel="noreferrer" className={styles.Link}>
+            {field.value}
+          </a>
+          {!disabled && (
+            <IconButton size="small" data-testid="removeFile" onClick={() => setValue('')} aria-label={t('Remove')}>
+              <CrossIcon />
+            </IconButton>
+          )}
+        </div>
+      ) : (
+        <div className={styles.Empty}>{t('No file uploaded yet.')}</div>
+      )}
+
+      <input ref={inputRef} type="file" accept={accept} hidden data-testid="fileInput" onChange={onFileChosen} />
+
+      <Button
+        variant="outlined"
+        size="small"
+        disabled={disabled || uploading}
+        data-testid="uploadButton"
+        onClick={() => inputRef.current?.click()}
+      >
+        {uploading ? <CircularProgress size={16} /> : field.value ? t('Replace') : t('Upload')}
+      </Button>
+
+      <FormHelperText className={error || fieldError ? styles.DangerText : styles.HelperText}>
+        {error || fieldError || helperText || t('Up to {{max}}KB.', { max: maxSizeKb })}
+      </FormHelperText>
+    </div>
+  );
+};
+
+export default FileUpload;

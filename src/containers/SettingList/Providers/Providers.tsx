@@ -10,6 +10,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { FileUpload } from 'components/UI/Form/FileUpload/FileUpload';
 import { GET_PROVIDERS, GET_CREDENTIAL } from 'graphql/queries/Organization';
 import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
 import styles from './Providers.module.css';
@@ -157,33 +158,49 @@ export const Providers = () => {
 
     orderedKeys.forEach((key) => {
       if (fields[key]) {
-        // A provider key declaring `type: "select"` carries its own options, so a provider can
-        // offer a fixed choice without this page knowing anything about that provider.
+        // A provider key declaring `type: "select"` or `"upload"` carries everything the field
+        // needs, so a provider gets the right control without this page knowing anything about
+        // that provider.
         const isSelect = fields[key].type === 'select' && Array.isArray(fields[key].options);
+        const isUpload = fields[key].type === 'upload';
 
-        const field = isSelect
-          ? {
-              component: Dropdown,
-              name: key,
-              options: fields[key].options,
-              // FormLayout renders `label` above every field with the spacing the rest of the
-              // form uses. Dropdown would render `placeholder` as a second label of its own,
-              // so it is left empty rather than duplicating the name.
-              label: fields[key].label,
-              placeholder: '',
-              disabled: fields[key].view_only,
-              skip: fields[key].hide,
-            }
-          : {
-              component: Input,
-              name: key,
-              type: 'text',
-              label: fields[key].label,
-              disabled: fields[key].view_only,
-              skip: fields[key].hide,
-              placeholder:
-                type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key) ? `Enter ${fields[key].label} here` : '',
-            };
+        let field;
+        if (isSelect) {
+          field = {
+            component: Dropdown,
+            name: key,
+            options: fields[key].options,
+            // FormLayout renders `label` above every field with the spacing the rest of the
+            // form uses. Dropdown would render `placeholder` as a second label of its own,
+            // so it is left empty rather than duplicating the name.
+            label: fields[key].label,
+            placeholder: '',
+            disabled: fields[key].view_only,
+            skip: fields[key].hide,
+          };
+        } else if (isUpload) {
+          field = {
+            component: FileUpload,
+            name: key,
+            label: fields[key].label,
+            maxSizeKb: fields[key].max_size_kb,
+            accept: fields[key].accept,
+            helperText: fields[key].helper_text,
+            disabled: fields[key].view_only,
+            skip: fields[key].hide,
+          };
+        } else {
+          field = {
+            component: Input,
+            name: key,
+            type: 'text',
+            label: fields[key].label,
+            disabled: fields[key].view_only,
+            skip: fields[key].hide,
+            placeholder:
+              type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key) ? `Enter ${fields[key].label} here` : '',
+          };
+        }
         formField.push(field);
 
         // create validation object for field

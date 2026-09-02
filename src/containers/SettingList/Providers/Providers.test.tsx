@@ -300,7 +300,7 @@ const webChannelProvider = () => (
 );
 
 describe('provider keys declaring a select', () => {
-  it('renders a dropdown of the provider\'s own options, not a text input', async () => {
+  it("renders a dropdown of the provider's own options, not a text input", async () => {
     render(webChannelProvider());
 
     await waitFor(() => {
@@ -325,8 +325,20 @@ describe('provider keys declaring a select', () => {
     });
 
     expect(screen.getByText('Display Name')).toBeInTheDocument();
-    expect(screen.getByText('Logo URL (https)')).toBeInTheDocument();
-    expect(container.querySelectorAll('input[type="text"]').length).toBeGreaterThanOrEqual(2);
+    expect(container.querySelector('input[type="text"]')).toBeInTheDocument();
+  });
+
+  it('renders an upload control for a key declaring type: upload', async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('fileUpload')).toBeInTheDocument();
+    expect(screen.getByTestId('fileInput')).toHaveAttribute('accept', 'image/png,image/jpeg,image/webp,image/svg+xml');
+    // The provider's own limit, not the component default.
+    expect(screen.getByText('PNG, JPEG, WEBP or SVG up to 200KB. Landscape works best.')).toBeInTheDocument();
   });
 
   it('orders fields by their declared position, not by jsonb key order', async () => {
@@ -337,7 +349,7 @@ describe('provider keys declaring a select', () => {
     });
 
     const labels = screen.getAllByTestId('formLabel').map((label) => label.textContent);
-    expect(labels).toEqual(['Display Name', 'Logo URL (https)', 'Theme']);
+    expect(labels).toEqual(['Display Name', 'Logo', 'Theme']);
   });
 
   it('labels the dropdown once, through the same path as every other field', async () => {

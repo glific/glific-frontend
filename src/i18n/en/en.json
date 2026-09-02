@@ -1205,5 +1205,13 @@
   "adherence to ground truth": "adherence to ground truth",
   "adherence to knowledge base": "adherence to knowledge base",
   "adherence to prompt": "adherence to prompt",
-  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded"
+  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded",
+  "That file type is not supported.": "That file type is not supported.",
+  "That file is {{size}}KB. Please upload something under {{max}}KB.": "That file is {{size}}KB. Please upload something under {{max}}KB.",
+  "The upload did not return a file. Please try again.": "The upload did not return a file. Please try again.",
+  "An error occurred while uploading the file.": "An error occurred while uploading the file.",
+  "Uploaded file": "Uploaded file",
+  "No file uploaded yet.": "No file uploaded yet.",
+  "Up to {{max}}KB.": "Up to {{max}}KB.",
+  "Replace": "Replace"
 }

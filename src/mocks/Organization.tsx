@@ -1210,7 +1210,16 @@ const WEB_CHANNEL_KEYS = JSON.stringify({
       { id: 'zinc', label: 'Zinc' },
     ],
   },
-  logo_url: { view_only: false, type: 'string', label: 'Logo URL (https)', default: null, position: 2 },
+  logo_url: {
+    view_only: false,
+    type: 'upload',
+    label: 'Logo',
+    default: null,
+    position: 2,
+    max_size_kb: 200,
+    accept: 'image/png,image/jpeg,image/webp,image/svg+xml',
+    helper_text: 'PNG, JPEG, WEBP or SVG up to 200KB. Landscape works best.',
+  },
   display_name: { view_only: false, type: 'string', label: 'Display Name', default: null, position: 1 },
 });
 
@@ -1254,11 +1263,7 @@ const getWebChannelProvider = {
 
 // A provider whose keys declare `type: "select"`, to prove the credential form renders a
 // dropdown generically rather than needing a page of its own.
-export const getWebChannelProviderMock = [
-  getWebChannelCredential,
-  getWebChannelCredential,
-  getWebChannelProvider,
-];
+export const getWebChannelProviderMock = [getWebChannelCredential, getWebChannelCredential, getWebChannelProvider];
 
 export const updateMaytapiCredentials = (error: boolean = false) => ({
   request: {
