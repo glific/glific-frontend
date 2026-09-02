@@ -30,6 +30,7 @@ export const Configure = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const [showJSON, setShowJSON] = useState(false);
+  const [hasUnappliedJSON, setHasUnappliedJSON] = useState(false);
   const [view, setView] = useState<'preview' | 'variables' | 'versions'>('preview');
   const [isPublished, setIsPublished] = useState(false);
   const [previewingVersion, setPreviewingVersion] = useState<number | null>(null);
@@ -49,6 +50,11 @@ export const Configure = () => {
 
   const handleViewJSON = () => {
     setShowJSON(true);
+  };
+
+  const closeJSONViewer = () => {
+    setShowJSON(false);
+    setHasUnappliedJSON(false);
   };
 
   const handleScreensChange = (newScreens: Screen[] | ((prev: Screen[]) => Screen[])) => {
@@ -109,7 +115,7 @@ export const Configure = () => {
 
   const handleBackToEditing = () => {
     if (showJSON) {
-      setShowJSON(false);
+      closeJSONViewer();
       return;
     }
     setScreens(currentScreensRef.current);
@@ -162,6 +168,12 @@ export const Configure = () => {
   }, [latestRevisionData]);
 
   const handleSaveWhatsappFormRevision = async () => {
+    if (hasUnappliedJSON) {
+      setNotification('Click "Apply Changes" in the JSON editor before saving, or your edits will be lost.', 'warning');
+      hasUnsavedChangesRef.current = true;
+      return;
+    }
+
     const flowJSON = convertFormBuilderToFlowJSON(screens);
 
     try {
@@ -212,7 +224,7 @@ export const Configure = () => {
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [screens, params.id, saveWhatsappFormRevision, isViewOnly]);
+  }, [screens, params.id, saveWhatsappFormRevision, isViewOnly, hasUnappliedJSON]);
 
   let dialog;
   if (openDialog) {
@@ -303,8 +315,9 @@ export const Configure = () => {
           {showJSON ? (
             <JSONViewer
               screens={screens}
-              onClose={() => setShowJSON(false)}
+              onClose={closeJSONViewer}
               onScreensChange={isViewOnly ? undefined : handleScreensChange}
+              onUnappliedChanges={setHasUnappliedJSON}
             />
           ) : (
             <FormBuilder

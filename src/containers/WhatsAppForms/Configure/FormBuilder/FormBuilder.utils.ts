@@ -33,6 +33,35 @@ const generateUniqueScreenIds = (screens: Screen[]): string[] => {
   return ids;
 };
 
+/**
+ * Component types that hold a form value — the ones whose `name` becomes a payload key.
+ * Components outside this list may still carry a `name` (NavigationList, for instance)
+ * without contributing a value, so they must never be added to a footer payload.
+ */
+const INPUT_COMPONENT_TYPES = [
+  'TextInput',
+  'TextArea',
+  'DatePicker',
+  'RadioButtonsGroup',
+  'CheckboxGroup',
+  'Dropdown',
+  'OptIn',
+  'CalendarPicker',
+  'ChipsSelector',
+  'DocumentPicker',
+  'PhotoPicker',
+];
+
+/**
+ * Media upload values cannot be relayed between screens — Meta rejects them in the payload
+ * of a navigate action, so they are only ever emitted on the terminal screen.
+ */
+const MEDIA_UPLOAD_COMPONENT_TYPES = new Set(['PhotoPicker', 'DocumentPicker']);
+
+/** True when a passthrough component holds a form value, so its `name` is a payload key. */
+const isInputComponent = (component: any): boolean =>
+  !!component?.name && INPUT_COMPONENT_TYPES.includes(component.type);
+
 /** Checks whether a content item has validation errors based on its type (empty labels, missing options, etc.). */
 export const hasContentItemError = (item: ContentItem): boolean => {
   const { data, type, name } = item;
@@ -127,12 +156,15 @@ export const convertFormBuilderToFlowJSON = (screens: Screen[]): any => {
     );
 
     screen.content.forEach((item) => {
-      if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
+      if (item.type === 'Unsupported') {
+        const raw = item.data.rawComponent;
+        // Media uploads cannot be relayed to later screens, so they never enter the data schema
+        if (!isInputComponent(raw) || MEDIA_UPLOAD_COMPONENT_TYPES.has(raw.type)) return;
         const fieldName = fieldNameMap.get(item.id);
         if (fieldName) {
           previousScreensPayloadData.push({
             payloadKey: fieldName,
-            fieldType: item.data.rawComponent.type,
+            fieldType: raw.type,
             inputType: 'text',
             screenId: screenIds[index],
           });
@@ -232,9 +264,11 @@ export const computeFieldNames = (screens: Screen[]): Map<string, string> => {
 
   screens.forEach((screen) => {
     screen.content.forEach((item) => {
-      // Unsupported components with a name are input components that need field tracking
-      if (item.type === 'Unsupported' && item.data.rawComponent?.name) {
-        const name = uniqueName(item.data.rawComponent.name, usedNames);
+      // Passthrough components only need field tracking when they actually hold a value
+      if (item.type === 'Unsupported') {
+        const raw = item.data.rawComponent;
+        if (!isInputComponent(raw)) return;
+        const name = uniqueName(raw.name, usedNames);
         usedNames.add(name);
         fieldNameMap.set(item.id, name);
         return;
@@ -267,6 +301,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
     return {
       text: data.text,
       type: componentType,
+      ...data.extraAttributes,
     };
   }
 
@@ -289,6 +324,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       required: data.required || false,
       type: 'TextArea',
       ...(data.placeholder && { 'helper-text': data.placeholder }),
+      ...data.extraAttributes,
     };
   }
 
@@ -308,6 +344,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       'data-source': (data.options || []).map((opt, index) => ({
         id: opt.id || `${index}_${opt.value}`,
         title: opt.value,
+        ...opt.extraAttributes,
       })),
       label: data.label,
       name: fieldName,
@@ -322,6 +359,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       'data-source': (data.options || []).map((opt, index) => ({
         id: opt.id || `${index}_${opt.value}`,
         title: opt.value,
+        ...opt.extraAttributes,
       })),
       label: data.label,
       name: fieldName,
@@ -336,6 +374,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       'data-source': (data.options || []).map((opt, index) => ({
         id: opt.id || `${index}_${opt.value}`,
         title: opt.value,
+        ...opt.extraAttributes,
       })),
       label: data.label,
       name: fieldName,
@@ -351,6 +390,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       name: fieldName,
       required: data.required || false,
       type: 'OptIn',
+      ...data.extraAttributes,
     };
   }
 
@@ -361,6 +401,7 @@ const convertContentItemToComponent = (item: ContentItem, fieldNameMap: Map<stri
       src: src || '',
       height: 400,
       'scale-type': 'contain',
+      ...data.extraAttributes,
     };
   }
 
@@ -434,8 +475,13 @@ const generateScreenPayload = (
   });
 
   screenContent.forEach((item) => {
-    if (item.type === 'Unsupported' && item.data.rawComponent?.name && fieldNameMap.has(item.id)) {
-      payload[fieldNameMap.get(item.id)!] = `\${form.${fieldNameMap.get(item.id)!}}`;
+    if (item.type === 'Unsupported') {
+      const raw = item.data.rawComponent;
+      if (!isInputComponent(raw) || !fieldNameMap.has(item.id)) return;
+      // Meta rejects media upload values in a navigate payload — terminal screens only
+      if (MEDIA_UPLOAD_COMPONENT_TYPES.has(raw.type) && !isTerminal) return;
+      const fieldName = fieldNameMap.get(item.id)!;
+      payload[fieldName] = `\${form.${fieldName}}`;
       return;
     }
 
@@ -452,12 +498,6 @@ const generateScreenPayload = (
 
   return payload;
 };
-
-/**
- * Component types that must be direct children of SingleColumnLayout,
- * NOT nested inside a Form component.
- */
-const LAYOUT_DIRECT_COMPONENT_TYPES = new Set(['CalendarPicker', 'DocumentPicker', 'PhotoPicker']);
 
 /** Converts a single form builder screen into a WhatsApp Flow JSON screen object with layout, components, and footer. */
 export const convertScreenToFlowJSON = (
@@ -481,8 +521,7 @@ export const convertScreenToFlowJSON = (
     const component = convertContentItemToComponent(item, fieldNameMap);
     if (!component) return;
 
-    const rawType = item.type === 'Unsupported' ? item.data.rawComponent?.type : null;
-    if (rawType && LAYOUT_DIRECT_COMPONENT_TYPES.has(rawType)) {
+    if (item.data.layoutDirect) {
       layoutDirectChildren.push(component);
     } else {
       formChildren.push(component);
@@ -500,6 +539,7 @@ export const convertScreenToFlowJSON = (
           ? { name: 'complete', payload }
           : { name: 'navigate', next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' }, payload },
         type: 'Footer',
+        ...screen.footerAttributes,
       }
     : null;
 
@@ -557,86 +597,66 @@ const getInternalComponentType = (whatsappType: string): { type: string; name: s
 };
 
 /**
- * Extra Meta-spec keys per component type that the form builder does not edit.
- * These are picked from the JSON component and stored in extraAttributes so they
- * are spread back verbatim when converting back to JSON — nothing is lost.
+ * Keys each component type is *modelled* on — the ones the builder writes back itself.
+ * Everything else on a component is captured into extraAttributes and spread back
+ * verbatim, so an attribute the builder does not understand (including one Meta adds
+ * later) survives a round-trip instead of being silently dropped.
  */
-const EXTRA_ATTRIBUTE_KEYS: Record<string, string[]> = {
-  TextInput: ['pattern', 'min-chars', 'max-chars'],
-  DatePicker: [
-    'min-date',
-    'max-date',
-    'unavailable-dates',
-    'visible',
-    'enabled',
-    'on-select-action',
-    'init-value',
-    'error-message',
-  ],
-  RadioButtonsGroup: [
-    'min-selected-items',
-    'max-selected-items',
-    'enabled',
-    'visible',
-    'on-select-action',
-    'on-unselect-action',
-    'description',
-    'init-value',
-    'error-message',
-    'media-size',
-  ],
-  CheckboxGroup: [
-    'min-selected-items',
-    'max-selected-items',
-    'enabled',
-    'visible',
-    'on-select-action',
-    'on-unselect-action',
-    'description',
-    'init-value',
-    'error-message',
-    'media-size',
-  ],
-  Dropdown: ['enabled', 'visible', 'on-select-action', 'on-unselect-action', 'init-value', 'error-message'],
+const CONSUMED_ATTRIBUTE_KEYS: Record<string, string[]> = {
+  TextHeading: ['type', 'text'],
+  TextSubheading: ['type', 'text'],
+  TextCaption: ['type', 'text'],
+  TextBody: ['type', 'text'],
+  TextInput: ['type', 'label', 'name', 'required', 'input-type', 'helper-text'],
+  TextArea: ['type', 'label', 'name', 'required', 'helper-text'],
+  DatePicker: ['type', 'label', 'name', 'required', 'helper-text'],
+  RadioButtonsGroup: ['type', 'label', 'name', 'required', 'data-source'],
+  CheckboxGroup: ['type', 'label', 'name', 'required', 'data-source'],
+  Dropdown: ['type', 'label', 'name', 'required', 'data-source'],
+  OptIn: ['type', 'label', 'name', 'required'],
+  Image: ['type', 'src'],
 };
 
 /**
- * All component types valid per the WhatsApp Flows spec.
- * Supported types are editable in the form builder.
- * Known-but-unsupported types are preserved as raw JSON passthroughs.
- * Anything outside this set triggers a validation error.
+ * Component types known to the WhatsApp Flows spec.
+ * Supported types are editable in the form builder; the rest are preserved as raw JSON
+ * passthroughs. Anything outside this set is reported as a warning, never an error —
+ * Meta adds components faster than this list can track, and an unrecognised type must
+ * not block the form from being saved.
  */
 export const VALID_COMPONENT_TYPES = new Set([
   'TextHeading',
   'TextSubheading',
   'TextCaption',
   'TextBody',
+  'RichText',
   'TextInput',
   'TextArea',
   'DatePicker',
+  'CalendarPicker',
   'RadioButtonsGroup',
   'CheckboxGroup',
   'Dropdown',
+  'ChipsSelector',
   'OptIn',
   'Image',
-  'Footer',
-  'CalendarPicker',
-  'DocumentPicker',
-  'ChipsSelector',
-  'EmbeddedLink',
+  'ImageCarousel',
   'PhotoPicker',
-  'RichText',
+  'DocumentPicker',
+  'EmbeddedLink',
+  'NavigationList',
+  'Footer',
   'If',
   'Switch',
 ]);
 
-/** Picks the known extra Meta-spec attributes from a JSON component that the form builder doesn't edit. */
+/** Picks every attribute of a JSON component that the form builder does not model itself. */
 const extractExtraAttributes = (component: any, componentType: string): Record<string, any> | undefined => {
-  const extraKeys = EXTRA_ATTRIBUTE_KEYS[componentType];
-  if (!extraKeys) return undefined;
+  const consumed = CONSUMED_ATTRIBUTE_KEYS[componentType];
+  if (!consumed) return undefined;
   const extra: Record<string, any> = {};
-  extraKeys.forEach((key) => {
-    if (key in component) extra[key] = component[key];
+  Object.keys(component).forEach((key) => {
+    if (!consumed.includes(key)) extra[key] = component[key];
   });
   return Object.keys(extra).length > 0 ? extra : undefined;
 };
@@ -665,8 +685,10 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   }
 
   if (['TextHeading', 'TextSubheading', 'TextCaption', 'TextBody'].includes(type)) {
+    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       text: component.text || '',
+      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
@@ -685,10 +707,12 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   }
 
   if (type === 'TextArea') {
+    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       label: component.label || '',
       required: component.required || false,
       placeholder: component['helper-text'] || '',
+      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
@@ -710,27 +734,35 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     contentItem.data = {
       label: component.label || '',
       required: component.required || false,
-      options: dataSource.map((item: any, index: number) => ({
-        id: item.id || `${index}_${item.title}`,
-        value: item.title || '',
-      })),
+      options: dataSource.map((item: any, index: number) => {
+        const { id, title, ...rest } = item;
+        return {
+          id: id || `${index}_${title}`,
+          value: title || '',
+          ...(Object.keys(rest).length > 0 && { extraAttributes: rest }),
+        };
+      }),
       ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
 
   if (type === 'OptIn') {
+    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       label: component.label || 'Label',
       required: component.required || false,
+      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
 
   if (type === 'Image') {
     const src = component.src || '';
+    const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
       text: src && !src.startsWith('data:') ? `data:image/png;base64,${src}` : src,
+      ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
   }
@@ -746,21 +778,39 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
 
   return flowJSON.screens.map((flowScreen: any, screenIndex: number) => {
     const layoutChildren = flowScreen.layout?.children || [];
-    const formLayout = layoutChildren.find((c: any) => c.type === 'Form');
-    const directLayoutComponents = layoutChildren.filter((c: any) => c.type !== 'Form');
-    const formChildren = formLayout ? formLayout.children || [] : [];
-    const allChildren = [...directLayoutComponents, ...formChildren];
+
+    // Flatten in document order, remembering whether each component sat directly in the
+    // layout or inside the Form, so its placement survives the round-trip untouched.
+    const allChildren: Array<{ component: any; layoutDirect: boolean }> = [];
+    layoutChildren.forEach((child: any) => {
+      if (child.type === 'Form') {
+        (child.children || []).forEach((formChild: any) =>
+          allChildren.push({ component: formChild, layoutDirect: false })
+        );
+      } else {
+        allChildren.push({ component: child, layoutDirect: true });
+      }
+    });
 
     let buttonLabel = 'Continue';
-    const footerComponent = allChildren.find((child: any) => child.type === 'Footer');
-    if (footerComponent) {
-      buttonLabel = footerComponent.label || 'Continue';
+    let footerAttributes: Record<string, any> | undefined;
+    const footer = allChildren.find(({ component }) => component.type === 'Footer');
+    if (footer) {
+      buttonLabel = footer.component.label || 'Continue';
+      const { type, label, 'on-click-action': onClickAction, ...rest } = footer.component;
+      if (Object.keys(rest).length > 0) {
+        footerAttributes = rest;
+      }
     }
 
     const content: ContentItem[] = allChildren
-      .map((component: any, index: number) => {
+      .map(({ component, layoutDirect }, index: number) => {
         const item = convertWhatsAppComponentToContentItem(component, index);
-        if (item && item.type !== 'Unsupported' && component.name) {
+        if (!item) return null;
+        if (layoutDirect) {
+          item.data.layoutDirect = true;
+        }
+        if (item.type !== 'Unsupported' && component.name) {
           item.data.variableName = component.name;
         }
         return item;
@@ -773,6 +823,7 @@ export const convertFlowJSONToFormBuilder = (flowJSON: any): Screen[] => {
       order: screenIndex,
       content,
       buttonLabel,
+      ...(footerAttributes && { footerAttributes }),
     };
   });
 };
@@ -784,24 +835,14 @@ interface FlowJsonError {
 
 interface FlowJsonValidationResult {
   errors: FlowJsonError[];
+  /** Non-blocking notices — the JSON still saves and round-trips unchanged. */
+  warnings: FlowJsonError[];
 }
-
-const INPUT_COMPONENT_TYPES = [
-  'TextInput',
-  'TextArea',
-  'DatePicker',
-  'RadioButtonsGroup',
-  'CheckboxGroup',
-  'Dropdown',
-  'OptIn',
-  'CalendarPicker',
-  'DocumentPicker',
-  'PhotoPicker',
-];
 
 /** Validates a WhatsApp Flow JSON structure, checking screen IDs, titles, layout, actions, components, and data properties. */
 export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
   const errors: FlowJsonError[] = [];
+  const warnings: FlowJsonError[] = [];
 
   // Phase 1: Top-level structure
   if (!parsedJson.version || typeof parsedJson.version !== 'string') {
@@ -810,12 +851,12 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
 
   if (!parsedJson.screens || !Array.isArray(parsedJson.screens)) {
     errors.push({ message: 'Missing or invalid "screens" array' });
-    return { errors };
+    return { errors, warnings };
   }
 
   if (parsedJson.screens.length === 0) {
     errors.push({ message: 'Screens array cannot be empty' });
-    return { errors };
+    return { errors, warnings };
   }
 
   const { screens } = parsedJson;
@@ -876,16 +917,6 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     const formIndex = layoutChildren.findIndex((c: any) => c.type === 'Form');
     const formComponent = formIndex !== -1 ? layoutChildren[formIndex] : undefined;
     const formChildren: any[] = Array.isArray(formComponent?.children) ? formComponent.children : [];
-
-    // Check for layout-direct components incorrectly placed inside Form
-    formChildren.forEach((component: any, j: number) => {
-      if (LAYOUT_DIRECT_COMPONENT_TYPES.has(component.type)) {
-        errors.push({
-          message: `Screen '${screenLabel}': '${component.type}' must be a direct child of SingleColumnLayout, not inside a Form component`,
-          path: `screens[${i}].layout.children[${formIndex}].children[${j}]`,
-        });
-      }
-    });
 
     // Collect all components: direct layout children (non-Form) + Form children
     const directLayoutComponents = layoutChildren.filter((c: any) => c.type !== 'Form');
@@ -1000,8 +1031,8 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
           directIdx !== -1
             ? `screens[${i}].layout.children[${directIdx}]`
             : `screens[${i}].layout.children[${formIndex}].children[${formChildren.indexOf(component)}]`;
-        errors.push({
-          message: `Screen '${screenLabel}': Unknown component type '${component.type}' at index ${j}`,
+        warnings.push({
+          message: `Screen '${screenLabel}': '${component.type}' at index ${j} is not editable in the form builder — it will be saved exactly as written`,
           path: componentPath,
         });
       }
@@ -1041,5 +1072,5 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     }
   });
 
-  return { errors };
+  return { errors, warnings };
 };
