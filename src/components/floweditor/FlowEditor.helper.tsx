@@ -84,7 +84,6 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
       contact: CONTACT_CHAT_LINK,
       optins: `${glificBase}optins`,
     },
-    copyNodeEnabled: !!services.copyNodeEnabled,
     onEvent: (event: string, properties: Record<string, any>) => {
       posthog?.capture(event, properties);
     },

@@ -126,11 +126,27 @@ export const REPORT_TO_GUPSHUP = gql`
 `;
 
 export const TRANSLATE_SESSION_TEMPLATE = gql`
-  mutation TranslateSessionTemplate($languageId: ID!, $body: String, $footer: String, $buttons: [String]) {
-    translateSessionTemplate(languageId: $languageId, body: $body, footer: $footer, buttons: $buttons) {
+  mutation TranslateSessionTemplate(
+    $templateId: ID!
+    $languageId: ID!
+    $body: String
+    $footer: String
+    $buttons: [String]
+  ) {
+    translateSessionTemplate(
+      templateId: $templateId
+      languageId: $languageId
+      body: $body
+      footer: $footer
+      buttons: $buttons
+    ) {
       body
       footer
       buttons
+      sourceLanguage {
+        id
+        label
+      }
       errors {
         key
         message
