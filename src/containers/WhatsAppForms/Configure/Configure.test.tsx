@@ -9,9 +9,12 @@ import {
   computeFieldNames,
   convertFlowJSONToFormBuilder,
   convertFormBuilderToFlowJSON,
+  validateFlowJson,
 } from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
 
 import {
+  FLOW_JSON_COMPONENTS,
+  FOOTER_WITH_CAPTIONS,
   WHATSAPP_FORM_MOCKS,
   validScreen,
   revertWhatsappFormRevisionMock,
@@ -1431,29 +1434,51 @@ describe('validateFlowJson — all phases', () => {
     );
   });
 
-  test('phase 3 — CalendarPicker inside Form throws layout placement error', async () => {
-    await setJsonAndExpectError(
-      flow([
-        validScreen({
-          layout: {
-            type: 'SingleColumnLayout',
-            children: [
-              formWith([
-                {
-                  type: 'CalendarPicker',
-                  name: 'appt_date',
-                  label: 'Pick a date',
-                  required: true,
-                  mode: 'single',
-                },
-                footer({ name: 'complete', payload: {} }),
-              ]),
-            ],
-          },
-        }),
-      ]),
-      "'CalendarPicker' must be a direct child of SingleColumnLayout, not inside a Form component"
-    );
+  test('phase 3 — CalendarPicker inside Form is valid and stays inside Form', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const calendarInsideForm = flow([
+      validScreen({
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            formWith([
+              {
+                type: 'CalendarPicker',
+                name: 'appt_date',
+                label: 'Pick a date',
+                required: true,
+                mode: 'single',
+              },
+              footer({ name: 'complete', payload: {} }),
+            ]),
+          ],
+        },
+      }),
+    ]);
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(calendarInsideForm) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('apply-changes')).not.toBeInTheDocument();
+    });
+
+    // The picker must not be hoisted out of the Form on the way back to JSON
+    const roundTripped = JSON.parse((screen.getByTestId('json-preview') as HTMLTextAreaElement).value);
+    const [layoutChild] = roundTripped.screens[0].layout.children;
+    expect(layoutChild.type).toBe('Form');
+    expect(layoutChild.children.find((c: any) => c.type === 'CalendarPicker')).toBeDefined();
   });
 
   test('phase 3 — CalendarPicker as direct layout child with Form+Footer is valid', async () => {
@@ -1745,23 +1770,43 @@ describe('validateFlowJson — all phases', () => {
   });
 
   // ── Phase 5: Unknown component type ──────────────────────────────────────
-  test('phase 5 — unknown component type triggers validation error', async () => {
-    await setJsonAndExpectError(
-      flow([
-        validScreen({
-          layout: {
-            type: 'SingleColumnLayout',
-            children: [
-              formWith([
-                { type: 'SuperWidget', name: 'widget_1', label: 'Widget' },
-                footer({ name: 'complete', payload: {} }),
-              ]),
-            ],
-          },
-        }),
-      ]),
-      "Unknown component type 'SuperWidget'"
-    );
+  test('phase 5 — unknown component type does not block saving', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const superWidget = { type: 'SuperWidget', name: 'widget_1', label: 'Widget' };
+    const withUnknownComponent = flow([
+      validScreen({
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [formWith([superWidget, footer({ name: 'complete', payload: {} })])],
+        },
+      }),
+    ]);
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(withUnknownComponent) } });
+
+    // An unknown type is not an error, so the edit can still be applied
+    await waitFor(() => {
+      expect(screen.getByTestId('apply-changes')).toBeEnabled();
+    });
+    expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('apply-changes')).not.toBeInTheDocument();
+    });
+
+    // Preserved verbatim, and its name is not mistaken for a form value
+    const roundTripped = JSON.parse((screen.getByTestId('json-preview') as HTMLTextAreaElement).value);
+    const [form] = roundTripped.screens[0].layout.children;
+    expect(form.children.find((c: any) => c.type === 'SuperWidget')).toEqual(superWidget);
+    expect(form.children.find((c: any) => c.type === 'Footer')['on-click-action'].payload).toEqual({});
   });
 
   // ── Phase 6: Data property validation ────────────────────────────────────
@@ -1857,7 +1902,7 @@ describe('round-trip preservation — unsupported components & extra attributes'
     expect(unsupportedItem!.data.rawComponent).toEqual(photoPicker);
 
     const outputJSON = convertFormBuilderToFlowJSON(screens);
-    const outputChildren = outputJSON.screens[0].layout.children;
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
     const outputComponent = outputChildren.find((c: any) => c.type === 'PhotoPicker');
 
     expect(outputComponent).toEqual(photoPicker);
@@ -2146,33 +2191,364 @@ describe('round-trip preservation — unsupported components & extra attributes'
   });
 
   test('duplicate Unsupported rawComponent names get _1, _2 suffixes like Text Answer/Selection', () => {
-    const flowJSON = makeFlowJSON([
-      {
-        type: 'EmbeddedLink',
-        name: 'promo',
-        text: 'Promo A',
-        'on-click-action': { name: 'open_url', url: 'https://a.com' },
-      },
-      {
-        type: 'EmbeddedLink',
-        name: 'promo',
-        text: 'Promo B',
-        'on-click-action': { name: 'open_url', url: 'https://b.com' },
-      },
-      {
-        type: 'EmbeddedLink',
-        name: 'promo',
-        text: 'Promo C',
-        'on-click-action': { name: 'open_url', url: 'https://c.com' },
-      },
-    ]);
+    const chips = (name: string, label: string) => ({
+      type: 'ChipsSelector',
+      name,
+      label,
+      'data-source': [{ id: '1', title: 'One' }],
+    });
+
+    const flowJSON = makeFlowJSON([chips('choice', 'A'), chips('choice', 'B'), chips('choice', 'C')]);
 
     const screens = convertFlowJSONToFormBuilder(flowJSON);
     const fieldNameMap = computeFieldNames(screens);
 
     const ids = screens[0].content.map((item) => item.id);
-    expect(fieldNameMap.get(ids[0])).toBe('promo');
-    expect(fieldNameMap.get(ids[1])).toBe('promo_1');
-    expect(fieldNameMap.get(ids[2])).toBe('promo_2');
+    expect(fieldNameMap.get(ids[0])).toBe('choice');
+    expect(fieldNameMap.get(ids[1])).toBe('choice_1');
+    expect(fieldNameMap.get(ids[2])).toBe('choice_2');
+  });
+
+  test('a named non-input passthrough component is not treated as a form value', () => {
+    const navigationList = {
+      type: 'NavigationList',
+      name: 'menu',
+      'list-items': [{ id: 'a', 'main-content': { title: 'Item A' } }],
+    };
+
+    const flowJSON = makeFlowJSON([navigationList]);
+    const screens = convertFlowJSONToFormBuilder(flowJSON);
+
+    // No field name, so nothing lands in the footer payload
+    expect(computeFieldNames(screens).size).toBe(0);
+
+    const outputJSON = convertFormBuilderToFlowJSON(screens);
+    const outputChildren = outputJSON.screens[0].layout.children[0].children;
+    expect(outputChildren.find((c: any) => c.type === 'NavigationList')).toEqual(navigationList);
+    expect(outputChildren.find((c: any) => c.type === 'Footer')['on-click-action'].payload).toEqual({});
+  });
+
+  const layoutAndFormChildren = (screen: any) => {
+    const out: any[] = [];
+    (screen.layout?.children || []).forEach((c: any) => {
+      if (c.type === 'Form') (c.children || []).forEach((x: any) => out.push(x));
+      else out.push(c);
+    });
+    return out;
+  };
+
+  const deepDiff = (want: any, got: any, path = ''): string[] => {
+    if (Array.isArray(want)) {
+      if (!Array.isArray(got)) return [`${path}: not an array`];
+      return want.flatMap((v, i) => deepDiff(v, got[i], `${path}[${i}]`));
+    }
+    if (want && typeof want === 'object') {
+      if (!got || typeof got !== 'object') return [`${path}: missing`];
+      return Object.keys(want).flatMap((k) =>
+        k in got ? deepDiff(want[k], got[k], path ? `${path}.${k}` : k) : [`${path ? `${path}.` : ''}${k}: DROPPED`]
+      );
+    }
+    return JSON.stringify(want) === JSON.stringify(got)
+      ? []
+      : [`${path}: ${JSON.stringify(want)} -> ${JSON.stringify(got)}`];
+  };
+
+  it.each(Object.keys(FLOW_JSON_COMPONENTS))('%s survives a round-trip with every documented attribute', (name) => {
+    const component = FLOW_JSON_COMPONENTS[name];
+    const input = makeFlowJSON([component]);
+
+    expect(validateFlowJson(input).errors).toEqual([]);
+
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
+    const back = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === name);
+
+    expect(back).toBeDefined();
+    expect(deepDiff(component, back)).toEqual([]);
+  });
+
+  it('preserves Footer attributes the builder does not edit', () => {
+    const input = makeFlowJSON([FLOW_JSON_COMPONENTS.TextBody]);
+    input.screens[0].layout.children[0].children = [FLOW_JSON_COMPONENTS.TextBody, FOOTER_WITH_CAPTIONS];
+
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
+    const back = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'Footer');
+
+    expect(deepDiff(FOOTER_WITH_CAPTIONS, back)).toEqual([]);
+  });
+
+  it('generates option ids and titles when the data-source omits them', () => {
+    const input = makeFlowJSON([
+      {
+        type: 'RadioButtonsGroup',
+        name: 'choice',
+        label: 'Pick',
+        required: true,
+        'data-source': [{}, { title: 'Named' }],
+      },
+    ]);
+
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
+    const group = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'RadioButtonsGroup');
+
+    expect(group['data-source']).toEqual([
+      { id: '0_undefined', title: '' },
+      { id: '1_Named', title: 'Named' },
+    ]);
+  });
+
+  it('handles a Form with no children and a Footer with no label', () => {
+    const input = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              { type: 'Form', name: 'flow_path' },
+              { type: 'Footer', 'on-click-action': { name: 'complete', payload: {} } },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(input);
+    expect(screens[0].buttonLabel).toBe('Continue');
+
+    const output = convertFormBuilderToFlowJSON(screens);
+    const footer = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'Footer');
+    expect(footer.label).toBe('Continue');
+  });
+
+  it('handles a screen with no Footer at all', () => {
+    const input = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: { type: 'SingleColumnLayout', children: [{ type: 'TextBody', text: 'Just text' }] },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(input);
+    expect(screens[0].buttonLabel).toBe('Continue');
+    expect(screens[0].footerAttributes).toBeUndefined();
+  });
+
+  it('preserves an attribute the builder has never heard of', () => {
+    // Stand-in for a component attribute Meta adds after this code was written
+    const futureAttr = { type: 'TextBody', text: 'Hi', 'some-future-attribute': { nested: true } };
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(makeFlowJSON([futureAttr])));
+    const back = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'TextBody');
+
+    expect(back['some-future-attribute']).toEqual({ nested: true });
+  });
+});
+
+describe('JSON editor — unsupported components are saved, not silently dropped', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  // Reported bug: a PhotoPicker inside a Form was rejected as a layout-placement error, which
+  // hid "Apply Changes", so Save Draft kept persisting the untouched template.
+  test('PhotoPicker inside a Form applies and round-trips verbatim', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const photoPicker = {
+      type: 'PhotoPicker',
+      'photo-source': 'camera_gallery',
+      name: 'photos',
+      'min-uploaded-photos': 0,
+      'max-uploaded-photos': 10,
+      'max-file-size-kb': 10240,
+      label: 'Dear Teacher, please share 10 photos of your students work.',
+      description: 'Click "Take Photo" to take each photo.',
+    };
+    const pastedJSON = flow([
+      {
+        id: 'Share_student_work',
+        title: 'Share Student Work',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            formWith([photoPicker, footer({ name: 'complete', payload: { photos: '${form.photos}' } }, 'Share')]),
+          ],
+        },
+      },
+    ]);
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(pastedJSON) } });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('json-error')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Apply Changes'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('apply-changes')).not.toBeInTheDocument();
+    });
+
+    const roundTripped = JSON.parse((screen.getByTestId('json-preview') as HTMLTextAreaElement).value);
+    const [layoutChild] = roundTripped.screens[0].layout.children;
+    expect(layoutChild.type).toBe('Form');
+    expect(layoutChild.children.find((c: any) => c.type === 'PhotoPicker')).toEqual(photoPicker);
+    expect(layoutChild.children.find((c: any) => c.type === 'Footer')['on-click-action'].payload).toEqual({
+      photos: '${form.photos}',
+    });
+  });
+
+  test('Save Draft refuses to run while JSON edits are unapplied', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(flow([validScreen()])) } });
+
+    await waitFor(() => expect(screen.getByTestId('apply-changes')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith(
+        'Click "Apply Changes" in the JSON editor — that applies and saves your edits.',
+        'warning'
+      );
+    });
+    expect(screen.queryByText('Saving')).not.toBeInTheDocument();
+  });
+
+  test('invalid JSON keeps Apply Changes visible but disabled', async () => {
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(flow([validScreen({ title: '' })])) } });
+
+    await waitFor(() => expect(screen.getByTestId('json-error')).toBeInTheDocument());
+    expect(screen.getByTestId('apply-changes')).toBeDisabled();
+  });
+
+  test('closing the JSON editor clears the unapplied-changes guard', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(flow([validScreen()])) } });
+    await waitFor(() => expect(screen.getByTestId('apply-changes')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByTestId('json-viewer-close'));
+
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => expect(screen.getByText('Saving')).toBeInTheDocument());
+    expect(notificationSpy).not.toHaveBeenCalledWith(
+      'Click "Apply Changes" in the JSON editor — that applies and saves your edits.',
+      'warning'
+    );
+  });
+
+  test('the Form Builder button also clears the unapplied-changes guard', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(flow([validScreen()])) } });
+    await waitFor(() => expect(screen.getByTestId('apply-changes')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByText('Form Builder'));
+
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => expect(screen.getByText('Saving')).toBeInTheDocument());
+    expect(notificationSpy).not.toHaveBeenCalledWith(
+      'Click "Apply Changes" in the JSON editor — that applies and saves your edits.',
+      'warning'
+    );
+  });
+
+  test('media upload values are kept out of navigate payloads and cross-screen data', () => {
+    const photoPicker = {
+      type: 'PhotoPicker',
+      name: 'photos',
+      label: 'Upload photos',
+      'max-uploaded-photos': 3,
+    };
+
+    const twoScreens = flow([
+      {
+        id: 'screen_one',
+        title: 'Screen One',
+        terminal: false,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            formWith([
+              photoPicker,
+              footer({ name: 'navigate', next: { name: 'screen_two', type: 'screen' }, payload: {} }),
+            ]),
+          ],
+        },
+      },
+      {
+        id: 'screen_two',
+        title: 'Screen Two',
+        terminal: true,
+        data: {},
+        layout: {
+          type: 'SingleColumnLayout',
+          children: [
+            formWith([
+              { type: 'TextInput', name: 'notes', label: 'Notes', required: false, 'input-type': 'text' },
+              footer({ name: 'complete', payload: {} }),
+            ]),
+          ],
+        },
+      },
+    ]);
+
+    const outputJSON = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(twoScreens));
+    const [first, second] = outputJSON.screens;
+
+    const navigateFooter = first.layout.children[0].children.find((c: any) => c.type === 'Footer');
+    expect(navigateFooter['on-click-action'].payload).toEqual({});
+    expect(second.data).toEqual({});
+
+    // ...but the picker itself is untouched
+    expect(first.layout.children[0].children.find((c: any) => c.type === 'PhotoPicker')).toEqual(photoPicker);
   });
 });
