@@ -2467,6 +2467,73 @@ describe('round-trip preservation — unsupported components & extra attributes'
     expect(deepDiff(RICH_FOOTER, back)).toEqual([]);
   });
 
+  it('generates option ids and titles when the data-source omits them', () => {
+    const input = makeFlowJSON([
+      {
+        type: 'RadioButtonsGroup',
+        name: 'choice',
+        label: 'Pick',
+        required: true,
+        'data-source': [{}, { title: 'Named' }],
+      },
+    ]);
+
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
+    const group = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'RadioButtonsGroup');
+
+    expect(group['data-source']).toEqual([
+      { id: '0_undefined', title: '' },
+      { id: '1_Named', title: 'Named' },
+    ]);
+  });
+
+  it('handles a Form with no children and a Footer with no label', () => {
+    const input = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: {
+            type: 'SingleColumnLayout',
+            children: [
+              { type: 'Form', name: 'flow_path' },
+              { type: 'Footer', 'on-click-action': { name: 'complete', payload: {} } },
+            ],
+          },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(input);
+    expect(screens[0].buttonLabel).toBe('Continue');
+
+    const output = convertFormBuilderToFlowJSON(screens);
+    const footer = layoutAndFormChildren(output.screens[0]).find((c: any) => c.type === 'Footer');
+    expect(footer.label).toBe('Continue');
+  });
+
+  it('handles a screen with no Footer at all', () => {
+    const input = {
+      version: '7.3',
+      screens: [
+        {
+          id: 'screen_one',
+          title: 'Screen 1',
+          terminal: true,
+          data: {},
+          layout: { type: 'SingleColumnLayout', children: [{ type: 'TextBody', text: 'Just text' }] },
+        },
+      ],
+    };
+
+    const screens = convertFlowJSONToFormBuilder(input);
+    expect(screens[0].buttonLabel).toBe('Continue');
+    expect(screens[0].footerAttributes).toBeUndefined();
+  });
+
   it('preserves an attribute the builder has never heard of', () => {
     // Stand-in for a component attribute Meta adds after this code was written
     const futureAttr = { type: 'TextBody', text: 'Hi', 'some-future-attribute': { nested: true } };
@@ -2553,7 +2620,7 @@ describe('JSON editor — unsupported components are saved, not silently dropped
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith(
-        'Click "Apply Changes" in the JSON editor before saving, or your edits will be lost.',
+        'Click "Apply Changes" in the JSON editor — that applies and saves your edits.',
         'warning'
       );
     });
@@ -2594,7 +2661,32 @@ describe('JSON editor — unsupported components are saved, not silently dropped
 
     await waitFor(() => expect(screen.getByText('Saving')).toBeInTheDocument());
     expect(notificationSpy).not.toHaveBeenCalledWith(
-      'Click "Apply Changes" in the JSON editor before saving, or your edits will be lost.',
+      'Click "Apply Changes" in the JSON editor — that applies and saves your edits.',
+      'warning'
+    );
+  });
+
+  test('the Form Builder button also clears the unapplied-changes guard', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(wrapper());
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('formJsonBtn'));
+    await waitFor(() => expect(screen.getByText('Form JSON')).toBeInTheDocument());
+
+    const textarea = screen.getByTestId('json-preview') as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: JSON.stringify(flow([validScreen()])) } });
+    await waitFor(() => expect(screen.getByTestId('apply-changes')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByText('Form Builder'));
+
+    await waitFor(() => expect(screen.getAllByTestId('form-screen')).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('save-button'));
+
+    await waitFor(() => expect(screen.getByText('Saving')).toBeInTheDocument());
+    expect(notificationSpy).not.toHaveBeenCalledWith(
+      'Click "Apply Changes" in the JSON editor — that applies and saves your edits.',
       'warning'
     );
   });

@@ -653,7 +653,6 @@ export const VALID_COMPONENT_TYPES = new Set([
 /** Picks every attribute of a JSON component that the form builder does not model itself. */
 const extractExtraAttributes = (component: any, componentType: string): Record<string, any> | undefined => {
   const consumed = CONSUMED_ATTRIBUTE_KEYS[componentType];
-  if (!consumed) return undefined;
   const extra: Record<string, any> = {};
   Object.keys(component).forEach((key) => {
     if (!consumed.includes(key)) extra[key] = component[key];

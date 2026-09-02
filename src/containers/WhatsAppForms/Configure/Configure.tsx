@@ -169,8 +169,7 @@ export const Configure = () => {
 
   const handleSaveWhatsappFormRevision = async () => {
     if (hasUnappliedJSON) {
-      setNotification('Click "Apply Changes" in the JSON editor before saving, or your edits will be lost.', 'warning');
-      hasUnsavedChangesRef.current = true;
+      setNotification('Click "Apply Changes" in the JSON editor — that applies and saves your edits.', 'warning');
       return;
     }
 
@@ -202,7 +201,7 @@ export const Configure = () => {
       return;
     }
 
-    if (isViewOnly || !params.id || screens.length === 0) {
+    if (isViewOnly || !params.id || screens.length === 0 || hasUnappliedJSON) {
       return;
     }
 
