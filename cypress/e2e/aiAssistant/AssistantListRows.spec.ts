@@ -36,22 +36,20 @@ const ASSISTANTS = [
   assistant('3', 'Nutrition Helper'),
 ];
 
-const stubAssistants = () => {
+const stubAssistants = (available = ASSISTANTS) => {
   cy.intercept('POST', Cypress.expose('backendUrl'), (req) => {
     if (req.body?.operationName === 'Assistants') {
       const term = req.body.variables?.filter?.name_or_assistant_id ?? '';
       const matching = term
-        ? ASSISTANTS.filter((entry) =>
-            entry.name.toLowerCase().includes(String(term).toLowerCase())
-          )
-        : ASSISTANTS;
+        ? available.filter((entry) => entry.name.toLowerCase().includes(String(term).toLowerCase()))
+        : available;
 
       req.reply({ body: { data: { assistants: matching } } });
       return;
     }
 
     if (req.body?.operationName === 'CountAssistants') {
-      req.reply({ body: { data: { countAssistants: ASSISTANTS.length } } });
+      req.reply({ body: { data: { countAssistants: available.length } } });
       return;
     }
 
@@ -131,5 +129,18 @@ describe('AI Assistant list with assistants', () => {
 
     cy.get('[data-testid="dialogTitle"]').should('contain', 'Clone Assistant');
     cy.get('[data-testid="cancel-button"]').click();
+  });
+});
+
+describe('AI Assistant list with nothing in it', () => {
+  it('says so plainly, and still offers to create the first one', () => {
+    loginWithServices(V2_SERVICES);
+    stubAssistants([]);
+
+    cy.visit('/assistants');
+
+    cy.contains('There are no assistants right now', { timeout: 10000 }).should('be.visible');
+    cy.get('[data-testid="tableBody"] tr').should('not.exist');
+    cy.get('[data-testid="headingButton"]').should('contain', 'Create New Assistant');
   });
 });
