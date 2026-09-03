@@ -24,6 +24,7 @@ interface JSONViewerProps {
   screens: Screen[];
   onClose: () => void;
   onScreensChange?: (screens: Screen[]) => void;
+  onUnappliedChanges?: (hasUnapplied: boolean) => void;
 }
 
 const validateJSON = (jsonString: string): ValidationResult => {
@@ -73,7 +74,7 @@ const validateJSON = (jsonString: string): ValidationResult => {
   return result;
 };
 
-export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProps) => {
+export const JSONViewer = ({ screens, onClose, onScreensChange, onUnappliedChanges }: JSONViewerProps) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [jsonText, setJsonText] = useState('');
   const [validation, setValidation] = useState<ValidationResult>({
@@ -105,6 +106,13 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
     setValidation(result);
   }, [jsonText]);
 
+  const isEditable = !!onScreensChange;
+  const hasChanges = jsonText !== JSON.stringify(flowJSON, null, 2);
+
+  useEffect(() => {
+    onUnappliedChanges?.(isEditable && hasChanges);
+  }, [isEditable, hasChanges, onUnappliedChanges]);
+
   const handleCopyJSON = () => {
     copyToClipboard(jsonText);
     setCopySuccess(true);
@@ -121,9 +129,6 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
     }
   }, [validation, onScreensChange]);
 
-  const isEditable = !!onScreensChange;
-  const hasChanges = jsonText !== JSON.stringify(flowJSON, null, 2);
-
   return (
     <div className={styles.JsonViewerContainer}>
       <div className={styles.JsonActions}>
@@ -134,13 +139,15 @@ export const JSONViewer = ({ screens, onClose, onScreensChange }: JSONViewerProp
           <span>Form JSON</span>
         </div>
         <div className={styles.ActionButtons}>
-          {isEditable && hasChanges && validation.isValidContent && (
+          {isEditable && hasChanges && (
             <Button
               variant="contained"
               color="primary"
               onClick={handleApplyChanges}
+              disabled={!validation.isValidContent}
               size="small"
               className={styles.ApplyButton}
+              data-testid="apply-changes"
             >
               Apply Changes
             </Button>

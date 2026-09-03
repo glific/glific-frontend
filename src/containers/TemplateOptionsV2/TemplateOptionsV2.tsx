@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { t } from 'i18next';
 import { FieldArray } from 'formik';
 import {
   TextField,
@@ -33,10 +34,11 @@ export interface TemplateOptionsV2Props {
   onInputChange: any;
   disabled: any;
   onDynamicParamsChange: any;
-  // the anchor (English) template's own buttons, shown as a reference while
+  // the anchor template's own buttons, shown as a reference while
   // translating a new language — matched to inputFields by index, same as
   // the source-reference card does for body/footer on the HSM v2 page.
   anchorButtons?: Array<any>;
+  referenceLanguage?: string;
 }
 
 const callToActionTypeOptions: Array<{ id: string; label: string; icon: any }> = [
@@ -57,6 +59,7 @@ export const TemplateOptionsV2 = ({
   disabled = false,
   onDynamicParamsChange,
   anchorButtons,
+  referenceLanguage,
 }: TemplateOptionsV2Props) => {
   const [screens, setScreens] = useState<any>([]);
   const [advancedOpenRows, setAdvancedOpenRows] = useState<Record<number, boolean>>({});
@@ -132,7 +135,11 @@ export const TemplateOptionsV2 = ({
 
       return (
         <div className={styles.ButtonCard}>
-          <SourceReferenceChip language="English" value={anchorButton?.title} data-testid="button-source-reference" />
+          <SourceReferenceChip
+            language={referenceLanguage || t('English')}
+            value={anchorButton?.title}
+            data-testid="button-source-reference"
+          />
           <div className={styles.ButtonCardHeader}>
             <div className={styles.ChipRow}>
               {callToActionTypeOptions.map((option) => {
@@ -259,7 +266,11 @@ export const TemplateOptionsV2 = ({
     if (templateType?.id === QUICK_REPLY) {
       return (
         <div className={styles.QuickReplyGroup}>
-          <SourceReferenceChip language="English" value={anchorButton?.value} data-testid="button-source-reference" />
+          <SourceReferenceChip
+            language={referenceLanguage || t('English')}
+            value={anchorButton?.value}
+            data-testid="button-source-reference"
+          />
           <div className={styles.QuickReplyRow} data-testid="quickReplyWrapper">
             <FormControl fullWidth error={isError('value')}>
               <TextField
