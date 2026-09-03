@@ -1,4 +1,6 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { ApolloClient, ApolloProvider, InMemoryCache, split } from '@apollo/client';
+import { MockedProvider, MockLink, MockSubscriptionLink } from '@apollo/client/testing';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as utils from 'common/utils';
@@ -1270,16 +1272,17 @@ describe('running an evaluation', () => {
       result: { data: { aiEvaluations: [] } },
       maxUsageCount: Number.POSITIVE_INFINITY,
     };
-    const updateMock = {
-      request: { query: AI_EVALUATION_UPDATED },
-      // held back so it lands after the filter is chosen, the way a run finishing mid-session would
-      delay: 200,
-      result: { data: { aiEvaluationUpdated: { ...completedRun, id: 'r6', status: 'COMPLETED' } } },
-    };
 
-    render(
-      <MockedProvider
-        mocks={[
+    const subscriptionLink = new MockSubscriptionLink();
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+        },
+        subscriptionLink,
+        new MockLink([
           listMock([
             { id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' },
             { id: 'g2', name: 'anc_followups', insertedAt: '2026-08-11T10:00:00Z' },
@@ -1287,11 +1290,14 @@ describe('running an evaluation', () => {
           runsMock([completedRun]),
           scoresMock('r1'),
           filteredMock,
-          updateMock,
-        ]}
-      >
+        ])
+      ),
+    });
+
+    render(
+      <ApolloProvider client={client}>
         <Evaluation assistantId="1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
-      </MockedProvider>
+      </ApolloProvider>
     );
 
     await screen.findByTestId('evaluationSubTabs');
@@ -1302,7 +1308,11 @@ describe('running an evaluation', () => {
     fireEvent.click(await screen.findByRole('option', { name: 'anc_followups' }));
 
     await waitFor(() => {
-      expect(filteredRequests).toBeGreaterThan(0);
+      expect(filteredRequests).toBe(1);
+    });
+
+    subscriptionLink.simulateResult({
+      result: { data: { aiEvaluationUpdated: { ...completedRun, id: 'r6', status: 'COMPLETED' } } },
     });
 
     // the run that just landed belongs in this list too, so it is asked for again
