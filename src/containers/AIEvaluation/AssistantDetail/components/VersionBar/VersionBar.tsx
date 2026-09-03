@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import type { SelectMenuOption } from 'components/UI/SelectMenu/SelectMenu';
 import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
+import { BAND_LABEL, formatScore, scoreBand } from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import { BAND_ICON } from 'containers/AIEvaluation/utils/evaluation/bandIcon';
 import { LivePill } from '../LivePill/LivePill';
 import styles from './VersionBar.module.css';
 
@@ -14,6 +16,7 @@ export const canPublishVersion = (version?: AssistantVersion) =>
 
 export interface VersionBarProps {
   versions: AssistantVersion[];
+  versionScores?: Record<string, number>;
   selectedVersion?: AssistantVersion;
   liveVersion?: AssistantVersion;
   onSelectVersion: (versionId: string) => void;
@@ -22,6 +25,7 @@ export interface VersionBarProps {
 
 export const VersionBar = ({
   versions,
+  versionScores = {},
   selectedVersion,
   liveVersion,
   onSelectVersion,
@@ -52,8 +56,31 @@ export const VersionBar = ({
     return null;
   };
 
+  const healthPill = (version: AssistantVersion) => {
+    const score = versionScores[version.id];
+    if (score == null) return null;
+
+    const band = scoreBand(score);
+    const BandIcon = BAND_ICON[band];
+
+    return (
+      <span className={`${styles.HealthPill} ${styles[band]}`} data-testid={`versionHealth-${version.versionLabel}`}>
+        <BandIcon className={styles.HealthIcon} />
+        {t(BAND_LABEL[band])} {formatScore(score)}
+      </span>
+    );
+  };
+
   const statusPill = (version: AssistantVersion) => (
     <span className={styles.PillGroup}>
+      {publishPill(version)}
+      {buildPill(version)}
+    </span>
+  );
+
+  const optionPills = (version: AssistantVersion) => (
+    <span className={styles.PillGroup}>
+      {healthPill(version)}
       {publishPill(version)}
       {buildPill(version)}
     </span>
@@ -132,7 +159,7 @@ export const VersionBar = ({
                   {t('Version')} {version.versionLabel}
                 </span>
               ),
-              endAdornment: statusPill(version),
+              endAdornment: optionPills(version),
               description: versionMeta(version),
             }))}
           />

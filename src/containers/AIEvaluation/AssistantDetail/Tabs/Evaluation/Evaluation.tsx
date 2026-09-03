@@ -1,5 +1,5 @@
 import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -18,6 +18,8 @@ import {
   isRunFailed,
   isRunInProgress,
   mergeEvaluationUpdate,
+  overallScore,
+  parseEvaluationResults,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
@@ -36,6 +38,7 @@ export interface EvaluationProps {
   assistantName?: string;
   onRunningChange?: (running: boolean) => void;
   onLastRunChange?: (run: EvaluationRun | null) => void;
+  onVersionScoresChange?: (scores: Record<string, number>) => void;
   openRunSignal?: number;
 }
 
@@ -47,6 +50,7 @@ export const Evaluation = ({
   assistantName,
   onRunningChange,
   onLastRunChange,
+  onVersionScoresChange,
   openRunSignal = 0,
 }: EvaluationProps) => {
   const { t } = useTranslation();
@@ -95,8 +99,12 @@ export const Evaluation = ({
   });
 
   const sets: GoldenQaSet[] = data?.goldenQas ?? [];
-  const assistantRuns: EvaluationRun[] = (runData?.aiEvaluations ?? []).filter(
-    (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+  const assistantRuns: EvaluationRun[] = useMemo(
+    () =>
+      (runData?.aiEvaluations ?? []).filter(
+        (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+      ),
+    [runData, assistantId]
   );
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
   // the server filter carries no assistant, so the same narrowing is applied to the filtered list
@@ -118,6 +126,24 @@ export const Evaluation = ({
   useEffect(() => {
     onLastRunChange?.(lastScoredRun);
   }, [lastScoredRun, onLastRunChange]);
+
+  const versionScores = useMemo(() => {
+    const scores: Record<string, number> = {};
+
+    assistantRuns.forEach((run) => {
+      const version = run.assistantConfigVersion?.id;
+      if (!version || version in scores || isRunInProgress(run) || isRunFailed(run)) return;
+
+      const overall = overallScore(parseEvaluationResults(run.results));
+      if (overall != null) scores[version] = overall;
+    });
+
+    return scores;
+  }, [assistantRuns]);
+
+  useEffect(() => {
+    onVersionScoresChange?.(versionScores);
+  }, [versionScores, onVersionScoresChange]);
 
   useEffect(() => {
     if (openRunSignal > 0 && sets.length > 0) setRunOpen(true);

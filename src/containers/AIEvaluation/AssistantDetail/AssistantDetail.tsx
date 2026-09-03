@@ -113,6 +113,7 @@ export const AssistantDetail = () => {
   const [discardOpen, setDiscardOpen] = useState(false);
   const [evaluationRunning, setEvaluationRunning] = useState(false);
   const [lastVersionRun, setLastVersionRun] = useState<EvaluationRun | null>(null);
+  const [versionScores, setVersionScores] = useState<Record<string, number>>({});
   const [publishConfirmOpen, setPublishConfirmOpen] = useState(false);
   const [runRequest, setRunRequest] = useState(0);
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -473,6 +474,7 @@ export const AssistantDetail = () => {
         assistantName={assistant?.name}
         onRunningChange={setEvaluationRunning}
         onLastRunChange={setLastVersionRun}
+        onVersionScoresChange={setVersionScores}
         openRunSignal={runRequest}
       />
     ),
@@ -537,6 +539,7 @@ export const AssistantDetail = () => {
 
       <VersionBar
         versions={sortedVersions}
+        versionScores={versionScores}
         selectedVersion={selectedVersion}
         liveVersion={liveVersion}
         onSelectVersion={handleSelectVersion}

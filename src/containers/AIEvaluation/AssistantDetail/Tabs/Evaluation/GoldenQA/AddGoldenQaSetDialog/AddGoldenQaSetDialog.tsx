@@ -12,7 +12,7 @@ import { GOLDEN_QA_TEMPLATE_LINK } from 'config';
 import { CREATE_GOLDEN_QA } from 'graphql/mutations/AIEvaluations';
 import type { GoldenQaRow } from 'containers/AIEvaluation/types/goldenQaType';
 import {
-  GOLDEN_QA_NAME_PATTERN,
+  GOLDEN_QA_NAME_MAX_LENGTH,
   parseGoldenQaCsv,
   suggestedGoldenQaName,
 } from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
@@ -43,7 +43,7 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
     name: Yup.string()
       .trim()
       .required(t('Give this Golden Q&A a name.'))
-      .matches(GOLDEN_QA_NAME_PATTERN, t('Use lowercase letters, numbers and underscores only.')),
+      .max(GOLDEN_QA_NAME_MAX_LENGTH, t('Keep the name to 80 characters or fewer.')),
     file: Yup.mixed().required(t('Choose a CSV file to upload.')),
   });
 
@@ -144,13 +144,13 @@ export const AddGoldenQaSetDialog = ({ onClose, onAdded }: AddGoldenQaSetDialogP
         <div className={styles.FieldLabel}>{t('Name this Golden Q&A')}</div>
         <Input
           type="text"
-          placeholder={t('e.g. maternal_health_core')}
+          placeholder={t('e.g. Maternal health core')}
           field={{ name: 'name', value: formik.values.name, onBlur: formik.handleBlur }}
           onChange={(value: string) => {
             formik.setFieldValue('name', value);
             setNameTouched(value.trim() !== '');
           }}
-          inputProp={{ 'data-testid': 'goldenQaNameInput' }}
+          inputProp={{ 'data-testid': 'goldenQaNameInput', maxLength: GOLDEN_QA_NAME_MAX_LENGTH }}
         />
         {formik.touched.name && formik.errors.name && (
           <div className={styles.Error} data-testid="goldenQaNameError">

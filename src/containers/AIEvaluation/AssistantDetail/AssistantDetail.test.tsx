@@ -17,6 +17,7 @@ import {
   KNOWLEDGE_BASE_VERSION_UPDATED,
 } from 'graphql/subscriptions/Assistant';
 import { IMPROVE_PROMPT_UPDATED } from 'graphql/subscriptions/AIEvaluations';
+import { LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
@@ -56,6 +57,41 @@ vi.mock('react-i18next', () => ({
     i18n: { changeLanguage: () => new Promise(() => {}) },
   }),
 }));
+
+const runMocks = (scoresByVersion: Record<string, number>) => {
+  const runs = Object.entries(scoresByVersion).map(([versionId, score], index) => ({
+    id: `run-${index}`,
+    name: `run_${index}`,
+    status: 'COMPLETED',
+    failureReason: null,
+    results: JSON.stringify({ summary_scores: [{ name: 'Adherence to Ground Truth', avg: score }] }),
+    duplicationFactor: 1,
+    goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
+    assistantConfigVersion: {
+      id: versionId,
+      majorVersion: Number(versionId.replace('v', '')),
+      minorVersion: 0,
+      assistant: { id: '1', name: 'Assistant' },
+    },
+    insertedAt: '2026-08-10T10:00:00Z',
+    updatedAt: '2026-08-10T10:05:00Z',
+  }));
+
+  return [
+    {
+      request: { query: LIST_GOLDEN_QA },
+      variableMatcher: () => true,
+      result: { data: { goldenQas: [] } },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    },
+    {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: () => true,
+      result: { data: { aiEvaluations: runs } },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    },
+  ];
+};
 
 const confirmPublish = async () => {
   // the button opens the confirmation first; nothing has been evaluated in these tests, so the
@@ -2051,6 +2087,35 @@ describe('a version changing while the page is open', () => {
 
     await screen.findByTestId('assistantDetailContainer');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
+  });
+
+  test('the version dropdown carries how each version scored last time', async () => {
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), ...runMocks({ v1: 4.32, v2: 2.4 })]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionHealth-1.0')).toHaveTextContent('Good 4.32');
+    });
+    expect(screen.getByTestId('versionHealth-2.0')).toHaveTextContent('Could improve 2.4');
+
+    // the same marks the list and the run panel use, so a score reads the same everywhere
+    expect(screen.getByTestId('versionHealth-1.0').querySelector('svg')).toHaveAttribute('data-testid', 'CheckIcon');
+    expect(screen.getByTestId('versionHealth-2.0').querySelector('svg')).toHaveAttribute(
+      'data-testid',
+      'WarningAmberIcon'
+    );
+  });
+
+  test('a version never evaluated carries no score', async () => {
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock(), ...runMocks({ v1: 4.32 })]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('versionHealth-1.0')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('versionHealth-2.0')).not.toBeInTheDocument();
   });
 
   test('a version from another assistant is left alone', async () => {

@@ -174,14 +174,15 @@ describe('adding a set', () => {
     expect(screen.queryByTestId('goldenQaPreviewRow')).not.toBeInTheDocument();
   });
 
-  test('the name is suggested from the filename, in the shape the backend accepts', async () => {
+  test('the name is suggested from the filename, exactly as it was written', async () => {
     renderTab();
     await openDialog();
 
-    pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
+    pickFile(csvFile(SAMPLE_CSV, 'maternal_health-core.csv'));
 
+    // only the extension goes; the reader's own casing and separators stand
     await waitFor(() => {
-      expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health');
+      expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health-core');
     });
   });
 
@@ -190,10 +191,10 @@ describe('adding a set', () => {
     await openDialog();
 
     pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
-    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('Maternal Health'));
 
     pickFile(csvFile(SAMPLE_CSV, 'Child Nutrition.csv'));
-    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('child_nutrition'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('Child Nutrition'));
   });
 
   test('a name the reader typed survives picking another file', async () => {
@@ -201,13 +202,13 @@ describe('adding a set', () => {
     await openDialog();
 
     pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
-    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('Maternal Health'));
 
-    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'my_own_set' } });
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'My own set' } });
     pickFile(csvFile(SAMPLE_CSV, 'Child Nutrition.csv'));
 
     await screen.findByTestId('goldenQaParsed');
-    expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('my_own_set');
+    expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('My own set');
   });
 
   test('a file with no questions is refused, and nothing can be added', async () => {
@@ -220,16 +221,50 @@ describe('adding a set', () => {
     expect(screen.queryByTestId('goldenQaParsed')).not.toBeInTheDocument();
   });
 
-  test('a name the backend would reject is caught before uploading', async () => {
+  test('only an empty name is refused', async () => {
     renderTab();
     await openDialog();
     pickFile(csvFile(SAMPLE_CSV));
     await screen.findByTestId('goldenQaParsed');
 
-    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'Maternal Health!' } });
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: '   ' } });
     fireEvent.click(screen.getByTestId('ok-button'));
 
-    expect(await screen.findByTestId('goldenQaNameError')).toHaveTextContent('lowercase letters');
+    expect(await screen.findByTestId('goldenQaNameError')).toHaveTextContent('Give this Golden Q&A a name');
+  });
+
+  test('the field stops at 80 characters, however much is typed', async () => {
+    renderTab();
+    await openDialog();
+    pickFile(csvFile(SAMPLE_CSV));
+    await screen.findByTestId('goldenQaParsed');
+
+    expect(screen.getByTestId('goldenQaNameInput')).toHaveAttribute('maxlength', '80');
+  });
+
+  test('a name too long for the field is refused if it gets there anyway', async () => {
+    renderTab();
+    await openDialog();
+    pickFile(csvFile(SAMPLE_CSV));
+    await screen.findByTestId('goldenQaParsed');
+
+    // the browser stops typing at 80; a paste through the DOM still has to be caught
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'a'.repeat(81) } });
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    expect(await screen.findByTestId('goldenQaNameError')).toHaveTextContent('80 characters or fewer');
+  });
+
+  test('however the reader writes the name, it is accepted', async () => {
+    renderTab();
+    await openDialog();
+    pickFile(csvFile(SAMPLE_CSV));
+    await screen.findByTestId('goldenQaParsed');
+
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'ANC Follow-Ups (2026)!' } });
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    expect(screen.queryByTestId('goldenQaNameError')).not.toBeInTheDocument();
   });
 
   test('uploading sends the file and the set appears in the list', async () => {
@@ -256,7 +291,7 @@ describe('adding a set', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Golden Q&A added');
     });
-    expect(sent.input.name).toBe('maternal_health');
+    expect(sent.input.name).toBe('Maternal Health');
     expect(sent.input.duplication_factor).toBe(1);
     expect(sent.input.file).toBeInstanceOf(File);
 
@@ -773,6 +808,51 @@ describe('running an evaluation', () => {
 
     await waitFor(() => {
       expect(onRunningChange).toHaveBeenCalledWith(true);
+    });
+  });
+
+  test('each version reports the score of its own newest scored run', async () => {
+    const onVersionScoresChange = vi.fn();
+    const olderRunSameVersion = {
+      ...completedRun,
+      id: 'r0',
+      results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":1}]}',
+    };
+    const otherVersion = {
+      ...completedRun,
+      id: 'r2',
+      results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":2}]}',
+      assistantConfigVersion: { ...completedRun.assistantConfigVersion, id: 'v2' },
+    };
+    const stillRunning = {
+      ...completedRun,
+      id: 'r3',
+      status: 'RUNNING',
+      results: null,
+      assistantConfigVersion: { ...completedRun.assistantConfigVersion, id: 'v3' },
+    };
+
+    render(
+      <MockedProvider
+        mocks={[
+          listMock(oneSet),
+          // newest first, the way the server orders them
+          runsMock([stillRunning, completedRun, olderRunSameVersion, otherVersion]),
+          scoresMock('r1'),
+        ]}
+      >
+        <Evaluation
+          versionId="v1"
+          versionLabel="1.0"
+          assistantName="Assistant"
+          onVersionScoresChange={onVersionScoresChange}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      // v1 keeps its newest score, not the older run's; v3 has nothing scored yet
+      expect(onVersionScoresChange).toHaveBeenCalledWith({ v1: 3.54, v2: 2 });
     });
   });
 
