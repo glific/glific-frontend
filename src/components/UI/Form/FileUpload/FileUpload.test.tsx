@@ -122,6 +122,56 @@ describe('<FileUpload />', () => {
     expect(setFieldValue).toHaveBeenCalledWith('logo_url', '');
   });
 
+  // `accept` takes three forms and an empty list means "anything"; comparing file.type to the
+  // raw tokens rejected legitimate files for two of the three.
+  it('accepts a wildcard MIME token', async () => {
+    const logo = file('logo.png', 'image/png', 40);
+    renderUpload({ accept: 'image/*' }, [uploadMock(logo)]);
+
+    fireEvent.change(screen.getByTestId('fileInput'), { target: { files: [logo] } });
+
+    await waitFor(() => expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL));
+  });
+
+  it('accepts an extension token, which carries no MIME type', async () => {
+    const sheet = file('data.csv', '', 10);
+    renderUpload({ accept: '.csv' }, [
+      {
+        request: { query: UPLOAD_MEDIA, variables: { media: sheet, extension: 'csv', maxSizeKb: 200 } },
+        result: { data: { uploadMedia: UPLOADED_URL } },
+      },
+    ]);
+
+    fireEvent.change(screen.getByTestId('fileInput'), { target: { files: [sheet] } });
+
+    await waitFor(() => expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL));
+  });
+
+  it('imposes no restriction when accept is empty', async () => {
+    const anything = file('notes.txt', 'text/plain', 10);
+    renderUpload({ accept: '' }, [
+      {
+        request: { query: UPLOAD_MEDIA, variables: { media: anything, extension: 'txt', maxSizeKb: 200 } },
+        result: { data: { uploadMedia: UPLOADED_URL } },
+      },
+    ]);
+
+    fireEvent.change(screen.getByTestId('fileInput'), { target: { files: [anything] } });
+
+    await waitFor(() => expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL));
+  });
+
+  it('still rejects a type outside a wildcard family', async () => {
+    renderUpload({ accept: 'image/*' });
+
+    fireEvent.change(screen.getByTestId('fileInput'), {
+      target: { files: [file('doc.pdf', 'application/pdf', 10)] },
+    });
+
+    await waitFor(() => expect(screen.getByText('That file type is not supported.')).toBeInTheDocument());
+    expect(setFieldValue).not.toHaveBeenCalled();
+  });
+
   it('states the limit so an admin knows before picking a file', () => {
     renderUpload();
 

@@ -290,7 +290,7 @@ describe('gupshup dialog', () => {
 });
 
 const webChannelProvider = () => (
-  <MemoryRouter initialEntries={[`/settings/web`]}>
+  <MemoryRouter initialEntries={[`/settings/web_channel`]}>
     <MockedProvider mocks={[...mocks, ...getWebChannelProviderMock]} addTypename={false}>
       <Routes>
         <Route path="settings/:type" element={<Providers />} />

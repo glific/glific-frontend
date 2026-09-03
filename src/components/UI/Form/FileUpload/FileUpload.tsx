@@ -22,6 +22,32 @@ export interface FileUploadProps {
 
 const DEFAULT_MAX_SIZE_KB = 200;
 
+/**
+ * Match a file against an `accept` list the way the native input does.
+ *
+ * `accept` takes three forms — an exact MIME type (`image/png`), a wildcard (`image/*`) and a
+ * filename extension (`.csv`) — and an empty list means no restriction. Comparing `file.type`
+ * against the raw tokens rejects legitimate files for the last two, and rejects everything when
+ * `accept` is empty.
+ */
+const isAccepted = (file: File, accept: string): boolean => {
+  const tokens = accept
+    .split(',')
+    .map((token) => token.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (!tokens.length) return true;
+
+  const type = file.type.toLowerCase();
+  const name = file.name.toLowerCase();
+
+  return tokens.some((token) => {
+    if (token.startsWith('.')) return name.endsWith(token);
+    if (token.endsWith('/*')) return type.startsWith(`${token.slice(0, -1)}`);
+    return type === token;
+  });
+};
+
 export const FileUpload = ({
   field,
   form,
@@ -47,8 +73,7 @@ export const FileUpload = ({
 
     setError(null);
 
-    const acceptedTypes = accept.split(',').map((type) => type.trim());
-    if (acceptedTypes.length && !acceptedTypes.includes(file.type)) {
+    if (!isAccepted(file, accept)) {
       setError(t('That file type is not supported.'));
       return;
     }

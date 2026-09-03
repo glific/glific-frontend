@@ -1226,7 +1226,7 @@ const WEB_CHANNEL_KEYS = JSON.stringify({
 const getWebChannelCredential = {
   request: {
     query: GET_CREDENTIAL,
-    variables: { shortcode: 'web' },
+    variables: { shortcode: 'web_channel' },
   },
   result: {
     data: {
@@ -1241,7 +1241,7 @@ const getWebChannelCredential = {
 const getWebChannelProvider = {
   request: {
     query: GET_PROVIDERS,
-    variables: { filter: { shortcode: 'web' } },
+    variables: { filter: { shortcode: 'web_channel' } },
   },
   result: {
     data: {
@@ -1254,7 +1254,7 @@ const getWebChannelProvider = {
           keys: WEB_CHANNEL_KEYS,
           name: 'Web Channel',
           secrets: '{}',
-          shortcode: 'web',
+          shortcode: 'web_channel',
         },
       ],
     },
