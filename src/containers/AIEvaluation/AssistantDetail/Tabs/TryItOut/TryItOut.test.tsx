@@ -119,6 +119,30 @@ describe('the sandbox', () => {
     expect(screen.queryByTestId('sampleQuestionButton')).not.toBeInTheDocument();
   });
 
+  test('the version on screen is the one asked, not whichever is live', async () => {
+    let sent: any;
+    renderTab({ versionId: 'v7' }, [
+      {
+        request: { query: SEND_ASSISTANT_MESSAGE },
+        variableMatcher: (variables: any) => {
+          sent = variables;
+          return true;
+        },
+        result: {
+          data: { sendAssistantMessage: { answer: 'Hello.', conversationId: 'c1', jobId: 'j1', errors: null } },
+        },
+      },
+    ]);
+
+    type('Are you there?');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    await waitFor(() => {
+      expect(sent?.input?.configVersionId).toBe('v7');
+    });
+    expect(sent.input.assistantId).toBe('1');
+  });
+
   test('an answer returned by the mutation is shown straight away', async () => {
     renderTab({}, [sendMock({ answer: 'Yes, in most cases.', requestId: 'r1' })]);
 
@@ -304,8 +328,10 @@ test('sends only the fields AssistantChatInput accepts', async () => {
     expect(variableMatcher).toHaveBeenCalled();
   });
 
-  // the schema rejects question/requestId/versionId, and message is required
-  expect(variableMatcher.mock.calls[0][0]).toEqual({ input: { assistantId: '1', message: 'Hello' } });
+  // the schema rejects question/requestId, and message is required
+  expect(variableMatcher.mock.calls[0][0]).toEqual({
+    input: { assistantId: '1', message: 'Hello', configVersionId: 'v2' },
+  });
 });
 
 test("renders the reply the way WhatsApp would, and leaves what it can't format alone", async () => {
@@ -394,7 +420,9 @@ describe('starting over', () => {
     await waitFor(() => {
       expect(variableMatcher).toHaveBeenCalledTimes(2);
     });
-    expect(variableMatcher.mock.calls[1][0]).toEqual({ input: { assistantId: '1', message: 'Fresh start' } });
+    expect(variableMatcher.mock.calls[1][0]).toEqual({
+      input: { assistantId: '1', message: 'Fresh start', configVersionId: 'v2' },
+    });
   });
 });
 
@@ -441,7 +469,7 @@ describe('the chat survives leaving the tab', () => {
       expect(variableMatcher).toHaveBeenCalledTimes(2);
     });
     expect(variableMatcher.mock.calls[1][0]).toEqual({
-      input: { assistantId: '1', message: 'More', conversationId: 'c1' },
+      input: { assistantId: '1', message: 'More', configVersionId: 'v2', conversationId: 'c1' },
     });
   });
 
