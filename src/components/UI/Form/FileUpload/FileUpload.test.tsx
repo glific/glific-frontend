@@ -15,7 +15,7 @@ const user = userEvent.setup();
 const UPLOADED_URL = 'https://storage.googleapis.com/glific/logo.png';
 
 const uploadMock = (media: File) => ({
-  request: { query: UPLOAD_MEDIA, variables: { media, extension: 'png' } },
+  request: { query: UPLOAD_MEDIA, variables: { media, extension: 'png', maxSizeKb: 200 } },
   result: { data: { uploadMedia: UPLOADED_URL } },
 });
 
@@ -100,7 +100,7 @@ describe('<FileUpload />', () => {
     const logo = file('logo.png', 'image/png', 40);
     const failing = [
       {
-        request: { query: UPLOAD_MEDIA, variables: { media: logo, extension: 'png' } },
+        request: { query: UPLOAD_MEDIA, variables: { media: logo, extension: 'png', maxSizeKb: 200 } },
         error: new Error('boom'),
       },
     ];

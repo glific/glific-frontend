@@ -67,7 +67,9 @@ export const FileUpload = ({
     setUploading(true);
 
     try {
-      const { data } = await uploadMedia({ variables: { media: file, extension } });
+      // Sent as well as checked above: the client check is for fast feedback, the server
+      // check is what actually holds if a request does not come from this form.
+      const { data } = await uploadMedia({ variables: { media: file, extension, maxSizeKb } });
       if (data?.uploadMedia) {
         setValue(data.uploadMedia);
       } else {

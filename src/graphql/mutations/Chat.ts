@@ -71,7 +71,9 @@ export const UPLOAD_MEDIA_BLOB = gql`
 `;
 
 export const UPLOAD_MEDIA = gql`
-  mutation uploadMedia($media: Upload!, $extension: String!) {
-    uploadMedia(media: $media, extension: $extension)
+  # maxSizeKb is optional: callers that know what they are uploading (a logo, say) cap it,
+  # and the backend refuses anything larger. Omitting it keeps the previous behaviour.
+  mutation uploadMedia($media: Upload!, $extension: String!, $maxSizeKb: Int) {
+    uploadMedia(media: $media, extension: $extension, maxSizeKb: $maxSizeKb)
   }
 `;
