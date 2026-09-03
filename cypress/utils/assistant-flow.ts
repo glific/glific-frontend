@@ -3,10 +3,16 @@ export const BELOW_STICKY_HEADER = { scrollBehavior: 'center' } as const;
 export const SEARCH_FIELD = '[data-testid="searchInput"] input';
 
 export const loginWithServices = (services: Record<string, boolean>) => {
-  cy.login();
-  cy.window().then((win) => {
-    win.localStorage.setItem('organizationServices', JSON.stringify(services));
-  });
+  cy.session(
+    ['ai-assistant', JSON.stringify(services)],
+    () => {
+      cy.login();
+      cy.window().then((win) => {
+        win.localStorage.setItem('organizationServices', JSON.stringify(services));
+      });
+    },
+    { cacheAcrossSpecs: true }
+  );
 };
 
 export const openAssistantList = () => {
