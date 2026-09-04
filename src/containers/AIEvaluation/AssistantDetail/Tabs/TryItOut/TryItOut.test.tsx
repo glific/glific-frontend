@@ -48,6 +48,10 @@ beforeEach(() => {
   clearAllSandboxChats();
 });
 
+interface ChatVariables {
+  input: { assistantId?: string; message: string; configVersionId?: string; conversationId?: string };
+}
+
 const type = (text: string) => fireEvent.change(screen.getByTestId('sandboxInput'), { target: { value: text } });
 
 describe('blocked states', () => {
@@ -120,11 +124,11 @@ describe('the sandbox', () => {
   });
 
   test('the version on screen is the one asked, not whichever is live', async () => {
-    let sent: any;
+    let sent: ChatVariables | undefined;
     renderTab({ versionId: 'v7' }, [
       {
         request: { query: SEND_ASSISTANT_MESSAGE },
-        variableMatcher: (variables: any) => {
+        variableMatcher: (variables: ChatVariables) => {
           sent = variables;
           return true;
         },
@@ -140,7 +144,31 @@ describe('the sandbox', () => {
     await waitFor(() => {
       expect(sent?.input?.configVersionId).toBe('v7');
     });
-    expect(sent.input.assistantId).toBe('1');
+    expect(sent?.input.assistantId).toBe('1');
+  });
+
+  test('with no version selected the backend is left to fall back to the live one', async () => {
+    let sent: ChatVariables | undefined;
+    renderTab({ versionId: undefined }, [
+      {
+        request: { query: SEND_ASSISTANT_MESSAGE },
+        variableMatcher: (variables: ChatVariables) => {
+          sent = variables;
+          return true;
+        },
+        result: {
+          data: { sendAssistantMessage: { answer: 'Hello.', conversationId: 'c1', jobId: 'j1', errors: null } },
+        },
+      },
+    ]);
+
+    type('Are you there?');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+
+    await waitFor(() => {
+      expect(sent).toBeDefined();
+    });
+    expect(sent?.input).toEqual({ assistantId: '1', message: 'Are you there?' });
   });
 
   test('an answer returned by the mutation is shown straight away', async () => {
