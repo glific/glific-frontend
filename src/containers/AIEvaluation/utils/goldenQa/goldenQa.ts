@@ -116,3 +116,6 @@ export const suggestedGoldenQaName = (filename: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
+
+export const goldenQaItemCount = (totalItems?: number | null) =>
+  typeof totalItems === 'number' && totalItems > 0 ? totalItems : null;
