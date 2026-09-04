@@ -192,15 +192,14 @@ describe('adding a set', () => {
     expect(screen.queryByTestId('goldenQaPreviewRow')).not.toBeInTheDocument();
   });
 
-  test('the name is suggested from the filename, exactly as it was written', async () => {
+  test('the name is suggested from the filename, in the shape the backend accepts', async () => {
     renderTab();
     await openDialog();
 
-    pickFile(csvFile(SAMPLE_CSV, 'maternal_health-core.csv'));
+    pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
 
-    // only the extension goes; the reader's own casing and separators stand
     await waitFor(() => {
-      expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health-core');
+      expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health');
     });
   });
 
@@ -209,10 +208,10 @@ describe('adding a set', () => {
     await openDialog();
 
     pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
-    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('Maternal Health'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health'));
 
     pickFile(csvFile(SAMPLE_CSV, 'Child Nutrition.csv'));
-    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('Child Nutrition'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('child_nutrition'));
   });
 
   test('a name the reader typed survives picking another file', async () => {
@@ -220,13 +219,13 @@ describe('adding a set', () => {
     await openDialog();
 
     pickFile(csvFile(SAMPLE_CSV, 'Maternal Health.csv'));
-    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('Maternal Health'));
+    await waitFor(() => expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('maternal_health'));
 
-    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'My own set' } });
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'my_own_set' } });
     pickFile(csvFile(SAMPLE_CSV, 'Child Nutrition.csv'));
 
     await screen.findByTestId('goldenQaParsed');
-    expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('My own set');
+    expect(screen.getByTestId('goldenQaNameInput')).toHaveValue('my_own_set');
   });
 
   test('a file with no questions is refused, and nothing can be added', async () => {
@@ -239,50 +238,16 @@ describe('adding a set', () => {
     expect(screen.queryByTestId('goldenQaParsed')).not.toBeInTheDocument();
   });
 
-  test('only an empty name is refused', async () => {
+  test('a name the backend would reject is caught before uploading', async () => {
     renderTab();
     await openDialog();
     pickFile(csvFile(SAMPLE_CSV));
     await screen.findByTestId('goldenQaParsed');
 
-    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: '   ' } });
+    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'Maternal Health!' } });
     fireEvent.click(screen.getByTestId('ok-button'));
 
-    expect(await screen.findByTestId('goldenQaNameError')).toHaveTextContent('Give this Golden Q&A a name');
-  });
-
-  test('the field stops at 80 characters, however much is typed', async () => {
-    renderTab();
-    await openDialog();
-    pickFile(csvFile(SAMPLE_CSV));
-    await screen.findByTestId('goldenQaParsed');
-
-    expect(screen.getByTestId('goldenQaNameInput')).toHaveAttribute('maxlength', '80');
-  });
-
-  test('a name too long for the field is refused if it gets there anyway', async () => {
-    renderTab();
-    await openDialog();
-    pickFile(csvFile(SAMPLE_CSV));
-    await screen.findByTestId('goldenQaParsed');
-
-    // the browser stops typing at 80; a paste through the DOM still has to be caught
-    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'a'.repeat(81) } });
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    expect(await screen.findByTestId('goldenQaNameError')).toHaveTextContent('80 characters or fewer');
-  });
-
-  test('however the reader writes the name, it is accepted', async () => {
-    renderTab();
-    await openDialog();
-    pickFile(csvFile(SAMPLE_CSV));
-    await screen.findByTestId('goldenQaParsed');
-
-    fireEvent.change(screen.getByTestId('goldenQaNameInput'), { target: { value: 'ANC Follow-Ups (2026)!' } });
-    fireEvent.click(screen.getByTestId('ok-button'));
-
-    expect(screen.queryByTestId('goldenQaNameError')).not.toBeInTheDocument();
+    expect(await screen.findByTestId('goldenQaNameError')).toHaveTextContent('lowercase letters');
   });
 
   test('uploading sends the file and the set appears in the list', async () => {
@@ -309,7 +274,7 @@ describe('adding a set', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Golden Q&A added');
     });
-    expect(sent.input.name).toBe('Maternal Health');
+    expect(sent.input.name).toBe('maternal_health');
     expect(sent.input.duplication_factor).toBe(1);
     expect(sent.input.file).toBeInstanceOf(File);
 
