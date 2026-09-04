@@ -108,6 +108,11 @@ export const downloadFromUrl = (url: string) => {
   document.body.removeChild(link);
 };
 
-export const GOLDEN_QA_NAME_MAX_LENGTH = 80;
+export const GOLDEN_QA_NAME_PATTERN = /^[a-z0-9_]+$/;
 
-export const suggestedGoldenQaName = (filename: string) => filename.replace(/\.[^.]+$/, '').trim();
+export const suggestedGoldenQaName = (filename: string) =>
+  filename
+    .replace(/\.[^.]+$/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');

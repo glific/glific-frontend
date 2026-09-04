@@ -1,4 +1,10 @@
-import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv, suggestedGoldenQaName } from './goldenQa';
+import {
+  downloadFromUrl,
+  goldenQaCategories,
+  GOLDEN_QA_NAME_PATTERN,
+  parseGoldenQaCsv,
+  suggestedGoldenQaName,
+} from './goldenQa';
 
 describe('parseGoldenQaCsv', () => {
   test('reads question, answer and category', () => {
@@ -125,19 +131,36 @@ describe('separators other than a comma', () => {
 });
 
 describe('naming a set', () => {
-  test('the file name is what it suggests, exactly as written', () => {
-    expect(suggestedGoldenQaName('Maternal Health.csv')).toBe('Maternal Health');
-    expect(suggestedGoldenQaName('maternal_health-core.csv')).toBe('maternal_health-core');
-    // nothing is folded, spaced out or otherwise rewritten
-    expect(suggestedGoldenQaName('ANC — core set (v2).csv')).toBe('ANC — core set (v2)');
+  test('a name the backend accepts', () => {
+    expect(GOLDEN_QA_NAME_PATTERN.test('maternal_health_core')).toBe(true);
+    expect(GOLDEN_QA_NAME_PATTERN.test('set123')).toBe(true);
+  });
+
+  test('anything outside lowercase, digits and underscores is refused', () => {
+    expect(GOLDEN_QA_NAME_PATTERN.test('Maternal Health')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('maternal-health')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('MaternalHealth')).toBe(false);
+    expect(GOLDEN_QA_NAME_PATTERN.test('')).toBe(false);
+  });
+
+  test('a filename becomes a name the backend accepts', () => {
+    expect(suggestedGoldenQaName('Maternal Health.csv')).toBe('maternal_health');
+    expect(suggestedGoldenQaName('ANC — core set (v2).csv')).toBe('anc_core_set_v2');
+    expect(suggestedGoldenQaName('already_fine.csv')).toBe('already_fine');
   });
 
   test('only the extension is dropped, not every dot', () => {
-    expect(suggestedGoldenQaName('set.v1.final.csv')).toBe('set.v1.final');
+    expect(suggestedGoldenQaName('set.v1.final.csv')).toBe('set_v1_final');
   });
 
-  test('a file with no extension keeps its whole name', () => {
-    expect(suggestedGoldenQaName('NOTES')).toBe('NOTES');
+  test('a filename with nothing usable in it comes back empty', () => {
+    expect(suggestedGoldenQaName('___.csv')).toBe('');
+  });
+
+  test('what it suggests is always what the schema would accept', () => {
+    const suggested = suggestedGoldenQaName('Maternal Health — ANC.csv');
+
+    expect(GOLDEN_QA_NAME_PATTERN.test(suggested)).toBe(true);
   });
 });
 
