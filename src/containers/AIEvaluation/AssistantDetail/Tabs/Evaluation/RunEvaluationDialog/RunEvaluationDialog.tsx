@@ -8,6 +8,7 @@ import { CREATE_EVALUATION } from 'graphql/mutations/AIEvaluations';
 import { evaluationRunName } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { DuplicationFactor } from 'containers/AIEvaluation/types/evaluationType';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
+import { goldenQaItemCount } from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import styles from './RunEvaluationDialog.module.css';
 
 export interface RunEvaluationDialogProps {
@@ -107,20 +108,28 @@ export const RunEvaluationDialog = ({
         <div className={styles.FieldLabel}>{t('Golden Q&A')}</div>
         <Dropdown
           placeholder=""
-          options={sets.map((set) => ({
-            id: set.id,
-            label:
-              set.id === lastUsed ? (
+          options={sets.map((set) => {
+            const items = goldenQaItemCount(set.totalItems);
+
+            return {
+              id: set.id,
+              label: (
                 <span className={styles.SetOption}>
                   {set.name}
-                  <span className={styles.LastUsedPill} data-testid="lastUsedSet">
-                    {t('Last used')}
-                  </span>
+                  {items !== null && (
+                    <span className={styles.SetSize} data-testid={`setSize-${set.id}`}>
+                      {items === 1 ? t('1 question') : t('{{count}} questions', { count: items })}
+                    </span>
+                  )}
+                  {set.id === lastUsed && (
+                    <span className={styles.LastUsedPill} data-testid="lastUsedSet">
+                      {t('Last used')}
+                    </span>
+                  )}
                 </span>
-              ) : (
-                set.name
               ),
-          }))}
+            };
+          })}
           field={{
             name: 'goldenQaSet',
             value: goldenQaId,

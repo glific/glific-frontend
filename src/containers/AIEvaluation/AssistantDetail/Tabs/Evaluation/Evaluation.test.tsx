@@ -1,4 +1,6 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { ApolloClient, ApolloProvider, InMemoryCache, split } from '@apollo/client';
+import { MockedProvider, MockLink, MockSubscriptionLink } from '@apollo/client/testing';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as Notification from 'common/notification';
 import * as utils from 'common/utils';
@@ -30,12 +32,12 @@ vi.mock('react-i18next', () => ({
 const listVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 const runVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 
-const listMock = (goldenQas: { id: string; name: string; insertedAt: string }[]) => ({
+const listMock = (goldenQas: { id: string; name: string; totalItems?: number | null; insertedAt: string }[]) => ({
   request: { query: LIST_GOLDEN_QA, variables: listVariables },
   result: { data: { goldenQas } },
 });
 
-const oneSet = [{ id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' }];
+const oneSet = [{ id: 'g1', name: 'maternal_health_core', totalItems: 120, insertedAt: '2026-08-10T10:00:00Z' }];
 
 const noRunsMock = {
   request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
@@ -72,6 +74,7 @@ const viewSignedUrlMock = {
           id: 'g1',
           name: 'maternal_health_core',
           signedUrl: 'https://files.example/set.csv',
+          totalItems: 120,
           insertedAt: '',
         },
         errors: null,
@@ -118,6 +121,21 @@ describe('listing sets', () => {
       expect(screen.getAllByTestId('goldenQaViewRow')).toHaveLength(2);
     });
     vi.unstubAllGlobals();
+  });
+
+  test('a set says how many questions it holds', async () => {
+    renderTab([listMock(oneSet)]);
+
+    await openManage();
+    expect(screen.getByTestId('goldenQaSetItems')).toHaveTextContent('120 questions');
+  });
+
+  test('a set stored before the count existed says nothing about its size', async () => {
+    renderTab([listMock([{ id: 'g9', name: 'older_set', totalItems: null, insertedAt: '2026-08-10T10:00:00Z' }])]);
+
+    await openManage();
+    expect(screen.getByTestId('manageGoldenQaSet')).toHaveTextContent('older_set');
+    expect(screen.queryByTestId('goldenQaSetItems')).not.toBeInTheDocument();
   });
 
   test('the view dialog can go back to the list it came from', async () => {
@@ -428,6 +446,19 @@ describe('viewing a set', () => {
 
     expect(download).toHaveBeenCalledWith('https://files.example/set.csv');
     download.mockRestore();
+  });
+
+  test('a file that cannot be read still says how big the set is', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+    renderTab([listMock(oneSet), viewSignedUrlMock]);
+
+    await openView();
+
+    // the rows never arrive, so the count the server took at upload is all there is to go on
+    expect(await screen.findByTestId('goldenQaViewFailureReason')).toBeInTheDocument();
+    expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent(
+      'Every evaluation on this Golden Q&A asks these 120 questions.'
+    );
   });
 
   test('rows that cannot be read offer the download instead', async () => {
@@ -776,6 +807,51 @@ describe('running an evaluation', () => {
     });
   });
 
+  test('each version reports the score of its own newest scored run', async () => {
+    const onVersionScoresChange = vi.fn();
+    const olderRunSameVersion = {
+      ...completedRun,
+      id: 'r0',
+      results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":1}]}',
+    };
+    const otherVersion = {
+      ...completedRun,
+      id: 'r2',
+      results: '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":2}]}',
+      assistantConfigVersion: { ...completedRun.assistantConfigVersion, id: 'v2' },
+    };
+    const stillRunning = {
+      ...completedRun,
+      id: 'r3',
+      status: 'RUNNING',
+      results: null,
+      assistantConfigVersion: { ...completedRun.assistantConfigVersion, id: 'v3' },
+    };
+
+    render(
+      <MockedProvider
+        mocks={[
+          listMock(oneSet),
+          // newest first, the way the server orders them
+          runsMock([stillRunning, completedRun, olderRunSameVersion, otherVersion]),
+          scoresMock('r1'),
+        ]}
+      >
+        <Evaluation
+          versionId="v1"
+          versionLabel="1.0"
+          assistantName="Assistant"
+          onVersionScoresChange={onVersionScoresChange}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      // v1 keeps its newest score, not the older run's; v3 has nothing scored yet
+      expect(onVersionScoresChange).toHaveBeenCalledWith({ v1: 3.54, v2: 2 });
+    });
+  });
+
   test('a run on another version leaves this one unflagged', async () => {
     const onRunningChange = vi.fn();
     const otherVersionRun = {
@@ -910,6 +986,15 @@ describe('running an evaluation', () => {
     expect(sent.input.duplicationFactor).toBe(1);
     expect(sent.input.evaluationName).toMatch(/^assistant_v1_0_maternal_health_core_\d+$/);
     notificationSpy.mockRestore();
+  });
+
+  test('the run dialog says how big the set it is about to run is', async () => {
+    renderWithRuns([]);
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+    const dialog = await screen.findByTestId('runEvaluationDialog');
+
+    expect(within(dialog).getByTestId('setSize-g1')).toHaveTextContent('120 questions');
   });
 
   test('the duplication the reader picks is what gets run', async () => {
@@ -1115,6 +1200,140 @@ describe('running an evaluation', () => {
 
     expect(await screen.findByTestId('evaluationRunning')).toHaveTextContent('Evaluation in progress');
     expect(screen.queryByTestId('overallScore')).not.toBeInTheDocument();
+  });
+
+  test('History can be narrowed to one Golden Q&A, and the server is asked for just that one', async () => {
+    const otherSetRun = {
+      ...completedRun,
+      id: 'r5',
+      goldenQa: { id: 'g2', name: 'anc_followups', duplicationFactor: 1 },
+    };
+    let askedFor: any;
+    const filteredMock = {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: (variables: any) => {
+        // the unfiltered list is served by runsMock; this one only answers the narrowed request
+        if (!variables?.filter?.goldenQaId) return false;
+        askedFor = variables.filter.goldenQaId;
+        return true;
+      },
+      result: { data: { aiEvaluations: [otherSetRun] } },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+
+    render(
+      <MockedProvider
+        mocks={[
+          listMock([
+            { id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' },
+            { id: 'g2', name: 'anc_followups', insertedAt: '2026-08-11T10:00:00Z' },
+          ]),
+          runsMock([completedRun]),
+          scoresMock('r1'),
+          filteredMock,
+        ]}
+      >
+        <Evaluation assistantId="1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
+      </MockedProvider>
+    );
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+    const history = await screen.findByTestId('evaluationHistory');
+    expect(history).toHaveTextContent('maternal_health_core');
+
+    fireEvent.mouseDown(within(history).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'anc_followups' }));
+
+    await waitFor(() => {
+      expect(askedFor).toBe('g2');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('evaluationHistory')).toHaveTextContent('anc_followups');
+    });
+    // the field keeps showing what it was narrowed to
+    expect(within(screen.getByTestId('evaluationHistory')).getByRole('combobox')).toHaveTextContent('anc_followups');
+
+    // and picking All puts every run back, without narrowing the request again
+    fireEvent.mouseDown(within(screen.getByTestId('evaluationHistory')).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'All Golden Q&A' }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('evaluationHistory')).toHaveTextContent('maternal_health_core');
+    });
+  });
+
+  test('a run finishing while History is filtered refreshes the narrowed list', async () => {
+    let filteredRequests = 0;
+    const filteredMock = {
+      request: { query: LIST_AI_EVALUATIONS },
+      variableMatcher: (variables: any) => {
+        if (!variables?.filter?.goldenQaId) return false;
+        filteredRequests += 1;
+        return true;
+      },
+      result: { data: { aiEvaluations: [] } },
+      maxUsageCount: Number.POSITIVE_INFINITY,
+    };
+
+    const subscriptionLink = new MockSubscriptionLink();
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+        },
+        subscriptionLink,
+        new MockLink([
+          listMock([
+            { id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' },
+            { id: 'g2', name: 'anc_followups', insertedAt: '2026-08-11T10:00:00Z' },
+          ]),
+          runsMock([completedRun]),
+          scoresMock('r1'),
+          filteredMock,
+        ])
+      ),
+    });
+
+    render(
+      <ApolloProvider client={client}>
+        <Evaluation assistantId="1" versionId="v1" versionLabel="1.0" assistantName="Assistant" />
+      </ApolloProvider>
+    );
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+    const history = await screen.findByTestId('evaluationHistory');
+
+    fireEvent.mouseDown(within(history).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'anc_followups' }));
+
+    await waitFor(() => {
+      expect(filteredRequests).toBe(1);
+    });
+
+    subscriptionLink.simulateResult({
+      result: { data: { aiEvaluationUpdated: { ...completedRun, id: 'r6', status: 'COMPLETED' } } },
+    });
+
+    // the run that just landed belongs in this list too, so it is asked for again
+    await waitFor(() => {
+      expect(filteredRequests).toBeGreaterThan(1);
+    });
+  });
+
+  test('with no filter chosen History asks for nothing extra', async () => {
+    renderWithRuns([completedRun]);
+
+    await screen.findByTestId('evaluationSubTabs');
+    fireEvent.click(screen.getByRole('radio', { name: 'History' }));
+
+    // only the unfiltered list is mocked, so an extra request here would surface as a missing mock
+    const history = await screen.findByTestId('evaluationHistory');
+    expect(history).toHaveTextContent('maternal_health_core');
+    expect(within(history).getByRole('combobox')).toHaveTextContent('All Golden Q&A');
   });
 
   test('History shows runs from every version', async () => {

@@ -1,5 +1,5 @@
 import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -18,6 +18,8 @@ import {
   isRunFailed,
   isRunInProgress,
   mergeEvaluationUpdate,
+  overallScore,
+  parseEvaluationResults,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { AddGoldenQaSetDialog, ManageGoldenQaSetsDialog, ViewGoldenQaSetDialog } from './GoldenQA';
@@ -36,6 +38,7 @@ export interface EvaluationProps {
   assistantName?: string;
   onRunningChange?: (running: boolean) => void;
   onLastRunChange?: (run: EvaluationRun | null) => void;
+  onVersionScoresChange?: (scores: Record<string, number>) => void;
   openRunSignal?: number;
 }
 
@@ -47,6 +50,7 @@ export const Evaluation = ({
   assistantName,
   onRunningChange,
   onLastRunChange,
+  onVersionScoresChange,
   openRunSignal = 0,
 }: EvaluationProps) => {
   const { t } = useTranslation();
@@ -56,6 +60,7 @@ export const Evaluation = ({
   const [addOpen, setAddOpen] = useState(false);
   const [viewing, setViewing] = useState<GoldenQaSet | null>(null);
   const [runOpen, setRunOpen] = useState(false);
+  const [historySetId, setHistorySetId] = useState('');
 
   const { data, loading, error, refetch } = useQuery(LIST_GOLDEN_QA, {
     variables: GOLDEN_QA_LIST_VARIABLES,
@@ -71,6 +76,12 @@ export const Evaluation = ({
     fetchPolicy: 'cache-and-network',
   });
 
+  const { data: filteredRunData } = useQuery<EvaluationListData>(LIST_AI_EVALUATIONS, {
+    variables: { ...RUN_LIST_VARIABLES, filter: { goldenQaId: historySetId } },
+    skip: !historySetId,
+    fetchPolicy: 'cache-and-network',
+  });
+
   const client = useApolloClient();
 
   useSubscription(AI_EVALUATION_UPDATED, {
@@ -83,15 +94,25 @@ export const Evaluation = ({
         (previous) => mergeEvaluationUpdate(previous ?? undefined, updated)
       );
 
-      refetchRuns();
+      client.refetchQueries({ include: [LIST_AI_EVALUATIONS] });
     },
   });
 
   const sets: GoldenQaSet[] = data?.goldenQas ?? [];
-  const assistantRuns: EvaluationRun[] = (runData?.aiEvaluations ?? []).filter(
-    (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+  const assistantRuns: EvaluationRun[] = useMemo(
+    () =>
+      (runData?.aiEvaluations ?? []).filter(
+        (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+      ),
+    [runData, assistantId]
   );
   const versionRuns = assistantRuns.filter((run) => run.assistantConfigVersion?.id === versionId);
+  // the server filter carries no assistant, so the same narrowing is applied to the filtered list
+  const historyRuns: EvaluationRun[] = historySetId
+    ? (filteredRunData?.aiEvaluations ?? []).filter(
+        (run: EvaluationRun) => !assistantId || run.assistantConfigVersion?.assistant?.id === assistantId
+      )
+    : assistantRuns;
   const lastUsedSetId = assistantRuns[0]?.goldenQa?.id;
   const latestRun = versionRuns[0];
   const versionRunInProgress = versionRuns.some(isRunInProgress);
@@ -105,6 +126,24 @@ export const Evaluation = ({
   useEffect(() => {
     onLastRunChange?.(lastScoredRun);
   }, [lastScoredRun, onLastRunChange]);
+
+  const versionScores = useMemo(() => {
+    const scores: Record<string, number> = {};
+
+    assistantRuns.forEach((run) => {
+      const version = run.assistantConfigVersion?.id;
+      if (!version || version in scores || isRunInProgress(run) || isRunFailed(run)) return;
+
+      const overall = overallScore(parseEvaluationResults(run.results));
+      if (overall != null) scores[version] = overall;
+    });
+
+    return scores;
+  }, [assistantRuns]);
+
+  useEffect(() => {
+    onVersionScoresChange?.(versionScores);
+  }, [versionScores, onVersionScoresChange]);
 
   useEffect(() => {
     if (openRunSignal > 0 && sets.length > 0) setRunOpen(true);
@@ -238,7 +277,13 @@ export const Evaluation = ({
       {subTab === 'run' ? (
         <RunPanel run={latestRun} versionLabel={versionLabel} onGoToHistory={() => setSubTab('history')} />
       ) : assistantRuns.length > 0 ? (
-        <EvaluationHistory runs={assistantRuns} liveVersionId={liveVersionId} />
+        <EvaluationHistory
+          runs={historyRuns}
+          liveVersionId={liveVersionId}
+          sets={sets}
+          selectedSetId={historySetId}
+          onSetChange={setHistorySetId}
+        />
       ) : (
         <EmptyState
           testId="evaluationHistoryEmpty"

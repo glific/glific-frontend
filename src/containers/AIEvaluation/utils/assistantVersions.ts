@@ -12,3 +12,12 @@ export const nextPublishLabel = (versions: AssistantVersion[], selected: Assista
   const highestMajor = versions.reduce((highest, version) => Math.max(highest, version.majorVersion), 0);
   return `${highestMajor + 1}.0`;
 };
+
+export const mergeVersionUpdate = (current: AssistantVersion, updated: Partial<AssistantVersion>): AssistantVersion => {
+  const carried = Object.fromEntries(
+    Object.entries(updated).filter(([, value]) => value !== null && value !== undefined)
+  );
+  const merged = { ...current, ...carried } as AssistantVersion;
+
+  return { ...merged, versionLabel: merged.versionLabel || `${merged.majorVersion}.${merged.minorVersion}` };
+};

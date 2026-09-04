@@ -261,14 +261,32 @@ test('cancelling the remove dialog changes nothing', async () => {
   expect(onFilesChange).not.toHaveBeenCalled();
 });
 
-test('a legacy assistant is read-only', () => {
+test('a legacy assistant offers nothing to add, remove or download', () => {
   renderTab({ legacy: true });
 
   expect(screen.getByTestId('legacyNotice')).toBeInTheDocument();
   expect(screen.getByTestId('addFilesButton')).toBeDisabled();
   expect(screen.queryByTestId('removeFileButton')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('downloadFileButton')).not.toBeInTheDocument();
   // nothing can be uploaded here, so the format hint would only be noise
   expect(screen.queryByTestId('supportedFormats')).not.toBeInTheDocument();
+});
+
+test('a legacy assistant says on hover why its buttons do nothing', async () => {
+  renderTab({ legacy: true });
+
+  fireEvent.mouseOver(screen.getByTestId('legacyKnowledgeBaseInfo'));
+
+  await waitFor(() => {
+    expect(screen.getByRole('tooltip')).toHaveTextContent('legacy knowledge base');
+  });
+});
+
+test('an assistant on the current knowledge base can still download its files', () => {
+  renderTab();
+
+  expect(screen.getByTestId('downloadFileButton')).toBeInTheDocument();
+  expect(screen.queryByTestId('legacyKnowledgeBaseInfo')).not.toBeInTheDocument();
 });
 
 describe('technical details', () => {

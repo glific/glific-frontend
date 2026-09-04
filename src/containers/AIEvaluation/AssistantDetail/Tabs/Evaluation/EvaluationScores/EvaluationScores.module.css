@@ -92,7 +92,8 @@
 .Answer {
   max-height: 9rem;
   overflow-y: auto;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
   color: var(--app-color-text-heading);
 }
 
@@ -102,7 +103,7 @@
 }
 
 .Answer:hover {
-  scrollbar-width: thin;
+  scrollbar-color: var(--app-color-border) transparent;
 }
 
 .Answer:hover::-webkit-scrollbar-thumb {
