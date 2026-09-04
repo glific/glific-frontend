@@ -41,8 +41,13 @@ const stubAssistants = (available = ASSISTANTS) => {
   cy.intercept('POST', Cypress.expose('backendUrl'), (req) => {
     if (req.body?.operationName === 'Assistants') {
       const term = req.body.variables?.filter?.name_or_assistant_id ?? '';
+      const needle = String(term).toLowerCase();
       const matching = term
-        ? available.filter((entry) => entry.name.toLowerCase().includes(String(term).toLowerCase()))
+        ? available.filter((entry) =>
+            [entry.name, entry.assistantDisplayId].some((value) =>
+              String(value).toLowerCase().includes(needle)
+            )
+          )
         : available;
 
       req.reply({ body: { data: { assistants: matching } } });
@@ -146,6 +151,13 @@ describe('AI Assistant list rows', () => {
       'have.length',
       ASSISTANTS.length
     );
+  });
+
+  it('finds an assistant by its id as well as its name', () => {
+    cy.get(SEARCH_FIELD).type('asst_10000000000', BELOW_STICKY_HEADER);
+
+    cy.get('[data-testid="tableBody"] tr', { timeout: 10000 }).should('have.length', 1);
+    cy.get('[data-testid="tableBody"]').should('contain', 'Maternal Health Bot');
   });
 
   it('says so plainly when a search matches nothing', () => {
