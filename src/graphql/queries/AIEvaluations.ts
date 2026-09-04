@@ -51,6 +51,7 @@ export const LIST_GOLDEN_QA = gql`
     goldenQas(filter: $filter, opts: $opts) {
       id
       name
+      totalItems
       insertedAt
     }
   }
@@ -82,6 +83,7 @@ export const GET_GOLDEN_QA = gql`
         id
         name
         signedUrl
+        totalItems
         insertedAt
       }
       errors {

@@ -2,6 +2,7 @@ import {
   downloadFromUrl,
   goldenQaCategories,
   GOLDEN_QA_NAME_PATTERN,
+  goldenQaItemCount,
   parseGoldenQaCsv,
   suggestedGoldenQaName,
 } from './goldenQa';
@@ -192,5 +193,17 @@ describe('reading real-world exports', () => {
 
   test('a headerless file is still read by position', () => {
     expect(parseGoldenQaCsv('Q1,A1,C1')).toEqual([{ question: 'Q1', answer: 'A1', category: 'C1' }]);
+  });
+});
+
+describe('goldenQaItemCount', () => {
+  test('reports what the server counted', () => {
+    expect(goldenQaItemCount(120)).toBe(120);
+  });
+
+  test('a set stored before the count existed has nothing to report', () => {
+    expect(goldenQaItemCount(null)).toBeNull();
+    expect(goldenQaItemCount(undefined)).toBeNull();
+    expect(goldenQaItemCount(0)).toBeNull();
   });
 });

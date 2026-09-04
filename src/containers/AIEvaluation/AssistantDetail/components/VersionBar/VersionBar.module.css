@@ -69,6 +69,10 @@ button.VersionPillLive {
   gap: var(--app-space-sm);
 }
 
+.PillGroup > span {
+  min-height: 1.75rem;
+}
+
 .InProgressPill {
   display: inline-flex;
   align-items: center;
@@ -120,7 +124,6 @@ button.VersionPillLive {
   justify-content: center;
   width: 1.25rem;
   height: 1.25rem;
-  /* pinned right so it sits in the same spot whether or not the badge is there */
   margin-left: auto;
   border: 1px solid var(--app-color-border-muted);
   border-radius: var(--app-radius-lg);
@@ -165,4 +168,37 @@ button.VersionPillLive {
   b {
     color: var(--app-color-text-primary);
   }
+}
+
+.HealthPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border: 1px solid;
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.Good {
+  border-color: var(--app-color-brand-primary);
+  color: var(--app-color-brand-primary);
+}
+
+.Okay {
+  border-color: var(--app-color-attention);
+  color: var(--app-color-attention);
+}
+
+.Bad {
+  border-color: var(--app-color-error);
+  color: var(--app-color-error);
+}
+
+.HealthIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  flex-shrink: 0;
 }
