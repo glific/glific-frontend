@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router';
 import userEvent from '@testing-library/user-event';
@@ -14,6 +14,7 @@ import {
   updateMaytapiCredentials,
   getProvidersQuery,
   getCredential,
+  getWebChannelProviderMock,
 } from 'mocks/Organization';
 
 const mocks = LIST_ITEM_MOCKS;
@@ -284,6 +285,100 @@ describe('gupshup dialog', () => {
       const content = screen.getByTestId('dialog-content');
       expect(content).toHaveTextContent('App Name:');
       expect(content).toHaveTextContent('API Key:');
+    });
+  });
+});
+
+const webChannelProvider = () => (
+  <MemoryRouter initialEntries={[`/settings/web_channel`]}>
+    <MockedProvider mocks={[...mocks, ...getWebChannelProviderMock]} addTypename={false}>
+      <Routes>
+        <Route path="settings/:type" element={<Providers />} />
+      </Routes>
+    </MockedProvider>
+  </MemoryRouter>
+);
+
+describe('provider keys declaring a select', () => {
+  it("renders a dropdown of the provider's own options, not a text input", async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    // The dropdown comes from the provider's key metadata; this page knows nothing about the
+    // web channel specifically.
+    const dropdown = await screen.findByTestId('dropdown');
+    expect(dropdown).toBeInTheDocument();
+    expect(screen.getByText('Theme')).toBeInTheDocument();
+
+    // ...and it defaults to the value the provider declared.
+    expect(within(dropdown).getByText('Zinc')).toBeInTheDocument();
+  });
+
+  it('still renders string keys as text inputs alongside it', async () => {
+    const { container } = render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Display Name')).toBeInTheDocument();
+    expect(container.querySelector('input[type="text"]')).toBeInTheDocument();
+  });
+
+  it('renders an upload control for a key declaring type: upload', async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('fileUpload')).toBeInTheDocument();
+    expect(screen.getByTestId('fileInput')).toHaveAttribute('accept', 'image/png,image/jpeg,image/webp,image/svg+xml');
+    // The provider's own limit, not the component default.
+    expect(screen.getByText('PNG, JPEG, WEBP or SVG up to 200KB. Landscape works best.')).toBeInTheDocument();
+  });
+
+  it('orders fields by their declared position, not by jsonb key order', async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    const labels = screen.getAllByTestId('formLabel').map((label) => label.textContent);
+    expect(labels).toEqual(['Display Name', 'Logo', 'Theme']);
+  });
+
+  it('labels the dropdown once, through the same path as every other field', async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    // Dropdown renders its own label from `placeholder`; letting it do so alongside
+    // FormLayout's printed the field name twice and lost the form's spacing.
+    expect(screen.getAllByText('Theme')).toHaveLength(1);
+  });
+
+  it('lets an admin pick a different theme', async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    const dropdown = await screen.findByTestId('dropdown');
+    await user.click(within(dropdown).getByRole('combobox'));
+
+    const violet = await screen.findByRole('option', { name: 'Violet' });
+    await user.click(violet);
+
+    await waitFor(() => {
+      expect(within(dropdown).getByText('Violet')).toBeInTheDocument();
     });
   });
 });
