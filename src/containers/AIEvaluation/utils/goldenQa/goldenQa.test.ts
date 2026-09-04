@@ -1,4 +1,10 @@
-import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv, suggestedGoldenQaName } from './goldenQa';
+import {
+  downloadFromUrl,
+  goldenQaCategories,
+  goldenQaItemCount,
+  parseGoldenQaCsv,
+  suggestedGoldenQaName,
+} from './goldenQa';
 
 describe('parseGoldenQaCsv', () => {
   test('reads question, answer and category', () => {
@@ -169,5 +175,17 @@ describe('reading real-world exports', () => {
 
   test('a headerless file is still read by position', () => {
     expect(parseGoldenQaCsv('Q1,A1,C1')).toEqual([{ question: 'Q1', answer: 'A1', category: 'C1' }]);
+  });
+});
+
+describe('goldenQaItemCount', () => {
+  test('reports what the server counted', () => {
+    expect(goldenQaItemCount(120)).toBe(120);
+  });
+
+  test('a set stored before the count existed has nothing to report', () => {
+    expect(goldenQaItemCount(null)).toBeNull();
+    expect(goldenQaItemCount(undefined)).toBeNull();
+    expect(goldenQaItemCount(0)).toBeNull();
   });
 });

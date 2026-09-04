@@ -111,3 +111,6 @@ export const downloadFromUrl = (url: string) => {
 export const GOLDEN_QA_NAME_MAX_LENGTH = 80;
 
 export const suggestedGoldenQaName = (filename: string) => filename.replace(/\.[^.]+$/, '').trim();
+
+export const goldenQaItemCount = (totalItems?: number | null) =>
+  typeof totalItems === 'number' && totalItems > 0 ? totalItems : null;

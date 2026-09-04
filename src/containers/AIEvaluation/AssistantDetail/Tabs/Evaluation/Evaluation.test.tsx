@@ -32,12 +32,12 @@ vi.mock('react-i18next', () => ({
 const listVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 const runVariables = { filter: {}, opts: { order: 'DESC', orderWith: 'inserted_at' } };
 
-const listMock = (goldenQas: { id: string; name: string; insertedAt: string }[]) => ({
+const listMock = (goldenQas: { id: string; name: string; totalItems?: number | null; insertedAt: string }[]) => ({
   request: { query: LIST_GOLDEN_QA, variables: listVariables },
   result: { data: { goldenQas } },
 });
 
-const oneSet = [{ id: 'g1', name: 'maternal_health_core', insertedAt: '2026-08-10T10:00:00Z' }];
+const oneSet = [{ id: 'g1', name: 'maternal_health_core', totalItems: 120, insertedAt: '2026-08-10T10:00:00Z' }];
 
 const noRunsMock = {
   request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
@@ -74,6 +74,7 @@ const viewSignedUrlMock = {
           id: 'g1',
           name: 'maternal_health_core',
           signedUrl: 'https://files.example/set.csv',
+          totalItems: 120,
           insertedAt: '',
         },
         errors: null,
@@ -120,6 +121,21 @@ describe('listing sets', () => {
       expect(screen.getAllByTestId('goldenQaViewRow')).toHaveLength(2);
     });
     vi.unstubAllGlobals();
+  });
+
+  test('a set says how many questions it holds', async () => {
+    renderTab([listMock(oneSet)]);
+
+    await openManage();
+    expect(screen.getByTestId('goldenQaSetItems')).toHaveTextContent('120 questions');
+  });
+
+  test('a set stored before the count existed says nothing about its size', async () => {
+    renderTab([listMock([{ id: 'g9', name: 'older_set', totalItems: null, insertedAt: '2026-08-10T10:00:00Z' }])]);
+
+    await openManage();
+    expect(screen.getByTestId('manageGoldenQaSet')).toHaveTextContent('older_set');
+    expect(screen.queryByTestId('goldenQaSetItems')).not.toBeInTheDocument();
   });
 
   test('the view dialog can go back to the list it came from', async () => {
@@ -465,6 +481,19 @@ describe('viewing a set', () => {
 
     expect(download).toHaveBeenCalledWith('https://files.example/set.csv');
     download.mockRestore();
+  });
+
+  test('a file that cannot be read still says how big the set is', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+    renderTab([listMock(oneSet), viewSignedUrlMock]);
+
+    await openView();
+
+    // the rows never arrive, so the count the server took at upload is all there is to go on
+    expect(await screen.findByTestId('goldenQaViewFailureReason')).toBeInTheDocument();
+    expect(screen.getByTestId('goldenQaViewSummary')).toHaveTextContent(
+      'Every evaluation on this Golden Q&A asks these 120 questions.'
+    );
   });
 
   test('rows that cannot be read offer the download instead', async () => {
@@ -992,6 +1021,15 @@ describe('running an evaluation', () => {
     expect(sent.input.duplicationFactor).toBe(1);
     expect(sent.input.evaluationName).toMatch(/^assistant_v1_0_maternal_health_core_\d+$/);
     notificationSpy.mockRestore();
+  });
+
+  test('the run dialog says how big the set it is about to run is', async () => {
+    renderWithRuns([]);
+
+    fireEvent.click(await screen.findByTestId('runEvaluationButton'));
+    const dialog = await screen.findByTestId('runEvaluationDialog');
+
+    expect(within(dialog).getByTestId('setSize-g1')).toHaveTextContent('120 questions');
   });
 
   test('the duplication the reader picks is what gets run', async () => {
