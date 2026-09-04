@@ -11,6 +11,12 @@ import styles from './VersionBar.module.css';
 
 dayjs.extend(relativeTime);
 
+const BAND_CLASS = {
+  good: styles.Good,
+  okay: styles.Okay,
+  bad: styles.Bad,
+} as const;
+
 export const canPublishVersion = (version?: AssistantVersion) =>
   Boolean(version) && !version?.isLive && version?.status !== 'in_progress' && version?.status !== 'failed';
 
@@ -64,7 +70,10 @@ export const VersionBar = ({
     const BandIcon = BAND_ICON[band];
 
     return (
-      <span className={`${styles.HealthPill} ${styles[band]}`} data-testid={`versionHealth-${version.versionLabel}`}>
+      <span
+        className={`${styles.HealthPill} ${BAND_CLASS[band]}`}
+        data-testid={`versionHealth-${version.versionLabel}`}
+      >
         <BandIcon className={styles.HealthIcon} />
         {t(BAND_LABEL[band])} {formatScore(score)}
       </span>

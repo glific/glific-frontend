@@ -182,17 +182,17 @@ button.VersionPillLive {
   white-space: nowrap;
 }
 
-.good {
+.Good {
   border-color: var(--app-color-brand-primary);
   color: var(--app-color-brand-primary);
 }
 
-.okay {
+.Okay {
   border-color: var(--app-color-attention);
   color: var(--app-color-attention);
 }
 
-.bad {
+.Bad {
   border-color: var(--app-color-error);
   color: var(--app-color-error);
 }
