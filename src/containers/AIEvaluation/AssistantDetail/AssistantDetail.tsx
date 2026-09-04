@@ -148,11 +148,23 @@ export const AssistantDetail = () => {
       const updated = subscription?.data?.assistantConfigVersionUpdated;
       if (!updated) return;
 
+      const cached = client.cache.readQuery<{ assistantVersions: AssistantVersion[] }>({
+        query: GET_ASSISTANT_VERSIONS,
+        variables: { assistantId },
+      })?.assistantVersions;
+
+      if (!cached) return;
+
+      if (!cached.some((version) => version.id === updated.id)) {
+        refetchVersions();
+        return;
+      }
+
       client.cache.updateQuery<{ assistantVersions: AssistantVersion[] }>(
         { query: GET_ASSISTANT_VERSIONS, variables: { assistantId } },
         (previous) => {
           const current = previous?.assistantVersions;
-          if (!current?.some((version) => version.id === updated.id)) return previous;
+          if (!current) return previous;
 
           return {
             ...previous,

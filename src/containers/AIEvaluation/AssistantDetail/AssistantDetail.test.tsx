@@ -2033,6 +2033,64 @@ describe('a version changing while the page is open', () => {
     expect(screen.getByTestId('publishButton')).toBeEnabled();
   });
 
+  test('a version built after the page loaded is fetched, and brings its knowledge base with it', async () => {
+    const fresh = {
+      ...version(3, false),
+      vectorStore: {
+        id: 'vs-3',
+        vectorStoreId: 'vs_built_later',
+        knowledgeBaseVersionId: 'llm-vs-3',
+        name: 'VectorStore-new',
+        legacy: false,
+        size: 100,
+        files: [],
+      },
+    };
+
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock([version(1, true)]),
+      configUpdate(fresh),
+      versionsMock([version(1, true), fresh]),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    await waitFor(() => {
+      expect(screen.getByTestId('versionOption-3.0')).toBeInTheDocument();
+    });
+  });
+
+  test('the knowledge base id lands with the build, without a reload', async () => {
+    const building = { ...version(2, false), status: 'in_progress', vectorStore: null };
+
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock([version(1, true), building]),
+      configUpdate({
+        ...building,
+        status: 'ready',
+        vectorStore: {
+          id: 'vs-2',
+          vectorStoreId: 'vs_freshly_made',
+          knowledgeBaseVersionId: 'llm-vs-2',
+          name: 'VectorStore-new',
+          legacy: false,
+          size: 100,
+          files: [],
+        },
+      }),
+    ]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+    fireEvent.click(screen.getByTestId('tab-knowledgeBase'));
+    fireEvent.click(await screen.findByTestId('technicalDetailsToggle'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('vectorStoreId')).toHaveTextContent('vs_freshly_made');
+    });
+  });
+
   test('a version going live elsewhere moves the LIVE badge over', async () => {
     renderDetail('/assistants/1', [
       getAssistant('1'),
@@ -2072,6 +2130,14 @@ describe('a version changing while the page is open', () => {
     fireEvent.click(await screen.findByTestId('versionPill'));
     expect(screen.getByTestId('versionOption-2.0')).toBeInTheDocument();
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Version 1.0 is live in your flows');
+  });
+
+  test('a version update landing before the list does is left to the list', async () => {
+    // nothing is cached yet, so there is no list to merge into and none to refetch either
+    renderDetail('/assistants/1', [getAssistant('1'), configUpdate(version(2, false))]);
+
+    await screen.findByTestId('assistantDetailContainer');
+    expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
   });
 
   test('a knowledge base update that carries nothing is ignored', async () => {
