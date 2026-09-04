@@ -9,7 +9,12 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { DataTable } from 'components/UI/DataTable/DataTable';
 import { GET_GOLDEN_QA } from 'graphql/queries/AIEvaluations';
 import type { GoldenQaRow, GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
-import { downloadFromUrl, goldenQaCategories, parseGoldenQaCsv } from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
+import {
+  downloadFromUrl,
+  goldenQaCategories,
+  goldenQaItemCount,
+  parseGoldenQaCsv,
+} from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import styles from './ViewGoldenQaSetDialog.module.css';
 
 export interface ViewGoldenQaSetDialogProps {
@@ -31,6 +36,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
   });
 
   const signedUrl: string | undefined = data?.goldenQa?.goldenQa?.signedUrl;
+  const fetchedTotal: number | null | undefined = data?.goldenQa?.goldenQa?.totalItems;
   const queryFailed = Boolean(error) || Boolean(data?.goldenQa?.errors?.length);
 
   // the questions live in the stored file, not in the API, so the file itself is read back
@@ -83,6 +89,7 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
 
   const categories = rows ? goldenQaCategories(rows) : [];
   const hasCategories = categories.length > 0;
+  const questionCount = rows?.length ?? goldenQaItemCount(fetchedTotal ?? set.totalItems);
 
   const body = () => {
     if (reading) return <Loading />;
@@ -178,11 +185,11 @@ export const ViewGoldenQaSetDialog = ({ set, onClose, onBack }: ViewGoldenQaSetD
       <div data-testid="viewGoldenQaSetDialog">
         <div className={styles.Intro} data-testid="goldenQaViewSummary">
           <b className={styles.SetName}>{set.name}</b>
-          {rows &&
+          {questionCount !== null &&
             ' · ' +
-              (rows.length === 1
+              (questionCount === 1
                 ? t('Every evaluation on this Golden Q&A asks this 1 question.')
-                : t('Every evaluation on this Golden Q&A asks these {{count}} questions.', { count: rows.length }))}
+                : t('Every evaluation on this Golden Q&A asks these {{count}} questions.', { count: questionCount }))}
         </div>
         {body()}
       </div>

@@ -6,11 +6,13 @@ import { copyToClipboard, downloadFile } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { IconButton } from 'components/UI/IconButton/IconButton';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import type { KnowledgeBaseFile, UploadError } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import { UPLOAD_FILE_TO_KAAPI } from 'graphql/mutations/Assistant';
 import { GET_KNOWLEDGE_BASE_FILE } from 'graphql/queries/Assistant';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import SettingsIcon from 'assets/images/icons/Settings/Settings.svg?react';
@@ -242,7 +244,14 @@ export const KnowledgeBase = ({
             onChange={handleAddFiles}
             data-testid="fileInput"
           />
-          {!isReadOnly && (
+          {isReadOnly ? (
+            <Tooltip
+              title={t('This assistant uses a legacy knowledge base — its files cannot be added to or downloaded.')}
+              placement="left"
+            >
+              <InfoOutlinedIcon className={styles.LegacyInfoIcon} data-testid="legacyKnowledgeBaseInfo" />
+            </Tooltip>
+          ) : (
             <div className={styles.FormatsHint} data-testid="supportedFormats">
               {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV · {{size}}MB per file', {
                 size: MAX_FILE_SIZE_MB,
@@ -255,7 +264,9 @@ export const KnowledgeBase = ({
       <div className={styles.Card}>
         {isReadOnly ? (
           <div className={styles.Note} data-testid="legacyNotice">
-            {t('This assistant was created before the knowledge base rewrite, so its files are read-only.')}
+            {t(
+              'This assistant was created before the knowledge base rewrite, so its files cannot be added to or downloaded.'
+            )}
           </div>
         ) : (
           <div className={styles.Note}>
@@ -276,16 +287,18 @@ export const KnowledgeBase = ({
                 {formatSize(file.fileSize) && <div className={styles.Note}>{formatSize(file.fileSize)}</div>}
               </div>
               <div className={styles.FileActions}>
-                <IconButton
-                  size="small"
-                  className={`${styles.FileAction} ${styles.FileActionDownload}`}
-                  onClick={() => handleDownload(file)}
-                  loading={downloading === file.fileId}
-                  aria-label={t('Download')}
-                  data-testid="downloadFileButton"
-                >
-                  <FileDownloadOutlinedIcon />
-                </IconButton>
+                {!isReadOnly && (
+                  <IconButton
+                    size="small"
+                    className={`${styles.FileAction} ${styles.FileActionDownload}`}
+                    onClick={() => handleDownload(file)}
+                    loading={downloading === file.fileId}
+                    aria-label={t('Download')}
+                    data-testid="downloadFileButton"
+                  >
+                    <FileDownloadOutlinedIcon />
+                  </IconButton>
+                )}
                 {!isReadOnly && (
                   <IconButton
                     size="small"
