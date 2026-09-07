@@ -1214,5 +1214,6 @@
   "No file uploaded yet.": "No file uploaded yet.",
   "Up to {{max}}KB.": "Up to {{max}}KB.",
   "Replace": "Replace",
-  "File URL": "File URL"
+  "File URL": "File URL",
+  "Enter {{label}} here": "Enter {{label}} here"
 }

@@ -144,6 +144,21 @@ describe('<FileUpload />', () => {
     expect(setFieldValue).not.toHaveBeenCalled();
   });
 
+  it('clears a rejection message along with the file it referred to', async () => {
+    renderUpload({ field: { value: UPLOADED_URL } });
+
+    // Reject a replacement, then remove the existing file: the stale "that file is 500KB"
+    // must not sit beside an empty field looking like a live error.
+    fireEvent.change(screen.getByTestId('fileInput'), {
+      target: { files: [file('big.png', 'image/png', 500)] },
+    });
+    await waitFor(() => expect(screen.getByText(SIZE_ERROR)).toBeInTheDocument());
+
+    await user.click(screen.getByTestId('removeFile'));
+
+    expect(screen.queryByText(SIZE_ERROR)).not.toBeInTheDocument();
+  });
+
   it('clears the stored file', async () => {
     renderUpload({ field: { value: UPLOADED_URL } });
 

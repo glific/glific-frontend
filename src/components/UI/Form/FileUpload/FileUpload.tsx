@@ -72,7 +72,12 @@ export const FileUpload = ({
   const [error, setError] = useState<string | null>(null);
   const [uploadMedia] = useMutation(UPLOAD_CREDENTIAL_FILE);
 
-  const setValue = (value: string) => form?.setFieldValue(field.name, value);
+  const setValue = (value: string) => {
+    // Clear any rejection message with the value it referred to — a stale "that file is
+    // 500KB" beside an empty field reads as a live error.
+    setError(null);
+    form?.setFieldValue(field.name, value);
+  };
 
   const onFileChosen = async (event: any) => {
     const file = event.target.files?.[0];
@@ -152,10 +157,7 @@ export const FileUpload = ({
           value={field.value || ''}
           placeholder={placeholder}
           inputProps={{ 'data-testid': 'fileUrlInput', 'aria-label': t('File URL') }}
-          onChange={(event) => {
-            setError(null);
-            setValue(event.target.value);
-          }}
+          onChange={(event) => setValue(event.target.value)}
         />
 
         <input ref={inputRef} type="file" accept={accept} hidden data-testid="fileInput" onChange={onFileChosen} />

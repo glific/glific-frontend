@@ -217,7 +217,9 @@ export const Providers = () => {
             disabled: fields[key].view_only,
             skip: fields[key].hide,
             placeholder:
-              type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key) ? `Enter ${fields[key].label} here` : '',
+              type === 'gupshup' && GUPSHUP_CREDENTIAL_FIELDS.includes(key)
+                ? t('Enter {{label}} here', { label: fields[key].label })
+                : '',
           };
         }
         formField.push(field);
