@@ -70,6 +70,18 @@
   background-color: rgba(17, 150, 86, 0.57);
 }
 
+/* The composer is the one control that acts, so it says which channel it will act on. Declared
+   after .SendButton:disabled so the disabled variant wins on order — both are one class plus one
+   pseudo-class, and they live in the same file. */
+.SendButtonWeb,
+.SendButtonWeb:hover {
+  background-color: var(--app-color-channel-web) !important;
+}
+
+.SendButtonWeb:disabled {
+  background-color: rgb(var(--app-color-indigo-primary-rgb) / 57%);
+}
+
 .SendButtonContainer {
   padding: 0 10px;
 }

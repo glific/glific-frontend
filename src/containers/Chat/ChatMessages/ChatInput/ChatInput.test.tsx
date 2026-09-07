@@ -83,6 +83,12 @@ describe('<ChatInput />', () => {
     expect(getByTestId('message-input-container')).toBeInTheDocument();
   });
 
+  test('the send button keeps the default colour on WhatsApp', () => {
+    const { getByTestId } = render(chatInput);
+
+    expect(getByTestId('sendButton').className).not.toMatch(/SendButtonWeb/);
+  });
+
   test('speed send, template and interactive buttons should exist', () => {
     const { getAllByTestId } = render(chatInput);
     fireEvent.click(screen.getByTestId('shortcut-open-button'));
@@ -107,6 +113,13 @@ describe('<ChatInput />', () => {
 
       expect(getByTestId('message-input-container')).toBeInTheDocument();
       expect(queryByText(/aren’t opted in to your number/)).not.toBeInTheDocument();
+    });
+
+    // The composer is the one control that acts, so it says which channel it is about to act on.
+    test('the send button takes the web channel colour', () => {
+      const { getByTestId } = render(webChatInput);
+
+      expect(getByTestId('sendButton').className).toMatch(/SendButtonWeb/);
     });
 
     test('templates are not offered, since there is no BSP to approve one', () => {

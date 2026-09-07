@@ -541,7 +541,7 @@ export const ChatInput = ({
           </ClickAwayListener>
           <div className={styles.SendButtonContainer}>
             <Button
-              className={styles.SendButton}
+              className={`${styles.SendButton} ${isWebConversation ? styles.SendButtonWeb : ''}`}
               data-testid="sendButton"
               variant="contained"
               color="primary"
