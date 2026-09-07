@@ -1,4 +1,4 @@
-import { compareVersionsDesc, isNewerThan, nextPublishLabel } from './assistantVersions';
+import { compareVersionsDesc, isNewerThan, mergeVersionUpdate, nextPublishLabel } from './assistantVersions';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 
 const version = (majorVersion: number, minorVersion: number): AssistantVersion => ({
@@ -53,5 +53,34 @@ describe('nextPublishLabel', () => {
 
     // 1.1 carries unsaved-from-1.0 work, so it cannot go live under its own number
     expect(nextPublishLabel(versions, version(1, 1), false)).toBe('2.0');
+  });
+});
+
+describe('mergeVersionUpdate', () => {
+  test('takes what the update carries', () => {
+    const merged = mergeVersionUpdate(version(2, 0), { status: 'ready', isLive: true });
+
+    expect(merged.status).toBe('ready');
+    expect(merged.isLive).toBe(true);
+  });
+
+  test('a field the server left null does not blank out what is on screen', () => {
+    // versionLabel is derived when the server builds a list, so a pushed version arrives without it
+    const merged = mergeVersionUpdate(version(3, 1), { status: 'ready', versionLabel: null as never });
+
+    expect(merged.versionLabel).toBe('3.1');
+    expect(merged.prompt).toBe(version(3, 1).prompt);
+  });
+
+  test('a label missing from both sides is rebuilt from the numbers', () => {
+    const merged = mergeVersionUpdate({ ...version(4, 2), versionLabel: '' }, { status: 'ready' });
+
+    expect(merged.versionLabel).toBe('4.2');
+  });
+
+  test('false is a value, not a gap', () => {
+    const merged = mergeVersionUpdate({ ...version(1, 0), isLive: true }, { isLive: false });
+
+    expect(merged.isLive).toBe(false);
   });
 });

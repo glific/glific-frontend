@@ -264,7 +264,7 @@ export const HSMList = () => {
       onClick={handleHsmUpdates}
       aria-hidden="true"
     >
-      SYNC HSM
+      {t('Sync HSM')}
     </Button>
   );
 

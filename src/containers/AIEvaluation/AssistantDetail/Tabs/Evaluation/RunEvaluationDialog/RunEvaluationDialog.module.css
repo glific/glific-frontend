@@ -100,6 +100,12 @@
   gap: var(--app-space-sm);
 }
 
+.SetSize {
+  color: var(--app-color-text-tertiary);
+  font-size: var(--app-font-size-xs);
+  white-space: nowrap;
+}
+
 .LastUsedPill {
   padding: 0 var(--app-space-sm);
   border: 1px solid var(--app-color-border-brand);

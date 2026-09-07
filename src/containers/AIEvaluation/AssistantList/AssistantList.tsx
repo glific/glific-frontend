@@ -2,12 +2,10 @@ import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { IconButton } from 'components/UI/IconButton/IconButton';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { BAND_ICON } from 'containers/AIEvaluation/utils/evaluation/bandIcon';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
@@ -61,12 +59,6 @@ const getLiveVersion = (liveVersionLabel: string | null) =>
   ) : (
     <span className={styles.NoVersion}>-</span>
   );
-
-const HEALTH_ICON = {
-  good: CheckIcon,
-  okay: WarningAmberIcon,
-  bad: CloseIcon,
-} as const;
 
 const columnStyles = [styles.NameColumn, styles.HealthColumn, styles.VersionColumn, styles.Actions];
 
@@ -195,7 +187,7 @@ export const AssistantList = () => {
     }
 
     const band = scoreBand(score);
-    const BandIcon = HEALTH_ICON[band];
+    const BandIcon = BAND_ICON[band];
 
     return (
       <span className={`${styles.Health} ${styles[band]}`} data-testid="evaluationHealth">

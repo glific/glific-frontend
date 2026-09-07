@@ -6,7 +6,32 @@
 
 .CardHeader {
   display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
   margin-bottom: var(--app-space-lg);
+}
+
+.Filter {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  width: 18rem;
+}
+
+.Filter :global(.MuiOutlinedInput-input) {
+  padding: var(--app-space-sm) var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+}
+
+.Filter :global(.MuiSelect-icon) {
+  right: var(--app-space-sm);
+}
+
+.FilterLabel {
+  font-size: var(--app-font-size-sm);
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+  white-space: nowrap;
 }
 
 .ExportButton {

@@ -7,6 +7,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import DocumentIcon from 'assets/images/icons/Document/Dark.svg?react';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
+import { goldenQaItemCount } from 'containers/AIEvaluation/utils/goldenQa/goldenQa';
 import styles from './ManageGoldenQaSetsDialog.module.css';
 
 dayjs.extend(relativeTime);
@@ -42,29 +43,39 @@ export const ManageGoldenQaSetsDialog = ({ sets, onView, onAdd, onClose }: Manag
         </div>
 
         <div className={styles.SetList} data-testid="goldenQaSetList">
-          {sets.map((set) => (
-            <button
-              type="button"
-              className={styles.Set}
-              key={set.id}
-              onClick={() => onView(set)}
-              data-testid="manageGoldenQaSet"
-            >
-              <span className={styles.SetIcon}>
-                <DocumentIcon />
-              </span>
-              <span className={styles.SetText}>
-                <span className={styles.SetName}>{set.name}</span>
-                <span className={styles.Note}>
-                  {t('Added')} {dayjs(set.insertedAt).fromNow()}
+          {sets.map((set) => {
+            const items = goldenQaItemCount(set.totalItems);
+
+            return (
+              <button
+                type="button"
+                className={styles.Set}
+                key={set.id}
+                onClick={() => onView(set)}
+                data-testid="manageGoldenQaSet"
+              >
+                <span className={styles.SetIcon}>
+                  <DocumentIcon />
                 </span>
-              </span>
-              <span className={styles.ViewLink}>
-                {t('View')}
-                <ArrowForwardIcon className={styles.ViewIcon} />
-              </span>
-            </button>
-          ))}
+                <span className={styles.SetText}>
+                  <span className={styles.SetName}>{set.name}</span>
+                  <span className={styles.Note}>
+                    {t('Added')} {dayjs(set.insertedAt).fromNow()}
+                    {items !== null && (
+                      <span data-testid="goldenQaSetItems">
+                        {' • '}
+                        {items === 1 ? t('1 question') : t('{{count}} questions', { count: items })}
+                      </span>
+                    )}
+                  </span>
+                </span>
+                <span className={styles.ViewLink}>
+                  {t('View')}
+                  <ArrowForwardIcon className={styles.ViewIcon} />
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <Button

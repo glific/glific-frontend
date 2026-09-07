@@ -4,6 +4,7 @@ export interface Screen {
   order: number;
   content: ContentItem[];
   buttonLabel: string;
+  footerAttributes?: Record<string, any>;
 }
 
 export interface ContentItem {
@@ -25,11 +26,13 @@ export interface ContentItemData {
   variableName?: string;
   extraAttributes?: Record<string, any>;
   rawComponent?: any;
+  layoutDirect?: boolean;
 }
 
 export interface ContentOption {
   id: string;
   value: string;
+  extraAttributes?: Record<string, any>;
 }
 
 export interface FormBuilderProps {

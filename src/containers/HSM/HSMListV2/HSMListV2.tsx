@@ -248,7 +248,7 @@ const HSMListV2 = () => {
       data-testid="syncHsm"
       onClick={handleSync}
     >
-      {t('SYNC HSM')}
+      {t('Sync HSM')}
     </Button>
   );
 

@@ -1,12 +1,10 @@
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { BAND_ICON } from 'containers/AIEvaluation/utils/evaluation/bandIcon';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   BAND_LABEL,
@@ -35,12 +33,6 @@ export interface EvaluationResultProps {
 }
 
 const METRIC_ORDER = ['groundTruth', 'prompt', 'knowledgeBase'] as const satisfies readonly (keyof EvaluationMetrics)[];
-
-const BAND_ICON = {
-  good: CheckIcon,
-  okay: WarningAmberIcon,
-  bad: CloseIcon,
-} as const;
 
 const ScoreBar = ({ score, band }: { score: number; band: string }) => (
   <div className={styles.Bar} data-testid="scoreBar">

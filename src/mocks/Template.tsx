@@ -111,16 +111,31 @@ export const deleteTemplateErrorMock = (id: string, message: string) => ({
 });
 
 export const translateSessionTemplateMock = (
-  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
-  result: { body: string; footer?: string | null; buttons?: string[] }
+  variables: {
+    templateId: string;
+    languageId: string;
+    body?: string;
+    footer?: string;
+    buttons?: string[];
+  },
+  result: {
+    body: string;
+    footer?: string | null;
+    buttons?: string[];
+    sourceLanguage?: { id: string; label: string } | null;
+  }
 ) => ({
-  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  request: {
+    query: TRANSLATE_SESSION_TEMPLATE,
+    variables: { buttons: undefined, ...variables },
+  },
   result: {
     data: {
       translateSessionTemplate: {
         body: result.body,
         footer: result.footer ?? null,
         buttons: result.buttons ?? null,
+        sourceLanguage: result.sourceLanguage ?? null,
         errors: null,
       },
     },
@@ -128,24 +143,43 @@ export const translateSessionTemplateMock = (
 });
 
 export const translateSessionTemplateErrorMock = (
-  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  variables: {
+    templateId: string;
+    languageId: string;
+    body?: string;
+    footer?: string;
+    buttons?: string[];
+  },
   message: string
 ) => ({
-  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  request: {
+    query: TRANSLATE_SESSION_TEMPLATE,
+    variables: { buttons: undefined, ...variables },
+  },
   error: new Error(message),
 });
 
 export const translateSessionTemplateResultErrorMock = (
-  variables: { languageId: string; body?: string; footer?: string; buttons?: string[] },
+  variables: {
+    templateId: string;
+    languageId: string;
+    body?: string;
+    footer?: string;
+    buttons?: string[];
+  },
   error: { key: string; message: string }
 ) => ({
-  request: { query: TRANSLATE_SESSION_TEMPLATE, variables: { buttons: undefined, ...variables } },
+  request: {
+    query: TRANSLATE_SESSION_TEMPLATE,
+    variables: { buttons: undefined, ...variables },
+  },
   result: {
     data: {
       translateSessionTemplate: {
         body: null,
         footer: null,
         buttons: null,
+        sourceLanguage: null,
         errors: [error],
       },
     },

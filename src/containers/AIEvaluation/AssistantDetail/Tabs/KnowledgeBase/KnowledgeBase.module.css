@@ -237,3 +237,13 @@
 .FileActionDownload:hover {
   background-color: rgb(var(--app-color-green-primary-rgb) / 8%) !important;
 }
+
+.LegacyInfoIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  margin-top: var(--app-space-2xs);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+  display: block;
+  margin-left: auto;
+}

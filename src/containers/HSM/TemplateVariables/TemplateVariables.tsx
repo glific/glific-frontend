@@ -19,6 +19,7 @@ export interface TemplateOptionsProps {
   attached?: boolean;
 
   variableReferences?: Array<{ id: number; text: string }>;
+  referenceLanguage?: string;
 }
 
 export const TemplateVariables = ({
@@ -29,6 +30,7 @@ export const TemplateVariables = ({
   isEditing,
   attached,
   variableReferences,
+  referenceLanguage,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
 
@@ -81,7 +83,7 @@ export const TemplateVariables = ({
                 <div className={styles.Variable} key={index}>
                   {reference?.text && (
                     <SourceReferenceChip
-                      language={t('English')}
+                      language={referenceLanguage || t('English')}
                       value={reference.text}
                       data-testid={`variable-source-reference-${variable.id}`}
                     />

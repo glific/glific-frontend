@@ -1,6 +1,7 @@
 export interface GoldenQaSet {
   id: string;
   name: string;
+  totalItems?: number | null;
   insertedAt: string;
 }
 

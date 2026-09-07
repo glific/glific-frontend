@@ -220,6 +220,7 @@ const goldenQaSampleRows = [
     id: '1',
     name: 'Diabetescare-0101',
     datasetId: '101',
+    totalItems: 120,
     insertedAt: new Date().toISOString(),
   },
   {
@@ -227,6 +228,7 @@ const goldenQaSampleRows = [
     id: '2',
     name: 'Healthcare-0102',
     datasetId: '102',
+    totalItems: 45,
     insertedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
@@ -234,6 +236,7 @@ const goldenQaSampleRows = [
     id: '3',
     name: 'Testabc-0801',
     datasetId: '103',
+    totalItems: 1,
     insertedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
   },
   {
@@ -241,6 +244,7 @@ const goldenQaSampleRows = [
     id: '4',
     name: 'GuideMentalHealth-2111',
     datasetId: '104',
+    totalItems: 80,
     insertedAt: '2024-11-21T00:00:00Z',
   },
 ];
@@ -289,6 +293,7 @@ export const getGoldenQaDownloadMock = (id = '1', signedUrl = 'https://storage.e
           id,
           name: 'Diabetescare-0101',
           signedUrl,
+          totalItems: 120,
           insertedAt: new Date().toISOString(),
         },
         errors: null,

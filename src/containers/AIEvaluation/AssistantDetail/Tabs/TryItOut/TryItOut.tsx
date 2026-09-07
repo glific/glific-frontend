@@ -209,6 +209,7 @@ export const TryItOut = ({
           input: {
             assistantId,
             message: trimmed,
+            ...(versionId ? { configVersionId: versionId } : {}),
             ...(conversationIdRef.current ? { conversationId: conversationIdRef.current } : {}),
           },
         },
