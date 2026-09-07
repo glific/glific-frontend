@@ -175,6 +175,28 @@
   align-items: center;
 }
 
+/* Both trailing blocks are fixed width so nothing to their left shifts. Without it the collection
+   name changes with every contact and the session status changes with the channel, and each of
+   those drags the elements beside it sideways. */
+.Collections {
+  width: 15rem;
+  justify-content: flex-end;
+}
+
+.Collections .CollectionsName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.ChannelStatus {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 7.5rem;
+}
+
 .SessionTimer + div {
   text-align: right;
 }

@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import { GET_CONTACT_WEB_PRESENCE } from 'graphql/queries/Contact';
 import styles from './WebPresence.module.css';
@@ -13,6 +14,8 @@ export interface WebPresenceProps {
 // shows would be meaningless here. Whether the person still has the widget open is the
 // equivalent thing staff need to know before they type.
 export const WebPresence = ({ entityId }: WebPresenceProps) => {
+  const { t } = useTranslation();
+
   const { data } = useQuery(GET_CONTACT_WEB_PRESENCE, {
     variables: { id: entityId },
     pollInterval: POLL_INTERVAL_MS,
@@ -23,8 +26,8 @@ export const WebPresence = ({ entityId }: WebPresenceProps) => {
 
   return (
     <div className={styles.Presence} data-testid="webPresence">
+      {online ? t('Online') : t('Offline')}
       <span className={`${styles.Dot} ${online ? styles.Online : styles.Offline}`} aria-hidden="true" />
-      {online ? 'Online' : 'Offline'}
     </div>
   );
 };

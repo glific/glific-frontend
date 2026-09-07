@@ -1209,5 +1209,8 @@
   "adherence to ground truth": "adherence to ground truth",
   "adherence to knowledge base": "adherence to knowledge base",
   "adherence to prompt": "adherence to prompt",
-  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded"
+  "Evaluation runs could not be loaded": "Evaluation runs could not be loaded",
+  "Online": "Online",
+  "Offline": "Offline",
+  "Flows cannot be started on the web channel yet": "Flows cannot be started on the web channel yet"
 }

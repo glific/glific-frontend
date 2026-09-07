@@ -339,7 +339,7 @@ export const ConversationHeader = ({
     // The flow engine still never sees a web inbound message, so a flow started here would reply
     // over WhatsApp to someone who consented only to the web channel.
     flowButton = (
-      <Tooltip title="Flows cannot be started on the web channel yet" placement="right">
+      <Tooltip title={t('Flows cannot be started on the web channel yet')} placement="right">
         <span>
           <Button data-testid="disabledFlowButton" className={styles.ListButtonPrimary} disabled>
             <FlowUnselectedIcon className={styles.Icon} />
@@ -511,7 +511,7 @@ export const ConversationHeader = ({
   let contactCollections: any;
   if (selectedCollections.length > 0) {
     contactCollections = (
-      <div className={styles.SessionTimer}>
+      <div className={`${styles.SessionTimer} ${styles.Collections}`}>
         <span>Collections:</span>
         <span className={styles.CollectionsName} data-testid="collectionNames">
           {selectedCollectionsName}
@@ -521,7 +521,7 @@ export const ConversationHeader = ({
   }
 
   const timeleft: any = (
-    <div className={styles.SessionTimer} data-testid="sessionTimer">
+    <div className={`${styles.SessionTimer} ${styles.ChannelStatus}`} data-testid="sessionTimer">
       <span>Time left:</span>
       <Timer
         time={contact?.lastMessageTime}
@@ -555,7 +555,14 @@ export const ConversationHeader = ({
     conversationHeaderDetails = (
       <div className={styles.SessionTimerContainer}>
         {contactCollections}
-        {!groups && (isWebConversation ? <WebPresence entityId={entityId} /> : timeleft)}
+        {!groups &&
+          (isWebConversation ? (
+            <div className={styles.ChannelStatus}>
+              <WebPresence entityId={entityId} />
+            </div>
+          ) : (
+            timeleft
+          ))}
       </div>
     );
   } else if (collectionId && !groups) {
