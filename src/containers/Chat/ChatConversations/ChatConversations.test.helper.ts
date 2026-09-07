@@ -29,6 +29,7 @@ const withResult = {
             id: '34',
             body: 'Hi',
             messageNumber: 1,
+            channel: 'WHATSAPP',
             sendBy: null,
             location: null,
             insertedAt: '2020-08-03T07:01:36Z',
@@ -133,6 +134,7 @@ export const searchMultiQuery = (
               insertedAt: '2020-10-15T06:59:31.473314Z',
               media: null,
               messageNumber: 48,
+              channel: 'WHATSAPP',
               receiver: {
                 id: '1',
               },
@@ -181,6 +183,7 @@ export const sampleMessage = {
   location: null,
   errors: null,
   messageNumber: 2,
+  channel: 'WHATSAPP',
   contextMessage: null,
   sendBy: 'Glific User',
   interactiveContent: '{}',

@@ -85,6 +85,7 @@ export const waGroup = {
             insertedAt: '2024-03-11T12:49:44.406045Z',
             media: null,
             messageNumber: 4,
+            channel: 'WHATSAPP',
             status: 'sent',
             type: 'POLL',
             poll: {
@@ -117,6 +118,7 @@ export const waGroup = {
             insertedAt: '2024-03-11T12:49:39.915883Z',
             media: null,
             messageNumber: 3,
+            channel: 'WHATSAPP',
             status: 'sent',
             type: 'TEXT',
             poll: null,
@@ -167,6 +169,7 @@ const sampleMessage = {
   insertedAt: '2024-03-11T04:39:56.772383Z',
   media: null,
   messageNumber: 1,
+  channel: 'WHATSAPP',
   status: 'received',
   type: 'POLL',
   poll: {
@@ -881,6 +884,7 @@ export const waMessageReceivedSubscription = {
         insertedAt: '2024-03-16T18:10:40.990907Z',
         media: null,
         messageNumber: 2,
+        channel: 'WHATSAPP',
         status: 'received',
         type: 'TEXT',
         waGroup: {
@@ -915,6 +919,7 @@ export const waMessageSendSubscription = {
         insertedAt: '2024-03-16T18:11:46.277657Z',
         media: null,
         messageNumber: 3,
+        channel: 'WHATSAPP',
         status: 'enqueued',
         type: 'TEXT',
         waGroup: {
@@ -941,6 +946,7 @@ export const waSentMessageCollectionQuery = {
         flow: 'INBOUND',
         type: 'TEXT',
         messageNumber: 1,
+        channel: 'WHATSAPP',
         insertedAt: '2024-03-16T18:12:34.735467Z',
         groupId: '1',
         media: null,
@@ -967,6 +973,7 @@ const updateWaSatatusMock = {
         errors: '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8310]. \\"}"}',
         id: '26',
         messageNumber: 21,
+        channel: 'WHATSAPP',
         waGroup: {
           __typename: 'WaGroup',
           id: '4',

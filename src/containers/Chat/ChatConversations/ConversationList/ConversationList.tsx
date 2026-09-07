@@ -17,8 +17,9 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
-  MESSAGE_CHANNELS,
   MessageChannel,
+  conversationOnChannel,
+  messageChannel,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   getVariables,
 } from 'common/constants';
@@ -71,13 +72,6 @@ export const ConversationList = ({
   const { t } = useTranslation();
   const location = useLocation();
   const hasSearchParams = searchParam ? Object.keys(searchParam).length !== 0 : false;
-  // Only the web channel filters. A filtered list reads a lazily-fetched result rather than the
-  // cache the chat subscription writes into, so it does not update live — the same trade-off an
-  // advanced search filter already makes. Applying that to WhatsApp would cost every organization
-  // with the flag on live updates in their main inbox, which is far worse than the web-only
-  // contacts that consequently still appear there. Making WhatsApp exclusive needs the chat
-  // subscription to become channel-aware; that is a follow-up, not this ticket.
-  const hasChannelFilter = channel === MESSAGE_CHANNELS.web;
   const navigate = useNavigate();
 
   let groups: boolean = location.pathname.includes('group');
@@ -174,9 +168,6 @@ export const ConversationList = ({
     }
 
     const filter: any = {};
-    if (hasChannelFilter) {
-      filter.channel = channel;
-    }
     if (searchVal) {
       filter.term = searchVal;
     }
@@ -279,7 +270,7 @@ export const ConversationList = ({
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (hasSearchParams || hasChannelFilter || savedSearchCriteria || phonenumber || selectedCollectionId) {
+    } else if (hasSearchParams || savedSearchCriteria || phonenumber || selectedCollectionId) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
@@ -315,7 +306,7 @@ export const ConversationList = ({
         }
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria, phonenumber, channel]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -344,8 +335,24 @@ export const ConversationList = ({
   }
 
   // If no cache, assign conversations data from search query.
-  if (called && (searchVal || savedSearchCriteria || hasSearchParams || hasChannelFilter || phonenumber)) {
+  if (called && (searchVal || savedSearchCriteria || hasSearchParams || phonenumber)) {
     conversations = searchData.search;
+  }
+
+  // Filtered here rather than in the query, because the chat subscription writes into the
+  // unfiltered cache entry: a filtered query would show the right conversations and then never
+  // update again. The preview text comes from a conversation's messages, so those are scoped too.
+  //
+  // The cost is reach rather than correctness: a conversation whose loaded messages are all on the
+  // other channel is not shown until "load more" pulls in one that is. `searchFilter.channel`
+  // exists server-side for when that matters.
+  if (channel && conversations) {
+    conversations = conversations
+      .filter((conversation: any) => conversationOnChannel(conversation, channel))
+      .map((conversation: any) => ({
+        ...conversation,
+        messages: conversation.messages.filter((message: any) => messageChannel(message) === channel),
+      }));
   }
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {

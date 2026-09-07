@@ -99,6 +99,19 @@ export const MESSAGE_CHANNELS = {
 
 export type MessageChannel = (typeof MESSAGE_CHANNELS)[keyof typeof MESSAGE_CHANNELS];
 
+// A message with no channel is a WhatsApp message: the column defaults to whatsapp server-side,
+// and anything cached or mocked before the field existed reads as undefined here.
+export const messageChannel = (message: any): MessageChannel => message?.channel ?? MESSAGE_CHANNELS.whatsapp;
+
+// A conversation belongs to a channel when it has at least one message on it. Filtering here
+// rather than in the query is what keeps the inbox live: the chat subscription writes into the
+// unfiltered cache entry, so a filtered *query* would stop receiving new messages entirely.
+export const conversationOnChannel = (conversation: any, channel?: MessageChannel): boolean => {
+  if (!channel) return true;
+
+  return (conversation?.messages ?? []).some((message: any) => messageChannel(message) === channel);
+};
+
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
     limit: DEFAULT_ENTITY_LIMIT,

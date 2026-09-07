@@ -32,7 +32,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
-import { MESSAGE_CHANNELS, MessageChannel } from 'common/constants';
+import { MESSAGE_CHANNELS, MessageChannel, messageChannel } from 'common/constants';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
@@ -587,7 +587,12 @@ export const ChatMessages = ({
   };
 
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
-    let reverseConversation = [...conversationInfo.messages];
+    // A contact is one person across both channels, but a thread is not: replying in the
+    // WhatsApp view to something they said in the browser would put the answer on the wrong
+    // channel. Filtered at render, not in the query, so the thread still updates live.
+    let reverseConversation = channel
+      ? conversationInfo.messages.filter((message: any) => messageChannel(message) === channel)
+      : [...conversationInfo.messages];
 
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (

@@ -41,6 +41,7 @@ cache.writeQuery({
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
             messageNumber: 0,
+            channel: 'WHATSAPP',
             receiver: {
               id: '1',
             },
@@ -54,6 +55,7 @@ cache.writeQuery({
               body: 'All good',
               contextId: 1,
               messageNumber: 10,
+              channel: 'WHATSAPP',
               errors: '{}',
               media: null,
               type: 'TEXT',

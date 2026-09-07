@@ -3,7 +3,9 @@ import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { searchContactCollection } from 'mocks/Search';
+import { messages, searchContactCollection } from 'mocks/Search';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, MESSAGE_CHANNELS } from 'common/constants';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import ConversationList from './ConversationList';
 
 import { conversationCollectionQuery } from 'mocks/Chat';
@@ -230,5 +232,90 @@ test('it renders whatsapp groups for multi search', async () => {
     const listItems = screen.getAllByTestId('list');
     expect(listItems.length).toBe(6);
     fireEvent.click(listItems[0]);
+  });
+});
+
+describe('filtering by channel', () => {
+  const conversation = (id: string, name: string, channel: string, body: string) => ({
+    id: `contact_${id}`,
+    group: null,
+    contact: {
+      id,
+      name,
+      phone: `9876543${id}`,
+      maskedPhone: `98****3${id}`,
+      lastMessageAt: new Date(),
+      status: 'VALID',
+      fields: '{}',
+      bspStatus: 'SESSION_AND_HSM',
+      isOrgRead: true,
+    },
+    messages: messages(2, Number(id) * 10, channel, body),
+  });
+
+  const mixedCache = new InMemoryCache({ addTypename: false });
+  mixedCache.writeQuery({
+    query: SEARCH_QUERY,
+    variables: {
+      filter: {},
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
+    data: {
+      search: [
+        conversation('4', 'Whatsapp Person', MESSAGE_CHANNELS.whatsapp, 'sent over whatsapp'),
+        conversation('5', 'Browser Person', MESSAGE_CHANNELS.web, 'sent from a browser'),
+      ],
+    },
+  });
+
+  const mixedClient = new ApolloClient({
+    cache: mixedCache,
+    uri: 'http://localhost:4000/',
+    assumeImmutableResults: true,
+  });
+
+  const renderWithChannel = (channel: any) =>
+    render(
+      <ApolloProvider client={mixedClient}>
+        <Router>
+          <ConversationList
+            searchVal=""
+            selectedContactId={4}
+            setSelectedContactId={vi.fn()}
+            savedSearchCriteria=""
+            searchMode={false}
+            searchParam={{}}
+            entityType="contact"
+            channel={channel}
+          />
+        </Router>
+      </ApolloProvider>
+    );
+
+  // The reported bug: a conversation held in the browser was showing up in the WhatsApp view.
+  test('a web conversation does not appear in the WhatsApp view', async () => {
+    renderWithChannel(MESSAGE_CHANNELS.whatsapp);
+
+    await waitFor(() => expect(screen.getByText('Whatsapp Person')).toBeInTheDocument());
+
+    expect(screen.queryByText('Browser Person')).not.toBeInTheDocument();
+  });
+
+  test('a WhatsApp conversation does not appear in the web view', async () => {
+    renderWithChannel(MESSAGE_CHANNELS.web);
+
+    await waitFor(() => expect(screen.getByText('Browser Person')).toBeInTheDocument());
+
+    expect(screen.queryByText('Whatsapp Person')).not.toBeInTheDocument();
+  });
+
+  // With the flag off no channel is passed at all, and the inbox must look exactly as it did.
+  test('both appear when no channel is selected', async () => {
+    renderWithChannel(undefined);
+
+    await waitFor(() => expect(screen.getByText('Whatsapp Person')).toBeInTheDocument());
+
+    expect(screen.getByText('Browser Person')).toBeInTheDocument();
   });
 });

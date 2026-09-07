@@ -219,6 +219,7 @@ export const searchContactCollection = [
               id: '23237',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '216',
@@ -246,6 +247,7 @@ export const searchContactCollection = [
               id: '23238',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '3456',
@@ -337,6 +339,7 @@ export const searchGroupCollection = [
               id: '23237',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '31',
@@ -364,6 +367,7 @@ export const searchGroupCollection = [
               id: '23238',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '34',
@@ -489,6 +493,7 @@ export const getContactSearchQuery = {
               location: null,
               media: null,
               messageNumber: 87,
+              channel: 'WHATSAPP',
               receiver: {
                 __typename: 'Contact',
                 id: '3',
@@ -524,13 +529,14 @@ export const getBlockedContactSearchQuery = {
   },
 };
 
-export const messages = (limit: number, skip: number) =>
+export const messages = (limit: number, skip: number, channel: string = 'WHATSAPP', body?: string) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
     id: `${index + skip}`,
-    body: 'Hey there whats up?',
+    body: body ?? 'Hey there whats up?',
     insertedAt: `2020-${index}-25T13:36:43Z`,
     location: null,
     messageNumber: index + skip + 4,
+    channel,
     receiver: {
       id: '1',
     },
@@ -546,6 +552,7 @@ export const messages = (limit: number, skip: number) =>
             body: 'All good',
             contextId: 1,
             messageNumber: 10,
+            channel: 'WHATSAPP',
             errors: '{}',
             media: null,
             type: 'TEXT',

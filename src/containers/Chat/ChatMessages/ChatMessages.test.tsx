@@ -508,6 +508,49 @@ test('send message to contact', async () => {
   });
 });
 
+// A contact is one person across both channels, but a thread is not: a reply typed in the WhatsApp
+// view under something they said in the browser would go out on the wrong channel.
+test('a web message is not shown in the WhatsApp thread', async () => {
+  const mixedCache = new InMemoryCache({ addTypename: false });
+  mixedCache.writeQuery({
+    ...searchQuery,
+    data: {
+      search: searchQuery.data.search.map((conversation: any, index: number) =>
+        index === 0
+          ? {
+              ...conversation,
+              messages: [
+                ...messages(2, 60, 'WEB', 'sent from a browser'),
+                ...messages(2, 70, 'WHATSAPP', 'sent over whatsapp'),
+              ],
+            }
+          : conversation
+      ),
+    },
+  });
+
+  const renderThread = (channel?: any) =>
+    render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks} cache={mixedCache}>
+          <ChatMessages entityId="2" channel={channel} />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+  const { unmount } = renderThread(MESSAGE_CHANNELS.whatsapp);
+
+  await waitFor(() => expect(screen.getAllByText('sent over whatsapp').length).toBeGreaterThan(0));
+  expect(screen.queryByText('sent from a browser')).not.toBeInTheDocument();
+
+  unmount();
+
+  renderThread(MESSAGE_CHANNELS.web);
+
+  await waitFor(() => expect(screen.getAllByText('sent from a browser').length).toBeGreaterThan(0));
+  expect(screen.queryByText('sent over whatsapp')).not.toBeInTheDocument();
+});
+
 // The single most consequential line in this component: omit the channel and the server defaults
 // the reply to WhatsApp, sending a browser visitor a message they never consented to.
 test('a reply on the web channel says so in the mutation', async () => {
