@@ -14,6 +14,7 @@ export const SEARCH_QUERY = gql`
         status
         bspStatus
         isOrgRead
+        isWebOnline
       }
       group {
         id

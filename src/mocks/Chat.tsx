@@ -103,6 +103,7 @@ export const conversationMessageQuery = (
             status: 'VALID',
             bspStatus: 'SESSION_AND_HSM',
             isOrgRead: true,
+            isWebOnline: false,
             fields: '{}',
           },
           messages: [sampleMessages],
@@ -508,6 +509,7 @@ export const conversationQuery = getConversationQuery({
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
         isOrgRead: true,
+        isWebOnline: false,
         fields: '{}',
       },
       messages: [
@@ -787,6 +789,7 @@ const searchQueryResult = {
           fields: '{}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
+          isWebOnline: false,
         },
         messages: [
           {
@@ -929,6 +932,7 @@ export const loadMoreChats = {
             fields: '{}',
             id: '2',
             isOrgRead: true,
+            isWebOnline: false,
             lastMessageAt: '2024-03-23T14:39:08Z',
             maskedPhone: '4977******79',
             name: 'Chrissy Cron',
@@ -983,6 +987,7 @@ export const conversationMock = (
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
         isOrgRead: true,
+        isWebOnline: false,
         fields: '{}',
       },
       messages: [sampleMessages],

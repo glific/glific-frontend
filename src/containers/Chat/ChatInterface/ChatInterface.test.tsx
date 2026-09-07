@@ -62,6 +62,7 @@ cache.writeQuery({
           fields: '{}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
+          isWebOnline: false,
         },
         messages: [
           {

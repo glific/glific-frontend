@@ -165,6 +165,7 @@ const contactsMock = new Array(30).fill(null).map((val: any, index: number) => (
   status: 'VALID',
   bspStatus: 'SESSION_AND_HSM',
   isOrgRead: false,
+  isWebOnline: false,
 }));
 
 export const searchContactCollection = [
@@ -191,6 +192,7 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             {
               id: '219',
@@ -201,6 +203,7 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
+              isWebOnline: false,
             },
             {
               id: '163',
@@ -211,6 +214,7 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             ...contactsMock,
           ],
@@ -311,6 +315,7 @@ export const searchGroupCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             {
               id: '219',
@@ -321,6 +326,7 @@ export const searchGroupCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
+              isWebOnline: false,
             },
             {
               id: '163',
@@ -331,6 +337,7 @@ export const searchGroupCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             ...contactsMock,
           ],
@@ -472,6 +479,7 @@ export const getContactSearchQuery = {
             fields: '{}',
             id: '3',
             isOrgRead: false,
+            isWebOnline: false,
             lastMessageAt: '2024-03-28T15:12:27Z',
             maskedPhone: '9876******_2',
             name: 'New Contact',
@@ -596,6 +604,7 @@ export const searchQuery = {
             '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
+          isWebOnline: false,
         },
         messages: messages(20, 1),
       },
@@ -634,6 +643,7 @@ export const searchWithDateFilters = (from: boolean = false, to: boolean = false
                 '{"name":{"value":"Onie Rohan","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839210Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839215Z"},"age":{"value":44,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839210Z"}}',
               id: '18',
               isOrgRead: true,
+              isWebOnline: false,
               lastMessageAt: '2025-05-26T10:57:11Z',
               maskedPhone: '589/******77',
               name: 'Onie Rohan',
@@ -653,6 +663,7 @@ export const searchWithDateFilters = (from: boolean = false, to: boolean = false
                 '{"name":{"value":"Nat Reichert","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839395Z"},"gender":{"value":"Male","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839396Z"},"age":{"value":25,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839396Z"}}',
               id: '26',
               isOrgRead: false,
+              isWebOnline: false,
               lastMessageAt: '2025-05-26T10:57:11Z',
               maskedPhone: '615-******82',
               name: 'Nat Reichert',

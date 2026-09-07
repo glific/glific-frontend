@@ -447,6 +447,8 @@ export const ConversationList = ({
           lastMessage={lastMessage}
           contactIsOrgRead={contactIsOrgRead}
           timer={timer}
+          channel={channel}
+          isWebOnline={conversation.contact?.isWebOnline}
         />
       );
     });

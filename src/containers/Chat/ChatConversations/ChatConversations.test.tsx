@@ -33,6 +33,7 @@ cache.writeQuery({
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
+          isWebOnline: false,
         },
         messages: [
           {

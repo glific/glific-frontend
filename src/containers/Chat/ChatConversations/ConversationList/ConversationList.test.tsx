@@ -249,6 +249,7 @@ describe('filtering by channel', () => {
       fields: '{}',
       bspStatus: 'SESSION_AND_HSM',
       isOrgRead: true,
+      isWebOnline: false,
     },
     messages: messages(2, Number(id) * 10, channel, body),
   });
@@ -308,6 +309,25 @@ describe('filtering by channel', () => {
     await waitFor(() => expect(screen.getByText('Browser Person')).toBeInTheDocument());
 
     expect(screen.queryByText('Whatsapp Person')).not.toBeInTheDocument();
+  });
+
+  // The 24 hour window is a WhatsApp construct, so a countdown on a web card is a number that
+  // means nothing — the card shows whether the person still has the widget open instead.
+  test('a web card shows presence where a WhatsApp card shows the session timer', async () => {
+    renderWithChannel(MESSAGE_CHANNELS.web);
+
+    await waitFor(() => expect(screen.getByText('Browser Person')).toBeInTheDocument());
+
+    expect(screen.getByTestId('presenceIndicator')).toBeInTheDocument();
+    expect(screen.queryByTestId('timerCount')).not.toBeInTheDocument();
+  });
+
+  test('a WhatsApp card keeps its session timer', async () => {
+    renderWithChannel(MESSAGE_CHANNELS.whatsapp);
+
+    await waitFor(() => expect(screen.getByText('Whatsapp Person')).toBeInTheDocument());
+
+    expect(screen.queryByTestId('presenceIndicator')).not.toBeInTheDocument();
   });
 
   // With the flag off no channel is passed at all, and the inbox must look exactly as it did.
