@@ -124,7 +124,13 @@ export const FileUpload = ({
         <div className={styles.Current}>
           <img src={field.value} alt={t('Uploaded file')} className={styles.Preview} data-testid="filePreview" />
           {!disabled && (
-            <IconButton size="small" data-testid="removeFile" onClick={() => setValue('')} aria-label={t('Remove')}>
+            <IconButton
+              size="small"
+              className={styles.Remove}
+              data-testid="removeFile"
+              onClick={() => setValue('')}
+              aria-label={t('Remove')}
+            >
               <CrossIcon />
             </IconButton>
           )}

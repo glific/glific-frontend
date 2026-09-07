@@ -20,9 +20,15 @@
   max-width: 100%;
 }
 
+.Remove {
+  align-self: flex-start;
+}
+
+/* Square, and the same shape the widget renders it in, so the admin sees what beneficiaries
+   will see. object-fit: contain keeps a landscape wordmark whole rather than cropping it. */
 .Preview {
-  height: 40px;
-  max-width: 140px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   border: 1px solid var(--color-widget-border);
   border-radius: var(--curvature);
