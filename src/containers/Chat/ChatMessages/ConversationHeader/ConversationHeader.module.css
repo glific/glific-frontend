@@ -199,6 +199,16 @@
   align-items: center;
   width: 100%;
   justify-content: space-between;
+  position: relative;
+}
+
+/* Centred against the header itself rather than between its siblings: the contact name on one
+   side and the session timer on the other are both variable width, so a flex-centred child would
+   sit wherever they left room. */
+.ChannelSelectorContainer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .ConversationHeaderWrapper {
@@ -221,6 +231,15 @@
 
   .SessionTimerContainer {
     display: none;
+  }
+
+  /* The header stacks on a narrow screen, so absolute centring would overlap the name. */
+  .ChannelSelectorContainer {
+    position: static;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    padding: 0 12px 12px;
   }
 
   .Chat {

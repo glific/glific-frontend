@@ -10,9 +10,11 @@ export interface ChannelSelectorProps {
   className?: string;
 }
 
+// The selected channel is a filled pill in that channel's own colour, matching the
+// Contacts / Collections / Searches tabs below it, so the two rows read as one control.
 const options = [
-  { value: MESSAGE_CHANNELS.whatsapp, label: 'WhatsApp', className: styles.WhatsAppDot },
-  { value: MESSAGE_CHANNELS.web, label: 'Web', className: styles.WebDot },
+  { value: MESSAGE_CHANNELS.whatsapp, label: 'WhatsApp', activeClassName: styles.WhatsAppActive },
+  { value: MESSAGE_CHANNELS.web, label: 'Web', activeClassName: styles.WebActive },
 ];
 
 export const ChannelSelector = ({
@@ -24,19 +26,15 @@ export const ChannelSelector = ({
 }: ChannelSelectorProps) => (
   <SegmentedControl<MessageChannel>
     testId={testId}
-    className={className}
+    className={`${styles.ChannelSelector} ${className ?? ''}`}
     label={label}
     value={value}
     onChange={onChange}
     equalWidth
     options={options.map((option) => ({
       value: option.value,
-      label: (
-        <span className={styles.Option}>
-          <span className={`${styles.Dot} ${option.className}`} aria-hidden="true" />
-          {option.label}
-        </span>
-      ),
+      label: option.label,
+      className: option.value === value ? option.activeClassName : '',
     }))}
   />
 );

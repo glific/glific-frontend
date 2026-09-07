@@ -180,8 +180,8 @@ html {
 
   /* Colors — indigo. The web channel's own accent: staff work both channels in one inbox, so
      the surface has to say which one a reply is going out on without being read. */
-  --app-color-indigo-primary: #4f46e5;
-  --app-color-indigo-tertiary: #eef0fb;
+  --app-color-indigo-primary: #351196;
+  --app-color-indigo-tertiary: #f0f6ff;
 
   /* RGB channels of the above, for rgb(... / alpha) tints. Keep in sync with the hex. */
   --app-color-green-primary-rgb: 17 150 86; /* #119656 */

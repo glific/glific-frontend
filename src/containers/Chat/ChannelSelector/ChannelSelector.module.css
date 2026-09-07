@@ -1,19 +1,15 @@
-.Option {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--app-space-sm);
+/* Scoped under .ChannelSelector so these beat SegmentedControl's own .ActiveOption, which is a
+   single class in a different module and would otherwise win or lose on stylesheet order. */
+.ChannelSelector .WhatsAppActive,
+.ChannelSelector .WebActive {
+  color: var(--app-color-white);
+  box-shadow: none;
 }
 
-.Dot {
-  width: var(--app-size-dot);
-  height: var(--app-size-dot);
-  border-radius: var(--app-radius-pill);
-}
-
-.WhatsAppDot {
+.ChannelSelector .WhatsAppActive {
   background-color: var(--app-color-channel-whatsapp);
 }
 
-.WebDot {
+.ChannelSelector .WebActive {
   background-color: var(--app-color-channel-web);
 }

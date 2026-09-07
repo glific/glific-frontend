@@ -6,6 +6,8 @@ export interface SegmentedControlOption<T extends string = string> {
   label?: ReactNode;
   disabled?: boolean;
   testId?: string;
+  /** Extra classes for this one option, so a caller can colour it per value. */
+  className?: string;
 }
 
 export interface SegmentedControlProps<T extends string = string> {
@@ -56,7 +58,7 @@ export function SegmentedControl<T extends string = string>({
               key={option.value}
               aria-checked={isActive}
               disabled={disabled || option.disabled}
-              className={`${styles.Option} ${isActive ? styles.ActiveOption : ''}`}
+              className={`${styles.Option} ${isActive ? styles.ActiveOption : ''} ${option.className ?? ''}`}
               onClick={() => onChange(option.value)}
               data-testid={option.testId ?? `${testId}-${option.value}`}
             >

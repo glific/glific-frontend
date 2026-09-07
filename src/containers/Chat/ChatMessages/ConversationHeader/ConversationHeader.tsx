@@ -583,11 +583,13 @@ export const ConversationHeader = ({
                     <ExpandIcon />
                   </div>
                 </ClickAwayListener>
-                {channel && onChannelChange && (
-                  <ChannelSelector testId="conversationChannelSelector" value={channel} onChange={onChannelChange} />
-                )}
               </div>
             </div>
+            {channel && onChannelChange && (
+              <div className={styles.ChannelSelectorContainer}>
+                <ChannelSelector testId="conversationChannelSelector" value={channel} onChange={onChannelChange} />
+              </div>
+            )}
             {conversationHeaderDetails}
             <div role="button" className={styles.Chat} onKeyDown={() => showChats()} onClick={() => showChats()}>
               <IconButton className={styles.MobileIcon}>
