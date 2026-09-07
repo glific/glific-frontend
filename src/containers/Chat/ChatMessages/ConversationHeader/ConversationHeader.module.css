@@ -157,17 +157,10 @@
 }
 
 .ContactDetails {
+  grid-column: 1;
   display: flex;
   align-items: center;
-}
-
-.SessionTimerContainer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-left: auto;
-  width: 50%;
-  gap: 26px;
+  min-width: 0;
 }
 
 .SessionTimer {
@@ -175,11 +168,11 @@
   align-items: center;
 }
 
-/* Both trailing blocks are fixed width so nothing to their left shifts. Without it the collection
-   name changes with every contact and the session status changes with the channel, and each of
-   those drags the elements beside it sideways. */
+/* Each block owns a column, so an absent one leaves a gap rather than letting the rest slide
+   along: a contact with no collections must not move the timer, and a web contact must not move
+   anything by showing presence where a timer would be. */
 .Collections {
-  width: 15rem;
+  grid-column: 3;
   justify-content: flex-end;
 }
 
@@ -191,10 +184,16 @@
 }
 
 .ChannelStatus {
+  grid-column: 4;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 7.5rem;
+}
+
+/* The collection page has no channel selector and no timer, so its own detail block takes the
+   whole right-hand side. */
+.CollectionInformation {
+  grid-column: 3 / -1;
 }
 
 .SessionTimer + div {
@@ -216,21 +215,23 @@
   text-align: justify;
 }
 
+/* A grid rather than flex: the four blocks need strict positions, and only fixed tracks give
+   them that. The first column is exactly as wide as the last two together, which is what centres
+   the channel selector — no absolute positioning, and no dependence on how long a contact's name
+   or collection list happens to be. minmax(0, ...) lets a track shrink on a narrow window instead
+   of overflowing. */
 .ContactInfoWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 22.5rem) auto minmax(0, 15rem) minmax(0, 7.5rem);
   align-items: center;
   width: 100%;
-  justify-content: space-between;
-  position: relative;
 }
 
-/* Centred against the header itself rather than between its siblings: the contact name on one
-   side and the session timer on the other are both variable width, so a flex-centred child would
-   sit wherever they left room. */
 .ChannelSelectorContainer {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ConversationHeaderWrapper {
@@ -251,16 +252,27 @@
     padding-bottom: 0px !important;
   }
 
-  .SessionTimerContainer {
+  /* The header stacks on a narrow screen: one column, and the trailing detail is dropped as it
+     always has been. */
+  .ContactInfoWrapper {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ContactDetails,
+  .ChannelSelectorContainer,
+  .Collections,
+  .ChannelStatus,
+  .CollectionInformation {
+    grid-column: 1;
+  }
+
+  .Collections,
+  .ChannelStatus,
+  .CollectionInformation {
     display: none;
   }
 
-  /* The header stacks on a narrow screen, so absolute centring would overlap the name. */
   .ChannelSelectorContainer {
-    position: static;
-    transform: none;
-    display: flex;
-    justify-content: center;
     padding: 0 12px 12px;
   }
 

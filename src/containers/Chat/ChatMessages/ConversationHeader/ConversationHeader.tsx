@@ -549,24 +549,27 @@ export const ConversationHeader = ({
   // CONTACT: display session timer & Assigned to
   // COLLECTION: display contact info & Assigned to
   // GROUP: display Assigned to
-  let conversationHeaderDetails: any;
+  //
+  // These are siblings in the grid below rather than nested, so each one owns a named column and
+  // stays put when another is absent — a WhatsApp contact with no collections must not shift the
+  // timer, and a web contact must not shift anything by having presence instead of a timer.
+  let channelStatus: any;
+  let collectionInformation: any;
 
-  if (entityId) {
-    conversationHeaderDetails = (
-      <div className={styles.SessionTimerContainer}>
-        {contactCollections}
-        {!groups &&
-          (isWebConversation ? (
-            <div className={styles.ChannelStatus}>
-              <WebPresence entityId={entityId} />
-            </div>
-          ) : (
-            timeleft
-          ))}
+  if (entityId && !groups) {
+    channelStatus = isWebConversation ? (
+      <div className={styles.ChannelStatus}>
+        <WebPresence entityId={entityId} />
       </div>
+    ) : (
+      timeleft
     );
   } else if (collectionId && !groups) {
-    conversationHeaderDetails = <CollectionInformation collectionId={collectionId} />;
+    collectionInformation = (
+      <div className={styles.CollectionInformation}>
+        <CollectionInformation collectionId={collectionId} />
+      </div>
+    );
   }
 
   return (
@@ -574,30 +577,30 @@ export const ConversationHeader = ({
       <div className={styles.ConversationHeaderWrapper}>
         <div className={styles.ContactInfoContainer}>
           <div className={styles.ContactInfoWrapper}>
-            <div className={styles.InfoWrapperRight}>
-              <div className={styles.ContactDetails}>
-                <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-                  {slicedString(displayName, 40)}
-                </Typography>
-                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                  <div
-                    className={styles.Configure}
-                    data-testid="dropdownIcon"
-                    onClick={handleConfigureIconClick}
-                    onKeyPress={handleConfigureIconClick}
-                    aria-hidden
-                  >
-                    <ExpandIcon />
-                  </div>
-                </ClickAwayListener>
-              </div>
+            <div className={styles.ContactDetails}>
+              <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
+                {slicedString(displayName, 40)}
+              </Typography>
+              <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                <div
+                  className={styles.Configure}
+                  data-testid="dropdownIcon"
+                  onClick={handleConfigureIconClick}
+                  onKeyPress={handleConfigureIconClick}
+                  aria-hidden
+                >
+                  <ExpandIcon />
+                </div>
+              </ClickAwayListener>
             </div>
             {channel && onChannelChange && (
               <div className={styles.ChannelSelectorContainer}>
                 <ChannelSelector testId="conversationChannelSelector" value={channel} onChange={onChannelChange} />
               </div>
             )}
-            {conversationHeaderDetails}
+            {entityId && contactCollections}
+            {channelStatus}
+            {collectionInformation}
             <div role="button" className={styles.Chat} onKeyDown={() => showChats()} onClick={() => showChats()}>
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />
