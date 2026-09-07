@@ -195,7 +195,6 @@ const FAILED_RUN = {
   failureReason: 'The judge timed out',
 };
 
-// a run that scores below 4 is what makes the prompt suggestion appear
 const WEAK_SCORES = JSON.stringify({
   score: {
     overall: { overall_score: 3.1, ai_summary: 'Answers drift on longer questions.' },
@@ -235,7 +234,6 @@ const GROUPED_SCORES = JSON.stringify({
   },
 });
 
-// a run the judge scored overall, but with no per-check averages to pin a suggestion on
 const UNSCORED_SCORES = JSON.stringify({
   score: {
     overall: { overall_score: 3.1, ai_summary: 'Hard to say much from this run.' },
@@ -266,7 +264,6 @@ const UPLOADED_FILE = {
   fileSize: 2048,
 };
 
-// file uploads go out as multipart, so the operation name is in the raw body rather than in JSON
 const isMultipart = (body: unknown, operation: string) =>
   typeof body === 'string' && body.includes(operation);
 
