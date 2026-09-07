@@ -442,7 +442,10 @@ export const ChatInput = ({
   }
 
   return (
-    <Container className={`${styles.ChatInput} ${additionalStyle}`} data-testid="message-input-container">
+    <Container
+      className={`${styles.ChatInput} ${isWebConversation ? styles.ChatInputWeb : ''} ${additionalStyle}`}
+      data-testid="message-input-container"
+    >
       {dialog}
       {open ? (
         <div className={styles.SendsContainer} id="popup">

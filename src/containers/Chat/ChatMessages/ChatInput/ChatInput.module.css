@@ -4,6 +4,13 @@
   max-width: 100% !important;
 }
 
+/* The composer paints its own band behind itself, independent of the chat area above it, so it
+   kept the WhatsApp grey on a web conversation. Same token as the message area, so the two are
+   one continuous surface rather than two nearly-matching ones. */
+.ChatInputWeb {
+  background-color: var(--app-color-surface-channel-web);
+}
+
 .ChatInputElements {
   display: flex;
   height: 72px;
