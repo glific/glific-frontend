@@ -186,6 +186,7 @@ export const Providers = () => {
             maxSizeKb: fields[key].max_size_kb,
             accept: fields[key].accept,
             folder: fields[key].upload_folder,
+            storage: fields[key].upload_storage?.toUpperCase(),
             helperText: fields[key].helper_text,
             disabled: fields[key].view_only,
             skip: fields[key].hide,

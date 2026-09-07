@@ -15,7 +15,10 @@ const user = userEvent.setup();
 const UPLOADED_URL = 'https://storage.googleapis.com/glific/logo.png';
 
 const uploadMock = (media: File) => ({
-  request: { query: UPLOAD_MEDIA, variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo' } },
+  request: {
+    query: UPLOAD_MEDIA,
+    variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
+  },
   result: { data: { uploadMedia: UPLOADED_URL } },
 });
 
@@ -29,6 +32,7 @@ const renderUpload = ({ field, ...props }: any = {}, mocks: any[] = []) =>
         form={{ setFieldValue, touched: {}, errors: {} }}
         maxSizeKb={200}
         folder="org_logo"
+        storage="SAAS"
         accept="image/png,image/jpeg"
         {...props}
       />
@@ -123,7 +127,7 @@ describe('<FileUpload />', () => {
       {
         request: {
           query: UPLOAD_MEDIA,
-          variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo' },
+          variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
         error: new Error('boom'),
       },
@@ -163,7 +167,7 @@ describe('<FileUpload />', () => {
       {
         request: {
           query: UPLOAD_MEDIA,
-          variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo' },
+          variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
         result: { data: { uploadMedia: UPLOADED_URL } },
       },
@@ -180,7 +184,7 @@ describe('<FileUpload />', () => {
       {
         request: {
           query: UPLOAD_MEDIA,
-          variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo' },
+          variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
         result: { data: { uploadMedia: UPLOADED_URL } },
       },
