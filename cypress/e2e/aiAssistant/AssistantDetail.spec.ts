@@ -345,10 +345,9 @@ const stubAssistantApi = (options: StubOptions = {}) => {
         req.reply({
           body: {
             data: {
-              assistant: {
-                __typename: 'AssistantResult',
-                assistant: { ...ASSISTANT, vectorStore },
-              },
+              assistant: assistantMissing
+                ? null
+                : { __typename: 'AssistantResult', assistant: { ...ASSISTANT, vectorStore } },
             },
           },
         });
@@ -1126,6 +1125,13 @@ describe('reading and exporting the results', () => {
     cy.get('@objectUrl').should('have.been.called');
   });
 
+  it('explains what the Overall column means', () => {
+    cy.get('[data-testid="evaluationSubTabs-history"]').click(BELOW_STICKY_HEADER);
+    cy.get('[data-testid="historyOverallHint"]').trigger('mouseover', BELOW_STICKY_HEADER);
+
+    cy.get('[role="tooltip"]').should('contain', 'weighted average');
+  });
+
   it('exports the history as a CSV', () => {
     cy.get('[data-testid="evaluationSubTabs-history"]').click(BELOW_STICKY_HEADER);
     cy.window().then((win) => {
@@ -1149,11 +1155,11 @@ describe('the prompt suggestion under a run', () => {
     openAssistant({ scores: WEAK_SCORES });
     openTab('evaluation');
 
-    cy.get('[data-testid="suggestedPrompt"]').should('be.visible');
+    cy.get('[data-testid="suggestedPrompt"]').scrollIntoView().should('be.visible');
     cy.get('[data-testid="whyThisChangeButton"]').click(BELOW_STICKY_HEADER);
     cy.get('[data-testid="whyThisChange"]').should('contain', 'knowledge base');
 
-    cy.get('[data-testid="applySuggestionButton"]').click();
+    cy.get('[data-testid="applySuggestionButton"]').click(BELOW_STICKY_HEADER);
 
     cy.wait('@ImproveEvaluationPrompt').then((interception) => {
       expect(interception.request.body.variables?.evaluationId).to.eq(RUN_ID);
@@ -1168,8 +1174,8 @@ describe('the prompt suggestion under a run', () => {
     cy.get('[data-testid="dismissSuggestionButton"]').click(BELOW_STICKY_HEADER);
     cy.get('[data-testid="suggestedPromptDismissed"]').should('contain', 'Suggestion dismissed');
 
-    cy.get('[data-testid="restoreSuggestionButton"]').click();
-    cy.get('[data-testid="suggestedPrompt"]').should('be.visible');
+    cy.get('[data-testid="restoreSuggestionButton"]').click(BELOW_STICKY_HEADER);
+    cy.get('[data-testid="suggestedPrompt"]').scrollIntoView().should('be.visible');
   });
 });
 
@@ -1311,14 +1317,14 @@ describe('when the server does not answer', () => {
     openAssistant({ fails: ['EvaluationScores'] });
     openTab('evaluation');
 
-    cy.get('[data-testid="evaluationScoresError"]').should('be.visible');
+    cy.get('[data-testid="evaluationScoresError"]').scrollIntoView().should('be.visible');
   });
 
   it('says so when a run produced no question-level rows', () => {
     openAssistant({ scores: EMPTY_SCORES });
     openTab('evaluation');
 
-    cy.get('[data-testid="evaluationScoresEmpty"]').should('be.visible');
+    cy.get('[data-testid="evaluationScoresEmpty"]').scrollIntoView().should('be.visible');
     cy.get('[data-testid="evaluationScoreRow"]').should('not.exist');
   });
 
@@ -1351,13 +1357,6 @@ describe('an assistant with nothing run against it yet', () => {
     cy.get('[data-testid="runFirstEvaluationButton"]').click(BELOW_STICKY_HEADER);
 
     cy.get('[data-testid="noEvaluationsYet"]').should('be.visible');
-  });
-
-  it('explains what the Overall column means', () => {
-    cy.get('[data-testid="evaluationSubTabs-history"]').click(BELOW_STICKY_HEADER);
-    cy.get('[data-testid="historyOverallHint"]').trigger('mouseover', BELOW_STICKY_HEADER);
-
-    cy.get('[role="tooltip"]').should('contain', 'weighted average');
   });
 
   it('takes the reader from the run panel to the history', () => {
@@ -1471,7 +1470,7 @@ describe('the smaller things on the page', () => {
     openTab('evaluation');
 
     cy.get('[data-testid="scoreReason"]').first().should('exist');
-    cy.get('[data-testid="evaluationScoresTable"]').should('be.visible');
+    cy.get('[data-testid="evaluationScoresTable"]').scrollIntoView().should('be.visible');
   });
 
   it('has no suggestion to make when no check reported a score', () => {
