@@ -364,6 +364,22 @@ describe('provider keys declaring a select', () => {
     expect(screen.getAllByText('Theme')).toHaveLength(1);
   });
 
+  it('shows each option colour so an admin need not know what "Amber" looks like', async () => {
+    render(webChannelProvider());
+
+    await waitFor(() => {
+      expect(screen.getByText('Active?')).toBeInTheDocument();
+    });
+
+    const dropdown = await screen.findByTestId('dropdown');
+    await user.click(within(dropdown).getByRole('combobox'));
+
+    const amber = await screen.findByRole('option', { name: 'Amber' });
+    const swatch = amber.querySelector('span > span');
+
+    expect(swatch).toHaveStyle({ backgroundColor: '#ffb900' });
+  });
+
   it('lets an admin pick a different theme', async () => {
     render(webChannelProvider());
 

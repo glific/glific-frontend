@@ -4,3 +4,17 @@
   line-height: 18px;
   font-size: 16px;
 }
+
+.SwatchOption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.Swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--curvature);
+  border: 1px solid var(--color-borders);
+  flex-shrink: 0;
+}

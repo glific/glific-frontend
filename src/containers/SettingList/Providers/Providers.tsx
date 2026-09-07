@@ -22,6 +22,23 @@ const SettingIcon = <Settingicon />;
 
 const GUPSHUP_CREDENTIAL_FIELDS = ['app_name', 'api_key', 'app_id'];
 
+// A provider option may carry a `swatch` colour. Showing it beside the name is the difference
+// between picking a theme and guessing what "Amber" looks like.
+const withSwatches = (options: any[]) =>
+  options.map((option: any) =>
+    option.swatch
+      ? {
+          ...option,
+          label: (
+            <span className={styles.SwatchOption}>
+              <span className={styles.Swatch} style={{ backgroundColor: option.swatch }} />
+              {option.label}
+            </span>
+          ),
+        }
+      : option
+  );
+
 const areAllGupshupFieldsSet = (secretsObj: Record<string, string>) =>
   GUPSHUP_CREDENTIAL_FIELDS.every((field) => secretsObj[field] && secretsObj[field] !== 'NA');
 
@@ -169,7 +186,7 @@ export const Providers = () => {
           field = {
             component: Dropdown,
             name: key,
-            options: fields[key].options,
+            options: withSwatches(fields[key].options),
             // FormLayout renders `label` above every field with the spacing the rest of the
             // form uses. Dropdown would render `placeholder` as a second label of its own,
             // so it is left empty rather than duplicating the name.
