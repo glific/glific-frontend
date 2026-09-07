@@ -17,6 +17,8 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
+  MESSAGE_CHANNELS,
+  MessageChannel,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   getVariables,
 } from 'common/constants';
@@ -42,6 +44,7 @@ interface ConversationListProps {
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
   phonenumber?: any;
+  channel?: MessageChannel;
 }
 
 export const ConversationList = ({
@@ -56,6 +59,7 @@ export const ConversationList = ({
   setSelectedCollectionId,
   entityType = 'contact',
   phonenumber,
+  channel,
 }: ConversationListProps) => {
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_ENTITY_LIMIT);
@@ -67,6 +71,13 @@ export const ConversationList = ({
   const { t } = useTranslation();
   const location = useLocation();
   const hasSearchParams = searchParam ? Object.keys(searchParam).length !== 0 : false;
+  // Only the web channel filters. A filtered list reads a lazily-fetched result rather than the
+  // cache the chat subscription writes into, so it does not update live — the same trade-off an
+  // advanced search filter already makes. Applying that to WhatsApp would cost every organization
+  // with the flag on live updates in their main inbox, which is far worse than the web-only
+  // contacts that consequently still appear there. Making WhatsApp exclusive needs the chat
+  // subscription to become channel-aware; that is a follow-up, not this ticket.
+  const hasChannelFilter = channel === MESSAGE_CHANNELS.web;
   const navigate = useNavigate();
 
   let groups: boolean = location.pathname.includes('group');
@@ -163,6 +174,9 @@ export const ConversationList = ({
     }
 
     const filter: any = {};
+    if (hasChannelFilter) {
+      filter.channel = channel;
+    }
     if (searchVal) {
       filter.term = searchVal;
     }
@@ -265,7 +279,7 @@ export const ConversationList = ({
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (hasSearchParams || savedSearchCriteria || phonenumber || selectedCollectionId) {
+    } else if (hasSearchParams || hasChannelFilter || savedSearchCriteria || phonenumber || selectedCollectionId) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
@@ -301,7 +315,7 @@ export const ConversationList = ({
         }
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber, channel]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -330,7 +344,7 @@ export const ConversationList = ({
   }
 
   // If no cache, assign conversations data from search query.
-  if (called && (searchVal || savedSearchCriteria || hasSearchParams || phonenumber)) {
+  if (called && (searchVal || savedSearchCriteria || hasSearchParams || hasChannelFilter || phonenumber)) {
     conversations = searchData.search;
   }
 

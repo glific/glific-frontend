@@ -90,6 +90,15 @@ export const DEFAULT_MESSAGE_LIMIT = 20;
 // load more message limit
 export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 50;
 
+// Mirrors Glific's `message_channel_enum`. A conversation belongs to exactly one of these, and
+// the value is sent verbatim as a GraphQL enum, so the casing matters.
+export const MESSAGE_CHANNELS = {
+  whatsapp: 'WHATSAPP',
+  web: 'WEB',
+} as const;
+
+export type MessageChannel = (typeof MESSAGE_CHANNELS)[keyof typeof MESSAGE_CHANNELS];
+
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
     limit: DEFAULT_ENTITY_LIMIT,

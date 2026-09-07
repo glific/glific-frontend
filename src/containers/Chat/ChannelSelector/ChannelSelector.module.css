@@ -1,0 +1,19 @@
+.Option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.Dot {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  border-radius: var(--app-radius-pill);
+}
+
+.WhatsAppDot {
+  background-color: var(--app-color-channel-whatsapp);
+}
+
+.WebDot {
+  background-color: var(--app-color-channel-web);
+}

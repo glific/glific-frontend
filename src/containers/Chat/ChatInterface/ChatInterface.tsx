@@ -9,12 +9,18 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { getUserRole } from 'context/role';
 import { setErrorMessage } from 'common/notification';
-import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  MESSAGE_CHANNELS,
+  MessageChannel,
+  SEARCH_QUERY_VARIABLES,
+} from 'common/constants';
 import ChatConversations from '../ChatConversations/ChatConversations';
 import ChatMessages from '../ChatMessages/ChatMessages';
 import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
+import ChannelSelector from '../ChannelSelector/ChannelSelector';
 import styles from './ChatInterface.module.css';
 import { getOrganizationServices } from 'services/AuthService';
 
@@ -48,6 +54,8 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const [value, setValue] = useState(tabs[0].link);
   const [appliedFilters, setAppliedFilters] = useState<any>({});
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
+  const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
+  const [channel, setChannel] = useState<MessageChannel>(MESSAGE_CHANNELS.whatsapp);
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -139,6 +147,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <ChatConversations
           entityId={simulatorId > 0 ? simulatorId : selectedContactId}
           setAppliedFilters={setAppliedFilters}
+          channel={isWebChannelEnabled ? channel : undefined}
         />
       );
 
@@ -155,6 +164,8 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
             entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
             appliedFilters={appliedFilters}
+            channel={isWebChannelEnabled ? channel : undefined}
+            onChannelChange={isWebChannelEnabled ? setChannel : undefined}
           />
         </div>
 
@@ -165,6 +176,12 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
               {heading}
             </div>
           </div>
+
+          {isWebChannelEnabled && (
+            <div className={styles.ChannelContainer}>
+              <ChannelSelector className={styles.ChannelSelectorFullWidth} value={channel} onChange={setChannel} />
+            </div>
+          )}
 
           <div className={styles.TabContainer}>
             <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">

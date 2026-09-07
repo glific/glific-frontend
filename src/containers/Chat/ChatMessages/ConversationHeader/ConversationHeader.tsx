@@ -27,6 +27,8 @@ import { setNotification } from 'common/notification';
 import {
   CONTACTS_COLLECTION,
   is24HourWindowOver,
+  MESSAGE_CHANNELS,
+  MessageChannel,
   SEARCH_QUERY_VARIABLES,
   setVariables,
   WA_GROUPS_COLLECTION,
@@ -41,6 +43,8 @@ import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddToCollection from '../AddToCollection/AddToCollection';
 import StartAFlow from '../StartFlow/StartFlow';
+import ChannelSelector from '../../ChannelSelector/ChannelSelector';
+import WebPresence from '../WebPresence/WebPresence';
 
 import styles from './ConversationHeader.module.css';
 
@@ -62,6 +66,8 @@ export const shortenMultipleItems = (multipleItems: Array<string>) => {
 
 export interface ConversationHeaderProps {
   displayName: string;
+  channel?: MessageChannel;
+  onChannelChange?: (channel: MessageChannel) => void;
   entityId?: string;
   collectionId?: string;
   handleAction: any;
@@ -82,6 +88,8 @@ export const ConversationHeader = ({
   isSimulator,
   groups,
   contact,
+  channel,
+  onChannelChange,
 }: ConversationHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -94,6 +102,10 @@ export const ConversationHeader = ({
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [showTerminateDialog, setShowTerminateDialog] = useState(false);
   const { t } = useTranslation();
+
+  // A web conversation has no 24 hour window, so anything derived from one — the session timer,
+  // the flow button's window check — has to take a different branch here.
+  const isWebConversation = channel === MESSAGE_CHANNELS.web;
 
   let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
 
@@ -323,6 +335,19 @@ export const ConversationHeader = ({
         Start a flow
       </Button>
     );
+  } else if (isWebConversation) {
+    // The flow engine still never sees a web inbound message, so a flow started here would reply
+    // over WhatsApp to someone who consented only to the web channel.
+    flowButton = (
+      <Tooltip title="Flows cannot be started on the web channel yet" placement="right">
+        <span>
+          <Button data-testid="disabledFlowButton" className={styles.ListButtonPrimary} disabled>
+            <FlowUnselectedIcon className={styles.Icon} />
+            Start a flow
+          </Button>
+        </span>
+      </Tooltip>
+    );
   } else if (
     groups ||
     (contact?.contactBspStatus &&
@@ -530,7 +555,7 @@ export const ConversationHeader = ({
     conversationHeaderDetails = (
       <div className={styles.SessionTimerContainer}>
         {contactCollections}
-        {!groups && timeleft}
+        {!groups && (isWebConversation ? <WebPresence entityId={entityId} /> : timeleft)}
       </div>
     );
   } else if (collectionId && !groups) {
@@ -558,6 +583,9 @@ export const ConversationHeader = ({
                     <ExpandIcon />
                   </div>
                 </ClickAwayListener>
+                {channel && onChannelChange && (
+                  <ChannelSelector testId="conversationChannelSelector" value={channel} onChange={onChannelChange} />
+                )}
               </div>
             </div>
             {conversationHeaderDetails}

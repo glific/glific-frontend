@@ -131,6 +131,32 @@ setUserSession(JSON.stringify({ organization: { id: '1' } }));
 window.HTMLElement.prototype.scrollIntoView = function () {};
 
 describe('Chat interface', () => {
+  afterEach(() => {
+    localStorage.removeItem('organizationServices');
+  });
+
+  // The channel selector sits above the tabs rather than beside them: the channel scopes what
+  // Contacts, Collections and Searches each search, it is not a fourth thing to search.
+  test('offers a channel selector when the web channel is switched on', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
+
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('channelSelector')).toBeInTheDocument();
+    });
+  });
+
+  test('leaves the inbox untouched for an organization without the web channel', async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
+
+    expect(screen.queryByTestId('channelSelector')).not.toBeInTheDocument();
+  });
+
   test('it should render chat interface component correctly', async () => {
     render(wrapper);
 

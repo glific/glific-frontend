@@ -209,3 +209,16 @@ export const GET_CONTACT_STATUS = gql`
     }
   }
 `;
+
+// Presence is ephemeral, node-local state on the server: there is no subscription for it, so the
+// header polls while a web conversation is open rather than showing a value that silently ages.
+export const GET_CONTACT_WEB_PRESENCE = gql`
+  query contactWebPresence($id: ID!) {
+    contact(id: $id) {
+      contact {
+        id
+        isWebOnline
+      }
+    }
+  }
+`;

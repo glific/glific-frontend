@@ -7,7 +7,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
-    exclude: [...configDefaults.exclude, 'cypress/**'],
+    // `.claude/worktrees/**` holds full checkouts of this repo, so without this every test file
+    // is collected twice and the run reports roughly double the real count.
+    exclude: [...configDefaults.exclude, 'cypress/**', '.claude/**'],
     coverage: {
       reporter: ['lcov', 'text', 'html'],
       // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252

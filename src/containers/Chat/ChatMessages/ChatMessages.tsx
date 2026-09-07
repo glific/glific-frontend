@@ -32,6 +32,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
+import { MESSAGE_CHANNELS, MessageChannel } from 'common/constants';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
@@ -48,9 +49,18 @@ export interface ChatMessagesProps {
   phoneId?: any;
   setPhonenumber?: any;
   appliedFilters?: any;
+  channel?: MessageChannel;
+  onChannelChange?: (channel: MessageChannel) => void;
 }
 
-export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }: ChatMessagesProps) => {
+export const ChatMessages = ({
+  entityId,
+  collectionId,
+  phoneId,
+  appliedFilters,
+  channel,
+  onChannelChange,
+}: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -358,6 +368,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
           interactiveTemplateId,
           type: messageType,
           mediaId,
+          // Decides which transport the server uses. Omitting it would default the message to
+          // WhatsApp and send a browser visitor a message they never consented to.
+          channel,
         };
 
         payload = updatePayload(payload, selectedTemplate, variableParam);
@@ -372,7 +385,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
         handleMutationError(error);
       }
     },
-    [createAndSendMessage, entityId, phoneId, conversationInfo]
+    [createAndSendMessage, entityId, phoneId, conversationInfo, channel]
   );
 
   // loop through the cached conversations and find if contact/Collection exists
@@ -870,6 +883,8 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
         }}
         handleAction={() => handleChatClearedAction()}
         groups={groups}
+        channel={channel}
+        onChannelChange={onChannelChange}
       />
     );
 
@@ -883,6 +898,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
             contactStatus={conversationInfo[chatType]?.status}
             contactBspStatus={conversationInfo[chatType]?.bspStatus}
             showAttachmentButton={!groups}
+            channel={channel}
           />
         </LexicalWrapper>
       </div>
@@ -908,7 +924,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   }
 
   return (
-    <Container data-testid="message-container" className={styles.ChatMessages} maxWidth={false} disableGutters>
+    <Container
+      data-testid="message-container"
+      className={`${styles.ChatMessages} ${channel === MESSAGE_CHANNELS.web ? styles.WebChannel : ''}`}
+      maxWidth={false}
+      disableGutters
+    >
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation

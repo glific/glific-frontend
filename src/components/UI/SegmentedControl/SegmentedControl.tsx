@@ -15,6 +15,8 @@ export interface SegmentedControlProps<T extends string = string> {
   label?: ReactNode;
   helperText?: ReactNode;
   disabled?: boolean;
+  /** Give every option the same width, so labels of different lengths still read as a pair. */
+  equalWidth?: boolean;
   className?: string;
   labelClassName?: string;
   testId?: string;
@@ -27,6 +29,7 @@ export function SegmentedControl<T extends string = string>({
   label,
   helperText,
   disabled = false,
+  equalWidth = false,
   className,
   labelClassName,
   testId = 'segmentedControl',
@@ -39,7 +42,11 @@ export function SegmentedControl<T extends string = string>({
         </div>
       )}
 
-      <div className={styles.Track} role="radiogroup" data-testid={testId}>
+      <div
+        className={`${styles.Track} ${equalWidth ? styles.EqualWidthTrack : ''}`}
+        role="radiogroup"
+        data-testid={testId}
+      >
         {options.map((option) => {
           const isActive = option.value === value;
           return (

@@ -8,6 +8,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import ChatMessages from './ChatMessages';
+import { MESSAGE_CHANNELS } from 'common/constants';
 import { MemoryRouter, Route, Routes, BrowserRouter as Router } from 'react-router';
 import { createMediaMessageMock, getAttachmentPermissionMock } from 'mocks/Attachment';
 import { clearMessagesQuery, contactCollectionsQuery } from 'mocks/Contact';
@@ -502,6 +503,47 @@ test('send message to contact', async () => {
 
   fireEvent.click(getByTestId('sendButton'), { force: true });
 
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
+// The single most consequential line in this component: omit the channel and the server defaults
+// the reply to WhatsApp, sending a browser visitor a message they never consented to.
+test('a reply on the web channel says so in the mutation', async () => {
+  const webSendMock = createAndSendMessageMutation({
+    body: 'hey',
+    senderId: 1,
+    receiverId: '2',
+    flow: 'OUTBOUND',
+    interactiveTemplateId: undefined,
+    type: 'TEXT',
+    mediaId: null,
+    channel: MESSAGE_CHANNELS.web,
+  });
+
+  const { getByTestId } = render(
+    <MemoryRouter>
+      <MockedProvider mocks={[...mocks, webSendMock]} cache={cache}>
+        <ChatMessages entityId="2" channel={MESSAGE_CHANNELS.web} />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  // Only the mock above matches an input carrying channel WEB, so its result arriving is the
+  // assertion — an unchannelled payload would find no mock and surface an error instead.
   await waitFor(() => {
     expect(screen.getByText('hey')).toBeInTheDocument();
   });
