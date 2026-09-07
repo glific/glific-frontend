@@ -17,7 +17,7 @@ const UPLOADED_URL = 'https://storage.googleapis.com/glific/logo.png';
 const uploadMock = (media: File) => ({
   request: {
     query: UPLOAD_CREDENTIAL_FILE,
-    variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
+    variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo' },
   },
   result: { data: { uploadMedia: UPLOADED_URL } },
 });
@@ -32,7 +32,6 @@ const renderUpload = ({ field, ...props }: any = {}, mocks: any[] = []) =>
         form={{ setFieldValue, touched: {}, errors: {} }}
         maxSizeKb={200}
         folder="org_logo"
-        storage="SAAS"
         accept="image/png,image/jpeg"
         {...props}
       />
@@ -129,7 +128,7 @@ describe('<FileUpload />', () => {
       {
         request: {
           query: UPLOAD_CREDENTIAL_FILE,
-          variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
+          variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo' },
         },
         error: new Error('Something went wrong: bucket not found'),
       },
@@ -184,7 +183,7 @@ describe('<FileUpload />', () => {
       {
         request: {
           query: UPLOAD_CREDENTIAL_FILE,
-          variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
+          variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo' },
         },
         result: { data: { uploadMedia: UPLOADED_URL } },
       },
@@ -201,7 +200,7 @@ describe('<FileUpload />', () => {
       {
         request: {
           query: UPLOAD_CREDENTIAL_FILE,
-          variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
+          variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo' },
         },
         result: { data: { uploadMedia: UPLOADED_URL } },
       },

@@ -22,8 +22,6 @@ export interface FileUploadProps {
   placeholder?: string;
   /** Store the object under this prefix rather than the default attachment path. */
   folder?: string;
-  /** "SAAS" writes to the platform bucket, so an org without its own GCS can still upload. */
-  storage?: string;
 }
 
 const DEFAULT_MAX_SIZE_KB = 200;
@@ -64,7 +62,6 @@ export const FileUpload = ({
   preview = true,
   placeholder = 'https://…',
   folder,
-  storage,
 }: FileUploadProps) => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -108,7 +105,7 @@ export const FileUpload = ({
     try {
       // Sent as well as checked above: the client check is for fast feedback, the server
       // check is what actually holds if a request does not come from this form.
-      const { data } = await uploadMedia({ variables: { media: file, extension, maxSizeKb, folder, storage } });
+      const { data } = await uploadMedia({ variables: { media: file, extension, maxSizeKb, folder } });
       if (data?.uploadMedia) {
         setValue(data.uploadMedia);
       } else {

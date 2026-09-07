@@ -83,13 +83,7 @@ export const UPLOAD_MEDIA = gql`
 // that does not have them yet — so a frontend deploy ahead of the backend would break every
 // media upload in Glific. Keeping them here confines that risk to this field.
 export const UPLOAD_CREDENTIAL_FILE = gql`
-  mutation uploadMedia(
-    $media: Upload!
-    $extension: String!
-    $maxSizeKb: Int
-    $folder: String
-    $storage: UploadStorageEnum
-  ) {
-    uploadMedia(media: $media, extension: $extension, maxSizeKb: $maxSizeKb, folder: $folder, storage: $storage)
+  mutation uploadMedia($media: Upload!, $extension: String!, $maxSizeKb: Int, $folder: String) {
+    uploadMedia(media: $media, extension: $extension, maxSizeKb: $maxSizeKb, folder: $folder)
   }
 `;
