@@ -1,0 +1,230 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
+
+import { UPLOAD_CREDENTIAL_FILE } from 'graphql/mutations/Chat';
+import { FileUpload } from './FileUpload';
+
+// setupTests mocks react-i18next with `t: (str) => str`, so interpolated copy renders as its
+// key. Assert on the key and pin the *behaviour* separately.
+const SIZE_ERROR = 'That file is {{size}}KB. Please upload something under {{max}}KB.';
+const LIMIT_HINT = 'Up to {{max}}KB.';
+
+const user = userEvent.setup();
+const UPLOADED_URL = 'https://storage.googleapis.com/glific/logo.png';
+
+const uploadMock = (media: File) => ({
+  request: {
+    query: UPLOAD_CREDENTIAL_FILE,
+    variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo' },
+  },
+  result: { data: { uploadMedia: UPLOADED_URL } },
+});
+
+const setFieldValue = vi.fn();
+
+const renderUpload = ({ field, ...props }: any = {}, mocks: any[] = []) =>
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <FileUpload
+        field={{ name: 'logo_url', value: '', ...field }}
+        form={{ setFieldValue, touched: {}, errors: {} }}
+        maxSizeKb={200}
+        folder="org_logo"
+        accept="image/png,image/jpeg"
+        {...props}
+      />
+    </MockedProvider>
+  );
+
+const file = (name: string, type: string, sizeInKb: number) => {
+  const uploaded = new File(['x'], name, { type });
+  Object.defineProperty(uploaded, 'size', { value: sizeInKb * 1024 });
+  return uploaded;
+};
+
+describe('<FileUpload />', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('offers both a URL field and an Upload button when nothing is set', () => {
+    renderUpload();
+
+    expect(screen.getByTestId('fileUrlInput')).toHaveValue('');
+    expect(screen.getByTestId('uploadButton')).toHaveTextContent('Upload');
+    expect(screen.queryByTestId('filePreview')).not.toBeInTheDocument();
+  });
+
+  // An organisation without Google Cloud Storage configured has no way to upload, so pasting a
+  // URL it hosts itself must keep working — otherwise a missing GCS credential blocks the whole
+  // web channel.
+  it('accepts a pasted URL without uploading anything', async () => {
+    renderUpload();
+
+    fireEvent.change(screen.getByTestId('fileUrlInput'), {
+      target: { value: 'https://ngo.example.org/logo.png' },
+    });
+
+    expect(setFieldValue).toHaveBeenCalledWith('logo_url', 'https://ngo.example.org/logo.png');
+  });
+
+  it('previews a pasted URL the same as an uploaded one', () => {
+    renderUpload({ field: { value: 'https://ngo.example.org/logo.png' } });
+
+    expect(screen.getByTestId('filePreview')).toHaveAttribute('src', 'https://ngo.example.org/logo.png');
+  });
+
+  it('previews the stored file, shows its URL, and offers to replace it', () => {
+    renderUpload({ field: { value: UPLOADED_URL } });
+
+    expect(screen.getByTestId('filePreview')).toHaveAttribute('src', UPLOADED_URL);
+    expect(screen.getByTestId('fileUrlInput')).toHaveValue(UPLOADED_URL);
+    expect(screen.getByTestId('uploadButton')).toHaveTextContent('Replace');
+  });
+
+  it('rejects a file over the size limit without uploading it', async () => {
+    // No mock is provided, so the mutation firing at all would error the test.
+    renderUpload();
+
+    await user.upload(screen.getByTestId('fileInput'), file('big.png', 'image/png', 500));
+
+    await waitFor(() => {
+      expect(screen.getByText(SIZE_ERROR)).toBeInTheDocument();
+    });
+    expect(setFieldValue).not.toHaveBeenCalled();
+  });
+
+  it('rejects a file type the provider did not allow', async () => {
+    renderUpload();
+
+    // `accept` on the input is only a hint — drag-and-drop and some platforms ignore it, and
+    // user.upload honours it, so the change event is fired directly to reach the real check.
+    fireEvent.change(screen.getByTestId('fileInput'), {
+      target: { files: [file('doc.pdf', 'application/pdf', 10)] },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('That file type is not supported.')).toBeInTheDocument();
+    });
+    expect(setFieldValue).not.toHaveBeenCalled();
+  });
+
+  it('uploads an acceptable file and stores the returned URL', async () => {
+    const logo = file('logo.png', 'image/png', 40);
+    renderUpload({}, [uploadMock(logo)]);
+
+    await user.upload(screen.getByTestId('fileInput'), logo);
+
+    await waitFor(() => {
+      expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL);
+    });
+  });
+
+  // A GCS failure names its cause — a disabled billing account, a missing bucket. Collapsing
+  // every one into a single sentence makes the failure undiagnosable from the UI.
+  it('surfaces what the server said, not a generic message', async () => {
+    const logo = file('logo.png', 'image/png', 40);
+    const failing = [
+      {
+        request: {
+          query: UPLOAD_CREDENTIAL_FILE,
+          variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo' },
+        },
+        error: new Error('Something went wrong: bucket not found'),
+      },
+    ];
+    renderUpload({}, failing);
+
+    await user.upload(screen.getByTestId('fileInput'), logo);
+
+    await waitFor(() => {
+      expect(screen.getByText(/bucket not found/)).toBeInTheDocument();
+    });
+    expect(setFieldValue).not.toHaveBeenCalled();
+  });
+
+  it('clears a rejection message along with the file it referred to', async () => {
+    renderUpload({ field: { value: UPLOADED_URL } });
+
+    // Reject a replacement, then remove the existing file: the stale "that file is 500KB"
+    // must not sit beside an empty field looking like a live error.
+    fireEvent.change(screen.getByTestId('fileInput'), {
+      target: { files: [file('big.png', 'image/png', 500)] },
+    });
+    await waitFor(() => expect(screen.getByText(SIZE_ERROR)).toBeInTheDocument());
+
+    await user.click(screen.getByTestId('removeFile'));
+
+    expect(screen.queryByText(SIZE_ERROR)).not.toBeInTheDocument();
+  });
+
+  it('clears the stored file', async () => {
+    renderUpload({ field: { value: UPLOADED_URL } });
+
+    await user.click(screen.getByTestId('removeFile'));
+
+    expect(setFieldValue).toHaveBeenCalledWith('logo_url', '');
+  });
+
+  // `accept` takes three forms and an empty list means "anything"; comparing file.type to the
+  // raw tokens rejected legitimate files for two of the three.
+  it('accepts a wildcard MIME token', async () => {
+    const logo = file('logo.png', 'image/png', 40);
+    renderUpload({ accept: 'image/*' }, [uploadMock(logo)]);
+
+    fireEvent.change(screen.getByTestId('fileInput'), { target: { files: [logo] } });
+
+    await waitFor(() => expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL));
+  });
+
+  it('accepts an extension token, which carries no MIME type', async () => {
+    const sheet = file('data.csv', '', 10);
+    renderUpload({ accept: '.csv' }, [
+      {
+        request: {
+          query: UPLOAD_CREDENTIAL_FILE,
+          variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo' },
+        },
+        result: { data: { uploadMedia: UPLOADED_URL } },
+      },
+    ]);
+
+    fireEvent.change(screen.getByTestId('fileInput'), { target: { files: [sheet] } });
+
+    await waitFor(() => expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL));
+  });
+
+  it('imposes no restriction when accept is empty', async () => {
+    const anything = file('notes.txt', 'text/plain', 10);
+    renderUpload({ accept: '' }, [
+      {
+        request: {
+          query: UPLOAD_CREDENTIAL_FILE,
+          variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo' },
+        },
+        result: { data: { uploadMedia: UPLOADED_URL } },
+      },
+    ]);
+
+    fireEvent.change(screen.getByTestId('fileInput'), { target: { files: [anything] } });
+
+    await waitFor(() => expect(setFieldValue).toHaveBeenCalledWith('logo_url', UPLOADED_URL));
+  });
+
+  it('still rejects a type outside a wildcard family', async () => {
+    renderUpload({ accept: 'image/*' });
+
+    fireEvent.change(screen.getByTestId('fileInput'), {
+      target: { files: [file('doc.pdf', 'application/pdf', 10)] },
+    });
+
+    await waitFor(() => expect(screen.getByText('That file type is not supported.')).toBeInTheDocument());
+    expect(setFieldValue).not.toHaveBeenCalled();
+  });
+
+  it('states the limit so an admin knows before picking a file', () => {
+    renderUpload();
+
+    expect(screen.getByText(LIMIT_HINT)).toBeInTheDocument();
+  });
+});
