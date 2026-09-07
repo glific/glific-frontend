@@ -1217,6 +1217,7 @@ const WEB_CHANNEL_KEYS = JSON.stringify({
     default: null,
     position: 2,
     max_size_kb: 200,
+    upload_folder: 'org_logo',
     accept: 'image/png,image/jpeg,image/webp,image/svg+xml',
     helper_text: 'PNG, JPEG, WEBP or SVG up to 200KB. Landscape works best.',
   },

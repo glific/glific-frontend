@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Button, CircularProgress, FormHelperText, IconButton } from '@mui/material';
+import { Button, CircularProgress, FormHelperText, IconButton, OutlinedInput } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
@@ -18,6 +18,10 @@ export interface FileUploadProps {
   accept?: string;
   /** Show the stored URL as an image rather than as text. */
   preview?: boolean;
+  /** Placeholder for the URL field. */
+  placeholder?: string;
+  /** Store the object under this prefix rather than the default attachment path. */
+  folder?: string;
 }
 
 const DEFAULT_MAX_SIZE_KB = 200;
@@ -56,6 +60,8 @@ export const FileUpload = ({
   maxSizeKb = DEFAULT_MAX_SIZE_KB,
   accept = 'image/png,image/jpeg,image/webp,image/svg+xml',
   preview = true,
+  placeholder = 'https://…',
+  folder,
 }: FileUploadProps) => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,7 +100,7 @@ export const FileUpload = ({
     try {
       // Sent as well as checked above: the client check is for fast feedback, the server
       // check is what actually holds if a request does not come from this form.
-      const { data } = await uploadMedia({ variables: { media: file, extension, maxSizeKb } });
+      const { data } = await uploadMedia({ variables: { media: file, extension, maxSizeKb, folder } });
       if (data?.uploadMedia) {
         setValue(data.uploadMedia);
       } else {
@@ -111,35 +117,46 @@ export const FileUpload = ({
 
   return (
     <div className={styles.FileUpload} data-testid="fileUpload">
-      {field.value ? (
+      {field.value && preview && (
         <div className={styles.Current}>
-          {preview && (
-            <img src={field.value} alt={t('Uploaded file')} className={styles.Preview} data-testid="filePreview" />
-          )}
-          <a href={field.value} target="_blank" rel="noreferrer" className={styles.Link}>
-            {field.value}
-          </a>
+          <img src={field.value} alt={t('Uploaded file')} className={styles.Preview} data-testid="filePreview" />
           {!disabled && (
             <IconButton size="small" data-testid="removeFile" onClick={() => setValue('')} aria-label={t('Remove')}>
               <CrossIcon />
             </IconButton>
           )}
         </div>
-      ) : (
-        <div className={styles.Empty}>{t('No file uploaded yet.')}</div>
       )}
 
-      <input ref={inputRef} type="file" accept={accept} hidden data-testid="fileInput" onChange={onFileChosen} />
+      {/* The stored value is a URL either way. Uploading fills this field; an organisation
+          without Google Cloud Storage configured can host the file itself and paste the URL,
+          so a missing GCS credential never blocks them. */}
+      <div className={styles.Row}>
+        <OutlinedInput
+          fullWidth
+          size="small"
+          disabled={disabled}
+          value={field.value || ''}
+          placeholder={placeholder}
+          inputProps={{ 'data-testid': 'fileUrlInput', 'aria-label': t('File URL') }}
+          onChange={(event) => {
+            setError(null);
+            setValue(event.target.value);
+          }}
+        />
 
-      <Button
-        variant="outlined"
-        size="small"
-        disabled={disabled || uploading}
-        data-testid="uploadButton"
-        onClick={() => inputRef.current?.click()}
-      >
-        {uploading ? <CircularProgress size={16} /> : field.value ? t('Replace') : t('Upload')}
-      </Button>
+        <input ref={inputRef} type="file" accept={accept} hidden data-testid="fileInput" onChange={onFileChosen} />
+
+        <Button
+          variant="outlined"
+          size="small"
+          disabled={disabled || uploading}
+          data-testid="uploadButton"
+          onClick={() => inputRef.current?.click()}
+        >
+          {uploading ? <CircularProgress size={16} /> : field.value ? t('Replace') : t('Upload')}
+        </Button>
+      </div>
 
       <FormHelperText className={error || fieldError ? styles.DangerText : styles.HelperText}>
         {error || fieldError || helperText || t('Up to {{max}}KB.', { max: maxSizeKb })}

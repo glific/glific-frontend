@@ -15,7 +15,7 @@ const user = userEvent.setup();
 const UPLOADED_URL = 'https://storage.googleapis.com/glific/logo.png';
 
 const uploadMock = (media: File) => ({
-  request: { query: UPLOAD_MEDIA, variables: { media, extension: 'png', maxSizeKb: 200 } },
+  request: { query: UPLOAD_MEDIA, variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo' } },
   result: { data: { uploadMedia: UPLOADED_URL } },
 });
 
@@ -28,6 +28,7 @@ const renderUpload = ({ field, ...props }: any = {}, mocks: any[] = []) =>
         field={{ name: 'logo_url', value: '', ...field }}
         form={{ setFieldValue, touched: {}, errors: {} }}
         maxSizeKb={200}
+        folder="org_logo"
         accept="image/png,image/jpeg"
         {...props}
       />
@@ -43,18 +44,38 @@ const file = (name: string, type: string, sizeInKb: number) => {
 describe('<FileUpload />', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('shows an empty state and an Upload button when nothing is set', () => {
+  it('offers both a URL field and an Upload button when nothing is set', () => {
     renderUpload();
 
-    expect(screen.getByText('No file uploaded yet.')).toBeInTheDocument();
+    expect(screen.getByTestId('fileUrlInput')).toHaveValue('');
     expect(screen.getByTestId('uploadButton')).toHaveTextContent('Upload');
     expect(screen.queryByTestId('filePreview')).not.toBeInTheDocument();
   });
 
-  it('previews the stored file and offers to replace it', () => {
+  // An organisation without Google Cloud Storage configured has no way to upload, so pasting a
+  // URL it hosts itself must keep working — otherwise a missing GCS credential blocks the whole
+  // web channel.
+  it('accepts a pasted URL without uploading anything', async () => {
+    renderUpload();
+
+    fireEvent.change(screen.getByTestId('fileUrlInput'), {
+      target: { value: 'https://ngo.example.org/logo.png' },
+    });
+
+    expect(setFieldValue).toHaveBeenCalledWith('logo_url', 'https://ngo.example.org/logo.png');
+  });
+
+  it('previews a pasted URL the same as an uploaded one', () => {
+    renderUpload({ field: { value: 'https://ngo.example.org/logo.png' } });
+
+    expect(screen.getByTestId('filePreview')).toHaveAttribute('src', 'https://ngo.example.org/logo.png');
+  });
+
+  it('previews the stored file, shows its URL, and offers to replace it', () => {
     renderUpload({ field: { value: UPLOADED_URL } });
 
     expect(screen.getByTestId('filePreview')).toHaveAttribute('src', UPLOADED_URL);
+    expect(screen.getByTestId('fileUrlInput')).toHaveValue(UPLOADED_URL);
     expect(screen.getByTestId('uploadButton')).toHaveTextContent('Replace');
   });
 
@@ -100,7 +121,10 @@ describe('<FileUpload />', () => {
     const logo = file('logo.png', 'image/png', 40);
     const failing = [
       {
-        request: { query: UPLOAD_MEDIA, variables: { media: logo, extension: 'png', maxSizeKb: 200 } },
+        request: {
+          query: UPLOAD_MEDIA,
+          variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo' },
+        },
         error: new Error('boom'),
       },
     ];
@@ -137,7 +161,10 @@ describe('<FileUpload />', () => {
     const sheet = file('data.csv', '', 10);
     renderUpload({ accept: '.csv' }, [
       {
-        request: { query: UPLOAD_MEDIA, variables: { media: sheet, extension: 'csv', maxSizeKb: 200 } },
+        request: {
+          query: UPLOAD_MEDIA,
+          variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo' },
+        },
         result: { data: { uploadMedia: UPLOADED_URL } },
       },
     ]);
@@ -151,7 +178,10 @@ describe('<FileUpload />', () => {
     const anything = file('notes.txt', 'text/plain', 10);
     renderUpload({ accept: '' }, [
       {
-        request: { query: UPLOAD_MEDIA, variables: { media: anything, extension: 'txt', maxSizeKb: 200 } },
+        request: {
+          query: UPLOAD_MEDIA,
+          variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo' },
+        },
         result: { data: { uploadMedia: UPLOADED_URL } },
       },
     ]);

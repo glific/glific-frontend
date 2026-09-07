@@ -185,6 +185,7 @@ export const Providers = () => {
             label: fields[key].label,
             maxSizeKb: fields[key].max_size_kb,
             accept: fields[key].accept,
+            folder: fields[key].upload_folder,
             helperText: fields[key].helper_text,
             disabled: fields[key].view_only,
             skip: fields[key].hide,
