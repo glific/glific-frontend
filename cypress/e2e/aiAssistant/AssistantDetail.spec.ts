@@ -256,6 +256,8 @@ const EMPTY_SCORES = JSON.stringify({ score: { overall: { overall_score: 4.32 },
 
 const NO_PARAM_MODELS = [{ ...MODELS[0], config: JSON.stringify({}) }, MODELS[1]];
 
+const FILE_DOWNLOAD_PATH = '/files/anc-guide.pdf';
+
 const UPLOADED_FILE = {
   __typename: 'FilesearchFile',
   fileId: 'file-2',
@@ -402,7 +404,7 @@ const stubAssistantApi = (options: StubOptions = {}) => {
             data: {
               getFile: {
                 __typename: 'FilesearchFile',
-                signedUrl: 'https://files.example/anc-guide.pdf',
+                signedUrl: FILE_DOWNLOAD_PATH,
                 filename: 'anc-guide.pdf',
                 errors: null,
               },
@@ -689,11 +691,14 @@ describe('the Knowledge Base tab of a saved assistant', () => {
   });
 
   it('asks the server for a link when a file is downloaded', () => {
+    cy.intercept('GET', `**${FILE_DOWNLOAD_PATH}`, { body: 'the file' }).as('fileDownload');
+
     cy.get('[data-testid="downloadFileButton"]').first().click(BELOW_STICKY_HEADER);
 
     cy.wait('@GetFile').then((interception) => {
       expect(interception.request.body.variables?.fileId).to.eq('file-1');
     });
+    cy.wait('@fileDownload');
   });
 
   it('saves an added file as a new knowledge base version', () => {
