@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { Button, CircularProgress, FormHelperText, IconButton, OutlinedInput } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import { UPLOAD_CREDENTIAL_FILE } from 'graphql/mutations/Chat';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import styles from './FileUpload.module.css';
 
@@ -70,7 +70,7 @@ export const FileUpload = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA);
+  const [uploadMedia] = useMutation(UPLOAD_CREDENTIAL_FILE);
 
   const setValue = (value: string) => form?.setFieldValue(field.name, value);
 

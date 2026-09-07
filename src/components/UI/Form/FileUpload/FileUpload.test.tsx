@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import { UPLOAD_CREDENTIAL_FILE } from 'graphql/mutations/Chat';
 import { FileUpload } from './FileUpload';
 
 // setupTests mocks react-i18next with `t: (str) => str`, so interpolated copy renders as its
@@ -16,7 +16,7 @@ const UPLOADED_URL = 'https://storage.googleapis.com/glific/logo.png';
 
 const uploadMock = (media: File) => ({
   request: {
-    query: UPLOAD_MEDIA,
+    query: UPLOAD_CREDENTIAL_FILE,
     variables: { media, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
   },
   result: { data: { uploadMedia: UPLOADED_URL } },
@@ -128,7 +128,7 @@ describe('<FileUpload />', () => {
     const failing = [
       {
         request: {
-          query: UPLOAD_MEDIA,
+          query: UPLOAD_CREDENTIAL_FILE,
           variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
         error: new Error('Something went wrong: bucket not found'),
@@ -168,7 +168,7 @@ describe('<FileUpload />', () => {
     renderUpload({ accept: '.csv' }, [
       {
         request: {
-          query: UPLOAD_MEDIA,
+          query: UPLOAD_CREDENTIAL_FILE,
           variables: { media: sheet, extension: 'csv', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
         result: { data: { uploadMedia: UPLOADED_URL } },
@@ -185,7 +185,7 @@ describe('<FileUpload />', () => {
     renderUpload({ accept: '' }, [
       {
         request: {
-          query: UPLOAD_MEDIA,
+          query: UPLOAD_CREDENTIAL_FILE,
           variables: { media: anything, extension: 'txt', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
         result: { data: { uploadMedia: UPLOADED_URL } },
