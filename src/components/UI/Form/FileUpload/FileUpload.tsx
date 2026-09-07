@@ -109,8 +109,12 @@ export const FileUpload = ({
       } else {
         setError(t('The upload did not return a file. Please try again.'));
       }
-    } catch {
-      setError(t('An error occurred while uploading the file.'));
+    } catch (uploadError: any) {
+      // Surface what the server actually said. GCS failures carry a reason — a disabled
+      // billing account, a missing bucket, a rejected extension — and collapsing them all
+      // into one sentence makes them undiagnosable from the UI.
+      const reason = uploadError?.graphQLErrors?.[0]?.message || uploadError?.message;
+      setError(reason || t('An error occurred while uploading the file.'));
     } finally {
       setUploading(false);
     }

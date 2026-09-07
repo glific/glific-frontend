@@ -121,7 +121,9 @@ describe('<FileUpload />', () => {
     });
   });
 
-  it('surfaces an upload failure instead of failing silently', async () => {
+  // A GCS failure names its cause — a disabled billing account, a missing bucket. Collapsing
+  // every one into a single sentence makes the failure undiagnosable from the UI.
+  it('surfaces what the server said, not a generic message', async () => {
     const logo = file('logo.png', 'image/png', 40);
     const failing = [
       {
@@ -129,7 +131,7 @@ describe('<FileUpload />', () => {
           query: UPLOAD_MEDIA,
           variables: { media: logo, extension: 'png', maxSizeKb: 200, folder: 'org_logo', storage: 'SAAS' },
         },
-        error: new Error('boom'),
+        error: new Error('Something went wrong: bucket not found'),
       },
     ];
     renderUpload({}, failing);
@@ -137,7 +139,7 @@ describe('<FileUpload />', () => {
     await user.upload(screen.getByTestId('fileInput'), logo);
 
     await waitFor(() => {
-      expect(screen.getByText('An error occurred while uploading the file.')).toBeInTheDocument();
+      expect(screen.getByText(/bucket not found/)).toBeInTheDocument();
     });
     expect(setFieldValue).not.toHaveBeenCalled();
   });
