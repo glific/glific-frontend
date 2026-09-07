@@ -1,5 +1,3 @@
-// Fixtures for the AI assistant detail specs: one saved assistant with two versions, a knowledge
-// base, two Golden Q&A sets, and the runs scored against them.
 export const ASSISTANT_ID = '7';
 export const DETAIL_PATH = `/assistants/${ASSISTANT_ID}`;
 export const LIVE_VERSION_ID = 'v-live';

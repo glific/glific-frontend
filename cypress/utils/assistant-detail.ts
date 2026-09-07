@@ -1,5 +1,3 @@
-// Stubs the whole assistant API by operation name, so every spec can put the page in the state
-// it wants to test. File uploads go out as multipart, where the operation name is in the raw body.
 import { BELOW_STICKY_HEADER, V2_SERVICES, loginWithServices } from './assistant-flow';
 import {
   ASSISTANT,
