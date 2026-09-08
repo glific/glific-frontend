@@ -232,24 +232,30 @@ describe('when the server does not answer', () => {
     cy.get('[data-testid="assistantNotFound"]').should('contain', 'Assistant not found');
   });
 
-  it('offers to try the Golden Q&A list again', () => {
-    openAssistant({ fails: ['GoldenQas'] });
+  it('recovers the Golden Q&A list when the retry is taken', () => {
+    openAssistant({ failsOnce: ['GoldenQas'] });
     openTab('evaluation');
 
     cy.get('[data-testid="goldenQaLoadError"]').should('contain', 'Golden Q&A could not be loaded');
     cy.get('[data-testid="retryGoldenQaButton"]').click(BELOW_STICKY_HEADER);
-    cy.wait('@GoldenQas');
+
+    cy.get('[data-testid="goldenQaLoadError"]').should('not.exist');
+    cy.get('[data-testid="evaluationSubTabs"]').should('be.visible');
+    cy.get('[data-testid="manageSetsButton"]').should('be.visible');
   });
 
-  it('offers to try the run history again', () => {
-    openAssistant({ fails: ['AiEvaluations'] });
+  it('recovers the run history when the retry is taken', () => {
+    openAssistant({ failsOnce: ['AiEvaluations'] });
     openTab('evaluation');
 
     cy.get('[data-testid="evaluationRunsLoadError"]').should(
       'contain',
       'Evaluation runs could not be loaded'
     );
-    cy.get('[data-testid="retryRunsButton"]').should('be.visible');
+    cy.get('[data-testid="retryRunsButton"]').click(BELOW_STICKY_HEADER);
+
+    cy.get('[data-testid="evaluationRunsLoadError"]').should('not.exist');
+    cy.get('[data-testid="evaluationResult"]').should('be.visible');
   });
 
   it('says the question-level results could not be loaded', () => {

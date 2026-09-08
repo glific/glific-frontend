@@ -1,4 +1,9 @@
-import { BELOW_STICKY_HEADER, V2_SERVICES, loginWithServices } from './assistant-flow';
+import {
+  BELOW_STICKY_HEADER,
+  V2_SERVICES,
+  bodyMentions,
+  loginWithServices,
+} from './assistant-flow';
 import {
   ASSISTANT,
   ASSISTANT_ID,
@@ -11,26 +16,44 @@ import {
   KNOWLEDGE_BASE,
   MODELS,
   RUN_SCORES,
+  type GoldenQaFixture,
+  type ModelFixture,
+  type RunFixture,
+  type VersionFixture,
   SET_ID,
   UPLOADED_FILE,
   VERSIONS,
 } from './assistant-fixtures';
 
-export const isMultipart = (body: unknown, operation: string) =>
-  typeof body === 'string' && body.includes(operation);
+export type StubbedOperation =
+  | 'AssistantModels'
+  | 'Assistant'
+  | 'AssistantVersions'
+  | 'UpdateAssistant'
+  | 'SetLiveVersion'
+  | 'CreateKnowledgeBase'
+  | 'GetFile'
+  | 'GoldenQas'
+  | 'GetGoldenQa'
+  | 'AiEvaluations'
+  | 'EvaluationScores'
+  | 'ImproveEvaluationPrompt'
+  | 'createEvaluation'
+  | 'SendAssistantMessage';
 
 export interface StubOptions {
-  runs?: unknown[];
+  runs?: RunFixture[];
   chat?: 'answer' | 'pending' | 'error';
-  fails?: string[];
+  fails?: StubbedOperation[];
+  failsOnce?: StubbedOperation[];
   assistantMissing?: boolean;
-  sets?: unknown[];
+  sets?: GoldenQaFixture[];
   scoresDelay?: number;
-  models?: unknown[];
+  models?: ModelFixture[];
   scores?: string;
   groupedScores?: string;
-  versions?: unknown[];
-  vectorStore?: unknown;
+  versions?: VersionFixture[];
+  vectorStore?: typeof KNOWLEDGE_BASE | null;
   uploadDelay?: number;
 }
 
@@ -44,20 +67,24 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
     uploadDelay = 0,
     chat = 'answer',
     fails = [],
+    failsOnce = [],
     assistantMissing = false,
     sets = GOLDEN_SETS,
     scoresDelay = 0,
     models = MODELS,
   } = options;
 
+  // spent as it is used, so the operation answers normally from the second request on
+  const stillFailing = new Set<StubbedOperation>(failsOnce);
+
   cy.intercept('POST', Cypress.expose('backendUrl'), (req) => {
-    if (isMultipart(req.body, 'UploadFilesearchFile')) {
+    if (bodyMentions(req.body, 'UploadFilesearchFile')) {
       req.alias = 'uploadFile';
       req.reply({ body: { data: { uploadFilesearchFile: UPLOADED_FILE } }, delay: uploadDelay });
       return;
     }
 
-    if (isMultipart(req.body, 'CreateGoldenQa')) {
+    if (bodyMentions(req.body, 'CreateGoldenQa')) {
       req.alias = 'CreateGoldenQa';
       req.reply({
         body: {
@@ -82,7 +109,8 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
     req.alias = operation;
 
     // whatever the test asked to break answers with a server error instead
-    if (fails.includes(operation)) {
+    if (fails.includes(operation) || stillFailing.has(operation)) {
+      stillFailing.delete(operation);
       req.reply({ statusCode: 500, body: {} });
       return;
     }

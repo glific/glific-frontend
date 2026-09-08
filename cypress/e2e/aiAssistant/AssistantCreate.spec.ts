@@ -1,175 +1,11 @@
 import { BELOW_STICKY_HEADER, V2_SERVICES, loginWithServices } from '../../utils/assistant-flow';
-
-const NEW_ASSISTANT_ID = '42';
-const CREATE_PATH = '/assistants/add';
-
-const MODELS = [
-  {
-    __typename: 'KaapiModel',
-    modelName: 'gpt-4.1',
-    provider: 'openai',
-    completionType: ['text'],
-    config: JSON.stringify({
-      temperature: { description: 'How adventurous the answers are.', min: 0, max: 2, default: 1 },
-    }),
-    badge: 'Recommended',
-    category: 'recommended',
-  },
-  {
-    __typename: 'KaapiModel',
-    modelName: 'o3-mini',
-    provider: 'openai',
-    completionType: ['text'],
-    config: JSON.stringify({
-      effort: {
-        description: 'How long it thinks before answering.',
-        options: ['low', 'medium', 'high'],
-        default: 'medium',
-      },
-    }),
-    badge: null,
-    category: 'all',
-  },
-];
-
-const UPLOADED_FILE = {
-  __typename: 'FilesearchFile',
-  fileId: 'file-abc123',
-  filename: 'sample.md',
-  uploadedAt: '2026-01-01T00:00:00Z',
-  fileSize: 2048,
-};
-
-const CREATED_ASSISTANT = {
-  __typename: 'Assistant',
-  id: NEW_ASSISTANT_ID,
-  assistantId: 'asst_420000000000',
-  name: 'Maternal Health Bot',
-  newVersionInProgress: false,
-  cloneStatus: null,
-  model: 'gpt-4.1',
-  instructions: 'You answer questions about antenatal care.',
-  status: 'ready',
-  temperature: 1,
-  effort: null,
-  vectorStore: null,
-};
-
-const FIRST_VERSION = {
-  __typename: 'AssistantConfigVersion',
-  id: 'v1',
-  majorVersion: 1,
-  minorVersion: 0,
-  versionLabel: '1.0',
-  model: 'gpt-4.1',
-  prompt: 'You answer questions about antenatal care.',
-  settings: { temperature: 1 },
-  status: 'ready',
-  isLive: true,
-  description: null,
-  insertedAt: '2026-01-01T00:00:00Z',
-  updatedAt: '2026-01-01T00:00:00Z',
-  vectorStore: null,
-};
-
-// the file upload goes out as multipart, so the operation name is in the raw body rather than in JSON
-const isFileUpload = (body: unknown) =>
-  typeof body === 'string' && body.includes('UploadFilesearchFile');
-
-const stubAssistantApi = () => {
-  cy.intercept('POST', Cypress.expose('backendUrl'), (req) => {
-    if (isFileUpload(req.body)) {
-      req.alias = 'uploadFile';
-      req.reply({ body: { data: { uploadFilesearchFile: UPLOADED_FILE } } });
-      return;
-    }
-
-    const operation = req.body?.operationName;
-    if (!operation) {
-      req.continue();
-      return;
-    }
-
-    // every operation answers to its own name, so a test can wait on the one it cares about
-    req.alias = operation;
-
-    switch (operation) {
-      case 'AssistantModels':
-        req.reply({ body: { data: { kaapiModels: MODELS } } });
-        return;
-
-      case 'CreateAssistant':
-        req.reply({
-          body: {
-            data: {
-              createAssistant: {
-                assistant: {
-                  __typename: 'Assistant',
-                  id: NEW_ASSISTANT_ID,
-                  name: req.body.variables?.input?.name,
-                },
-                errors: null,
-              },
-            },
-          },
-        });
-        return;
-
-      case 'CreateKnowledgeBase':
-        req.reply({
-          body: {
-            data: {
-              createKnowledgeBase: {
-                knowledgeBase: {
-                  __typename: 'KnowledgeBase',
-                  id: 'kb-1',
-                  knowledgeBaseVersionId: 'kbv-1',
-                  name: 'Maternal Health Bot',
-                },
-              },
-            },
-          },
-        });
-        return;
-
-      case 'Assistant':
-        req.reply({
-          body: {
-            data: { assistant: { __typename: 'AssistantResult', assistant: CREATED_ASSISTANT } },
-          },
-        });
-        return;
-
-      case 'AssistantVersions':
-        req.reply({ body: { data: { assistantVersions: [FIRST_VERSION] } } });
-        return;
-
-      case 'GoldenQas':
-        req.reply({ body: { data: { goldenQas: [] } } });
-        return;
-
-      case 'AiEvaluations':
-        req.reply({ body: { data: { aiEvaluations: [] } } });
-        return;
-
-      default:
-        req.continue();
-    }
-  });
-};
-
-const openCreatePage = () => {
-  loginWithServices(V2_SERVICES);
-  stubAssistantApi();
-
-  cy.visit(CREATE_PATH);
-  cy.get('[data-testid="assistantDetailContainer"]', { timeout: 10000 }).should('be.visible');
-};
-
-const openTab = (tab: string) => {
-  cy.get(`[data-testid="tab-${tab}"]`).click(BELOW_STICKY_HEADER);
-  return cy.get(`[data-testid="tabPanel-${tab}"]`).should('be.visible');
-};
+import {
+  CREATE_PATH,
+  NEW_ASSISTANT_ID,
+  openCreatePage,
+  stubCreateAssistantApi,
+} from '../../utils/assistant-create';
+import { openTab } from '../../utils/assistant-detail';
 
 const nameIt = (name: string) => {
   cy.get('[data-testid="editNameButton"]').click(BELOW_STICKY_HEADER);
@@ -184,7 +20,7 @@ const writePrompt = (prompt: string) => {
 describe('starting a new assistant', () => {
   it('the create button on the list opens a blank assistant', () => {
     loginWithServices(V2_SERVICES);
-    stubAssistantApi();
+    stubCreateAssistantApi();
 
     cy.visit('/assistants');
     cy.get('[data-testid="headingButton"]', { timeout: 10000 }).click(BELOW_STICKY_HEADER);

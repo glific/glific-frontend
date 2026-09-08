@@ -32,3 +32,6 @@ export const openAssistantList = () => {
     return assistants.length as number;
   });
 };
+
+export const bodyMentions = (body: unknown, operation: string) =>
+  typeof body === 'string' && body.includes(operation);

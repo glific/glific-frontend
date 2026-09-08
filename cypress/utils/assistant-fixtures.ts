@@ -72,13 +72,18 @@ const version = (id: string, label: string, isLive: boolean, prompt: string) => 
   model: 'gpt-4.1',
   prompt,
   settings: { temperature: 1 },
-  status: 'ready',
+  status: 'ready' as string,
   isLive,
   description: null,
   insertedAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-02T00:00:00Z',
-  vectorStore: KNOWLEDGE_BASE,
+  vectorStore: KNOWLEDGE_BASE as typeof KNOWLEDGE_BASE | null,
 });
+
+export type RunFixture = typeof COMPLETED_RUN;
+export type VersionFixture = ReturnType<typeof version>;
+export type ModelFixture = (typeof MODELS)[number];
+export type GoldenQaFixture = (typeof GOLDEN_SETS)[number];
 
 export const VERSIONS = [
   version(LIVE_VERSION_ID, '2.0', true, LIVE_PROMPT),
@@ -112,9 +117,9 @@ export const COMPLETED_RUN = {
   __typename: 'AiEvaluation',
   id: RUN_ID,
   name: 'maternal_health_core_run',
-  status: 'COMPLETED',
-  failureReason: null,
-  results: JSON.stringify({ summary_scores: SUMMARY_SCORES }),
+  status: 'COMPLETED' as string,
+  failureReason: null as string | null,
+  results: JSON.stringify({ summary_scores: SUMMARY_SCORES }) as string | null,
   duplicationFactor: 1,
   goldenQa: {
     __typename: 'AiEvalGoldenQa',
