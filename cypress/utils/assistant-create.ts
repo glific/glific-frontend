@@ -37,6 +37,8 @@ export const FIRST_VERSION = {
 };
 
 export const stubCreateAssistantApi = () => {
+  let createdName = CREATED_ASSISTANT.name;
+
   cy.intercept('POST', Cypress.expose('backendUrl'), (req) => {
     if (bodyMentions(req.body, 'UploadFilesearchFile')) {
       req.alias = 'uploadFile';
@@ -59,15 +61,12 @@ export const stubCreateAssistantApi = () => {
         return;
 
       case 'CreateAssistant':
+        createdName = req.body.variables?.input?.name ?? CREATED_ASSISTANT.name;
         req.reply({
           body: {
             data: {
               createAssistant: {
-                assistant: {
-                  __typename: 'Assistant',
-                  id: NEW_ASSISTANT_ID,
-                  name: req.body.variables?.input?.name,
-                },
+                assistant: { __typename: 'Assistant', id: NEW_ASSISTANT_ID, name: createdName },
                 errors: null,
               },
             },
@@ -95,7 +94,12 @@ export const stubCreateAssistantApi = () => {
       case 'Assistant':
         req.reply({
           body: {
-            data: { assistant: { __typename: 'AssistantResult', assistant: CREATED_ASSISTANT } },
+            data: {
+              assistant: {
+                __typename: 'AssistantResult',
+                assistant: { ...CREATED_ASSISTANT, name: createdName },
+              },
+            },
           },
         });
         return;

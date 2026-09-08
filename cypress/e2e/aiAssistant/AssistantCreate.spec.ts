@@ -184,7 +184,7 @@ describe('the Try It Out tab', () => {
 describe('saving the first version', () => {
   beforeEach(() => {
     openCreatePage();
-    nameIt('Maternal Health Bot');
+    nameIt('ANC Companion');
     writePrompt('You answer questions about antenatal care.');
   });
 
@@ -194,7 +194,7 @@ describe('saving the first version', () => {
     cy.wait('@CreateAssistant').then((interception) => {
       const input = interception.request.body.variables?.input;
 
-      expect(input.name).to.eq('Maternal Health Bot');
+      expect(input.name).to.eq('ANC Companion');
       expect(input.instructions).to.eq('You answer questions about antenatal care.');
       expect(input.model).to.eq('gpt-4.1');
     });
@@ -206,6 +206,7 @@ describe('saving the first version', () => {
     cy.location('pathname', { timeout: 10000 }).should('eq', `/assistants/${NEW_ASSISTANT_ID}`);
     cy.contains('Assistant created successfully').should('be.visible');
 
+    cy.get('[data-testid="headerTitle"]').should('contain', 'ANC Companion');
     cy.get('[data-testid="versionBar"]').should('be.visible');
     cy.get('[data-testid="versionPill"]').should('contain', 'Version 1.0');
     cy.get('[data-testid="newAssistantPill"]').should('not.exist');
