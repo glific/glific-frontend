@@ -1,7 +1,9 @@
 import { BELOW_STICKY_HEADER } from '../../utils/assistant-flow';
 import {
+  BUILDING_VERSIONS,
   EMPTY_SCORES,
   FAILED_RUN,
+  FAILED_VERSIONS,
   GOLDEN_SETS,
   LIVE_VERSION_ID,
   RUNNING_RUN,
@@ -10,7 +12,12 @@ import {
   UNSCORED_SCORES,
   WEAK_SCORES,
 } from '../../utils/assistant-fixtures';
-import { openAssistant, openAssistantPage, openTab } from '../../utils/assistant-detail';
+import {
+  openAssistant,
+  openAssistantPage,
+  openTab,
+  selectVersion,
+} from '../../utils/assistant-detail';
 
 describe('the Golden Q&A Evaluation tab of a saved assistant', () => {
   beforeEach(() => {
@@ -300,6 +307,40 @@ describe('a run with nothing to suggest from', () => {
     cy.get('[data-testid="suggestedPromptUnscored"]').should(
       'contain',
       'No suggestion for this run'
+    );
+  });
+});
+
+describe('a version the server has not built', () => {
+  const hoverRun = () =>
+    cy
+      .get('[data-testid="runEvaluationButton"]')
+      .parent()
+      .trigger('mouseover', BELOW_STICKY_HEADER);
+
+  it('will not evaluate a failed version, and says why', () => {
+    openAssistant({ versions: FAILED_VERSIONS });
+    selectVersion('2.1');
+    openTab('evaluation');
+
+    cy.get('[data-testid="runEvaluationButton"]').should('be.disabled');
+    hoverRun();
+    cy.get('[role="tooltip"]').should(
+      'contain',
+      'This version failed to build, so it cannot be evaluated'
+    );
+  });
+
+  it('will not evaluate a version that is still being prepared', () => {
+    openAssistant({ versions: BUILDING_VERSIONS });
+    selectVersion('2.1');
+    openTab('evaluation');
+
+    cy.get('[data-testid="runEvaluationButton"]').should('be.disabled');
+    hoverRun();
+    cy.get('[role="tooltip"]').should(
+      'contain',
+      'It can be evaluated once the server has finished building it.'
     );
   });
 });
