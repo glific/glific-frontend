@@ -1867,7 +1867,8 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
 });
 
 test("the judge's summary is shown in the banner", async () => {
-  const summary = 'Overall the run looks healthy. The one mild gap is item_0, which scored 3 on ground truth.';
+  const summary =
+    '**Overall read:** the run looks healthy. The one mild gap is item_0, which scored 3 on ground truth.';
 
   render(
     <MockedProvider
@@ -1916,7 +1917,11 @@ test("the judge's summary is shown in the banner", async () => {
     </MockedProvider>
   );
 
-  expect(await screen.findByTestId('evaluationSummary')).toHaveTextContent('Overall the run looks healthy');
+  const banner = await screen.findByTestId('evaluationSummary');
+
+  expect(banner).toHaveTextContent('the run looks healthy');
+  expect(banner.querySelector('b')).toHaveTextContent('Overall read:');
+  expect(banner.textContent).not.toContain('*');
 });
 
 test('Export CSV downloads the question-level results as a CSV file', async () => {
