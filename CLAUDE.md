@@ -22,7 +22,24 @@ yarn serve               # Preview production build locally
 npx vitest run src/path/to/Component.test.tsx
 ```
 
-**End-to-end (Cypress) tests** live in this repo under `cypress/` and require the **Elixir backend** (`glific/glific`) running — they are not part of `yarn test`. Don't run them by hand; use the **`e2e-test-engineer`** agent, which brings up backend + frontend and runs the specs. See "End-to-End (E2E) Testing" below.
+**End-to-end (Cypress) tests** live in this repo under `cypress/` and require the **Elixir backend** (`glific/glific`) running — they are not part of `yarn test`. Don't run them by hand; use the **`test-engineer`** agent, which brings up backend + frontend and runs the narrowest relevant spec. See "End-to-End (E2E) Testing" below.
+
+## The standard agent workflow
+
+Feature work runs through four agents in `.claude/agents/`, the same four in every
+ProjectTech4Dev repo. Use them rather than ad-hoc prompting — they encode the conventions in
+this document.
+
+| Agent | Takes | Produces |
+|-------|-------|----------|
+| `planner` | a rough plan, ticket, or feature request | a detailed implementation plan at `plans/<slug>.md` |
+| `engineer` | that plan | the implementation |
+| `test-engineer` | the implementation | the test layer (Vitest + Cypress) |
+| `reviewer` | the diff + the plan + the original request | a prioritised review verdict |
+
+Skip the planner only for changes small enough to hold in one file. The reviewer checks the diff
+against the plan first, so a plan that names real files, the components to reuse, and testable
+acceptance criteria is what makes the rest of the chain work.
 
 ## Dev Environment Prerequisites
 
@@ -230,7 +247,7 @@ E2E is **Cypress**, and the specs live in this repo under `cypress/`. Running th
 - **Frontend** (this repo, `yarn dev`) at `https://glific.test:3000`
 - Copy `cypress.config.ts.example` to `cypress.config.ts` (gitignored) and fill in local/test credentials before running Cypress locally.
 
-Prefer the **`e2e-test-engineer`** agent (`.claude/agents/`) over doing this by hand — it does the
+Prefer the **`test-engineer`** agent (`.claude/agents/`) over doing this by hand — it does the
 preflight/bring-up, runs the narrowest relevant spec, and returns a compact pass/fail verdict
 instead of flooding the session with server and runner logs. CI mirrors this in
 `.github/workflows/e2e-tests.yml` (sharded via `cypress-split`); the slow `filesearch` suite is
