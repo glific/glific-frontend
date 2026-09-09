@@ -168,6 +168,18 @@ describe('AI Assistant list rows', () => {
     }).should('be.visible');
   });
 
+  it('copies an assistant id from its row', () => {
+    cy.window().then((win) => {
+      cy.stub(win.navigator.clipboard, 'writeText').as('copy').resolves();
+    });
+
+    cy.get('[data-testid="copyAssistantId"]').first().click(BELOW_STICKY_HEADER);
+
+    cy.get('@copy').should('have.been.calledWith', 'asst_10000000000');
+    // copying a row must not open it
+    cy.location('pathname').should('eq', '/assistants');
+  });
+
   it('opens the assistant behind the row', () => {
     cy.get('[data-testid="edit-icon"]').first().click(BELOW_STICKY_HEADER);
 
