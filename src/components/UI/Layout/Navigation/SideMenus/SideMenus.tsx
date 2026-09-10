@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import {
   Accordion,
   AccordionDetails,
@@ -12,6 +13,7 @@ import {
 } from '@mui/material';
 import LinkIcon from 'assets/images/icons/UrlLink.svg?react';
 import ListIcon from 'components/UI/ListIcon/ListIcon';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { Menu } from 'config/menu';
 import { getSideDrawerMenus } from 'context/role';
 import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
@@ -171,6 +173,11 @@ const SideMenus = ({ opened }: SideMenusProps) => {
                       className={isSelected ? styles.SelectedText : styles.UnselectedText}
                       primary={t(menu.title as any)}
                     />
+                  )}
+                  {opened && menu.alert && (
+                    <Tooltip title={t(menu.alert as any)} placement="right">
+                      <WarningAmberIcon className={styles.MenuAlert} data-testid="menuAlert" />
+                    </Tooltip>
                   )}
                 </ListItemButton>
               </div>
