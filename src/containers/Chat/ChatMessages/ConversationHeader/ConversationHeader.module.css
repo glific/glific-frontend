@@ -273,7 +273,7 @@
   }
 
   .ChannelSelectorContainer {
-    padding: 0 12px 12px;
+    padding: 0 var(--app-space-lg) var(--app-space-lg);
   }
 
   .Chat {
