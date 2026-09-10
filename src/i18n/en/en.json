@@ -1200,7 +1200,7 @@
   "Apply and save a new version": "Apply and save a new version",
   "Not now": "Not now",
   "Restore": "Restore",
-  "Targets your weakest check — {{check}} at {{score}}": "Targets your weakest check — {{check}} at {{score}}",
+  "Targets your weakest check — {{check}} at {{score}}/{{outOf}}": "Targets your weakest check — {{check}} at {{score}}/{{outOf}}",
   "No suggestion for this run": "No suggestion for this run",
   "None of the checks reported a score, so there is nothing to pin a prompt change on.": "None of the checks reported a score, so there is nothing to pin a prompt change on.",
   "Suggestion dismissed": "Suggestion dismissed",

@@ -1065,7 +1065,7 @@
   "Apply and save a new version": "लागू करें और नया संस्करण सहेजें",
   "Not now": "अभी नहीं",
   "Restore": "वापस लाएं",
-  "Targets your weakest check — {{check}} at {{score}}": "आपकी सबसे कमज़ोर जाँच पर केंद्रित — {{check}}, {{score}}",
+  "Targets your weakest check — {{check}} at {{score}}/{{outOf}}": "आपकी सबसे कमज़ोर जाँच पर केंद्रित — {{check}}, {{score}}/{{outOf}}",
   "No suggestion for this run": "इस रन के लिए कोई सुझाव नहीं",
   "None of the checks reported a score, so there is nothing to pin a prompt change on.": "किसी भी जाँच ने स्कोर नहीं दिया, इसलिए प्रॉम्प्ट बदलाव को किसी आधार पर टिकाया नहीं जा सकता।",
   "Suggestion dismissed": "सुझाव हटाया गया",
