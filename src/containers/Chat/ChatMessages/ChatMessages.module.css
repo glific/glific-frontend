@@ -150,9 +150,3 @@ html {
   margin-top: 0px;
   font-size: 0.8rem;
 }
-
-/* The web channel gets its own ground rather than the WhatsApp green, so staff can see which
-   channel they are replying on without reading the header. */
-.WebChannel {
-  background-color: var(--app-color-surface-channel-web);
-}

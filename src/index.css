@@ -178,16 +178,14 @@ html {
   --app-color-red-primary: #fb5c5c;
   --app-color-red-secondary: #dd1f1f;
 
-  /* Colors — indigo. The web channel's own accent: staff work both channels in one inbox, so
-     the surface has to say which one a reply is going out on without being read. */
+  /* Colors — indigo. The web channel's own accent, used to tell the two channels apart in the
+     inbox's channel toggle and presence dot. */
   --app-color-indigo-primary: #351196;
-  --app-color-indigo-tertiary: #f0f6ff;
 
   /* RGB channels of the above, for rgb(... / alpha) tints. Keep in sync with the hex. */
   --app-color-green-primary-rgb: 17 150 86; /* #119656 */
   --app-color-green-secondary-rgb: 7 63 36; /* #073f24 */
   --app-color-amber-primary-rgb: 234 179 8; /* #eab308 */
-  --app-color-indigo-primary-rgb: 79 70 229; /* #4f46e5 */
   --app-color-slate-rgb: 122 144 135; /* #7a9087 — hairlines and sunken fills */
   --app-color-white-rgb: 255 255 255;
 
@@ -208,7 +206,6 @@ html {
   --app-color-warning: var(--app-color-red-secondary);
   --app-color-channel-whatsapp: var(--app-color-green-primary);
   --app-color-channel-web: var(--app-color-indigo-primary);
-  --app-color-surface-channel-web: var(--app-color-indigo-tertiary);
 
   /* Spacing (rem, 16px root: 0.75rem=12px, 1rem=16px, 1.5rem=24px, 3rem=48px) */
   --app-space-2xs: 0.25rem; /* 0.25rem=4px */

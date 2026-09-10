@@ -4,13 +4,6 @@
   max-width: 100% !important;
 }
 
-/* The composer paints its own band behind itself, independent of the chat area above it, so it
-   kept the WhatsApp grey on a web conversation. Same token as the message area, so the two are
-   one continuous surface rather than two nearly-matching ones. */
-.ChatInputWeb {
-  background-color: var(--app-color-surface-channel-web);
-}
-
 .ChatInputElements {
   display: flex;
   height: 72px;
@@ -75,18 +68,6 @@
 
 .SendButton:disabled {
   background-color: rgba(17, 150, 86, 0.57);
-}
-
-/* The composer is the one control that acts, so it says which channel it will act on. Declared
-   after .SendButton:disabled so the disabled variant wins on order — both are one class plus one
-   pseudo-class, and they live in the same file. */
-.SendButtonWeb,
-.SendButtonWeb:hover {
-  background-color: var(--app-color-channel-web) !important;
-}
-
-.SendButtonWeb:disabled {
-  background-color: rgb(var(--app-color-indigo-primary-rgb) / 57%);
 }
 
 .SendButtonContainer {

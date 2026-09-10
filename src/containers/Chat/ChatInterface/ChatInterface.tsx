@@ -165,7 +165,6 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
             collectionId={selectedCollectionId}
             appliedFilters={appliedFilters}
             channel={isWebChannelEnabled ? channel : undefined}
-            onChannelChange={isWebChannelEnabled ? setChannel : undefined}
           />
         </div>
 

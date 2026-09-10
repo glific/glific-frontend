@@ -32,7 +32,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
-import { MESSAGE_CHANNELS, MessageChannel, messageChannel } from 'common/constants';
+import { MessageChannel, messageChannel } from 'common/constants';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
@@ -50,17 +50,9 @@ export interface ChatMessagesProps {
   setPhonenumber?: any;
   appliedFilters?: any;
   channel?: MessageChannel;
-  onChannelChange?: (channel: MessageChannel) => void;
 }
 
-export const ChatMessages = ({
-  entityId,
-  collectionId,
-  phoneId,
-  appliedFilters,
-  channel,
-  onChannelChange,
-}: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters, channel }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -889,7 +881,6 @@ export const ChatMessages = ({
         handleAction={() => handleChatClearedAction()}
         groups={groups}
         channel={channel}
-        onChannelChange={onChannelChange}
       />
     );
 
@@ -929,12 +920,7 @@ export const ChatMessages = ({
   }
 
   return (
-    <Container
-      data-testid="message-container"
-      className={`${styles.ChatMessages} ${channel === MESSAGE_CHANNELS.web ? styles.WebChannel : ''}`}
-      maxWidth={false}
-      disableGutters
-    >
+    <Container data-testid="message-container" className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation

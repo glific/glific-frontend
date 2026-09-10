@@ -215,23 +215,16 @@
   text-align: justify;
 }
 
-/* A grid rather than flex: the four blocks need strict positions, and only fixed tracks give
-   them that. The first column is exactly as wide as the last two together, which is what centres
-   the channel selector — no absolute positioning, and no dependence on how long a contact's name
-   or collection list happens to be. minmax(0, ...) lets a track shrink on a narrow window instead
-   of overflowing. */
+/* A grid rather than flex: the blocks need strict positions, and only fixed tracks give them
+   that — a contact with no collections must not shift the timer, and a web contact must not
+   shift anything by showing presence instead of one. The empty second track takes up the slack
+   so the last two stay right-aligned. minmax(0, ...) lets a track shrink on a narrow window
+   instead of overflowing. */
 .ContactInfoWrapper {
   display: grid;
-  grid-template-columns: minmax(0, 22.5rem) auto minmax(0, 15rem) minmax(0, 7.5rem);
+  grid-template-columns: minmax(0, 22.5rem) 1fr minmax(0, 15rem) minmax(0, 7.5rem);
   align-items: center;
   width: 100%;
-}
-
-.ChannelSelectorContainer {
-  grid-column: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .ConversationHeaderWrapper {
@@ -259,7 +252,6 @@
   }
 
   .ContactDetails,
-  .ChannelSelectorContainer,
   .Collections,
   .ChannelStatus,
   .CollectionInformation {
@@ -270,10 +262,6 @@
   .ChannelStatus,
   .CollectionInformation {
     display: none;
-  }
-
-  .ChannelSelectorContainer {
-    padding: 0 var(--app-space-lg) var(--app-space-lg);
   }
 
   .Chat {

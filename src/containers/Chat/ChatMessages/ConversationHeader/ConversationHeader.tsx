@@ -43,7 +43,6 @@ import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddToCollection from '../AddToCollection/AddToCollection';
 import StartAFlow from '../StartFlow/StartFlow';
-import ChannelSelector from '../../ChannelSelector/ChannelSelector';
 import WebPresence from '../WebPresence/WebPresence';
 
 import styles from './ConversationHeader.module.css';
@@ -67,7 +66,6 @@ export const shortenMultipleItems = (multipleItems: Array<string>) => {
 export interface ConversationHeaderProps {
   displayName: string;
   channel?: MessageChannel;
-  onChannelChange?: (channel: MessageChannel) => void;
   entityId?: string;
   collectionId?: string;
   handleAction: any;
@@ -89,7 +87,6 @@ export const ConversationHeader = ({
   groups,
   contact,
   channel,
-  onChannelChange,
 }: ConversationHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -593,11 +590,6 @@ export const ConversationHeader = ({
                 </div>
               </ClickAwayListener>
             </div>
-            {channel && onChannelChange && (
-              <div className={styles.ChannelSelectorContainer}>
-                <ChannelSelector testId="conversationChannelSelector" value={channel} onChange={onChannelChange} />
-              </div>
-            )}
             {entityId && contactCollections}
             {channelStatus}
             {collectionInformation}

@@ -442,10 +442,7 @@ export const ChatInput = ({
   }
 
   return (
-    <Container
-      className={`${styles.ChatInput} ${isWebConversation ? styles.ChatInputWeb : ''} ${additionalStyle}`}
-      data-testid="message-input-container"
-    >
+    <Container className={`${styles.ChatInput} ${additionalStyle}`} data-testid="message-input-container">
       {dialog}
       {open ? (
         <div className={styles.SendsContainer} id="popup">
@@ -544,7 +541,7 @@ export const ChatInput = ({
           </ClickAwayListener>
           <div className={styles.SendButtonContainer}>
             <Button
-              className={`${styles.SendButton} ${isWebConversation ? styles.SendButtonWeb : ''}`}
+              className={styles.SendButton}
               data-testid="sendButton"
               variant="contained"
               color="primary"

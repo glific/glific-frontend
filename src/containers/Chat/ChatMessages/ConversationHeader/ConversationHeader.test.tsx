@@ -459,7 +459,7 @@ describe('on a web channel conversation', () => {
     result: { data: { contact: { contact: { id: '2', isWebOnline: true } } } },
   };
 
-  const webProps = { channel: MESSAGE_CHANNELS.web, onChannelChange: vi.fn() };
+  const webProps = { channel: MESSAGE_CHANNELS.web };
 
   // There is no 24 hour window on the web, so a countdown would be a number that means nothing.
   test('presence replaces the session timer', async () => {
@@ -494,10 +494,10 @@ describe('on a web channel conversation', () => {
     expect(screen.getByTestId('disabledFlowButton')).toBeDisabled();
   });
 
-  // The four blocks are laid out by a grid with one named column each, which only holds if they
-  // are direct children of it. Nesting any of them — as the old flex markup did — silently drops
-  // it out of its column and lets the others slide along.
-  test('the name, channel, collections and status are siblings in the grid', async () => {
+  // The blocks are laid out by a grid with one named column each, which only holds if they are
+  // direct children of it. Nesting any of them — as the old flex markup did — silently drops it
+  // out of its column and lets the others slide along.
+  test('the name, collections and status are siblings in the grid', async () => {
     const { container } = render(renderHeader([...mocks, presenceMock], webProps));
 
     await waitFor(() => {
@@ -508,7 +508,6 @@ describe('on a web channel conversation', () => {
     const cells = Array.from(wrapper.children).map((child) => child.className);
 
     expect(cells.filter((name) => /ContactDetails/.test(name))).toHaveLength(1);
-    expect(cells.filter((name) => /ChannelSelectorContainer/.test(name))).toHaveLength(1);
     expect(cells.filter((name) => /ChannelStatus/.test(name))).toHaveLength(1);
 
     // The name and the presence indicator are inside their own cells, not nested any deeper.
@@ -516,16 +515,15 @@ describe('on a web channel conversation', () => {
     expect(screen.getByTestId('webPresence').parentElement?.className).toMatch(/ChannelStatus/);
   });
 
-  test('the channel can be switched from the header', async () => {
-    const onChannelChange = vi.fn();
-    render(renderHeader([...mocks, presenceMock], { ...webProps, onChannelChange }));
+  // The panel's selector is the only one: a second copy in the header let the two disagree about
+  // which channel was selected, and duplicated the same control a few hundred pixels apart.
+  test('the header does not offer its own channel selector', async () => {
+    render(renderHeader([...mocks, presenceMock], webProps));
 
     await waitFor(() => {
-      expect(screen.getByTestId('conversationChannelSelector')).toBeInTheDocument();
+      expect(screen.getByTestId('webPresence')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('conversationChannelSelector-WHATSAPP'));
-
-    expect(onChannelChange).toHaveBeenCalledWith(MESSAGE_CHANNELS.whatsapp);
+    expect(screen.queryByTestId('conversationChannelSelector')).not.toBeInTheDocument();
   });
 });
