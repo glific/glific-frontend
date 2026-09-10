@@ -158,6 +158,6 @@
 .MenuAlert {
   display: block;
   color: var(--app-color-attention);
-  font-size: 1.125rem;
+  font-size: var(--app-size-icon-lg);
   flex-shrink: 0;
 }
