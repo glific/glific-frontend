@@ -1,20 +1,21 @@
 import {
   configVersionLabel,
-  formatScore,
-  parseOverallScore,
   evaluationRunName,
-  parseEvaluationSummary,
-  shortMetricName,
-  parseEvaluationScores,
-  traceMetricNames,
+  formatScore,
   isRunComplete,
   isRunFailed,
   isRunInProgress,
+  markdownBoldToWhatsApp,
   mergeEvaluationUpdate,
-  parseAssistantHealth,
   overallScore,
+  parseAssistantHealth,
   parseEvaluationResults,
+  parseEvaluationScores,
+  parseEvaluationSummary,
+  parseOverallScore,
   scoreBand,
+  shortMetricName,
+  traceMetricNames,
 } from './evaluation';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 
@@ -430,5 +431,25 @@ describe('configVersionLabel', () => {
   test('a run with no config version has no label', () => {
     expect(configVersionLabel(null)).toBe('');
     expect(configVersionLabel(undefined)).toBe('');
+  });
+});
+
+describe('markdownBoldToWhatsApp', () => {
+  test('a markdown pair becomes the single asterisk the renderer understands', () => {
+    expect(markdownBoldToWhatsApp('**Top 3 to check:** questions 2, 22')).toBe('*Top 3 to check:* questions 2, 22');
+  });
+
+  test('every pair in a long summary is collapsed', () => {
+    expect(markdownBoldToWhatsApp('**Overall read:** fine. **Question 58** failed.')).toBe(
+      '*Overall read:* fine. *Question 58* failed.'
+    );
+  });
+
+  test('bold spanning a line break is still collapsed', () => {
+    expect(markdownBoldToWhatsApp('**two\nlines**')).toBe('*two\nlines*');
+  });
+
+  test('text with nothing to collapse is left alone', () => {
+    expect(markdownBoldToWhatsApp('*already whatsapp* and 2 * 3 maths')).toBe('*already whatsapp* and 2 * 3 maths');
   });
 });

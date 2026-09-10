@@ -109,10 +109,10 @@ export const addLogsMethod = (event: string, logData: any) => {
   setLogs(`${event} with data ${JSON.stringify(logData)}`, 'info', false);
 };
 
-export const downloadFile = (url: string, filename: string) => {
+export const downloadFile = (url: string, filename: string, target: string = '_blank') => {
   const link = document.createElement('a');
   link.href = url;
-  link.target = '_blank';
+  link.target = target;
   link.download = filename;
   document.body.appendChild(link);
   link.click();

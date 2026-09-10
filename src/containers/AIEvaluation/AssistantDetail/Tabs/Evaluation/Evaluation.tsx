@@ -35,6 +35,7 @@ export interface EvaluationProps {
   versionId?: string;
   liveVersionId?: string;
   versionLabel?: string;
+  versionStatus?: string;
   assistantName?: string;
   onRunningChange?: (running: boolean) => void;
   onLastRunChange?: (run: EvaluationRun | null) => void;
@@ -47,6 +48,7 @@ export const Evaluation = ({
   versionId,
   liveVersionId,
   versionLabel,
+  versionStatus,
   assistantName,
   onRunningChange,
   onLastRunChange,
@@ -116,6 +118,15 @@ export const Evaluation = ({
   const lastUsedSetId = assistantRuns[0]?.goldenQa?.id;
   const latestRun = versionRuns[0];
   const versionRunInProgress = versionRuns.some(isRunInProgress);
+
+  const runBlockedReason = () => {
+    if (versionRunInProgress) return t('An evaluation is already running for this version. Wait for it to finish.');
+    if (versionStatus === 'failed')
+      return t('This version failed to build, so it cannot be evaluated. Save a new version.');
+    if (versionStatus === 'in_progress')
+      return t('This version is still being prepared. It can be evaluated once the server has finished building it.');
+    return '';
+  };
 
   useEffect(() => {
     onRunningChange?.(versionRunInProgress);
@@ -250,20 +261,13 @@ export const Evaluation = ({
             >
               {t('Manage Golden Q&A')}
             </Button>
-            <Tooltip
-              title={
-                versionRunInProgress
-                  ? t('An evaluation is already running for this version. Wait for it to finish.')
-                  : ''
-              }
-              placement="top"
-            >
+            <Tooltip title={runBlockedReason()} placement="top">
               <Button
                 variant="contained"
                 color="primary"
                 className={styles.RunButton}
                 startIcon={<PlayArrowIcon />}
-                disabled={!versionId || versionRunInProgress}
+                disabled={!versionId || Boolean(runBlockedReason())}
                 onClick={() => setRunOpen(true)}
                 data-testid="runEvaluationButton"
               >

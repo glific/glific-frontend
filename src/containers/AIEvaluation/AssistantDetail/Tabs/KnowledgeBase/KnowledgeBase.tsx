@@ -114,7 +114,7 @@ export const KnowledgeBase = ({
         return;
       }
 
-      downloadFile(signedUrl, data?.getFile?.filename || file.filename);
+      downloadFile(signedUrl, data?.getFile?.filename || file.filename, '_self');
     } catch (error: unknown) {
       setErrorMessage(error);
     } finally {

@@ -206,6 +206,8 @@ export const parseScoreMetrics = (raw: unknown): EvaluationMetrics => {
   return parseEvaluationResults(field(asJson(raw), 'score'));
 };
 
+export const markdownBoldToWhatsApp = (text: string) => text.replace(/\*\*([\s\S]+?)\*\*/g, '*$1*');
+
 export const parseEvaluationSummary = (raw: unknown): string | null => {
   const summary = field(asJson(raw), 'score', 'overall', 'ai_summary');
 

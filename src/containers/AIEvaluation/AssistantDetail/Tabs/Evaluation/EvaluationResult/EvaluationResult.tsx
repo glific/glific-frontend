@@ -5,9 +5,11 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { BAND_ICON } from 'containers/AIEvaluation/utils/evaluation/bandIcon';
+import { MarkdownAnswer } from '../../../components';
 import type { EvaluationMetrics, EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import {
   BAND_LABEL,
+  markdownBoldToWhatsApp,
   configVersionLabel,
   MAX_SCORE,
   METRIC_HINT,
@@ -151,7 +153,7 @@ export const EvaluationResult = ({
               </span>
               {summary && (
                 <div className={styles.BannerSummary} data-testid="evaluationSummary">
-                  {summary}
+                  <MarkdownAnswer text={markdownBoldToWhatsApp(summary)} />
                 </div>
               )}
             </div>

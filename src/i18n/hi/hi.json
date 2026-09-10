@@ -1046,6 +1046,8 @@
   "Consistency check": "निरंतरता जांच",
   "Asks each question five times. Catches answers that change between attempts.": "हर प्रश्न पांच बार पूछता है। हर बार बदलने वाले उत्तर पकड़ता है।",
   "An evaluation is already running for this version. Wait for it to finish.": "इस वर्ज़न के लिए पहले से एक मूल्यांकन चल रहा है। उसके पूरा होने का इंतज़ार करें।",
+  "This version failed to build, so it cannot be evaluated. Save a new version.": "यह संस्करण तैयार नहीं हो सका, इसलिए इसका मूल्यांकन नहीं हो सकता। नया संस्करण सेव करें।",
+  "This version is still being prepared. It can be evaluated once the server has finished building it.": "यह संस्करण अभी तैयार किया जा रहा है। सर्वर इसे तैयार कर ले, तब इसका मूल्यांकन हो सकेगा।",
   "Knowledge Base ID": "नॉलेज बेस आईडी",
   "Edit system instructions": "सिस्टम निर्देश संपादित करें",
   "Loading out the overall score": "कुल स्कोर निकाला जा रहा है",

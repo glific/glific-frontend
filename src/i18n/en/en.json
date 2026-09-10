@@ -1181,6 +1181,8 @@
   "Consistency check": "Consistency check",
   "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
   "An evaluation is already running for this version. Wait for it to finish.": "An evaluation is already running for this version. Wait for it to finish.",
+  "This version failed to build, so it cannot be evaluated. Save a new version.": "This version failed to build, so it cannot be evaluated. Save a new version.",
+  "This version is still being prepared. It can be evaluated once the server has finished building it.": "This version is still being prepared. It can be evaluated once the server has finished building it.",
   "Knowledge Base ID": "Knowledge Base ID",
   "Edit system instructions": "Edit system instructions",
   "Loading out the overall score": "Loading out the overall score",

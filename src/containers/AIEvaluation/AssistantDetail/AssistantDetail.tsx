@@ -483,6 +483,7 @@ export const AssistantDetail = () => {
         versionId={selectedVersion?.id}
         liveVersionId={liveVersion?.id}
         versionLabel={selectedVersion?.versionLabel}
+        versionStatus={selectedVersion?.status}
         assistantName={assistant?.name}
         onRunningChange={setEvaluationRunning}
         onLastRunChange={setLastVersionRun}
