@@ -878,7 +878,7 @@
   "is larger than": "से बड़ी है",
   "These are the documents the assistant can search when answering. Adding or removing a file takes a minute or two to process.": "ये वे दस्तावेज़ हैं जिनमें असिस्टेंट उत्तर देते समय खोज सकता है। फ़ाइल जोड़ने या हटाने में एक-दो मिनट लगते हैं।",
   "Processing — this runs in the background; you can keep working.": "प्रोसेस हो रहा है — यह पृष्ठभूमि में चलता है; आप काम जारी रख सकते हैं।",
-  "Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV · {{size}}MB per file": "PDF, DOC, DOCX, TXT, MD, HTML और CSV समर्थित हैं · प्रति फ़ाइल अधिकतम {{size}}MB",
+  "Supports PDF, DOC, DOCX, TXT, MD and HTML · {{size}}MB per file": "PDF, DOC, DOCX, TXT, MD और HTML समर्थित हैं · प्रति फ़ाइल अधिकतम {{size}}MB",
   "No files added yet. Add files for the assistant to use when answering questions.": "अभी कोई फ़ाइल नहीं जोड़ी गई। वे फ़ाइलें जोड़ें जिनका उपयोग असिस्टेंट उत्तर देते समय करेगा।",
   "Files added — the knowledge base is rebuilding": "फ़ाइलें जोड़ी गईं — नॉलेज बेस फिर से बन रहा है",
   "File removed — the knowledge base is rebuilding": "फ़ाइल हटाई गई — नॉलेज बेस फिर से बन रहा है",

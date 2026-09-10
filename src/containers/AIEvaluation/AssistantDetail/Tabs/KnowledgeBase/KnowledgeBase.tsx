@@ -35,7 +35,7 @@ const MAX_RETRY_ATTEMPTS = 5;
 const INITIAL_BACKOFF_MS = 2000;
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const ACCEPTED_TYPES = '.csv,.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt';
+const ACCEPTED_TYPES = '.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt';
 
 const isRateLimitError = (error: unknown) => {
   const failure = error as UploadError | null;
@@ -253,7 +253,7 @@ export const KnowledgeBase = ({
             </Tooltip>
           ) : (
             <div className={styles.FormatsHint} data-testid="supportedFormats">
-              {t('Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV · {{size}}MB per file', {
+              {t('Supports PDF, DOC, DOCX, TXT, MD and HTML · {{size}}MB per file', {
                 size: MAX_FILE_SIZE_MB,
               })}
             </div>
