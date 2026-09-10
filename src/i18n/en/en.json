@@ -1181,6 +1181,8 @@
   "Consistency check": "Consistency check",
   "Asks each question five times. Catches answers that change between attempts.": "Asks each question five times. Catches answers that change between attempts.",
   "An evaluation is already running for this version. Wait for it to finish.": "An evaluation is already running for this version. Wait for it to finish.",
+  "This version failed to build, so it cannot be evaluated. Save a new version.": "This version failed to build, so it cannot be evaluated. Save a new version.",
+  "This version is still being prepared. It can be evaluated once the server has finished building it.": "This version is still being prepared. It can be evaluated once the server has finished building it.",
   "Knowledge Base ID": "Knowledge Base ID",
   "Edit system instructions": "Edit system instructions",
   "Loading out the overall score": "Loading out the overall score",
@@ -1212,5 +1214,15 @@
   "Evaluation runs could not be loaded": "Evaluation runs could not be loaded",
   "Online": "Online",
   "Offline": "Offline",
-  "Flows cannot be started on the web channel yet": "Flows cannot be started on the web channel yet"
+  "Flows cannot be started on the web channel yet": "Flows cannot be started on the web channel yet",
+  "That file type is not supported.": "That file type is not supported.",
+  "That file is {{size}}KB. Please upload something under {{max}}KB.": "That file is {{size}}KB. Please upload something under {{max}}KB.",
+  "The upload did not return a file. Please try again.": "The upload did not return a file. Please try again.",
+  "An error occurred while uploading the file.": "An error occurred while uploading the file.",
+  "Uploaded file": "Uploaded file",
+  "No file uploaded yet.": "No file uploaded yet.",
+  "Up to {{max}}KB.": "Up to {{max}}KB.",
+  "Replace": "Replace",
+  "File URL": "File URL",
+  "Enter {{label}} here": "Enter {{label}} here"
 }

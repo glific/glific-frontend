@@ -1867,7 +1867,8 @@ test('a markdown table stays as text, because WhatsApp cannot render one', async
 });
 
 test("the judge's summary is shown in the banner", async () => {
-  const summary = 'Overall the run looks healthy. The one mild gap is item_0, which scored 3 on ground truth.';
+  const summary =
+    '**Overall read:** the run looks healthy. The one mild gap is item_0, which scored 3 on ground truth.';
 
   render(
     <MockedProvider
@@ -1916,7 +1917,11 @@ test("the judge's summary is shown in the banner", async () => {
     </MockedProvider>
   );
 
-  expect(await screen.findByTestId('evaluationSummary')).toHaveTextContent('Overall the run looks healthy');
+  const banner = await screen.findByTestId('evaluationSummary');
+
+  expect(banner).toHaveTextContent('the run looks healthy');
+  expect(banner.querySelector('b')).toHaveTextContent('Overall read:');
+  expect(banner.textContent).not.toContain('*');
 });
 
 test('Export CSV downloads the question-level results as a CSV file', async () => {
@@ -2470,4 +2475,41 @@ test('a failed runs fetch says so instead of claiming nothing has run', async ()
 
   expect(await screen.findByTestId('evaluationRunsLoadError')).toHaveTextContent('could not be loaded');
   expect(screen.queryByTestId('noEvaluationsYet')).not.toBeInTheDocument();
+});
+
+describe('a version the server has not built', () => {
+  const renderVersion = (versionStatus: string) =>
+    render(
+      <MockedProvider mocks={[listMock(oneSet), noRunsMock]}>
+        <Evaluation assistantId="a1" versionId="v1" versionLabel="1.0" versionStatus={versionStatus} />
+      </MockedProvider>
+    );
+
+  const hoverRun = async () => {
+    const button = await screen.findByTestId('runEvaluationButton');
+    fireEvent.mouseOver(button.parentElement as HTMLElement);
+    return screen.findByRole('tooltip');
+  };
+
+  test('a failed version cannot be evaluated, and says why on hover', async () => {
+    renderVersion('failed');
+
+    expect(await screen.findByTestId('runEvaluationButton')).toBeDisabled();
+    expect(await hoverRun()).toHaveTextContent(
+      'This version failed to build, so it cannot be evaluated. Save a new version.'
+    );
+  });
+
+  test('a version still being prepared cannot be evaluated either', async () => {
+    renderVersion('in_progress');
+
+    expect(await screen.findByTestId('runEvaluationButton')).toBeDisabled();
+    expect(await hoverRun()).toHaveTextContent('It can be evaluated once the server has finished building it.');
+  });
+
+  test('a ready version is left alone', async () => {
+    renderVersion('ready');
+
+    expect(await screen.findByTestId('runEvaluationButton')).toBeEnabled();
+  });
 });

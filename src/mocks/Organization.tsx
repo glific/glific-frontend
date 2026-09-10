@@ -1190,6 +1190,81 @@ export const getMaytapiProvider = {
   },
 };
 
+// Deliberately declared out of order, so the `position` sort is what puts them right.
+const WEB_CHANNEL_KEYS = JSON.stringify({
+  theme: {
+    view_only: false,
+    type: 'select',
+    label: 'Theme',
+    default: 'zinc',
+    position: 3,
+    options: [
+      { id: 'violet', label: 'Violet', swatch: '#7f22fe' },
+      { id: 'blue', label: 'Blue', swatch: '#155dfc' },
+      { id: 'green', label: 'Green', swatch: '#008236' },
+      { id: 'teal', label: 'Teal', swatch: '#00786f' },
+      { id: 'rose', label: 'Rose', swatch: '#ec003f' },
+      { id: 'orange', label: 'Orange', swatch: '#ff6900' },
+      { id: 'amber', label: 'Amber', swatch: '#ffb900' },
+      { id: 'zinc', label: 'Zinc', swatch: '#18181b' },
+    ],
+  },
+  logo_url: {
+    view_only: false,
+    type: 'upload',
+    label: 'Logo',
+    default: null,
+    position: 2,
+    max_size_kb: 200,
+    upload_folder: 'org_logo',
+    accept: 'image/png,image/jpeg,image/webp,image/svg+xml',
+    helper_text: 'PNG, JPEG, WEBP or SVG up to 200KB. Landscape works best.',
+  },
+  display_name: { view_only: false, type: 'string', label: 'Display Name', default: null, position: 1 },
+});
+
+const getWebChannelCredential = {
+  request: {
+    query: GET_CREDENTIAL,
+    variables: { shortcode: 'web_channel' },
+  },
+  result: {
+    data: {
+      credential: {
+        __typename: 'CredentialResult',
+        credential: null,
+      },
+    },
+  },
+};
+
+const getWebChannelProvider = {
+  request: {
+    query: GET_PROVIDERS,
+    variables: { filter: { shortcode: 'web_channel' } },
+  },
+  result: {
+    data: {
+      providers: [
+        {
+          description: 'Branding shown to beneficiaries chatting from a browser',
+          group: null,
+          id: '14',
+          isRequired: false,
+          keys: WEB_CHANNEL_KEYS,
+          name: 'Web Channel',
+          secrets: '{}',
+          shortcode: 'web_channel',
+        },
+      ],
+    },
+  },
+};
+
+// A provider whose keys declare `type: "select"`, to prove the credential form renders a
+// dropdown generically rather than needing a page of its own.
+export const getWebChannelProviderMock = [getWebChannelCredential, getWebChannelCredential, getWebChannelProvider];
+
 export const updateMaytapiCredentials = (error: boolean = false) => ({
   request: {
     query: UPDATE_CREDENTIAL,

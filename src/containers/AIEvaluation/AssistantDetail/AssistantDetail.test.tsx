@@ -1357,6 +1357,42 @@ describe('version status', () => {
     });
   });
 
+  test('a failed version cannot be evaluated either, and the run button says why', async () => {
+    const failed = { ...version(2, false), status: 'failed' };
+    const evaluationMocks = [
+      {
+        request: { query: LIST_GOLDEN_QA },
+        variableMatcher: () => true,
+        result: {
+          data: { goldenQas: [{ id: 'g1', name: 'core_set', totalItems: 10, insertedAt: '2026-08-10T10:00:00Z' }] },
+        },
+        maxUsageCount: Number.POSITIVE_INFINITY,
+      },
+      {
+        request: { query: LIST_AI_EVALUATIONS },
+        variableMatcher: () => true,
+        result: { data: { aiEvaluations: [] } },
+        maxUsageCount: Number.POSITIVE_INFINITY,
+      },
+    ];
+
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([version(1, true), failed]), ...evaluationMocks]);
+
+    fireEvent.click(await screen.findByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId('versionOption-2.0'));
+    fireEvent.click(screen.getByTestId('tab-evaluation'));
+
+    const runButton = await screen.findByTestId('runEvaluationButton');
+    expect(runButton).toBeDisabled();
+
+    fireEvent.mouseOver(runButton.parentElement as HTMLElement);
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent(
+        'This version failed to build, so it cannot be evaluated. Save a new version.'
+      );
+    });
+  });
+
   test('a live version being rebuilt keeps its LIVE badge', async () => {
     const rebuildingLive = { ...version(1, true), status: 'in_progress' };
     renderDetail('/assistants/1', [getAssistant('1'), versionsMock([rebuildingLive, version(2, false)])]);
