@@ -386,7 +386,11 @@ test('downloading a file fetches a fresh link and saves it under its own name', 
   fireEvent.click(screen.getByTestId('downloadFileButton'));
 
   await waitFor(() => {
-    expect(download).toHaveBeenCalledWith('https://storage.test/nutrition_faq.pdf?sig=abc', 'nutrition_faq.pdf');
+    expect(download).toHaveBeenCalledWith(
+      'https://storage.test/nutrition_faq.pdf?sig=abc',
+      'nutrition_faq.pdf',
+      '_self'
+    );
   });
 
   download.mockRestore();
