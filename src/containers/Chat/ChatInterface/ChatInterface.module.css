@@ -132,3 +132,13 @@
 .Heading {
   margin-right: 10px;
 }
+
+/* Above the tabs, because the channel scopes what Contacts, Collections and Searches each
+   search rather than being a fourth thing to search. */
+.ChannelContainer {
+  padding: var(--app-space-sm) var(--app-space-xl) var(--app-space-xl);
+}
+
+.ChannelSelectorFullWidth {
+  width: 100%;
+}

@@ -165,6 +165,7 @@ const contactsMock = new Array(30).fill(null).map((val: any, index: number) => (
   status: 'VALID',
   bspStatus: 'SESSION_AND_HSM',
   isOrgRead: false,
+  isWebOnline: false,
 }));
 
 export const searchContactCollection = [
@@ -191,6 +192,7 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             {
               id: '219',
@@ -201,6 +203,7 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
+              isWebOnline: false,
             },
             {
               id: '163',
@@ -211,6 +214,7 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             ...contactsMock,
           ],
@@ -219,6 +223,7 @@ export const searchContactCollection = [
               id: '23237',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '216',
@@ -246,6 +251,7 @@ export const searchContactCollection = [
               id: '23238',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '3456',
@@ -309,6 +315,7 @@ export const searchGroupCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             {
               id: '219',
@@ -319,6 +326,7 @@ export const searchGroupCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
+              isWebOnline: false,
             },
             {
               id: '163',
@@ -329,6 +337,7 @@ export const searchGroupCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
+              isWebOnline: false,
             },
             ...contactsMock,
           ],
@@ -337,6 +346,7 @@ export const searchGroupCollection = [
               id: '23237',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '31',
@@ -364,6 +374,7 @@ export const searchGroupCollection = [
               id: '23238',
               body: 'Please check this\n',
               messageNumber: 2,
+              channel: 'WHATSAPP',
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
                 id: '34',
@@ -468,6 +479,7 @@ export const getContactSearchQuery = {
             fields: '{}',
             id: '3',
             isOrgRead: false,
+            isWebOnline: false,
             lastMessageAt: '2024-03-28T15:12:27Z',
             maskedPhone: '9876******_2',
             name: 'New Contact',
@@ -489,6 +501,7 @@ export const getContactSearchQuery = {
               location: null,
               media: null,
               messageNumber: 87,
+              channel: 'WHATSAPP',
               receiver: {
                 __typename: 'Contact',
                 id: '3',
@@ -524,13 +537,14 @@ export const getBlockedContactSearchQuery = {
   },
 };
 
-export const messages = (limit: number, skip: number) =>
+export const messages = (limit: number, skip: number, channel: string = 'WHATSAPP', body?: string) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
     id: `${index + skip}`,
-    body: 'Hey there whats up?',
+    body: body ?? 'Hey there whats up?',
     insertedAt: `2020-${index}-25T13:36:43Z`,
     location: null,
     messageNumber: index + skip + 4,
+    channel,
     receiver: {
       id: '1',
     },
@@ -546,6 +560,7 @@ export const messages = (limit: number, skip: number) =>
             body: 'All good',
             contextId: 1,
             messageNumber: 10,
+            channel: 'WHATSAPP',
             errors: '{}',
             media: null,
             type: 'TEXT',
@@ -589,6 +604,7 @@ export const searchQuery = {
             '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
+          isWebOnline: false,
         },
         messages: messages(20, 1),
       },
@@ -627,6 +643,7 @@ export const searchWithDateFilters = (from: boolean = false, to: boolean = false
                 '{"name":{"value":"Onie Rohan","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839210Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839215Z"},"age":{"value":44,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839210Z"}}',
               id: '18',
               isOrgRead: true,
+              isWebOnline: false,
               lastMessageAt: '2025-05-26T10:57:11Z',
               maskedPhone: '589/******77',
               name: 'Onie Rohan',
@@ -646,6 +663,7 @@ export const searchWithDateFilters = (from: boolean = false, to: boolean = false
                 '{"name":{"value":"Nat Reichert","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839395Z"},"gender":{"value":"Male","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839396Z"},"age":{"value":25,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839396Z"}}',
               id: '26',
               isOrgRead: false,
+              isWebOnline: false,
               lastMessageAt: '2025-05-26T10:57:11Z',
               maskedPhone: '615-******82',
               name: 'Nat Reichert',

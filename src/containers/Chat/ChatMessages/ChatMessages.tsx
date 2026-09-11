@@ -32,6 +32,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
+import { MessageChannel, messageChannel } from 'common/constants';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
@@ -48,9 +49,10 @@ export interface ChatMessagesProps {
   phoneId?: any;
   setPhonenumber?: any;
   appliedFilters?: any;
+  channel?: MessageChannel;
 }
 
-export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters, channel }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -358,6 +360,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
           interactiveTemplateId,
           type: messageType,
           mediaId,
+          // Decides which transport the server uses. Omitting it would default the message to
+          // WhatsApp and send a browser visitor a message they never consented to.
+          channel,
         };
 
         payload = updatePayload(payload, selectedTemplate, variableParam);
@@ -372,7 +377,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
         handleMutationError(error);
       }
     },
-    [createAndSendMessage, entityId, phoneId, conversationInfo]
+    [createAndSendMessage, entityId, phoneId, conversationInfo, channel]
   );
 
   // loop through the cached conversations and find if contact/Collection exists
@@ -574,7 +579,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   };
 
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
-    let reverseConversation = [...conversationInfo.messages];
+    // A contact is one person across both channels, but a thread is not: replying in the
+    // WhatsApp view to something they said in the browser would put the answer on the wrong
+    // channel. Filtered at render, not in the query, so the thread still updates live.
+    let reverseConversation = channel
+      ? conversationInfo.messages.filter((message: any) => messageChannel(message) === channel)
+      : [...conversationInfo.messages];
 
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
@@ -870,6 +880,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
         }}
         handleAction={() => handleChatClearedAction()}
         groups={groups}
+        channel={channel}
       />
     );
 
@@ -883,6 +894,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
             contactStatus={conversationInfo[chatType]?.status}
             contactBspStatus={conversationInfo[chatType]?.bspStatus}
             showAttachmentButton={!groups}
+            channel={channel}
           />
         </LexicalWrapper>
       </div>

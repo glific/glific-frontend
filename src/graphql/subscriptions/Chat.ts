@@ -5,6 +5,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
     receivedMessage(organizationId: $organizationId) {
       id
       body
+      channel
       flow
       type
       groupId
@@ -72,6 +73,7 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
     sentMessage(organizationId: $organizationId) {
       id
       body
+      channel
       flow
       type
       groupId
@@ -148,6 +150,7 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
     sentGroupMessage(organizationId: $organizationId) {
       id
       body
+      channel
       flow
       type
       groupId

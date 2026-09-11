@@ -157,22 +157,43 @@
 }
 
 .ContactDetails {
+  grid-column: 1;
   display: flex;
   align-items: center;
-}
-
-.SessionTimerContainer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-left: auto;
-  width: 50%;
-  gap: 26px;
+  min-width: 0;
 }
 
 .SessionTimer {
   display: flex;
   align-items: center;
+}
+
+/* Each block owns a column, so an absent one leaves a gap rather than letting the rest slide
+   along: a contact with no collections must not move the timer, and a web contact must not move
+   anything by showing presence where a timer would be. */
+.Collections {
+  grid-column: 3;
+  justify-content: flex-end;
+}
+
+.Collections .CollectionsName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.ChannelStatus {
+  grid-column: 4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* The collection page has no channel selector and no timer, so its own detail block takes the
+   whole right-hand side. */
+.CollectionInformation {
+  grid-column: 3 / -1;
 }
 
 .SessionTimer + div {
@@ -194,11 +215,16 @@
   text-align: justify;
 }
 
+/* A grid rather than flex: the blocks need strict positions, and only fixed tracks give them
+   that — a contact with no collections must not shift the timer, and a web contact must not
+   shift anything by showing presence instead of one. The empty second track takes up the slack
+   so the last two stay right-aligned. minmax(0, ...) lets a track shrink on a narrow window
+   instead of overflowing. */
 .ContactInfoWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 22.5rem) 1fr minmax(0, 15rem) minmax(0, 7.5rem);
   align-items: center;
   width: 100%;
-  justify-content: space-between;
 }
 
 .ConversationHeaderWrapper {
@@ -219,7 +245,22 @@
     padding-bottom: 0px !important;
   }
 
-  .SessionTimerContainer {
+  /* The header stacks on a narrow screen: one column, and the trailing detail is dropped as it
+     always has been. */
+  .ContactInfoWrapper {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ContactDetails,
+  .Collections,
+  .ChannelStatus,
+  .CollectionInformation {
+    grid-column: 1;
+  }
+
+  .Collections,
+  .ChannelStatus,
+  .CollectionInformation {
     display: none;
   }
 

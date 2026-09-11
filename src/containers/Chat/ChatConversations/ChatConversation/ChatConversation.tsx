@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router';
 import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
+import { COMPACT_MESSAGE_LENGTH, MESSAGE_CHANNELS, MessageChannel, SHORT_DATE_FORMAT } from 'common/constants';
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';
@@ -13,6 +13,7 @@ import Track from 'services/TrackService';
 import { slicedString, updateContactCache } from 'common/utils';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { Timer } from 'components/UI/Timer/Timer';
+import { PresenceIndicator } from 'components/UI/PresenceIndicator/PresenceIndicator';
 
 export interface ChatConversationProps {
   entityId: number;
@@ -33,6 +34,8 @@ export interface ChatConversationProps {
   highlightSearch?: string | null;
   searchMode?: any;
   timer?: any;
+  channel?: MessageChannel;
+  isWebOnline?: boolean;
 }
 
 // display highlighted search message
@@ -108,6 +111,8 @@ const ChatConversation = ({
   messageNumber,
   onClick,
   timer,
+  channel,
+  isWebOnline,
 }: ChatConversationProps) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
@@ -208,7 +213,9 @@ const ChatConversation = ({
           {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
         </div>
         <div className={styles.MessageDate} data-testid="timerContainer">
-          <Timer {...timer} />
+          {/* The 24 hour window is a WhatsApp construct; on the web the equivalent signal is
+              whether the person still has the widget open. */}
+          {channel === MESSAGE_CHANNELS.web ? <PresenceIndicator online={isWebOnline} /> : <Timer {...timer} />}
         </div>
       </div>
     </ListItemButton>

@@ -21,6 +21,7 @@ type ServiceType =
   | 'whatsappGroupEnabled'
   | 'certificateEnabled'
   | 'askGlificEnabled'
+  | 'webChannelEnabled'
   | 'whatsappFormsEnabled'
   | 'aiEvaluationsEnabled'
   | 'aiEvaluationV2Enabled'

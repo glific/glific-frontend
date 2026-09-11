@@ -17,6 +17,9 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
+  MessageChannel,
+  conversationOnChannel,
+  messageChannel,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   getVariables,
 } from 'common/constants';
@@ -42,6 +45,7 @@ interface ConversationListProps {
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
   phonenumber?: any;
+  channel?: MessageChannel;
 }
 
 export const ConversationList = ({
@@ -56,6 +60,7 @@ export const ConversationList = ({
   setSelectedCollectionId,
   entityType = 'contact',
   phonenumber,
+  channel,
 }: ConversationListProps) => {
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_ENTITY_LIMIT);
@@ -334,6 +339,22 @@ export const ConversationList = ({
     conversations = searchData.search;
   }
 
+  // Filtered here rather than in the query, because the chat subscription writes into the
+  // unfiltered cache entry: a filtered query would show the right conversations and then never
+  // update again. The preview text comes from a conversation's messages, so those are scoped too.
+  //
+  // The cost is reach rather than correctness: a conversation whose loaded messages are all on the
+  // other channel is not shown until "load more" pulls in one that is. `searchFilter.channel`
+  // exists server-side for when that matters.
+  if (channel && conversations) {
+    conversations = conversations
+      .filter((conversation: any) => conversationOnChannel(conversation, channel))
+      .map((conversation: any) => ({
+        ...conversation,
+        messages: conversation.messages.filter((message: any) => messageChannel(message) === channel),
+      }));
+  }
+
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
     const { displayName, contactIsOrgRead, selectedRecord, entityId, entity, timer } = getConversationForSearchMulti(
@@ -426,6 +447,8 @@ export const ConversationList = ({
           lastMessage={lastMessage}
           contactIsOrgRead={contactIsOrgRead}
           timer={timer}
+          channel={channel}
+          isWebOnline={conversation.contact?.isWebOnline}
         />
       );
     });

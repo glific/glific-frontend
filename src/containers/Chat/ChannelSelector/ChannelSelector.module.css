@@ -1,0 +1,15 @@
+/* Scoped under .ChannelSelector so these beat SegmentedControl's own .ActiveOption, which is a
+   single class in a different module and would otherwise win or lose on stylesheet order. */
+.ChannelSelector .WhatsAppActive,
+.ChannelSelector .WebActive {
+  color: var(--app-color-white);
+  box-shadow: none;
+}
+
+.ChannelSelector .WhatsAppActive {
+  background-color: var(--app-color-channel-whatsapp);
+}
+
+.ChannelSelector .WebActive {
+  background-color: var(--app-color-channel-web);
+}

@@ -32,6 +32,7 @@ const searchQueryMock = {
               body: 'Hey there whats up?',
               insertedAt: '2020-06-25T13:36:43Z',
               messageNumber: 0,
+              channel: 'WHATSAPP',
               location: null,
               receiver: {
                 id: '1',
@@ -46,6 +47,7 @@ const searchQueryMock = {
                 body: 'All good',
                 contextId: 1,
                 messageNumber: 10,
+                channel: 'WHATSAPP',
                 errors: '{}',
                 media: null,
                 type: 'TEXT',

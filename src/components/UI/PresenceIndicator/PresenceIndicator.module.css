@@ -1,0 +1,21 @@
+.Presence {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.Dot {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  border-radius: var(--app-radius-pill);
+}
+
+.Online {
+  background-color: var(--app-color-channel-web);
+}
+
+.Offline {
+  background-color: var(--app-color-border);
+}

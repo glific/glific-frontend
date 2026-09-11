@@ -23,8 +23,10 @@
   border: 1px solid #e0e0e0;
 }
 
+/* Same source as the Contacts/Collections/Searches indicator above it, which MUI paints from
+   palette.primary — the two rows of pills sit together and read as one control. */
 .SavedSearchSelected {
-  background: #073f24 !important;
+  background: var(--app-color-brand-primary) !important;
 }
 
 .SavedSearchItemLabel {

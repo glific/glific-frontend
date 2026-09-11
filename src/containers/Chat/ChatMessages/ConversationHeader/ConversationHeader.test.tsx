@@ -16,6 +16,8 @@ import { getPublishedFlowQuery, addFlowToContactQuery, addFlowToCollectionQuery 
 import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 import { searchGroupQuery } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
+import { MESSAGE_CHANNELS } from 'common/constants';
+import { GET_CONTACT_WEB_PRESENCE } from 'graphql/queries/Contact';
 
 const mocks = [
   ...CONVERSATION_MOCKS,
@@ -448,5 +450,80 @@ test('opens AddToCollection dialog from collection-mode add member button', asyn
 
   await waitFor(() => {
     expect(screen.getByText('Add contacts to the collection')).toBeInTheDocument();
+  });
+});
+
+describe('on a web channel conversation', () => {
+  const presenceMock = {
+    request: { query: GET_CONTACT_WEB_PRESENCE, variables: { id: '2' } },
+    result: { data: { contact: { contact: { id: '2', isWebOnline: true } } } },
+  };
+
+  const webProps = { channel: MESSAGE_CHANNELS.web };
+
+  // There is no 24 hour window on the web, so a countdown would be a number that means nothing.
+  test('presence replaces the session timer', async () => {
+    render(renderHeader([...mocks, presenceMock], webProps));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('webPresence')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('sessionTimer')).not.toBeInTheDocument();
+  });
+
+  test('a WhatsApp conversation keeps its session timer', async () => {
+    render(renderHeader());
+
+    await waitFor(() => {
+      expect(screen.getByTestId('sessionTimer')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('webPresence')).not.toBeInTheDocument();
+  });
+
+  // The flow engine still never sees a web inbound message, so a flow started here would answer
+  // over WhatsApp to someone who consented only to the web channel.
+  test('starting a flow is disabled', async () => {
+    render(renderHeader([...mocks, presenceMock], webProps));
+
+    await waitFor(() => {
+      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+    });
+
+    expect(screen.getByTestId('disabledFlowButton')).toBeDisabled();
+  });
+
+  // The blocks are laid out by a grid with one named column each, which only holds if they are
+  // direct children of it. Nesting any of them — as the old flex markup did — silently drops it
+  // out of its column and lets the others slide along.
+  test('the name, collections and status are siblings in the grid', async () => {
+    const { container } = render(renderHeader([...mocks, presenceMock], webProps));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('webPresence')).toBeInTheDocument();
+    });
+
+    const wrapper = container.querySelector('[class*="ContactInfoWrapper"]') as HTMLElement;
+    const cells = Array.from(wrapper.children).map((child) => child.className);
+
+    expect(cells.filter((name) => /ContactDetails/.test(name))).toHaveLength(1);
+    expect(cells.filter((name) => /ChannelStatus/.test(name))).toHaveLength(1);
+
+    // The name and the presence indicator are inside their own cells, not nested any deeper.
+    expect(screen.getByTestId('beneficiaryName').parentElement?.className).toMatch(/ContactDetails/);
+    expect(screen.getByTestId('webPresence').parentElement?.className).toMatch(/ChannelStatus/);
+  });
+
+  // The panel's selector is the only one: a second copy in the header let the two disagree about
+  // which channel was selected, and duplicated the same control a few hundred pixels apart.
+  test('the header does not offer its own channel selector', async () => {
+    render(renderHeader([...mocks, presenceMock], webProps));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('webPresence')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('conversationChannelSelector')).not.toBeInTheDocument();
   });
 });
