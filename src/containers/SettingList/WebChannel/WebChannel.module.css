@@ -1,0 +1,49 @@
+.Form {
+  max-width: 40rem;
+}
+
+.Section {
+  margin-top: var(--app-space-3xl);
+}
+
+.Section:first-child {
+  margin-top: 0;
+}
+
+.SectionTitle {
+  color: var(--app-color-text-heading);
+  font-weight: 600;
+}
+
+.SectionDescription {
+  color: var(--app-color-gray-primary);
+  font-size: var(--app-font-size-sm);
+  margin-top: var(--app-space-2xs);
+}
+
+.ColorRow {
+  display: flex;
+  gap: var(--app-space-3xl);
+  width: 100%;
+}
+
+.ColorField {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.ColorLabel {
+  color: var(--app-color-text-heading);
+  font-size: var(--app-font-size-sm);
+  margin-bottom: var(--app-space-2xs);
+}
+
+.Note {
+  border-left: 3px solid var(--app-color-attention);
+  padding: var(--app-space-sm) var(--app-space-lg);
+  color: var(--app-color-text-heading);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.5;
+  background: var(--app-color-surface-page);
+  border-radius: 0 var(--app-radius-lg) var(--app-radius-lg) 0;
+}
