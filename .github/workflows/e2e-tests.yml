@@ -123,7 +123,17 @@ jobs:
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
           mkdir -p project
           cd project
-          git clone https://github.com/glific/glific.git
+          # A web-channel feature spans both repos: the frontend queries GraphQL fields that land
+          # in a same-named backend branch before they reach master. Clone that branch when it
+          # exists so e2e runs against a backend that has them; otherwise use master. Self-heals
+          # once the backend branch merges and is deleted — the fallback picks up master.
+          BACKEND_BRANCH="${{ github.head_ref }}"
+          if [ -n "$BACKEND_BRANCH" ] && git ls-remote --exit-code --heads https://github.com/glific/glific.git "$BACKEND_BRANCH" >/dev/null 2>&1; then
+            echo "Cloning matching backend branch: $BACKEND_BRANCH"
+            git clone --branch "$BACKEND_BRANCH" --single-branch https://github.com/glific/glific.git
+          else
+            git clone https://github.com/glific/glific.git
+          fi
           cd glific
           cd priv
           mkdir cert
