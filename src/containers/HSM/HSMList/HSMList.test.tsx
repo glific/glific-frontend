@@ -1,8 +1,14 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { BrowserRouter as Router, MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { HSM_LIST, bulkApplyMutation, bulkApplyMutationWIthError } from 'mocks/Template';
+import {
+  HSM_LIST,
+  bulkApplyMutation,
+  bulkApplyMutationWIthError,
+  filterTemplatesMock,
+  templateCountQuery,
+} from 'mocks/Template';
 import { BULK_APPLY_TEMPLATES } from 'graphql/mutations/Template';
 import { HSMList } from './HSMList';
 import userEvent from '@testing-library/user-event';
@@ -60,6 +66,25 @@ const template = (mockQuery?: any) => (
     <Router>
       <HSMList />
     </Router>
+  </MockedProvider>
+);
+
+const statusMocks = (status: string, tagIds?: number[]) => {
+  const filter: any = { isHsm: true, status };
+  if (tagIds) filter.tagIds = tagIds;
+  return [
+    filterTemplatesMock(filter),
+    filterTemplatesMock(filter),
+    templateCountQuery(filter, 1),
+    templateCountQuery(filter, 1),
+  ];
+};
+
+const templateWithEntries = (initialEntries: string[], additionalMocks: any[] = []) => (
+  <MockedProvider mocks={[...mocks, ...additionalMocks]} addTypename={false}>
+    <MemoryRouter initialEntries={initialEntries}>
+      <HSMList />
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -247,5 +272,131 @@ test('bulk apply templates with application-level errors', async () => {
       'Templates were processed with errors. Please check the csv file for details.',
       'warning'
     );
+  });
+});
+
+describe('HSM status filter URL restoration and navigation', () => {
+  test('direct URL with status=REJECTED restores Rejected filter', async () => {
+    render(templateWithEntries(['/template?status=REJECTED'], statusMocks('REJECTED')));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Rejected');
+    expect(screen.getByText('Reason')).toBeInTheDocument();
+
+    const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit', {
+        state: { status: 'REJECTED' },
+      });
+    });
+  });
+
+  test('direct URL with status=PENDING restores Pending filter', async () => {
+    render(templateWithEntries(['/template?status=PENDING'], statusMocks('PENDING')));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Pending');
+
+    const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit', {
+        state: { status: 'PENDING' },
+      });
+    });
+  });
+
+  test('direct URL with status=FAILED restores Failed filter', async () => {
+    render(templateWithEntries(['/template?status=FAILED'], statusMocks('FAILED')));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Failed');
+    expect(screen.getByText('Reason')).toBeInTheDocument();
+
+    const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit', {
+        state: { status: 'FAILED' },
+      });
+    });
+  });
+
+  test('direct URL with status=APPROVED restores Approved filter', async () => {
+    render(templateWithEntries(['/template?status=APPROVED'], statusMocks('APPROVED')));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
+
+    const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit', {
+        state: { status: 'APPROVED' },
+      });
+    });
+  });
+
+  test('tag + status URL restores both filters and passes them to detail and create pages', async () => {
+    render(templateWithEntries(['/template?status=REJECTED&tag=Messages'], statusMocks('REJECTED', [1])));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Rejected');
+
+    const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit', {
+        state: { tag: { label: 'Messages', id: '1' }, status: 'REJECTED' },
+      });
+    });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/add', {
+      state: { tag: { label: 'Messages', id: '1' }, status: 'REJECTED' },
+    });
+  });
+
+  test('selecting status dropdown updates filter and passes state to detail page', async () => {
+    render(templateWithEntries(['/template'], statusMocks('REJECTED')));
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    fireEvent.mouseDown(within(screen.getByTestId('dropdown-template')).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'Rejected' }));
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Rejected');
+
+    const viewIcons = await screen.findAllByTestId('view-icon', {}, { timeout: 5000 });
+    fireEvent.click(viewIcons[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/1/edit', {
+        state: { status: 'REJECTED' },
+      });
+    });
   });
 });
