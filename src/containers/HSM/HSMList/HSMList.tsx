@@ -315,7 +315,7 @@ export const HSMList = () => {
     const statusParam = searchParams.get('status')?.toUpperCase();
     if (statusParam && statusParam in statusFilter) {
       setFilters({ ...statusFilter, [statusParam]: true });
-    } else if (!statusParam) {
+    } else {
       setFilters({ ...statusFilter, APPROVED: true });
     }
 

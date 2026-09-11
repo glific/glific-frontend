@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { BrowserRouter as Router, MemoryRouter } from 'react-router';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { BrowserRouter as Router, MemoryRouter, useSearchParams } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import {
@@ -398,5 +398,40 @@ describe('HSM status filter URL restoration and navigation', () => {
         state: { status: 'REJECTED' },
       });
     });
+  });
+
+  test('transitioning from REJECTED to INVALID resets filter to Approved', async () => {
+    let updateSearchParams: any;
+    const SearchParamsUpdater = () => {
+      const [, setSearchParams] = useSearchParams();
+      updateSearchParams = setSearchParams;
+      return null;
+    };
+
+    render(
+      <MockedProvider mocks={[...mocks, ...statusMocks('REJECTED'), ...statusMocks('APPROVED')]} addTypename={false}>
+        <MemoryRouter initialEntries={['/template?status=REJECTED']}>
+          <SearchParamsUpdater />
+          <HSMList />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('HSM Templates')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Rejected');
+    expect(screen.getByText('Reason')).toBeInTheDocument();
+
+    act(() => {
+      updateSearchParams({ status: 'INVALID' });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dropdown-template')).toHaveTextContent('Approved');
+    });
+    expect(screen.getByTestId('dropdown-template')).not.toHaveTextContent('Rejected');
+    expect(screen.queryByText('Reason')).not.toBeInTheDocument();
   });
 });
