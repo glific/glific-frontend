@@ -147,6 +147,16 @@ export const GET_ORGANIZATION_SERVICES = gql`
   }
 `;
 
+export const GET_ORGANIZATION_SHORTCODE = gql`
+  query organizationShortcode {
+    organization {
+      organization {
+        shortcode
+      }
+    }
+  }
+`;
+
 export const GET_ORGANIZATION_PROVIDER = gql`
   query provider {
     organization {

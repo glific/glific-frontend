@@ -1,0 +1,60 @@
+.ColorInput {
+  width: 100%;
+}
+
+.Row {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  background: var(--app-color-surface-raised);
+}
+
+.RowError {
+  border-color: var(--app-color-error);
+}
+
+.Swatch {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background: none;
+  cursor: pointer;
+}
+
+.Swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.Swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: calc(var(--app-radius-lg) - 2px);
+}
+
+.Swatch::-moz-color-swatch {
+  border: none;
+  border-radius: calc(var(--app-radius-lg) - 2px);
+}
+
+.Hex fieldset {
+  border: none;
+}
+
+.Hex input {
+  font-family: monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.HelperText {
+  color: var(--app-color-text-heading);
+}
+
+.DangerText {
+  color: var(--app-color-error);
+}
