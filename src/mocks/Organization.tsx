@@ -13,6 +13,7 @@ import {
   FILTER_ORGANIZATIONS,
   GET_ORGANIZATION_COUNT,
   GET_ORGANIZATION_PROVIDER,
+  GET_ORGANIZATION_SHORTCODE,
   GET_QUALITY_RATING,
   GET_ORGANIZATION_PHONE,
   GET_ORGANIZATION_SERVICES,
@@ -1506,3 +1507,18 @@ export const createWebChannelCredential = (keys: any) => ({
     },
   },
 });
+
+export const getOrganizationShortcode = {
+  request: {
+    query: GET_ORGANIZATION_SHORTCODE,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          shortcode: 'tides',
+        },
+      },
+    },
+  },
+};

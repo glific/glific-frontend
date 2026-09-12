@@ -2,17 +2,21 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Field } from 'formik';
 import { Typography } from '@mui/material';
+
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ColorInput } from 'components/UI/Form/ColorInput/ColorInput';
 import { FileUpload } from 'components/UI/Form/FileUpload/FileUpload';
-import { GET_PROVIDERS, GET_CREDENTIAL } from 'graphql/queries/Organization';
+import { GET_PROVIDERS, GET_CREDENTIAL, GET_ORGANIZATION_SHORTCODE } from 'graphql/queries/Organization';
 import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
+import { copyToClipboard } from 'common/utils';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
+import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import styles from './WebChannel.module.css';
 
 const SHORTCODE = 'web_channel';
@@ -39,6 +43,42 @@ const queries = {
   createItemQuery: CREATE_CREDENTIAL,
   updateItemQuery: UPDATE_CREDENTIAL,
   deleteItemQuery: DELETE_ORGANIZATION,
+};
+
+/**
+ * The address this organisation's contacts reach the widget on.
+ *
+ * The domain comes from the console's own host rather than a constant, because one deployment
+ * of this console serves production and staging and the two are not on the same domain.
+ */
+export const webChannelUrl = (shortcode: string, hostname: string): string => {
+  const labels = hostname.split('.');
+  const domain = labels.length > 2 ? labels.slice(1).join('.') : 'glific.com';
+
+  return `https://web.${shortcode}.${domain}`;
+};
+
+const WebChannelUrl = ({ shortcode }: { shortcode?: string }) => {
+  const { t } = useTranslation();
+
+  if (!shortcode) return null;
+
+  const url = webChannelUrl(shortcode, window.location.hostname);
+
+  return (
+    <div className={styles.UrlPanel} data-testid="webChannelUrl">
+      <div className={styles.UrlLabel}>{t('Your web channel address')}</div>
+      <div className={styles.UrlRow}>
+        <a href={url} target="_blank" rel="noreferrer" className={styles.Url}>
+          {url}
+        </a>
+        <CopyIcon className={styles.CopyIcon} data-testid="copyWebChannelUrl" onClick={() => copyToClipboard(url)} />
+      </div>
+      <div className={styles.SectionDescription}>
+        {t('Share this link with your contacts. It opens the chat in their browser.')}
+      </div>
+    </div>
+  );
 };
 
 const Section = ({ title, description }: { title: string; description?: string }) => (
@@ -78,7 +118,7 @@ const ColorNote = () => {
     <div className={styles.Note}>
       {/* Restates the guarantee Branding.readable_on/1 implements. If one changes the other
           has to, or the page is promising something the widget no longer does. */}
-      <strong>{t('Primary')}</strong> {t('drives the header, buttons, sent-message bubbles and links.')}{' '}
+      <strong>{t('Primary')}</strong> {t('drives the header, buttons, sent-message bubbles and links.')} <br />
       <strong>{t('Secondary')}</strong>{' '}
       {t(
         'is decorative only — chip borders, selected rings and trust accents, never text. Header text auto-flips dark or light to stay legible on your primary colour.'
@@ -91,6 +131,9 @@ export const WebChannel = () => {
   const { t } = useTranslation();
   const [credentialId, setCredentialId] = useState(null);
   const [states, setStates] = useState<any>({});
+  // Mirrors the form's own `isActive` so the field list can be rebuilt as it is toggled;
+  // formFields is computed outside Formik and cannot read its values.
+  const [isActive, setIsActive] = useState(false);
 
   const { data: providerData, loading: providerLoading } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: SHORTCODE } },
@@ -98,12 +141,21 @@ export const WebChannel = () => {
   const { data: credentialData, loading: credentialLoading } = useQuery(GET_CREDENTIAL, {
     variables: { shortcode: SHORTCODE },
   });
+  const { data: organizationData } = useQuery(GET_ORGANIZATION_SHORTCODE);
+
+  const orgShortcode = organizationData?.organization?.organization?.shortcode;
 
   const keys = providerData?.providers?.[0] ? JSON.parse(providerData.providers[0].keys) : null;
 
   const setCredential = (item: any) => {
     const saved = item?.keys ? JSON.parse(item.keys) : {};
-    setStates(Object.fromEntries(FIELDS.map((name) => [name, saved[name] ?? keys?.[name]?.default ?? ''])));
+    const active = !!item?.isActive;
+
+    setIsActive(active);
+    setStates({
+      ...Object.fromEntries(FIELDS.map((name) => [name, saved[name] ?? keys?.[name]?.default ?? ''])),
+      isActive: active,
+    });
   };
 
   useEffect(() => {
@@ -115,14 +167,21 @@ export const WebChannel = () => {
 
   if (providerLoading || credentialLoading) return <Loading whiteBackground />;
 
+  // Nothing below the toggle is on screen while the channel is off, so requiring it would
+  // reject a save the admin cannot see the reason for.
+  const requiredWhenActive = (schema: Yup.StringSchema, message: string) =>
+    schema.when('isActive', { is: true, then: (active) => active.required(message) });
+
   const validationSchema = Yup.object().shape({
-    display_name: Yup.string().required(t('Display name is required.')),
-    primary_color: Yup.string()
-      .required(t('Primary colour is required.'))
-      .matches(HEX, t('Enter a colour like #4C3BCF.')),
-    secondary_color: Yup.string()
-      .required(t('Secondary colour is required.'))
-      .matches(HEX, t('Enter a colour like #FF8A3D.')),
+    display_name: requiredWhenActive(Yup.string(), t('Display name is required.')),
+    primary_color: requiredWhenActive(Yup.string(), t('Primary colour is required.')).matches(HEX, {
+      message: t('Enter a colour like #4C3BCF.'),
+      excludeEmptyString: true,
+    }),
+    secondary_color: requiredWhenActive(Yup.string(), t('Secondary colour is required.')).matches(HEX, {
+      message: t('Enter a colour like #FF8A3D.'),
+      excludeEmptyString: true,
+    }),
     about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
   });
 
@@ -136,6 +195,18 @@ export const WebChannel = () => {
   });
 
   const formFields = [
+    {
+      component: Checkbox,
+      name: 'isActive',
+      title: t('Web channel is active'),
+      handleChange: (value: boolean) => setIsActive(value),
+      // Says only what the switch does today. Whether the channel itself is open to contacts is
+      // still the web_channel_enabled feature flag's decision, not this credential's.
+      info: {
+        title: t('Your branding and business profile apply to the web chat only while this is on.'),
+      },
+    },
+    { component: WebChannelUrl, name: '__webChannelUrl', shortcode: orgShortcode },
     {
       component: Section,
       name: '__sectionDisplayPicture',
@@ -182,7 +253,7 @@ export const WebChannel = () => {
 
   const setPayload = (payload: any) => ({
     shortcode: SHORTCODE,
-    isActive: true,
+    isActive: !!payload.isActive,
     keys: JSON.stringify(Object.fromEntries(FIELDS.map((name) => [name, payload[name] ?? '']))),
     secrets: JSON.stringify({}),
   });
@@ -191,6 +262,9 @@ export const WebChannel = () => {
     const saved = data?.createCredential?.credential ?? data?.updateCredential?.credential;
     if (saved) setCredentialId(saved.id);
   };
+
+  // Everything except the toggle and the address is configuration for a channel that is off.
+  const fields = formFields.map((field) => (field.name === 'isActive' ? field : { ...field, skip: !isActive }));
 
   return (
     <FormLayout
@@ -204,7 +278,7 @@ export const WebChannel = () => {
       setPayload={setPayload}
       listItemName="Settings"
       dialogMessage=""
-      formFields={formFields}
+      formFields={fields}
       redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"

@@ -1249,5 +1249,9 @@
   "Hours": "Hours",
   "Web channel": "Web channel",
   "Set up the org-branded web chat & OTP sign-in surface your contacts reach from a broadcast link.": "Set up the org-branded web chat & OTP sign-in surface your contacts reach from a broadcast link.",
-  "NEW": "NEW"
+  "NEW": "NEW",
+  "Your web channel address": "Your web channel address",
+  "Share this link with your contacts. It opens the chat in their browser.": "Share this link with your contacts. It opens the chat in their browser.",
+  "Web channel is active": "Web channel is active",
+  "Your branding and business profile apply to the web chat only while this is on.": "Your branding and business profile apply to the web chat only while this is on."
 }

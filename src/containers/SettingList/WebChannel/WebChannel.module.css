@@ -1,5 +1,5 @@
 .Form {
-  max-width: 40rem;
+  min-width: 45rem;
 }
 
 .Section {
@@ -13,6 +13,7 @@
 .SectionTitle {
   color: var(--app-color-text-heading);
   font-weight: 600;
+  font-size: var(--app-font-size-md);
 }
 
 .SectionDescription {
@@ -41,9 +42,46 @@
 .Note {
   border-left: 3px solid var(--app-color-attention);
   padding: var(--app-space-sm) var(--app-space-lg);
+  margin-top: var(--app-space-sm);
   color: var(--app-color-text-heading);
   font-size: var(--app-font-size-sm);
   line-height: 1.5;
   background: var(--app-color-surface-page);
   border-radius: 0 var(--app-radius-lg) var(--app-radius-lg) 0;
+}
+
+.UrlPanel {
+  border: 1px solid var(--app-color-border-brand);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-color-surface-hover);
+  padding: var(--app-space-lg) var(--app-space-xl);
+  margin-top: var(--app-space-lg);
+}
+
+.UrlLabel {
+  color: var(--app-color-text-heading);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.UrlRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  margin: var(--app-space-2xs) 0;
+}
+
+.Url {
+  color: var(--app-color-brand-primary);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.CopyIcon {
+  cursor: pointer;
+  flex-shrink: 0;
+  height: var(--app-size-icon-lg);
+  width: var(--app-size-icon-lg);
 }
