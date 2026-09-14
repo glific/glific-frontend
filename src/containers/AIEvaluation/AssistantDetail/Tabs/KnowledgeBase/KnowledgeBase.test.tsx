@@ -155,8 +155,14 @@ test('names the formats it takes beside the add button, so a rejected file is no
   renderTab();
 
   expect(screen.getByTestId('supportedFormats')).toHaveTextContent(
-    'Supports PDF, DOC, DOCX, TXT, MD, HTML and CSV · 20MB per file'
+    'Supports PDF, DOC, DOCX, TXT, MD and HTML · 20MB per file'
   );
+});
+
+test('the file picker offers only what file search can read', () => {
+  renderTab();
+
+  expect(screen.getByTestId('fileInput')).toHaveAttribute('accept', '.doc,.docx,.html,.htm,.md,.markdown,.pdf,.txt');
 });
 
 test('rejects a file over 20MB before uploading', () => {

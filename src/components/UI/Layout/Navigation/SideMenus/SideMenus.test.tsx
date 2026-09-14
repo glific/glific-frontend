@@ -144,3 +144,32 @@ describe('AI Evals sibling menu selection', () => {
     expectMenuNotSelected('AI Assistant');
   });
 });
+
+describe('the AI Evals notice', () => {
+  test('the menu item carries an alert sign', async () => {
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
+    renderSideMenus('/chat');
+
+    await waitFor(() => {
+      expect(getMenuItem('AI Evals')).toBeInTheDocument();
+    });
+
+    // the sign sits on the AI Evals row, not on its siblings
+    const alerts = screen.getAllByTestId('menuAlert');
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].closest('a')).toHaveAttribute('href', '/ai-evaluations');
+  });
+
+  test('hovering the sign says what has to be done, and by when', async () => {
+    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
+    renderSideMenus('/chat');
+
+    const alert = await screen.findByTestId('menuAlert');
+    // the tooltip hangs off the wrapper the shared component adds
+    fireEvent.mouseOver(alert.parentElement as HTMLElement);
+
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      'Download your evaluation results before 18 September 2026'
+    );
+  });
+});

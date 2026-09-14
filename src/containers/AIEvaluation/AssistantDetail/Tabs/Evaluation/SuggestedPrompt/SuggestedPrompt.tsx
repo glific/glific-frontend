@@ -101,9 +101,10 @@ export const SuggestedPrompt = ({ runId, overall, metrics }: SuggestedPromptProp
     );
   }
 
-  const why = t('Targets your weakest check — {{check}} at {{score}}', {
+  const why = t('Targets your weakest check — {{check}} at {{score}}/{{outOf}}', {
     check: CHECK_SLOT,
-    score: `${formatScore(metrics[weakest.key])}/${MAX_SCORE}`,
+    score: formatScore(metrics[weakest.key]),
+    outOf: MAX_SCORE,
   }).split(CHECK_SLOT);
 
   const applyChange = async () => {
