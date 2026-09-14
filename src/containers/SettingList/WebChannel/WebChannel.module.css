@@ -11,6 +11,9 @@
 }
 
 .SectionTitle {
+  /* h3 rather than a styled div, so the sections are navigable; margin reset because the
+     browser's default would double up with .Section's own spacing. */
+  margin: 0;
   color: var(--app-color-text-heading);
   font-weight: 600;
   font-size: var(--app-font-size-md);

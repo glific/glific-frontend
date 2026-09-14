@@ -33,12 +33,12 @@
 
 .Swatch::-webkit-color-swatch {
   border: none;
-  border-radius: calc(var(--app-radius-lg) - 2px);
+  border-radius: var(--app-radius-lg);
 }
 
 .Swatch::-moz-color-swatch {
   border: none;
-  border-radius: calc(var(--app-radius-lg) - 2px);
+  border-radius: var(--app-radius-lg);
 }
 
 .Hex fieldset {

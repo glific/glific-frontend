@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Field } from 'formik';
-import { Typography } from '@mui/material';
 
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -83,9 +82,7 @@ const WebChannelUrl = ({ shortcode }: { shortcode?: string }) => {
 
 const Section = ({ title, description }: { title: string; description?: string }) => (
   <div className={styles.Section}>
-    <Typography variant="h5" className={styles.SectionTitle}>
-      {title}
-    </Typography>
+    <h3 className={styles.SectionTitle}>{title}</h3>
     {description && <div className={styles.SectionDescription}>{description}</div>}
   </div>
 );
@@ -96,15 +93,11 @@ const BrandColors = ({ keys }: { keys: any }) => {
   return (
     <div className={styles.ColorRow}>
       <div className={styles.ColorField}>
-        <Typography variant="h6" className={styles.ColorLabel}>
-          {t('Primary')}
-        </Typography>
+        <div className={styles.ColorLabel}>{t('Primary')}</div>
         <Field component={ColorInput} name="primary_color" fallback={keys?.primary_color?.default} />
       </div>
       <div className={styles.ColorField}>
-        <Typography variant="h6" className={styles.ColorLabel}>
-          {t('Secondary')}
-        </Typography>
+        <div className={styles.ColorLabel}>{t('Secondary')}</div>
         <Field component={ColorInput} name="secondary_color" fallback={keys?.secondary_color?.default} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
@@ -166,21 +166,20 @@ describe('<WebChannel />', () => {
     await user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
     await waitFor(() => expect(screen.getByTestId('colorHex-primary_color')).toBeInTheDocument());
 
-    const fill = async (testId: string, value: string) => {
-      const input = screen.getByTestId(testId);
-      await user.clear(input);
-      await user.type(input, value);
-    };
+    // fireEvent rather than user.type: nine fields typed a keystroke at a time took five
+    // seconds locally and blew the 10s limit on CI. What this test is about is the payload,
+    // not the typing — the keystroke-level behaviour is covered by the colour tests above.
+    const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
 
-    await user.type(screen.getByTestId('fileUrlInput'), SAVED.logo_url);
-    await fill('display_name', SAVED.display_name);
-    await fill('colorHex-primary_color', SAVED.primary_color);
-    await fill('colorHex-secondary_color', SAVED.secondary_color);
-    await fill('about_description', SAVED.about_description);
-    await fill('about_address', SAVED.about_address);
-    await fill('about_website', SAVED.about_website);
-    await fill('about_email', SAVED.about_email);
-    await fill('about_hours', SAVED.about_hours);
+    fill('fileUrlInput', SAVED.logo_url);
+    fill('display_name', SAVED.display_name);
+    fill('colorHex-primary_color', SAVED.primary_color);
+    fill('colorHex-secondary_color', SAVED.secondary_color);
+    fill('about_description', SAVED.about_description);
+    fill('about_address', SAVED.about_address);
+    fill('about_website', SAVED.about_website);
+    fill('about_email', SAVED.about_email);
+    fill('about_hours', SAVED.about_hours);
 
     await user.click(screen.getByTestId('submitActionButton'));
 
