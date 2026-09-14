@@ -154,3 +154,10 @@
     transform: scale3d(1, 1, 1);
   }
 }
+
+.MenuAlert {
+  display: block;
+  color: var(--app-color-attention);
+  font-size: var(--app-size-icon-lg);
+  flex-shrink: 0;
+}
