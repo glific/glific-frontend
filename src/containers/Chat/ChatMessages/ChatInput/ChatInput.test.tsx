@@ -8,6 +8,7 @@ import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage
 import '../VoiceRecorder/VoiceRecorder';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
+import { MESSAGE_CHANNELS } from 'common/constants';
 
 const mocks = [
   searchInteractive,
@@ -86,6 +87,37 @@ describe('<ChatInput />', () => {
     const { getAllByTestId } = render(chatInput);
     fireEvent.click(screen.getByTestId('shortcut-open-button'));
     expect(getAllByTestId('shortcutButton')).toHaveLength(3);
+  });
+
+  describe('on a web channel conversation', () => {
+    // A browser-only contact has no WhatsApp opt-in and therefore sits at bspStatus NONE, which
+    // on WhatsApp means "chat unavailable". On the web that status says nothing at all.
+    const webProps = { ...defaultProps, contactBspStatus: 'NONE', channel: MESSAGE_CHANNELS.web };
+
+    const webChatInput = (
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <LexicalWrapper>
+          <ChatInput {...webProps} />
+        </LexicalWrapper>
+      </MockedProvider>
+    );
+
+    test('the composer is available even though the contact is not opted in to WhatsApp', () => {
+      const { getByTestId, queryByText } = render(webChatInput);
+
+      expect(getByTestId('message-input-container')).toBeInTheDocument();
+      expect(queryByText(/aren’t opted in to your number/)).not.toBeInTheDocument();
+    });
+
+    test('templates are not offered, since there is no BSP to approve one', () => {
+      const { getAllByTestId } = render(webChatInput);
+
+      fireEvent.click(screen.getByTestId('shortcut-open-button'));
+
+      const shortcuts = getAllByTestId('shortcutButton').map((button) => button.textContent);
+      expect(shortcuts).not.toContain('Templates');
+      expect(shortcuts).toContain('Interactive msg');
+    });
   });
 
   test('it should not be able to submit without any message', () => {

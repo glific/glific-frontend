@@ -27,6 +27,8 @@ import { setNotification } from 'common/notification';
 import {
   CONTACTS_COLLECTION,
   is24HourWindowOver,
+  MESSAGE_CHANNELS,
+  MessageChannel,
   SEARCH_QUERY_VARIABLES,
   setVariables,
   WA_GROUPS_COLLECTION,
@@ -41,6 +43,7 @@ import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddToCollection from '../AddToCollection/AddToCollection';
 import StartAFlow from '../StartFlow/StartFlow';
+import WebPresence from '../WebPresence/WebPresence';
 
 import styles from './ConversationHeader.module.css';
 
@@ -62,6 +65,7 @@ export const shortenMultipleItems = (multipleItems: Array<string>) => {
 
 export interface ConversationHeaderProps {
   displayName: string;
+  channel?: MessageChannel;
   entityId?: string;
   collectionId?: string;
   handleAction: any;
@@ -82,6 +86,7 @@ export const ConversationHeader = ({
   isSimulator,
   groups,
   contact,
+  channel,
 }: ConversationHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -94,6 +99,10 @@ export const ConversationHeader = ({
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [showTerminateDialog, setShowTerminateDialog] = useState(false);
   const { t } = useTranslation();
+
+  // A web conversation has no 24 hour window, so anything derived from one — the session timer,
+  // the flow button's window check — has to take a different branch here.
+  const isWebConversation = channel === MESSAGE_CHANNELS.web;
 
   let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
 
@@ -323,6 +332,19 @@ export const ConversationHeader = ({
         Start a flow
       </Button>
     );
+  } else if (isWebConversation) {
+    // The flow engine still never sees a web inbound message, so a flow started here would reply
+    // over WhatsApp to someone who consented only to the web channel.
+    flowButton = (
+      <Tooltip title={t('Flows cannot be started on the web channel yet')} placement="right">
+        <span>
+          <Button data-testid="disabledFlowButton" className={styles.ListButtonPrimary} disabled>
+            <FlowUnselectedIcon className={styles.Icon} />
+            Start a flow
+          </Button>
+        </span>
+      </Tooltip>
+    );
   } else if (
     groups ||
     (contact?.contactBspStatus &&
@@ -486,7 +508,7 @@ export const ConversationHeader = ({
   let contactCollections: any;
   if (selectedCollections.length > 0) {
     contactCollections = (
-      <div className={styles.SessionTimer}>
+      <div className={`${styles.SessionTimer} ${styles.Collections}`}>
         <span>Collections:</span>
         <span className={styles.CollectionsName} data-testid="collectionNames">
           {selectedCollectionsName}
@@ -496,7 +518,7 @@ export const ConversationHeader = ({
   }
 
   const timeleft: any = (
-    <div className={styles.SessionTimer} data-testid="sessionTimer">
+    <div className={`${styles.SessionTimer} ${styles.ChannelStatus}`} data-testid="sessionTimer">
       <span>Time left:</span>
       <Timer
         time={contact?.lastMessageTime}
@@ -524,17 +546,27 @@ export const ConversationHeader = ({
   // CONTACT: display session timer & Assigned to
   // COLLECTION: display contact info & Assigned to
   // GROUP: display Assigned to
-  let conversationHeaderDetails: any;
+  //
+  // These are siblings in the grid below rather than nested, so each one owns a named column and
+  // stays put when another is absent — a WhatsApp contact with no collections must not shift the
+  // timer, and a web contact must not shift anything by having presence instead of a timer.
+  let channelStatus: any;
+  let collectionInformation: any;
 
-  if (entityId) {
-    conversationHeaderDetails = (
-      <div className={styles.SessionTimerContainer}>
-        {contactCollections}
-        {!groups && timeleft}
+  if (entityId && !groups) {
+    channelStatus = isWebConversation ? (
+      <div className={styles.ChannelStatus}>
+        <WebPresence entityId={entityId} />
       </div>
+    ) : (
+      timeleft
     );
   } else if (collectionId && !groups) {
-    conversationHeaderDetails = <CollectionInformation collectionId={collectionId} />;
+    collectionInformation = (
+      <div className={styles.CollectionInformation}>
+        <CollectionInformation collectionId={collectionId} />
+      </div>
+    );
   }
 
   return (
@@ -542,25 +574,25 @@ export const ConversationHeader = ({
       <div className={styles.ConversationHeaderWrapper}>
         <div className={styles.ContactInfoContainer}>
           <div className={styles.ContactInfoWrapper}>
-            <div className={styles.InfoWrapperRight}>
-              <div className={styles.ContactDetails}>
-                <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-                  {slicedString(displayName, 40)}
-                </Typography>
-                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                  <div
-                    className={styles.Configure}
-                    data-testid="dropdownIcon"
-                    onClick={handleConfigureIconClick}
-                    onKeyPress={handleConfigureIconClick}
-                    aria-hidden
-                  >
-                    <ExpandIcon />
-                  </div>
-                </ClickAwayListener>
-              </div>
+            <div className={styles.ContactDetails}>
+              <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
+                {slicedString(displayName, 40)}
+              </Typography>
+              <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                <div
+                  className={styles.Configure}
+                  data-testid="dropdownIcon"
+                  onClick={handleConfigureIconClick}
+                  onKeyPress={handleConfigureIconClick}
+                  aria-hidden
+                >
+                  <ExpandIcon />
+                </div>
+              </ClickAwayListener>
             </div>
-            {conversationHeaderDetails}
+            {entityId && contactCollections}
+            {channelStatus}
+            {collectionInformation}
             <div role="button" className={styles.Chat} onKeyDown={() => showChats()} onClick={() => showChats()}>
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />

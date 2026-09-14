@@ -21,6 +21,16 @@
   background-color: rgb(var(--app-color-slate-rgb) / 14%);
 }
 
+.EqualWidthTrack {
+  display: flex;
+  align-self: stretch;
+}
+
+.EqualWidthTrack .Option {
+  flex: 1 1 0;
+  text-align: center;
+}
+
 .Option {
   padding: var(--app-space-2xs) var(--app-space-lg);
   border: none;

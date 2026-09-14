@@ -14,6 +14,7 @@ export const SEARCH_QUERY = gql`
         status
         bspStatus
         isOrgRead
+        isWebOnline
       }
       group {
         id
@@ -22,6 +23,7 @@ export const SEARCH_QUERY = gql`
       messages {
         id
         body
+        channel
         insertedAt
         messageNumber
         receiver {

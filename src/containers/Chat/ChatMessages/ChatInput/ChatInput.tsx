@@ -8,7 +8,7 @@ import AttachmentIconSelected from 'assets/images/icons/Attachment/Selected.svg?
 import VariableIcon from 'assets/images/icons/Template/Variable.svg?react';
 import CrossIcon from 'assets/images/icons/Clear.svg?react';
 import SendMessageIcon from 'assets/images/icons/SendMessage.svg?react';
-import { is24HourWindowOver, pattern } from 'common/constants';
+import { is24HourWindowOver, MESSAGE_CHANNELS, MessageChannel, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
@@ -55,6 +55,7 @@ export interface ChatInputProps {
   isCollection?: any;
   lastMessageTime?: any;
   showAttachmentButton?: boolean;
+  channel?: MessageChannel;
 }
 
 export const ChatInput = ({
@@ -65,6 +66,7 @@ export const ChatInput = ({
   isCollection,
   lastMessageTime,
   showAttachmentButton = true,
+  channel,
 }: ChatInputProps) => {
   const [editorState, setEditorState] = useState<any>('');
   const [selectedTab, setSelectedTab] = useState('');
@@ -353,7 +355,15 @@ export const ChatInput = ({
 
   // determine what kind of messages we should display
   let quickSendTypes: any = [];
-  if (contactBspStatus) {
+  const isWebConversation = channel === MESSAGE_CHANNELS.web;
+
+  // Everything below keys off `contactBspStatus`, which is a WhatsApp session concept: a
+  // browser-only contact sits at NONE and would otherwise be shown the opted-out message. On the
+  // web there is no session window and no BSP to approve an HSM against, so templates are out and
+  // everything else is always available.
+  if (isWebConversation) {
+    quickSendTypes = [interactiveMsg, speedSends];
+  } else if (contactBspStatus) {
     switch (contactBspStatus) {
       case 'SESSION':
         quickSendTypes = [interactiveMsg, speedSends];
@@ -372,7 +382,7 @@ export const ChatInput = ({
     }
   }
 
-  if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
+  if (!isWebConversation && ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE')) {
     return (
       <div className={styles.ContactOptOutMessage}>
         {t('Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.')}

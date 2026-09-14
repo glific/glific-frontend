@@ -45,6 +45,7 @@ const getProps: any = (additionalProps: any) => {
       body: '*All good* https://www.google.com',
       contextId: 1,
       messageNumber: 10,
+      channel: 'WHATSAPP',
       errors: '{}',
       media: null,
       type: 'TEXT',
@@ -236,6 +237,7 @@ describe('<ChatMessage />', () => {
       id: 1,
     },
     messageNumber: 2,
+    channel: 'WHATSAPP',
     type: 'IMAGE',
     media: {
       url: 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',

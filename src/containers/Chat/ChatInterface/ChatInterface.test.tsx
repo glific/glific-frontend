@@ -62,6 +62,7 @@ cache.writeQuery({
           fields: '{}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
+          isWebOnline: false,
         },
         messages: [
           {
@@ -70,6 +71,7 @@ cache.writeQuery({
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
             messageNumber: 48,
+            channel: 'WHATSAPP',
             receiver: {
               id: '1',
             },
@@ -83,6 +85,7 @@ cache.writeQuery({
               body: 'All good',
               contextId: 1,
               messageNumber: 10,
+              channel: 'WHATSAPP',
               errors: '{}',
               media: null,
               type: 'TEXT',
@@ -131,6 +134,32 @@ setUserSession(JSON.stringify({ organization: { id: '1' } }));
 window.HTMLElement.prototype.scrollIntoView = function () {};
 
 describe('Chat interface', () => {
+  afterEach(() => {
+    localStorage.removeItem('organizationServices');
+  });
+
+  // The channel selector sits above the tabs rather than beside them: the channel scopes what
+  // Contacts, Collections and Searches each search, it is not a fourth thing to search.
+  test('offers a channel selector when the web channel is switched on', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
+
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('channelSelector')).toBeInTheDocument();
+    });
+  });
+
+  test('leaves the inbox untouched for an organization without the web channel', async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
+
+    expect(screen.queryByTestId('channelSelector')).not.toBeInTheDocument();
+  });
+
   test('it should render chat interface component correctly', async () => {
     render(wrapper);
 

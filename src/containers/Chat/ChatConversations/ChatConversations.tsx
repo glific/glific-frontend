@@ -12,6 +12,7 @@ import { Search } from 'containers/Search/Search';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { getUserRolePermissions } from 'context/role';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
+import { MessageChannel } from 'common/constants';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
@@ -22,6 +23,7 @@ export interface ChatConversationsProps {
   phonenumber?: any;
   filterComponent?: any;
   setAppliedFilters?: any;
+  channel?: MessageChannel;
 }
 
 export const ChatConversations = ({
@@ -29,6 +31,7 @@ export const ChatConversations = ({
   phonenumber,
   setAppliedFilters,
   filterComponent,
+  channel,
 }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
@@ -261,6 +264,7 @@ export const ChatConversations = ({
         savedSearchCriteria={savedSearchCriteria}
         savedSearchCriteriaId={savedSearchCriteriaId}
         entityType="contact"
+        channel={channel}
       />
       {saveSearchButton}
       {dialogBox}
