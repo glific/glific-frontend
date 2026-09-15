@@ -72,3 +72,15 @@
 .Divider {
   margin: 8px 0px;
 }
+
+.NewBadge {
+  margin-left: var(--app-space-sm);
+  padding: 0 var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-brand-primary);
+  color: var(--app-color-white);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}

@@ -7,8 +7,11 @@ import { useEffect } from 'react';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
 import { Heading } from 'components/UI/Heading/Heading';
+import { getOrganizationServices } from 'services/AuthService';
 import Track from 'services/TrackService';
 import styles from './SettingList.module.css';
+
+const WEB_CHANNEL = 'web_channel';
 
 export const SettingHeading = ({ formTitle, description }: any) => {
   return (
@@ -34,7 +37,7 @@ export const SettingList = () => {
 
   if (loading) return <Loading />;
 
-  const list = [
+  const list: any[] = [
     {
       name: 'Organization',
       shortcode: 'organization',
@@ -52,9 +55,24 @@ export const SettingList = () => {
     },
   ];
 
+  const webChannelEnabled = getOrganizationServices('webChannelEnabled');
+
+  if (webChannelEnabled) {
+    list.push({
+      name: 'Web channel',
+      shortcode: WEB_CHANNEL,
+      description: t(
+        'Set up the org-branded web chat & OTP sign-in surface your contacts reach from a broadcast link.'
+      ),
+      isNew: true,
+    });
+  }
+
   let providersList: any = [];
   if (providerData) {
-    const providers = [...providerData.providers];
+    // The web channel has its own entry above, beside the other org-level settings rather
+    // than among the third-party integrations.
+    const providers = providerData.providers.filter((provider: any) => provider.shortcode !== WEB_CHANNEL);
     const sortedProviders = providers.sort((first: any, second: any) => (first.name > second.name ? 1 : -1));
 
     // create setting list of Organisation & providers
@@ -70,6 +88,7 @@ export const SettingList = () => {
           className={`${styles.Tab} ${location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab}`}
         >
           {data.name}
+          {data.isNew && <span className={styles.NewBadge}>{t('NEW')}</span>}
         </div>
       ))}
       <Divider className={styles.Divider} />

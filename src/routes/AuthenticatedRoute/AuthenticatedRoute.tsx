@@ -10,6 +10,7 @@ import Billing from 'containers/SettingList/Billing/Billing';
 import Organization from 'containers/SettingList/Organization/Organization';
 import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
 import Providers from 'containers/SettingList/Providers/Providers';
+import WebChannel from 'containers/SettingList/WebChannel/WebChannel';
 import Tag from 'containers/Tag/Tag';
 import TagList from 'containers/Tag/TagList/TagList';
 import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChatInterface';
@@ -136,6 +137,7 @@ const adminRoutes = (
       <Route path="organization" element={<Organization />} />
       <Route path="organization-flows" element={<OrganizationFlows />} />
       <Route path="billing" element={<Billing />} />
+      <Route path="web_channel" element={<WebChannel />} />
       <Route path=":type" element={<Providers />} />
     </Route>
     <Route path="blocked-contacts" element={<BlockContactList />} />

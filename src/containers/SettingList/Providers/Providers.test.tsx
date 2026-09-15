@@ -14,7 +14,7 @@ import {
   updateMaytapiCredentials,
   getProvidersQuery,
   getCredential,
-  getWebChannelProviderMock,
+  getSelectProviderMock,
 } from 'mocks/Organization';
 
 const mocks = LIST_ITEM_MOCKS;
@@ -289,9 +289,9 @@ describe('gupshup dialog', () => {
   });
 });
 
-const webChannelProvider = () => (
-  <MemoryRouter initialEntries={[`/settings/web_channel`]}>
-    <MockedProvider mocks={[...mocks, ...getWebChannelProviderMock]} addTypename={false}>
+const selectProvider = () => (
+  <MemoryRouter initialEntries={[`/settings/demo_select`]}>
+    <MockedProvider mocks={[...mocks, ...getSelectProviderMock]} addTypename={false}>
       <Routes>
         <Route path="settings/:type" element={<Providers />} />
       </Routes>
@@ -301,7 +301,7 @@ const webChannelProvider = () => (
 
 describe('provider keys declaring a select', () => {
   it("renders a dropdown of the provider's own options, not a text input", async () => {
-    render(webChannelProvider());
+    render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();
@@ -318,7 +318,7 @@ describe('provider keys declaring a select', () => {
   });
 
   it('still renders string keys as text inputs alongside it', async () => {
-    const { container } = render(webChannelProvider());
+    const { container } = render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();
@@ -329,7 +329,7 @@ describe('provider keys declaring a select', () => {
   });
 
   it('renders an upload control for a key declaring type: upload', async () => {
-    render(webChannelProvider());
+    render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();
@@ -342,7 +342,7 @@ describe('provider keys declaring a select', () => {
   });
 
   it('orders fields by their declared position, not by jsonb key order', async () => {
-    render(webChannelProvider());
+    render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();
@@ -353,7 +353,7 @@ describe('provider keys declaring a select', () => {
   });
 
   it('labels the dropdown once, through the same path as every other field', async () => {
-    render(webChannelProvider());
+    render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();
@@ -365,7 +365,7 @@ describe('provider keys declaring a select', () => {
   });
 
   it('shows each option colour so an admin need not know what "Amber" looks like', async () => {
-    render(webChannelProvider());
+    render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();
@@ -381,7 +381,7 @@ describe('provider keys declaring a select', () => {
   });
 
   it('lets an admin pick a different theme', async () => {
-    render(webChannelProvider());
+    render(selectProvider());
 
     await waitFor(() => {
       expect(screen.getByText('Active?')).toBeInTheDocument();

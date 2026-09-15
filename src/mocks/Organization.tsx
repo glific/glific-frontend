@@ -13,6 +13,7 @@ import {
   FILTER_ORGANIZATIONS,
   GET_ORGANIZATION_COUNT,
   GET_ORGANIZATION_PROVIDER,
+  GET_ORGANIZATION_SHORTCODE,
   GET_QUALITY_RATING,
   GET_ORGANIZATION_PHONE,
   GET_ORGANIZATION_SERVICES,
@@ -1191,7 +1192,7 @@ export const getMaytapiProvider = {
 };
 
 // Deliberately declared out of order, so the `position` sort is what puts them right.
-const WEB_CHANNEL_KEYS = JSON.stringify({
+const SELECT_PROVIDER_KEYS = JSON.stringify({
   theme: {
     view_only: false,
     type: 'select',
@@ -1223,10 +1224,10 @@ const WEB_CHANNEL_KEYS = JSON.stringify({
   display_name: { view_only: false, type: 'string', label: 'Display Name', default: null, position: 1 },
 });
 
-const getWebChannelCredential = {
+const getSelectProviderCredential = {
   request: {
     query: GET_CREDENTIAL,
-    variables: { shortcode: 'web_channel' },
+    variables: { shortcode: 'demo_select' },
   },
   result: {
     data: {
@@ -1238,23 +1239,23 @@ const getWebChannelCredential = {
   },
 };
 
-const getWebChannelProvider = {
+const getSelectProviderProvider = {
   request: {
     query: GET_PROVIDERS,
-    variables: { filter: { shortcode: 'web_channel' } },
+    variables: { filter: { shortcode: 'demo_select' } },
   },
   result: {
     data: {
       providers: [
         {
-          description: 'Branding shown to beneficiaries chatting from a browser',
+          description: 'A provider whose keys exercise the select and upload controls',
           group: null,
           id: '14',
           isRequired: false,
-          keys: WEB_CHANNEL_KEYS,
-          name: 'Web Channel',
+          keys: SELECT_PROVIDER_KEYS,
+          name: 'Demo Select',
           secrets: '{}',
-          shortcode: 'web_channel',
+          shortcode: 'demo_select',
         },
       ],
     },
@@ -1263,7 +1264,11 @@ const getWebChannelProvider = {
 
 // A provider whose keys declare `type: "select"`, to prove the credential form renders a
 // dropdown generically rather than needing a page of its own.
-export const getWebChannelProviderMock = [getWebChannelCredential, getWebChannelCredential, getWebChannelProvider];
+export const getSelectProviderMock = [
+  getSelectProviderCredential,
+  getSelectProviderCredential,
+  getSelectProviderProvider,
+];
 
 export const updateMaytapiCredentials = (error: boolean = false) => ({
   request: {
@@ -1412,3 +1417,108 @@ export const getOrganizationSettingsAllowBot = [
 ];
 
 export const getMaytapiProviderMock = [getCredentials, getCredentials, getMaytapiProvider];
+
+const WEB_CHANNEL_KEYS = JSON.stringify({
+  logo_url: {
+    view_only: false,
+    type: 'upload',
+    label: 'Display picture',
+    default: null,
+    position: 1,
+    max_size_kb: 2048,
+    upload_folder: 'org_logo',
+    accept: 'image/png,image/jpeg',
+    helper_text: 'PNG or JPG, square (1:1) and shown as a circle.',
+  },
+  display_name: { view_only: false, type: 'string', label: 'Display name', default: null, position: 2 },
+  primary_color: { view_only: false, type: 'color', label: 'Primary', default: '#4c3bcf', position: 3 },
+  secondary_color: { view_only: false, type: 'color', label: 'Secondary', default: '#ff8a3d', position: 4 },
+  about_description: { view_only: false, type: 'text', label: 'Description', default: null, position: 5 },
+  about_address: { view_only: false, type: 'string', label: 'Address', default: null, position: 6 },
+  about_website: { view_only: false, type: 'string', label: 'Website', default: null, position: 7 },
+  about_email: { view_only: false, type: 'string', label: 'Contact email', default: null, position: 8 },
+  about_hours: { view_only: false, type: 'string', label: 'Hours', default: null, position: 9 },
+});
+
+export const getWebChannelProvider = {
+  request: {
+    query: GET_PROVIDERS,
+    variables: { filter: { shortcode: 'web_channel' } },
+  },
+  result: {
+    data: {
+      providers: [
+        {
+          description: 'Branding shown to beneficiaries chatting from a browser',
+          group: null,
+          id: '15',
+          isRequired: false,
+          keys: WEB_CHANNEL_KEYS,
+          name: 'Web Channel',
+          secrets: '{}',
+          shortcode: 'web_channel',
+        },
+      ],
+    },
+  },
+};
+
+export const getWebChannelCredential = (keys: any = null) => ({
+  request: {
+    query: GET_CREDENTIAL,
+    variables: { shortcode: 'web_channel' },
+  },
+  result: {
+    data: {
+      credential: {
+        __typename: 'CredentialResult',
+        credential: keys
+          ? {
+              id: '9',
+              isActive: true,
+              keys: JSON.stringify(keys),
+              secrets: '{}',
+              provider: { shortcode: 'web_channel' },
+            }
+          : null,
+      },
+    },
+  },
+});
+
+export const createWebChannelCredential = (keys: any) => ({
+  request: {
+    query: CREATE_CREDENTIAL,
+    variables: {
+      input: {
+        shortcode: 'web_channel',
+        isActive: true,
+        keys: JSON.stringify(keys),
+        secrets: '{}',
+      },
+    },
+  },
+  result: {
+    data: {
+      createCredential: {
+        credential: { id: '9', keys: JSON.stringify(keys), secrets: '{}' },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const getOrganizationShortcode = {
+  request: {
+    query: GET_ORGANIZATION_SHORTCODE,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          shortcode: 'tides',
+        },
+      },
+    },
+  },
+};

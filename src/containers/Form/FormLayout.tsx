@@ -73,6 +73,8 @@ export interface FormLayoutProps {
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
+  /** For a credential page with its own route, where there is no :type param to read. */
+  credentialShortcode?: string;
   // separate from entityId: fetches from getItemQuery and runs setStates the
   // same way entityId does, but doesn't make performTask treat this as an
   // update, and doesn't suppress the isAttachment fresh-media-upload step —
@@ -150,6 +152,7 @@ export const FormLayout = ({
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
   entityId = null,
+  credentialShortcode,
   prefillId = null,
   restrictDelete = false,
   languageAttributes = {},
@@ -181,7 +184,8 @@ export const FormLayout = ({
 
   let variables: any = fetchId ? { [idType]: fetchId } : false;
   if (listItem === 'credential') {
-    variables = params.type ? { shortcode: params.type } : false;
+    const shortcode = params.type ?? credentialShortcode;
+    variables = shortcode ? { shortcode } : false;
   }
 
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any, isSaveClick: boolean = false) => {
