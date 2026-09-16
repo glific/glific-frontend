@@ -176,13 +176,7 @@ test('starts a contact flow on the web channel, sending the channel variable', a
   const webMocks = [getPublishedFlowQuery, addFlowToContactWebQuery];
   const { getByTestId, getByText, getByRole } = render(
     <MockedProvider mocks={webMocks} addTypename={false}>
-      <StartAFlow
-        collectionId=""
-        entityId="1"
-        groups={false}
-        channel="WEB"
-        setShowFlowDialog={setShowFlowDialogMock}
-      />
+      <StartAFlow collectionId="" entityId="1" groups={false} channel="WEB" setShowFlowDialog={setShowFlowDialogMock} />
     </MockedProvider>
   );
 
