@@ -144,6 +144,7 @@ const filterFlowResult = {
         lastChangedAt: '2021-03-05T04:32:23Z',
         lastPublishedAt: null,
         name: 'Help Workflow',
+        channel: 'WHATSAPP',
         isBackground: false,
         updatedAt: '2021-03-05T04:32:23Z',
         uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
@@ -170,6 +171,7 @@ const filterFlowResult = {
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:41.450940Z',
         name: 'Preference Workflow',
+        channel: 'WEB',
         roles: [],
         tag: null,
         updatedAt: '2024-03-23T15:26:41.447361Z',
@@ -186,6 +188,7 @@ const filterFlowResult = {
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:40.635789Z',
         name: 'Optout Workflow',
+        channel: null,
         roles: [],
         tag: null,
         updatedAt: '2024-03-23T15:26:40.634989Z',
@@ -195,7 +198,9 @@ const filterFlowResult = {
   },
 };
 
-export const filterFlowQuery = (filter: any) => ({
+// `flows` overrides the rows the query answers with, for filters that are expected to narrow the
+// list rather than just be accepted.
+export const filterFlowQuery = (filter: any, flows?: any[]) => ({
   request: {
     query: FILTER_FLOW,
     variables: {
@@ -209,8 +214,10 @@ export const filterFlowQuery = (filter: any) => ({
     },
   },
 
-  result: filterFlowResult,
+  result: flows ? { data: { flows } } : filterFlowResult,
 });
+
+export const webChannelFlows = filterFlowResult.data.flows.filter((flow: any) => flow.channel === 'WEB');
 
 export const filterTemplateFlows = {
   request: {

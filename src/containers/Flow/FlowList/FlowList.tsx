@@ -19,11 +19,12 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { MESSAGE_CHANNELS, MessageChannel, STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
+import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -56,7 +57,15 @@ const getLastPublished = (date: string, fallback: string = '') =>
   );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-const columnStyles = [styles.Pinned, styles.Name, styles.DateColumn, styles.Label, styles.DateColumn, styles.Actions];
+const columnStyles = [
+  styles.Pinned,
+  styles.Name,
+  styles.Channel,
+  styles.DateColumn,
+  styles.Label,
+  styles.DateColumn,
+  styles.Actions,
+];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -74,6 +83,7 @@ export const FlowList = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
+  const [channelFilter, setChannelFilter] = useState<MessageChannel | ''>('');
   const [selectedtag, setSelectedTag] = useState<any>(null);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
@@ -311,9 +321,10 @@ export const FlowList = () => {
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id }: any) => ({
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id, channel }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
+    channel: <ChannelLabel channel={channel} />,
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
@@ -322,6 +333,7 @@ export const FlowList = () => {
   const columnNames = [
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
+    { label: t('Channel') },
     { label: t('Last published') },
     { label: t('Tag') },
     { label: t('Last saved in Draft') },
@@ -335,6 +347,12 @@ export const FlowList = () => {
     columns: getColumns,
     columnStyles,
   };
+
+  const channelFilterList = [
+    { label: t('All channels'), value: '' },
+    { label: 'WhatsApp', value: MESSAGE_CHANNELS.whatsapp },
+    { label: 'Web', value: MESSAGE_CHANNELS.web },
+  ];
 
   const filterList = [
     { label: 'Active', value: true },
@@ -351,6 +369,22 @@ export const FlowList = () => {
 
   const activeFilter = (
     <>
+      <FormControl>
+        <Select
+          aria-label="channel-type"
+          name="channel-type"
+          value={channelFilter}
+          onChange={(event) => setChannelFilter(event.target.value as MessageChannel | '')}
+          className={styles.SearchBar}
+          data-testid="channelFilter"
+        >
+          {channelFilterList.map((option: any) => (
+            <MenuItem key={option.label} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <FormControl>
         <Select
           aria-label="template-type"
@@ -398,6 +432,7 @@ export const FlowList = () => {
   const filters = useMemo(() => {
     let filters = {
       ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
+      ...(channelFilter && { channel: channelFilter }),
     };
     if (filter === 'isTemplate') {
       filters = { ...filters, isTemplate: true };
@@ -405,7 +440,7 @@ export const FlowList = () => {
       filters = { ...filters, isActive: filter, isTemplate: false };
     }
     return filters;
-  }, [filter, selectedtag, importing]);
+  }, [filter, selectedtag, importing, channelFilter]);
 
   const restrictedAction = () =>
     filter === 'isTemplate' ? { delete: false, edit: false } : { edit: true, delete: true };

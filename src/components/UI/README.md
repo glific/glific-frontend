@@ -40,6 +40,7 @@ field components (below); it isn't itself a component.
 | CSV bulk-upload                                   | `CsvUpload`                                                 |
 | Generic (non-CSV) file import                     | `ImportButton`                                              |
 | Person avatar (initials)                          | `AvatarDisplay`                                             |
+| Which channel a row/record belongs to             | `ChannelLabel`                                              |
 | "Beta" label                                      | `BetaTag`                                                   |
 | Click/hover dropdown action menu                  | `Menu`                                                      |
 
@@ -69,6 +70,7 @@ feature file.
 | `EmptyState`     | Card for a screen with nothing to show: icon, title, note, action | `title`, `note`, `icon`, `action`, `testId` | 2 files (AI Evaluation) | Use for "nothing here yet" and for blocked states with a next step. Not for inline field errors or full-page failures (`ErrorPage`).                                                  |
 | `ToastMessage`   | Snackbar+Alert toast                                              | `open`, `severity`, `message`               | 2 files                 | **Prefer `setNotification`/`setErrorMessage`** (see root `CLAUDE.md`) over using this directly — toasts should go through the Apollo-cache notification service, not component state. |
 | `Timer`          | WhatsApp 24-hour session-window countdown, or opt-out indicator   | `time`, `contactStatus`, `variant`          | 3 files                 | Domain-specific to WhatsApp session windows, not a generic timer.                                                                                                                     |
+| `ChannelLabel`   | Coloured dot + name for the channel a record belongs to           | `channel`, `testId`                         | 1 file (flow list)      | Reads `MESSAGE_CHANNELS` from `common/constants`; an absent or unknown channel renders as WhatsApp. For _choosing_ a channel use `Chat/ChannelSelector`.                               |
 
 ## Data display
 

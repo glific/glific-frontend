@@ -18,6 +18,7 @@ import {
   importFlowWithSheetError,
   importFlowWithAssistantAndSheetError,
   importFlowWithoutNodeFields,
+  webChannelFlows,
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
@@ -138,6 +139,39 @@ describe('<FlowList />', () => {
       expect(getByText('help, मदद'));
       expect(getByText('help, activity, preference, op...'));
     });
+  });
+
+  test('should name the channel each flow runs on', async () => {
+    const { getAllByTestId } = render(flowList());
+
+    await waitFor(() => {
+      expect(getAllByTestId('channelLabel').map((label) => label.textContent)).toEqual(['WhatsApp', 'Web', 'WhatsApp']);
+    });
+  });
+
+  test('should narrow the list to the selected channel', async () => {
+    const webFilter = { ...isActiveFilter, channel: 'WEB' };
+    const { getByTestId, getByText, queryByText } = render(
+      flowList([
+        ...mocks,
+        filterFlowQuery(webFilter, webChannelFlows),
+        filterFlowQuery(webFilter, webChannelFlows),
+        getFlowCountQuery(webFilter),
+        getFlowCountQuery(webFilter),
+      ])
+    );
+
+    await waitFor(() => {
+      expect(getByText('Help Workflow')).toBeInTheDocument();
+    });
+
+    fireEvent.mouseDown(within(getByTestId('channelFilter')).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'Web' }));
+
+    await waitFor(() => {
+      expect(queryByText('Help Workflow')).not.toBeInTheDocument();
+    });
+    expect(getByText('Preference Workflow')).toBeInTheDocument();
   });
 
   test('should search flow and check if flow keywords are present below the name', async () => {
@@ -272,7 +306,7 @@ describe('<FlowList />', () => {
       expect(screen.getByText('Flows')).toBeInTheDocument();
     });
 
-    const autoComplete = screen.getAllByRole('combobox')[1];
+    const autoComplete = within(screen.getByTestId('autocomplete-element')).getByRole('combobox');
 
     autoComplete.focus();
 

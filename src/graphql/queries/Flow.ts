@@ -51,6 +51,7 @@ export const FILTER_FLOW = gql`
       uuid
       keywords
       description
+      channel
       lastChangedAt
       isBackground
       lastPublishedAt
