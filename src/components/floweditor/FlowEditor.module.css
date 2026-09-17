@@ -63,7 +63,7 @@
 .BlockingDialog {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--app-space-lg);
 }
 
 .DialogError {
@@ -154,7 +154,7 @@
 .Title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--app-space-lg);
 }
 
 .BackIcon {
