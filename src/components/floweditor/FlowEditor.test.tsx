@@ -685,7 +685,7 @@ test('refuses to publish a flow whose nodes its channel cannot run, with no over
     expect(getByText('This flow was not published')).toBeInTheDocument();
   });
 
-  expect(getByText(/only works on WhatsApp/)).toBeInTheDocument();
+  expect(getByText('Sending a WhatsApp template (HSM)')).toBeInTheDocument();
   // the only way out is to go back and edit
   expect(queryByTestId('ok-button')).not.toBeInTheDocument();
   expect(getByText('Go back and edit')).toBeInTheDocument();

@@ -478,7 +478,7 @@ export const publishFlowBlockedByChannel = {
       publishFlow: {
         errors: [
           {
-            message: 'Sending a WhatsApp template (HSM) only works on WhatsApp, so it cannot be part of a web flow.',
+            message: 'Sending a WhatsApp template (HSM)',
             category: 'Blocking',
           },
         ],
