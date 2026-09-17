@@ -377,6 +377,8 @@ export const FlowList = () => {
           onChange={(event) => setChannelFilter(event.target.value as MessageChannel | '')}
           className={styles.SearchBar}
           data-testid="channelFilter"
+          // the unfiltered value is '', which MUI renders as a blank control unless told otherwise
+          displayEmpty
         >
           {channelFilterList.map((option: any) => (
             <MenuItem key={option.label} value={option.value}>

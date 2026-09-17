@@ -59,6 +59,13 @@
   background-color: white !important;
 }
 
+/* Spacing only: the description sets its own colour, and the error list below brings its own. */
+.BlockingDialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .DialogError {
   text-align: center;
   margin: 0;
@@ -147,6 +154,7 @@
 .Title {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .BackIcon {

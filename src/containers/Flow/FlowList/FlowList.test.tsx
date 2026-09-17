@@ -149,6 +149,16 @@ describe('<FlowList />', () => {
     });
   });
 
+  // Regression: the default filter value is '', which MUI renders as an empty control unless
+  // `displayEmpty` is set — the pill showed only a dropdown arrow, with no label at all.
+  test('should label the channel filter when no channel is selected', async () => {
+    const { getByTestId } = render(flowList());
+
+    await waitFor(() => {
+      expect(getByTestId('channelFilter')).toHaveTextContent('All channels');
+    });
+  });
+
   test('should narrow the list to the selected channel', async () => {
     const webFilter = { ...isActiveFilter, channel: 'WEB' };
     const { getByTestId, getByText, queryByText } = render(

@@ -12,6 +12,8 @@ import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql
 import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_FLOW } from 'graphql/queries/Flow';
 import { getAddOrRemoveRoleIds } from 'common/utils';
+import { MESSAGE_CHANNELS, MessageChannel } from 'common/constants';
+import { ChannelField } from 'components/UI/Form/ChannelField/ChannelField';
 import { setErrorMessage } from 'common/notification';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
@@ -46,6 +48,7 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const [copyFlowTitle, setCopyFlowTitle] = useState('');
   const [skipValidation, setSkipValidation] = useState(false);
+  const [channel, setChannel] = useState<MessageChannel>(MESSAGE_CHANNELS.whatsapp);
 
   const { t } = useTranslation();
 
@@ -78,6 +81,7 @@ export const Flow = () => {
   if (loading) return <Loading />;
 
   const states = {
+    channel,
     isActive,
     isPinned,
     isBackground,
@@ -101,6 +105,7 @@ export const Flow = () => {
     ignoreKeywords: ignoreKeywordsValue,
     roles: rolesValue,
     skipValidation: skipValidation,
+    channel: channelValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -136,6 +141,7 @@ export const Flow = () => {
     setRoles(rolesValue);
     setDescription(description);
     setSkipValidation(skipValidation);
+    setChannel(channelValue ?? MESSAGE_CHANNELS.whatsapp);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -180,7 +186,20 @@ export const Flow = () => {
 
   const additionalAction = isTemplate ? viewAction : configureAction;
 
+  const isExistingFlow = Boolean(params.id);
+
   const formFields = [
+    {
+      component: ChannelField,
+      name: 'channel',
+      label: isExistingFlow ? t('Channel') : `${t('Channel')}*`,
+      disabled: isExistingFlow || isTemplate,
+      // read-only once the flow exists, so it is never part of an update payload
+      skipPayload: isExistingFlow,
+      helperText: isExistingFlow
+        ? t('A flow stays on the channel it was created for.')
+        : t('This decides where the flow runs. It cannot be changed later.'),
+    },
     {
       component: Input,
       name: 'name',

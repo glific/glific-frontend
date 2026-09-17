@@ -40,3 +40,21 @@ test('takes a custom test id', () => {
 
   expect(screen.getByTestId('flowChannel')).toHaveTextContent('WhatsApp');
 });
+
+// The chip variant is a filled badge for headers. Asserting on the classes is the only
+// observable signal in jsdom, and they are what carry the fill and the channel colour.
+test('renders a filled chip when asked, tinted per channel', () => {
+  renderLabel({ channel: MESSAGE_CHANNELS.web, variant: 'chip' });
+
+  const chip = screen.getByTestId('channelLabel');
+
+  expect(chip.className).toMatch(/Chip/);
+  expect(chip.className).toMatch(/WebChip/);
+  expect(chip).toHaveTextContent('Web');
+});
+
+test('stays a bare label by default, so table cells are unaffected', () => {
+  renderLabel({ channel: MESSAGE_CHANNELS.web });
+
+  expect(screen.getByTestId('channelLabel').className).not.toMatch(/Chip/);
+});

@@ -34,6 +34,7 @@ const flowData = {
       id: '1',
       name: 'Help',
       isActive: true,
+      channel: 'WHATSAPP',
       description: 'Help flow',
       uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
       keywords: ['help'],
@@ -314,6 +315,7 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
           isActive,
           name: 'help workflow',
           keywords,
+          channel: 'WHATSAPP',
           isTemplate,
           skipValidation: true,
         },
@@ -456,7 +458,30 @@ export const publishFlow = {
   result: {
     data: {
       publishFlow: {
-        errors: [{ message: 'Something went wrong' }],
+        errors: [{ message: 'Something went wrong', category: 'Critical' }],
+        success: null,
+      },
+    },
+  },
+};
+
+// A web flow carrying a WhatsApp-only node: the server refuses the publish rather than warning.
+export const publishFlowBlockedByChannel = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: [
+          {
+            message: 'Sending a WhatsApp template (HSM) only works on WhatsApp, so it cannot be part of a web flow.',
+            category: 'Blocking',
+          },
+        ],
         success: null,
       },
     },
@@ -475,6 +500,7 @@ export const publishFlowWithDuplicateErrors = {
       publishFlow: {
         errors: Array(5).fill({
           message: '"stop" has already been used as a keyword for a flow',
+          category: 'Critical',
         }),
         success: null,
       },

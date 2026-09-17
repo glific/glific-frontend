@@ -41,6 +41,7 @@ field components (below); it isn't itself a component.
 | Generic (non-CSV) file import                     | `ImportButton`                                              |
 | Person avatar (initials)                          | `AvatarDisplay`                                             |
 | Which channel a row/record belongs to             | `ChannelLabel`                                              |
+| Pick a channel inside a form                      | `Form/ChannelField`                                         |
 | "Beta" label                                      | `BetaTag`                                                   |
 | Click/hover dropdown action menu                  | `Menu`                                                      |
 
@@ -124,6 +125,7 @@ All Formik-integrated unless noted.
 | `Checkbox`           | Checkbox with label + optional info tooltip/dialog                                                | `title`, `info`, `infoType`                                             | 14 files     |                                                                                                               |
 | `PhoneInput`         | Phone number field (country search, defaults to India)                                            | `enableSearch`, `changeHandler`                                         | 7 files      |                                                                                                               |
 | `Dropdown`           | Simple MUI `Select`                                                                               | `options`, `helperText`                                                 | 5 files      | For searchable/multi-select, use `AutoComplete` instead.                                                      |
+| `ChannelField`       | Formik channel picker (WhatsApp / Web) as coloured pills; renders read-only when `disabled`        | `field`, `form`, `disabled`, `helperText`                               | 1 file (flow form) | Built on `SegmentedControl`. `disabled` shows a `ChannelLabel` instead of a control — for values fixed after creation. |
 | `Calendar`           | Date-only picker (MUI X)                                                                          | `format`, `minDate`                                                     | 4 files      | Pair with `TimePicker`, or use `DateTimePicker` for one combined control.                                     |
 | `Captcha`            | HOC wrapping a component's `onClick` with reCAPTCHA v3 verification                               | `component`, `action`                                                   | 4 files      | Not a visual component — a verification wrapper (login/registration).                                         |
 | `EmojiInput`         | `Editor` (Lexical rich text) + emoji-picker adornment                                             | `handleChange`, `rows`                                                  | 4 files      | For plain rich text without emoji, the underlying `Editor` has no other external consumers today.             |
