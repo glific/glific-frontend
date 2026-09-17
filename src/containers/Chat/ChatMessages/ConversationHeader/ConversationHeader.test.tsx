@@ -491,7 +491,11 @@ describe('on a web channel conversation', () => {
       fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
 
-    expect(screen.getByTestId('flowButton')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('flowButton'));
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+    });
   });
 
   // The blocks are laid out by a grid with one named column each, which only holds if they are
