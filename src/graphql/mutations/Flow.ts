@@ -79,8 +79,8 @@ export const ADD_FLOW_TO_COLLECTION = gql`
 `;
 
 export const ADD_FLOW_TO_CONTACT = gql`
-  mutation startContactFlow($flowId: ID!, $contactId: ID!) {
-    startContactFlow(flowId: $flowId, contactId: $contactId) {
+  mutation startContactFlow($flowId: ID!, $contactId: ID!, $channel: MessageChannelEnum) {
+    startContactFlow(flowId: $flowId, contactId: $contactId, channel: $channel) {
       success
     }
   }
