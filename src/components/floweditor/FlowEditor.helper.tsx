@@ -110,6 +110,10 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
   if (services.whatsappGroupEnabled) {
     config.filters.push('groups');
   }
+
+  if (services.bulkContactFieldsEnabled) {
+    config.filters.push('bulk_contact_fields');
+  }
   return config;
 };
 
