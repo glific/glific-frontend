@@ -28,7 +28,7 @@ type ServiceType =
   | 'promptGeneratorEnabled'
   | 'templateV2Enabled'
   | 'templateLibraryEnabled'
-  | 'bulkContactFieldsEnabled';
+  | 'bulkContactUpdateEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
