@@ -34,6 +34,7 @@ const flowData = {
       id: '1',
       name: 'Help',
       isActive: true,
+      channel: 'WHATSAPP',
       description: 'Help flow',
       uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
       keywords: ['help'],
@@ -144,6 +145,7 @@ const filterFlowResult = {
         lastChangedAt: '2021-03-05T04:32:23Z',
         lastPublishedAt: null,
         name: 'Help Workflow',
+        channel: 'WHATSAPP',
         isBackground: false,
         updatedAt: '2021-03-05T04:32:23Z',
         uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
@@ -170,6 +172,7 @@ const filterFlowResult = {
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:41.450940Z',
         name: 'Preference Workflow',
+        channel: 'WEB',
         roles: [],
         tag: null,
         updatedAt: '2024-03-23T15:26:41.447361Z',
@@ -186,6 +189,7 @@ const filterFlowResult = {
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:40.635789Z',
         name: 'Optout Workflow',
+        channel: null,
         roles: [],
         tag: null,
         updatedAt: '2024-03-23T15:26:40.634989Z',
@@ -195,7 +199,9 @@ const filterFlowResult = {
   },
 };
 
-export const filterFlowQuery = (filter: any) => ({
+// `flows` overrides the rows the query answers with, for filters that are expected to narrow the
+// list rather than just be accepted.
+export const filterFlowQuery = (filter: any, flows?: any[]) => ({
   request: {
     query: FILTER_FLOW,
     variables: {
@@ -209,8 +215,10 @@ export const filterFlowQuery = (filter: any) => ({
     },
   },
 
-  result: filterFlowResult,
+  result: flows ? { data: { flows } } : filterFlowResult,
 });
+
+export const webChannelFlows = filterFlowResult.data.flows.filter((flow: any) => flow.channel === 'WEB');
 
 export const filterTemplateFlows = {
   request: {
@@ -307,6 +315,7 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
           isActive,
           name: 'help workflow',
           keywords,
+          channel: 'WHATSAPP',
           isTemplate,
           skipValidation: true,
         },
@@ -449,7 +458,30 @@ export const publishFlow = {
   result: {
     data: {
       publishFlow: {
-        errors: [{ message: 'Something went wrong' }],
+        errors: [{ message: 'Something went wrong', category: 'Critical' }],
+        success: null,
+      },
+    },
+  },
+};
+
+// A web flow carrying a WhatsApp-only node: the server refuses the publish rather than warning.
+export const publishFlowBlockedByChannel = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: [
+          {
+            message: 'Sending a WhatsApp template (HSM)',
+            category: 'Blocking',
+          },
+        ],
         success: null,
       },
     },
@@ -468,6 +500,7 @@ export const publishFlowWithDuplicateErrors = {
       publishFlow: {
         errors: Array(5).fill({
           message: '"stop" has already been used as a keyword for a flow',
+          category: 'Critical',
         }),
         success: null,
       },

@@ -92,6 +92,10 @@ export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 50;
 
 // Mirrors Glific's `message_channel_enum`. A conversation belongs to exactly one of these, and
 // the value is sent verbatim as a GraphQL enum, so the casing matters.
+// Publish-time validation errors in this category cannot be overridden: the server refused to
+// publish, rather than publishing with a warning as it does for every other category.
+export const BLOCKING_ERROR_CATEGORY = 'Blocking';
+
 export const MESSAGE_CHANNELS = {
   whatsapp: 'WHATSAPP',
   web: 'WEB',
