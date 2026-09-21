@@ -115,7 +115,7 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
     config.filters.push('bulk_contact_fields');
   }
 
-  if (services.bulkResultUpdateEnabled) {
+  if (services.bulkFlowResultsEnabled) {
     config.filters.push('bulk_flow_results');
   }
   return config;

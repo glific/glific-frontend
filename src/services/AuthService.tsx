@@ -29,7 +29,7 @@ type ServiceType =
   | 'templateV2Enabled'
   | 'templateLibraryEnabled'
   | 'bulkContactUpdateEnabled'
-  | 'bulkResultUpdateEnabled';
+  | 'bulkFlowResultsEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
