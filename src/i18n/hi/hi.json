@@ -1080,5 +1080,9 @@
   "Evaluation runs could not be loaded": "मूल्यांकन रन लोड नहीं हो सके",
   "Online": "ऑनलाइन",
   "Offline": "ऑफ़लाइन",
-  "Flows cannot be started on the web channel yet": "वेब चैनल पर अभी फ़्लो शुरू नहीं किए जा सकते"
+  "Flows cannot be started on the web channel yet": "वेब चैनल पर अभी फ़्लो शुरू नहीं किए जा सकते",
+  "Channel": "चैनल",
+  "All channels": "सभी चैनल",
+  "A flow stays on the channel it was created for.": "फ़्लो उसी चैनल पर रहता है जिसके लिए इसे बनाया गया था।",
+  "This decides where the flow runs. It cannot be changed later.": "इससे तय होता है कि फ़्लो कहाँ चलेगा। इसे बाद में बदला नहीं जा सकता।"
 }

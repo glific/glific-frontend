@@ -1,0 +1,46 @@
+.ChannelLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+  line-height: 20px;
+  color: var(--app-color-text-tertiary);
+}
+
+.Dot {
+  width: var(--app-size-dot);
+  height: var(--app-size-dot);
+  border-radius: var(--app-radius-pill);
+  flex-shrink: 0;
+}
+
+.WhatsApp {
+  background-color: var(--app-color-channel-whatsapp);
+}
+
+.Web {
+  background-color: var(--app-color-channel-web);
+}
+
+/* Chip variant: a filled badge for headers, where a bare dot and label reads as stray text
+   rather than a deliberate label. The fill is the channel's own colour at low alpha, so the two
+   channels stay distinguishable without a second palette. */
+.Chip {
+  gap: var(--app-space-2xs);
+  width: fit-content;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  font-size: var(--app-font-size-xs);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.Chip.WhatsAppChip {
+  color: var(--app-color-channel-whatsapp);
+  background-color: rgb(var(--app-color-channel-whatsapp-rgb) / 10%);
+}
+
+.Chip.WebChip {
+  color: var(--app-color-channel-web);
+  background-color: rgb(var(--app-color-channel-web-rgb) / 10%);
+}

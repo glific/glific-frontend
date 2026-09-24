@@ -1253,5 +1253,9 @@
   "Your web channel address": "Your web channel address",
   "Share this link with your contacts. It opens the chat in their browser.": "Share this link with your contacts. It opens the chat in their browser.",
   "Web channel is active": "Web channel is active",
-  "Your branding and business profile apply to the web chat only while this is on.": "Your branding and business profile apply to the web chat only while this is on."
+  "Your branding and business profile apply to the web chat only while this is on.": "Your branding and business profile apply to the web chat only while this is on.",
+  "Channel": "Channel",
+  "All channels": "All channels",
+  "A flow stays on the channel it was created for.": "A flow stays on the channel it was created for.",
+  "This decides where the flow runs. It cannot be changed later.": "This decides where the flow runs. It cannot be changed later."
 }

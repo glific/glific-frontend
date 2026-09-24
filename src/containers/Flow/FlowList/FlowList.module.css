@@ -17,8 +17,13 @@
 }
 
 .Name {
-  width: 27%;
+  width: 22%;
   min-width: 200px;
+}
+
+.Channel {
+  width: 11%;
+  min-width: 100px;
 }
 
 .Pinned {
@@ -26,7 +31,7 @@
 }
 
 .Label {
-  width: 14%;
+  width: 11%;
 }
 
 .Actions {
@@ -130,7 +135,7 @@
 }
 
 .DateColumn {
-  width: 19.5%;
+  width: 18%;
   min-width: 120px;
 }
 

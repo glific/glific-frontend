@@ -186,6 +186,7 @@ html {
   --app-color-green-primary-rgb: 17 150 86; /* #119656 */
   --app-color-green-secondary-rgb: 7 63 36; /* #073f24 */
   --app-color-amber-primary-rgb: 234 179 8; /* #eab308 */
+  --app-color-indigo-primary-rgb: 53 17 150; /* #351196 */
   --app-color-slate-rgb: 122 144 135; /* #7a9087 — hairlines and sunken fills */
   --app-color-white-rgb: 255 255 255;
 
@@ -206,6 +207,9 @@ html {
   --app-color-warning: var(--app-color-red-secondary);
   --app-color-channel-whatsapp: var(--app-color-green-primary);
   --app-color-channel-web: var(--app-color-indigo-primary);
+  /* For tinted channel surfaces (badges), so a chip's fill derives from its own channel colour */
+  --app-color-channel-whatsapp-rgb: var(--app-color-green-primary-rgb);
+  --app-color-channel-web-rgb: var(--app-color-indigo-primary-rgb);
 
   /* Spacing (rem, 16px root: 0.75rem=12px, 1rem=16px, 1.5rem=24px, 3rem=48px) */
   --app-space-2xs: 0.25rem; /* 0.25rem=4px */

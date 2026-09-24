@@ -11,6 +11,7 @@ import {
   getFlowWithoutKeyword,
   getOrganizationServicesQuery,
   publishFlow,
+  publishFlowBlockedByChannel,
   publishFlowWithDuplicateErrors,
   publishFlowSuccess,
   publishFlowNetworkError,
@@ -644,4 +645,48 @@ test('shows a warning when publishing the flow fails unexpectedly', async () => 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalledWith('Sorry! An error occurred', 'warning');
   });
+});
+
+// The editor offers different nodes per channel, so which channel you are editing has to be
+// visible in the header rather than inferred.
+test('names the channel the flow runs on in the header', async () => {
+  render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('flowEditorChannel')).toBeInTheDocument();
+  });
+});
+
+// A node the flow's channel cannot run is refused, not warned about: the server did not publish,
+// so the dialog must not offer a way to "publish anyway" and claim otherwise.
+test('refuses to publish a flow whose nodes its channel cannot run, with no override', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const blockedMocks = [
+    ...mocks.filter((mock: any) => mock !== publishFlow),
+    publishFlowBlockedByChannel,
+    getActiveFlow,
+  ];
+
+  const { getByTestId, queryByTestId, getByText } = render(wrapperFunction(blockedMocks));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('button'));
+
+  await waitFor(() => {
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(getByText('This flow was not published')).toBeInTheDocument();
+  });
+
+  expect(getByText('Sending a WhatsApp template (HSM)')).toBeInTheDocument();
+  // the only way out is to go back and edit
+  expect(queryByTestId('ok-button')).not.toBeInTheDocument();
+  expect(getByText('Go back and edit')).toBeInTheDocument();
 });

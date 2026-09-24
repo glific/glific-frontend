@@ -19,10 +19,12 @@ import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
+import { BLOCKING_ERROR_CATEGORY } from 'common/constants';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
@@ -72,6 +74,7 @@ export const FlowEditor = () => {
   let dialog = null;
   let flowTitle: any;
   let flowKeywords;
+  let flowChannel;
 
   const loadFlowEditor = (forceReadOnly?: boolean) => {
     const readOnlyMode = forceReadOnly ?? isReadOnly;
@@ -183,8 +186,11 @@ export const FlowEditor = () => {
     }
   }, [flowName]);
 
+  const hasFlowDetails = Boolean(flowName && flowName.flows.length > 0);
+
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
+    flowChannel = flowName.flows[0].channel;
     const keywords = flowName.flows[0].keywords;
     flowKeywords = getKeywords(keywords);
   }
@@ -309,6 +315,9 @@ export const FlowEditor = () => {
     setFlowValidation('');
   };
 
+  const blockingErrors = (flowValidation || []).filter((error: any) => error.category === BLOCKING_ERROR_CATEGORY);
+  const hasBlockingErrors = blockingErrors.length > 0;
+
   const errorMsg = () => (
     <div className={styles.DialogError}>
       {(() => {
@@ -354,7 +363,25 @@ export const FlowEditor = () => {
     );
   }
 
-  if (IsError) {
+  if (IsError && hasBlockingErrors) {
+    dialog = (
+      <DialogBox
+        title="This flow was not published"
+        handleCancel={() => handleCancelFlow()}
+        buttonCancel="Go back and edit"
+        alignButtons="center"
+        skipOk
+      >
+        <div className={styles.BlockingDialog}>
+          <p className={styles.DialogDescription}>
+            This is a Web flow. The nodes below only work on WhatsApp, so they need to be removed before you can
+            publish.
+          </p>
+          {errorMsg()}
+        </div>
+      </DialogBox>
+    );
+  } else if (IsError) {
     dialog = (
       <DialogBox
         title="Errors were detected in the flow. Would you like to continue modifying?"
@@ -415,6 +442,7 @@ export const FlowEditor = () => {
             </Typography>
             <div>{flowKeywords}</div>
           </div>
+          {hasFlowDetails && <ChannelLabel channel={flowChannel} variant="chip" testId="flowEditorChannel" />}
         </div>
         <div className={styles.Actions}>
           <Button
