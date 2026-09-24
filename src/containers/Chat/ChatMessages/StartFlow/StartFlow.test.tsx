@@ -9,6 +9,7 @@ import {
   addFlowToCollectionQueryError,
   addFlowToContactQuery,
   addFlowToContactQueryError,
+  addFlowToContactWebQuery,
   addFlowToWAGroupQuery,
   getPublishedFlowQuery,
 } from 'mocks/Flow';
@@ -164,6 +165,37 @@ test('should start a flow for whatsapp group', async () => {
 
   fireEvent.click(getByText('Start'));
 
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('starts a contact flow on the web channel, sending the channel variable', async () => {
+  vi.mocked(setNotification).mockClear();
+
+  const webMocks = [getPublishedFlowQuery, addFlowToContactWebQuery];
+  const { getByTestId, getByText, getByRole } = render(
+    <MockedProvider mocks={webMocks} addTypename={false}>
+      <StartAFlow collectionId="" entityId="1" groups={false} channel="WEB" setShowFlowDialog={setShowFlowDialogMock} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(getByText('Help Workflow'));
+
+  await waitFor(() => {
+    expect(getByRole('combobox')).toHaveValue('Help Workflow');
+  });
+
+  fireEvent.click(getByText('Start'));
+
+  // The web mock only matches if channel: 'WEB' is sent, so a success toast proves it was.
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
   });

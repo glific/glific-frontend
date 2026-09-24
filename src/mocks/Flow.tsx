@@ -85,6 +85,25 @@ export const addFlowToContactQuery = {
   },
 };
 
+export const addFlowToContactWebQuery = {
+  request: {
+    query: ADD_FLOW_TO_CONTACT,
+    variables: {
+      contactId: '1',
+      flowId: '1',
+      channel: 'WEB',
+    },
+  },
+
+  result: {
+    data: {
+      startContactFlow: {
+        success: true,
+      },
+    },
+  },
+};
+
 export const addFlowToContactQueryError = {
   request: {
     query: ADD_FLOW_TO_CONTACT,
