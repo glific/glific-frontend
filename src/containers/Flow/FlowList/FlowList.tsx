@@ -324,7 +324,7 @@ export const FlowList = () => {
   const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id, channel }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
-    channel: <ChannelLabel channel={channel} />,
+    channel: <ChannelLabel channel={channel} variant="chip" />,
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
