@@ -18,9 +18,10 @@ interface StartAFlowProps {
   entityId?: any;
   setShowFlowDialog: any;
   groups?: boolean;
+  channel?: string;
 }
 
-export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }: StartAFlowProps) => {
+export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId, channel }: StartAFlowProps) => {
   const { t } = useTranslation();
   const addFlowForCollectionMutation = groups ? ADD_FLOW_TO_WA_GROUP_COLLECTION : ADD_FLOW_TO_COLLECTION;
   const addFlowMutation = groups ? ADD_FLOW_TO_WA_GROUP : ADD_FLOW_TO_CONTACT;
@@ -51,6 +52,9 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
         flowVariables.waGroupId = entityId;
       } else {
         flowVariables.contactId = entityId;
+        if (channel) {
+          flowVariables.channel = channel;
+        }
       }
 
       try {
