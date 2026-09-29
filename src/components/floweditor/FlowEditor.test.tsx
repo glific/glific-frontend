@@ -47,6 +47,11 @@ beforeEach(() => {
     writable: true,
     value: { reload: vi.fn() },
   });
+  localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
+});
+
+afterEach(() => {
+  localStorage.removeItem('organizationServices');
 });
 
 vi.mock('react-router', async () => {

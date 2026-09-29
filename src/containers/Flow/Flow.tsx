@@ -14,6 +14,7 @@ import { GET_FLOW } from 'graphql/queries/Flow';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { MESSAGE_CHANNELS, MessageChannel } from 'common/constants';
 import { ChannelField } from 'components/UI/Form/ChannelField/ChannelField';
+import { getOrganizationServices } from 'services/AuthService';
 import { setErrorMessage } from 'common/notification';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
@@ -49,6 +50,7 @@ export const Flow = () => {
   const [copyFlowTitle, setCopyFlowTitle] = useState('');
   const [skipValidation, setSkipValidation] = useState(false);
   const [channel, setChannel] = useState<MessageChannel>(MESSAGE_CHANNELS.whatsapp);
+  const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
 
   const { t } = useTranslation();
 
@@ -188,18 +190,26 @@ export const Flow = () => {
 
   const isExistingFlow = Boolean(params.id);
 
+  // With only one channel available there is nothing to choose, and the flow falls back to the
+  // whatsapp default the column already carries.
+  const channelField = isWebChannelEnabled
+    ? [
+        {
+          component: ChannelField,
+          name: 'channel',
+          label: isExistingFlow ? t('Channel') : `${t('Channel')}*`,
+          disabled: isExistingFlow || isTemplate,
+          // read-only once the flow exists, so it is never part of an update payload
+          skipPayload: isExistingFlow,
+          helperText: isExistingFlow
+            ? t('A flow stays on the channel it was created for.')
+            : t('This decides where the flow runs. It cannot be changed later.'),
+        },
+      ]
+    : [];
+
   const formFields = [
-    {
-      component: ChannelField,
-      name: 'channel',
-      label: isExistingFlow ? t('Channel') : `${t('Channel')}*`,
-      disabled: isExistingFlow || isTemplate,
-      // read-only once the flow exists, so it is never part of an update payload
-      skipPayload: isExistingFlow,
-      helperText: isExistingFlow
-        ? t('A flow stays on the channel it was created for.')
-        : t('This decides where the flow runs. It cannot be changed later.'),
-    },
+    ...channelField,
     {
       component: Input,
       name: 'name',

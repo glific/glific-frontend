@@ -124,7 +124,9 @@ vi.mock('react-router', async () => {
 });
 
 setUserSession(JSON.stringify({ roles: [{ id: '1', label: 'Admin' }] }));
-setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
+setOrganizationServices(
+  '{"__typename":"OrganizationServicesResult","rolesAndPermission":true,"webChannelEnabled":true}'
+);
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 describe('<FlowList />', () => {
@@ -147,6 +149,26 @@ describe('<FlowList />', () => {
     await waitFor(() => {
       expect(getAllByTestId('channelLabel').map((label) => label.textContent)).toEqual(['WhatsApp', 'Web', 'WhatsApp']);
     });
+  });
+
+  // An org with only WhatsApp has nothing to pick between, so the column and the filter are
+  // noise rather than information.
+  test('should hide the channel column and filter when the web channel is off', async () => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
+
+    const { queryByTestId, queryAllByTestId, getByText, queryByText } = render(flowList());
+
+    await waitFor(() => {
+      expect(getByText('Flows'));
+    });
+
+    expect(queryAllByTestId('channelLabel')).toHaveLength(0);
+    expect(queryByTestId('channelFilter')).not.toBeInTheDocument();
+    expect(queryByText('Channel')).not.toBeInTheDocument();
+
+    setOrganizationServices(
+      '{"__typename":"OrganizationServicesResult","rolesAndPermission":true,"webChannelEnabled":true}'
+    );
   });
 
   // Regression: the default filter value is '', which MUI renders as an empty control unless

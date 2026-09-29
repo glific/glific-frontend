@@ -30,6 +30,7 @@ import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import ShareResponderLink from '../ShareResponderLink/ShareResponderLink';
+import { getOrganizationServices } from 'services/AuthService';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
@@ -57,15 +58,16 @@ const getLastPublished = (date: string, fallback: string = '') =>
   );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-const columnStyles = [
-  styles.Pinned,
-  styles.Name,
-  styles.Channel,
-  styles.DateColumn,
-  styles.Label,
-  styles.DateColumn,
-  styles.Actions,
-];
+const columnStyles = (showChannel: boolean) =>
+  [
+    styles.Pinned,
+    styles.Name,
+    showChannel && styles.Channel,
+    styles.DateColumn,
+    styles.Label,
+    styles.DateColumn,
+    styles.Actions,
+  ].filter(Boolean);
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -84,6 +86,9 @@ export const FlowList = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
   const [channelFilter, setChannelFilter] = useState<MessageChannel | ''>('');
+  // A flow's channel is only meaningful to an org that has more than one, so the whole notion
+  // stays hidden until the web channel is on.
+  const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
   const [selectedtag, setSelectedTag] = useState<any>(null);
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
@@ -324,7 +329,7 @@ export const FlowList = () => {
   const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id, channel }: any) => ({
     pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
-    channel: <ChannelLabel channel={channel} variant="chip" />,
+    ...(isWebChannelEnabled && { channel: <ChannelLabel channel={channel} variant="chip" /> }),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
@@ -333,7 +338,7 @@ export const FlowList = () => {
   const columnNames = [
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
-    { label: t('Channel') },
+    ...(isWebChannelEnabled ? [{ label: t('Channel') }] : []),
     { label: t('Last published') },
     { label: t('Tag') },
     { label: t('Last saved in Draft') },
@@ -345,7 +350,7 @@ export const FlowList = () => {
   const columnAttributes = {
     columnNames,
     columns: getColumns,
-    columnStyles,
+    columnStyles: columnStyles(isWebChannelEnabled),
   };
 
   const channelFilterList = [
@@ -369,24 +374,26 @@ export const FlowList = () => {
 
   const activeFilter = (
     <>
-      <FormControl>
-        <Select
-          aria-label="channel-type"
-          name="channel-type"
-          value={channelFilter}
-          onChange={(event) => setChannelFilter(event.target.value as MessageChannel | '')}
-          className={styles.SearchBar}
-          data-testid="channelFilter"
-          // the unfiltered value is '', which MUI renders as a blank control unless told otherwise
-          displayEmpty
-        >
-          {channelFilterList.map((option: any) => (
-            <MenuItem key={option.label} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {isWebChannelEnabled && (
+        <FormControl>
+          <Select
+            aria-label="channel-type"
+            name="channel-type"
+            value={channelFilter}
+            onChange={(event) => setChannelFilter(event.target.value as MessageChannel | '')}
+            className={styles.SearchBar}
+            data-testid="channelFilter"
+            // the unfiltered value is '', which MUI renders as a blank control unless told otherwise
+            displayEmpty
+          >
+            {channelFilterList.map((option: any) => (
+              <MenuItem key={option.label} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
       <FormControl>
         <Select
           aria-label="template-type"

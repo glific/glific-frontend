@@ -18,7 +18,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import Track from 'services/TrackService';
@@ -39,6 +39,7 @@ export const FlowEditor = () => {
   const navigate = useNavigate();
   const posthog = usePostHog();
   const { t } = useTranslation();
+  const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
 
   useEffect(() => {
     posthog?.capture('flow_editor_opened');
@@ -449,7 +450,9 @@ export const FlowEditor = () => {
             </Typography>
             <div>{flowKeywords}</div>
           </div>
-          {hasFlowDetails && <ChannelLabel channel={flowChannel} variant="chip" testId="flowEditorChannel" />}
+          {hasFlowDetails && isWebChannelEnabled && (
+            <ChannelLabel channel={flowChannel} variant="chip" testId="flowEditorChannel" />
+          )}
         </div>
         <div className={styles.Actions}>
           <Button

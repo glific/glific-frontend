@@ -137,6 +137,11 @@ vi.mock('common/notification', async (importOriginal) => {
 
 beforeEach(() => {
   cleanup();
+  localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
+});
+
+afterEach(() => {
+  localStorage.removeItem('organizationServices');
 });
 
 const flow = () => (
