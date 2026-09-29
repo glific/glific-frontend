@@ -18,8 +18,6 @@ interface StartAFlowProps {
   entityId?: any;
   setShowFlowDialog: any;
   groups?: boolean;
-  // The conversation's channel, so a flow started for a contact runs on — and replies over — the
-  // same channel. Sent verbatim as the GraphQL enum; omitted (undefined) defaults to whatsapp.
   channel?: string;
 }
 
@@ -54,8 +52,6 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId, 
         flowVariables.waGroupId = entityId;
       } else {
         flowVariables.contactId = entityId;
-        // Only send it when we have one, so existing (whatsapp) callers are unchanged; the server
-        // defaults an absent channel to whatsapp.
         if (channel) {
           flowVariables.channel = channel;
         }

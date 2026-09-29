@@ -334,8 +334,6 @@ export const ConversationHeader = ({
       </Button>
     );
   } else if (isWebConversation) {
-    // The web channel has no BSP 24-hour window, so a flow can always be started here; StartAFlow
-    // sends the web channel so the flow runs on — and replies over — the widget.
     flowButton = (
       <Button
         data-testid="flowButton"

@@ -482,8 +482,6 @@ describe('on a web channel conversation', () => {
     expect(screen.queryByTestId('webPresence')).not.toBeInTheDocument();
   });
 
-  // A web conversation can now start a flow; it runs on the web channel and replies to the widget
-  // (there is no BSP 24-hour window to gate it on).
   test('starting a flow is enabled', async () => {
     render(renderHeader([...mocks, presenceMock], webProps));
 
