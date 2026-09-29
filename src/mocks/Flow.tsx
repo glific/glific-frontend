@@ -458,7 +458,7 @@ export const publishFlow = {
   result: {
     data: {
       publishFlow: {
-        errors: [{ message: 'Something went wrong', category: 'Critical' }],
+        errors: [{ message: 'Something went wrong', category: 'Critical', blocking: false, nodeUuid: null }],
         success: null,
       },
     },
@@ -480,6 +480,14 @@ export const publishFlowBlockedByChannel = {
           {
             message: 'Sending a WhatsApp template (HSM)',
             category: 'Blocking',
+            blocking: true,
+            nodeUuid: 'e8f4a3d1-1c2b-4c9a-9a3f-0d7c1e5b6a20',
+          },
+          {
+            message: 'Sending a WhatsApp template (HSM)',
+            category: 'Blocking',
+            blocking: true,
+            nodeUuid: 'f1c9b7e2-4a5d-4e3b-8c71-92a0d4f6b318',
           },
         ],
         success: null,
@@ -501,6 +509,8 @@ export const publishFlowWithDuplicateErrors = {
         errors: Array(5).fill({
           message: '"stop" has already been used as a keyword for a flow',
           category: 'Critical',
+          blocking: false,
+          nodeUuid: null,
         }),
         success: null,
       },

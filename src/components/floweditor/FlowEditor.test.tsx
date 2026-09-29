@@ -667,7 +667,7 @@ test('refuses to publish a flow whose nodes its channel cannot run, with no over
     getActiveFlow,
   ];
 
-  const { getByTestId, queryByTestId, getByText } = render(wrapperFunction(blockedMocks));
+  const { getByTestId, queryByTestId, getByText, getAllByText } = render(wrapperFunction(blockedMocks));
 
   await waitFor(() => {
     expect(getByTestId('button')).toBeInTheDocument();
@@ -685,7 +685,9 @@ test('refuses to publish a flow whose nodes its channel cannot run, with no over
     expect(getByText('This flow was not published')).toBeInTheDocument();
   });
 
-  expect(getByText('Sending a WhatsApp template (HSM)')).toBeInTheDocument();
+  // two nodes are offending, and both are listed: a shared message must not collapse them into
+  // one row, or the author is told to remove "a" node when there are two
+  expect(getAllByText('Sending a WhatsApp template (HSM)')).toHaveLength(2);
   // the only way out is to go back and edit
   expect(queryByTestId('ok-button')).not.toBeInTheDocument();
   expect(getByText('Go back and edit')).toBeInTheDocument();

@@ -1084,5 +1084,8 @@
   "Channel": "चैनल",
   "All channels": "सभी चैनल",
   "A flow stays on the channel it was created for.": "फ़्लो उसी चैनल पर रहता है जिसके लिए इसे बनाया गया था।",
-  "This decides where the flow runs. It cannot be changed later.": "इससे तय होता है कि फ़्लो कहाँ चलेगा। इसे बाद में बदला नहीं जा सकता।"
+  "This decides where the flow runs. It cannot be changed later.": "इससे तय होता है कि फ़्लो कहाँ चलेगा। इसे बाद में बदला नहीं जा सकता।",
+  "This flow was not published": "यह फ़्लो प्रकाशित नहीं हुआ",
+  "Go back and edit": "वापस जाएँ और संपादित करें",
+  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "नीचे दिए गए नोड इस फ़्लो के चैनल पर नहीं चल सकते, इसलिए प्रकाशित करने से पहले उन्हें हटाना होगा।"
 }

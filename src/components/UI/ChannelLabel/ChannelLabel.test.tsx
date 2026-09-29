@@ -20,11 +20,12 @@ test.each([
   expect(screen.getByTestId('channelLabel')).toHaveTextContent('WhatsApp');
 });
 
-// A channel the frontend has not been taught yet must not blank the row it is rendered in.
-test('falls back to WhatsApp for an unrecognised channel', () => {
+// A channel the frontend has not been taught yet must not blank the row it is rendered in, and
+// must not claim to be WhatsApp either.
+test('shows an unrecognised channel as itself', () => {
   renderLabel({ channel: 'RCS' as any });
 
-  expect(screen.getByTestId('channelLabel')).toHaveTextContent('WhatsApp');
+  expect(screen.getByTestId('channelLabel')).toHaveTextContent('RCS');
 });
 
 // The dot is the only thing that distinguishes the two channels at a glance, and its colour comes

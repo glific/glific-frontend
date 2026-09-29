@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePostHog } from '@posthog/react';
 
 import InfoIcon from '@mui/icons-material/Info';
@@ -24,7 +25,6 @@ import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
-import { BLOCKING_ERROR_CATEGORY } from 'common/constants';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 import ShareResponderLink from 'containers/Flow/ShareResponderLink/ShareResponderLink';
@@ -38,6 +38,7 @@ export const FlowEditor = () => {
   const { uuid } = params;
   const navigate = useNavigate();
   const posthog = usePostHog();
+  const { t } = useTranslation();
 
   useEffect(() => {
     posthog?.capture('flow_editor_opened');
@@ -315,26 +316,33 @@ export const FlowEditor = () => {
     setFlowValidation('');
   };
 
-  const blockingErrors = (flowValidation || []).filter((error: any) => error.category === BLOCKING_ERROR_CATEGORY);
+  const blockingErrors = (flowValidation || []).filter((error: any) => error.blocking);
   const hasBlockingErrors = blockingErrors.length > 0;
 
-  const errorMsg = () => (
-    <div className={styles.DialogError}>
-      {(() => {
-        const seen = new Set<string>();
-        return flowValidation.filter((msg: any) => {
-          if (seen.has(msg.message)) return false;
-          seen.add(msg.message);
+  // Advisory errors repeat the same sentence per offending field, so they dedupe. Blocking
+  // errors name a node kind, so N offending nodes share one message — deduping them would tell
+  // the author to remove "a" node when there are three.
+  const errorMsg = (errors: any[], dedupe: boolean = true) => {
+    const seen = new Set<string>();
+    const visible = dedupe
+      ? errors.filter((error: any) => {
+          if (seen.has(error.message)) return false;
+          seen.add(error.message);
           return true;
-        });
-      })().map((message: any) => (
-        <div key={message.message} className={styles.ErrorMsg}>
-          <WarningIcon className={styles.ErrorMsgIcon} />
-          {message.message}
-        </div>
-      ))}
-    </div>
-  );
+        })
+      : errors;
+
+    return (
+      <div className={styles.DialogError}>
+        {visible.map((error: any, index: number) => (
+          <div key={error.nodeUuid ?? `${error.message}-${index}`} className={styles.ErrorMsg}>
+            <WarningIcon className={styles.ErrorMsgIcon} />
+            {error.message}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   if (publishDialog) {
     dialog = (
@@ -366,18 +374,17 @@ export const FlowEditor = () => {
   if (IsError && hasBlockingErrors) {
     dialog = (
       <DialogBox
-        title="This flow was not published"
+        title={t('This flow was not published')}
         handleCancel={() => handleCancelFlow()}
-        buttonCancel="Go back and edit"
+        buttonCancel={t('Go back and edit')}
         alignButtons="center"
         skipOk
       >
         <div className={styles.BlockingDialog}>
           <p className={styles.DialogDescription}>
-            This is a Web flow. The nodes below only work on WhatsApp, so they need to be removed before you can
-            publish.
+            {t("The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.")}
           </p>
-          {errorMsg()}
+          {errorMsg(blockingErrors, false)}
         </div>
       </DialogBox>
     );
@@ -395,7 +402,7 @@ export const FlowEditor = () => {
         alignButtons="center"
         buttonCancel="Modify"
       >
-        {errorMsg()}
+        {errorMsg(flowValidation)}
       </DialogBox>
     );
   }

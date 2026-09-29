@@ -15,10 +15,11 @@ const CHANNEL_DETAILS: Record<MessageChannel, { label: string; dotClass: string;
 
 // A row with no channel reads as WhatsApp: the column defaults to whatsapp server-side, and
 // anything cached or mocked before the field existed arrives here as undefined. A channel the
-// frontend has not been taught yet falls back the same way rather than blanking the row.
+// frontend has not been taught yet is shown as itself — painting it WhatsApp would state
+// something false about where the flow runs.
 export const ChannelLabel = ({ channel, variant = 'inline', testId = 'channelLabel' }: ChannelLabelProps) => {
-  const { label, dotClass, chipClass } =
-    CHANNEL_DETAILS[channel as MessageChannel] ?? CHANNEL_DETAILS[MESSAGE_CHANNELS.whatsapp];
+  const known = channel == null ? CHANNEL_DETAILS[MESSAGE_CHANNELS.whatsapp] : CHANNEL_DETAILS[channel];
+  const { label, dotClass, chipClass } = known ?? { label: channel as string, dotClass: '', chipClass: '' };
 
   const isChip = variant === 'chip';
 
