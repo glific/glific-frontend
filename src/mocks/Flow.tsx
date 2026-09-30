@@ -420,6 +420,42 @@ export const getPublishedFlowQuery = {
   },
 };
 
+export const getPublishedFlowQueryOnChannel = (channel: string, flows: any[]) => ({
+  request: {
+    query: GET_FLOWS,
+    variables: {
+      filter: { status: 'published', isActive: true, isTemplate: false, channel },
+      opts: {
+        order: 'ASC',
+        limit: null,
+        offset: 0,
+      },
+    },
+  },
+
+  result: {
+    data: {
+      flows,
+    },
+  },
+});
+
+export const webFlows = [
+  {
+    id: '1',
+    name: 'Help Workflow',
+    uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+  },
+];
+
+export const whatsappFlows = [
+  {
+    id: '2',
+    name: 'AB Test Workflow',
+    uuid: '5f3fd8c6-2ec3-4945-8e7c-314db8c04c31',
+  },
+];
+
 export const filterFlowNewQuery = {
   request: {
     query: FILTER_FLOW,
