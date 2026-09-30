@@ -20,16 +20,12 @@ test.each([
   expect(screen.getByTestId('channelLabel')).toHaveTextContent('WhatsApp');
 });
 
-// A channel the frontend has not been taught yet must not blank the row it is rendered in, and
-// must not claim to be WhatsApp either.
 test('shows an unrecognised channel as itself', () => {
   renderLabel({ channel: 'RCS' as any });
 
   expect(screen.getByTestId('channelLabel')).toHaveTextContent('RCS');
 });
 
-// The dot is the only thing that distinguishes the two channels at a glance, and its colour comes
-// from the class. Asserting on the class is the only observable signal for that in jsdom.
 test('colours the dot per channel', () => {
   const { container } = renderLabel({ channel: MESSAGE_CHANNELS.web });
 
@@ -42,8 +38,6 @@ test('takes a custom test id', () => {
   expect(screen.getByTestId('flowChannel')).toHaveTextContent('WhatsApp');
 });
 
-// The chip variant is a filled badge for headers. Asserting on the classes is the only
-// observable signal in jsdom, and they are what carry the fill and the channel colour.
 test('renders a filled chip when asked, tinted per channel', () => {
   renderLabel({ channel: MESSAGE_CHANNELS.web, variant: 'chip' });
 

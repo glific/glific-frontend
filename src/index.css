@@ -207,7 +207,6 @@ html {
   --app-color-warning: var(--app-color-red-secondary);
   --app-color-channel-whatsapp: var(--app-color-green-primary);
   --app-color-channel-web: var(--app-color-indigo-primary);
-  /* For tinted channel surfaces (badges), so a chip's fill derives from its own channel colour */
   --app-color-channel-whatsapp-rgb: var(--app-color-green-primary-rgb);
   --app-color-channel-web-rgb: var(--app-color-indigo-primary-rgb);
 

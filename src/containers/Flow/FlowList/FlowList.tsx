@@ -86,8 +86,6 @@ export const FlowList = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
   const [channelFilter, setChannelFilter] = useState<MessageChannel | ''>('');
-  // A flow's channel is only meaningful to an org that has more than one, so the whole notion
-  // stays hidden until the web channel is on.
   const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
   const [selectedtag, setSelectedTag] = useState<any>(null);
   const [importing, setImporting] = useState(false);
@@ -383,7 +381,6 @@ export const FlowList = () => {
             onChange={(event) => setChannelFilter(event.target.value as MessageChannel | '')}
             className={styles.SearchBar}
             data-testid="channelFilter"
-            // the unfiltered value is '', which MUI renders as a blank control unless told otherwise
             displayEmpty
           >
             {channelFilterList.map((option: any) => (

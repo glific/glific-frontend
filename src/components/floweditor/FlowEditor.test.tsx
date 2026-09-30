@@ -652,8 +652,6 @@ test('shows a warning when publishing the flow fails unexpectedly', async () => 
   });
 });
 
-// The editor offers different nodes per channel, so which channel you are editing has to be
-// visible in the header rather than inferred.
 test('names the channel the flow runs on in the header', async () => {
   render(defaultWrapper);
 
@@ -662,8 +660,6 @@ test('names the channel the flow runs on in the header', async () => {
   });
 });
 
-// A node the flow's channel cannot run is refused, not warned about: the server did not publish,
-// so the dialog must not offer a way to "publish anyway" and claim otherwise.
 test('refuses to publish a flow whose nodes its channel cannot run, with no override', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const blockedMocks = [
@@ -690,10 +686,7 @@ test('refuses to publish a flow whose nodes its channel cannot run, with no over
     expect(getByText('This flow was not published')).toBeInTheDocument();
   });
 
-  // two nodes are offending, and both are listed: a shared message must not collapse them into
-  // one row, or the author is told to remove "a" node when there are two
   expect(getAllByText('Sending a WhatsApp template (HSM)')).toHaveLength(2);
-  // the only way out is to go back and edit
   expect(queryByTestId('ok-button')).not.toBeInTheDocument();
   expect(getByText('Go back and edit')).toBeInTheDocument();
 });

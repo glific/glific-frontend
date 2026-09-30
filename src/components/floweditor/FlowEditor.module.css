@@ -59,7 +59,6 @@
   background-color: white !important;
 }
 
-/* Spacing only: the description sets its own colour, and the error list below brings its own. */
 .BlockingDialog {
   display: flex;
   flex-direction: column;

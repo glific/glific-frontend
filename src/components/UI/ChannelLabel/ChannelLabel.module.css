@@ -22,9 +22,6 @@
   background-color: var(--app-color-channel-web);
 }
 
-/* Chip variant: a filled badge for headers, where a bare dot and label reads as stray text
-   rather than a deliberate label. The fill is the channel's own colour at low alpha, so the two
-   channels stay distinguishable without a second palette. */
 .Chip {
   gap: var(--app-space-2xs);
   width: fit-content;

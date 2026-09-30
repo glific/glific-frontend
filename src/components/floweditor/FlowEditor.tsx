@@ -320,9 +320,6 @@ export const FlowEditor = () => {
   const blockingErrors = (flowValidation || []).filter((error: any) => error.blocking);
   const hasBlockingErrors = blockingErrors.length > 0;
 
-  // Advisory errors repeat the same sentence per offending field, so they dedupe. Blocking
-  // errors name a node kind, so N offending nodes share one message — deduping them would tell
-  // the author to remove "a" node when there are three.
   const errorMsg = (errors: any[], dedupe: boolean = true) => {
     const seen = new Set<string>();
     const visible = dedupe

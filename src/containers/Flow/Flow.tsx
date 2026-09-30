@@ -190,8 +190,6 @@ export const Flow = () => {
 
   const isExistingFlow = Boolean(params.id);
 
-  // With only one channel available there is nothing to choose, and the flow falls back to the
-  // whatsapp default the column already carries.
   const channelField = isWebChannelEnabled
     ? [
         {
@@ -199,7 +197,6 @@ export const Flow = () => {
           name: 'channel',
           label: isExistingFlow ? t('Channel') : `${t('Channel')}*`,
           disabled: isExistingFlow || isTemplate,
-          // read-only once the flow exists, so it is never part of an update payload
           skipPayload: isExistingFlow,
           helperText: isExistingFlow
             ? t('A flow stays on the channel it was created for.')

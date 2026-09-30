@@ -26,16 +26,12 @@ test('reports the picked channel to formik under the field name', () => {
   expect(setFieldValue).toHaveBeenCalledWith('channel', MESSAGE_CHANNELS.web);
 });
 
-// A flow with no channel yet (created before the column existed) must still render a control
-// rather than an unselected pair.
 test('treats a missing value as WhatsApp', () => {
   renderField({ field: { name: 'channel', value: undefined } });
 
   expect(screen.getByTestId('channelField-WHATSAPP')).toHaveAttribute('aria-checked', 'true');
 });
 
-// Switching a built flow's channel can invalidate nodes it relies on, so an existing flow keeps
-// the control visible with the value selected, but disabled.
 test('keeps the control visible but disabled, and ignores clicks', () => {
   const { setFieldValue } = renderField({
     disabled: true,

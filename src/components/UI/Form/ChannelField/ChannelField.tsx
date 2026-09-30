@@ -15,9 +15,6 @@ const options = [
   { value: MESSAGE_CHANNELS.web, label: 'Web', activeClassName: styles.WebActive },
 ];
 
-// A flow's channel is fixed once it exists: switching a built flow to another channel can
-// invalidate nodes it already relies on, so an existing flow shows the same control with both
-// options disabled. Formik-shaped so `FormLayout` can render it like any other field.
 export const ChannelField = ({ field, form, disabled, helperText, testId = 'channelField' }: ChannelFieldProps) => {
   const value = field.value ?? MESSAGE_CHANNELS.whatsapp;
 

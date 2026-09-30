@@ -1,5 +1,3 @@
-/* Scoped under .ChannelField so these beat SegmentedControl's own .ActiveOption, which is a
-   single class in a different module and would otherwise win or lose on stylesheet order. */
 .ChannelField .WhatsAppActive,
 .ChannelField .WebActive {
   color: var(--app-color-white);

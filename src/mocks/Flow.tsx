@@ -218,8 +218,6 @@ const filterFlowResult = {
   },
 };
 
-// `flows` overrides the rows the query answers with, for filters that are expected to narrow the
-// list rather than just be accepted.
 export const filterFlowQuery = (filter: any, flows?: any[]) => ({
   request: {
     query: FILTER_FLOW,
@@ -520,7 +518,6 @@ export const publishFlow = {
   },
 };
 
-// A web flow carrying a WhatsApp-only node: the server refuses the publish rather than warning.
 export const publishFlowBlockedByChannel = {
   request: {
     query: PUBLISH_FLOW,

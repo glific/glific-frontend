@@ -151,8 +151,6 @@ describe('<FlowList />', () => {
     });
   });
 
-  // An org with only WhatsApp has nothing to pick between, so the column and the filter are
-  // noise rather than information.
   test('should hide the channel column and filter when the web channel is off', async () => {
     setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
@@ -171,8 +169,6 @@ describe('<FlowList />', () => {
     );
   });
 
-  // Regression: the default filter value is '', which MUI renders as an empty control unless
-  // `displayEmpty` is set — the pill showed only a dropdown arrow, with no label at all.
   test('should label the channel filter when no channel is selected', async () => {
     const { getByTestId } = render(flowList());
 
