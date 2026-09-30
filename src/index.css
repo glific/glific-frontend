@@ -186,7 +186,7 @@ html {
   --app-color-green-primary-rgb: 17 150 86; /* #119656 */
   --app-color-green-secondary-rgb: 7 63 36; /* #073f24 */
   --app-color-amber-primary-rgb: 234 179 8; /* #eab308 */
-  --app-color-indigo-primary-rgb: 53 17 150; /* #351196 */
+  --app-color-indigo-primary-rgb: 53 17 150;
   --app-color-slate-rgb: 122 144 135; /* #7a9087 — hairlines and sunken fills */
   --app-color-white-rgb: 255 255 255;
 
