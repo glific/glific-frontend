@@ -227,6 +227,7 @@ export const ConversationHeader = ({
         entityId={entityId}
         setShowFlowDialog={setShowFlowDialog}
         groups={groups}
+        channel={channel}
       />
     );
   }
@@ -333,17 +334,17 @@ export const ConversationHeader = ({
       </Button>
     );
   } else if (isWebConversation) {
-    // The flow engine still never sees a web inbound message, so a flow started here would reply
-    // over WhatsApp to someone who consented only to the web channel.
     flowButton = (
-      <Tooltip title={t('Flows cannot be started on the web channel yet')} placement="right">
-        <span>
-          <Button data-testid="disabledFlowButton" className={styles.ListButtonPrimary} disabled>
-            <FlowUnselectedIcon className={styles.Icon} />
-            Start a flow
-          </Button>
-        </span>
-      </Tooltip>
+      <Button
+        data-testid="flowButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          setShowFlowDialog(true);
+        }}
+      >
+        <FlowIcon className={styles.Icon} />
+        Start a flow
+      </Button>
     );
   } else if (
     groups ||

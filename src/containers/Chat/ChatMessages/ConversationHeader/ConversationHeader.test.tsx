@@ -482,16 +482,18 @@ describe('on a web channel conversation', () => {
     expect(screen.queryByTestId('webPresence')).not.toBeInTheDocument();
   });
 
-  // The flow engine still never sees a web inbound message, so a flow started here would answer
-  // over WhatsApp to someone who consented only to the web channel.
-  test('starting a flow is disabled', async () => {
+  test('starting a flow is enabled', async () => {
     render(renderHeader([...mocks, presenceMock], webProps));
 
     await waitFor(() => {
       fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
 
-    expect(screen.getByTestId('disabledFlowButton')).toBeDisabled();
+    fireEvent.click(screen.getByTestId('flowButton'));
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+    });
   });
 
   // The blocks are laid out by a grid with one named column each, which only holds if they are

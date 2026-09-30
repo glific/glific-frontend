@@ -143,6 +143,8 @@ export const GET_ORGANIZATION_SERVICES = gql`
       promptGeneratorEnabled
       templateV2Enabled
       templateLibraryEnabled
+      bulkContactUpdateEnabled
+      bulkFlowResultsEnabled
     }
   }
 `;
