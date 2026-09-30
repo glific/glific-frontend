@@ -12,6 +12,9 @@ import {
   addFlowToContactWebQuery,
   addFlowToWAGroupQuery,
   getPublishedFlowQuery,
+  getPublishedFlowQueryOnChannel,
+  webFlows,
+  whatsappFlows,
 } from 'mocks/Flow';
 
 const mocks = [getPublishedFlowQuery, addFlowToContactQuery, addFlowToCollectionQuery, addFlowToWAGroupQuery];
@@ -173,7 +176,7 @@ test('should start a flow for whatsapp group', async () => {
 test('starts a contact flow on the web channel, sending the channel variable', async () => {
   vi.mocked(setNotification).mockClear();
 
-  const webMocks = [getPublishedFlowQuery, addFlowToContactWebQuery];
+  const webMocks = [getPublishedFlowQueryOnChannel('WEB', webFlows), addFlowToContactWebQuery];
   const { getByTestId, getByText, getByRole } = render(
     <MockedProvider mocks={webMocks} addTypename={false}>
       <StartAFlow collectionId="" entityId="1" groups={false} channel="WEB" setShowFlowDialog={setShowFlowDialogMock} />
@@ -199,6 +202,54 @@ test('starts a contact flow on the web channel, sending the channel variable', a
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
   });
+});
+
+test('on the web tab the flow list offers only web flows', async () => {
+  const { getByTestId, getByText, queryByText } = render(
+    <MockedProvider mocks={[getPublishedFlowQueryOnChannel('WEB', webFlows)]} addTypename={false}>
+      <StartAFlow collectionId="" entityId="1" groups={false} channel="WEB" setShowFlowDialog={setShowFlowDialogMock} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+  await waitFor(() => {
+    expect(getByText('Help Workflow')).toBeInTheDocument();
+  });
+  expect(queryByText('AB Test Workflow')).not.toBeInTheDocument();
+});
+
+test('on the whatsapp tab the flow list offers only whatsapp flows', async () => {
+  const { getByTestId, getByText, queryByText } = render(
+    <MockedProvider mocks={[getPublishedFlowQueryOnChannel('WHATSAPP', whatsappFlows)]} addTypename={false}>
+      <StartAFlow
+        collectionId=""
+        entityId="1"
+        groups={false}
+        channel="WHATSAPP"
+        setShowFlowDialog={setShowFlowDialogMock}
+      />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+  await waitFor(() => {
+    expect(getByText('AB Test Workflow')).toBeInTheDocument();
+  });
+  expect(queryByText('Help Workflow')).not.toBeInTheDocument();
 });
 
 test('does nothing when Start is clicked without selecting a flow', async () => {
