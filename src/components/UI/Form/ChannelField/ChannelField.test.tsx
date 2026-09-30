@@ -34,13 +34,20 @@ test('treats a missing value as WhatsApp', () => {
   expect(screen.getByTestId('channelField-WHATSAPP')).toHaveAttribute('aria-checked', 'true');
 });
 
-// Switching a built flow's channel can invalidate nodes it relies on, so an existing flow shows
-// the value and offers no way to change it.
-test('renders the value with no control when disabled', () => {
-  renderField({ disabled: true, field: { name: 'channel', value: MESSAGE_CHANNELS.web } });
+// Switching a built flow's channel can invalidate nodes it relies on, so an existing flow keeps
+// the control visible with the value selected, but disabled.
+test('keeps the control visible but disabled, and ignores clicks', () => {
+  const { setFieldValue } = renderField({
+    disabled: true,
+    field: { name: 'channel', value: MESSAGE_CHANNELS.web },
+  });
 
-  expect(screen.getByTestId('channelField-readOnly')).toHaveTextContent('Web');
-  expect(screen.queryByTestId('channelField-WEB')).not.toBeInTheDocument();
+  expect(screen.getByTestId('channelField-WEB')).toHaveAttribute('aria-checked', 'true');
+  expect(screen.getByTestId('channelField-WEB')).toBeDisabled();
+  expect(screen.getByTestId('channelField-WHATSAPP')).toBeDisabled();
+
+  fireEvent.click(screen.getByTestId('channelField-WHATSAPP'));
+  expect(setFieldValue).not.toHaveBeenCalled();
 });
 
 test('shows helper text in both states', () => {

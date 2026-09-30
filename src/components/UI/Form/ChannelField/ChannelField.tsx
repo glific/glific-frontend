@@ -1,5 +1,4 @@
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
-import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import { MESSAGE_CHANNELS, MessageChannel } from 'common/constants';
 import styles from './ChannelField.module.css';
 
@@ -17,19 +16,10 @@ const options = [
 ];
 
 // A flow's channel is fixed once it exists: switching a built flow to another channel can
-// invalidate nodes it already relies on, so an existing flow renders the value rather than a
-// control. Formik-shaped so `FormLayout` can render it like any other field.
+// invalidate nodes it already relies on, so an existing flow shows the same control with both
+// options disabled. Formik-shaped so `FormLayout` can render it like any other field.
 export const ChannelField = ({ field, form, disabled, helperText, testId = 'channelField' }: ChannelFieldProps) => {
   const value = field.value ?? MESSAGE_CHANNELS.whatsapp;
-
-  if (disabled) {
-    return (
-      <div className={styles.ReadOnly} data-testid={`${testId}-readOnly`}>
-        <ChannelLabel channel={value} variant="chip" />
-        {helperText && <span className={styles.HelperText}>{helperText}</span>}
-      </div>
-    );
-  }
 
   return (
     <SegmentedControl<MessageChannel>
@@ -38,6 +28,7 @@ export const ChannelField = ({ field, form, disabled, helperText, testId = 'chan
       value={value}
       onChange={(channel) => form.setFieldValue(field.name, channel)}
       helperText={helperText}
+      disabled={disabled}
       equalWidth
       options={options.map((option) => ({
         value: option.value,
