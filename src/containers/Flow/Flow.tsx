@@ -203,7 +203,7 @@ export const Flow = () => {
           skipPayload: isExistingFlow,
           helperText: isExistingFlow
             ? t('A flow stays on the channel it was created for.')
-            : t('This decides where the flow runs. It cannot be changed later.'),
+            : t('Channel cannot be changed later after creation'),
         },
       ]
     : [];
