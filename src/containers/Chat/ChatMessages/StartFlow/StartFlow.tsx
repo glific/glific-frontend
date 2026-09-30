@@ -31,6 +31,7 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId, 
       status: FLOW_STATUS_PUBLISHED,
       isActive: true,
       isTemplate: false,
+      ...(channel && { channel }),
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
