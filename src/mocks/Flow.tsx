@@ -34,6 +34,7 @@ const flowData = {
       id: '1',
       name: 'Help',
       isActive: true,
+      channel: 'WHATSAPP',
       description: 'Help flow',
       uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
       keywords: ['help'],
@@ -163,6 +164,7 @@ const filterFlowResult = {
         lastChangedAt: '2021-03-05T04:32:23Z',
         lastPublishedAt: null,
         name: 'Help Workflow',
+        channel: 'WHATSAPP',
         isBackground: false,
         updatedAt: '2021-03-05T04:32:23Z',
         uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
@@ -189,6 +191,7 @@ const filterFlowResult = {
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:41.450940Z',
         name: 'Preference Workflow',
+        channel: 'WEB',
         roles: [],
         tag: null,
         updatedAt: '2024-03-23T15:26:41.447361Z',
@@ -205,6 +208,7 @@ const filterFlowResult = {
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:40.635789Z',
         name: 'Optout Workflow',
+        channel: null,
         roles: [],
         tag: null,
         updatedAt: '2024-03-23T15:26:40.634989Z',
@@ -214,7 +218,7 @@ const filterFlowResult = {
   },
 };
 
-export const filterFlowQuery = (filter: any) => ({
+export const filterFlowQuery = (filter: any, flows?: any[]) => ({
   request: {
     query: FILTER_FLOW,
     variables: {
@@ -228,8 +232,10 @@ export const filterFlowQuery = (filter: any) => ({
     },
   },
 
-  result: filterFlowResult,
+  result: flows ? { data: { flows } } : filterFlowResult,
 });
+
+export const webChannelFlows = filterFlowResult.data.flows.filter((flow: any) => flow.channel === 'WEB');
 
 export const filterTemplateFlows = {
   request: {
@@ -326,6 +332,7 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
           isActive,
           name: 'help workflow',
           keywords,
+          channel: 'WHATSAPP',
           isTemplate,
           skipValidation: true,
         },
@@ -411,6 +418,42 @@ export const getPublishedFlowQuery = {
   },
 };
 
+export const getPublishedFlowQueryOnChannel = (channel: string, flows: any[]) => ({
+  request: {
+    query: GET_FLOWS,
+    variables: {
+      filter: { status: 'published', isActive: true, isTemplate: false, channel },
+      opts: {
+        order: 'ASC',
+        limit: null,
+        offset: 0,
+      },
+    },
+  },
+
+  result: {
+    data: {
+      flows,
+    },
+  },
+});
+
+export const webFlows = [
+  {
+    id: '1',
+    name: 'Help Workflow',
+    uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+  },
+];
+
+export const whatsappFlows = [
+  {
+    id: '2',
+    name: 'AB Test Workflow',
+    uuid: '5f3fd8c6-2ec3-4945-8e7c-314db8c04c31',
+  },
+];
+
 export const filterFlowNewQuery = {
   request: {
     query: FILTER_FLOW,
@@ -468,7 +511,37 @@ export const publishFlow = {
   result: {
     data: {
       publishFlow: {
-        errors: [{ message: 'Something went wrong' }],
+        errors: [{ message: 'Something went wrong', category: 'Critical', blocking: false, nodeUuid: null }],
+        success: null,
+      },
+    },
+  },
+};
+
+export const publishFlowBlockedByChannel = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: [
+          {
+            message: 'Sending a WhatsApp template (HSM)',
+            category: 'Blocking',
+            blocking: true,
+            nodeUuid: 'e8f4a3d1-1c2b-4c9a-9a3f-0d7c1e5b6a20',
+          },
+          {
+            message: 'Sending a WhatsApp template (HSM)',
+            category: 'Blocking',
+            blocking: true,
+            nodeUuid: 'f1c9b7e2-4a5d-4e3b-8c71-92a0d4f6b318',
+          },
+        ],
         success: null,
       },
     },
@@ -487,6 +560,9 @@ export const publishFlowWithDuplicateErrors = {
       publishFlow: {
         errors: Array(5).fill({
           message: '"stop" has already been used as a keyword for a flow',
+          category: 'Critical',
+          blocking: false,
+          nodeUuid: null,
         }),
         success: null,
       },

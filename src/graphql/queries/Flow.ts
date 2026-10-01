@@ -19,6 +19,7 @@ export const GET_FLOW = gql`
         uuid
         isActive
         isPinned
+        channel
         description
         roles {
           id
@@ -51,6 +52,7 @@ export const FILTER_FLOW = gql`
       uuid
       keywords
       description
+      channel
       lastChangedAt
       isBackground
       lastPublishedAt
@@ -77,6 +79,7 @@ export const GET_FLOW_DETAILS = gql`
       isActive
       name
       keywords
+      channel
       isTemplate
       skipValidation
     }

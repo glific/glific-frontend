@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePostHog } from '@posthog/react';
 
 import InfoIcon from '@mui/icons-material/Info';
@@ -17,8 +18,9 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
@@ -36,6 +38,8 @@ export const FlowEditor = () => {
   const { uuid } = params;
   const navigate = useNavigate();
   const posthog = usePostHog();
+  const { t } = useTranslation();
+  const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
 
   useEffect(() => {
     posthog?.capture('flow_editor_opened');
@@ -72,6 +76,7 @@ export const FlowEditor = () => {
   let dialog = null;
   let flowTitle: any;
   let flowKeywords;
+  let flowChannel;
 
   const loadFlowEditor = (forceReadOnly?: boolean) => {
     const readOnlyMode = forceReadOnly ?? isReadOnly;
@@ -183,8 +188,11 @@ export const FlowEditor = () => {
     }
   }, [flowName]);
 
+  const hasFlowDetails = Boolean(flowName && flowName.flows.length > 0);
+
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
+    flowChannel = flowName.flows[0].channel;
     const keywords = flowName.flows[0].keywords;
     flowKeywords = getKeywords(keywords);
   }
@@ -309,23 +317,30 @@ export const FlowEditor = () => {
     setFlowValidation('');
   };
 
-  const errorMsg = () => (
-    <div className={styles.DialogError}>
-      {(() => {
-        const seen = new Set<string>();
-        return flowValidation.filter((msg: any) => {
-          if (seen.has(msg.message)) return false;
-          seen.add(msg.message);
+  const blockingErrors = (flowValidation || []).filter((error: any) => error.blocking);
+  const hasBlockingErrors = blockingErrors.length > 0;
+
+  const errorMsg = (errors: any[], dedupe: boolean = true) => {
+    const seen = new Set<string>();
+    const visible = dedupe
+      ? errors.filter((error: any) => {
+          if (seen.has(error.message)) return false;
+          seen.add(error.message);
           return true;
-        });
-      })().map((message: any) => (
-        <div key={message.message} className={styles.ErrorMsg}>
-          <WarningIcon className={styles.ErrorMsgIcon} />
-          {message.message}
-        </div>
-      ))}
-    </div>
-  );
+        })
+      : errors;
+
+    return (
+      <div className={styles.DialogError}>
+        {visible.map((error: any, index: number) => (
+          <div key={error.nodeUuid ?? `${error.message}-${index}`} className={styles.ErrorMsg}>
+            <WarningIcon className={styles.ErrorMsgIcon} />
+            {error.message}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   if (publishDialog) {
     dialog = (
@@ -354,7 +369,24 @@ export const FlowEditor = () => {
     );
   }
 
-  if (IsError) {
+  if (IsError && hasBlockingErrors) {
+    dialog = (
+      <DialogBox
+        title={t('This flow was not published')}
+        handleCancel={() => handleCancelFlow()}
+        buttonCancel={t('Go back and edit')}
+        alignButtons="center"
+        skipOk
+      >
+        <div className={styles.BlockingDialog}>
+          <p className={styles.DialogDescription}>
+            {t("The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.")}
+          </p>
+          {errorMsg(blockingErrors, false)}
+        </div>
+      </DialogBox>
+    );
+  } else if (IsError) {
     dialog = (
       <DialogBox
         title="Errors were detected in the flow. Would you like to continue modifying?"
@@ -368,7 +400,7 @@ export const FlowEditor = () => {
         alignButtons="center"
         buttonCancel="Modify"
       >
-        {errorMsg()}
+        {errorMsg(flowValidation)}
       </DialogBox>
     );
   }
@@ -415,6 +447,9 @@ export const FlowEditor = () => {
             </Typography>
             <div>{flowKeywords}</div>
           </div>
+          {hasFlowDetails && isWebChannelEnabled && (
+            <ChannelLabel channel={flowChannel} variant="chip" testId="flowEditorChannel" />
+          )}
         </div>
         <div className={styles.Actions}>
           <Button

@@ -65,6 +65,9 @@ export const PUBLISH_FLOW = gql`
       success
       errors {
         message
+        category
+        blocking
+        nodeUuid
       }
     }
   }

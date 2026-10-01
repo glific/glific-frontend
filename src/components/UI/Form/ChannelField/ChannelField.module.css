@@ -1,0 +1,17 @@
+.ChannelField .WhatsAppActive,
+.ChannelField .WebActive {
+  color: var(--app-color-white);
+  box-shadow: none;
+}
+
+.ChannelField .WhatsAppActive {
+  background-color: var(--app-color-channel-whatsapp);
+}
+
+.ChannelField .WebActive {
+  background-color: var(--app-color-channel-web);
+}
+
+.ChannelField {
+  max-width: 320px;
+}
