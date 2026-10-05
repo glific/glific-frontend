@@ -656,6 +656,7 @@ describe('Unsaved changes', () => {
             instructions: 'Be concise.',
             model: 'gpt-4o',
             temperature: 1,
+            knowledgeBaseVersionId: 'llm-vs-1',
             name: 'Assistant-405db438',
           },
         },
@@ -695,12 +696,15 @@ describe('Unsaved changes', () => {
     });
   });
 
-  const saveInput = {
+  const saveInputWithoutVersion = {
     instructions: 'Be concise.',
     model: 'gpt-4o',
     temperature: 1,
     name: 'Assistant-405db438',
   };
+
+  // the live version in the fixtures owns knowledge base `llm-vs-1`, so a save on it carries that id
+  const saveInput = { ...saveInputWithoutVersion, knowledgeBaseVersionId: 'llm-vs-1' };
 
   test('a save that comes back with errors keeps the unsaved state', async () => {
     const errorSpy = vi.spyOn(Notification, 'setErrorMessage').mockImplementation(() => {});
@@ -766,7 +770,7 @@ describe('Unsaved changes', () => {
   test('a save on an assistant with no versions selects the version it creates', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const save = {
-      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInput } },
+      request: { query: UPDATE_ASSISTANT, variables: { updateAssistantId: '1', input: saveInputWithoutVersion } },
       result: { data: { updateAssistant: { errors: null } } },
     };
 
@@ -801,7 +805,12 @@ describe('Unsaved changes', () => {
         variables: {
           updateAssistantId: '1',
           // no `temperature` key at all — the schema would reject an empty string
-          input: { instructions: 'You are a helpful assistant.', model: 'gpt-4o', name: 'Assistant-405db438' },
+          input: {
+            instructions: 'You are a helpful assistant.',
+            model: 'gpt-4o',
+            knowledgeBaseVersionId: 'llm-vs-1',
+            name: 'Assistant-405db438',
+          },
         },
       },
       result: { data: { updateAssistant: { errors: null } } },
@@ -1731,6 +1740,7 @@ describe('switching versions', () => {
             instructions: 'Be concise.',
             model: 'gpt-4o',
             temperature: 1,
+            knowledgeBaseVersionId: 'llm-vs-1',
             name: 'Assistant-405db438',
           },
         },
@@ -1812,6 +1822,40 @@ describe('what a save sends', () => {
     });
     expect(sent.variables.input.temperature).toBe(0.5);
     expect(sent.variables.input).not.toHaveProperty('effort');
+  });
+
+  const savePromptOnVersion = async (versionLabel: string) => {
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('versionPill'));
+    fireEvent.click(await screen.findByTestId(`versionOption-${versionLabel}`));
+    await waitFor(() => {
+      expect(screen.getByTestId('versionPill')).toHaveTextContent(`Version ${versionLabel}`);
+    });
+    fireEvent.change(screen.getByTestId('promptInput'), { target: { value: 'Only the prompt changed.' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+  };
+
+  test("a prompt-only save keeps the selected version's knowledge base, not the live one", async () => {
+    const { sent, mock } = captureSave();
+    const draftWithOwnKnowledgeBase = {
+      ...version(2, false),
+      vectorStore: { ...version(1, true).vectorStore!, id: 'vs-2', knowledgeBaseVersionId: 'kbv-2' },
+    };
+    renderDetail('/assistants/1', [
+      getAssistant('1'),
+      versionsMock([version(1, true), draftWithOwnKnowledgeBase]),
+      mock,
+    ]);
+
+    await savePromptOnVersion('2.0');
+
+    await waitFor(() => {
+      expect(sent.variables).toBeDefined();
+    });
+    expect(sent.variables.input.instructions).toBe('Only the prompt changed.');
+    expect(sent.variables.input.knowledgeBaseVersionId).toBe('kbv-2');
   });
 });
 

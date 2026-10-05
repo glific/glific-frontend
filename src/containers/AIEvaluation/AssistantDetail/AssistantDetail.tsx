@@ -331,6 +331,8 @@ export const AssistantDetail = () => {
         });
         const versionId = knowledgeBaseResponse.data?.createKnowledgeBase?.knowledgeBase?.knowledgeBaseVersionId;
         if (versionId) input.knowledgeBaseVersionId = versionId;
+      } else if (selectedVersion) {
+        input.knowledgeBaseVersionId = selectedVersion.vectorStore?.knowledgeBaseVersionId ?? null;
       }
 
       if (isCreateMode) {
