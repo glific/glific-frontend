@@ -575,8 +575,6 @@ export const AssistantDetail = () => {
             {panel}
           </div>
         ))}
-
-        {!activePanel && `${t(activeTabLabel)} ${t('coming soon')}`}
       </div>
 
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
