@@ -21,7 +21,6 @@ import { LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluatio
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
-import { setOrganizationServices } from 'services/AuthService';
 import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
 import AssistantDetail from './AssistantDetail';
 
@@ -1170,25 +1169,6 @@ describe('tabs', () => {
     fireEvent.click(screen.getByTestId('tab-guardrails'));
 
     expect(screen.getByTestId('tabPanel')).toHaveTextContent('Guardrails coming soon');
-  });
-
-  test('a rolled-out org sees a different placeholder for Guardrails', async () => {
-    setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true }));
-
-    renderDetail('/assistants/add', []);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('personaPrompt')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('tab-guardrails'));
-
-    expect(screen.getByTestId('tabPanel')).toHaveTextContent(
-      'Guardrails for this assistant are being rolled out for your organization. Check back soon.'
-    );
-    expect(screen.queryByTestId('tabPanel')).not.toHaveTextContent('coming soon');
-
-    setOrganizationServices(JSON.stringify({}));
   });
 });
 

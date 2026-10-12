@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { getOrganizationServices } from 'services/AuthService';
 import {
   CREATE_ASSISTANT,
   CREATE_KNOWLEDGE_BASE,
@@ -43,7 +42,7 @@ import {
   PublishVersionDialog,
   VersionBar,
 } from './components';
-import { KnowledgeBase, PersonaPrompt, TryItOut, Evaluation } from './Tabs';
+import { Guardrails, KnowledgeBase, PersonaPrompt, TryItOut, Evaluation } from './Tabs';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
@@ -468,7 +467,6 @@ export const AssistantDetail = () => {
   }
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
-  const isAiGuardrailEnabled = Boolean(getOrganizationServices('aiGuardrailEnabled'));
   const vectorStore = selectedVersion ? selectedVersion.vectorStore : assistant?.vectorStore;
 
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
@@ -506,6 +504,7 @@ export const AssistantDetail = () => {
         legacy={vectorStore?.legacy ?? false}
       />
     ),
+    guardrails: <Guardrails />,
     tryItOut: (
       <TryItOut
         hasVersions={versions.length > 0}
@@ -572,16 +571,12 @@ export const AssistantDetail = () => {
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">
         {Object.entries(TAB_PANELS).map(([key, panel]) => (
-          <div key={key} hidden={key !== activeTab} data-testid={`tabPanel-${key}`}>
+          <div key={key} hidden={key !== activeTab} data-testid={`tabPanel-${key}`} className={styles.TabSlot}>
             {panel}
           </div>
         ))}
 
         {!activePanel && `${t(activeTabLabel)} ${t('coming soon')}`}
-        {!activePanel &&
-          (activeTab === 'guardrails' && isAiGuardrailEnabled
-            ? t('Guardrails for this assistant are being rolled out for your organization. Check back soon.')
-            : `${t(activeTabLabel)} ${t('coming soon')}`)}
       </div>
 
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
