@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { getOrganizationServices } from 'services/AuthService';
 import {
   CREATE_ASSISTANT,
   CREATE_KNOWLEDGE_BASE,
@@ -467,6 +468,7 @@ export const AssistantDetail = () => {
   }
 
   const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
+  const isAiGuardrailEnabled = Boolean(getOrganizationServices('aiGuardrailEnabled'));
   const vectorStore = selectedVersion ? selectedVersion.vectorStore : assistant?.vectorStore;
 
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
@@ -576,6 +578,10 @@ export const AssistantDetail = () => {
         ))}
 
         {!activePanel && `${t(activeTabLabel)} ${t('coming soon')}`}
+        {!activePanel &&
+          (activeTab === 'guardrails' && isAiGuardrailEnabled
+            ? t('Guardrails for this assistant are being rolled out for your organization. Check back soon.')
+            : `${t(activeTabLabel)} ${t('coming soon')}`)}
       </div>
 
       {leaveOpen && <LeaveDialog onConfirm={leavePage} onCancel={() => setLeaveOpen(false)} />}
