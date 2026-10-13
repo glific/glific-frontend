@@ -228,8 +228,8 @@
 }
 
 .GuardrailBlocked {
-  background-color: rgb(var(--app-color-amber-secondary-rgb) / 12%);
-  color: var(--app-color-attention-strong);
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 16%);
+  color: var(--app-color-attention);
 }
 
 .GuardrailApplied {
