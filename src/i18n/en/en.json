@@ -1260,5 +1260,10 @@
   "Channel cannot be changed later after creation": "Channel cannot be changed later after creation",
   "This flow was not published": "This flow was not published",
   "Go back and edit": "Go back and edit",
-  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish."
+  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.",
+  "Login keys": "Login keys",
+  "Your own backend can sign contacts in to the web chat without an OTP by signing a login token with one of these secrets. A token signed with either secret is accepted. To rotate, put the new secret in the empty slot, switch your backend to it, then clear the old one. Leave both secrets empty to allow only phone and OTP sign-in.": "Your own backend can sign contacts in to the web chat without an OTP by signing a login token with one of these secrets. A token signed with either secret is accepted. To rotate, put the new secret in the empty slot, switch your backend to it, then clear the old one. Leave both secrets empty to allow only phone and OTP sign-in.",
+  "Login key {{slot}} name": "Login key {{slot}} name",
+  "Login key {{slot}} secret": "Login key {{slot}} secret",
+  "Give this key a name so you can tell it apart.": "Give this key a name so you can tell it apart."
 }

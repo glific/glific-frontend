@@ -10,9 +10,14 @@ import {
   getOrganizationShortcode,
   getWebChannelCredential,
   getWebChannelProvider,
+  updateWebChannelCredential,
 } from 'mocks/Organization';
 
 const user = userEvent.setup();
+
+// The save tests assert through the success notification, so a call left over from an earlier
+// test would let a save whose payload never matched pass.
+beforeEach(() => vi.clearAllMocks());
 
 const SAVED = {
   logo_url: 'https://cdn.example.org/logo.png',
@@ -26,6 +31,11 @@ const SAVED = {
   about_hours: 'Mon-Sat, 9am-7pm IST',
 };
 
+const LOGIN_KEY_NAMES = { login_key_1_name: '2025', login_key_2_name: '2026' };
+const LOGIN_KEY_SECRETS = { login_key_1_secret: 'old-shared-secret', login_key_2_secret: 'new-shared-secret' };
+const EMPTY_LOGIN_KEY_NAMES = { login_key_1_name: '', login_key_2_name: '' };
+const EMPTY_LOGIN_KEY_SECRETS = { login_key_1_secret: '', login_key_2_secret: '' };
+
 const wrapper = (mocks: any[]) => (
   <MemoryRouter initialEntries={['/settings/web_channel']}>
     <MockedProvider mocks={[getOrganizationShortcode, ...mocks]} addTypename={false}>
@@ -37,7 +47,13 @@ const wrapper = (mocks: any[]) => (
 const off = [getWebChannelProvider, getWebChannelCredential(), getWebChannelCredential()];
 const on = [getWebChannelProvider, getWebChannelCredential(SAVED), getWebChannelCredential(SAVED)];
 
-const SECTIONS = ['Display picture', 'Display name', 'Brand colours', 'About the organisation'];
+const SECTIONS = ['Display picture', 'Display name', 'Brand colours', 'About the organisation', 'Login keys'];
+
+const savedWith = (keys: any, secrets: any) => [
+  getWebChannelProvider,
+  getWebChannelCredential(keys, secrets),
+  getWebChannelCredential(keys, secrets),
+];
 
 describe('the active toggle', () => {
   it('starts off for an organisation that has never configured the channel', async () => {
@@ -160,7 +176,9 @@ describe('<WebChannel />', () => {
   it('saves every field as the credential keys', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
-    render(wrapper([...off, createWebChannelCredential(SAVED)]));
+    render(
+      wrapper([...off, createWebChannelCredential({ ...SAVED, ...EMPTY_LOGIN_KEY_NAMES }, EMPTY_LOGIN_KEY_SECRETS)])
+    );
 
     await waitFor(() => expect(screen.getByText('Web channel is active')).toBeInTheDocument());
     await user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
@@ -186,6 +204,122 @@ describe('<WebChannel />', () => {
     // The mutation's mock matches on the exact keys payload, so reaching the success
     // notification is the assertion that every field was saved under the name the server
     // expects — a renamed or dropped key fails to match and never gets here.
-    await waitFor(() => expect(notification).toHaveBeenCalled());
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings created successfully!'));
+  });
+});
+
+describe('login keys', () => {
+  const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
+
+  it('offers two slots, each with a name and a masked secret, labelled by the provider', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByText('Login keys')).toBeInTheDocument());
+    expect(screen.getByText(/A token signed with either secret is accepted/)).toBeInTheDocument();
+
+    ['Login key 1 name', 'Login key 2 name', 'Login key 1 secret', 'Login key 2 secret'].forEach((label) =>
+      expect(screen.getByText(label)).toBeInTheDocument()
+    );
+    expect(screen.getByTestId('login_key_1_name')).toHaveAttribute('type', 'text');
+    expect(screen.getByTestId('login_key_2_name')).toHaveAttribute('type', 'text');
+    expect(screen.getByTestId('login_key_1_secret')).toHaveAttribute('type', 'password');
+    expect(screen.getByTestId('login_key_2_secret')).toHaveAttribute('type', 'password');
+  });
+
+  it('reveals a secret on request, so an admin can check what they pasted', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('login_key_1_secret')).toBeInTheDocument());
+    await user.click(screen.getAllByTestId('passwordToggle')[0]);
+
+    expect(screen.getByTestId('login_key_1_secret')).toHaveAttribute('type', 'text');
+    expect(screen.getByTestId('login_key_2_secret')).toHaveAttribute('type', 'password');
+  });
+
+  it('restores the saved names and secrets', async () => {
+    render(wrapper(savedWith({ ...SAVED, ...LOGIN_KEY_NAMES }, LOGIN_KEY_SECRETS)));
+
+    await waitFor(() => expect(screen.getByTestId('login_key_1_name')).toHaveValue('2025'));
+    expect(screen.getByTestId('login_key_2_name')).toHaveValue('2026');
+    expect(screen.getByTestId('login_key_1_secret')).toHaveValue('old-shared-secret');
+    expect(screen.getByTestId('login_key_2_secret')).toHaveValue('new-shared-secret');
+  });
+
+  it('saves both names in the keys and both secrets in the secrets', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+
+    render(
+      wrapper([
+        ...savedWith(SAVED, {}),
+        updateWebChannelCredential({ ...SAVED, ...LOGIN_KEY_NAMES }, LOGIN_KEY_SECRETS),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('login_key_1_name')).toBeInTheDocument());
+
+    fill('login_key_1_name', ' 2025 ');
+    fill('login_key_1_secret', 'old-shared-secret');
+    fill('login_key_2_name', '2026');
+    fill('login_key_2_secret', 'new-shared-secret ');
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    // The mutation's mock matches on the exact payload, so the notification is the assertion.
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
+  // The server replaces keys and secrets wholesale, so a save that only sent what changed
+  // would wipe the login keys — and anything set on the credential outside this page.
+  it('keeps the login keys and every other saved value when only the branding changes', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    const keys = { ...SAVED, ...LOGIN_KEY_NAMES, widget_variant: 'beta' };
+    const secrets = { ...LOGIN_KEY_SECRETS, analytics_token: 'kept' };
+
+    render(
+      wrapper([
+        ...savedWith(keys, secrets),
+        updateWebChannelCredential({ ...keys, display_name: 'TAP Buddy' }, secrets),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('display_name')).toHaveValue('The Apprentice Project'));
+    fill('display_name', 'TAP Buddy');
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
+  it('sends empty slots as empty strings', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+
+    render(
+      wrapper([
+        ...savedWith({ ...SAVED, ...LOGIN_KEY_NAMES }, LOGIN_KEY_SECRETS),
+        updateWebChannelCredential(
+          { ...SAVED, login_key_1_name: '', login_key_2_name: '2026' },
+          { login_key_1_secret: '', login_key_2_secret: 'new-shared-secret' }
+        ),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('login_key_1_name')).toHaveValue('2025'));
+    fill('login_key_1_name', '');
+    fill('login_key_1_secret', '');
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
+  it('asks for a name when a secret is filled in', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('login_key_2_secret')).toBeInTheDocument());
+    fill('login_key_2_secret', 'new-shared-secret');
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => expect(screen.getByText('Give this key a name so you can tell it apart.')).toBeInTheDocument());
   });
 });

@@ -1438,6 +1438,41 @@ const WEB_CHANNEL_KEYS = JSON.stringify({
   about_website: { view_only: false, type: 'string', label: 'Website', default: null, position: 7 },
   about_email: { view_only: false, type: 'string', label: 'Contact email', default: null, position: 8 },
   about_hours: { view_only: false, type: 'string', label: 'Hours', default: null, position: 9 },
+  login_key_1_name: {
+    view_only: false,
+    type: 'string',
+    label: 'Login key 1 name',
+    default: null,
+    position: 10,
+    helper_text: 'A name of your choice to tell this key apart, for example the year it was issued.',
+  },
+  login_key_2_name: {
+    view_only: false,
+    type: 'string',
+    label: 'Login key 2 name',
+    default: null,
+    position: 11,
+    helper_text: 'A name of your choice to tell this key apart, for example the year it was issued.',
+  },
+});
+
+const WEB_CHANNEL_SECRETS = JSON.stringify({
+  login_key_1_secret: {
+    view_only: false,
+    type: 'string',
+    label: 'Login key 1 secret',
+    default: null,
+    position: 1,
+    helper_text: 'Shared HS256 secret your backend signs login tokens with.',
+  },
+  login_key_2_secret: {
+    view_only: false,
+    type: 'string',
+    label: 'Login key 2 secret',
+    default: null,
+    position: 2,
+    helper_text: 'Shared HS256 secret your backend signs login tokens with.',
+  },
 });
 
 export const getWebChannelProvider = {
@@ -1455,7 +1490,7 @@ export const getWebChannelProvider = {
           isRequired: false,
           keys: WEB_CHANNEL_KEYS,
           name: 'Web Channel',
-          secrets: '{}',
+          secrets: WEB_CHANNEL_SECRETS,
           shortcode: 'web_channel',
         },
       ],
@@ -1463,7 +1498,7 @@ export const getWebChannelProvider = {
   },
 };
 
-export const getWebChannelCredential = (keys: any = null) => ({
+export const getWebChannelCredential = (keys: any = null, secrets: any = {}) => ({
   request: {
     query: GET_CREDENTIAL,
     variables: { shortcode: 'web_channel' },
@@ -1477,7 +1512,7 @@ export const getWebChannelCredential = (keys: any = null) => ({
               id: '9',
               isActive: true,
               keys: JSON.stringify(keys),
-              secrets: '{}',
+              secrets: JSON.stringify(secrets),
               provider: { shortcode: 'web_channel' },
             }
           : null,
@@ -1486,7 +1521,7 @@ export const getWebChannelCredential = (keys: any = null) => ({
   },
 });
 
-export const createWebChannelCredential = (keys: any) => ({
+export const createWebChannelCredential = (keys: any, secrets: any) => ({
   request: {
     query: CREATE_CREDENTIAL,
     variables: {
@@ -1494,14 +1529,43 @@ export const createWebChannelCredential = (keys: any) => ({
         shortcode: 'web_channel',
         isActive: true,
         keys: JSON.stringify(keys),
-        secrets: '{}',
+        secrets: JSON.stringify(secrets),
       },
     },
   },
   result: {
     data: {
       createCredential: {
-        credential: { id: '9', keys: JSON.stringify(keys), secrets: '{}' },
+        credential: { id: '9', keys: JSON.stringify(keys), secrets: JSON.stringify(secrets) },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const updateWebChannelCredential = (keys: any, secrets: any) => ({
+  request: {
+    query: UPDATE_CREDENTIAL,
+    variables: {
+      id: '9',
+      input: {
+        shortcode: 'web_channel',
+        isActive: true,
+        keys: JSON.stringify(keys),
+        secrets: JSON.stringify(secrets),
+      },
+    },
+  },
+  result: {
+    data: {
+      updateCredential: {
+        credential: {
+          id: '9',
+          provider: { shortcode: 'web_channel' },
+          keys: JSON.stringify(keys),
+          secrets: JSON.stringify(secrets),
+          isActive: true,
+        },
         errors: null,
       },
     },

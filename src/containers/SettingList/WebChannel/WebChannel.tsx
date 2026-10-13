@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Field } from 'formik';
 
@@ -21,8 +21,9 @@ import styles from './WebChannel.module.css';
 const SHORTCODE = 'web_channel';
 const SettingIcon = <Settingicon />;
 
-// The order the page saves, and the only keys it writes — a credential edited elsewhere keeps
-// whatever else it holds rather than having it dropped by a save from this form.
+// The keys this page edits, in the order a new credential saves them. The server replaces keys
+// and secrets wholesale on update, so a save merges these over whatever the saved credential
+// already holds rather than dropping values this form does not show.
 const FIELDS = [
   'logo_url',
   'display_name',
@@ -33,7 +34,21 @@ const FIELDS = [
   'about_website',
   'about_email',
   'about_hours',
+  'login_key_1_name',
+  'login_key_2_name',
 ];
+
+const SECRET_FIELDS = ['login_key_1_secret', 'login_key_2_secret'];
+
+const LOGIN_KEY_SLOTS = [1, 2].map((slot) => ({
+  slot,
+  name: `login_key_${slot}_name`,
+  secret: `login_key_${slot}_secret`,
+}));
+
+const LOGIN_KEY_FIELDS = LOGIN_KEY_SLOTS.flatMap(({ name, secret }) => [name, secret]);
+
+const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
@@ -87,6 +102,14 @@ const Section = ({ title, description }: { title: string; description?: string }
   </div>
 );
 
+const SecretInput = (props: any) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <Input {...props} type="password" togglePassword={visible} endAdornmentCallback={() => setVisible(!visible)} />
+  );
+};
+
 const BrandColors = ({ keys }: { keys: any }) => {
   const { t } = useTranslation();
 
@@ -127,6 +150,7 @@ export const WebChannel = () => {
   // Mirrors the form's own `isActive` so the field list can be rebuilt as it is toggled;
   // formFields is computed outside Formik and cannot read its values.
   const [isActive, setIsActive] = useState(false);
+  const saved = useRef<{ keys: any; secrets: any }>({ keys: {}, secrets: {} });
 
   const { data: providerData, loading: providerLoading } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: SHORTCODE } },
@@ -138,15 +162,20 @@ export const WebChannel = () => {
 
   const orgShortcode = organizationData?.organization?.organization?.shortcode;
 
-  const keys = providerData?.providers?.[0] ? JSON.parse(providerData.providers[0].keys) : null;
+  const provider = providerData?.providers?.[0];
+  const keys = provider ? JSON.parse(provider.keys) : null;
+  const secrets = provider ? parseJson(provider.secrets) : {};
 
   const setCredential = (item: any) => {
-    const saved = item?.keys ? JSON.parse(item.keys) : {};
+    const savedKeys = parseJson(item?.keys);
+    const savedSecrets = parseJson(item?.secrets);
     const active = !!item?.isActive;
 
+    saved.current = { keys: savedKeys, secrets: savedSecrets };
     setIsActive(active);
     setStates({
-      ...Object.fromEntries(FIELDS.map((name) => [name, saved[name] ?? keys?.[name]?.default ?? ''])),
+      ...Object.fromEntries(FIELDS.map((name) => [name, savedKeys[name] ?? keys?.[name]?.default ?? ''])),
+      ...Object.fromEntries(SECRET_FIELDS.map((name) => [name, savedSecrets[name] ?? ''])),
       isActive: active,
     });
   };
@@ -176,6 +205,15 @@ export const WebChannel = () => {
       excludeEmptyString: true,
     }),
     about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
+    ...Object.fromEntries(
+      LOGIN_KEY_SLOTS.map(({ name, secret }) => [
+        name,
+        Yup.string().when(['isActive', secret], {
+          is: (active: boolean, secretValue?: string) => active && !!secretValue?.trim(),
+          then: (schema) => schema.trim().required(t('Give this key a name so you can tell it apart.')),
+        }),
+      ])
+    ),
   });
 
   const textField = (name: string, label?: string) => ({
@@ -242,18 +280,55 @@ export const WebChannel = () => {
     textField('about_website', t('Website')),
     textField('about_email', t('Contact email')),
     textField('about_hours', t('Hours')),
+    {
+      component: Section,
+      name: '__sectionLoginKeys',
+      title: t('Login keys'),
+      description: t(
+        'Your own backend can sign contacts in to the web chat without an OTP by signing a login token with one of these secrets. A token signed with either secret is accepted. To rotate, put the new secret in the empty slot, switch your backend to it, then clear the old one. Leave both secrets empty to allow only phone and OTP sign-in.'
+      ),
+    },
+    ...LOGIN_KEY_SLOTS.flatMap(({ slot, name, secret }) => [
+      {
+        ...textField(name, keys?.[name]?.label ?? t('Login key {{slot}} name', { slot })),
+        helperText: keys?.[name]?.helper_text,
+      },
+      {
+        component: SecretInput,
+        name: secret,
+        label: secrets?.[secret]?.label ?? t('Login key {{slot}} secret', { slot }),
+        helperText: secrets?.[secret]?.helper_text,
+        placeholder: '',
+        autoComplete: 'new-password',
+        inputProp: { 'data-testid': secret },
+      },
+    ]),
   ];
+
+  const formValue = (payload: any, name: string) => {
+    const value = payload[name] ?? '';
+    return LOGIN_KEY_FIELDS.includes(name) && typeof value === 'string' ? value.trim() : value;
+  };
 
   const setPayload = (payload: any) => ({
     shortcode: SHORTCODE,
     isActive: !!payload.isActive,
-    keys: JSON.stringify(Object.fromEntries(FIELDS.map((name) => [name, payload[name] ?? '']))),
-    secrets: JSON.stringify({}),
+    keys: JSON.stringify({
+      ...saved.current.keys,
+      ...Object.fromEntries(FIELDS.map((name) => [name, formValue(payload, name)])),
+    }),
+    secrets: JSON.stringify({
+      ...saved.current.secrets,
+      ...Object.fromEntries(SECRET_FIELDS.map((name) => [name, formValue(payload, name)])),
+    }),
   });
 
   const afterSave = (data: any) => {
-    const saved = data?.createCredential?.credential ?? data?.updateCredential?.credential;
-    if (saved) setCredentialId(saved.id);
+    const credential = data?.createCredential?.credential ?? data?.updateCredential?.credential;
+    if (!credential) return;
+
+    setCredentialId(credential.id);
+    saved.current = { keys: parseJson(credential.keys), secrets: parseJson(credential.secrets) };
   };
 
   // Everything except the toggle and the address is configuration for a channel that is off.
