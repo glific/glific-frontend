@@ -1087,5 +1087,10 @@
   "Channel cannot be changed later after creation": "चैनल बनाने के बाद बदला नहीं जा सकता",
   "This flow was not published": "यह फ़्लो प्रकाशित नहीं हुआ",
   "Go back and edit": "वापस जाएँ और संपादित करें",
-  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "नीचे दिए गए नोड इस फ़्लो के चैनल पर नहीं चल सकते, इसलिए प्रकाशित करने से पहले उन्हें हटाना होगा।"
+  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "नीचे दिए गए नोड इस फ़्लो के चैनल पर नहीं चल सकते, इसलिए प्रकाशित करने से पहले उन्हें हटाना होगा।",
+  "Blocked by guardrail": "गार्डरेल ने रोका",
+  "Guardrails applied": "गार्डरेल लागू हुए",
+  "Guardrail": "गार्डरेल",
+  "Input to LLM": "LLM को भेजा गया इनपुट",
+  "Output from LLM": "LLM से मिला आउटपुट"
 }
