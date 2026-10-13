@@ -466,7 +466,6 @@ export const AssistantDetail = () => {
     );
   }
 
-  const activeTabLabel = (TABS.find((tab) => tab.key === activeTab) ?? TABS[0]).label;
   const vectorStore = selectedVersion ? selectedVersion.vectorStore : assistant?.vectorStore;
 
   const TAB_PANELS: Partial<Record<TabKey, ReactNode>> = {
