@@ -88,3 +88,53 @@
   height: var(--app-size-icon-lg);
   width: var(--app-size-icon-lg);
 }
+
+.KeyCard {
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-color-surface-page);
+  padding: var(--app-space-lg) var(--app-space-xl);
+  margin: var(--app-space-lg) 0 0;
+  min-width: 0;
+}
+
+.KeyCardTitle {
+  /* Floated so the legend sits inside the card as a heading instead of cutting its border. */
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: var(--app-space-sm);
+  color: var(--app-color-text-heading);
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+}
+
+.KeyCardFields {
+  clear: both;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--app-space-xl);
+  row-gap: var(--app-space-sm);
+  align-items: start;
+}
+
+.KeyCardLabel {
+  /* Matches the outlined input's height, so the label stays level with it when an error
+     message grows the input's row. */
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  color: var(--app-color-text-heading);
+  font-size: var(--app-font-size-sm);
+}
+
+@media (max-width: 600px) {
+  .KeyCardFields {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--app-space-2xs);
+  }
+
+  .KeyCardLabel {
+    min-height: 0;
+  }
+}

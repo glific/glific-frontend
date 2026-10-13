@@ -110,6 +110,48 @@ const SecretInput = (props: any) => {
   );
 };
 
+const LoginKeyCard = ({ slot, nameField, secretField }: { slot: number; nameField: string; secretField: string }) => {
+  const { t } = useTranslation();
+
+  return (
+    <fieldset className={styles.KeyCard} data-testid={`loginKey${slot}`}>
+      <legend className={styles.KeyCardTitle}>{t('Key {{slot}}', { slot })}</legend>
+      <div className={styles.KeyCardFields}>
+        <label className={styles.KeyCardLabel} htmlFor={nameField}>
+          {t('Name')}
+        </label>
+        <Field
+          component={Input}
+          name={nameField}
+          type="text"
+          placeholder={t('e.g. Tap 2026')}
+          inputProp={{ id: nameField, 'data-testid': nameField }}
+        />
+        <label className={styles.KeyCardLabel} htmlFor={secretField}>
+          {t('Secret')}
+        </label>
+        <Field
+          component={SecretInput}
+          name={secretField}
+          placeholder=""
+          autoComplete="new-password"
+          inputProp={{ id: secretField, 'data-testid': secretField }}
+        />
+      </div>
+    </fieldset>
+  );
+};
+
+const LoginKeysNote = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className={styles.SectionDescription}>
+      {t('To rotate: fill the empty key, switch your backend, then clear the old one.')}
+    </div>
+  );
+};
+
 const BrandColors = ({ keys }: { keys: any }) => {
   const { t } = useTranslation();
 
@@ -164,7 +206,6 @@ export const WebChannel = () => {
 
   const provider = providerData?.providers?.[0];
   const keys = provider ? JSON.parse(provider.keys) : null;
-  const secrets = provider ? parseJson(provider.secrets) : {};
 
   const setCredential = (item: any) => {
     const savedKeys = parseJson(item?.keys);
@@ -285,24 +326,17 @@ export const WebChannel = () => {
       name: '__sectionLoginKeys',
       title: t('Login keys'),
       description: t(
-        'Your own backend can sign contacts in to the web chat without an OTP by signing a login token with one of these secrets. A token signed with either secret is accepted. To rotate, put the new secret in the empty slot, switch your backend to it, then clear the old one. Leave both secrets empty to allow only phone and OTP sign-in.'
+        "Your backend signs contacts' login tokens with one of these secrets. Either one works; leave both empty for phone + OTP only."
       ),
     },
-    ...LOGIN_KEY_SLOTS.flatMap(({ slot, name, secret }) => [
-      {
-        ...textField(name, keys?.[name]?.label ?? t('Login key {{slot}} name', { slot })),
-        helperText: keys?.[name]?.helper_text,
-      },
-      {
-        component: SecretInput,
-        name: secret,
-        label: secrets?.[secret]?.label ?? t('Login key {{slot}} secret', { slot }),
-        helperText: secrets?.[secret]?.helper_text,
-        placeholder: '',
-        autoComplete: 'new-password',
-        inputProp: { 'data-testid': secret },
-      },
-    ]),
+    ...LOGIN_KEY_SLOTS.map(({ slot, name, secret }) => ({
+      component: LoginKeyCard,
+      name: `__loginKey${slot}`,
+      slot,
+      nameField: name,
+      secretField: secret,
+    })),
+    { component: LoginKeysNote, name: '__loginKeysNote' },
   ];
 
   const formValue = (payload: any, name: string) => {

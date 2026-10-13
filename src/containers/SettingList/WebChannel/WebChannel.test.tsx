@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
@@ -211,29 +211,39 @@ describe('<WebChannel />', () => {
 describe('login keys', () => {
   const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
 
-  it('offers two slots, each with a name and a masked secret, labelled by the provider', async () => {
+  it('groups each key into its own card, with a name and a masked secret', async () => {
     render(wrapper(on));
 
     await waitFor(() => expect(screen.getByText('Login keys')).toBeInTheDocument());
-    expect(screen.getByText(/A token signed with either secret is accepted/)).toBeInTheDocument();
+    expect(screen.getByText(/Either one works/)).toBeInTheDocument();
+    expect(screen.getByText(/To rotate: fill the empty key/)).toBeInTheDocument();
 
-    ['Login key 1 name', 'Login key 2 name', 'Login key 1 secret', 'Login key 2 secret'].forEach((label) =>
-      expect(screen.getByText(label)).toBeInTheDocument()
-    );
-    expect(screen.getByTestId('login_key_1_name')).toHaveAttribute('type', 'text');
-    expect(screen.getByTestId('login_key_2_name')).toHaveAttribute('type', 'text');
-    expect(screen.getByTestId('login_key_1_secret')).toHaveAttribute('type', 'password');
-    expect(screen.getByTestId('login_key_2_secret')).toHaveAttribute('type', 'password');
+    [1, 2].forEach((slot) => {
+      const card = screen.getByTestId(`loginKey${slot}`);
+
+      // The test i18n mock returns keys uninterpolated, so the heading reads "Key {{slot}}" here.
+      expect(card).toHaveAccessibleName('Key {{slot}}');
+
+      expect(within(card).getByLabelText('Name')).toBe(screen.getByTestId(`login_key_${slot}_name`));
+      expect(within(card).getByLabelText('Name')).toHaveAttribute('type', 'text');
+      expect(within(card).getByLabelText('Name')).toHaveAttribute('placeholder', 'e.g. Tap 2026');
+      expect(within(card).getByLabelText('Secret')).toBe(screen.getByTestId(`login_key_${slot}_secret`));
+      expect(within(card).getByLabelText('Secret')).toHaveAttribute('type', 'password');
+    });
   });
 
   it('reveals a secret on request, so an admin can check what they pasted', async () => {
     render(wrapper(on));
 
-    await waitFor(() => expect(screen.getByTestId('login_key_1_secret')).toBeInTheDocument());
-    await user.click(screen.getAllByTestId('passwordToggle')[0]);
+    await waitFor(() => expect(screen.getByTestId('loginKey2')).toBeInTheDocument());
+    const card = (slot: number) => screen.getByTestId(`loginKey${slot}`);
 
-    expect(screen.getByTestId('login_key_1_secret')).toHaveAttribute('type', 'text');
-    expect(screen.getByTestId('login_key_2_secret')).toHaveAttribute('type', 'password');
+    await user.click(within(card(2)).getByTestId('passwordToggle'));
+    expect(within(card(2)).getByLabelText('Secret')).toHaveAttribute('type', 'text');
+    expect(within(card(1)).getByLabelText('Secret')).toHaveAttribute('type', 'password');
+
+    await user.click(within(card(2)).getByTestId('passwordToggle'));
+    expect(within(card(2)).getByLabelText('Secret')).toHaveAttribute('type', 'password');
   });
 
   it('restores the saved names and secrets', async () => {
@@ -320,6 +330,12 @@ describe('login keys', () => {
 
     await user.click(screen.getByTestId('submitActionButton'));
 
-    await waitFor(() => expect(screen.getByText('Give this key a name so you can tell it apart.')).toBeInTheDocument());
+    const card = screen.getByTestId('loginKey2');
+    await waitFor(() =>
+      expect(within(card).getByText('Give this key a name so you can tell it apart.')).toBeInTheDocument()
+    );
+    expect(
+      within(screen.getByTestId('loginKey1')).queryByText('Give this key a name so you can tell it apart.')
+    ).not.toBeInTheDocument();
   });
 });
