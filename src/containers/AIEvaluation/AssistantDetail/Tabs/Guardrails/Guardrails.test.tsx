@@ -1,6 +1,44 @@
-import { render, screen } from '@testing-library/react';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { setOrganizationServices } from 'services/AuthService';
-import { Guardrails } from './Guardrails';
+import {
+  ALL_GUARDRAIL_VALIDATORS,
+  getGuardrailValidatorsErrorMock,
+  getGuardrailValidatorsMock,
+  guardrailDocsLink,
+} from 'mocks/Guardrails';
+import { Guardrails, GuardrailsPanel } from './Guardrails';
+import type { GuardrailRule } from 'containers/AIEvaluation/types/guardrailType';
+
+/*
+ * The global mock returns keys verbatim, which would leave "{{count}}" in the assertions below.
+ * This one fills interpolation in so the tests read the sentence a user actually sees.
+ */
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options ? key.replace(/{{(\w+)}}/g, (token, name) => (name in options ? String(options[name]) : token)) : key,
+    i18n: { changeLanguage: () => new Promise(() => {}) },
+  }),
+}));
+
+const renderGuardrails = (mocks: MockedResponse[] = [getGuardrailValidatorsMock()]) => {
+  setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true }));
+  return render(
+    <MockedProvider mocks={mocks}>
+      <Guardrails />
+    </MockedProvider>
+  );
+};
+
+// renders with every validator the backend knows about, and waits until they have loaded
+const renderPanel = async () => {
+  renderGuardrails();
+  await screen.findByTestId('guardrailStage-incoming');
+};
+
+// every rule starts off, and a rule's editor only shows once it is on
+const turnOn = (ruleId: string) => fireEvent.click(screen.getByTestId(`guardrailToggle-${ruleId}`));
 
 test('says Guardrails is coming soon when the org has not been rolled out', () => {
   setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: false }));
@@ -9,13 +47,348 @@ test('says Guardrails is coming soon when the org has not been rolled out', () =
   expect(screen.getByTestId('guardrails')).toHaveTextContent('Guardrails coming soon');
 });
 
-test('tells a rolled-out org it is on its way instead of the generic message', () => {
-  setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true }));
-  render(<Guardrails />);
+describe('a rolled-out org', () => {
+  test('sees both stages, each with its own running numbers', async () => {
+    await renderPanel();
 
-  const text = screen.getByTestId('guardrails');
-  expect(text).toHaveTextContent(
-    'Guardrails for this assistant are being rolled out for your organization. Check back soon.'
-  );
-  expect(text).not.toHaveTextContent('coming soon');
+    const incoming = screen.getByTestId('guardrailStage-incoming');
+    expect(incoming).toHaveTextContent('Guardrails on incoming messages');
+    expect(within(incoming).getByTestId('guardrailRule-privacy-protection')).toHaveTextContent('1');
+    expect(within(incoming).getByTestId('guardrailRule-content-safety')).toHaveTextContent('2');
+    expect(within(incoming).getByTestId('guardrailRule-scope-control')).toHaveTextContent('3');
+
+    // numbering starts over for the reply stage, rather than continuing from the one before it
+    const reply = screen.getByTestId('guardrailStage-reply');
+    expect(reply).toHaveTextContent('Guardrails on assistant replies');
+    expect(within(reply).getByTestId('guardrailRule-gender-neutrality')).toHaveTextContent('1');
+  });
+
+  test('every rule starts off, with no editor showing', async () => {
+    await renderPanel();
+
+    expect(screen.getByTestId('guardrailToggle-privacy-protection')).not.toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-content-safety')).not.toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-scope-control')).not.toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-gender-neutrality')).not.toBeChecked();
+    expect(screen.queryByTestId('editDetailTypesToggle')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('editTopicsToggle')).not.toBeInTheDocument();
+  });
+
+  test('turning a rule on shows its editor', async () => {
+    await renderPanel();
+
+    turnOn('scope-control');
+
+    expect(screen.getByTestId('guardrailToggle-scope-control')).toBeChecked();
+    expect(screen.getByTestId('editTopicsToggle')).toBeInTheDocument();
+  });
+
+  test('turning a rule off hides the editor it had open', async () => {
+    await renderPanel();
+    turnOn('scope-control');
+
+    fireEvent.click(screen.getByTestId('editTopicsToggle'));
+    expect(screen.getByTestId('topicsEditorBody')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+
+    expect(screen.queryByTestId('topicsEditorBody')).not.toBeInTheDocument();
+  });
+
+  describe('the detail types a Privacy Protection check looks for', () => {
+    test('starts collapsed, with everything selected', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+
+      expect(screen.queryByTestId('detailTypesEditorBody')).not.toBeInTheDocument();
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('all 15 selected');
+    });
+
+    test('unselecting one updates the count', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+
+      fireEvent.click(screen.getByTestId('detailOption-name'));
+
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('14 selected');
+      expect(screen.getByTestId('detailOption-name')).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    test('Clear empties a group, Select all brings it back', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+
+      fireEvent.click(screen.getAllByText('Clear', { selector: 'button' })[0]);
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('5 selected');
+
+      fireEvent.click(screen.getAllByText('Select all', { selector: 'button' })[0]);
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('all 15 selected');
+    });
+  });
+
+  describe('the topics a Scope Control check blocks', () => {
+    const openEditor = async () => {
+      await renderPanel();
+      turnOn('scope-control');
+      fireEvent.click(screen.getByTestId('editTopicsToggle'));
+    };
+
+    const addSuggestion = (suggestionId: string) =>
+      fireEvent.click(screen.getByTestId(`suggestedTopic-${suggestionId}`));
+
+    // a topic added from a suggestion takes the suggestion's id, prefixed
+    const addedFrom = (suggestionId: string) => `disallowedTopic-topic-${suggestionId}`;
+
+    test('starts with nothing blocked, nothing suggested picked and no reply written', async () => {
+      await openEditor();
+
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('0 added');
+      expect(screen.queryByTestId(/^disallowedTopic-/)).not.toBeInTheDocument();
+      screen.getAllByTestId(/^suggestedTopic-/).forEach((suggestion) => expect(suggestion).toBeEnabled());
+      expect(screen.getByTestId('setReplyInput')).toHaveValue('');
+    });
+
+    test('a suggestion can be added with one click, and then shows as added', async () => {
+      await openEditor();
+
+      addSuggestion('suggest-politics-religion');
+
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('1 added');
+      expect(screen.getByTestId(addedFrom('suggest-politics-religion'))).toHaveTextContent('elections');
+      expect(screen.getByTestId('suggestedTopic-suggest-politics-religion')).toBeDisabled();
+    });
+
+    test('a suggestion already on the list does nothing more when clicked', async () => {
+      await openEditor();
+      addSuggestion('suggest-politics-religion');
+
+      addSuggestion('suggest-politics-religion');
+
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('1 added');
+    });
+
+    test('removing a topic takes it off the list, and its suggestion can be picked again', async () => {
+      await openEditor();
+      addSuggestion('suggest-politics-religion');
+      addSuggestion('suggest-medical-treatment-claims');
+
+      fireEvent.click(within(screen.getByTestId(addedFrom('suggest-politics-religion'))).getByRole('button'));
+
+      expect(screen.queryByTestId(addedFrom('suggest-politics-religion'))).not.toBeInTheDocument();
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('1 added');
+      expect(screen.getByTestId('suggestedTopic-suggest-politics-religion')).toBeEnabled();
+    });
+
+    test('removing every topic leaves just the input to add one', async () => {
+      await openEditor();
+      addSuggestion('suggest-politics-religion');
+
+      fireEvent.click(within(screen.getByTestId(addedFrom('suggest-politics-religion'))).getByRole('button'));
+
+      expect(screen.queryByTestId(/^disallowedTopic-/)).not.toBeInTheDocument();
+      expect(screen.getByTestId('newTopicInput')).toBeInTheDocument();
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('0 added');
+    });
+
+    test('typing a topic and pressing Enter adds it', async () => {
+      await openEditor();
+
+      fireEvent.change(screen.getByTestId('newTopicInput'), { target: { value: 'Self-harm' } });
+      fireEvent.keyDown(screen.getByTestId('newTopicInput'), { key: 'Enter' });
+
+      expect(screen.getByText('Self-harm', { exact: false })).toBeInTheDocument();
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('1 added');
+      expect(screen.getByTestId('newTopicInput')).toHaveValue('');
+    });
+
+    test('clicking + Add works the same as pressing Enter', async () => {
+      await openEditor();
+
+      fireEvent.change(screen.getByTestId('newTopicInput'), { target: { value: 'Violence' } });
+      fireEvent.click(screen.getByTestId('addTopicButton'));
+
+      expect(screen.getByText('Violence', { exact: false })).toBeInTheDocument();
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('1 added');
+    });
+
+    test('an empty draft adds nothing, whether by Enter or by the button', async () => {
+      await openEditor();
+
+      // + Add stays faded until something is typed, as in the design
+      expect(screen.getByTestId('addTopicButton')).toBeDisabled();
+
+      fireEvent.keyDown(screen.getByTestId('newTopicInput'), { key: 'Enter' });
+      fireEvent.click(screen.getByTestId('addTopicButton'));
+
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('0 added');
+    });
+
+    test('typing a topic that is already blocked does not add a second one', async () => {
+      await openEditor();
+      addSuggestion('suggest-politics-religion');
+
+      fireEvent.change(screen.getByTestId('newTopicInput'), { target: { value: 'politics & religion' } });
+      fireEvent.click(screen.getByTestId('addTopicButton'));
+
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('1 added');
+    });
+
+    test('the reply sent when the guardrail fires can be written', async () => {
+      await openEditor();
+
+      fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'Naya jawab.' } });
+
+      expect(screen.getByTestId('setReplyInput')).toHaveValue('Naya jawab.');
+    });
+  });
+
+  describe('the "when a guardrail is triggered" banner', () => {
+    test('starts closed, showing just the title and the legend', async () => {
+      await renderPanel();
+
+      expect(screen.getByTestId('guardrailsLegend')).toHaveTextContent('Fixes & passes on');
+      expect(screen.getByTestId('guardrailsSeeHowButton')).toHaveTextContent('See how');
+      expect(screen.queryByTestId('guardrailsHowItWorks')).not.toBeInTheDocument();
+    });
+
+    test('See how opens both flows, and Hide closes them again', async () => {
+      await renderPanel();
+
+      fireEvent.click(screen.getByTestId('guardrailsSeeHowButton'));
+
+      expect(screen.getByTestId('guardrailsSeeHowButton')).toHaveTextContent('Hide');
+      expect(screen.getByTestId('guardrailsFlow-fix')).toHaveTextContent('Flagged part hidden / reworded');
+      expect(screen.getByTestId('guardrailsFlow-block')).toHaveTextContent('Your set reply is sent to the user');
+      // the legend stays put either way
+      expect(screen.getByTestId('guardrailsLegend')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('guardrailsSeeHowButton'));
+
+      expect(screen.queryByTestId('guardrailsHowItWorks')).not.toBeInTheDocument();
+      expect(screen.getByTestId('guardrailsSeeHowButton')).toHaveTextContent('See how');
+    });
+
+    test('the caret on the left opens and closes it too', async () => {
+      await renderPanel();
+      const caret = screen.getByTestId('guardrailsBannerToggle');
+
+      fireEvent.click(caret);
+      expect(caret).toHaveAttribute('aria-expanded', 'true');
+      expect(screen.getByTestId('guardrailsHowItWorks')).toBeInTheDocument();
+
+      fireEvent.click(caret);
+      expect(caret).toHaveAttribute('aria-expanded', 'false');
+      expect(screen.queryByTestId('guardrailsHowItWorks')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('what the backend returns decides what is shown', () => {
+    test('each card Info link opens that validator docs in a new tab', async () => {
+      await renderPanel();
+
+      ['privacy-protection', 'content-safety', 'scope-control', 'gender-neutrality'].forEach((ruleId) => {
+        const info = screen.getByTestId(`guardrailInfo-${ruleId}`);
+        expect(info).toHaveAttribute('href', guardrailDocsLink(ruleId));
+        expect(info).toHaveAttribute('target', '_blank');
+        expect(info).toHaveAttribute('rel', 'noopener noreferrer');
+      });
+    });
+
+    test('hovering Info shows the rule description in a tooltip', async () => {
+      await renderPanel();
+
+      fireEvent.mouseOver(screen.getByTestId('guardrailInfo-content-safety'));
+
+      // the description shows twice — on the card, and now in the tooltip
+      await waitFor(() =>
+        expect(screen.getAllByText('Removes abusive or hurtful words from messages.')).toHaveLength(2)
+      );
+    });
+
+    test('cards follow the tab order, not the order the backend sends them in', async () => {
+      await renderPanel();
+
+      const incoming = screen.getByTestId('guardrailStage-incoming');
+      const ids = within(incoming)
+        .getAllByTestId(/^guardrailRule-/)
+        .map((card) => card.getAttribute('data-testid'));
+      expect(ids).toEqual([
+        'guardrailRule-privacy-protection',
+        'guardrailRule-content-safety',
+        'guardrailRule-scope-control',
+      ]);
+    });
+
+    test('a validator the backend does not return gets no card', async () => {
+      renderGuardrails([
+        getGuardrailValidatorsMock(ALL_GUARDRAIL_VALIDATORS.filter((v) => v.type !== 'gender_assumption_bias')),
+      ]);
+      await screen.findByTestId('guardrailStage-incoming');
+
+      expect(screen.queryByTestId('guardrailRule-gender-neutrality')).not.toBeInTheDocument();
+      // with nothing left in it, the replies stage goes too
+      expect(screen.queryByTestId('guardrailStage-reply')).not.toBeInTheDocument();
+    });
+
+    test('a validator type the tab does not know is skipped', async () => {
+      renderGuardrails([
+        getGuardrailValidatorsMock([...ALL_GUARDRAIL_VALIDATORS, { type: 'jailbreak_detector', link: null }]),
+      ]);
+      await screen.findByTestId('guardrailStage-incoming');
+
+      expect(screen.getAllByTestId(/^guardrailRule-/)).toHaveLength(4);
+    });
+
+    test('a validator without a link keeps its Info tooltip, but Info opens nothing', async () => {
+      renderGuardrails([getGuardrailValidatorsMock([{ type: 'profanity_free', link: null }])]);
+      await screen.findByTestId('guardrailRule-content-safety');
+
+      const info = screen.getByTestId('guardrailInfo-content-safety');
+      expect(info).not.toHaveAttribute('href');
+
+      fireEvent.mouseOver(info);
+      await waitFor(() =>
+        expect(screen.getAllByText('Removes abusive or hurtful words from messages.')).toHaveLength(2)
+      );
+    });
+
+    test('says so when the validators cannot be loaded', async () => {
+      renderGuardrails([getGuardrailValidatorsErrorMock]);
+
+      expect(await screen.findByText('Guardrails could not be loaded. Please try again.')).toBeInTheDocument();
+    });
+  });
+
+  describe('a stage or tier with nothing in it', () => {
+    const onlyIncomingRule: GuardrailRule = {
+      id: 'solo-rule',
+      type: 'profanity_free',
+      link: null,
+      stage: 'incoming',
+      tier: 'additional',
+      title: 'Solo Rule',
+      description: 'The only rule in this mock.',
+      action: 'fix',
+      enabled: true,
+      control: { kind: 'none' },
+    };
+
+    test('a stage nothing is assigned to is left out entirely', () => {
+      render(<GuardrailsPanel initialRules={[onlyIncomingRule]} />);
+
+      expect(screen.getByTestId('guardrailStage-incoming')).toBeInTheDocument();
+      expect(screen.queryByTestId('guardrailStage-reply')).not.toBeInTheDocument();
+    });
+
+    test('a tier nothing is assigned to is left out of the stage it would have joined', () => {
+      render(<GuardrailsPanel initialRules={[onlyIncomingRule]} />);
+
+      // "Solo Rule" is tier "additional" — "Recommended" has nothing under it and does not render
+      expect(screen.queryByText('Recommended')).not.toBeInTheDocument();
+      expect(screen.getByText('Additional')).toBeInTheDocument();
+      expect(screen.getByText('Solo Rule')).toBeInTheDocument();
+    });
+  });
 });

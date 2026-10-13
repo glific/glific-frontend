@@ -173,6 +173,7 @@ html {
 
   /* Colors — amber */
   --app-color-amber-primary: #eab308;
+  --app-color-amber-secondary: #c8821e;
 
   /* Colors — red */
   --app-color-red-primary: #fb5c5c;
@@ -186,6 +187,7 @@ html {
   --app-color-green-primary-rgb: 17 150 86; /* #119656 */
   --app-color-green-secondary-rgb: 7 63 36; /* #073f24 */
   --app-color-amber-primary-rgb: 234 179 8; /* #eab308 */
+  --app-color-amber-secondary-rgb: 200 130 30; /* #c8821e */
   --app-color-indigo-primary-rgb: 53 17 150;
   --app-color-slate-rgb: 122 144 135; /* #7a9087 — hairlines and sunken fills */
   --app-color-white-rgb: 255 255 255;
@@ -203,6 +205,7 @@ html {
   --app-color-border-muted: var(--app-color-green-quaternary);
   --app-color-border-brand: var(--app-color-green-quinary);
   --app-color-attention: var(--app-color-amber-primary);
+  --app-color-attention-strong: var(--app-color-amber-secondary);
   --app-color-error: var(--app-color-red-primary);
   --app-color-warning: var(--app-color-red-secondary);
   --app-color-channel-whatsapp: var(--app-color-green-primary);

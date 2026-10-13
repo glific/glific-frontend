@@ -1,0 +1,43 @@
+.Root {
+  width: 2.75rem;
+  height: 1.5rem;
+  padding: 0;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.SwitchBase {
+  padding: 0.125rem;
+  color: var(--app-color-white);
+}
+
+.SwitchBase.Checked {
+  transform: translateX(1.25rem);
+  color: var(--app-color-white);
+}
+
+.SwitchBase.Checked + .Track {
+  background-color: var(--app-color-brand-primary);
+  border-color: var(--app-color-brand-primary);
+  opacity: 1;
+}
+
+.Thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  box-shadow: var(--app-shadow-card);
+}
+
+.Track {
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-gray-quaternary);
+  border: 1px solid var(--app-color-gray-quaternary);
+  opacity: 1;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.Disabled {
+  opacity: 0.5;
+}
