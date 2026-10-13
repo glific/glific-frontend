@@ -36,7 +36,6 @@ import {
   HeaderActions,
   LeaveDialog,
   SwitchVersionDialog,
-  TABS,
   TabBar,
   TabKey,
   PublishVersionDialog,
