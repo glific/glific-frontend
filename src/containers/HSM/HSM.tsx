@@ -97,7 +97,15 @@ export const HSM = () => {
   const { t } = useTranslation();
   const params = useParams();
   let timer: any = null;
-  let backButton = location.state?.tag?.label ? `template?tag=${location.state?.tag?.label}` : 'template';
+  const queryParams = new URLSearchParams();
+  if (location.state?.status) {
+    queryParams.set('status', location.state.status.toUpperCase());
+  }
+  if (location.state?.tag?.label) {
+    queryParams.set('tag', location.state.tag.label);
+  }
+  const queryString = queryParams.toString();
+  let backButton = queryString ? `template?${queryString}` : 'template';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
   const {
@@ -166,7 +174,7 @@ export const HSM = () => {
   let mode;
   const copyMessage = t('Copy of the template has been created!');
 
-  const isCopyState = location.state === 'copy';
+  const isCopyState = location.state === 'copy' || location.state?.copy || location.state?.mode === 'copy';
   if (isCopyState) {
     queries.updateItemQuery = CREATE_TEMPLATE;
     mode = 'copy';
