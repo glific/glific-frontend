@@ -144,13 +144,17 @@ export const StaffManagement = () => {
     }
   });
 
+  // the seeded label is 'Glific_admin'; matching on 'Glific admin' silently let the
+  // option through, so compare case-insensitively and ignore the separator
+  const isGlificAdminLabel = (label: string) => label?.toLowerCase().replace(/[\s_]/g, '') === 'glificadmin';
+
   if (rolesList.length > 0) {
     if (isManager) {
       // should not display Admin role to manager.
-      rolesList = rolesList.filter((item: any) => item.label !== 'Admin' && item.label !== 'Glific admin');
+      rolesList = rolesList.filter((item: any) => item.label !== 'Admin' && !isGlificAdminLabel(item.label));
     }
     if (isAdmin) {
-      rolesList = rolesList.filter((item: any) => item.label !== 'Glific admin');
+      rolesList = rolesList.filter((item: any) => !isGlificAdminLabel(item.label));
     }
   }
 
