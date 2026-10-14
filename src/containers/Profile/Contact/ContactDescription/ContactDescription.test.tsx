@@ -51,3 +51,64 @@ test('it should display multiple collections properly', () => {
   const { getAllByTestId } = render(<ContactDescription {...propsWithMultipleCollections}></ContactDescription>);
   expect(getAllByTestId('collections')[0]).toHaveTextContent('Default Collection, Poetry Collection, Staff Collection');
 });
+
+describe('identities', () => {
+  test('it should list each identity with its channel label', () => {
+    render(
+      <ContactDescription
+        {...defaultProps}
+        identities={[
+          { id: '1', channel: 'WHATSAPP', identifier: '919876543210' },
+          { id: '2', channel: 'WEB', identifier: 'ravi_web' },
+        ]}
+      />
+    );
+
+    expect(screen.getByText('Identities')).toBeInTheDocument();
+    const identities = screen.getAllByTestId('identity');
+    expect(identities).toHaveLength(2);
+    expect(identities[0]).toHaveTextContent('WhatsApp919876543210');
+    expect(identities[1]).toHaveTextContent('Webravi_web');
+  });
+
+  test('it should not render the identities block when the list is empty', () => {
+    render(<ContactDescription {...defaultProps} identities={[]} />);
+
+    expect(screen.queryByTestId('identities')).not.toBeInTheDocument();
+    expect(screen.queryByText('Identities')).not.toBeInTheDocument();
+  });
+
+  test('it should not render the identities block for groups', () => {
+    render(
+      <ContactDescription
+        {...defaultProps}
+        groups
+        identities={[{ id: '1', channel: 'WHATSAPP', identifier: '919876543210' }]}
+      />
+    );
+
+    expect(screen.queryByTestId('identities')).not.toBeInTheDocument();
+  });
+
+  test('it should render a web-only contact without a phone value', () => {
+    render(
+      <ContactDescription
+        {...defaultProps}
+        phone={undefined}
+        maskedPhone={undefined}
+        identities={[{ id: '2', channel: 'WEB', identifier: 'ravi_web' }]}
+      />
+    );
+
+    expect(screen.getByTestId('phone')).toHaveTextContent(/^-$/);
+    expect(screen.queryByTestId('phoneToggle')).not.toBeInTheDocument();
+    expect(screen.getByTestId('identity')).toHaveTextContent('Webravi_web');
+  });
+
+  test('it should keep showing the masked phone when the plain phone is withheld', () => {
+    render(<ContactDescription {...defaultProps} phone="" maskedPhone="91987******10" identities={[]} />);
+
+    expect(screen.getByTestId('phone')).toHaveTextContent('+91987******10');
+    expect(screen.queryByTestId('phoneToggle')).not.toBeInTheDocument();
+  });
+});
