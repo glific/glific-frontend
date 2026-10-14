@@ -122,6 +122,11 @@ export const GET_CONTACT_DETAILS = gql`
         }
         phone
         maskedPhone
+        identities {
+          id
+          channel
+          identifier
+        }
         status
         lastMessageAt
         groups {

@@ -48,7 +48,7 @@ export const ContactProfile = () => {
 
   const { contact } = data;
   const contactData = contact.contact;
-  const { phone, maskedPhone, groups, lastMessage, settings, activeProfile } = contactData;
+  const { phone, maskedPhone, identities, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
   const contactDisplayName = getDisplayName(contactData);
@@ -163,6 +163,7 @@ export const ContactProfile = () => {
         statusMessage={statusMessage}
         phone={phone}
         maskedPhone={maskedPhone}
+        identities={identities}
         fields={fields}
         settings={settings}
         collections={groups}
