@@ -11,6 +11,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 ---
 
 ## 📋 Table of Contents
+
 - [Pre-requisite](#pre-requisite)
   - [Software Dependencies](#software-dependencies)
     - [npm (via asdf)](#npm-via-asdf)
@@ -24,6 +25,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
   - [Login credentials](#login-credentials)
   - [Configure Gupshup settings](#configure-gupshup-settings-optional)
 - [Available Scripts](#available-scripts)
+- [End-to-End (Cypress) Testing](#end-to-end-cypress-testing)
 - [Docker Image for Production](#docker-image-for-production)
 - [Localization](#localization)
 - [Deploying Release on ECS with CD](#deploying-release-on-ecs-with-cd)
@@ -108,16 +110,15 @@ Visit `https://glific.test:3000` to open the app.
 
 ### Login credentials
 
-* Phone: 917834811114
+- Phone: 917834811114
 
-* Password: Secret1234!
+- Password: Secret1234!
 
 ---
 
 ### Configure Gupshup settings (Optional)
 
 After logging in:
-
 
 This step is required only if you're using Gupshup integration and have ISV credentials stored in the database.
 
@@ -139,6 +140,49 @@ yarn test:coverage       # Run tests with coverage
 yarn build               # Create optimized production build
 yarn extract-translations # Extract English strings for Lokalise
 ```
+
+---
+
+## End-to-End (Cypress) Testing
+
+All Cypress specs, fixtures, and support files live under [`cypress/`](./cypress) in
+this repo.
+
+### Pre-requisites
+
+- The **Glific backend** ([`glific/glific`](https://github.com/glific/glific)) must be
+  running and reachable
+- The **frontend dev server** (this repo, `yarn dev`) must be running and reachable
+- Copy `cypress.config.ts.example` to `cypress.config.ts` (gitignored) and fill in your
+  local/test credentials before running Cypress locally:
+
+  ```bash
+  cp cypress.config.ts.example cypress.config.ts
+  ```
+
+### Running the tests
+
+```bash
+yarn cy:open           # interactive Cypress runner
+yarn cy:run            # headless run
+```
+
+### Linting & formatting
+
+Cypress specs are linted/formatted independently of the main app, scoped to `cypress/`:
+
+```bash
+yarn cy:typecheck      # tsc against cypress/tsconfig.json
+yarn cy:lint           # ESLint scoped to cypress/
+yarn cy:format         # Prettier write scoped to cypress/
+yarn cy:format:check   # Prettier check scoped to cypress/
+```
+
+### Adding or updating specs
+
+Whenever you add a new page, form, dialog, or flow to the app, add or extend a spec under
+`cypress/e2e/`, following the existing folder/fixture conventions. If you're fixing
+behavior an existing spec covers, update that spec too.
 
 ---
 
@@ -186,5 +230,7 @@ Replace `API-PORT` with your backend API port number.
 - 📁 [Google Drive](https://glific.github.io/docs/docs/intro)
 - 📝 [Product Features](https://glific.github.io/docs/docs/category/product-features)
 - 📰 [Blogs](https://glific.org/blogs/)
-### Chat With Us  
+
+### Chat With Us
+
 - 💬 [Discord](https://discord.gg/scsrGUw)
