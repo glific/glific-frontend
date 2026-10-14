@@ -277,6 +277,31 @@ describe('parseEvaluationScores', () => {
       expect(trace.answers[1].guardrail).toMatchObject({ inputToLlm: 'Q', outputFromLlm: 'Fine.' });
     });
 
+    test('a guardrail value that is missing, empty, the wrong type or has no status is no guardrail', () => {
+      const answerGuardrail = (row: Record<string, unknown>) =>
+        parseEvaluationScores([{ question_id: '1', llm_answer: 'A', ...row }])[0].answers[0].guardrail;
+
+      for (const guardrail of [undefined, null, '', ':', '  : reason', 42, { status: 'blocked' }, ['blocked: x']]) {
+        expect(answerGuardrail({ guardrail, input_to_llm: 'Q' })).toBeNull();
+      }
+    });
+
+    test('input and output that are not text are left out', () => {
+      const [trace] = parseEvaluationScores([
+        { question_id: '1', guardrail: 'applied', input_to_llm: 123, output_from_llm: { text: 'A' } },
+      ]);
+
+      expect(trace.answers[0].guardrail).toMatchObject({ inputToLlm: null, outputFromLlm: null });
+    });
+
+    test('in a grouped row a list shorter than the answers leaves the rest with none', () => {
+      const [trace] = parseEvaluationScores([
+        { question_id: '1', llm_answers: ['A', 'B', 'C'], scores: [[], [], []], guardrail: ['applied', null] },
+      ]);
+
+      expect(trace.answers.map((answer) => answer.guardrail?.status ?? null)).toEqual(['applied', null, null]);
+    });
+
     test('in a grouped row a single value applies to every answer', () => {
       const [trace] = parseEvaluationScores([
         { question_id: '1', llm_answers: ['A', 'B'], scores: [[], []], guardrail: 'applied' },

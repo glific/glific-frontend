@@ -171,9 +171,12 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
     const raw = nonEmpty(pick('guardrail'));
     if (!raw) return null;
 
-    const [status, ...reason] = raw.split(':');
+    const [rawStatus, ...reason] = raw.split(':');
+    const status = rawStatus.trim().toLowerCase();
+    if (!status) return null;
+
     return {
-      status: status.trim().toLowerCase(),
+      status,
       reason: reason.join(':').trim(),
       inputToLlm: nonEmpty(pick('input_to_llm')),
       outputFromLlm: nonEmpty(pick('output_from_llm')),
