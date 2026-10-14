@@ -1088,11 +1088,11 @@
   "This flow was not published": "यह फ़्लो प्रकाशित नहीं हुआ",
   "Go back and edit": "वापस जाएँ और संपादित करें",
   "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "नीचे दिए गए नोड इस फ़्लो के चैनल पर नहीं चल सकते, इसलिए प्रकाशित करने से पहले उन्हें हटाना होगा।",
-  "Login keys": "लॉगिन कुंजियाँ",
-  "Give this key a name so you can tell it apart.": "इस कुंजी को एक नाम दें ताकि आप इसे अलग पहचान सकें।",
-  "Your backend signs contacts' login tokens with one of these secrets. Either one works; leave both empty for phone + OTP only.": "आपका बैकएंड संपर्कों के लॉगिन टोकन इनमें से किसी एक सीक्रेट से साइन करता है। दोनों में से कोई भी काम करता है; केवल फ़ोन + OTP से साइन-इन के लिए दोनों खाली छोड़ दें।",
-  "Key {{slot}}": "कुंजी {{slot}}",
   "Secret": "सीक्रेट",
   "e.g. Tap 2026": "जैसे Tap 2026",
-  "To rotate: fill the empty key, switch your backend, then clear the old one.": "बदलने के लिए: खाली कुंजी भरें, अपने बैकएंड को उस पर स्विच करें, फिर पुरानी कुंजी हटा दें।"
+  "JWT signature secrets": "JWT हस्ताक्षर सीक्रेट",
+  "Give this secret a name so you can tell it apart.": "इस सीक्रेट को एक नाम दें ताकि आप इसे अलग पहचान सकें।",
+  "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only.": "आपका बैकएंड संपर्कों के लॉगिन टोकन (JWT) इनमें से किसी एक सीक्रेट से साइन करता है। दोनों में से कोई भी काम करता है; केवल फ़ोन + OTP से साइन-इन के लिए दोनों खाली छोड़ दें।",
+  "Secret {{slot}}": "सीक्रेट {{slot}}",
+  "To rotate: fill the empty slot, switch your backend, then clear the old one.": "बदलने के लिए: खाली स्लॉट भरें, अपने बैकएंड को उस पर स्विच करें, फिर पुराना सीक्रेट हटा दें।"
 }

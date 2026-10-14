@@ -89,7 +89,7 @@
   width: var(--app-size-icon-lg);
 }
 
-.KeyCard {
+.SecretCard {
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   background: var(--app-color-surface-page);
@@ -98,7 +98,7 @@
   min-width: 0;
 }
 
-.KeyCardTitle {
+.SecretCardTitle {
   /* Floated so the legend sits inside the card as a heading instead of cutting its border. */
   float: left;
   width: 100%;
@@ -109,7 +109,7 @@
   font-weight: 600;
 }
 
-.KeyCardFields {
+.SecretCardFields {
   clear: both;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
@@ -118,7 +118,7 @@
   align-items: start;
 }
 
-.KeyCardLabel {
+.SecretCardLabel {
   /* Matches the outlined input's height, so the label stays level with it when an error
      message grows the input's row. */
   display: flex;
@@ -129,12 +129,12 @@
 }
 
 @media (max-width: 600px) {
-  .KeyCardFields {
+  .SecretCardFields {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--app-space-2xs);
   }
 
-  .KeyCardLabel {
+  .SecretCardLabel {
     min-height: 0;
   }
 }

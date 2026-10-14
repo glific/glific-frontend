@@ -31,10 +31,10 @@ const SAVED = {
   about_hours: 'Mon-Sat, 9am-7pm IST',
 };
 
-const LOGIN_KEY_NAMES = { login_key_1_name: '2025', login_key_2_name: '2026' };
-const LOGIN_KEY_SECRETS = { login_key_1_secret: 'old-shared-secret', login_key_2_secret: 'new-shared-secret' };
-const EMPTY_LOGIN_KEY_NAMES = { login_key_1_name: '', login_key_2_name: '' };
-const EMPTY_LOGIN_KEY_SECRETS = { login_key_1_secret: '', login_key_2_secret: '' };
+const JWT_SECRET_NAMES = { jwt_signature_secret_1_name: '2025', jwt_signature_secret_2_name: '2026' };
+const JWT_SECRETS = { jwt_signature_secret_1: 'old-shared-secret', jwt_signature_secret_2: 'new-shared-secret' };
+const EMPTY_JWT_SECRET_NAMES = { jwt_signature_secret_1_name: '', jwt_signature_secret_2_name: '' };
+const EMPTY_JWT_SECRETS = { jwt_signature_secret_1: '', jwt_signature_secret_2: '' };
 
 const wrapper = (mocks: any[]) => (
   <MemoryRouter initialEntries={['/settings/web_channel']}>
@@ -47,7 +47,13 @@ const wrapper = (mocks: any[]) => (
 const off = [getWebChannelProvider, getWebChannelCredential(), getWebChannelCredential()];
 const on = [getWebChannelProvider, getWebChannelCredential(SAVED), getWebChannelCredential(SAVED)];
 
-const SECTIONS = ['Display picture', 'Display name', 'Brand colours', 'About the organisation', 'Login keys'];
+const SECTIONS = [
+  'Display picture',
+  'Display name',
+  'Brand colours',
+  'About the organisation',
+  'JWT signature secrets',
+];
 
 const savedWith = (keys: any, secrets: any) => [
   getWebChannelProvider,
@@ -176,9 +182,7 @@ describe('<WebChannel />', () => {
   it('saves every field as the credential keys', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
-    render(
-      wrapper([...off, createWebChannelCredential({ ...SAVED, ...EMPTY_LOGIN_KEY_NAMES }, EMPTY_LOGIN_KEY_SECRETS)])
-    );
+    render(wrapper([...off, createWebChannelCredential({ ...SAVED, ...EMPTY_JWT_SECRET_NAMES }, EMPTY_JWT_SECRETS)]));
 
     await waitFor(() => expect(screen.getByText('Web channel is active')).toBeInTheDocument());
     await user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
@@ -208,26 +212,26 @@ describe('<WebChannel />', () => {
   });
 });
 
-describe('login keys', () => {
+describe('JWT signature secrets', () => {
   const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
 
-  it('groups each key into its own card, with a name and a masked secret', async () => {
+  it('groups each secret into its own card, with a name and a masked secret', async () => {
     render(wrapper(on));
 
-    await waitFor(() => expect(screen.getByText('Login keys')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('JWT signature secrets')).toBeInTheDocument());
     expect(screen.getByText(/Either one works/)).toBeInTheDocument();
-    expect(screen.getByText(/To rotate: fill the empty key/)).toBeInTheDocument();
+    expect(screen.getByText(/To rotate: fill the empty slot/)).toBeInTheDocument();
 
     [1, 2].forEach((slot) => {
-      const card = screen.getByTestId(`loginKey${slot}`);
+      const card = screen.getByTestId(`jwtSecret${slot}`);
 
-      // The test i18n mock returns keys uninterpolated, so the heading reads "Key {{slot}}" here.
-      expect(card).toHaveAccessibleName('Key {{slot}}');
+      // The test i18n mock returns keys uninterpolated, so the heading reads "Secret {{slot}}" here.
+      expect(card).toHaveAccessibleName('Secret {{slot}}');
 
-      expect(within(card).getByLabelText('Name')).toBe(screen.getByTestId(`login_key_${slot}_name`));
+      expect(within(card).getByLabelText('Name')).toBe(screen.getByTestId(`jwt_signature_secret_${slot}_name`));
       expect(within(card).getByLabelText('Name')).toHaveAttribute('type', 'text');
       expect(within(card).getByLabelText('Name')).toHaveAttribute('placeholder', 'e.g. Tap 2026');
-      expect(within(card).getByLabelText('Secret')).toBe(screen.getByTestId(`login_key_${slot}_secret`));
+      expect(within(card).getByLabelText('Secret')).toBe(screen.getByTestId(`jwt_signature_secret_${slot}`));
       expect(within(card).getByLabelText('Secret')).toHaveAttribute('type', 'password');
     });
   });
@@ -235,8 +239,8 @@ describe('login keys', () => {
   it('reveals a secret on request, so an admin can check what they pasted', async () => {
     render(wrapper(on));
 
-    await waitFor(() => expect(screen.getByTestId('loginKey2')).toBeInTheDocument());
-    const card = (slot: number) => screen.getByTestId(`loginKey${slot}`);
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    const card = (slot: number) => screen.getByTestId(`jwtSecret${slot}`);
 
     await user.click(within(card(2)).getByTestId('passwordToggle'));
     expect(within(card(2)).getByLabelText('Secret')).toHaveAttribute('type', 'text');
@@ -247,30 +251,27 @@ describe('login keys', () => {
   });
 
   it('restores the saved names and secrets', async () => {
-    render(wrapper(savedWith({ ...SAVED, ...LOGIN_KEY_NAMES }, LOGIN_KEY_SECRETS)));
+    render(wrapper(savedWith({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS)));
 
-    await waitFor(() => expect(screen.getByTestId('login_key_1_name')).toHaveValue('2025'));
-    expect(screen.getByTestId('login_key_2_name')).toHaveValue('2026');
-    expect(screen.getByTestId('login_key_1_secret')).toHaveValue('old-shared-secret');
-    expect(screen.getByTestId('login_key_2_secret')).toHaveValue('new-shared-secret');
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toHaveValue('2025'));
+    expect(screen.getByTestId('jwt_signature_secret_2_name')).toHaveValue('2026');
+    expect(screen.getByTestId('jwt_signature_secret_1')).toHaveValue('old-shared-secret');
+    expect(screen.getByTestId('jwt_signature_secret_2')).toHaveValue('new-shared-secret');
   });
 
   it('saves both names in the keys and both secrets in the secrets', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
     render(
-      wrapper([
-        ...savedWith(SAVED, {}),
-        updateWebChannelCredential({ ...SAVED, ...LOGIN_KEY_NAMES }, LOGIN_KEY_SECRETS),
-      ])
+      wrapper([...savedWith(SAVED, {}), updateWebChannelCredential({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS)])
     );
 
-    await waitFor(() => expect(screen.getByTestId('login_key_1_name')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toBeInTheDocument());
 
-    fill('login_key_1_name', ' 2025 ');
-    fill('login_key_1_secret', 'old-shared-secret');
-    fill('login_key_2_name', '2026');
-    fill('login_key_2_secret', 'new-shared-secret ');
+    fill('jwt_signature_secret_1_name', ' 2025 ');
+    fill('jwt_signature_secret_1', 'old-shared-secret');
+    fill('jwt_signature_secret_2_name', '2026');
+    fill('jwt_signature_secret_2', 'new-shared-secret ');
 
     await user.click(screen.getByTestId('submitActionButton'));
 
@@ -279,11 +280,11 @@ describe('login keys', () => {
   });
 
   // The server replaces keys and secrets wholesale, so a save that only sent what changed
-  // would wipe the login keys — and anything set on the credential outside this page.
-  it('keeps the login keys and every other saved value when only the branding changes', async () => {
+  // would wipe the JWT signature secrets — and anything set on the credential outside this page.
+  it('keeps the JWT signature secrets and every other saved value when only the branding changes', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
-    const keys = { ...SAVED, ...LOGIN_KEY_NAMES, widget_variant: 'beta' };
-    const secrets = { ...LOGIN_KEY_SECRETS, analytics_token: 'kept' };
+    const keys = { ...SAVED, ...JWT_SECRET_NAMES, widget_variant: 'beta' };
+    const secrets = { ...JWT_SECRETS, analytics_token: 'kept' };
 
     render(
       wrapper([
@@ -305,17 +306,17 @@ describe('login keys', () => {
 
     render(
       wrapper([
-        ...savedWith({ ...SAVED, ...LOGIN_KEY_NAMES }, LOGIN_KEY_SECRETS),
+        ...savedWith({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS),
         updateWebChannelCredential(
-          { ...SAVED, login_key_1_name: '', login_key_2_name: '2026' },
-          { login_key_1_secret: '', login_key_2_secret: 'new-shared-secret' }
+          { ...SAVED, jwt_signature_secret_1_name: '', jwt_signature_secret_2_name: '2026' },
+          { jwt_signature_secret_1: '', jwt_signature_secret_2: 'new-shared-secret' }
         ),
       ])
     );
 
-    await waitFor(() => expect(screen.getByTestId('login_key_1_name')).toHaveValue('2025'));
-    fill('login_key_1_name', '');
-    fill('login_key_1_secret', '');
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toHaveValue('2025'));
+    fill('jwt_signature_secret_1_name', '');
+    fill('jwt_signature_secret_1', '');
 
     await user.click(screen.getByTestId('submitActionButton'));
 
@@ -325,17 +326,17 @@ describe('login keys', () => {
   it('asks for a name when a secret is filled in', async () => {
     render(wrapper(on));
 
-    await waitFor(() => expect(screen.getByTestId('login_key_2_secret')).toBeInTheDocument());
-    fill('login_key_2_secret', 'new-shared-secret');
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_2')).toBeInTheDocument());
+    fill('jwt_signature_secret_2', 'new-shared-secret');
 
     await user.click(screen.getByTestId('submitActionButton'));
 
-    const card = screen.getByTestId('loginKey2');
+    const card = screen.getByTestId('jwtSecret2');
     await waitFor(() =>
-      expect(within(card).getByText('Give this key a name so you can tell it apart.')).toBeInTheDocument()
+      expect(within(card).getByText('Give this secret a name so you can tell it apart.')).toBeInTheDocument()
     );
     expect(
-      within(screen.getByTestId('loginKey1')).queryByText('Give this key a name so you can tell it apart.')
+      within(screen.getByTestId('jwtSecret1')).queryByText('Give this secret a name so you can tell it apart.')
     ).not.toBeInTheDocument();
   });
 });

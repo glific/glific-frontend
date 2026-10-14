@@ -34,19 +34,19 @@ const FIELDS = [
   'about_website',
   'about_email',
   'about_hours',
-  'login_key_1_name',
-  'login_key_2_name',
+  'jwt_signature_secret_1_name',
+  'jwt_signature_secret_2_name',
 ];
 
-const SECRET_FIELDS = ['login_key_1_secret', 'login_key_2_secret'];
+const SECRET_FIELDS = ['jwt_signature_secret_1', 'jwt_signature_secret_2'];
 
-const LOGIN_KEY_SLOTS = [1, 2].map((slot) => ({
+const JWT_SECRET_SLOTS = [1, 2].map((slot) => ({
   slot,
-  name: `login_key_${slot}_name`,
-  secret: `login_key_${slot}_secret`,
+  name: `jwt_signature_secret_${slot}_name`,
+  secret: `jwt_signature_secret_${slot}`,
 }));
 
-const LOGIN_KEY_FIELDS = LOGIN_KEY_SLOTS.flatMap(({ name, secret }) => [name, secret]);
+const JWT_SECRET_FIELDS = JWT_SECRET_SLOTS.flatMap(({ name, secret }) => [name, secret]);
 
 const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
 
@@ -110,14 +110,14 @@ const SecretInput = (props: any) => {
   );
 };
 
-const LoginKeyCard = ({ slot, nameField, secretField }: { slot: number; nameField: string; secretField: string }) => {
+const JwtSecretCard = ({ slot, nameField, secretField }: { slot: number; nameField: string; secretField: string }) => {
   const { t } = useTranslation();
 
   return (
-    <fieldset className={styles.KeyCard} data-testid={`loginKey${slot}`}>
-      <legend className={styles.KeyCardTitle}>{t('Key {{slot}}', { slot })}</legend>
-      <div className={styles.KeyCardFields}>
-        <label className={styles.KeyCardLabel} htmlFor={nameField}>
+    <fieldset className={styles.SecretCard} data-testid={`jwtSecret${slot}`}>
+      <legend className={styles.SecretCardTitle}>{t('Secret {{slot}}', { slot })}</legend>
+      <div className={styles.SecretCardFields}>
+        <label className={styles.SecretCardLabel} htmlFor={nameField}>
           {t('Name')}
         </label>
         <Field
@@ -127,7 +127,7 @@ const LoginKeyCard = ({ slot, nameField, secretField }: { slot: number; nameFiel
           placeholder={t('e.g. Tap 2026')}
           inputProp={{ id: nameField, 'data-testid': nameField }}
         />
-        <label className={styles.KeyCardLabel} htmlFor={secretField}>
+        <label className={styles.SecretCardLabel} htmlFor={secretField}>
           {t('Secret')}
         </label>
         <Field
@@ -142,12 +142,12 @@ const LoginKeyCard = ({ slot, nameField, secretField }: { slot: number; nameFiel
   );
 };
 
-const LoginKeysNote = () => {
+const JwtSecretsNote = () => {
   const { t } = useTranslation();
 
   return (
     <div className={styles.SectionDescription}>
-      {t('To rotate: fill the empty key, switch your backend, then clear the old one.')}
+      {t('To rotate: fill the empty slot, switch your backend, then clear the old one.')}
     </div>
   );
 };
@@ -247,11 +247,11 @@ export const WebChannel = () => {
     }),
     about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
     ...Object.fromEntries(
-      LOGIN_KEY_SLOTS.map(({ name, secret }) => [
+      JWT_SECRET_SLOTS.map(({ name, secret }) => [
         name,
         Yup.string().when(['isActive', secret], {
           is: (active: boolean, secretValue?: string) => active && !!secretValue?.trim(),
-          then: (schema) => schema.trim().required(t('Give this key a name so you can tell it apart.')),
+          then: (schema) => schema.trim().required(t('Give this secret a name so you can tell it apart.')),
         }),
       ])
     ),
@@ -323,25 +323,25 @@ export const WebChannel = () => {
     textField('about_hours', t('Hours')),
     {
       component: Section,
-      name: '__sectionLoginKeys',
-      title: t('Login keys'),
+      name: '__sectionJwtSecrets',
+      title: t('JWT signature secrets'),
       description: t(
-        "Your backend signs contacts' login tokens with one of these secrets. Either one works; leave both empty for phone + OTP only."
+        "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only."
       ),
     },
-    ...LOGIN_KEY_SLOTS.map(({ slot, name, secret }) => ({
-      component: LoginKeyCard,
-      name: `__loginKey${slot}`,
+    ...JWT_SECRET_SLOTS.map(({ slot, name, secret }) => ({
+      component: JwtSecretCard,
+      name: `__jwtSecret${slot}`,
       slot,
       nameField: name,
       secretField: secret,
     })),
-    { component: LoginKeysNote, name: '__loginKeysNote' },
+    { component: JwtSecretsNote, name: '__jwtSecretsNote' },
   ];
 
   const formValue = (payload: any, name: string) => {
     const value = payload[name] ?? '';
-    return LOGIN_KEY_FIELDS.includes(name) && typeof value === 'string' ? value.trim() : value;
+    return JWT_SECRET_FIELDS.includes(name) && typeof value === 'string' ? value.trim() : value;
   };
 
   const setPayload = (payload: any) => ({
