@@ -13,14 +13,9 @@ import type {
   GuardrailTopicSuggestion,
   TopicsEditorProps,
 } from 'containers/AIEvaluation/types/guardrailType';
+import { slugify } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import { GuardrailEditor } from '../GuardrailEditor/GuardrailEditor';
 import styles from './TopicsEditor.module.css';
-
-const slugify = (label: string) =>
-  label
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 
 export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
   const { t } = useTranslation();
