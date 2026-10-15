@@ -58,9 +58,7 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
         <div className={styles.TopicsLabelRow}>
           <span className={styles.TopicsLabel}>{t('Disallowed topics')}</span>
           <Tooltip
-            title={t(
-              'Along with the topic keywords, adding a short definition/description improves the accuracy.'
-            )}
+            title={t('Along with the topic keywords, adding a short definition/description improves the accuracy.')}
             placement="top"
           >
             <InfoOutlinedIcon className={styles.InfoIcon} data-testid="disallowedTopicsHint" />
