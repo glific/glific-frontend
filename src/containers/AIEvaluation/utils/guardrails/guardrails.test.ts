@@ -1,5 +1,13 @@
 import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails';
-import { actionFromConfig, piiDetailGroups, scopeFallbackMessage } from './guardrails';
+import {
+  actionFromConfig,
+  parseGuardrailSpecs,
+  piiDetailGroups,
+  safeLink,
+  scopeFallbackMessage,
+  topicsFromConfiguration,
+  topicsToConfiguration,
+} from './guardrails';
 
 describe('piiDetailGroups', () => {
   test('reads every kind into one list, ticked as the default says, ticked ones first', () => {
@@ -60,5 +68,54 @@ describe('scopeFallbackMessage', () => {
     expect(scopeFallbackMessage(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
     expect(scopeFallbackMessage({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe('Sirf sehat.');
     expect(scopeFallbackMessage('not json')).toBe('');
+  });
+});
+
+describe('parseGuardrailSpecs', () => {
+  test('reads a JSON string or an already-parsed list, dropping entries without a type', () => {
+    const specs = [{ type: 'pii_remover' }, { on_fail: 'fix' }, { type: '' }, 'nope'];
+
+    expect(parseGuardrailSpecs(JSON.stringify(specs))).toEqual([{ type: 'pii_remover' }]);
+    expect(parseGuardrailSpecs(specs)).toEqual([{ type: 'pii_remover' }]);
+  });
+
+  test('anything that is not a list gives no specs', () => {
+    expect(parseGuardrailSpecs(null)).toEqual([]);
+    expect(parseGuardrailSpecs('not json')).toEqual([]);
+    expect(parseGuardrailSpecs({ type: 'pii_remover' })).toEqual([]);
+  });
+});
+
+describe('topics configuration', () => {
+  const suggestions = [{ id: 'suggest-politics', label: 'Politics', description: 'elections, parties' }];
+
+  test('round-trips topics, one per line, keeping commas inside a description', () => {
+    const topics = [
+      { id: 'topic-suggest-politics', label: 'Politics', description: 'elections, parties' },
+      { id: 'custom-cricket-1', label: 'Cricket', description: '' },
+    ];
+
+    const configuration = topicsToConfiguration(topics);
+    expect(configuration).toBe('Politics — elections, parties\nCricket');
+    expect(topicsFromConfiguration(configuration, suggestions)).toEqual([
+      { id: 'topic-suggest-politics', label: 'Politics', description: 'elections, parties' },
+      { id: 'custom-cricket-1', label: 'Cricket', description: '' },
+    ]);
+  });
+
+  test('a configuration that is not text gives no topics', () => {
+    expect(topicsFromConfiguration(undefined, suggestions)).toEqual([]);
+  });
+});
+
+describe('safeLink', () => {
+  test('keeps web addresses and drops every other kind of link', () => {
+    expect(safeLink('https://projecttech4devai.github.io/kaapi-docs/guardrails/pii')).toBe(
+      'https://projecttech4devai.github.io/kaapi-docs/guardrails/pii'
+    );
+    expect(safeLink('javascript:alert(1)')).toBeNull();
+    expect(safeLink('data:text/html,<script>alert(1)</script>')).toBeNull();
+    expect(safeLink('not a url')).toBeNull();
+    expect(safeLink(null)).toBeNull();
   });
 });

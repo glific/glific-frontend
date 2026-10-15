@@ -21,6 +21,8 @@ import { LIST_AI_EVALUATIONS, LIST_GOLDEN_QA } from 'graphql/queries/AIEvaluatio
 import { GET_ASSISTANT, GET_ASSISTANT_MODELS, GET_ASSISTANT_VERSIONS } from 'graphql/queries/Assistant';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { getAssistant } from 'mocks/Assistants';
+import { getGuardrailValidatorsMock } from 'mocks/Guardrails';
+import { setOrganizationServices } from 'services/AuthService';
 import { rawModels } from './Tabs/PersonaPrompt/PersonaPrompt.test';
 import AssistantDetail from './AssistantDetail';
 
@@ -32,6 +34,8 @@ const version = (major: number, isLive: boolean) => ({
   model: 'gpt-4o',
   prompt: 'You are a helpful assistant.',
   settings: { temperature: 1 } as { temperature: number } | string,
+  inputGuardrails: '[]' as unknown,
+  outputGuardrails: '[]' as unknown,
   status: 'ready',
   isLive,
   description: null as string | null,
@@ -99,6 +103,8 @@ const confirmPublish = async () => {
   await screen.findByTestId('publishVersionDialog');
   fireEvent.click(screen.getByTestId('middle-button'));
 };
+
+const NO_GUARDRAILS = { inputGuardrails: '[]', outputGuardrails: '[]' };
 
 const versionsMock = (assistantVersions = [version(1, true), version(2, false)]) => ({
   request: { query: GET_ASSISTANT_VERSIONS, variables: { assistantId: '1' } },
@@ -618,7 +624,7 @@ describe('Unsaved changes', () => {
     await waitFor(() => {
       expect(screen.getByText('Discard unsaved changes?')).toBeInTheDocument();
     });
-    expect(screen.getByText(/Reverts the prompt, model, settings and knowledge base/)).toBeInTheDocument();
+    expect(screen.getByText(/Reverts the prompt, model, settings, knowledge base and guardrails/)).toBeInTheDocument();
     expect(screen.getByText('Any edits made since your last save will be lost.')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Discard changes'));
@@ -658,6 +664,7 @@ describe('Unsaved changes', () => {
             temperature: 1,
             knowledgeBaseVersionId: 'llm-vs-1',
             name: 'Assistant-405db438',
+            ...NO_GUARDRAILS,
           },
         },
       },
@@ -701,6 +708,7 @@ describe('Unsaved changes', () => {
     model: 'gpt-4o',
     temperature: 1,
     name: 'Assistant-405db438',
+    ...NO_GUARDRAILS,
   };
 
   // the live version in the fixtures owns knowledge base `llm-vs-1`, so a save on it carries that id
@@ -810,6 +818,7 @@ describe('Unsaved changes', () => {
             model: 'gpt-4o',
             knowledgeBaseVersionId: 'llm-vs-1',
             name: 'Assistant-405db438',
+            ...NO_GUARDRAILS,
           },
         },
       },
@@ -842,7 +851,13 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-5.6-luna', effort: 'medium', name: 'Untitled assistant' },
+          input: {
+            instructions: 'Hello',
+            model: 'gpt-5.6-luna',
+            effort: 'medium',
+            name: 'Untitled assistant',
+            ...NO_GUARDRAILS,
+          },
         },
       },
       result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
@@ -864,7 +879,13 @@ describe('Unsaved changes', () => {
       request: {
         query: CREATE_ASSISTANT,
         variables: {
-          input: { instructions: 'Hello', model: 'gpt-5.6-luna', effort: 'medium', name: 'Untitled assistant' },
+          input: {
+            instructions: 'Hello',
+            model: 'gpt-5.6-luna',
+            effort: 'medium',
+            name: 'Untitled assistant',
+            ...NO_GUARDRAILS,
+          },
         },
       },
       result: { data: { createAssistant: { assistant: null, errors: [{ message: 'Name taken', key: 'name' }] } } },
@@ -1014,6 +1035,7 @@ describe('knowledge base', () => {
             temperature: 1,
             knowledgeBaseVersionId: 'kbv-9',
             name: 'Assistant-405db438',
+            ...NO_GUARDRAILS,
           },
         },
       },
@@ -1639,6 +1661,7 @@ describe('switching versions', () => {
             temperature: 0.5,
             knowledgeBaseVersionId: 'kbv-9',
             name: 'Assistant-405db438',
+            ...NO_GUARDRAILS,
           },
         },
       },
@@ -1742,6 +1765,7 @@ describe('switching versions', () => {
             temperature: 1,
             knowledgeBaseVersionId: 'llm-vs-1',
             name: 'Assistant-405db438',
+            ...NO_GUARDRAILS,
           },
         },
       },
@@ -2325,5 +2349,80 @@ describe('a version changing while the page is open', () => {
       expect(screen.getByTestId('versionOption-2.0')).toBeInTheDocument();
     });
     expect(screen.queryByTestId('versionOption-3.0')).not.toBeInTheDocument();
+  });
+});
+
+describe('guardrails', () => {
+  beforeEach(() => setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true })));
+  afterEach(() => setOrganizationServices(JSON.stringify({})));
+
+  const openGuardrails = async () => {
+    await waitFor(() => expect(screen.getByTestId('tab-guardrails')).toBeInTheDocument());
+    fireEvent.click(screen.getByTestId('tab-guardrails'));
+    await screen.findByTestId('guardrailStage-incoming');
+  };
+
+  test('turning a guardrail on marks the tab unsaved and is sent with the save', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const save = {
+      request: {
+        query: UPDATE_ASSISTANT,
+        variables: {
+          updateAssistantId: '1',
+          input: {
+            instructions: 'You are a helpful assistant.',
+            model: 'gpt-4o',
+            temperature: 1,
+            knowledgeBaseVersionId: 'llm-vs-1',
+            name: 'Assistant-405db438',
+            inputGuardrails: '[]',
+            outputGuardrails: JSON.stringify([{ type: 'gender_assumption_bias' }]),
+          },
+        },
+      },
+      result: { data: { updateAssistant: { errors: null } } },
+    };
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock(), save, versionsMock()]);
+    await openGuardrails();
+
+    expect(screen.queryByTestId('saveVersionButton')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('guardrailToggle-gender-neutrality'));
+
+    expect(screen.getByTestId('tabDirtyDot-guardrails')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => expect(notificationSpy).toHaveBeenCalledWith('Changes saved successfully'));
+    notificationSpy.mockRestore();
+  });
+
+  test('a version opens with the guardrails it was saved with', async () => {
+    const saved = {
+      ...version(1, true),
+      inputGuardrails: JSON.stringify([{ type: 'pii_remover', entity_types: ['PHONE_NUMBER'] }]),
+      outputGuardrails: JSON.stringify([{ type: 'gender_assumption_bias' }]),
+    };
+    renderDetail('/assistants/1', [getAssistant('1'), versionsMock([saved]), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    expect(screen.getByTestId('guardrailToggle-privacy-protection')).toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-gender-neutrality')).toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-content-safety')).not.toBeChecked();
+    expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('1 selected');
+    // loading what was saved is not an edit
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('discard puts the guardrails back the way they were loaded', async () => {
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-content-safety'));
+    expect(screen.getByTestId('guardrailToggle-content-safety')).toBeChecked();
+
+    fireEvent.click(screen.getByTestId('discardButton'));
+    fireEvent.click(await screen.findByText('Discard changes'));
+
+    await waitFor(() => expect(screen.getByTestId('guardrailToggle-content-safety')).not.toBeChecked());
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
   });
 });

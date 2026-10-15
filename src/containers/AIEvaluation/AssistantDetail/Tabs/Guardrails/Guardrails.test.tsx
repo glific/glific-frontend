@@ -8,7 +8,8 @@ import {
   guardrailDocsLink,
 } from 'mocks/Guardrails';
 import { Guardrails, GuardrailsPanel } from './Guardrails';
-import type { GuardrailRule } from 'containers/AIEvaluation/types/guardrailType';
+import type { GuardrailRule, GuardrailSpecs } from 'containers/AIEvaluation/types/guardrailType';
+import { EMPTY_GUARDRAIL_SPECS } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 
 /*
  * The global mock returns keys verbatim, which would leave "{{count}}" in the assertions below.
@@ -22,19 +23,23 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-const renderGuardrails = (mocks: MockedResponse[] = [getGuardrailValidatorsMock()]) => {
+const renderGuardrails = (
+  mocks: MockedResponse[] = [getGuardrailValidatorsMock()],
+  props: Partial<Parameters<typeof Guardrails>[0]> = {}
+) => {
   setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true }));
   return render(
     <MockedProvider mocks={mocks}>
-      <Guardrails />
+      <Guardrails value={EMPTY_GUARDRAIL_SPECS} onChange={vi.fn()} {...props} />
     </MockedProvider>
   );
 };
 
 // renders with every validator the backend knows about, and waits until they have loaded
-const renderPanel = async () => {
-  renderGuardrails();
+const renderPanel = async (props: Partial<Parameters<typeof Guardrails>[0]> = {}) => {
+  const result = renderGuardrails(undefined, props);
   await screen.findByTestId('guardrailStage-incoming');
+  return result;
 };
 
 // every rule starts off, and a rule's editor only shows once it is on
@@ -42,7 +47,7 @@ const turnOn = (ruleId: string) => fireEvent.click(screen.getByTestId(`guardrail
 
 test('says Guardrails is coming soon when the org has not been rolled out', () => {
   setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: false }));
-  render(<Guardrails />);
+  render(<Guardrails value={EMPTY_GUARDRAIL_SPECS} onChange={vi.fn()} />);
 
   expect(screen.getByTestId('guardrails')).toHaveTextContent('Guardrails coming soon');
 });
@@ -465,19 +470,105 @@ describe('a rolled-out org', () => {
     };
 
     test('a stage nothing is assigned to is left out entirely', () => {
-      render(<GuardrailsPanel initialRules={[onlyIncomingRule]} />);
+      render(<GuardrailsPanel initialRules={[onlyIncomingRule]} value={EMPTY_GUARDRAIL_SPECS} onChange={vi.fn()} />);
 
       expect(screen.getByTestId('guardrailStage-incoming')).toBeInTheDocument();
       expect(screen.queryByTestId('guardrailStage-reply')).not.toBeInTheDocument();
     });
 
     test('a tier nothing is assigned to is left out of the stage it would have joined', () => {
-      render(<GuardrailsPanel initialRules={[onlyIncomingRule]} />);
+      render(<GuardrailsPanel initialRules={[onlyIncomingRule]} value={EMPTY_GUARDRAIL_SPECS} onChange={vi.fn()} />);
 
       // "Solo Rule" is tier "additional" — "Recommended" has nothing under it and does not render
       expect(screen.queryByText('Recommended')).not.toBeInTheDocument();
       expect(screen.getByText('Additional')).toBeInTheDocument();
       expect(screen.getByText('Solo Rule')).toBeInTheDocument();
     });
+  });
+});
+
+describe('saving and loading', () => {
+  const saved: GuardrailSpecs = {
+    input: [
+      { type: 'pii_remover', entity_types: ['PHONE_NUMBER', 'IN_AADHAAR'] },
+      {
+        type: 'topic_relevance_llm',
+        on_fail: 'rephrase',
+        configuration: 'Politics & Religion — elections\nCricket scores',
+        fallback_message: 'I can only help with farming questions.',
+      },
+    ],
+    output: [{ type: 'gender_assumption_bias' }],
+  };
+
+  test('turning a rule on reports its spec on the list for its stage', async () => {
+    const onChange = vi.fn();
+    await renderPanel({ onChange });
+
+    turnOn('privacy-protection');
+    turnOn('gender-neutrality');
+
+    const latest = onChange.mock.calls.at(-1)?.[0] as GuardrailSpecs;
+    expect(latest.input).toEqual([{ type: 'pii_remover', entity_types: expect.arrayContaining(['PHONE_NUMBER']) }]);
+    expect(latest.output).toEqual([{ type: 'gender_assumption_bias' }]);
+  });
+
+  test('saved specs switch their rules on and fill in what was picked', async () => {
+    await renderPanel({ value: saved });
+
+    expect(screen.getByTestId('guardrailToggle-privacy-protection')).toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-content-safety')).not.toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-gender-neutrality')).toBeChecked();
+    expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('2 selected');
+
+    fireEvent.click(screen.getByTestId('editTopicsToggle'));
+    // a saved topic matching a suggestion shows that suggestion as already added
+    expect(screen.getByTestId('disallowedTopic-topic-suggest-politics-religion')).toHaveTextContent(
+      'Politics & Religion — elections'
+    );
+    expect(screen.getByText('Cricket scores')).toBeInTheDocument();
+    expect(screen.getByTestId('setReplyInput')).toHaveValue('I can only help with farming questions.');
+  });
+
+  test('editing keeps the params the tab does not show, and specs for checks it does not know', async () => {
+    const onChange = vi.fn();
+    await renderPanel({
+      value: { ...saved, input: [...saved.input, { type: 'future_check', level: 2 }] },
+      onChange,
+    });
+
+    fireEvent.click(screen.getByTestId('editTopicsToggle'));
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'Ask me about crops.' } });
+
+    const latest = onChange.mock.calls.at(-1)?.[0] as GuardrailSpecs;
+    expect(latest.input).toContainEqual({
+      type: 'topic_relevance_llm',
+      on_fail: 'rephrase',
+      configuration: 'Politics & Religion — elections\nCricket scores',
+      fallback_message: 'Ask me about crops.',
+    });
+    expect(latest.input).toContainEqual({ type: 'future_check', level: 2 });
+  });
+
+  test('turning a rule off drops its spec', async () => {
+    const onChange = vi.fn();
+    await renderPanel({ value: saved, onChange });
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-gender-neutrality'));
+
+    expect((onChange.mock.calls.at(-1)?.[0] as GuardrailSpecs).output).toEqual([]);
+  });
+
+  test('new specs from the page (another version, or a discard) reload the rules', async () => {
+    const { rerender } = await renderPanel({ value: saved });
+    expect(screen.getByTestId('guardrailToggle-privacy-protection')).toBeChecked();
+
+    rerender(
+      <MockedProvider mocks={[getGuardrailValidatorsMock()]}>
+        <Guardrails value={EMPTY_GUARDRAIL_SPECS} onChange={vi.fn()} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('guardrailToggle-privacy-protection')).not.toBeChecked());
   });
 });

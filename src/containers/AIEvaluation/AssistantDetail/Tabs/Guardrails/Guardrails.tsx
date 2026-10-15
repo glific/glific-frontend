@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -13,6 +13,7 @@ import type {
   GuardrailAction,
   GuardrailRule,
   GuardrailsPanelProps,
+  GuardrailsProps,
   GuardrailStage,
   GuardrailTier,
   GuardrailValidatorsData,
@@ -22,6 +23,8 @@ import {
   GUARDRAIL_ACTION_LABEL,
   GUARDRAIL_STAGE_COPY,
   GUARDRAIL_TIER_LABEL,
+  rulesWithSpecs,
+  specsFromRules,
 } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import styles from './Guardrails.module.css';
 
@@ -29,7 +32,7 @@ const STAGE_ORDER: GuardrailStage[] = ['incoming', 'reply'];
 const TIER_ORDER: GuardrailTier[] = ['recommended', 'additional'];
 const ACTIONS: GuardrailAction[] = ['fix', 'block'];
 
-export const Guardrails = () => {
+export const Guardrails = ({ value, onChange }: GuardrailsProps) => {
   const { t } = useTranslation();
   const isAiGuardrailEnabled = Boolean(getOrganizationServices('aiGuardrailEnabled'));
 
@@ -41,10 +44,10 @@ export const Guardrails = () => {
     );
   }
 
-  return <GuardrailsLoader />;
+  return <GuardrailsLoader value={value} onChange={onChange} />;
 };
 
-const GuardrailsLoader = () => {
+const GuardrailsLoader = ({ value, onChange }: GuardrailsProps) => {
   const { t } = useTranslation();
   const { data, loading, error } = useQuery<GuardrailValidatorsData>(GET_GUARDRAIL_VALIDATORS);
 
@@ -58,17 +61,35 @@ const GuardrailsLoader = () => {
     );
   }
 
-  return <GuardrailsPanel initialRules={buildGuardrailRules(data.guardrailValidators?.validators ?? [])} />;
+  return (
+    <GuardrailsPanel
+      initialRules={buildGuardrailRules(data.guardrailValidators?.validators ?? [])}
+      value={value}
+      onChange={onChange}
+    />
+  );
 };
 
-export const GuardrailsPanel = ({ initialRules }: GuardrailsPanelProps) => {
+export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPanelProps) => {
   const { t } = useTranslation();
-  const [rules, setRules] = useState<GuardrailRule[]>(initialRules);
+  const [rules, setRules] = useState<GuardrailRule[]>(() => rulesWithSpecs(initialRules, value));
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
   const toggleHowItWorks = () => setHowItWorksOpen((open) => !open);
+  const emitted = useRef(value);
 
-  const updateRule = (id: string, patch: Partial<GuardrailRule>) =>
-    setRules((current) => current.map((rule) => (rule.id === id ? ({ ...rule, ...patch } as GuardrailRule) : rule)));
+  useEffect(() => {
+    if (value === emitted.current) return;
+    emitted.current = value;
+    setRules(rulesWithSpecs(initialRules, value));
+  }, [value]);
+
+  const updateRule = (id: string, patch: Partial<GuardrailRule>) => {
+    const next = rules.map((rule) => (rule.id === id ? ({ ...rule, ...patch } as GuardrailRule) : rule));
+    const specs = specsFromRules(next, value);
+    setRules(next);
+    emitted.current = specs;
+    onChange(specs);
+  };
 
   const renderControl = (rule: GuardrailRule) => {
     if (rule.control.kind === 'detailTypes' && rule.control.groups.length > 0) {

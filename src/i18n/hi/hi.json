@@ -866,7 +866,7 @@
   "Keep editing": "संपादन जारी रखें",
   "Any edits made since your last save will be lost.": "पिछली बार सहेजने के बाद किए गए सभी बदलाव समाप्त हो जाएंगे।",
   "Assistant created successfully": "असिस्टेंट सफलतापूर्वक बनाया गया",
-  "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone.": "प्रॉम्प्ट, मॉडल, सेटिंग्स और नॉलेज बेस को वापस उसी स्थिति में ले जाता है जो संपादन शुरू करने से पहले थी। इसे पूर्ववत नहीं किया जा सकता।",
+  "Reverts the prompt, model, settings, knowledge base and guardrails back to what they were before you started editing. This can't be undone.": "प्रॉम्प्ट, मॉडल, सेटिंग्स, नॉलेज बेस और सुरक्षा नियमों को वापस उसी स्थिति में ले जाता है जो संपादन शुरू करने से पहले थी। इसे पूर्ववत नहीं किया जा सकता।",
   "Untitled assistant": "अनामांकित असिस्टेंट",
   "This assistant uses a legacy knowledge base — its files cannot be added to or downloaded.": "यह असिस्टेंट पुराने नॉलेज बेस पर है — इसमें फ़ाइलें न जोड़ी जा सकती हैं और न डाउनलोड की जा सकती हैं।",
   "This assistant was created before the knowledge base rewrite, so its files cannot be added to or downloaded.": "यह असिस्टेंट नॉलेज बेस के नए रूप से पहले बना था, इसलिए इसमें फ़ाइलें न जोड़ी जा सकती हैं और न डाउनलोड की जा सकती हैं।",
