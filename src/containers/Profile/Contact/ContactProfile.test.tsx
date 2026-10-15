@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK, getContactDetailsQuery, multiple_profile_mock } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 import { MemoryRouter, Route, Routes } from 'react-router';
@@ -47,6 +47,62 @@ describe('contact profile with single profile', () => {
       expect(screen.getByText('Status')).toBeInTheDocument();
       expect(screen.getByText('Collections')).toBeInTheDocument();
     });
+
+    expect(screen.getByText('Identities')).toBeInTheDocument();
+    expect(screen.getByTestId('identity')).toHaveTextContent('WhatsApp919820198765');
+  });
+});
+
+describe('contact profile details for a web-only contact', () => {
+  const webOnlyDetails = getContactDetailsQuery('1', {
+    activeProfile: null,
+    phone: null,
+    maskedPhone: null,
+    identities: [{ id: '2', channel: 'WEB', identifier: 'ravi_web' }],
+  });
+  const mocks = [webOnlyDetails, webOnlyDetails, ...LOGGED_IN_USER_MOCK, ...historyMock];
+
+  test('shows the web identity and no phone value', async () => {
+    render(
+      <MemoryRouter initialEntries={['/contact-profile/1']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Routes>
+            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
+          </Routes>
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(await screen.findByText('Details'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('identity')).toHaveTextContent('Webravi_web');
+    });
+    expect(screen.getByTestId('phone')).toHaveTextContent(/^-$/);
+  });
+});
+
+describe('contact profile details for a staff user', () => {
+  const staffDetails = getContactDetailsQuery('1', { activeProfile: null, identities: [] });
+  const mocks = [staffDetails, staffDetails, ...LOGGED_IN_USER_MOCK, ...historyMock];
+
+  test('hides the identities block when the list is empty', async () => {
+    render(
+      <MemoryRouter initialEntries={['/contact-profile/1']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Routes>
+            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
+          </Routes>
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(await screen.findByText('Details'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Collections')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Identities')).not.toBeInTheDocument();
   });
 });
 

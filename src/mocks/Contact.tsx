@@ -190,10 +190,10 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
     data: {
       contact: {
         contact: {
-          ...attributes,
           name: 'Default User',
           phone: '+919820198765',
           maskedPhone: '+919820198765',
+          identities: [{ id: '1', channel: 'WHATSAPP', identifier: '919820198765' }],
           lastMessageAt: date.toISOString(),
           groups: [
             {
@@ -209,6 +209,7 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
           optinMethod: 'BSP',
           optoutMethod: null,
           settings: {},
+          ...attributes,
         },
       },
     },

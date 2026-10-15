@@ -1260,5 +1260,6 @@
   "Channel cannot be changed later after creation": "Channel cannot be changed later after creation",
   "This flow was not published": "This flow was not published",
   "Go back and edit": "Go back and edit",
-  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish."
+  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.",
+  "Identities": "Identities"
 }
