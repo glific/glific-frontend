@@ -96,12 +96,32 @@ describe('a rolled-out org', () => {
   });
 
   describe('the detail types a Privacy Protection check looks for', () => {
-    test('starts collapsed, with everything selected', async () => {
+    test('starts collapsed, with what the backend turns on by default', async () => {
       await renderPanel();
       turnOn('privacy-protection');
 
       expect(screen.queryByTestId('detailTypesEditorBody')).not.toBeInTheDocument();
-      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('all 15 selected');
+      // 15 kinds in the schema, 12 of them in its default
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('12 selected');
+    });
+
+    test('every kind in the schema is an option, grouped and named, ticked as its default says', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+
+      expect(screen.getAllByTestId(/^detailOption-/)).toHaveLength(15);
+      // one list, no headings — the ticked kinds first
+      expect(screen.queryByText(/General details|Indian government IDs/)).not.toBeInTheDocument();
+      const options = screen.getAllByTestId(/^detailOption-/);
+      expect(options.slice(0, 12).every((option) => option.getAttribute('aria-pressed') === 'true')).toBe(true);
+      expect(options.slice(12).every((option) => option.getAttribute('aria-pressed') === 'false')).toBe(true);
+
+      expect(screen.getByTestId('detailOption-PHONE_NUMBER')).toHaveTextContent('Phone number');
+      expect(screen.getByTestId('detailOption-PHONE_NUMBER')).toHaveAttribute('aria-pressed', 'true');
+      // left out of the default, so left unticked
+      expect(screen.getByTestId('detailOption-PERSON')).toHaveTextContent('Name');
+      expect(screen.getByTestId('detailOption-PERSON')).toHaveAttribute('aria-pressed', 'false');
     });
 
     test('unselecting one updates the count', async () => {
@@ -109,23 +129,92 @@ describe('a rolled-out org', () => {
       turnOn('privacy-protection');
       fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
 
-      fireEvent.click(screen.getByTestId('detailOption-name'));
+      fireEvent.click(screen.getByTestId('detailOption-PHONE_NUMBER'));
 
-      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('14 selected');
-      expect(screen.getByTestId('detailOption-name')).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('11 selected');
+      expect(screen.getByTestId('detailOption-PHONE_NUMBER')).toHaveAttribute('aria-pressed', 'false');
     });
 
-    test('Clear empties a group, Select all brings it back', async () => {
+    test('with no options in its config, Privacy Protection has nothing to edit', async () => {
+      renderGuardrails([getGuardrailValidatorsMock([{ type: 'pii_remover', link: null }])]);
+      await screen.findByTestId('guardrailRule-privacy-protection');
+      turnOn('privacy-protection');
+
+      expect(screen.queryByTestId('editDetailTypesToggle')).not.toBeInTheDocument();
+    });
+
+    test('Clear unticks everything, Select all ticks it all', async () => {
       await renderPanel();
       turnOn('privacy-protection');
       fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
 
-      fireEvent.click(screen.getAllByText('Clear', { selector: 'button' })[0]);
-      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('5 selected');
+      fireEvent.click(screen.getByText('Clear', { selector: 'button' }));
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('0 selected');
+      expect(screen.getByText('Nothing in this group is checked.')).toBeInTheDocument();
 
-      fireEvent.click(screen.getAllByText('Select all', { selector: 'button' })[0]);
+      fireEvent.click(screen.getByText('Select all', { selector: 'button' }));
       expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('all 15 selected');
     });
+
+    test('the toggles read "Configure …" for every check that has one', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      turnOn('scope-control');
+
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('Configure');
+      expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('Configure');
+    });
+
+    test('Content Safety and Gender Neutrality have nothing to configure', async () => {
+      await renderPanel();
+      turnOn('content-safety');
+      turnOn('gender-neutrality');
+
+      for (const ruleId of ['content-safety', 'gender-neutrality']) {
+        expect(
+          within(screen.getByTestId(`guardrailRule-${ruleId}`)).queryByRole('button', { name: /Configure/ })
+        ).toBeNull();
+      }
+    });
+  });
+
+  describe('whether a check fixes or blocks comes from its on_fail', () => {
+    test('every check the backend sends today defaults to "fix", so each says it fixes', async () => {
+      await renderPanel();
+
+      for (const ruleId of ['privacy-protection', 'content-safety', 'scope-control', 'gender-neutrality']) {
+        expect(screen.getByTestId(`guardrailRule-${ruleId}`)).toHaveTextContent('Fixes & passes on');
+      }
+    });
+
+    test('an "exception" default makes it block', async () => {
+      renderGuardrails([
+        getGuardrailValidatorsMock([
+          { type: 'topic_relevance_llm', link: null, config: { properties: { on_fail: { default: 'exception' } } } },
+        ]),
+      ]);
+
+      expect(await screen.findByTestId('guardrailRule-scope-control')).toHaveTextContent('Blocks — sends set reply');
+    });
+  });
+
+  test('Scope Control starts its set reply from the fallback message in its config', async () => {
+    renderGuardrails([
+      getGuardrailValidatorsMock([
+        {
+          type: 'topic_relevance_llm',
+          link: null,
+          config: {
+            properties: { fallback_message: { default: 'Main sirf sehat ke sawalon mein madad karti hoon.' } },
+          },
+        },
+      ]),
+    ]);
+    await screen.findByTestId('guardrailRule-scope-control');
+    turnOn('scope-control');
+    fireEvent.click(screen.getByTestId('editTopicsToggle'));
+
+    expect(screen.getByTestId('setReplyInput')).toHaveValue('Main sirf sehat ke sawalon mein madad karti hoon.');
   });
 
   describe('the topics a Scope Control check blocks', () => {
@@ -342,7 +431,7 @@ describe('a rolled-out org', () => {
     });
 
     test('a validator without a link keeps its Info tooltip, but Info opens nothing', async () => {
-      renderGuardrails([getGuardrailValidatorsMock([{ type: 'profanity_free', link: null }])]);
+      renderGuardrails([getGuardrailValidatorsMock([{ type: 'uli_slur_match', link: null }])]);
       await screen.findByTestId('guardrailRule-content-safety');
 
       const info = screen.getByTestId('guardrailInfo-content-safety');
@@ -364,7 +453,7 @@ describe('a rolled-out org', () => {
   describe('a stage or tier with nothing in it', () => {
     const onlyIncomingRule: GuardrailRule = {
       id: 'solo-rule',
-      type: 'profanity_free',
+      type: 'uli_slur_match',
       link: null,
       stage: 'incoming',
       tier: 'additional',

@@ -55,7 +55,7 @@ export const DetailTypesEditor = ({ groups, onChange }: DetailTypesEditorProps) 
         data-testid="editDetailTypesToggle"
       >
         <EditOutlinedIcon className={styles.EditIcon} />
-        {t('Edit detail types')}
+        {t('Configure')}
         <span className={styles.EditSummary}>· {summary}</span>
         {expanded ? <ExpandMoreIcon className={styles.EditCaret} /> : <ChevronRightIcon className={styles.EditCaret} />}
       </button>
@@ -74,9 +74,11 @@ export const DetailTypesEditor = ({ groups, onChange }: DetailTypesEditorProps) 
             return (
               <div className={styles.DetailGroup} key={group.id}>
                 <div className={styles.DetailGroupHeader}>
-                  <span className={styles.DetailGroupLabel}>
-                    {group.label} ({group.options.length})
-                  </span>
+                  {group.label && (
+                    <span className={styles.DetailGroupLabel}>
+                      {group.label} ({group.options.length})
+                    </span>
+                  )}
                   <span className={styles.DetailGroupActions}>
                     <button type="button" onClick={() => setGroupSelection(group.id, true)}>
                       {t('Select all')}

@@ -1,5 +1,8 @@
 import type {
   GuardrailAction,
+  GuardrailControl,
+  GuardrailDetailGroup,
+  GuardrailDetailOption,
   GuardrailRule,
   GuardrailStage,
   GuardrailTier,
@@ -27,7 +30,7 @@ export const GUARDRAIL_TIER_LABEL = {
   additional: 'Additional',
 } as const satisfies Record<GuardrailTier, string>;
 
-const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link'>[] = [
+const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link' | 'action'>[] = [
   {
     id: 'privacy-protection',
     type: 'pii_remover',
@@ -35,49 +38,16 @@ const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link'>[] = [
     tier: 'recommended',
     title: 'Privacy Protection',
     description: 'Hides personal details like phone numbers, addresses and ID numbers, so they are not saved or shown.',
-    action: 'fix',
     enabled: false,
-    control: {
-      kind: 'detailTypes',
-      groups: [
-        {
-          id: 'general',
-          label: 'General details',
-          options: [
-            { id: 'name', label: 'Name', selected: true },
-            { id: 'phone', label: 'Phone number', selected: true },
-            { id: 'email', label: 'Email address', selected: true },
-            { id: 'location', label: 'Location / address', selected: true },
-            { id: 'web-link', label: 'Web link', selected: true },
-            { id: 'credit-card', label: 'Credit card number', selected: true },
-            { id: 'ip-address', label: 'IP address', selected: true },
-            { id: 'bank-account', label: 'Bank account (IBAN)', selected: true },
-            { id: 'medical-license', label: 'Medical license number', selected: true },
-            { id: 'affiliation', label: 'Nationality / religious / political group', selected: true },
-          ],
-        },
-        {
-          id: 'indian-ids',
-          label: 'Indian government IDs',
-          options: [
-            { id: 'aadhaar', label: 'Aadhaar number', selected: true },
-            { id: 'pan', label: 'PAN card number', selected: true },
-            { id: 'passport', label: 'Passport number', selected: true },
-            { id: 'voter-id', label: 'Voter ID number', selected: true },
-            { id: 'vehicle-registration', label: 'Vehicle registration number', selected: true },
-          ],
-        },
-      ],
-    },
+    control: { kind: 'detailTypes', groups: [] },
   },
   {
     id: 'content-safety',
-    type: 'profanity_free',
+    type: 'uli_slur_match',
     stage: 'incoming',
     tier: 'recommended',
     title: 'Content Safety',
     description: 'Removes abusive or hurtful words from messages.',
-    action: 'fix',
     enabled: false,
     control: { kind: 'none' },
   },
@@ -88,7 +58,6 @@ const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link'>[] = [
     tier: 'recommended',
     title: 'Scope Control',
     description: "The assistant won't answer questions about the topics you list here.",
-    action: 'block',
     enabled: false,
     control: {
       kind: 'topics',
@@ -127,14 +96,145 @@ const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link'>[] = [
     title: 'Gender Neutrality',
     description:
       "Changes words that guess someone's gender, using words that work for any gender in Hindi and English.",
-    action: 'fix',
     enabled: false,
     control: { kind: 'none' },
   },
 ];
 
+const PII_ENTITY_LABEL: Record<string, string> = {
+  PERSON: 'Name',
+  PHONE_NUMBER: 'Phone number',
+  EMAIL_ADDRESS: 'Email address',
+  LOCATION: 'Location / address',
+  URL: 'Web link',
+  CREDIT_CARD: 'Credit card number',
+  IP_ADDRESS: 'IP address',
+  IBAN_CODE: 'Bank account (IBAN)',
+  MEDICAL_LICENSE: 'Medical license number',
+  NRP: 'Nationality / religious / political group',
+  IN_AADHAAR: 'Aadhaar number',
+  IN_PAN: 'PAN card number',
+  IN_PASSPORT: 'Passport number',
+  IN_VOTER: 'Voter ID number',
+  IN_VEHICLE_REGISTRATION: 'Vehicle registration number',
+};
+
+const humanize = (code: string) =>
+  code
+    .toLowerCase()
+    .split('_')
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(' ');
+
+type JsonObject = Record<string, unknown>;
+
+const asObject = (value: unknown): JsonObject | null =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as JsonObject) : null;
+
+const stringsIn = (value: unknown) =>
+  Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : null;
+
+/** the backend sends a validator's config schema as a JSON string; anything unreadable is null */
+const readSchema = (config: unknown): JsonObject | null => {
+  if (typeof config !== 'string') return asObject(config);
+  try {
+    return asObject(JSON.parse(config));
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * A config property, with a nullable `anyOf: [X, { type: "null" }]` unwrapped to X — keeping the
+ * property's own title and default, which sit outside the `anyOf`.
+ */
+const propertyOf = (schema: JsonObject | null, name: string): JsonObject | null => {
+  const property = asObject(asObject(schema?.properties)?.[name]);
+  const variants = Array.isArray(property?.anyOf) ? property.anyOf.map(asObject) : [];
+  const inner = variants.find((variant) => variant && variant.type !== 'null');
+  return inner ? { ...inner, ...property } : property;
+};
+
+/**
+ * The values a property may take. The enum sits on the property, on its array `items`, or behind
+ * a `"#/$defs/…"` reference from either.
+ */
+const enumOf = (schema: JsonObject | null, name: string): string[] => {
+  const property = propertyOf(schema, name);
+  const source = asObject(property?.items) ?? property;
+  const ref = typeof source?.$ref === 'string' ? source.$ref.split('/').pop() : undefined;
+  return stringsIn(source?.enum) ?? stringsIn(asObject(asObject(schema?.$defs)?.[ref ?? ''])?.enum) ?? [];
+};
+
+/**
+ * Builds the Privacy Protection detail types from the `pii_remover` config schema: every value of
+ * its `entity_types` enum is an option, ticked when it's in the schema's default, with the ticked
+ * ones listed first. Anything unreadable gives no group, and so no editor.
+ */
+export const piiDetailGroups = (config: unknown): GuardrailDetailGroup[] => {
+  const schema = readSchema(config);
+  const codes = enumOf(schema, 'entity_types');
+  if (codes.length === 0) return [];
+
+  // no default means nothing narrows it down, so every kind is checked
+  const defaults = stringsIn(propertyOf(schema, 'entity_types')?.default);
+  const options: GuardrailDetailOption[] = codes.map((code) => ({
+    id: code,
+    label: PII_ENTITY_LABEL[code] ?? humanize(code),
+    selected: defaults ? defaults.includes(code) : true,
+  }));
+
+  return [
+    {
+      id: 'entity-types',
+      label: '',
+      options: [...options.filter((option) => option.selected), ...options.filter((option) => !option.selected)],
+    },
+  ];
+};
+
+// "exception" and "rephrase" stop the message and answer the user instead; "fix" lets it through
+const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
+
+/**
+ * Whether a validator fixes the message or blocks it, from its default `on_fail`. Without one —
+ * or with a value it doesn't know — it is taken to fix.
+ */
+export const actionFromConfig = (config: unknown): GuardrailAction => {
+  const onFail = propertyOf(readSchema(config), 'on_fail')?.default;
+  return typeof onFail === 'string' && BLOCKING_ON_FAIL.includes(onFail) ? 'block' : 'fix';
+};
+
+/** Scope Control's set reply starts as the schema's default `fallback_message`, empty when it has none. */
+export const scopeFallbackMessage = (config: unknown) => {
+  const fallback = propertyOf(readSchema(config), 'fallback_message')?.default;
+  return typeof fallback === 'string' ? fallback : '';
+};
+
+// fills a rule's editor with what its validator's config schema offers
+const controlFromConfig = (control: GuardrailControl, config: unknown): GuardrailControl => {
+  if (control.kind === 'detailTypes') return { kind: 'detailTypes', groups: piiDetailGroups(config) };
+  if (control.kind === 'topics') return { ...control, setReply: scopeFallbackMessage(config) };
+  return control;
+};
+
+/**
+ * One rule per validator the backend returned, in the tab's own order. A validator the backend
+ * doesn't return isn't shown; one the tab doesn't know how to present is skipped, since there would
+ * be no title or description to show for it.
+ */
 export const buildGuardrailRules = (validators: GuardrailValidator[]): GuardrailRule[] =>
   GUARDRAIL_PRESENTATION.flatMap((rule) => {
     const validator = validators.find((entry) => entry.type === rule.type);
-    return validator ? [{ ...rule, link: validator.link }] : [];
+    if (!validator) return [];
+
+    return [
+      {
+        ...rule,
+        link: validator.link,
+        action: actionFromConfig(validator.config),
+        control: controlFromConfig(rule.control, validator.config),
+      },
+    ];
   });

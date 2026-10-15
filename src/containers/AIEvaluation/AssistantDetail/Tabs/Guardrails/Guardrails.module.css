@@ -393,12 +393,13 @@
   align-items: center;
   gap: var(--app-space-2xs);
   font-size: var(--app-font-size-xs);
-  color: var(--app-color-text-tertiary);
+  font-weight: 600;
+  color: var(--app-color-brand-primary);
   text-decoration: none;
 }
 
 a.InfoLink:hover {
-  color: var(--app-color-brand-primary);
+  text-decoration: underline;
 }
 
 .InfoIcon {
@@ -477,6 +478,7 @@ a.InfoLink:hover {
 .DetailGroupActions {
   display: flex;
   gap: var(--app-space-sm);
+  margin-left: auto;
   font-size: var(--app-font-size-xs);
 
   button {
@@ -541,6 +543,12 @@ a.InfoLink:hover {
 .DetailGroupNote {
   font-size: var(--app-font-size-xs);
   color: var(--app-color-attention);
+}
+
+.TopicsField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
 }
 
 .TopicsLabelRow {

@@ -77,7 +77,7 @@ export const GuardrailsPanel = ({ initialRules }: GuardrailsPanelProps) => {
     setRules((current) => current.map((rule) => (rule.id === id ? ({ ...rule, ...patch } as GuardrailRule) : rule)));
 
   const renderControl = (rule: GuardrailRule) => {
-    if (rule.control.kind === 'detailTypes') {
+    if (rule.control.kind === 'detailTypes' && rule.control.groups.length > 0) {
       return (
         <DetailTypesEditor
           groups={rule.control.groups}

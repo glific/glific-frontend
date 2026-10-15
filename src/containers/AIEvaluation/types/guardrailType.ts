@@ -1,6 +1,6 @@
 export type GuardrailValidatorType =
   | 'pii_remover'
-  | 'profanity_free'
+  | 'uli_slur_match'
   | 'topic_relevance_llm'
   | 'gender_assumption_bias';
 

@@ -60,77 +60,79 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
         data-testid="editTopicsToggle"
       >
         <EditOutlinedIcon className={styles.EditIcon} />
-        {t('Edit topics')}
+        {t('Configure')}
         <span className={styles.EditSummary}>· {t('{{count}} added', { count: disallowedTopics.length })}</span>
         {expanded ? <ExpandMoreIcon className={styles.EditCaret} /> : <ChevronRightIcon className={styles.EditCaret} />}
       </button>
 
       {expanded && (
         <div className={styles.EditorBody} data-testid="topicsEditorBody">
-          <div className={styles.TopicsLabelRow}>
-            <span className={styles.TopicsLabel}>{t('Disallowed topics')}</span>
-            <Tooltip
-              title={t(
-                'The assistant refuses to answer anything matching a topic listed here, and sends the reply below instead.'
-              )}
-              placement="top"
-            >
-              <InfoOutlinedIcon className={styles.InfoIcon} data-testid="disallowedTopicsHint" />
-            </Tooltip>
-          </div>
-
-          <div className={styles.TopicsBox}>
-            {disallowedTopics.map((topic) => (
-              <span className={styles.TopicChip} key={topic.id} data-testid={`disallowedTopic-${topic.id}`}>
-                {topic.description ? `${topic.label} — ${topic.description}` : topic.label}
-                <button
-                  type="button"
-                  className={styles.TopicRemove}
-                  onClick={() => removeTopic(topic.id)}
-                  aria-label={t('Remove {{topic}}', { topic: topic.label })}
-                >
-                  <CloseIcon className={styles.TopicRemoveIcon} />
-                </button>
-              </span>
-            ))}
-
-            {/* the input lives inside the same box as the chips it adds to */}
-            <div className={styles.TopicInputRow}>
-              <Input
-                type="text"
-                placeholder={t('Type a topic to block… e.g. Politics — elections, parties, candidates')}
-                field={{
-                  name: 'newTopic',
-                  value: draft,
-                  onBlur: () => {},
-                }}
-                onChange={setDraft}
-                inputProp={{
-                  'data-testid': 'newTopicInput',
-                  onKeyDown: (event: React.KeyboardEvent) => {
-                    if (event.key === 'Enter') {
-                      event.preventDefault();
-                      addFromDraft();
-                    }
-                  },
-                }}
-              />
-              <Button
-                variant="outlined"
-                className={styles.TopicAddButton}
-                onClick={addFromDraft}
-                disabled={!draft.trim()}
-                data-testid="addTopicButton"
+          <div className={styles.TopicsField}>
+            <div className={styles.TopicsLabelRow}>
+              <span className={styles.TopicsLabel}>{t('Disallowed topics')}</span>
+              <Tooltip
+                title={t(
+                  'The assistant refuses to answer anything matching a topic listed here, and sends the reply below instead.'
+                )}
+                placement="top"
               >
-                <AddIcon className={styles.TopicAddIcon} />
-                {t('Add')}
-              </Button>
+                <InfoOutlinedIcon className={styles.InfoIcon} data-testid="disallowedTopicsHint" />
+              </Tooltip>
             </div>
+
+            <div className={styles.TopicsBox}>
+              {disallowedTopics.map((topic) => (
+                <span className={styles.TopicChip} key={topic.id} data-testid={`disallowedTopic-${topic.id}`}>
+                  {topic.description ? `${topic.label} — ${topic.description}` : topic.label}
+                  <button
+                    type="button"
+                    className={styles.TopicRemove}
+                    onClick={() => removeTopic(topic.id)}
+                    aria-label={t('Remove {{topic}}', { topic: topic.label })}
+                  >
+                    <CloseIcon className={styles.TopicRemoveIcon} />
+                  </button>
+                </span>
+              ))}
+
+              {/* the input lives inside the same box as the chips it adds to */}
+              <div className={styles.TopicInputRow}>
+                <Input
+                  type="text"
+                  placeholder={t('Type a topic to block… e.g. Politics — elections, parties, candidates')}
+                  field={{
+                    name: 'newTopic',
+                    value: draft,
+                    onBlur: () => {},
+                  }}
+                  onChange={setDraft}
+                  inputProp={{
+                    'data-testid': 'newTopicInput',
+                    onKeyDown: (event: React.KeyboardEvent) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        addFromDraft();
+                      }
+                    },
+                  }}
+                />
+                <Button
+                  variant="outlined"
+                  className={styles.TopicAddButton}
+                  onClick={addFromDraft}
+                  disabled={!draft.trim()}
+                  data-testid="addTopicButton"
+                >
+                  <AddIcon className={styles.TopicAddIcon} />
+                  {t('Add')}
+                </Button>
+              </div>
+            </div>
+            <div className={styles.TopicsHelper}>{t('Press Enter or click + Add after typing.')}</div>
           </div>
-          <div className={styles.TopicsHelper}>{t('Press Enter or click + Add after typing.')}</div>
 
           {suggestedTopics.length > 0 && (
-            <>
+            <div className={styles.TopicsField}>
               <div className={styles.TopicsLabel}>{t('Suggested — click to add')}</div>
               <div className={styles.SuggestionRow}>
                 {suggestedTopics.map((suggestion) => {
@@ -160,24 +162,26 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
                   );
                 })}
               </div>
-            </>
+            </div>
           )}
 
-          <div className={styles.TopicsLabel}>{t('Set reply — sent when this guardrail is flagged')}</div>
-          <Input
-            type="text"
-            textArea
-            rows={2}
-            placeholder={t('What should the assistant say when it blocks a message on this topic?')}
-            field={{ name: 'setReply', value: setReply, onBlur: () => {} }}
-            onChange={(text: string) => onChange({ ...value, setReply: text })}
-            inputProp={{ 'data-testid': 'setReplyInput' }}
-          />
-          <div className={styles.TopicsLanguageNote}>
-            <LanguageIcon className={styles.LanguageIcon} />
-            {t(
-              'Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).'
-            )}
+          <div className={styles.TopicsField}>
+            <div className={styles.TopicsLabel}>{t('Set reply — sent when this guardrail is flagged')}</div>
+            <Input
+              type="text"
+              textArea
+              rows={2}
+              placeholder={t('What should the assistant say when it blocks a message on this topic?')}
+              field={{ name: 'setReply', value: setReply, onBlur: () => {} }}
+              onChange={(text: string) => onChange({ ...value, setReply: text })}
+              inputProp={{ 'data-testid': 'setReplyInput' }}
+            />
+            <div className={styles.TopicsLanguageNote}>
+              <LanguageIcon className={styles.LanguageIcon} />
+              {t(
+                'Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).'
+              )}
+            </div>
           </div>
         </div>
       )}
