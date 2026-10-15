@@ -14,6 +14,8 @@ export const GUARDRAIL_ACTION_LABEL = {
   block: 'Blocks — sends set reply',
 } as const satisfies Record<GuardrailAction, string>;
 
+const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
+
 export const GUARDRAIL_STAGE_COPY = {
   incoming: {
     title: 'Guardrails on incoming messages',
@@ -135,7 +137,6 @@ const asObject = (value: unknown): JsonObject | null =>
 const stringsIn = (value: unknown) =>
   Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : null;
 
-/** the backend sends a validator's config schema as a JSON string; anything unreadable is null */
 const readSchema = (config: unknown): JsonObject | null => {
   if (typeof config !== 'string') return asObject(config);
   try {
@@ -167,17 +168,11 @@ const enumOf = (schema: JsonObject | null, name: string): string[] => {
   return stringsIn(source?.enum) ?? stringsIn(asObject(asObject(schema?.$defs)?.[ref ?? ''])?.enum) ?? [];
 };
 
-/**
- * Builds the Privacy Protection detail types from the `pii_remover` config schema: every value of
- * its `entity_types` enum is an option, ticked when it's in the schema's default, with the ticked
- * ones listed first. Anything unreadable gives no group, and so no editor.
- */
 export const piiDetailGroups = (config: unknown): GuardrailDetailGroup[] => {
   const schema = readSchema(config);
   const codes = enumOf(schema, 'entity_types');
   if (codes.length === 0) return [];
 
-  // no default means nothing narrows it down, so every kind is checked
   const defaults = stringsIn(propertyOf(schema, 'entity_types')?.default);
   const options: GuardrailDetailOption[] = codes.map((code) => ({
     id: code,
@@ -188,42 +183,27 @@ export const piiDetailGroups = (config: unknown): GuardrailDetailGroup[] => {
   return [
     {
       id: 'entity-types',
-      label: '',
       options: [...options.filter((option) => option.selected), ...options.filter((option) => !option.selected)],
     },
   ];
 };
 
-// "exception" and "rephrase" stop the message and answer the user instead; "fix" lets it through
-const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
-
-/**
- * Whether a validator fixes the message or blocks it, from its default `on_fail`. Without one —
- * or with a value it doesn't know — it is taken to fix.
- */
 export const actionFromConfig = (config: unknown): GuardrailAction => {
   const onFail = propertyOf(readSchema(config), 'on_fail')?.default;
   return typeof onFail === 'string' && BLOCKING_ON_FAIL.includes(onFail) ? 'block' : 'fix';
 };
 
-/** Scope Control's set reply starts as the schema's default `fallback_message`, empty when it has none. */
 export const scopeFallbackMessage = (config: unknown) => {
   const fallback = propertyOf(readSchema(config), 'fallback_message')?.default;
   return typeof fallback === 'string' ? fallback : '';
 };
 
-// fills a rule's editor with what its validator's config schema offers
 const controlFromConfig = (control: GuardrailControl, config: unknown): GuardrailControl => {
   if (control.kind === 'detailTypes') return { kind: 'detailTypes', groups: piiDetailGroups(config) };
   if (control.kind === 'topics') return { ...control, setReply: scopeFallbackMessage(config) };
   return control;
 };
 
-/**
- * One rule per validator the backend returned, in the tab's own order. A validator the backend
- * doesn't return isn't shown; one the tab doesn't know how to present is skipped, since there would
- * be no title or description to show for it.
- */
 export const buildGuardrailRules = (validators: GuardrailValidator[]): GuardrailRule[] =>
   GUARDRAIL_PRESENTATION.flatMap((rule) => {
     const validator = validators.find((entry) => entry.type === rule.type);

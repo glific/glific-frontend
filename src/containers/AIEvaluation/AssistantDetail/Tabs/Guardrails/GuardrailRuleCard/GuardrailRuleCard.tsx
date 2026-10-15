@@ -1,30 +1,17 @@
-import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import BlockIcon from '@mui/icons-material/Block';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Switch } from 'components/UI/Switch/Switch';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
-import type { GuardrailAction } from 'containers/AIEvaluation/types/guardrailType';
-import { GUARDRAIL_ACTION_LABEL } from './guardrailsData';
-import styles from './Guardrails.module.css';
+import type { GuardrailAction, GuardrailRuleCardProps } from 'containers/AIEvaluation/types/guardrailType';
+import { GUARDRAIL_ACTION_LABEL } from 'containers/AIEvaluation/utils/guardrails/guardrails';
+import styles from './GuardrailRuleCard.module.css';
 
 const ACTION_ICON: Record<GuardrailAction, typeof AutorenewIcon> = {
   fix: AutorenewIcon,
   block: BlockIcon,
 };
-
-export interface GuardrailRuleCardProps {
-  id: string;
-  number: number;
-  title: string;
-  description: string;
-  link: string | null;
-  action: GuardrailAction;
-  enabled: boolean;
-  onToggle: (enabled: boolean) => void;
-  children?: ReactNode;
-}
 
 export const GuardrailRuleCard = ({
   id,

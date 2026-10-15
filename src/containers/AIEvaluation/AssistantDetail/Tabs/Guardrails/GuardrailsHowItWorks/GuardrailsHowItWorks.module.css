@@ -1,0 +1,146 @@
+.HowItWorks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+}
+
+.FlowCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg);
+  border: 1px solid var(--app-color-border);
+  border-left-width: 3px;
+  border-radius: var(--app-radius-lg);
+}
+
+.FlowCard.fix {
+  border-left-color: var(--app-color-brand-primary);
+}
+
+.FlowCard.block {
+  border-left-color: var(--app-color-attention-strong);
+}
+
+.FlowHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--app-space-sm);
+}
+
+.FlowTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  font-weight: 700;
+}
+
+.FlowCard.fix .FlowTitle {
+  color: var(--app-color-brand-primary);
+}
+
+.FlowCard.block .FlowTitle {
+  color: var(--app-color-attention-strong);
+}
+
+.FlowTitleIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.FlowDescription {
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.FlowSteps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--app-space-lg);
+}
+
+.FlowStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-space-sm);
+  width: 8rem;
+  text-align: center;
+}
+
+.FlowStepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--app-color-gray-secondary);
+  color: var(--app-color-text-tertiary);
+}
+
+.FlowStepIcon svg {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+}
+
+.FlowStepLabel {
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  color: var(--app-color-text-primary);
+}
+
+.FlowCard.fix .FlowStep.action .FlowStepIcon {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 12%);
+  color: var(--app-color-brand-primary);
+}
+
+.FlowCard.fix .FlowStep.action .FlowStepLabel {
+  color: var(--app-color-brand-primary);
+}
+
+.FlowCard.block .FlowStep.action .FlowStepIcon {
+  background-color: rgb(var(--app-color-amber-secondary-rgb) / 14%);
+  color: var(--app-color-attention-strong);
+}
+
+.FlowCard.block .FlowStep.action .FlowStepLabel {
+  color: var(--app-color-attention-strong);
+}
+
+.FlowStep.skipped {
+  opacity: 0.5;
+}
+
+.FlowStep.skipped .FlowStepLabel {
+  text-decoration: line-through;
+}
+
+.FlowArrow {
+  margin-top: var(--app-space-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.FlowStopped {
+  display: flex;
+  align-items: center;
+  width: 2.5rem;
+  justify-content: center;
+  border-top: 1px dashed var(--app-color-error);
+  margin-top: 1.25rem;
+}
+
+.FlowStoppedIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+  margin-top: -0.5rem;
+  background-color: var(--app-color-surface-raised);
+  color: var(--app-color-error);
+}
+
+.HowItWorksNote {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}

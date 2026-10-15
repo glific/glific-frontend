@@ -1,5 +1,5 @@
 import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails';
-import { actionFromConfig, piiDetailGroups, scopeFallbackMessage } from './guardrailsData';
+import { actionFromConfig, piiDetailGroups, scopeFallbackMessage } from './guardrails';
 
 describe('piiDetailGroups', () => {
   test('reads every kind into one list, ticked as the default says, ticked ones first', () => {
@@ -10,7 +10,6 @@ describe('piiDetailGroups', () => {
     expect(options).toHaveLength(15);
     expect(options.filter((option) => option.selected)).toHaveLength(12);
 
-    // the 12 in the default come before the 3 left out of it
     expect(options.slice(0, 12).every((option) => option.selected)).toBe(true);
     expect(options.slice(12).map((option) => option.id)).toEqual(['LOCATION', 'NRP', 'PERSON']);
     expect(piiDetailGroups(JSON.stringify(PII_REMOVER_CONFIG))).toEqual(groups);

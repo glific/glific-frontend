@@ -13,8 +13,8 @@ import type {
   GuardrailFlowStep,
   GuardrailFlowStepIcon,
 } from 'containers/AIEvaluation/types/guardrailType';
-import { GUARDRAIL_ACTION_LABEL } from './guardrailsData';
-import styles from './Guardrails.module.css';
+import { GUARDRAIL_ACTION_LABEL } from 'containers/AIEvaluation/utils/guardrails/guardrails';
+import styles from './GuardrailsHowItWorks.module.css';
 
 const STEP_ICON = {
   message: ChatBubbleOutlineIcon,

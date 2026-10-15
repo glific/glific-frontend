@@ -25,8 +25,6 @@ test('cannot be flipped while disabled', async () => {
   const input = screen.getByTestId('mySwitch');
   expect(input).toBeDisabled();
 
-  // MUI drops pointer-events on a disabled control, so user-event itself refuses the click —
-  // which is the real browser behaviour this is meant to prove
   await expect(user.click(input)).rejects.toThrow('pointer-events: none');
   expect(onChange).not.toHaveBeenCalled();
 });

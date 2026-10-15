@@ -1,0 +1,87 @@
+.EditorIntro {
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.DetailGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+}
+
+.DetailGroupHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--app-space-sm);
+}
+
+.DetailGroupActions {
+  display: flex;
+  gap: var(--app-space-sm);
+  margin-left: auto;
+  font-size: var(--app-font-size-xs);
+
+  button {
+    all: unset;
+    cursor: pointer;
+    color: var(--app-color-brand-primary);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}
+
+.DetailOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-sm);
+}
+
+.DetailOption {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  color: var(--app-color-text-primary);
+  font-family: inherit;
+  font-size: var(--app-font-size-sm);
+  text-align: left;
+  white-space: nowrap;
+  min-width: 10rem;
+  cursor: pointer;
+}
+
+.DetailOptionSelected {
+  border-color: var(--app-color-border-brand);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 6%);
+}
+
+.DetailOptionBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--app-color-border);
+}
+
+.DetailOptionSelected .DetailOptionBox {
+  border-color: var(--app-color-brand-primary);
+  background-color: var(--app-color-brand-primary);
+}
+
+.DetailOptionCheck {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--app-color-white);
+}
+
+.DetailGroupNote {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-attention);
+}

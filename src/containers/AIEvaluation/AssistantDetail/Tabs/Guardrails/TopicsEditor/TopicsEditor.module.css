@@ -1,0 +1,159 @@
+.InfoIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.TopicsField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+}
+
+.TopicsLabelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+}
+
+.TopicsLabel {
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-color-attention-strong);
+}
+
+.TopicsBox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+}
+
+.TopicChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  background-color: rgb(var(--app-color-amber-secondary-rgb) / 14%);
+  color: var(--app-color-attention-strong);
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.TopicRemove {
+  all: unset;
+  display: flex;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--app-color-text-tertiary);
+}
+
+.TopicRemoveIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.TopicInputRow {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+
+  > div:first-child {
+    flex: 1;
+  }
+}
+
+.TopicInputRow fieldset {
+  border: none;
+}
+
+.TopicInputRow input {
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  font-size: var(--app-font-size-sm);
+}
+
+.TopicAddButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-lg) !important;
+  min-width: 0 !important;
+  border-radius: var(--app-radius-pill) !important;
+  border-color: var(--app-color-border-brand) !important;
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%) !important;
+  color: var(--app-color-brand-primary) !important;
+  font-size: var(--app-font-size-xs) !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+}
+
+.TopicAddButton:disabled {
+  opacity: 0.5;
+}
+
+.TopicAddIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.TopicsHelper {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.SuggestionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-sm);
+}
+
+.Suggestion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border: 1px solid var(--app-color-border-brand);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-surface-raised);
+  color: var(--app-color-brand-primary);
+  font-family: inherit;
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.SuggestionAdded {
+  border-color: var(--app-color-border);
+  color: var(--app-color-text-tertiary);
+  cursor: default;
+}
+
+.SuggestionIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.TopicsLanguageNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--app-space-2xs);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.LanguageIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}

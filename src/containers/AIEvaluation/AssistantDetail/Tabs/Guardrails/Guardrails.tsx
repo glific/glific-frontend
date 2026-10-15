@@ -8,13 +8,11 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_GUARDRAIL_VALIDATORS } from 'graphql/queries/Guardrails';
 import { getOrganizationServices } from 'services/AuthService';
-import { DetailTypesEditor } from './DetailTypesEditor';
-import { GuardrailRuleCard } from './GuardrailRuleCard';
-import { GuardrailsHowItWorks } from './GuardrailsHowItWorks';
-import { TopicsEditor } from './TopicsEditor';
+import { DetailTypesEditor, GuardrailRuleCard, GuardrailsHowItWorks, TopicsEditor } from './index';
 import type {
   GuardrailAction,
   GuardrailRule,
+  GuardrailsPanelProps,
   GuardrailStage,
   GuardrailTier,
   GuardrailValidatorsData,
@@ -24,7 +22,7 @@ import {
   GUARDRAIL_ACTION_LABEL,
   GUARDRAIL_STAGE_COPY,
   GUARDRAIL_TIER_LABEL,
-} from './guardrailsData';
+} from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import styles from './Guardrails.module.css';
 
 const STAGE_ORDER: GuardrailStage[] = ['incoming', 'reply'];
@@ -62,10 +60,6 @@ const GuardrailsLoader = () => {
 
   return <GuardrailsPanel initialRules={buildGuardrailRules(data.guardrailValidators?.validators ?? [])} />;
 };
-
-export interface GuardrailsPanelProps {
-  initialRules: GuardrailRule[];
-}
 
 export const GuardrailsPanel = ({ initialRules }: GuardrailsPanelProps) => {
   const { t } = useTranslation();
