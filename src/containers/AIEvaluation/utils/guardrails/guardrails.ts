@@ -311,11 +311,7 @@ const paramsFromControl = (control: GuardrailControl): Record<string, unknown> =
   return {};
 };
 
-/**
- * The specs to save for the tab's rules: one per switched-on rule, on the list for its stage.
- * Specs the tab doesn't show, and params it doesn't edit, are carried over from `previous`.
- */
-export const specsFromRules = (rules: GuardrailRule[], previous: GuardrailSpecs): GuardrailSpecs => {
+export const buildSavedGuardrails = (rules: GuardrailRule[], previous: GuardrailSpecs): GuardrailSpecs => {
   const shownTypes = new Set<string>(rules.map((rule) => rule.type));
 
   const specsFor = (list: keyof GuardrailSpecs): GuardrailSpec[] => [

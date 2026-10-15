@@ -24,7 +24,7 @@ import {
   GUARDRAIL_STAGE_COPY,
   GUARDRAIL_TIER_LABEL,
   rulesWithSpecs,
-  specsFromRules,
+  buildSavedGuardrails,
 } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import styles from './Guardrails.module.css';
 
@@ -85,7 +85,7 @@ export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPan
 
   const updateRule = (id: string, patch: Partial<GuardrailRule>) => {
     const next = rules.map((rule) => (rule.id === id ? ({ ...rule, ...patch } as GuardrailRule) : rule));
-    const specs = specsFromRules(next, value);
+    const specs = buildSavedGuardrails(next, value);
     setRules(next);
     emitted.current = specs;
     onChange(specs);
