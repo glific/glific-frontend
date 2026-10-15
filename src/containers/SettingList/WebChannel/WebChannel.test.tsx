@@ -32,7 +32,10 @@ const SAVED = {
 };
 
 const JWT_SECRET_NAMES = { jwt_signature_secret_1_name: '2025', jwt_signature_secret_2_name: '2026' };
-const JWT_SECRETS = { jwt_signature_secret_1: 'old-shared-secret', jwt_signature_secret_2: 'new-shared-secret' };
+const JWT_SECRETS = {
+  jwt_signature_secret_1: 'old-shared-secret-0123456789abcdef',
+  jwt_signature_secret_2: 'new-shared-secret-0123456789abcdef',
+};
 const EMPTY_JWT_SECRET_NAMES = { jwt_signature_secret_1_name: '', jwt_signature_secret_2_name: '' };
 const EMPTY_JWT_SECRETS = { jwt_signature_secret_1: '', jwt_signature_secret_2: '' };
 
@@ -255,8 +258,8 @@ describe('JWT signature secrets', () => {
 
     await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toHaveValue('2025'));
     expect(screen.getByTestId('jwt_signature_secret_2_name')).toHaveValue('2026');
-    expect(screen.getByTestId('jwt_signature_secret_1')).toHaveValue('old-shared-secret');
-    expect(screen.getByTestId('jwt_signature_secret_2')).toHaveValue('new-shared-secret');
+    expect(screen.getByTestId('jwt_signature_secret_1')).toHaveValue('old-shared-secret-0123456789abcdef');
+    expect(screen.getByTestId('jwt_signature_secret_2')).toHaveValue('new-shared-secret-0123456789abcdef');
   });
 
   it('saves both names in the keys and both secrets in the secrets', async () => {
@@ -269,9 +272,9 @@ describe('JWT signature secrets', () => {
     await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toBeInTheDocument());
 
     fill('jwt_signature_secret_1_name', ' 2025 ');
-    fill('jwt_signature_secret_1', 'old-shared-secret');
+    fill('jwt_signature_secret_1', 'old-shared-secret-0123456789abcdef');
     fill('jwt_signature_secret_2_name', '2026');
-    fill('jwt_signature_secret_2', 'new-shared-secret ');
+    fill('jwt_signature_secret_2', 'new-shared-secret-0123456789abcdef ');
 
     await user.click(screen.getByTestId('submitActionButton'));
 
@@ -309,7 +312,7 @@ describe('JWT signature secrets', () => {
         ...savedWith({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS),
         updateWebChannelCredential(
           { ...SAVED, jwt_signature_secret_1_name: '', jwt_signature_secret_2_name: '2026' },
-          { jwt_signature_secret_1: '', jwt_signature_secret_2: 'new-shared-secret' }
+          { jwt_signature_secret_1: '', jwt_signature_secret_2: 'new-shared-secret-0123456789abcdef' }
         ),
       ])
     );
@@ -327,7 +330,7 @@ describe('JWT signature secrets', () => {
     render(wrapper(on));
 
     await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_2')).toBeInTheDocument());
-    fill('jwt_signature_secret_2', 'new-shared-secret');
+    fill('jwt_signature_secret_2', 'new-shared-secret-0123456789abcdef');
 
     await user.click(screen.getByTestId('submitActionButton'));
 
@@ -338,5 +341,71 @@ describe('JWT signature secrets', () => {
     expect(
       within(screen.getByTestId('jwtSecret1')).queryByText('Give this secret a name so you can tell it apart.')
     ).not.toBeInTheDocument();
+  });
+
+  it('states the minimum secret length', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByText(/at least 32 characters/)).toBeInTheDocument());
+  });
+
+  it('refuses a secret shorter than 32 characters, under that card only, and does not save', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_2')).toBeInTheDocument());
+    fill('jwt_signature_secret_2_name', '2026');
+    fill('jwt_signature_secret_2', ` ${'a'.repeat(31)} `);
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() =>
+      expect(within(screen.getByTestId('jwtSecret2')).getByText('Use at least 32 characters.')).toBeInTheDocument()
+    );
+    expect(within(screen.getByTestId('jwtSecret1')).queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
+    expect(notification).not.toHaveBeenCalled();
+  });
+
+  it('saves a secret of exactly 32 characters', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    const secret = 'b'.repeat(32);
+
+    render(
+      wrapper([
+        ...savedWith(SAVED, {}),
+        updateWebChannelCredential(
+          { ...SAVED, jwt_signature_secret_1_name: '2025', jwt_signature_secret_2_name: '' },
+          { jwt_signature_secret_1: secret, jwt_signature_secret_2: '' }
+        ),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1')).toBeInTheDocument());
+    fill('jwt_signature_secret_1_name', '2025');
+    fill('jwt_signature_secret_1', secret);
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+    expect(screen.queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
+  });
+
+  it('allows both secrets to stay empty', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+
+    render(
+      wrapper([
+        ...savedWith(SAVED, {}),
+        updateWebChannelCredential({ ...SAVED, ...EMPTY_JWT_SECRET_NAMES }, EMPTY_JWT_SECRETS),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1')).toHaveValue(''));
+    fill('display_name', SAVED.display_name);
+
+    await user.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+    expect(screen.queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
   });
 });

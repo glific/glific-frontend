@@ -1092,7 +1092,8 @@
   "e.g. Tap 2026": "जैसे Tap 2026",
   "JWT signature secrets": "JWT हस्ताक्षर सीक्रेट",
   "Give this secret a name so you can tell it apart.": "इस सीक्रेट को एक नाम दें ताकि आप इसे अलग पहचान सकें।",
-  "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only.": "आपका बैकएंड संपर्कों के लॉगिन टोकन (JWT) इनमें से किसी एक सीक्रेट से साइन करता है। दोनों में से कोई भी काम करता है; केवल फ़ोन + OTP से साइन-इन के लिए दोनों खाली छोड़ दें।",
+  "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only. Use a random secret of at least 32 characters.": "आपका बैकएंड संपर्कों के लॉगिन टोकन (JWT) इनमें से किसी एक सीक्रेट से साइन करता है। दोनों में से कोई भी काम करता है; केवल फ़ोन + OTP से साइन-इन के लिए दोनों खाली छोड़ दें। कम से कम 32 अक्षरों का कोई रैंडम सीक्रेट इस्तेमाल करें।",
+  "Use at least 32 characters.": "कम से कम 32 अक्षरों का इस्तेमाल करें।",
   "Secret {{slot}}": "सीक्रेट {{slot}}",
   "To rotate: fill the empty slot, switch your backend, then clear the old one.": "बदलने के लिए: खाली स्लॉट भरें, अपने बैकएंड को उस पर स्विच करें, फिर पुराना सीक्रेट हटा दें।"
 }

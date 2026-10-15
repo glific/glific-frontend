@@ -52,6 +52,9 @@ const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
+// HS256 needs a key of at least 32 bytes; the server ignores a shorter secret.
+const MIN_SECRET_LENGTH = 32;
+
 const queries = {
   getItemQuery: GET_CREDENTIAL,
   createItemQuery: CREATE_CREDENTIAL,
@@ -247,12 +250,26 @@ export const WebChannel = () => {
     }),
     about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
     ...Object.fromEntries(
-      JWT_SECRET_SLOTS.map(({ name, secret }) => [
-        name,
-        Yup.string().when(['isActive', secret], {
-          is: (active: boolean, secretValue?: string) => active && !!secretValue?.trim(),
-          then: (schema) => schema.trim().required(t('Give this secret a name so you can tell it apart.')),
-        }),
+      JWT_SECRET_SLOTS.flatMap(({ name, secret }) => [
+        [
+          name,
+          Yup.string().when(['isActive', secret], {
+            is: (active: boolean, secretValue?: string) => active && !!secretValue?.trim(),
+            then: (schema) => schema.trim().required(t('Give this secret a name so you can tell it apart.')),
+          }),
+        ],
+        [
+          secret,
+          Yup.string().when('isActive', {
+            is: true,
+            then: (schema) =>
+              schema.test(
+                'min-secret-length',
+                t('Use at least 32 characters.'),
+                (value) => !value?.trim() || value.trim().length >= MIN_SECRET_LENGTH
+              ),
+          }),
+        ],
       ])
     ),
   });
@@ -326,7 +343,7 @@ export const WebChannel = () => {
       name: '__sectionJwtSecrets',
       title: t('JWT signature secrets'),
       description: t(
-        "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only."
+        "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only. Use a random secret of at least 32 characters."
       ),
     },
     ...JWT_SECRET_SLOTS.map(({ slot, name, secret }) => ({
