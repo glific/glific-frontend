@@ -1289,7 +1289,7 @@
   "Nothing in this group is checked.": "Nothing in this group is checked.",
   "{{count}} added": "{{count}} added",
   "Disallowed topics": "Disallowed topics",
-  "The assistant refuses to answer anything matching a topic listed here, and sends the reply below instead.": "The assistant refuses to answer anything matching a topic listed here, and sends the reply below instead.",
+  "Along with the topic keywords, adding a short definition/description improves the accuracy.": "Along with the topic keywords, adding a short definition/description improves the accuracy.",
   "Remove {{topic}}": "Remove {{topic}}",
   "Type a topic to block… e.g. Politics — elections, parties, candidates": "Type a topic to block… e.g. Politics — elections, parties, candidates",
   "Press Enter or click + Add after typing.": "Press Enter or click + Add after typing.",

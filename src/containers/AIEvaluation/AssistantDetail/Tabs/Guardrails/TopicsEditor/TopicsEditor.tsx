@@ -59,7 +59,7 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
           <span className={styles.TopicsLabel}>{t('Disallowed topics')}</span>
           <Tooltip
             title={t(
-              'The assistant refuses to answer anything matching a topic listed here, and sends the reply below instead.'
+              'Along with the topic keywords, adding a short definition/description improves the accuracy.'
             )}
             placement="top"
           >

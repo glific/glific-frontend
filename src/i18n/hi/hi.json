@@ -1116,7 +1116,7 @@
   "Nothing in this group is checked.": "इस समूह में कुछ भी चुना नहीं गया है।",
   "{{count}} added": "{{count}} जोड़े गए",
   "Disallowed topics": "रोके गए विषय",
-  "The assistant refuses to answer anything matching a topic listed here, and sends the reply below instead.": "यहां दिए गए किसी भी विषय से मेल खाने वाले सवाल का असिस्टेंट जवाब नहीं देता, बल्कि नीचे दिया गया जवाब भेजता है।",
+  "Along with the topic keywords, adding a short definition/description improves the accuracy.": "विषय की कीवर्ड्स के साथ, एक छोटा परिभाषा/विवरण जोड़ने से सटीकता में सुधार होता है।",
   "Remove {{topic}}": "{{topic}} हटाएं",
   "Type a topic to block… e.g. Politics — elections, parties, candidates": "रोकने के लिए एक विषय लिखें… जैसे राजनीति — चुनाव, पार्टियां, उम्मीदवार",
   "Press Enter or click + Add after typing.": "लिखने के बाद Enter दबाएं या + जोड़ें पर क्लिक करें।",
