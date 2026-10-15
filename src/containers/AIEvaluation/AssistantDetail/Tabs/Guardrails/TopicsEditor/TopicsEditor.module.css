@@ -29,9 +29,17 @@
   align-items: center;
   gap: var(--app-space-sm);
   padding: var(--app-space-sm);
-  border: 1px solid var(--app-color-border);
+  border: 2px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-surface-raised);
+}
+
+.TopicsBox:hover {
+  border-color: var(--app-color-text-heading);
+}
+
+.TopicsBox:focus-within {
+  border-color: var(--app-color-brand-primary);
 }
 
 .TopicChip {
