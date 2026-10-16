@@ -1300,7 +1300,7 @@
   "Redacted using English model: misses many Indian names and sometimes masks ordinary words": "Redacted using English model: misses many Indian names and sometimes masks ordinary words",
   "{{count}} added": "{{count}} added",
   "Disallowed topics": "Disallowed topics",
-  "Add a short description after a dash to make it more accurate, e.g. Politics — elections, parties, candidates.": "Add a short description after a dash to make it more accurate, e.g. Politics — elections, parties, candidates.",
+  "Along with the topic keywords, adding a short definition/description improves the accuracy.": "Along with the topic keywords, adding a short definition/description improves the accuracy.",
   "Privacy Protection": "Privacy Protection",
   "Hides personal details like phone numbers, addresses and ID numbers, so they are not saved or shown.": "Hides personal details like phone numbers, addresses and ID numbers, so they are not saved or shown.",
   "Content Safety": "Content Safety",
