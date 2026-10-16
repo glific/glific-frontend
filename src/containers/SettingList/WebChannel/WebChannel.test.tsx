@@ -289,6 +289,32 @@ describe('JWT signature secrets', () => {
     expect(screen.queryByTestId('jwtSecret3')).not.toBeInTheDocument();
   });
 
+  it('keeps the next secret masked after removing a revealed one', async () => {
+    render(wrapper(savedWith(SAVED, JWT_SECRETS)));
+
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    await user.click(within(card(1)).getByTestId('passwordToggle'));
+    expect(secretOf(1)).toHaveAttribute('type', 'text');
+
+    await user.click(within(card(1)).getByTestId('removeJwtSecret'));
+
+    expect(nameOf(1)).toHaveValue('2026');
+    expect(secretOf(1)).toHaveAttribute('type', 'password');
+  });
+
+  it('drops the fixed secret slots an earlier version saved', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    const legacyKeys = { ...SAVED, jwt_signature_secret_1_name: '2025' };
+    const legacySecrets = { ...JWT_SECRETS, jwt_signature_secret_1: OLD_SECRET };
+
+    render(wrapper([...savedWith(legacyKeys, legacySecrets), updateWebChannelCredential(SAVED, JWT_SECRETS)]));
+
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    await save();
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
   it('reveals a secret on request, so an admin can check what they pasted', async () => {
     render(wrapper(savedWith(SAVED, JWT_SECRETS)));
 

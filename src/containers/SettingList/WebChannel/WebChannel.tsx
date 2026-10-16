@@ -43,7 +43,19 @@ const JWT_SECRETS = 'jwt_signature_secrets';
 
 type JwtSecret = { name: string; secret: string };
 
-const EMPTY_JWT_SECRET: JwtSecret = { name: '', secret: '' };
+// The key a card keeps for as long as it is on screen, so removing one never hands another
+// card its revealed state. It is never saved.
+type JwtSecretEntry = JwtSecret & { uiKey: number };
+
+let nextUiKey = 0;
+const newJwtSecretEntry = (name = '', secret = ''): JwtSecretEntry => ({ name, secret, uiKey: nextUiKey++ });
+
+// The fixed slots an earlier version of this page saved; the server reads only the list now.
+const LEGACY_JWT_KEYS = ['jwt_signature_secret_1_name', 'jwt_signature_secret_2_name'];
+const LEGACY_JWT_SECRETS = ['jwt_signature_secret_1', 'jwt_signature_secret_2'];
+
+const omit = (values: Record<string, any>, names: string[]) =>
+  Object.fromEntries(Object.entries(values).filter(([name]) => !names.includes(name)));
 
 const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
 
@@ -55,12 +67,12 @@ const MIN_SECRET_LENGTH = 32;
 // One secret normally, a second only while rotating; the server reads no more than two.
 const MAX_JWT_SECRETS = 2;
 
-const toJwtSecrets = (entries: any): JwtSecret[] =>
+const toJwtSecrets = (entries: any): JwtSecretEntry[] =>
   Array.isArray(entries)
-    ? entries.slice(0, MAX_JWT_SECRETS).map((entry) => ({ name: entry?.name ?? '', secret: entry?.secret ?? '' }))
+    ? entries.slice(0, MAX_JWT_SECRETS).map((entry) => newJwtSecretEntry(entry?.name ?? '', entry?.secret ?? ''))
     : [];
 
-const trimJwtSecrets = (entries: JwtSecret[] = []): JwtSecret[] =>
+const trimJwtSecrets = (entries: JwtSecretEntry[] = []): JwtSecret[] =>
   entries
     .map(({ name, secret }) => ({ name: name.trim(), secret: secret.trim() }))
     .filter(({ name, secret }) => name || secret);
@@ -189,7 +201,7 @@ const JwtSecretCard = ({ index, onRemove }: { index: number; onRemove: () => voi
 
 const JwtSecrets = ({ form }: any) => {
   const { t } = useTranslation();
-  const entries: JwtSecret[] = form.values[JWT_SECRETS] ?? [];
+  const entries: JwtSecretEntry[] = form.values[JWT_SECRETS] ?? [];
 
   return (
     <FieldArray
@@ -201,8 +213,8 @@ const JwtSecrets = ({ form }: any) => {
               {t('No secrets yet. Contacts sign in with phone + OTP only.')}
             </div>
           )}
-          {entries.map((_entry, index) => (
-            <JwtSecretCard key={index} index={index} onRemove={() => arrayHelpers.remove(index)} />
+          {entries.map((entry, index) => (
+            <JwtSecretCard key={entry.uiKey} index={index} onRemove={() => arrayHelpers.remove(index)} />
           ))}
           {entries.length < MAX_JWT_SECRETS && (
             <Button
@@ -211,7 +223,7 @@ const JwtSecrets = ({ form }: any) => {
               className={styles.AddSecret}
               startIcon={<AddIcon />}
               data-testid="addJwtSecret"
-              onClick={() => arrayHelpers.push({ ...EMPTY_JWT_SECRET })}
+              onClick={() => arrayHelpers.push(newJwtSecretEntry())}
             >
               {t('Add secret')}
             </Button>
@@ -438,11 +450,11 @@ export const WebChannel = () => {
     shortcode: SHORTCODE,
     isActive: !!payload.isActive,
     keys: JSON.stringify({
-      ...saved.current.keys,
+      ...omit(saved.current.keys, LEGACY_JWT_KEYS),
       ...Object.fromEntries(FIELDS.map((name) => [name, payload[name] ?? ''])),
     }),
     secrets: JSON.stringify({
-      ...saved.current.secrets,
+      ...omit(saved.current.secrets, LEGACY_JWT_SECRETS),
       [JWT_SECRETS]: trimJwtSecrets(payload[JWT_SECRETS]),
     }),
   });
