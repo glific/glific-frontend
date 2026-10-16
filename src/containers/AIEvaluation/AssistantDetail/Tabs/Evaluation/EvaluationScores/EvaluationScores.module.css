@@ -208,3 +208,57 @@
   font-size: var(--app-font-size-xs) !important;
   line-height: 1.5 !important;
 }
+
+.Guardrail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2xs) var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+}
+
+.GuardrailBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.GuardrailBlocked {
+  background-color: rgb(var(--app-color-amber-primary-rgb) / 16%);
+  color: var(--app-color-attention);
+}
+
+.GuardrailApplied {
+  background-color: rgb(var(--app-color-green-primary-rgb) / 12%);
+  color: var(--app-color-brand-primary);
+}
+
+.GuardrailIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.GuardrailReason {
+  color: var(--app-color-text-tertiary);
+}
+
+.GuardrailDetails {
+  margin: 0;
+
+  dt {
+    font-weight: 700;
+  }
+
+  dd {
+    margin: 0 0 var(--app-space-sm);
+    white-space: pre-wrap;
+  }
+
+  dd:last-child {
+    margin-bottom: 0;
+  }
+}

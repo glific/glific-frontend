@@ -17,6 +17,7 @@ import {
   shortMetricName,
   traceMetricNames,
 } from './evaluation';
+import { guardrailTraces } from 'mocks/AIEvaluations';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
 
 describe('parseEvaluationResults', () => {
@@ -230,6 +231,84 @@ describe('parseEvaluationScores', () => {
 
   test('a bare array of traces is read too', () => {
     expect(parseEvaluationScores([{ question_id: '1', question: 'Q', llm_answer: 'A' }])).toHaveLength(1);
+  });
+
+  describe('what the guardrails did with each answer', () => {
+    const [blocked, applied, older] = parseEvaluationScores(guardrailTraces);
+
+    test('a blocked answer keeps its reason, and nothing reached the model', () => {
+      expect(blocked.answers[0]).toMatchObject({
+        answer: '',
+        guardrail: { status: 'blocked', reason: 'PII detected in the text.', inputToLlm: null, outputFromLlm: null },
+      });
+    });
+
+    test('an answer let through records what was sent to the model', () => {
+      expect(applied.answers[0].guardrail).toEqual({
+        status: 'applied',
+        reason: '',
+        inputToLlm: 'What is the sequence of taxonomic categories?',
+        outputFromLlm: null,
+      });
+    });
+
+    test('a run from before guardrails has none', () => {
+      expect(older.answers[0].guardrail).toBeNull();
+    });
+
+    test('a reason that itself contains a colon is kept whole', () => {
+      const [trace] = parseEvaluationScores([{ question_id: '1', guardrail: 'Blocked: topic: politics' }]);
+      expect(trace.answers[0].guardrail).toMatchObject({ status: 'blocked', reason: 'topic: politics' });
+    });
+
+    test('in a grouped row each answer takes its own entry when the fields are lists', () => {
+      const [trace] = parseEvaluationScores([
+        {
+          question_id: '1',
+          llm_answers: ['', 'Fine.'],
+          scores: [[], []],
+          guardrail: ['blocked: PII detected in the text.', 'applied'],
+          input_to_llm: [null, 'Q'],
+          output_from_llm: [null, 'Fine.'],
+        },
+      ]);
+
+      expect(trace.answers.map((answer) => answer.guardrail?.status)).toEqual(['blocked', 'applied']);
+      expect(trace.answers[1].guardrail).toMatchObject({ inputToLlm: 'Q', outputFromLlm: 'Fine.' });
+    });
+
+    test('a guardrail value that is missing, empty, the wrong type or has no status is no guardrail', () => {
+      const answerGuardrail = (row: Record<string, unknown>) =>
+        parseEvaluationScores([{ question_id: '1', llm_answer: 'A', ...row }])[0].answers[0].guardrail;
+
+      for (const guardrail of [undefined, null, '', ':', '  : reason', 42, { status: 'blocked' }, ['blocked: x']]) {
+        expect(answerGuardrail({ guardrail, input_to_llm: 'Q' })).toBeNull();
+      }
+    });
+
+    test('input and output that are not text are left out', () => {
+      const [trace] = parseEvaluationScores([
+        { question_id: '1', guardrail: 'applied', input_to_llm: 123, output_from_llm: { text: 'A' } },
+      ]);
+
+      expect(trace.answers[0].guardrail).toMatchObject({ inputToLlm: null, outputFromLlm: null });
+    });
+
+    test('in a grouped row a list shorter than the answers leaves the rest with none', () => {
+      const [trace] = parseEvaluationScores([
+        { question_id: '1', llm_answers: ['A', 'B', 'C'], scores: [[], [], []], guardrail: ['applied', null] },
+      ]);
+
+      expect(trace.answers.map((answer) => answer.guardrail?.status ?? null)).toEqual(['applied', null, null]);
+    });
+
+    test('in a grouped row a single value applies to every answer', () => {
+      const [trace] = parseEvaluationScores([
+        { question_id: '1', llm_answers: ['A', 'B'], scores: [[], []], guardrail: 'applied' },
+      ]);
+
+      expect(trace.answers.map((answer) => answer.guardrail?.status)).toEqual(['applied', 'applied']);
+    });
   });
 });
 
