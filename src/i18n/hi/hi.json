@@ -1152,5 +1152,17 @@
   "Suggested — click to add": "सुझाए गए — जोड़ने के लिए क्लिक करें",
   "Set reply — sent when this guardrail is flagged": "जवाब तय करें — जब यह गार्डरेल सक्रिय हो तो भेजा जाएगा",
   "What should the assistant say when it blocks a message on this topic?": "जब असिस्टेंट इस विषय पर कोई संदेश रोके, तो उसे क्या कहना चाहिए?",
-  "Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).": "इसे किसी भी एक भाषा में लिखें — AI इसे अपने आप उस भाषा में बदल देगा जिसमें उपयोगकर्ता ने लिखा था (जैसे, हिंदी में संदेश आने पर जवाब भी हिंदी में जाएगा)।"
+  "Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).": "इसे किसी भी एक भाषा में लिखें — AI इसे अपने आप उस भाषा में बदल देगा जिसमें उपयोगकर्ता ने लिखा था (जैसे, हिंदी में संदेश आने पर जवाब भी हिंदी में जाएगा)।",
+  "Secret": "सीक्रेट",
+  "e.g. 2026": "जैसे 2026",
+  "JWT signature secrets": "JWT हस्ताक्षर सीक्रेट",
+  "Give this secret a name so you can tell it apart.": "इस सीक्रेट को एक नाम दें ताकि आप इसे अलग पहचान सकें।",
+  "Use at least 32 characters.": "कम से कम 32 अक्षरों का इस्तेमाल करें।",
+  "Secret {{slot}}": "सीक्रेट {{slot}}",
+  "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.": "आपका बैकएंड संपर्कों के लॉगिन टोकन (HS256 JWT) इनमें से किसी एक सीक्रेट से साइन करता है; इनमें से किसी से भी साइन किया गया टोकन स्वीकार किया जाता है। कम से कम 32 अक्षरों का कोई रैंडम सीक्रेट इस्तेमाल करें। सामान्यतः एक सीक्रेट रखें, और दूसरा केवल बदलते समय।",
+  "To rotate: add the new secret, switch your backend to it, then remove the old one.": "बदलने के लिए: नया सीक्रेट जोड़ें, अपने बैकएंड को उस पर स्विच करें, फिर पुराना सीक्रेट हटा दें।",
+  "Add secret": "सीक्रेट जोड़ें",
+  "Remove secret": "सीक्रेट हटाएँ",
+  "No secrets yet. Contacts sign in with phone + OTP only.": "अभी कोई सीक्रेट नहीं है। संपर्क केवल फ़ोन + OTP से साइन इन करते हैं।",
+  "Another secret already has this name.": "किसी दूसरे सीक्रेट का यही नाम पहले से है।"
 }

@@ -1325,5 +1325,17 @@
   "Suggested — click to add": "Suggested — click to add",
   "Set reply — sent when this guardrail is flagged": "Set reply — sent when this guardrail is flagged",
   "What should the assistant say when it blocks a message on this topic?": "What should the assistant say when it blocks a message on this topic?",
-  "Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).": "Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi)."
+  "Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).": "Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).",
+  "Secret": "Secret",
+  "e.g. 2026": "e.g. 2026",
+  "JWT signature secrets": "JWT signature secrets",
+  "Give this secret a name so you can tell it apart.": "Give this secret a name so you can tell it apart.",
+  "Use at least 32 characters.": "Use at least 32 characters.",
+  "Secret {{slot}}": "Secret {{slot}}",
+  "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.": "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.",
+  "To rotate: add the new secret, switch your backend to it, then remove the old one.": "To rotate: add the new secret, switch your backend to it, then remove the old one.",
+  "Add secret": "Add secret",
+  "Remove secret": "Remove secret",
+  "No secrets yet. Contacts sign in with phone + OTP only.": "No secrets yet. Contacts sign in with phone + OTP only.",
+  "Another secret already has this name.": "Another secret already has this name."
 }
