@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckIcon from '@mui/icons-material/Check';
@@ -13,8 +13,10 @@ import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import type { AssistantChatResponse, SandboxMessage } from 'containers/AIEvaluation/types/sandboxType';
 import { clearSandboxChat, readSandboxChat, writeSandboxChat } from 'containers/AIEvaluation/services/sandboxChatCache';
 import { normalizeLineBreaks } from 'containers/AIEvaluation/utils/sandbox/sandbox';
+import { getOrganizationServices } from 'services/AuthService';
 import { MarkdownAnswer } from '../../components';
 import { useAssistantChatResponse } from 'containers/AIEvaluation/hooks/useAssistantChatResponse';
+import { GuardrailTrace, toGuardrailTrace } from './GuardrailTrace';
 import styles from './TryItOut.module.css';
 
 export interface TryItOutProps {
@@ -172,7 +174,16 @@ export const TryItOut = ({
       return;
     }
 
-    finish({ role: 'assistant', text: result.answer ?? t('Could not get a reply. Try sending it again.') });
+    const guardrails = toGuardrailTrace({
+      ...result,
+      inputChecks: result.inputGuardrail,
+      outputChecks: result.outputGuardrail,
+    });
+    finish({
+      role: 'assistant',
+      text: result.outputToUser || result.answer || t('Could not get a reply. Try sending it again.'),
+      ...(guardrails ? { guardrails } : {}),
+    });
   };
 
   const assistantChatResponse = useAssistantChatResponse({
@@ -181,6 +192,7 @@ export const TryItOut = ({
   });
 
   const canSend = Boolean(assistantId);
+  const showGuardrails = Boolean(getOrganizationServices('aiGuardrailEnabled'));
 
   const send = async (text: string) => {
     const trimmed = text.trim();
@@ -330,7 +342,12 @@ export const TryItOut = ({
               )}
             </div>
           ) : (
-            messages.map((message, index) => <ChatMessage key={`${message.role}-${index}`} message={message} />)
+            messages.map((message, index) => (
+              <Fragment key={`${message.role}-${index}`}>
+                <ChatMessage message={message} />
+                {showGuardrails && message.guardrails && <GuardrailTrace trace={message.guardrails} />}
+              </Fragment>
+            ))
           )}
 
           {pending && (
