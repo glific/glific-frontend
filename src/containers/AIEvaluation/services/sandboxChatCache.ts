@@ -6,6 +6,7 @@ import {
   resolveKey,
   sandboxKeys,
 } from '../utils/sandbox/sandbox';
+import { toGuardrailTrace } from '../AssistantDetail/Tabs/TryItOut/GuardrailTrace';
 
 const MAX_CACHED_MESSAGES = 50;
 
@@ -21,12 +22,17 @@ export const readSandboxChat = (assistantId?: string, versionId?: string): Sandb
     if (!parsed || !Array.isArray(parsed.messages)) return null;
 
     // drop anything that is not a message we could render
-    const messages = parsed.messages.filter(
-      (message): message is SandboxMessage =>
-        Boolean(message) &&
-        typeof message.text === 'string' &&
-        (message.role === 'user' || message.role === 'assistant')
-    );
+    const messages = parsed.messages
+      .filter(
+        (message): message is SandboxMessage =>
+          Boolean(message) &&
+          typeof message.text === 'string' &&
+          (message.role === 'user' || message.role === 'assistant')
+      )
+      .map(({ guardrails, ...message }) => {
+        const trace = guardrails && typeof guardrails === 'object' ? toGuardrailTrace(guardrails) : null;
+        return trace ? { ...message, guardrails: trace } : message;
+      });
 
     return { messages, conversationId: typeof parsed.conversationId === 'string' ? parsed.conversationId : '' };
   } catch {

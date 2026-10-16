@@ -7,6 +7,12 @@ export const ASSISTANT_CHAT_RESPONSE = gql`
       conversationId
       jobId
       requestId
+      inputFromUser
+      inputToLlm
+      outputFromLlm
+      outputToUser
+      inputGuardrail
+      outputGuardrail
       errors {
         key
         message

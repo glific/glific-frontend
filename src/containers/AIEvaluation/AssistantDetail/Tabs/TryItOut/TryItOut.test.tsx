@@ -3,8 +3,12 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import * as Notification from 'common/notification';
 import { SEND_ASSISTANT_MESSAGE } from 'graphql/mutations/Assistant';
 import { ASSISTANT_CHAT_RESPONSE } from 'graphql/subscriptions/Assistant';
-import { setUserSession } from 'services/AuthService';
-import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
+import { setOrganizationServices, setUserSession } from 'services/AuthService';
+import {
+  clearAllSandboxChats,
+  readSandboxChat,
+  writeSandboxChat,
+} from 'containers/AIEvaluation/services/sandboxChatCache';
 import TryItOut from './TryItOut';
 
 const defaultProps = {
@@ -831,5 +835,136 @@ describe('replies that arrive double-encoded', () => {
 
     // real line breaks mean this reply was encoded correctly, so the printed escape is content
     expect(within(message).getByText(/line\.split/)).toHaveTextContent('line.split("\\n")');
+  });
+});
+
+describe('guardrails on a reply', () => {
+  const guardedReply = {
+    answer: 'I can’t help with slurs.',
+    requestId: 'r1',
+    inputFromUser: 'call me kutta at 8979220110 from Ram village',
+    inputToLlm: 'call me [REDACTED_SLUR] at <phone_number> from <location>',
+    outputFromLlm: 'I can’t help with slurs.',
+    outputToUser: 'I can’t help with slurs.',
+    inputGuardrail: JSON.stringify([
+      { name: 'PIIRemover', outcome: 'FAIL', error: 'PII detected in the text.' },
+      { name: 'LexicalSlur', outcome: 'FAIL', error: 'Mentioned toxic words: kutta' },
+    ]),
+    outputGuardrail: JSON.stringify([{ name: 'PIIRemover', outcome: 'PASS', error: null }]),
+  };
+
+  const replyMock = (payload: Record<string, unknown>) => ({
+    request: { query: ASSISTANT_CHAT_RESPONSE },
+    result: { data: { assistantChatResponse: { conversationId: 'c1', errors: null, ...payload } } },
+  });
+
+  const ask = () => {
+    type('call me kutta at 8979220110 from Ram village');
+    fireEvent.click(screen.getByTestId('sendMessageButton'));
+  };
+
+  beforeEach(() => setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true })));
+  afterEach(() => setOrganizationServices(JSON.stringify({})));
+
+  test('shows what each guardrail flagged, and how the message changed on its way in', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), replyMock(guardedReply)]);
+    ask();
+
+    const toggle = await screen.findByTestId('guardrailTraceToggle');
+    expect(toggle).toHaveTextContent('flagged');
+    expect(within(toggle).getByTestId('guardrailTraceFlaggedIcon')).toBeInTheDocument();
+    expect(screen.queryByTestId('guardrailTraceBody')).not.toBeInTheDocument();
+
+    fireEvent.click(toggle);
+    const incoming = screen.getByTestId('guardrailTraceInput');
+    expect(incoming).toHaveTextContent('call me kutta at 8979220110 from Ram village');
+    expect(within(incoming).getByTestId('guardrailTraceInput-changed')).toHaveTextContent(
+      'call me [REDACTED_SLUR] at <phone_number> from <location>'
+    );
+    expect(incoming).toHaveTextContent('Privacy Protection');
+    expect(incoming).toHaveTextContent('Content Safety');
+    expect(incoming).toHaveTextContent('Mentioned toxic words: kutta');
+    expect(within(incoming).getAllByText('Flagged')).toHaveLength(2);
+
+    // the reply went out untouched, so it is shown once, with the check that passed it
+    const reply = screen.getByTestId('guardrailTraceOutput');
+    expect(within(reply).queryByTestId('guardrailTraceOutput-changed')).not.toBeInTheDocument();
+    expect(within(reply).getByTestId('guardrailCheck')).toHaveTextContent('Passed');
+  });
+
+  test('the details open in a dialog, which Done closes', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), replyMock(guardedReply)]);
+    ask();
+
+    fireEvent.click(await screen.findByTestId('guardrailTraceToggle'));
+    expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Guardrails');
+    expect(screen.getByTestId('guardrailTraceBody')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+    await waitFor(() => expect(screen.queryByTestId('guardrailTraceBody')).not.toBeInTheDocument());
+  });
+
+  test('a reply every check passed says so, with the green shield', async () => {
+    const passing = JSON.stringify([{ name: 'PIIRemover', outcome: 'PASS', error: null }]);
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      replyMock({ ...guardedReply, inputToLlm: guardedReply.inputFromUser, inputGuardrail: passing }),
+    ]);
+    ask();
+
+    const toggle = await screen.findByTestId('guardrailTraceToggle');
+    expect(toggle).toHaveTextContent('All checks passed');
+    expect(within(toggle).getByTestId('guardrailTracePassedIcon')).toBeInTheDocument();
+  });
+
+  test('the reply shown is what the user received after the output guardrail', async () => {
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      replyMock({ ...guardedReply, answer: 'Call Ram at 8979220110.', outputToUser: 'Call Ram at <PHONE_NUMBER>.' }),
+    ]);
+    ask();
+
+    expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Call Ram at <PHONE_NUMBER>.');
+  });
+
+  test('a reply without guardrail metadata shows no trace', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), replyMock({ answer: 'Hello.', requestId: 'r1' })]);
+    ask();
+
+    await screen.findByTestId('assistantMessage');
+    expect(screen.queryByTestId('guardrailTrace')).not.toBeInTheDocument();
+  });
+
+  test('an org without guardrails does not see the trace', async () => {
+    setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: false }));
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), replyMock(guardedReply)]);
+    ask();
+
+    await screen.findByTestId('assistantMessage');
+    expect(screen.queryByTestId('guardrailTrace')).not.toBeInTheDocument();
+  });
+
+  test('the trace is kept with the cached chat, so it is still there after a reload', async () => {
+    renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), replyMock(guardedReply)]);
+    ask();
+    await screen.findByTestId('guardrailTrace');
+
+    const cached = readSandboxChat('1', 'v2');
+    expect(cached?.messages.at(-1)?.guardrails?.inputChecks).toHaveLength(2);
+  });
+
+  test('a cached trace that does not parse is dropped rather than breaking the chat', () => {
+    writeSandboxChat('1', 'v2', {
+      conversationId: 'c1',
+      messages: [
+        { role: 'user', text: 'Hi' },
+        { role: 'assistant', text: 'Hello.', guardrails: 'garbage' as never },
+      ],
+    });
+
+    renderTab();
+
+    expect(screen.getByTestId('assistantMessage')).toHaveTextContent('Hello.');
+    expect(screen.queryByTestId('guardrailTrace')).not.toBeInTheDocument();
   });
 });
