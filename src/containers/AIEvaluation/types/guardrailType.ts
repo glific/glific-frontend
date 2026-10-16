@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react';
+import type { resources } from 'i18n/config';
+
+type TranslationKey = keyof (typeof resources)['en']['translation'];
 
 export type GuardrailValidatorType =
   | 'pii_remover'
@@ -26,6 +29,7 @@ export interface GuardrailDetailOption {
 
 export interface GuardrailDetailGroup {
   id: string;
+  note?: TranslationKey;
   options: GuardrailDetailOption[];
 }
 

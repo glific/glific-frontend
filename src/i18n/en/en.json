@@ -1287,6 +1287,7 @@
   "Choose which kinds of personal details this check should look for. Works with sensible defaults even if you skip this.": "Choose which kinds of personal details this check should look for. Works with sensible defaults even if you skip this.",
   "Select all": "Select all",
   "Nothing in this group is checked.": "Nothing in this group is checked.",
+  "Redacted using English model: misses many Indian names and sometimes masks ordinary words": "Redacted using English model: misses many Indian names and sometimes masks ordinary words",
   "{{count}} added": "{{count}} added",
   "Disallowed topics": "Disallowed topics",
   "Along with the topic keywords, adding a short definition/description improves the accuracy.": "Along with the topic keywords, adding a short definition/description improves the accuracy.",

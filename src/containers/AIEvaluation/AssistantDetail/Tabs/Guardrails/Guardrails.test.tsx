@@ -148,17 +148,26 @@ describe('a rolled-out org', () => {
       expect(screen.queryByTestId('editDetailTypesToggle')).not.toBeInTheDocument();
     });
 
-    test('Clear unticks everything, Select all ticks it all', async () => {
+    test('each group has its own Clear and Select all', async () => {
       await renderPanel();
       turnOn('privacy-protection');
       fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
 
-      fireEvent.click(screen.getByText('Clear', { selector: 'button' }));
-      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('0 selected');
-      expect(screen.getByText('Nothing in this group is checked.')).toBeInTheDocument();
+      // the model-guessed group sits apart, under a note on how reliable it is
+      expect(
+        screen.getByText('Redacted using English model: misses many Indian names and sometimes masks ordinary words')
+      ).toBeInTheDocument();
+      const [clearMatched] = screen.getAllByText('Clear', { selector: 'button' });
+      const [, selectAllGuessed] = screen.getAllByText('Select all', { selector: 'button' });
 
-      fireEvent.click(screen.getByText('Select all', { selector: 'button' }));
-      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('all 15 selected');
+      fireEvent.click(clearMatched);
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('0 selected');
+      expect(screen.getAllByText('Nothing in this group is checked.')).toHaveLength(2);
+
+      fireEvent.click(selectAllGuessed);
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('3 selected');
+      expect(screen.getByTestId('detailOption-PERSON')).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('detailOption-PHONE_NUMBER')).toHaveAttribute('aria-pressed', 'false');
     });
 
     test('the toggles read "Configure …" for every check that has one', async () => {

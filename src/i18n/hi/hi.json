@@ -1114,6 +1114,7 @@
   "Choose which kinds of personal details this check should look for. Works with sensible defaults even if you skip this.": "चुनें कि यह जांच किस तरह के व्यक्तिगत विवरण ढूंढे। आप इसे छोड़ें तो भी यह ठीक से काम करेगा।",
   "Select all": "सभी चुनें",
   "Nothing in this group is checked.": "इस समूह में कुछ भी चुना नहीं गया है।",
+  "Redacted using English model: misses many Indian names and sometimes masks ordinary words": "अंग्रेज़ी मॉडल से हटाया गया: कई भारतीय नाम छूट जाते हैं और कभी-कभी सामान्य शब्द भी छिप जाते हैं",
   "{{count}} added": "{{count}} जोड़े गए",
   "Disallowed topics": "रोके गए विषय",
   "Along with the topic keywords, adding a short definition/description improves the accuracy.": "विषय की कीवर्ड्स के साथ, एक छोटा परिभाषा/विवरण जोड़ने से सटीकता में सुधार होता है।",

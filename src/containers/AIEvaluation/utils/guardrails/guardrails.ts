@@ -20,6 +20,8 @@ export const GUARDRAIL_ACTION_LABEL = {
 
 const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
 
+const MODEL_GUESSED_ENTITIES = ['PERSON', 'LOCATION', 'NRP'];
+
 export const GUARDRAIL_STAGE_COPY = {
   incoming: {
     title: 'Guardrails on incoming messages',
@@ -191,12 +193,16 @@ export const piiDetailGroups = (config: unknown): GuardrailDetailGroup[] => {
     selected: defaults ? defaults.includes(code) : true,
   }));
 
-  return [
+  const guessed = (option: GuardrailDetailOption) => MODEL_GUESSED_ENTITIES.includes(option.id);
+  const groups: GuardrailDetailGroup[] = [
+    { id: 'pattern-matched', options: selectedFirst(options.filter((option) => !guessed(option))) },
     {
-      id: 'entity-types',
-      options: selectedFirst(options),
+      id: 'model-guessed',
+      note: 'Redacted using English model: misses many Indian names and sometimes masks ordinary words',
+      options: selectedFirst(options.filter(guessed)),
     },
   ];
+  return groups.filter((group) => group.options.length > 0);
 };
 
 export const actionFromConfig = (config: unknown): GuardrailAction => {
