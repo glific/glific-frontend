@@ -1,0 +1,43 @@
+.Editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+}
+
+.EditToggle {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  cursor: pointer;
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border: 1px solid var(--app-color-border-brand);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-color-brand-primary);
+  font-size: var(--app-font-size-xs);
+  font-weight: 600;
+  width: fit-content;
+}
+
+.EditIcon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.EditSummary {
+  color: var(--app-color-text-tertiary);
+  font-weight: 500;
+}
+
+.EditCaret {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.EditorBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+  padding-top: var(--app-space-lg);
+  border-top: 1px dashed var(--app-color-border);
+}

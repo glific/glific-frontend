@@ -6,3 +6,147 @@
   color: var(--app-color-text-tertiary);
   font-size: var(--app-font-size-md);
 }
+
+.Panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-xl);
+  padding-bottom: var(--app-space-6xl);
+}
+
+.Banner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg) var(--app-space-xl);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.BannerHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.BannerToggle {
+  all: unset;
+  display: flex;
+  cursor: pointer;
+  color: var(--app-color-text-tertiary);
+}
+
+.BannerCaret {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+}
+
+.BannerBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.BannerTitle {
+  font-weight: 700;
+  color: var(--app-color-text-heading);
+}
+
+.Legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-lg);
+  margin-top: var(--app-space-2xs);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.LegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+}
+
+.LegendDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.LegendDot.fix {
+  background-color: var(--app-color-brand-primary);
+}
+
+.LegendDot.block {
+  background-color: var(--app-color-attention-strong);
+}
+
+.SeeHowButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-lg) !important;
+  min-width: 0 !important;
+  border-radius: var(--app-radius-pill) !important;
+  border-color: transparent !important;
+  background-color: rgb(var(--app-color-green-primary-rgb) / 12%) !important;
+  color: var(--app-color-brand-primary) !important;
+  font-size: var(--app-font-size-xs) !important;
+  font-weight: 600 !important;
+}
+
+.SeeHowCaret {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.Stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+}
+
+.StageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--app-space-sm);
+}
+
+.StageTitle {
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-color-text-heading);
+}
+
+.StageNote {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.TierZone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-card);
+}
+
+.TierLabel {
+  font-size: var(--app-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+}
+
+.TierCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-lg);
+}
