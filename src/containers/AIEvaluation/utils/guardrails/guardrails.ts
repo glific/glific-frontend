@@ -11,7 +11,9 @@ import type {
   GuardrailTopic,
   GuardrailTopicSuggestion,
   GuardrailValidator,
+  TranslationKey,
 } from 'containers/AIEvaluation/types/guardrailType';
+import en from 'i18n/en/en.json';
 
 export const GUARDRAIL_ACTION_LABEL = {
   fix: 'Fixes & passes on',
@@ -109,7 +111,7 @@ const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link' | 'action'>[] = [
   },
 ];
 
-const PII_ENTITY_LABEL: Record<string, string> = {
+const PII_ENTITY_LABEL: Record<string, TranslationKey> = {
   PERSON: 'Name',
   PHONE_NUMBER: 'Phone number',
   EMAIL_ADDRESS: 'Email address',
@@ -363,3 +365,5 @@ export const rulesWithSpecs = (rules: GuardrailRule[], specs: GuardrailSpecs): G
     const spec = specs[specListFor(rule.stage)].find((entry) => entry.type === rule.type);
     return spec ? { ...rule, enabled: true, control: controlWithSpec(rule.control, spec) } : rule;
   });
+
+export const isTranslationKey = (text: string): text is TranslationKey => Object.hasOwn(en, text);

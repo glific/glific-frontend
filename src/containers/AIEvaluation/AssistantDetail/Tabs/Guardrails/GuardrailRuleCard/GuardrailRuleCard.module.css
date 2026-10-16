@@ -97,7 +97,7 @@
   text-decoration: none;
 }
 
-a.InfoLink:hover {
+.InfoLink:hover {
   text-decoration: underline;
 }
 

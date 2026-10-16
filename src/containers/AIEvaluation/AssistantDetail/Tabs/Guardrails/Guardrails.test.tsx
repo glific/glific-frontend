@@ -399,17 +399,6 @@ describe('a rolled-out org', () => {
       });
     });
 
-    test('hovering Info shows the rule description in a tooltip', async () => {
-      await renderPanel();
-
-      fireEvent.mouseOver(screen.getByTestId('guardrailInfo-content-safety'));
-
-      // the description shows twice — on the card, and now in the tooltip
-      await waitFor(() =>
-        expect(screen.getAllByText('Removes abusive or hurtful words from messages.')).toHaveLength(2)
-      );
-    });
-
     test('cards follow the tab order, not the order the backend sends them in', async () => {
       await renderPanel();
 
@@ -444,17 +433,11 @@ describe('a rolled-out org', () => {
       expect(screen.getAllByTestId(/^guardrailRule-/)).toHaveLength(4);
     });
 
-    test('a validator without a link keeps its Info tooltip, but Info opens nothing', async () => {
+    test('a validator without a link shows no Info, since it would lead nowhere', async () => {
       renderGuardrails([getGuardrailValidatorsMock([{ type: 'uli_slur_match', link: null }])]);
       await screen.findByTestId('guardrailRule-content-safety');
 
-      const info = screen.getByTestId('guardrailInfo-content-safety');
-      expect(info).not.toHaveAttribute('href');
-
-      fireEvent.mouseOver(info);
-      await waitFor(() =>
-        expect(screen.getAllByText('Removes abusive or hurtful words from messages.')).toHaveLength(2)
-      );
+      expect(screen.queryByTestId('guardrailInfo-content-safety')).not.toBeInTheDocument();
     });
 
     test('says so when the validators cannot be loaded', async () => {
@@ -471,8 +454,8 @@ describe('a rolled-out org', () => {
       link: null,
       stage: 'incoming',
       tier: 'additional',
-      title: 'Solo Rule',
-      description: 'The only rule in this mock.',
+      title: 'Content Safety',
+      description: 'Removes abusive or hurtful words from messages.',
       action: 'fix',
       enabled: true,
       control: { kind: 'none' },
@@ -488,10 +471,10 @@ describe('a rolled-out org', () => {
     test('a tier nothing is assigned to is left out of the stage it would have joined', () => {
       render(<GuardrailsPanel initialRules={[onlyIncomingRule]} value={EMPTY_GUARDRAIL_SPECS} onChange={vi.fn()} />);
 
-      // "Solo Rule" is tier "additional" — "Recommended" has nothing under it and does not render
+      // the only rule is tier "additional" — "Recommended" has nothing under it and does not render
       expect(screen.queryByText('Recommended')).not.toBeInTheDocument();
       expect(screen.getByText('Additional')).toBeInTheDocument();
-      expect(screen.getByText('Solo Rule')).toBeInTheDocument();
+      expect(screen.getByText('Content Safety')).toBeInTheDocument();
     });
   });
 });
