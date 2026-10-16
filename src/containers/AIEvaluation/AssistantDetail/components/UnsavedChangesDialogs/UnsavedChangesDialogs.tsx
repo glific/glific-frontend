@@ -42,7 +42,7 @@ export const DiscardDialog = ({ onConfirm, onCancel }: DiscardDialogProps) => {
     <WarningDialog
       title={t('Discard unsaved changes?')}
       subtitle={t(
-        "Reverts the prompt, model, settings and knowledge base back to what they were before you started editing. This can't be undone."
+        "Reverts the prompt, model, settings, knowledge base and guardrails back to what they were before you started editing. This can't be undone."
       )}
       buttonOk={t('Discard changes')}
       onConfirm={onConfirm}

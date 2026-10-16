@@ -1,4 +1,6 @@
 .EditorIntro {
+  flex: 1;
+  min-width: 0;
   font-size: var(--app-font-size-sm);
   color: var(--app-color-text-tertiary);
 }
@@ -7,6 +9,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--app-space-sm);
+}
+
+.DetailGroup + .DetailGroup {
+  padding-top: var(--app-space-lg);
+  border-top: 1px dashed var(--app-color-border);
 }
 
 .DetailGroupHeader {
@@ -18,6 +25,7 @@
 
 .DetailGroupActions {
   display: flex;
+  flex-shrink: 0;
   gap: var(--app-space-sm);
   margin-left: auto;
   font-size: var(--app-font-size-xs);

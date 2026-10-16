@@ -25,6 +25,8 @@ export const ASSISTANT_CONFIG_VERSION_UPDATED = gql`
       model
       prompt
       settings
+      inputGuardrails
+      outputGuardrails
       status
       isLive
       description

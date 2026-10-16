@@ -95,6 +95,8 @@ export const GET_ASSISTANT_VERSIONS = gql`
       model
       prompt
       settings
+      inputGuardrails
+      outputGuardrails
       status
       isLive
       description
