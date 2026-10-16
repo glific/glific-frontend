@@ -170,8 +170,8 @@ export const GuardrailsPanel = ({ initialRules }: GuardrailsPanelProps) => {
                           key={rule.id}
                           id={rule.id}
                           number={runningNumber}
-                          title={rule.title}
-                          description={rule.description}
+                          title={t(rule.title)}
+                          description={t(rule.description)}
                           link={rule.link}
                           action={rule.action}
                           enabled={rule.enabled}

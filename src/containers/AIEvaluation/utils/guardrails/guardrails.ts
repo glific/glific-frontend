@@ -7,7 +7,9 @@ import type {
   GuardrailStage,
   GuardrailTier,
   GuardrailValidator,
+  TranslationKey,
 } from 'containers/AIEvaluation/types/guardrailType';
+import en from 'i18n/en/en.json';
 
 export const GUARDRAIL_ACTION_LABEL = {
   fix: 'Fixes & passes on',
@@ -103,7 +105,7 @@ const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link' | 'action'>[] = [
   },
 ];
 
-const PII_ENTITY_LABEL: Record<string, string> = {
+const PII_ENTITY_LABEL: Record<string, TranslationKey> = {
   PERSON: 'Name',
   PHONE_NUMBER: 'Phone number',
   EMAIL_ADDRESS: 'Email address',
@@ -224,3 +226,5 @@ export const slugify = (label: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+
+export const isTranslationKey = (text: string): text is TranslationKey => Object.hasOwn(en, text);

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 import type { DetailTypesEditorProps } from 'containers/AIEvaluation/types/guardrailType';
 import { GuardrailEditor } from '../GuardrailEditor/GuardrailEditor';
+import { isTranslationKey } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import styles from './DetailTypesEditor.module.css';
 
 export const DetailTypesEditor = ({ groups, onChange }: DetailTypesEditorProps) => {
@@ -73,7 +74,7 @@ export const DetailTypesEditor = ({ groups, onChange }: DetailTypesEditorProps) 
                   <span className={styles.DetailOptionBox}>
                     {option.selected && <CheckIcon className={styles.DetailOptionCheck} />}
                   </span>
-                  {option.label}
+                  {isTranslationKey(option.label) ? t(option.label) : option.label}
                 </button>
               ))}
             </div>

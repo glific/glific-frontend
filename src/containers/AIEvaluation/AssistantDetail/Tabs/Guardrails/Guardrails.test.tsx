@@ -457,8 +457,8 @@ describe('a rolled-out org', () => {
       link: null,
       stage: 'incoming',
       tier: 'additional',
-      title: 'Solo Rule',
-      description: 'The only rule in this mock.',
+      title: 'Content Safety',
+      description: 'Removes abusive or hurtful words from messages.',
       action: 'fix',
       enabled: true,
       control: { kind: 'none' },
@@ -474,10 +474,10 @@ describe('a rolled-out org', () => {
     test('a tier nothing is assigned to is left out of the stage it would have joined', () => {
       render(<GuardrailsPanel initialRules={[onlyIncomingRule]} />);
 
-      // "Solo Rule" is tier "additional" — "Recommended" has nothing under it and does not render
+      // the only rule is tier "additional" — "Recommended" has nothing under it and does not render
       expect(screen.queryByText('Recommended')).not.toBeInTheDocument();
       expect(screen.getByText('Additional')).toBeInTheDocument();
-      expect(screen.getByText('Solo Rule')).toBeInTheDocument();
+      expect(screen.getByText('Content Safety')).toBeInTheDocument();
     });
   });
 });

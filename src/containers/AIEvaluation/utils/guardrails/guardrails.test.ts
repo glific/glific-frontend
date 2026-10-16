@@ -1,5 +1,5 @@
 import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails';
-import { actionFromConfig, piiDetailGroups, scopeFallbackMessage } from './guardrails';
+import { actionFromConfig, isTranslationKey, piiDetailGroups, scopeFallbackMessage } from './guardrails';
 
 describe('piiDetailGroups', () => {
   test('reads every kind into one list, ticked as the default says, ticked ones first', () => {
@@ -60,5 +60,13 @@ describe('scopeFallbackMessage', () => {
     expect(scopeFallbackMessage(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
     expect(scopeFallbackMessage({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe('Sirf sehat.');
     expect(scopeFallbackMessage('not json')).toBe('');
+  });
+});
+
+describe('isTranslationKey', () => {
+  test('a label the app has a translation for is one; a code we only made readable is not', () => {
+    expect(isTranslationKey('Aadhaar number')).toBe(true);
+    expect(isTranslationKey('Crypto Wallet')).toBe(false);
+    expect(isTranslationKey('toString')).toBe(false);
   });
 });
