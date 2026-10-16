@@ -169,7 +169,7 @@ const JwtSecretCard = ({ index, onRemove }: { index: number; onRemove: () => voi
           component={NestedInput}
           name={nameField}
           type="text"
-          placeholder={t('e.g. Tap 2026')}
+          placeholder={t('e.g. 2026')}
           inputProp={{ id: nameField, 'data-testid': 'jwtSecretName' }}
         />
         <label className={styles.SecretCardLabel} htmlFor={secretField}>

@@ -1089,7 +1089,7 @@
   "Go back and edit": "वापस जाएँ और संपादित करें",
   "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "नीचे दिए गए नोड इस फ़्लो के चैनल पर नहीं चल सकते, इसलिए प्रकाशित करने से पहले उन्हें हटाना होगा।",
   "Secret": "सीक्रेट",
-  "e.g. Tap 2026": "जैसे Tap 2026",
+  "e.g. 2026": "जैसे 2026",
   "JWT signature secrets": "JWT हस्ताक्षर सीक्रेट",
   "Give this secret a name so you can tell it apart.": "इस सीक्रेट को एक नाम दें ताकि आप इसे अलग पहचान सकें।",
   "Use at least 32 characters.": "कम से कम 32 अक्षरों का इस्तेमाल करें।",

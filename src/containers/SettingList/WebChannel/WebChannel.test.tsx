@@ -21,10 +21,10 @@ beforeEach(() => vi.clearAllMocks());
 
 const SAVED = {
   logo_url: 'https://cdn.example.org/logo.png',
-  display_name: 'The Apprentice Project',
+  display_name: 'Example Foundation',
   primary_color: '#4C3BCF',
   secondary_color: '#FF8A3D',
-  about_description: 'TAP runs skill-building journeys.',
+  about_description: 'Example Foundation runs learning programmes.',
   about_address: 'Mumbai, Maharashtra',
   about_website: 'theapprenticeproject.org',
   about_email: 'support@tap.org',
@@ -158,7 +158,7 @@ describe('<WebChannel />', () => {
     render(wrapper(on));
 
     await waitFor(() => expect(screen.getByTestId('colorHex-primary_color')).toHaveValue('#4C3BCF'));
-    expect(screen.getByDisplayValue('The Apprentice Project')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Example Foundation')).toBeInTheDocument();
     expect(screen.getByDisplayValue('support@tap.org')).toBeInTheDocument();
   });
 
@@ -238,7 +238,7 @@ describe('JWT signature secrets', () => {
       expect(card(slot)).toHaveAccessibleName(/^Secret \{\{slot\}\}/);
       expect(within(card(slot)).getByLabelText('Name')).toBe(nameOf(slot));
       expect(nameOf(slot)).toHaveAttribute('type', 'text');
-      expect(nameOf(slot)).toHaveAttribute('placeholder', 'e.g. Tap 2026');
+      expect(nameOf(slot)).toHaveAttribute('placeholder', 'e.g. 2026');
       expect(within(card(slot)).getByLabelText('Secret')).toBe(secretOf(slot));
       expect(secretOf(slot)).toHaveAttribute('type', 'password');
     });
@@ -332,12 +332,12 @@ describe('JWT signature secrets', () => {
     render(
       wrapper([
         ...savedWith(keys, secrets),
-        updateWebChannelCredential({ ...keys, display_name: 'TAP Buddy' }, secrets),
+        updateWebChannelCredential({ ...keys, display_name: 'Example Buddy' }, secrets),
       ])
     );
 
-    await waitFor(() => expect(screen.getByTestId('display_name')).toHaveValue('The Apprentice Project'));
-    fill(screen.getByTestId('display_name'), 'TAP Buddy');
+    await waitFor(() => expect(screen.getByTestId('display_name')).toHaveValue('Example Foundation'));
+    fill(screen.getByTestId('display_name'), 'Example Buddy');
 
     await save();
 
