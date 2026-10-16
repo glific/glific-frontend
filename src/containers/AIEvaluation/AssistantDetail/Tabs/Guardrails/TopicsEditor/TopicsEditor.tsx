@@ -13,12 +13,13 @@ import type {
   GuardrailTopicSuggestion,
   TopicsEditorProps,
 } from 'containers/AIEvaluation/types/guardrailType';
-import { slugify } from 'containers/AIEvaluation/utils/guardrails/guardrails';
+import { isTranslationKey, slugify } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import { GuardrailEditor } from '../GuardrailEditor/GuardrailEditor';
 import styles from './TopicsEditor.module.css';
 
 export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
   const { t } = useTranslation();
+  const translate = (text: string) => (isTranslationKey(text) ? t(text) : text);
   const [draft, setDraft] = useState('');
 
   const { disallowedTopics, suggestedTopics, setReply } = value;
@@ -53,7 +54,9 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
         <div className={styles.TopicsLabelRow}>
           <span className={styles.TopicsLabel}>{t('Disallowed topics')}</span>
           <Tooltip
-            title={t('Along with the topic keywords, adding a short definition/description improves the accuracy.')}
+            title={t(
+              'Add a short description after a dash to make it more accurate, e.g. Politics — elections, parties, candidates.'
+            )}
             placement="top"
           >
             <InfoOutlinedIcon className={styles.InfoIcon} data-testid="disallowedTopicsHint" />
@@ -63,12 +66,14 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
         <div className={styles.TopicsBox}>
           {disallowedTopics.map((topic) => (
             <span className={styles.TopicChip} key={topic.id} data-testid={`disallowedTopic-${topic.id}`}>
-              {topic.description ? `${topic.label} — ${topic.description}` : topic.label}
+              {topic.description
+                ? `${translate(topic.label)} — ${translate(topic.description)}`
+                : translate(topic.label)}
               <button
                 type="button"
                 className={styles.TopicRemove}
                 onClick={() => removeTopic(topic.id)}
-                aria-label={t('Remove {{topic}}', { topic: topic.label })}
+                aria-label={t('Remove {{topic}}', { topic: translate(topic.label) })}
               >
                 <CloseIcon className={styles.TopicRemoveIcon} />
               </button>
@@ -136,7 +141,7 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
                   ) : (
                     <AddIcon className={styles.SuggestionIcon} />
                   )}
-                  {suggestion.label}
+                  {t(suggestion.label)}
                 </button>
               );
             })}

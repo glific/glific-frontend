@@ -1,6 +1,8 @@
 import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails';
+import type { GuardrailTopicSuggestion } from 'containers/AIEvaluation/types/guardrailType';
 import {
   actionFromConfig,
+  isTranslationKey,
   parseGuardrailSpecs,
   piiDetailGroups,
   safeLink,
@@ -105,18 +107,24 @@ describe('parseGuardrailSpecs', () => {
 });
 
 describe('topics configuration', () => {
-  const suggestions = [{ id: 'suggest-politics', label: 'Politics', description: 'elections, parties' }];
+  const suggestions: GuardrailTopicSuggestion[] = [
+    {
+      id: 'suggest-politics',
+      label: 'Legal & financial advice',
+      description: 'legal proceedings, investment advice, loans, tax filing',
+    },
+  ];
 
   test('round-trips topics, one per line, keeping commas inside a description', () => {
     const topics = [
-      { id: 'topic-suggest-politics', label: 'Politics', description: 'elections, parties' },
+      { id: 'topic-suggest-politics', label: 'Legal & financial advice', description: 'loans, tax filing' },
       { id: 'custom-cricket-1', label: 'Cricket', description: '' },
     ];
 
     const configuration = topicsToConfiguration(topics);
-    expect(configuration).toBe('Politics — elections, parties\nCricket');
+    expect(configuration).toBe('Legal & financial advice — loans, tax filing\nCricket');
     expect(topicsFromConfiguration(configuration, suggestions)).toEqual([
-      { id: 'topic-suggest-politics', label: 'Politics', description: 'elections, parties' },
+      { id: 'topic-suggest-politics', label: 'Legal & financial advice', description: 'loans, tax filing' },
       { id: 'custom-cricket-1', label: 'Cricket', description: '' },
     ]);
   });
@@ -135,5 +143,13 @@ describe('safeLink', () => {
     expect(safeLink('data:text/html,<script>alert(1)</script>')).toBeNull();
     expect(safeLink('not a url')).toBeNull();
     expect(safeLink(null)).toBeNull();
+  });
+});
+
+describe('isTranslationKey', () => {
+  test('a label the app has a translation for is one; a code we only made readable is not', () => {
+    expect(isTranslationKey('Aadhaar number')).toBe(true);
+    expect(isTranslationKey('Crypto Wallet')).toBe(false);
+    expect(isTranslationKey('toString')).toBe(false);
   });
 });
