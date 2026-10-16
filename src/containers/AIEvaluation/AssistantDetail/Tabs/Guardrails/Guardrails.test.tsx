@@ -1,5 +1,5 @@
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { setOrganizationServices } from 'services/AuthService';
 import {
   ALL_GUARDRAIL_VALIDATORS,
@@ -385,17 +385,6 @@ describe('a rolled-out org', () => {
       });
     });
 
-    test('hovering Info shows the rule description in a tooltip', async () => {
-      await renderPanel();
-
-      fireEvent.mouseOver(screen.getByTestId('guardrailInfo-content-safety'));
-
-      // the description shows twice — on the card, and now in the tooltip
-      await waitFor(() =>
-        expect(screen.getAllByText('Removes abusive or hurtful words from messages.')).toHaveLength(2)
-      );
-    });
-
     test('cards follow the tab order, not the order the backend sends them in', async () => {
       await renderPanel();
 
@@ -430,17 +419,11 @@ describe('a rolled-out org', () => {
       expect(screen.getAllByTestId(/^guardrailRule-/)).toHaveLength(4);
     });
 
-    test('a validator without a link keeps its Info tooltip, but Info opens nothing', async () => {
+    test('a validator without a link shows no Info, since it would lead nowhere', async () => {
       renderGuardrails([getGuardrailValidatorsMock([{ type: 'uli_slur_match', link: null }])]);
       await screen.findByTestId('guardrailRule-content-safety');
 
-      const info = screen.getByTestId('guardrailInfo-content-safety');
-      expect(info).not.toHaveAttribute('href');
-
-      fireEvent.mouseOver(info);
-      await waitFor(() =>
-        expect(screen.getAllByText('Removes abusive or hurtful words from messages.')).toHaveLength(2)
-      );
+      expect(screen.queryByTestId('guardrailInfo-content-safety')).not.toBeInTheDocument();
     });
 
     test('says so when the validators cannot be loaded', async () => {

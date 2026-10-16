@@ -3,7 +3,6 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import BlockIcon from '@mui/icons-material/Block';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Switch } from 'components/UI/Switch/Switch';
-import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import type { GuardrailAction, GuardrailRuleCardProps } from 'containers/AIEvaluation/types/guardrailType';
 import { GUARDRAIL_ACTION_LABEL } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import styles from './GuardrailRuleCard.module.css';
@@ -43,25 +42,18 @@ export const GuardrailRuleCard = ({
           {enabled && children && <div className={styles.RuleBody}>{children}</div>}
         </div>
         <div className={styles.RuleControls}>
-          <Tooltip title={description} placement="top">
-            {link ? (
-              <a
-                className={styles.InfoLink}
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-testid={`guardrailInfo-${id}`}
-              >
-                <InfoOutlinedIcon className={styles.InfoIcon} />
-                {t('Info')}
-              </a>
-            ) : (
-              <span className={styles.InfoLink} data-testid={`guardrailInfo-${id}`}>
-                <InfoOutlinedIcon className={styles.InfoIcon} />
-                {t('Info')}
-              </span>
-            )}
-          </Tooltip>
+          {link && (
+            <a
+              className={styles.InfoLink}
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid={`guardrailInfo-${id}`}
+            >
+              <InfoOutlinedIcon className={styles.InfoIcon} />
+              {t('Info')}
+            </a>
+          )}
           <Switch checked={enabled} onChange={onToggle} ariaLabel={title} testId={`guardrailToggle-${id}`} />
         </div>
       </div>
