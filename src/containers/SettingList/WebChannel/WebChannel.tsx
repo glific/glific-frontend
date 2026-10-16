@@ -52,8 +52,13 @@ const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 // HS256 needs a key of at least 32 bytes; the server ignores a shorter secret.
 const MIN_SECRET_LENGTH = 32;
 
+// One secret normally, a second only while rotating; the server reads no more than two.
+const MAX_JWT_SECRETS = 2;
+
 const toJwtSecrets = (entries: any): JwtSecret[] =>
-  Array.isArray(entries) ? entries.map((entry) => ({ name: entry?.name ?? '', secret: entry?.secret ?? '' })) : [];
+  Array.isArray(entries)
+    ? entries.slice(0, MAX_JWT_SECRETS).map((entry) => ({ name: entry?.name ?? '', secret: entry?.secret ?? '' }))
+    : [];
 
 const trimJwtSecrets = (entries: JwtSecret[] = []): JwtSecret[] =>
   entries
@@ -199,16 +204,18 @@ const JwtSecrets = ({ form }: any) => {
           {entries.map((_entry, index) => (
             <JwtSecretCard key={index} index={index} onRemove={() => arrayHelpers.remove(index)} />
           ))}
-          <Button
-            variant="outlined"
-            color="primary"
-            className={styles.AddSecret}
-            startIcon={<AddIcon />}
-            data-testid="addJwtSecret"
-            onClick={() => arrayHelpers.push({ ...EMPTY_JWT_SECRET })}
-          >
-            {t('Add secret')}
-          </Button>
+          {entries.length < MAX_JWT_SECRETS && (
+            <Button
+              variant="outlined"
+              color="primary"
+              className={styles.AddSecret}
+              startIcon={<AddIcon />}
+              data-testid="addJwtSecret"
+              onClick={() => arrayHelpers.push({ ...EMPTY_JWT_SECRET })}
+            >
+              {t('Add secret')}
+            </Button>
+          )}
         </div>
       )}
     />

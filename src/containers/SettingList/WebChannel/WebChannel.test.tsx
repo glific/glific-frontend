@@ -257,20 +257,36 @@ describe('JWT signature secrets', () => {
     expect(screen.getByTestId('addJwtSecret')).toBeInTheDocument();
   });
 
-  it('adds an empty card, and removes the one asked for', async () => {
+  it('allows at most two secrets, and removes the one asked for', async () => {
     render(wrapper(savedWith(SAVED, JWT_SECRETS)));
 
     await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
-    await user.click(screen.getByTestId('addJwtSecret'));
-
-    expect(nameOf(3)).toHaveValue('');
-    expect(secretOf(3)).toHaveValue('');
+    expect(screen.queryByTestId('addJwtSecret')).not.toBeInTheDocument();
 
     await user.click(within(card(1)).getByTestId('removeJwtSecret'));
 
-    expect(screen.queryByTestId('jwtSecret3')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('jwtSecret2')).not.toBeInTheDocument();
     expect(nameOf(1)).toHaveValue('2026');
+
+    await user.click(screen.getByTestId('addJwtSecret'));
+
     expect(nameOf(2)).toHaveValue('');
+    expect(secretOf(2)).toHaveValue('');
+    expect(screen.queryByTestId('addJwtSecret')).not.toBeInTheDocument();
+  });
+
+  it('shows only the first two of more saved secrets', async () => {
+    const three = {
+      jwt_signature_secrets: [
+        ...JWT_SECRETS.jwt_signature_secrets,
+        { name: '2027', secret: 'third-shared-secret-0123456789abcdef' },
+      ],
+    };
+
+    render(wrapper(savedWith(SAVED, three)));
+
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    expect(screen.queryByTestId('jwtSecret3')).not.toBeInTheDocument();
   });
 
   it('reveals a secret on request, so an admin can check what they pasted', async () => {
@@ -286,7 +302,7 @@ describe('JWT signature secrets', () => {
     expect(secretOf(2)).toHaveAttribute('type', 'password');
   });
 
-  it('saves the secrets as one list in the secrets, trimmed and without empty entries', async () => {
+  it('saves the secrets as one list in the secrets, trimmed', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
     render(wrapper([...savedWith(SAVED, {}), updateWebChannelCredential(SAVED, JWT_SECRETS)]));
@@ -294,12 +310,11 @@ describe('JWT signature secrets', () => {
     await waitFor(() => expect(screen.getByTestId('jwtSecretsEmpty')).toBeInTheDocument());
     await user.click(screen.getByTestId('addJwtSecret'));
     await user.click(screen.getByTestId('addJwtSecret'));
-    await user.click(screen.getByTestId('addJwtSecret'));
 
     fill(nameOf(1), ' 2025 ');
     fill(secretOf(1), OLD_SECRET);
-    fill(nameOf(3), '2026');
-    fill(secretOf(3), `${NEW_SECRET} `);
+    fill(nameOf(2), '2026');
+    fill(secretOf(2), `${NEW_SECRET} `);
 
     await save();
 
