@@ -140,6 +140,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       whatsappFormsEnabled
       aiEvaluationsEnabled
       aiEvaluationV2Enabled
+      aiGuardrailEnabled
       promptGeneratorEnabled
       templateV2Enabled
       templateLibraryEnabled
