@@ -23,6 +23,10 @@
   font-size: var(--app-font-size-md);
 }
 
+.TabSlot {
+  height: 100%;
+}
+
 .NotFound {
   text-align: center;
   margin: var(--app-space-3xl) 0;
